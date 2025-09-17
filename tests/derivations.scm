@@ -306,12 +306,14 @@
                          get-string-all)
                        text))))))
 
+(define %nonce (random-text))
+
 (test-equal "'git-download' built-in builder"
-  `(("/a.txt" . "AAA")
+  `(("/a.txt" . ,%nonce)
     ("/b.scm" . "#t"))
   (let ((nonce (random-text)))
-    (with-temporary-git-repository directory
-        `((add "a.txt" "AAA")
+    (with-served-temporary-git-repository directory port
+        `((add "a.txt" ,%nonce)
           (add "b.scm" "#t")
           (commit ,nonce))
       (let* ((commit (with-repository directory repository
@@ -322,7 +324,9 @@
                               #:env-vars
                               `(("url"
                                  . ,(object->string
-                                     (string-append "file://" directory)))
+                                     (string-append "git://localhost:"
+                                                    (number->string port)
+                                                    "/")))
                                 ("commit" . ,commit))
                               #:hash-algo 'sha256
                               #:hash (file-hash* directory
@@ -335,7 +339,7 @@
         (directory-contents (derivation->output-path drv) get-string-all)))))
 
 (test-assert "'git-download' built-in builder, invalid hash"
-  (with-temporary-git-repository directory
+  (with-served-temporary-git-repository directory port
       `((add "a.txt" "AAA")
         (add "b.scm" "#t")
         (commit "Commit!"))
@@ -347,7 +351,9 @@
                             #:env-vars
                             `(("url"
                                . ,(object->string
-                                   (string-append "file://" directory)))
+                                   (string-append "git://localhost:"
+                                                  (number->string port)
+                                                  "/")))
                               ("commit" . ,commit))
                             #:hash-algo 'sha256
                             #:hash (gcrypt:sha256 #vu8())
@@ -358,7 +364,7 @@
         #f))))
 
 (test-assert "'git-download' built-in builder, invalid commit"
-  (with-temporary-git-repository directory
+  (with-served-temporary-git-repository directory port
       `((add "a.txt" "AAA")
         (add "b.scm" "#t")
         (commit "Commit!"))
@@ -367,7 +373,9 @@
                             #:env-vars
                             `(("url"
                                . ,(object->string
-                                   (string-append "file://" directory)))
+                                   (string-append "git://localhost:"
+                                                  (number->string port)
+                                                  "/")))
                               ("commit"
                                . "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
                             #:hash-algo 'sha256
@@ -379,19 +387,24 @@
         #f))))
 
 (test-assert "'git-download' built-in builder, not found"
-  (let* ((drv (derivation %store "git-download"
-                          "builtin:git-download" '()
-                          #:env-vars
-                          `(("url" . "file:///does-not-exist.git")
-                            ("commit"
-                             . "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
-                          #:hash-algo 'sha256
-                          #:hash (gcrypt:sha256 #vu8())
-                          #:recursive? #t)))
-    (guard (c ((store-protocol-error? c)
-               (string-contains (store-protocol-error-message c) "failed")))
-      (build-derivations %store (list drv))
-      #f)))
+  (with-served-temporary-git-repository directory port
+    '()
+    (let* ((drv (derivation %store "git-download"
+                            "builtin:git-download" '()
+                            #:env-vars
+                            `(("url" . ,(object->string
+                                         (string-append "git://localhost:"
+                                                        (number->string port)
+                                                        "/nonexistent")))
+                              ("commit"
+                               . "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
+                            #:hash-algo 'sha256
+                            #:hash (gcrypt:sha256 #vu8())
+                            #:recursive? #t)))
+      (guard (c ((store-protocol-error? c)
+                 (string-contains (store-protocol-error-message c) "failed")))
+        (build-derivations %store (list drv))
+        #f))))
 
 (test-equal "derivation-name"
   "foo-0.0"

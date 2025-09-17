@@ -88,10 +88,10 @@
     (and (file-exists? out)
          (valid-path? %store out))))
 
-(test-equal "git-fetch, file URI"
+(test-equal "git-fetch, local URI"
   '("." ".." "a.txt" "b.scm")
   (let ((nonce (random-text)))
-    (with-temporary-git-repository directory
+    (with-served-temporary-git-repository directory port
         `((add "a.txt" ,nonce)
           (add "b.scm" "#t")
           (commit "Commit.")
@@ -103,7 +103,9 @@
                                              #:recursive? #t))
                              (drv (git-fetch
                                    (git-reference
-                                    (url (string-append "file://" directory))
+                                    (url (string-append "git://localhost:"
+                                                        (number->string port)
+                                                        "/"))
                                     (commit "v1.0.0"))
                                    'sha256 hash
                                    "git-fetch-test")))

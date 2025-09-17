@@ -27,6 +27,9 @@
   #:export (git-command
             with-temporary-git-repository
             with-git-repository
+            serve-git-repository
+            with-served-git-repository
+            with-served-temporary-git-repository
             find-commit))
 
 (define git-command
@@ -151,3 +154,67 @@ per DIRECTIVES."
                   #f
                   repository)
     (error "commit not found" message)))
+
+(define* (serve-git-repository directory #:optional port)
+  "Run \"git daemon\" to serve the bare git repository at DIRECTORY as the
+root resource on PORT on the loopback interface.  If PORT isn't provided or is
+#f, select an arbitrary unused port instead.
+
+Return two values: the PID of the newly-spawned process and the port it is
+listening on."
+  (let ((port (or port
+                  ;; XXX: race between when it's closed and 'git daemon' binds
+                  ;; the same port.
+                  (call-with-port (socket AF_INET SOCK_STREAM 0)
+                    (lambda (sock)
+                      (bind sock AF_INET INADDR_LOOPBACK 0)
+                      (sockaddr:port (getsockname sock)))))))
+    (values
+     (spawn (git-command)
+            (list (basename (git-command))
+                  "daemon"
+                  (string-append "--base-path=" directory)
+                  "--listen=127.0.0.1"
+                  "--listen=::1"
+                  (string-append "--port=" (number->string port))
+                  "--export-all" ;; don't require git-daemon-export-ok file
+                  "--strict-paths"
+                  "--"
+                  ;; with --strict-paths this limits requests to exactly this
+                  ;; directory.  The client can't fetch an empty string,
+                  ;; though (has to be at least "/"), so add a trailing slash.
+                  (if (string-suffix? "/" directory)
+                      directory
+                      (string-append directory "/"))))
+     port)))
+
+(define* (call-with-served-git-repository directory proc #:key port)
+  "Serve DIRECTORY as the root resource \"/\" on the loopback interface during
+the dynamic extent of a single invocation of PROC.  PROC is called with a
+single integer argument indicating which port of the loopback interface \"git
+daemon\" is listening on.  If PORT is specified, that port will be used,
+otherwise a random unused port will be chosen."
+  (call-with-values (lambda ()
+                      (serve-git-repository directory port))
+    (lambda (pid port)
+      (dynamic-wind
+        (const #t)
+        (lambda ()
+          (proc port))
+        (lambda ()
+          (kill pid SIGTERM)
+          (waitpid pid))))))
+
+(define-syntax-rule (with-served-git-repository directory port exp ...)
+  "Evaluate EXP in a context where the identifier PORT is bound to a port
+number on which \"git daemon\" is serving DIRECTORY as the root resource
+\"/\"."
+  (call-with-served-git-repository directory
+                                   (lambda (port)
+                                     exp ...)))
+
+(define-syntax-rule (with-served-temporary-git-repository directory port
+                                                          directives exp ...)
+  (with-temporary-git-repository directory directives
+    (with-served-git-repository (string-append directory "/.git") port
+      exp ...)))
