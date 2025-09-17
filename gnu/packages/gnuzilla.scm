@@ -294,6 +294,85 @@ getTimeZoneTransition/transitions-close-together.js")))))
 in C/C++.")
     (license license:mpl2.0))) ; and others for some files
 
+(define-public mozjs-128
+  (package
+    (inherit mozjs)
+    (version "128.3.1")
+    (source (origin
+              (method url-fetch)
+              ;; TODO: Switch to IceCat source once available on ftp.gnu.org.
+              (uri (string-append "https://ftp.mozilla.org/pub/firefox"
+                                  "/releases/" version "esr/source/firefox-"
+                                  version "esr.source.tar.xz"))
+              (sha256
+               (base32
+                "1a3h7p7126pxzpidb1lqckvhfh1had805mai4l96mnc878phbx61"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments mozjs)
+       ((#:configure-flags flags)
+        #~(delete "--enable-rust-simd" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+          (replace 'adjust-tests
+            (lambda _
+              (with-directory-excursion "../js/src/tests"
+                (substitute* "shell/os.js"
+                  ;; FIXME: Why does the killed process have an exit status?
+                  ((".*killed process should not have exitStatus.*")
+                   ""))
+
+                ;; This was fixed sometime between 102.15.1 and 115.11.0.
+                ;; These tests are supposed to be skipped on all 64-bit systems.
+                #$@(if (target-riscv64?)
+                       #~((substitute* '("non262/Array/regress-157652.js"
+                                         "non262/regress/regress-422348.js")
+                            (("mips64") "mips64|riscv64")))
+                       #~())
+
+                ;; FIXME: An one-hour difference is produced after DST
+                ;; starting in the timezone the test suite uses.
+                (delete-file "non262/Date/15.9.5.7.js")
+
+                ;; The test suite expects a lightly patched ICU.  Disable tests
+                ;; that do not work with the system version.  See
+                ;; "intl/icu-patches" for clues.
+
+                ;; See <https://unicode-org.atlassian.net/browse/ICU-20992> and
+                ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=1636984> and
+                ;; related patch for why this is failing.
+                (delete-file "non262/Intl/DateTimeFormat/\
+fractional-second-digits-append-item.js")
+                ;; FIXME: got "0 \u251CAM/PM: noon\u2524", expected "0 (AM/PM: noon)"
+                (delete-file "non262/Intl/DateTimeFormat/day-period-hour-cycle.js")
+                ;; FIXME: got "en-US-posix", expected "en-US-POSIX".
+                (delete-file "non262/Intl/available-locales-supported.js")
+                ;; FIXME: got "en-US", expected "en-US-POSIX"
+                (delete-file "non262/Intl/available-locales-resolved.js")
+
+                ;;; Since 115:
+                ;; Mismatching array lengths
+                (delete-file "non262/Intl/supportedValuesOf-timeZones-canonical.js")
+                ;; FIXME: got "America/Santa_Isabel", expected "America/Tijuana":
+                ;; America/Santa_Isabel -> America/Tijuana
+                (delete-file "non262/Intl/DateTimeFormat/timeZone_backward_links.js")
+                ;; TODO: tzdata 2024a expected – find a way to regenerate
+                ;; these generated tests
+                (delete-file "non262/Intl/DateTimeFormat/timeZone_version.js")
+
+                ;; FIXME: got "\uD840\uDDF2", expected "\u5047"
+                (delete-file "non262/Intl/Collator/implicithan.js")
+                ;; FIXME: got "\uD840\uDDF2", expected "\u3467"
+                (delete-file "non262/Intl/Collator/big5han-gb2312han.js")
+
+                ;; Since 128:
+                ;; FIXME: got (void 0), expected "GMT"
+                (delete-file "non262/Intl/DateTimeFormat/formatRange-timeZoneName-matches-format.js")
+                ;; FIXME: got 7, expected 9: parts count mismatch
+                (delete-file "non262/Intl/DateTimeFormat/formatRange-timeZone-offset.js")
+                (delete-file "non262/Intl/DateTimeFormat/formatRange-timeZoneName.js"))))))))
+    (inputs
+     (list icu4c-73 readline zlib))))
+
 (define-public mozjs-115
   (package
     (inherit mozjs)
