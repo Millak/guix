@@ -723,12 +723,11 @@ which allows one to install the M8 firmware on any Teensy.")
 
 (define-public nextpnr
   ;; Necessary for compatibility with latest apycula.
-  ;; TODO: Remove with release 0.9.
-  (let ((commit "d796cc720b60ccc18580c686d93c8751fe461532")
+  (let ((commit "9715a1d56580d0652b4a90d58eb4096ba537e3ce")
         (revision "0"))
     (package
       (name "nextpnr")
-      (version (git-version "0.8" revision commit))
+      (version "0.9")
       (source
        (origin
          (method git-fetch)
@@ -762,7 +761,7 @@ which allows one to install the M8 firmware on any Teensy.")
          (patches (search-patches "nextpnr-gtest.patch"
                                   "nextpnr-imgui.patch"))
          (sha256
-          (base32 "1arj25vad76wg6b5yaaky4cby5zp9v92pdd4y3l0kxi7wvxhmmya"))))
+          (base32 "1wrlk0f4y29znd1zgl531lw4s0rfm5w8kx4hlwwdaj7b9vv3v65f"))))
       (build-system qt-build-system)
       (arguments
        (list
