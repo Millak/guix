@@ -8131,7 +8131,7 @@ cpufreq sub-system is enabled or not.")
 (define-public haveged
   (package
     (name "haveged")
-    (version "1.9.18")
+    (version "1.9.19")
     (source
      (origin
        (method git-fetch)
@@ -8140,7 +8140,7 @@ cpufreq sub-system is enabled or not.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y1p3qhjzhpgd20xz5ffms3w1bdvpk883y38ydwsmp9mc0kzy8kz"))))
+        (base32 "1qka68dlfz9z3gjfvfwvh60l2121c1yx0z264jqsf2vjp5f0xbmn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
