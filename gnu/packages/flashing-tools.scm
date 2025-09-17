@@ -845,10 +845,14 @@ production use.")
       (native-inputs (list libxml2))
       (inputs (list eudev))
       (arguments
-       `(#:tests? #f  ; No tests implemented
-         #:make-flags (list (string-append "CC=" ,(cc-for-target))
-                            (string-append "prefix=" %output))
-         #:phases (modify-phases %standard-phases (delete 'configure))))
+       (list
+        #:tests? #f  ; No tests implemented
+        #:make-flags
+        #~(list (string-append "CC=" #$(cc-for-target))
+                (string-append "prefix=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure))))
       (home-page "https://git.linaro.org/landing-teams/working/qualcomm/qdl")
       (synopsis "Qualcomm EDL mode flashing tool")
       (description "This tool communicates with USB devices of id 05c6:9008 to
