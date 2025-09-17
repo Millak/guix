@@ -54,8 +54,8 @@
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ceramicnetwork/go-dag-jose")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ceramicnetwork/go-dag-jose")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0g34dwlnq07zg176bdhp2hcg1hg5l55s0a6hk4kiq37vm01w68j7"))
@@ -104,8 +104,8 @@
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/bbloom")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/bbloom")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0dcdn7nlysynl7yrbivv8m7j83jq7pabhcff8mvfjdk583rgnkp2"))))
@@ -284,8 +284,8 @@ Verification specification
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-bitfield")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-bitfield")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1zhgwdg2kizhk0hb9q5p0pwrwldd2pacz8l1pnapxh6qm3fqs663"))))
@@ -308,8 +308,8 @@ Verification specification
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-block-format")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-block-format")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0pd8ww06ss922g3w2fgi3w0q66y2mkb9b2q9x5qxabrjj65xranz"))))
@@ -339,8 +339,8 @@ corresponding to the block.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-blockservice")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-blockservice")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1pg6mj0iwlisp0sk9dng9663vvxbcnxjmbb62nkdfaf4dkbs920c"))))
@@ -383,8 +383,8 @@ data either locally or from a remote peer through the exchange.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-cidutil")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-cidutil")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0j18wf42rfxrrh2fjdbjsjvjqxwgvg46b9wl6y5ig22fx5hvpm1n"))))
@@ -412,8 +412,8 @@ with @url{https://github.com/ipld/cid, CIDs}.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ds-badger4")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ds-badger4")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1gyzywd74cb8jl0zr8b3fjjmd8rsabwk5rj17nhagigps4971h1a"))))
@@ -445,8 +445,8 @@ datastore for IPFS.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ds-dynamodb")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ds-dynamodb")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1z155ajpx52v71hsdjz5950z1w0qmp6c7lsqmsa9qyn7x21g7p0g"))))
@@ -479,8 +479,8 @@ scans, enabling high performance, ordered, high-cardinality prefix queries.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ds-flatfs")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ds-flatfs")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1m5fxxdn2zj9i9nm8fdyll4wcgaknfg3vj07959mj06hwc9r3z3c"))))
@@ -508,8 +508,8 @@ hierarchy of the keys.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ds-measure")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ds-measure")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "14p3681sb1h81qxkwblngvy72yrd73drcvamgc3v7za734l9f54b"))))
@@ -535,8 +535,8 @@ hierarchy of the keys.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ds-pebble")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ds-pebble")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0l0abcknray9hvk5j3vdiybgjk7yn6j3awznpy46j08g97z88ljw"))))
@@ -565,8 +565,8 @@ go-datastore}.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-fs-lock")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-fs-lock")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "14m5038067px6vvqyvx6449f0f62nj8d0p5hkf9rj8ykfahs80ff"))))
@@ -593,8 +593,8 @@ go-datastore}.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ipfs-blockstore")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ipfs-blockstore")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1a3a0fm8k8njdlq2w795qff01piadjfp6r5r2hww69fxqsplln9l"))))
@@ -630,8 +630,8 @@ datastore, giving a clean interface for getting and putting block objects.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ipfs-blocksutil")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ipfs-blocksutil")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0g6b4b2b5wp5r0dh20qdfdm76qnh421y8lgz4381r02q2flh57dv"))))
@@ -656,8 +656,8 @@ datastore, giving a clean interface for getting and putting block objects.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ipfs-cmds")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ipfs-cmds")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0npgcwzxzgvygl9r9h5kbnfl1dh0hygmwk1jj1hwznyvj47x6lwl"))))
@@ -692,8 +692,8 @@ applications.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ipfs-delay")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ipfs-delay")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0a5acj622sk1hibnh893mya4h86nsy1dan0wlh9q444c04iqpviw"))))
@@ -716,8 +716,8 @@ objects.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ipfs-ds-help")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ipfs-ds-help")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1xmn9pdyrcim9ahqs9pkh0c9ac71gilb3pb48kcagq8zxf22i4bj"))))
@@ -745,8 +745,8 @@ keys used by @code{go-ipfs} (Kubo).")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-datastore")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-datastore")
+              (commit (string-append "v" version))))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -797,8 +797,8 @@ throughout its lifetime.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-datastore")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-datastore")
+              (commit (string-append "v" version))))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -825,8 +825,8 @@ throughout its lifetime.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ds-badger")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ds-badger")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0ywq8cs6yf5vqfbw6rd5pw79sqljd87qi0ykv4gg736s7g7mkjr6"))))
@@ -856,8 +856,8 @@ by @url{https://dgraph.io/docs/badger,Badger}.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ds-leveldb")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ds-leveldb")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1hi7vmjpzzh00zcf0638rvgiqj4j8difz5kzr0pilr0z6zcb7dq3"))))
@@ -883,8 +883,8 @@ LevelDB backend.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-detect-race")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-detect-race")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0rqb0q66d7z852j5mhlr025dz698c44w014g4mx587amr1rvwqna"))))
@@ -905,8 +905,8 @@ LevelDB backend.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ipfs-exchange-interface")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ipfs-exchange-interface")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0h5jizhjq4yz9sikqc6yhv5gsb8fgv67v0qjzagyhfznfx8kwv1d"))))
@@ -931,8 +931,8 @@ LevelDB backend.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ipfs-exchange-offline")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ipfs-exchange-offline")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1ad28xbqbxc93ckjnlifbk7p58qis7ayfpndav33n6b4sq6s2a0r"))))
@@ -964,8 +964,8 @@ but returns nil values to every request.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ipfs-pq")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ipfs-pq")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0zi177lysf6f2zap9l0yxcw4r2xvjiji1yb1jzdmiif2ahvi0v84"))))
@@ -989,8 +989,8 @@ but returns nil values to every request.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ipfs-redirects-file")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ipfs-redirects-file")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "16lisd5jbniang85jzfwfigw0kmz73913fsrfj49nh92mpw50qpz"))))
@@ -1018,8 +1018,8 @@ parsing.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ipfs-routing")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ipfs-routing")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0j5pyp35z0jnqzz7iiknqx3234swqrpqz478ng8al3b6gqaza9ks"))))
@@ -1060,8 +1060,8 @@ development.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ipfs-util")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ipfs-util")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0x80c6a50zcv473xx0b39sz2xkwpiw3nmmjf51k5x7a4rx0rgvx4"))))
@@ -1085,8 +1085,8 @@ development.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ipld-cbor")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ipld-cbor")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0yxk4sbf1fk9aaizzpz3h30049wqvaz0s3jnbdd5akhj7wg89h21"))))
@@ -1117,8 +1117,8 @@ implementation of @code{go-ipld-format}")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ipld-format")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ipld-format")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0zl172ncmx9h5z2p3d0j1377xm9glw4zfyamks31p0pvvx2kyn7c"))))
@@ -1145,8 +1145,8 @@ order to be a part of the @acronym{IPLD, InterPlanetary Linked Data} merkle-fore
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ipld-git")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ipld-git")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1v52qzgmx7qym0qzkzkry2kfj58f9hh7c8qycg74sqbd9zb1ynjj"))))
@@ -1187,8 +1187,8 @@ IPLD graph as detailed below.  Objects are demonstrated here using both
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-ipld-legacy")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-ipld-legacy")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0sc2zc3lyxy30fzynwdpfrl8jhh1ynwixn1crrv8hzn93yix6550"))))
@@ -1218,8 +1218,8 @@ IPLD graph as detailed below.  Objects are demonstrated here using both
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-merkledag")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-merkledag")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0g1hrk2iw7gvk5qyv5avcc2idkc13w8agz6d7390bwjk18bdd5gr"))))
@@ -1265,8 +1265,8 @@ Graphs, DAG} data structures as specified in
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-metrics-interface")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-metrics-interface")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0d7jh9aclmxq4z5hynn4lc0ab8c8rip92xkc224vjw2y7kg6jyvg"))))
@@ -1295,8 +1295,8 @@ Graphs, DAG} data structures as specified in
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-metrics-prometheus")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-metrics-prometheus")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "12bvlg1pnwxyfn8paxf0viky5mv5isdql29mflvjhgs5g48mnc3s"))))
@@ -1322,8 +1322,8 @@ Graphs, DAG} data structures as specified in
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-peertaskqueue")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-peertaskqueue")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0mz6kj0d23p7hfmcrh8l0khj6gx9f58v2ls5336im6yw4vkzr711"))))
@@ -1352,8 +1352,8 @@ tasks distributed among peers.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-test")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-test")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0h2lns6xl874m175l692qwsrwrv7jcx54ncqygjy9l3910ny2dg2"))))
@@ -1385,8 +1385,8 @@ IPFS related projects.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-unixfsnode")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-unixfsnode")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0rn4x8f9a1ipwz0rg19ylbyh2s3q81vpnlan9yjscnfxx1r6gdbg"))))
@@ -1400,17 +1400,17 @@ IPFS related projects.")
      (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list ;; go-github-com-ipfs-boxo ; introduce cycle
-           go-github-com-ipfs-go-bitfield
-           go-github-com-ipfs-go-cid
-           go-github-com-ipfs-go-ipld-format
-           go-github-com-ipfs-go-test
-           go-github-com-ipld-go-car-v2
-           go-github-com-ipld-go-codec-dagpb
-           go-github-com-ipld-go-ipld-prime
-           go-github-com-multiformats-go-multicodec
-           go-github-com-multiformats-go-multihash
-           go-github-com-spaolacci-murmur3
-           go-google-golang-org-protobuf))
+      go-github-com-ipfs-go-bitfield
+      go-github-com-ipfs-go-cid
+      go-github-com-ipfs-go-ipld-format
+      go-github-com-ipfs-go-test
+      go-github-com-ipld-go-car-v2
+      go-github-com-ipld-go-codec-dagpb
+      go-github-com-ipld-go-ipld-prime
+      go-github-com-multiformats-go-multicodec
+      go-github-com-multiformats-go-multihash
+      go-github-com-spaolacci-murmur3
+      go-google-golang-org-protobuf))
     (home-page "https://github.com/ipfs/go-unixfsnode")
     (synopsis "ADL IPLD prime node implementation of protobuf")
     (description
@@ -1433,8 +1433,8 @@ based of paths.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-verifcid")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-verifcid")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "05i6wp2nln0mlr1pivmva7j6bwa09k7jl04acx1lw65h4d9nxsjm"))))
@@ -1463,8 +1463,8 @@ code prior to it getting merged into @code{go-cid}.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs-shipyard/nopfs")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs-shipyard/nopfs")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1qbp7hny0v6n74agh1ym98ndnnr53aq1hd6ybm5q214fah7k23r7"))
@@ -1555,8 +1555,8 @@ go-ipfs stack to enable content-blocking.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipld/go-car")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipld/go-car")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1c9mmvwwhl86m0jv7cp3xaay7bpp9nzq3by3r75z2hyz341zvb2c"))
@@ -1601,8 +1601,8 @@ go-ipfs stack to enable content-blocking.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipld/go-car")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipld/go-car")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "08zkz73r76va2hvrg6gixc0nfdwwsigdncsl9h6b5ibb11zwa0gn"))))
@@ -1646,8 +1646,8 @@ go-ipfs stack to enable content-blocking.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipld/go-codec-dagpb")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipld/go-codec-dagpb")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1jbrwbgr222wsi95gdflbj350csja6k8vphdq7c9bm50ipr8bvkq"))))
@@ -1674,8 +1674,8 @@ go-ipfs stack to enable content-blocking.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipld/go-ipld-prime")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipld/go-ipld-prime")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1ycb08h0hvq3mw3sbjkjzp5sfcxmss155jxiv5gjg7myxvzk91ja"))))
@@ -1722,8 +1722,8 @@ basic operations on IPLD objects (traversals, etc).")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-log")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-log")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1yh3sw8knpy364h8h8rqw193whnjd6fbc13cxh6zs29z3x2a7aqa"))))
@@ -1752,8 +1752,8 @@ their levels to be controlled individually.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipfs/go-log")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipfs/go-log")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0gj2yqrv6wgpkv6f9c1anmw5kwg59plv0jrcxb3zmjrnk8fsn1jr"))))
@@ -1774,8 +1774,8 @@ their levels to be controlled individually.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ipshipyard/p2p-forge")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ipshipyard/p2p-forge")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0qh820v738fn1k5scd99v230s4xcz26wg2s41farirhdjx8lmzc6"))))
@@ -1824,8 +1824,8 @@ peers.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/libp2p/go-cidranger")
-             (commit (string-append "v" version))))
+              (url "https://github.com/libp2p/go-cidranger")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "05hzlk5hx7qna5znr3q1crr0qb7h8yrv1v96pj015dh0kbdkdaba"))))
@@ -1862,8 +1862,8 @@ published AWS Route53 CIDR 52.95.110.0/24), IP routing rules, etc.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/libp2p/go-doh-resolver")
-             (commit (string-append "v" version))))
+              (url "https://github.com/libp2p/go-doh-resolver")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0asni7f3gd65bjfqz99fqchz9y75cpgmfwkkhsbq0y2dydagw666"))))
@@ -1892,8 +1892,8 @@ specified in @url{https://datatracker.ietf.org/doc/html/rfc8484, RFC 8484}.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/libp2p/go-libp2p")
-             (commit (string-append "v" version))))
+              (url "https://github.com/libp2p/go-libp2p")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1sxx27hgryg93a03n08vasycaj76iwclzdskajjy8bivk5z9ls9p"))
@@ -1999,8 +1999,8 @@ specified in @url{https://datatracker.ietf.org/doc/html/rfc8484, RFC 8484}.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/libp2p/go-libp2p-gostream")
-             (commit (string-append "v" version))))
+              (url "https://github.com/libp2p/go-libp2p-gostream")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1zq5vhjj590azc1gwwiyqilf9ifxp8nz4hziz0fxs5ly2xhjj1mw"))))
@@ -2035,8 +2035,8 @@ Go with @url{https://github.com/libp2p/libp2p, LibP2P} streams.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/libp2p/go-libp2p-http")
-             (commit (string-append "v" version))))
+              (url "https://github.com/libp2p/go-libp2p-http")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0v65xjj1ljpx9bfwqivgncc6imrykw1dd8m2zvaqiygv0dirzkzn"))))
@@ -2073,8 +2073,8 @@ through @url{https://github.com/libp2p/libp2p, LibP2P} using Go's standard
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/libp2p/go-libp2p-kad-dht")
-             (commit (string-append "v" version))))
+              (url "https://github.com/libp2p/go-libp2p-kad-dht")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1m263kjax7zyn3k3xgiamh6fcfl4724hm64z6mvmlslcx5zvmmzz"))))
@@ -2147,8 +2147,8 @@ kab-dht}.  This DHT is modeled after Kademlia with S/Kademlia modifications.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/libp2p/go-libp2p-kbucket")
-             (commit (string-append "v" version))))
+              (url "https://github.com/libp2p/go-libp2p-kbucket")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1p764b38xm0v5w3h8df14480j6y0fxxlsxwqizqchf0ivr3fr634"))))
@@ -2187,8 +2187,8 @@ kab-dht}.  This DHT is modeled after Kademlia with S/Kademlia modifications.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/libp2p/go-libp2p-pubsub")
-             (commit (string-append "v" version))))
+              (url "https://github.com/libp2p/go-libp2p-pubsub")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "14afjrgfbmlrnjd5xnl70ff95mbvfxp9n8mx3hrw8069bcpzvm2k"))))
@@ -2232,8 +2232,8 @@ provides topic-based pubsub, with pluggable routing algorithms.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/libp2p/go-libp2p-pubsub-router")
-             (commit (string-append "v" version))))
+              (url "https://github.com/libp2p/go-libp2p-pubsub-router")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "01mxb8gi7myidnyfg8yqb445lbwqmgncvh7rcwx6n8av84afplx4"))))
@@ -2268,8 +2268,8 @@ provides topic-based pubsub, with pluggable routing algorithms.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/libp2p/go-libp2p-record")
-             (commit (string-append "v" version))))
+              (url "https://github.com/libp2p/go-libp2p-record")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0hl3khlsxagypf18cgx0rd2hnlnpg2vhcrn4g7m1xrkimgj57696"))))
@@ -2298,8 +2298,8 @@ systems.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/libp2p/go-libp2p-routing-helpers")
-             (commit (string-append "v" version))))
+              (url "https://github.com/libp2p/go-libp2p-routing-helpers")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0s0gzxfhmvywk4w78j1ga1ha7f948csfyflpxz8la1cp64238f01"))))
@@ -2339,8 +2339,8 @@ different types of routers.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/libp2p/go-libp2p-testing")
-             (commit (string-append "v" version))))
+              (url "https://github.com/libp2p/go-libp2p-testing")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "08n17mqskdj5il6lws53wk1zsf9d8c55f58bap1rjngf2d669p39"))))
@@ -2364,8 +2364,8 @@ different types of routers.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/libp2p/go-libp2p-xor")
-             (commit (string-append "v" version))))
+              (url "https://github.com/libp2p/go-libp2p-xor")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0p4mwz0q0zbj8p1s04hmpy0w0znfxz3b7x28dv7cz0cg6wqvfqvk"))))
@@ -2394,8 +2394,8 @@ as distance-based operations with respect to the XOR metric.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/libp2p/go-socket-activation")
-             (commit (string-append "v" version))))
+              (url "https://github.com/libp2p/go-socket-activation")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1cqxzmjfg7838xifs07kigys9icardwlj1wl426mzgzmbwn6pg5s"))))
@@ -2423,8 +2423,8 @@ daemon as described in
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/whyrusleeping/cbor-gen")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/whyrusleeping/cbor-gen")
+              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "08by7pqh4fcwf2va01iif75yqkfssi6d48334404mmv9jmhzim60"))))
@@ -2595,8 +2595,8 @@ also mount the world at @code{/ipfs}.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://gitlab.com/spritely/go-libp2p-daemon.git")
-               (commit commit)))
+                (url "https://gitlab.com/spritely/go-libp2p-daemon.git")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32 "0bk2610rlg8d4lla7h7sic9drv1syabfbr7kbg2yqqbhiwg0v2br"))))
