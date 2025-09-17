@@ -247,7 +247,8 @@ firmware from it.")
        (uri (git-reference
              (url "https://github.com/PaulStoffregen/teensy_loader_cli")
              (commit version)))
-       (sha256 (base32 "12n8ifz4gph1anhwd8if3j1kw0wc3yxf48abbyxl8071l9vj3m0b"))
+       (sha256
+        (base32 "12n8ifz4gph1anhwd8if3j1kw0wc3yxf48abbyxl8071l9vj3m0b"))
        (file-name (git-file-name name version))
        (modules '((guix build utils)))
        (snippet
@@ -259,14 +260,18 @@ firmware from it.")
     (arguments
      (list
       #:tests? #f ;; Makefile has no test target
-      #:make-flags #~(list "CC=gcc" (string-append "PREFIX=" #$output))
-      #:phases #~(modify-phases %standard-phases
-                   (delete 'configure)
-                   (replace 'install
-                     (lambda _
-                       (install-file "teensy_loader_cli"
-                                     (string-append #$output "/bin")))))))
-    (inputs (list libusb-compat))       ;only compatible with libusb 0.1
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "teensy_loader_cli"
+                            (string-append #$output "/bin")))))))
+    (inputs
+     (list libusb-compat))       ;only compatible with libusb 0.1
     (synopsis "Command line firmware uploader for Teensy development boards")
     (description
      "The Teensy loader program communicates with your Teensy board when the
