@@ -377,14 +377,14 @@ management, IP blocking lists.")
 (define-public kunifiedpush
   (package
     (name "kunifiedpush")
-    (version "25.04.0")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0hzhbn8rrlgkml47r6qqpcqg01az2za20kcsrasgmc5bf1cwclqw"))))
+        (base32 "1mx3kb2yxnvv6rzmhxkl4xqaxzmdkc6vj5a1rd27b5a36s3h3giz"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -401,7 +401,9 @@ management, IP blocking lists.")
            kcoreaddons
            ki18n
            kservice
-           qtwebsockets))
+           openssl
+           qtwebsockets
+           solid))
     (home-page "https://invent.kde.org/libraries/kunifiedpush")
     (synopsis "UnifiedPush client components")
     (description "KUnifiedPush is a @uref{https://unifiedpush.org/,
