@@ -6570,15 +6570,6 @@ can also directly record to WebM or MP4 if you prefer.")
           (add-before 'check 'configure-tests
             (lambda _
               (setenv "HOME" (getcwd))))
-          ;; XXX: This can happen when some side-effects happens at
-          ;; initialization. See https://codeberg.org/guix/guix/issues/1089
-          (add-before 'sanity-check 'patch-script
-            (lambda _
-              (substitute* (string-append #$output "/bin/.yt-real")
-                (("import mps_youtube as mod")
-                 "from mps_youtube.main import main")
-                (("sys\\.exit \\(mod\\.main\\.main \\(\\)\\)")
-                 "sys.exit(main())"))))
           (replace 'sanity-check
             (lambda _
               (invoke (string-append #$output "/bin/yt") "-h"))))))

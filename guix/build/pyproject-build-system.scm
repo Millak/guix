@@ -349,8 +349,8 @@ and return write it to PATH/NAME."
           (format port "#!~a
 # Auto-generated entry point script.
 import sys
-import ~a as mod
-sys.exit (mod.~a ())~%" interpreter module function)))
+from ~a import ~a
+sys.exit(~a())~%" interpreter module function function)))
       (chmod file-path #o755)))
 
   (let* ((site-dir (site-packages inputs outputs))
