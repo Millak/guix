@@ -406,30 +406,31 @@ referred to as the \"Odin 3 protocol\".")
   (package
     (name "ifdtool")
     (version "4.9")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/coreboot/coreboot")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0jidj29jh6p65d17k304wlzhxvp4p3c2namgcdwg2sxq8jfr0zlm"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://review.coreboot.org/coreboot")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0jidj29jh6p65d17k304wlzhxvp4p3c2namgcdwg2sxq8jfr0zlm"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list "CC=gcc"
-             "INSTALL=install"
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _
-             (chdir "util/ifdtool")
-             #t))
-         (delete 'configure))           ; no configure script
-       #:tests? #f))                    ; no test suite
-    (home-page "https://github.com/corna/me_cleaner/")
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              "INSTALL=install"
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "util/ifdtool")))
+          (delete 'configure))           ; no configure script
+      #:tests? #f))                    ; no test suite
+    (home-page "https://doc.coreboot.org/util/ifdtool/")
     (synopsis "Intel Firmware Descriptor dumper")
     (description "This package provides @command{ifdtool}, a program to
 dump Intel Firmware Descriptor data of an image file.")
