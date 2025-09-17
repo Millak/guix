@@ -22,6 +22,7 @@
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Esther Flashner <esther@flashner.co.il>
+;;; Copyright © 2025 André Batista <nandre@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2030,6 +2031,13 @@ order to add a suitable bootloader menu entry.")
                              "\t" #$(this-package-native-input "syslinux")
                              "/share/syslinux \\\n"
                              all))))))
+                 #~())
+            #$@(if (target-x86-32?)
+                 ;; Otherwise (u)int64 assertion failure on this arch.
+                 ;; See <https://github.com/ipxe/ipxe/issues/1506>
+                 #~((add-after 'enter-source-directory 'fix-x86-align
+                      (lambda _
+                        (setenv "HOST_EFI_CFLAGS" "-malign-double"))))
                  #~())
             (delete 'configure)         ; no configure script
             (replace 'install
