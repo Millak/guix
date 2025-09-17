@@ -85,30 +85,33 @@
   (package
     (name "flashrom")
     (version "1.6.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://download.flashrom.org/releases/flashrom-v"
-                    version ".tar.xz"))
-              (sha256
-               (base32
-                "08s4r7abcyk849zk840l3szgdmaxj0bx1281wy0zrdgrgncb77cb"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://download.flashrom.org/releases/flashrom-v"
+             version ".tar.xz"))
+       (sha256
+        (base32
+         "08s4r7abcyk849zk840l3szgdmaxj0bx1281wy0zrdgrgncb77cb"))))
     (build-system meson-build-system)
-    (inputs (list bash-minimal dmidecode pciutils libusb libftdi libjaylink))
-    (native-inputs (list cmocka pkg-config))
     (arguments
-     (list #:configure-flags
-           #~'("-Dprogrammer=all")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-path
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* "dmi.c"
-                     (("(dmidecode)( 2>/dev/null)" _ command suffix)
-                      (string-append
-                       (search-input-file
-                        inputs (in-vicinity "sbin" command))
-                       suffix))))))))
+     (list
+      #:configure-flags #~'("-Dprogrammer=all")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "dmi.c"
+                (("(dmidecode)( 2>/dev/null)" _ command suffix)
+                 (string-append
+                  (search-input-file
+                   inputs (in-vicinity "sbin" command))
+                  suffix))))))))
+    (native-inputs
+     (list cmocka pkg-config))
+    (inputs
+     (list bash-minimal dmidecode pciutils libusb libftdi libjaylink))
     (home-page "https://flashrom.org/")
     (synopsis "Identify, read, write, erase, and verify ROM/flash chips")
     (description
