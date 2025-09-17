@@ -346,7 +346,7 @@ and return write it to PATH/NAME."
           ;; Technically the script could also include search-paths,
           ;; but having a generic 'wrap phases also handles manually
           ;; written entry point scripts.
-          (format port "#!~a
+          (format port "#!~a -sP
 # Auto-generated entry point script.
 import sys
 from ~a import ~a
