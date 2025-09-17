@@ -11837,7 +11837,7 @@ desktop.")
 (define-public evtest
   (package
     (name "evtest")
-    (version "1.35")
+    (version "1.36")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11846,7 +11846,7 @@ desktop.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "164prnw35kda6jfykl7h52lfzy99ma2lk029zscyqk766k19spf4"))))
+                "0mwjvz0fwwcwm4fpw0m4x8bcxpnzjkiy7fpb438vf4i5g5q0dc1k"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ;No tests exist
