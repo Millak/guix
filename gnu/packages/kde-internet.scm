@@ -232,21 +232,22 @@ Features are:
 (define-public krdc
   (package
     (name "krdc")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/krdc-" version ".tar.xz"))
        (sha256
-        (base32 "0kwsnmvnqyaj53njpd0424fsd7pkdcv5h162dym2binkq710mdvf"))))
+        (base32 "16vnh9aq8hlhi1bnyy0f0mscc025wp5fnd6vswx8h4dnhq0ink8k"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config kdoctools))
     (inputs
      (list breeze-icons ; default icon set
            kbookmarks
-           freerdp
+           freerdp-3
+           fuse
            kcmutils
            kcompletion
            kconfig
