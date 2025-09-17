@@ -11798,7 +11798,7 @@ libraries are found or why they cannot be located.")
 (define-public touchegg
   (package
     (name "touchegg")
-    (version "2.0.14")
+    (version "2.0.18")
     (source
      (origin
        (method git-fetch)
@@ -11807,7 +11807,7 @@ libraries are found or why they cannot be located.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0shvslz0c8nqx5f988z55qjc9xw0in9rb7b19r6vr1f7cdkqb6yr"))))
+        (base32 "0m8zgihij14b8dxrxxvpl8sdsx49mjlnxnm0fhgfxscy7n07kcpc"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f ; No tests exist
