@@ -1,0 +1,48 @@
+;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2025 Giacomo Leidi <goodoldpaul@autistici.org>
+;;;
+;;; This file is part of GNU Guix.
+;;;
+;;; GNU Guix is free software; you can redistribute it and/or modify it
+;;; under the terms of the GNU General Public License as published by
+;;; the Free Software Foundation; either version 3 of the License, or (at
+;;; your option) any later version.
+;;;
+;;; GNU Guix is distributed in the hope that it will be useful, but
+;;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;; GNU General Public License for more details.
+;;;
+;;; You should have received a copy of the GNU General Public License
+;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
+
+(define-module (gnu packages elixir-web)
+  #:use-module (gnu packages erlang-xyz)
+  #:use-module (gnu packages elixir-databases)
+  #:use-module (gnu packages elixir-i18n)
+  #:use-module (gnu packages elixir-markup)
+  #:use-module (gnu packages elixir-xyz)
+  #:use-module (guix build-system mix)
+  #:use-module (guix download)
+  #:use-module (guix git-download)
+  #:use-module (guix gexp)
+  #:use-module ((guix licenses)
+                #:prefix license:)
+  #:use-module (guix packages))
+
+(define-public elixir-websock
+  (package
+    (name "elixir-websock")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "websock" version))
+       (sha256
+        (base32 "0lxlp1h18595nqczfg15iy34kw5xbbab3yk6ml9cf8mcgwyla1b1"))))
+    (build-system mix-build-system)
+    (synopsis "Specification for WebSocket connections")
+    (description
+     "This package provides a specification for @code{WebSocket} connections.")
+    (home-page "https://hexdocs.pm/websock/")
+    (license license:expat)))
