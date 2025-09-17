@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Alex Kost <alezost@gmail.com>
-;;; Copyright © 2018, 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2020, 2022 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2019 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2022 Fredrik Salomonsson <plattfot@posteo.net>
 ;;;

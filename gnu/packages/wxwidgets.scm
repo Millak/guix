@@ -11,7 +11,7 @@
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023, 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
-;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;

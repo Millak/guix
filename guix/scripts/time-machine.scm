@@ -2,7 +2,7 @@
 ;;; Copyright © 2019 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2019-2021, 2023-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
-;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

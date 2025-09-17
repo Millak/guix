@@ -16,7 +16,7 @@
 ;;; Copyright © 2019 Mikhail Kirillov <w96k.ru@gmail.com>
 ;;; Copyright © 2020 Holger Peters <holger.peters@posteo.de>
 ;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2020, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2021 Giacomo Leidi <goodoldpaul@autistici.org>

@@ -1,7 +1,7 @@
 Submitted here: https://github.com/freebsd/atf/pull/57
 
 From 098b66269b1cf1d944b8b214ceb7ce9febde3682 Mon Sep 17 00:00:00 2001
-From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+From: Maxim Cournoyer <maxim@guixotic.coop>
 Date: Mon, 29 Jan 2024 22:35:49 -0500
 Subject: [PATCH] Fix use after free in execute_with_shell.
 

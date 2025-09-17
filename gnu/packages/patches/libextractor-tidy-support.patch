@@ -1,7 +1,7 @@
 Upstream status: submitted to bug-libextractor@gnu.org.
 
 From 1fc6daaeaf829fb941a176831c011888a73c43b9 Mon Sep 17 00:00:00 2001
-From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+From: Maxim Cournoyer <maxim@guixotic.coop>
 Date: Mon, 11 Mar 2024 09:36:26 -0400
 Subject: [PATCH] html_extractor: Add support for modern tidy-html.
 

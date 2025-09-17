@@ -11,7 +11,7 @@
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 André Batista <nandre@riseup.net>
 ;;; Copyright © 2021-2023 Danial Behzadi <dani.behzi@ubuntu.com>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Jim Newsome <jnewsome@torproject.org>
 ;;; Copyright © 2025 Danial Behzadi <dani.behzi@ubuntu.com>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>

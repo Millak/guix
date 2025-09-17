@@ -68,7 +68,7 @@
 ;;; Copyright © 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Luca Cirrottola <luca.cirrottola@inria.fr>
-;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Sören Tempel <soeren@soeren-tempel.net>
 ;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
 ;;;

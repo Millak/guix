@@ -12,7 +12,7 @@
 ;;; Copyright © 2020, 2023, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2022, 2024, 2025 gemmaro <gemmaro.dev@gmail.com>
-;;; Copyright © 2023 Maxim Cournoyer maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Maxim Cournoyer maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

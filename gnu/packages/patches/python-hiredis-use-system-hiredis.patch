@@ -1,7 +1,7 @@
 Upstream status: https://github.com/redis/hiredis-py/pull/161
 
 From 7b3c8a364f6167f4b1828dd9c48ada3d8b0786f6 Mon Sep 17 00:00:00 2001
-From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+From: Maxim Cournoyer <maxim@guixotic.coop>
 Date: Sat, 18 Mar 2023 21:32:21 -0400
 Subject: [PATCH] setup.py: Fallback to use the system hiredis library.
 

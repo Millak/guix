@@ -5,7 +5,7 @@
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;

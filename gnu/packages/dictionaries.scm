@@ -11,7 +11,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2022 ROCKTAKEY <rocktakey@gmail.com>
 ;;; Copyright © 2022, 2024 Runciter <runciter@whispers-vpn.org>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
 ;;;

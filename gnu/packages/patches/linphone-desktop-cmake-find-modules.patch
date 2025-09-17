@@ -1,5 +1,5 @@
 From 25bdfe9ad3a33e1db6e5db8290b3a5112f4d621e Mon Sep 17 00:00:00 2001
-From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+From: Maxim Cournoyer <maxim@guixotic.coop>
 Date: Fri, 14 Jun 2024 22:33:58 -0400
 Subject: [PATCH] cmake: Delete most CMake find modules.
 

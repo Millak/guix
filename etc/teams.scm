@@ -10,7 +10,7 @@ exec $pre_inst_env_maybe guix repl -- "$0" "$@"
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022-2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
-;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2025 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
@@ -1175,7 +1175,7 @@ the \"texlive\" importer."
   reproduciblebuilds)
 
 (define-member (person "Maxim Cournoyer"
-                       "maxim.cournoyer@gmail.com"
+                       "maxim@guixotic.coop"
                        "apteryx")
   documentation gnome qt telephony electronics)
 

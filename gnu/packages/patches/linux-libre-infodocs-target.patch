@@ -1,7 +1,7 @@
 Upstream status: https://marc.info/?l=linux-doc&m=166861669723994&w=2
 
 From 7edb5b278ee383ff9bed525329b2cdbe22317bf2 Mon Sep 17 00:00:00 2001
-From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+From: Maxim Cournoyer <maxim@guixotic.coop>
 Date: Mon, 14 Nov 2022 22:51:11 -0500
 Subject: [PATCH] doc: add texinfodocs and infodocs targets
 
@@ -13,7 +13,7 @@ This change also causes the html output to appear under its own output
 sub-directory, which makes it easier to install, since it's clean from
 .doctrees or other output formats.
 
-Signed-off-by: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+Signed-off-by: Maxim Cournoyer <maxim@guixotic.coop>
 ---
  Documentation/Makefile                     | 13 ++++++++++++-
  Documentation/userspace-api/media/Makefile |  3 ++-

@@ -1,7 +1,7 @@
 Upstream status: https://gitlab.com/wavexx/gnus-desktop-notify.el/-/merge_requests/15
 
 From 905e7ea41560783ec723aa0167911ba050f91789 Mon Sep 17 00:00:00 2001
-From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+From: Maxim Cournoyer <maxim@guixotic.coop>
 Date: Mon, 16 Jun 2025 09:24:07 +0900
 Subject: [PATCH] Revert to use the notifications library by default.
 

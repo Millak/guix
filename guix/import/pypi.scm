@@ -4,7 +4,7 @@
 ;;; Copyright © 2015-2017, 2019-2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018, 2023 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2024 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>

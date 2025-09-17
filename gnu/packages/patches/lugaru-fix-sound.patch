@@ -1,5 +1,5 @@
 From 3adfb088eed81fc2c9e40ac55018378d4975f469 Mon Sep 17 00:00:00 2001
-From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+From: Maxim Cournoyer <maxim@guixotic.coop>
 Date: Sun, 28 Jan 2024 19:50:51 -0500
 Subject: [PATCH] audio: Look extension from right, not left.
 

@@ -2,7 +2,7 @@
 ;;; Copyright © 2017 David Hashe <david.hashe@dhashe.com>
 ;;; Copyright © 2017 Kei Kebreau <address@hidden>
 ;;; Copyright © 2020 Eric Bavier <bavier@posteo.net>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;

@@ -14,7 +14,7 @@
 # Copyright © 2018 nikita <nikita@n0.is>
 # Copyright © 2018, 2021 Julien Lepiller <julien@lepiller.eu>
 # Copyright © 2017-2018 Eric Bavier <bavier@posteo.net>
-# Copyright © 2020-2021, 2023-204 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+# Copyright © 2020-2021, 2023-204 Maxim Cournoyer <maxim@guixotic.coop>
 # Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 # Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 

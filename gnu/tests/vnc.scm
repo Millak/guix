@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>.
+;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>.
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
