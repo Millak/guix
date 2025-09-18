@@ -24,6 +24,7 @@
 ;;; Copyright © 2023 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Robin Templeton <robin@guixotic.coop>
+;;; Copyright © 2025 Laura Kirsch <laurakirsch240406@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1048,14 +1049,14 @@ devices.")
 (define-public ausweisapp
   (package
     (name "ausweisapp")
-    (version "2.2.2")
+    (version "2.3.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/Governikus/AusweisApp/releases"
                                   "/download/" version "/AusweisApp-" version ".tar.gz"))
               (sha256
                (base32
-                "1rbbgr90ivay1sh8sarp0nd1p8zdyfscjjwg8jdi2ig61jr795zf"))))
+                "0d6zc9vz6g37a6vkb4jzwcrh77q217nbr5mvj9vqkvqhkzwwfkgb"))))
 
     (build-system qt-build-system)
     (native-inputs
@@ -1069,7 +1070,8 @@ devices.")
            qtwebsockets
            qtgraphicaleffects
            pcsc-lite
-           openssl))
+           openssl
+           eudev))
     (arguments
      `(#:qtbase ,qtbase
        #:phases
