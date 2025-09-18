@@ -2054,12 +2054,12 @@ implementation of the ASDF Standard.")
             (lambda _ (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-pytest
+           python-pytest-asdf-plugin
            python-pytest-astropy
            python-pytest-xdist
            python-scipy
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-asdf
            python-asdf-coordinates-schemas
