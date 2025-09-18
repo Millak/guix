@@ -40,6 +40,7 @@
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gstreamer)
@@ -350,6 +351,91 @@ Some of JuK's features include:
 @end itemize
 
 This package is part of the KDE multimedia module.")
+    (license license:gpl2+)))
+
+(define-public kdenlive
+  (package
+    (name "kdenlive")
+    (version "25.07.80")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://invent.kde.org/multimedia/kdenlive")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mvd3sfwdihfw94s1wrlyp66a7z5m4d95bcsq7pszjqbj8pq10wq"))))
+    (build-system qt-build-system)
+    (arguments
+     ;; XXX otiotest seemingly freezes.  Additionally, tests/mixtest.cpp:818
+     ;; fails with an unexpected exception.
+     (list
+      #:qtbase qtbase
+      #:configure-flags #~(list "-DFETCH_OTIO=off")
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-executable
+            (lambda _
+              (let* ((ffmpeg #$(this-package-input "ffmpeg"))
+                     (frei0r #$(this-package-input "frei0r-plugins"))
+                     (ladspa #$(this-package-input "ladspa"))
+                     (qtbase #$(this-package-input "qtbase")))
+                (wrap-program (string-append #$output "/bin/kdenlive")
+                  `("PATH" ":" prefix
+                    ,(list (string-append ffmpeg "/bin")))
+                  `("FREI0R_PATH" ":" =
+                    (,(string-append frei0r "/lib/frei0r-1")))
+                  `("LADSPA_PATH" ":" =
+                    (,(string-append ladspa "/lib/ladspa")))
+                  `("QT_QPA_PLATFORM_PLUGIN_PATH" ":" =
+                    (,(string-append qtbase "/lib/qt6/plugins/platforms")))
+                  `("MLT_PREFIX" ":" =
+                    (,#$(this-package-input "mlt"))))))))))
+    (native-inputs
+     (list extra-cmake-modules kdoctools pkg-config qttools))
+    (inputs
+     (list bash-minimal
+           breeze                       ; make dark theme available easily
+           breeze-icons                 ; recommended icon set
+           ffmpeg
+           frei0r-plugins
+           imath
+           karchive
+           kcrash
+           kdbusaddons
+           kdeclarative
+           kdoctools
+           kfilemetadata
+           kguiaddons
+           kiconthemes
+           kirigami
+           knewstuff
+           knotifications
+           knotifyconfig
+           kparts
+           kplotting
+           ktextwidgets
+           ladspa
+           mlt
+           opentimelineio
+           purpose
+           qqc2-desktop-style
+           qtbase
+           qtdeclarative
+           qtmultimedia
+           qtnetworkauth
+           qtsvg
+           shared-mime-info))
+    (home-page "https://kdenlive.org")
+    (synopsis "Non-linear video editor")
+    (description "Kdenlive is an acronym for KDE Non-Linear Video Editor.
+
+Non-linear video editing is much more powerful than beginner's (linear)
+editors, hence it requires a bit more organization before starting.  However,
+it is not reserved to specialists and can be used for small personal
+projects.")
     (license license:gpl2+)))
 
 (define-public kid3
