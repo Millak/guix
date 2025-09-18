@@ -6,7 +6,7 @@
 ;;; Copyright © 2017, 2019, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2021-2024 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Esther Flashner <esther@flashner.co.il>
 ;;;

@@ -11,7 +11,7 @@
 ;;; Copyright © 2021 Nathan Dehnel <ncdehnel@gmail.com>
 ;;; Copyright © 2022 Cameron V Chaparro <cameron@cameronchaparro.com>
 ;;; Copyright © 2022 Timo Wilken <guix@twilken.net>
-;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Richard Sent <richard@freakingpenguin.com>
 ;;; Copyright © 2025 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;;

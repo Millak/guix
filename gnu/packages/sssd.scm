@@ -4,7 +4,7 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021, 2024 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2021, 2022 Remco van 't Veer <remco@remworks.net>
-;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

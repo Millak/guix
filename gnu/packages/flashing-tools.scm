@@ -13,7 +13,7 @@
 ;;; Copyright © 2022 Peter Polidoro <peter@polidoro.io>
 ;;; Copyright © 2022 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2023 B. Wilson <x@wilsonb.com>
-;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024, 2025 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2025 Joaquín Aguirrezabalaga <kinote@kinote.org>

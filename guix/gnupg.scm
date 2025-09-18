@@ -2,7 +2,7 @@
 ;;; Copyright © 2010, 2011, 2013, 2014, 2016, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2021, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

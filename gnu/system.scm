@@ -9,7 +9,7 @@
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
-;;; Copyright © 2020, 2022, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2022, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <jannek@gnu.org>
 ;;; Copyright © 2020, 2022, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>

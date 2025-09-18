@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2023-2025 Maxim Cournoyer maxim.cournoyer@gmail.com>
+;;; Copyright © 2023-2025 Maxim Cournoyer maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

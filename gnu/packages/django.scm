@@ -7,7 +7,7 @@
 ;;; Copyright © 2018 Vijayalakshmi Vedantham <vijimay12@gmail.com>
 ;;; Copyright © 2019 Sam <smbaines8@gmail.com>
 ;;; Copyright © 2020, 2021, 2022, 2023 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;; Copyright © 2022 Pradana Aumars <paumars@courrier.dev>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>

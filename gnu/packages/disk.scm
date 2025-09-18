@@ -24,7 +24,7 @@
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2014, 2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Disseminate Dissent <disseminatedissent@protonmail.com>
 ;;; Copyright © 2023 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2023 Morgan Smith <Morgan.J.Smith@outlook.com>

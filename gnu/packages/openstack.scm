@@ -5,7 +5,7 @@
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021, 2025 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>

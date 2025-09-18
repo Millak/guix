@@ -17,7 +17,7 @@
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Baptiste Strazzul <bstrazzull@hotmail.fr>
 ;;; Copyright © 2022 SeerLite <seerlite@disroot.org>
 ;;; Copyright © 2024 Aleksandr Vityazev <avityazew@gmail.com>

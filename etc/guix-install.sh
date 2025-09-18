@@ -9,7 +9,7 @@
 # Copyright © 2020 Daniel Brooks <db48x@db48x.net>
 # Copyright © 2021 Jakub Kądziołka <kuba@kadziolka.net>
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
-# Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+# Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
 # Copyright © 2022 Prafulla Giri <prafulla.giri@protonmail.com>
 # Copyright © 2023 Andrew Tropin <andrew@trop.in>
 # Copyright © 2020 David A. Redick <david.a.redick@gmail.com>

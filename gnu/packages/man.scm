@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Imran Iqbal <imran@imraniqbal.org>
 ;;;
 ;;; This file is part of GNU Guix.

@@ -4,7 +4,7 @@
 ;;; Copyright © 2016, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2017, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2017, 2020, 2021, 2022 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2020, 2023 Andreas Enge <andreas@enge.fr>
