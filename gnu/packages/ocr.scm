@@ -5,7 +5,7 @@
 ;;; Copyright © 2019 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2021, 2024 Andy Tai <atai@atai.org>
 ;;; Copyright © 2021, 2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

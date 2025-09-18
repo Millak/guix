@@ -1,7 +1,7 @@
 Forwarded upstream: https://lists.gnu.org/archive/html/jami/2024-01/msg00010.html
 
 From 1d3b044c85c32341cca392254fe8bbf34a4639e1 Mon Sep 17 00:00:00 2001
-From: Maxim Cournoyer <maxim@guixotic.coop>
+From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
 Date: Tue, 9 Jan 2024 11:14:04 -0500
 Subject: [PATCH] tests: Skip tests that need Internet when there's none.
 MIME-Version: 1.0

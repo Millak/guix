@@ -7,7 +7,7 @@
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Brian Cully <bjc@spork.org>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>

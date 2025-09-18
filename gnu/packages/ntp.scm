@@ -5,7 +5,7 @@
 ;;; Copyright © 2015, 2018 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2022, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>

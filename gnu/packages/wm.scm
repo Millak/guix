@@ -54,7 +54,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2022 Pier-Hugues Pellerin <ph@heykimo.com>
-;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Elais Player <elais@fastmail.com>
 ;;; Copyright © 2022, 2023 Trevor Richards <trev@trevdev.ca>

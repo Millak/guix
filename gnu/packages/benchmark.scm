@@ -8,7 +8,7 @@
 ;;; Copyright © 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 malte Frank Gerdes <malte.f.gerdes@gmail.com>
-;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>

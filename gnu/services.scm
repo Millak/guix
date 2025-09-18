@@ -9,7 +9,7 @@
 ;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2023 Brian Cully <bjc@spork.org>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

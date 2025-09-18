@@ -3,7 +3,7 @@
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>

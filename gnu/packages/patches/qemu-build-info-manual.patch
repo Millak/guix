@@ -1,5 +1,5 @@
 From 2793f47c066ed396b38893c10533202fceb1a05f Mon Sep 17 00:00:00 2001
-From: Maxim Cournoyer <maxim@guixotic.coop>
+From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
 Date: Thu, 17 Sep 2020 13:28:19 -0400
 Subject: [PATCH] build: Build and install a Texinfo version of the manual.
 
@@ -10,7 +10,7 @@ readers.
 
 * docs/meson.build (texi, info): New targets.
 
-Signed-off-by: Maxim Cournoyer <maxim@guixotic.coop>
+Signed-off-by: Maxim Cournoyer <maxim.cournoyer@gmail.com>
 
 diff --git a/docs/meson.build b/docs/meson.build
 index 9040f860ae..2ae7886fcb 100644

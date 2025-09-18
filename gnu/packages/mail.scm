@@ -32,7 +32,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
 ;;; Copyright © 2020 Eric Brown <ecbrown@ericcbrown.com>
-;;; Copyright © 2020, 2021, 2022, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020, 2021, 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021 Alexey Abramov <levenson@mmer.org>
 ;;; Copyright © 2020 Tim Gesthuizen <tim.gesthuizen@yahoo.de>

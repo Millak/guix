@@ -31,7 +31,7 @@
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022-2025 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2022-2024 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2022, 2023, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 Sughosha <Sughosha@proton.me>
 ;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>

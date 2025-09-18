@@ -20,7 +20,7 @@
 ;;; Copyright © 2019 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2019 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2020 Joseph LaFreniere <joseph@lafreniere.xyz>
-;;; Copyright © 2020 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>

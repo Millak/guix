@@ -6,7 +6,7 @@
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021, 2022 Jean-Baptiste Volatier <jbv@pm.me>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Akira Kyle <akira@akirakyle.com>
 ;;;
 ;;; This file is part of GNU Guix.

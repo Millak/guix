@@ -4,7 +4,7 @@
 ;;; Copyright © 2016, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2019, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Prafulla Giri <pratheblackdiamond@gmail.com>
 ;;; Copyright © 2020 Christopher Lam <christopher.lck@gmail.com>

@@ -4,7 +4,7 @@
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

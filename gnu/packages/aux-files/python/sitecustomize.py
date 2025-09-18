@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2021 Maxim Cournoyer <maxim@guixotic.coop>
+# Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 #
 # This file is part of GNU Guix.
 #

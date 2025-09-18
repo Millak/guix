@@ -32,7 +32,7 @@
 ;;; Copyright © 2017 Kristofer Buffington <kristoferbuffington@gmail.com>
 ;;; Copyright © 2018 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
-;;; Copyright © 2018, 2021, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2018, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Gábor Boskovits <boskovits@gmail.com>

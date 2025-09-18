@@ -24,7 +24,7 @@
 ;;; Copyright © 2023 Eidvilas Markevičius <markeviciuseidvilas@gmail.com>
 ;;; Copyright © 2025 aurtzy <aurtzy@gmail.com>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
-;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>
 ;;;

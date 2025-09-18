@@ -12,7 +12,7 @@
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.ccom>
 ;;; Copyright © 2021, 2022, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
-;;; Copyright © 2021, 2023, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Nicolas Graves <ngraves@ngraves.fr>

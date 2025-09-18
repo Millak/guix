@@ -6,7 +6,7 @@
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2021, 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2022, 2023, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Abhishek Cherath <abhi@quic.us>
 ;;; Copyright © 2025 Juliana Sims <juli@incana.org>

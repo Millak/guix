@@ -23,7 +23,7 @@
 ;;; Copyright © 2022 Robby Zambito <contact@robbyzambito.me>
 ;;; Copyright © 2023, 2024 Andrew Whatson <whatson@tailcall.au>
 ;;; Copyright © 2023, 2024 Juliana Sims <juli@incana.org>
-;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Skylar Hill <stellarskylark@posteo.net>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>

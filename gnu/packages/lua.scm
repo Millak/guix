@@ -22,7 +22,7 @@
 ;;; Copyright © 2023 Valter Nazianzeno <manipuladordedados@gmail.com>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2024 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
-;;; Copyright © 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
 ;;;
 ;;; This file is part of GNU Guix.

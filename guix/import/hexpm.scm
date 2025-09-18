@@ -3,7 +3,7 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2017, 2019-2021, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019 Martin Becze <mjbecze@riseup.net>
-;;; Copyright © 2019, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2019, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020-2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.

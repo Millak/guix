@@ -9,7 +9,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Simon South <simon@simonsouth.net>

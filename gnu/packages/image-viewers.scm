@@ -24,7 +24,7 @@
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 dissent <disseminatedissent@protonmail.com>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 Cairn <cairn@pm.me>
 ;;; Copyright © 2023 Florian Pelz <pelzflorian@pelzflorian.de>

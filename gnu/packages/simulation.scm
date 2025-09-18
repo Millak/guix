@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Reza Housseini <reza@housseini.me>

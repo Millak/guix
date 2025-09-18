@@ -1,5 +1,5 @@
 From 0216b81c46f2612b8acf33b1a7c5886db25f45ff Mon Sep 17 00:00:00 2001
-From: Maxim Cournoyer <maxim@guixotic.coop>
+From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
 Date: Thu, 13 Jun 2024 16:04:29 -0400
 Subject: [PATCH] cmake: Fix BelCard cmake module name.
 

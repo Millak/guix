@@ -15,7 +15,7 @@
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2023, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2020, 2021, 2023, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020, 2021, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>

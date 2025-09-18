@@ -8,9 +8,9 @@
 ;;; Copyright © 2018 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2019, 2020 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2019 Jelle Licht <jlicht@fsfe.org>
-;;; Copyright © 2020, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
-;;; Copyright © 2020 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>

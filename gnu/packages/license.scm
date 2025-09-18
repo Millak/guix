@@ -5,7 +5,7 @@
 ;;; Copyright © 2021 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
-;;; Copyright © 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2024 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.

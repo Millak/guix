@@ -24,7 +24,7 @@ index c69a86d..fbf4ce7 100644
 +++ b/unit-tests/logging.logger.scm
 @@ -3,6 +3,7 @@
  ;;;    Copyright (C) 2003 Richard Todd
- ;;;    Copyright (C) 2024 Maxim Cournoyer <maxim@guixotic.coop>
+ ;;;    Copyright (C) 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
  ;;;    Copyright (C) 2024 David Pirotte <david@altosw.be>
 +;;;    Copyright (C) 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
  

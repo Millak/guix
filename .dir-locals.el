@@ -6,7 +6,7 @@
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2018-2020 Caleb Ristvedt <caleb.ristvedt@cune.org>
-;;; Copyright © 2020-2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020-2023,2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>

@@ -8,7 +8,7 @@
 ;;; Copyright © 2020, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 pukkamustard <pukkamustard@posteo.net>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;

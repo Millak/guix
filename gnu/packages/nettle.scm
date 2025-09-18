@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013, 2014, 2015 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017, 2020-2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2021 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

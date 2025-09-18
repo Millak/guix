@@ -11,7 +11,7 @@
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2019 Hartmut Goebel <h.goebel@goebel-consult.de>
-;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020, 2021, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 lu hui <luhuins@163.com>

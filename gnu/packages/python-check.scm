@@ -5,7 +5,7 @@
 ;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
 ;;; Copyright © 2018-2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019-2025 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019-2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2019-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019, 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Matthew James Kraai <kraai@ftbfs.org>

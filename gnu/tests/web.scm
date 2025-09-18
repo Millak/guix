@@ -4,7 +4,7 @@
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2018 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

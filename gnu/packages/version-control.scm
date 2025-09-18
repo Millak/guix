@@ -33,7 +33,7 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
-;;; Copyright © 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Léo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>

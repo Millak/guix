@@ -27,7 +27,7 @@
 ;;; Copyright © 2021 Robby Zambito <contact@robbyzambito.me>
 ;;; Copyright © 2021, 2022, 2023 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021, 2022, 2024 John Kehayias <john.kehayias@protonmail.com>
-;;; Copyright © 2021-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>

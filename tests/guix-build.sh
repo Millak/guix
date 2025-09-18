@@ -2,7 +2,7 @@
 # Copyright © 2012-2014, 2016-2025 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
-# Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
+# Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 #
 # This file is part of GNU Guix.
 #

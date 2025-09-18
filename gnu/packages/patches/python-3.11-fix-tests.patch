@@ -1,5 +1,5 @@
 From f0698133e7d6c353a3e6ae0fc62e57ba558a9bc0 Mon Sep 17 00:00:00 2001
-From: Maxim Cournoyer <maxim@guixotic.coop>
+From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
 Date: Wed, 28 Oct 2020 22:55:05 -0400
 Subject: [PATCH] Skip problematic Python 3 tests in Guix.
 

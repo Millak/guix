@@ -9,7 +9,7 @@
 ;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;; Copyright © 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;; Copyright © 2020-2025 Maxim Cournoyer <maxim@guixotic.coop>
+;; Copyright © 2020-2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;; Copyright © 2021–2023 Leo Famulari <leo@famulari.name>
 ;; Copyright © 2021 Zhu Zihao <all_but_last@163.com>
 ;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>

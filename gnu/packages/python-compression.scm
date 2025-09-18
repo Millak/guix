@@ -10,7 +10,7 @@
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 TakeV <takev@disroot.org>
 ;;; Copyright © 2023 Ivan Vilata i Balaguer <ivan@selidor.net>
-;;; Copyright © 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 ;;;

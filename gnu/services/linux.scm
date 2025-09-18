@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 raid5atemyhomework <raid5atemyhomework@protonmail.com>

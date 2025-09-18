@@ -7,7 +7,7 @@
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
-;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.

@@ -8,7 +8,7 @@
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2018, 2020, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2018, 2020, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019, 2020 Giacomo Leidi <goodoldpaul@autistici.org>

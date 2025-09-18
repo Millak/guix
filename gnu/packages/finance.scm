@@ -28,7 +28,7 @@
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
-;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2023 dan <i@dan.games>

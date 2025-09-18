@@ -7,7 +7,7 @@ Subject: [PATCH] Build: Find Xfont2/fontenc/Pixman using pkg-config
 these libraries will share include/library paths with libX11.  This
 commit reverts e9cb8665dc3822b33dc0ffc5571fce5a759e7cb9.
 
-Rebased on 3.0.1 by Maxim Cournoyer <maxim@guixotic.coop>
+Rebased on 3.0.1 by Maxim Cournoyer <maxim.cournoyer@gmail.com>
 
 diff --git a/unix/Xvnc/CMakeLists.txt b/unix/Xvnc/CMakeLists.txt
 index 064feda..293f794 100644

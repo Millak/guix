@@ -5,7 +5,7 @@
 ;;; Copyright © 2017-2020, 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2021 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Frank Pursel <frank.pursel@gmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>

@@ -17,7 +17,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>

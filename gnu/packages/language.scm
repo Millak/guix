@@ -6,7 +6,7 @@
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020, 2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2022 Milran <milranmike@protonmail.com>
-;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023, 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Charles <charles@charje.net>

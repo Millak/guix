@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015 Pjotr Prins <pjotr.public01@thebird.nl>
 ;;; Copyright © 2015, 2016 Ben Woodcroft <donttrustben@gmail.com>
-;;; Copyright © 2020 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

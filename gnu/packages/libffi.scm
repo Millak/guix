@@ -6,7 +6,7 @@
 ;;; Copyright © 2016, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017, 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2021 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2019, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 John Doe <dftxbs3e@free.fr>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>

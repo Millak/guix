@@ -1,7 +1,7 @@
 Forwarded here: https://lists.gnu.org/archive/html/jami/2024-01/msg00003.html
 
 From 20a1702d881b381979d31c456f1b8cf5e0f728ad Mon Sep 17 00:00:00 2001
-From: Maxim Cournoyer <maxim@guixotic.coop>
+From: Maxim Cournoyer <maxim.cournoyer@gmail.com>
 Date: Sun, 7 Jan 2024 16:40:41 -0500
 Subject: [PATCH] configure.ac: Expand AC_CONFIG_FILES to fix a race.
 

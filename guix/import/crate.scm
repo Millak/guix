@@ -7,7 +7,7 @@
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023, 2024 David Elsing <david.elsing@posteo.net>
-;;; Copyright © 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2025 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Murilo <murilo@disroot.org>
 ;;; Copyright © 2024-2025 Luis Guilherme Coelho <lgcoelho@disroot.org>

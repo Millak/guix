@@ -33,7 +33,7 @@
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
-;;; Copyright © 2022, 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022, 2023, 2025 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Theofilos Pechlivanis <theofilos.pechlivanis@gmail.com>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>

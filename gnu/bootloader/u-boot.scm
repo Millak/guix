@@ -3,7 +3,7 @@
 ;;; Copyright © 2017, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023-2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>

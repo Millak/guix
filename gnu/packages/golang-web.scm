@@ -2,7 +2,7 @@
 ;;; Copyright © 2017, 2019, 2020, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
-;;; Copyright © 2019 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2019 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>

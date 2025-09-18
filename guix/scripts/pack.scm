@@ -5,7 +5,7 @@
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2022 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2023 Graham James Addis <graham@addis.org.uk>

@@ -5,7 +5,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

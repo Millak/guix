@@ -15,7 +15,7 @@
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020-2025 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022-2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Kiran Shila <me@kiranshila.com>
 ;;; Copyright © 2022 Wiktor Zelazny <wzelazny@vurv.cz>

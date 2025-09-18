@@ -21,7 +21,7 @@
 ;;; Copyright © 2021 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Guix Together <jgart@dismail.de>
-;;; Copyright © 2021, 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Ramana Radhakrishnan <ramana.radhakrishnan@arm.com>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>

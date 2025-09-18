@@ -18,7 +18,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
-;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022, 2023 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 jgart <jgart@dismail.de>

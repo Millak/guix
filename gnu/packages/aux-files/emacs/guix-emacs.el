@@ -3,7 +3,7 @@
 
 ;; Copyright © 2014, 2015, 2016, 2017 Alex Kost <alezost@gmail.com>
 ;; Copyright © 2017 Kyle Meyer <kyle@kyleam.com>
-;; Copyright © 2019, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;; Copyright © 2019, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 
 ;; This file is part of GNU Guix.
 

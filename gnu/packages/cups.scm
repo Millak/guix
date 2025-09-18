@@ -7,7 +7,7 @@
 ;;; Copyright © 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2021, 2023, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Lukas Gradl <lgradl@posteo.net>
 ;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>

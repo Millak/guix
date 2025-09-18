@@ -5,7 +5,7 @@
 ;;; Copyright © 2019-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2025 Herman Rimm <herman@rimm.ee>
 ;;;
 ;;; This file is part of GNU Guix.

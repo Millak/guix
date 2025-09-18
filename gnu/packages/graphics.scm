@@ -21,7 +21,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2021, 2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
-;;; Copyright © 2020-2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020-2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2021 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>

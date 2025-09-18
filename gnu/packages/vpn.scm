@@ -20,7 +20,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Josselin Poiret <josselin.poiret@protonmail.ch>
 ;;; Copyright © 2022 Lu hui <luhux76@gmail.com>
-;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
 ;;; Copyright © 2022, 2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2024 Allan Adair <allan@adair.no>

@@ -15,7 +15,7 @@
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2020, 2021, 2022, 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020, 2021, 2022, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2023 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>

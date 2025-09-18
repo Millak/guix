@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2017, 2020, 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2017, 2020, 2022, 2023, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2018, 2020, 2022, 2025 Efraim Flashner <efraim@flashner.co.il>

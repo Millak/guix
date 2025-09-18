@@ -17,7 +17,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022, 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021 Stefan <stefan-guix@vodafonemail.de>
-;;; Copyright © 2022, 2023, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023-2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>

@@ -20,7 +20,7 @@
 ;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
 ;;; Copyright © 2022 Patrick Noll <patrick@patricknoll.com>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
-;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 Jonathan Brielmaier <jonathan.brielmaier@web.de>

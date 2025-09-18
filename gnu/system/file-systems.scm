@@ -2,7 +2,7 @@
 ;;; Copyright © 2013-2022, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Google LLC
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;;

@@ -10,7 +10,7 @@
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019 Florian Pelz <pelzflorian@pelzflorian.de>
-;;; Copyright © 2019, 2021, 2024, 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2019, 2021, 2024, 2025 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Sou Bunnbu <iyzsong@member.fsf.org>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>

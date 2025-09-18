@@ -9,7 +9,7 @@ stateful bits that would write configuration to /etc/vconsole.conf
 and /etc/X11, which are unused in Guix anyway.
 
 Patch by Ludovic Courtès <ludo@gnu.org>.
-Ported from v241 to v257 by Maxim Cournoyer <maxim@guixotic.coop>        
+Ported from v241 to v257 by Maxim Cournoyer <maxim.cournoyer@gmail.com>        
 
 diff --git a/src/locale/localed-util.c b/src/locale/localed-util.c
 index 6413288ea3..c2a1c70e9e 100644

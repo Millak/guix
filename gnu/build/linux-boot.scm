@@ -3,7 +3,7 @@
 ;;; Copyright © 2016, 2017, 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

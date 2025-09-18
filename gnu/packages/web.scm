@@ -46,7 +46,7 @@
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2021 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@posteo.ro>
-;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 la snesne <lasnesne@lagunposprasihopre.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
