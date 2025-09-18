@@ -806,14 +806,14 @@ Its features include:
 (define-public libkcddb
   (package
     (name "libkcddb")
-    (version "25.04.0")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkcddb-" version ".tar.xz"))
        (sha256
-        (base32 "10m4klkm7bz0d1qkpj53dhy0mp7haddpq4a5c8lq442ds09hrv0b"))))
+        (base32 "0vwd6cnfiwwx2kd32dqn1k3fk9csghpmqyllnq786fp5ik8f8hkh"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
