@@ -40,6 +40,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
   #:use-module (guix gexp)
   #:use-module (gnu packages)
@@ -75,6 +76,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -1130,3 +1132,31 @@ to mark points of failure inside your code
 and to enable/disable the failure of those points.")
     (home-page "https://blitiri.com.ar/p/libfiu")
     (license license:public-domain)))
+
+(define-public python-fiu
+  (package
+    (name "python-fiu")
+    (version "1.2")
+    (source (package-source fiu))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'enter-python-dir
+                          (lambda _ (chdir "bindings/python")))
+                        (add-before 'build 'set-env
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            (setenv "PLIBPATH"
+                                    (string-append (assoc-ref inputs "fiu")
+                                                   "/lib")))))
+           #:tests? #f))               ; tests run in fiu
+    (native-inputs (list python-setuptools python-wheel))
+    (inputs (list fiu))
+    (synopsis "Python binding for fiu (fault injection in userspace)")
+    (description "This package includes two Python modules:
+@enumerate
+@item @code{fiu} is a wrapper for @code{libfiu}, the fault injection C library.
+@item @code{fiu_ctrl} provide an easy way run a command
+with @code{libfiu} enabled, and controlling the failure points dynamically.
+@end enumerate")
+    (home-page (package-home-page fiu))
+    (license (package-license fiu))))
