@@ -4237,6 +4237,51 @@ numerical python, statistics, and file input/output.  Includes specialized
 tools for astronomers.")
     (license license:gpl2+)))
 
+(define-public python-eventio
+  (package
+    (name "python-eventio")
+    (version "1.16.1")
+    (source
+     (origin
+       (method git-fetch) ; no test data in the PyPI tarball
+       (uri (git-reference
+             (url "https://github.com/cta-observatory/pyeventio")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jg2zgs0z5jfkdkbgxiiclxkyxrz4zhb57x1ji0c5pd2vsrn4g92"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-env-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (add-before 'build 'relax-gcc-14-strictness
+            (lambda _
+              (setenv "CFLAGS" (string-join
+                                (list "-g" "-O2"
+                                      "-Wno-error=implicit-function-declaration"
+                                      "-Wno-error=int-conversion")
+                                " ")))))))
+    (native-inputs
+     (list python-cython
+           python-numpy
+           python-pytest
+           python-setuptools-next
+           python-setuptools-scm-next))
+    (propagated-inputs
+     (list python-corsikaio
+           python-matplotlib
+           python-numpy
+           python-zstandard))
+    (home-page "https://github.com/cta-observatory/pyeventio")
+    (synopsis "Python read-only implementation of the EventIO file format")
+    (description
+     "Python read-only implementation of the @code{EventIO} file format.")
+    (license license:expat)))
+
 (define-public python-extinction
   (package
     (name "python-extinction")
