@@ -1958,13 +1958,13 @@ Main features:
 (define-public python-asdf
   (package
     (name "python-asdf")
-    (version "4.4.0")
+    (version "5.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf" version))
        (sha256
-        (base32 "0gincjs1vn6wxryazbkgmxy45cn1azb2yphj7nwg05yjwccn257p"))))
+        (base32 "1405fmv0f8dxr949njfw368bkm7w8cnqr5w6nqlxr68vvc1pghx7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1973,24 +1973,23 @@ Main features:
     (native-inputs
      (list python-psutil
            python-pytest
-           python-pytest-doctestplus
            python-pytest-remotedata
            python-pytest-xdist
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-asdf-standard
            python-asdf-transform-schemas
            python-attrs ;; for vendorized jsonschema
-           python-fsspec
            python-importlib-metadata
            python-jmespath
-           python-lz4
            python-numpy
            python-packaging
            python-pyyaml
-           python-semantic-version))
+           python-semantic-version
+           ;; [optional]
+           python-fsspec
+           python-lz4))
     (home-page "https://github.com/asdf-format/asdf")
     (synopsis "Python tools to handle ASDF files")
     (description
