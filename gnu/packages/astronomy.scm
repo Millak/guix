@@ -5683,16 +5683,17 @@ photometry, segmentations, Petrosian profiling, and Sérsic fitting.")
 (define-public python-photutils
   (package
     (name "python-photutils")
-    (version "2.2.0")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "photutils" version))
        (sha256
-        (base32 "1h1bf8694pf9qdv9gf0934v6dk08d3ybrj858salqnfz6prnfnzb"))))
+        (base32 "1xyrnf0ynh8l3dad8s93dyqk3m9gvmxgvrji1nb9yillfzvjfxcl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1843 passed, 22 skipped
       #:test-flags
       #~(list "--pyargs" "photutils"
               "--numprocesses" (number->string (min 8 (parallel-job-count))))
@@ -5703,6 +5704,13 @@ photometry, segmentations, Petrosian profiling, and Sérsic fitting.")
               (when tests?
                 (with-directory-excursion "/tmp"
                   (apply invoke "pytest" "-vv" test-flags))))))))
+    (native-inputs
+     (list python-cython-3
+           python-extension-helpers
+           python-pytest-astropy
+           python-pytest-xdist
+           python-setuptools-next
+           python-setuptools-scm-next))
     (propagated-inputs
      (list python-astropy
            python-bottleneck
@@ -5715,17 +5723,11 @@ photometry, segmentations, Petrosian profiling, and Sérsic fitting.")
            python-scipy
            python-shapely
            python-tqdm))
-    (native-inputs
-     (list python-cython-3
-           python-extension-helpers
-           python-pytest-astropy
-           python-pytest-xdist
-           python-setuptools
-           python-setuptools-scm))
     (home-page "https://github.com/astropy/photutils")
     (synopsis "Source detection and photometry")
-    (description "Photutils is an Astropy package for detection and photometry
-of astronomical sources.")
+    (description
+     "Photutils is an Astropy package for detection and photometry of
+astronomical sources.")
     (license license:bsd-3)))
 
 (define-public python-pint-pulsar
