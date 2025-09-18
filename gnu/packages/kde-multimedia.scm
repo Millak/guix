@@ -355,16 +355,14 @@ This package is part of the KDE multimedia module.")
 (define-public kid3
   (package
     (name "kid3")
-    (version "3.9.6")
+    (version "3.9.7")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://invent.kde.org/multimedia/kid3.git/")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/kid3/" version
+                           "/kid3-" version ".tar.xz"))
        (sha256
-        (base32 "1gklqbvpvdllgn7h0pnskd2zf98jfr2w93vq2nmabh8xs9fw2sks"))))
+        (base32 "0q07f4fwh8lwbqi7qm2ga01a6hsqaarnr1vqi6npipnxskvyxkzr"))))
     (build-system qt-build-system)
     (arguments
      (list
