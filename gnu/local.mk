@@ -1029,6 +1029,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/barony-fix-textures.patch		\
   %D%/packages/patches/bash-completion-directories.patch	\
   %D%/packages/patches/bash-linux-pgrp-pipe.patch		\
+  %D%/packages/patches/basis-universal-unbundle-libs.patch	\
   %D%/packages/patches/bastet-change-source-of-unordered_set.patch	\
   %D%/packages/patches/bdb-4-5-configure.patch                  \
   %D%/packages/patches/bdb-5.3-atomics-on-gcc-9.patch		\

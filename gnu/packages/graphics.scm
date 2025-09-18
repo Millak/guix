@@ -108,6 +108,7 @@
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ninja)
+  #:use-module (gnu packages opencl)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
@@ -3414,3 +3415,38 @@ environment.  It supports drawing freehand as well as basic shapes and text.
 It features cut-and-paste for irregular regions or polygons.")
     (home-page "https://www.gnu.org/software/gpaint/")
     (license license:gpl3+)))
+
+(define-public basis-universal
+  (package
+    (name "basis-universal")
+    (version "1.60")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/BinomialLLC/basis_universal")
+                     (commit (string-append "v"
+                               (string-replace-substring version "." "_")))))
+              (file-name (git-file-name name version))
+              (patches (search-patches "basis-universal-unbundle-libs.patch"))
+              (modules '((guix build utils)))
+              (snippet #~(for-each delete-file-recursively '("OpenCL" "zstd")))
+              (sha256
+                (base32
+                  "1s38fp3j9pp0s260s805lw2h4gqbx7d2cd0d96pjp5bfqndmmk8b"))))
+    (build-system cmake-build-system)
+    (arguments
+      (list #:phases
+            #~(modify-phases %standard-phases
+                (delete 'check)
+                (add-after 'install 'check
+                  (lambda _ (invoke (string-append #$output "/bin/basisu")
+                                    "-test_dir" "../source/test_files"
+                                    "-test"))))))
+    (inputs (list opencl-headers (list zstd "lib")))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/BinomialLLC/basis_universal")
+    (synopsis "LDR/HDR compressed texture transcoder")
+    (description "Basis Universal is an LDR/HDR GPU compressed texture
+interchange system supporting transcoding to a large number of GPU texture
+formats.")
+    (license (list license:asl2.0 license:bsd-3 license:expat))))
