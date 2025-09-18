@@ -2126,6 +2126,41 @@ support for reading and writing various compression algorithms including:
 @url{http://facebook.github.io/zstd/,Zstandard}.")
       (license license:bsd-3))))
 
+(define-public python-asdf-standard
+  (package
+    (name "python-asdf-standard")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asdf_standard" version))
+       (sha256
+        (base32
+         "0r7dxbiwngpwwjdbs2vqk94v1vjsgyilswkq180d5slx74grcn2r"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-asdf-bootstrap
+           python-asdf-transform-schemas-bootstrap
+           python-astropy-minimal
+           python-jsonschema
+           python-pypa-build
+           python-pytest
+           python-packaging
+           python-setuptools-next
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://asdf-standard.readthedocs.io/")
+    (synopsis "ASDF standard schemas")
+    (description
+     "This package provides Python implementation of @acronym{ASDF, Advanced
+Scientific Data Format} - a proposed next generation interchange format for
+scientific data.  ASDF aims to exist in the same middle ground that made FITS
+so successful, by being a hybrid text and binary format: containing human
+editable metadata for interchange, and raw binary data that is fast to load
+and use.  Unlike FITS, the metadata is highly structured and is designed
+up-front for extensibility.")
+    (license license:bsd-3)))
+
 (define-public python-asdf-transform-schemas
   (hidden-package
    (package
@@ -5780,6 +5815,54 @@ binned galaxy positions or shear) in cylindrical projection, but its core
 functionality is more general.")
     (license license:bsd-3)))
 
+(define-public python-poppy
+  (package
+    (name "python-poppy")
+    (version "1.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "poppy" version))
+       (sha256
+        (base32 "0mvnd9rlglb1cqhaavd2lyxnvi4xmc133x50rzzlh00xn0gyxgfq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count)))))
+    (native-inputs
+     (list python-docutils
+           python-pytest
+           python-pytest-astropy
+           python-pytest-xdist
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     ;; XXX: With python-synphot (marked as optional) package added to the list
+     ;; it tries to download from remote host during tests and fails. Overall
+     ;; tests take up to 5-8min to pass.
+     (list python-astropy
+           python-matplotlib
+           python-numexpr
+           python-numpy
+           python-scipy))
+    (home-page "https://poppy-optics.readthedocs.io/")
+    (synopsis "Physical Optics Propagation in Python")
+    (description
+     "@acronym{POPPY, Physical Optics Propagation in Python} is a Python package that
+simulates physical optical propagation including diffraction.  It implements a
+flexible framework for modeling Fraunhofer and Fresnel diffraction and point
+spread function formation, particularly in the context of astronomical
+telescopes.
+
+POPPY was developed as part of a simulation package for the James Webb Space
+Telescope, but is more broadly applicable to many kinds of imaging simulations.
+It is not, however, a substitute for high fidelity optical design software such
+as Zemax or Code V, but rather is intended as a lightweight alternative for
+cases for which diffractive rather than geometric optics is the topic of
+interest, and which require portability between platforms or ease of scripting.")
+    (license license:bsd-3)))
+
 (define-public python-pvextractor
   (package
     (name "python-pvextractor")
@@ -6124,6 +6207,48 @@ data.  Pysat's plug-in design allows analysis support for any data, including
 user provided data sets.")
     (license license:bsd-3)))
 
+(define-public python-pysiaf
+  (package
+    (name "python-pysiaf")
+    (version "0.24.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pysiaf" version))
+       (sha256
+        (base32 "0jgs50jmisv7b7am677q2c3kqjk0fch8gpvijzhdllhkav9wdhs0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              ;; Disable 2 failing tests, see
+              ;; <https://github.com/spacetelescope/pysiaf/issues/338>
+              "-k" (string-append "not test_write_jwst_siaf_xlsx"
+                                  " and not test_write_jwst_siaf_xml" ))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-lxml
+           python-matplotlib
+           python-numpy
+           python-openpyxl
+           python-requests
+           python-scipy))
+    (home-page "https://pysiaf.readthedocs.io/")
+    (synopsis "Handling SIAF for space telescopes")
+    (description
+     "@code{pysiaf} is a python package to access, interpret, maintain, and
+generate @acronym{Handling of Science Instrument Aperture Files, SIAF}, in
+particular for JWST.  Tools for applying the frame transformations, plotting,
+comparison, and validation are provided.")
+    (license license:bsd-3)))
+
 (define-public python-pysiril
   (package
     (name "python-pysiril")
@@ -6233,6 +6358,48 @@ experiments.  It is a large refactor of
 memory usage, improving performance and run in parallel with MPI.")
     (license license:bsd-3)))
 
+(define-public python-pyvo
+  (package
+    (name "python-pyvo")
+    (version "1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyvo" version))
+       (sha256
+        (base32 "0813ws6g6mns3g3k4xgj54pcp6hw42q47psm7q8jswqhskpxkym6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--pyargs" "pyvo"
+              ;; XXX: Some data file was not copied in install phase:
+              ;; urllib.error.URLError: <urlopen error [Errno 2] No such file
+              ;; or directory
+              ;; <.../lib/python3.11/site-packages/pyvo/mivot/writer/mivot-v1.xsd>.
+              "-k" (string-join
+                    (list "not test_all_properties"
+                          "test_extraction_from_votable_header")
+                    " and not "))))
+    (native-inputs
+     (list python-pytest-astropy
+           python-pytest-doctestplus
+           python-requests-mock
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-defusedxml ; extra requirements
+           python-pillow     ; extra requirements
+           python-requests))
+    (home-page "https://github.com/astropy/pyvo")
+    (synopsis "Access Virtual Observatory data and services")
+    (description
+     "PyVO is a package providing access to remote data and services of the
+Virtual observatory (VO) using Python.")
+    (license license:bsd-3)))
+
 (define-public python-pyxsim
   (package
     (name "python-pyxsim")
@@ -6288,6 +6455,48 @@ export the simulated X-ray events to other software packages to simulate the
 end products of specific X-ray observatories.")
     (license license:bsd-3)))
 
+(define-public python-rad
+  (package
+    (name "python-rad")
+    (version "0.27.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "rad" version))
+       (sha256
+        (base32 "04vzqkcw6la5n2jw92khmqnizs2nf5vb27nknn3c6wj1jwfwl6bv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; 1131 passed, 1 skipped
+      #:test-flags
+      ;; Ignore tests requiring python-crds to break cycle:
+      ;; python-rad -> python-roman-datamodels -> python-crds -> python-rad
+      #~(list "--ignore=tests/test_schemas.py"
+              ;; E   git.exc.InvalidGitRepositoryError
+              "--ignore=tests/test_versioning.py"
+              ;; E TypeError: the JSON object must be str, bytes or bytearray,
+              ;; not NoneType
+              "--ignore=tests/test_latest.py")))
+    (native-inputs
+     (list python-pytest
+           python-pytest-doctestplus
+           python-semantic-version
+           python-setuptools-next
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-asdf
+           python-asdf-astropy))
+    (home-page "https://github.com/spacetelescope/rad")
+    (synopsis "Roman Attribute Dictionary")
+    (description
+     "@acronym{RAD, The Roman Attribute Dictionary} is package which defines
+schemas for the Nancy Grace Roman Space Telescope shared attributes for
+processing and archive.  These schemas are schemas for the ASDF file file
+format, which are used by ASDF to serialize and deserialize data for the Nancy
+Grace Roman Space Telescope.")
+    (license license:bsd-3)))
+
 (define-public python-radiospectra
   (package
     (name "python-radiospectra")
@@ -6333,6 +6542,49 @@ end products of specific X-ray observatories.")
      "@code{radiospectra} provides support for some type of radio spectra in
 solar physics.")
     (license license:bsd-2)))
+
+(define-public python-regions
+  (package
+    (name "python-regions")
+    (version "0.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "regions" version))
+       (sha256
+        (base32 "10cswrknj3qh9i1daynlx4ild66lwcyra5rs03h8s9j4l275274n"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (with-directory-excursion #$output
+                (apply invoke "pytest" "-vv" test-flags)))))))
+    (propagated-inputs
+     (list python-astropy
+           python-h5py
+           python-matplotlib
+           python-numpy
+           python-scipy
+           python-shapely))
+    (native-inputs
+     (list python-cython-3
+           python-extension-helpers
+           python-pytest-arraydiff
+           python-pytest-astropy
+           python-pytest-runner
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://github.com/astropy/regions")
+    (synopsis "Package for region handling")
+    (description "Regions is an Astropy package for region handling.")
+    (license license:bsd-3)))
 
 (define-public python-regularizepsf
   (package
@@ -7152,54 +7404,6 @@ applications, but can also be used to analyze artificial satellites in
 Low-Earth Orbit (LEO).")
   (license license:expat)))
 
-(define-public python-poppy
-  (package
-    (name "python-poppy")
-    (version "1.1.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "poppy" version))
-       (sha256
-        (base32 "0mvnd9rlglb1cqhaavd2lyxnvi4xmc133x50rzzlh00xn0gyxgfq"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count)))))
-    (native-inputs
-     (list python-docutils
-           python-pytest
-           python-pytest-astropy
-           python-pytest-xdist
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     ;; XXX: With python-synphot (marked as optional) package added to the list
-     ;; it tries to download from remote host during tests and fails. Overall
-     ;; tests take up to 5-8min to pass.
-     (list python-astropy
-           python-matplotlib
-           python-numexpr
-           python-numpy
-           python-scipy))
-    (home-page "https://poppy-optics.readthedocs.io/")
-    (synopsis "Physical Optics Propagation in Python")
-    (description
-     "@acronym{POPPY, Physical Optics Propagation in Python} is a Python package that
-simulates physical optical propagation including diffraction.  It implements a
-flexible framework for modeling Fraunhofer and Fresnel diffraction and point
-spread function formation, particularly in the context of astronomical
-telescopes.
-
-POPPY was developed as part of a simulation package for the James Webb Space
-Telescope, but is more broadly applicable to many kinds of imaging simulations.
-It is not, however, a substitute for high fidelity optical design software such
-as Zemax or Code V, but rather is intended as a lightweight alternative for
-cases for which diffractive rather than geometric optics is the topic of
-interest, and which require portability between platforms or ease of scripting.")
-    (license license:bsd-3)))
-
 (define-public python-pyavm
   (package
     (name "python-pyavm")
@@ -7227,48 +7431,6 @@ interest, and which require portability between platforms or ease of scripting."
 @acronym{AVM, Astronomy Visualization Metadata} standard provided by
 @url{https://www.virtualastronomy.org/avm_metadata.php, vamp} project.")
     (license license:expat)))
-
-(define-public python-pyvo
-  (package
-    (name "python-pyvo")
-    (version "1.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyvo" version))
-       (sha256
-        (base32 "0813ws6g6mns3g3k4xgj54pcp6hw42q47psm7q8jswqhskpxkym6"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--pyargs" "pyvo"
-              ;; XXX: Some data file was not copied in install phase:
-              ;; urllib.error.URLError: <urlopen error [Errno 2] No such file
-              ;; or directory
-              ;; <.../lib/python3.11/site-packages/pyvo/mivot/writer/mivot-v1.xsd>.
-              "-k" (string-join
-                    (list "not test_all_properties"
-                          "test_extraction_from_votable_header")
-                    " and not "))))
-    (native-inputs
-     (list python-pytest-astropy
-           python-pytest-doctestplus
-           python-requests-mock
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-astropy
-           python-defusedxml ; extra requirements
-           python-pillow     ; extra requirements
-           python-requests))
-    (home-page "https://github.com/astropy/pyvo")
-    (synopsis "Access Virtual Observatory data and services")
-    (description
-     "PyVO is a package providing access to remote data and services of the
-Virtual observatory (VO) using Python.")
-    (license license:bsd-3)))
 
 (define-public python-reproject
   (package
@@ -7949,48 +8111,6 @@ astrophysical simulations supporting PKDGRAV/Gasoline, Gadget, Gadget4/Arepo,
 N-Chilada and RAMSES AMR outputs.")
     (license license:gpl3+)))
 
-(define-public python-pysiaf
-  (package
-    (name "python-pysiaf")
-    (version "0.24.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pysiaf" version))
-       (sha256
-        (base32 "0jgs50jmisv7b7am677q2c3kqjk0fch8gpvijzhdllhkav9wdhs0"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
-              ;; Disable 2 failing tests, see
-              ;; <https://github.com/spacetelescope/pysiaf/issues/338>
-              "-k" (string-append "not test_write_jwst_siaf_xlsx"
-                                  " and not test_write_jwst_siaf_xml" ))))
-    (native-inputs
-     (list python-pytest
-           python-pytest-xdist
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-astropy
-           python-lxml
-           python-matplotlib
-           python-numpy
-           python-openpyxl
-           python-requests
-           python-scipy))
-    (home-page "https://pysiaf.readthedocs.io/")
-    (synopsis "Handling SIAF for space telescopes")
-    (description
-     "@code{pysiaf} is a python package to access, interpret, maintain, and
-generate @acronym{Handling of Science Instrument Aperture Files, SIAF}, in
-particular for JWST.  Tools for applying the frame transformations, plotting,
-comparison, and validation are provided.")
-    (license license:bsd-3)))
-
 (define-public python-pysynphot
   ;; XXX: 2.0.0 was released in 2021 there are a lot of changes since that
   ;; time and it failed to build with python-astropy 6.0.0, use the latest
@@ -8042,41 +8162,6 @@ observed with the Hubble Space Telescope (HST).  Passbands for standard
 photometric systems are available, and users can incorporate their own filters,
 spectra, and data.")
       (license license:bsd-3))))
-
-(define-public python-asdf-standard
-  (package
-    (name "python-asdf-standard")
-    (version "1.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "asdf_standard" version))
-       (sha256
-        (base32
-         "0r7dxbiwngpwwjdbs2vqk94v1vjsgyilswkq180d5slx74grcn2r"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-asdf-bootstrap
-           python-asdf-transform-schemas-bootstrap
-           python-astropy-minimal
-           python-jsonschema
-           python-pypa-build
-           python-pytest
-           python-packaging
-           python-setuptools-next
-           python-setuptools-scm
-           python-wheel))
-    (home-page "https://asdf-standard.readthedocs.io/")
-    (synopsis "ASDF standard schemas")
-    (description
-     "This package provides Python implementation of @acronym{ASDF, Advanced
-Scientific Data Format} - a proposed next generation interchange format for
-scientific data.  ASDF aims to exist in the same middle ground that made FITS
-so successful, by being a hybrid text and binary format: containing human
-editable metadata for interchange, and raw binary data that is fast to load
-and use.  Unlike FITS, the metadata is highly structured and is designed
-up-front for extensibility.")
-    (license license:bsd-3)))
 
 (define-public python-asdf-coordinates-schemas
   (hidden-package
@@ -8151,48 +8236,6 @@ implementation package such as asdf-astropy.")
         "This package provides ASDF schemas for validating FITS tags.")
        (license license:bsd-3)))))
 
-(define-public python-rad
-  (package
-    (name "python-rad")
-    (version "0.27.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "rad" version))
-       (sha256
-        (base32 "04vzqkcw6la5n2jw92khmqnizs2nf5vb27nknn3c6wj1jwfwl6bv"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; 1131 passed, 1 skipped
-      #:test-flags
-      ;; Ignore tests requiring python-crds to break cycle:
-      ;; python-rad -> python-roman-datamodels -> python-crds -> python-rad
-      #~(list "--ignore=tests/test_schemas.py"
-              ;; E   git.exc.InvalidGitRepositoryError
-              "--ignore=tests/test_versioning.py"
-              ;; E TypeError: the JSON object must be str, bytes or bytearray,
-              ;; not NoneType
-              "--ignore=tests/test_latest.py")))
-    (native-inputs
-     (list python-pytest
-           python-pytest-doctestplus
-           python-semantic-version
-           python-setuptools-next
-           python-setuptools-scm))
-    (propagated-inputs
-     (list python-asdf
-           python-asdf-astropy))
-    (home-page "https://github.com/spacetelescope/rad")
-    (synopsis "Roman Attribute Dictionary")
-    (description
-     "@acronym{RAD, The Roman Attribute Dictionary} is package which defines
-schemas for the Nancy Grace Roman Space Telescope shared attributes for
-processing and archive.  These schemas are schemas for the ASDF file file
-format, which are used by ASDF to serialize and deserialize data for the Nancy
-Grace Roman Space Telescope.")
-    (license license:bsd-3)))
-
 (define-public python-radio-beam
   (package
     (name "python-radio-beam")
@@ -8228,49 +8271,6 @@ channels
 @item Find the smallest common beam from a set of beams
 @item Add the beam shape to a matplotlib plot
 @end itemize")
-    (license license:bsd-3)))
-
-(define-public python-regions
-  (package
-    (name "python-regions")
-    (version "0.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "regions" version))
-       (sha256
-        (base32 "10cswrknj3qh9i1daynlx4ild66lwcyra5rs03h8s9j4l275274n"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count)))
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (with-directory-excursion #$output
-                (apply invoke "pytest" "-vv" test-flags)))))))
-    (propagated-inputs
-     (list python-astropy
-           python-h5py
-           python-matplotlib
-           python-numpy
-           python-scipy
-           python-shapely))
-    (native-inputs
-     (list python-cython-3
-           python-extension-helpers
-           python-pytest-arraydiff
-           python-pytest-astropy
-           python-pytest-runner
-           python-pytest-xdist
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (home-page "https://github.com/astropy/regions")
-    (synopsis "Package for region handling")
-    (description "Regions is an Astropy package for region handling.")
     (license license:bsd-3)))
 
 (define-public python-roman-datamodels
