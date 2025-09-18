@@ -295,16 +295,14 @@ your computer.")
 (define-public francis
   (package
     (name "francis")
-    (version "25.04.0")
+    (version "25.08.1")
     (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://invent.kde.org/utilities/francis")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/francis-" version ".tar.xz"))
               (sha256
                (base32
-                "1lxpy5ffcyfb6xhs0yiwidai357x07ga8564l6qhgsygm5iiq0z6"))))
+                "1cxknyl8zzcc2dyvqsjj4f7i386mw31501296d5wl2hb5zfjv4nr"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kirigami
