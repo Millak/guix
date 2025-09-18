@@ -6334,6 +6334,35 @@ Pipeline Library, CPL} toolkit, including the CPL plugin interface.")
     (properties '((upstream-name . "pycpl")))
     (license license:bsd-3)))
 
+(define-public python-pydl
+  (package
+    (name "python-pydl")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pydl" version))
+       (sha256
+        (base32 "0z08c05qf0ix4h348n0hhxixn1wipdm55g9z6qys24z41ywf69jh"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest-astropy
+           python-pytest-mock
+           python-setuptools-next
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy
+           python-scipy))
+    (home-page "https://github.com/weaverba137/pydl")
+    (synopsis "IDL astronomy routines converted to Python")
+    (description
+     "This package consists of Python replacements for functions that are part
+of the @url{https://www.nv5geospatialsoftware.com/Products/IDL, IDL} built-in
+library or part of astronomical IDL libraries.  The emphasis is on reproducing
+results of the astronomical library functions.  Only the bare minimum of IDL
+built-in functions are implemented to support this.")
+    (license license:bsd-3)))
+
 (define-public python-pyerfa
   (package
     (name "python-pyerfa")
