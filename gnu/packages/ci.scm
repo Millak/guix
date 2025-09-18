@@ -72,7 +72,7 @@
 (define-public cuirass
   (package
     (name "cuirass")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -82,7 +82,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "15jrl0rx6i5ibiw7svrdgcy13v8iwi5z30jp49gfxrapp6m6lsrw"))))
+         "0bvzdrih8id8bwsfddkymskcb99xrh5db771mbbb5jlzccjlwhgx"))))
     (build-system gnu-build-system)
     (arguments
      (list #:modules `((guix build utils)
@@ -101,20 +101,6 @@
            #:parallel-tests? #f
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'build 'install-minified-javascript
-                 (lambda _
-                   ;; Work around guix/cuirass#34.  Remove when 1.3.1 is out.
-                   (define files
-                     '("src/static/js/choices.min.js"
-                       "src/static/js/d3.v6.min.js"
-                       "src/static/js/list.min.js"))
-                   (apply invoke "make" files)
-                   (for-each (lambda (file)
-                               (install-file
-                                file
-                                (in-vicinity #$output
-                                             "share/cuirass/static/js")))
-                             files)))
                (add-after 'install 'wrap-program
                  (lambda* (#:key inputs outputs #:allow-other-keys)
                    ;; Wrap the 'cuirass' command to refer to the right modules.
