@@ -1219,6 +1219,30 @@ library, scripting API, and co-simulation capability for FPGA or ASIC
 verification.")
     (license license:asl2.0)))
 
+;;; Required by python-vunit.
+(define osvvm-2023.04
+  (package
+    (inherit osvvm)
+    (name "osvvm")
+    (version "2023.04")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/osvvm/OsvvmLibraries/")
+              (commit version)
+              ;; OsvvmLibraries repository gathers all osvvm libraries as
+              ;; submodules.
+              (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kn18ibvm7bzdyw2d914284wriravyh5qwfarj06pb052x1yblyx"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments osvvm)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (delete 'fix-scripts)))))))
+
 (define-public python-cocotb
   (package
     (name "python-cocotb")
