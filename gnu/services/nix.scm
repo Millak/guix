@@ -127,7 +127,7 @@ GID."
                     (format #t "sandbox = ~a~%" (if #$sandbox "true" "false"))
                     ;; config.nix captures store file names.
                     (format #t "build-sandbox-paths = ~{~a ~}~%"
-                            (append (list (string-append "/bin/sh=" #$bash-minimal "/bin/sh"))
+                            (append (list (string-append "/bin/sh=" #$bash-minimal "/bin/bash"))
                                     internal-sandbox-paths
                                     '#$build-sandbox-items))
                     (for-each (cut display <>) '#$extra-config)))))))))))
