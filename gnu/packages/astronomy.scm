@@ -1854,13 +1854,13 @@ model-fitting photometry or morphological analyses.")
 (define-public python-aiapy
   (package
     (name "python-aiapy")
-    (version "0.10.1")
+    (version "0.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aiapy" version))
        (sha256
-        (base32 "009zj20jcqlw2i8llx0pnxyz8416h4ng9avpqjrqszlhcq9xavrn"))))
+        (base32 "0lr8v2bakqxqn516fr45905lcql72kac3q6rdzn24rn95f812n27"))))
     (build-system pyproject-build-system)
     (arguments
      (list
