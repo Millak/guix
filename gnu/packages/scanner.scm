@@ -55,7 +55,7 @@
 (define-public sane-airscan
   (package
     (name "sane-airscan")
-    (version "0.99.27")
+    (version "0.99.36")
     (source
      (origin
        (method git-fetch)
@@ -64,7 +64,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1syxsih1kdnz9slsg5a92bqnllagm4cybqk4n2y6mbkqn6h0zlnv"))))
+        (base32 "1dh7rq1g120gqhkr7ac3p7yizm330dj3xqrrg08dff7ra1jx955y"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -80,6 +80,7 @@
            gnutls
            libjpeg-turbo
            libpng
+           libtiff
            libxml2
            sane))
     (home-page "https://github.com/alexpevzner/sane-airscan")
