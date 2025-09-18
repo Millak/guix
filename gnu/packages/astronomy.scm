@@ -3129,13 +3129,13 @@ Origins Spectrograph}.")
 (define-public python-camb
   (package
     (name "python-camb")
-    (version "1.6.2")
+    (version "1.6.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "camb" version))
        (sha256
-        (base32 "1h9zdfsk14vx8hwpsvgs351cid1waggd47hj0yhy69djz935rgq5"))))
+        (base32 "1l9c8s263i3zgs50sn000yw0vyhrk56rvfcv18pwxs1zbq8bw0si"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3151,7 +3151,6 @@ Origins Spectrograph}.")
      (list gfortran
            python-packaging
            python-setuptools
-           python-wheel
            which)) ; for fortran/Makefile
     (propagated-inputs
      (list python-numpy
