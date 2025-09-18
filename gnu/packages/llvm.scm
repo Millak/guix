@@ -891,6 +891,12 @@ Library.")
       (patches (search-patches "llvm-13-gcc-14.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments llvm-14)
+      ((#:tests? _ #t)
+       ;; The tests on riscv64 error on the differences between
+       ;; generic and generic-rv64.
+       (not (or (%current-target-system)
+                (target-x86-32?)
+                (target-riscv64?))))
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
             (delete 'change-directory)))))
