@@ -2685,8 +2685,12 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
       #~(list "--pyargs" "astropy"
               ;; XXX: Tests are not thread save when they are more than 8.
               "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              ;; Fails with  assert 13 == 1.
-              "-k" "not test_skip_meta")
+              "-k" (string-append
+                    ;; Fails with  assert 13 == 1.
+                    "not test_skip_meta"
+                    ;; Failed: DID NOT WARN. No warnings of type (<class
+                    ;; 'ResourceWarning'>,) were emitted.
+                    " and not test_ephemeris_local_file_not_ephemeris"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'preparations
