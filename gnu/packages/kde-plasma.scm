@@ -1952,33 +1952,6 @@ on top of Baloo.")
 KF5/Qt5 to KF6/Qt6")
     (license (list license:lgpl2.0+))))
 
-(define-public mpvqt
-  (package
-    (name "mpvqt")
-    (version "1.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/mpvqt/"
-                    name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "130p3irs1llv7n1hs7w5xms29amh0aa2bi238wjgc9ww65gvhdwz"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules pkg-config))
-    (inputs
-     (list qtdeclarative))
-    (propagated-inputs
-     (list mpv))
-    (arguments
-     (list #:qtbase qtbase
-           #:tests? #f))
-    (home-page "https://invent.kde.org/libraries/mpvqt")
-    (synopsis "libmpv wrapper for QtQuick2 and QML")
-    (description "This package provides a libmpv wrapper for QtQuick2 and QML.")
-    (license license:lgpl2.1+)))
-
 (define-public plasmatube
   (package
     (name "plasmatube")
