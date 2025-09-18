@@ -1760,6 +1760,7 @@ menu specification.")
                    mate-control-center
                    mate-media
                    mate-applets
+                   mate-sensors-applet
                    mate-user-guide
                    mate-calc
                    mate-backgrounds
