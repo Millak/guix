@@ -1836,7 +1836,6 @@ on top of Baloo.")
                              kiconthemes ;required by sddm breeze theme
                              kinfocenter
                              kmenuedit
-                             kpmcore
                              krdp
                              kscreen
                              kscreenlocker
@@ -1886,6 +1885,10 @@ on top of Baloo.")
                               (resolve-interface
                                '(gnu packages kde-systemtools))
                               'konsole)
+                             (module-ref
+                              (resolve-interface
+                               '(gnu packages kde-systemtools))
+                              'kpmcore)
                              (module-ref
                               (resolve-interface
                                '(gnu packages kde-systemtools))

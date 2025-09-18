@@ -21,6 +21,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages kde-systemtools)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system qt)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -29,8 +30,11 @@
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (gnu packages)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages aidc)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde)
@@ -39,6 +43,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages ocr)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages polkit)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages ruby)
@@ -187,6 +192,70 @@ hierarchy is represented as hierarchy of the meta data files.  Directories are
 also described by a meta data file which contains the same information as a
 document meta data file.")
     (license license:gpl2+)))
+
+(define-public kpmcore
+  (package
+    (name "kpmcore")
+    (version "24.12.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/release-service/" version
+                    "/src/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "19xfaqj7i8mi5iwkh8n5d5h3m15bny0mzg2skpgbjdlmzc773iga"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list extra-cmake-modules pkg-config))
+    (inputs
+     `(("coreutils" ,coreutils)
+       ("cryptsetup" ,cryptsetup)
+       ("eudev" ,eudev)
+       ("kauth" ,kauth)
+       ("kcoreaddons" ,kcoreaddons)
+       ("ki18n" ,ki18n)
+       ("kwidgetsaddons" ,kwidgetsaddons)
+       ("lvm2" ,lvm2)
+       ("mdadm" ,mdadm)
+       ("polkit-qt6" ,polkit-qt6)
+       ("qtbase" ,qtbase)
+       ("qca-qt6" ,qca-qt6)
+       ("smartmontools" ,smartmontools)
+       ("util-linux" ,util-linux)
+       ("util-linux:lib" ,util-linux "lib")))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-polkit-action-path
+            (lambda _
+              (substitute* "src/util/CMakeLists.txt"
+                (("DESTINATION \\$\\{POLKITQT-1_POLICY_FILES_INSTALL_DIR\\}")
+                 "DESTINATION share/polkit-1/actions"))
+              (substitute* "src/backend/corebackend.cpp"
+                  (("\\/usr") #$output))))
+          (add-before 'configure 'patch-trustedprefixes-file
+              (lambda* (#:key inputs #:allow-other-keys)
+                (call-with-output-file "src/util/trustedprefixes"
+                  (lambda (port)
+                    (map (lambda (prefix)
+                           (display prefix port)
+                           (newline port))
+                         (list (assoc-ref inputs "coreutils")
+                               (assoc-ref inputs "util-linux")
+                               (assoc-ref inputs "eudev")
+                               (assoc-ref inputs "cryptsetup")
+                               (assoc-ref inputs "lvm2")
+                               (assoc-ref inputs "mdadm")
+                               (assoc-ref inputs "smartmontools")
+                               "/run/current-system/profile"
+                               "/usr"
+                               "/")))))))))
+    (home-page "https://community.kde.org/Frameworks")
+    (synopsis "Library for managing partitions")
+    (description "Library for managing partitions.")
+    (license license:gpl3+)))
 
 (define-public konsole
   (package
