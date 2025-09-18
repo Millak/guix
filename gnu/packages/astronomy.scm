@@ -6727,7 +6727,7 @@ end products of specific X-ray observatories.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; 1131 passed, 1 skipped
+      ;; tests: 1253 passed, 1 skipped
       #:test-flags
       ;; Ignore tests requiring python-crds to break cycle:
       ;; python-rad -> python-roman-datamodels -> python-crds -> python-rad
@@ -6739,6 +6739,7 @@ end products of specific X-ray observatories.")
               "--ignore=tests/test_latest.py")))
     (native-inputs
      (list python-pytest
+           python-pytest-asdf-plugin
            python-pytest-doctestplus
            python-semantic-version
            python-setuptools-next
