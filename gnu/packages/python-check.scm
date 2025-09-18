@@ -343,16 +343,16 @@ all the files it generates a report.")
 (define-public python-beartype
   (package
     (name "python-beartype")
-    (version "0.19.0")
+    (version "0.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "beartype" version))
        (sha256
-        (base32 "0wv598iv9c2s6ivfiara9pnkdlnas8xjw063wvyi0dswpb0xyhny"))))
+        (base32 "0i1j1mkcw0fgms9qg7j30nlgcr0b0ndx2l98sb162wp8bj7hg9gr"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-hatchling python-numpy python-pygments python-pytest))
+     (list python-hatchling python-pytest))
     (home-page "https://github.com/beartype/beartype")
     (synopsis "Fast runtime type checking for Python")
     (description "Beartype aims to be a very fast runtime type checking tool
