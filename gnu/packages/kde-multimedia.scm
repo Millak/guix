@@ -611,20 +611,17 @@ camera.  Use it to take pictures and make videos to share.")
 (define-public kasts
   (package
     (name "kasts")
-    (version "25.04.0")
+    (version "25.08.1")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://invent.kde.org/multimedia/kasts")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kasts-" version ".tar.xz"))
        (sha256
-        (base32 "0qzm89z1amw48kghdrp09l36djvvfmgrsy4wabblxvz05phbih8n"))))
+        (base32 "0fihb3kyml2asa96glz28vkiay2cjirrqy4py9vgz4jrb627y76j"))))
     (build-system qt-build-system)
     (native-inputs (list pkg-config extra-cmake-modules))
-    (inputs (list bash-minimal
-                  breeze-icons
+    (inputs (list breeze-icons
                   gstreamer
                   kcolorscheme
                   kcoreaddons
