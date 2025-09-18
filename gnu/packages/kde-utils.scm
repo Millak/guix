@@ -54,6 +54,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages samba)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages version-control))
@@ -658,26 +659,39 @@ conversions between European currencies.")
 (define-public keysmith
   (package
     (name "keysmith")
-    (version "24.12.1")
+    (version "25.08.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/keysmith-" version ".tar.xz"))
               (sha256
                (base32
-                "1sbixsi4jq8p7bz044qjx70155b2ywvy3pjypfyaicjcq23bnd19"))))
+                "1lvjslf3vwr0anzrwc6bpl6xnv91hpf5xjnyfsyx74srwjhfsjmz"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules pkg-config python-minimal))
-    (inputs (list kcoreaddons
+    (inputs (list kconfig
+                  kcoreaddons
                   kdbusaddons
                   kirigami
                   ki18n
                   kwindowsystem
                   libsodium
+                  openssl
+                  prison
                   qqc2-desktop-style
                   qtsvg
                   qtdeclarative))
-    (arguments (list #:qtbase qtbase))
+    (arguments
+     (list #:qtbase qtbase
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'unrequire-qmlmodule
+                 (lambda _
+                   ;; HACK: ecm_find_qmlmodule cannot find qmlmodule on other
+                   ;; prefix, so we remove its requirement.
+                   (substitute* "CMakeLists.txt"
+                     (("(org\\.kde\\.prison\\.scanner) REQUIRED" all start)
+                      start)))))))
     (home-page "https://invent.kde.org/utilities/keysmith")
     (synopsis "OTP client for Plasma Mobile and Desktop")
     (description
