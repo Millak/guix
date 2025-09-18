@@ -41764,6 +41764,29 @@ supports generation of phonetic and numeric passwords.")
 text into a QR Code and show it in a separate buffer.")
     (license license:gpl3+)))
 
+(define-public emacs-quick-fasd
+  (package
+    (name "emacs-quick-fasd")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jamescherti/quick-fasd.el/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1fsl6l67jf8fm5h6i5qxqvibzssbiyyjzchq3r5sbqry3d8yx3mk"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (home-page "https://github.com/jamescherti/quick-fasd.el/")
+    (synopsis "Navigate file system within Emacs by using @code{fasd}")
+    (description
+     "@code{quick-fasd} integrates the @code{fasd} tool within the Emacs
+environment, providing fast access to frequently used files and directories.")
+    (license license:gpl3+)))
+
 (define-public emacs-quiet
   (package
     (name "emacs-quiet")
