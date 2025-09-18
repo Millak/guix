@@ -885,3 +885,39 @@ CDs.")
     (synopsis "libmpv wrapper for QtQuick2 and QML")
     (description "This package provides a libmpv wrapper for QtQuick2 and QML.")
     (license license:lgpl2.1+)))
+
+(define-public plasmatube
+  (package
+    (name "plasmatube")
+    (version "24.12.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/" version
+                                  "/src/plasmatube-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0505s8hz6hcq8bc9cp9qpy4ccyznnczb1spg4x0l0n4ji7bg2m8n"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules pkg-config python-minimal))
+    (inputs
+     (list kconfig
+           kcoreaddons
+           kdbusaddons
+           kirigami
+           kirigami-addons
+           ki18n
+           kwindowsystem
+           mpvqt
+           purpose
+           qtdeclarative
+           qtmultimedia
+           qtsvg
+           qtkeychain-qt6
+           qtwayland
+           yt-dlp))
+    (arguments (list #:qtbase qtbase))
+    (home-page "https://apps.kde.org/plasmatube/")
+    (synopsis "Kirigami YouTube video player")
+    (description "This package provides YouTube video player based
+on QtMultimedia and @command{yt-dlp}.")
+    (license license:gpl3+)))
