@@ -862,15 +862,15 @@ CDs.")
 (define-public mpvqt
   (package
     (name "mpvqt")
-    (version "1.0.1")
+    (version "1.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "mirror://kde/stable/mpvqt/"
+                    "mirror://kde//stable/mpvqt/"
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "130p3irs1llv7n1hs7w5xms29amh0aa2bi238wjgc9ww65gvhdwz"))))
+                "0cix3ssvpw9wg8h06zr5x0jcm1f1p0c6524ac9zh3wwc6dlymldx"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
