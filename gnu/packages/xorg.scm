@@ -44,6 +44,7 @@
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2025 B. Wilson <elaexuotee@wilsonb.com>
+;;; Copyright © 2025 Simen Endsjø <contact@simendsjo.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6202,16 +6203,13 @@ The XCB util-wm module provides the following libraries:
 (define-public xinit
   (package
     (name "xinit")
-    (version "1.4.3")
+    (version "1.4.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://xorg/individual/app/xinit-"
                                   version ".tar.xz"))
               (sha256
-               (base32
-                "0npx32mi035xkz26gp7raps5xsq4v7rgayy1q794h4d3lqhryh46"))
-              (patches
-                (search-patches "xinit-startx-mcookie-path.patch"))))
+               (base32 "1ygymifhg500sx1ybk8x4d1zn4g4ywvlnyvqwcf9hzsc2rx7r920"))))
     (build-system gnu-build-system)
     (inputs (list libx11 util-linux xorgproto))
     (native-inputs (list pkg-config))
