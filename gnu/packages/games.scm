@@ -204,6 +204,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages opencl)
   #:use-module (gnu packages pcre)
@@ -222,6 +223,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages sdl)
@@ -6522,77 +6524,64 @@ in-window at 640x480 resolution or fullscreen.")
 (define-public warzone2100
   (package
     (name "warzone2100")
-    (version "4.3.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/warzone2100/releases/"
-                           version
-                           "/warzone2100_src.tar.xz"))
-       (sha256
-        (base32 "1hq56hm6bn3s2pksznh5g8hgq6ww6fnl1pspr3bi93k3z7v0imh1"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (with-directory-excursion "3rdparty"
-             (for-each
-              delete-file-recursively
-              '("discord-rpc"
-                "miniupnp"
-                "utfcpp")))
-             #t))))
+    (version "4.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/warzone2100/releases/"
+                                  version "/warzone2100_src.tar.xz"))
+              (patches (search-patches "warzone2100-unbundle-libs.patch"))
+              (modules '((guix build utils)))
+              (snippet #~(for-each delete-file-recursively
+                           (cons* "lib/netplay/3rdparty/miniupnp"
+                                  "lib/sound/3rdparty/opusfile"
+                             (map (lambda (s) (string-append "3rdparty/" s))
+                               '("basis_universal" "basis_universal_host_build"
+                                 "discord-rpc" "fmt" "GameNetworkingSockets"
+                                 "inih" "re2" "utf8proc" "utfcpp")))))
+              (sha256
+                (base32
+                  "02x5ihkpfkpjxwvh00d8yqzd796af7d684nk96hzhhq28qw5bb16"))))
     (build-system cmake-build-system)
-    (arguments
-     (list #:configure-flags #~'("-DWZ_DISTRIBUTOR=Guix"
-                                 "-DWZ_ENABLE_BACKEND_VULKAN=off"
-                                 "-DENABLE_DISCORD=off")
-           #:tests? #f ; TODO: Tests seem to be broken, configure.ac is missing.
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-utfcpp-include
-                 (lambda _
-                   (substitute* "lib/framework/wzstring.cpp"
-                     (("<utfcpp/source/utf8.h>")
-                      "<utf8cpp/utf8.h>"))))
-               (add-after 'unpack 'link-tests-with-qt
-                 (lambda _
-                   (substitute* "tests/Makefile.am"
-                     (("(framework_linktest_LDADD|maptest_LDADD) = "
-                       prefix)
-                      (string-append prefix "$(QT5_LIBS) ")))))
-               (add-after 'unpack 'fix-ivis-linktest
-                 (lambda _
-                   (substitute* "tests/ivis_linktest.cpp"
-                     (("iV_DrawTextRotated.*;")
-                      (string-append
-                       "iV_DrawTextRotated(\"Press ESC to exit.\", "
-                       "100, 100, 0.0f, font_regular);"))))))))
-    (native-inputs (list asciidoc
-                     ruby-asciidoctor/minimal
-                     gettext-minimal
-                     pkg-config
-                     unzip
-                     ;; 7z is used to create .zip archive, not `zip' as in version 3.2.*.
-                     p7zip))
-    (inputs (list opus
+    (arguments (list #:configure-flags #~'("-GNinja"
+                                           "-DWZ_DISTRIBUTOR=Guix"
+                                           "-DWZ_DOWNLOAD_PREBUILT_PACKAGES=off"
+                                           "-DWZ_INCLUDE_VIDEOS=off"
+                                           "-DWZ_FORCE_MINIMAL_OPUSFILE=off"
+                                           "-DENABLE_GNS_NETWORK_BACKEND=off")
+                     ;; TODO: Tests seem to be broken, configure.ac is missing.
+                     #:tests? #f))
+    (native-inputs (list basis-universal
+                         gettext-minimal
+                         ninja
+                         p7zip
+                         pkg-config
+                         ruby-asciidoctor/minimal
+                         shaderc))
+    (inputs (list basis-universal
                   curl
-                  fontconfig
+                  fmt
                   freetype
-                  glew
+                  fribidi
+                  gnutls
                   harfbuzz
+                  libinih
+                  libogg
+                  libpng
+                  libsodium
                   libtheora
                   libvorbis
-                  libxrandr
-                  libsodium
+                  libzip
                   miniupnpc
                   openal
+                  opus
+                  opusfile
                   physfs
-                  qtbase-5
-                  qtscript-5
-                  openssl
+                  re2
                   sdl2
                   sqlite
-                  utfcpp))
+                  utf8proc
+                  utfcpp
+                  vulkan-headers))
     (home-page "https://wz2100.net")
     (synopsis "3D Real-time strategy and real-time tactics game")
     (description
