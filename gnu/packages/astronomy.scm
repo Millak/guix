@@ -190,8 +190,8 @@ randomly altered.
     (license license:gpl3)))
 
 (define-public aocommon
-  (let ((commit "9272ea36693a7ce7aa3524a9e212a60a509c3b8a")
-        (revision "2"))
+  (let ((commit "1444d66a59e757e7a0c74447e9f8d7a69c5e102d")
+        (revision "3"))
     (package
       (name "aocommon")
       (version (git-version "0.0.0" revision commit))
@@ -199,15 +199,16 @@ randomly altered.
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://gitlab.com/aroffringa/aocommon")
-               (commit commit)))
+                (url "https://gitlab.com/aroffringa/aocommon")
+                (commit commit)))
          (sha256
-          (base32 "0klcrrlkc4sjpr83m2gnwb65lg798rydyvrlpangf7np1qg4zbk5"))
+          (base32 "06kdkkarx4bmp9808bwlx35vnp6g0vfzaxx1ijvzwgsjgg8yi5cp"))
          (file-name (git-file-name name version))))
       (build-system copy-build-system)
       (arguments
        (list #:install-plan
-             #~'(("include/aocommon" "include/aocommon"))))
+             #~'(("include/aocommon" "include/aocommon")
+                 ("CMake" "CMake"))))
       (home-page "https://gitlab.com/aroffringa/aocommon")
       (synopsis "Collection of functionality that is reused in astronomical applications")
       (description
