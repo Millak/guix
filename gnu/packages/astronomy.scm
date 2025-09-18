@@ -2009,6 +2009,17 @@ implementation of the ASDF Standard.")
        (sha256
         (base32 "0scnw5y4x5k3vyfylq0w612b662xlccx3gsscaw082zlv2yxfyh4"))))))
 
+(define-public python-asdf-4
+  (package
+    (inherit python-asdf)
+    (version "4.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asdf" version))
+       (sha256
+        (base32 "1h9dvnxdcd7cmjddpfnjsn6a1acav8gm5307gf7kpifacf99fdqz"))))))
+
 (define-public python-asdf-astropy
   (package
     (name "python-asdf-astropy")
