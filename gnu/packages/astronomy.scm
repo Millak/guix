@@ -6554,16 +6554,16 @@ natively in Siril.")
 (define-public python-pysm3
   (package
     (name "python-pysm3")
-    (version "3.4.1a1")
+    (version "3.4.2")
     (source
      (origin
        (method git-fetch) ; no tests data in the PyPI tarball
        (uri (git-reference
-             (url "https://github.com/galsci/pysm")
-             (commit version)))
+              (url "https://github.com/galsci/pysm")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rp22d1ckln9j490ga5snk0xb28qal1i10m4kqmhg7sfkw7dnnzs"))))
+        (base32 "0r8njxss389hqz1nxixamhclays6blyrq7qnrzs2776w9c0cv6vb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6572,36 +6572,44 @@ natively in Siril.")
       ;; <https://healpy.github.io/healpy-data>
       ;; <https://portal.nersc.gov/project/cmb/pysm-data>
       #~(list "-k" (string-join
-                    (list "not test_model"
+                    (list "not test_bandpass_unit_conversion"
                           "test_bandpass_unit_conversion_CMB2MJysr"
                           "test_bandpass_unit_conversion_MJysr2KRJ"
                           "test_cmb_lensed"
+                          "test_cmb_lensed_delens"
+                          "test_cmb_lensed_l01"
+                          "test_cmb_lensed_no_delens"
+                          "test_cmb_lensed_with_patch_object"
                           "test_cmb_map"
                           "test_cmb_map_bandpass"
                           "test_co"
                           "test_co_model"
-                          "test_dust_model"
-                          "test_model_d12"
                           "test_d10_vs_d11"
+                          "test_dust_model"
                           "test_dust_model_353"
                           "test_gnilc_857"
+                          "test_healpix_output_nside"
                           "test_highfreq_dust_model"
+                          "test_model"
+                          "test_model_d12"
                           "test_presmoothed"
-                          "test_sky_max_nside"
-                          "test_sky_max_nside_highres"
                           "test_read_map_unit"
                           "test_read_map_unit_dimensionless"
-                          "test_healpix_output_nside"
+                          "test_s6_vs_s5"
+                          "test_sky_max_nside"
+                          "test_sky_max_nside_highres"
                           "test_smoothing_healpix"
                           "test_smoothing_healpix_beamwindow"
-                          "test_s6_vs_s5"
                           "test_synch_44"
                           "test_synch_model_noscaling"
                           "test_synch_model_s7_44"
                           "test_synch_model_s7_noscaling"
                           "test_synchrotron_model"
-                          "test_bandpass_unit_conversion")
-                    " and not "))
+                          ;; RuntimeError: This function has been removed. Use
+                          ;; reproject.healpix2map(...method='harm').
+                          "test_car_nosmoothing")
+                    " and not ")
+              "tests")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-version
@@ -6611,6 +6619,7 @@ natively in Siril.")
      (list nss-certs-for-test
            python-hatch-vcs
            python-hatchling
+           python-nbval
            python-netcdf4
            python-pixell
            python-psutil
@@ -6620,8 +6629,11 @@ natively in Siril.")
            python-xarray))
     (propagated-inputs
      (list python-astropy
+           python-h5py
            python-healpy
            python-numba
+           python-numpy
+           python-scipy
            python-toml))
     (home-page "https://pysm3.readthedocs.io/")
     (synopsis "Sky emission simulations for Cosmic Microwave Background experiments")
