@@ -7542,13 +7542,13 @@ but has evolved to support other missions as well.")
 (define-public python-space-dolphin
   (package
     (name "python-space-dolphin")
-    (version "1.1.3")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "space_dolphin" version))
        (sha256
-        (base32 "0qsdaqbdf51ai54w4d483bf9kxjjcsr5fiqs861z7k7s7zrjms0r"))))
+        (base32 "162899av6mp0wkjbas07xkqjr70qbvirgnnch7hb501gz0rb50bh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -7562,8 +7562,7 @@ but has evolved to support other missions as well.")
               (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (native-inputs
      (list ;; python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-astropy
            python-corner
