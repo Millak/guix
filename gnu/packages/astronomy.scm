@@ -5857,14 +5857,26 @@ and the use of a modern programming language, techniques, and libraries
 (define-public python-pixell
   (package
     (name "python-pixell")
-    (version "0.29.0")
+    (version "0.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pixell" version))
        (sha256
-        (base32 "17ivl01j2a6j6frzxdmzb4bdbs94n8rkipz2lh3zhhkx17djlbfh"))))
+        (base32 "0ncqqwvpg47yihlplzmhn8za8y7wab5k71n87nz8bcvzj8gnmpvw"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'relax-requirements
+                 ;; XXX: To prevent sanity check faileur in dependent
+                 ;; packages, Cython, Coveralls and Pytests are not required
+                 ;; during runtime.
+                 (lambda _
+                   (substitute* "pyproject.toml"
+                     (("    'cython',") "")
+                     (("    'coveralls>=1.5',") "")
+                     (("    'pytest>=4.6',") "")))))))
     (native-inputs
      (list gfortran
            meson-python
@@ -5874,8 +5886,6 @@ and the use of a modern programming language, techniques, and libraries
            python-pytest))
     (propagated-inputs
      (list python-astropy
-           python-coveralls
-           python-cython ; check why it needs in installation
            python-dateutil
            python-ducc0
            python-h5py
