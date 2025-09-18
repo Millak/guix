@@ -3785,6 +3785,7 @@ Cesium.")
      (list python-pydot
            python-pytest
            python-pytest-cov
+           python-pytest-asdf-plugin
            python-pytest-doctestplus
            python-pytest-filter-subpackage
            python-pytest-httpserver
