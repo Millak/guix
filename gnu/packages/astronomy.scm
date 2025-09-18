@@ -6961,6 +6961,49 @@ export the simulated X-ray events to other software packages to simulate the
 end products of specific X-ray observatories.")
     (license license:bsd-3)))
 
+(define-public python-raccoon
+  (package
+    (name "python-raccoon")
+    (version "1.0.0")
+    (source
+     (origin
+       ;; PyPi tarball lacks tests.
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ajshajib/raccoon")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hn8g7zxga47yhk4y9nrbnz0n7apflczlaszr79h4lg6b4v4h9f4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Three tests fail with error: AttributeError: module
+                    ;; 'numpy' has no attribute 'trapezoid'.
+                    (list "not test_clean_cube"
+                          "test_clean_cube_with_min_n_amplitude_and_min_n_f"
+                          "test_clean_cube_with_wiggle_detection_thresholds")
+                    " and not "))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools-next))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-scipy
+           python-statsmodels
+           python-tqdm))
+    (home-page "https://github.com/ajshajib/raccoon")
+    (synopsis "Clean modulation due to resampling noise in the JWST/NIRSpec IFS spectra")
+    (description
+     "Package Raccoon cleans the \"wiggles\" (i.e., low-frequency sinusoidal
+artifacts) in the JWST-NIRSpec IFS (integral field spectroscopy) data.  These
+wiggles are caused by resampling noise or aliasing artifacts.")
+    (license license:bsd-3)))
+
 (define-public python-rad
   (package
     (name "python-rad")
