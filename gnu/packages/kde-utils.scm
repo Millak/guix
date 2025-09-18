@@ -876,14 +876,14 @@ artists to web-designers to people with low vision.")
 (define-public kmousetool
   (package
     (name "kmousetool")
-    (version "25.04.0")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmousetool-" version ".tar.xz"))
        (sha256
-        (base32 "1pwc9y11499g9zcyvm0wayfw0cc23yzv3liz2sp85x8493vp3654"))))
+        (base32 "0qvvygx3brbdccnqfdfmx9kjhsddbayydvirdlncfas80d7anxgj"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
