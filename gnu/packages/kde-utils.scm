@@ -388,20 +388,20 @@ to camera devices supported by @code{libgphoto2} using
 (define-public kate
   (package
     (name "kate")
-    (version "25.04.0")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kate-" version ".tar.xz"))
        (sha256
-        (base32 "04i7k4r7wqir3jay0abfgq1wm0c67yzbwqw3v28h7gx4avdf9q7n"))))
+        (base32 "1qg85dgkxapmndc5spb0q0p89xrvnqx1br234s76d9x51lj9spvb"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
      (list breeze-icons ;; default icon set
-           plasma-activities
+           karchive
            kconfig
            kcrash
            kdbusaddons
@@ -421,7 +421,8 @@ to camera devices supported by @code{libgphoto2} using
            kwindowsystem
            kxmlgui
            libplasma
-           libxkbcommon))
+           libxkbcommon
+           plasma-activities))
     (arguments
      (list #:qtbase qtbase
            #:phases
