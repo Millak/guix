@@ -106,19 +106,19 @@ This package is part of the KDE multimedia module.")
 (define-public dragon
   (package
     (name "dragon")
-    (version "25.04.0")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dragon-" version ".tar.xz"))
        (sha256
-        (base32 "07lk1i6r0ybyxhdsfkjbagrsd2lwlk6v9cma8i4p2mrhpcf527yj"))))
+        (base32 "07vpbxfxrawl9ybg48zcc0rb99pj630wqzf7mg76i5qyilckwvxz"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools))
+     (list extra-cmake-modules kdoctools pkg-config))
     (inputs
-     (list bash-minimal
+     (list ffmpeg
            kconfig
            kconfigwidgets
            kcoreaddons
@@ -129,12 +129,12 @@ This package is part of the KDE multimedia module.")
            kjobwidgets
            knotifications
            kparts
+           kirigami
            kwidgetsaddons
            kwindowsystem
            kxmlgui
            breeze-icons ; default icon set
-           phonon
-           phonon-backend-vlc
+           qtmultimedia
            solid))
     (arguments
      (list #:qtbase qtbase
