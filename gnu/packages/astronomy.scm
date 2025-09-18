@@ -3680,6 +3680,42 @@ JSON template file alongside Python routines for visualizing and comparing
 lens models possibly obtained from different modeling codes.")
     (license  license:gpl3)))
 
+(define-public python-corsikaio
+  (package
+    (name "python-corsikaio")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch) ; no tests in the PyPI tarball
+       (uri (git-reference
+             (url "https://github.com/cta-observatory/pycorsikaio")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1afv7jra31fi2g85z8jzmjr6w1wk9xs4v2cg06df2zffqfgfjnjj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-env-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-pytest
+           python-scipy
+           python-setuptools-next
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://github.com/cta-observatory/pycorsikaio")
+    (synopsis "Reader for CORSIKA binary output files")
+    (description
+     "This package implements a reader for
+@url{https://www.iap.kit.edu/corsika/, @acronym{CORSIKA, COsmic Ray
+SImulations for KAscade}} binary output files using NumPy.")
+    (license license:expat)))
+
 (define-public python-cosmopy
   (package
     (name "python-cosmopy")
