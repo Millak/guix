@@ -100,7 +100,6 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages polkit)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
@@ -1390,49 +1389,6 @@ opening hours expressions.")
      "This package provides facilities for rendering OpenStreetMap
 multi-floor indoor maps.")
     (license license:lgpl2.0+)))
-
-(define-public partitionmanager
-  (package
-    (name "partitionmanager")
-    (version "24.12.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
-                           "/src/partitionmanager-" version ".tar.xz"))
-       (sha256
-        (base32 "17p63a9igpbcv0xdziaf3d30n88rj9474w9yx2cpvh0m2nrv3582"))))
-    (build-system qt-build-system)
-    (arguments
-     (list #:qtbase qtbase
-           #:tests? #f))
-    (native-inputs
-     (list extra-cmake-modules kdoctools))
-    (inputs
-     (list kconfig
-           kconfigwidgets
-           kcoreaddons
-           kcrash
-           kdbusaddons
-           ki18n
-           kio
-           kjobwidgets
-           (module-ref
-            (resolve-interface
-             '(gnu packages kde-systemtools))
-            'kpmcore)
-           kwidgetsaddons
-           kwindowsystem
-           kxmlgui
-           polkit-qt6))
-    (home-page "https://apps.kde.org/partitionmanager/")
-    (synopsis "Disk device, partition and file system manager")
-    (description "KDE Partition Manager is a utility to help you manage the
-disks, partitions, and file systems.  It allows you to easily create, copy,
-move, delete, back up, restore, and resize them without losing data.  It
-supports a large number of file systems, including ext2/3/4, btrfs, NTFS,
-FAT16/32, JFS, XFS and more.")
-    (license license:gpl3+)))
 
 (define-public kpublictransport
   (package
