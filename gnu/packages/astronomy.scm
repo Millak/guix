@@ -9021,13 +9021,13 @@ to the SolarSoft data analysis environment.")
 (define-public python-sunraster
   (package
     (name "python-sunraster")
-    (version "0.6.1")
+    (version "0.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunraster" version))
        (sha256
-        (base32 "0a1w7958n4m1qm59x6y00a0p45b5drnj1ippwl7gvszbwamhr2gr"))))
+        (base32 "0rpxarw108igdgxvdz1g63yhyam6mgkpp7l1kkcxqyqv9najnrh4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
