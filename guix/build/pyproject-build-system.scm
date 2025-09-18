@@ -401,6 +401,21 @@ which creates runnable scripts in bin/ from entry point specification
 file entry_points.txt.  This is necessary, because wheels do not contain
 these binaries and installers are expected to create them."
 
+  (define (parse-entry-point item-match)
+    "Parse an entry point.  Return a list of script, module and function."
+    (list (match:substring item-match 1)
+          (match:substring item-match 2)
+          (match:substring item-match 3)))
+
+  (define (parse-line inside line)
+    (cond
+     ((string-match "^\\[(console|gui)_scripts\\]$" line)
+      #t)
+     ((and inside (string-match "^([^ =]+)\\s*=\\s*([^:]+):(.+)$" line))
+      => parse-entry-point)
+     (else
+      #f)))
+
   (define (entry-points.txt->entry-points file)
     "Specialized parser for Python configfile-like files, in particular
 entry_points.txt.  Returns a list of console_script and gui_scripts
@@ -412,25 +427,11 @@ entry points."
                    (result '()))
           (if (eof-object? line)
               result
-              (let* ((group-match (string-match "^\\[(.+)\\]$" line))
-                     (group-name (if group-match
-                                     (match:substring group-match 1)
-                                     #f))
-                     (next-inside (if (not group-name)
-                                      inside
-                                      (or (string=? group-name
-                                                    "console_scripts")
-                                          (string=? group-name "gui_scripts"))))
-                     (item-match (string-match
-                                  "^([^ =]+)\\s*=\\s*([^:]+):(.+)$" line)))
-                (if (and inside item-match)
-                    (loop (read-line in)
-                          next-inside
-                          (cons (list (match:substring item-match 1)
-                                      (match:substring item-match 2)
-                                      (match:substring item-match 3))
-                                result))
-                    (loop (read-line in) next-inside result))))))))
+              (match (parse-line inside line)
+                ((? list? entry)
+                 (loop (read-line in) #t (cons entry result)))
+                (next-inside
+                 (loop (read-line in) next-inside result))))))))
 
   (define (create-script path name module function)
     "Create a Python script from an entry point’s NAME, MODULE and FUNCTION
