@@ -56,11 +56,11 @@ behalf.  The RPCs are implemented in the (guix store) module.
 
 * Contact
 
-GNU Guix is hosted at https://savannah.gnu.org/projects/guix/.
+GNU Guix is hosted at https://codeberg.org/guix/guix.
 
-Please email <help-guix@gnu.org> for questions and <bug-guix@gnu.org> for bug
-reports; email <gnu-system-discuss@gnu.org> for general issues regarding the
-GNU system.
+Please email mailto:help-guix@gnu.org for questions. Bug reports should be
+submitted via https://codeberg.org/guix/guix/issues. Email
+mailto:gnu-system-discuss@gnu.org for general issues regarding the GNU system.
 
 Join #guix on irc.libera.chat.
 
