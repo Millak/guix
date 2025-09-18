@@ -231,6 +231,37 @@ also described by a meta data file which contains the same information as a
 document meta data file.")
     (license license:gpl2+)))
 
+(define-public kio-fuse
+  (package
+    (name "kio-fuse")
+    (version "5.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/kio-fuse/kio-fuse-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0jz9952dd20sw0c25pyn2l86nmc1s5l42gxk4js1jnkx4a0la43x"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (setenv "HOME" (getcwd))
+                         (setenv "XDG_RUNTIME_DIR" (getcwd))
+                         (setenv "QT_QPA_PLATFORM" "offscreen")
+                         (invoke "dbus-launch" "ctest" "-E"
+                                 "(fileopstest-cache|fileopstest-filejob)")))))))
+    (native-inputs (list dbus extra-cmake-modules pkg-config))
+    (inputs (list fuse kio kcoreaddons qtbase))
+    (home-page "https://community.kde.org/Frameworks")
+    (synopsis "FUSE Interface for KIO")
+    (description "This package provides FUSE Interface for KIO.")
+    (license license:lgpl2.1+)))
+
 (define-public kpmcore
   (package
     (name "kpmcore")
