@@ -78,12 +78,14 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-maths)
   #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages gperf)
   #:use-module (gnu packages gps)
   #:use-module (gnu packages graph)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libusb)
@@ -540,67 +542,74 @@ Library with namespaces, exception handling, and member template functions.")
                                    "See License.txt in the distribution."))))
 
 (define-public celestia
-  (package
-    (name "celestia")
-    (version "1.6.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/celestiaproject/celestia")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0nz9k5nd2zmrbwj1qhsfwmvqymqk8c4yjxpybck44isrild2ah9j"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:modules
-      `((guix build gnu-build-system)
-        (guix build utils)
-        (srfi srfi-1)
-        (srfi srfi-71))
-      #:configure-flags
-      #~(list "--with-glut"
-              (string-append "--with-lua=" #$(this-package-input "lua")))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-lua-version
-            (lambda _
-              (let* ((_ version (package-name->name+version
-                                 #$(this-package-input "lua")))
-                     (components (string-split version #\.))
-                     (major+minor (string-join (take components 2) ".")))
-                (substitute* "configure.ac"
-                  (("lua5.3")
-                   (string-append "lua-" major+minor)))))))))
-    (native-inputs
-     (list autoconf
-           automake
-           gettext-minimal
-           libgit2
-           libtool
-           perl
-           pkg-config))
-    (inputs
-     (list freeglut
-           glu
-           libjpeg-turbo
-           libpng
-           libtheora
-           mesa))
-    (propagated-inputs
-     (list lua))
-    (home-page "https://celestia.space/")
-    (synopsis "Real-time 3D visualization of space")
-    (description
-     "This simulation program lets you explore our universe in three
+  ;; 1.6.4 was placed in 2023 while master migrated to Qt6, use the lates
+  ;; commit for now.
+  (let ((commit "d3f4040401f5f71bcca79e55d53be75c05b867ef")
+        (revision "0"))
+    (package
+      (name "celestia")
+      (version (git-version "1.6.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/celestiaproject/celestia")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0rqkzxyf8gfjprhj1c19d7chhc3b94wlq2119wz0c344rx7hnh9l"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f     ;no tests were found
+        #:configure-flags
+        #~(list "-DENABLE_FFMPEG=ON"
+                "-DENABLE_GLES=ON"
+                "-DENABLE_LIBAVIF=ON"
+                "-DENABLE_QT6=ON"
+                "-DENABLE_TOOLS=ON"
+                "-DUSE_QT6=ON")
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; TODO: Wrap celestia-content instead of copping it, if posible.
+            (add-after 'install 'install-content
+              (lambda _
+                (copy-recursively
+                 (string-append #$(this-package-native-input "celestia-content")
+                                "/share")
+                 (string-append #$output "/share")))))))
+      (native-inputs
+       (list boost
+             celestia-content
+             gettext-minimal
+             pkg-config))
+      (inputs
+       (list eigen
+             ffmpeg
+             fmt
+             freetype
+             glu
+             gperf
+             libavif
+             libepoxy
+             libjpeg-turbo
+             libpng
+             mesa
+             qtbase
+             qtwayland))
+      (propagated-inputs
+       (list lua
+             perl))
+      (home-page "https://celestia.space/")
+      (synopsis "Real-time 3D visualization of space")
+      (description
+       "This simulation program lets you explore our universe in three
 dimensions.  Celestia simulates many different types of celestial objects.
 From planets and moons to star clusters and galaxies, you can visit every
 object in the expandable database and view it from any point in space and
 time.  The position and movement of solar system objects is calculated
 accurately in real time at any rate desired.")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public celestia-content
   ;; No rleases or version tags.
