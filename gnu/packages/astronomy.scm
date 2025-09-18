@@ -2126,6 +2126,38 @@ support for reading and writing various compression algorithms including:
 @url{http://facebook.github.io/zstd/,Zstandard}.")
       (license license:bsd-3))))
 
+(define-public python-asdf-coordinates-schemas
+  (hidden-package
+   (package
+     (name "python-asdf-coordinates-schemas")
+     (version "0.4.0")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "asdf_coordinates_schemas" version))
+        (sha256
+         (base32 "1i5w1v74b84ygbd9pw9cs35bjaqs35f5iavazhjpbycqr1pf8rvh"))))
+     (build-system pyproject-build-system)
+     (arguments
+      (list
+       #:test-flags
+       #~(list "--numprocesses" (number->string (parallel-job-count)))))
+     (native-inputs
+      (list python-pytest
+            python-pytest-xdist
+            python-setuptools-next
+            python-setuptools-scm
+            python-wheel))
+     (propagated-inputs
+      (list python-asdf))
+     (home-page "https://github.com/asdf-format/asdf-coordinates-schemas")
+     (synopsis "ASDF coordinates schemas")
+     (description
+      "This package provides ASDF schemas for validating coordinates tags.
+Users should not need to install this directly; instead, install an
+implementation package such as asdf-astropy.")
+     (license license:bsd-3))))
+
 (define-public python-asdf-standard
   (package
     (name "python-asdf-standard")
@@ -5815,6 +5847,96 @@ binned galaxy positions or shear) in cylindrical projection, but its core
 functionality is more general.")
     (license license:bsd-3)))
 
+;; XXX: The project is archived, maintained fork is available see
+;; <https://github.com/poliastro/poliastro/issues/1640>.
+;; Maintained fork <https://github.com/pleiszenburg/hapsira>.
+(define-public python-poliastro
+  (package
+    (name "python-poliastro")
+    (version "0.17.0")
+    (source
+     (origin
+       ;; PyPi tarball lacks tests.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/poliastro/poliastro")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1iclyjp0cvm6hp5qf4fzklszxvhj3idkxgb6a9h7xzg9bf5j5gi2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-m" "not remote_data"
+              ;; TODO: Review failing tests later when any upstream
+              ;; suggestions are provided:
+              ;; https://github.com/poliastro/poliastro/issues/1618
+              "--ignore=tests/test_czml.py"
+              "-k" (string-append
+                    ;; This fails with "ufunc 'isfinite' not
+                    ;; supported for the input types"
+                    "not test_porkchop_plotting"
+                    " and not test_maneuver_constructor_raises_error_if_invalid_delta_v"))
+      #:phases
+      #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("5.0,<6") "5.0,<7"))))
+          (add-after 'unpack 'matplotlib-compatibility
+            (lambda _
+              (substitute* "src/poliastro/plotting/static.py"
+                (("import numpy as np.*" m)
+                 (string-append m "\
+import itertools\n"))
+                (("( +)self._ax = ax.*" m indent)
+                 (string-append m indent
+                                "\
+self.colors = itertools.cycle(plt.rcParams[\"axes.prop_cycle\"].by_key()[\"color\"])\n"))
+                (("color = next\\(self._ax._get_lines.prop_cycler\\)\\[\"color\"\\]")
+                 "color = next(self.colors)"))))
+          ;; NOTE: Tests take about 7-10 minutes to pass.
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-coverage
+           python-hypothesis
+           python-mypy
+           python-flit-core
+           python-pytest
+           python-pytest-cov
+           python-pytest-doctestplus
+           python-pytest-mpl
+           python-pytest-mypy))
+    (propagated-inputs
+     (list python-astropy-6
+           python-astroquery
+           python-czml3
+           python-jplephem
+           python-matplotlib
+           python-numba
+           python-numpy
+           python-pandas
+           python-plotly
+           python-pyerfa
+           python-scipy))
+    (home-page "https://www.poliastro.space/")
+    (synopsis "Astrodynamics in Python")
+    (description
+     "POLIASTRO is a Python library for interactive Astrodynamics and Orbital
+Mechanics, with a focus on ease of use, speed, and quick visualization.  It
+provides a simple and intuitive API, and handles physical quantities with
+units.
+
+Some features include orbit propagation, solution of the Lambert's problem,
+conversion between position and velocity vectors and classical orbital
+elements and orbit plotting, among others.  It focuses on interplanetary
+applications, but can also be used to analyze artificial satellites in
+Low-Earth Orbit (LEO).")
+  (license license:expat)))
+
 (define-public python-poppy
   (package
     (name "python-poppy")
@@ -6094,6 +6216,94 @@ subhalos and line of sight halos for gravitational lensing simulations.  It
 also transltes halo properties (mass, concentration, redshift, etc) into
 angular units for lensing computations with lenstronomy.")
     (license license:expat)))
+
+(define-public python-pynbody
+  (package
+    (name "python-pynbody")
+    (version "1.6.0.post0")
+    (source
+     (origin
+       (method git-fetch) ;PyPi doesn't have not prebuit version.
+       (uri (git-reference
+             (url "https://github.com/pynbody/pynbody")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rl9ais4yc6kdijq1il4vi3mplp7z6bcih4x55axhan5n3n7riwi"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Symlink goes to not existing directory.
+        #~(for-each delete-file '("docs/testdata"
+                                  "docs/tutorials/example_code/testdata")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list
+                           ;; Disable tests which need to download additional
+                           ;; 1.0GiB+ of test data archive from
+                           ;; http://star.ucl.ac.uk/~app/testdata.tar.gz
+                           ;;    https://github.com/pynbody/pynbody/blob/ \
+                           ;;    f4bd482dc47532831b3ec115c7cb07149d61bfc5/ \
+                           ;;    .github/workflows/build-test.yaml#L41
+                           ;; See <https://github.com/pynbody/pynbody/issues/778>
+                           "--ignore=tests/copy_on_access_test.py"
+                           "--ignore=tests/gravity_test.py"
+                           "--ignore=tests/adaptahop_test.py"
+                           "--ignore=tests/ahf_halos_test.py"
+                           "--ignore=tests/array_test.py"
+                           "--ignore=tests/bridge_test.py"
+                           "--ignore=tests/family_test.py"
+                           "--ignore=tests/partial_tipsy_test.py"
+                           "--ignore=tests/snapshot_test.py"
+                           "--ignore=tests/test_profile.py"
+                           "--ignore=tests/gadget_test.py"
+                           "--ignore=tests/gadgethdf_test.py"
+                           "--ignore=tests/grafic_test.py"
+                           "--ignore=tests/halotools_test.py"
+                           "--ignore=tests/nchilada_test.py"
+                           "--ignore=tests/ramses_new_ptcl_format_test.py"
+                           "--ignore=tests/ramses_test.py"
+                           "--ignore=tests/rockstar_test.py"
+                           "--ignore=tests/sph_image_test.py"
+                           "--ignore=tests/sph_smooth_test.py"
+                           "--ignore=tests/subfind_test.py"
+                           "--ignore=tests/subfindhdf_gadget4_test.py"
+                           "--ignore=tests/tipsy_test.py"
+                           "-k"
+                           (string-append
+                            "not test_div_curl_smoothing"
+                            " and not test_float_kd"
+                            " and not test_kd_delete"
+                            " and not test_kd_issue_88"
+                            " and not test_kdtree_from_existing_kdtree"
+                            " and not test_kdtree_shared_mem"
+                            " and not test_neighbour_list"
+                            " and not test_particles_in_sphere"
+                            " and not test_periodic_smoothing"
+                            " and not test_smooth"
+                            " and not test_smooth_WendlandC2"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'set-compiler
+                 (lambda _
+                   (setenv "CC" #$(cc-for-target)))))))
+    (native-inputs
+     (list python-cython
+           python-pandas
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-h5py
+           python-matplotlib
+           python-numpy
+           python-posix-ipc
+           python-scipy))
+    (home-page "https://pynbody.github.io/pynbody/index.html")
+    (synopsis "Light-weight astronomical N-body/SPH analysis for python")
+    (description "@code{Pynbody} is an analysis framework for N-body and hydrodynamic
+astrophysical simulations supporting PKDGRAV/Gasoline, Gadget, Gadget4/Arepo,
+N-Chilada and RAMSES AMR outputs.")
+    (license license:gpl3+)))
 
 (define-public python-pyregion
   (package
@@ -6495,6 +6705,43 @@ schemas for the Nancy Grace Roman Space Telescope shared attributes for
 processing and archive.  These schemas are schemas for the ASDF file file
 format, which are used by ASDF to serialize and deserialize data for the Nancy
 Grace Roman Space Telescope.")
+    (license license:bsd-3)))
+
+(define-public python-radio-beam
+  (package
+    (name "python-radio-beam")
+    (version "0.3.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "radio_beam" version))
+       (sha256
+        (base32 "0i76hj6wyijbpxx7n1sm12f0qqw15srk6ikq2cr589lvrixylpwv"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest-astropy
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-scipy))
+   (home-page "https://radio-beam.readthedocs.io/en/latest/")
+    (synopsis "Operations for radio astronomy beams with Astropy")
+    (description
+     "Radio Beam is a simple toolkit for reading beam information from FITS
+headers and manipulating beams.
+Some example applications include:
+@itemize
+@item Convolution and deconvolution
+@item Unit conversion (Jy to/from K)
+@item Handle sets of beams for spectral cubes with varying resolution between
+channels
+@item Find the smallest common beam from a set of beams
+@item Add the beam shape to a matplotlib plot
+@end itemize")
     (license license:bsd-3)))
 
 (define-public python-radiospectra
@@ -7314,96 +7561,6 @@ instruments.")
     (license (list license:bsd-3     ; licenses/LICENSE.rst, same as python-astropy
                    license:expat)))) ; licenses/KOSMOS_LICENSE
 
-;; XXX: The project is archived, maintained fork is available see
-;; <https://github.com/poliastro/poliastro/issues/1640>.
-;; Maintained fork <https://github.com/pleiszenburg/hapsira>.
-(define-public python-poliastro
-  (package
-    (name "python-poliastro")
-    (version "0.17.0")
-    (source
-     (origin
-       ;; PyPi tarball lacks tests.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/poliastro/poliastro")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1iclyjp0cvm6hp5qf4fzklszxvhj3idkxgb6a9h7xzg9bf5j5gi2"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-m" "not remote_data"
-              ;; TODO: Review failing tests later when any upstream
-              ;; suggestions are provided:
-              ;; https://github.com/poliastro/poliastro/issues/1618
-              "--ignore=tests/test_czml.py"
-              "-k" (string-append
-                    ;; This fails with "ufunc 'isfinite' not
-                    ;; supported for the input types"
-                    "not test_porkchop_plotting"
-                    " and not test_maneuver_constructor_raises_error_if_invalid_delta_v"))
-      #:phases
-      #~(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "pyproject.toml"
-               (("5.0,<6") "5.0,<7"))))
-          (add-after 'unpack 'matplotlib-compatibility
-            (lambda _
-              (substitute* "src/poliastro/plotting/static.py"
-                (("import numpy as np.*" m)
-                 (string-append m "\
-import itertools\n"))
-                (("( +)self._ax = ax.*" m indent)
-                 (string-append m indent
-                                "\
-self.colors = itertools.cycle(plt.rcParams[\"axes.prop_cycle\"].by_key()[\"color\"])\n"))
-                (("color = next\\(self._ax._get_lines.prop_cycler\\)\\[\"color\"\\]")
-                 "color = next(self.colors)"))))
-          ;; NOTE: Tests take about 7-10 minutes to pass.
-          (add-before 'check 'prepare-test-environment
-            (lambda _
-              (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list python-coverage
-           python-hypothesis
-           python-mypy
-           python-flit-core
-           python-pytest
-           python-pytest-cov
-           python-pytest-doctestplus
-           python-pytest-mpl
-           python-pytest-mypy))
-    (propagated-inputs
-     (list python-astropy-6
-           python-astroquery
-           python-czml3
-           python-jplephem
-           python-matplotlib
-           python-numba
-           python-numpy
-           python-pandas
-           python-plotly
-           python-pyerfa
-           python-scipy))
-    (home-page "https://www.poliastro.space/")
-    (synopsis "Astrodynamics in Python")
-    (description
-     "POLIASTRO is a Python library for interactive Astrodynamics and Orbital
-Mechanics, with a focus on ease of use, speed, and quick visualization.  It
-provides a simple and intuitive API, and handles physical quantities with
-units.
-
-Some features include orbit propagation, solution of the Lambert's problem,
-conversion between position and velocity vectors and classical orbital
-elements and orbit plotting, among others.  It focuses on interplanetary
-applications, but can also be used to analyze artificial satellites in
-Low-Earth Orbit (LEO).")
-  (license license:expat)))
-
 (define-public python-pyavm
   (package
     (name "python-pyavm")
@@ -8023,94 +8180,6 @@ science instruments plus the fine guidance sensor, including both direct
 imaging, coronagraphic, and spectroscopic modes.")
     (license license:bsd-3)))
 
-(define-public python-pynbody
-  (package
-    (name "python-pynbody")
-    (version "1.6.0.post0")
-    (source
-     (origin
-       (method git-fetch) ;PyPi doesn't have not prebuit version.
-       (uri (git-reference
-             (url "https://github.com/pynbody/pynbody")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0rl9ais4yc6kdijq1il4vi3mplp7z6bcih4x55axhan5n3n7riwi"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Symlink goes to not existing directory.
-        #~(for-each delete-file '("docs/testdata"
-                                  "docs/tutorials/example_code/testdata")))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags #~(list
-                           ;; Disable tests which need to download additional
-                           ;; 1.0GiB+ of test data archive from
-                           ;; http://star.ucl.ac.uk/~app/testdata.tar.gz
-                           ;;    https://github.com/pynbody/pynbody/blob/ \
-                           ;;    f4bd482dc47532831b3ec115c7cb07149d61bfc5/ \
-                           ;;    .github/workflows/build-test.yaml#L41
-                           ;; See <https://github.com/pynbody/pynbody/issues/778>
-                           "--ignore=tests/copy_on_access_test.py"
-                           "--ignore=tests/gravity_test.py"
-                           "--ignore=tests/adaptahop_test.py"
-                           "--ignore=tests/ahf_halos_test.py"
-                           "--ignore=tests/array_test.py"
-                           "--ignore=tests/bridge_test.py"
-                           "--ignore=tests/family_test.py"
-                           "--ignore=tests/partial_tipsy_test.py"
-                           "--ignore=tests/snapshot_test.py"
-                           "--ignore=tests/test_profile.py"
-                           "--ignore=tests/gadget_test.py"
-                           "--ignore=tests/gadgethdf_test.py"
-                           "--ignore=tests/grafic_test.py"
-                           "--ignore=tests/halotools_test.py"
-                           "--ignore=tests/nchilada_test.py"
-                           "--ignore=tests/ramses_new_ptcl_format_test.py"
-                           "--ignore=tests/ramses_test.py"
-                           "--ignore=tests/rockstar_test.py"
-                           "--ignore=tests/sph_image_test.py"
-                           "--ignore=tests/sph_smooth_test.py"
-                           "--ignore=tests/subfind_test.py"
-                           "--ignore=tests/subfindhdf_gadget4_test.py"
-                           "--ignore=tests/tipsy_test.py"
-                           "-k"
-                           (string-append
-                            "not test_div_curl_smoothing"
-                            " and not test_float_kd"
-                            " and not test_kd_delete"
-                            " and not test_kd_issue_88"
-                            " and not test_kdtree_from_existing_kdtree"
-                            " and not test_kdtree_shared_mem"
-                            " and not test_neighbour_list"
-                            " and not test_particles_in_sphere"
-                            " and not test_periodic_smoothing"
-                            " and not test_smooth"
-                            " and not test_smooth_WendlandC2"))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'build 'set-compiler
-                 (lambda _
-                   (setenv "CC" #$(cc-for-target)))))))
-    (native-inputs
-     (list python-cython
-           python-pandas
-           python-pytest
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-h5py
-           python-matplotlib
-           python-numpy
-           python-posix-ipc
-           python-scipy))
-    (home-page "https://pynbody.github.io/pynbody/index.html")
-    (synopsis "Light-weight astronomical N-body/SPH analysis for python")
-    (description "@code{Pynbody} is an analysis framework for N-body and hydrodynamic
-astrophysical simulations supporting PKDGRAV/Gasoline, Gadget, Gadget4/Arepo,
-N-Chilada and RAMSES AMR outputs.")
-    (license license:gpl3+)))
-
 (define-public python-pysynphot
   ;; XXX: 2.0.0 was released in 2021 there are a lot of changes since that
   ;; time and it failed to build with python-astropy 6.0.0, use the latest
@@ -8163,38 +8232,6 @@ photometric systems are available, and users can incorporate their own filters,
 spectra, and data.")
       (license license:bsd-3))))
 
-(define-public python-asdf-coordinates-schemas
-  (hidden-package
-   (package
-     (name "python-asdf-coordinates-schemas")
-     (version "0.4.0")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "asdf_coordinates_schemas" version))
-        (sha256
-         (base32 "1i5w1v74b84ygbd9pw9cs35bjaqs35f5iavazhjpbycqr1pf8rvh"))))
-     (build-system pyproject-build-system)
-     (arguments
-      (list
-       #:test-flags
-       #~(list "--numprocesses" (number->string (parallel-job-count)))))
-     (native-inputs
-      (list python-pytest
-            python-pytest-xdist
-            python-setuptools-next
-            python-setuptools-scm
-            python-wheel))
-     (propagated-inputs
-      (list python-asdf))
-     (home-page "https://github.com/asdf-format/asdf-coordinates-schemas")
-     (synopsis "ASDF coordinates schemas")
-     (description
-      "This package provides ASDF schemas for validating coordinates tags.
-Users should not need to install this directly; instead, install an
-implementation package such as asdf-astropy.")
-     (license license:bsd-3))))
-
 (define-public python-asdf-fits-schemas
   (hidden-package
    ;; This package was never released and has been archived. The schemas in
@@ -8235,43 +8272,6 @@ implementation package such as asdf-astropy.")
        (description
         "This package provides ASDF schemas for validating FITS tags.")
        (license license:bsd-3)))))
-
-(define-public python-radio-beam
-  (package
-    (name "python-radio-beam")
-    (version "0.3.9")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "radio_beam" version))
-       (sha256
-        (base32 "0i76hj6wyijbpxx7n1sm12f0qqw15srk6ikq2cr589lvrixylpwv"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest-astropy
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-astropy
-           python-matplotlib
-           python-numpy
-           python-scipy))
-   (home-page "https://radio-beam.readthedocs.io/en/latest/")
-    (synopsis "Operations for radio astronomy beams with Astropy")
-    (description
-     "Radio Beam is a simple toolkit for reading beam information from FITS
-headers and manipulating beams.
-Some example applications include:
-@itemize
-@item Convolution and deconvolution
-@item Unit conversion (Jy to/from K)
-@item Handle sets of beams for spectral cubes with varying resolution between
-channels
-@item Find the smallest common beam from a set of beams
-@item Add the beam shape to a matplotlib plot
-@end itemize")
-    (license license:bsd-3)))
 
 (define-public python-roman-datamodels
   (package
