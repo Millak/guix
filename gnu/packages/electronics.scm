@@ -1601,11 +1601,10 @@ to enforce it.")
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/VUnit/vunit")
-              (commit (string-append "v" version))
-              (recursive? #t)))
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zm7733g7ivcx6y00bigvqzkxa2i46sw4pb5k1n3lfbqvsjymshh"))))
+        (base32 "1si542jrrvibiigaridg2vds5smbiass7g5pdfk5z26xqgbh0fxc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1619,7 +1618,18 @@ to enforce it.")
                 ((": \"llvm\",")
                  (string-append
                   ": \"llvm\",\n\tr\"static elaboration, LLVM JIT code "
-                  "generator\": \"llvm-jit\","))))))
+                  "generator\": \"llvm-jit\",")))))
+          (add-after 'ensure-no-mtimes-pre-1980 'dosymlink
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "vunit/vhdl/JSON-for-VHDL"
+                (symlink
+                 (search-input-directory inputs "/share/json-for-vhdl")
+                 "src"))
+              (with-directory-excursion "vunit/vhdl"
+                (delete-file-recursively "osvvm")
+                (symlink
+                 (search-input-directory inputs "/share/osvvm/osvvm")
+                 "osvvm")))))
       #:test-flags
       ;; Skip lint tests which require python-pycodestyle, python-pylint and
       ;; python-mypy to reduce closoure size; some lint test fails, see
@@ -1635,6 +1645,8 @@ to enforce it.")
            python-setuptools
            python-setuptools-scm
            python-wheel))
+    (inputs
+     (list json-for-vhdl-for-vunit osvvm-2023.04))
     (propagated-inputs
      (list python-colorama))
     (home-page "https://vunit.github.io")
