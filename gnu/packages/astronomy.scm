@@ -218,65 +218,67 @@ reused in several astronomical applications, such as @code{wsclean},
       (license license:gpl3+))))
 
 (define-public aoflagger
-  (package
-    (name "aoflagger")
-    (version "3.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/aroffringa/aoflagger")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32 "0dxmcy04cayhs4s2z41wls1dnmg9hkffvlqcmc660idqziffvv1g"))
-       (patches
-        (search-patches "aoflagger-use-system-provided-pybind11.patch"))
-       (file-name (git-file-name name version))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      ;; Tests require external files download from
-      ;; https://www.astron.nl/citt/ci_data/aoflagger/
-      #:tests? #f
-      #:configure-flags
-      #~(list (string-append "-DCASACORE_ROOT_DIR="
-                             #$(this-package-input "casacore")))
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; aocommon and pybind11 are expected to be found as git submodules,
-          ;; link them before build.
-          (add-after 'unpack 'link-submodule-package
-            (lambda _
-              (rmdir "external/aocommon")
-              (symlink #$(this-package-native-input "aocommon")
-                       (string-append (getcwd) "/external/aocommon")))))))
-    (native-inputs
-     (list aocommon
-           boost
-           pkg-config
-           python
-           pybind11))
-    (inputs
-     (list casacore
-           cfitsio
-           fftw
-           gsl
-           gtkmm-3
-           hdf5
-           libpng
-           libsigc++
-           libxml2
-           lua
-           openblas
-           zlib))
-    (home-page "https://gitlab.com/aroffringa/aoflagger")
-    (synopsis "Astronomical tool that can find and remove radio-frequency interference")
-    (description
-     "AOFlagger is a tool that can find and remove radio-frequency
+  ;; 3.4.0 was released in 2023, there are a lot of changes and compatibility
+  ;; for EveryBeam.
+  (let ((commit "b3a459df54b35ec18821ae0a392eeef1ca92cdba")
+        (revision "0"))
+    (package
+      (name "aoflagger")
+      (version (git-version "3.4.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://gitlab.com/aroffringa/aoflagger")
+                (commit commit)))
+         (sha256
+          (base32 "0fgm2svdw52m348hi28pnknxsdy54dkfd7y388b14hwf9z5ransa"))
+         (file-name (git-file-name name version))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        ;; Tests require external files download from
+        ;; https://www.astron.nl/citt/ci_data/aoflagger/
+        #:tests? #f
+        #:configure-flags
+        #~(list (string-append "-DCASACORE_ROOT_DIR="
+                               #$(this-package-input "casacore")))
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; aocommon and pybind11 are expected to be found as git submodules,
+            ;; link them before build.
+            (add-after 'unpack 'link-submodule-package
+              (lambda _
+                (rmdir "external/aocommon")
+                (symlink #$(this-package-native-input "aocommon")
+                         (string-append (getcwd) "/external/aocommon")))))))
+      (native-inputs
+       (list aocommon
+             boost
+             pkg-config
+             python
+             pybind11))
+      (inputs
+       (list casacore
+             cfitsio
+             fftw
+             gsl
+             gtkmm-3
+             hdf5
+             libpng
+             libsigc++
+             libxml2
+             lua
+             openblas
+             zlib))
+      (home-page "https://gitlab.com/aroffringa/aoflagger")
+      (synopsis "Astronomical tool that can find and remove radio-frequency interference")
+      (description
+       "AOFlagger is a tool that can find and remove radio-frequency
 interference (RFI) in radio astronomical observations.  It can make use of Lua
 scripts to make flagging strategies flexible, and the tools are applicable to a
 wide set of telescopes.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public astroterm
   (package

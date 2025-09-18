@@ -993,7 +993,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/antiword-CVE-2014-8123.patch			\
   %D%/packages/patches/antlr3-3_1-fix-java8-compilation.patch	\
   %D%/packages/patches/antlr3-3_3-fix-java8-compilation.patch	\
-  %D%/packages/patches/aoflagger-use-system-provided-pybind11.patch \
   %D%/packages/patches/apr-fix-atomics.patch			\
   %D%/packages/patches/apr-skip-getservbyname-test.patch	\
   %D%/packages/patches/aria-maestosa-scons-python3.patch	\
