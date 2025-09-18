@@ -55,21 +55,21 @@
 (define-public dolphin
   (package
     (name "dolphin")
-    (version "25.04.0")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dolphin-" version ".tar.xz"))
        (sha256
-        (base32 "061a05dab11isn7pnv07mvvh84wgx8appxpygmj25bqjxw2fr5w9"))))
+        (base32 "1kgaf4889g2hpgi9rdsnlf90a27z3gy6myhgca6zs937d7053c08"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools ruby ruby-test-unit))
     (inputs
      (list baloo
            baloo-widgets
-           plasma-activities
+           breeze-icons ;; default icon set
            kbookmarks
            kcmutils
            kcompletion
@@ -87,10 +87,10 @@
            ktextwidgets
            kuserfeedback
            kwindowsystem
-           breeze-icons ;; default icon set
-           phonon
-           solid
-           libxkbcommon))
+           libxkbcommon
+           plasma-activities
+           qtmultimedia
+           solid))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f)) ;; TODO: 4/15 tests fail even with offscreen
