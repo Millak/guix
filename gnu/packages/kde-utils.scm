@@ -323,26 +323,27 @@ your computer.")
 (define-public isoimagewriter
   (package
     (name "isoimagewriter")
-    (version "25.04.0")
+    (version "25.08.1")
     (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://invent.kde.org/utilities/isoimagewriter")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/isoimagewriter-" version
+                                  ".tar.xz"))
               (sha256
                (base32
-                "149qgmc2qj8n1rxkqzmbwi6r0bbq48y8g9vqqaz3yrr2ljygds04"))))
+                "12qh8xlc7x0wvkpp2fac96nnr9iil3zpkw4wkmwd2jx6xwmi7230"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
-    (inputs (list kauth
+    (inputs (list gpgme
+                  kauth
                   karchive
                   kcoreaddons
                   ki18n
                   kiconthemes
                   kcrash
                   solid
-                  kwidgetsaddons))
+                  kwidgetsaddons
+                  qgpgme-qt6))
     (arguments (list #:qtbase qtbase
                      #:tests? #f))
     (home-page "https://invent.kde.org/utilities/isoimagewriter")
