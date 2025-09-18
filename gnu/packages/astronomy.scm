@@ -3637,13 +3637,13 @@ Spectrograph}.")
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "12.1.11")
+    (version "13.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "crds" version))
        (sha256
-        (base32 "1h4n5wyv23pa1fld2nfqph6app8zxb8zkzv5p1w6dm11n7zbnxih"))))
+        (base32 "02901rqzvgd8ssw1rv3skinqbxp0nycwx75k7n3bn3fjyfn2g2zc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3683,19 +3683,18 @@ Spectrograph}.")
            python-pytest-astropy
            python-pytest-doctestplus
            python-setuptools
-           python-setuptools-scm
-           python-stsynphot
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-asdf
-           python-astropy
-           python-beautifulsoup4
-           python-boto3
-           python-filelock
+     (list python-astropy
            python-numpy
-           python-parsley
-           python-pysynphot
+           python-filelock
+           python-asdf
            python-requests
+           python-parsley
+           ;; [optional]
+           python-beautifulsoup4
+           ;; python-crds -> python-ci-watson -> python-jwst -> python-crds
+           ;; python-jwst
            python-roman-datamodels
            python-stsynphot))
     (home-page "https://hst-crds.stsci.edu")
