@@ -642,14 +642,14 @@ BIND and djbdns---whilst using relatively little memory.")
 (define-public unbound
   (package
     (name "unbound")
-    (version "1.23.1")
+    (version "1.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.unbound.net/downloads/unbound-"
                            version ".tar.gz"))
        (sha256
-        (base32 "14156vzhj9mjpncgaws45zagd48msw7pwfa3hs3f73cxg5y12sva"))))
+        (base32 "11jh8qkjxgry4mlv5lyjzycziz2vhjrm3qh722i8l0677jc24yql"))))
     (build-system gnu-build-system)
     (outputs '("out" "python"))
     (native-inputs
@@ -1347,4 +1347,3 @@ nameservers other than libc.")
 clients, obtains DNS query results from multiple upstream DNS servers, and
 returns the fastest access results to clients.")
     (license license:gpl3+)))
-
