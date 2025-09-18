@@ -2161,26 +2161,23 @@ implementation package such as asdf-astropy.")
 (define-public python-asdf-standard
   (package
     (name "python-asdf-standard")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf_standard" version))
        (sha256
-        (base32
-         "0r7dxbiwngpwwjdbs2vqk94v1vjsgyilswkq180d5slx74grcn2r"))))
+        (base32 "1p7x5j8ym70c2cmgnv0113i4q465jbrqg8311mwbfz5q1lfi4pqc"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-asdf-bootstrap
            python-asdf-transform-schemas-bootstrap
-           python-astropy-minimal
-           python-jsonschema
-           python-pypa-build
-           python-pytest
            python-packaging
+           python-pytest
+           python-pytest-asdf-plugin
+           python-pyyaml
            python-setuptools-next
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (home-page "https://asdf-standard.readthedocs.io/")
     (synopsis "ASDF standard schemas")
     (description
