@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2018, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2014-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Dave Love <fx@gnu.org>
@@ -231,7 +231,7 @@ bind processes, and much more.")
                   '()))))
        (append (list `(,hwloc-2 "lib")
                      gfortran
-                     libfabric
+                     libfabric-1                  ;fails to build with 2.3
                      libevent
                      opensm
                      openssh-sans-x)
@@ -376,6 +376,8 @@ software vendors, application developers and computer science researchers.")
               ;; As of Open MPI 5.0.X, PMIx is used to communicate
               ;; with SLURM, so SLURM'S PMI is no longer needed.
               (delete "slurm")
+              ;; Replace libfabric 1.x with a newer version.
+              (replace "libfabric" libfabric)
               (append openpmix)        ;for PMI support (launching via "srun")
               (append prrte)))         ;for PMI support (launching via "srun")
     (native-inputs (modify-inputs (package-native-inputs openmpi)
