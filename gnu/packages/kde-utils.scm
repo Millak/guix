@@ -1262,7 +1262,7 @@ remind you to take a break now and then.")
 (define-public smb4k
   (package
     (name "smb4k")
-    (version "4.0.0")
+    (version "4.0.4")
     (source
      (origin
        (method git-fetch)
@@ -1270,7 +1270,7 @@ remind you to take a break now and then.")
                            (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v6h18pla0cx36arka9jy77n5p0chd1xgdgia5xjryzpsc66ddpx"))))
+        (base32 "1sbw7fdcgfjadggnmsl3m85kgim80lkn2vakwv4mrkrci0izk1xj"))))
     (build-system qt-build-system)
     (arguments (list
                 #:qtbase qtbase
