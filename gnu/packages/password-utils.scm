@@ -1684,7 +1684,8 @@ your online accounts makes it necessary.")
               (snippet
                ;; TODO: Unbundle LZMA-SDK as well
                #~(for-each delete-file-recursively
-                           '("deps/zlib" "deps/xxHash" "deps/OpenCL-Headers")))))
+                           '("deps/unrar" ;; nonfree license
+                             "deps/zlib" "deps/xxHash" "deps/OpenCL-Headers")))))
     (inputs (list minizip opencl-headers xxhash zlib))
     (build-system gnu-build-system)
     (arguments
@@ -1692,6 +1693,7 @@ your online accounts makes it necessary.")
            #:make-flags #~(list (string-append "PREFIX=" #$output)
                                 (string-append "AR=" #$(ar-for-target))
                                 (string-append "CC=" #$(cc-for-target))
+                                (string-append "ENABLE_UNRAR=0")
                                 (string-append "USE_SYSTEM_ZLIB=1")
                                 (string-append "USE_SYSTEM_OPENCL=1")
                                 (string-append "USE_SYSTEM_XXHASH=1"))
