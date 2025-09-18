@@ -14,6 +14,7 @@
 ;;; Copyright © 2023 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
+;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1098,3 +1099,34 @@ to aid in debugging.")
     (synopsis "Debugger for the Go programming language")
     (description "Delve is a debugger for the Go programming language.")
     (license license:expat)))
+
+(define-public fiu
+  (package
+    (name "fiu")
+    (version "1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://blitiri.com.ar/p/libfiu/files/"
+                           version "/libfiu-" version ".tar.gz"))
+       (sha256
+        (base32 "0x4ncvi6sv22rqi9x61byybpmch0z1zvpr6p48axkk890ysv6fim"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags #~(list (string-append "PREFIX=" #$output)
+                                (string-append "CC=" #$(cc-for-target))
+                                (string-append "LDFLAGS=-Wl,-rpath="
+                                               #$output "/lib"))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (add-before 'check 'set-env
+                          ;; Shorten paths to sockets in tests.
+                          (lambda _ (setenv "TMPDIR" "/tmp"))))
+           #:test-target "test"))
+    (native-inputs (list python))      ; for tests
+    (synopsis "Fault injector in userspace")
+    (description "Fiu provides CLI utilities and a C library
+to mark points of failure inside your code
+and to enable/disable the failure of those points.")
+    (home-page "https://blitiri.com.ar/p/libfiu")
+    (license license:public-domain)))
