@@ -193,7 +193,7 @@ cmark processors if they are installed.")
 (define-public tellico
   (package
     (name "tellico")
-    (version "4.1.1")
+    (version "4.1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -201,7 +201,7 @@ cmark processors if they are installed.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0jx512rgrbc8n8p2gnk543l3k53gf30a0zjixp8ly2z70w6qp2br"))
+               (base32 "0930jh6b9cl3jvhmfv00l6566vsnpwkf6shz5w0hn67j0vpvhk7s"))
               (modules '((guix build utils)))
               (snippet
                ;; Fix including QtPrintSupport.
