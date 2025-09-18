@@ -300,14 +300,14 @@ This package is part of the KDE multimedia module.")
 (define-public juk
   (package
     (name "juk")
-    (version "25.04.0")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/juk-" version ".tar.xz"))
        (sha256
-        (base32 "0mcikzh5zvg9f1zyh92jjblcrvqi2pvj8wv08s2d9xv5qwa28qip"))))
+        (base32 "1mwdsyqcvwiz7lcq9l6sywqnbsc7916racgd1sgrwwswmdf4p8ir"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
@@ -330,9 +330,8 @@ This package is part of the KDE multimedia module.")
            kwindowsystem
            kxmlgui
            breeze-icons ; default icon set
-           phonon
-           phonon-backend-vlc
            qtbase
+           qtmultimedia
            qtsvg
            taglib))
     (arguments (list #:qtbase qtbase))
