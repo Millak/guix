@@ -4169,13 +4169,13 @@ all the input image headers.")
 (define-public python-fitsio
   (package
     (name "python-fitsio")
-    (version "1.2.6")
+    (version "1.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fitsio" version))
        (sha256
-        (base32 "1brkkfqgfwbnl1si7hppripcixmsfjs5lpbn18yrwxziafycvc1k"))
+        (base32 "1cbynx6lyf38863njqyg1gnpcdp69bxywmi0ckhzgf9wicxf31nk"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove the bundled cfitsio. When update the package check the
@@ -4202,8 +4202,7 @@ all the input image headers.")
                        #$(this-package-input "cfitsio") "/lib")))))))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools-next))
     (inputs
      (list curl
            cfitsio
