@@ -44,18 +44,3 @@ strings, it produces a hash function and hash table in C or C++ code.  That
 the hash function is perfect means that no collisions can exist and that
 look-ups can be made by single string comparisons.")
     (license gpl3+)))
-
-(define-public gperf-3.0
-  ;; This older version would use 'unsigned int' in its generated lookup
-  ;; functions whereas 3.1 uses 'size_t', which causes breakage such as
-  ;; <https://github.com/wingo/elogind/issues/8>.
-  (package
-    (inherit gperf)
-    (version "3.0.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/gperf/gperf-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0gnnm8iqcl52m8iha3sxrzrl9mcyhg7lfrhhqgdn4zj00ji14wbn"))))))
