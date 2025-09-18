@@ -39,6 +39,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix deprecation)
   #:use-module (guix search-paths)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
@@ -160,7 +161,7 @@ your project into different processes.")
           (add-before 'check 'pre-check
             (lambda _
               (setenv "PYTHONPATH" "."))))))
-    (propagated-inputs (list python-django python-django-crispy-forms))
+    (propagated-inputs (list python-django-4 python-django-crispy-forms))
     (native-inputs (list python-pytest python-pytest-django python-setuptools))
     (home-page "https://github.com/django-crispy-forms/crispy-bootstrap3")
     (synopsis "Bootstrap3 template pack for django-crispy-forms")
@@ -190,7 +191,7 @@ your project into different processes.")
           (add-before 'check 'pre-check
             (lambda _
               (setenv "PYTHONPATH" "."))))))
-    (propagated-inputs (list python-django python-django-crispy-forms))
+    (propagated-inputs (list python-django-4 python-django-crispy-forms))
     (native-inputs (list python-pytest python-pytest-django python-setuptools))
     (home-page "https://github.com/django-crispy-forms/crispy-bootstrap4")
     (synopsis "Bootstrap4 template pack for django-crispy-forms")
@@ -202,13 +203,13 @@ your project into different processes.")
 (define-public python-django
   (package
     (name "python-django")
-    (version "4.2.23")
+    (version "5.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "django" version))
        (sha256
-        (base32 "1r7sbhllc6d903di0ydqy737s28m223lgpk69y6xhjb4dsxfmza2"))))
+        (base32 "0yx82k8iilz8l6wkdvjcrz75i144lf211xybrrrks6b34wvh0pns"))))
     (build-system pyproject-build-system)
     (arguments
      '(#:test-flags
@@ -236,6 +237,12 @@ your project into different processes.")
                ((".*def test_incorrect_timezone.*" all)
                 (string-append "    @unittest.skip('Disabled by Guix')\n"
                                all)))))
+         (add-before 'check 'delete-sitecustomize
+           (lambda* _
+             ;; This file gets loaded instead of the GUIX sitecustomize.py,
+             ;; so we end up ignoring GUIX_PYTHONPATH and breaking imports.
+             ;; It only contains a coverage hook that we don't need here.
+             (delete-file "tests/sitecustomize.py")))
          (replace 'check
            (lambda* (#:key tests? test-flags #:allow-other-keys)
              (if tests?
@@ -291,6 +298,22 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
                   ;; This CVE seems fixed since 4.2.1.
                   (lint-hidden-cve . ("CVE-2023-31047"))))))
 
+(define-public python-django-4
+  (package
+    (inherit python-django)
+    (name "python-django-4")
+    (version "4.2.23")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "django" version))
+        (sha256
+         (base32 "1r7sbhllc6d903di0ydqy737s28m223lgpk69y6xhjb4dsxfmza2"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-django)
+       ((#:phases phases)
+        #~(modify-phases #$phases (delete 'delete-sitecustomize)))))))
+
 (define-public python-django-cache-url
   (package
     (name "python-django-cache-url")
@@ -342,7 +365,7 @@ with a @var{CACHE_URL} environment variable.")
                              (string-append ".:" (getenv "GUIX_PYTHONPATH")))
                      (invoke "django-cadmin" "test" "-v2")))))))
     (propagated-inputs
-     (list python-django))
+     (list python-django-4))
     (native-inputs
      (list python-dj-database-url
            python-dj-email-url
@@ -467,7 +490,7 @@ that are useful for particular countries or cultures.")
     (native-inputs
      (list python-mock python-setuptools python-wheel))
     (propagated-inputs
-     (list python-django python-six))
+     (list python-django-4 python-six))
     (synopsis "Easy-to-use math field/widget captcha for Django forms")
     (description
      "A multi-value-field that presents a human answerable question,
@@ -847,7 +870,7 @@ templatetags and a full test suite.")
                (with-directory-excursion "testing"
                  (invoke "python" "runtests.py"))))))))
     (propagated-inputs
-     (list python-django python-jinja2 python-pytz python-django-pipeline))
+     (list python-django-4 python-jinja2 python-pytz python-django-pipeline))
     (native-inputs
      (list python-setuptools python-wheel tzdata-for-tests))
     (home-page "https://niwinz.github.io/django-jinja/latest/")
@@ -1033,7 +1056,7 @@ for Django sites.")
       #:test-backend #~'custom
       #:test-flags #~(list "tests/runtests.py")))
     (native-inputs (list python-setuptools tzdata-for-tests))
-    (propagated-inputs (list python-django))
+    (propagated-inputs (list python-django-4))
     (home-page "https://github.com/django/django-contrib-comments")
     (synopsis "Comments framework")
     (description
@@ -1642,7 +1665,7 @@ a single block.")
                   (delete "python-django-crispy-forms")))))
            (list python-crispy-bootstrap3 python-crispy-bootstrap4))
       (list python-pytest python-pytest-django python-setuptools)))
-    (propagated-inputs (list python-django))
+    (propagated-inputs (list python-django-4))
     (home-page "https://github.com/django-crispy-forms/django-crispy-forms")
     (synopsis "Tool to control Django forms without custom templates")
     (description
