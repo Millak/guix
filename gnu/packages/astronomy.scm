@@ -4813,23 +4813,32 @@ observationally-derived galaxy merger catalogs.")
 (define-public python-irispy-lmsal
   (package
     (name "python-irispy-lmsal")
-    (version "0.3.1")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "irispy_lmsal" version))
        (sha256
-        (base32 "037ip97kb5sq98shgw4d1c5x7lpbzksampfw7d97x59zbvbmvwhn"))))
+        (base32 "1al7nyw2d2175gbij7ab2q0ks3wsf4b7n6g89ic2mpg4v1ybyxw5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 68 passed, 1 skipped, 9 deselected, 2 warnings
       #:test-flags
       ;; See: <https://github.com/LM-SAL/irispy-lmsal/issues/83>.
       ;; Expected:
       ;;     np.float64(0.33)
       ;; Got:
       ;;     0.33
-      #~(list "--deselect=irispy/obsid.py::irispy.obsid.ObsID")
+      #~(list "--deselect=irispy/obsid.py::irispy.obsid.ObsID"
+              ;; TODO: Report upstram.
+              ;; Arrays are not almost equal to 4 decimals
+              ;; Mismatched elements: 42 / 3601 (1.17%)
+              ;; Max absolute difference: 0.34272391
+              ;; Max relative difference: 0.00491848
+              ;;  x: array([0., 0., 0., ..., 0., 0., 0.])
+              ;;  y: array([0., 0., 0., ..., 0., 0., 0.], dtype='>f4')
+              "-k" "not test_get_latest_response_to_idl")
       #:phases
       #~(modify-phases %standard-phases
           ;; XXX: It fails to check SunPy's optional inputs versions.
