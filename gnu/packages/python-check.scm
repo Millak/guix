@@ -1834,6 +1834,31 @@ data arrays produced during tests, in particular in cases where the arrays
 are too large to conveniently hard-code them in the tests.")
     (license license:bsd-3)))
 
+(define-public python-pytest-asdf-plugin
+  (package
+    (name "python-pytest-asdf-plugin")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_asdf_plugin" version))
+       (sha256
+        (base32 "0bcfl1s7yrnr2rlpr3hswcg9jyq6gnj0ppmpzppw9xgj796ycfb5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f         ;to avoid import astronomy module
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'sanity-check))))
+    (native-inputs
+     (list python-setuptools-next
+           python-setuptools-scm-next))
+    (home-page "https://github.com/asdf-format/pytest-asdf-plugin")
+    (synopsis "Pytest plugin for testing ASDF schemas")
+    (description
+     "This package provides a Pytest plugin for testing ASDF schemas.")
+    (license license:bsd-3)))
+
 (define-public python-pytest-astropy
   (package
     (name "python-pytest-astropy")
