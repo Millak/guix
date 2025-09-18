@@ -1,0 +1,14 @@
+This patch fixes finding gstreamer in Guix.
+
+diff -ruN a/src/CMakeLists.txt b/src/CMakeLists.txt
+--- src/CMakeLists.txt	2025-09-09 08:56:49.000000000 +0530
++++ src/CMakeLists.txt	2025-09-18 12:00:43.703603807 +0530
+@@ -20,7 +20,7 @@
+ target_link_libraries(kamoso
+     Qt::Core Qt::Gui Qt::Widgets Qt::Quick
+     KF6::KIOFileWidgets KF6::ConfigGui KF6::I18n KF6::Notifications
+-    PkgConfig::GStreamerVideo PkgConfig::GStreamer
++    PkgConfig::gstreamervideo PkgConfig::gstreamer
+ )
+ 
+ install(TARGETS kamoso ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
