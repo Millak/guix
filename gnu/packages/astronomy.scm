@@ -602,6 +602,40 @@ time.  The position and movement of solar system objects is calculated
 accurately in real time at any rate desired.")
     (license license:gpl2+)))
 
+(define-public celestia-content
+  ;; No rleases or version tags.
+  (let ((commit "10bd43b0e8925f6ee9bb9687522708a95338d664")
+        (revision "0"))
+    (package
+      (name "celestia-content")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/CelestiaProject/CelestiaContent")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1gah823hdf0lhyql6ln6cmivfl9d8dr7yp3mrc1rcw7bm4hbb2qq"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f))   ;no tests were found
+      (native-inputs
+       (list gettext-minimal
+             imagemagick))
+      (home-page "https://celestia.space/")
+      (synopsis "Data files for Celestia space simulator")
+      (description
+       "This package provides data content for Celestia.
+@itemize
+@item Scientific Data Base
+@item Texture maps
+@item 3D Models
+@end itemize")
+      (license license:gpl2+))))
+
 (define-public celestia-gtk
   (deprecated-package "celestia-gtk" celestia))
 
