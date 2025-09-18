@@ -595,6 +595,59 @@ Interactive Weather Information Network (IWIN).
 @end enumerate\n")
     (license (list license:gpl2+ license:lgpl2.0+ license:gpl3+))))
 
+(define-public mate-sensors-applet
+  (package
+    (name "mate-sensors-applet")
+    (version "1.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://mate/"
+                           (version-major+minor version)
+                           "/"
+                           "mate-sensors-applet-"
+                           version
+                           ".tar.xz"))
+       (sha256
+        (base32 "10as64102wbgmi8ak3ya2zyvc3dpx24rfg18323fp3xgh9k3crfl"))))
+    (build-system glib-or-gtk-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--enable-in-process")))
+    (native-inputs (list pkg-config
+                         intltool
+                         itstool
+                         yelp-tools
+                         gettext-minimal
+                         gobject-introspection))
+    (inputs (list at-spi2-core
+                  dbus
+                  dbus-glib
+                  glib
+                  gtk+
+                  libnotify
+                  lm-sensors
+                  libx11
+                  libxml2
+                  libxslt
+                  libatasmart
+                  libwnck
+                  mate-desktop
+                  mate-menus
+                  mate-panel
+                  pango
+                  polkit ;either polkit or setuid
+                  upower
+                  wireless-tools))
+    (home-page "https://mate-desktop.org/")
+    (synopsis "MATE panel applet for hardware monitoring")
+    (description
+     "MATE Sensors Applet displays readings from hardware sensors in the MATE
+panel, these include CPU temperature, fan speeds and voltage reading under
+GNU plus Linux distributions.")
+    (license license:gpl2+)))
+
 (define-public mate-media
   (package
     (name "mate-media")
