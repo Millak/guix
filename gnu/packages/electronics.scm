@@ -478,6 +478,30 @@ structures from external files on disk.  It provides a context to be
 used in the declarative section of design units.")
       (license license:asl2.0))))
 
+;;; Required by python-vunit.
+(define json-for-vhdl-for-vunit
+  (let ((commit "95e848b8902c6b4275d715462e1a2cc60706917c") ;sync with vunit
+        (revision "0"))
+    (package
+      (inherit json-for-vhdl)
+      (name "json-for-vhdl-for-vunit")
+      (version (git-version "20220106" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/Paebbels/JSON-for-VHDL/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1c106hm0sfnzdi5j9vaacjlz7i5m1dm75j7lrgcdsa4siw5ac7k3"))))
+      (arguments
+       (list
+        #:install-plan
+        #~'(("src" "share/json-for-vhdl" #:include ("vhdl")))))
+      (native-inputs
+       '()))))
+
 (define librnd
   (package
     (name "librnd")
