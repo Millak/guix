@@ -61,68 +61,6 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
-(define-public choqok
-  (package
-    (name "choqok")
-    (version "1.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/choqok/"
-                           (version-major+minor version)
-                           "/src/choqok-" version ".tar.xz"))
-       (sha256
-        (base32 "0zm4nkpmvd181xlkis7ydzx54p3vn0zgpdzgh54f1hsjy6ahsq16"))))
-    (build-system qt-build-system)
-    (arguments
-     (list #:tests? #f))
-    (native-inputs
-     (list extra-cmake-modules kdoctools-5 pkg-config))
-    (inputs
-     (list attica-5
-           kcmutils-5
-           kconfigwidgets-5
-           kcoreaddons-5
-           kemoticons
-           kglobalaccel-5
-           kguiaddons-5
-           ki18n-5
-           kio-5
-           knotifications-5
-           knotifyconfig-5
-           kparts-5
-           ktextwidgets-5
-           kwallet-5
-           kwidgetsaddons-5
-           kxmlgui-5
-           ;; TODO: telepathy
-           breeze-icons ; default icon set
-           purpose-5
-           qca
-           qoauth
-           qtbase-5
-           qtnetworkauth-5
-           sonnet-5))
-    (home-page "https://kde.org/applications/internet/org.kde.choqok")
-    (synopsis "Micro-Blogging Client")
-    (description "Choqok is a fast, efficient and simple to use micro-blogging
-client for KDE.  It currently supports the twitter.com and identi.ca
-microblogging services.
-
-Other notable features include:
-@itemize
-@item Support for user + friends time-lines.
-@item Support for @@Reply time-lines.
-@item Support for sending and receiving direct messages.
-@item Twitpic.com integration.
-@item The ability to use multiple accounts simultaneously.
-@item Support for search APIs for all services.
-@item KWallet integration.
-@item Support for automatic shortening urls with more than 30 characters.
-@item Support for configuring status lists appearance.
-@end itemize")
-    (license license:gpl3+)))
-
 (define-public falkon
   (package
     (name "falkon")
