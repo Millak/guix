@@ -30,6 +30,27 @@
                 #:prefix license:)
   #:use-module (guix packages))
 
+;; This package lives here to avoid module level circular dependencies as it
+;; depends on elixir-plug.
+(define-public elixir-error-message
+  (package
+    (name "elixir-error-message")
+    (version "0.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "error_message" version))
+       (sha256
+        (base32 "0wsbcwby3grnb5s6558s2x5wrhy8f7vwbbfdk88rsacbf1w0l6k7"))))
+    (build-system mix-build-system)
+    (native-inputs (list elixir-excoveralls))
+    (propagated-inputs (list elixir-jason elixir-plug))
+    (synopsis "Make errors consistent across your system")
+    (description
+     "Error system to help make errors consistent across your system.")
+    (home-page "https://hexdocs.pm/error_message/")
+    (license license:expat)))
+
 (define-public elixir-plug-crypto
   (package
     (name "elixir-plug-crypto")
