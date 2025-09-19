@@ -2341,25 +2341,25 @@ python-fixtures package instead.")
 
 (define-public python-fixtures
   (package
-    (inherit python-fixtures-bootstrap)
     (name "python-fixtures")
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "testtools.run"
-                       "fixtures.test_suite")))))))
-    (propagated-inputs
-     ;; Fixtures uses pbr at runtime to check versions, etc.
-     (list python-pbr python-six python-extras))
+    (version "4.2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fixtures" version))
+       (sha256
+        (base32 "02y92rnl2vyjcbc31mcpxkxjky6g9hjb2cxy5xkkl1j5n4ajniwm"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     `(("python-mock" ,python-mock)
-       ("python-testtools" ,python-testtools-bootstrap)))
+     (list python-hatch-vcs
+           python-hatchling
+           python-testtools-bootstrap))
+    (home-page "https://github.com/testing-cabal/fixtures")
+    (synopsis "Python test fixture library")
     (description
      "Fixtures provides a way to create reusable state, useful when writing
-Python tests.")))
+Python tests.")
+    (license (list license:bsd-3 license:asl2.0)))) ; at user's option
 
 (define-public python-testrepository-bootstrap
   (package
