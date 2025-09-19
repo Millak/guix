@@ -651,10 +651,9 @@ placed in a udev rules file."
   (group         vfs-mapping-group
                  (default "users"))
   (name          vfs-mapping-name
-                 (default (string-append
-                           (vfs-mapping-source      this-record) "-["
-                           (vfs-mapping-policy      this-record) "]->"
-                           (vfs-mapping-destination this-record)))
+                 (default (format #f "~a-on-~a"
+                                  (vfs-mapping-policy      this-record)
+                                  (vfs-mapping-destination this-record)))
                  (thunked))
   (requirement   vfs-mapping-requirement
                  (default '(file-systems user-homes))))
