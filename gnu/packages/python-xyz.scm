@@ -12331,22 +12331,6 @@ a general image processing tool.")
 and a plugin for Pillow.")
     (license license:bsd-3)))
 
-(define-public python-pillow-2.9
-  (package
-    (inherit python-pillow)
-    (version "2.9.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "Pillow" version))
-        (sha256
-         (base32
-           "0ada7lf3lmbdsqm3b7ja920p1pllyfhmqndr85ikpj77fmz9s5qg"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments python-pillow)
-       ((#:tests? _ #f) #f)))
-    (properties '((hidden? #t)))))
-
 (define-public python-pillow-simd
   (package
     (inherit python-pillow)
