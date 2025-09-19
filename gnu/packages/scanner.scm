@@ -110,7 +110,7 @@ both WSD and eSCL.")
 (define-public sane
   (package
     (name "sane")
-    (version "1.3.1")
+    (version "1.4.0")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -118,7 +118,7 @@ both WSD and eSCL.")
                    (commit version)))
              (file-name (git-file-name name version))
              (sha256
-              (base32 "1fb6shx9bz0svcyasmyqs93rbbwq7kzg6l0h1zh3kjvcwhchyv72"))
+              (base32 "09hcqrli127amdxjlj6xd9lvc0rhlhhm8vxrnldbd8c2mxss7dbv"))
              (patches (search-patches
                        "sane-look-for-plugins-in-SANE_BACKEND_LIB_PATH.patch"))
              (modules '((guix build utils)))
