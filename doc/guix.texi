@@ -19852,6 +19852,11 @@ symlink:
 This procedure is meant for @code{/bin/sh}, @code{/usr/bin/env} and
 similar targets.  In particular, use for targets under @code{/etc} might
 not work as expected if the target is managed by Guix in other ways.
+
+The special files persist on your system even after the
+@code{extra-special-file} call has been removed from your system config
+and the system has been reconfigured.  The special files need to be
+removed manually.
 @end deffn
 
 @defvar host-name-service-type
