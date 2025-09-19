@@ -2262,16 +2262,31 @@ testresources package instead.")
 
 (define-public python-testresources
   (package
-    (inherit python-testresources-bootstrap)
     (name "python-testresources")
+    (version "2.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "testresources" version))
+       (sha256
+        (base32 "1v7a3mzi461v4cw4qil094j39wzn8hk10jkm9gi9ybmb01z3vgrc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "-m" "testtools.run" "discover")))
+    (native-inputs
+     (list python-fixtures
+           python-setuptools
+           python-testtools))
     (propagated-inputs
      (list python-pbr))
-    (arguments '())
-    (native-inputs
-     (list python-fixtures python-testtools))
+    (home-page "https://github.com/testing-cabal/testresources")
+    (synopsis "Pyunit extension for managing test resources")
     (description
      "Testresources is an extension to Python's unittest to allow declarative
-use of resources by test cases.")))
+use of resources by test cases.")
+    (license (list license:bsd-3 license:asl2.0)))) ; at the user's option
 
 (define-public python-subunit-bootstrap
   (package
