@@ -2166,38 +2166,47 @@ see the output as well as any file modifications.")
 
 (define-public python-testtools
   (package
-    (inherit python-testtools-bootstrap)
     (name "python-testtools")
+    (version "2.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "testtools" version))
+       (sha256
+        (base32 "18vy77n4ab2dvgx5ni6gfp2d0haxhh3yrkm6mih8n3zsy30vprav"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "-m" "testtools.run" "testtools.tests.test_suite")
       #:phases
-      '(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; There are six failing tests:
-               ;; "test_fast_keyboard_interrupt_stops_test_run"
-               ;; "test_keyboard_interrupt_stops_test_run"
-               ;; "test_fast_sigint_raises_no_result_error"
-               ;; "test_fast_sigint_raises_no_result_error_second_time"
-               ;; "test_sigint_raises_no_result_error"
-               ;; "test_sigint_raises_no_result_error_second_time"
-               (substitute* "testtools/tests/twistedsupport/__init__.py"
-                 (("test_spinner,") "")
-                 (("test_runtest,") ""))
-               (invoke "python" "-m" "testtools.run"
-                       "testtools.tests.test_suite")))))))
-    (propagated-inputs
-     (list python-fixtures python-pbr))
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; There are six failing tests:
+              ;; "test_fast_keyboard_interrupt_stops_test_run"
+              ;; "test_keyboard_interrupt_stops_test_run"
+              ;; "test_fast_sigint_raises_no_result_error"
+              ;; "test_fast_sigint_raises_no_result_error_second_time"
+              ;; "test_sigint_raises_no_result_error"
+              ;; "test_sigint_raises_no_result_error_second_time"
+              (substitute* "testtools/tests/twistedsupport/__init__.py"
+                (("test_spinner,") "")
+                (("test_runtest,") "")))))))
     (native-inputs
-     (list python-hatchling python-hatch-vcs
-           python-testscenarios-bootstrap
+     (list python-hatch-vcs
+           python-hatchling
            python-twisted
-           python-setuptools)) ;due to python-pbr
+           python-testscenarios-bootstrap))
+    (propagated-inputs
+     (list python-fixtures))
+    (home-page "https://github.com/testing-cabal/testtools")
+    (synopsis "Extensions to the Python standard library unit testing framework")
     (description
      "Testtools extends the Python standard library unit testing framework to
 provide matchers, more debugging information, and cross-Python
-compatibility.")))
+compatibility.")
+    (license license:expat)))
 
 ;; XXX: The project is not maintained since 2015, consider to remove when
 ;; nothing depends on it.
