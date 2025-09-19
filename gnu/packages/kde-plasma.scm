@@ -1187,48 +1187,6 @@ the running system.")
     (home-page "https://invent.kde.org/plasma/ksystemstats")
     (license (list license:gpl2 license:gpl3))))
 
-(define-public latte-dock
-  (package
-    (name "latte-dock")
-    (version "0.10.9")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/stable/latte-dock/"
-                                  "latte-dock-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0zj818wpxdiqpzivvwrgbzj26lcmmv49zw8206v4shcms1afbl9j"))))
-    (build-system cmake-build-system)
-    (native-inputs (list extra-cmake-modules))
-    (inputs (list qtbase-5
-                  qtdeclarative-5
-                  knotifications
-                  kwindowsystem
-                  kio
-                  plasma-framework
-                  kwayland
-                  kactivities
-                  kcrash
-                  kiconthemes
-                  knewstuff
-                  karchive
-                  kguiaddons
-                  kdbusaddons
-                  kglobalaccel
-                  kirigami
-                  ki18n
-                  kdeclarative
-                  kcoreaddons
-                  xcb-util
-                  qtx11extras
-                  libsm))
-    (synopsis "Latte is a dock based on plasma frameworks")
-    (description
-     "Latte is a dock based on plasma frameworks that provides
-an elegant and intuitive experience for your tasks and plasmoids.")
-    (home-page "https://github.com/KDE/latte-dock")
-    (license license:gpl2+)))
-
 (define-public layer-shell-qt
   (package
     (name "layer-shell-qt")
