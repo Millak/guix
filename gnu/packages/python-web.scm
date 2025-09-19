@@ -2311,6 +2311,33 @@ responses as planin JSON/YAML file or save responses as plain JSON/YAML
 files.")
     (license license:bsd-2)))
 
+(define-public python-requests-futures
+  (package
+    (name "python-requests-futures")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "requests_futures" version))
+       (sha256
+        (base32 "1njqfjmd72l5f32jvcppg2afrvb0cd8angdwmq7q0vik81wvazkb"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-greenlet
+           python-pytest
+           python-pytest-httpbin
+           python-readme-renderer
+           python-setuptools
+           python-twine
+           python-werkzeug))
+    (propagated-inputs (list python-requests))
+    (home-page "https://github.com/ross/requests-futures")
+    (synopsis "Asynchronous Python HTTP for Humans")
+    (description
+     "This package provides and add-on the Python Requests HTTP library to run
+code asynchronously.")
+    (license license:asl2.0)))
+
 (define-public python-s3path
   (package
     (name "python-s3path")
