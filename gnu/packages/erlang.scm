@@ -271,13 +271,13 @@ Mustache template engine")
 (define-public erlang-certifi
   (package
     (name "erlang-certifi")
-    (version "2.13.0")
+    (version "2.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "certifi" version))
        (sha256
-        (base32 "1887qmxp7qmha4c8k4m4cw35iii15srrdmfmvypp0q7hl0rragcg"))))
+        (base32 "0q2ap7ax2wfcigr9vx1g3bv85hf1cm8hakyrvapjxmvirqifsixi"))))
     (build-system rebar-build-system)
     (arguments
      `(#:tests? #f)) ;; have not been updated for latest cert bundle
