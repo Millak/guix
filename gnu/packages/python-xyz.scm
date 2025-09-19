@@ -27701,32 +27701,6 @@ distributions.  It authenticates the user over HTTPS, allows them to pre-sign
 their files and supports any packaging format (including wheels).")
     (license license:asl2.0)))
 
-(define-public python-linecache2
-  (package
-    (name "python-linecache2")
-    (version "1.0.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "linecache2" version))
-        (sha256
-          (base32
-            "0z79g3ds5wk2lvnqw0y2jpakjf32h95bd9zmnvp7dnqhf57gy9jb"))))
-    (build-system python-build-system)
-    (arguments
-     `(;; The tests depend on unittest2, and our version is a bit too old.
-       #:tests? #f))
-    (native-inputs
-     `(("python-pbr" ,python-pbr-minimal)))
-    (home-page
-      "https://github.com/testing-cabal/linecache2")
-    (synopsis "Backports of the linecache module")
-    (description
-      "The linecache module allows one to get any line from any file, while
-attempting to optimize internally, using a cache, the common case where many
-lines are read from a single file.")
-    (license license:psfl)))
-
 (define-public python-tracerite
   (package
     (name "python-tracerite")
