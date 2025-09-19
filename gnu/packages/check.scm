@@ -2348,31 +2348,6 @@ python-fixtures package instead.")
 Python tests.")
     (license (list license:bsd-3 license:asl2.0)))) ; at user's option
 
-(define-public python-testrepository-bootstrap
-  (package
-    (name "python-testrepository-bootstrap")
-     (version "0.0.20")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "testrepository" version))
-       (sha256
-        (base32
-         "1ssqb07c277010i6gzzkbdd46gd9mrj0bi0i8vn560n2k2y4j93m"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))
-    (propagated-inputs
-     `(("python-fixtures" ,python-fixtures-bootstrap)
-       ("python-subunit" ,python-subunit-bootstrap)
-       ("python-testtools" ,python-testtools-bootstrap)))
-    (native-inputs
-     (list python-mimeparse))
-    (home-page "https://launchpad.net/testrepository")
-    (synopsis "Database for Python test results")
-    (description
-     "Bootstrap package for python-testrepository.  Don't use this.")
-    (license (list license:bsd-3 license:asl2.0)))) ; at user's option
-
 (define-public python-testrepository
   (package
     (name "python-testrepository")
