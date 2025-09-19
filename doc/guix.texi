@@ -34622,6 +34622,10 @@ use the size of the processors cache line.
 @item @code{server-names-hash-bucket-max-size} (default: @code{#f})
 Maximum bucket size for the server names hash tables.
 
+@item @code{stream} (default: @code{#f})
+@code{<nginx-stream-configuration>} object describing stream server
+directives.
+
 @item @code{modules} (default: @code{'()})
 List of nginx dynamic modules to load.  This should be a list of file
 names of loadable modules, as in this example:
@@ -34830,6 +34834,29 @@ Name to identify this location block.
 blocks can be used in a similar way to the
 @code{nginx-location-configuration body}.  One restriction is that the
 body of a named location block cannot contain location blocks.
+
+@end table
+@end deftp
+
+@deftp {Data Type} nginx-stream-configuration
+Data type representing the configuration file context in which stream
+directives are specified.  This type has the following parameters:
+
+@table @asis
+@item @code{upstream-blocks} (default: @code{'()})
+A list of upstream blocks to create in the generated configuration file,
+the elements should be of type @code{<nginx-upstream-configuration>}.
+
+@item @code{server-blocks} (default: @code{'()})
+A list of server blocks to create in the generated configuration file,
+the elements should be of type @code{<nginx-server-configuration>}.
+
+@item @code{extra-content} (default: @code{'()})
+Additional content to be appended to the @code{stream} block.  Can either
+be a value that can be lowered into a string or a list of such values.
+In the former case, it is inserted directly.  In the latter, it is
+prefixed with indentation and suffixed with a newline.  Nested lists are
+flattened into one line.
 
 @end table
 @end deftp

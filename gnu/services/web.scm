@@ -68,6 +68,7 @@
   #:use-module ((guix packages) #:select (package-version))
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
+  #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (ice-9 match)
   #:use-module (ice-9 format)
@@ -112,6 +113,7 @@
             nginx-configuration-upstream-blocks
             nginx-configuration-server-names-hash-bucket-size
             nginx-configuration-server-names-hash-bucket-max-size
+            nginx-configuration-stream
             nginx-configuration-modules
             nginx-configuration-global-directives
             nginx-configuration-extra-content
@@ -150,6 +152,11 @@
             nginx-named-location-configuration?
             nginx-named-location-configuration-name
             nginx-named-location-configuration-body
+
+            nginx-stream-configuration
+            nginx-stream-configuration-server-blocks
+            nginx-stream-configuraiton-upstream-blocks
+            nginx-stream-configuration-extra-content
 
             nginx-service
             nginx-service-type
@@ -587,6 +594,16 @@
                        (default #f))
   (body                nginx-named-location-configuration-body))
 
+(define-record-type* <nginx-stream-configuration>
+  nginx-stream-configuration make-nginx-stream-configuration
+  nginx-stream-configuration?
+  (upstream-blocks nginx-stream-configuration-upstream-blocks
+                   (default '()))  ;list of <nginx-upstream-configuration>
+  (server-blocks nginx-stream-configuration-server-blocks
+                 (default '()))  ;list of <nginx-server-configuration>
+  (extra-content nginx-stream-configuration-extra-content
+                 (default '())))
+
 (define-record-type* <nginx-configuration>
   nginx-configuration make-nginx-configuration
   nginx-configuration?
@@ -613,6 +630,8 @@
                                  (default #f))
   (server-names-hash-bucket-max-size nginx-configuration-server-names-hash-bucket-max-size
                                      (default #f))
+  (stream nginx-configuration-stream
+          (default #f))  ;#f | <nginx-stream-configuration>
   (modules nginx-configuration-modules (default '()))
   (global-directives nginx-configuration-global-directives
                      (default '((events . ()))))
@@ -677,7 +696,7 @@ of index files."
       (map (lambda (x) (list "        " x "\n")) body)
       "      }\n"))))
 
-(define (emit-nginx-server-config server)
+(define* (emit-nginx-server-config server #:optional (context 'http))
   (let ((listen (nginx-server-configuration-listen server))
         (server-name (nginx-server-configuration-server-name server))
         (ssl-certificate (nginx-server-configuration-ssl-certificate server))
@@ -702,16 +721,20 @@ of index files."
      "      server_name " (config-domain-strings server-name) ";\n"
      (and/l ssl-certificate     "      ssl_certificate " <> ";\n")
      (and/l ssl-certificate-key "      ssl_certificate_key " <> ";\n")
-     (if (not (equal? "" root))
+     (if (and (eq? context 'http)
+              (not (equal? "" root)))
          (list "      root " root ";\n")
          "")
-     (if (not (null? index))
+     (if (and (eq? context 'http)
+              (not (null? index)))
          (list "      index " (config-index-strings index) ";\n")
          "")
      (if (not (nil? try-files))
          (and/l (config-index-strings try-files) "      try_files " <> ";\n")
          "")
-     "      server_tokens " (if server-tokens? "on" "off") ";\n"
+     (if (eq? context 'http)
+         (list "      server_tokens " (if server-tokens? "on" "off") ";\n")
+         "")
      "\n"
      (map emit-nginx-location-config locations)
      "\n"
@@ -761,6 +784,7 @@ of index files."
                  server-blocks upstream-blocks
                  server-names-hash-bucket-size
                  server-names-hash-bucket-max-size
+                 stream
                  modules
                  global-directives
                  lua-package-path
@@ -773,6 +797,20 @@ of index files."
            "error_log " (nginx-error-log-file config) " " (symbol->string log-level) ";\n"
            (map emit-load-module modules)
            (map emit-global-directive global-directives)
+           (match stream
+             (#f "")
+             (_
+              (list "stream {\n"
+                    (map emit-nginx-upstream-config
+                         (nginx-stream-configuration-upstream-blocks stream))
+                    (map (cut emit-nginx-server-config <> 'stream)
+                         (nginx-stream-configuration-server-blocks stream))
+                    (let ((extra-content (nginx-stream-configuration-extra-content stream)))
+                      (if (list? extra-content)
+                          (map (cut list "    " <> "\n")
+                               extra-content)
+                          extra-content))
+                    "}\n")))
            "http {\n"
            "    client_body_temp_path " run-directory "/client_body_temp;\n"
            "    proxy_temp_path " run-directory "/proxy_temp;\n"
