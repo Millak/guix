@@ -564,7 +564,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/pumpio.scm			\
   %D%/packages/pretty-print.scm			\
   %D%/packages/protobuf.scm			\
-  %D%/packages/pure.scm				\
   %D%/packages/purescript.scm			\
   %D%/packages/pv.scm				\
   %D%/packages/pypy.scm				\

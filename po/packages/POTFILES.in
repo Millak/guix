@@ -309,7 +309,6 @@ gnu/packages/printers.scm
 gnu/packages/profiling.scm
 gnu/packages/prometheus.scm
 gnu/packages/pth.scm
-gnu/packages/pure.scm
 gnu/packages/pv.scm
 gnu/packages/pypy.scm
 gnu/packages/python-build.scm
