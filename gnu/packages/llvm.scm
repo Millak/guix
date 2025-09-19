@@ -1108,15 +1108,6 @@ Library.")
                         (string-append (getcwd) "/lib"))))
             (delete 'install-opt-viewer)))))))
 
-(define-public clang-runtime-3.7
-  (clang-runtime-from-llvm
-   llvm-3.7
-   "10c1mz2q4bdq9bqfgr3dirc6hz1h3sq8573srd5q5lr7m7j6jiwx"
-   '("clang-runtime-asan-build-fixes.patch"
-     "clang-runtime-3.8-libsanitizer-mode-field.patch"
-     "clang-3.5-libsanitizer-ustat-fix.patch"
-     "clang-runtime-3.7-fix-build-with-python3.patch")))
-
 (define-public clang-3.7
   (clang-from-llvm llvm-3.7 clang-runtime-3.7
                    "0x065d0w9b51xvdjxwfzjxng0gzpbx45fgiaxpap45ragi61dqjn"
