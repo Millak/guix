@@ -42,6 +42,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages ocr)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -151,6 +152,38 @@ Advanced plugins:
 @item KFormula: Mathematical formulas
 @end itemize")
     (license (list license:lgpl2.0+ license:gpl2+))))
+
+(define-public crow-translate
+  (package
+    (name "crow-translate")
+    (version "3.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/crow-translate/" version
+                           "/crow-translate-v" version ".tar.gz"))
+       (sha256
+        (base32 "18f7i5sxrvqp6h7zj77sdxyy9rlbw0rv3w7akf1j14072ala9bwc"))))
+    (build-system qt-build-system)
+    (arguments '(#:tests? #f)) ; there are no tests.
+    (inputs
+     (list qtbase-5
+           qtx11extras
+           qtsvg-5
+           qtmultimedia-5
+           tesseract-ocr
+           kwayland-5))
+    (native-inputs
+     (list pkg-config
+           extra-cmake-modules
+           qttools-5))
+    (home-page "https://invent.kde.org/office/crow-translate")
+    (synopsis "Application for translating text")
+    (description
+     "Crow Translate is an application written in C++/Qt for translating
+and speaking text which relies on Mozhi to interface with various
+translation engines.")
+    (license license:gpl3+)))
 
 (define-public ghostwriter
   (package
