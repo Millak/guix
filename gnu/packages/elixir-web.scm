@@ -95,6 +95,30 @@ in HTTP/2.")
     (home-page "https://hexdocs.pm/hpack/")
     (license license:expat)))
 
+(define-public elixir-hpax
+  (package
+    (name "elixir-hpax")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "hpax" version))
+       (sha256
+        (base32 "0jpkgn2abg0pr1anw7p9v3dkbbwlx243b92brv11hncdz8f6xawf"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list erlang-coveralls
+           elixir-excoveralls))
+    (propagated-inputs
+     (list elixir-castore
+           elixir-hpack
+           elixir-stream-data))
+    (synopsis "Implementation of the HPACK protocol (RFC 7541) for Elixir")
+    (description "This package provides @code{elixir-hpax}, an implementation of
+the HPACK protocol (RFC 7541) for Elixir.")
+    (home-page "https://hexdocs.pm/hpax/")
+    (license license:asl2.0)))
+
 (define-public elixir-plug-crypto
   (package
     (name "elixir-plug-crypto")
