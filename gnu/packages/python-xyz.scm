@@ -11369,27 +11369,28 @@ parse and apply unified diffs.  It has features such as:
 (define-public python-numexpr
   (package
     (name "python-numexpr")
-    (version "2.9.0") ; starting from 2.10.0, NumPy 2+ is required
+    (version "2.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "numexpr" version))
        (sha256
-        (base32 "1w5ampdamlwj8ix1ipzxngmrlqpnmcmk95gbi6839kijqkv147gj"))))
+        (base32 "1aslzx2mzgk1xxxpm3mrvl8ngfxj7dxlz4q2xbqx20gh1bnzlfg2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'build-extensions
-            (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion #$output
+                  (apply invoke "pytest" "-vv" test-flags))))))))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
-     (list python-numpy))
+     (list python-numpy-2))
     (home-page "https://github.com/pydata/numexpr")
     (synopsis "Fast numerical expression evaluator for NumPy")
     (description
