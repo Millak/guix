@@ -47,6 +47,33 @@ implementing crypto-related functionality for the web, used by Plug.")
     (home-page "https://hexdocs.pm/plug_crypto/")
     (license license:asl2.0)))
 
+(define-public elixir-plug
+  (package
+    (name "elixir-plug")
+    (version "1.18.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "plug" version))
+       (sha256
+        (base32 "1hkcahx1l6yi1hcxn7lw6cbcscwdrwrjsza3cjsj5d7j1nvpv9ap"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-mime elixir-plug-crypto erlang-telemetry))
+    (synopsis "Compose web applications with functions")
+    (description "Plug is:
+
+@itemize
+@item A specification for composing web applications with functions
+@item Connection adapters for different web servers in the Erlang VM
+@end itemize
+
+In other words, Plug allows you to build web applications from small pieces and
+run them on different web servers.  Plug is used by web frameworks such as
+Phoenix to manage requests, responses, and websockets.  This documentation will
+show some high-level examples and introduce the Plug's main building blocks.")
+    (home-page "https://hexdocs.pm/plug/")
+    (license license:asl2.0)))
+
 (define-public elixir-websock
   (package
     (name "elixir-websock")
