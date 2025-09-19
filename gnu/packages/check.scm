@@ -2139,31 +2139,6 @@ command-line applications.  With it you can run a script in a subprocess and
 see the output as well as any file modifications.")
     (license license:expat)))
 
-(define-public python-testtools-bootstrap
-  (package
-    (name "python-testtools-bootstrap")
-    (version "2.7.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "testtools" version))
-       (sha256
-        (base32
-         "18vy77n4ab2dvgx5ni6gfp2d0haxhh3yrkm6mih8n3zsy30vprav"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))
-    (propagated-inputs
-     (list python-fixtures-bootstrap python-pbr-minimal))
-    (native-inputs
-     (list python-hatchling python-hatch-vcs
-           python-setuptools)) ;due to python-pbr-minimal
-    (home-page "https://github.com/testing-cabal/testtools")
-    (synopsis
-     "Extensions to the Python standard library unit testing framework")
-    (description
-     "This package is only for bootstrapping.  Do not use this.")
-    (license license:psfl)))
-
 (define-public python-testtools
   (package
     (name "python-testtools")
@@ -2207,6 +2182,14 @@ see the output as well as any file modifications.")
 provide matchers, more debugging information, and cross-Python
 compatibility.")
     (license license:expat)))
+
+(define-public python-testtools-bootstrap
+  (hidden-package
+   (package/inherit python-testtools
+     (arguments
+      ;; To break cycle with python-fixtures.
+      (list #:tests? #f))
+     (propagated-inputs '()))))
 
 ;; XXX: The project is not maintained since 2015, consider to remove when
 ;; nothing depends on it.
