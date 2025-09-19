@@ -5354,27 +5354,23 @@ library.")
 (define-public python-requests-mock
   (package
     (name "python-requests-mock")
-    (version "1.8.0")
+    (version "1.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "requests-mock" version))
        (sha256
-        (base32
-         "09nj8fmyj7xz2mgwyvbw0fl9zybmx2d3qd2hf529vvjc9s24d3z6"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-requests python-six))
+        (base32 "008l6xysgs6ax56lairg1li5i4bb04i2z19w5bl5claj7crjxqg9"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pbr
-           python-discover
-           python-docutils
-           python-fixtures
-           python-mock
-           python-purl
+     (list python-purl
            python-pytest
-           python-sphinx
-           python-testrepository))
+           python-requests-futures
+           python-setuptools
+           python-setuptools-scm
+           python-testtools))
+    (propagated-inputs
+     (list python-requests))
     (home-page "https://requests-mock.readthedocs.org/")
     (synopsis "Mock out responses from the requests package")
     (description
