@@ -19571,19 +19571,19 @@ convert an @code{.ipynb} notebook file into various static formats including:
 (define-public python-widgetsnbextension
   (package
     (name "python-widgetsnbextension")
-    (version "4.0.10")
+    (version "4.0.14")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "widgetsnbextension" version))
        (sha256
-        (base32
-         "13v88h3cvlf4cs70j568abr04w0bzckl56k9iqx1iadrydgnq6b4"))))
+        (base32 "1bxm6ys3kmxfhi8dns9q6xrjkxijfa606qpq5lhr7f7dwc29nqm3"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests in PyPI or git
     (native-inputs
      (list python-jupyter-packaging
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://ipython.org")
     (synopsis "IPython HTML widgets for Jupyter")
     (description "This package provides interactive HTML widgets for Jupyter
