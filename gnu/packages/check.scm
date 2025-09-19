@@ -2312,36 +2312,6 @@ use of resources by test cases.")
 protocol.")
     (license (list license:bsd-3 license:asl2.0)))) ; at the user's option
 
-;; Fixtures requires python-pbr at runtime, but pbr uses fixtures for its
-;; own tests.  Hence this bootstrap variant.
-(define-public python-fixtures-bootstrap
-  (package
-    (name "python-fixtures-bootstrap")
-    (version "3.0.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "fixtures" version))
-        (sha256
-         (base32
-          "1vxj29bzz3rd4pcy51d05wng9q9dh4jq6wx92yklsm7i6h1ddw7w"))
-        (patches (search-patches "python-fixtures-remove-monkeypatch-test.patch"))))
-    (build-system python-build-system)
-    (arguments
-      `(#:tests? #f
-        #:phases
-         (modify-phases %standard-phases
-           ;; Package is not loadable on its own at this stage.
-           (delete 'sanity-check))))
-    (propagated-inputs
-     (list python-pbr-minimal python-six python-extras))
-    (home-page "https://launchpad.net/python-fixtures")
-    (synopsis "Python test fixture library")
-    (description
-     "This package is only used for bootstrapping.  Use the regular
-python-fixtures package instead.")
-    (license (list license:bsd-3 license:asl2.0)))) ; at user's option
-
 (define-public python-fixtures
   (package
     (name "python-fixtures")
