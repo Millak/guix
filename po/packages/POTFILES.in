@@ -484,7 +484,6 @@ gnu/packages/plotutils.scm
 gnu/packages/postmarketos.scm
 gnu/packages/potassco.scm
 gnu/packages/power.scm
-gnu/packages/presentation.scm
 gnu/packages/prolog.scm
 gnu/packages/protobuf.scm
 gnu/packages/pulseaudio.scm

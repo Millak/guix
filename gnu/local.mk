@@ -562,7 +562,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/pth.scm				\
   %D%/packages/pulseaudio.scm			\
   %D%/packages/pumpio.scm			\
-  %D%/packages/presentation.scm		\
   %D%/packages/pretty-print.scm			\
   %D%/packages/protobuf.scm			\
   %D%/packages/pure.scm				\
