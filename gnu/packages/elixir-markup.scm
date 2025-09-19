@@ -140,6 +140,23 @@ item A @code{String.Chars} implementation to convert them to text
     (home-page "https://hexdocs.pm/ex_doc/")
     (license license:asl2.0)))
 
+(define-public elixir-html-entities
+  (package
+    (name "elixir-html-entities")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "html_entities" version))
+       (sha256
+        (base32 "1k7xyj0q38ms3n5hbn782pa6w1vgd6biwlxr4db6319l828a6fy5"))))
+    (build-system mix-build-system)
+    (synopsis "Decode and encode HTML entities in a string")
+    (description "This library provides an Elixir module to decode and encode
+HTML entities in a string.")
+    (home-page "https://hexdocs.pm/html_entities/")
+    (license license:expat)))
+
 (define-public elixir-floki
   (package
     (name "elixir-floki")
