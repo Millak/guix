@@ -27727,34 +27727,6 @@ attempting to optimize internally, using a cache, the common case where many
 lines are read from a single file.")
     (license license:psfl)))
 
-(define-public python-traceback2
-  (package
-    (name "python-traceback2")
-    (version "1.4.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "traceback2" version))
-        (sha256
-          (base32
-            "0c1h3jas1jp1fdbn9z2mrgn3jj0hw1x3yhnkxp7jw34q15xcdb05"))))
-    (build-system python-build-system)
-    (arguments
-     `(;; python-traceback2 and python-unittest2 depend on one another.
-       #:tests? #f))
-    (native-inputs
-     `(("python-pbr" ,python-pbr-minimal)))
-    (propagated-inputs
-      (list python-linecache2 python-six))
-    (home-page
-      "https://github.com/testing-cabal/traceback2")
-    (synopsis "Backports of the traceback module")
-    (description
-      "This module provides a standard interface to extract, format and print
-stack traces of Python programs.  It exactly mimics the behavior of the Python
-interpreter when it prints a stack trace.")
-    (license license:psfl)))
-
 (define-public python-tracerite
   (package
     (name "python-tracerite")
