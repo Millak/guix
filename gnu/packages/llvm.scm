@@ -1108,12 +1108,6 @@ Library.")
                         (string-append (getcwd) "/lib"))))
             (delete 'install-opt-viewer)))))))
 
-(define-public clang-3.7
-  (clang-from-llvm llvm-3.7 clang-runtime-3.7
-                   "0x065d0w9b51xvdjxwfzjxng0gzpbx45fgiaxpap45ragi61dqjn"
-                   #:legacy-build-shared-libs? #t
-                   #:patches '("clang-3.5-libc-search-path.patch")))
-
 (define-public llvm-3.5
   (package (inherit llvm-3.7)
     (version "3.5.2")
