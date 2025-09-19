@@ -2375,18 +2375,43 @@ Python tests.")
 
 (define-public python-testrepository
   (package
-    (inherit python-testrepository-bootstrap)
     (name "python-testrepository")
+    (version "0.0.21")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "testrepository" version))
+       (sha256
+        (base32 "1nd36zf1gz7rp5qqqvw15d8lwcdwcigs4m6ppn4cdcwhw3vzr2in"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; FIXME: Many tests are failing.
-     '(#:tests? #f))
-    (propagated-inputs
-     (list python-fixtures python-subunit python-testtools))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (invoke "./testr" "init")
+                (invoke "./testr" "run")))))))
     (native-inputs
-     (list python-mimeparse))
-    (description "Testrepository provides a database of test results which can
-be used as part of a developer's workflow to check things such as what tests
-have failed since the last commit or what tests are currently failing.")))
+     (list python-hatch-vcs
+           python-hatchling
+           python-pytz
+           python-setuptools
+           python-testresources
+           python-testscenarios))
+    (propagated-inputs
+     (list python-fixtures
+           python-iso8601
+           python-subunit))
+    (home-page "https://github.com/testing-cabal/testrepository")
+    (synopsis "Database for Python test results")
+    (description
+     "Testrepository provides a database of test results which can be used as
+part of a developer's workflow to check things such as what tests have failed
+since the last commit or what tests are currently failing.")
+    (license (list license:bsd-3 license:asl2.0)))) ; at user's option
 
 (define-public python-coverage
   (package
