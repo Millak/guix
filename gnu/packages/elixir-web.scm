@@ -32,6 +32,28 @@
 
 ;; This package lives here to avoid module level circular dependencies as it
 ;; depends on elixir-plug.
+(define-public elixir-ecto-shorts
+  (package
+    (name "elixir-ecto-shorts")
+    (version "2.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "ecto_shorts" version))
+       (sha256
+        (base32 "1r7cc0dhhvmqnwicrnay9lsaf2xahr919g993rbbakdca2xw0q3l"))))
+    (build-system mix-build-system)
+    (native-inputs (list elixir-credo elixir-excoveralls))
+    (propagated-inputs (list elixir-ecto-sql elixir-error-message))
+    (synopsis
+     "Helper tools for making ecto interactions shorter")
+    (description
+     "Helper tools for making ecto interactions more pleasant and shorter.")
+    (home-page "https://hexdocs.pm/ecto_shorts/")
+    (license license:expat)))
+
+;; This package lives here to avoid module level circular dependencies as it
+;; depends on elixir-plug.
 (define-public elixir-error-message
   (package
     (name "elixir-error-message")
