@@ -9548,7 +9548,15 @@ bibliography files in BibTeX format, a bibliography in HTML format.")
          "0yxdkrhrrbwvay5sn0p26rh3f11876k6kdharmpi4afxknml74ql"))))
     (build-system dune-build-system)
     (arguments
-     `(#:tests? #f)) ; no tests
+     `(#:tests? #f ;; no tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-gcc-flags
+           (lambda _
+             (substitute* "config/discover.ml"
+               ;; Disable a strict default added in GCC 14.
+               (("libffi.P.cflags")
+                "[\"-Wno-int-conversion\"] @ libffi.P.cflags")))))))
     (propagated-inputs
      (list ocaml-sexplib
            ocaml-ctypes
