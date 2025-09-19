@@ -119,6 +119,36 @@ the HPACK protocol (RFC 7541) for Elixir.")
     (home-page "https://hexdocs.pm/hpax/")
     (license license:asl2.0)))
 
+(define-public elixir-mint
+  (package
+    (name "elixir-mint")
+    (version "1.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "mint" version))
+       (sha256
+        (base32 "06r3kb9vkzpx8lgp6fjngaxz9hzidl8sw91hxvfh2hzjs2ja1szw"))))
+    (build-system mix-build-system)
+    (arguments
+     ;; Tests depend on elixir-mox which is not packaged yet.
+     (list #:tests? #f))
+    (native-inputs
+     (list elixir-excoveralls))
+    (propagated-inputs (list elixir-castore elixir-hpax))
+    (synopsis "Functional HTTP client for Elixir with support for HTTP/1 and
+HTTP/2")
+    (description "Mint is different from most Erlang and Elixir HTTP clients
+because it provides a process-less architecture.  Instead, Mint is based on a
+functional and immutable data structure that represents an HTTP connection.
+
+This data structure wraps a TCP or SSL socket.  This allows for more
+fine-tailored architectures where the developer is responsible for wrapping the
+connection struct, such as having one process handle multiple connections or
+having different kinds of processes handle connections.")
+    (home-page "https://hexdocs.pm/mint/")
+    (license license:asl2.0)))
+
 (define-public elixir-plug-crypto
   (package
     (name "elixir-plug-crypto")
