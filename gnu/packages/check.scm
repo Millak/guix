@@ -2199,33 +2199,6 @@ see the output as well as any file modifications.")
 provide matchers, more debugging information, and cross-Python
 compatibility.")))
 
-(define-public python-testscenarios-bootstrap
-  (package
-    (name "python-testscenarios-bootstrap")
-    (version "0.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "testscenarios" version))
-       (sha256
-        (base32
-         "1dm2aydqpv76vnsk1pw7k8n42hq58cfi4n1ixy7nyzpaj1mwnmy2"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "python" "-m" "testtools.run"
-                              "testscenarios.test_suite"))))))
-    (propagated-inputs
-     `(("python-pbr" ,python-pbr-minimal)
-       ("python-testtools" ,python-testtools-bootstrap)))
-    (home-page "https://launchpad.net/testscenarios")
-    (synopsis "Pyunit extension for dependency injection")
-    (description
-     "This package is only for bootstrapping.  Don't use this.")
-    (license (list license:bsd-3 license:asl2.0)))) ; at the user's option
-
 ;; XXX: The project is not maintained since 2015, consider to remove when
 ;; nothing depends on it.
 (define-public python-testscenarios
@@ -2254,6 +2227,18 @@ compatibility.")))
      "Testscenarios provides clean dependency injection for Python unittest
 style tests.")
     (license (list license:bsd-3 license:asl2.0)))) ; at the user's option
+
+(define-public python-testscenarios-bootstrap
+  (hidden-package
+   (package/inherit python-testscenarios
+     (arguments
+      ;; To break cycle with python-testtols and python-subunit.
+      (list #:tests? #f
+            #:phases
+            #~(modify-phases %standard-phases
+                (delete 'sanity-check))))
+     (propagated-inputs
+      (list python-pbr)))))
 
 (define-public python-testresources
   (package
