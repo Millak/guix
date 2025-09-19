@@ -1055,33 +1055,6 @@ Library.")
            `(("config" ,config))
            '())))))
 
-(define-public llvm-3.8
-  (package (inherit llvm-6)
-    (name "llvm")
-    (version "3.8.1")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (llvm-uri "llvm" version))
-      (sha256
-       (base32
-        "1ybmnid4pw2hxn12ax5qa5kl1ldfns0njg8533y3mzslvd5cx0kf"))
-      (patches (search-patches "llvm-3.x.1-fix-build-with-gcc.patch"))))
-    (outputs '("out"))
-    (arguments
-     (substitute-keyword-arguments (package-arguments llvm-6)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (add-before 'build 'shared-lib-workaround
-              ;; Even with CMAKE_SKIP_BUILD_RPATH=FALSE, llvm-tblgen
-              ;; doesn't seem to get the correct rpath to be able to run
-              ;; from the build directory.  Set LD_LIBRARY_PATH as a
-              ;; workaround.
-              (lambda _
-                (setenv "LD_LIBRARY_PATH"
-                        (string-append (getcwd) "/lib"))))
-            (delete 'install-opt-viewer)))))))
-
 (define-public llvm-16
   (make-llvm "16.0.6"))
 
