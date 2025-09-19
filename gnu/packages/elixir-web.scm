@@ -30,6 +30,33 @@
                 #:prefix license:)
   #:use-module (guix packages))
 
+(define-public elixir-bandit
+  (package
+    (name "elixir-bandit")
+    (version "1.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "bandit" version))
+       (sha256
+        (base32 "08jll47yxkj4n08nh7xm8bm36z077a458j4xlqp2mzr0xm7gyn44"))))
+    (build-system mix-build-system)
+    (arguments
+     ;; Tests depend on elixir-req which is not yet packaged.
+     (list #:tests? #f))
+    (propagated-inputs
+     (list elixir-hpax
+           elixir-plug
+           erlang-telemetry
+           elixir-thousand-island
+           elixir-websock))
+    (synopsis "HTTP server built for Plug & WebSock apps")
+    (description
+     "This package provides a pure-Elixir HTTP server built for Plug & @code{WebSock}
+apps.")
+    (home-page "https://hexdocs.pm/bandit/")
+    (license license:expat)))
+
 ;; This package lives here to avoid module level circular dependencies as it
 ;; depends on elixir-plug.
 (define-public elixir-ecto-shorts
