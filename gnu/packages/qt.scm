@@ -5940,6 +5940,35 @@ simple editor for binary data, just like @code{QPlainTextEdit} is for text
 data.")
     (license license:lgpl2.1)))
 
+(define-public qhotkey
+  (package
+    (name "qhotkey")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Skycoder42/QHotkey")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0glzh4l532xk4v9mphsdf96v1557pyvg5al3ha0vr3244bfh9hcf"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f ;no tests
+           #:configure-flags
+           #~(list "-DQT_DEFAULT_MAJOR_VERSION=6"
+                   "-DBUILD_SHARED_LIBS=ON"
+                   "-DQHOTKEY_EXAMPLES=ON")))
+    (inputs (list libx11 qtbase))
+    (home-page "https://github.com/Skycoder42/QHotkey")
+    (synopsis "Global shortcut key for Qt desktop applications")
+    (description
+     "This package provides @code{QHotKey} class that can be used to create
+hotkeys/global shortcuts, aka shortcuts that work everywhere, independent of
+the application state.")
+    (license license:bsd-3)))
+
 (define-public qthttpserver
   (package
     (name "qthttpserver")
