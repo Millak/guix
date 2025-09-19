@@ -19136,7 +19136,7 @@ JSON Reference and JSON Pointer.")
 (define-public python-fastbencode
   (package
     (name "python-fastbencode")
-    (version "0.3.1")
+    (version "0.3.2")   ;the last non Rust version
     (source
      (origin
        (method url-fetch)
@@ -19145,9 +19145,15 @@ JSON Reference and JSON Pointer.")
        ;; Delete pre-generated Cython C files.
        (snippet '(for-each delete-file (find-files "." "\\.c$")))
        (sha256
-        (base32 "15x1in22gwam7wwga5lbj1pd8hc9jk741pia3pv1m29n2xywpq2z"))))
+        (base32 "1daal7xgsl2sjxq8pcilcas9wd9j9796wd4rlkhrvv5h0k2k4k53"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-cython-3 python-setuptools python-wheel))
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:test-flags #~(list "fastbencode.tests.test_suite")))
+    (native-inputs
+     (list python-cython
+           python-setuptools))
     (home-page "https://github.com/breezy-team/fastbencode")
     (synopsis "Python Bencode (de)serializer with optional fast C extensions")
     (description
