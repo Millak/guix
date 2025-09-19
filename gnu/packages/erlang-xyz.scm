@@ -311,6 +311,17 @@ Erlang.")
     (home-page "https://hex.pm/packages/metrics")
     (license license:bsd-2)))
 
+(define-public erlang-metrics-1.0
+  (package
+    (inherit erlang-metrics)
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "metrics" version))
+       (sha256
+        (base32 "05lz15piphyhvvm3d1ldjyw0zsrvz50d2m5f2q3s8x2gvkfrmc39"))))))
+
 (define-public erlang-mimerl
   (package
     (name "erlang-mimerl")
