@@ -2236,30 +2236,6 @@ compatibility.")))
      "Testscenarios provides clean dependency injection for Python unittest
 style tests.")))
 
-;; Testresources requires python-pbr at runtime, but pbr needs it for its
-;; own tests.  Hence this bootstrap variant.
-(define-public python-testresources-bootstrap
-  (package
-    (name "python-testresources-bootstrap")
-    (version "2.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "testresources" version))
-              (sha256
-               (base32
-                "05s4dsli9g17m1r3b1gvwicbbgq011hnpb2b9qnj27ja2n11k7gf"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))
-    (propagated-inputs
-     `(("python-pbr" ,python-pbr-minimal)))
-    (home-page "https://launchpad.net/testresources")
-    (synopsis
-     "Pyunit extension for managing test resources")
-    (description
-     "This package is only here for bootstrapping purposes.  Use the regular
-testresources package instead.")
-    (license (list license:bsd-3 license:asl2.0)))) ; at the user's option
-
 (define-public python-testresources
   (package
     (name "python-testresources")
