@@ -2286,15 +2286,55 @@ python-subunit package instead.")
 
 (define-public python-subunit
   (package
-    (inherit python-subunit-bootstrap)
     (name "python-subunit")
-    (propagated-inputs
-     (list python-extras python-testtools))
+    (version "1.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python-subunit" version))
+       (sha256
+        (base32 "0d7arni5h98x7mpgpv90bzipf6p6q9djcdwj4m2ky7da64qkcy8h"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "-m" "testtools.run" "subunit.test_suite")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              ;; There are two failing tests:
+              ;; subunit.tests.test_test_protocol.TestExecTestCase.test_args
+              ;; AssertionError: 1 != 0
+              ;;
+              ;; subunit.tests.test_test_protocol.TestExecTestCase.test_run
+              ;; AssertionError: Lists differ: [('startTest',
+              ;; <subunit.RemotedTestCase de[666 chars]r'>)] != []
+              (substitute* "python/subunit/tests/test_test_protocol.py"
+                (("test_args") "_off_test_args")
+                (("test_run") "_off_test_run"))))
+          (add-after 'disable-failing-tests 'disable-failing-console-scripts
+            (lambda _
+              (substitute* "setup.py"
+                ;; Requries not maintained python-junitxml.
+                (("'subunit2junitxml=.*subunit2junitxml:main',") "")
+                ;; To avoid Gtk in inputs.
+                (("'subunit-notify=.*subunit_notify:main',") "")
+                (("'subunit2gtk=.*subunit2gtk:main',") "")))))))
     (native-inputs
-     (list python-fixtures python-hypothesis python-testscenarios))
+     (list python-fixtures
+           python-setuptools
+           python-testscenarios))
+    (propagated-inputs
+     (list python-iso8601
+           python-pygobject
+           python-testtools))
+    (home-page "https://github.com/testing-cabal/subunit")
+    (synopsis "Python implementation of the subunit protocol")
     (description
      "Python-subunit is a Python implementation of the subunit test streaming
-protocol.")))
+protocol.")
+    (license (list license:bsd-3 license:asl2.0)))) ; at the user's option
 
 ;; Fixtures requires python-pbr at runtime, but pbr uses fixtures for its
 ;; own tests.  Hence this bootstrap variant.
