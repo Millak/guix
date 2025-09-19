@@ -100,6 +100,34 @@ apps.")
     (home-page "https://hexdocs.pm/error_message/")
     (license license:expat)))
 
+;; This package lives here to avoid module level circular dependencies as it
+;; depends on elixir-mint.
+(define-public elixir-ex-cldr-dates-times
+  (package
+    (name "elixir-ex-cldr-dates-times")
+    (version "2.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "ex_cldr_dates_times" version))
+       (sha256
+        (base32 "00zzwr07x8i8dvhqi2vxpa858s874l941h2m41x9ip2k96dgc3nk"))))
+    (build-system mix-build-system)
+    (propagated-inputs
+     (list elixir-calendar-interval
+           elixir-ex-cldr
+           elixir-ex-cldr-calendars
+           elixir-ex-cldr-units
+           elixir-jason
+           elixir-tz))
+    (synopsis
+     "Date, Time and DateTime localization, internationalization and formatting")
+    (description
+     "Date, Time and @code{DateTime} localization, internationalization and formatting
+functions using the Common Locale Data Repository (CLDR).")
+    (home-page "https://hexdocs.pm/ex_cldr_dates_times/")
+    (license license:asl2.0)))
+
 (define-public elixir-hpack
   (package
     (name "elixir-hpack")
