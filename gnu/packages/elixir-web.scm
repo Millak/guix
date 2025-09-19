@@ -30,6 +30,23 @@
                 #:prefix license:)
   #:use-module (guix packages))
 
+(define-public elixir-plug-crypto
+  (package
+    (name "elixir-plug-crypto")
+    (version "2.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "plug_crypto" version))
+       (sha256
+        (base32 "0z1424zcywdg47wsbvhmdbrngbz4lzhzsbv1jza8n774zzkbqw34"))))
+    (build-system mix-build-system)
+    (synopsis "Crypto-related functionality for the web")
+    (description "This package provides @code{elixir-plug-crypto}, a library
+implementing crypto-related functionality for the web, used by Plug.")
+    (home-page "https://hexdocs.pm/plug_crypto/")
+    (license license:asl2.0)))
+
 (define-public elixir-websock
   (package
     (name "elixir-websock")
