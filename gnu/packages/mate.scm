@@ -1498,53 +1498,54 @@ can be used as backgrounds in the MATE Desktop environment.")
 (define-public engrampa
   (package
     (name "engrampa")
-    (version "1.28.1")
+    (version "1.28.2")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://mate/" (version-major+minor version) "/"
-                           "engrampa-" version ".tar.xz"))
+       (uri (string-append "mirror://mate/"
+                           (version-major+minor version)
+                           "/"
+                           "engrampa-"
+                           version
+                           ".tar.xz"))
        (sha256
-        (base32 "0siqhm6vh0lwx0qh7v4asn4m15ac9g93hm97iymfw24brydlqp4w"))))
+        (base32 "1vq9mi87c0agfwysrbki155835xgv5qm2cbzld1qigs56z17g68y"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:configure-flags (list "--disable-schemas-compile"
-                               "--disable-run-in-place"
-                               "--enable-magic"
-                               "--enable-packagekit"
-                               (string-append "--with-cajadir="
-                                              (assoc-ref %outputs "out")
-                                              "/lib/caja/extensions-2.0/"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "data/Makefile"
-               (("gtk-update-icon-cache") "true"))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list "--disable-schemas-compile" "--disable-run-in-place"
+              "--enable-magic" "--enable-packagekit"
+              (string-append "--with-cajadir="
+                             #$output "/lib/caja/extensions-2.0/"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "data/Makefile"
+                (("gtk-update-icon-cache")
+                 "true")) #t)))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("yelp-tools" ,yelp-tools)))
-    (inputs
-     (list caja
-           file
-           glib
-           gtk+
-           (librsvg-for-system)
-           json-glib
-           libcanberra
-           libx11
-           libsm
-           packagekit
-           pango))
+     (list gettext-minimal
+           gtk-doc/stable
+           intltool
+           pkg-config
+           yelp-tools))
+    (inputs (list caja
+                  file
+                  glib
+                  gtk+
+                  (librsvg-for-system)
+                  json-glib
+                  libcanberra
+                  libx11
+                  libsm
+                  packagekit
+                  pango))
     (home-page "https://mate-desktop.org/")
     (synopsis "Archive Manager for MATE")
-    (description
-     "Engrampa is the archive manager for the MATE Desktop.")
+    (description "Engrampa is the archive manager for the MATE Desktop.")
     (license license:gpl2)))
 
 (define-public pluma
