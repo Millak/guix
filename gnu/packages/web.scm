@@ -572,6 +572,7 @@ the same, being completely separated from the Internet.")
               "--with-compat"
               "--with-stream"
               "--with-stream_ssl_module"
+              "--with-stream_ssl_preread_module"
               "--with-http_stub_status_module"
               ;; Even when not cross-building, we pass the
               ;; --crossbuild option to avoid customizing for the
