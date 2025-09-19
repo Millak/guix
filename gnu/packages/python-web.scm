@@ -3453,32 +3453,27 @@ high-speed transfers via libcurl and frequently outperforms alternatives.")
 (define-public python-url-normalize
   (package
     (name "python-url-normalize")
-    (version "1.4.3")
+    (version "2.2.1")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
        (uri (git-reference
-             (url "https://github.com/niksite/url-normalize")
-             (commit version)))
+              (url "https://github.com/niksite/url-normalize")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09nac5nh94x0n4bfazjfxk96b20mfsx6r1fnvqv85gkzs0rwqkaq"))))
+        (base32 "1yhsf4sk6l6nznpnqigisbfz690a4g342dsk2n6dggh7q4l3amk4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'use-poetry-core
-            (lambda _
-              ;; Patch to use the core poetry API.
-              (substitute* "pyproject.toml"
-                (("poetry.masonry.api") "poetry.core.masonry.api")))))))
+      #:test-flags #~(list "--ignore=tests/test_cli.py")))
     (native-inputs
-     (list python-poetry-core
-           python-pytest
-           python-pytest-flakes
+     (list python-pytest
            python-pytest-cov
-           python-pytest-socket))
+           python-pytest-socket
+           python-setuptools))
+    (propagated-inputs
+     (list python-idna))
     (home-page "https://github.com/niksite/url-normalize")
     (synopsis "URL normalization for Python")
     (description
