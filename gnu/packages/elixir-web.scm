@@ -73,6 +73,28 @@
     (home-page "https://hexdocs.pm/error_message/")
     (license license:expat)))
 
+(define-public elixir-hpack
+  (package
+    (name "elixir-hpack")
+    (version "3.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "hpack" version))
+       (sha256
+        (base32 "1gh4p21mlnnbprh7fxk03i53lmbdqsgi0my3r9sv9ivl9i6nm0rq"))))
+    (build-system mix-build-system)
+    (synopsis
+     "Implementation of the
+@uref{https://http2.github.io/http2-spec/compression.html,HPack} protocol")
+    (description
+     "This package provides @code{elixir-hpack}, an implementation of the
+@uref{https://http2.github.io/http2-spec/compression.html,HPack} protocol: a
+compression format for efficiently representing HTTP header fields, to be used
+in HTTP/2.")
+    (home-page "https://hexdocs.pm/hpack/")
+    (license license:expat)))
+
 (define-public elixir-plug-crypto
   (package
     (name "elixir-plug-crypto")
