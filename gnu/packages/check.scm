@@ -2226,15 +2226,34 @@ compatibility.")))
      "This package is only for bootstrapping.  Don't use this.")
     (license (list license:bsd-3 license:asl2.0)))) ; at the user's option
 
+;; XXX: The project is not maintained since 2015, consider to remove when
+;; nothing depends on it.
 (define-public python-testscenarios
   (package
-    (inherit python-testscenarios-bootstrap)
     (name "python-testscenarios")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "testscenarios" version))
+       (sha256
+        (base32 "1dm2aydqpv76vnsk1pw7k8n42hq58cfi4n1ixy7nyzpaj1mwnmy2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "-m" "testtools.run" "testscenarios.test_suite")))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
-     (list python-pbr python-testtools))
+     (list python-pbr
+           python-testtools))
+    (home-page "https://launchpad.net/testscenarios")
+    (synopsis "Pyunit extension for dependency injection")
     (description
      "Testscenarios provides clean dependency injection for Python unittest
-style tests.")))
+style tests.")
+    (license (list license:bsd-3 license:asl2.0)))) ; at the user's option
 
 (define-public python-testresources
   (package
