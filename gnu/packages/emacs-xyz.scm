@@ -2015,7 +2015,7 @@ while the ones that are not being actively edited will be reduced to a smaller
 size.")
       (license license:expat))))
 
-(define-public emacs-zoom 
+(define-public emacs-zoom
     (package
       (name "emacs-zoom")
       (version "0.3.0")
@@ -40288,11 +40288,10 @@ service, and connect it with Emacs via inter-process communication.")
       (license license:gpl3+))))
 
 (define-public emacs-telega
-  (let ((commit "1cedc1a8c838102b342d537a742e5eab3dfad3ce")
-        (revision "0"))
+  (let ((commit "50eea5dea4fdfb9fff46d71e3c3bcc6dbf09f26a"))
     (package
       (name "emacs-telega")
-      (version (git-version "0.8.522" revision commit))
+      (version "0.8.554")
       (source
        (origin
          (method git-fetch)
@@ -40300,7 +40299,7 @@ service, and connect it with Emacs via inter-process communication.")
                (url "https://github.com/zevlg/telega.el")
                (commit commit)))
          (sha256
-          (base32 "036k7vnh6i6la1sa854f4l8phx5ymvgqrx6qqpnsssr5yd0a7drb"))
+          (base32 "1w0hpiaaj6p5nlmdi99psc0lmvmy65d27pz2vv3gafp2la4dplgx"))
          (file-name (git-file-name "emacs-telega" version))
          (patches
           (search-patches "emacs-telega-path-placeholder.patch"
