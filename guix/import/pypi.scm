@@ -601,7 +601,12 @@ VERSION."
          (sha256 (or (and=> sha256 bytevector->nix-base32-string)
                      (guix-hash-url (with-store store
                                       (download-to-store store source-url)))))
-         (source (pypi-package->upstream-source pypi-package version)))
+         (source (pypi-package->upstream-source pypi-package version))
+         (home-page (project-info-home-page info))
+         (home-page (if (and (string? home-page)
+                             (string-prefix? "http://" home-page))
+                        (string-append "https" (string-drop home-page 4))
+                        home-page)))
     (values
      `(package
         (name ,(python->package-name name))
@@ -626,7 +631,7 @@ VERSION."
                         'propagated-inputs)
         ,@(maybe-inputs (upstream-source-native-inputs source)
                         'native-inputs)
-        (home-page ,(project-info-home-page info))
+        (home-page ,home-page)
         (synopsis ,(project-info-summary info))
         (description ,(and=> (non-empty-string-or-false
                               (project-info-summary info))
