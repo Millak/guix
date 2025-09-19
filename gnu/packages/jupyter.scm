@@ -864,15 +864,17 @@ endpoints—to Jupyter web applications.")
 (define-public python-jupyterlab-widgets
   (package
     (name "python-jupyterlab-widgets")
-    (version "3.0.10")
+    ;; XXX: Newer version requires python-jupyterlab, see guix/guix#2073.
+    (version "3.0.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jupyterlab_widgets" version))
        (sha256
-        (base32
-         "1h04kln8hp56svdjjk2hbsb0z1mby71cv4gss3wy89v7jw2arwh4"))))
+        (base32 "09zfvqsw0svm6r3i2lhklnx44s7j4i60bvcvkkr9m5iwb5wwcnnx"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests in PyPI
     (native-inputs
      (list python-jupyter-packaging))
     (home-page "https://github.com/jupyter-widgets/ipywidgets")
