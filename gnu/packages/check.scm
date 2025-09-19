@@ -2260,30 +2260,6 @@ style tests.")
 use of resources by test cases.")
     (license (list license:bsd-3 license:asl2.0)))) ; at the user's option
 
-(define-public python-subunit-bootstrap
-  (package
-    (name "python-subunit-bootstrap")
-    (version "1.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "python-subunit" version))
-       (sha256
-        (base32
-         "0j0ymmnc5nfxi1qzvy59j27viqca7l7xd0y9x29g7yr0h693j804"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-extras python-testtools-bootstrap))
-    (native-inputs
-     (list python-fixtures-bootstrap python-hypothesis
-           python-testscenarios-bootstrap))
-    (home-page "https://launchpad.net/subunit")
-    (synopsis "Python implementation of the subunit protocol")
-    (description
-     "This package is here for bootstrapping purposes only.  Use the regular
-python-subunit package instead.")
-    (license (list license:bsd-3 license:asl2.0)))) ; at the user's option
-
 (define-public python-subunit
   (package
     (name "python-subunit")
