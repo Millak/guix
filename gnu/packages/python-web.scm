@@ -2195,7 +2195,9 @@ decode and default on encode.
                     (list "not test_build_graph"
                           "test_good_template"
                           "test_success_run"
-                          "test_update_docs")
+                          "test_update_docs"
+                          ;; ImportError: Missing optional dependencies sarif
+                          "test_sarif_formatter")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
@@ -2218,9 +2220,7 @@ decode and default on encode.
            python-sympy
            python-typing-extensions
            ;; [optional]
-           python-jschema-to-python
-           python-junit-xml
-           python-sarif-om))
+           python-junit-xml))
     (home-page "https://github.com/aws-cloudformation/cfn-lint")
     (synopsis "Validate CloudFormation templates")
     (description
