@@ -911,15 +911,24 @@ documentation from the OpenStack project.")
        (sha256
         (base32 "1vp85v81p2vx66j973hc7fa65shp0ilhaypyyny01jwcip94152s"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-fixtures python-subunit python-testtools))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-sub-package
+            ;; error: Multiple top-level packages discovered in a flat-layout:
+            ;; ['oslotest', 'releasenotes'].
+            (lambda _
+              (delete-file-recursively "releasenotes"))))))
     (native-inputs
-     (list python-coverage
-           python-debtcollector
+     (list python-debtcollector
            python-oslo-config
            python-stestr
-           python-setuptools
-           python-wheel))
+           python-setuptools))
+    (propagated-inputs
+     (list python-fixtures
+           python-subunit
+           python-testtools))
     (home-page "https://launchpad.net/oslo")
     (synopsis "Oslo test framework")
     (description "The Oslo Test framework provides common fixtures, support
