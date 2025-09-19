@@ -48,6 +48,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages speech)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages wm)
@@ -156,27 +157,81 @@ Advanced plugins:
 (define-public crow-translate
   (package
     (name "crow-translate")
-    (version "3.1.0")
+    (version "4.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/crow-translate/" version
-                           "/crow-translate-v" version ".tar.gz"))
+                           "/crow-translate-" version ".tar.gz"))
        (sha256
-        (base32 "18f7i5sxrvqp6h7zj77sdxyy9rlbw0rv3w7akf1j14072ala9bwc"))))
+        (base32 "0lrpxdgicbg0wj2cf0lif99pz5kiqck53qkm5385vymzn1w8wjz2"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Delete bundled breeze-icons, espeak-ng and qhotkey.
+           (for-each delete-file-recursively
+                     '("data/icons/3rdparty/breeze-icons"
+                       "src/3rdparty/espeak-ng"
+                       "src/3rdparty/qhotkey"))
+           ;; Use system libraries instead.
+           (substitute* "CMakeLists.txt"
+             ((".*icon-theme\\.qrc.*$") "")
+             (("WITH_PIPER_TTS") "WITH_BUNDLED_ESPEAK_NG")
+             (("(.*WITH_BUNDLED_ESPEAK_NG.* )ON" all start)
+              (string-append start "OFF"))
+             (("Enable Piper neural TTS provider.*\"")
+              "Build bundled espeak-ng (requires onnxruntime)\"")
+             (("Piper TTS support disabled.*\"")
+              "Piper TTS support enabled with system espeak-ng\"")
+             (("add_subdirectory.*qhotkey.*")
+              (string-append "\nfind_package(PkgConfig)\n"
+                             "pkg_check_modules(eSpeak_NG REQUIRED espeak-ng)"
+                             "\nfind_package(QHotkey REQUIRED)\n"))
+             (("QHotkey::QHotkey") "qhotkey")
+             (("( *)Qt6::TextToSpeech" all indent)
+              (string-append all "\n" indent "espeak-ng")))
+           ;; Link Qt6::Widgets.
+           (substitute* "CMakeLists.txt"
+             (("Qt6::TextToSpeech" all) (string-append all "\n    Qt6::Widgets")))
+           ;; Include QGuiApplication in main.cpp.
+           (substitute* "src/main.cpp"
+             (("#include <QtCore>" all)
+              (string-append all "\n#include <QtGui/QGuiApplication>")))))))
     (build-system qt-build-system)
-    (arguments '(#:tests? #f)) ; there are no tests.
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f ; no tests
+           #:configure-flags
+           #~(list (string-append "-DCMAKE_CXX_FLAGS=-isystem "
+                                  #$(this-package-input "qtbase")
+                                  "/include/qt6/QtWidgets"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'unbundle-singleapplication
+                 (lambda _
+                   (delete-file-recursively "src/3rdparty/singleapplication")
+                   (substitute* "CMakeLists.txt"
+                     (("add_subdirectory.*singleapplication.*$") "")
+                     (("SingleApplication::SingleApplication")
+                      (string-append #$(this-package-input
+                                        "single-application")
+                                     "/lib/libSingleApplication.a"))))))))
     (inputs
-     (list qtbase-5
-           qtx11extras
-           qtsvg-5
-           qtmultimedia-5
-           tesseract-ocr
-           kwayland-5))
+     (list breeze-icons
+           espeak-ng
+           kwayland
+           qhotkey
+           qtbase
+           qtsvg
+           qtmultimedia
+           qtscxml
+           qtspeech
+           single-application
+           tesseract-ocr))
     (native-inputs
      (list pkg-config
            extra-cmake-modules
-           qttools-5))
+           qttools))
     (home-page "https://invent.kde.org/office/crow-translate")
     (synopsis "Application for translating text")
     (description
