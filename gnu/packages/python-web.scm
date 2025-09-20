@@ -5037,20 +5037,29 @@ registering and looking up components.")
 (define-public python-zope-deferredimport
   (package
     (name "python-zope-deferredimport")
-    (version "4.3.1")
+    (version "6.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "zope.deferredimport" version))
-        (sha256
-         (base32
-          "1q89v54dwniiqypjbwywwdfjdr4kdkqlyqsgrpplgvsygdg39cjp"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-zope-proxy))
-    (native-inputs
-     (list python-zope-testrunner))
-    (home-page "https://github.com/zopefoundation/zope.deferredimport")
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/zope.deferredimport")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08j728nn1la570nny1xz1xvxcm9hf2mcc3im1bzcxxrrxh4kw3zd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
+    (propagated-inputs (list python-zope-proxy))
+    (native-inputs (list python-zope-testrunner python-setuptools))
+    (home-page "https://zopedeferredimport.readthedocs.io")
     (synopsis "Defer imports until used by code")
     (description
      "Often, especially for package modules, you want to import names for
