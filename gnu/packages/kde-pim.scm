@@ -21,6 +21,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages kde-pim)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system qt)
   #:use-module (guix gexp)
   #:use-module (guix download)
@@ -33,6 +34,7 @@
   #:use-module (gnu packages aidc)
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages cyrus-sasl)
@@ -53,6 +55,8 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages rust)
+  #:use-module (gnu packages rust-crates)
   #:use-module (gnu packages search)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages gcc)
@@ -849,92 +853,129 @@ functions for accessing calendar data using the kcalcore API.")
 (define-public kdepim-addons
   (package
     (name "kdepim-addons")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kdepim-addons-" version ".tar.xz"))
        (sha256
-        (base32 "1wm1bp41q1asd6wi5q305gjvgfjaa50l401k2nnn7gvdrz3y4fa6"))))
+        (base32 "0vnls5sgligkdl2swbcss815viw4v7xqszf6ds38j9v9wwnaxlgp"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
+           #:test-exclude
+           (string-append "("
+                          (string-join '("kdepim-addons-todoedittest"
+                                         "kdepim-addons-eventedittest"
+                                         "enterpriseheaderstyleplugintest"
+                                         "fancyheaderstyleplugintest"
+                                         "grantleeheaderstyleplugintest"
+                                         "messageviewerplugins-rendertest"
+                                         "akonadi-sqlite-rendertest-akonadi"
+                                         "akonadi-sqlite-mailsenderjobtest"
+                                         "akonadi-sqlite-gravatarupdatewidget\
+test"
+                                         "eventdatavisitortest" ;FIXME: enable
+                                         "pimeventsplugintest" ;FIXME: enable
+                                         "messageviewer-dkimauthentication\
+verifiedserverdialogtest" ;SEGFAULT
+                                         "markdowncreateimagewidgettest")
+                                       "|")
+                          ")")
+           #:imported-modules
+           `(,@%qt-build-system-modules
+             ,@%cargo-build-system-modules)
+           #:modules
+           '(((guix build cargo-build-system) #:prefix cargo:)
+             (guix build qt-build-system)
+             (guix build utils))
            #:phases
            #~(modify-phases %standard-phases
-               ;; TODO: Out of 156 tests, 10 fail and 2 get stuck.
-               ;; kdepim-addons-todoedittest and kdepim-addons-eventedittest
-               ;; get stuck. Do they require user input?
-               ;; eventdatavisitortest and pimeventsplugintest fail only in the
-               ;; check phase of guix build, but testing the same normally
-               ;; outside the guix build passes these two tests.
-               ;; messageviewer-dkimauthenticationverifiedserverdialogtest
-               ;; fails due to SEGFAULT.
+               (add-before 'configure 'change-directory-to-adblock
+                 (lambda _
+                   (chdir "plugins/webengineurlinterceptor/adblock")))
+               (add-after 'change-directory-to-adblock 'unpack-rust-crates
+                 (assoc-ref cargo:%standard-phases 'unpack-rust-crates))
+               (add-after 'unpack-rust-crates 'configure-adblock
+                 (assoc-ref cargo:%standard-phases 'configure))
+               (add-after 'configure-adblock 'check-for-pregenerated-files
+                 (assoc-ref cargo:%standard-phases
+                            'check-for-pregenerated-files))
+               (add-after 'check-for-pregenerated-files 'patch-cargo-checksums
+                 (assoc-ref cargo:%standard-phases 'patch-cargo-checksums))
+               (add-after 'patch-cargo-checksums 'build-adblock
+                 (assoc-ref cargo:%standard-phases 'build))
+               (add-after 'build-adblock 'change-directory-back-to-source
+                 (lambda _
+                   (chdir "../../..")))
                (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
+                 (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
                    (setenv "HOME" "/tmp")
                    (when tests?
-                     (invoke "dbus-launch" "ctest" "-E" "\
-(kdepim-addons-todoedittest|kdepim-addons-eventedittest\
-|enterpriseheaderstyleplugintest|fancyheaderstyleplugintest\
-|grantleeheaderstyleplugintest|messageviewerplugins-rendertest\
-|akonadi-sqlite-rendertest-akonadi|akonadi-sqlite-mailsenderjobtest\
-|akonadi-sqlite-gravatarupdatewidgettest|eventdatavisitortest\
-|pimeventsplugintest\
-|messageviewer-dkimauthenticationverifiedserverdialogtest)")))))))
+                     (invoke "dbus-launch" "ctest" "-E" test-exclude)))))))
     (native-inputs
-     (list dbus extra-cmake-modules libxml2)) ;libxml2 for xmllint
+     (list corrosion
+           dbus
+           extra-cmake-modules
+           pkg-config
+           rust
+           `(,rust "cargo")
+           libxml2)) ;libxml2 for xmllint
     (inputs
-     (list akonadi
-           akonadi-calendar
-           akonadi-contacts
-           akonadi-import-wizard
-           akonadi-mime
-           akonadi-notes
-           discount
-           grantlee
-           grantleetheme
-           kaddressbook
-           karchive
-           kcalendarcore
-           kcalendarsupport
-           kcalutils
-           kconfig
-           kcontacts
-           kdbusaddons
-           kdeclarative
-           keventviews
-           kguiaddons
-           kholidays
-           ki18n
-           kiconthemes
-           kidentitymanagement
-           kimap
-           kincidenceeditor
-           kio
-           kitemmodels
-           kitinerary
-           kldap
-           kmailcommon
-           kmailimporter
-           kmailtransport
-           kmessagelib
-           kmime
-           kparts
-           kpimcommon
-           kpimtextedit
-           kpkpass
-           ksyntaxhighlighting
-           ktextaddons
-           ktnef
-           kwallet
-           kxmlgui
-           libgravatar
-           libkdepim
-           libkleo
-           libksieve
-           prison
-           qtwebengine))
+     (cons* akonadi
+            akonadi-calendar
+            akonadi-contacts
+            akonadi-import-wizard
+            akonadi-mime
+            akonadi-notes
+            discount
+            grantlee
+            grantleetheme
+            kaddressbook
+            karchive
+            kcalendarcore
+            kcalendarsupport
+            kcalutils
+            kcmutils
+            kconfig
+            kcontacts
+            kdbusaddons
+            kdeclarative
+            keventviews
+            kguiaddons
+            kholidays
+            ki18n
+            kiconthemes
+            kidentitymanagement
+            kimap
+            kincidenceeditor
+            kio
+            kitemmodels
+            kitinerary
+            kldap
+            kmailcommon
+            kmailimporter
+            kmailtransport
+            kmessagelib
+            kmime
+            kparts
+            kpimcommon
+            kpimtextedit
+            kpkpass
+            ksyntaxhighlighting
+            ktextaddons
+            ktnef
+            kwallet
+            kxmlgui
+            libgravatar
+            libkdepim
+            libkleo
+            libksieve
+            plasma-activities
+            prison
+            qtwebengine
+            (cargo-inputs 'kdepim-addons)))
     (home-page "https://invent.kde.org/pim/kdepim-addons")
     (synopsis "Add-ons for KDE PIM applications")
     (description "This package contains add-ons for KDE PIM applications such
