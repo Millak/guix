@@ -9336,24 +9336,41 @@ framework, designed to be lean and fast, with few dependencies.")
 (define-public python-persistent
   (package
     (name "python-persistent")
-    (version "4.6.4")
+    (version "6.1.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "persistent" version))
-        (sha256
-         (base32
-          "0imm9ji03lhkpcfmhid7x5209ix8g2rlgki9ik1qxks4b8sm8gzq"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/persistent/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19qwqg49zql2c8l4vjxjb9haw0bzd6lk8p4v3hip2irch6a4578a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src"
+                          ;; XXX: Ignore doc tests.
+                          "!persistent.tests.test_docs")
+                  (format #t "test suite not run~%")))))))
     (propagated-inputs
-     (list python-cffi python-zope-interface))
+     (list python-cffi
+           python-zope-deferredimport
+           python-zope-interface
+           python-zope-testrunner))
     (native-inputs
-     (list python-manuel python-zope-testrunner))
+     (list python-manuel python-zope-testrunner python-setuptools))
     (home-page "https://github.com/zopefoundation/persistent/")
     (synopsis "Translucent persistent objects")
-    (description "This package contains a generic persistence implementation for
-Python.  It forms the core protocol for making objects interact
-\"transparently\" with a database such as the ZODB.")
+    (description
+     "This package contains a generic persistence implementation for Python.
+It forms the core protocol for making objects interact \"transparently\" with
+a database such as the ZODB.")
     (license license:zpl2.1)))
 
 (define-public python-btrees
