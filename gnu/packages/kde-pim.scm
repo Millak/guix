@@ -2478,7 +2478,7 @@ is a Sieve parser and interpreter library for KDE.")
 (define-public merkuro
   (package
     (name "merkuro")
-    (version "24.12.1")
+    (version "25.08.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
@@ -2486,7 +2486,7 @@ is a Sieve parser and interpreter library for KDE.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "18sdf4nd0dl36d3wv4hl99d1by5871wdblc9d9z72kph4jgyyacm"))))
+                "1k536qkfgr6bvxqbvc2szyych4076kxgvnbs7zy9vkpwzqdlcz42"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -2502,7 +2502,7 @@ is a Sieve parser and interpreter library for KDE.")
                   akonadi-calendar
                   akonadi-contacts
                   akonadi-mime
-                  akonadi-mime
+                  akonadi-search
                   breeze-icons
                   gpgme
                   grantleetheme
@@ -2515,6 +2515,7 @@ is a Sieve parser and interpreter library for KDE.")
                   kcrash
                   kdbusaddons
                   keventviews
+                  kholidays
                   ki18n
                   kiconthemes
                   kidentitymanagement
@@ -2539,6 +2540,8 @@ is a Sieve parser and interpreter library for KDE.")
                   mimetreeparser
                   qqc2-desktop-style
                   qtdeclarative
+                  qtlocation
+                  qtpositioning
                   qtsvg
                   qtwebengine))
     (home-page "https://apps.kde.org/kalendar/")
