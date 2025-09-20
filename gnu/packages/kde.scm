@@ -1684,51 +1684,6 @@ performance counters.  There also exist converters for profiling output of
 Python, PHP, and Perl.")
     (license license:gpl2)))
 
-(define-public libkdegames
-  (package
-    (name "libkdegames")
-    (version "25.04.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
-                           "/src/libkdegames-" version ".tar.xz"))
-       (sha256
-        (base32 "0zq481x2l6sqilw5ialacp3cksvw58syxz9dkk3yha0vfjp1p8k9"))))
-    (build-system qt-build-system)
-    (arguments (list #:qtbase qtbase))
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list karchive
-           kbookmarks
-           kcodecs
-           kcompletion
-           kconfigwidgets
-           kcrash
-           kdbusaddons
-           kdeclarative
-           kdnssd
-           kglobalaccel
-           kguiaddons
-           ki18n
-           kiconthemes
-           kitemviews
-           kjobwidgets
-           knewstuff
-           kservice
-           ktextwidgets
-           kwidgetsaddons
-           kxmlgui
-           libsndfile
-           openal
-           qtdeclarative
-           qtsvg))
-    (home-page "https://apps.kde.org/categories/games/")
-    (synopsis "Runtime library for kdegames")
-    (description "Runtime library for kdegames")
-    (license (list license:gpl2+  license:fdl1.2+))))
-
 (define-public marble-qt
   (package
     (name "marble-qt")

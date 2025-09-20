@@ -30,6 +30,7 @@
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (guix gexp)
+  #:use-module (gnu packages audio)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages games)
@@ -38,11 +39,57 @@
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages xiph))
+
+(define-public libkdegames
+  (package
+    (name "libkdegames")
+    (version "25.04.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/libkdegames-" version ".tar.xz"))
+       (sha256
+        (base32 "0zq481x2l6sqilw5ialacp3cksvw58syxz9dkk3yha0vfjp1p8k9"))))
+    (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list karchive
+           kbookmarks
+           kcodecs
+           kcompletion
+           kconfigwidgets
+           kcrash
+           kdbusaddons
+           kdeclarative
+           kdnssd
+           kglobalaccel
+           kguiaddons
+           ki18n
+           kiconthemes
+           kitemviews
+           kjobwidgets
+           knewstuff
+           kservice
+           ktextwidgets
+           kwidgetsaddons
+           kxmlgui
+           libsndfile
+           openal
+           qtdeclarative
+           qtsvg))
+    (home-page "https://apps.kde.org/categories/games/")
+    (synopsis "Runtime library for kdegames")
+    (description "Runtime library for kdegames")
+    (license (list license:gpl2+  license:fdl1.2+))))
 
 (define-public ktuberling
   (package
