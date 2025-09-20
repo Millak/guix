@@ -1085,7 +1085,8 @@ the Monero GUI client.")
          (sha256
           (base32 "0wq6q0yrw3x42d81v445xy4nh2qlrn7swsydgpv81dkay11kajrz"))))
       (build-system pyproject-build-system)
-      (native-inputs (list python-setuptools python-wheel))
+      (arguments (list #:test-backend #~'unittest))
+      (native-inputs (list python-setuptools))
       (home-page "https://github.com/fiatjaf/bech32")
       (synopsis "Reference implementation for Bech32 and Segwit addresses")
       (description "This package provides a python reference implementation for
