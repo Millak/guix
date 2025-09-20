@@ -4649,20 +4649,28 @@ servers, regular expressions, and more.")
 (define-public python-zope-i18nmessageid
   (package
     (name "python-zope-i18nmessageid")
-    (version "5.1.1")
+    (version "7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "zope.i18nmessageid" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/zope.i18nmessageid")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "14mx62khys82p2gmmf3m40x4jmvcz3rndvl6qik2n2qfp13n7ds7"))))
+        (base32 "192ixj8r9n467avbxrmhakmqiaflc1vw37k08z096ajcjgbfrm5d"))))
     (build-system pyproject-build-system)
-    (native-inputs
-     (list python-coverage python-setuptools
-           python-wheel python-zope-testrunner))
-    (propagated-inputs
-     (list python-six))
-    (home-page "https://pypi.org/project/zope.i18nmessageid/")
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
+    (native-inputs (list python-setuptools python-zope-testrunner))
+    (home-page "https://zopei18nmessageid.readthedocs.io")
     (synopsis "Message identifiers for internationalization")
     (description "Zope.i18nmessageid provides facilities for declaring
 internationalized messages within program source text.")
