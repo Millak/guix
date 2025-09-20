@@ -20592,17 +20592,19 @@ text.")
 (define-public python-moto
   (package
     (name "python-moto")
-    (version "5.0.25")
+    (version "5.1.5")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "moto" version))
               (sha256
-               (base32 "1cp61k745dxyzck543lamh8mnwwxazsgzqascg4nanpcihaqpsny"))))
+               (base32 "0kpqdn96gw9h2bq05bp943q85f4lq89c4nk1gf71w60nkbm65cs2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 10000 passed, 16 skipped, 2 xfailed, 42 warnings
       #:test-flags
       '(list "-m" "not network and not requires_docker"
+             "--numprocesses" (number->string (min 8 (parallel-job-count)))
              ;; This needs pycognito.
              "--ignore-glob=tests/test_cognitoidp/*"
              ;; This needs Internet access.
@@ -20634,7 +20636,28 @@ text.")
               " and not test_with_custom_request_header"
               " and not test_dependencies"
               " and not test_cancel_running_job"
-              " and not test_container_overrides"))
+              " and not test_container_overrides"
+
+              ;; TypeError: Got unexpected keyword argument
+              ;; 'account_id_endpoint_mode'
+              " and not test_dynamodb_with_account_id_routing"
+
+              ;; botocore.exceptions.ParamValidationError: Parameter
+              ;; validation failed
+              " and not test_create_firewall"
+              " and not test_describe_logging_configuration"
+              " and not test_update_logging_configuration"
+              " and not test_list_firewalls"
+              ;; AttributeError: 'TimestreamInfluxDB' object has no attribute
+              ;; 'list_db_clusters'
+
+              " and not test_create_db_cluster"
+              " and not test_get_db_cluster"
+              " and not test_list_db_clusters"
+
+              ;; XXX: misc
+              " and not test_list_objects_v2_checksum_algo"
+              " and not test_upload_file_with_checksum_algorithm"))
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'compatibility
@@ -20656,6 +20679,7 @@ text.")
            python-flask-cors
            python-freezegun
            python-pytest
+           python-pytest-xdist
            python-setuptools
            python-wheel))
     (inputs
@@ -20675,6 +20699,7 @@ text.")
            python-multipart
            python-openapi-spec-validator
            python-py-partiql-parser
+           python-pyparsing
            python-requests
            python-responses
            python-werkzeug
