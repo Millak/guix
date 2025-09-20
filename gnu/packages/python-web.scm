@@ -2048,9 +2048,8 @@ emit information from within their applications to the AWS X-Ray service.")
        (sha256
         (base32 "0llam7g7sv08lcfgy18iph8br8ldjmy2qbjaykc9pd3z4iisb0yd"))))
     (build-system pyproject-build-system)
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/ko-zu/psl")
     (synopsis "Public suffix list for Python")
     (description
