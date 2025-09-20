@@ -1281,25 +1281,40 @@ easier to do so.")
 (define-public kitinerary
   (package
     (name "kitinerary")
-    (version "24.12.1")
+    (version "25.08.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kitinerary-" version ".tar.xz"))
               (sha256
                (base32
-                "1fxrhhffkp5mw5i8pdaxj92ggs5zx7z8vgdarjqr1ml48sl1cv7a"))))
+                "1qq3f3yagjrk8s0h5vhkdl52w39myd80cdlcxzkhvg4x0sbd9h4j"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
-           #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key inputs tests? #:allow-other-keys)
-                            (when tests?
-                              (setenv "TZDIR"
-                                      (search-input-directory inputs "share/zoneinfo"))
-                              (invoke "dbus-launch" "ctest" "-E"
-                                      "(jsonlddocumenttest|mergeutiltest|locationutiltest|knowledgedbtest|airportdbtest|extractorscriptenginetest|pkpassextractortest|postprocessortest|calendarhandlertest|extractortest)")))))))
+           #:test-exclude
+           (string-append "("
+                          (string-join '("jsonlddocumenttest"
+                                         "mergeutiltest"
+                                         "locationutiltest"
+                                         "knowledgedbtest"
+                                         "airportdbtest"
+                                         "extractorscriptenginetest"
+                                         "pkpassextractortest"
+                                         "postprocessortest"
+                                         "calendarhandlertest"
+                                         "extractortest")
+                                       "|")
+                          ")")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key inputs tests? (test-exclude "")
+                           #:allow-other-keys)
+                   (when tests?
+                     (setenv "TZDIR"
+                             (search-input-directory inputs "share/zoneinfo"))
+                     (invoke "dbus-launch" "ctest" "-E" test-exclude)))))))
     (native-inputs (list dbus extra-cmake-modules tzdata-for-tests))
     (inputs (list kpkpass
                   kcalendarcore
