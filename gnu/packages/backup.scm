@@ -681,7 +681,7 @@ rsnapshot uses hard links to deduplicate identical files.")
            lz4
            openssl
            ;; This is the latest version of msgpack accepted by 'setup.py'.
-           python-msgpack
+           python-msgpack-for-borg
            ;; FUSE 3 isn't working well, so we stick with FUSE 2 for now:
            ;; <https://issues.guix.gnu.org/53407>
            python-llfuse
