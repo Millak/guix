@@ -4497,51 +4497,56 @@ systems can be built.")
     (version "7.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "zope.interface" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/zope.interface")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1zi84y3s90jylv8xfvdlr05f9xf7ca1p6bidngsxlk7fs6iz2jcb"))))
+        (base32 "01snm1lbqhx3ird4m76nciaqasxvf8dd6817zm35v684g5hbzd2s"))))
     (build-system pyproject-build-system)
-    (arguments '(#:tests? #f))  ; test suite can't find python-zope-testing
-    (native-inputs
-     (list python-setuptools))
-    (home-page "https://github.com/zopefoundation/zope.interface")
-    (synopsis "Python implementation of the \"design by contract\"
-methodology")
-    (description "Zope.interface provides an implementation of \"object
-interfaces\" for Python.  Interfaces are a mechanism for labeling objects as
-conforming to a given API or contract.")
+    (arguments
+     ;; XXX: test suite can't find python-zope-testing
+     (list #:tests? #f))
+    (native-inputs (list python-setuptools))
+    (home-page "https://zopeinterface.readthedocs.io")
+    (synopsis "\"Design by contract\" methodology in Python")
+    (description
+     "Zope.interface provides an implementation of \"object interfaces\" for
+Python.  Interfaces are a mechanism for labeling objects as conforming to a
+given API or contract.")
     (license license:zpl2.1)))
 
 (define-public python-zope-exceptions
   (package
     (name "python-zope-exceptions")
-    (version "4.6")
+    (version "6.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "zope.exceptions" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/zope.exceptions")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1kc3hql2i35ys5alkj9csiaz2s9bx0rff585vnrrgvavqsj297b1"))))
-    (build-system python-build-system)
+        (base32 "0fmsw2j8islaiv6zf2mxh2s43y7virqny6s8gk8v2zkcxpy95cic"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (if tests?
-                 (invoke "zope-testrunner" "--test-path=src")
-                 (format #t "test suite not run~%")))))))
-    (native-inputs
-     `(("python-zope-testrunner" ,python-zope-testrunner-bootstrap)))
-    (propagated-inputs
-     (list python-zope-interface))
-    (home-page "https://pypi.org/project/zope.exceptions/")
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
+    (native-inputs (list python-setuptools python-zope-testrunner-bootstrap))
+    (propagated-inputs (list python-zope-interface))
+    (home-page "https://github.com/zopefoundation/zope.exceptions")
     (synopsis "Zope exceptions")
-    (description "Zope.exceptions provides general-purpose exception types
-that have uses outside of the Zope framework.")
+    (description
+     "Zope.exceptions provides general-purpose exception types that have uses
+outside of the Zope framework.")
     (license license:zpl2.1)))
 
 (define (python-zope-bootstrap-package orig)
