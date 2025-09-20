@@ -4668,40 +4668,6 @@ complement or replace traditional mailing lists.  Readers may read via NNTP,
 IMAP, Atom feeds or HTML archives.")
     (license license:agpl3+)))
 
-(define-public sylpheed
-  (package
-    (name "sylpheed")
-    (version "3.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://sylpheed.sraoss.jp/sylpheed/v3.7/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0j9y5vdzch251s264diw9clrn88dn20bqqkwfmis9l7m8vmwasqd"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list bogofilter
-           compface
-           gnupg-1
-           gpgme
-           gtk+-2
-           gtkspell3
-           libnsl
-           openldap
-           openssl))
-    (home-page "https://sylpheed.sraoss.jp/en/")
-    (synopsis "Lightweight GTK+ email client")
-    (description
-     "Sylpheed is a simple, lightweight but featureful, and easy-to-use e-mail
-client.  Sylpheed provides intuitive user-interface.  Sylpheed is also
-designed for keyboard-oriented operation.")
-    (properties '((release-monitoring-url
-                   . "https://sylpheed.sraoss.jp/en/download.html")))
-    (license license:gpl2+)))
-
 (define-public python-authres
   (package
     (name "python-authres")
