@@ -387,14 +387,14 @@ wrapping notes into KMime::Message objects.")
 (define-public akonadi-search
   (package
     (name "akonadi-search")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/akonadi-search-" version ".tar.xz"))
        (sha256
-        (base32 "03kjm3s3zy2lb8qyazpsy5vys17dkbz2jj8hqj40b36w3f6fv55y"))))
+        (base32 "1fdwzfs43vqz3kmwaz45h27lap9rsfpl4w7qmq5211qbw2wxdxf7"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules
@@ -421,21 +421,22 @@ wrapping notes into KMime::Message objects.")
     (arguments
      (list
       #:qtbase qtbase
+      ;; FIXME: This test fails because it fails to establish a socket
+      ;; connection, seemingly due to failure during DBus communication.  See
+      ;; also 'korganizer'.
+      #:test-exclude "akonadi-sqlite-collectionindexingjobtest"
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-failing-test
             (lambda _
-              ;; FIXME: This test fails because it fails to establish
-              ;; a socket connection, seemingly due to failure during
-              ;; DBus communication.  See also 'korganizer'.
+
               (substitute* "agent/autotests/CMakeLists.txt"
                 ((".*schedulertest\\.cpp.*")
                  ""))))
           (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
               (when tests?
-                (invoke "dbus-launch" "ctest" "-E"
-                        "akonadi-sqlite-collectionindexingjobtest")))))))
+                (invoke "dbus-launch" "ctest" "-E" test-exclude)))))))
     (home-page "https://api.kde.org/kdepim/akonadi/html/index.html")
     (synopsis "Akonadi search library")
     (description "This package provides a library used to search in the
