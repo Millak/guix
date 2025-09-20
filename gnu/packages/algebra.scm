@@ -1268,24 +1268,26 @@ features, and more.")
 (define-public eigen-for-onnxruntime
   (let ((commit "1d8b82b0740839c0de7f1242a3585e3390ff5f33")
         (revision "0"))
-    (package/inherit eigen
-      (name "eigen")
-      (version (git-version "3.4.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://gitlab.com/libeigen/eigen")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0pxh81jjnz97ndwaanla6zch1128bfdrf2kgqxgxyjvqbdg1vqwi"))))
-      ;; XXX: Some tests fail, but onnxruntime will move on to the next
-      ;; release soon enough.
-      (arguments
-       (substitute-keyword-arguments (package-arguments eigen)
-         ((#:tests? tests? #t)
-          #f))))))
+    (hidden-package
+      (package
+        (inherit eigen)
+        (name "eigen-for-onnxruntime")
+        (version (git-version "3.4.0" revision commit))
+        (source
+         (origin
+           (method git-fetch)
+           (uri (git-reference
+                  (url "https://gitlab.com/libeigen/eigen")
+                  (commit commit)))
+           (file-name (git-file-name name version))
+           (sha256
+            (base32 "0pxh81jjnz97ndwaanla6zch1128bfdrf2kgqxgxyjvqbdg1vqwi"))))
+        ;; XXX: Some tests fail, but onnxruntime will move on to the next
+        ;; release soon enough.
+        (arguments
+         (substitute-keyword-arguments (package-arguments eigen)
+           ((#:tests? tests? #t)
+            #f)))))))
 
 ;; XXX: python-ml-dtypes uses this commit specifically since at least version
 ;; 0.2.0.  It's not compiling with another eigen, so build this one for now.
