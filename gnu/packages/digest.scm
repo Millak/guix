@@ -106,20 +106,24 @@ platforms (both big and little endian).")
 (define-public python-xxhash
   (package
     (name "python-xxhash")
-    (version "3.1.0")
+    (version "3.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "xxhash" version))
        (sha256
-        (base32
-         "1hdxcscry59gh0znlm71ya23mm9rfmvz8lvvlplzxzf63pib28dc"))))
+        (base32 "0pxlc37x0rrw3vl8yhf638wqcpfg9jfsh8ifvkwcpjaiz7fwmwl4"))))
     (build-system pyproject-build-system)
-    ;; Needed to embed the correct version string
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
-     (list python-setuptools-scm
-           python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (home-page "https://github.com/ifduyue/python-xxhash")
     (synopsis "Python binding for xxHash")
     (description "This package provides Python bindings for the xxHash hash
