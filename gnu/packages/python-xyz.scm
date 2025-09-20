@@ -8375,39 +8375,39 @@ logging and tracing of the execution.")
 (define-public python-daemon
   (package
     (name "python-daemon")
-    (version "3.0.1")
+    (version "3.1.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python-daemon" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://pagure.io/python-daemon")
+              (commit (string-append "release/" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1rfsnij687hk97ppzs2q6mwmxgr632nh672ajd0gzsppf8ilamvc"))))
-    (build-system python-build-system)
+        (base32 "0rfchh68pxg68s02idc0qcm2s9yn587hv0b83r4isy5ccb3g60y4"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'adjust-tests
-           (lambda _
-             ;; FIXME: Determine why test fails
-             (substitute* "test/test_daemon.py"
-               (("test_detaches_process_context")
-                "skip_test_detaches_process_context"))
-             (substitute* "test/scaffold.py"
-               (("test_exception_instance")
-                "skip_test_exception_instance")
-               (("test_exception_types")
-                "skip_test_exception_types")))))))
-    (propagated-inputs
-     (list python-lockfile python-packaging python-setuptools))
-    (native-inputs
-     (list python-docutils
-           python-testscenarios
-           python-testtools))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'discard-dynamic-metadata
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("^dynamic = " all)
+                 (format #f "version = ~s~%~a" #$version all))
+                (("\"(description|readme|version|maintainers)\",")
+                 ""))
+              (for-each delete-file
+                        '("setup.py"
+                          "test/test_util_metadata.py"
+                          "test/test_setup.py")))))))
+    (propagated-inputs (list python-lockfile))
+    (native-inputs (list python-testscenarios python-setuptools))
     (home-page "https://pagure.io/python-daemon/")
     (synopsis "Python library for making a Unix daemon process")
-    (description "Python-daemon is a library that assists a Python program to
-turn itself into a well-behaved Unix daemon process, as specified in PEP 3143.
+    (description
+     "Python-daemon is a library that assists a Python program to turn itself
+into a well-behaved Unix daemon process, as specified in PEP 3143.
 
 This library provides a @code{DaemonContext} class that manages the following
 important tasks for becoming a daemon process:
