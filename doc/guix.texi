@@ -43618,8 +43618,8 @@ Service type for binding a directory in multiple places on the file
 system.
 
 The access rights are either the same in source and destination
-(@code{'bind}), or writes are translated back to the sources as if made
-by the destination's owner (@code{'translate}), or kept in an overlay
+(@code{'bind}), or writes are translated back to the source as if made
+by the source's owner (@code{'translate}), or kept in an overlay
 directory near the destination (@code{'overlay}).  The service's value
 must be a @code{vfs-mapping-configuration} object.
 @end defvar
