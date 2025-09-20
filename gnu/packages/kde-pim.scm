@@ -1297,14 +1297,14 @@ model and itinerary extraction code.")
 (define-public kldap
   (package
     (name "kldap")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kldap-" version ".tar.xz"))
        (sha256
-        (base32 "13yvxiff898r6lx2fv8722w5xm51lapwaqjk5max1znabhmnahvy"))))
+        (base32 "0fbhryrx1c8xa3x0502p7ip0zgg2i5dvw7nqw2fjlyn2qks7qf81"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
