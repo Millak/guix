@@ -36,7 +36,7 @@
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2024, 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2025 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
 ;;;
@@ -2341,7 +2341,8 @@ information.")
                (base32
                 "0746lwxgybc5ss3hzdd0crjjghk0ck0x9jbmz73iig405arp42xj"))
               (patches
-               (search-patches "gtk-doc-respect-xml-catalog.patch"))))
+               (search-patches "gtk-doc-respect-xml-catalog.patch"
+                               "gtk-doc-mkhtml-test-fix.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
