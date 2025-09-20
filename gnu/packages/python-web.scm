@@ -4573,18 +4573,29 @@ outside of the Zope framework.")
 (define-public python-zope-testing
   (package
     (name "python-zope-testing")
-    (version "5.1")
+    (version "6.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "zope_testing" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/zope.testing")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0iyc3ahiyibqqzk8s4i07c7all9ng89dp6hs95p7jf1xxjmfndbi"))))
+        (base32 "0zqipsgv7qj7f8hrd3x6xpqwszdiac8vpjdm8ak5kljl5napw7d7"))))
     (build-system pyproject-build-system)
-    (arguments (list #:test-backend #~'custom
-                     #:test-flags #~(list "src/zope/testing/tests.py")))
-    (native-inputs
-     (list python-setuptools))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
+    (native-inputs (list python-setuptools
+                         python-zope-interface
+                         python-zope-testrunner-bootstrap))
     (home-page "https://zopetesting.readthedocs.io/")
     (synopsis "Zope testing helpers")
     (description
