@@ -2002,7 +2002,9 @@ bindings for Python, Java, OCaml and more.")
                              python-croniter
                              python-docutils
                              python-flask
-                             python-marshmallow
+                             ;; v4 is supported in upcomming release, see
+                             ;; <https://git.platypush.tech/platypush/platypush/issues/445>.
+                             python-marshmallow-3
                              python-pillow
                              python-pygments
                              python-pyotp
