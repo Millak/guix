@@ -4990,40 +4990,45 @@ security policies on Python objects.")
 (define-public python-zope-component
   (package
     (name "python-zope-component")
-    (version "4.6.2")
+    (version "7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "zope.component" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/zope.component")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "14iwp95hh6q5dj4k9h1iw75cbp89bs27nany4dinyglb44c8jqli"))))
-    (build-system python-build-system)
+        (base32 "1jygzhcg9rppsrd8cwvm0944naq1ldjf0vcpgsz0glwcdnr7cyfw"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (if tests?
-                 (invoke "python" "setup.py" "test")
-                 (format #t "test suite not run~%")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
     (native-inputs
-     `(("python-persistent" ,python-persistent)
-       ("python-zope-configuration" ,python-zope-configuration-bootstrap)
-       ("python-zope-i18nmessageid" ,python-zope-i18nmessageid)
-       ("python-zope-location" ,python-zope-location-bootstrap)
-       ("python-zope-proxy" ,python-zope-proxy-bootstrap)
-       ("python-zope-security" ,python-zope-security-bootstrap)
-       ("python-zope-testing" ,python-zope-testing)
-       ("python-zope-testrunner" ,python-zope-testrunner)))
+     (list python-persistent
+           python-zope-configuration-bootstrap
+           python-zope-i18nmessageid
+           python-zope-location-bootstrap
+           python-zope-proxy-bootstrap
+           python-zope-security-bootstrap
+           python-zope-testing
+           python-zope-testrunner
+           python-setuptools))
     (propagated-inputs
      (list python-zope-deferredimport python-zope-deprecation
            python-zope-event python-zope-hookable python-zope-interface))
-    (home-page "https://github.com/zopefoundation/zope.component")
+    (home-page "https://zopecomponent.readthedocs.io")
     (synopsis "Zope Component Architecture")
-    (description "Zope.component represents the core of the Zope Component
-Architecture.  Together with the zope.interface package, it provides
-facilities for defining, registering and looking up components.")
+    (description
+     "Zope.component represents the core of the Zope Component Architecture.
+Together with the zope.interface package, it provides facilities for defining,
+registering and looking up components.")
     (license license:zpl2.1)))
 
 (define-public python-zope-component-bootstrap
