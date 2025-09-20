@@ -11137,16 +11137,19 @@ humans, and implementation simplicity.")
     (version "0.0.15")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "merge3" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/breezy-team/merge3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1brb97v24i5ym3cfxsv416a0m1n78s1aqllmwg4xymjdv09w5snk"))))
+        (base32 "0p52fdzra86d03p5gwz7wmb2pgzkv0frgdhhg9wfld8qr0611wp4"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/breezy-team/merge3")
     (synopsis "Python implementation of 3-way merge")
-    (description
-     "This Python library implements 3-way merge for text.")
+    (description "This Python library implements 3-way merge for text.")
     (license license:gpl2+)))
 
 (define-public python-wmctrl
