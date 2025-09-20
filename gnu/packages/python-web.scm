@@ -4823,26 +4823,40 @@ Markup Language.")
 (define-public python-zope-proxy
   (package
     (name "python-zope-proxy")
-    (version "4.3.5")
+    (version "7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "zope.proxy" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/zope.proxy")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "14h7nyfbl5vpfk0rbviy4ygdfx0yx5kncvg6jpbdb0dhwna0ssm6"))))
-    (build-system python-build-system)
+        (base32 "00r9f4n0cl3fyc5gyf5l43zh95cmzx1gz6wr04k17d7wm2gmivyn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
     (native-inputs
-     (list python-zope-security-bootstrap python-zope-testrunner))
-    (propagated-inputs
-     (list python-zope-interface))
-    (home-page "https://pypi.org/project/zope.proxy/")
+     (list python-zope-location-bootstrap
+           python-zope-security-bootstrap
+           python-zope-testrunner
+           python-setuptools))
+    (propagated-inputs (list python-zope-interface))
+    (home-page "https://zopeproxy.readthedocs.io")
     (synopsis "Generic, transparent proxies")
-    (description "Zope.proxy provides generic, transparent proxies for Python.
-Proxies are special objects which serve as mostly-transparent wrappers around
-another object, intervening in the apparent behavior of the wrapped object
-only when necessary to apply the policy (e.g., access checking, location
-brokering, etc.) for which the proxy is responsible.")
+    (description
+     "Zope.proxy provides generic, transparent proxies for Python. Proxies are
+special objects which serve as mostly-transparent wrappers around another
+object, intervening in the apparent behavior of the wrapped object only when
+necessary to apply the policy (e.g., access checking, location brokering,
+etc.) for which the proxy is responsible.")
     (license license:zpl2.1)))
 
 (define-public python-zope-proxy-bootstrap
