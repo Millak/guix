@@ -2347,14 +2347,14 @@ various Google services.")
 (define-public libkleo
   (package
     (name "libkleo")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkleo-" version ".tar.xz"))
        (sha256
-        (base32 "1jajjq0gnymkfhviixjiz3x3b97pcdrgcs63x92sj1qncvs51yjp"))))
+        (base32 "1bwbgncmkgnrxbr9xclfnk8y5i9dqq7k1hja27398hlscppjp6ka"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools qttools))
@@ -2378,14 +2378,21 @@ various Google services.")
     (arguments
      (list
       #:qtbase qtbase
+      #:test-exclude
+      (string-append "("
+                     (string-join '("expirycheckertest"
+                                    "keyresolvercoretest"
+                                    "newkeyapprovaldialogtest"
+                                    "keyparameterstest"
+                                    "keycachetest")
+                                  "|")
+                          ")")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
               (when tests? ;; FIXME: These tests fail.
-                (invoke "ctest" "-E"
-                        "(expirycheckertest|keyresolvercoretest|\
-newkeyapprovaldialogtest|keyparameterstest|keycachetest)")))))))
+                (invoke "ctest" "-E" test-exclude)))))))
     (home-page "https://invent.kde.org/pim/libkleo")
     (synopsis "KDE PIM cryptographic library")
     (description "@code{libkleo} is a library for Kleopatra and other parts of
