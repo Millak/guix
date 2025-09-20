@@ -27388,6 +27388,26 @@ input.")
 to and from native Python datatypes.")
     (license license:expat)))
 
+(define-public python-marshmallow-3
+  (package
+    (inherit python-marshmallow)
+    (version "3.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "marshmallow" version))
+       (sha256
+        (base32 "0gl2qmq5sqf1b3f84zd7yzkznaknr6j5lnbxcfw0n8ja20lzawj9"))))
+    (arguments '())
+    (native-inputs
+     (list python-pytest
+           python-pytz
+           python-simplejson
+           python-flit-core))
+    (propagated-inputs
+     (list python-packaging))))
+
+
 ;; XXX: Deprecated upstream: This repository has been archived by the owner on
 ;; Jun 6, 2024. It is now read-only.
 ;; Consider to remove when nothing is depend on it.
