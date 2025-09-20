@@ -32,6 +32,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix import utils)
+  #:autoload   (git structs) (git-error-message)
   #:use-module (guix base32)
   #:use-module ((guix build download) #:prefix build:)
   #:use-module ((gcrypt hash) #:hide (sha256))
@@ -40,6 +41,7 @@
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix deprecation)
+  #:use-module (guix diagnostics)
   #:use-module (guix discovery)
   #:use-module (guix build-system)
   #:use-module (guix git)
@@ -75,6 +77,7 @@
             download-git-repository
             git-origin
             git->origin
+            default-git-error
 
             package-names->package-inputs
             maybe-inputs
@@ -221,6 +224,18 @@ be a procedure with a 'body property, used to generate the origin sexp."
                 (download-git-repository url ref)
                 (values #f #f #f))))
     (values (git-origin url (peek-body proc) hash) directory)))
+
+(define (default-git-error home-page)
+  "Return a procedure to be passed to a `git-error' `catch' for HOME-PAGE."
+  (match-lambda*
+    (('git-error error)
+     (warning location
+              (G_ "failed to download Git repository ~a: ~a~%")
+              home-page
+              (git-error-message error))
+     #f)
+    (_
+     #f)))
 
 (define %spdx-license-identifiers
   ;; https://spdx.org/licenses/
