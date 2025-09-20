@@ -1945,14 +1945,14 @@ Features:
 (define-public kontactinterface
   (package
     (name "kontactinterface")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kontactinterface-" version ".tar.xz"))
        (sha256
-        (base32 "0n4dxnavd0rsa6qa9929sd7bjk9x58r11w5i1i6hsmg2f5zwf7wv"))))
+        (base32 "02afpyw640bvragj7gd97741x7n0hvph2b1wcha1pkqx15skii6x"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
