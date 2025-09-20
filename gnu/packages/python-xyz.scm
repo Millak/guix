@@ -1177,6 +1177,42 @@ of Ordered Set.")
 your terminal.")
     (license license:expat)))
 
+(define-public python-pbs-installer
+  (package
+    (name "python-pbs-installer")
+    (version "2025.09.18")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/frostming/pbs-installer")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f5gpr4xp71d46vk2ggbb31bhagj4drf1ijl1lg1jd1apimr0jkf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests provided
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "PDM_BUILD_SCM_VERSION" #$version))))))
+    (native-inputs
+     (list python-pdm-backend
+           python-pytest))
+    (propagated-inputs
+     (list python-httpx
+           python-zstandard))
+    (home-page "https://github.com/frostming/pbs-installer")
+    (synopsis "Installer for Python Build Standalone")
+    (description
+     "This package implements an installer for
+@url{https://github.com/astral-sh/python-build-standalone, Python Build
+Standalone}.")
+    (license license:expat)))
+
 (define-public python-puccinialin
   (package
     (name "python-puccinialin")
