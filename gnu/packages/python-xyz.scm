@@ -5131,13 +5131,18 @@ version identifier.")
     (version "1.41")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "serpent" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/irmen/Serpent")
+             (commit (string-append "serpent-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "15bhxpihxvbphsvp4wyh2kwfz7xasmki9zwcsj3l6r66wdgh61q4"))))
+        (base32 "081bm13pdxp3rxis24j2mjka06fzi4kap51wmnf21q69fsikbza8"))))
     (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest
+                     #:test-flags #~(list "discover" "-s" "tests")))
     (native-inputs
-     (list python-attrs python-pytz python-setuptools python-wheel))
+     (list python-attrs python-pytz python-setuptools))
     (home-page "https://github.com/irmen/Serpent")
     (synopsis "Serializer for literal Python expressions")
     (description
