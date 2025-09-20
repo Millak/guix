@@ -560,6 +560,26 @@ depend: $(STDLIB_MLIS) $(STDLIB_DEPS)"))
       (substitute-keyword-arguments (package-arguments ocaml-4.09)
         ((#:phases phases)
          `(modify-phases ,phases
+            (add-after 'unpack 'patch-cflags
+              (lambda _
+                (substitute*
+                    "configure"
+                  ;; Disable error for redefined macro `sigsetjmp`
+                  (("-Wall -Werror") "-Wall")
+                  ;; Disable strict checks in GCC 14
+                  (("\"-O2 -fno-strict-aliasing -fwrapv\"")
+                   (string-append "\"-O2 -fno-strict-aliasing -fwrapv "
+                                  "-Wno-incompatible-pointer-types "
+                                  "-Wno-implicit-function-declaration\"")))
+                ;; The GCC 14 flags above apply to the source build
+                ;; itself but not when calling config helper scripts, so
+                ;; update these too.
+                (substitute*
+                    '("config/auto-aux/hasgot"
+                      "config/auto-aux/hasgot2")
+                  (("[$]cflags")
+                   (string-append "$cflags -Wno-incompatible-pointer-types "
+                                  "-Wno-implicit-function-declaration")))))
             (add-before 'configure 'copy-bootstrap
               (lambda* (#:key inputs #:allow-other-keys)
                 (let ((ocaml (assoc-ref inputs "ocaml")))
