@@ -9376,19 +9376,29 @@ a database such as the ZODB.")
 (define-public python-btrees
   (package
     (name "python-btrees")
-    (version "4.7.2")
+    (version "6.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "BTrees" version))
-        (sha256
-         (base32
-          "0iiq0g9k1g6qgqq84q9h6639vlvzznk1rgdm0rfcnnqkbkmsbr3w"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-persistent python-zope-interface))
-    (native-inputs
-     (list python-persistent python-transaction python-zope-testrunner))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/BTrees")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vcibmd725ddgsl5yzmi8d403day3796h82xlq84w91xbdrbd5d5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
+    (propagated-inputs (list python-persistent python-zope-interface))
+    (native-inputs (list python-persistent python-transaction
+                         python-zope-testrunner python-setuptools))
     (home-page "https://github.com/zopefoundation/BTrees")
     (synopsis "Scalable persistent object containers")
     (description
