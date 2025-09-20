@@ -4469,17 +4469,20 @@ support for the @code{noload} operations used by @code{zodb}.")
     (version "6.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "zope_event" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/zope.event")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "14nzj3wd203z68glpskmvinxxhfq6chjf70li5x8npvwzaacifhf"))))
+        (base32 "0la3q47c59aq50s036q468bhnmzgs71f1cygv89w6qkk1hkn35ym"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags #~(list "src/zope/event/tests.py")))
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (home-page "https://pypi.org/project/zope.event/")
+     (list
+      #:test-flags
+      #~(list "src/zope/event/tests.py")))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://zopeevent.readthedocs.io/en/latest/")
     (synopsis "Event publishing system for Python")
     (description
      "Zope.event provides an event publishing API, intended for use by
