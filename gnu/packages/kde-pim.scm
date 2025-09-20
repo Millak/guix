@@ -1976,14 +1976,14 @@ application \"Parts\" to be embedded as a Kontact component (or plugin).")
 (define-public korganizer
   (package
     (name "korganizer")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/korganizer-" version ".tar.xz"))
        (sha256
-        (base32 "092ad5qw6jsvn7rf5gmkwcq5khlxr04lizdcflw70lnb7j4y7zpk"))))
+        (base32 "15wmsshadlfx6wq7g5k0k34n3ljz0pgk8vyb4w8qikyznk8hismp"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules dbus qttools kdoctools tzdata-for-tests))
@@ -2037,15 +2037,16 @@ application \"Parts\" to be embedded as a Kontact component (or plugin).")
            phonon))
     (arguments
      (list #:qtbase qtbase
+           #:test-exclude "akonadi-sqlite-koeventpopupmenutest"
            #:phases
            #~(modify-phases %standard-phases
                (replace 'check
-                 (lambda* (#:key inputs tests? #:allow-other-keys)
+                 (lambda* (#:key inputs tests? (test-exclude "")
+                           #:allow-other-keys)
                    (when tests?
                      (setenv "TZDIR" (search-input-directory
                                       inputs "share/zoneinfo"))
-                     (invoke "dbus-launch" "ctest"
-                             "-E" "akonadi-sqlite-koeventpopupmenutest")))))))
+                     (invoke "dbus-launch" "ctest" "-E" test-exclude)))))))
     (home-page "https://apps.kde.org/korganizer/")
     (synopsis "Organizational assistant, providing calendars and other similar
 functionality")
