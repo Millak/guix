@@ -4606,41 +4606,44 @@ servers, regular expressions, and more.")
 (define-public python-zope-testrunner
   (package
     (name "python-zope-testrunner")
-    (version "5.2")
+    (version "7.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "zope.testrunner" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/zope.testrunner")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0jyyf1dcz156q95x2y7yw2v420q2xn3cff0c5aci7hmdmcbn0gc7"))))
-    (build-system python-build-system)
+        (base32 "0gd5rnzw6vzbx766jxqr4zc6qx7gk75r2c0nqqvhkb12hzk5ca2g"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f                    ;FIXME: Tests can't find zope.interface.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-problematic-test
-           (lambda _
-             ;; This test contains invalid syntax, which breaks bytecode
-             ;; compilation.  For simplicity just remove it.
-             (delete-file
-              "src/zope/testrunner/tests/testrunner-ex/sample2/badsyntax.py"))))))
-    (native-inputs
-     (list python-zope-testing))
-    (propagated-inputs
-     (list python-six python-zope-exceptions python-zope-interface))
-    (home-page "https://pypi.org/project/zope.testrunner/")
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-problematic-test
+            (lambda _
+              ;; This test contains invalid syntax, which breaks bytecode
+              ;; compilation.  For simplicity just remove it.
+              (delete-file
+               "src/zope/testrunner/tests/testrunner-ex/sample2/badsyntax.py")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
+    (native-inputs (list python-setuptools python-zope-testing))
+    (propagated-inputs (list python-zope-exceptions python-zope-interface))
+    (home-page "https://zopetestrunner.readthedocs.io")
     (synopsis "Zope testrunner script")
-    (description "Zope.testrunner provides a script for running Python
-tests.")
+    (description "This package provides a script for running Python tests.")
     (license license:zpl2.1)))
 
 (define-public python-zope-testrunner-bootstrap
   (package
     (inherit (python-zope-bootstrap-package python-zope-testrunner))
     (propagated-inputs
-     `(("python-six" ,python-six)
-       ("python-zope-exceptions" ,python-zope-exceptions-bootstrap)))
+     (list python-six python-zope-exceptions-bootstrap))
     (properties `((hidden? . #t)))))
 
 (define-public python-zope-i18nmessageid
