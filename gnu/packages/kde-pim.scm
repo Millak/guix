@@ -509,14 +509,14 @@ PIM data into Akonadi for use in KDE PIM applications.")
 (define-public itinerary
   (package
     (name "itinerary")
-    (version "24.12.1")
+    (version "25.08.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0d2nckmi4j36k9nhp62zdjyb2fckzq3205fy221nxn8cnpi121ni"))))
+                "0lrqwx1b0dc72wpjpr475h3dxns24a05r3vn7wjn237ax4cx159v"))))
     (build-system qt-build-system)
 
     (arguments
