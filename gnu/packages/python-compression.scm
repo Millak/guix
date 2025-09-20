@@ -118,17 +118,16 @@ This Python package wraps the Blosc library.")
        (uri (pypi-uri "blosc2" version))
        (sha256
         (base32 "1s4gpdf1hfbw5w3hpx0g8bfwjrws1b8wgmh7snafh5ivai0lvnrl"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'build
-                          (lambda* (#:key inputs #:allow-other-keys)
-                            (invoke "python" "setup.py" "build"
-                                    "-DUSE_SYSTEM_BLOSC2=ON")))
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "python" "-m" "pytest" "-vv")))))))
+     (list
+      #:test-flags
+      #~(list "--pyargs" "blosc2")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'configure
+            (lambda _
+              (setenv "USE_SYSTEM_BLOSC2" "ON"))))))
     (inputs (list c-blosc2))
     (propagated-inputs
      (list python-msgpack
@@ -141,7 +140,8 @@ This Python package wraps the Blosc library.")
            pkg-config
            python-cython-3
            python-pytest
-           python-scikit-build))
+           python-scikit-build
+           python-setuptools))
     (home-page "https://github.com/blosc/python-blosc2")
     (synopsis "Python wrapper for the Blosc2 data compressor library")
     (description
