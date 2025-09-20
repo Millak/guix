@@ -1350,6 +1350,7 @@ that is 20-25x faster than @code{numpy.histogram2d}.")
        (sha256
         (base32 "19labbgnq85p4r4jbli2p045lgh57larhi2g2anagfxnlzpqdf5a"))))
     (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
     (propagated-inputs (list python-numpy))
     (native-inputs (list python-scipy python-setuptools python-wheel))
     (home-page "https://danifold.net/fastcluster.html")
