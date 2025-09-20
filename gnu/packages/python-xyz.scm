@@ -31326,7 +31326,7 @@ library in Python.")
     (version "0.38.1")
     (source
      (origin
-       (method git-fetch)               ; no tests in PyPI release
+       (method git-fetch)
        (uri (git-reference
              (url "https://github.com/jstasiak/python-zeroconf")
              (commit version)))
@@ -31337,14 +31337,20 @@ library in Python.")
     (arguments
      (list
       #:test-flags
-      #~(list "-k" (string-append
-                    ;; Networking isn't available for these tests.
-                    "not test_integration_with_listener_ipv6"
-                    " and not test_launch_and_close_v4_v6"
-                    " and not test_launch_and_close_context_manager"
-                    " and not test_launch_and_close"
-                    " and not test_close_multiple_times"))))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+      #~(list
+         "-k" (string-append
+               ;; XXX: Despite asyncio, this test fails.
+               "not test_run_coro_with_timeout and not "
+               ;; XXX: Networking isn't available.
+               (string-join
+                (list "test_integration_with_listener_ipv6"
+                      "test_launch_and_close_v4_v6"
+                      "test_launch_and_close_context_manager"
+                      "test_launch_and_close"
+                      "test_close_multiple_times")
+                " and not ")))))
+    (native-inputs
+     (list python-pytest python-pytest-asyncio python-setuptools))
     (propagated-inputs
      (list python-ifaddr))
     (home-page "https://github.com/jstasiak/python-zeroconf")
