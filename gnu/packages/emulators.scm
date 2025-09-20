@@ -1088,67 +1088,74 @@ The following systems are supported:
     (license (list license:gpl2+ license:bsd-3))))
 
 (define-public mgba
-  (package
-    (name "mgba")
-    (version "0.10.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/mgba-emu/mgba")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1scyvcp8l5z1sy1hcr0wgdf8zrirg07fzqjdmhkjnyhxmb9sibb5"))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
-       (snippet
-        #~(begin
-            (define (delete-all-but directory . preserve)
-              (with-directory-excursion directory
-                (let* ((pred (negate (cut member <> (cons* "." ".." preserve))))
-                       (items (scandir "." pred)))
-                  (for-each (cut delete-file-recursively <>) items))))
+  ;; Use the latest commit, as the last release does not support Qt 6 yet.
+  (let ((commit "c6aa8f5523b21fd84336c9855b7f4df54a606a32")
+        (revision "0"))
+    (package
+      (name "mgba")
+      (version (git-version "0.10.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/mgba-emu/mgba")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0dfsz4dsh49dc9xx9rjhfzfkg4h91i2ksgp2inlr9yhgldw9q8h3"))
+         (modules '((guix build utils)
+                    (ice-9 ftw)
+                    (srfi srfi-26)))
+         (snippet
+          #~(begin
+              (define (delete-all-but directory . preserve)
+                (with-directory-excursion directory
+                  (let* ((pred (negate (cut member <> (cons* "." ".." preserve))))
+                         (items (scandir "." pred)))
+                    (for-each (cut delete-file-recursively <>) items))))
 
-            (delete-all-but "src/third-party"
-                            "blip_buf"
-                            "inih")))))
-    (build-system qt-build-system)
-    (arguments
-     (list
-      #:qtbase qtbase
-      #:configure-flags
-      #~(list "-DBUILD_SUITE=ON"
-              "-DUSE_DISCORD_RPC=OFF"   ;avoid bundled copy
-              "-DUSE_LIBZIP=OFF"        ;use "zlib" instead
-              "-DUSE_LZMA=OFF")))       ;do not use bundled LZMA
-    (native-inputs (list cmocka pkg-config qttools))
-    (inputs
-     (list ffmpeg
-           libedit
-           elfutils
-           libepoxy
-           libpng
-           mesa
-           minizip
-           ncurses
-           qtbase
-           qtmultimedia
-           sdl2
-           sqlite
-           zlib))
-    (home-page "https://mgba.io")
-    (synopsis "Game Boy Advance emulator")
-    (description
-     "mGBA is an emulator for running Game Boy Advance games.  It aims to be
-faster and more accurate than many existing Game Boy Advance emulators, as
-well as adding features that other emulators lack.  It also supports Game Boy
-and Game Boy Color games")
-    (license (list license:mpl2.0       ;mgba itself
-                   license:lgpl2.1+     ;blip_buf bundled library
-                   license:bsd-3))))    ;inih bundled library
+              (delete-all-but "src/third-party"
+                              "blip_buf"
+                              "inih")))))
+      (build-system qt-build-system)
+      (arguments
+       (list
+        #:qtbase qtbase
+        #:configure-flags
+        #~(list "-DBUILD_SUITE=ON"
+                "-DUSE_DISCORD_RPC=OFF" ;avoid bundled copy
+                "-DUSE_LIBZIP=OFF"      ;use "zlib" instead
+                "-DUSE_LZMA=OFF")       ;do not use bundled LZMA
+        ;; The platform-qt-autoscript and platform-qt-library tests fails due
+        ;; to 'LibraryModelTest::testList' not returning the expected value
+        ;; (see: <https://github.com/mgba-emu/mgba/issues/3593>).
+        #:test-exclude "(platform-qt-autoscript|platform-qt-library)"))
+      (native-inputs (list cmocka pkg-config qttools))
+      (inputs
+       (list ffmpeg
+             libedit
+             elfutils
+             libepoxy
+             libpng
+             mesa
+             minizip
+             ncurses
+             qtbase
+             qtmultimedia
+             sdl2
+             sqlite
+             zlib))
+      (home-page "https://mgba.io")
+      (synopsis "Game Boy Advance emulator")
+      (description
+       "mGBA is an emulator for running Game Boy Advance games.  It aims to be
+        faster and more accurate than many existing Game Boy Advance emulators, as
+        well as adding features that other emulators lack.  It also supports Game Boy
+        and Game Boy Color games")
+      (license (list license:mpl2.0     ;mgba itself
+                     license:lgpl2.1+   ;blip_buf bundled library
+                     license:bsd-3)))))    ;inih bundled library
 
 (define-public mgba-for-dolphin
   ;; The commit should match that of the mgba git submodule in dolphin (see:
