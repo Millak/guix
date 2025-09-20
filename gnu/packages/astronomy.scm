@@ -4035,10 +4035,23 @@ older EsoReflex environment.")
        (sha256
         (base32 "0rb0vc3kgmw5rzhfhxffg94bcwasm46sf814hv7l13ry8m7xckrw"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--deselect=ephem/tests/test_jpl.py::JPLTest::runTest")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: See https://codeberg.org/guix/guix/issues/2108
+          (add-after 'install 'remove-installed-tests
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (delete-file-recursively ".")
+              (mkdir-p "ephem")
+              (let* ((site (site-packages inputs outputs))
+                     (tests (string-append site "/ephem/tests")))
+                (copy-recursively tests "ephem/tests")
+                (delete-file-recursively tests)))))))
     (native-inputs
-     (list python-setuptools
-           python-wheel
-           tzdata))
+     (list python-pytest python-setuptools tzdata))
     (home-page "https://rhodesmill.org/pyephem/")
     (synopsis "Compute positions of the planets and stars")
     (description
