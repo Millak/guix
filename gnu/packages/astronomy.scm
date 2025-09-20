@@ -2406,13 +2406,13 @@ astronomical images, especially when there is no WCS information available.")
 (define-public python-astrocut
   (package
     (name "python-astrocut")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astrocut" version))
        (sha256
-        (base32 "14m713y90zj3v5hhlmq79cslqlr8dz8y3zyk454qda01fkcj6za7"))))
+        (base32 "1i8cpghk31cds9ipgap2ffws7jqy0smgk6w6kihxwpcw34jkr8h4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2437,7 +2437,12 @@ astronomical images, especially when there is no WCS information available.")
                           "test_tess_footprint_cutout_write_as_tpf"
                           ;; Some NumPy compatability errors during tests.
                           "test_get_cutout_limits"
-                          "test_get_cutout_wcs")
+                          "test_get_cutout_wcs"
+                          ;; botocore.exceptions.EndpointConnectionError:
+                          ;; Could not connect to the endpoint URL:
+                          ;; "https://stpubdata.s3.amazonaws.com/tess/public/\
+                          ;; footprints/tess_ffi_footprint_cache.json"
+                          "test_tess_footprint_cutout")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
