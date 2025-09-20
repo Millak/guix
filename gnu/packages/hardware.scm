@@ -75,6 +75,7 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages lxqt)
   #:use-module (gnu packages man)
+  #:use-module (gnu packages mes)
   #:use-module (gnu packages messaging)
   #:use-module (gnu packages mtools)
   #:use-module (gnu packages package-management)
@@ -108,6 +109,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system guile)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system pyproject)
@@ -1791,3 +1793,36 @@ output relays.")
      "This is the Python extension to @code{usbrelay}, a Linux driver based on
 hidapi for a variety of inexpensive HID compatible USB relay modules.  This
 package also includes @code{usbrelayd}.")))
+
+(define-public guile-usbrelay
+  (package
+    (name "guile-usbrelay")
+    (version "0.1.0")
+    (home-page "https://codeberg.org/pisemsky/guile-usbrelay")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ndgkazv9bnyj45pccym11245c65hlvsvzmx0acpzlywz7xxyy72"))))
+    (build-system guile-build-system)
+    (arguments
+     (list
+      #:source-directory "modules"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'compile-ffi
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "GUILE_AUTO_COMPILE" "0")
+              (invoke "guile" "make.scm"))))))
+    (native-inputs (list gcc guile-3.0 nyacc pkg-config))
+    (inputs (list hidapi))
+    (propagated-inputs (list nyacc))
+    (synopsis "Control USB HID relays from Guile")
+    (description
+     "This package provides a Guile Scheme API to control USB HID relay modules
+produced by dcttech.")
+    (license license:lgpl3+)))
