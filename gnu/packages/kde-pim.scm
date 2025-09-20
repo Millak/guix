@@ -1403,14 +1403,14 @@ and retrieving certificates from LDAP servers.")
 (define-public kmail
   (package
     (name "kmail")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmail-" version ".tar.xz"))
        (sha256
-        (base32 "1cl6giblw0jwyxr7bk88gd8krqkd3xxryniyz2jbrqnkvbrml23n"))))
+        (base32 "1nk1b149vv8skq9cjriji7mslmnvz42m6j4r4ac9bcffvqxr2wag"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules dbus kdoctools))
@@ -1479,6 +1479,20 @@ and retrieving certificates from LDAP servers.")
     (arguments
      (list
       #:qtbase qtbase
+      ;; FIXME: Many failing tests.
+      #:test-exclude
+      (string-append "("
+                     (string-join '("akonadi-sqlite-kmcomposerwintest"
+                                    "akonadi-sqlite-archivemailwidgettest"
+                                    "akonadi-sqlite-tagselectdialogtest"
+                                    "akonadi-sqlite-kmcommandstest"
+                                    "sendlateragent-sendlaterutiltest"
+                                    "sendlateragent-sendlaterconfigtest"
+                                    "followupreminder-followupreminderconfig\
+test"
+                                    "akonadi-sqlite-unifiedmailboxmanagertest")
+                                  "|")
+                     ")")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'wrap-program
@@ -1495,17 +1509,9 @@ and retrieving certificates from LDAP servers.")
                               "akonadictl"
                               "accountwizard"))))))
           (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
               (when tests?
-                (invoke "dbus-launch" "ctest" "-E" ;; FIXME: Many failing tests.
-                        "(akonadi-sqlite-kmcomposerwintest|\
-akonadi-sqlite-archivemailwidgettest|\
-akonadi-sqlite-tagselectdialogtest|\
-akonadi-sqlite-kmcommandstest|\
-sendlateragent-sendlaterutiltest|\
-sendlateragent-sendlaterconfigtest|\
-followupreminder-followupreminderconfigtest|\
-akonadi-sqlite-unifiedmailboxmanagertest)")))))))
+                (invoke "dbus-launch" "ctest" "-E" test-exclude)))))))
     (home-page "https://kontact.kde.org/components/kmail/")
     (synopsis "Full featured graphical email client")
     (description "KMail supports multiple accounts, mail filtering and email
