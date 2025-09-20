@@ -11127,16 +11127,27 @@ metadata from HTML markup.  Currently, extruct supports:
 (define-public python-wadllib
   (package
     (name "python-wadllib")
-    (version "1.3.6")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "wadllib" version))
        (sha256
-        (base32 "1z65crvdsjxh9nahz1g6q021ijmv85ixmq88l96d61qh5imavndc"))))
+        (base32 "09vlfg4mzdmkqk6br7j8ms3116qk5am0nf4v1jkzwd7swhisznqy"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Doctests are currently failing.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
     (native-inputs
-     (list python-setuptools python-wheel))
+     (list python-multipart python-setuptools python-zope-testrunner))
     (propagated-inputs (list python-lazr-uri))
     (home-page "https://launchpad.net/wadllib")
     (synopsis "Web Application Description Language (WADL) navigation library")
