@@ -387,6 +387,8 @@ datetime module, available in Python 2.3+.")
     (license (list bsd-3 asl2.0))))
 
 (define-public python-dateutils
+  ;; XXX: The last release was in 2021, no development on the master
+  ;; branch. consider to remove when nothing depends on it.
   (package
     (name "python-dateutils")
     (version "0.6.12")
@@ -397,8 +399,9 @@ datetime module, available in Python 2.3+.")
                (base32
                 "1wg3f3imjq3snvjccv64h5498pqv9xz664xhni7bsh8mnay91p83"))))
     (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ;requires twine
     (propagated-inputs (list python-dateutil python-pytz))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/jmcantrell/python-dateutils")
     (synopsis "Various utilities for working with date and datetime objects")
     (description
