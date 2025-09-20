@@ -941,14 +941,14 @@ as KMail, KAddressBook etc.")
 (define-public kdepim-runtime
   (package
     (name "kdepim-runtime")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kdepim-runtime-" version ".tar.xz"))
        (sha256
-        (base32 "0n7wdnx7zl9pykg75naai0g1b0m3ck20g61k0rqj9gx6dmfy468i"))))
+        (base32 "1srr9dxn60yqhci50bch9v8h94nyq50ns5wq7np6c86k6kwh5x62"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules dbus kdoctools libxslt shared-mime-info))
@@ -1000,27 +1000,42 @@ as KMail, KAddressBook etc.")
      ;; TODO: 5/45 tests fail for quite different reasons, even with
      ;; "offscreen" and dbus
      (list #:qtbase qtbase
-           #:phases #~(modify-phases %standard-phases
-                        (add-after 'set-paths 'extend-CPLUS_INCLUDE_PATH
-                          (lambda* (#:key inputs #:allow-other-keys)
-                            ;; FIXME: <Akonadi/KMime/SpecialMailCollections> is not
-                            ;; found during one of the compilation steps without
-                            ;; this hack.
-                            (setenv "CPLUS_INCLUDE_PATH"
-                                    (string-append
-                                     (assoc-ref inputs "akonadi-mime") "/include/KF6:"
-                                     (or (getenv "CPLUS_INCLUDE_PATH") "")))))
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              ;; FIXME: Atleast some appear to require network.
-                              (invoke "dbus-launch" "ctest" "-E" "\
-(akonadi-sqlite-icalcategoriestotagsmigrationtest|akonadi-sqlite-synctest\
-|akonadi-sqlite-pop3test|storecompacttest|akonadi-sqlite-ewstest\
-|ewsmoveitemrequest_ut|ewsdeleteitemrequest_ut\
-|ewsgetitemrequest_ut|ewsunsubscriberequest_ut|ewssettings_ut\
-|templatemethodstest|akonadi-sqlite-serverbusytest|ewsattachment_ut\
-|testmovecollectiontask)")))))))
+           ;; FIXME: Atleast some appear to require network.
+           #:test-exclude
+           (string-append "("
+                          (string-join '("akonadi-sqlite-icalcategoriestotags\
+migrationtest"
+                                         "akonadi-sqlite-synctest"
+                                         "akonadi-sqlite-pop3test"
+                                         "storecompacttest"
+                                         "akonadi-sqlite-ewstest"
+                                         "ewsmoveitemrequest_ut"
+                                         "ewsdeleteitemrequest_ut"
+                                         "ewsgetitemrequest_ut"
+                                         "ewsunsubscriberequest_ut"
+                                         "ewssettings_ut"
+                                         "templatemethodstest"
+                                         "akonadi-sqlite-serverbusytest"
+                                         "ewsattachment_ut"
+                                         "testmovecollectiontask")
+                                       "|")
+                          ")")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'set-paths 'extend-CPLUS_INCLUDE_PATH
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; FIXME: <Akonadi/KMime/SpecialMailCollections> is not
+                   ;; found during one of the compilation steps without
+                   ;; this hack.
+                   (setenv "CPLUS_INCLUDE_PATH"
+                           (string-append (assoc-ref inputs "akonadi-mime")
+                                          "/include/KF6:"
+                                          (or (getenv "CPLUS_INCLUDE_PATH")
+                                              "")))))
+               (replace 'check
+                 (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
+                   (when tests?
+                     (invoke "dbus-launch" "ctest" "-E" test-exclude)))))))
     (home-page "https://invent.kde.org/pim/kdepim-runtime")
     (synopsis "Runtime components for Akonadi KDE")
     (description "This package contains Akonadi agents written using KDE
