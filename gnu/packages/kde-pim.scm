@@ -1164,27 +1164,32 @@ cryptography to the contents of the clipboard.")
 (define-public khealthcertificate
   (package
     (name "khealthcertificate")
-    (version "24.12.1")
+    (version "25.08.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/khealthcertificate-" version ".tar.xz"))
               (sha256
                (base32
-                "1vxlq0gfpg9q58963zm8fb5vsp16aicfqp0xgzdj5ad2pk1zgrkm"))))
+                "0ikpc57sld9mp16hk62a1kkspqkf3jszsik1i6813cqlnpnys730"))))
     (build-system qt-build-system)
     (arguments
      (list
       #:qtbase qtbase
+      #:test-exclude
+      (string-append "("
+                     (string-join '("icaovdsparsertest"
+                                    "eudgcparsertest")
+                                  "|")
+                     ")")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
-            (lambda* (#:key inputs tests? #:allow-other-keys)
+            (lambda* (#:key inputs tests? (test-exclude "") #:allow-other-keys)
               (when tests?
                 (setenv "TZDIR"
                         (search-input-directory inputs "share/zoneinfo"))
-                (invoke "ctest" "-E"
-                        "(icaovdsparsertest|eudgcparsertest)")))))))
+                (invoke "ctest" "-E" test-exclude)))))))
     (native-inputs (list extra-cmake-modules pkg-config tzdata-for-tests))
     (inputs (list karchive
                   kcodecs
