@@ -9179,10 +9179,8 @@ to deprecate classes, functions or methods.")
 (define-public python-pygithub
   (package
     (name "python-pygithub")
-    (version "1.55")
+    (version "2.8.1")
     (source
-     ;; We fetch from the Git repo because there are no tests in the PyPI
-     ;; archive.
      (origin
        (method git-fetch)
        (uri (git-reference
@@ -9190,21 +9188,26 @@ to deprecate classes, functions or methods.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "082bxffpy4h97dsay3l75cpgfjj10kywkvicnm6xscwvah285q9y"))))
-    (build-system python-build-system)
+        (base32 "0c5qp69qfkfcp8lfmfh0a2rcb1azsrlrc525qd8blnkrmz2mmayz"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs
-     (list python-cryptography python-deprecated python-pyjwt
-           python-pynacl python-requests))
+     (list python-pyjwt
+           python-pynacl
+           python-requests
+           python-typing-extensions
+           python-urllib3))
     (native-inputs
-     (list nss-certs-for-test python-httpretty python-pytest))
+     (list python-responses
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
     (home-page "https://pygithub.readthedocs.io/en/latest/")
     (synopsis "Python library for the GitHub API")
     (description "This library allows managing GitHub resources such as
