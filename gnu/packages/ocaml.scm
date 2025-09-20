@@ -162,7 +162,35 @@
          #:phases
          (modify-phases %standard-phases
            (delete 'configure)
-           (add-before 'build 'no-autocompile
+           (add-after 'unpack 'patch-makefile
+             (lambda _
+               (substitute*
+                   ;; Problems during the configure phase tend to cause build
+                   ;; failures ("<feature> not implemented") after hours of
+                   ;; compile time. Run the configure script verbosely to make
+                   ;; these problems more visible.
+                   "Makefile"
+                 (("bash configure") "bash configure --verbose"))))
+           (add-after 'unpack 'patch-cflags
+             (lambda _
+               (substitute*
+                   "ocaml-src/configure"
+                 ;; Disable error for redefined macro `sigsetjmp`
+                 (("-Wall -Werror") "-Wall")
+                 ;; Disable strict checks in GCC 14
+                 (("\"-O2 -fno-strict-aliasing -fwrapv\"")
+                  (string-append "\"-O2 -fno-strict-aliasing -fwrapv "
+                                 "-Wno-incompatible-pointer-types "
+                                 "-Wno-implicit-function-declaration\"")))
+               ;; The GCC 14 flags above apply to the source build itself but
+               ;; not when calling config helper scripts, so update these too.
+               (substitute*
+                   '("ocaml-src/config/auto-aux/hasgot"
+                     "ocaml-src/config/auto-aux/hasgot2")
+                 (("[$]cflags")
+                  (string-append "$cflags -Wno-incompatible-pointer-types "
+                                 "-Wno-implicit-function-declaration")))))
+	   (add-before 'build 'no-autocompile
              (lambda _
                ;; prevent a guile warning
                (setenv "GUILE_AUTO_COMPILE" "0")))
