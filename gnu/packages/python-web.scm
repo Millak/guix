@@ -991,18 +991,26 @@ datasets and other repos on the @url{huggingface.co} hub.")
                 (for-each delete-file '("test_oauth.py" "test_docs.py")))
               (substitute* "setup.py"
                 (("\"(oauth|lazr\\.(authentication|restful>=0\\.11\\.0))\",")
-                 "")))))))
-    (native-inputs (list python-setuptools
-                         python-testtools
-                         python-wheel
-                         python-wsgi-intercept
-                         python-zope-testrunner))
-    (propagated-inputs (list python-distro
-                             python-httplib2
-                             python-oauthlib
-                             python-pyparsing
-                             python-setuptools
-                             python-wadllib))
+                 ""))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
+    (native-inputs
+     (list python-setuptools
+           python-testtools
+           python-wheel
+           python-wsgi-intercept
+           python-zope-testrunner))
+    (propagated-inputs
+     (list python-distro
+           python-httplib2
+           python-oauthlib
+           python-pyparsing
+           python-setuptools
+           python-six
+           python-wadllib))
     (home-page "https://launchpad.net/lazr.restfulclient")
     (synopsis "Web client Python library extending wadlib")
     (description "This package provides a programmable client library that
