@@ -94,14 +94,14 @@
 (define-public ktuberling
   (package
     (name "ktuberling")
-    (version "25.04.0")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ktuberling-" version ".tar.xz"))
        (sha256
-        (base32 "0hdn2rvi1v6jzvidqq6db38axiah7cg1jsmj0bdlpfjzbffi8mjl"))))
+        (base32 "0aqxk98qll6a89brbqdwrw92pazyg5z32rp141nc7zgx8j8i174w"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
