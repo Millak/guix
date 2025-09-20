@@ -571,14 +571,14 @@ information.")
 (define-public kincidenceeditor
   (package
     (name "kincidenceeditor")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/incidenceeditor-" version ".tar.xz"))
        (sha256
-        (base32 "13knf50ds2shjps93v5z8dvh19cx820gfh2dk5wlpz3sdcmh5hw9"))))
+        (base32 "1m8bwk1vvhbygriaivdbs845j43zl1favdsimwbkddvmk4wpamp1"))))
     (properties `((upstream-name . "incidenceeditor")))
     (build-system qt-build-system)
     (native-inputs
@@ -619,14 +619,20 @@ information.")
     (arguments
      (list
       #:qtbase qtbase
+      ;; FIXME: These tests fail.
+      #:test-exclude
+      (string-append "("
+                     (string-join '("akonadi-sqlite-incidencedatetimetest"
+                                    "ktimezonecomboboxtest"
+                                    "testindividualmaildialog")
+                                  "|")
+                     ")")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
               (when tests?
-                (invoke "dbus-launch" "ctest" ;; FIXME: tests fails.
-                        "-E"
-		        "(akonadi-sqlite-incidencedatetimetest|ktimezonecomboboxtest|testindividualmaildialog)")))))))
+                (invoke "dbus-launch" "ctest" "-E" test-exclude)))))))
     (home-page "https://invent.kde.org/pim/incidenceeditor")
     (synopsis "KDE PIM library for editing incidences")
     (description "This library provides an incidence editor for KDE PIM.")
