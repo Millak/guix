@@ -642,14 +642,14 @@ information.")
 (define-public kaddressbook
   (package
     (name "kaddressbook")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kaddressbook-" version ".tar.xz"))
        (sha256
-        (base32 "0dy5ir5xb6mamc7xqqm6hi3mdgcs91d98rf29xmmh6yld1gg7dc2"))))
+        (base32 "1hi0qwmjjbvqn1vainrhhs6k73i880m9iiacx54hn6aff1x4mxnx"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
