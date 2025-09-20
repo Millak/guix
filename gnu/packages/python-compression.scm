@@ -467,13 +467,16 @@ compression algorithm.")
        ;; Remove bundled isa-l source code
        (modules '((guix build utils)))
        (snippet
-        '(delete-file-recursively "src/isal/isa-l"))))
+        #~(delete-file-recursively "src/isal/isa-l"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-dynamic-linking
-           (lambda _ (setenv "PYTHON_ISAL_LINK_DYNAMIC" "1"))))))
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-dynamic-linking
+            (lambda _
+              (setenv "PYTHON_ISAL_LINK_DYNAMIC" "1"))))))
     (inputs (list isa-l))
     (native-inputs (list python-cython python-setuptools python-wheel))
     (home-page "https://github.com/pycompression/python-isal")
