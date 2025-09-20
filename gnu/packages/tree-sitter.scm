@@ -46,18 +46,19 @@
   (package
     (name "python-tree-sitter")
     (version "0.21.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/tree-sitter/py-tree-sitter")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1cdxl0zyldml3x5wi2nmlmhwfahwxalcr5lxyb6j6762irmm4b2c"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tree-sitter/py-tree-sitter")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cdxl0zyldml3x5wi2nmlmhwfahwxalcr5lxyb6j6762irmm4b2c"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-backend #~'unittest
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-tree-sitter-lib-path
@@ -94,7 +95,11 @@
                            (or native-inputs inputs)
                            (string-append
                             "lib/tree-sitter/libtree-sitter-" name ".so"))
-                          name)))))))))
+                          name))))))
+          ;; XXX: See https://codeberg.org/guix/guix/issues/2108
+          (add-before 'check 'remove-uninstalled-package
+            (lambda _
+              (delete-file-recursively "tree_sitter"))))))
     (inputs (list tree-sitter))
     (native-inputs
      (list tree-sitter-embedded-template
