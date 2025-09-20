@@ -1061,6 +1061,47 @@ one-time-password (OTP) secrets, generating OTP codes, and displaying secret
 key URIs using the standard otpauth:// scheme.")
     (license license:gpl3+)))
 
+(define-public pass-update
+  (package
+    (name "pass-update")
+    (version "2.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/roddhjav/pass-update")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1srg0zpgfj2rcsc8aynq7jy2wd9l2h21rpp73si6rwiccff4ymrl"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "tests"
+      #:make-flags
+      #~(list (string-append "PREFIX="
+                             #$output)
+              (string-append "BASHCOMPDIR="
+                             #$output "/share/bash-completion/completions"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build)
+          (add-before 'check 'setenv
+            (lambda _
+              ;; Tests need the env var TMP
+              (mkdir "/tmp/pw")
+              (setenv "TMP" "/tmp/pw")))
+          (delete 'configure))))
+    (native-inputs (list password-store gnupg git))
+    (home-page "https://github.com/roddhjav/pass-update")
+    (synopsis "Extension to @code{password-store} for updating passwords")
+    (description
+     "@code{pass-update} extends the pass utility with an update command
+providing an easy flow for updating passwords.  It supports path, directory
+and wildcard update.  Moreover, you can select how to update your passwords by
+automatically generating new passwords or manually setting your own.")
+    (license license:gpl3)))
+
 (define-public qtpass
   (package
     (name "qtpass")
