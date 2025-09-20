@@ -2108,6 +2108,7 @@ timeout has been exceeded.")
      ;; to fail (see: https://github.com/pytest-dev/pytest-forked/issues/54).
      (list python-pytest-bootstrap python-setuptools
            python-setuptools-scm python-wheel))
+    (propagated-inputs (list python-py))
     (home-page "https://github.com/pytest-dev/pytest-forked")
     (synopsis "Pytest plugin to run tests in isolated forked subprocesses")
     (description "This package provides a Pytest plugin which enables running
