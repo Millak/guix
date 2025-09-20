@@ -2252,14 +2252,14 @@ standard protocols for e-mail transmission.")
 (define-public ktnef
   (package
     (name "ktnef")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ktnef-" version ".tar.xz"))
        (sha256
-        (base32 "1ylpmrzqgpkfdzmzgq9b1hvsvna6q0fvv1c9p9qxhnbaycyyg92g"))))
+        (base32 "03vqhvqy13vbkv7xa79wz2mbs9dnqj2jgbzilqdhj2nrb7v5hyxy"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
