@@ -4682,27 +4682,28 @@ internationalized messages within program source text.")
     (version "7.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "zope.schema" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/zope.schema")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-          "1fgvx7nim9plxnyiq6vmah1dji7ba5290fws1i0lwk9m0g5xpm7a"))))
-    (build-system python-build-system)
+        (base32 "1hj6j0gqgvv9a5pyaz54wbn8n7wf9lyg4njb2cfs980z0d5faj39"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (if tests?
-               (invoke "zope-testrunner" "--test-path=src")
-               #t))))))
-    (propagated-inputs
-     (list python-zope-event python-zope-interface))
-    (native-inputs
-     (list python-zope-i18nmessageid python-zope-testing
-           python-zope-testrunner))
-    (home-page "https://pypi.org/project/zope.schema/")
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+              (add-installed-pythonpath inputs outputs)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run.~%")))))))
+    (propagated-inputs (list python-zope-event python-zope-interface))
+    (native-inputs (list python-zope-i18nmessageid python-zope-testing
+                         python-zope-testrunner python-setuptools))
+    (home-page "https://zopeschema.readthedocs.io")
     (synopsis "Zope data schemas")
     (description "Zope.scheme provides extensions to zope.interface for
 defining data schemas.")
