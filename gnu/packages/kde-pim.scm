@@ -89,14 +89,14 @@
 (define-public akonadi
   (package
     (name "akonadi")
-    (version "24.12.3")
+    (version "25.08.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/akonadi-" version ".tar.xz"))
               (sha256
                (base32
-                "1j0p1hmn0i81ipw3j0jvbax0c2admq89s9xhf5fycy75a20dxr71"))
+                "1pmgf9ah7h8522ainlpqzi7phxwd9y0g1zhcl03dmjdpbd1xaank"))
               (patches (search-patches "akonadi-paths.patch"
                                        "akonadi-timestamps.patch"
                                        "akonadi-not-relocatable.patch"))))
@@ -132,19 +132,50 @@
     (arguments
      (list #:qtbase qtbase
            #:tests? #f
+           #:test-exclude
+           (string-append "("
+                          (string-join '("AkonadiServer-dbconfigtest"
+                                         "mimetypecheckertest"
+                                         "entitytreemodeltest"
+                                         "akonadi-sqlite-testenvironmenttest"
+                                         "akonadi-sqlite-autoincrementtest"
+                                         "akonadi-sqlite-attributefactorytest"
+                                         "akonadi-sqlite-collectionpath\
+resolvertest"
+                                         "akonadi-sqlite-collectionattribute\
+test"                                    "akonadi-sqlite-itemfetchtest"
+                                         "akonadi-sqlite-itemappendtest"
+                                         "akonadi-sqlite-itemstoretest"
+                                         "akonadi-sqlite-itemdeletetest"
+                                         "akonadi-sqlite-entitycachetest"
+                                         "akonadi-sqlite-monitortest"
+                                         "akonadi-sqlite-changerecordertest"
+                                         "akonadi-sqlite-resourcetest"
+                                         "akonadi-sqlite-subscriptiontest"
+                                         "akonadi-sqlite-transactiontest"
+                                         "akonadi-sqlite-itemcopytest"
+                                         "akonadi-sqlite-itemmovetest"
+                                         "akonadi-sqlite-invalidatecachejob\
+test"
+                                         "akonadi-sqlite-collectioncreatetest"
+                                         "akonadi-sqlite-collectioncopytest"
+                                         "akonadi-sqlite-collectionmovetest"
+                                         "akonadi-sqlite-collectionsynctest"
+                                         "akonadi-sqlite-itemsynctest")
+                                       "|")
+                          ")")
            #:configure-flags #~'("-DDATABASE_BACKEND=SQLITE") ;lightweight
            #:modules `((ice-9 textual-ports)
                        ,@%qt-build-system-modules)
            #:phases
            #~(modify-phases (@ (guix build qt-build-system) %standard-phases)
                (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
+                 (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
                    (when tests?
                      (setenv "PATH"
                              (string-append (getcwd) "/bin" ":"
                                             (getenv "PATH")))
-                     (invoke "dbus-launch" "ctest" "-E"
-                             "(AkonadiServer-dbconfigtest|mimetypecheckertest|entitytreemodeltest|akonadi-sqlite-testenvironmenttest|akonadi-sqlite-autoincrementtest|akonadi-sqlite-attributefactorytest|akonadi-sqlite-collectionpathresolvertest|akonadi-sqlite-collectionattributetest|akonadi-sqlite-itemfetchtest|akonadi-sqlite-itemappendtest|akonadi-sqlite-itemstoretest|akonadi-sqlite-itemdeletetest|akonadi-sqlite-entitycachetest|akonadi-sqlite-monitortest|akonadi-sqlite-changerecordertest|akonadi-sqlite-resourcetest|akonadi-sqlite-subscriptiontest|akonadi-sqlite-transactiontest|akonadi-sqlite-itemcopytest|akonadi-sqlite-itemmovetest|akonadi-sqlite-invalidatecachejobtest|akonadi-sqlite-collectioncreatetest|akonadi-sqlite-collectioncopytest|akonadi-sqlite-collectionmovetest|akonadi-sqlite-collectionsynctest|akonadi-sqlite-itemsynctest)"))))
+                     (invoke "dbus-launch" "ctest" "-E" test-exclude))))
                (add-before 'configure 'add-definitions
                  (lambda* (#:key outputs inputs #:allow-other-keys)
                    (with-output-to-file "CMakeLists.txt.new"
