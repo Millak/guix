@@ -4555,16 +4555,17 @@ outside of the Zope framework.")
     (name (string-append (package-name orig) "-bootstrap"))
     (arguments
      (if (null? (package-arguments orig))
-         `(#:tests? #f
-           #:phases (modify-phases %standard-phases
-                      (delete 'sanity-check)))
+         (list
+          #:tests? #f
+          #:phases #~(modify-phases %standard-phases
+                       (delete 'sanity-check)))
          (substitute-keyword-arguments (package-arguments orig)
            ((#:tests? _ #f) #f)
            ((#:phases phases '%standard-phases)
-            `(modify-phases ,phases
-               (delete 'sanity-check))))))
+            #~(modify-phases #$phases
+                (delete 'sanity-check))))))
     (propagated-inputs `())
-    (native-inputs `())
+    (native-inputs (list python-setuptools))
     (properties `((hidden? . #t)))))
 
 (define-public python-zope-exceptions-bootstrap
