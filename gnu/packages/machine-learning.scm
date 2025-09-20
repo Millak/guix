@@ -1134,6 +1134,7 @@ depend on language-specific pre- or post-processing.")
          (sha256
           (base32 "018ilrp41fcclmb5lsml3aijwbmhbq3m7wy65hr1fryj0avic8fr"))))
       (build-system pyproject-build-system)
+      (arguments (list #:test-backend #~'unittest))
       (native-inputs (list python-setuptools python-wheel))
       (home-page "https://github.com/sofiatolaosebikan/hopcroftkarp")
       (synopsis "Implementation of the Hopcroft-Karp algorithm")
