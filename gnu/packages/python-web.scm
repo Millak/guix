@@ -4784,29 +4784,37 @@ Markup Language.")
 (define-public python-zope-copy
   (package
     (name "python-zope-copy")
-    (version "4.2")
+    (version "6.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "zope.copy" version))
-        (sha256
-         (base32
-          "06m75434krl57n6p73c2qj55k5i3fixg887j8ss01ih6zw4rvfs7"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/zope.copy")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ym82p9scpfi3rflxnlv55v0a7hra3rq4rrlw759maq05i8qp1w5"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "zope-testrunner" "--test-path=src" "\\[]"))))))
-    (propagated-inputs
-     (list python-zope-interface))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
+    (propagated-inputs (list python-zope-interface))
     (native-inputs
-     `(("python-zope-component" ,python-zope-component-bootstrap)
-       ("python-zope-location" ,python-zope-location-bootstrap)
-       ("python-zope-testing" ,python-zope-testing)
-       ("python-zope-testrunner" ,python-zope-testrunner)))
-    (home-page "https://github.com/zopefoundation/zope.copy")
+     (list python-zodbpickle
+           python-zope-component-bootstrap
+           python-zope-location-bootstrap
+           python-zope-proxy
+           python-zope-schema
+           python-zope-testing
+           python-zope-testrunner
+           python-setuptools))
+    (home-page "https://zopecopy.readthedocs.io")
     (synopsis "Pluggable object copying mechanism")
     (description
      "This package provides a pluggable mechanism for copying persistent objects.")
