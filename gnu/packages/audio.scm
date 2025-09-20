@@ -5282,7 +5282,7 @@ interface.")
 (define-public qsynth
   (package
     (name "qsynth")
-    (version "0.9.9")
+    (version "1.0.3")
     (source
      (origin
        (method url-fetch)
@@ -5292,7 +5292,7 @@ interface.")
               (string-append "mirror://sourceforge/qsynth/qsynth (attic)"
                              "/qsynth-" version ".tar.gz")))
        (sha256
-        (base32 "1cjg25nva5ivahr0qqlvf6ybnpcx9jgrxbp4vgwkk64b4k9wnd4n"))))
+        (base32 "0rmskh0b0jacjhqi4qkfaa28m96dn46a5r796rvha4g8xlm7x2fg"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no "check" phase
