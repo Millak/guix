@@ -1708,14 +1708,14 @@ mail transport.")
 (define-public kmbox
   (package
     (name "kmbox")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmbox-" version ".tar.xz"))
        (sha256
-        (base32 "1z6rv3chc9y9ppy9jx1lj8nkl3wlcv8511p0zaarz9khsx413jns"))))
+        (base32 "0vk7dn9cip23nw6fxsp6lma4r938c1k4hfccyrd6bp4wza2mhi14"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
