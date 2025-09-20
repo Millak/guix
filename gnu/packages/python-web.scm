@@ -1039,15 +1039,24 @@ scripting Launchpad via its the web service API.")
 (define-public python-lazr-uri
   (package
     (name "python-lazr-uri")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "lazr.uri" version))
+       (uri (pypi-uri "lazr_uri" version))
        (sha256
-        (base32 "0r44rw0bj5mayhqwfwj1dnrjgzj1lrh7ishiddd1vygnrczqa9jh"))))
-    (build-system python-build-system)
-    (native-inputs (list python-zope-testrunner))
+        (base32 "1vm34pw8fksc6m8fnqwh215sqdlw546cxcdga93i2l746grzc37d"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
+    (native-inputs (list python-setuptools python-zope-testrunner))
     (home-page "https://launchpad.net/lazr.uri")
     (synopsis "Python URI manipulation library")
     (description "This Python package provides a self-contained, easily
