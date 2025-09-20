@@ -43,7 +43,6 @@
   #:use-module (gnu packages firmware)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages ocr)
-  #:use-module (gnu packages openbox)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages ratpoison)
   #:use-module (gnu packages suckless)

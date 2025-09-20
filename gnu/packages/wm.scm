@@ -1,11 +1,12 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2014 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2015 Siniša Biđin <sinisa@bidin.eu>
 ;;; Copyright © 2015, 2016, 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015 xd1le <elisp.vim@gmail.com>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
-;;; Copyright © 2016, 2019, 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2019-2020, 2023-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;; Copyright © 2016 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
@@ -706,6 +707,85 @@ status line from their output.  The generated line is meant to be displayed by
 the i3 window manager through its i3bar component, as an alternative to
 i3status.")
     (license license:gpl3+)))
+
+(define-public obconf
+  (package
+    (name "obconf")
+    (version "2.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://openbox.org/dist/" name
+                           "/" name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1fanjdmd8727kk74x5404vi8v7s4kpq48l583d12fsi4xvsfb8vi"))))
+    (inputs (list gtk+-2
+                  imlib2
+                  libglade
+                  libsm
+                  librsvg
+                  libxft
+                  openbox
+                  startup-notification))
+    (native-inputs (list gettext-minimal pkg-config))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+       #:configure-flags
+         #~(list "--enable-nls"
+                 "CFLAGS=-g -O2 -Wno-error=implicit-function-declaration")))
+    (home-page "https://openbox.org/obconf")
+    (synopsis "Openbox configuration tool")
+    (description
+     "Obconf is a tool for configuring the Openbox window manager.
+You can configure its appearance, themes, and much more.")
+    (license license:gpl2+)))
+
+(define-public openbox
+  (package
+    (name "openbox")
+    (version "3.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "http://openbox.org/dist/openbox/" name "-"
+             version ".tar.xz"))
+       (sha256
+        (base32
+         "0vg2y1qddsdxkjv806mzpvmkgzliab8ll4s7zm7ma5jnriamirxb"))
+       (patches (search-patches "openbox-add-fix-for-glib2-exposed-segfault.patch" "openbox-python3.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'force-reconfigure
+                 ;; This is made necessary by the openbox-python3 patch.
+                 (lambda _
+                   (delete-file "configure"))))))
+    (native-inputs (list autoconf automake gettext-minimal libtool pkg-config))
+    (propagated-inputs (list python-pyxdg))
+    (inputs (list imlib2
+                  libxml2
+                  (librsvg-for-system)
+                  libsm
+                  libxcursor
+                  libxinerama
+                  libxml2
+                  libxrandr
+                  libxft
+                  pango
+                  python-wrapper))
+    (synopsis "Box style window manager")
+    (description
+     "Openbox is a highly configurable, next generation window manager with
+extensive standards support.  The *box visual style is well known for its
+minimalistic appearance.  Openbox uses the *box visual style, while providing
+a greater number of options for theme developers than previous *box
+implementations.")
+    (home-page "http://openbox.org/wiki/Main_Page")
+    (license license:gpl2+)))
 
 (define-public papersway
   (package

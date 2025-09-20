@@ -512,7 +512,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/openkinect.scm			\
   %D%/packages/onc-rpc.scm			\
   %D%/packages/opencl.scm			\
-  %D%/packages/openbox.scm			\
   %D%/packages/opencog.scm			\
   %D%/packages/openldap.scm			\
   %D%/packages/openpgp.scm			\
