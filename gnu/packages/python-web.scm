@@ -4937,15 +4937,26 @@ are are special objects that have a structural location.")
 (define-public python-zope-security
   (package
     (name "python-zope-security")
-    (version "5.1.1")
+    (version "7.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "zope.security" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/zope.security")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "11lfw67cigscfax9c5j63xcvz2qcj724zx5fcdqyc94am2glim0h"))))
-    (build-system python-build-system)
+        (base32 "06x6qcls2mdl05xnsyy5h70mbgij8xb6ksxbawzrc23cq04nkvx7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
     (propagated-inputs
      (list python-zope-component
            python-zope-i18nmessageid
@@ -4959,8 +4970,9 @@ are are special objects that have a structural location.")
            python-zope-configuration-bootstrap
            python-zope-location-bootstrap
            python-zope-testing
-           python-zope-testrunner))
-    (home-page "https://pypi.org/project/zope.security/")
+           python-zope-testrunner
+           python-setuptools))
+    (home-page "https://zopesecurity.readthedocs.io")
     (synopsis "Zope security framework")
     (description "Zope.security provides a generic mechanism to implement
 security policies on Python objects.")
@@ -4970,10 +4982,10 @@ security policies on Python objects.")
   (package
     (inherit (python-zope-bootstrap-package python-zope-security))
     (propagated-inputs
-     `(("python-zope-i18nmessageid" ,python-zope-i18nmessageid)
-       ("python-zope-interface" ,python-zope-interface)
-       ("python-zope-proxy" ,python-zope-proxy-bootstrap)
-       ("python-zope-schema" ,python-zope-schema)))))
+     (list python-zope-i18nmessageid
+           python-zope-interface
+           python-zope-proxy-bootstrap
+           python-zope-schema))))
 
 (define-public python-zope-component
   (package
