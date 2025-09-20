@@ -33145,19 +33145,32 @@ information for your operating system.")
 (define-public python-signedjson
   (package
     (name "python-signedjson")
-    (version "1.1.1")
+    (version "1.1.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "signedjson" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/matrix-org/python-signedjson")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0280f8zyycsmd7iy65bs438flm7m8ffs1kcxfbvhi8hbazkqc19m"))))
-    (build-system python-build-system)
+        (base32 "1wkgbwr0hdvafbhbqjibca06rxqbp95gg6rfd3ba6rkgl4g85i5z"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs
-     (list python-canonicaljson python-importlib-metadata python-pynacl
-           python-typing-extensions python-unpaddedbase64))
+     (list python-canonicaljson
+           python-importlib-metadata
+           python-pynacl
+           python-typing-extensions
+           python-unpaddedbase64))
     (native-inputs
-     (list python-setuptools-scm))
+     (list python-pytest python-setuptools-scm python-setuptools))
     (home-page "https://github.com/matrix-org/python-signedjson")
     (synopsis "Sign JSON objects with ED25519 signatures")
     (description
