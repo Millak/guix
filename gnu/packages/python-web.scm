@@ -4713,24 +4713,36 @@ defining data schemas.")
   (package
     (name "python-zope-sqlalchemy")
     (version "1.6")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "zope.sqlalchemy" version))
-              (sha256
-               (base32
-                "1azm2awl2ra10xl6wps3yvy14jk2rpzvsyfsb9cncm97aydbwlww"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-sqlalchemy
-           python-transaction
-           python-zope-interface))
-    (native-inputs (list python-zope-testing))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/zope.sqlalchemy")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1z4gw4i95dyqxsvrahk4fav008045n8kyxpn3fa887snmpvcjhng"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
+    (propagated-inputs (list python-sqlalchemy python-transaction
+                             python-zope-interface))
+    (native-inputs (list python-zope-testing python-zope-testrunner
+                         python-setuptools))
     (home-page "https://github.com/zopefoundation/zope.sqlalchemy")
     (synopsis "Minimal SQLAlchemy transaction integration for Zope")
-    (description "The aim of this package is to unify the plethora of existing
-packages integrating SQLAlchemy with Zope's transaction management.  As such,
-it only provides a data manager and makes no attempt to define a @i{zopeish}
-way to configure engines.")
+    (description
+     "The aim of this package is to unify the plethora of existing packages
+integrating SQLAlchemy with Zope's transaction management.  As such,it only
+provides a data manager and makes no attempt to define a @i{zopeish} way to
+configure engines.")
     (license license:zpl2.1)))
 
 (define-public python-zope-configuration
