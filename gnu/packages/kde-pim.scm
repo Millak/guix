@@ -1737,14 +1737,14 @@ using a Qt/KMime C++ API.")
 (define-public kmessagelib
   (package
     (name "kmessagelib")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/messagelib-" version ".tar.xz"))
        (sha256
-        (base32 "0v8yrl6j5325mwnhix43qp4s9jjny2437hns9sr5zq7ry4zfas73"))))
+        (base32 "1syqmpnq3dk94kjd1143g6kyccx4a4wblzjj2k4b6ir1iqr8kzlr"))))
     (properties `((upstream-name . "messagelib")))
     (build-system qt-build-system)
     (native-inputs
