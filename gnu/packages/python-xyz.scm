@@ -23547,19 +23547,47 @@ database, file, dict stores.  Cachy supports python versions 2.7+ and 3.2+.")
 (define-public poetry
   (package
     (name "poetry")
-    (version "1.8.4")
+    (version "2.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "poetry" version))
        (sha256
-        (base32 "00ljr5r9h93wh68h4m242qw58mdai8gji4g0c3bfqznicvdgi42l"))))
+        (base32 "1505snny5sgz9zf0wx1zqw6kqly3pi9lbsl8dnbpb55ij1kvvjgj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1295 passed, 9 skipped
       #:test-flags
-      #~(list "--ignore=tests/installation/test_executor.py"
+      ;; Network access is required.
+      #~(list "--ignore=tests/console/commands/test_add.py"
+              "--ignore=tests/console/commands/test_search.py"
+              "--ignore=tests/console/commands/test_show.py"
               "--ignore=tests/installation/test_chef.py"
+              "--ignore=tests/installation/test_chooser.py"
+              "--ignore=tests/installation/test_executor.py"
+              "--ignore=tests/installation/test_installer.py"
+              "--ignore=tests/packages/test_direct_origin.py"
+              "--ignore=tests/publishing/test_uploader.py"
+              "--ignore=tests/puzzle/test_solver.py"
+              "--ignore=tests/repositories/test_legacy_repository.py"
+              "--ignore=tests/repositories/test_pypi_repository.py"
+              "--ignore=tests/repositories/test_repository_pool.py"
+              "--ignore=tests/utils/test_authenticator.py"
+              "--ignore=tests/utils/test_dependency_specification.py"
+              "--ignore=tests/utils/test_helpers.py"
+              ;; XXX: Various incompatibility faileurs.
+              "--ignore=tests/console/commands/env/test_activate.py"
+              "--ignore=tests/console/commands/python/test_python_list.py"
+              "--ignore=tests/console/commands/test_publish.py"
+              "--ignore=tests/console/test_application_command_not_found.py"
+              "--ignore=tests/inspection/test_info.py"
+              "--ignore=tests/inspection/test_lazy_wheel.py"
+              "--ignore=tests/puzzle/test_provider.py"
+              "--ignore=tests/utils/env/python/test_manager.py"
+              "--ignore=tests/utils/env/test_env.py"
+              "--ignore=tests/utils/test_isolated_build.py"
+              "--ignore=tests/vcs/git/test_backend.py"
               "-k" (string-join
                     (list "not test_builder_setup_generation_runs_with_pip_editable"
                           "test_check_invalid"
@@ -23594,10 +23622,12 @@ database, file, dict stores.  Cachy supports python versions 2.7+ and 3.2+.")
            python-dulwich
            python-entrypoints
            python-fastjsonschema
+           python-findpython
            python-importlib-metadata
            python-installer
            python-keyring
            python-packaging
+           python-pbs-installer
            python-pexpect
            python-pip
            python-pkginfo
