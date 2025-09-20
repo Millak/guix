@@ -583,6 +583,35 @@ VERSION."
        (package (project-info-name info))
        (version version)))))
 
+(define (make-pypi-source version release name)
+  "Return a PyPi url-source sexp."
+  (let* ((source-url (and=> release distribution-url))
+         (sha256 (and=> release distribution-sha256))
+         (sha256 (or (and=> sha256 bytevector->nix-base32-string)
+                     (guix-hash-url
+                      (with-store store
+                        (download-to-store store source-url))))))
+    `(origin
+       (method url-fetch)
+       (uri (pypi-uri
+             ,(find-project-url name source-url)
+             version
+             ;; Some packages have been released as `.zip`
+             ;; instead of the more common `.tar.gz`. For
+             ;; example, see "path-and-address".
+             ,@(if (string-suffix? ".zip" source-url)
+                   '(".zip")
+                   '())))
+       (sha256 (base32 ,sha256)))))
+
+(define (make-source home-page version release name)
+  "Try to return a git-source sexp, on failure fallback on a url-source sexp."
+  (or (and (string? home-page)
+           (git-repository-url? home-page)
+           (generate-git-source home-page version
+                                (default-git-error home-page)))
+      (make-pypi-source version release name)))
+
 (define* (make-pypi-sexp pypi-package
                          #:optional (version (latest-version pypi-package)))
   "Return the `package' s-expression the given VERSION of PYPI-PACKAGE, a
@@ -594,13 +623,6 @@ VERSION."
 
   (let* ((info (pypi-project-info pypi-package))
          (name (project-info-name info))
-         (source-url (and=> (source-release pypi-package version)
-                            distribution-url))
-         (sha256 (and=> (source-release pypi-package version)
-                        distribution-sha256))
-         (sha256 (or (and=> sha256 bytevector->nix-base32-string)
-                     (guix-hash-url (with-store store
-                                      (download-to-store store source-url)))))
          (source (pypi-package->upstream-source pypi-package version))
          (home-page (project-info-home-page info))
          (home-page (if (and (string? home-page)
@@ -611,20 +633,10 @@ VERSION."
      `(package
         (name ,(python->package-name name))
         (version ,version)
-        (source
-         (origin
-           (method url-fetch)
-           (uri (pypi-uri
-                 ,(find-project-url name source-url)
-                 version
-                 ;; Some packages have been released as `.zip`
-                 ;; instead of the more common `.tar.gz`. For
-                 ;; example, see "path-and-address".
-                 ,@(if (string-suffix? ".zip" source-url)
-                       '(".zip")
-                       '())))
-           (sha256
-            (base32 ,sha256))))
+        (source ,(make-source home-page
+                              version
+                              (source-release pypi-package version)
+                              name))
         ,@(maybe-upstream-name name)
         (build-system pyproject-build-system)
         ,@(maybe-inputs (upstream-source-propagated-inputs source)
