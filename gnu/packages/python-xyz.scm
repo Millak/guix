@@ -27999,14 +27999,15 @@ Rust Python extensions implemented with @code{PyO3} or @code{rust-cpython}.")
     (version "0.1.14")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "setuptools_gettext" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/breezy-team/setuptools-gettext")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0b0d74cwa9lk32cajzpxxg9nwm5hch17xc6bzg6i4iqsygprkw23"))))
+        (base32 "1m6a3qjwvqbvlzwqap7050rqsxb7nwibl38iklnqz8363iclm76k"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-tomli
-                         python-setuptools
-                         python-wheel))
+    (native-inputs (list python-pytest python-tomli python-setuptools))
     (home-page "https://github.com/breezy-team/setuptools-gettext")
     (synopsis "Setuptools plugin for gettext")
     (description "This package provides a plugin for Setuptools for gettext.")
