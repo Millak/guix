@@ -4865,25 +4865,37 @@ etc.) for which the proxy is responsible.")
 (define-public python-zope-hookable
   (package
     (name "python-zope-hookable")
-    (version "5.0.1")
+    (version "7.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "zope.hookable" version))
-        (sha256
-         (base32
-          "0hc82lfr7bk53nvbxvjkibkarngyrzgfk2i6bg8wshl0ly0pdl19"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-coverage python-zope-testing))
-    (home-page "https://github.com/zopefoundation/zope.hookable")
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/zope.hookable")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l94xzzpyslpgv2ghvl5qzpfcsq02kp04fmvl95d6jcmivmmr4m8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
+    (native-inputs (list python-zope-testing python-zope-testrunner
+                         python-setuptools))
+    (home-page "https://zopehookable.readthedocs.io")
     (synopsis "Zope hookable")
-    (description "This package supports the efficient creation of hookable
-objects, which are callable objects that are meant to be optionally replaced.
-The idea is that you create a function that does some default thing and make i
-hookable.  Later, someone can modify what it does by calling its sethook method
-and changing its implementation.  All users of the function, including those
-that imported it, will see the change.")
+    (description
+     "This package supports the efficient creation of hookable objects, which
+are callable objects that are meant to be optionally replaced. The idea is
+that you create a function that does some default thing and make i hookable.
+Later, someone can modify what it does by calling its sethook method and
+changing its implementation.  All users of the function, including those that
+imported it, will see the change.")
     (license license:zpl2.1)))
 
 (define-public python-zope-location
