@@ -4901,25 +4901,34 @@ imported it, will see the change.")
 (define-public python-zope-location
   (package
     (name "python-zope-location")
-    (version "4.2")
+    (version "6.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "zope.location" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/zope.location")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1b40pzl8v00d583d3gsxv1qjdw2dhghlgkbgxl3m07d5r3izj857"))))
-    (build-system python-build-system)
+        (base32 "1jfsmbxj6hz7kmk5b0351b63ssm7qfkgqmz9v7xb7wwlmxsxkcdk"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f)) ; FIXME: Tests can't find zope.interface.
-    (native-inputs
-     (list python-zope-testrunner))
-    (propagated-inputs
-     (list python-zope-interface python-zope-proxy python-zope-schema))
-    (home-page "https://pypi.org/project/zope.location/")
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
+    (native-inputs (list python-zope-testrunner python-setuptools))
+    (propagated-inputs (list python-zope-interface python-zope-proxy
+                             python-zope-schema))
+    (home-page "https://zopelocation.readthedocs.io")
     (synopsis "Zope location library")
-    (description "Zope.location implements the concept of \"locations\" in
-Zope3, which are are special objects that have a structural location.")
+    (description
+     "Zope.location implements the concept of \"locations\" in Zope3, which
+are are special objects that have a structural location.")
     (license license:zpl2.1)))
 
 (define-public python-zope-location-bootstrap
