@@ -35452,29 +35452,29 @@ number of words, syllables, and sentences.")
     (license license:asl2.0)))
 
 (define-public python-readability-lxml
+  ;; No releases since 2020, see:
+  ;; <https://github.com/buriy/python-readability/issues/196>.
   (package
     (name "python-readability-lxml")
-    (version "0.8.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/buriy/python-readability")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "13nfy2v0pbbf62jn9qwgi489gg97hbb22q6w3f78mnvjxd2m19rh"))
-              (snippet
-               #~(begin (delete-file "readability/compat/two.py")))))
+    (version "0.8.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "http://github.com/buriy/python-readability")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dr567k03ljhwx9pacmynrv47w5vgq9fkgncpm0vlvmby2g0xgdl"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-chardet
-                             python-cssselect
-                             python-lxml
-                             python-lxml-html-clean))
-    (native-inputs (list python-timeout-decorator
-                         python-setuptools
-                         python-pytest
-                         python-wheel))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
+    (propagated-inputs
+     (list python-chardet
+           python-cssselect
+           python-lxml
+           python-lxml-html-clean))    ;XXX: it sould be part of python-lxml lib
     (home-page "http://github.com/buriy/python-readability")
     (synopsis "HTML to text parser")
     (description
