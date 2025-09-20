@@ -9,6 +9,7 @@
 ;;; Copyright © 2023, 2024 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
+;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -529,6 +530,14 @@ which will be used as a snippet in origin."
      #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-hcl"
      #:commit commit
      #:license license:asl2.0)))
+
+(define-public tree-sitter-janet
+  (tree-sitter-grammar
+   "janet" "Janet"
+   "1sg862gqxn5y86sqa4habyicsr1ax70i7w8ibnn2yyx1bzn99jqn"
+   "0.1.0"
+   #:repository-url "https://github.com/GrayJack/tree-sitter-janet"
+   #:license license:bsd-3))
 
 (define-public tree-sitter-java
   (tree-sitter-grammar
