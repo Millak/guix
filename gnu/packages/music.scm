@@ -5060,28 +5060,27 @@ provide a very simple interface for editing and playing MIDI loops.")
   (package
     (name "python-discogs-client")
     (version "2.8")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "python3_discogs_client" version))
-              (sha256
-               (base32
-                "0fxk8q8z5v5l961d9z2ywq49i2fz50h074p81zv6w6j9zzs7fb0g"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/joalla/discogs_client")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ga48ds2q4as8srmvhq3ri1w7p7pmrr4yswcp9nf5c1rwdy02qys"))))
     (build-system pyproject-build-system)
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-dateutil
-           python-oauthlib
-           python-requests))
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-dateutil python-oauthlib python-requests))
     (home-page "https://github.com/joalla/discogs_client")
     (synopsis "Python client for the Discogs API")
-    (description "This is the continuation of the official Discogs API
-client for Python.  It enables you to query the Discogs database for
-information on artists, releases, labels, users, Marketplace listings,
-and more.  It also supports OAuth 1.0a authorization, which allows you to
-change user data such as profile information, collections and wantlists,
-inventory, and orders.")
+    (description
+     "This is the continuation of the official Discogs API client for Python.
+It enables you to query the Discogs database for information on artists,
+releases, labels, users, Marketplace listings,and more.  It also supports
+OAuth 1.0a authorization, which allows you to change user data such as profile
+information, collections and wantlists,inventory, and orders.")
     (license license:bsd-2)))
 
 (define-public libsmf
