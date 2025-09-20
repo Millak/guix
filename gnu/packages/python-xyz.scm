@@ -838,6 +838,30 @@ built-in @code{int} and @code{float} that are on par or faster with the Python
 equivalents.")
     (license license:expat)))
 
+(define-public python-findpython
+  (package
+    (name "python-findpython")
+    (version "0.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "findpython" version))
+       (sha256
+        (base32 "1p3kqr00sym0yaddsbaw1gf7nslfnscnd050q6ipj9rmfry68ccb"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pdm-backend
+           python-pytest))
+    (propagated-inputs
+     (list python-packaging
+           python-platformdirs))
+    (home-page "https://github.com/frostming/findpython")
+    (synopsis "Find Python versions the system")
+    (description
+     "This package provides a utility to find Python versions on the current
+system.")
+    (license license:expat)))
+
 (define-public python-flake8-class-newline
   (package
     (name "python-flake8-class-newline")
