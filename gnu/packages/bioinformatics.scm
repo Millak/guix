@@ -25689,7 +25689,7 @@ exclude =
     (inputs
      (cons python-wrapper (cargo-inputs 'python-gseapy)))
     (native-inputs
-     (list python-pytest python-wheel))
+     (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-numpy
            python-scipy
