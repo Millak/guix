@@ -6798,27 +6798,6 @@ developed by the Astropy project but is intended to be general and usable by
 any Python package.")
     (license license:bsd-3)))
 
-(define-public python-extras
-  (package
-    (name "python-extras")
-    (version "1.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "extras" version))
-       (sha256
-        (base32
-         "0khvm08rcwm62wc47j8niyl6h13f8w51c8669ifivjdr23g3cbhk"))))
-    (build-system python-build-system)
-    (arguments
-     ;; FIXME: Circular dependency on testtools.
-     '(#:tests? #f))
-    (home-page "https://github.com/testing-cabal/extras")
-    (synopsis "Useful extensions to the Python standard library")
-    (description
-     "Extras is a set of extensions to the Python standard library.")
-    (license license:expat)))
-
 (define-public python-types-colorama
   (package
     (name "python-types-colorama")
