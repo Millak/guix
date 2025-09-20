@@ -17312,6 +17312,8 @@ blocks or callables with two context managers and two decorators.")
     (license license:expat)))
 
 (define-public python-timeout-decorator
+  ;; TODO: Remove when python-requests-caches releses a fresh version dropping
+  ;; it, see, <https://github.com/requests-cache/requests-cache/pull/1111>.
   (package
     (name "python-timeout-decorator")
     (version "0.5.0")
@@ -17322,6 +17324,7 @@ blocks or callables with two context managers and two decorators.")
        (sha256
         (base32 "1mxk2qyydhzncm93z08kvj5ssxq3fr2n7pkrrji28nqwvdc2ybva"))))
     (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))
     (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/pnpnpn/timeout-decorator")
     (synopsis "Timeout decorator")
