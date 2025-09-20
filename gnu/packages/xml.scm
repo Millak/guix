@@ -189,7 +189,6 @@ binary extension of XML for the purpose of storing and manipulating data in a
 hierarchical form with variable field lengths.")
     (license license:lgpl2.1)))
 
-;; Note: Remember to check python-libxml2 when updating this package.
 (define-public libxml2
   (package
     (name "libxml2")
@@ -262,6 +261,24 @@ hierarchical form with variable field lengths.")
      "Libxml2 is the XML C parser and toolkit developed for the Gnome
 project (but it is usable outside of the Gnome platform).")
     (license license:x11)))
+
+;; This is an old version (the most recent that works) of libxml2 solely for
+;; building librsvg-2.40.
+;; XXX: Remove once Rust (and thus newer librsvg) is supported on all
+;; platforms.
+(define-public libxml2-2.11
+  (hidden-package
+   (package
+     (inherit libxml2)
+     (version "2.11.9")
+     (source (origin
+               (inherit (package-source libxml2))
+               (uri (string-append "mirror://gnome/sources/libxml2/"
+                                   (version-major+minor version)"/libxml2-"
+                                   version ".tar.xz"))
+               (sha256
+                (base32
+                 "17w0a622466k2hi5nln276la6rzfr9xaip3lqj71hmyvxyhmf0bq")))))))
 
 (define-public libxml2-xpath0
   (package/inherit libxml2

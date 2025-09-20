@@ -3802,7 +3802,7 @@ diagrams.")
            `(,glib "bin") ; glib-mkenums, etc.
            gobject-introspection)) ; g-ir-compiler, etc.
     (inputs
-     (list pango libcroco libxml2))
+     (list pango libcroco libxml2-2.11))
     (propagated-inputs
      ;; librsvg-2.0.pc refers to all of that.
      (list cairo gdk-pixbuf glib))
