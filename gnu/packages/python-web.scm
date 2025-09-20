@@ -4748,20 +4748,31 @@ configure engines.")
 (define-public python-zope-configuration
   (package
     (name "python-zope-configuration")
-    (version "4.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "zope.configuration" version))
-              (sha256
-               (base32
-                "0g6vrl7y27z9cj5xyrww9xlzk4npj55mgmlrcd9d2nj08jn2pw79"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-manuel python-zope-testing python-zope-testrunner))
-    (propagated-inputs
-     (list python-zope-i18nmessageid python-zope-interface
-           python-zope-schema))
-    (home-page "https://pypi.org/project/zope.configuration/")
+    (version "7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/zope.configuration")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11lr6z3jpz9835a1if89g3x7k31sviq2d0xvvic5xi4c980dbkhv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
+    (native-inputs (list python-manuel python-setuptools python-zope-testing
+                         python-zope-testrunner))
+    (propagated-inputs (list python-zope-i18nmessageid python-zope-interface
+                             python-zope-schema))
+    (home-page "https://zopeconfiguration.readthedocs.io")
     (synopsis "Zope Configuration Markup Language")
     (description "Zope.configuration implements ZCML, the Zope Configuration
 Markup Language.")
