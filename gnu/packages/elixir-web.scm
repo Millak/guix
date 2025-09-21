@@ -151,6 +151,25 @@ functions using the Common Locale Data Repository (CLDR).")
     (home-page "https://hexdocs.pm/ex_cldr_dates_times/")
     (license license:asl2.0)))
 
+(define-public elixir-ex-cldr-plugs
+  (package
+    (name "elixir-ex-cldr-plugs")
+    (version "1.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "ex_cldr_plugs" version))
+       (sha256
+        (base32 "0apm3x98abjnlhzb59p3qnhh2pmzrbk8gh0x209k0h5cgq4rx0ih"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-ex-cldr elixir-gettext elixir-jason elixir-plug))
+    (synopsis
+     "Plugs supporting CLDR")
+    (description
+     "Plugs supporting CLDR and setting the locale from requests and request headers.")
+    (home-page "https://hexdocs.pm/ex_cldr_plugs/")
+    (license license:asl2.0)))
+
 (define-public elixir-exjsx
   (package
     (name "elixir-exjsx")
