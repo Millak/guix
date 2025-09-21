@@ -441,12 +441,12 @@ drawing.")
                    license:expat))))
 
 (define-public lukesmithxyz-st
-  (let ((commit "e053bd6036331cc7d14f155614aebc20f5371d3a")
-        (revision "0"))
+  (let ((commit "62ebf677d3ad79e0596ff610127df5db034cd234")
+        (revision "1"))
     (package
       (inherit st)
       (name "lukesmithxyz-st")
-      (version "0.8.4")
+      (version (git-version "0.8.4" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -455,7 +455,7 @@ drawing.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "12avzzapkkj4mvd00zh8b6gynk6jysh84jcwlkliyyd82lvyw22v"))))
+          (base32 "1cqnl8zlxccqg0901gx21h06j9wk3ja6lr8wp4k85ni4msf4m09g"))))
       (arguments
        (substitute-keyword-arguments (package-arguments st)
          ((#:phases phases)
