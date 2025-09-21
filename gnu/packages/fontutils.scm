@@ -1063,8 +1063,8 @@ tools can generate partial instances.
        (uri (pypi-uri "ufonormalizer" version ".zip"))
        (sha256
         (base32 "0v5awian2alap7nvxfz38aahyqbqnma16nrqcpr8602hbbki04g6"))))
-    (build-system python-build-system)
-    (native-inputs (list python-setuptools-scm unzip))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools-scm unzip))
     (home-page "https://github.com/unified-font-object/ufoNormalizer")
     (synopsis "Script to normalize @acronym{UFO, Unified Font Object} data")
     (description "The purpose of the @command{ufonormalizer} command is to
