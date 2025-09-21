@@ -10058,12 +10058,8 @@ SOCKS protocols.  It can be paired with any I/O library.")
      ;; Requires Internet access to resolve example.com
      (list #:test-flags '(list "--ignore=tests/test_client.py")))
     (propagated-inputs (list python-wsproto))
-    (native-inputs (list python-flake8
-                         python-pytest
-                         python-pytest-cov
-                         python-setuptools
-                         python-tox
-                         python-wheel))
+    (native-inputs (list python-pytest
+                         python-setuptools))
     (home-page "https://github.com/miguelgrinberg/simple-websocket")
     (synopsis "Simple WebSocket server and client for Python")
     (description "This package provides a simple @code{WebSocket} server and
