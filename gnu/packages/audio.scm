@@ -1444,7 +1444,8 @@ tools.")
          ;; CVE-2017-6833:
          "audiofile-division-by-zero.patch"
          "audiofile-CVE-2018-13440.patch"
-         "audiofile-CVE-2018-17095.patch"))))
+         "audiofile-CVE-2018-17095.patch"
+         "audiofile-CVE-2022-24599.patch"))))
     (properties `((lint-hidden-cve . ("CVE-2017-6829"
 
                                       "CVE-2017-6827" "CVE-2017-6828"

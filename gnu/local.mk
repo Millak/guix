@@ -1012,6 +1012,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/audiofile-CVE-2015-7747.patch		\
   %D%/packages/patches/audiofile-CVE-2018-13440.patch		\
   %D%/packages/patches/audiofile-CVE-2018-17095.patch		\
+  %D%/packages/patches/audiofile-CVE-2022-24599.patch		\
   %D%/packages/patches/audiofile-check-number-of-coefficients.patch \
   %D%/packages/patches/audiofile-Fail-on-error-in-parseFormat.patch \
   %D%/packages/patches/audiofile-Fix-index-overflow-in-IMA.cpp.patch \
