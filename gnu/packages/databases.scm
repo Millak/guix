@@ -3654,22 +3654,20 @@ on another machine, accessed via TCP/IP.")
 (define-public python-peewee
   (package
     (name "python-peewee")
-    (version "3.17.9")
+    (version "3.18.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "peewee" version))
        (sha256
-        (base32 "1a67kdmyd0y3xzhqj5r90wlpqfg703cqx36awg429qsq2w0cs5gy"))))
+        (base32 "184n97vc9xy0whl8w54431fc4h5ij7mjwggnfbmg5bv1xdil59bp"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))                    ; fails to import test data
     (inputs
      (list sqlite))
     (native-inputs
-     (list python-cython
-           python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (home-page "https://github.com/coleifer/peewee/")
     (synopsis "Small object-relational mapping utility")
     (description
