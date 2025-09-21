@@ -886,10 +886,14 @@ performance when matching IRC hostmasks.")
        (sha256
         (base32 "0x0psq31f43d88b8jhaqwd9f1ykiqm4j13i8nxgcgkgp992cw002"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "test.py")))
     (propagated-inputs (list python-pyyaml))
     (native-inputs
-     (list python-girc python-ircmatch
-           python-setuptools python-wheel))
+     (list python-girc
+           python-ircmatch
+           python-setuptools))
     (home-page "https://github.com/ircdocs/parser-tests")
     (synopsis "Tests for various IRC protocol parsers")
     (description
