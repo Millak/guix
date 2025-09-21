@@ -31674,23 +31674,25 @@ information in various formats.")
 (define-public python-cairosvg
   (package
     (name "python-cairosvg")
-    (version "2.5.0")
+    (version "2.8.2")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "CairoSVG" version))
+       (uri (pypi-uri "cairosvg" version))
        (sha256
-        (base32 "1ylsisha2cc4w0yydxwhy7idkfw1inl9fsipxsrm7vyby080vi9z"))))
+        (base32 "17zgbgw24jw70rfka9wa3ff5wymk9cmaqk4a6697mchpcglg9jq7"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-cairocffi python-cssselect2 python-defusedxml
-           python-pillow python-tinycss2))
+    (arguments
+     (list #:test-flags #~(list "cairosvg/test_api.py")))
     (native-inputs
-     (list python-pytest-flake8
-           python-pytest-isort
-           python-pytest-runner
-           python-setuptools
-           python-wheel))
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-cairocffi
+           python-cssselect2
+           python-defusedxml
+           python-pillow
+           python-tinycss2))
     (home-page "https://cairosvg.org/")
     (synopsis "SVG to PDF/PS/PNG converter based on Cairo")
     (description "CairoSVG is a SVG converter based on Cairo.  It can export
