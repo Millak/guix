@@ -4151,7 +4151,7 @@ of tags.")
        (sha256
         (base32 "05rv5wmasamwxkbs8v9lbp2js6y5hhqz6c58c2afz2b202yp932m"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://python-musicbrainzngs.readthedocs.org/")
     (synopsis "Python bindings for MusicBrainz NGS webservice")
     (description
