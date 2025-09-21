@@ -5470,34 +5470,37 @@ data.")
     (license license:expat)))
 
 (define-public python-supersmoother
-  (package
-    (name "python-supersmoother")
-    (version "0.4")
-    (source
-     (origin
-       (method git-fetch)        ; no package in PyPI
-       (uri (git-reference
-             (url "https://github.com/jakevdp/supersmoother")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1lkj8l2mpki6x2pxcwlrplx63lhi8h9v2rzxgjfb0cppsfr8m1wp"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-scipy
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-numpy))
-    (home-page "http://github.com/jakevdp/supersmoother")
-    (synopsis "Python implementation of Friedman's Supersmoother")
-    (description
-     "This package provides an efficient implementation of
+  ;; 0.4 was release in 2017, there a lot of changes on master branch
+  ;; providing tests fixtures.
+  (let ((commit "0a81544ac6bb33bdb08deeba69e97a4ceebcebcf")
+        (revision "0"))
+    (package
+      (name "python-supersmoother")
+      (version (git-version "0.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)        ; no package in PyPI
+         (uri (git-reference
+                (url "https://github.com/jakevdp/supersmoother")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1r79nssw4a44zizvqg8y685nv3asdfj440s227phfww6kz33s3la"))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list python-pytest
+             python-scipy
+             python-setuptools))
+      (propagated-inputs
+       (list python-numpy))
+      (home-page "http://github.com/jakevdp/supersmoother")
+      (synopsis "Python implementation of Friedman's Supersmoother")
+      (description
+       "This package provides an efficient implementation of
 @url{https://www.slac.stanford.edu/pubs/slacpubs/3250/slac-pub-3477.pdf,
 Friedman's SuperSmoother} based in Python.  It makes use of numpy for fast
 numerical computation.")
-    (license license:bsd-2)))
+      (license license:bsd-2))))
 
 (define-public python-pylems
   (package
