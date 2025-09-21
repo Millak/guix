@@ -7808,14 +7808,15 @@ in finite element programs.")
     (native-inputs
      (list unzip))
     (inputs
-     `(("hdf5" ,hdf5)
-       ;; FIXME: 'mkoctfile' fails with a linker error:
-       ;;  ld: cannot find -loctinterp
-       ;;  ld: cannot find -loctave
-       ;; Disable it for now.
-       ;;("octave" ,octave-cli)
-       ("python" ,python-2) ; print syntax
-       ("zlib" ,zlib)))
+      (list
+        hdf5
+        ;; FIXME: 'mkoctfile' fails with a linker error:
+        ;;  ld: cannot find -loctinterp
+        ;;  ld: cannot find -loctave
+        ;; Disable it for now.
+        ;; octave-cli
+        python
+        zlib))
     (arguments
      `(;; The 'share/flann/octave' contains a .mex file, which is an ELF file
        ;; taken 46 MiB unstripped, and 6 MiB stripped.
