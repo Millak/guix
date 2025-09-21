@@ -20778,10 +20778,13 @@ matrices.")
     (version "1.7.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "scanorama" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/brianhie/scanorama")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0p00brhd8j8klnvcc2r3h5bhm4iywhbs5lw0fy605hxbcc711pk7"))))
+        (base32 "1jpn4kq3qqa40xr0dwa9bw5cgga6h9ww9gfbyj6w3mfs8rv4w9rz"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-annoy
                              python-fbpca
@@ -20791,10 +20794,7 @@ matrices.")
                              python-numpy
                              python-scikit-learn
                              python-scipy))
-    (native-inputs
-     (list python-anndata
-           python-pytest
-           python-setuptools))
+    (native-inputs (list python-anndata python-pytest python-setuptools))
     (home-page "https://github.com/brianhie/scanorama")
     (synopsis
      "Panoramic stitching of heterogeneous single cell transcriptomic data")
