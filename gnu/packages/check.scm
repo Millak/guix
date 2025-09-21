@@ -3932,7 +3932,7 @@ helpers for writing tests.")
 (define-public subunit
   (package
     (name "subunit")
-    (version "1.4.2")
+    (version "1.4.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3941,7 +3941,7 @@ helpers for writing tests.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16n1zxwnmhb7vzixngvmm5zzk4q5jaqqjwyr6pr6w0ys60b7xja3"))))
+                "0fcqxh4cwhn9yz2z1zszzvgc554gai5b7c59w45a4cg9y9p30h8d"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf
                          automake
@@ -3953,7 +3953,10 @@ helpers for writing tests.")
                          python-hypothesis
                          python-testscenarios))
     (inputs (list perl python))
-    (propagated-inputs (list python-testtools))
+    (propagated-inputs (list
+                        python-iso8601
+                        python-pygobject
+                        python-testtools))
     (home-page "https://github.com/testing-cabal/subunit")
     (synopsis "Test reporting and control protocol")
     (description
