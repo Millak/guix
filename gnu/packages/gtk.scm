@@ -2119,25 +2119,16 @@ printing and other features typical of a source code editor.")
     (version "1.26.0")
     (source
      (origin
-      (method url-fetch)
-      ;; TODO: Try to build from git checkout instead GitHub release tarball.
-      (uri (string-append "https://github.com/pygobject/pycairo/releases/download/v"
-                          version "/pycairo-" version ".tar.gz"))
-      (sha256
-       (base32
-        "1sybz43sj4ynjahlkidrcdpdrq8yi1avkndc2hgb5pgvfjld1p9d"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; XXX: Project provides Meson build as well which may simplify the
-      ;; packaging.
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'build-extensions
-            (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pygobject/pycairo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pqam2dxmp6b6r0pvarhiw1sp6p5nwlpyl2754aji445q4zcqj81"))))
+    (build-system meson-build-system)
     (native-inputs
-     (list pkg-config python-pytest python-setuptools))
+     (list pkg-config python python-pytest python-setuptools))
     (propagated-inputs                  ;pycairo.pc references cairo
      (list cairo))
     (home-page "https://cairographics.org/pycairo/")
@@ -2147,8 +2138,6 @@ printing and other features typical of a source code editor.")
     (properties
      '((upstream-name . "pycairo")))
     (license license:lgpl3+)))
-
-;; Pycairo no longer supports Python 2 since version 1.19.0, so we stick
 
 (define-public perl-cairo
   (package
