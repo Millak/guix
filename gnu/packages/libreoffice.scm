@@ -479,14 +479,14 @@ Apple Keynote documents.  It currently supports Keynote versions 2 to 5.")
 (define-public liblangtag
   (package
     (name "liblangtag")
-    (version "0.6.4")
+    (version "0.6.7")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://bitbucket.org/tagoh/liblangtag/downloads/"
                             "liblangtag-" version ".tar.bz2"))
         (sha256
-         (base32 "0r55r30ih8dgq1hwbpl834igilj7bpxcnmlrlkd3vryk2wn0c0ap"))))
+         (base32 "03h33sjqsrmmkyj2kxs7c6226hd4s5n22bz62b4hag1zmvabrmjy"))))
     (build-system gnu-build-system)
     (native-inputs
      (list libtool pkg-config))
