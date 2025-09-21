@@ -1307,6 +1307,8 @@ Django Q, dependencies updates, docs updates and several bug fixes.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; XXX: No tests in Pypi archive, unclear how to get it from git.
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'use-poetry-core
