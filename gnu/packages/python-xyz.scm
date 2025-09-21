@@ -7482,13 +7482,9 @@ diff, and patch JSON and JSON-like structures in Python.")
         (base32 "1nh8m6rxslwk05daxshxmgk41qfp18yynydba49b13l4m8dnh634"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-codecov
-           python-coveralls
-           python-pytest
+     (list python-pytest
            python-pytest-cov
-           python-setuptools
-           python-tox
-           python-wheel))
+           python-setuptools))
     (propagated-inputs (list python-pyparsing))
     (home-page "https://github.com/shinichi-takii/ddlparse")
     (synopsis "Parses and converts DDL to BigQuery JSON schema")
