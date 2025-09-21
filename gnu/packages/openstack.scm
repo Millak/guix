@@ -1153,29 +1153,39 @@ Gerrit for review, or fetching existing ones.")
     (version "1.4.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "requestsexceptions" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openstack/requestsexceptions")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0r9hp9yzgj8r81q5gc6r8sgxldqc09xi6ax0b7a6dw0qfv3wp5dh"))))
+        (base32 "12c4bi2vm337sgbbl08i01v794glnk1fzgxdc11545dqdl57rslz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; XXX: There are some tests in tox.ini, but it leads nowhere.
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements
             (lambda _
               (substitute* "test-requirements.txt"
                 (("hacking.*")
-                 "")))))))
-    (native-inputs (list python-pbr python-setuptools python-wheel))
-    (home-page "https://www.openstack.org/")
-    (synopsis "Import exceptions from potentially bundled packages in requests")
-    (description "The Python requests library bundles the urllib3 library,
-however, some software distributions modify requests to remove the bundled
-library.  This makes some operations difficult, such as suppressing the
-“insecure platform warning” messages that urllib emits.  This package is a
-simple library to find the correct path to exceptions in the requests library
-regardless of whether they are bundled or not.")
+                 ""))))
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "PBR_VERSION" #$version))))))
+    (native-inputs (list python-os-testr python-pbr python-setuptools))
+    (home-page "https://github.com/openstack/requestsexceptions")
+    (synopsis
+     "Import exceptions from potentially bundled packages in requests")
+    (description
+     "The Python requests library bundles the urllib3 library, however, some
+software distributions modify requests to remove the bundled library.  This
+makes some operations difficult, such as suppressing the “insecure platform
+warning” messages that urllib emits.  This package is a simple library to find
+the correct path to exceptions in the requests library regardless of whether
+they are bundled or not.")
     (license license:asl2.0)))
 
 (define-public python-openstacksdk
