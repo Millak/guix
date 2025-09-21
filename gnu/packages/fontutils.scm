@@ -528,13 +528,22 @@ Kit for OpenType (AFDKO) @command{tx} tool.")
     (version "0.5.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "compreffor" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googlefonts/compreffor")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "03hh7yi5slib4gayvj955a2f03j9yknijsx6kbh3yj7r6wc3vhc9"))))
+        (base32 "04pgh1ajglvzm229c4janazfillh9156i4zrkhkyn2mb3dm1zq6y"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags #~(list "--pyargs" "compreffor")))
+     (list
+      #:test-flags #~(list "--pyargs" "compreffor")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-cython
            python-pytest
@@ -543,8 +552,9 @@ Kit for OpenType (AFDKO) @command{tx} tool.")
     (propagated-inputs (list python-fonttools-minimal))
     (home-page "https://github.com/googlefonts/compreffor")
     (synopsis "@acronym{CFF, Compact Font Format} subroutinizer for fontTools")
-    (description "This package provides a @acronym{CFF, Compact Font Format}
-subroutinizer for fontTools.")
+    (description
+     "This package provides a @acronym{CFF, Compact Font Format} subroutinizer
+for fontTools.")
     (license license:asl2.0)))
 
 (define-public python-cu2qu
