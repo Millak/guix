@@ -1956,14 +1956,24 @@ API-compatible with defcon.")
 (define-public python-defcon-bootstrap
   (package
     (name "python-defcon-bootstrap")
-    (version "0.10.3")
+    (version "0.11.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "defcon" version ".zip"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/robotools/defcon")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "036clkwjfv5mmvy6s67s0pbni73n9hdw32z20gm4w5jzqzbjdpjn"))))
+        (base32 "06w5kd5ac63m6m8x8j4xwdl7ncbpjl7pdpfpy9i6c8nhbd8sbjfm"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs (list python-fontpens-bootstrap python-fonttools))
     (native-inputs
      (list python-pytest
@@ -1971,8 +1981,9 @@ API-compatible with defcon.")
            python-setuptools-scm
            unzip))
     (home-page "https://github.com/robotools/defcon")
-    (synopsis "Flexible objects for representing @acronym{UFO, unified font object} data")
-    (description "Defcon is a set of @acronym{UFO, unified font object} based
+    (synopsis "Flexible objects for representing UFO data")
+    (description
+     "Defcon is a set of @acronym{UFO, unified font object} based
 objects optimized for use in font editing applications.  The objects are built
 to be lightweight, fast and flexible.  The objects are very bare-bones and
 they are not meant to be end-all, be-all objects.  Rather, they are meant to
