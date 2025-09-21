@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Pierre-Henry Fröhring <contact@phfrohring.com>
+;;; Copyright © 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -73,6 +74,7 @@ See: https://github.com/hexpm/specifications/blob/main/endpoints.md"
                     #:key
                     source
                     (tests? #t)
+                    (test-flags ''())
                     (mix-path #f) ;See MIX_PATH.
                     (mix-exs "mix.exs") ;See MIX_EXS.
                     (build-per-environment #t) ;See :build_per_environment.
@@ -107,6 +109,7 @@ See: https://github.com/hexpm/specifications/blob/main/endpoints.md"
                            #:source #+source
                            #:system #$system
                            #:tests? #$tests?
+                           #:test-flags #$test-flags
                            #:mix-path #$mix-path
                            #:mix-exs #$mix-exs
                            #:mix-environments '#$mix-environments

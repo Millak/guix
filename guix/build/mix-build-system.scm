@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2023 Pierre-Henry Fröhring <contact@phfrohring.com>
 ;;; Copyright © 2024 Igor Goryachev <igor@goryachev.org>
-;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2024, 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -119,13 +119,14 @@ See: https://hexdocs.pm/mix/1.15.7/Mix.html#module-environment-variables"
                       "--no-prune-code-paths"))
             mix-environments))
 
-(define* (check #:key (tests? #t) #:allow-other-keys)
+(define* (check #:key (tests? #t) (test-flags '()) #:allow-other-keys)
   "Test the Mix project."
   (if tests?
       (begin
         (setenv "MIX_ENV" "test")
-        (invoke "mix" "do" "compile" "--no-deps-check" "--no-prune-code-paths" "+"
-                "test" "--no-deps-check"))
+        (apply invoke "mix" "do" "compile" "--no-deps-check"
+                       "--no-prune-code-paths" "+" "test"
+                       "--no-deps-check" test-flags))
       (format #t "tests? = ~a~%" tests?)))
 
 (define* (remove-mix-dirs . _)
