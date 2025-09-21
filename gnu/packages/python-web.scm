@@ -1934,7 +1934,7 @@ routes using HTTP Digest Authentication.")
               (lambda _
                 (substitute* "setup.cfg"
                   (("^tests_require.*") "")))))))
-      (native-inputs (list python-setuptools python-wheel unzip))
+      (native-inputs (list python-pytest python-setuptools))
       (home-page "https://github.com/juancarlospaco/css-html-js-minify")
       (synopsis "CSS/HTML/JS minifier")
       (description
