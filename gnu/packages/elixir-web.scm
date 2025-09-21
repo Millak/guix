@@ -295,6 +295,27 @@ purposes.  Its goal is to be as close as possible to
     (home-page "https://hexdocs.pm/httpoison/")
     (license license:expat)))
 
+(define-public elixir-mint-web-socket
+  (package
+    (name "elixir-mint-web-socket")
+    (version "1.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "mint_web_socket" version))
+       (sha256
+        (base32 "14d9c2ryqggl2p54bh0rhm3ab17j6l7ir817rsh4nnn455alqz82"))))
+    (build-system mix-build-system)
+    (arguments
+     ;; Tests depend on gun from hex.pm which is not packaged yet.
+     (list #:tests? #f))
+    (native-inputs (list elixir-jason erlang-cowboy))
+    (propagated-inputs (list elixir-mint))
+    (synopsis "WebSocket support for Mint")
+    (description "HTTP/1 and HTTP/2 @code{WebSocket} support for Mint.")
+    (home-page "https://hexdocs.pm/mint_web_socket/")
+    (license license:asl2.0)))
+
 (define-public elixir-mint
   (package
     (name "elixir-mint")
