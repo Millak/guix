@@ -638,7 +638,7 @@ applications, there is xclip integration." )
 (define-public ssh-to-age
   (package
     (name "ssh-to-age")
-    (version "1.1.7")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -647,7 +647,7 @@ applications, there is xclip integration." )
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "134gpbalyll238wvj9ci0rascgm4csayz863ci99cy5qq8266wrl"))))
+        (base32 "0f8s8k8sbdrifklspcc83rjp290v7mrqqp9jwg02dj2mm7iy2bfj"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/Mic92/ssh-to-age/cmd/ssh-to-age"
