@@ -1903,11 +1903,11 @@ API-compatible with defcon.")
        (uri (pypi-uri "defcon" version ".zip"))
        (sha256
         (base32 "036clkwjfv5mmvy6s67s0pbni73n9hdw32z20gm4w5jzqzbjdpjn"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-fontpens-bootstrap python-fonttools))
     (native-inputs
      (list python-pytest
-           python-pytest-runner
+           python-setuptools
            python-setuptools-scm
            unzip))
     (home-page "https://github.com/robotools/defcon")
