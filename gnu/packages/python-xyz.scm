@@ -32029,7 +32029,9 @@ standard error channel (stderr) in your program.")
        (sha256
         (base32 "1ygjgkzn0i61zk2yr27aqnma08c8xpblhdixli9f20if1nlgkm2y"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list #:tests? #f)) ;no tests
+    (native-inputs (list python-setuptools))
     (home-page "http://github.com/vpelletier/python-ioctl-opt")
     (synopsis "Functions to compute fnctl.ioctl's opt argument")
     (description
