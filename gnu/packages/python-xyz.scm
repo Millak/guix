@@ -5357,14 +5357,16 @@ your Python package version as a calendar version.")
 (define-public python-can
   (package
     (name "python-can")
-    (version "4.2.0")
+    (version "4.6.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python-can" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hardbyte/python-can")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1w5sdzxivpd3pw4pypwnjlksvfimdb93qnlddbrh5f13flhsgg8g"))))
+        (base32 "0i89hzc9n1h8i63wa333ahh5j1xqxq9v4ymcx7mcsg6ygji5wllr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5375,16 +5377,17 @@ your Python package version as a calendar version.")
          ;;
          ;; Disable tests which require specific CAN drivers we have no
          ;; package for in Guix.
-         "--ignore" "test/test_interface_canalystii.py"
+         "--ignore=test/test_interface_canalystii.py"
          ;; These tests fail with "OSError: [Errno 19] No such device".
-         "-k" "not BasicTestUdpMulticastBusIPv")))
-    (propagated-inputs
-     (list python-msgpack python-typing-extensions python-wrapt
-           python-setuptools))
+         "-k" "not BasicTestUdpMulticastBusIPv")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (propagated-inputs (list python-packaging python-wrapt))
     (native-inputs
      (list ;; python-canalystii ; Not packed yet
-           python-codecov
-           python-coverage
            python-future
            python-hypothesis
            python-mock
@@ -5392,13 +5395,14 @@ your Python package version as a calendar version.")
            python-pyserial
            python-pytest
            python-pytest-cov
-           python-pytest-runner
            python-pytest-timeout
-           python-wheel))
+           python-setuptools
+           python-setuptools-scm))
     (home-page "https://github.com/hardbyte/python-can")
     (synopsis "Controller Area Network (CAN) interface module for Python")
-    (description "This package defines the @code{can} module, which provides
-controller area network (CAN) support for Python developers; providing common
+    (description
+     "This package defines the @code{can} module, which provides controller
+area network (CAN) support for Python developers; providing common
 abstractions to different hardware devices, and a suite of utilities for
 sending and receiving messages on a CAN bus.")
     (license license:lgpl3+)))
