@@ -4914,6 +4914,9 @@ milliarcsecond).")
          (base32 "0b2rgb7pvwnl72pqjryf9c812mmdxr69fwiym7mnz05l2xrcr6hd"))))
     (arguments
      (list
+      ;; FIXME: OSError: [Errno 30] Read-only file system:
+      ;; '/gnu/store/4az2pl6mslrdh9wcxd5r3dmr4spr5y94-python-3.11.11/lib/python3.11/@test_43_tmpæ.pyc'
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
