@@ -111,6 +111,7 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages nettle)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages opencl)
   #:use-module (gnu packages perl)
@@ -1594,15 +1595,15 @@ is the community-enhanced, \"jumbo\" version of John the Ripper.")
 (define-public fpm2
   (package
     (name "fpm2")
-    (version "0.79")
+    (version "0.90.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://als.regnet.cz/fpm2/download/fpm2-"
-                           version ".tar.bz2"))
+                           version ".tar.xz"))
        (sha256
         (base32
-         "19sdy1lygfhkg5nxi2w9a4d9kwvw24nxp0ix0p0lz91qpvk9qpnm"))))
+         "144mylycnkpzxbbfy30gas450iypgwx0bcd3nrimyws417kwb8qv"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1619,16 +1620,14 @@ is the community-enhanced, \"jumbo\" version of John the Ripper.")
                 (lambda (port)
                   (format port "data/fpm2.desktop.in
 data/fpm2.desktop.in.in
-fpm2.glade
 src/callbacks.c
 src/fpm.c
 src/fpm_file.c
 src/interface.c
 src/support.c
-fpm2.glade
 "))))))))
     (inputs
-     (list gtk+-2 gnupg libxml2))
+     (list gtk+ gnupg libxml2 nettle))
     (native-inputs
      (list pkg-config intltool))
     (synopsis "Manage, generate and store passwords encrypted")
