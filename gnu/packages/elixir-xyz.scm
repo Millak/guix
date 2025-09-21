@@ -713,6 +713,24 @@ for Elixir.")
     (home-page "https://hexdocs.pm/mime/")
     (license license:asl2.0)))
 
+(define-public elixir-mimic
+  (package
+    (name "elixir-mimic")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "mimic" version))
+       (sha256
+        (base32 "0mh9dx5v5zxghjlgxlgxkn74x0jw08iszb88c9809v9k16kw4qcx"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list elixir-ham))
+    (synopsis "Mocks for Elixir functions")
+    (description "This package provides @code{mimic} a mocking library for
+Elixir.")
+    (home-page "https://hexdocs.pm/mimic/")
+    (license license:asl2.0)))
+
 (define-public elixir-mox
   (package
     (name "elixir-mox")
