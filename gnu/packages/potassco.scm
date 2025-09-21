@@ -776,8 +776,8 @@ as logic programs.")
                     "clingexplaid>=1.3.3"))))))
    (build-system pyproject-build-system)
    (native-inputs
-    (list python-setuptools
-          python-wheel))
+    (list python-pytest
+          python-setuptools))
    (propagated-inputs
     (list python-clingo
           python-clingo-dl
