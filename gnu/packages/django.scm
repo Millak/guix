@@ -612,24 +612,27 @@ them do this.")
     (version "65.3.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "django_allauth" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pennersr/django-allauth")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "11q56p07g987hsz7v27nrvr2piy72jhyzwjrcis3lxd2f4drabp0"))))
+        (base32 "1vm8q5jp854lrykqirmklmlppzz6dih2bzjgv4c7mdwhsfp9s1i2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       ;; XXX: KeyError: location
-      '(list "--ignore=allauth/socialaccount/providers/openid/tests.py")
+      #~(list "--ignore=allauth/socialaccount/providers/openid/tests.py")
       #:phases
       #~(modify-phases %standard-phases
           ;; FIXME: This should be fixed in python-xmlsec
           (add-before 'check 'pre-check
             (lambda* (#:key inputs #:allow-other-keys)
-              (setenv "LD_LIBRARY_PATH"
-                      (dirname (search-input-file inputs "lib/libxmlsec1-openssl.so.1.2.37"))))))))
+              (let ((lib (search-input-file inputs "lib/libxmlsec1-openssl.so")))
+                (setenv "LD_LIBRARY_PATH"
+                        (dirname lib))))))))
     (propagated-inputs
      (list python-asgiref
            python-django
@@ -640,12 +643,12 @@ them do this.")
            python-requests
            python-requests-oauthlib
            python-python3-saml))
+    (inputs (list xmlsec-openssl))
     (native-inputs
      (list tzdata-for-tests
            python-pytest
            python-pytest-django
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://github.com/pennersr/django-allauth")
     (synopsis "Set of Django applications addressing authentication")
     (description
