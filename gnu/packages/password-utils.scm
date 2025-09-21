@@ -489,8 +489,8 @@ platforms.")
     (license license:artistic2.0)))
 
 (define-public pwsafe-cli
-  (let ((commit "c49a0541b66647ad04d19ddb351d264054c67759")
-        (revision "0"))
+  (let ((commit "984fe38489c24602391e24150b450a37bfb866b7")
+        (revision "1"))
     (package
       (name "pwsafe-cli")
       (version (git-version "0.2.0" revision commit))
@@ -502,14 +502,11 @@ platforms.")
                (commit commit)))
          (sha256
           (base32
-           "0ak09r1l7k57m6pdx468hhzvz0szmaq42vyr575fvsjc8rbrp8qq"))
+           "1fx0rhvl9ijjs9z5psxs990752rgw0558g7acjc0myx67ffxhhmy"))
          (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
        (list
-        ;; FIXME: skip failing test suite (requires write access to /tmp),
-        ;; patching path does not help somehow.
-        #:tests? #f
         #:phases
         #~(modify-phases %standard-phases
             (replace 'bootstrap
