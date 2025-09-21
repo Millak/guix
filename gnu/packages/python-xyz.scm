@@ -4083,25 +4083,35 @@ API wrappers to build on.")
       (license license:bsd-2))))
 
 (define-public python-iron-mq
-  (package
-    (name "python-iron-mq")
-    (version "0.9")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "iron-mq" version))
-       (sha256
-        (base32 "1ypc71xppidy5lx3mbfj1zc685na3jns441q6il8kh6rfbc42169"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-iron-core))
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "https://github.com/iron-io/iron_mq_python")
-    (synopsis "Client library for IronMQ, a message queue in the cloud")
-    (description
-     "This package provides Python language bindings for IronMQ.  IronMQ is an
+  (let ((commit "e6ff76ac0068c3184d9003e3163b94ffc839dbe8")
+        (revision "0"))
+    (package
+      (name "python-iron-mq")
+      (version (git-version "0.9" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/iron-io/iron_mq_python")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0bb8gpzb3jr2r6i367jspwcxrz5ygdf40a67nl9aj5n79hg1aq8x"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        ;; XXX: Tests are broken and require network access.
+        #:tests? #f
+        #:test-backend #~'unittest))
+      (propagated-inputs (list python-iron-core))
+      (native-inputs (list python-setuptools))
+      (home-page "https://github.com/iron-io/iron_mq_python")
+      (synopsis "Client library for IronMQ, a message queue in the cloud")
+      (description
+       "This package provides Python language bindings for IronMQ.  IronMQ is an
 elastic message queue for managing data and event flow within cloud
 applications and between systems.")
-    (license license:bsd-2)))
+      (license license:bsd-2))))
 
 (define-public python-rasterio
   (package
