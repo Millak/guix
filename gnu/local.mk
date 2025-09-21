@@ -301,7 +301,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/freeipmi.scm			\
   %D%/packages/ftp.scm				\
   %D%/packages/fribidi.scm			\
-  %D%/packages/fvwm.scm				\
   %D%/packages/gambas.scm			\
   %D%/packages/game-development.scm		\
   %D%/packages/games.scm			\
