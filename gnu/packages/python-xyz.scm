@@ -9017,25 +9017,6 @@ with Python.")
 working with Valve's VDF text format.")
     (license license:expat)))
 
-(define-public python-pygments-github-lexers
-  (package
-    (name "python-pygments-github-lexers")
-    (version "0.0.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pygments-github-lexers" version))
-       (sha256
-        (base32
-         "0cz14clcc9z4pn79ll8hp3xzgsrfjscak5zfsvlgrz6ngkkmgjma"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-pygments))
-    (home-page "https://github.com/liluo/pygments-github-lexers")
-    (synopsis "Pygments Github custom lexers")
-    (description "This package installs Github custom lexers to Pygments.")
-    (license license:bsd-3)))
-
 (define-public python-pygtrie
   (package
     (name "python-pygtrie")
