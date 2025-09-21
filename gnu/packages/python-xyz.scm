@@ -9017,14 +9017,16 @@ with Python.")
     (version "3.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "vdf" version))
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/ValvePython/vdf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1bz2gn04pl6rj2mawlzlirz1ygg4rdypq0pxbyg018873vs1jm7x"))))
+        (base32 "1xc0sd21xgf08pf6dwa4l23y9jb6yqaw61rr03ns0d2r6sby137a"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools python-wheel))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/ValvePython/vdf")
     (synopsis "Work with Valve's VDF text format")
     (description "This package provides @code{python-vdf}, a library for
