@@ -2116,7 +2116,7 @@ printing and other features typical of a source code editor.")
 (define-public python-pycairo
   (package
     (name "python-pycairo")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method git-fetch)
@@ -2125,7 +2125,7 @@ printing and other features typical of a source code editor.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pqam2dxmp6b6r0pvarhiw1sp6p5nwlpyl2754aji445q4zcqj81"))))
+        (base32 "0k0mm3kx0rsz07v7a4ijrgjnxigr9in1zcsij8nlg8aszxi7a09q"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config python python-pytest python-setuptools))
