@@ -560,13 +560,13 @@ for running external processes.")
 (define-public python-oslo-config
   (package
     (name "python-oslo-config")
-    (version "8.7.1")
+    (version "9.8.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "oslo.config" version))
+       (uri (pypi-uri "oslo_config" version))
        (sha256
-        (base32 "0q3v4yicqls9zsfxkmh5mrgz9dailaz3ir25p458gj6dg3bldhx0"))))
+        (base32 "1ah8knzcxkg28v9av19wp6bg91d1mfyxm2y56whngvmb0jah1a7f"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -593,7 +593,6 @@ for running external processes.")
      (list python-coverage
            python-docutils
            python-fixtures
-           python-mypy
            python-oslo-log-bootstrap
            python-oslotest-bootstrap
            python-pbr
@@ -602,8 +601,7 @@ for running external processes.")
            python-sphinx
            python-stestr
            python-testscenarios
-           python-testtools
-           python-wheel))
+           python-testtools))
     (home-page "https://launchpad.net/oslo")
     (synopsis "Oslo Configuration API")
     (description
