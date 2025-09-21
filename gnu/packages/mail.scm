@@ -1685,11 +1685,8 @@ useful for email address completion.")
                 (("libnotmuch\\.so\\.")
                  (format #f "~a/lib/libnotmuch.so."
                          #$(this-package-input "notmuch")))))))))
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
-    (inputs
-     (list notmuch))
+    (native-inputs (list python-setuptools))
+    (inputs (list notmuch))
     (home-page (package-home-page notmuch))
     (synopsis "Python bindings of the Notmuch mail indexing library")
     (description
