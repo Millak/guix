@@ -892,6 +892,13 @@ which will be used as a snippet in origin."
    "1.1.2"
    #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-zig"))
 
+(define-public tree-sitter-vim
+  (tree-sitter-grammar "vim"
+   "Vimscript"
+   "0wr0sijh3vpka0gysbf0ki8zkvwfg8r5lvhi3xbwmkbyszjzgrqw"
+   "0.7.0"
+   #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-vim"))
+
 (define* (python-tree-sitter-grammar pkg #:key tests?)
   "Returns a package for Python bindings of a Tree-sitter grammar.  PKG is a
 package for a Tree-sitter grammar; its name will be used with python- prefix
