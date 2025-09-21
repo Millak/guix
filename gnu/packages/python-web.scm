@@ -337,21 +337,30 @@ server process.")
 (define-public python-devpi-server
   (package
     (name "python-devpi-server")
-    (version "6.14.0")
+    (version "6.17.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "devpi-server" version))
+       (uri (pypi-uri "devpi_server" version))
        (sha256
-        (base32 "08smfjhnvqj68fp45gzqm9axjcgnksc0z31v48llivnzlxwf8cmr"))))
+        (base32 "13lybrw8j6zjxwvx6sk7bw6854hd2m18s1xcvl0q100j4n06p6ml"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       ;; These all fail with: "module 'py' has no attribute 'io'"
-      '(list "--ignore=test_devpi_server/test_importexport.py"
-             "--ignore=test_devpi_server/test_main.py"
-             "--ignore=test_devpi_server/test_genconfig.py")))
+      #~(list "--ignore=test_devpi_server/test_importexport.py"
+              "--ignore=test_devpi_server/test_main.py"
+              "--ignore=test_devpi_server/test_genconfig.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; It straggles to check argon2 in passlib on any versions
+                ;; starting from 6.14.0: UnknownExtra("passlib 1.7.4 has no
+                ;; such extra feature 'argon2'",).
+                (("passlib\\[argon2\\]") "passlib")))))))
     (propagated-inputs (list python-argon2-cffi
                              python-attrs
                              python-defusedxml
@@ -366,16 +375,16 @@ server process.")
                              python-py
                              python-pyramid
                              python-repoze-lru
-                             python-ruamel.yaml
+                             python-ruamel.yaml-0.16 ;FIXME: rename
                              python-strictyaml
                              python-waitress))
     (native-inputs
      (list python-execnet
            python-pytest
+           python-pytest-asyncio
            python-pytest-timeout
            python-setuptools
-           python-webtest
-           python-wheel))
+           python-webtest))
     (home-page "https://devpi.net")
     (synopsis "Pypi.org caching server")
     (description "This package implements a reliable private and pypi.org
