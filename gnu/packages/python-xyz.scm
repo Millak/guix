@@ -4053,24 +4053,34 @@ utilities such as ping(1).")
     (license license:lgpl3)))
 
 (define-public python-iron-core
-  (package
-    (name "python-iron-core")
-    (version "1.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "iron-core" version))
-       (sha256
-        (base32 "158vdymq6nbym0v1f9l5gz42j1gsq09b9yw9hgd70m5ymy30n6dp"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-dateutil python-requests))
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "https://www.github.com/iron-io/iron_core_python")
-    (synopsis "Universal classes and methods for Iron.io API wrappers")
-    (description
-     "This package provides universal classes and methods for the Iron.io API
-wrappers to build on.")
-    (license license:bsd-2)))
+  (let ((commit "5a5f3011da09769a812c6a1c44781ef852abc19b")
+        (revision "0"))
+    (package
+      (name "python-iron-core")
+      (version (git-version "1.2.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://www.github.com/iron-io/iron_core_python")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "030ibimgqvc6hywh7g3k7qn147ckagi0wbdiqcpdf1c85xqrj5zq"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        ;; XXX: Tests are run, but they seem too old/not updated.
+        #:tests? #f
+        #:test-backend #~'unittest))
+      (propagated-inputs (list python-dateutil python-requests))
+      (native-inputs (list python-setuptools))
+      (home-page "https://www.github.com/iron-io/iron_core_python")
+      (synopsis "Universal classes and methods for Iron.io API wrappers")
+      (description
+       "This package provides universal classes and methods for the Iron.io
+API wrappers to build on.")
+      (license license:bsd-2))))
 
 (define-public python-iron-mq
   (package
