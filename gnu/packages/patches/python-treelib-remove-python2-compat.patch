@@ -1,0 +1,129 @@
+From: Alexandre Detiste <alexandre.detiste@gmail.com>, ngraves@ngraves.fr
+
+diff --git a/pyproject.toml b/pyproject.toml
+index 98b5603..7b192a8 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -35,7 +35,6 @@ include = [
+ 
+ [tool.poetry.dependencies]
+ python = "^3.7"
+-six = ">=1.13.0"
+ 
+ [tool.poetry.group.dev.dependencies]
+ # Testing dependencies - pytest for all Python versions
+diff --git a/treelib/__init__.py b/treelib/__init__.py
+index bed89cc..f164208 100644
+--- a/treelib/__init__.py
++++ b/treelib/__init__.py
+@@ -57,15 +57,6 @@ Common Use Cases:
+     - Abstract syntax trees
+     - Family trees and genealogy
+ 
+-Compatibility Note:
+-    To ensure string compatibility between Python 2.x and 3.x, treelib follows
+-    Python 3.x string handling conventions. All strings are handled as unicode.
+-
+-    For Python 2.x users with non-ASCII characters, enable unicode literals:
+-
+-    .. code-block:: python
+-
+-       from __future__ import unicode_literals
+ """
+ 
+ from .node import Node  # noqa: F401
+diff --git a/treelib/node.py b/treelib/node.py
+index cb79a01..64547f7 100644
+--- a/treelib/node.py
++++ b/treelib/node.py
+@@ -22,8 +22,6 @@ Note:
+     directly instantiated, as the Tree class manages the parent-child
+     relationships automatically.
+ """
+-from __future__ import unicode_literals
+-
+ import copy
+ import sys
+ import uuid
+@@ -40,7 +38,7 @@ else:
+     StrList = List[str]  # Python 3.8 and earlier
+ 
+ 
+-class Node(object):
++class Node:
+     """
+     Elementary node object stored in Tree structures.
+ 
+diff --git a/treelib/tree.py b/treelib/tree.py
+index 39bbdb5..8042175 100644
+--- a/treelib/tree.py
++++ b/treelib/tree.py
+@@ -26,26 +26,13 @@ Key Features:
+     - Subtree operations and filtering
+     - Tree metrics and analysis tools
+ """
+-from __future__ import print_function, unicode_literals
+-
+-try:
+-    from builtins import str as text
+-except ImportError:
+-    from __builtin__ import str as text  # type: ignore
+-
+ import codecs
+ import json
+ import sys
+ import uuid
+ from copy import deepcopy
+ from typing import Any, Callable, List, Optional, Union, cast
+-
+-from six import iteritems, python_2_unicode_compatible
+-
+-try:
+-    from StringIO import StringIO  # type: ignore
+-except ImportError:
+-    from io import StringIO
++from io import StringIO
+ 
+ from .exceptions import (
+     DuplicatedNodeIdError,
+@@ -70,8 +57,7 @@ else:
+ __author__ = "chenxm"
+ 
+ 
+-@python_2_unicode_compatible
+-class Tree(object):
++class Tree():
+     """
+     Hierarchical tree data structure.
+ 
+@@ -220,7 +206,7 @@ class Tree(object):
+ 
+         if tree is not None:
+             self.root = tree.root
+-            for nid, node in iteritems(tree.nodes):
++            for nid, node in tree.nodes.items():
+                 new_node = deepcopy(node) if deep else node
+                 self._nodes[nid] = new_node
+                 if tree.identifier != self._identifier:
+@@ -1540,9 +1526,9 @@ class Tree(object):
+ 
+         set_joint = set(new_tree._nodes) & set(self._nodes)  # joint keys
+         if set_joint:
+-            raise ValueError("Duplicated nodes %s exists." % list(map(text, set_joint)))
++            raise ValueError("Duplicated nodes %s exists." % list(map(str, set_joint)))
+ 
+-        for cid, node in iteritems(new_tree.nodes):
++        for cid, node in new_tree.nodes.items():
+             if deep:
+                 node = deepcopy(new_tree[node])
+             self._nodes.update({cid: node})
+@@ -1909,7 +1895,7 @@ class Tree(object):
+         :return: None
+         """
+         cn = self[nid]
+-        for attr, val in iteritems(attrs):
++        for attr, val in attrs.items():
+             if attr == "identifier":
+                 # Updating node id meets following contraints:
+                 # * Update node identifier property
+

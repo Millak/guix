@@ -14636,13 +14636,15 @@ without using the configuration machinery.")
     (version "1.8.0")
     (source
      (origin
-       (method git-fetch) ; no tests in PyPI
+       (method git-fetch)
        (uri (git-reference
              (url "https://github.com/caesar0301/treelib")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jd3rdaq8v7ykb626cm1gxa03higqnn2pmnv46fc0lc55xbrkxlf"))))
+        (base32 "0jd3rdaq8v7ykb626cm1gxa03higqnn2pmnv46fc0lc55xbrkxlf"))
+       (patches
+        (search-patches "python-treelib-remove-python2-compat.patch"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-poetry-core python-pytest))
     (home-page "https://github.com/caesar0301/treelib")
