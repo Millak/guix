@@ -346,6 +346,26 @@ having different kinds of processes handle connections.")
     (home-page "https://hexdocs.pm/mint/")
     (license license:asl2.0)))
 
+(define-public elixir-neuron
+  (package
+    (name "elixir-neuron")
+    (version "5.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "neuron" version))
+       (sha256
+        (base32 "1kmnhlihpv1075i3f5izysx2vdgqw71lnnxw8yifxh6r1l7dpk93"))))
+    (build-system mix-build-system)
+    (arguments
+     ;; Tests depend on Coverex, which is not packaged yet.
+     (list #:tests? #f))
+    (propagated-inputs (list elixir-httpoison elixir-jason))
+    (synopsis "GraphQL client for Elixir")
+    (description "This package provides a @code{GraphQL} client for Elixir.")
+    (home-page "https://hexdocs.pm/neuron/")
+    (license license:isc)))
+
 (define-public elixir-plug-crypto
   (package
     (name "elixir-plug-crypto")
