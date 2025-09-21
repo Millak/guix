@@ -820,7 +820,9 @@ conn_max_age argument to easily enable Django’s connection pool.")
                (base32
                 "16k91rvd9889xxrrf84a3zb0jpinizhfqdmafn54zxa8kqrf7zsm"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list #:tests? #f)) ;XXX: no tests in PyPI, check in git
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/migonzalvar/dj-email-url")
     (synopsis "Configure email settings from URLs")
     (description
