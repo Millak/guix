@@ -9529,6 +9529,11 @@ using a pure Python implementation.")
     (license license:bsd-3)))
 
 (define-public python-pyjsparser
+  ;; XXX: This project is potentially abandonware, consider to remove in next
+  ;; refresh cycle, see:
+  ;; <https://github.com/PiotrDabkowski/pyjsparser/issues/28>,
+  ;; <https://github.com/PiotrDabkowski/pyjsparser/issues/39>, and
+  ;; <https://github.com/PiotrDabkowski/pyjsparser/issues/40>.
   (package
     (name "python-pyjsparser")
     (version "2.7.1")
@@ -9539,7 +9544,9 @@ using a pure Python implementation.")
        (sha256
         (base32 "0ycmf9fsvwliqmm1n6sfz7x71y7i2kbfgn39d8lsbiccfxmxlq5y"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     '(#:tests? #f)) ;no tests in PyPI
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/PiotrDabkowski/pyjsparser")
     (synopsis "Fast JavaScript parser")
     (description
