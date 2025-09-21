@@ -32899,24 +32899,32 @@ messages.")
 (define-public python-daiquiri
   (package
     (name "python-daiquiri")
-    (version "2.1.1")
+    (version "3.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "daiquiri" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jd/daiquiri")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1qmank3c217ddiig3xr8ps0mqaydcp0q5a62in9a9g4zf72zjnqd"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-json-logger))
-    (native-inputs
-     (list python-mock python-pytest python-setuptools-scm python-six))
+        (base32 "0vfakncq87s6g67mqihjf32xarphd75c03ammvgavladz0pqhlg4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (propagated-inputs (list python-json-logger))
+    (native-inputs (list python-mock python-pytest python-setuptools
+                         python-setuptools-scm))
     (home-page "https://github.com/jd/daiquiri")
-    (synopsis
-     "Library to configure Python logging easily")
-    (description "The daiquiri library provides an easy way to configure
-logging in Python.  It also provides some custom formatters and handlers.")
+    (synopsis "Library to configure Python logging easily")
+    (description
+     "The daiquiri library provides an easy way to configure logging in
+Python.  It also provides some custom formatters and handlers.")
     (license license:asl2.0)))
 
 (define-public python-pifpaf
