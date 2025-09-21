@@ -3350,7 +3350,7 @@ modules and plugins that extend Ansible.")
        (patches
         (search-patches "debops-setup-py-avoid-git.patch"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (inputs
      (list ansible
            encfs
@@ -3372,6 +3372,7 @@ modules and plugins that extend Ansible.")
            python-toml))
     (arguments
      (list
+      #:tests? #f ;no tests
       #:modules '((guix build pyproject-build-system)
                   (guix build utils)
                   (srfi srfi-26))
