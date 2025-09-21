@@ -11041,13 +11041,16 @@ objects.")
     (version "3.0.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "colormath2" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bkmgit/python-colormath2")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1yigkhvjgbl9nrlijn4iwcs6k7i5y58drix1331cd1hb9wzn35z7"))))
+        (base32 "0xxhmmx1mzjggapjmpz8v166lj86xrkq7kak83akcirnq0pz9ihv"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-networkx python-numpy))
-    (native-inputs (list python-pytest python-setuptools))
+    (native-inputs (list python-nose2 python-setuptools))
     (home-page "https://github.com/bkmgit/python-colormath2")
     (synopsis "Color math and conversion library")
     (description
