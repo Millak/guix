@@ -646,15 +646,16 @@ OpenSSL library.")
         (base32
          "18v3rfyv7xi26fb97nw1xc0l6x8wi0i4xj8dlq4gblpbjxiac187"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
     (arguments
      (list
+      #:test-backend #~'unittest
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-gcc-14-strictness
             (lambda _
               (setenv "CFLAGS"
                       (string-append "-g -O2 -Wno-error=int-conversion")))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/tgalal/python-axolotl-curve25519")
     (synopsis "Python wrapper for curve25519 library")
     (description "This is a python wrapper for the curve25519 library
