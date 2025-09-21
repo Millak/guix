@@ -8298,7 +8298,7 @@ templates.  A format string can be provided to control the output.")
                          python-poetry-core
                          python-pytest
                          python-tornado-6))
-    (propagated-inputs (list python-charset-normalizer))
+    (propagated-inputs (list python-charset-normalizer python-six))
     (home-page "https://github.com/kakulukia/pypugjs")
     (synopsis "Convert Pug source files into different template languages")
     (description
