@@ -1753,44 +1753,32 @@ backends in a single library.")
 (define-public python-django-auth-ldap
   (package
     (name "python-django-auth-ldap")
-    (version "4.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "django-auth-ldap" version))
-              (sha256
-               (base32
-                "0jd9jms9qpa92fk5n7gqcxjk3zs6ay79r73ann7cw1vqn79lkxvp"))))
-    (build-system python-build-system)
+    (version "4.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/django-auth-ldap/django-auth-ldap")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11mgxj05ra1yh2z9knzvcayd3zwqgl39gna0gm0xp290cyw5mnnb"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'build
-                 (lambda _
-                   ;; Set file modification times to the early 80's because
-                   ;; the Zip format does not support earlier timestamps.
-                   (setenv "SOURCE_DATE_EPOCH"
-                           (number->string (* 10 366 24 60 60)))
-                   (invoke "python" "-m" "build" "--wheel"
-                           "--no-isolation" ".")))
-               (replace 'check
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (setenv "SLAPD" (search-input-file inputs "/libexec/slapd"))
-                   (setenv "SCHEMA"
-                           (search-input-directory inputs "etc/openldap/schema"))
-                   (invoke "python" "-m" "django" "test"
-                           "--settings" "tests.settings")))
-               (replace 'install
-                 (lambda _
-                   (let ((whl (car (find-files "dist" "\\.whl$"))))
-                     (invoke "pip" "--no-cache-dir" "--no-input"
-                             "install" "--no-deps" "--prefix" #$output whl)))))))
-    (native-inputs
-     (list openldap python-wheel python-setuptools-scm python-toml
-
-           ;; These can be removed after <https://bugs.gnu.org/46848>.
-           python-pypa-build python-pip))
-    (propagated-inputs
-     (list python-django python-ldap))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "SLAPD"
+                      (search-input-file inputs "/libexec/slapd"))
+              (setenv "SCHEMA"
+                      (search-input-directory inputs "etc/openldap/schema"))
+              (invoke "python"
+                      "-m" "django" "test"
+                      "--settings" "tests.settings"))))))
+    (native-inputs (list openldap python-setuptools))
+    (propagated-inputs (list python-django python-ldap))
     (home-page "https://github.com/django-auth-ldap/django-auth-ldap")
     (synopsis "Django LDAP authentication backend")
     (description
