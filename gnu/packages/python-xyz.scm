@@ -27323,6 +27323,37 @@ input.")
      address is valid and really exists.")
     (license license:lgpl3+)))
 
+(define-public python-valkey
+  (package
+    (name "python-valkey")
+    (version "6.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/valkey-io/valkey-py")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05zmnb8lmygv75zx0hb40s2rgr53sy4g0sizcb9mq8fd09z5i0n2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: A lot of tests fail with ConnectionError
+     ;; Maybe we need to spawn a valkey server?
+     (list #:tests? #f))
+    (native-inputs
+     (list python-cachetools
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-timeout
+           python-setuptools))
+    (home-page "https://github.com/valkey-io/valkey-py")
+    (synopsis "Python client for Valkey")
+    (description
+     "This package provides a python client for the @code{Valkey} key-value
+store, forked from redis-py.")
+    (license license:expat)))
+
 ;; XXX: Project has no updates since 2019, consider to remove when nothing
 ;; depends on it in the next refresh cycle.
 ;; See: <https://github.com/pipermerriam/flex/issues/237>.
