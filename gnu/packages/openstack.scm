@@ -866,40 +866,6 @@ in transmittable and storable formats, such as JSON and MessagePack.")
 and building documentation from them.")
     (license license:asl2.0)))
 
-(define-public python-oslosphinx
-  (package
-    (name "python-oslosphinx")
-    (version "4.18.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "oslosphinx" version))
-       (sha256
-        (base32 "1xm41857vzrzjmnyi6bqirg4i5qa61v7wxcsdc4q1nzgr3ndgz5k"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "test-requirements.txt"
-                (("(hacking|reno).*")
-                 "")))))))
-    (propagated-inputs
-     (list python-requests))
-    (native-inputs
-     (list python-openstackdocstheme
-           python-pbr
-           python-setuptools
-           python-sphinx
-           python-wheel))
-    (home-page "https://www.openstack.org/")
-    (synopsis "OpenStack sphinx extensions and theme")
-    (description "This package provides themes and extensions for Sphinx
-documentation from the OpenStack project.")
-    (license license:asl2.0)))
-
 (define-public python-oslotest
   (package
     (name "python-oslotest")
