@@ -6043,18 +6043,6 @@ Six supports every Python version since 2.5.  It is contained in only one
 Python file, so it can be easily copied into your project.")
     (license license:x11)))
 
-(define-public python2-six
-  ;; XXX: The only one user of this package is qtwebengine-5, consider to
-  ;; remove when no longer required.
-  (let ((base (package-with-python2 python-six)))
-    (package
-      (inherit base)
-      ;; Reduce Python 2 closure by disabling tests.
-      (arguments (list #:tests? #f))
-      (native-inputs
-       (list python-setuptools
-             python-wheel)))))
-
 (define-public python-schedule
   (package
     (name "python-schedule")
