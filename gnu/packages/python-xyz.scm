@@ -27902,6 +27902,8 @@ services.")
     (license license:asl2.0)))
 
 (define-public python-setuptools-git
+  ;; XXX: The project is abandoned since 2018, consider to remove in the next
+  ;; refresh cycle.
   (package
     (name "python-setuptools-git")
     (version "1.2")
@@ -27914,6 +27916,7 @@ services.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #f       ;no tests in PyPI
       #:phases
       #~(modify-phases %standard-phases
           ;; This is needed for tests.
