@@ -1222,22 +1222,33 @@ basic geometries.")
     (version "0.9.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "booleanOperations" version ".zip"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/typemytype/booleanOperations")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1f41lb19m8azchl1aqz6j5ycbspb8jsf1cnn42hlydxd68f85ylc"))))
+        (base32 "0ahfgamyq1ndwbr9n8sdx8qhqc2195xnbahylgjpk877hbr2gxav"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs (list python-fonttools-minimal python-pyclipper))
     (native-inputs
      (list python-defcon-bootstrap
            python-fontpens-bootstrap
            python-pytest
-           python-setuptools-scm
            python-setuptools
+           python-setuptools-scm
            unzip))
     (home-page "https://github.com/typemytype/booleanOperations")
     (synopsis "Boolean operations on paths")
-    (description "Boolean operations on paths which uses a super fast
+    (description
+     "Boolean operations on paths which uses a super fast
 @url{http://www.angusj.com/delphi/clipper.php, polygon clipper library by
 Angus Johnson}.")
     (license license:expat)))
