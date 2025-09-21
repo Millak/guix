@@ -5625,18 +5625,16 @@ of primitive data types like @code{char}, @code{int}, etc.")
 (define-public python-cantools
   (package
     (name "python-cantools")
-    (version "40.2.3")
+    (version "40.5.0")
     (source
      (origin
-       ;; We take the sources from the Git repository as the documentation is
-       ;; not included with the PyPI archive.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/eerimoq/cantools")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09cpsma0qgra7yjvcppripsrhr70ivc2bgcg1vqi64125dpi8a3x"))))
+        (base32 "0ldqdsvkvy7vmplyiqcfqqwbh8v88ha98hgdrnlm09g4qbylh5d4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5650,11 +5648,11 @@ of primitive data types like @code{char}, @code{int}, etc.")
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
-     (list python-parameterized
+     (list python-freezegun
+           python-parameterized
            python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-argparse-addons
            python-bitstruct
@@ -5665,8 +5663,9 @@ of primitive data types like @code{char}, @code{int}, etc.")
            python-textparser))
     (home-page "https://github.com/eerimoq/cantools")
     (synopsis "Tools for the Controller Area Network (CAN) bus protocol")
-    (description "This package includes Controller Area Network (CAN) related
-tools that can be used to:
+    (description
+     "This package includes Controller Area Network (CAN) related tools that
+can be used to:
 @itemize
 @item parse DBC, KCD, SYM, ARXML 4 and CDD files
 @item encode and decode CAN messages
