@@ -879,18 +879,23 @@ Built-in integration with @url{http://nedbatchelder.com/code/coverage/, coverage
     (version "1.1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "hiro" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alisaifee/hiro")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0s2xz72i7kbm0l75vr04cqq2war74p3p376wm76999f93npkjcys"))))
+        (base32 "0j7z54nd72qfc065jgljqx53dhfkfz0922fk8qqczg7swmqf6cqv"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "https://hiro.readthedocs.io/")
+    (native-inputs
+     (list python-pytest python-pytest-cov python-setuptools))
+    (home-page "https://hiro.readthedocs.io")
     (synopsis "Time manipulation utilities for testing in Python")
-    (description "Hiro provides context managers and utilities to either
-freeze, accelerate or decelerate and jump between different points in time.
-Functions exposed by the standard library’s @code{time}, @code{datetime} and
-@code{date} modules are patched within the contexts exposed.")
+    (description
+     "Hiro provides context managers and utilities to either freeze,
+accelerate or decelerate and jump between different points in time.  Functions
+exposed by the standard library’s @code{time}, @code{datetime} and @code{date}
+modules are patched within the contexts exposed.")
     (license license:expat)))
 
 (define-public python-httmock
