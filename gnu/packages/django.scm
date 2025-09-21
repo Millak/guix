@@ -1279,6 +1279,7 @@ Django Q, dependencies updates, docs updates and several bug fixes.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #f ; no tests.
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'use-poetry-core
@@ -1287,7 +1288,7 @@ Django Q, dependencies updates, docs updates and several bug fixes.")
               (substitute* "pyproject.toml"
                 (("poetry.masonry.api") "poetry.core.masonry.api")))))))
     (propagated-inputs (list python-sentry-sdk))
-    (native-inputs (list python-poetry-core python-setuptools python-wheel))
+    (native-inputs (list python-poetry-core python-setuptools))
     (home-page "https://django-q.readthedocs.org")
     (synopsis "Sentry support plugin for Django Q")
     (description "This package provides a Sentry support plugin for Django Q.")
