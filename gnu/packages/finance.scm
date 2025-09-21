@@ -122,6 +122,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ninja)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
@@ -1323,7 +1324,22 @@ Nano dongle.")
            (for-each delete-file
                      (append (find-files "." "^CHANGELOG.unreleased$")
                              (find-files "." "^.towncrier.template.md$")))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Failed to resolve 'data.trezor.io'
+                    (list "not test_core_basic"
+                          "test_core_code_hashes"
+                          "test_disallow_unsigned"
+                          "test_embedded_v2"
+                          "test_integrity_core"
+                          "test_integrity_legacy"
+                          "test_legacy_basic"
+                          "test_unsigned"
+                          "test_vendor_header")
+                    " and not "))))
     (propagated-inputs
      (list python-attrs
            python-click
@@ -1335,15 +1351,14 @@ Nano dongle.")
            python-requests
            python-typing-extensions))
     (native-inputs ; Only needed for running the tests
-     (list protobuf
-           python-black
-           python-isort
+     (list nss-certs-for-test
+           protobuf
+           python-pytest
            python-pillow
            python-protobuf
            python-pyqt
            python-pytest
-           python-simple-rlp
-           python-wheel))
+           python-simple-rlp))
     (home-page "https://github.com/trezor/python-trezor")
     (synopsis "Python library for communicating with TREZOR Hardware Wallet")
     (description "@code{trezor} is a Python library for communicating with
