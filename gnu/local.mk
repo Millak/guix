@@ -2163,7 +2163,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-pillow-CVE-2022-45199.patch	\
   %D%/packages/patches/python-libxml2-utf8.patch		\
   %D%/packages/patches/python-memcached-syntax-warnings.patch	\
-  %D%/packages/patches/python-mox3-python3.6-compat.patch	\
   %D%/packages/patches/python-packaging-test-arch.patch		\
   %D%/packages/patches/python-pandas-2-no-pytz_datetime.patch		\
   %D%/packages/patches/python-property-cached-asyncio-3_11.patch	\

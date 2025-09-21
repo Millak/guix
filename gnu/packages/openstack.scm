@@ -174,50 +174,6 @@ manner.")
 guidelines}.")
     (license license:asl2.0)))
 
-(define-public python-mox3
-  (package
-    (name "python-mox3")
-    (version "0.24.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "mox3" version))
-        (patches (search-patches "python-mox3-python3.6-compat.patch"))
-        (sha256
-          (base32 "0w58adwv7q9wzvmq9mlrk2asfk73myq9fpwy7mjkzsz3baa95zf5"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-fixtures python-pbr))
-    (native-inputs
-     (list python-openstackdocstheme
-           python-setuptools
-           python-sphinx
-           python-subunit
-           python-testrepository
-           python-testtools
-           python-wheel))
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-for-python-3.11
-            (lambda _
-              ;; The getargspec function has been removed in python 3.11.
-              (substitute* "mox3/mox.py"
-                (("self\\._args, varargs, varkw, defaults = inspect\\.getargspec\\(method\\)")
-                 "inspect_result = inspect.getfullargspec(method)
-            self._args = inspect_result.args
-            varargs = inspect_result.varargs
-            varkw = inspect_result.varkw
-            defaults = inspect_result.defaults")))))))
-    (home-page "https://www.openstack.org/")
-    (synopsis "Mock object framework for Python")
-    (description
-      "Mox3 is an unofficial port of the @uref{https://code.google.com/p/pymox/,
-Google mox framework} to Python 3.  It was meant to be as compatible
-with mox as possible, but small enhancements have been made.")
-    (license license:asl2.0)))
-
 (define-public python-openstackdocstheme
   (package
     (name "python-openstackdocstheme")
