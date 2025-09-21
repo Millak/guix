@@ -413,18 +413,27 @@ with arguments to the field constructor.")
     (name "python-django-classy-tags")
     (version "4.1.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "django-classy-tags" version))
-        (sha256
-         (base32
-          "0ngffhbicyx1j0j0nxdvbg9bhs9ss88xvx3dhr6irrx65ymd3nf8"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/divio/django-classy-tags")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10xl1knpvnfjlc5mm0lyy62di463nwcgikdr18bqb1gxipfk6br4"))))
     (build-system pyproject-build-system)
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-django))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "DJANGO_SETTINGS_MODULE" "tests.settings")
+                (invoke "django-admin" "test" "tests"
+                        "--pythonpath=.")))))))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-django))
     (home-page "https://github.com/divio/django-classy-tags")
     (synopsis "Class based template tags for Django")
     (description
