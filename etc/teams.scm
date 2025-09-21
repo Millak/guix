@@ -956,6 +956,20 @@ release."
                       "guix/scripts/import/crate.scm"
                       "tests/import/crate.scm")))
 
+(define-team crypto
+  (team 'crypto
+        #:name "Crypto team"
+        #:description
+        "Secrets, passwords, cryptography and security related packages."
+        #:scope (list
+                 "gnu/packages/crypto.scm"
+                 "gnu/packages/gnupg.scm"
+                 "gnu/packages/nettle.scm"
+                 "gnu/packages/password-utils.scm"
+                 "gnu/packages/security-token.scm"
+                 "gnu/packages/ssh.scm"
+                 "gnu/packages/tls.scm")))
+
 (define-team science
   (team 'science
         #:name "Science team"
@@ -1294,7 +1308,7 @@ the \"texlive\" importer."
 (define-member (person "Cayetano Santos"
                        "csantosb@inventati.org"
                        "csantosb")
-  ai emacs electronics hpc)
+  ai emacs electronics hpc crypto)
 
 (define-member (person "Greg Hogan"
                        "code@greghogan.com"
