@@ -6972,43 +6972,25 @@ for Flask.")
 (define-public python-webassets
   (package
     (name "python-webassets")
-    (version "2.0")
+    (version "3.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "webassets" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/miracle2k/webassets")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1kc1042jydgk54xpgcp0r1ib4gys91nhy285jzfcxj3pfqrk4w8n"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'adjust-tests
-                    (lambda _
-                      ;; Fix for Python 3.9 compatibility.
-                      (substitute* "tests/test_script.py"
-                        (("self\\.t\\.isAlive")
-                         "self.t.is_alive"))
-                      ;; This test requires 'postcss' and 'babel' which are
-                      ;; not yet available in Guix.
-                      (delete-file "tests/test_filters.py")
-                      ;; These expect pytest, but when pytest is added to the
-                      ;; environment more tests fail.
-                      (delete-file "tests/test_cache.py")
-                      (delete-file "tests/test_bundle_build.py")
-                      (delete-file "tests/test_bundle_urls.py")))
-                  (replace 'check
-                    (lambda _
-                      (invoke "nosetests" "-vv"))))))
-    (propagated-inputs
-     (list python-pyyaml))
-    (native-inputs
-     (list python-jinja2 python-mock python-nose))
+        (base32 "11hxvdqw86q6r665iryjzwx21ys8jh2c63mw016ldr6j49l0zyyh"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pyyaml python-zope-dottedname))
+    (native-inputs (list python-hatchling python-pytest))
     (home-page "https://github.com/miracle2k/webassets")
     (synopsis "Media asset management")
-    (description "Merges, minifies and compresses Javascript and CSS files,
-supporting a variety of different filters, including YUI, jsmin, jspacker or
-CSS tidy.  Also supports URL rewriting in CSS files.")
+    (description
+     "This package provides utilities to merge, minify and compress Javascript
+and CSS files,supporting a variety of different filters, including YUI, jsmin,
+jspacker or CSS tidy.  It also supports URL rewriting in CSS files.")
     (license license:bsd-2)))
 
 (define-public python-cssmin
