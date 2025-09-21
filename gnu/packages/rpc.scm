@@ -6,6 +6,7 @@
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -169,7 +170,7 @@ type information of gRPC.")
        (uri (pypi-uri "grpcio" version))
        (sha256
         (base32 "1nsgm8q4yahzdab4m3irffdw9zklq4kb7f8hki1ayfgw54ysim55"))
-       (modules '((guix build utils) (ice-9 ftw)))
+       (modules '((guix build utils) (ice-9 ftw) (srfi srfi-26)))
        (snippet
         '(begin
            ;; Delete this generated file.
@@ -178,16 +179,14 @@ type information of gRPC.")
              ;; Delete the bundled source code of libraries that are possible
              ;; to provide as inputs.
              (for-each delete-file-recursively
-                       (scandir "."
-                                (lambda (file)
-                                  (not (member file
-                                               '("." ".."
-                                                 "address_sorting"
-                                                 "upb"
-                                                 "xxhash")))))))))))
+                       (scandir "." (negate (cut member <> '("." ".."
+                                                             "address_sorting"
+                                                             "upb"
+                                                             "xxhash"))))))))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #f ; There seems to be no tests.
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'use-system-libraries
@@ -212,16 +211,13 @@ type information of gRPC.")
             (lambda _
               (substitute* '("setup.py" "src/python/grpcio/commands.py")
                 (("'cc'") "'gcc'")))))))
-    (inputs
-     (list abseil-cpp-cxxstd11 c-ares grpc openssl re2 zlib))
-    (native-inputs
-     (list python-cython python-setuptools python-wheel))
-    (propagated-inputs
-     (list python-six))
+    (inputs (list abseil-cpp-cxxstd11 c-ares grpc openssl re2 zlib))
+    (native-inputs (list python-cython-0 python-setuptools))
     (home-page "https://grpc.io")
     (synopsis "HTTP/2-based RPC framework")
-    (description "This package provides a Python library for communicating
-with the HTTP/2-based RPC framework gRPC.")
+    (description
+     "This package provides a Python library for communicating with the
+HTTP/2-based RPC framework gRPC.")
     (license license:asl2.0)))
 
 (define-public python-grpcio-tools
