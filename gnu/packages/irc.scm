@@ -843,7 +843,7 @@ interface for those who are accustomed to the ircII way of doing things.")
            ;; this package.
            (lambda _ (delete-file "tests/test_parse.py"))))))
     (propagated-inputs (list python-docopt))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/DanielOaks/girc")
     (synopsis "IRC library for Python")
     (description
