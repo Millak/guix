@@ -1118,33 +1118,36 @@ support.")
     (license license:expat)))
 
 (define-public sfm
-  (package
-    (name "sfm")
-    (version "0.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/afify/sfm")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0g6k884mggryld0k054sjcj6kpkbca9cvr50w98klszym73yw0sp"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f                      ;no check target
-      #:make-flags
-      #~(list (string-append "CC=" #$(cc-for-target))
-              (string-append "PREFIX=" #$output))
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure))))         ;no configure script
-    (home-page "https://github.com/afify/sfm")
-    (synopsis "Simple file manager")
-    (description "sfm is a simple file manager.")
-    (license license:isc)))
+  ;; Latest release is from 2021.
+  (let ((commit "f1f1197142421d3f727dc109a5910129d0bcb0b0")
+        (revision "0"))
+    (package
+      (name "sfm")
+      (version (git-version "0.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+            (url "https://github.com/afify/sfm")
+            (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0c4fll79dd4flp3rdr20vh2w2vsy5h6qrkic806r5mn9i4xl85zn"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                      ;no check target
+        #:make-flags
+        #~(list (string-append "CC=" #$(cc-for-target))
+                (string-append "PREFIX=" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure))))         ;no configure script
+      (home-page "https://github.com/afify/sfm")
+      (synopsis "Simple file manager")
+      (description "sfm is a simple file manager.")
+      (license license:isc))))
 
 (define-public sfeed
   (package
