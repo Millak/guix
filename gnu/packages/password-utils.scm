@@ -1671,14 +1671,14 @@ your online accounts makes it necessary.")
 (define-public hashcat
   (package
     (name "hashcat")
-    (version "6.2.6")
+    (version "7.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://hashcat.net/files/hashcat-" version
                                   ".tar.gz"))
               (sha256
                (base32
-                "0akv1cgbmwyw8h8zbw5w5ixh92y95sdadh8qiz60hjgkpivi0pmj"))
+                "15lbzjfb6n3d06090g1dyf3llc20mnmrn1yc9ys30xbldlracilm"))
               (modules '((guix build utils)))
               ;; Delete bundled libraries.
               (snippet
