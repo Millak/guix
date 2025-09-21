@@ -3942,6 +3942,8 @@ when writing automated tests in Python.")
     (license license:expat)))
 
 (define-public python-tox
+  ;; NOTE: Try to avoid including it in inputs, it's for the local development
+  ;; only.
   (package
     (name "python-tox")
     (version "4.23.2")
@@ -3956,20 +3958,20 @@ when writing automated tests in Python.")
     (arguments
      (list
       #:test-flags
-      '(list "-k"
-             (string-join
-              (map (lambda (test)
-                     (string-append "not test_" test))
-                   '( ;; These freeze the test suite
-                     "parallel"
-                     "parallel_live"
-                     ;; Needs internet access
-                     "build_wheel_external"
-                     "run_installpkg_targz"
-                     "python_generate_hash_seed"
-                     ;; XXX Tries to call python-wrapper-3.10.7/bin/tox
-                     "call_as_exe"))
-              " and "))))
+      #~(list "-k" (string-join
+                    ;; These freeze the test suite
+                    (list "not test_parallel"
+                          "test_parallel_live"
+                          ;; Needs internet access
+                          "test_build_wheel_external"
+                          "test_run_installpkg_targz"
+                          "test_python_generate_hash_seed"
+                          ;; XXX Tries to call python-wrapper-3.10.7/bin/tox
+                          "test_call_as_exe"
+                          ;; assert 'covdefaults>=1.2; python_version == "2.7"
+                          ;; or python_version == "3.11"' == 'sphinx>=3'
+                          "test_load_dependency_many_extra")
+                    " and not "))))
     (propagated-inputs
      (list python-cachetools
            python-chardet
