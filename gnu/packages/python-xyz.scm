@@ -16199,38 +16199,30 @@ falling into the Python interpreter.")
 (define-public python-qnorm
   (package
     (name "python-qnorm")
-    (version "0.8.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "qnorm" version))
-              (sha256
-               (base32
-                "1iykxrvlg32h78d3cr0137x93w8krcwc8gdqyfj55id917pz7ck1"))))
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Maarten-vd-Sande/qnorm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bgqxmqq8d3il0gnbvlb5sik50f6z8myx7p652lpv4llj9hrl2w8"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #false ;there are none
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pyproject-format
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("url = .*") (string-append "version = \"" #$version "\""))
-                (("python_requires.*") "")
-                (("packages =.*") "")
-                (("install_requires") "dependencies")
-                (("\"Maarten van der Sande <maartenvandersande@hotmail.com>\"")
-                 "{ name = \"Maarten van der Sande\", email = \"maartenvandersande@hotmail.com\"}")
-                (("license = \"MIT\"") "license = { file = \"LICENSE\"}")))))))
-    (propagated-inputs (list python-numba python-numpy python-pandas))
-    (native-inputs (list python-setuptools python-wheel python-toml))
+    (propagated-inputs
+     (list python-numba python-numpy python-pandas
+           ;; XXX: pandas optional dependencies.
+           python-tables python-pyarrow python-fastparquet))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/Maarten-vd-Sande/qnorm")
     (synopsis "Quantile normalization")
-    (description "This tool implements quantile normalization.  It properly
-resolves rank ties, which is important when ties happen frequently, such as
-when working with discrete numbers (integers) in count tables.  This
-implementation should be relatively fast, and can use multiple cores to sort
-the columns and tie-resolvement is accelerated by numba.")
+    (description
+     "This tool implements quantile normalization.  It properly resolves rank
+ties, which is important when ties happen frequently, such as when working
+with discrete numbers (integers) in count tables.  This implementation should
+be relatively fast, and can use multiple cores to sort the columns and
+tie-resolvement is accelerated by numba.")
     (license license:expat)))
 
 (define-public python-xlib
