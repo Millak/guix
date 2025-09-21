@@ -4489,6 +4489,31 @@ supporting C extension) from both Python 3.2 and Python 3.3.  The fork adds
 support for the @code{noload} operations used by @code{zodb}.")
     (license (list license:psfl license:zpl2.1))))
 
+(define-public python-zope-dottedname
+  (package
+    (name "python-zope-dottedname")
+    (version "7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/zope.dottedname")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h7a637zsl1a3f0rpb2nw41mzxv0pqyj8ahn6h60n2c1px912rbd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "src/zope/dottedname/tests.py")))
+    (native-inputs (list python-setuptools))
+    (home-page "https://zopedottedname.readthedocs.io")
+    (synopsis "Resolver for Python dotted names")
+    (description
+     "This package provides a @code{resolve()} function that resolves strings
+containing dotted names into the appropriate Python object.")
+    (license license:zpl2.1)))
+
 (define-public python-zope-event
   (package
     (name "python-zope-event")
