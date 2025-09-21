@@ -1,0 +1,19 @@
+Retrieved from: https://src.fedoraproject.org/rpms/esound/raw/rawhide/f/esound-c99.patch
+
+Declare clean_exit to avoid an implicit function declaration and
+future build breakage.  This style of declarations outside of header
+files is already used for other functions.
+
+diff --git a/clients.c b/clients.c
+index 1f7e4aa644bdc32c..14416e620dcccbbf 100644
+--- a/clients.c
++++ b/clients.c
+@@ -33,7 +33,7 @@ static int write_wait = 0;
+ /* prototypes */
+ void dump_clients(void);
+ void free_client( esd_client_t *client );
+-
++void clean_exit(int signum);
+ 
+ /*******************************************************************/
+ /* for debugging purposes, dump the list of the clients and data */

@@ -304,7 +304,8 @@ applications that want audio visualisation and audio visualisation plugins.")
          (commit "ESOUND_0_2_41")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "141jg70fim276i8k2kyypm84gy89i1k9mm4yf68mfwnybvjw1d6n"))))
+        (base32 "141jg70fim276i8k2kyypm84gy89i1k9mm4yf68mfwnybvjw1d6n"))
+       (patches (search-patches "esound-c99.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
