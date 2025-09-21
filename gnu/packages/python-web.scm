@@ -6320,26 +6320,36 @@ library.")
     (license license:asl2.0)))
 
 (define-public python-grequests
-  (package
-    (name "python-grequests")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "grequests" version))
-       (sha256
-        (base32
-         "1j9icncllbkv7x5719b20mx670c6q1jrdx1sakskkarvx3pc8h8g"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-gevent python-requests))
-    (native-inputs
-     (list python-nose python-zope-interface python-zope-event))
-    (home-page "https://github.com/kennethreitz/grequests")
-    (synopsis "Python library for asynchronous HTTP requests")
-    (description "GRequests is a Python library that allows you to use
-@code{Requests} with @code{Gevent} to make asynchronous HTTP Requests easily")
-    (license license:bsd-2)))
+  (let ((commit "60f70e99e942a2df378b4e4f6202dcf862754c2d")
+        (revision "0"))
+    (package
+      (name "python-grequests")
+      (version (git-version "0.7.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/kennethreitz/grequests")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0132yv1rr4pmrmwasrnasqbnd80pi6rgy52608731p7lidkmxz9a"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        ;; XXX: Most failing tests seem to be caused by network access,
+        ;; but there is no easy/flag way to disable tests selectively.
+        #:tests? #f
+        #:test-backend #~'unittest
+        #:test-flags #~(list "tests.py")))
+      (propagated-inputs (list python-gevent python-requests))
+      (native-inputs (list python-setuptools))
+      (home-page "https://github.com/kennethreitz/grequests")
+      (synopsis "Python library for asynchronous HTTP requests")
+      (description
+       "GRequests is a Python library that allows you to use @code{Requests}
+with @code{Gevent} to make asynchronous HTTP Requests easily.")
+      (license license:bsd-2))))
 
 (define-public python-gwebsockets
   (package
