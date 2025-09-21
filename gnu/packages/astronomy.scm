@@ -4752,7 +4752,7 @@ parameters described on the ensemble level.")
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count)))))
     (native-inputs
-     (list python-cython
+     (list python-cython-0
            python-pytest
            python-pytest-xdist
            python-setuptools
