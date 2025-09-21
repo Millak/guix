@@ -2446,19 +2446,19 @@ or as a TikZ file for use in LaTeX documents;
 (define-public python-qdldl
   (package
     (name "python-qdldl")
-    (version "0.1.7.post2")
+    (version "0.1.7.post5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "qdldl" version))
        (sha256
-        (base32 "1lspam0k8gnw1yglqxvdv350fq00nkgdfmkizmx7bk0hxjjkj5ab"))))
+        (base32 "0vi8dgrw32qj03z2dd3zqd0d625pibq3xmlgmidfsnwvqkhrj4qb"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list cmake-minimal
            pybind11
-           python-setuptools
-           python-wheel))
+           python-pytest
+           python-setuptools))
     (propagated-inputs (list python-numpy python-scipy))
     (home-page "https://github.com/oxfordcontrol/qdldl-python/")
     (synopsis "QDLDL LDL factorization routine")
