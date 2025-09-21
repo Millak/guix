@@ -1104,21 +1104,33 @@ tools can generate partial instances.
 (define-public python-ufonormalizer
   (package
     (name "python-ufonormalizer")
-    (version "0.6.1")
+    (version "0.6.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ufonormalizer" version ".zip"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/unified-font-object/ufoNormalizer")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0v5awian2alap7nvxfz38aahyqbqnma16nrqcpr8602hbbki04g6"))))
+        (base32 "1dc2ibk4bgdwhrv9pwmvvgsny4gyf80ncrhakvixd14pz08inafx"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools-scm unzip))
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs (list python-setuptools python-setuptools-scm unzip))
     (home-page "https://github.com/unified-font-object/ufoNormalizer")
     (synopsis "Script to normalize @acronym{UFO, Unified Font Object} data")
-    (description "The purpose of the @command{ufonormalizer} command is to
-provide a standard formatting so that updates to @acronym{UFO, Unified Font
-Object} data can be usefully versioned.  Examples of formatting applied by
-ufoNormalizer include:
+    (description
+     "The purpose of the @command{ufonormalizer} command is to provide a
+standard formatting so that updates to @acronym{UFO, Unified Font Object} data
+can be usefully versioned.  Examples of formatting applied by ufoNormalizer
+include:
 @itemize
 @item Changing floating-point numbers to integers where it doesn't alter the
 value (e.g. @samp{x=\"95.0\"} becomes @samp{x=\"95\"})
