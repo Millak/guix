@@ -142,6 +142,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -1225,14 +1226,14 @@ basic geometries.")
        (uri (pypi-uri "booleanOperations" version ".zip"))
        (sha256
         (base32 "1f41lb19m8azchl1aqz6j5ycbspb8jsf1cnn42hlydxd68f85ylc"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-fonttools-minimal python-pyclipper))
     (native-inputs
      (list python-defcon-bootstrap
            python-fontpens-bootstrap
-           python-setuptools-scm
            python-pytest
-           python-wheel
+           python-setuptools-scm
+           python-setuptools
            unzip))
     (home-page "https://github.com/typemytype/booleanOperations")
     (synopsis "Boolean operations on paths")
