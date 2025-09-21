@@ -235,15 +235,18 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
   (package
     (name "python-django-cache-url")
     (version "3.4.5")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "django-cache-url" version))
-              (sha256
-               (base32
-                "05yr19gi5ln6za0y9nf184klaixnf1dr1nfajn63893mf6ab37zb"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/epicserve/django-cache-url")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a5vd07wrnfbclvf6pz9p8ag9kdd1453lsl9q0bkyc45hq2xqd2a"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-django python-setuptools python-wheel))
+     (list python-django python-pytest python-pytest-cov python-setuptools))
     (home-page "https://github.com/epicserve/django-cache-url")
     (synopsis "Configure Django cache settings from URLs")
     (description
