@@ -2231,6 +2231,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rtosc-0.3.1-fix-invalid-comparison-operator.patch	\
   %D%/packages/patches/racket-chez-scheme-bin-sh.patch		\
   %D%/packages/patches/racket-launcher-config-dir.patch		\
+  %D%/packages/patches/raptor2-libxml2.patch			\
   %D%/packages/patches/racket-rktio-bin-sh.patch		\
   %D%/packages/patches/re2c-Use-maximum-alignment.patch         \
   %D%/packages/patches/reduce-unbundle-libffi.patch             \
