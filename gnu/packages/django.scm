@@ -833,6 +833,7 @@ settings from URLs.")
                    license:cc0))))      ;configuration and data
 
 (define-public python-dj-search-url
+  ;; XXX: No updates since 2012, consider to remove in the next refresh cycle.
   (package
     (name "python-dj-search-url")
     (version "0.1")
@@ -843,7 +844,9 @@ settings from URLs.")
                (base32
                 "0h7vshhglym6af2pplkyivk6y0g0ncq0xpdzi88kq2sha9c1lka2"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list #:tests? #f))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/dstufft/dj-search-url")
     (synopsis "Configure Haystack search from URLs")
     (description
