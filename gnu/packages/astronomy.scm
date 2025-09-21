@@ -2900,13 +2900,13 @@ celestial-to-terrestrial coordinate transformations.")
 (define-public python-astroquery
   (package
     (name "python-astroquery")
-    (version "0.4.10")
+    (version "0.4.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astroquery" version))
        (sha256
-        (base32 "01m4sp35vgyc816gyvvajah3pa6sa0w15hzv80bn93ipvblr3kga"))))
+        (base32 "0crb0h39bs389y8x3vbl6kczbqwklnn9pkfmfgkhgyn7vndm4dsm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2944,8 +2944,7 @@ celestial-to-terrestrial coordinate transformations.")
            python-pytest-astropy
            python-pytest-dependency
            python-pytest-doctestplus
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-astropy
            python-astropy-healpix
