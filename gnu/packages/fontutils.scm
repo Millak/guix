@@ -664,13 +664,19 @@ implementing the pen protocol for manipulating glyphs.")
         (uri (pypi-uri "fontParts" version ".zip"))
         (sha256
          (base32 "0j4h8hszky639gmfy1avmw670y80ya49kca8yc635h5ihl0c3v8x"))))
-     (build-system python-build-system)
+     (build-system pyproject-build-system)
+     (arguments
+      (list #:test-backend #~'custom
+            #:test-flags #~(list "Lib/fontParts/fontshell/test.py")))
      (propagated-inputs
       (list python-booleanoperations
             python-defcon-bootstrap
             python-fontmath
             python-fonttools-minimal))
-     (native-inputs (list python-setuptools-scm unzip))
+     (native-inputs
+      (list python-setuptools
+            python-setuptools-scm
+            unzip))
      (home-page "https://github.com/robotools/fontParts")
      (synopsis "Library for interacting with font parts")
      (description "FontParts is an @acronym{API, Application Programming
