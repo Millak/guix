@@ -1064,12 +1064,9 @@ to asyncio and Pydantic.")
      (list python-jsmin
            python-css-html-js-minify))
     (native-inputs
-     (list python-coveralls
-           python-django
+     (list python-django
            python-setuptools
-           python-setuptools-scm
-           python-tox
-           python-wheel))
+           python-setuptools-scm))
     (home-page
      "https://github.com/jazzband/django-pipeline")
     (synopsis "Asset packaging library for Django")
