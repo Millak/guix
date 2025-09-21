@@ -7126,36 +7126,6 @@ port forwards using @acronym{UPnP, Universal Plug and Play}.")
 code introspection, and logging.")
     (license license:expat)))
 
-;; Recent versions of python-fixtures and python-testrepository need
-;; python-pbr for packaging, which itself needs these two packages for
-;; testing.
-;; To fix this circular dependency, we use a build of python-pbr, based on the
-;; same source, just without any test dependencies and with tests disabled.
-;; python-pbr-minmal is then used to package python-fixtures and
-;; python-testrepository.
-;; Strictly speaking we currently could remove the test-requirements from the
-;; normal python-pbr package (and save this package) since test are disabled
-;; there anyway. But this may change in future.
-(define-public python-pbr-minimal
-  (package
-    (name "python-pbr-minimal")
-    (version "5.5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pbr" version))
-       (sha256
-        (base32
-         "1j8k5d4rdhy5bw5ai1vkjzln2albah94in3vvyvxa0n42fv81baz"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f))
-    (home-page "https://docs.openstack.org/pbr/latest/")
-    (synopsis "Minimal build of python-pbr used for bootstrapping")
-    (description
-     "Used only for bootstrapping python2-pbr, you should not need this.")
-    (license license:asl2.0)))
-
 (define-public python-pbr
   (package
     (name "python-pbr")
