@@ -57,6 +57,27 @@ apps.")
     (home-page "https://hexdocs.pm/bandit/")
     (license license:expat)))
 
+(define-public elixir-con-cache
+  (package
+    (name "elixir-con-cache")
+    (version "1.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "con_cache" version))
+       (sha256
+        (base32 "05dfx20f6sncxcpmld7s3gc4jmibkyhn1g2vbg3n8r99xhdlvvqx"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list erlang-telemetry))
+    (synopsis
+     "ETS based key-value storage")
+    (description
+     "This package provides @code{con_cache}, an ETS based key-value storage
+with support for row-level isolated writes, TTL auto-purge, and modification
+callbacks.")
+    (home-page "https://hexdocs.pm/con_cache/")
+    (license license:expat)))
+
 ;; This package lives here to avoid module level circular dependencies as it
 ;; depends on elixir-plug.
 (define-public elixir-ecto-shorts
