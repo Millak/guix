@@ -214,6 +214,32 @@ the HPACK protocol (RFC 7541) for Elixir.")
     (home-page "https://hexdocs.pm/hpax/")
     (license license:asl2.0)))
 
+(define-public elixir-httparrot
+  (package
+    (name "elixir-httparrot")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/edgurgel/httparrot.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0grbqr41c6lf34k8q69v5ki6mlxwwkvgpjv5l7gmwfb8jmwbn6p7"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-earmark erlang-meck))
+    (propagated-inputs
+     (list elixir-con-cache erlang-cowboy elixir-exjsx))
+    (synopsis "HTTP Request & Response Server")
+    (description "HTTP server built on top of Cowboy using (mostly)
+@code{cowboy_rest} handlers to serve useful endpoints for testing
+purposes.  Its goal is to be as close as possible to
+@uref{http://httpbin.org, HTTPBin}.")
+    (home-page "https://hexdocs.pm/httparrot/")
+    (license license:expat)))
+
 (define-public elixir-mint
   (package
     (name "elixir-mint")
