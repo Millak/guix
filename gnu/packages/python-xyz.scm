@@ -18108,15 +18108,15 @@ asyncio.")
 (define-public python-geojson
   (package
     (name "python-geojson")
-    (version "3.1.0")
+    (version "3.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "geojson" version))
        (sha256
-        (base32 "1b5df7skx3906046j12yjv8gdbcy17q9y3lbqbpmi83yf90gm9sq"))))
+        (base32 "00s9h22vs4ppncwg3a0gh90czb2dd6d99qznypw72vwc3sxblq5q"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/jazzband/geojson")
     (synopsis "Python bindings and utilities for GeoJSON")
     (description
