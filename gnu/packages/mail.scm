@@ -1699,7 +1699,6 @@ and search library.")
     (inherit python-notmuch)
     (name "python-notmuch2")
     (version (package-version notmuch))
-    (propagated-inputs (list python-cffi))
     (arguments
      (list
       #:phases
@@ -1728,6 +1727,8 @@ and search library.")
                  "'/dev/null'")
                 (("version=VERSION,")
                  (string-append "version='" #$version "',"))))))))
+    (propagated-inputs (list python-cffi))
+    (native-inputs (list python-pytest python-pytest-cov python-setuptools))
     (synopsis "Pythonic bindings for the notmuch mail database using CFFI")
     (license license:gpl3+)))
 
