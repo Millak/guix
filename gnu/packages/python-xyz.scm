@@ -6756,30 +6756,6 @@ and informative visualizations, including scales, transformations and color
 palettes.")
     (license license:bsd-3)))
 
-(define-public python-pafy
-  (package
-    (name "python-pafy")
-    (version "0.5.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pafy" version))
-       (sha256
-        (base32
-         "1a7dxi95m1043rxx1r5x3ngb66nwlq6aqcasyqqjzmmmjps4zrim"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ; Currently pafy can not find itself in the tests
-    (propagated-inputs
-     ;; Youtube-dl is a python package which is imported in the file
-     ;; "backend_youtube_dl.py", therefore it needs to be propagated.
-     (list yt-dlp))
-    (home-page "https://np1.github.io/pafy/")
-    (synopsis "Retrieve YouTube content and metadata")
-    (description
-     "@code{pafy} is a python library to retrieve YouTube content and metadata.")
-    (license license:lgpl3+)))
-
 (define-public python-miniupnpc
   (package
     (name "python-miniupnpc")
