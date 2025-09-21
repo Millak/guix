@@ -3575,10 +3575,9 @@ linux/libcurl_wrapper.h")
            node-lts
            perl
            pkg-config
-           python2-six
-           python-2
-           ;; TODO Move to ruby@3 on the next rebuild cycle.
-           ruby-2.7))
+           python-six
+           python-wrapper
+           ruby))
     (inputs
      (list alsa-lib
            at-spi2-core
