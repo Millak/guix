@@ -321,7 +321,7 @@ lines.")
         (base32 "0sx53l555rwq0z7if8agirjgw4ddp8r9b949wwz8vlig03sjvfmp"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools python-wheel))
+     (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-networkx python-numpy))
     (home-page "https://github.com/taynaud/python-louvain")
