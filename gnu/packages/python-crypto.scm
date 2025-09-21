@@ -712,11 +712,11 @@ environments.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1gx0znbfvs8jg9s754hha81l8wpghswkfsqx2jzpgv6gigf3sm8z"))))
-    (build-system python-build-system)
+        (base32 "1gx0znbfvs8jg9s754hha81l8wpghswkfsqx2jzpgv6gigf3sm8z"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
     (propagated-inputs
-     (list python-axolotl-curve25519 python-cryptography python-protobuf-5))
+     (list python-cryptography python-protobuf-5 python-setuptools))
     (home-page "https://dev.gajim.org/gajim/omemo-dr")
     (synopsis "OMEMO cryptography library")
     (description "OMEMO cryptography library that was forked from python-axolotl.")
