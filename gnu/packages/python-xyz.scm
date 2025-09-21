@@ -8938,12 +8938,16 @@ Microsoft Word (.docx) documents.")
     (version "0.11.8")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "reretry" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/leshchenko1979/reretry")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1qrjsjzah8gw1bciqn8bhrj80fjjg13qg8jks7qs4bjipv71yygj"))))
+        (base32 "15c6275mcrkrq3zs0gyx06gr3xsg9ldrpyknfy4mbypgwjy6fp38"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs
+     (list python-pytest python-pytest-asyncio python-setuptools))
     (home-page "https://github.com/leshchenko1979/reretry")
     (synopsis "Functional decorator for retrying on exceptions")
     (description
