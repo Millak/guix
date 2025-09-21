@@ -34297,13 +34297,17 @@ By default it uses the open Python vulnerability database Safety DB.")
     (version "1.15")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pypandoc" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JessicaTegner/pypandoc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "04yfja8p8flvpjakyw7n43jb1jm3863w043l7zb43bhjwzmvw9ga"))))
+        (base32 "0jqr380xpg1n93dagxv7zfakhdravw0nc81rc4pnmjzkj360l5nr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-backend #~'unittest
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'disable-tests
@@ -34332,8 +34336,8 @@ By default it uses the open Python vulnerability database Safety DB.")
     (propagated-inputs (list python-wheel))
     (home-page "https://github.com/JessicaTegner/pypandoc")
     (synopsis "Python wrapper for pandoc")
-    (description "pypandoc is a thin Python wrapper around pandoc
-and pandoc-citeproc.")
+    (description
+     "pypandoc is a thin Python wrapper around pandoc and pandoc-citeproc.")
     (license license:expat)))
 
 (define-public python-rnc2rng
