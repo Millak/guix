@@ -772,15 +772,28 @@ Works word processor file format.")
       (uri (string-append "http://dev-www.libreoffice.org/src/libzmf/libzmf-"
                           version ".tar.xz"))
       (sha256 (base32
-               "08mg5kmkjrmqrd8j5rkzw9vdqlvibhb1ynp6bmfxnzq5rcq1l197"))))
+               "08mg5kmkjrmqrd8j5rkzw9vdqlvibhb1ynp6bmfxnzq5rcq1l197"))
+      (patches (search-patches "libzmf-doxygen-1.14.patch"))))
    (build-system gnu-build-system)
    (arguments
-    ;; A harmless 'sign-compare' error pops up on i686 so disable '-Werror'.
-    '(#:configure-flags '("--disable-werror")))
+    (list
+     ;; A harmless 'sign-compare' error pops up on i686 so disable '-Werror'.
+     #:configure-flags #~'("--disable-werror")
+     #:phases
+     #~(modify-phases %standard-phases
+          (replace 'bootstrap
+            (lambda _
+              ;; Override the bootstrap phase as a makefile has been patched.
+              (invoke "autoreconf" "-vif"))))))
    (inputs
     (list boost icu4c libpng librevenge zlib))
     (native-inputs
-     (list cppunit doxygen pkg-config))
+     (list autoconf
+           automake
+           libtool
+           cppunit
+           doxygen
+           pkg-config))
     (home-page "https://wiki.documentfoundation.org/DLP/Libraries/libzmf")
     (synopsis "Parses file format of Zoner Callisto/Draw documents")
     (description "Libzmf is a library that parses the file format of Zoner
