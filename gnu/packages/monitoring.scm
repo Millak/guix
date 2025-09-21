@@ -69,6 +69,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages prometheus)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-science)
@@ -444,27 +445,45 @@ historical data.")
     (version "1.1.10")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "carbon" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/graphite-project/carbon")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0p6yjxif5ly5wkllnaw41w2zy9y0nffgfk91v861fn6c26lmnfy1"))))
+        (base32 "0rnvn0hh4wmr7wn1p7aw1zajgi2r9bxfc1abqazk2k9r6nk5aqmw"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; Don't install to /opt
-         (add-after 'unpack 'do-not-install-to-/opt
-           (lambda _ (setenv "GRAPHITE_NO_PREFIX" "1") #t)))))
-    (native-inputs (list python-setuptools python-wheel))
+     (list
+      #:test-flags
+      #~(list
+         ;; XXX: cannot import name 'WhisperDatabase' from 'carbon.database'
+         "--ignore=lib/carbon/tests/test_database.py"
+         "--ignore=lib/carbon/tests/test_storage.py"
+         "-k" (string-join
+               (list "not testBasic" ; requires murmurhash3.
+                     ;; XXX: python-mock incompatibility.
+                     "test_decode_pickle"
+                     "test_invalid_pickle"
+                     "test_invalid_types")
+               " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Don't install to /opt
+          (add-after 'unpack 'do-not-install-to-/opt
+            (lambda _
+              (setenv "GRAPHITE_NO_PREFIX" "1"))))))
+    (native-inputs
+     (list python-mock python-protobuf python-pytest python-setuptools))
     (propagated-inputs
      (list python-cachetools python-twisted python-txamqp python-urllib3))
     (home-page "https://graphiteapp.org/")
     (synopsis "Backend data caching and persistence daemon for Graphite")
-    (description "Carbon is a backend data caching and persistence daemon for
-Graphite.  Carbon is responsible for receiving metrics over the network,
-caching them in memory for \"hot queries\" from the Graphite-Web application,
-and persisting them to disk using the Whisper time-series library.")
+    (description
+     "Carbon is a backend data caching and persistence daemon for Graphite.
+Carbon is responsible for receiving metrics over the network, caching them in
+memory for \"hot queries\" from the Graphite-Web application, and persisting
+them to disk using the Whisper time-series library.")
     (license license:asl2.0)))
 
 (define-public python-prometheus-client
