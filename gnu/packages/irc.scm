@@ -861,7 +861,10 @@ interface for those who are accustomed to the ircII way of doing things.")
        (sha256
         (base32 "1bn92bnk958c097jhwkas24i4a07h905hifix7bg111npc48536l"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "example.py")))
+    (native-inputs (list python-setuptools))
     (home-page "https://pypi.org/project/ircmatch/")
     (synopsis "Library for matching IRC masks based on atheme")
     (description "This is a python extension which provides string comparison
