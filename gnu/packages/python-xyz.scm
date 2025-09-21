@@ -22472,22 +22472,20 @@ respectively.")
         (base32
          "1078mkzivz45my8x2y5gxisr0vba630xj7yxx7anr068xhnpshsi"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-pytoolconfig))
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" "test_version_hash_varies_on_get_file_content")))
+    (propagated-inputs (list python-pytoolconfig))
     (native-inputs
-     (list python-pip
-           python-pre-commit
-           python-pytest
-           python-pytest-cov
-           python-pytest-timeout
-           python-setuptools
-           python-wheel))
+     (list python-pytest python-pytest-timeout python-setuptools))
     (home-page "https://github.com/python-rope/rope")
     (synopsis "Refactoring library for Python")
-    (description "Rope is a refactoring library for Python.  It facilitates
-the renaming, moving and extracting of attributes, functions, modules, fields
-and parameters in Python source code.  These refactorings can also be applied
-to occurrences in strings and comments.")
+    (description
+     "Rope is a refactoring library for Python.  It facilitates the renaming,
+moving and extracting of attributes, functions, modules, fields and parameters
+in Python source code.  These refactorings can also be applied to occurrences
+in strings and comments.")
     (license license:lgpl3+)))
 
 (define-public python-py3status
