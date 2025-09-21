@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2018 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2025 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,19 +21,22 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
-  #:use-module (guix licenses))
+  #:use-module (guix licenses)
+  #:use-module (gnu packages check)
+  #:use-module (gnu packages pkg-config))
+
 
 (define-public gcal
   (package
     (name "gcal")
-    (version "4.1")
+    (version "4.2.0")
     (source (origin
              (method url-fetch)
-             (uri (string-append "mirror://gnu/gcal/gcal-"
+             (uri (string-append "https://www.alteholz.dev/gnu/gcal-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "1av11zkfirbixn05hyq4xvilin0ncddfjqzc4zd9pviyp506rdci"))
+               "1p3q6his31bxs24nsgpfavw3nlhalqf0zak4f3b530p725s2vgfq"))
              (modules '((guix build utils)))
              (snippet
               '(begin
@@ -50,6 +54,8 @@
                                    "/* BSD stdio derived implementations")))
                  #t))))
     (build-system gnu-build-system)
+    (native-inputs (list check pkg-config))
+    (arguments `(#:configure-flags '("LDFLAGS=-lm")))
     (home-page "https://www.gnu.org/software/gcal/")
     (synopsis "Calculating and printing a wide variety of calendars")
     (description
