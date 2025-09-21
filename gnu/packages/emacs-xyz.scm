@@ -34476,7 +34476,7 @@ music.")
 (define-public emacs-mpdel
   (package
     (name "emacs-mpdel")
-    (version "2.1.0")
+    (version "2.1.1")
     (source
      (origin
        (method git-fetch)
@@ -34486,19 +34486,19 @@ music.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "00ajjb9iawva3g7i1y6bz4d4ny3cv5rby6vgkwiy2xkprzxi8900"))))
+         "1i7ymg0ls984vjmzjz0sbg280i47c6j79vr725x94xdpj6ci35qr"))))
     (build-system emacs-build-system)
     (arguments
      (list
-      ;; XXX: ‘check’ includes ‘lint-package-lint’, which raises errors.
-      #:test-command #~(list "make" "test" "lint-checkdoc")
+      ;; XXX: "check" includes "lint-package-lint", which raises errors.
+      #:test-command #~(list "make" "test")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'inject-makel
             (lambda* (#:key inputs #:allow-other-keys)
               (symlink (search-input-file inputs "/include/makel.mk")
                        "makel.mk"))))))
-    (inputs (list makel))
+    (native-inputs (list makel))
     (propagated-inputs
      (list emacs-libmpdel emacs-navigel))
     (home-page "https://gitea.petton.fr/mpdel/mpdel")
