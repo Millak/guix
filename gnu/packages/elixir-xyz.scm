@@ -633,6 +633,23 @@ including custom structs.")
     (home-page "https://hexdocs.pm/json_serde/")
     (license license:asl2.0)))
 
+(define-public elixir-ham
+  (package
+    (name "elixir-ham")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "ham" version))
+       (sha256
+        (base32 "16m6yvr00dri38fcli5fm69rwl2i0mvqdcclbwmx78z5q22cc75p"))))
+    (build-system mix-build-system)
+    (synopsis "Runtime Type checking")
+    (description "This package provides @code{ham}, a library to validate
+function arguments and return values against their typespecs.")
+    (home-page "https://hexdocs.pm/ham/")
+    (license license:asl2.0)))
+
 (define-public elixir-igniter
   (package
     (name "elixir-igniter")
