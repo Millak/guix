@@ -2075,20 +2075,9 @@ it adds to the Pytest command line interface (CLI).")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      #~(list "tests"
-              ;; FIXME: Failed: nomatch: '*sqr*PASSED*
-              "-k" (string-append
-                    "not test_wrap_cpp_ext_module[importlib]"
-                    " and not test_wrap_c_ext_module[importlib]"
-                    " and not test_cython_ext_module[importlib]"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'build-extensions
-            (lambda _
-              (with-directory-excursion "tests/example-project"
-                (invoke "python" "setup.py" "build_ext" "--inplace")))))))
-    (native-inputs (list python-cython-3 python-setuptools python-wheel))
+      ;; E   ModuleNotFoundError: No module named 'setuptools.sandbox'
+      #:tests? #f)) ;XXX: tests are broken
+    (native-inputs (list python-cython python-setuptools python-wheel))
     (propagated-inputs (list python-pytest))
     (home-page "https://github.com/lgpage/pytest-cython")
     (synopsis "Cython extension modules testing plugin")
