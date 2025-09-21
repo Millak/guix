@@ -2351,14 +2351,19 @@ dictionary, can be convert to a dictionary, and is ordered by insertion.")
   (package
     (name "python-dotty-dict")
     (version "1.3.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "dotty_dict" version))
-              (sha256
-               (base32
-                "058sah2nyg44xq5wxywlzc3abzcv9fifnlvsflwma9mfp01nw0ab"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pawelzny/dotty_dict")
+              (commit (string-append "v" version))))
+       (sha256
+        (base32 "0rs83pglkgb4sfnk09rskg8c53hvl7mkjw4vfgl5xc8z13vyi3li"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-poetry-core python-setuptools))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-setuptools))
     (home-page "https://github.com/pawelzny/dotty_dict")
     (synopsis "Python library for accessing dictionaries using a dot syntax")
     (description "This package provides a library that wraps the traditional
