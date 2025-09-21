@@ -1,0 +1,64 @@
+From 788c481157871fe37becb2ec0280510061174e95 Mon Sep 17 00:00:00 2001
+From: Giacomo Leidi <goodoldpaul@autistici.org>
+Date: Sun, 21 Sep 2025 20:25:03 +0200
+Subject: [PATCH] tests: Tag network dependent test cases.
+
+Many environments, such as Linux distributions one, segragate builds
+from accessing many system resources like Internet access. Currently it
+is impossible to run the test suite offline, as it needs access to
+badssl.com. This commit tags network dependent test cases to allow them
+to be excluded in offline environments using mix test --exclude.
+
+This holds at least for openSUSE Tumbleweed, NixOS, Guix System and
+probably many others.
+---
+ test/httpoison_test.exs | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/test/httpoison_test.exs b/test/httpoison_test.exs
+index b260c65..f342b59 100644
+--- a/test/httpoison_test.exs
++++ b/test/httpoison_test.exs
+@@ -409,6 +409,7 @@ defmodule HTTPoisonTest do
+       )
+     end
+ 
++    @tag :network
+     test "expired certificate" do
+       assert {:error, %HTTPoison.Error{reason: {:tls_alert, {:certificate_expired, reason}}}} =
+                HTTPoison.get("https://expired.badssl.com/")
+@@ -440,6 +441,7 @@ defmodule HTTPoisonTest do
+                )
+     end
+ 
++    @tag :network
+     test "allows changing TLS1.0 settings" do
+       assert {:error,
+               %HTTPoison.Error{
+@@ -455,6 +457,7 @@ defmodule HTTPoisonTest do
+       end
+     end
+ 
++    @tag :network
+     test "allows changing TLS1.1 settings" do
+       assert {:error,
+               %HTTPoison.Error{
+@@ -472,6 +475,7 @@ defmodule HTTPoisonTest do
+       end
+     end
+ 
++    @tag :network
+     test "does support tls1.2" do
+       if :"tlsv1.2" in :ssl.versions()[:supported] do
+         assert {:ok, _} = HTTPoison.get("https://tls-v1-2.badssl.com:1012/", [])
+@@ -485,6 +489,7 @@ defmodule HTTPoisonTest do
+       end
+     end
+ 
++    @tag :network
+     test "invalid common name" do
+       assert {:error,
+               %HTTPoison.Error{
+-- 
+2.51.0
+

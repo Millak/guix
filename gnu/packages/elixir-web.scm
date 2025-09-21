@@ -17,6 +17,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages elixir-web)
+  #:use-module (gnu packages)
   #:use-module (gnu packages erlang)
   #:use-module (gnu packages erlang-xyz)
   #:use-module (gnu packages elixir-databases)
@@ -238,6 +239,41 @@ the HPACK protocol (RFC 7541) for Elixir.")
 purposes.  Its goal is to be as close as possible to
 @uref{http://httpbin.org, HTTPBin}.")
     (home-page "https://hexdocs.pm/httparrot/")
+    (license license:expat)))
+
+(define-public elixir-httpoison
+  (package
+    (name "elixir-httpoison")
+    (version "2.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/edgurgel/httpoison")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k9g4dc6y30wr9ryxjs23izifpg4dqkkqk8xz39ff27jn5s97k8i"))
+       ;; Waiting for upstream inclusion at
+       ;; https://github.com/edgurgel/httpoison/pull/502
+       (patches
+        (search-patches "elixir-httpoison-tag-network-dependent-test-cases.patch"))))
+    (build-system mix-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These tests require network access to badssl.com.
+      #~(list "--exclude" "network")))
+    (native-inputs
+     (list erlang-cowboy
+           elixir-earmark
+           elixir-jason
+           elixir-httparrot
+           elixir-mimic))
+    (propagated-inputs (list erlang-hackney))
+    (synopsis "Yet Another HTTP client for Elixir")
+    (description "Yet Another HTTP client for Elixir powered by hackney.")
+    (home-page "https://hexdocs.pm/httpoison/")
     (license license:expat)))
 
 (define-public elixir-mint
