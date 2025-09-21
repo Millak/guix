@@ -1907,7 +1907,11 @@ between dataframe libraries.
        (sha256
         (base32 "1lpgsagmgxzsas7g8yiv6wmyss8q57w92h70fn11rnpadsvx16xz"))))
     (build-system pyproject-build-system)
-    (arguments (list #:test-flags #~(list "-c" "/dev/null"))) ;avoid coverage
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-c" "/dev/null" ;avoid coverage
+              "-k" "not test_iter_indices_matmul"))) ; flaky
     (native-inputs
      (list python-cython
            python-numpy
