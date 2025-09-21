@@ -37354,49 +37354,57 @@ Python @code{set} interface.")
 (define-public dynaconf
   (package
     (name "dynaconf")
-    (version "3.2.4")
+    (version "3.2.11")
     (source
      (origin
        (method git-fetch)
        (uri
         (git-reference
-         (url "https://github.com/dynaconf/dynaconf")
-         (commit version)))
+          (url "https://github.com/dynaconf/dynaconf")
+          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0fj2ffvzfvjf4d7f672h5x5fzq26f8hax9j3dfsix158fwm0212w"))
-       (patches (search-patches "dynaconf-unvendor-deps.patch"))
+        (base32 "05122x1bwskfqnzi9hqi86h7407byfjvhgczj74x6lp2m6rnwkzl"))
+       ;; (patches (search-patches "dynaconf-unvendor-deps.patch"))
        (modules '((guix build utils)))
        ;; Remove vendored dependencies
-       (snippet '(let ((unvendor '("click" "dotenv" "ruamel" "toml")))
-                   (with-directory-excursion "dynaconf/vendor"
-                     (for-each delete-file-recursively unvendor))))))
+       (snippet
+        #~(let ((unvendor '("click" "ruamel" "toml")))
+            (with-directory-excursion "dynaconf/vendor"
+              (for-each delete-file-recursively unvendor))
+            (substitute* (find-files "." "\\.py$")
+              (("from dynaconf\\.vendor import (click|ruamel|toml)([^l]+.*)$"
+                _ target rest)
+               (string-append "import " target rest))
+              (("dynaconf\\.vendor\\.(click|ruamel|toml)" _ target)
+               target))))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:test-flags
-       '("--ignore=tests/test_vault.py"  ; depend on hvac and a live Vault
-         "-k" ,(let ((click-tests '("test_negative_get"
-                                    "test_inspect_invalid_format")))
-                 ;; Disable integration tests
-                 (string-append "not integration and not "
-                                ;; These tests fail because we use Click 8.*
-                                ;; instead of Click 7
-                                (string-join click-tests " and not ")))
-         "tests")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-for-click-8
-           (lambda _
-             (substitute* "dynaconf/cli.py"
-               (("click.get_os_args\\()") ;deprecated from Click 8.1+
-                "sys.argv[1:]")))))))
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/test_vault.py"  ; depend on hvac and a live Vault
+              "-k" #$(let ((click-tests '("test_negative_get"
+                                          "test_not_found_key_exit_error[get]"
+                                          "test_inspect_invalid_format")))
+                       ;; Disable integration tests
+                       (string-append "not integration and not "
+                                      ;; These tests fail because we use
+                                      ;; Click 8.* instead of Click 7
+                                      (string-join click-tests " and not ")))
+              "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-for-click-8
+            (lambda _
+              (substitute* "dynaconf/cli.py"
+                (("click.get_os_args\\()") ;deprecated from Click 8.1+
+                 "sys.argv[1:]")))))))
     (propagated-inputs
-     (list python-click python-configobj python-dotenv-0.13.0
-           python-ruamel.yaml-0.16 python-toml python-tomli))
+     (list python-click python-configobj python-ruamel.yaml-0.16
+           python-toml python-tomli))
     (native-inputs
      (list python-django python-flask python-pytest python-pytest-cov
-           python-pytest-mock python-setuptools python-wheel))
+           python-pytest-mock python-setuptools))
     (home-page "https://www.dynaconf.com/")
     (synopsis "The dynamic configurator for your Python project")
     (description
