@@ -34442,7 +34442,7 @@ from Emacs.")
 (define-public emacs-libmpdel
   (package
     (name "emacs-libmpdel")
-    (version "2.0.0")
+    (version "2.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -34451,10 +34451,20 @@ from Emacs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03bavca89cf7dsjmg7hb48qnvca41ndiij33iw5yjjhbq1zyj8r4"))))
+                "1indy1y31g68i3a4j6nbx3idybn5b11bjvlx9vkibraf622s2bls"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      ;; XXX: "check" includes "lint-package-lint", which raises errors.
+      #:test-command #~(list "make" "test")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'inject-makel
+            (lambda* (#:key inputs #:allow-other-keys)
+              (symlink (search-input-file inputs "/include/makel.mk")
+                       "makel.mk"))))))
     (native-inputs
-     (list emacs-ert-runner))
+     (list emacs-ert-runner makel))
     (home-page "https://github.com/mpdel/libmpdel")
     (synopsis "Emacs library to communicate with Music Player Daemon (MPD)")
     (description
