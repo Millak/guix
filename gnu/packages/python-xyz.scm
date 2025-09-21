@@ -275,6 +275,7 @@
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages regex)
+  #:use-module (gnu packages rpc)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages scanner)
@@ -5853,6 +5854,35 @@ picture-based content such as Picture of the Day sites.  With the @command{dosag
 command-line script you can get the latest strip of a webcomic, catch-up to the last strip
 downloaded, or download a strip for a particular date or index, if possible.")
     (license license:expat)))
+
+(define-public python-etcd3
+  (package
+    (name "python-etcd3")
+    (version "0.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kragniz/python-etcd3")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06hw0kcl77v8px5w2hfnf2l9gjnjrspjb49kx3jqa382z7wzdkk0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests require the etcd package.
+      #:tests? #f
+      #:test-backend #~'custom
+      #:test-flags                      ; Taken from tox.ini.
+      #~(list "pifpaf" "-e" "python" "run" "etcd" "--cluster" "--" "pytest")))
+    (propagated-inputs (list python-grpcio python-protobuf python-tenacity))
+    (native-inputs (list python-mock python-pifpaf python-pytest python-setuptools))
+    (home-page "https://github.com/kragniz/python-etcd3")
+    (synopsis "Python client for the etcd3 API")
+    (description
+     "This package provide a Python client for the @code{etcd3} API.")
+    (license license:asl2.0)))
 
 (define-public python-et-xmlfile
   (package
