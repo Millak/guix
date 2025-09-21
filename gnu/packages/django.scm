@@ -745,38 +745,6 @@ queries done via the Django ORM, SQLAlchemy generated queries are displayed.")
 templatetags and a full test suite.")
     (license license:expat)))
 
-(define-public python-django-assets
-  (package
-    (name "python-django-assets")
-    (version "2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "django-assets" version))
-              (sha256
-               (base32
-                "0fc6i77faxxv1gjlp06lv3kw64b5bhdiypaygfxh5djddgk83fwa"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-bad-tests
-           (lambda _
-             (substitute* "tests/test_django.py"
-               (("bundles = self.loader.load_bundles\\(\\)")
-                "return")))))))
-    (native-inputs
-     (list python-nose python-setuptools python-wheel))
-    (propagated-inputs
-     (list python-django python-webassets))
-    (home-page "https://github.com/miracle2k/django-assets")
-    (synopsis "Asset management for Django")
-    (description
-      "Asset management for Django, to compress and merge CSS and Javascript
-files.  Integrates the webassets library with Django, adding support for
-merging, minifying and compiling CSS and Javascript files.")
-    (license license:bsd-2)))
-
 (define-public python-django-jinja
   (package
     (name "python-django-jinja")
