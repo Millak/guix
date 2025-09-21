@@ -3761,6 +3761,11 @@ Cesium.")
      (list
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; When python-pytest-benchmark is added: Benchmarks are
+              ;; automatically disabled because xdist plugin is
+              ;; active.Benchmarks cannot be performed reliably in a
+              ;; parallelized environment.
+              "--ignore=dkist/tests/test_benchmarks.py"
               ;; Network access is required.
               "--deselect=dkist/net/tests/test_client.py::test_fetch_with_headers")
       #:phases
@@ -3773,7 +3778,6 @@ Cesium.")
     (native-inputs
      (list python-pydot
            python-pytest
-           python-pytest-benchmark
            python-pytest-cov
            python-pytest-doctestplus
            python-pytest-filter-subpackage
