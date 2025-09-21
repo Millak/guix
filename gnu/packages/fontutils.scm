@@ -494,25 +494,21 @@ Kit for OpenType (AFDKO) @command{tx} tool.")
 (define-public python-compreffor
   (package
     (name "python-compreffor")
-    (version "0.5.4")
+    (version "0.5.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "compreffor" version))
        (sha256
-        (base32 "05gpszc8xh6wn3mdra05d6yz6ns624y67m9xs4vv8gh68m0aasrh"))))
-    (build-system python-build-system)
+        (base32 "03hh7yi5slib4gayvj955a2f03j9yknijsx6kbh3yj7r6wc3vhc9"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-setup.py
-            (lambda _
-              (substitute* "setup.py"
-                ;; Not actually needed.
-                ((", \"setuptools_git_ls_files\"") "")))))))
-    (native-inputs (list python-pytest python-pytest-runner
-                         python-setuptools-scm))
+     (list #:test-flags #~(list "--pyargs" "compreffor")))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs (list python-fonttools-minimal))
     (home-page "https://github.com/googlefonts/compreffor")
     (synopsis "@acronym{CFF, Compact Font Format} subroutinizer for fontTools")
