@@ -1118,15 +1118,47 @@ steps of converting to and from Python data types within Python.")
     (name "python-pyproj")
     (version "3.6.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pyproj" version))
-        (sha256
-          (base32
-            "1gq1spm5zdq9k8kl9cb31b9m08ybyrdggfw3sjrqyz9b9iq7raj4"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyproj" version))
+       (sha256
+        (base32
+         "1gq1spm5zdq9k8kl9cb31b9m08ybyrdggfw3sjrqyz9b9iq7raj4"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Network is required.
+                    (list "not test_sync_download"
+                          "test_sync_download__directory"
+                          "test_sync_download__system_directory"
+                          "test_sync__download_grids"
+                          "test_get_transform_grid_list"
+                          "test_get_transform_grid_list__bbox__antimeridian"
+                          "test_get_transform_grid_list__bbox__out_of_bounds"
+                          "test_get_transform_grid_list__source_id"
+                          "test_get_transform_grid_list__contains"
+                          "test_get_transform_grid_list__file"
+                          "test_get_transform_grid_list__area_of_use"
+                          "test__load_grid_geojson_old_file"
+                          "test_transformer_group__download_grids"
+                          ;; XXX: Some incompatibility issues.
+                          "test_append_data_dir__internal"
+                          "test_get_data_dir__from_env_var__multiple"
+                          "test_get_data_dir__from_env_var__proj_data"
+                          "test_get_data_dir__from_env_var__proj_lib"
+                          "test_get_data_dir__from_path"
+                          "test_get_data_dir__from_prefix"
+                          "test_get_data_dir__from_prefix__conda_windows"
+                          "test_get_data_dir__internal"
+                          "test_get_data_dir__missing"
+                          "test_sync__area_of_use__list"
+                          "test_sync__bbox__list"
+                          "test_sync__bbox__list__exclude_world_coverage"
+                          "test_sync__file__list"
+                          "test_sync__source_id__list")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-proj-path
@@ -1136,22 +1168,27 @@ steps of converting to and from Python data types within Python.")
                 (substitute* "pyproj/datadir.py"
                   (("(internal_datadir = ).*$" all var)
                    (string-append var "Path(\"" proj
-                                  "/share/proj\")\n")))))))))
+                                  "/share/proj\")\n"))))))
+          (add-before 'check 'remove-local-pyproj
+            (lambda _
+              ;; This would otherwise interfere with finding the installed
+              ;; pyproj when running tests.
+              (delete-file-recursively "pyproj"))))))
     (inputs
-      (list proj))
+     (list proj))
     (propagated-inputs
-      (list python-certifi))
+     (list python-certifi))
     (native-inputs
-      (list python-cython
-            python-numpy
-            python-pandas
-            python-pytest
-            python-xarray))
+     (list python-cython-0
+           python-numpy
+           python-pandas
+           python-pytest
+           python-setuptools
+           python-xarray))
     (home-page "https://github.com/pyproj4/pyproj")
-    (synopsis
-      "Python interface to PROJ")
+    (synopsis "Python interface to PROJ")
     (description
-      "This package provides a Python interface to PROJ, a cartographic
+     "This package provides a Python interface to PROJ, a cartographic
 projections and coordinate transformations library.")
     (license license:expat)))
 
