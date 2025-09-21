@@ -4970,21 +4970,49 @@ conventions and aliases in the same expression.")
 (define-public python-limits
   (package
     (name "python-limits")
-    (version "4.0.1")
+    (version "5.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "limits" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alisaifee/limits")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0nkdwkvn2rs5swnd4ihv6yg6b5124apqzrrymqcm75pwil2mqkx5"))))
+        (base32 "1ykld43q1pbvds4wsb18wagh852byzjpcjqg1xwa5cldigmkc2x0"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-deprecated python-packaging
-                             python-typing-extensions))
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list
+      ;; XXX: Despite running only unit tests, pytest exits with an error code.
+      #:tests? #f
+      #:test-flags #~(list "-m" "unit")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'ignore-K-pytest-option
+            (lambda _
+              (substitute* "pytest.ini"
+                (("-K") "")))))))
+    (propagated-inputs (list python-deprecated python-packaging))
+    (native-inputs
+     (list ; python-etcd3
+           python-flaky
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-benchmark
+           python-pytest-cov
+           python-pytest-lazy-fixtures
+           python-pytest-xdist
+           ;; python-pymemcache
+           ;; python-pymongo
+           ;; python-redis
+           python-setuptools
+           ;; python-valkey
+           ))
     (home-page "https://limits.readthedocs.io/")
     (synopsis "Rate limiting utilities")
-    (description "This package provides a Python library to perform rate
-limiting with commonly used storage backends.")
+    (description
+     "This package provides a Python library to perform rate limiting with
+commonly used storage backends.")
     (license license:expat)))
 
 (define-public python-wand
