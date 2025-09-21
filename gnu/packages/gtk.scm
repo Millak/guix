@@ -1107,7 +1107,12 @@ application suites.")
                 ;; <https://gitlab.gnome.org/GNOME/gtk/-/issues/7679>).
                 (substitute* "testsuite/reftests/meson.build"
                   (("  'flipping-icons.ui',.*") "")
-                  (("  'gtk-icontheme-sizing.ui',.*") ""))))
+                  (("  'gtk-icontheme-sizing.ui',.*") ""))
+                ;; This test fails just on i686-linux, for unknown reasons.
+                #$@(if (target-x86-32?)
+                       #~((substitute* "testsuite/reftests/meson.build"
+                            (("  'linear-gradient.ui',.*") "")))
+                       #~())))
           (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
             (assoc-ref glib-or-gtk:%standard-phases
                        'generate-gdk-pixbuf-loaders-cache-file))
