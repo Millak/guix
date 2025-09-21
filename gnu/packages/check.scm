@@ -2994,7 +2994,7 @@ statements in the module it tests.")
 (define-public python-pylint
   (package
     (name "python-pylint")
-    (version "3.3.1")
+    (version "3.3.8")
     (source
      (origin
        (method git-fetch)
@@ -3003,7 +3003,7 @@ statements in the module it tests.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "023cd6gqhhykr1gf8w7nxs5n7qgqwwsd4mgn94r14is8gcf1hwvj"))))
+        (base32 "0h6ynaxsgb5bidjkbrfwb05nc7dw9paxc0bjgkqaxrkpqfm39baj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3029,16 +3029,14 @@ statements in the module it tests.")
      (list python-pytest
            python-pytest-timeout
            python-pytest-xdist
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-astroid
            python-dill
            python-isort
            python-mccabe
            python-platformdirs
-           python-tomlkit
-           python-typing-extensions))
+           python-tomlkit))
     (home-page "https://github.com/PyCQA/pylint")
     (synopsis "Advanced Python code static checker")
     (description "Pylint is a Python source code analyzer which looks
