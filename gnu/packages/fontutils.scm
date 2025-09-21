@@ -619,11 +619,21 @@ to generate OpenType font binaries from Unified Font Objects (UFOs).")
     (version "0.9.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "fontMath" version ".zip"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/robotools/fontMath")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "197dgbnhg6n937ifsi3w9dm283wi3nwp35y4qc2i6kkqkl61kn8z"))))
+        (base32 "0g8vpwn4flg0rj7ar8wl9xlpjhcgiz01p56fzkjdlf2jqb36akyy"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (propagated-inputs (list python-fonttools-minimal))
     (native-inputs
      (list python-pytest
