@@ -896,9 +896,12 @@ validates a restricted subset of the YAML specification.")
         (base32
          "1dmv163cnslyqccrybkxn0c9s1jk1mmafmgxv75iamnz5lk5l8hk"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Tests are broken upstrea, see <https://github.com/brianolson/cbor_py/issues/6>.
+      #:tests? #f))
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (home-page "https://github.com/brianolson/cbor_py")
     (synopsis "Implementation of the Concise Binary Object Representation")
     (description
