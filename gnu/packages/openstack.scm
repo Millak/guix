@@ -51,6 +51,7 @@
   #:use-module ((guix build-system python) #:select (pypi-uri))
   #:use-module (guix build-system pyproject)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (srfi srfi-1))
@@ -259,43 +260,49 @@ is for some reason not possible and local caching of the fetched data.")
       (list python-pbr-next python-setuptools python-wheel)))))
 
 (define-public python-os-testr
-  (package
-    (name "python-os-testr")
-    (version "3.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "os-testr" version))
-       (sha256
-        (base32 "0vik5sjl0qhz6xqqg6gnaf5jva31m7xykyc0azb53jfq7y57ladv"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "test-requirements.txt"
-                (("(coverage|hacking).*")
-                 "")))))))
-    (propagated-inputs
-     (list python-stestr))
-    (native-inputs
-     (list python-babel
-           python-ddt
-           python-oslotest
-           python-pbr
-           python-setuptools
-           python-testrepository
-           python-testscenarios
-           python-testtools
-           python-wheel))
-    (home-page "https://www.openstack.org/")
-    (synopsis "Testr wrapper to provide functionality for OpenStack projects")
-    (description
-      "Os-testr provides developers with a testr wrapper and an output filter
+  (let ((commit "0ba674d8c5d34890698e4e8ff9f71b24c389e109")
+        (revision "0"))
+    (package
+      (name "python-os-testr")
+      (version (git-version "3.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/openstack/os-testr")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1fd8n5fsq35ikak8by4z45sya2m1pmxpc4440579rfk3jjsq4vgc"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'relax-requirements
+              (lambda _
+                (substitute* "test-requirements.txt"
+                  (("(coverage|hacking).*")
+                   ""))))
+            (add-after 'unpack 'set-version
+              (lambda _
+                (setenv "PBR_VERSION" "3.0.0"))))))
+      (propagated-inputs (list python-stestr))
+      (native-inputs
+       (list python-babel
+             python-ddt
+             python-oslotest
+             python-pbr
+             python-setuptools
+             python-testrepository
+             python-testscenarios
+             python-testtools))
+      (home-page "https://github.com/openstack/os-testr")
+      (synopsis "Testr wrapper to provide functionality for OpenStack projects")
+      (description
+       "Os-testr provides developers with a testr wrapper and an output filter
   for subunit.")
-    (license license:asl2.0)))
+      (license license:asl2.0))))
 
 (define-public python-stevedore
   (package
