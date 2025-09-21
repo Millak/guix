@@ -17,6 +17,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages elixir-web)
+  #:use-module (gnu packages erlang)
   #:use-module (gnu packages erlang-xyz)
   #:use-module (gnu packages elixir-databases)
   #:use-module (gnu packages elixir-i18n)
@@ -148,6 +149,24 @@ callbacks.")
 functions using the Common Locale Data Repository (CLDR).")
     (home-page "https://hexdocs.pm/ex_cldr_dates_times/")
     (license license:asl2.0)))
+
+(define-public elixir-exjsx
+  (package
+    (name "elixir-exjsx")
+    (version "4.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "exjsx" version))
+       (sha256
+        (base32 "01rfr1har8akbwwnsba4a248hfym5955348fhdkymzvwm4h5is9j"))))
+    (build-system mix-build-system)
+    (propagated-inputs (list erlang-jsx))
+    (synopsis "JSON for Elixir")
+    (description "This package provides @code{exjsx}, a JSON library for
+Elixir.")
+    (home-page "https://hexdocs.pm/exjsx/")
+    (license license:expat)))
 
 (define-public elixir-hpack
   (package
