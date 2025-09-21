@@ -696,8 +696,7 @@ is to provide an accurate identifier for record tracks.")
      (list gstreamer
            gst-plugins-base
            python-flit-core
-           python-pytest
-           python-tox))
+           python-pytest))
     (home-page "https://github.com/sampsyo/audioread")
     (synopsis "Decode audio files using whichever backend is available")
     (description
