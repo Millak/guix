@@ -10015,27 +10015,28 @@ realtime client and server.")
 (define-public python-socks
   (package
     (name "python-socks")
-    (version "2.6.1")
+    (version "2.7.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python_socks" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/romis2012/python-socks")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "17pcyd1gg2a7k2i4lvnqi9095brhf7pbpkqfcjmhpzkgmfd94hwp"))))
+        (base32 "1alrfjkir69006qmr2ax3inrffk2bllpljwmprwczb44r0mya77m"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-trio))
+    (propagated-inputs (list python-trio))
     (native-inputs
      (list python-anyio
            python-async-timeout
            python-flask
            python-pytest
            python-pytest-asyncio
+           python-pytest-trio
            python-setuptools
            python-tiny-proxy
            python-trustme
-           python-wheel
            python-yarl))
     (home-page "https://github.com/romis2012/python-socks")
     (synopsis
