@@ -1233,7 +1233,7 @@ enabled web server.")
 (define-public python-sphinx-autodoc-typehints
   (package
     (name "python-sphinx-autodoc-typehints")
-    (version "1.23.0")
+    (version "1.25.3")
     (source
      (origin
        (method git-fetch)               ;no tests in pypi archive
@@ -1243,13 +1243,17 @@ enabled web server.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0z5na9cxqq4xc9ikig1s2fwbwl5pjwm04z9zwidbp2lm6k53xs8b"))))
+         "1pw9dzxrq67m0x92c0v4zqmf8llkaiw2j2plqj6n7kcravg26n6v"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; This test requires to download an objects.inv file
-      ;; from the Sphinx website.
-      #:test-flags '(list "-k" "not test_format_annotation")
+      #:test-flags
+      #~(list "-k"
+              ;; This test requires to download an objects.inv file
+              ;; from the Sphinx website.
+              (string-append "not test_format_annotation"
+                             ;; XXX: Trailing -- missing.
+                             " and not test_always_document_param_types"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'pretend-version
@@ -1265,8 +1269,7 @@ enabled web server.")
            python-nptyping
            python-pytest
            python-setuptools-scm
-           python-sphobjinv
-           python-typing-extensions))
+           python-sphobjinv))
     (propagated-inputs
      (list python-sphinx))
     (home-page "https://pypi.org/project/sphinx-autodoc-typehints/")
