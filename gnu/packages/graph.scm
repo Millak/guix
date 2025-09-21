@@ -320,10 +320,9 @@ lines.")
        (sha256
         (base32 "0sx53l555rwq0z7if8agirjgw4ddp8r9b949wwz8vlig03sjvfmp"))))
     (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest python-setuptools))
-    (propagated-inputs
-     (list python-networkx python-numpy))
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-networkx python-numpy))
     (home-page "https://github.com/taynaud/python-louvain")
     (synopsis "Louvain algorithm for community detection")
     (description
