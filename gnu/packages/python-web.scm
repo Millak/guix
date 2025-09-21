@@ -6710,31 +6710,6 @@ S3.")
      "This package contains a Flask module for creating REST APIs.")
     (license license:bsd-3)))
 
-(define-public python-flask-htpasswd
-  (package
-    (name "python-flask-htpasswd")
-    (version "0.5.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "flask-htpasswd" version))
-        (sha256
-          (base32
-            "19arq4rn5nll0bbnsff1j10blm0ydp8nvs09c56s29kmlgj3r42x"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #false)) ;none included
-    (propagated-inputs
-     (list python-flask python-passlib python-pyjwt python-tox))
-    (native-inputs (list python-pytest
-                         python-setuptools
-                         python-wheel))
-    (home-page "https://github.com/carsongee/flask-htpasswd")
-    (synopsis "Basic authentication via htpasswd files in Flask applications")
-    (description "This package provides Basic authentication via
-@file{htpasswd} files and access_token authentication in Flask
-applications.")
-    (license license:bsd-3)))
-
 (define-public python-flask-sqlalchemy
   (package
     (name "python-flask-sqlalchemy")
