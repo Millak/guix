@@ -2630,6 +2630,7 @@ follower.")
      (list alsa-lib
            glib
            jack-1
+           pipewire
            libsndfile
            readline))
     (home-page "https://www.fluidsynth.org/")
