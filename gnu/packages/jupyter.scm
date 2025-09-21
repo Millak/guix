@@ -361,26 +361,33 @@ to Jupyter Server for their Python Web application backend.")
 (define-public python-jupyter-lsp
   (package
     (name "python-jupyter-lsp")
-    (version "2.2.5")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "jupyter-lsp" version))
+       (uri (pypi-uri "jupyter_lsp" version))
        (sha256
-        (base32 "00ahai7wp0m98glpqsrd1bymcllzkb8irvskzl4zhinlbah4fcbr"))))
+        (base32 "0i825shcn9d3f7a5zmvcj1p87s5wgpqn8cyphjvqz1nw769sb2j5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 63 passed, 8 skipped, 1 deselected, 20 warnings
       #:test-flags
-      ;; No R language server is present.
-      '(list "-k" "not test_r_package_detection")
+      ;; Network access is required or most tests failed.
+      #~(list "--ignore=jupyter_lsp/tests/test_listener.py"
+              "--ignore=jupyter_lsp/tests/test_session.py"
+              ;; No R language server is present.
+              "-k" "not test_r_package_detection")
       #:phases
-      '(modify-phases %standard-phases
-         ;; Some tests require a writable HOME
-         (add-before 'check 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp"))))))
+      #~(modify-phases %standard-phases
+          ;; Some tests require a writable HOME
+          (add-before 'check 'set-HOME
+            (lambda _ (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools))
     (propagated-inputs (list python-jupyter-server))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://pypi.org/project/jupyter-lsp/")
     (synopsis "Multi-Language Server WebSocket proxy for Jupyter Notebook/Lab server")
     (description
