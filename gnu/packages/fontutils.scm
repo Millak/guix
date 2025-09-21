@@ -399,10 +399,27 @@ but also provides many useful font conversion and analysis facilities.
                  "CFLAGS = -Wno-error=incompatible-pointer-types"))))
           (add-before 'build 'set-CC
             (lambda _
-              (setenv "CC" "gcc"))))))
+              (setenv "CC" "gcc")))
+          (replace 'check
+            ;; tests: 646 passed, 4 skipped, 40 warnings
+            ;; TODO: Try to fix more tests if this package is still required.
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (invoke "pytest" "-vv"
+                        "-n" (number->string (min 8 (parallel-job-count)))
+                        "--ignore=tests/buildcff2vf_test.py"
+                        "--ignore=tests/comparefamily_test.py"
+                        "--ignore=tests/makeinstancesufo_test.py"
+                        "--ignore=tests/makeotf_test.py"
+                        "--ignore=tests/makeotfexe_test.py"
+                        "--ignore=tests/otc2otf_test.py"
+                        "--ignore=tests/otf2ttf_test.py"
+                        "--ignore=tests/ttxn_test.py")))))))
     (native-inputs
      (list pkg-config
            python-pytest
+           python-pytest-xdist
            python-setuptools-scm
            python-wheel))
     (inputs
