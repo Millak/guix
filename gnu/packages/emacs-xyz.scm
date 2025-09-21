@@ -8455,6 +8455,29 @@ whose goal is to provide colorful yet legible options for users who want
 something with a bit more flair than the Modus themes.")
     (license license:gpl3+)))
 
+(define-public emacs-doric-themes
+  (package
+    (name "emacs-doric-themes")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/protesilaos/doric-themes")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06kvv5hvqig1sngzzvpxfpb9wln9fv2b7krjmvb0n3kvp0s0bxmd"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (home-page "https://github.com/protesilaos/doric-themes")
+    (synopsis "Highly readable minimalist Emacs themes")
+    (description
+     "This package provides a set of Emacs themes that conform with a
+minimalist aesthetic: they use few colours and appear monochromatic in many
+contexts")
+    (license license:gpl3+)))
+
 (define-public emacs-eslint-flymake
   (let ((commit "c78246330ee3ac1e0e07a709473d98a113d268e5")
         (revision "1"))
