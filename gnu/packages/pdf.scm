@@ -245,9 +245,6 @@ Drawing: Adding graphics and text directly onto PDF files.
 @end itemize")
     (license license:agpl3+)))
 
-(define-public a4pdf
-  (deprecated-package "a4pdf" capypdf))
-
 (define-public diffpdf
   (let ((commit "ba68231d3d05e0cb3a2d4a4fca8b70d4044f4303")
         (revision "1"))
