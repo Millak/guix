@@ -945,13 +945,13 @@ Erlang/Elixir.")
 (define-public erlang-yconf
   (package
     (name "erlang-yconf")
-    (version "1.0.17")
+    (version "1.0.21")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "yconf" version))
        (sha256
-        (base32 "098s6if76z37amcqi99m0xq30h5i1znbjmw4ri39li216a994a6x"))))
+        (base32 "0v093p002l0zw8v8g4f3l769fkr0ihv2xk39nj2mv1w6zpqsa965"))))
     (build-system rebar-build-system)
     (inputs (list erlang-fast-yaml))
     (synopsis "YAML configuration processor")
