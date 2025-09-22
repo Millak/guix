@@ -1271,7 +1271,6 @@ to the fix block above.
 @end itemize")
       (home-page "https://git.osmocom.org/gr-iqbal/")
       (license license:gpl3+))))
-(deprecated-package "gnuradio-iqbalance" gr-iqbal)
 
 (define-public gr-satellites
   (package
