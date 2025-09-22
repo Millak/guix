@@ -1753,6 +1753,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libofa-ftbfs-1.diff		\
   %D%/packages/patches/libofa-curl.diff		\
   %D%/packages/patches/libofa-ftbfs-2.diff		\
+  %D%/packages/patches/libosinfo-libxml2-fix.patch		\
   %D%/packages/patches/libotr-test-auth-fix.patch		\
   %D%/packages/patches/libksieve-Fix-missing-link-libraries.patch \
   %D%/packages/patches/libmad-armv7-thumb-pt1.patch		\

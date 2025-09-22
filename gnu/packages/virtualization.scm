@@ -1516,7 +1516,8 @@ using simplestreams index files as the publishing mechanism
                            version ".tar.xz"))
        (sha256
         (base32
-         "1dn6pzv0gzkxrjvi60cdzdmyxqlcsvinbrbds91xm4v7wbn5g1dd"))))
+         "1dn6pzv0gzkxrjvi60cdzdmyxqlcsvinbrbds91xm4v7wbn5g1dd"))
+       (patches (search-patches "libosinfo-libxml2-fix.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
