@@ -883,6 +883,3 @@ interface.")
     (native-inputs
      `(("guile" ,guile-2.2)
        ("pkg-config" ,pkg-config)))))
-
-(define-public guile3.0-sdl2
-  (deprecated-package "guile3.0-sdl2" guile-sdl2))

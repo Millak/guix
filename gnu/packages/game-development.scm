@@ -964,7 +964,7 @@ complex and interesting levels.")
        ("pkg-config" ,pkg-config)
        ("texinfo" ,texinfo)))
     (inputs
-     `(("guile-sdl2" ,guile3.0-sdl2)
+     `(("guile-sdl2" ,guile-sdl2)
        ("guile" ,guile-3.0)
        ("pango" ,pango)
        ("sdl2" ,sdl2)))
