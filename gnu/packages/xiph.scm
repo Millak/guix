@@ -438,7 +438,8 @@ decoding .opus files.")
                     ".tar.gz"))
               (sha256
                (base32
-                "02smwc5ah8nb3a67mnkjzqmrzk43j356hgj2a97s9midq40qd38i"))))
+                "02smwc5ah8nb3a67mnkjzqmrzk43j356hgj2a97s9midq40qd38i"))
+              (patches (search-patches "opusfile-CVE-2022-47021.patch"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")
