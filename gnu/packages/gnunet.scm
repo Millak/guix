@@ -193,7 +193,7 @@ authentication and support for SSL3 and TLS.")
 (define-public gnunet
   (package
     (name "gnunet")
-    (version "0.24.2")
+    (version "0.25.0")
     (source
      (origin
        (method url-fetch)
@@ -201,7 +201,7 @@ authentication and support for SSL3 and TLS.")
                            ".tar.gz"))
        (sha256
         (base32
-         "0ixgyq331vyv1vv63jcxgqwwyb7pxb69arsdvp1z09wlgn84lkif"))))
+         "1zrn5j12c2vfp3vfx3kirknsvzb4r832hbgh5a2lcnb0x0p6dsid"))))
     (build-system meson-build-system)
     (inputs
      (list bluez
@@ -235,7 +235,9 @@ authentication and support for SSL3 and TLS.")
            which))
     (arguments
      (list
-      #:parallel-tests? #f              ;parallel tests aren't supported
+      ;; Only running util tests until the p2p tests stop being flaky.
+      ;; See <https://bugs.gnunet.org/view.php?id=10430#c25964>.
+      #:test-options #~(list "--suite=util")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-network-tests
