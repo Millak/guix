@@ -338,37 +338,3 @@ The following services are supported:
     ;; or GPL.  Documentation is licensed as GFDL.
     (license (list license:agpl3+ license:gpl3+ license:fdl1.3+ license:lgpl3+))
     (home-page "https://git.gnunet.org/gnunet-scheme.git")))
-
-(define-public gnunet-gtk
-  (package (inherit gnunet)
-    (name "gnunet-gtk")
-    (version "0.24.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnu/gnunet/gnunet-gtk-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1asp0c5f278zdf6586zng36zmn5pj08qqx0pnap4nh58ycr37i5f"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:configure-flags
-           #~(list "--with-libunique"
-                   "--with-qrencode"
-                   (string-append "--with-gnunet="
-                                  #$(this-package-input "gnunet")))))
-    (inputs
-     (list glade3
-           gnunet
-           gnutls/dane
-           gtk+
-           libextractor
-           libgcrypt
-           libsodium
-           libunique
-           qrencode))
-    (native-inputs
-     (list pkg-config libglade))
-    (synopsis "Graphical front-end tools for GNUnet")
-    (properties '((ftp-server . "ftp.gnu.org")
-                  (ftp-directory . "/gnunet")))))
