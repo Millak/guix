@@ -3,6 +3,7 @@
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2025 Laura Kirsch <laurakirsch240406@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -42,14 +43,14 @@
 (define-public pypy
   (package
     (name "pypy")
-    (version "7.3.17")
+    (version "7.3.20")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://downloads.python.org/pypy/"
-                                  "pypy3.10-v" version "-src.tar.bz2"))
+                                  "pypy3.11-v" version "-src.tar.bz2"))
               (sha256
                (base32
-                "1xsbn9mbxi2kai4gg1nz6n6cbqsq60qh65f5l6ld7ip9g32lpmva"))))
+                "1yq6n888fxfdqid29q3w8bn7ii800bjkf44w82kjwgh0c2kxv1kp"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -156,22 +157,21 @@
                   (for-each
                    (lambda (x)
                      (delete-file-recursively (string-append
-                                               "lib/pypy3.10/" x)))
+                                               "lib/pypy3.11/" x)))
                    '("tkinter/test"
                      "test"
-                     "sqlite3/test"
                      "lib2to3/tests"
                      "idlelib/idle_test"
                      "distutils/tests"
                      "ctypes/test"
                      "unittest/test"))
                   ;; Patch shebang referencing python.
-                  (substitute* '("lib/pypy3.10/cgi.py"
-                                 "lib/pypy3.10/encodings/rot_13.py")
+                  (substitute* '("lib/pypy3.11/cgi.py"
+                                 "lib/pypy3.11/encodings/rot_13.py")
                     ((shebang-match-python) shebang-pypy3))
                   (with-fluids ((%default-port-encoding "ISO-8859-1"))
-                    (substitute* '("lib/pypy3.10/_md5.py"
-                                   "lib/pypy3.10/_sha1.py")
+                    (substitute* '("lib/pypy3.11/_md5.py"
+                                   "lib/pypy3.11/_sha1.py")
                       ((shebang-match-python) shebang-pypy3))))
                 (copy-recursively dist-dir #$output)))))))
     (native-inputs
@@ -186,7 +186,7 @@
            expat
            gdbm
            glibc
-           libffi
+           libffi-pic
            ncurses
            openssl
            sqlite
