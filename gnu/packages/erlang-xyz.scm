@@ -809,13 +809,13 @@ for Erlang/Elixir.")
 (define-public erlang-stun
   (package
     (name "erlang-stun")
-    (version "1.2.15")
+    (version "1.2.21")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "stun" version))
        (sha256
-        (base32 "1vzdq3mpajv4y7g54nq4dswn44k6rk07ddjqwqn3zlczl90sbn7n"))))
+        (base32 "1n8j3vf8g2aq7i271lcm5202vzvvif5vz9m9d8528nyhp7pyhzrx"))))
     (build-system rebar-build-system)
     (inputs (list erlang-fast-tls erlang-p1-utils))
     (synopsis "STUN and TURN library for Erlang/Elixir")
