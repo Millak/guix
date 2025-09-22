@@ -77,6 +77,7 @@
 ;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Philippe Swartvagher <phil.swart@gmx.fr>
+;;; Copyright © 2025 pinoaffe <pinoaffe@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -138,6 +139,7 @@
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages django)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages datastructures)
@@ -188,6 +190,7 @@
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages node)
   #:use-module (gnu packages nss)
@@ -215,6 +218,8 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages skribilo)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages tcl)
   #:use-module (gnu packages telephony)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
@@ -6741,6 +6746,66 @@ provides a unix command line interface to a variety of popular www search engine
 and similar services.")
       (home-page "http://surfraw.org/")
       (license license:public-domain))))
+
+(define-public bookmarkfs
+  (package
+    (name "bookmarkfs")
+    (version "0.1.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://codeberg.org/cismonx/bookmarkfs")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ad7h3ffwj7dg7c788znc8b0wr6v5xx83sans8xa6f93x9c56frm"))))
+    (build-system gnu-build-system)
+    (arguments (list
+                #:tests? #f        ; tests seem to not work in sandbox
+                #:configure-flags #~(list
+                                     "--enable-bookmarkfs-util"
+                                     "--enable-bookmarkfs-mount"
+                                     "--enable-bookmarkfs-fsck"
+                                     "--enable-bookmarkfs-mkfs"
+                                     "--enable-bookmarkctl"
+                                     "--enable-backend-firefox"
+                                     "--enable-backend-chromium"
+                                     "--enable-fsck-handler-tcl")
+                #:phases
+                #~(modify-phases %standard-phases
+                    (add-before 'build 'patch-flush
+                      (lambda _
+                        (substitute* "src/fs_ops.c"
+                          (("fi->noflush = 1;") "fi->flush = 0;"))))
+                    (add-before 'configure 'patch-configure
+                      (lambda _
+                        (substitute* "configure"
+                          (("AX_PTHREAD") "")))))))
+    (inputs (list fuse
+                  libseccomp
+                  nettle
+                  jansson
+                  readline
+                  tcl
+                  uriparser
+                  zlib
+                  xxhash
+                  sqlite))
+    (native-inputs (list autoconf-2.72
+                         autoconf-archive
+                         automake
+                         libtool
+                         pkg-config))
+    (home-page "https://www.nongnu.org/bookmarkfs/")
+    (synopsis "FUSE filesystem based interface to the bookmark data of web browsers")
+    (description "BookmarkFS is a FUSE-based pseudo-filesystem which provides an
+interface to the bookmark data of web browsers.
+
+Currently, the following browsers (and their derivatives) are supported:
+- @code{firefox}
+- @code{chromium}.")
+    (license license:gpl3+)))
 
 (define-public darkhttpd
   (package
