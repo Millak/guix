@@ -185,12 +185,15 @@ most situations.")
     (version "1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "assertpy" version))
+       (method git-fetch) ;no tests in PyPI distribution
+       (uri (git-reference
+              (url "https://github.com/assertpy/assertpy")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0cs8xya465wvb9dw0kdl7cvkxwrslhbma66y44r1mmsajcll7imc"))))
+        (base32 "0hnfh45cmqyp7zasrllwf8gbq3mazqlhhk0sq1iqlh6fig0yfq2f"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/assertpy/assertpy")
     (synopsis "Simple assertion library for unit testing")
     (description
