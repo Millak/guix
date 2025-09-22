@@ -10305,13 +10305,13 @@ Client Library for Python.")
 (define-public python-google-auth
   (package
     (name "python-google-auth")
-    (version "2.37.0")
+    (version "2.40.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "google_auth" version))
        (sha256
-        (base32 "002xvp1139lrw2c2s2yllg5499ghfxzg9lv35i4q770zpwx64m00"))))
+        (base32 "0xrvsqrqx89zkf13gjp328j2y5cfhl88sjzjkkm3dszdmllkl32h"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -10319,7 +10319,7 @@ Client Library for Python.")
       ;; This one test uses crypto.sign with an outdated calling convention.
       '(list "--ignore=tests/transport/test__mtls_helper.py")))
     (propagated-inputs
-     (list python-cachetools
+     (list python-cachetools-5
            python-pyasn1-modules
            python-pyjwt
            python-rsa))
