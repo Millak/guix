@@ -10397,9 +10397,11 @@ provides additional functionality on the produced Mallard documents.")
        (sha256
         (base32 "1xwpxff4whfvkwvcyhzhdcj5zzq89vvdjmnqy664s4a9yp4lnydl"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-cython
-                         python-setuptools
-                         python-wheel))
+    (arguments
+     (list #:tests? #f))        ;no tests in PyPI, 2.0.1 is not tagged in git
+    (native-inputs
+     (list python-cython
+           python-setuptools))
     (home-page "https://github.com/realead/cykhash")
     (synopsis "Khash-sets and maps")
     (description
