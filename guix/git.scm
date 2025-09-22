@@ -593,16 +593,20 @@ current settings unchanged."
      ;; left unchanged when cloning and pulling.
      (set-config-string config "core.autocrlf" "input")
 
-     ;; Only fetch remote if it has not been cloned just before.
+     ;; When using symrefs, fetch remote again even if it has been cloned just
+     ;; before as the requested reference are not fetched when cloning.
      (when (and cache-exists?
+                (not (null? symref-list))
                 (not (reference-available? repository ref)))
        (remote-fetch (remote-lookup repository "origin")
                      #:fetch-options (make-default-fetch-options
                                       #:verify-certificate?
                                       verify-certificate?)
-                     ;; Symbolic references are not fetched from the remote by
-                     ;; default.
-                     #:refspecs symref-list))
+                     ;; Build refspecs from symbolic references so they are
+                     ;; created locally and updated if necessary.
+                     #:refspecs (map (lambda (ref)
+                                       (string-append "+" ref ":" ref))
+                                     symref-list)))
      (when recursive?
        (update-submodules repository #:log-port log-port
                           #:fetch-options
