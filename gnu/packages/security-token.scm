@@ -45,7 +45,6 @@
   #:use-module (gnu packages)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
-  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix utils)
@@ -1091,9 +1090,6 @@ used for online authentication with electronic German ID cards and residence
 titles.  To use this app, a supported RFID card reader or NFC-enabled smart
 phone and a running pcscd service are required.")
     (license license:eupl1.2)))
-
-(define-deprecated/public ausweisapp2 ausweisapp
-    (deprecated-package "ausweisapp2" ausweisapp))
 
 (define-public libfido2
   (package
