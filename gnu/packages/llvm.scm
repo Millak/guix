@@ -160,7 +160,10 @@ as \"x86_64-linux\"."
          (llvm-monorepo (package-version llvm))))
     (build-system cmake-build-system)
     (native-inputs
-     (cond ((version>=? version "19")
+     (cond ((version>=? version "21")
+            (modify-inputs (package-native-inputs llvm)
+              (prepend gcc-15)))
+           ((version>=? version "19")
             (package-native-inputs llvm))
            ((version>=? version "18")
             ;; clang-18.1.8 doesn't build with gcc-14
@@ -582,7 +585,8 @@ output), and Binutils.")
     ("17.0.6" . "1a7rq3rgw5vxm8y39fyzr4kv7w97lli4a0c1qrkchwk8p0n07hgh")
     ("18.1.8" . "1l9wm0g9jrpdf309kxjx7xrzf13h81kz8bbp0md14nrz38qll9la")
     ("19.1.7" . "18hkfhsm88bh3vnj21q7f118vrcnf7z6q1ylnwbknyb3yvk0343i")
-    ("20.1.8" . "0v0lwf58i96vcwsql3hlgy72z3ncfvqwgyghyn26m2ri8vy83k6a")))
+    ("20.1.8" . "0v0lwf58i96vcwsql3hlgy72z3ncfvqwgyghyn26m2ri8vy83k6a")
+    ("21.1.1" . "01xf0yl9xf1f29v2afyzs0rl4sqa7n7wd5bdv4qgih8cnbfmj7r0")))
 
 (define %llvm-patches
   '(("14.0.6" . ("clang-14.0-libc-search-path.patch"
@@ -599,6 +603,8 @@ output), and Binutils.")
     ("19.1.7" . ("clang-18.0-libc-search-path.patch"
                  "clang-17.0-link-dsymutil-latomic.patch"))
     ("20.1.8" . ("clang-18.0-libc-search-path.patch"
+                 "clang-17.0-link-dsymutil-latomic.patch"))
+    ("21.1.1" . ("clang-18.0-libc-search-path.patch"
                  "clang-17.0-link-dsymutil-latomic.patch"))))
 
 (define (llvm-monorepo version)
@@ -1223,6 +1229,37 @@ Library.")
 (define-public clang-toolchain-20
   (make-clang-toolchain clang-20 libomp-20))
 
+(define-public llvm-21
+  (make-llvm "21.1.1"))
+
+(define-public clang-runtime-21
+  (clang-runtime-from-llvm llvm-21))
+
+(define-public clang-21
+  (clang-from-llvm
+   llvm-21 clang-runtime-21
+   #:tools-extra
+   (origin
+     (method url-fetch)
+     (uri (llvm-uri "clang-tools-extra"
+                    (package-version llvm-21)))
+     (sha256
+      (base32
+       "0sv0snykw4zl45apj9dfm5yrs8grhmmmnss7nmg5ab8v9n52zpl0")))))
+
+(define-public libomp-21
+  (package
+    (inherit libomp-15)
+    (version (package-version llvm-21))
+    (source (llvm-monorepo version))
+    (native-inputs
+     (modify-inputs (package-native-inputs libomp-15)
+       (replace "clang" clang-21)
+       (replace "llvm" llvm-21)))))
+
+(define-public clang-toolchain-21
+  (make-clang-toolchain clang-21 libomp-21))
+
 ;; Default LLVM and Clang version.
 (define-public libomp libomp-13)
 (define-public llvm llvm-13)
@@ -1395,6 +1432,13 @@ components which highly leverage existing libraries in the larger LLVM Project."
     (version (package-version llvm-20))
     (source (llvm-monorepo version))
     (inputs (list llvm-20))))
+
+(define-public lld-21
+  (package
+    (inherit lld-15)
+    (version (package-version llvm-21))
+    (source (llvm-monorepo version))
+    (inputs (list llvm-21))))
 
 (define-public lld lld-14)
 
