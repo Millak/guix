@@ -4910,26 +4910,19 @@ key of digital audio.")
 (define-public wavpack
   (package
     (name "wavpack")
-    (version "5.4.0")
+    (version "5.8.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/dbry/WavPack/releases/download/"
                            version "/wavpack-" version ".tar.xz"))
        (sha256
-        (base32 "0ycbqarw25x7208jilh86vwwiqklr7f617jps9mllqc659mnmpjb"))))
+        (base32 "09hcbkjlg00gdcyqfviqa76wpx4xz4waxhfgmx88hb30k1a7f8kk"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
        (list "--disable-static"
-             "--enable-tests")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "./cli/wvtest" "--default" "--short"))
-             #t)))))
+             "--enable-tests")))
     (home-page "https://www.wavpack.com/")
     (synopsis "Hybrid lossless audio codec")
     (description
