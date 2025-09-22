@@ -769,13 +769,13 @@ dispatch them as Telemetry events.")
 (define-public erlang-fast-tls
   (package
     (name "erlang-fast-tls")
-    (version "1.1.22")
+    (version "1.1.25")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "fast_tls" version))
        (sha256
-        (base32 "0ns8wbl5gxprficlm653ql6d51z6fy0fy3r3am3mrcbszfp7jmz6"))))
+        (base32 "08d894ckv6flwagngk5zwmgrwxz7nmrycsxap010wrqffjsq7qar"))))
     (build-system rebar-build-system)
     (inputs (list erlang-p1-utils openssl))
     (native-inputs (list erlang-pc openssl))
