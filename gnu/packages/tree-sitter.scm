@@ -10,6 +10,7 @@
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2025 Evgenii Klimov <eugene.dev@lipklim.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +30,7 @@
 (define-module (gnu packages tree-sitter)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages node)
@@ -40,6 +42,7 @@
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module (guix i18n)
   #:use-module (guix packages)
   #:use-module (guix utils))
 
@@ -888,3 +891,24 @@ which will be used as a snippet in origin."
    "1r9p7hhnc1zagwxzdxhs4p6rnqs9naddkgbfymi6pbw6cyg2ccwl"
    "1.1.2"
    #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-zig"))
+
+(define* (python-tree-sitter-grammar pkg #:key tests?)
+  "Returns a package for Python bindings of a Tree-sitter grammar.  PKG is a
+package for a Tree-sitter grammar; its name will be used with python- prefix
+to generate the package name.  When TESTS? is true, tests are enabled."
+  (package
+    (inherit pkg)
+    (name (string-append "python-" (package-name pkg)))
+    (source (origin (inherit (package-source pkg))
+                    (snippet #f) (patches '())))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? tests?))
+    (build-system pyproject-build-system)
+    (native-inputs (append (if tests?
+                               (list python-pytest
+                                     python-tree-sitter)
+                               '())
+                           (list python-setuptools
+                                 python-wheel)))
+    (description (string-append (package-description pkg)
+                                (P_ "\n\nThis variant provides Python bindings.")))))
