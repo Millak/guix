@@ -61,7 +61,7 @@
 ;;; Copyright © 2022, 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;; Copyright © 2023 Jake Leporte <jakeleporte@outlook.com>
-;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
+;;; Copyright © 2023, 2025 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;; Copyright © 2023, 2025 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
@@ -289,27 +289,35 @@ interactive dialogs to guide them.")
 (define-public calc
   (package
     (name "calc")
-    (version "2.14.2.1")
+    (version "2.15.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://www.isthe.com/chongo/src/calc/calc-"
                            version ".tar.bz2"))
        (sha256
-        (base32 "1swalx3cxjcx4aprnchb2jf0wig89ggvxjzzzx488r115w58lxnr"))))
+        (base32 "1710wsyjg3k6qx5xaa5fa1r81izpgjiy676ayznd2p42rn3czmm2"))))
     (build-system gnu-build-system)
     (inputs (list readline))
-    (native-inputs (list util-linux)) ; for col
+    (native-inputs (list man-db util-linux)) ;for col
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (delete 'configure)
-                        (add-before 'build 'patch-makefile
-                          (lambda _
-                            (substitute* "Makefile"
-                              (("^PREFIX= /usr/local")
-                               (string-append "PREFIX=" #$output))
-                              (("=\\s?/usr")
-                               "= ${PREFIX}")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'patch-makefile
+            (lambda _
+              (substitute* "Makefile.config"
+                (("^PREFIX= /usr/local")
+                 (string-append "PREFIX="
+                                #$output))
+                (("=\\s?/usr")
+                 "= ${PREFIX}"))
+              (substitute* "Makefile.target"
+                (("LIBCALC_SHLIB=")
+                 "LIBCALC_SHLIB= -Wl,-rpath='$$ORIGIN'")
+                (("LIBCUSTCALC_SHLIB=")
+                 "LIBCUSTCALC_SHLIB= -Wl,-rpath='$$ORIGIN'")))))))
     (synopsis "Arbitrary precision console calculator")
     (description
      "Calc is an arbitrary precision arithmetic system that uses a C-like
