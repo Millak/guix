@@ -1,0 +1,101 @@
+From 7501e5f980854996a9f411642f619fda806e6420 Mon Sep 17 00:00:00 2001
+From: Jean-Baptiste Note <jean-baptiste.note@m4x.org>
+Date: Tue, 23 Sep 2025 09:33:13 +0200
+Subject: [PATCH] [python] Guix support patch.
+
+* Remove bundled library in python wrapper.
+
+* Make library lookup consistent with something that can easily be
+patched for guix.
+---
+ py-interface/CMakeLists.txt    | 7 +------
+ py-interface/amdsmi_wrapper.py | 2 ++
+ py-interface/pyproject.toml.in | 4 ----
+ py-interface/setup.py.in       | 4 ----
+ tools/generator.py             | 2 ++
+ 5 files changed, 5 insertions(+), 14 deletions(-)
+
+diff --git a/py-interface/CMakeLists.txt b/py-interface/CMakeLists.txt
+index 6aaa5056..4bc0150e 100644
+--- a/py-interface/CMakeLists.txt
++++ b/py-interface/CMakeLists.txt
+@@ -80,10 +80,6 @@ add_custom_command(
+     COMMAND ln -Pf ${CMAKE_CURRENT_SOURCE_DIR}/README.md ${PY_PACKAGE_DIR}/
+     COMMAND ln -Pf ${PROJECT_SOURCE_DIR}/LICENSE ${PY_PACKAGE_DIR}/)
+ 
+-# copy libamd_smi.so to allow for a self-contained python package
+-add_custom_command(OUTPUT ${PY_PACKAGE_DIR}/libamd_smi.so DEPENDS ${PROJECT_BINARY_DIR}/src/libamd_smi.so
+-                   COMMAND cp "${PROJECT_BINARY_DIR}/src/libamd_smi.so" ${PY_PACKAGE_DIR}/)
+-
+ add_custom_target(
+     python_package ALL
+     DEPENDS ${PY_BUILD_DIR}/pyproject.toml
+@@ -93,8 +89,7 @@ add_custom_target(
+             ${PY_PACKAGE_DIR}/amdsmi_exception.py
+             ${PY_PACKAGE_DIR}/amdsmi_interface.py
+             ${PY_PACKAGE_DIR}/README.md
+-            ${PY_PACKAGE_DIR}/LICENSE
+-            ${PY_PACKAGE_DIR}/libamd_smi.so)
++            ${PY_PACKAGE_DIR}/LICENSE)
+ 
+ install(
+     FILES ${CMAKE_CURRENT_BINARY_DIR}/${PY_BUILD_DIR}/pyproject.toml
+diff --git a/py-interface/amdsmi_wrapper.py b/py-interface/amdsmi_wrapper.py
+index b52d7fa3..f19fbc73 100644
+--- a/py-interface/amdsmi_wrapper.py
++++ b/py-interface/amdsmi_wrapper.py
+@@ -183,6 +183,8 @@ def find_smi_library():
+     rocm_path = os.getenv("ROCM_HOME", os.getenv("ROCM_PATH"))
+     if rocm_path:
+         possible_locations.append(os.path.join(rocm_path, "lib/libamd_smi.so"))
++    if os.path.exists("/opt/rocm/lib/libamd_smi.so"):
++        possible_locations.append("/opt/rocm/lib/libamd_smi.so")
+     # 2.
+     possible_locations.append("libamd_smi.so")
+     # 3.
+diff --git a/py-interface/pyproject.toml.in b/py-interface/pyproject.toml.in
+index 38dc13f1..c80a76df 100644
+--- a/py-interface/pyproject.toml.in
++++ b/py-interface/pyproject.toml.in
+@@ -24,10 +24,6 @@ classifiers = [
+ [tool.setuptools]
+ packages = ["amdsmi"]
+ zip-safe = false
+-include-package-data = true
+-
+-[tool.setuptools.package-data]
+-amdsmi = ["*.so"]
+ 
+ [tool.pytest.ini_options]
+ pythonpath = "/opt/rocm/share/amd_smi"
+diff --git a/py-interface/setup.py.in b/py-interface/setup.py.in
+index dbd98e2b..8d5f283d 100644
+--- a/py-interface/setup.py.in
++++ b/py-interface/setup.py.in
+@@ -13,10 +13,6 @@ setup(
+         "Programming Language :: Python :: 3",
+     ],
+     python_requires=">=3.6",
+-    include_package_data=True,
+-    package_data={
+-        '': ['*.so'],
+-    },
+     zip_safe=False,
+     license='amdsmi/LICENSE',
+ )
+diff --git a/tools/generator.py b/tools/generator.py
+index 2882f494..24454bca 100644
+--- a/tools/generator.py
++++ b/tools/generator.py
+@@ -198,6 +198,8 @@ def find_smi_library():
+     rocm_path = os.getenv("ROCM_HOME", os.getenv("ROCM_PATH"))
+     if rocm_path:
+         possible_locations.append(os.path.join(rocm_path, "lib/{library_name}"))
++    if os.path.exists("/opt/rocm/lib/{library_name}"):
++        possible_locations.append("/opt/rocm/lib/{library_name}")
+     # 2.
+     possible_locations.append("{library_name}")
+     # 3.
+-- 
+2.51.0
+
