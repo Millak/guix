@@ -665,13 +665,13 @@ dispatch them as Telemetry events.")
 (define-public erlang-cache-tab
   (package
     (name "erlang-cache-tab")
-    (version "1.0.31")
+    (version "1.0.33")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "cache_tab" version))
        (sha256
-        (base32 "0lb35g3p3ybij5f7fnilq3ni37nfgzhajnrmhvplgch9985bd0l5"))))
+        (base32 "002rqgikbdnzfkzw4n2wi6k03155pcqf4j68w2mjmcjhn2g00n22"))))
     (build-system rebar-build-system)
     (inputs (list erlang-p1-utils))
     (native-inputs (list erlang-pc))
