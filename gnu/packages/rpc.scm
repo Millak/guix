@@ -237,12 +237,13 @@ HTTP/2-based RPC framework gRPC.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #f       ;XXX: no tests in PyPI, try to bulid from Git
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'configure
             (lambda _
               (setenv "GRPC_PYTHON_BUILD_WITH_CYTHON" "1"))))))
-    (native-inputs (list python-cython python-setuptools python-wheel))
+    (native-inputs (list python-cython python-setuptools))
     (propagated-inputs (list python-grpcio python-protobuf-4))
     (home-page "https://grpc.io")
     (synopsis "Protobuf code generator for gRPC")
