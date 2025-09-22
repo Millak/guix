@@ -2777,7 +2777,7 @@ Every puzzle has a complete solution, although there may be more than one.")
 (define-public dsda-doom
   (package
     (name "dsda-doom")
-    (version "0.29.0")
+    (version "0.29.3")
     (source
      (origin
        (method git-fetch)
@@ -2786,7 +2786,7 @@ Every puzzle has a complete solution, although there may be more than one.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1aki559nz1czlvzah1rdmpdcad4mswpp5gszfwxhil9x0hc3gj4r"))))
+        (base32 "1nhlwxwhs69ibsi873cdjanfdlpqcb4ybcp8c2j8j9l07xpgvk1n"))))
     (build-system cmake-build-system)
     (arguments
      (list
