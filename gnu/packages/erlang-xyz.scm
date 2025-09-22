@@ -717,13 +717,13 @@ dispatch them as Telemetry events.")
 (define-public erlang-mqtree
   (package
     (name "erlang-mqtree")
-    (version "1.0.17")
+    (version "1.0.19")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "mqtree" version))
        (sha256
-        (base32 "18z23c1axn6y9799f0ydb0m29wxvq956b57bzk886ixwiz7vgs2z"))))
+        (base32 "0g6fz25j942ryc6m6c6iyb9hvs22v3i5l2pq28l8i8a9biqna468"))))
     (build-system rebar-build-system)
     (inputs (list erlang-p1-utils))
     (native-inputs (list erlang-pc))
