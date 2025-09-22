@@ -56,7 +56,7 @@
 (define-public luanti
   (package
     (name "luanti")
-    (version "5.12.0")
+    (version "5.13.0")
     (source
      (origin
        (method git-fetch)
@@ -65,7 +65,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1l8kwy23p3gpk12nnhhq1lp4v0zj6kiygnmia043pdinmgzzd0xy"))
+        (base32 "1gsdsnyrdy40d6n7a0imjg9hs4k8g01zqbz824j0qiyvdvw39wjf"))
        (modules '((guix build utils)
                   (srfi srfi-26)
                   (ice-9 ftw)))
@@ -89,11 +89,10 @@
              ;; Catch2
              (substitute* "CMakeLists.txt"
                (("add_subdirectory\\(lib/catch2\\)") "find_package(Catch2 3 REQUIRED)"))
-             (substitute* "src/catch.h"
-               (("catch_amalgamated.hpp") "catch2/catch_all.hpp"))
-             (substitute* "src/unittest/test_irr_rotation.cpp"
-               (("catch_amalgamated.hpp") "catch2/catch_all.hpp"))
-             (substitute* "src/unittest/test_irr_matrix4.cpp"
+             (substitute* '("src/catch.h"
+                            "src/unittest/test_irr_rotation.cpp"
+                            "src/unittest/test_irr_matrix4.cpp"
+                            "src/unittest/test_irr_x_mesh_loader.cpp")
                (("catch_amalgamated.hpp") "catch2/catch_all.hpp"))))))
     (build-system cmake-build-system)
     (arguments
