@@ -2461,6 +2461,17 @@ decorators, including variants of the Python standard library's
 @code{lru_cache} function decorator.")
     (license license:expat)))
 
+(define-public python-cachetools-5
+  (package
+    (inherit python-cachetools)
+    (version "5.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cachetools" version))
+       (sha256
+        (base32 "1m20wqipm50zvcgs3z2xksb96qwx1xc1jbhvaxcnglkmj6m1qrhs"))))))
+
 (define-public python-colorcet
   (package
     (name "python-colorcet")
