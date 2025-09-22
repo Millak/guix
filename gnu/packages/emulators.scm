@@ -378,7 +378,7 @@ console.")
 (define-public melonds
   (package
    (name "melonds")
-   (version "1.0rc")
+   (version "1.0")
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -387,13 +387,12 @@ console.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "1y8ilin758znizmxyq23plx1wnx2pc9zqd2qrvr1cgy0s2wzxr7z"))))
+              "0qrpqgiw678kcdvjl6hm9wi223m6igngppkvws3q86lmkwrhg039"))))
    (build-system cmake-build-system)
    (arguments ; no test suite
     '(#:tests? #f))
    (native-inputs
-    (list gcc-13
-          extra-cmake-modules
+    (list extra-cmake-modules
           pkg-config))
    (inputs
     (list enet
