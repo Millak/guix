@@ -39,6 +39,7 @@
 ;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2025 pinoaffe <pinoaffe@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -75,6 +76,7 @@
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module ((guix licenses) #:prefix license:)
@@ -471,6 +473,43 @@ documents.  It contains backends for various formats such as RTF, HTML, TeX,
 MIF, SGML2SGML, and FOT.")
     (license (license:non-copyleft "file://COPYING"
                                    "See COPYING in the distribution."))))
+
+(define-public xmlbird
+  (package
+    (name "xmlbird")
+    (version "1.2.14")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/johanmattssonm/xmlbird")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0wgdg6zlccfm4lz2yx8axxp38bhy2sxwbi7cb2p80bb8y81npb3v"))))
+    (build-system gnu-build-system)
+    (arguments (list
+                #:phases
+                #~(modify-phases %standard-phases
+                    (replace 'configure
+                      (lambda* (#:key outputs #:allow-other-keys)
+                        (system* "python3" "configure"
+                                 "--libdir=/lib"
+                                 "--prefix" (assoc-ref outputs "out"))))
+                    (replace 'build
+                      (lambda _ (system* "doit")))
+                    (replace 'check
+                      (lambda* (#:key tests? #:allow-other-keys)
+                        (when tests? (system* "doit" "test"))))
+                    (replace 'install
+                      (lambda _ (system* "python3" "install.py"))))))
+    (inputs (list vala glib))
+    (native-inputs (list python-wrapper python-doit pkg-config))
+    (home-page "https://github.com/johanmattssonm/xmlbird")
+    (synopsis "XML parser for Vala and C programs")
+    (description "XML Bird is an XML parser library for programs written in Vala or C.
+It is developed for use by the @code{birdfont} font editor.")
+    (license license:lgpl3)))
 
 (define-public perl-graph-readwrite
   (package
