@@ -530,9 +530,6 @@ fast arithmetic.")
    (properties
     '((release-monitoring-url . "http://flintlib.org/downloads.html")))))
 
-(define-public arb
-  (deprecated-package "arb" flint))
-
 (define-public python-flint
   (package
     (name "python-flint")
