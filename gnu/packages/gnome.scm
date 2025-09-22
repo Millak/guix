@@ -9718,7 +9718,8 @@ easy, safe, and automatic.")
                              #$output "/lib:"
                              #$output "/lib/tracker-3.0")
               "-Ddocs=false"
-              "-Dsystemd_user_services=false")
+              "-Dsystemd_user_services=false"
+              "--wrap-mode=nodownload") ; XXX: to be disabled
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
