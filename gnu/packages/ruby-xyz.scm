@@ -2685,22 +2685,43 @@ support.")
     (version "0.17.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (rubygems-uri "ethon" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/typhoeus/ethon")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1d73yry0y96db22ks0bacjjjhwnbnajslipima3ayhq2cavpsiia"))))
+         "06rjq0r3bbybycqp6n2xqpcqmz5x8lymnk6fj5wsq59s8gf843r9"))))
     (build-system ruby-build-system)
     (arguments
      (list
-      #:tests? #f  ; no included tests
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'libcurl-use-absolute-reference
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "lib/ethon/curls/settings.rb"
                 (("libcurl', 'libcurl\\.so\\.4")
-                 (search-input-file inputs "/lib/libcurl.so"))))))))
+                 (search-input-file inputs "/lib/libcurl.so")))))
+          (add-after 'extract-gemspec 'remove-MIME-types-version-constraint
+            (lambda _
+              (substitute* "Gemfile"
+                (("(gem \"mime-types\").*" _ gem)
+                 gem))))
+          ;; Tell Bundler not to request perf dependencies
+          (add-after 'extract-gemspec 'remove-Bundler-setup
+            (lambda _
+              (substitute* "spec/spec_helper.rb"
+                (("Bundler.setup")
+                 ""))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (for-each (lambda (file)
+                            (invoke "ruby" "-Ispec" file))
+                          (find-files "spec" "_spec\\.rb$"))))))))
+    (native-inputs (list ruby-rspec ruby-sinatra ruby-mustermann
+                         ruby-mime-types ruby-webrick))
     (inputs
      (list curl))
     (propagated-inputs
