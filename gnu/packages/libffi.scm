@@ -257,3 +257,11 @@ from Ruby code.  Moreover, a Ruby-FFI extension works without changes on Ruby
 and JRuby.")
     (home-page "https://wiki.github.com/ffi/ffi")
     (license bsd-3)))
+
+;; pypy needs libffi compiled with -fPIC for some reason
+(define-public libffi-pic
+  (hidden-package
+    (package/inherit libffi
+      (arguments
+       `(#:configure-flags '("--enable-portable-binary"
+                             "--without-gcc-arch" "--with-pic"))))))
