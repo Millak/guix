@@ -909,25 +909,6 @@ C#, C, Go, Java, JavaScript, PHP, and Python.  It was originally created for
 game development and other performance-critical applications.")
     (license license:asl2.0)))
 
-(define-public flatbuffers-23.1
-    ;; needed explicitly by tensorflow-lite 2.13.1
-  (package
-    (inherit flatbuffers)
-    (version "23.1.21")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/google/flatbuffers")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name "flatbuffers" version))
-              (sha256
-               (base32
-                "1z3a6l8g2y53i5xzraswfs2i0i3kk52zv7nzc2q3fgisbyiri3pz"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments flatbuffers)
-       ((#:configure-flags flags #~'())
-        #~(append #$flags '("-DCMAKE_POSITION_INDEPENDENT_CODE=ON")))))))
-
 (define-public flatbuffers-23.5
   (hidden-package
    (package
