@@ -67,6 +67,7 @@
             %test-separate-home-os
             %test-raid-root-os
             %test-encrypted-root-os
+            %test-encrypted-root-extra-options-os
             %test-encrypted-home-os
             %test-encrypted-home-os-key-file
             %test-encrypted-root-not-boot-os
@@ -840,6 +841,73 @@ build (current-guix) and then store a couple of full system images.")
                                               %encrypted-root-installation-script))
                          (command (qemu-command* images)))
       (run-basic-test %encrypted-root-os command "encrypted-root-os"
+                      #:initialization enter-luks-passphrase)))))
+
+
+;;;
+;;; LUKS-encrypted root with extra options: --allow-discards,
+;;; --perf-no_read_workqueue and --perf-no_write_workqueue
+;;;
+
+;; Except for the 'mapped-devices' field, this is exactly the same as
+;; %encrypted-root-os.
+(define-os-with-source (%encrypted-root-extra-options-os
+                        %encrypted-root-extra-options-os-source)
+  ;; The OS we want to install.
+  (use-modules (gnu) (gnu tests) (srfi srfi-1))
+
+  (operating-system
+    (host-name "liberigilo")
+    (timezone "Europe/Paris")
+    (locale "en_US.UTF-8")
+
+    (bootloader (bootloader-configuration
+                 (bootloader grub-bootloader)
+                 (targets '("/dev/vdb"))))
+
+    ;; Note: Do not pass "console=ttyS0" so we can use our passphrase prompt
+    ;; detection logic in 'enter-luks-passphrase'.
+
+    (mapped-devices (list (mapped-device
+                            (source (uuid "12345678-1234-1234-1234-123456789abc"))
+                            (target "the-root-device")
+                            (type luks-device-mapping)
+                            (arguments '(#:allow-discards? #t
+                                         #:extra-options
+                                         ("--perf-no_read_workqueue"
+                                          "--perf-no_write_workqueue"))))))
+    (file-systems (cons (file-system
+                          (device "/dev/mapper/the-root-device")
+                          (mount-point "/")
+                          (type "ext4"))
+                        %base-file-systems))
+    (users (cons (user-account
+                  (name "charlie")
+                  (group "users")
+                  (supplementary-groups '("wheel" "audio" "video")))
+                 %base-user-accounts))
+    (services (cons (service marionette-service-type
+                             (marionette-configuration
+                              (imported-modules '((gnu services herd)
+                                                  (guix combinators)))))
+                    %base-services))))
+
+(define %test-encrypted-root-extra-options-os
+  (system-test
+   (name "encrypted-root-extra-options-os")
+   (description
+    "Test basic functionality of an OS installed like one would do by hand,
+with an LUKS-encrypted root partition opened with extra options
+(--allow-discards, --perf-no_read_workqueue and --perf-no_write_workqueue).
+This test is expensive in terms of CPU and storage usage since we need to
+build (current-guix) and then store a couple of full system images.")
+   (value
+    (mlet* %store-monad ((images (run-install %encrypted-root-extra-options-os
+                                              %encrypted-root-extra-options-os-source
+                                              #:script
+                                              %encrypted-root-installation-script))
+                         (command (qemu-command* images)))
+      (run-basic-test %encrypted-root-os command "encrypted-root-extra-options-os"
                       #:initialization enter-luks-passphrase)))))
 
 

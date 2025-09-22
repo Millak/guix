@@ -43,6 +43,7 @@
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (ice-9 match)
+  #:use-module (ice-9 optargs)
   #:use-module (ice-9 format)
   #:export (%mapped-device
             mapped-device
@@ -200,10 +201,12 @@ option of @command{guix system}.\n")
 ;;; Common device mappings.
 ;;;
 
-(define* (open-luks-device source targets #:key key-file allow-discards?)
+(define* (open-luks-device source targets
+                           #:key key-file allow-discards? (extra-options '()))
   "Return a gexp that maps SOURCE to TARGET as a LUKS device, using
 'cryptsetup'.  When ALLOW-DISCARDS? is true, the use of discard (TRIM)
-requests is allowed for the underlying device."
+requests is allowed for the underlying device.  EXTRA-OPTIONS is a list of
+additional options to be passed to the 'cryptsetup open' command."
   (with-imported-modules (source-module-closure
                           '((gnu build file-systems)
                             (guix build utils))) ;; For mkdir-p
@@ -244,10 +247,13 @@ requests is allowed for the underlying device."
              (let ((cryptsetup #$(file-append cryptsetup-static
                                               "/sbin/cryptsetup"))
                    (cryptsetup-flags (cons*
-                                      "open" "--type" "luks" partition #$target
-                                      (if #$allow-discards?
-                                          '("--allow-discards")
-                                          '()))))
+                                      "open" "--type" "luks"
+                                      (append
+                                       (if #$allow-discards?
+                                           '("--allow-discards")
+                                           '())
+                                       '#$extra-options
+                                       (list partition #$target)))))
                ;; We want to fallback to the password unlock if the keyfile
                ;; fails.
                (or (and keyfile
@@ -271,6 +277,17 @@ requests is allowed for the underlying device."
   "Ensure the source of MD is valid."
   (let ((source   (mapped-device-source md))
         (location (mapped-device-location md)))
+    (let-keywords (mapped-device-arguments md) #t
+                  ((extra-options '())
+                   key-file allow-discards)
+      (unless (list? extra-options)
+        (raise (make-compound-condition
+                (formatted-message (G_ "invalid value ~s for #:extra-options \
+argument of `open-luks-device'")
+                                   extra-options)
+                (condition
+                 (&error-location
+                  (location (source-properties->location location))))))))
     (or (not (zero? (getuid)))
         (if (uuid? source)
             (match (find-partition-by-luks-uuid (uuid-bytevector source))

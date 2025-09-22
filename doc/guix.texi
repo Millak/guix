@@ -18783,6 +18783,27 @@ this option can have a negative security impact because it can make
 file system level operations visible on the physical device.  For more
 information, refer to the description of the @code{--allow-discards}
 option in the @code{cryptsetup-open(8)} man page.
+
+@item #:extra-options
+List of additional command-line options for the @code{cryptsetup open}
+command.  See the @code{cryptsetup-open(8)} man page for a list of
+supported options.
+
+For example, here is how you could specify the
+@option{--perf-no_read_workqueue} and @option{--perf-no_write_workqueue}
+options, along with @option{--allow-discards}:
+
+@lisp
+(mapped-device
+  (source "/dev/sdb1")
+  (target "data")
+  (type luks-device-mapping)
+  (arguments '(#:allow-discards? #t
+               #:extra-options
+               ("--perf-no_read_workqueue"
+                "--perf-no_write_workqueue")))))
+@end lisp
+
 @end table
 @end defvar
 
