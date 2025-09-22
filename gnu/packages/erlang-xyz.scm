@@ -914,13 +914,13 @@ Erlang.")
 (define-public erlang-fast-yaml
   (package
     (name "erlang-fast-yaml")
-    (version "1.0.37")
+    (version "1.0.39")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "fast_yaml" version))
        (sha256
-        (base32 "0sd72nal5i6mbmicsmb494mr4g0gvs719lzp2hj1gqpp3dr6is4d"))))
+        (base32 "13d7n1zjgvnkrxjk7riignqssrh952hs5x259vb6k4ibksmvkir4"))))
     (build-system rebar-build-system)
     (inputs (list erlang-p1-utils))
     (native-inputs (list erlang-pc libyaml))
