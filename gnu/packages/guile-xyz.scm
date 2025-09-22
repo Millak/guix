@@ -3003,55 +3003,6 @@ users and in some situations.")
     (description "Guile-Udev provides GNU Guile bindings to libudev.")
     (license license:gpl3+)))
 
-(define-public guile-sly
-  (package
-    (name "guile-sly")
-    (version "0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://files.dthompson.us/sly/sly-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "1svzlbz2vripmyq2kjh0rig16bsrnbkwbsm558pjln9l65mcl4qq"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (substitute* "configure"
-                    (("_guile_required_version=\"2.0.11\"")
-                     "_guile_required_version=\"2\"")
-                    (("ac_subst_vars='")
-                     "ac_subst_vars='GUILE_EFFECTIVE_VERSION\n"))
-                  (substitute* (find-files "." "Makefile.in")
-                    (("moddir = .*$")
-                     (string-append
-                      "moddir = "
-                      "$(prefix)/share/guile/site/@GUILE_EFFECTIVE_VERSION@\n"))
-                    (("godir = .*$")
-                     (string-append
-                      "godir = "
-                      "$(prefix)/lib/guile/@GUILE_EFFECTIVE_VERSION@/site-ccache\n")))
-                  #t))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:configure-flags
-       (list (string-append "--with-libfreeimage-prefix="
-                            (assoc-ref %build-inputs "freeimage"))
-             (string-append "--with-libgslcblas-prefix="
-                            (assoc-ref %build-inputs "gsl")))))
-    (native-inputs
-     (list pkg-config))
-    (propagated-inputs
-     (list guile-sdl guile-opengl))
-    (inputs
-     (list guile-2.2 gsl freeimage mesa))
-    (synopsis "2D/3D game engine for GNU Guile")
-    (description "Sly is a 2D/3D game engine written in Guile Scheme.  Sly
-features a functional reactive programming interface and live coding
-capabilities.")
-    (home-page "https://dthompson.us/projects/sly.html")
-    (license license:gpl3+)))
-
 (define* (g-golf-source #:key version hash)
   (origin
     (method git-fetch)
