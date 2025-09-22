@@ -31,7 +31,7 @@
 ;;; Copyright © 2022-2025 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
-;;; Copyright © 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023, 2024, 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023-2025 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -2682,14 +2682,14 @@ support.")
 (define-public ruby-ethon
   (package
     (name "ruby-ethon")
-    (version "0.12.0")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "ethon" version))
        (sha256
         (base32
-         "0gggrgkcq839mamx7a8jbnp2h7x2ykfn34ixwskwb0lzx2ak17g9"))))
+         "1d73yry0y96db22ks0bacjjjhwnbnajslipima3ayhq2cavpsiia"))))
     (build-system ruby-build-system)
     (arguments
      (list
