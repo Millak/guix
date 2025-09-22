@@ -623,6 +623,29 @@ with CSS and mouseover annotations, XHTML 1.0 with inline CSS styling, LaTeX,
 and mIRC chat codes.")
     (license license:bsd-3)))
 
+(define-public lhs2tex
+  (package
+    (name "lhs2tex")
+    (version "1.25")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "lhs2tex" version))
+       (sha256
+        (base32 "0cf66z6mgadgqd1xs5b6gw8l9rkwgbfsc5czwdiapn7ichi26qyj"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "lhs2tex")))
+    (inputs (list ghc-regex-compat))
+    (home-page "https://github.com/kosmikus/lhs2tex")
+    (synopsis "Preprocessor for typesetting Haskell sources with LaTeX")
+    (description
+     "This tool is primarily intended for people who want to write articles or
+books using LaTeX that contain some Haskell code.  It works on literate Haskell
+documents where the non-Haskell parts form essentially a valid LaTeX document,
+then processes the Haskell code in the document and replaces it with formatted
+LaTeX output.")
+    (license license:gpl2+)))
+
 (define-public kmonad
   ;; Project is active, but no new releases exist. Pick current master
   ;; HEAD as of 2024-08-18.
