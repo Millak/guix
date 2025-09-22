@@ -7058,26 +7058,30 @@ this it tries to be opinion-free and very extendable.")
 (define-public python-engineio
   (package
     (name "python-engineio")
-    (version "4.11.2")
+    (version "4.12.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python_engineio" version))
        (sha256
         (base32
-         "0abijzn4srf89jlj0kqcd9xbhyxvglzxkciy5nxv815rrvdb0nql"))))
+         "1ynyf3n29biwkm6nwzzwzhr4m19lsir1x5azxq2nl7xyw7zi5rz7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; File not found.
-      #:test-flags '(list "-k" "not test_static_files")))
+      #:test-flags
+      #~(list "-k"
+              "not test_static_file_routing and not test_static_files")))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools
+           python-tornado))
     (propagated-inputs
      (list python-aiohttp
            python-requests
            python-simple-websocket
-           python-tornado
            python-websocket-client))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/miguelgrinberg/python-engineio/")
     (synopsis "Engine.IO server")
     (description "This package provides a Python implementation of the
