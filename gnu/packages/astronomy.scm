@@ -4233,21 +4233,11 @@ CFITSIO library.  Among other things, it can
        (sha256
         (base32 "1gw2z6x8nikvnw2gkdl70gr81cwczd1pd7v8ry2kjn6k4kssrfav"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; These tests require internet access
-      #~(list "-k" "not test_download_data.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; Tests need this
-          (add-before 'check 'set-HOME
-            (lambda _ (setenv "HOME" "/tmp"))))))
+    ;;TODO: Tests depends on Nose, report upstream.
+    (arguments (list #:tests? #f))
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
+     (list python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astroml
            python-numpy
