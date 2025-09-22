@@ -19,7 +19,7 @@
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2023 pinoaffe <pinoaffe@gmail.com>
+;;; Copyright © 2023, 2025 pinoaffe <pinoaffe@gmail.com>
 ;;; Copyright © 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2024 Sören Tempel <soeren@soeren-tempel.net>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
@@ -2249,6 +2249,58 @@ edit the fonts that your GNU/Linux kernel is using to display your text on text-
 based (vs graphical) terminals.")
     (license license:gpl3+)))
 
+(define-public birdfont
+  (package
+    (name "birdfont")
+    (version "2.33.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/johanmattssonm/birdfont")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "137qmfjdhs8m06j95iqcdv5hrpp2kf8p6l0sa0jr7vl7ziin65gg"))))
+    (build-system gnu-build-system)
+    (arguments (list
+                #:tests? #f             ; no tests
+                #:phases
+                #~(modify-phases %standard-phases
+                    (replace 'configure
+                      (lambda* (#:key outputs (configure-flags '()) #:allow-other-keys)
+                        (let ((out (assoc-ref outputs "out")))
+                          (apply system*
+                                 "python3"
+                                 "configure"
+                                 ;; Required for RUNPATH validation.
+                                 (string-append "--ldflags=-Wl,-rpath=" out "/lib")
+                                 (string-append "--prefix=" out)
+                                 configure-flags))))
+                    (replace 'build
+                      (lambda _ (system* "python3" "build.py")))
+                    (replace 'install
+                      (lambda _ (system* "python3" "install.py" "--libdir=/lib"))))))
+    (inputs (list cairo
+                  gdk-pixbuf
+                  glib
+                  gtk+
+                  libgee
+                  libnotify
+                  libsoup
+                  sqlite
+                  webkitgtk-for-gtk3
+                  xmlbird))
+    (native-inputs (list gettext-minimal
+                         pkg-config
+                         python-doit
+                         python-wrapper
+                         vala))
+    (home-page "https://github.com/johanmattssonm/birdfont")
+    (synopsis "Font editor for creating fonts in TTF, EOT, and SVG format")
+    (description "Birdfont is a font editor which can create vector graphics and export
+TTF, EOT, and SVG fonts.  It includes a graphical as well as a commandline interface.")
+    (license license:gpl3)))
 
 (define-public lcdf-typetools
   (package
