@@ -94,7 +94,7 @@ functions to ensure they are called with the right arguments during testing.")
 (define-public emacs-compat
   (package
     (name "emacs-compat")
-    (version "30.0.2.0")
+    (version "30.1.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -103,7 +103,7 @@ functions to ensure they are called with the right arguments during testing.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "020rn3l2sn0vzfhx30k47jd2cgvsddk0zfbizgb68hbajcxqfsl4"))))
+                "04kzp2m5qs1jyrj50yjz5l8azciyqkgkf4cbifcz4gngvxvgxdm4"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/compat.html")
     (synopsis "Emacs Lisp compatibility library")
