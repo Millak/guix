@@ -660,7 +660,7 @@ This package also provides @samp{kdlpp}, a C++20 wrapper around @samp{ckdl}.")
 (define-public capnproto
   (package
     (name "capnproto")
-    (version "1.0")
+    (version "1.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -668,13 +668,13 @@ This package also provides @samp{kdlpp}, a C++20 wrapper around @samp{ckdl}.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "03f1862ljdshg7d0rg3j7jzgm3ip55kzd2y91q7p0racax3hxx6i"))
+                "1vs2zpk4l55hb4lq4kldbwdqcjnwm1jblhcaqxmii9dxrd7f807d"))
               (patches (search-patches "capnproto-fix-test.patch"))))
-    (build-system gnu-build-system)
+    (build-system cmake-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-before 'check 'use-tmp-for-temporary-files
+         (add-after 'unpack 'use-tmp-for-temporary-files
            (lambda _
              ;; Use /tmp for temporary files, as the default /var/tmp directory
              ;; doesn't exist.
