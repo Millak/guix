@@ -783,7 +783,7 @@ For PDF support, install the @emph{mupdf} package.")
 (define-public qpageview
   (package
     (name "qpageview")
-    (version "0.6.2")
+    (version "1.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -792,15 +792,16 @@ For PDF support, install the @emph{mupdf} package.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xdhiglzqxyp05blp66l52nbzbpn10hmdm2idhncz6pf7qw16lsw"))))
-    (build-system python-build-system)
+                "0h3b7qhmjk1bz7ws7jwa9012wh2yvmk45j21ciyzj28mcjx9ygz4"))))
+    (build-system pyproject-build-system)
     (home-page "https://qpageview.org/")
-    (synopsis "Page based document viewer widget for Qt5/PyQt5")
+    (synopsis "Page based document viewer widget for Qt/PyQt")
     (inputs
-     (list python-pyqt qtbase-5))
+     (list python-pyqt-6 qtbase))
+    (native-inputs (list python-hatchling))
     (description
-     "@code{qpageview} provides a page based document viewer widget for Qt5
-and PyQt5.  It has a flexible architecture potentionally supporting many
+     "@code{qpageview} provides a page based document viewer widget for Qt
+and PyQt.  It has a flexible architecture potentionally supporting many
 formats.  Currently, it supports SVG documents, images, and, using the
 Poppler-Qt5 binding, PDF documents.")
     (license license:gpl3+)))
