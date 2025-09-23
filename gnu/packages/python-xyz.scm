@@ -33500,44 +33500,50 @@ with the Twisted web framework.")
       (license license:expat))))
 
 (define-public python-txacme
-  (package
-    (name "python-txacme")
-    (version "0.9.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "txacme" version))
-       (sha256
-        (base32 "1cplx4llq7i508w6fgwjdv9di7rsz9k9irfmzdfbiz6q6a0ykf1d"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-acme
-           python-attrs
-           python-eliot
-           python-josepy
-           python-pem
-           python-treq
-           python-twisted
-           python-txsni))
-    (native-inputs
-     (list python-fixtures
-           python-hypothesis
-           python-mock
-           python-service-identity
-           python-testrepository
-           python-testscenarios
-           python-testtools))
-    (home-page "https://github.com/twisted/txacme")
-    (synopsis "Twisted implexmentation of the ACME protocol")
-    (description
-     "ACME is Automatic Certificate Management Environment, a protocol that
+  ;; 0.9.3 tag was placed in 2020 and there a lot of changes providing
+  ;; compatibility wit twisted, use the latest commit from trunk branch.
+  ;;
+  ;;See: <https://github.com/twisted/txacme/issues/165>.
+  (let ((commit "ac18f92f6dde971a6b38f2ecfae44665815db583")
+        (revision "0"))
+    (package
+      (name "python-txacme")
+      (version (git-version "0.9.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)               ;no fresh release in PyPI
+         (uri (git-reference
+                (url "https://github.com/twisted/txacme")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0mgdfxldv8qflbn75ywslbarnd4i3l7c4krs4aibl2dpryclsjzs"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list #:test-backend #~'custom
+             #:test-flags #~(list "-m" "twisted.trial" "txacme")))
+      (native-inputs
+       (list python-setuptools))
+      (propagated-inputs
+       (list python-acme
+             python-attrs
+             python-eliot
+             python-josepy
+             python-pem
+             python-treq
+             python-twisted
+             python-txsni))
+      (home-page "https://github.com/twisted/txacme")
+      (synopsis "Twisted implexmentation of the ACME protocol")
+      (description
+       "ACME is Automatic Certificate Management Environment, a protocol that
 allows clients and certificate authorities to automate verification and
 certificate issuance.  The ACME protocol is used by the free Let's Encrypt
 Certificate Authority.
 
 txacme is an implementation of the protocol for Twisted, the event-driven
 networking engine for Python.")
-    (license license:expat)))
+    (license license:expat))))
 
 (define-public python-pysaml2
   (package
