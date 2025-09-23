@@ -281,7 +281,7 @@ networks.")
      (list python-cython-3
            python-poetry-core
            python-pytest
-           python-wheel))
+           python-setuptools))
     (inputs
      (list python-click
            python-cffi
@@ -323,7 +323,7 @@ networks.")
                 (("70.0.0") "67.6.1")    ; setuptools = ">=70.0.0"
                 (("1.8.1") "^1.8.1")     ; stem = "1.8.1"
                 (("3.0.6") "^3.0.6")     ; werkzeug = "3.0.6"
-                (("0.41.2") "0.40.0")))) ; wheel = "^0.41.2"
+                ((".*0.41.2.*") ""))))   ; wheel = "^0.41.2"
           (add-after 'unpack 'bake-tor
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* (list "cli/onionshare_cli/common.py"
