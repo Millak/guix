@@ -56,8 +56,10 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix memoization)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
+  #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module (guix search-paths)
   #:use-module (guix utils)
@@ -1553,6 +1555,43 @@ also includes the druntime and phobos libraries."
   (make-gdc gcc-15 gdc-11 #:frontend-version "2.111.0"))
 
 (define-public gdc gdc-14)
+
+(define-public gdmd
+  (let ((commit "ff2c97a47408fb71c18a2d453294d18808a97cc5")
+        (revision "1"))
+    (package
+      (name "gdmd")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/D-Programming-GDC/gdmd")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0pd70clk70069xcjysaas7zszzmigrcw1zl2xxv8kzdg7y7xrzvm"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan
+        #~'(("dmd-script" "bin/gdmd")
+            ("dmd-script.1" "share/man/man1/gdmd.1"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'adjust-gdc-location
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "dmd-script"
+                  (("my \\$gdc_dir.*")
+                   (string-append "my $gdc_dir = \""
+                                  (dirname (search-input-file inputs "/bin/gdc"))
+                                  "\";\n"))))))))
+      (inputs (list gdc perl))
+      (home-page "https://github.com/D-Programming-GDC/gdmd")
+      (synopsis "DMD-like wrapper for GDC")
+      (description "This package provides a DMD-like wrapper for the
+@acronym{GNU D Compiler,GDC}.")
+      (license gpl3+))))
 
 (define-public gm2
   (hidden-package

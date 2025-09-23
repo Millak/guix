@@ -9,6 +9,7 @@
 ;;; Copyright © 2021, 2024 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Esther Flashner <esther@flashner.co.il>
+;;; Copyright © 2025-2026 Jonas Meeuws <jonas.meeuws@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -110,43 +111,6 @@
 which runs D source files as scripts, and @code{dustmite}, which reduces D code
 to a minimal test case.")
     (license license:boost1.0)))
-
-(define-public gdmd
-  (let ((commit "ff2c97a47408fb71c18a2d453294d18808a97cc5")
-        (revision "1"))
-    (package
-      (name "gdmd")
-      (version (git-version "0.1.0" revision commit))
-      (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                 (url "https://github.com/D-Programming-GDC/gdmd")
-                 (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32 "0pd70clk70069xcjysaas7zszzmigrcw1zl2xxv8kzdg7y7xrzvm"))))
-      (build-system copy-build-system)
-      (arguments
-       (list
-         #:install-plan
-         #~'(("dmd-script" "bin/gdmd")
-             ("dmd-script.1" "share/man/man1/gdmd.1"))
-         #:phases
-         #~(modify-phases %standard-phases
-             (add-after 'unpack 'adjust-gdc-location
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (substitute* "dmd-script"
-                   (("my \\$gdc_dir.*")
-                    (string-append "my $gdc_dir = \""
-                                   (dirname (search-input-file inputs "/bin/gdc"))
-                                   "\";\n"))))))))
-      (inputs (list gdc perl))
-      (home-page "https://github.com/D-Programming-GDC/gdmd")
-      (synopsis "DMD-like wrapper for GDC")
-      (description "This package provides a DMD-like wrapper for the
-@acronym{GNU D Compiler,GDC}.")
-      (license license:gpl3+))))
 
 ;; We use GDC, the D frontend for GCC, to bootstrap ldc.  We then use
 ;; ldc to bootstrap itself so that no reference remains to GDC.
