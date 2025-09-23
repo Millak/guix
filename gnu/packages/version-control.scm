@@ -228,6 +228,10 @@
                                    (find-files "breezy/tests"))
                 (("#!/bin/sh")
                  (format #f "#!~a" (which "sh"))))))
+          (add-after 'unpack 'relax-gcc-14-strictness
+            (lambda _
+              (setenv "CFLAGS"
+                      (string-append "-g -O2 -Wno-error=implicit-function-declaration"))))
           (add-before 'build 'adjust-for-python-3.10
             (lambda _
               (substitute* '("breezy/doc_generate/__init__.py"
@@ -253,11 +257,13 @@
                         ;; Unknown Failure
                         "-x" "breezy.tests.test_plugins.TestLoadPluginAt.test_compiled_loaded"
                         "-x" "breezy.tests.test_plugins.TestPlugins.test_plugin_get_path_pyc_only"
-                        "-x" "breezy.tests.test_selftest.TestActuallyStartBzrSubprocess.test_start_and_stop_bzr_subprocess_send_signal")))))))
+                        "-x" "breezy.tests.test_selftest.TestActuallyStartBzrSubprocess.test_start_and_stop_bzr_subprocess_send_signal"
+                        ;; AttributeError: module 'paramiko' has no attribute 'DSSKey'
+                        "-x" "breezy.tests.test_transport.TestSSHConnections.test_bzr_connect_to_bzr_ssh")))))))
     (native-inputs
      (append
       (list gettext-minimal
-            python-cython
+            python-cython-0
             python-setuptools
             python-setuptools-gettext
             python-setuptools-rust
