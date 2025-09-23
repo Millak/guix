@@ -1704,6 +1704,7 @@ your online accounts makes it necessary.")
                               (("\\$\\(shell date \\+%s\\)")
                                "0"))))
                         (delete 'configure))))
+    (supported-systems %64bit-supported-systems)
     (home-page "https://hashcat.net/hashcat/")
     (synopsis "Advanced password recovery utility")
     (description
