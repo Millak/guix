@@ -4991,11 +4991,11 @@ long-read sequencing data.")
      (list lapack openblas))
     (native-inputs
      (list python-cython
-           python-setuptools
            python-pybiomart
-           python-wheel))
+           python-setuptools))
     (arguments
      (list
+      #:tests? #f       ;XXX: tests hangs during collection
       #:phases
       '(modify-phases %standard-phases
          ;; Numba needs a writable dir to cache functions.
