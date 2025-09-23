@@ -596,7 +596,6 @@ current settings unchanged."
      ;; When using symrefs, fetch remote again even if it has been cloned just
      ;; before as the requested reference are not fetched when cloning.
      (when (and cache-exists?
-                (not (null? symref-list))
                 (not (reference-available? repository ref)))
        (remote-fetch (remote-lookup repository "origin")
                      #:fetch-options (make-default-fetch-options
