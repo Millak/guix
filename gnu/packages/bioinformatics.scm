@@ -12167,20 +12167,23 @@ interpretation.")
               (snippet
                '(for-each delete-file
                           (find-files "taggd" "\\.c$")))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; AssertionError: 0 is not true : Running Normal BAM test failed.
+      #~(list "-k" "not test_normal_bam_run")
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-broken-tests
-           (lambda _
-             (substitute* "tests/taggd_demultiplex_test.py"
-               (("def test_normal_bam_run")
-                "def _disabled_test_normal_bam_run")))))))
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-taggd
+            (lambda _
+              ;; This would otherwise interfere with finding the installed
+              ;; taggd when running tests.
+              (delete-file-recursively "taggd"))))))
     (propagated-inputs
-     (list python-numpy python-pysam python-setuptools))
+     (list python-numpy python-pysam))
     (native-inputs
-     (list python-cython))
+     (list python-cython python-pytest python-setuptools))
     (home-page "https://github.com/SpatialTranscriptomicsResearch/taggd")
     (synopsis "Genetic barcode demultiplexing")
     (description "This package provides TagGD barcode demultiplexing utilities
