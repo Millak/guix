@@ -629,12 +629,17 @@ to @uref{https://www.rfc-editor.org/rfc/rfc2132#section-9.13,RFC 2132}.")
   (client-id
     maybe-string
     "Use the interface hardware address or the given string as a client identifier,
-this is matually exclusive with the @code{duid} option.")
+this is mutually exclusive with the @code{duid} option.")
 
   ;; Escape hatch for the generated configuration file.
   (extra-content
     maybe-string
     "Extra content to append to the configuration as-is.")
+
+  (shepherd-provision
+   (list-of-symbols '(networking))
+   "This is a list of symbols naming Shepherd services provided by this service."
+   empty-serializer)
 
   (shepherd-requirement
    (list-of-symbols '())
@@ -662,11 +667,11 @@ will depend on."
 
 (define (dhcpcd-shepherd-service config)
   (match-record config <dhcpcd-configuration>
-                (command-arguments interfaces shepherd-requirement)
+                (command-arguments interfaces shepherd-provision shepherd-requirement)
     (let ((config-file (dhcpcd-config-file config)))
       (list (shepherd-service
              (documentation "dhcpcd daemon.")
-             (provision '(networking))
+             (provision shepherd-provision)
              (requirement `(user-processes udev ,@shepherd-requirement))
              (actions (list (shepherd-configuration-action config-file)))
              (start

@@ -22096,6 +22096,9 @@ resolver:
 @end lisp
 @end defvar
 
+
+@c %start of fragment
+
 @deftp {Data Type} dhcpcd-configuration
 Available @code{dhcpcd-configuration} fields are:
 
@@ -22150,10 +22153,14 @@ refer to @uref{https://www.rfc-editor.org/rfc/rfc2132#section-9.13,RFC
 
 @item @code{client-id} (type: maybe-string)
 Use the interface hardware address or the given string as a client
-identifier, this is matually exclusive with the @code{duid} option.
+identifier, this is mutually exclusive with the @code{duid} option.
 
 @item @code{extra-content} (type: maybe-string)
 Extra content to append to the configuration as-is.
+
+@item @code{shepherd-provision} (default: @code{(networking)}) (type: list-of-symbols)
+This is a list of symbols naming Shepherd services provided by this
+service.
 
 @item @code{shepherd-requirement} (default: @code{()}) (type: list-of-symbols)
 This is a list of symbols naming Shepherd services that this service
@@ -22162,6 +22169,9 @@ will depend on.
 @end table
 
 @end deftp
+
+
+@c %end of fragment
 
 @cindex NetworkManager
 
