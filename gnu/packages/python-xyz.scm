@@ -39837,6 +39837,24 @@ package.  It can be used by type-checking tools like mypy, PyCharm, pytype
 etc. to check code that uses @code{orjson}.")
     (license license:asl2.0)))
 
+(define-public python-types-regex
+  (package
+    (name "python-types-regex")
+    (version "2025.9.18.20250921")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_regex" version))
+       (sha256
+        (base32 "0gqc8b9d38pdm1l6nryi9rq9vmpis575hqnxlvj904n3n4hhqw71"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in PyPI archive
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for regex")
+    (description "This package provides typing stubs for regex.")
+    (license license:asl2.0)))
+
 (define-public python-rpds-py
   (package
     (name "python-rpds-py")
