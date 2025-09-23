@@ -915,7 +915,7 @@ to generate and parse.  The two primary functions are @code{cbor.loads} and
 (define-public flatbuffers
   (package
     (name "flatbuffers")
-    (version "24.12.23")
+    (version "24.12.23")               ; Keep in sync with python-flatbuffers.
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -976,19 +976,23 @@ game development and other performance-critical applications.")
 (define-public python-flatbuffers
   (package
     (name "python-flatbuffers")
-    (version "23.1.21")
+    (version (package-version flatbuffers))
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "flatbuffers" version))
        (sha256
-        (base32 "11gzc7mhl984248q6abz5rrsph76j0y99mwk24xc90sxpcxr2j59"))))
+        (base32 "1b1dqa2hgcx2lf3g51amzd0a56vhl2vx061bvmwdpdp9dayb0419"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "https://google.github.io/flatbuffers/")
+    ;; XXX: No tests on Pypi.  Even in the upstream repository, it's unclear
+    ;; if there is a way to run tests for the python library only.
+    (arguments (list #:tests? #f))
+    (native-inputs (list python-setuptools))
+    (home-page "https://flatbuffers.dev")
     (synopsis "FlatBuffers serialization for Python")
-    (description "This package provides the @code{FlatBuffers} serialization
-format for Python.")
+    (description
+     "This package provides the @code{FlatBuffers} serialization format for
+Python.")
     (license license:asl2.0)))
 
 (define-public python-feather-format
