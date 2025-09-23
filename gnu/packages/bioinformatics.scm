@@ -12204,40 +12204,45 @@ for Spatial Transcriptomics data.")
 (define-public stpipeline
   (package
     (name "stpipeline")
-    (version "1.8.1")
+    (version "2.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "stpipeline" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jfnavarro/st_pipeline")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0har2g42fvaqpiz66lincy86aj1hvwzds26kxhxfamvyvv4721wk"))))
+        (base32 "1qah9sa7wy9ywf0si2ngqg0qyr9jjp5gxmjx3y65i78bxyq8pfyx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases '(modify-phases %standard-phases
-                  (add-after 'unpack 'relax-requirements
-                    (lambda _
-                      (substitute* "requirements.txt"
-                        (("argparse.*")
-                         "")))))))
+                  ;; requirements.txt and pyproject.toml have all versions
+                  ;; of the dependencies hardcoded. All tests pass, so it should
+                  ;; be good enough.
+                  ;; However, the sanity-check of any Python package that has
+                  ;; stpipelines a dependency, would fail too.
+                  (delete 'sanity-check))))
     (propagated-inputs (list htseq
-                             python-cython
-                             python-invoke
+                             python-distance
+                             python-dnaio
                              python-numpy
                              python-pandas
-                             python-pympler
                              python-pysam
                              python-regex
                              python-scikit-learn
                              python-scipy
                              python-seaborn
-                             python-setuptools
-                             python-sqlitedict
                              python-taggd
+                             python-types-regex
                              samtools
                              star))
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "https://github.com/SpatialTranscriptomicsResearch/st_pipeline")
+    (native-inputs (list
+                    python-cython
+                    python-pytest
+                    python-poetry-core))
+    (home-page "https://github.com/jfnavarro/st_pipeline")
     (synopsis "Pipeline for spatial mapping of unique transcripts")
     (description
      "This package provides an automated pipeline for spatial mapping of
