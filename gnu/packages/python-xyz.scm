@@ -38009,6 +38009,24 @@ static types.")
     (description "This package providis typing stubs for python-dateutil.")
     (license license:asl2.0)))
 
+(define-public python-types-aiofiles
+  (package
+    (name "python-types-aiofiles")
+    (version "24.1.0.20250822")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_aiofiles" version))
+       (sha256
+        (base32 "0ysar1an6il2rsd54fwzwdis209z3qq3i4zhgixfjzrh1j70vfcs"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in PyPI archive
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for python-aiofiles")
+    (description "This package providis typing stubs for python-aiofiles.")
+    (license license:asl2.0)))
+
 (define-public python-types-docutils
   (package
     (name "python-types-docutils")
