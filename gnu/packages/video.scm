@@ -3568,6 +3568,33 @@ authentication and descrambling (if an external libdvdcss library is
 installed).")
     (license license:gpl2+)))
 
+(define-public lsdvd
+  (package
+    (name "lsdvd")
+    (version "0.17")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.code.sf.net/p/lsdvd/git")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zsk4bwgw0ka44qymv52c5j9igajvdhdj8hlf07p35rpnbl2qzfm"))))
+    (native-inputs
+     (list autoconf
+           automake
+           pkg-config))
+    (inputs (list libdvdread))
+    (build-system gnu-build-system)
+    (home-page "https://sourceforge.net/projects/lsdvd/")
+    (synopsis "Console application that lists the contents of a DVD")
+    (description
+     "@command{lsdvd} provides output about the types of video, audio tracks
+and subtitles.  Output is available in a number of formats including human
+readable, perl, ruby or xml.")
+    (license license:gpl2)))
+
 (define-public dvdauthor
   (package
     (name "dvdauthor")
