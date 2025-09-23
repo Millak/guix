@@ -17706,7 +17706,7 @@ should be stored on various operating systems.")
         (base32 "0vm1r1jlaiagj0l9yf7j6zn9w3733dr2169911c0svgrr3gwiwn9"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-six))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/google/pasta")
     (synopsis "AST-based Python refactoring library")
     (description "This package provides \"pasta\", an AST-based Python
