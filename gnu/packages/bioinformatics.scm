@@ -24323,34 +24323,47 @@ data from @file{.hic} files.  This package provides Python bindings.")
 (define-public python-pybbi
   (package
     (name "python-pybbi")
-    (version "0.3.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pybbi" version))
        (sha256
-        (base32
-         "1hvy2f28i2b41l1pq15vciqbj538n0lichp8yr6413jmgg06xdsk"))))
-    (build-system python-build-system)
+        (base32 "0p1s6y9f33wzmvxdhfg9b37sas2kghnmvkfnb317aiad1p6ks6ba"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #false ; tests require network access
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-cc
-           (lambda _ (setenv "CC" "gcc")))
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (copy-recursively "tests" "/tmp/tests")
-               (with-directory-excursion "/tmp/tests"
-                 (invoke "python" "-m" "pytest" "-v"))))))))
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Network is required to run these tests.
+                    (list "not test_aws_403_redirect"
+                          "test_chromsizes"
+                          "test_fetch_remote"
+                          "test_fetch_remote_https"
+                          "test_sigs")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-cc
+            (lambda _ (setenv "CC" #$(cc-for-target))))
+          (add-before 'check 'remove-local-bbi
+            (lambda _
+              ;; This would otherwise interfere with finding the installed bbi
+              ;; when running tests.
+              (delete-file-recursively "bbi"))))))
     (native-inputs
-     (list pkg-config python-pkgconfig python-pytest))
+     (list pkg-config
+           python-cython
+           python-pandas
+           python-pkgconfig
+           python-pytest
+           python-setuptools))
     (inputs
-     (list libpng openssl zlib))
+     (list libpng
+           openssl
+           zlib))
     (propagated-inputs
-     (list python-cython python-numpy python-pandas python-six))
+     (list python-numpy))
     (home-page "https://github.com/nvictus/pybbi")
     (synopsis "Python bindings to UCSC Big Binary file library")
     (description
