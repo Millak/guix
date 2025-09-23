@@ -6242,7 +6242,8 @@ alias cysdig=sudo csysdig --modern-bpf
                                 '("paths-arch.conf" "paths-debian.conf"
                                   "paths-fedora.conf" "paths-freebsd.conf"
                                   "paths-opensuse.conf" "paths-osx.conf")))))
-       (patches (search-patches "fail2ban-paths-guix-conf.patch"))))
+       (patches (search-patches "fail2ban-fix-sshd-filter.patch"
+                                "fail2ban-paths-guix-conf.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list
