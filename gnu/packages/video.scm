@@ -2820,6 +2820,35 @@ fork of mplayer2 and MPlayer.  It shares some features with the former
 projects while introducing many more.")
     (license license:gpl2+)))
 
+(define-public mpv-thumbfast
+  ;; Latest commit as of 2025-12-08
+  (let ((commit "9deb0733c4e36938cf90e42ddfb7a19a8b2f4641")
+        (revision "0"))
+    (package
+      (name "mpv-thumbfast")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/po5/thumbfast")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0q537fjj9ndq7pzg2rv4h5qas8s3812k21bpw064bcvb204vbwba"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan
+        #~'(("thumbfast.lua" "share/mpv/scripts/"))))
+      (home-page "https://github.com/po5/thumbfast")
+      (synopsis "High-performance on-the-fly thumbnailer script for mpv")
+      (description
+       "Thumbfast is a high-performance on-the-fly thumbnailer script for mpv.
+@strong{This script does not display thumbnails on its own}, it is meant to be
+used alongside a @acronym{UI, User Interface} script that calls it.")
+      (license license:mpl2.0))))
+
 (define-public smplayer
   (package
     (name "smplayer")
