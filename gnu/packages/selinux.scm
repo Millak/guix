@@ -305,42 +305,46 @@ based on required access.")
   (package
     (name "python-setools")
     (version "4.4.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/SELinuxProject/setools")
-                    (commit version)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1qvd5j6zwq4fmlahg45swjplhif2z89x7s6pnp07gvcp2fbqdsh5"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/SELinuxProject/setools")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qvd5j6zwq4fmlahg45swjplhif2z89x7s6pnp07gvcp2fbqdsh5"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f ; the test target causes a rebuild
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'portability)
-         (add-after 'unpack 'set-SEPOL-variable
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "SEPOL"
-                     (search-input-file inputs "/lib/libsepol.a"))))
-         (add-after 'unpack 'remove-Werror
-           (lambda _
-             (substitute* "setup.py"
-               (("'-Werror',") ""))
-             #t))
-         (add-after 'unpack 'fix-target-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "setup.py"
-               (("join\\(sys.prefix")
-                (string-append "join(\"" (assoc-ref outputs "out") "/\"")))
-             #t)))))
+     (list
+      #:tests? #f ; the test target causes a rebuild
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'portability)
+          (add-after 'unpack 'set-SEPOL-variable
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "SEPOL"
+                      (search-input-file inputs "/lib/libsepol.a"))))
+          (add-after 'unpack 'remove-Werror
+            (lambda _
+              (substitute* "setup.py"
+                (("'-Werror',") ""))))
+          (add-after 'unpack 'fix-target-paths
+            (lambda _
+              (substitute* "setup.py"
+                (("join\\(sys.prefix")
+                 (string-append "join(\"" #$output "/\""))))))))
+    (native-inputs
+     (list bison
+           flex
+           python-cython-0
+           swig))
+    (inputs
+     (list libsepol
+           libselinux
+           python-pyqt))
     (propagated-inputs
      (list python-networkx))
-    (inputs
-     (list libsepol libselinux python-pyqt))
-    (native-inputs
-     (list bison flex python-cython swig))
     (home-page "https://github.com/SELinuxProject/setools")
     (synopsis "Tools for SELinux policy analysis")
     (description "SETools is a collection of graphical tools, command-line
