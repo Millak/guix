@@ -9571,12 +9571,10 @@ using a pure Python implementation.")
     (arguments
      (list #:tests? #f)) ; tests require Node
     (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (propagated-inputs
-     (list python-numpy
-           python-pyjsparser
+     (list python-pyjsparser
+           python-six
            python-tzlocal))
     (home-page "https://github.com/PiotrDabkowski/Js2Py")
     (synopsis "JavaScript to Python translator")
