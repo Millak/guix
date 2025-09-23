@@ -20,6 +20,7 @@
 ;;; Copyright © 2023 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2025 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2022, 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -113,8 +114,88 @@
   #:use-module (gnu packages toolkits)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xml))
+
+(define-public aacircuit
+  ;; No release in PyPI or version tag on Git, use the latest commit.
+  (let ((commit "18635c846754b6219da1a2ceb8977714f70004d0")
+        (revision "0"))
+    (package
+      (name "aacircuit")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/Blokkendoos/AACircuit")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "07agb7fbpbq74zm27j9b00imr46q6kpwhxzmmffw2s9scv80c1km"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:imported-modules `((guix build glib-or-gtk-build-system)
+                             ,@%pyproject-build-system-modules)
+        #:modules '(((guix build glib-or-gtk-build-system)
+                     #:prefix glib-or-gtk:)
+                    (guix build pyproject-build-system)
+                    (guix build utils))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+              (assoc-ref glib-or-gtk:%standard-phases
+                         'generate-gdk-pixbuf-loaders-cache-file))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  ;; Delete develompent test file.
+                  (delete-file "tests/test_flake.py")
+                  ;; Exclude tests intended for visual review.
+                  (setenv "NOSE_EXCLUDE"
+                          (string-join '("test_export_pdf"
+                                         "test_import_aacircuit_export_pdf")
+                                       ","))
+                  (setenv "HOME" "/tmp")
+                  (invoke "xvfb-run" "./testrunner.sh"))))
+            (add-after 'wrap 'glib-or-gtk-wrap
+              (assoc-ref glib-or-gtk:%standard-phases
+                         'glib-or-gtk-wrap))
+            (add-after 'glib-or-gtk-wrap 'wrap-aacircuit
+              (lambda* (#:key outputs #:allow-other-keys)
+                (wrap-program (string-append (assoc-ref outputs "out")
+                                             "/bin/aacircuit")
+                  `("GDK_PIXBUF_MODULE_FILE" =
+                    (,(getenv "GDK_PIXBUF_MODULE_FILE")))
+                  `("GI_TYPELIB_PATH" ":" prefix
+                    (,(getenv "GI_TYPELIB_PATH")))))))))
+      (native-inputs
+       ;; XXX: Test runner may be migrated to Pytest
+       ;; <https://docs.pytest.org/en/7.1.x/how-to/nose.html> after report to
+       ;; the upstream to modify them, use deprecated Nose test runner for
+       ;; now.
+       (list python-nose
+             python-setuptools
+             python-wheel
+             xvfb-run))
+      (inputs
+       (list bash-minimal
+             gtk+
+             python-bresenham
+             python-platformdirs
+             python-pycairo
+             python-pyclip
+             python-pygobject
+             python-pypubsub))
+      (home-page "https://github.com/Blokkendoos/AACircuit")
+      (synopsis "Draw electronic circuits with ASCII characters")
+      (description
+       "This is a pythonized, kind of reverse engineered version of original
+AACircuit written by Andreas Weber in Borland Delphi.  The idea and GUI layout
+are also taken from the original.")
+      (license license:gpl3+))))
 
 (define-public abc
   (let ((commit "e29dcd9f3275874c8d31a2f781487efac1dabb7b")
