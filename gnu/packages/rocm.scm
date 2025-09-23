@@ -174,7 +174,7 @@ AMDGPU code objects.")
     (synopsis "Radeon Open Compute Thunk Interface")
     (description "User-mode API interfaces used to interact with the ROCk
 driver.")
-    (license license:ncsa)))
+    (license (list license:expat license:ncsa))))
 
 (define-public rocr-runtime
   (package
@@ -275,7 +275,7 @@ applications to launch compute kernels to available HSA ROCm kernel agents.")
     (synopsis "ROCm OpenCL Runtime")
     (description "OpenCL 2.0 compatible language runtime, supporting offline
 and in-process/in-memory compilation.")
-    (license license:ncsa)))
+    (license license:expat)))
 
 (define-public rocminfo
   (package
@@ -333,7 +333,7 @@ characteristics of buffer copying and kernel read/write operations.  The help
 screen of the benchmark shows various options one can use in initiating
 cop/read/writer operations.  In addition one can also query the topology of
 the system in terms of memory pools and their agents.")
-    (license license:ncsa)))
+    (license license:expat)))
 
 
 ;; e-smi looks hard to unbundle correctly from amd-smi
