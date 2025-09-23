@@ -1151,8 +1151,8 @@ editor, part of the RiNgDove EDA suite.")
 
 (define-public prjtrellis
   ;; The last release is 2 years old; use the latest commit for now.
-  (let ((commit "898329dddf6ce6463299973081f109d645b9c55f")
-        (revision "0"))
+  (let ((commit "92345b77edf775fe5668700dd9931e19db2d36b0")
+        (revision "1"))
     (package
       (name "prjtrellis")
       (version (git-version "1.4" revision commit))
@@ -1173,7 +1173,7 @@ editor, part of the RiNgDove EDA suite.")
              (for-each delete-file-recursively
                        '("pybind11"))))
          (sha256
-          (base32 "1qljgn7rxz114vki21rms70zi9rgr4gw7crdfihxx1n68zgv60gg"))))
+          (base32 "1yl5qw846jbnwzs8jv8bllz0zrzsg8amphvl9nskq5p5fz188q22"))))
       (build-system cmake-build-system)
       (arguments
        (list
