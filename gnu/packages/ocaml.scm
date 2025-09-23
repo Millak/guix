@@ -253,6 +253,19 @@ functional, imperative and object-oriented styles of programming.")
     ;; distributed under lgpl2.0.
     (license (list license:qpl license:lgpl2.0))))
 
+(define-public ocaml-5.3
+  (package
+    (inherit ocaml-5.0)
+    (version "5.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ocaml/ocaml")
+                    (commit version)))
+              (file-name (git-file-name "ocaml" version))
+              (sha256
+               (base32
+                "05jhy9zn53v12rn3sg3vllqf5blv1gp7f06803npimc58crxy6rv"))))))
 
 (define-public ocaml-4.14
   (package
