@@ -16,7 +16,7 @@
 ;;; Copyright © 2021 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
-;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
+;;; Copyright © 2023, 2025 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Brian Kubisiak <brian@kubisiak.com>
@@ -744,7 +744,7 @@ Latin script and other languages.")
 (define-public direnv
   (package
     (name "direnv")
-    (version "2.36.0")
+    (version "2.37.1")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -753,7 +753,7 @@ Latin script and other languages.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0p6n9zi3p9frj3ndnpdc1cz51hq0nkyjc9b1rqg7967l8vhdr8f6"))))
+               "08wywbj5niqhpy6m4y8xw065w3rgpi8khfy5qzqfxr6752h66v7p"))))
     (build-system go-build-system)
     (arguments
      (list #:install-source? #f
