@@ -511,7 +511,11 @@
                (build-system gnu-build-system)
                (supported-systems
                 `("does-not-exist" "foobar" ,@%supported-systems)))))
-    (parameterize ((%current-system "armhf-linux")) ; a traditionally-bootstrapped architecture
+    ;; For '%current-system', pick an old-style-bootstrap (not full-source
+    ;; bootstrap) architecture, and one that uses a version of
+    ;; 'libstdc++-boot0' that has all of %SUPPORTED-SYSTEMS in its
+    ;; 'supported-systems' field.
+    (parameterize ((%current-system "riscv64-linux"))
       (package-transitive-supported-systems p))))
 
 (test-equal "package-transitive-supported-systems: reduced binary seed, implicit inputs"
