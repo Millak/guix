@@ -252,7 +252,7 @@ GLFW} OpenGL application development library.")
              (setenv "HOME" (getcwd)))))))
     (native-inputs
      (list pkg-config
-           python-cython
+           python-cython-0
            ;; Not packaged yet, for tests.
            ;; python-kivy-deps-glew
            ;; python-kivy-deps-glew-dev
