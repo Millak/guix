@@ -921,6 +921,10 @@ which allows one to install the M8 firmware on any Teensy.")
               (string-append "-DTRELLIS_INSTALL_PREFIX="
                              #$(this-package-input "prjtrellis"))
               "-DUSE_IPO=OFF")
+      #:modules '((guix build qt-build-system)
+                  (guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26))
       #:phases
       #~(modify-phases %standard-phases
           ;; Required by himbaechel architecture, ng-ultra support.
@@ -947,10 +951,42 @@ which allows one to install the M8 firmware on any Teensy.")
                 (("\\$\\{CMAKE_SOURCE_DIR}/3rdparty/sanitizers-cmake/cmake")
                  (string-append
                   #$(this-package-native-input "sanitizers-cmake")
-                  "/share/sanitizers-cmake/cmake"))))))))
+                  "/share/sanitizers-cmake/cmake")))))
+          (add-after 'install 'run-icestorm-examples
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "PATH"
+                        (string-append #$output "/bin:" (getenv "PATH")))
+                ;; Tests need write access.
+                (copy-recursively
+                 (string-append
+                  #$(this-package-native-input "icestorm") "/examples")
+                 "/tmp/icestorm/examples")
+                (with-directory-excursion "/tmp/icestorm/examples"
+                  (for-each
+                   (cut invoke "make" "-C" <>)
+                   (scandir "." (negate (cut member <> '("." "..")))))))))
+          (add-after 'run-icestorm-examples 'run-prjtrellis-examples
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "PATH"
+                        (string-append #$output "/bin:" (getenv "PATH")))
+                ;; Tests need write access.
+                (copy-recursively
+                 (string-append
+                  #$(this-package-native-input "prjtrellis") "/examples")
+                 "/tmp/prjtrellis/examples")
+                (with-directory-excursion "/tmp/prjtrellis/examples"
+                  (for-each
+                   (cut invoke "make" "-C" <>)
+                   ;; Other tests require unavailable tools.
+                   (list "ecp5_evn" "tinyfpga_rev1"
+                         "tinyfpga_rev2" "versa5g")))))))))
     (native-inputs
-     (list googletest
-           sanitizers-cmake))
+     `(("icestorm" ,(package-source icestorm))
+       ("googletest" ,googletest)
+       ("prjtrellis" ,(package-source prjtrellis))
+       ("sanitizers-cmake" ,sanitizers-cmake)))
     (inputs
      (list apycula
            boost
