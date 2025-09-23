@@ -183,13 +183,14 @@ or #f if there isn't any."
 (define (python->package-name name)
   "Given the NAME of a package on PyPI, return a Guix-compliant name for the
 package."
-  (cond
-   ((string-prefix? "python-" name) (snake-case name))
-   ((string-suffix? "-python" name)
-    (string-append "python-" (string-drop-right name 7)))
-   ((or (string=? "trytond" name)
-        (string-prefix? "trytond-" name)) (snake-case name))
-   (else (string-append "python-" (snake-case name)))))
+  (let ((name (snake-case name)))
+    (cond
+     ((string-prefix? "python-" name) name)
+     ((string-suffix? "-python" name)
+      (string-append "python-" (string-drop-right name 7)))
+     ((or (string=? "trytond" name)
+          (string-prefix? "trytond-" name)) name)
+     (else (string-append "python-" name)))))
 
 (define (guix-package->pypi-name package)
   "Given a Python PACKAGE built from pypi.org, return the name of the
