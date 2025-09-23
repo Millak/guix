@@ -734,7 +734,9 @@ environments.")
        (sha256
         (base32 "13vdaff15k0jyfcss4b4xvfgm8xyv0nrbyw5n1qc7lrqbi0b3h82"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list #:tests? #f))         ;no tests in PyPI
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/ricmoo/pyaes")
     (synopsis "Implementation of AES in Python")
     (description "This package contains a pure-Python implementation of the
