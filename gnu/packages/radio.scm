@@ -3367,9 +3367,9 @@ of devices than RTL-SDR.")
               (setenv "DISPLAY" ":0")
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-cython
+     (list python-cython-0
            python-pytest
-           python-wheel
+           python-setuptools
            xorg-server-for-tests))
     (inputs
      (list airspy
