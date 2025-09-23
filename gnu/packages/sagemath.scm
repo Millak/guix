@@ -247,8 +247,10 @@ libraries GMO, MPFR and MPC.")
        (sha256
         (base32 "1r7g175ddbpn5kjgs6f09s7mfachzw94p02snki6f6830dmj22fn"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests in PyPI or Git
     (native-inputs
-     (list python-cython python-setuptools python-wheel))
+     (list python-cython python-setuptools))
     (home-page "https://github.com/sagemath/memory_allocator")
     (synopsis "Extension class to allocate memory easily with Cython")
     (description "This package provides a single extension class
