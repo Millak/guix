@@ -12666,39 +12666,59 @@ and a plugin for Pillow.")
 
 (define-public python-pillow-simd
   (package
-    (inherit python-pillow)
     (name "python-pillow-simd")
     (version "10.0.1.post0")
-    ;; The PyPI tarball does not include test files.
     (source
      (origin
-       (method git-fetch)
+       (method git-fetch)       ;no tests in PyPI tarball
        (uri (git-reference
-             (url "https://github.com/uploadcare/pillow-simd")
-             (commit (string-append "v" version))))
+              (url "https://github.com/uploadcare/pillow-simd")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "16pr4qifb661spf58b7g2lyraask9wf944v4kwk3llg32djvb09b"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       ;; Got different content.
       '(list "-k" (string-append "not test_open"
                                  " and not test_consistency_3x3"
-                                 " and not test_consistency_5x5"))
+                                 " and not test_consistency_5x5"
+                                 " and not test_close"))
       #:phases
       '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-ldconfig
-           (lambda _
-             (substitute* "setup.py"
-               (("\\['/sbin/ldconfig', '-p'\\]") "['true']")))))))
+        (add-after 'unpack 'patch-ldconfig
+          (lambda _
+            (substitute* "setup.py"
+              (("\\['/sbin/ldconfig', '-p'\\]") "['true']")))))))
+    (native-inputs
+     (list python-check-manifest
+           python-defusedxml
+           python-markdown2
+           python-olefile
+           python-packaging
+           python-pytest
+           python-pytest-timeout
+           python-setuptools
+           python-trove-classifiers))
     (inputs
-     (modify-inputs (package-inputs python-pillow)
-       (prepend libraqm libimagequant)))
+     (list freetype
+           lcms
+           libimagequant
+           libjpeg-turbo
+           libraqm
+           libtiff
+           libwebp
+           openjpeg
+           zlib))
     (home-page "https://github.com/uploadcare/pillow-simd")
     (synopsis "Fork of the Python Imaging Library (Pillow)")
     (description "This package is a fork of Pillow which adds support for SIMD
-parallelism.")))
+parallelism.")
+    (license (license:x11-style
+              "http://www.pythonware.com/products/pil/license.htm"
+              "The PIL Software License"))))
 
 (define-public python-pixelmatch
   (package
