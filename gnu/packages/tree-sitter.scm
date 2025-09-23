@@ -912,3 +912,9 @@ to generate the package name.  When TESTS? is true, tests are enabled."
                                  python-wheel)))
     (description (string-append (package-description pkg)
                                 (P_ "\n\nThis variant provides Python bindings.")))))
+
+(define-public python-tree-sitter-html
+  (python-tree-sitter-grammar
+   tree-sitter-html
+   ;; TODO: Enable tests once python-tree-sitter >= 0.22 is packaged
+   #:tests? #f))
