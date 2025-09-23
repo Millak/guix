@@ -4420,7 +4420,7 @@ you are running, what theme or icon set you are using, etc.")
 (define-public hyfetch
   (package
     (name "hyfetch")
-    (version "2.0.1")
+    (version "2.0.2")
     (source
      (origin
        (method git-fetch)
@@ -4429,7 +4429,7 @@ you are running, what theme or icon set you are using, etc.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1c81425jaa2i0jdkfp2v7rsb0z7vzgba3735lgf5m921618k18rr"))))
+        (base32 "1h3s8m6csmxj815cpzh30m59132n8drxya0s2lh5ngjkpazgdnv3"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
