@@ -8,6 +8,7 @@
 ;;; Copyright © 2023 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2024 Leo Nikkilä <hello@lnikki.la>
 ;;; Copyright © 2024 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2025 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -247,6 +248,9 @@ Run the container with the given options."))
               (display (G_ "
       --expose=SPEC      expose host file system directory as read-only
                          according to SPEC"))
+              (display (G_ "
+      --pid-file=FILE    write the process ID of the container's PID 1
+                         process to FILE"))
               (newline)
               (display (G_ "
   -h, --help             display this help and exit"))
@@ -267,6 +271,11 @@ Run the container with the given options."))
                             (lambda (opt name arg result)
                               (alist-cons 'file-system-mapping
                                           (specification->file-system-mapping arg #f)
+                                          result)))
+                    (option '("pid-file") #t #f
+                            (lambda (opt name arg result)
+                              (alist-cons 'pid-file
+                                          arg
                                           result)))))
 
             (define (parse-options args options)
@@ -290,6 +299,10 @@ Run the container with the given options."))
               (newline (guix-warning-port)))
 
             (let* ((opts (parse-options (cdr (command-line)) %options))
+                   (pid-files (filter-map (match-lambda
+                                            (('pid-file . filename) filename)
+                                            (_ #f))
+                                          opts))
                    (mappings (filter-map (match-lambda
                                            (('file-system-mapping . mapping) mapping)
                                            (_ #f))
@@ -318,7 +331,13 @@ Run the container with the given options."))
                                  (delq 'net %namespaces)
                                  %namespaces)
                 #:writable-root? #t
-                #:process-spawned-hook explain)))))
+                #:process-spawned-hook (lambda (pid)
+                                         ;; Write out the PID to the requested files
+                                         (for-each (lambda (filename)
+                                                     (call-with-output-file filename
+                                                       (lambda (port) (write pid port))))
+                                                   pid-files)
+                                         (explain pid)))))))
 
     (gexp->script "run-container" script)))
 
