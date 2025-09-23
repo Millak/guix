@@ -9218,6 +9218,9 @@ using (multivariate) polynomials.")
       #:build-backend "setuptools.build_meta"
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count))
+              ;; Failed: 'yield' keyword is allowed in fixtures, but not in
+              ;; tests (test_recipe)
+              "--ignore=doc/source/cookbook/tests/test_cookbook.py"
               "-k" (string-join
                     ;; Tests requiring networking.
                     (list "not test_load_sample_timeout"
@@ -9227,7 +9230,10 @@ using (multivariate) polynomials.")
                           "test_registry_byte_size_dtype"
                           "test_registry_byte_size_sign"
                           ;; AssertionError: Arrays are not equal
-                          "test_field_cut_off_axis_octree")
+                          "test_field_cut_off_axis_octree"
+                          ;; UserWarning: pkg_resources is deprecated as an
+                          ;; API
+                          "test_glue_data_object")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
