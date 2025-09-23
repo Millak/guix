@@ -7635,17 +7635,21 @@ engine.  Its module is called @code{googlesearch}.")
 (define-public python-google-auth-httplib2
   (package
     (name "python-google-auth-httplib2")
-    (version "0.1.1")
+    (version "0.2.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "google-auth-httplib2" version))
               (sha256
-               (base32 "0agwwgw04nks7lzpm224fbvpnjfgzz67pkrfls77ipf6zmawajy6"))))
-    (build-system python-build-system)
+               (base32 "018fckshilc6z2qpj1pclh8haanbq3lr85w6p4g4z5wgyjnppaiq"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-google-auth python-httplib2 python-six))
+     (list python-google-auth python-httplib2))
     (native-inputs
-     (list python-flask python-mock python-pytest python-pytest-localserver))
+     (list python-pytest
+           python-pyparsing
+           python-pytest-localserver
+           python-flask
+           python-setuptools))
     (home-page
      "https://github.com/GoogleCloudPlatform/google-auth-library-python-httplib2")
     (synopsis "Google Authentication Library: httplib2 transport")
