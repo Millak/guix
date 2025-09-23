@@ -5218,23 +5218,21 @@ other machines, such as over the network.")
 (define-public python-setuptools-declarative-requirements
   (package
     (name "python-setuptools-declarative-requirements")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri
-             "setuptools-declarative-requirements"
-             version))
+       (uri (pypi-uri "setuptools-declarative-requirements" version))
        (sha256
-        (base32
-         "1l8zmcnp9h8sp8hsw7b81djaa1a9yig0y7i4phh5pihqz1gdn7yi"))))
-    (build-system python-build-system)
+        (base32 "1xwqp37ii9kql49agmkipawjbndwxg6y8sxax1wc4l6kkaxvk9ap"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;requir dated inputs
     (native-inputs
-     (list python-pytest python-setuptools-scm))
+     (list python-setuptools-scm))
     (propagated-inputs
-     (list python-toml python-wheel))
-    (home-page
-     "https://github.com/s0undt3ch/setuptools-declarative-requirements")
+     (list python-setuptools))
+    (home-page "https://github.com/s0undt3ch/setuptools-declarative-requirements")
     (synopsis "File support for setuptools declarative setup.cfg")
     (description
      "This package provides file support for setuptools declarative
