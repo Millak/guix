@@ -1418,10 +1418,9 @@ Python packages.")
        (sha256
         (base32 "0w7j5ywskandp91v74966pw1pvq9d5zrx5gkjcn84xi8wsyf8hc5"))))
     (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
     (native-inputs
-     (list python-svgelements
-           python-setuptools
-           python-wheel))
+     (list python-svgelements python-setuptools))
     (home-page "https://github.com/tatarize/shxparser")
     (synopsis "SHX line font parser")
     (description
