@@ -12165,26 +12165,19 @@ interpretation.")
 (define-public python-taggd
   (package
     (name "python-taggd")
-    (version "0.3.6")
+    (version "0.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/SpatialTranscriptomicsResearch/taggd")
+                    (url "https://github.com/jfnavarro/taggd")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0j19ah81z7aqrdljah9hyarp91gvgbk63pz6fz3pdpksy1yqyi6k"))
-              (modules '((guix build utils)))
-              (snippet
-               '(for-each delete-file
-                          (find-files "taggd" "\\.c$")))))
+                "17hi1vs1qwhxx8jnradnl9k471li6fjb6w5sljkpzjxy7rkxwb85"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      ;; AssertionError: 0 is not true : Running Normal BAM test failed.
-      #~(list "-k" "not test_normal_bam_run")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'remove-local-taggd
@@ -12193,10 +12186,16 @@ interpretation.")
               ;; taggd when running tests.
               (delete-file-recursively "taggd"))))))
     (propagated-inputs
-     (list python-numpy python-pysam))
+     (list python-numpy
+           python-pysam
+           python-tqdm
+           python-aiofiles
+           python-dnaio
+           python-types-aiofiles
+           python-types-tqdm))
     (native-inputs
      (list python-cython python-pytest python-setuptools))
-    (home-page "https://github.com/SpatialTranscriptomicsResearch/taggd")
+    (home-page "https://github.com/jfnavarro/taggd")
     (synopsis "Genetic barcode demultiplexing")
     (description "This package provides TagGD barcode demultiplexing utilities
 for Spatial Transcriptomics data.")
