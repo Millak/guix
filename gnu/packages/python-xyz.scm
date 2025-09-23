@@ -39270,16 +39270,34 @@ Currently, Linux is the only platform supported by this library.")
 (define-public python-dbus-fast
   (package
     (name "python-dbus-fast")
-    (version "2.30.2")
+    (version "2.44.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "dbus_fast" version))
+       (method git-fetch) ;No tests in PyPI package.
+       (uri (git-reference
+              (url "https://github.com/Bluetooth-Devices/dbus-fast")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1cx71lbw716smpr4vsc9d421v45s36hcqj2z95nl3wm2yhan6ac7"))))
+        (base32 "12f1f25ny7fd59s55gw3vr6ymdqgd51zzpbc1nkqfbmb166d1536"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-cython python-poetry-core python-setuptools
-                         python-wheel))
+    (arguments
+     (list
+      #:test-flags
+      '(list
+        ;; These tests need pytest_codspeed.
+        "--ignore-glob=tests/benchmarks/test_*marshall.py"
+        ;; These tests all fail with:
+        ;; dbus_fast.errors.InvalidAddressError: DBUS_SESSION_BUS_ADDRESS not
+        ;; set and could not get DISPLAY environment variable to get bus address
+        "-m" "not asyncio")))
+    (native-inputs (list python-cython
+                         python-poetry-core
+                         python-setuptools
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-asyncio
+                         python-covdefaults))
     (home-page "https://github.com/bluetooth-devices/dbus-fast")
     (synopsis "Faster version of dbus-next")
     (description "This package provides a faster version of dbus-next.")
