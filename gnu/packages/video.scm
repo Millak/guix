@@ -3774,7 +3774,7 @@ capabilities.")
     (native-inputs
      (list autoconf
            automake
-           python-cython
+           python-cython-0
            libtool
            pkg-config
            yasm))
