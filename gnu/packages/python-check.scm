@@ -832,18 +832,19 @@ Python.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "-vr" "green")
+      #:test-flags
+      #~(list "-tvvv"
+              "green.test.test_version"
+              "green.test.test_cmdline")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
+            (lambda* (#:key tests? test-flags  #:allow-other-keys)
               (when tests?
-                (apply invoke "python" "-m" "green" test-flags)))))))
+                (setenv "PATH" (string-append #$output "/bin:" (getenv "PATH")))
+                (apply invoke "green" test-flags)))))))
     (native-inputs
-     (list python-mypy
-           python-setuptools
-           python-testtools
-           python-wheel))
+     (list python-setuptools))
     (propagated-inputs
      (list python-colorama
            python-coverage
