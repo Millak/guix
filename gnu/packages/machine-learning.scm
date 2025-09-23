@@ -6411,15 +6411,23 @@ diverse set of reference environments (formerly Gym).")
 ;; better that way.
 (define-public python-dlib
   (package
-   (inherit dlib)
-   (name "python-dlib")
-   (build-system pyproject-build-system)
-   (arguments
-    `(#:phases
-      (modify-phases %standard-phases
-                     (add-after 'unpack 'subst
-                                (lambda _
-                                  (substitute* "tools/python/CMakeLists.txt"
-                                               (("add_subdirectory[(][.][.]/[.][.]/dlib/external/pybind11 pybind11_build[)]")
-                                                "find_package(pybind11 CONFIG)")))))))
-   (native-inputs (list python-setuptools python-wheel cmake-minimal perl pkg-config pybind11))))
+    (inherit dlib)
+    (name "python-dlib")
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'subst
+            (lambda _
+              (substitute* "tools/python/CMakeLists.txt"
+                (("\
+add_subdirectory[(][.][.]/[.][.]/dlib/external/pybind11 pybind11_build[)]")
+                 "find_package(pybind11 CONFIG)")))))))
+    (native-inputs
+     (list cmake-minimal
+           perl
+           pkg-config
+           pybind11
+           python-pytest
+           python-setuptools))))
