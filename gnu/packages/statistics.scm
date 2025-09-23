@@ -3010,9 +3010,16 @@ completion.")
          (base32
           "10nmydlbmi0vyim7sx71isx3z2mnnfjmhf3248cicy9x1z1hizyv"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: ...trying to load module _rinterface_cffi_api: ERROR:
+          ;;
+          ;; See: <https://github.com/rpy2/rpy2/issues/1034>.
+          (delete 'sanity-check))))
     (propagated-inputs
      (list python-cffi
-           python-six
            python-jinja2
            python-numpy
            python-pandas
@@ -3033,14 +3040,8 @@ completion.")
            r-dbplyr
            zlib))
     (native-inputs
-     (list python-coverage
-           python-ipython
-           python-numpy
-           python-pandas
-           python-pytest
-           python-pytest-cov
-           python-setuptools
-           python-wheel))
+     (list python-pytest
+           python-setuptools))
     (home-page "https://rpy2.github.io")
     (synopsis "Python interface to the R language")
     (description "rpy2 is a redesign and rewrite of rpy.  It is providing a
