@@ -9477,29 +9477,41 @@ utility, a static analysis tool (linter) for Robot Framework source files.")
     (license license:asl2.0)))
 
 (define-public python-sshtunnel
-  (package
-    (name "python-sshtunnel")
-    (version "0.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "sshtunnel" version))
-              (sha256
-               (base32
-                "1z7rdgpp9m36ysh9pfzrn3vyiaj05bkjvcjdhj8vz0fvfjkhxjz7"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests? (invoke "pytest" "-vv" "tests")))))))
-    (propagated-inputs (list python-paramiko))
-    (native-inputs (list openssh python-pytest python-mock))
-    (home-page "https://github.com/pahaz/sshtunnel")
-    (synopsis "Python SSH tunnels library")
-    (description "@code{sshtunnel} is a Python module for easily creating SSH
+  (let ((commit "dc0732884379a19a21bf7a49650d0708519ec54f")
+        (revision "0"))
+    (package
+      (name "python-sshtunnel")
+      (version (git-version "0.4.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/pahaz/sshtunnel")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0fzq7pbqa6fjamzp61gjpd2hzph2ag7r507dlwpqilp6w8ipz49a"))
+         (patches (search-patches "python-sshtunnel-pep518.patch"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'remove-deprecated-dsskey
+              (lambda _
+                (substitute* "sshtunnel.py"
+                  (("'dsa': paramiko\\.DSSKey,")
+                   "")
+                  (("paramiko\\.DSSKey, ")
+                   "")))))))
+      (propagated-inputs (list python-paramiko))
+      (native-inputs
+       (list openssh python-mock python-pytest python-setuptools))
+      (home-page "https://github.com/pahaz/sshtunnel")
+      (synopsis "Python SSH tunnels library")
+      (description "@code{sshtunnel} is a Python module for easily creating SSH
 tunnels in the background, using Python.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public python-robotframework-sshtunnellibrary
   (package
