@@ -38027,6 +38027,25 @@ static types.")
     (description "This package providis typing stubs for python-aiofiles.")
     (license license:asl2.0)))
 
+(define-public python-types-tqdm
+  (package
+    (name "python-types-tqdm")
+    (version "4.67.0.20250809")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_tqdm" version))
+       (sha256
+        (base32 "006md2hnsq79p7d5z3kiaapvl9wwa4dz3yb39jf0n22n2awpmgq2"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in PyPI archive
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-types-requests))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for python-tqdm")
+    (description "This package providis typing stubs for python-tqdm.")
+    (license license:asl2.0)))
+
 (define-public python-types-docutils
   (package
     (name "python-types-docutils")
