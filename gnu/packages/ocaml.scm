@@ -1470,14 +1470,15 @@ Knuth’s LR(1) parser construction technique.")
                       (wrap-program (string-append #$output "/bin/" "binsec")
                                     `("OCAMLPATH" ":" prefix ,ocamlpath))))))))
     (inputs (list bash-minimal))
-    (native-inputs (list gmp ocaml-qcheck ocaml-ounit2))
+    (native-inputs (list gmp ocaml-qcheck ocaml-ounit2 z3))
     (propagated-inputs (list dune-site
                              ocaml-base
                              ocaml-menhir
                              ocaml-graph
                              ocaml-zarith
                              ocaml-grain-dypgen
-                             ocaml-toml))
+                             ocaml-toml
+                             ocaml-z3))
     (synopsis "Binary-level analysis platform")
     (description
      "BINSEC is a binary analysis platform which implements analysis
