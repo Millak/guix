@@ -402,6 +402,15 @@ classification.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      ;; TODO: Review tests.
+      #~(list
+         ;; Failed: 'yield' keyword is allowed in fixtures, but not in tests
+         ;; (test_scale2_models)
+         "--ignore=GPy/testing/test_likelihood.py"
+         ;; Failed: 'yield' keyword is allowed in fixtures, but not in
+         ;; tests (test_figure)
+         "--ignore=GPy/testing/test_plotting.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'compatibility
