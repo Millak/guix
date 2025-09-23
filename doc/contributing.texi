@@ -2873,8 +2873,10 @@ Codeberg, a member of the ``Owners'' team can run:
 @end example
 
 @noindent
-... where @var{token} is a token created on the Codeberg interface
-granting access to the relevant settings.
+... where @var{token} is a token created via the
+@url{https://codeberg.org/user/settings/applications, Codeberg
+applications settings page}, granting read/write access to the
+@samp{organization} permission.
 
 @node Making Decisions
 @section Making Decisions
