@@ -1620,7 +1620,7 @@ color switches, and many more, with multiple options to customize.")
       (inputs
        (list (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))))
       (native-inputs
-       (list python-cython))
+       (list python-cython-0))
       (home-page "https://www.renpy.org/")
       (synopsis "Reimplementation of the Pygame API using SDL2")
       (description "Pygame_SDL2 reimplements the Pygame API using SDL2,
