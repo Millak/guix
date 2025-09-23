@@ -26479,31 +26479,21 @@ command line utility, a python library and plugins for various editors.")
 (define-public python-mando
   (package
     (name "python-mando")
-    (version "0.7.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "mando" version))
-              (sha256
-               (base32
-                "001mikga36i811pbc95rb45m2kzivkx4xb0fn3pzl4xnnjcskfhq"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest" "-vv")))))))
-    (propagated-inputs
-     (list python-rst2ansi python-six))
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mando" version))
+       (sha256
+        (base32 "1ddn4h1fvc9f8z2p8l88jyazxnp0h7rmh711i2hwkipxlbcmk5jk"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (home-page "https://mando.readthedocs.org/")
-    (synopsis
-     "Wrapper around argparse, allowing creation of complete CLI applications")
+    (synopsis "Wrapper around argparse, allowing creation of complete CLI applications")
     (description
      "This package is a wrapper around argparse, allowing you to write complete CLI
-     applications in seconds while maintaining all the flexibility.")
+applications in seconds while maintaining all the flexibility.")
     (license license:expat)))
 
 (define-public python-mwclient
