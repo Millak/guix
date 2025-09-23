@@ -37,7 +37,7 @@
 ;;; Copyright © 2020, 2021, 2023, 2024, 2025 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Josh Holland <josh@inv.alid.pw>
 ;;; Copyright © 2020, 2021 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
+;;; Copyright © 2020, 2025 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Alex McGrath <amk@amk.ie>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
@@ -174,7 +174,9 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libcanberra)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
@@ -632,6 +634,39 @@ as Chrome, Firefox, Cambozola, VLC, mplayer, and other software capable of
 receiving MJPG streams.")
     (home-page "https://github.com/jacksonliam/mjpg-streamer")
     (license license:gpl2+)))
+
+(define-public ustreamer
+  (package
+    (name "ustreamer")
+    (version "6.40")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pikvm/ustreamer")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                 "10ig3wad8af7zxjnnhcwk1wpi4w26zpx97qb4w8zlsyy1zx40g3b"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f  ; no test suite
+       #:make-flags (list (string-append "CC=" ,(cc-for-target))
+                          (string-append "PREFIX=" (assoc-ref %outputs "out"))
+                           "WITH_GPIO=1 WITH_PYTHON=1")
+       #:phases
+       (modify-phases %standard-phases
+            (delete 'configure))))
+    (inputs (list libbsd libevent libgpiod libjpeg-turbo which))
+    (native-inputs (list pkg-config python))
+    (synopsis "Lightweight and fast MJPEG-HTTP streamer")
+    (description "Lightweight and very quick server to stream MJPEG video
+from any V4L2 device to the net.  All new browsers have native support of
+this video format, as well as most video players such as mplayer, VLC etc.
+µStreamer is a part of the PiKVM project designed to stream VGA and
+HDMI screencast hardware data with the highest resolution and FPS possible.")
+    (home-page "https://pikvm.org")
+    (license license:gpl3)))
 
 (define-public mjpegtools
   (package
