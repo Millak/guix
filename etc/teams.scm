@@ -1256,7 +1256,8 @@ the \"texlive\" importer."
   core-packages qt kde)
 
 (define-member (person "Sughosha"
-                       "sughosha@disroot.org")
+                       "sughosha@disroot.org"
+                       "SameExpert")
   audio kde)
 
 (define-member (person "Jelle Licht"
