@@ -185,7 +185,16 @@ frameworks.")
         (base32 "07cz2ghfq6amcljaxpdr5chbd64ph513y8zqmibfx2xwfp74xkhn"))))
     (build-system cmake-build-system)
     ;; Tests require downloading of test data.
-    (arguments (list #:tests? #false))
+    (arguments
+     (list
+      #:tests? #false
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'gcc-14-fix
+            (lambda _
+              (substitute* "src/args.cc"
+                (("#include <unordered_map>" all)
+                 (string-append all "\n#include <cstdint>"))))))))
     (home-page "https://github.com/facebookresearch/fastText")
     (synopsis "Library for fast text representation and classification")
     (description "fastText is a library for efficient learning of word
