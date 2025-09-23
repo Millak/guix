@@ -12,7 +12,7 @@
 ;;; Copyright © 2020 Sergey Trofimov <sarg@sarg.org.ru>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2023 Camilo Q.S. (Distopico) <distopico@riseup.net>
+;;; Copyright © 2023, 2025 Camilo Q.S. (Distopico) <distopico@riseup.net>
 ;;; Copyright © 2025 Jordan Moore <lockbox@struct.foo>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -45,6 +45,7 @@
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_FILE))
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -739,27 +740,47 @@ file system.")
 (define-public sdkmanager
   (package
     (name "sdkmanager")
-    (version "0.6.5")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "sdkmanager" version ".tar.gz"))
-              (sha256
-               (base32
-                "11as7n2mj3nbqsqb3ivyv9985n73i022s748qvjg36cs8ig50afx"))))
+    (version "0.6.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sdkmanager" version ".tar.gz"))
+       (sha256
+        (base32 "0r3xwk8xsfxvmxyw3d57sy2i9by24g0l1jl40735jiac9mypcg7n"))))
     (build-system pyproject-build-system)
-    (inputs (list python-requests
-                  python-argcomplete
-                  python-urllib3-1.26
-                  gnupg))
-    (native-inputs (list python-setuptools python-wheel))
+    (inputs (list python-requests python-argcomplete python-urllib3
+                  python-looseversion gnupg))
+    (native-inputs (list python-setuptools python-wheel python-requests-cache
+                         python-defusedxml))
+    (native-search-paths
+     (list $SSL_CERT_FILE))
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-before 'build 'patch-gnupg
-                          (lambda _
-                            (substitute* "sdkmanager.py"
-                              (("gpgv")
-                               (string-append #$(this-package-input "gnupg")
-                                              "/bin/gpgv"))))))))
+     (list
+      #:test-flags
+      #~(list "-k" "test_*")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              (substitute* "test_sdkmanager.py"
+                ;; Tests below require network.
+                (("def test_checksums_json_mirrors")
+                 "def __test_checksums_json_mirrors")
+                (("def test_install_and_rerun")
+                 "def __test_install_and_rerun")
+                (("def test_main_args")
+                 "def __test_main_args")
+                (("def test_licenses")
+                 "def __test_licenses"))))
+          (add-before 'build 'patch-gnupg
+            (lambda _
+              (substitute* "sdkmanager.py"
+                (("gpgv")
+                 (string-append #$(this-package-input "gnupg") "/bin/gpgv")))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (apply invoke "python" "-m" "unittest" test-flags)))))))
     (home-page "https://gitlab.com/fdroid/sdkmanager")
     (synopsis "Replacement for Android sdkmanager written in Python")
     (description
