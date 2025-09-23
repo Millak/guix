@@ -378,13 +378,17 @@ provided as a list of file-like objects."))
   (service-type (name 'fail2ban)
                 (extensions
                  (list (service-extension shepherd-root-service-type
-                                          fail2ban-shepherd-service)))
+                                          fail2ban-shepherd-service)
+                       ;; For the fail2ban-client and fail2ban-regex commands.
+                       (service-extension
+                        profile-service-type
+                        (compose list fail2ban-configuration-fail2ban))))
                 (compose concatenate)
                 (extend (lambda (config jails)
                           (fail2ban-configuration
-                           (inherit config)
-                           (jails (append (fail2ban-configuration-jails config)
-                                          jails)))))
+                            (inherit config)
+                            (jails (append (fail2ban-configuration-jails config)
+                                           jails)))))
                 (default-value (fail2ban-configuration))
                 (description "Run the fail2ban server.")))
 
