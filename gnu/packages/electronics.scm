@@ -424,17 +424,14 @@ For synthesis, the compiler generates netlists in the desired format.")
      (list
       #:tests? #f               ;no tests
       #:make-flags
-      #~(list (string-append "CC="
-                             #$(cc-for-target))
-              (string-append "CXX="
-                             #$(cxx-for-target))
-              (string-append "PREFIX="
-                             #$output)
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "CXX=" #$(cxx-for-target))
+              (string-append "PREFIX=" #$output)
               "ICEPROG=1")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-usr-local
-            (lambda* (#:key outputs #:allow-other-keys)
+            (lambda _
               (substitute* "config.mk"
                 (("/usr/local")
                  #$output))
@@ -448,7 +445,7 @@ For synthesis, the compiler generates netlists in the desired format.")
                 (("/usr/local")
                  #$output))))
           (add-after 'build 'make-info
-            (lambda* (#:key outputs #:allow-other-keys)
+            (lambda _
               (with-directory-excursion "docs"
                 (invoke "make" "info")
                 (install-file "build/texinfo/projecticestorm.info"
@@ -458,12 +455,14 @@ For synthesis, the compiler generates netlists in the desired format.")
                  (string-append #$output
                                 "/share/info/projecticestorm-figures")))))
           (delete 'configure))))
-    (inputs (list libftdi))
-    (native-inputs (list pkg-config
-                         python-minimal
-                         python-sphinx-rtd-theme
-                         python-sphinxcontrib-svg2pdfconverter
-                         texinfo))
+    (inputs
+     (list libftdi))
+    (native-inputs
+     (list pkg-config
+           python-minimal
+           python-sphinx-rtd-theme
+           python-sphinxcontrib-svg2pdfconverter
+           texinfo))
     (home-page "https://prjicestorm.readthedocs.io/")
     (synopsis "Bitstream tools for Lattice iCE40 FPGAs")
     (description
