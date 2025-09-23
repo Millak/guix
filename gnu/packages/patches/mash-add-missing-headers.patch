@@ -1,0 +1,26 @@
+https://patch-diff.githubusercontent.com/raw/marbl/Mash/pull/181.diff
+
+Add missing includes to support newer compilers.
+---
+diff --git a/src/mash/robin_hood.h b/src/mash/robin_hood.h
+index 573607f..9141848 100644
+--- a/src/mash/robin_hood.h
++++ b/src/mash/robin_hood.h
+@@ -42,6 +42,7 @@
+ #include <cstdlib>
+ #include <cstring>
+ #include <functional>
++#include <limits>
+ #include <memory> // only to support hash of smart pointers
+ #include <stdexcept>
+ #include <string>
+--- a/src/mash/Command.cpp
++++ b/src/mash/Command.cpp
+@@ -8,6 +8,7 @@
+ #include <sys/ioctl.h>
+ #include <sstream>
+ #include <fstream>
++#include <cstdint>
+
+ #include "Command.h"
+ #include "version.h"

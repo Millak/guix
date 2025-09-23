@@ -10463,7 +10463,7 @@ technology.  Its features include:
 (define-public mash
   (package
     (name "mash")
-    (version "2.1")
+    (version "2.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10472,12 +10472,13 @@ technology.  Its features include:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "049hwcc059p2fd9vwndn63laifvvsi0wmv84i6y1fr79k15dxwy6"))
+                "00x4pvxwp3isf0qign1qmxwxc9rwzn5b3igjw9hyn3vx17bsx92q"))
               (modules '((guix build utils)))
               (snippet
                ;; Delete bundled kseq.
                ;; TODO: Also delete bundled murmurhash and open bloom filter.
-               '(delete-file "src/mash/kseq.h"))))
+               '(delete-file "src/mash/kseq.h"))
+              (patches (search-patches "mash-add-missing-headers.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; No tests.
@@ -10496,7 +10497,8 @@ technology.  Its features include:
            (lambda _
              (substitute* '("src/mash/Sketch.cpp"
                             "src/mash/CommandFind.cpp"
-                            "src/mash/CommandScreen.cpp")
+                            "src/mash/CommandScreen.cpp"
+                            "src/mash/CommandTaxScreen.cpp")
                (("^#include \"kseq\\.h\"")
                 "#include \"htslib/kseq.h\""))))
          (add-after 'fix-includes 'use-c++14
