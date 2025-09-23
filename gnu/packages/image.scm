@@ -770,15 +770,15 @@ maximum quality factor.")
       (if (and (target-riscv64?)
                (%current-target-system))
           (list #:phases
-                (modify-phases %standard-phases
-                  (add-after 'unpack 'update-config-scripts
-                    (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                      (for-each (lambda (file)
-                                  (install-file
-                                   (search-input-file
-                                    (or native-inputs inputs)
-                                    (string-append "/bin/" file)) "."))
-                                '("config.guess" "config.sub"))))))
+                #~(modify-phases %standard-phases
+                    (add-after 'unpack 'update-config-scripts
+                      (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                        (for-each (lambda (file)
+                                    (install-file
+                                     (search-input-file
+                                      (or native-inputs inputs)
+                                      (string-append "/bin/" file)) "."))
+                                  '("config.guess" "config.sub"))))))
           '())))
     (native-inputs
      (if (and (target-riscv64?)
