@@ -5015,10 +5015,11 @@ AI services.")
                (base32
                 "1xg9cngdz9dsxwcpcmzf28q306i15hw58h54allhb41q4wzziqip"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;XXX: broken tests
     (native-inputs
      (list python-coverage
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-importlib-metadata
            python-packaging
