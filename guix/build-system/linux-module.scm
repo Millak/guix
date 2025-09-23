@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Arjan Adriaanse <arjan@adriaan.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,7 +57,9 @@
     (inherit linux)
     (name (string-append (package-name linux) "-module-builder"))
     (inputs
-     `(("linux" ,linux)))
+     (cons
+      `("linux" ,linux)
+      (package-inputs linux)))
     (arguments
      (substitute-keyword-arguments (package-arguments linux)
        ((#:phases phases)
