@@ -19,6 +19,7 @@
 ;;; Copyright © 2024 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Leo Nikkilä <hello@lnikki.la>
+;;; Copyright © 2025-2026 Jonas Meeuws <jonas.meeuws@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1424,26 +1425,117 @@ as the 'native-search-paths' field."
                "gfortran" '("fortran")
                %generic-search-paths)))
 
-(define-public gdc-11                   ;kept for bootstrapping
-  (hidden-package
-   (custom-gcc gcc-11 "gdc" '("d")
-               %generic-search-paths)))
+(define* (make-gdc gcc #:optional bootstrap-gdc #:key frontend-version)
+  (define gdc (custom-gcc gcc "gdc" '("d") (list $LIBRARY_PATH)))
+  (define version (package-version gdc))
+  (define (since-version? since) (version>=? version since))
+  (define (until-version? until) (version>? until version))
+  (package
+    (inherit gdc)
+    (arguments
+     (substitute-keyword-arguments (package-arguments gdc)
+       ((#:modules modules)
+        `(,@modules
+          (ice-9 ftw)))
+       ((#:configure-flags flags)
+        #~(append
+           #$flags
+           (list "--disable-c++tools"
+                 #$@(if (since-version? "11") #~("--disable-libatomic") #~())
+                 "--disable-libcc1"
+                 "--disable-libgomp"
+                 "--disable-libitm"
+                 "--disable-libquadmath"
+                 "--disable-libsanitizer"
+                 "--disable-libssp"
+                 #$@(if (until-version? "15") #~("--disable-libstdcxx") #~())
+                 "--disable-plugin")))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'strip 'gdc-cleanup-install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (define (delete-except-matches prefix patterns)
+                  ;; Remove all files except for those matching any of the
+                  ;; patterns.
+                  (define (should-delete? path statbuf)
+                    (define suffix (substring path (string-length prefix)))
+                    (not (or (zero? (string-length suffix))
+                             (any (cut string-match <> suffix)
+                                  patterns))))
+                  (for-each (lambda (path)
+                              (format #t "Deleting ~a\n" path)
+                              (delete-file path))
+                            (find-files prefix should-delete?))
+                  ;; Clean up empty directories.
+                  (define (dir-empty? path statbuf)
+                    (and (eq? (stat:type statbuf) 'directory)
+                         (zero? (length (filter
+                                         (lambda (name)
+                                           (not (or (string=? name ".")
+                                                    (string=? name ".."))))
+                                         (scandir path))))))
+                  (while #t
+                    (let* ((empty-dirs (find-files prefix dir-empty?
+                                                   #:stat lstat
+                                                   #:directories? #t)))
+                      (if (zero? (length empty-dirs))
+                          (break)
+                          (for-each rmdir empty-dirs)))))
+                ;; Leave out non-GDC binaries, man pages, locale files, and
+                ;; c++ headers.
+                (delete-except-matches
+                 (assoc-ref outputs "out")
+                 (list "^/bin/.*gdc$"
+                       "^/libexec/"
+                       "^/share/info/gdc"
+                       "^/share/man/man1/gdc"
+                       "^/share/man/man7/"))
+                ;; Leave out C/C++ libraries, headers and empty directories.
+                (delete-except-matches
+                 (assoc-ref outputs "lib")
+                 (list "^/lib/gcc/.*/include/d/"
+                       "^/lib/gcc/.*/.*\\.[ao]$"
+                       "^/lib/libgcc_s.*"
+                       "^/lib/libgdruntime.*"
+                       "^/lib/libgphobos.*"))
+                ;; Repeat for the debug files.
+                (delete-except-matches
+                 (assoc-ref outputs "debug")
+                 (list "^/lib/debug/.*/bin/.*gdc\\.debug$"
+                       "^/lib/debug/.*/lib/libgcc_s"
+                       "^/lib/debug/.*/lib/libgdruntime"
+                       "^/lib/debug/.*/lib/libgphobos"))))))))
+    (inputs
+     (modify-inputs (package-inputs gdc)
+       ;; This makes flags like -static-libstdc++ work. Required for using this
+       ;; compiler as a bootstrap compiler for GDC 12+.
+       ;; Additionally, this allows us to support linking with GCC libraries,
+       ;; without building or storing them ourselves.
+       (append (list gcc "lib"))))
+    (native-inputs
+     (let ((orig (package-native-inputs gdc)))
+       (if bootstrap-gdc
+           (modify-inputs orig
+             ;; Since GCC 12, GDC is self-hosted, requiring a version of itself
+             ;; to build.
+             (append bootstrap-gdc))
+           orig)))
+    (synopsis "GNU D Compiler")
+    (description
+     (string-append
+      "GDC is the D frontend for the @acronym{GNU Compiler Collection,GCC}.  It
+also includes the druntime and phobos libraries."
+      (if frontend-version
+          (format #f "~%~%This compiler is based on the DMD frontend version ~a."
+                  frontend-version)
+          "")))
+    (home-page "https://www.gdcproject.org/")))
 
-;;; Alias tracking the latest GDC version.
+(define-public gdc-11
+  (make-gdc gcc-11 #:frontend-version "2.076.2"))
+
 (define-public gdc
-  (hidden-package
-   (let ((base (custom-gcc gcc
-                           "gdc" '("d")
-                           %generic-search-paths)))
-     (package
-       (inherit base)
-       (native-inputs
-        (modify-inputs (package-native-inputs base)
-          ;; Since GCC 12, GDC is self-hosted, requiring a version of itself
-          ;; to build.
-          ;; XXX: GCC must be prepended as well to avoid an issue with the C++
-          ;; headers ordering.
-          (prepend gcc gdc-11)))))))
+  (make-gdc gcc-14 gdc-11 #:frontend-version "2.108.1"))
 
 (define-public gm2
   (hidden-package
