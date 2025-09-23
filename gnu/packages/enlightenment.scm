@@ -433,7 +433,7 @@ embedded systems.")
             (delete-file "tests/ecore/test_09_file_download.py")
             (delete-file "tests/ecore/test_11_con.py"))))))
     (native-inputs
-     (list pkg-config python-cython))
+     (list pkg-config python-cython-0))
     (inputs
      (list efl python-dbus python-packaging))
     (home-page "https://www.enlightenment.org/")
