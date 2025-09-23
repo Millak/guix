@@ -597,14 +597,14 @@ library.")
   (package
     (inherit python-pyopengl)
     (name "python-pyopengl-accelerate")
-    (version "3.1.9")
+    (version "3.1.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyopengl_accelerate" version))
        (sha256
         (base32
-         "1ww6kbyj1hshxfi3gskkygv1w2f7klzj9jcyfpzihn4pfry7r5c5"))))
+         "0waskwvw9mp830bnnxcqd8bkh7a4qbnr0fcjnnw35xx6y21iqxc2"))))
     (arguments
      `(#:tests? #f
        #:phases
