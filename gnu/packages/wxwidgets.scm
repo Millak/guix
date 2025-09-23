@@ -302,6 +302,8 @@ and many other languages.")
     (outputs '("out" "debug"))
     (arguments
      (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "build.py" "-v" "test")
       #:modules '((guix build pyproject-build-system)
                   (guix build utils)
                   (ice-9 ftw)
@@ -355,7 +357,7 @@ except ImportError:
     (inputs
      (list gtk+ wxwidgets))
     (native-inputs
-     (list pkg-config python-setuptools python-waf python-wheel))
+     (list pkg-config python-setuptools python-waf))
     (propagated-inputs
      (list python-numpy python-pillow python-six))
     (home-page "https://wxpython.org/")
