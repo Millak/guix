@@ -31,7 +31,7 @@
 ;;; Copyright © 2020 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Magali Lemes <magalilemes00@gmail.com>
-;;; Copyright © 2020, 2021, 2022, 2023 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2020-2023, 2025 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2020 Aniket Patil <aniket112.patil@gmail.com>
 ;;; Copyright © 2021 Marcel Schilling <marcel.schilling@uni-luebeck.de>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -103,6 +103,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages node)
+  #:use-module (gnu packages ocr)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
@@ -55432,6 +55433,36 @@ and trajectories; utility functions for plotting data as map sequences (lattice
 or animation) or multiple time series; methods for spatial and temporal
 matching or aggregation, retrieving coordinates, print, summary, etc.")
     (license license:gpl2+)))
+
+(define-public r-tesseract
+  (package
+    (name "r-tesseract")
+    (version "5.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "tesseract" version))
+       (sha256
+        (base32 "181fbv1qhqxljr67phkrxahbfgsxa73gzq30zq0wvi38gzbfbnv8"))))
+    (properties `((upstream-name . "tesseract")))
+    (build-system r-build-system)
+    (inputs (list tesseract-ocr
+                  zlib))
+    (propagated-inputs (list r-curl
+                             r-digest
+                             r-pdftools
+                             r-rappdirs
+                             r-rcpp))
+    (native-inputs (list pkg-config
+                         r-knitr
+                         r-spelling))
+    (home-page "https://github.com/ropensci/tesseract")
+    (synopsis "Open Source OCR Engine")
+    (description
+     "Bindings to @code{tesseract}: an optical character recognition (OCR) engine
+that supports over 100 languages.  The engine is highly configurable in order
+to tune the detection algorithms and obtain the best possible results.")
+    (license license:asl2.0)))
 
 (define-public r-gstat
   (package
