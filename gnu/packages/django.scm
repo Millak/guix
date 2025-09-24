@@ -651,8 +651,8 @@ useful tools for testing Django applications and projects.")
            python-requests
            python-setuptools
            python-setuptools-scm
-           python-wheel
-           python-whoosh))
+           python-whoosh
+           tzdata-for-tests))
     (home-page "https://haystacksearch.org/")
     (synopsis "Pluggable search for Django")
     (description "Haystack provides modular search for Django.  It features a
