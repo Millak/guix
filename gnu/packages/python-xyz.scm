@@ -15450,7 +15450,7 @@ supports @code{readline} shortcuts.")
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count)))))
+      #~(list "--numprocesses" (number->string (min 4 (parallel-job-count))))))
     (native-inputs
      (list python-numpy
            python-pytest
