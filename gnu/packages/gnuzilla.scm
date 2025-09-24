@@ -603,11 +603,9 @@ in the case of Firefox, it is browser/locales/all-locales."
     "zh-CN"
     "zh-TW"))
 
-(define %icecat-base-version (package-version mozjs))
-;;; See <https://product-details.mozilla.org/1.0/firefox_versions.json>
-;;; for the source of truth regarding Firefox releases.
+(define %icecat-base-version "140.3.1")
 (define %icecat-version (string-append %icecat-base-version "-gnu1"))
-(define %icecat-build-id "20250916000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-build-id "20250923000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -618,9 +616,18 @@ in the case of Firefox, it is browser/locales/all-locales."
          (sub-version   (third  (string-split %icecat-base-version #\.)))
 
          (upstream-firefox-version (string-append %icecat-base-version "esr"))
-         (upstream-firefox-source (package-source mozjs))
+         (upstream-firefox-source
+          (origin
+            (method url-fetch)
+            (uri (string-append
+                  "https://ftp.mozilla.org/pub/firefox/releases/"
+                  upstream-firefox-version "/source/"
+                  "firefox-" upstream-firefox-version ".source.tar.xz"))
+            (sha256
+             (base32
+              "0db7qgcvw4knl6qbkn0a52vh2pcghcw4s2djdvcna1zlqjhv6hqb"))))
 
-         (gnuzilla-commit "c939d76c33294791cce8ce1722bd6747dadbe31f")
+         (gnuzilla-commit "b7f0c6b7d19ececd92640f26eaa43cfec29cf728")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -631,7 +638,7 @@ in the case of Firefox, it is browser/locales/all-locales."
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "03ly055r77fprm53474998hyjhb1a78spyxjs7998npyqzv3fscs"))))
+              "1hzwa4dbk5pvwas867vp2iivdr9zqppr9zbw2xgyd2mdf2kj4a20"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
