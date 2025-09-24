@@ -1136,20 +1136,26 @@ trivial to build for local use.  Portability is emphasized over performance.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1d0cnd2s607j642h64821mpklfvvzy70mkyl2dlsm5s9lgvndn2p"))
-              (modules '((guix build utils)))
-              (snippet
-               ;; These files are pre-generated, the build system is able to
-               ;; re-generate those.
-               #~(for-each delete-file '("src/precomputed_ecmult.c"
-                                         "src/precomputed_ecmult_gen.c")))))
+                "1d0cnd2s607j642h64821mpklfvvzy70mkyl2dlsm5s9lgvndn2p"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--enable-module-recovery"
-                           "--enable-experimental"
-                           "--enable-shared"
-                           "--disable-static"
-                           "--disable-benchmark")))
+     (list #:configure-flags
+           #~(list
+              "--enable-module-recovery"
+              "--enable-experimental"
+              "--enable-shared"
+              "--disable-static"
+              "--disable-benchmark")
+           #:phases
+           (if (%current-target-system)
+               #~%standard-phases
+               #~(modify-phases %standard-phases
+                   ;; These files are pre-generated, the build system is able to
+                   ;; re-generate those if not cross-compiling,
+                   (add-after 'unpack 'delete-precomputed-files
+                     (lambda _
+                       (for-each delete-file '("src/precomputed_ecmult.c"
+                                               "src/precomputed_ecmult_gen.c"))))))))
     (native-inputs
      (list autoconf automake libtool))
     (synopsis "C library for EC operations on curve secp256k1")
