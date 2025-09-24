@@ -168,7 +168,7 @@
    (lambda (e)
      (or (member e
                  '("no-warn" "whole-window" "border" "exclude-titlebar"
-                   "release" "locked" "inhibited" "no-repeat"))
+                   "release" "locked" "to-code" "inhibited" "no-repeat"))
          (string-prefix? "input-device=" e)))
    lst))
 
@@ -177,7 +177,7 @@
    (lambda (e)
      (or (member e
                  '("no-warn" "whole-window" "border" "exclude-titlebar"
-                   "release" "locked" "to-code" "inhibited" "no-repeat"))
+                   "release" "locked" "inhibited" "no-repeat"))
          (string-prefix? "input-device=" e)))
    lst))
 
