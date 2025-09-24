@@ -473,6 +473,41 @@ be a useful addition to your projects.")
     (home-page "https://hexdocs.pm/phoenix_view/")
     (license license:expat)))
 
+(define-public elixir-phoenix
+  (package
+    (name "elixir-phoenix")
+    (version "1.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "phoenix" version))
+       (sha256
+        (base32 "1cigrl8myx2079mns0ww2k6n11awxw0vv6bhabkwghvp5qmpvmw4"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-mint
+           elixir-mint-web-socket
+           elixir-phx-new))
+    (propagated-inputs
+     (list elixir-castore
+                  elixir-jason
+                  elixir-phoenix-pubsub
+                  elixir-phoenix-html
+                  elixir-phoenix-template
+                  elixir-phoenix-view
+                  elixir-plug
+                  elixir-plug-cowboy
+                  elixir-plug-crypto
+                  erlang-telemetry
+                  elixir-websock-adapter))
+    (synopsis "Web development framework")
+    (description "Phoenix is a web development framework written in Elixir
+which implements the server-side Model View Controller (MVC) pattern.  Many of
+its components and concepts will seem familiar to those with experience in other
+web frameworks like Ruby on Rails or Python's Django.")
+    (home-page "https://www.phoenixframework.org/")
+    (license license:expat)))
+
 (define-public elixir-phx-new
   (package
     (name "elixir-phx-new")
