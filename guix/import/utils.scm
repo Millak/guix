@@ -225,8 +225,9 @@ be a procedure with a 'body property, used to generate the origin sexp."
                 (values #f #f #f))))
     (values (git-origin url (peek-body proc) hash) directory)))
 
-(define (default-git-error home-page)
-  "Return a procedure to be passed to a `git-error' `catch' for HOME-PAGE."
+(define* (default-git-error home-page #:optional location)
+  "Return a procedure to be passed to a `git-error' `catch' for HOME-PAGE at
+LOCATION."
   (match-lambda*
     (('git-error error)
      (warning location

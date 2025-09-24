@@ -21,6 +21,7 @@
 
 (define-module (test-import-utils)
   #:use-module (guix tests)
+  #:use-module ((guix diagnostics) #:select (location))
   #:use-module (guix import utils)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -277,5 +278,28 @@ Differences are hard to spot, e.g. in CLOS vs. GOOPS."))
   '(license:gpl3+ license:agpl3 license:gpl2+)
   (map spdx-string->license
        '("GPL-3.0-oR-LaTeR" "AGPL-3.0" "GPL-2.0+")))
+
+;;;
+;;; default-git-error
+;;;
+
+(test-assert "default-git-error: returns a procedure without location argument"
+  (procedure?
+   (default-git-error "https://github.com/user/repo")))
+
+(test-assert "default-git-error: returns a procedure with location argument"
+  (procedure?
+   (default-git-error "https://github.com/user/repo"
+     (location "none.scm" 42 0))))
+
+(test-equal "default-git-error: procedure handles git-error"
+  #f
+  (let ((home-page "https://github.com/user/repo"))
+    ((default-git-error home-page) '(git-error "some error message"))))
+
+(test-equal "default-git-error: returns #f for non-git-error"
+  #f
+  (let ((home-page "https://github.com/user/repo"))
+    ((default-git-error home-page) '(some-other-error "message"))))
 
 (test-end "import-utils")
