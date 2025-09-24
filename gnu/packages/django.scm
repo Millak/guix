@@ -775,6 +775,35 @@ account authentication.")
 to Django.")
     (license license:bsd-3)))
 
+(define-public python-django-template-partials
+  (package
+    (name "python-django-template-partials")
+    (version "25.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "django_template_partials" version))
+       (sha256
+        (base32 "1xmfjqb4alwqky0jmq03292y7m7w13mmh1yz0ayavlym2954w12m"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (setenv "DJANGO_SETTINGS_MODULE" "tests.settings")
+                         (invoke "django-admin" "test" "--pythonpath=.")))))))
+    (propagated-inputs (list python-django))
+    (native-inputs (list python-flit-core))
+    (home-page "https://github.com/carltongibson/django-template-partials")
+    (synopsis
+     "Reusable named inline-partials for the Django Template Language")
+    (description
+     "This package provides template partials for Django, offering fragment
+reuse, integration with the template loader and inline output.")
+    (license license:expat)))
+
 (define-public python-django-debug-toolbar
   (package
     (name "python-django-debug-toolbar")
