@@ -3460,8 +3460,7 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
      (list python-flaky
            python-pytest
            python-pytest-xdist
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-dill
            python-fuzzywuzzy
@@ -3472,6 +3471,7 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
            python-portalocker
            python-py-bobyqa
            python-pyyaml
+           python-requests
            python-scipy
            python-tqdm
            python-typing-extensions))
