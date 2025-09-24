@@ -1479,7 +1479,7 @@ and rendering molecules.")
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (add-installed-pythonpath inputs outputs))))))
     (inputs (list python))
-    (native-inputs (list doxygen python python-cython python-sphinx))
+    (native-inputs (list doxygen python python-cython-0 python-sphinx))
     (home-page "https://github.com/rareylab/RingDecomposerLib")
     (synopsis "Calculate ring topology descriptions")
     (description "RingDecomposerLib is a library for the calculation of
