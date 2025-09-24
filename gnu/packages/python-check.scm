@@ -3856,8 +3856,9 @@ data in a standard way.")
        (sha256
         (base32 "0cs0gyihnkj8ya4yg3ld3ly73mpxrkn2gq9acamclhqvhxsv7zd6"))))
     (build-system pyproject-build-system)
-    (native-inputs
-     (list python-setuptools python-wheel))
+    (arguments
+     (list #:tests? #f))             ; No tests, neither on pypi nor upstream.
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/Kami/python-test-utils/")
     (synopsis "Utilities for functional and integration tests")
     (description
