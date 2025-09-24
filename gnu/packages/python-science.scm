@@ -3105,53 +3105,7 @@ cross-validation.")
                           (string-append
                            "import scipy; scipy.test('fast', parallel="
                            (number->string (parallel-job-count))
-                           ", verbose=2)"))))))
-          (add-after 'check 'install-doc
-            (lambda* (#:key outputs #:allow-other-keys)
-              ;; FIXME: Documentation cannot be built because it requires
-              ;; a newer version of pydata-sphinx-theme, which currently
-              ;; cannot build without internet access:
-              ;; <https://github.com/pydata/pydata-sphinx-theme/issues/628>.
-              ;; Keep the phase for easy testing.
-              (let ((sphinx-build (false-if-exception
-                                   (search-input-file input "bin/sphinx-build"))))
-                (if sphinx-build
-                    (let* ((doc (assoc-ref outputs "doc"))
-                           (data (string-append doc "/share"))
-                           (docdir (string-append
-                                    data "/doc/"
-                                    #$(package-name this-package) "-"
-                                    #$(package-version this-package)))
-                           (html (string-append docdir "/html")))
-                      (with-directory-excursion "doc"
-                        ;; Build doc.
-                        (invoke "make" "html"
-                                ;; Building the documentation takes a very long time.
-                                ;; Parallelize it.
-                                (string-append "SPHINXOPTS=-j"
-                                               (number->string (parallel-job-count))))
-                        ;; Install doc.
-                        (mkdir-p html)
-                        (copy-recursively "build/html" html)))
-                    (format #t "sphinx-build not found, skipping~%"))))))))
-    (propagated-inputs
-     (append
-       (if (supported-package? python-jupytext)  ; Depends on pandoc.
-           (list python-jupytext)
-           '())
-       (list python-matplotlib
-             python-mpmath
-             python-mypy
-             python-numpy
-             python-numpydoc
-             python-pydata-sphinx-theme
-             python-pydevtool
-             python-pythran
-             python-rich-click
-             python-sphinx
-             python-threadpoolctl
-             python-typing-extensions)))
-    (inputs (list openblas pybind11-2.10))
+                           ", verbose=2)")))))))))
     (native-inputs
      (list gfortran
            ;; XXX: Adding gfortran shadows GCC headers, causing a compilation
@@ -3162,14 +3116,23 @@ cross-validation.")
            python-click
            python-cython-0
            python-doit
-           python-hypothesis
+           python-mpmath
+           python-numpydoc
            python-pooch
            python-pycodestyle
            python-pydevtool
            python-pytest
-           python-pytest-cov
            python-pytest-timeout
-           python-pytest-xdist))
+           python-pytest-xdist
+           python-pythran
+           python-rich-click
+           python-threadpoolctl
+           python-typing-extensions))
+    (inputs
+     (list openblas
+           pybind11-2.10))
+    (propagated-inputs
+     (list python-numpy))
     (home-page "https://scipy.org/")
     (synopsis "The Scipy library provides efficient numerical routines")
     (description "The SciPy library is one of the core packages that make up
