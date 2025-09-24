@@ -744,6 +744,37 @@ registration, account management as well as 3rd party (social)
 account authentication.")
     (license license:expat)))
 
+(define-public python-django-csp
+  (package
+    (name "python-django-csp")
+    (version "4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "django_csp" version))
+       (sha256
+        (base32 "0cr8f4lbv8y32gfgnw4b6cnvi8k15ggpi49jmlyhmciff2xi0w5j"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fix-tests
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("--ruff --ruff-format") ""))
+              (setenv "PYTHONPATH" "."))))))
+    (propagated-inputs (list python-django python-packaging))
+    (native-inputs (list python-jinja2
+                         python-pytest
+                         python-pytest-django
+                         python-setuptools))
+    (home-page "https://django-csp.readthedocs.io/en/latest/")
+    (synopsis "Django Content Security Policy support.")
+    (description "This package adds support for Content-Security-Policy headers
+to Django.")
+    (license license:bsd-3)))
+
 (define-public python-django-debug-toolbar
   (package
     (name "python-django-debug-toolbar")
