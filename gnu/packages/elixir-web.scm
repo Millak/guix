@@ -366,6 +366,29 @@ having different kinds of processes handle connections.")
     (home-page "https://hexdocs.pm/neuron/")
     (license license:isc)))
 
+(define-public elixir-phoenix-ecto
+  (package
+    (name "elixir-phoenix-ecto")
+    (version "4.6.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "phoenix_ecto" version))
+       (sha256
+        (base32 "0jwdybzrsbrxjqsqw5pzzf2x8vsw0i2d1bccfhdz61zlxq435v16"))))
+    (build-system mix-build-system)
+    (propagated-inputs
+     (list elixir-ecto
+           elixir-phoenix-html
+           elixir-plug
+           elixir-postgrex))
+    (synopsis "Phoenix and Ecto integration with support for concurrent
+acceptance testing")
+    (description "This package provides a library that integrates Phoenix with
+Ecto, implementing all relevant protocols.")
+    (home-page "https://hexdocs.pm/phoenix_ecto/")
+    (license license:expat)))
+
 (define-public elixir-phoenix-html
   (package
     (name "elixir-phoenix-html")
