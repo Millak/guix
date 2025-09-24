@@ -27,7 +27,6 @@
                                        transformation-option-key?
                                        cacheable-transformation-option-key?
                                        show-transformation-options-help)
-  #:autoload   (guix grafts) (%graft?)
   #:use-module (guix scripts)
   #:use-module (guix packages)
   #:use-module (guix profiles)
@@ -344,9 +343,10 @@ performed--e.g., because the package cache is not authoritative."
          (((= channel-commit commits) ...)
           (string-join commits)))))
 
-(define (profile-file-cache-key file system)
+(define (profile-file-cache-key file system graft?)
   "Return the cache key for the profile corresponding to FILE, a 'guix.scm' or
-'manifest.scm' file, or #f if we lack channel information."
+'manifest.scm' file, or #f if we lack channel information. GRAFT? is used
+to distinguish cache keys of profiles without grafts."
   (match (profile-cache-primary-key)
     (#f #f)
     (primary-key
@@ -357,20 +357,21 @@ performed--e.g., because the package cache is not authoritative."
         ;; be insufficient: <https://lwn.net/Articles/866582/>.
         (sha256 (string->utf8
                  (string-append primary-key ":" system ":"
-                                (if (%graft?) "" "ungrafted:")
+                                (if graft? "" "ungrafted:")
                                 (number->string (stat:dev stat)) ":"
                                 (number->string (stat:ino stat))))))))))
 
-(define (profile-spec-cache-key specs system)
+(define (profile-spec-cache-key specs system graft?)
   "Return the cache key corresponding to SPECS built for SYSTEM, where SPECS
-is a list of package specs.  Return #f if caching is not possible."
+is a list of package specs.  Return #f if caching is not possible. GRAFT? is used
+to distinguish cache keys of profiles without grafts."
   (match (profile-cache-primary-key)
     (#f #f)
     (primary-key
      (bytevector->base32-string
       (sha256 (string->utf8
                (string-append primary-key ":" system ":"
-                              (if (%graft?) "" "ungrafted:")
+                              (if graft? "" "ungrafted:")
                               (object->string specs))))))))
 
 (define (profile-cached-gc-root opts)
@@ -381,6 +382,9 @@ return #f and #f."
   (define (key->file key)
     (string-append (%profile-cache-directory) "/" key))
 
+  (define graft?
+    (assoc-ref opts 'graft?))
+
   ;; A given key such as 'system might appear more than once in OPTS, so
   ;; process it backwards so the last occurrence "wins".
   (let loop ((opts (reverse opts))
@@ -390,9 +394,9 @@ return #f and #f."
     (match opts
       (()
        (if file
-           (values (and=> (profile-file-cache-key file system) key->file)
+           (values (and=> (profile-file-cache-key file system graft?) key->file)
                    (stat:mtime (stat file)))
-           (values (and=> (profile-spec-cache-key specs system) key->file)
+           (values (and=> (profile-spec-cache-key specs system graft?) key->file)
                    0)))
       (((and spec ('package . _)) . rest)
        (if (not file)
