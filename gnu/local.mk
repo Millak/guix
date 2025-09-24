@@ -2059,6 +2059,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/qtlocation-5.15.8-mapboxgl-gcc13.patch	\
   %D%/packages/patches/quodlibet-disable-bundled-packages.patch	\
   %D%/packages/patches/qxlsx-fix-include-directory.patch	\
+  %D%/packages/patches/schiffbruch-fix-build-for-gcc-13.patch	\
   %D%/packages/patches/scn-fast-float-compat.patch		\
   %D%/packages/patches/sdcc-disable-non-free-code.patch		\
   %D%/packages/patches/sdl-pango-api_additions.patch		\

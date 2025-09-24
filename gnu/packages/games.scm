@@ -12795,7 +12795,8 @@ to start over several times to find the most satisfactory ending.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0lg3rqacrapf6c4sxi12cm9bmg43mlbclway1zxcm848pi1xkzwv"))))
+          (base32 "0lg3rqacrapf6c4sxi12cm9bmg43mlbclway1zxcm848pi1xkzwv"))
+         (patches (search-patches "schiffbruch-fix-build-for-gcc-13.patch"))))
       (build-system cmake-build-system)
       (arguments
        `(#:tests? #f                              ; no tests
