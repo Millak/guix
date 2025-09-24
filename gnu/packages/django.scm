@@ -1615,7 +1615,7 @@ Django projects, which allows association of a number of tags with any
 (define-public python-django-rest-framework
   (package
     (name "python-django-rest-framework")
-    (version "3.15.2")
+    (version "3.16.1")
     (source
      (origin
        (method git-fetch)
@@ -1625,7 +1625,7 @@ Django projects, which allows association of a number of tags with any
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ky559g2rpbz5sir33qq56c1bd4gc73hlrnkxsxpdm5mi69jrvcx"))))
+         "01i2p1mh48bkxhggvfh6j11rh9zrgw4w6fr78msgrdw6bdjf4fwj"))))
     (build-system pyproject-build-system)
     (arguments
      '(#:phases
