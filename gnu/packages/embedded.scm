@@ -83,8 +83,6 @@
             make-gcc-arm-none-eabi-9-2020-q2-update
             make-gcc-arm-none-eabi-12.3.rel1
 
-            make-gcc-vc4
-
             make-newlib-arm-none-eabi
             make-newlib-arm-none-eabi-7-2018-q2-update
             make-newlib-arm-none-eabi-9-2020-q2-update
@@ -1428,35 +1426,6 @@ toolchain, the loader, the Openspin compiler, the Spin2cpp tool, and the Spin
 simulator.")
         (home-page (package-home-page propeller-gcc))
         (license (package-license propeller-gcc))))))
-
-(define make-gcc-vc4
-  (mlambda ()
-    (let ((commit "0fe4b83897341742f9df65797474cb0feab4b377")
-          (xgcc (cross-gcc "vc4-elf" #:xgcc gcc-6 #:xbinutils binutils-vc4)))
-      (package
-        (inherit xgcc)
-        (name "gcc-vc4")
-        (source (origin
-                  (method git-fetch)
-                  (uri (git-reference
-                        (url "https://github.com/puppeh/gcc-vc4")
-                        (commit commit)))
-                  (file-name (string-append name
-                                            "-"
-                                            (package-version xgcc)
-                                            "-checkout"))
-                  (sha256
-                   (base32
-                    "0kvaq4s0assvinmmicwqp07d0wwldcw0fv6f4k13whp3q5909jnr"))
-                  (patches
-                   (search-patches "gcc-6-fix-buffer-size.patch"
-                                   "gcc-6-fix-isl-includes.patch"))))
-        (native-inputs
-         (modify-inputs (package-native-inputs xgcc)
-           (prepend flex)))
-        (synopsis "GCC for VC4")
-        (description "This package provides @code{gcc} for VideoCore IV,
-the Raspberry Pi chip.")))))
 
 (define-public imx-usb-loader
   ;; There are no proper releases.
