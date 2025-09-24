@@ -316,6 +316,35 @@ purposes.  Its goal is to be as close as possible to
     (home-page "https://hexdocs.pm/httpoison/")
     (license license:expat)))
 
+(define-public elixir-iconify-ex
+  (package
+    (name "elixir-iconify-ex")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "iconify_ex" version))
+       (sha256
+        (base32 "1j6vzp6ayx278s6q7n4rdk849b23sx9wf040h336naxphqxm3qk6"))))
+    (build-system mix-build-system)
+    (propagated-inputs
+     (list elixir-arrows
+           elixir-emote
+           elixir-floki
+           elixir-jason
+           elixir-phoenix-live-favicon
+           elixir-phoenix-live-view
+           elixir-recase
+           elixir-surface
+           elixir-untangle))
+    (synopsis
+     "Phoenix helpers for using icon sets")
+    (description
+     "This package provides Phoenix helpers for using the 100,000+ SVG icons
+from 100+ icon sets from @uref{https://iconify.design, iconify.design}.")
+    (home-page "https://hexdocs.pm/iconify_ex/")
+    (license license:expat)))
+
 (define-public elixir-mint-web-socket
   (package
     (name "elixir-mint-web-socket")
