@@ -407,6 +407,27 @@ framework.")
     (home-page "https://hexdocs.pm/phoenix_html/")
     (license license:expat)))
 
+(define-public elixir-phoenix-pubsub
+  (package
+    (name "elixir-phoenix-pubsub")
+    (version "2.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "phoenix_pubsub" version))
+       (sha256
+        (base32 "00p5dvizhawhqbia2cakdn4whaxsm2adq3lzfn3b137xvk0np85v"))))
+    (build-system mix-build-system)
+    (arguments
+     ;; Tests require network
+     (list #:tests? #f))
+    (synopsis "Distributed PubSub and Presence platform")
+    (description "This package provides @code{elixir-phoenix-pubsub}, a library
+implementing a distributed @code{PubSub} and @code{Presence} platform for the
+Phoenix Framework.")
+    (home-page "https://hexdocs.pm/phoenix_pubsub/")
+    (license license:expat)))
+
 (define-public elixir-plug-crypto
   (package
     (name "elixir-plug-crypto")
