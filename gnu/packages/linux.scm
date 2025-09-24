@@ -5970,17 +5970,17 @@ information on country-specific regulations for the wireless spectrum.")
 (define-public lm-sensors
   (package
     (name "lm-sensors")
-    (version "3.6.0")
+    (version "3.6.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/groeck/lm-sensors")
+             (url "https://github.com/hramrach/lm-sensors")
              (commit (string-append "V" (string-join
                                          (string-split version #\.) "-")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ipf6wjx037sqyhy0r5jh4983h216anq9l68ckn2x5c3qc4wfmzn"))
+        (base32 "0p2ck8p9zb1w53l37pvm6c10vi6r8bfz51nd3sdwwsfhfhgvsr0j"))
        (patches (search-patches "lm-sensors-hwmon-attrs.patch"))))
     (build-system gnu-build-system)
     (inputs (list rrdtool perl kmod gnuplot))
