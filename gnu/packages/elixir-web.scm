@@ -473,6 +473,25 @@ be a useful addition to your projects.")
     (home-page "https://hexdocs.pm/phoenix_view/")
     (license license:expat)))
 
+(define-public elixir-phx-new
+  (package
+    (name "elixir-phx-new")
+    (version "1.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "phx_new" version))
+       (sha256
+        (base32 "05kv8i0w8f1ky6gx3rz0ps5mwp8nkln7dq6565zw660i3cxpnwzn"))))
+    (build-system mix-build-system)
+    (synopsis
+     "Phoenix framework project generator")
+    (description
+     "Phoenix framework project generator.  Provides a @command{mix phx.new}
+task to bootstrap a new Elixir application with Phoenix dependencies.")
+    (home-page "https://hexdocs.pm/phx_new/")
+    (license license:expat)))
+
 (define-public elixir-plug-crypto
   (package
     (name "elixir-plug-crypto")
