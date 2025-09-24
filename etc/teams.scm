@@ -1329,6 +1329,11 @@ the \"texlive\" importer."
                        "rodion-goritskov")
   release)
 
+(define-member (person "Rutherther"
+                       "rutherther@ditigal.xyz"
+                       "Rutherther")
+  release)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
