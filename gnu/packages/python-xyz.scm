@@ -9119,14 +9119,30 @@ working with Valve's VDF text format.")
   (package
     (name "python-pygtrie")
     (version "2.5.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pygtrie" version))
-              (sha256
-               (base32
-                "1qm4xdmzd4q5pc9h5gjdpr5m7lg06k8dvqnjn7d07d3fhani8d90"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mina86/pygtrie")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00m4h2faslm242hsp98d21n6jmc8h616m69p2n6ga2rz37jqmh45"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (delete-file "version.py")
+              (substitute* "setup.py"
+                (("import version")
+                 "")
+                (("version\\.get_version\\(\\)")
+                 (format #f "~s" #$version))))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/mina86/pygtrie")
     (synopsis "Pure Python trie data structure implementation")
     (description
