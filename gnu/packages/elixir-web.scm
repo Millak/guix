@@ -428,6 +428,36 @@ framework.")
     (home-page "https://hexdocs.pm/phoenix_html/")
     (license license:expat)))
 
+(define-public elixir-phoenix-live-head
+  (package
+    (name "elixir-phoenix-live-head")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "phoenix_live_head" version))
+       (sha256
+        (base32 "060bbni63v4jqyiqrykcl2sdra3brhvr15d1q7wg1c48cki01ah3"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-excoveralls))
+    (propagated-inputs
+     (list elixir-ex-doc elixir-jason elixir-phoenix
+           elixir-phoenix-html elixir-phoenix-live-view))
+    (synopsis "HTML Head manipulation for Phoenix Live Views")
+    (description "This package provides commands for manipulating the HTML Head
+of Phoenix Live View applications while minimizing data over the wire.
+
+The available command actions support a variety of utility operations useful for
+HTML Head manipulation.  Such as setting or removing tag attributes and adding
+or removing CSS classes.
+
+A special feature is the use of the @code{@{dynamic@}} tag in values.  This
+saves data over the wire by only sending the dynamic part of an attributes
+value.")
+    (home-page "https://hexdocs.pm/phoenix_live_head/")
+    (license license:expat)))
+
 (define-public elixir-phoenix-live-reload
   (package
     (name "elixir-phoenix-live-reload")
