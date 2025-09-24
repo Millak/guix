@@ -1726,6 +1726,10 @@ to enforce it.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:modules '((guix build pyproject-build-system)
+                  (guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-ghdl-jit
@@ -1751,14 +1755,27 @@ to enforce it.")
                  (string-append site-packages "osvvm")))))
           (add-after 'check 'run-examples
             ;; Run examples as an extra check.
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (with-directory-excursion "examples/vhdl"
-                (for-each
-                 (lambda (dir)
-                   (invoke "python3" (string-append dir "/run.py")))
-                 (list
-                  "array" "check" "composite_generics" "json4vhdl" "logging"
-                  "logging" "uart" "vhdl_configuration"))))))
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "examples/vhdl"
+                  (for-each
+                   (lambda (dir)
+                     (invoke "python3" (string-append dir "/run.py"))
+                     (delete-file-recursively "vunit_out"))
+                   (scandir "."
+                            (negate
+                             (cut member <>
+                                  '("coverage"  ;unsupported feature in nvc
+                                    "data_types"  ;no run.py
+                                    "docker_runall.sh"  ;not a test
+                                    "vivado" ;requires external tool
+                                    ;; Fails with nvc
+                                    "array_axis_vcs"
+                                    "osvvm_log_integration"
+                                    "run"
+                                    "third_party_integration"
+                                    "user_guide"
+                                    "." ".."))))))))))
       #:test-flags
       ;; Skip lint tests which require python-pycodestyle, python-pylint and
       ;; python-mypy to reduce closoure size; some lint test fails, see
