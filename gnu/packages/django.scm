@@ -1128,14 +1128,14 @@ to asyncio and Pydantic.")
 (define-public python-django-pipeline
   (package
     (name "python-django-pipeline")
-    (version "4.0.0")
+    (version "4.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "django_pipeline" version))
        (sha256
         (base32
-         "125wkgi3hf1ly34ps7n63k6agb067h17ngxyf9xjykn6kl6ikc8a"))))
+         "1d12wzqvdnc3hk3s5yz9jd4xqhc75wbfsl6xdhwphnr1dzgpj7da"))))
     (build-system pyproject-build-system)
     (arguments
      (list
