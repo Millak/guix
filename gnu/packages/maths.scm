@@ -4784,9 +4784,11 @@ Mathematics (GLM) library to Python.")
      (list python-accupy
            python-pytest
            python-setuptools
-           python-wheel
            unzip
            vtk))
+    (inputs
+     ;; [optional]
+     (list python-matplotlib))
     (propagated-inputs
       (list python-importlib-metadata
             python-numpy
