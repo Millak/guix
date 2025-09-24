@@ -5997,7 +5997,8 @@ Low-Earth Orbit (LEO).")
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count)))))
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              "--ignore=docs/exts/numfig.py")))
     (native-inputs
      (list python-docutils
            python-pytest
