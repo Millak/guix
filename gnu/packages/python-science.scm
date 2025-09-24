@@ -4956,9 +4956,9 @@ and more
               (chdir "packages/python/plotly"))))))
     (native-inputs
      (list python-ipywidgets
+           python-nbformat
            python-pytest
            python-setuptools
-           python-wheel
            python-xarray))
     (propagated-inputs
      (list python-ipython
