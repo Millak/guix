@@ -1300,15 +1300,15 @@ of VT100 terminal.")
     (version "1.8.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyxdameraulevenshtein" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lanl/pyxDamerauLevenshtein")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "07nhds44ry9mchqjqjdnq2asp13y9pqc8003pkydvb3dah7wrvhv"))))
+        (base32 "1qmmpgf8qxv5pfnqp328qqsj34jvyc63w8659xx18d8405agcjdr"))))
     (build-system pyproject-build-system)
-    (native-inputs
-     (list python-cython
-           python-setuptools
-           python-wheel))
+    (native-inputs (list python-cython python-pytest python-setuptools))
     (home-page "https://github.com/lanl/pyxDamerauLevenshtein")
     (synopsis "Damerau-Levenshtein edit distance algorithm")
     (description
