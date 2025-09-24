@@ -770,27 +770,33 @@ fullscreen terminal rendering, and keyboard input event reporting.")
     (license license:expat)))
 
 (define-public python-distance
-  (package
-    (name "python-distance")
-    (version "0.1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "Distance" version))
-       (sha256
-        (base32 "0la51nzzqrkisshwbk2wpviisqqzylwkz9qsa9f3y05nyn27b030"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
-    (home-page "https://github.com/doukremt/distance")
-    (synopsis "Utilities for comparing sequences")
-    (description
-     "This package provides helpers for computing similarities between
+  (let ((commit "ad7f9dc7e9b0e88a08d0cefd1442f4ab1dd1779b")
+        (revision "0"))
+    (package
+      (name "python-distance")
+      (version (git-version "0.1.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/doukremt/distance")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1vcn0506dy68xyjxdjsl75zzc4b8lmg2yxjgak4i35l7a97yzvwy"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list #:test-backend #~'custom
+             #:test-flags #~(list "tests/tests.py")))
+      (native-inputs (list python-setuptools))
+      (home-page "https://github.com/doukremt/distance")
+      (synopsis "Utilities for comparing sequences")
+      (description
+       "This package provides helpers for computing similarities between
 arbitrary sequences. Included metrics are Levenshtein, Hamming, Jaccard, and
 Sorensen distance, plus some bonuses.  All distance computations are
 implemented in pure Python, and most of them are also implemented in C.")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public python-domdf-python-tools
   (package
