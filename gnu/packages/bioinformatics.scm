@@ -25155,27 +25155,42 @@ interest.")
       (license license:gpl3+))))
 
 (define-public python-vireosnp
-  (package
-    (name "python-vireosnp")
-    (version "0.5.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "vireoSNP" version))
-       (sha256
-        (base32 "02ybhzivsxwnb1axlgbs63wni1j27xajnkl4jw1ps5vmsz2l4b0d"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-matplotlib python-numpy python-scipy))
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "https://github.com/huangyh09/vireoSNP")
-    (synopsis "Deconvolution based on SNP for multiplexed scRNA-seq data")
-    (description
-     "This package provides a deconvolution based on Single Nucleotide
+  (let ((commit "e3654633f7663732572c03c5dcf9fb00ec43b653")
+        (revision "0"))
+    (package
+      (name "python-vireosnp")
+      (version (git-version "0.5.9" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/huangyh09/vireoSNP")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1wd4llm54fvc1pc4nqfdc43g637gfx1f4z4aznvdr3biy9jksqza"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (if tests?
+                    (with-directory-excursion "examples"
+                      (invoke "bash" "demo.sh"))
+                    (format #f "test suite not run.~%")))))))
+      (propagated-inputs (list python-matplotlib python-numpy python-scipy))
+      (native-inputs (list python-setuptools))
+      (home-page "https://github.com/huangyh09/vireoSNP")
+      (synopsis "Deconvolution based on SNP for multiplexed scRNA-seq data")
+      (description
+       "This package provides a deconvolution based on Single Nucleotide
 Position (SNP) for multiplexed scRNA-seq data.  The name vireo stand for
 Variational Inference for Reconstructing Ensemble Origin by expressed SNPs in
 multiplexed scRNA-seq data and follows the clone identification from
 single-cell data named @url{https://github.com/PMBio/cardelino, cardelino}.")
-    (license license:asl2.0)))
+      (license license:asl2.0))))
 
 (define-public ccwl
   (package
