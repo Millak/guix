@@ -5983,56 +5983,52 @@ information on country-specific regulations for the wireless spectrum.")
         (base32 "0p2ck8p9zb1w53l37pvm6c10vi6r8bfz51nd3sdwwsfhfhgvsr0j"))
        (patches (search-patches "lm-sensors-hwmon-attrs.patch"))))
     (build-system gnu-build-system)
-    (inputs (list rrdtool perl kmod gnuplot))
-    (native-inputs (list pkg-config flex bison which))
     (outputs '("lib"                    ; avoid perl in closure
                "out"))
     (arguments
-     `(#:tests? #f                      ; no 'check' target
-       #:make-flags (list (string-append "PREFIX=" %output)
-                          (string-append "ETCDIR=" (assoc-ref %outputs "lib") "/etc")
-                          (string-append "INCLUDEDIR="
-                                         (assoc-ref %outputs "lib") "/include")
-                          (string-append "MANDIR=" %output "/share/man")
-                          (string-append "LIBDIR=" (assoc-ref %outputs "lib") "/lib"))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'patch-exec-paths
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "prog/detect/sensors-detect"
-               (("`uname")
-                (string-append "`" (assoc-ref inputs "coreutils")
-                               "/bin/uname"))
-               (("(`|\")modprobe" all open-quote)
-                (string-append open-quote
-                               (assoc-ref inputs "kmod")
-                               "/bin/modprobe")))
-             (substitute* '("prog/pwm/pwmconfig"
-                            "prog/pwm/fancontrol")
-               (("gnuplot")
-                (search-input-file inputs "/bin/gnuplot"))
-               (("cat ")
-                (string-append (search-input-file inputs "/bin/cat")
-                               " "))
-               (("e?grep " match)
-                (string-append (search-input-file inputs
-                                                  (string-append
-                                                   "/bin/"
-                                                   (string-trim-right match)))
-                               " "))
-               (("sed -e")
-                (string-append (search-input-file inputs "/bin/sed")
-                               " -e"))
-               (("cut -d")
-                (string-append (search-input-file inputs "/bin/cut")
-                               " -d"))
-               (("sleep ")
-                (string-append (search-input-file inputs "/bin/sleep")
-                               " "))
-               (("readlink -f")
-                (string-append (search-input-file inputs "/bin/readlink")
-                               " -f"))))))))
+     (list
+      #:tests? #f                        ; no 'check' target
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              (string-append "ETCDIR=" #$output:lib "/etc")
+              (string-append "INCLUDEDIR=" #$output:lib "/include")
+              (string-append "MANDIR=" #$output "/share/man")
+              (string-append "LIBDIR=" #$output:lib "/lib"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'patch-exec-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "prog/detect/sensors-detect"
+                (("`uname")
+                 (string-append
+                  "`" (assoc-ref inputs "coreutils") "/bin/uname"))
+                (("(`|\")modprobe" all open-quote)
+                 (string-append
+                  open-quote #$(this-package-input "kmod") "/bin/modprobe")))
+              (substitute* '("prog/pwm/pwmconfig" "prog/pwm/fancontrol")
+                (("gnuplot")
+                 (search-input-file inputs "/bin/gnuplot"))
+                (("cat ")
+                 (string-append (search-input-file inputs "/bin/cat") " "))
+                (("e?grep " match)
+                 (string-append
+                  (search-input-file
+                   inputs (string-append "/bin/" (string-trim-right match)))
+                  " "))
+                (("sed -e")
+                 (string-append (search-input-file inputs "/bin/sed") " -e"))
+                (("cut -d")
+                 (string-append (search-input-file inputs "/bin/cut") " -d"))
+                (("sleep ")
+                 (string-append (search-input-file inputs "/bin/sleep") " "))
+                (("readlink -f")
+                 (string-append
+                  (search-input-file inputs "/bin/readlink") " -f"))))))))
+    (inputs
+     (list gnuplot kmod perl rrdtool))
+    (native-inputs
+     (list bison flex pkg-config which))
     (home-page "https://hwmon.wiki.kernel.org/lm_sensors")
     (synopsis "Utilities to read temperature/voltage/fan sensors")
     (description
