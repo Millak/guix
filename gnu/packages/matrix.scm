@@ -253,21 +253,31 @@ homeserver and generally help bootstrap the ecosystem.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "07prfdnkr13d0pvzhnicwnpn562fwq9zx05d6wza230s7vj0mmk4"))))
+        (base32 "07prfdnkr13d0pvzhnicwnpn562fwq9zx05d6wza230s7vj0mmk4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; This test requires an Internet connection
-      '(list "tests" "-k" "not test_connect_wrapper")
+      #~(list "tests"
+              "-k" (string-join
+                    ;; This test requires an Internet connection
+                    (list "not test_connect_wrapper"
+                          ;; XXX: fixture 'event_loop' not found
+                          "test_sync_forever"
+                          "test_stop_sync_forever")
+                    " and not "))
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             (substitute* "tests/helpers.py"
-               (("from nio.crypto import OlmAccount, OlmDevice")
-                "from nio.crypto.device import OlmDevice
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"cachetools~=.*\"")
+                 "\"cachetools\""))))
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              (substitute* "tests/helpers.py"
+                (("from nio.crypto import OlmAccount, OlmDevice")
+                 "from nio.crypto.device import OlmDevice
 from nio.crypto.sessions import OlmAccount")))))))
     (native-inputs
      (list python-aioresponses
@@ -275,17 +285,11 @@ from nio.crypto.sessions import OlmAccount")))))))
            python-hpack
            python-hyperframe
            python-hypothesis
-           python-mypy
-           python-mypy-extensions
-           python-poetry-core
            python-pytest
            python-pytest-aiohttp
            python-pytest-asyncio
            python-pytest-benchmark
-           python-pytest-cov
-           python-pytest-flake8
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-aiofiles
            python-aiohttp
