@@ -35,7 +35,6 @@ gnu/packages/avr-xyz.scm
 gnu/packages/avr.scm
 gnu/packages/axoloti.scm
 gnu/packages/backup.scm
-gnu/packages/barrier.scm
 gnu/packages/base.scm
 gnu/packages/bash.scm
 gnu/packages/batik.scm
