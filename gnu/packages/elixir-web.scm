@@ -744,6 +744,35 @@ show some high-level examples and introduce the Plug's main building blocks.")
     (home-page "https://hexdocs.pm/plug/")
     (license license:asl2.0)))
 
+(define-public elixir-surface
+  (package
+    (name "elixir-surface")
+    (version "0.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "surface" version))
+       (sha256
+        (base32 "04yl1k13sd22iwlf90l46dd7a09x3wq0g1iq6caw9y9p4ljl4chk"))))
+    (build-system mix-build-system)
+    (native-inputs
+     (list elixir-ecto
+           elixir-floki
+           elixir-jason
+           elixir-phoenix-ecto
+           elixir-sourceror))
+    (propagated-inputs
+     (list elixir-phoenix-html
+           elixir-phoenix-live-view
+           elixir-sourceror))
+    (synopsis "Server-side rendering component library for Phoenix")
+    (description
+     "This package provides Surface is a server-side rendering component library
+that allows developers to build rich interactive user-interfaces, writing
+minimal custom JavaScript.")
+    (home-page "https://surface-ui.org")
+    (license license:expat)))
+
 ;; This package lives here to avoid module level circular dependencies as it
 ;; depends on elixir-mint.
 (define-public elixir-tz
