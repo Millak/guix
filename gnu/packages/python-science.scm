@@ -2702,7 +2702,7 @@ CMake.")
 (define-public python-scikit-fem
   (package
     (name "python-scikit-fem")
-    (version "10.0.2")
+    (version "11.0.0")
     (source
      (origin
        (method git-fetch)        ; no tests in PyPI
@@ -2711,7 +2711,7 @@ CMake.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10kvzm4fmazsrddd83m0903wan67fkj13vdp6w1iw6wm6a0b5h28"))))
+        (base32 "13zh57raz2qcdfhsvpdlyiba5q0s0lh5b3gmsmh4cfrncrkdh6mh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2725,11 +2725,11 @@ CMake.")
            ;; python-jax ; not packed yet
            python-pytest
            python-shapely
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-meshio
            python-numpy
+           python-matplotlib
            python-scipy))
     (home-page "https://scikit-fem.readthedocs.io/en/latest/")
     (synopsis "Library for performing finite element assembly")
