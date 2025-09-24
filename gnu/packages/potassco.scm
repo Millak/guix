@@ -699,18 +699,18 @@ the most probable model as well as finding all models and their probabilities.")
   (package
     (name "python-telingo")
     (version "2.1.3")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/potassco/telingo")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1q6hlh4b5hsa4n5agvmfa9rhsxfd2g6kpl4b9kfccwbmf6dh51k6"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/potassco/telingo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1q6hlh4b5hsa4n5agvmfa9rhsxfd2g6kpl4b9kfccwbmf6dh51k6"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-clingo))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://potassco.org/")
     (synopsis "Solve dynamic temporal logic programs")
     (description "This package provides a system to solve dynamic temporal
