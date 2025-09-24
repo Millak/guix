@@ -558,6 +558,28 @@ show some high-level examples and introduce the Plug's main building blocks.")
     (home-page "https://hexdocs.pm/tz/")
     (license license:asl2.0)))
 
+(define-public elixir-websock-adapter
+  (package
+    (name "elixir-websock-adapter")
+    (version "0.5.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "websock_adapter" version))
+       (sha256
+        (base32 "10ip7zyvb5nb9qyl9vmw8npk3kk79qcssh2iyfsi48jmclc9lnri"))))
+    (build-system mix-build-system)
+    (propagated-inputs
+     (list elixir-bandit
+           elixir-plug
+           elixir-plug-cowboy
+           elixir-websock))
+    (synopsis "WebSock adapters for common web servers")
+    (description
+     "This package provides a set of @code{WebSock} adapters for common web servers.")
+    (home-page "https://hexdocs.pm/websock_adapter/")
+    (license license:expat)))
+
 (define-public elixir-websock
   (package
     (name "elixir-websock")
