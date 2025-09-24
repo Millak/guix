@@ -366,6 +366,24 @@ having different kinds of processes handle connections.")
     (home-page "https://hexdocs.pm/neuron/")
     (license license:isc)))
 
+(define-public elixir-phoenix-html
+  (package
+    (name "elixir-phoenix-html")
+    (version "4.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "phoenix_html" version))
+       (sha256
+        (base32 "0lz04g7h49x9rg4k3l6zz29va84fxy62m3xfb7cmswg21880iwfg"))))
+    (build-system mix-build-system)
+    (synopsis "Phoenix view functions for working with HTML templates")
+    (description "This package provides @code{elixir-phoenix-html}, a library
+implementing view functions for working with HTML templates in the Phoenix
+framework.")
+    (home-page "https://hexdocs.pm/phoenix_html/")
+    (license license:expat)))
+
 (define-public elixir-plug-crypto
   (package
     (name "elixir-plug-crypto")
