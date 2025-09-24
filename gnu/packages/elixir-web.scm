@@ -428,6 +428,26 @@ Phoenix Framework.")
     (home-page "https://hexdocs.pm/phoenix_pubsub/")
     (license license:expat)))
 
+(define-public elixir-phoenix-template
+  (package
+    (name "elixir-phoenix-template")
+    (version "1.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "phoenix_template" version))
+       (sha256
+        (base32 "01j28jf0q1h5pk9ndf7s6jx9m489jyf24byabjpkyxf6wpq8231c"))))
+    (build-system mix-build-system)
+    (native-inputs (list elixir-jason))
+    (propagated-inputs (list elixir-phoenix-html))
+    (synopsis "Template rendering for Phoenix")
+    (description "This module provides functions for loading and compiling
+templates from disk. A markup language is compiled to Elixir code via an
+engine.")
+    (home-page "https://hexdocs.pm/phoenix_template/")
+    (license license:expat)))
+
 (define-public elixir-plug-crypto
   (package
     (name "elixir-plug-crypto")
