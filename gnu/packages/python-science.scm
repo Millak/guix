@@ -3853,76 +3853,72 @@ idea of the remaining amount of computation to be done.")
 (define-public python-pandera
   (package
     (name "python-pandera")
-    ;; FIXME: The latest version requires hypothesis >= 6.92.7, which can't be
-    ;; picked from python-hypothesis-next for some reason.
-    (version "0.18.0")
+    (version "0.26.1")
     (source
      (origin
-       ;; No tests in the PyPI tarball.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/unionai-oss/pandera")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (pypi-uri "pandera" version))
        (sha256
-        (base32 "14b5aij5zjkwvsimg0v00qvp59mhhq7ljim4qghcn432vkg9gh47"))))
+        (base32 "10px2wy3rb8gg2jyry8962yrd0m3jq88wgjcpyrk23bp55j5m9c1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 3093 passed, 48 skipped, 21 xfailed, 8232 warnings
       #:test-flags
-      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+      ;; With higher threads count tests randomly fail during collection.
+      #~(list "--numprocesses" (number->string (min 4 (parallel-job-count)))
+              ;; TODO: Ignore tests for not packaged python-ibis-framework,
+              ;; python-polars, and python-pyspark.
+              "--ignore=tests/ibis"
+              "--ignore=tests/polars"
               "--ignore=tests/pyspark"
               "-k" (string-join
-                    ;; Failed: DID NOT RAISE <class 'pandera.errors.SchemaError'>
-                    (list "not test_from_records_validates_the_schema"
-                          "test_init_pandas_dataframe_errors"
-                          "test_schema_dtype_crs_without_coerce"
-                          "test_schema_from_dataframe"
-                          "test_schema_model"
-                          "test_validate_coerce_on_init"
-                          ;; multimethod.DispatchError: ('str_length: 0
-                          ;; methods found', (<class
-                          ;; 'pandas.core.series.Series'>, <class 'NoneType'>,
-                          ;; <class 'int'>), [])
-                          "test_succeeding"
-                          "test_failing"
-                          "test_failing_with_none"
-                          ;; pandera.errors.SchemaError: Error while executing
-                          ;; check function: KeyError("foo")
-                          "test_check_groups"
-                          ;; [pandas_series.py-plugin_mypy.ini-expected_errors13]
-                          ;; - assert 1 == 2
-                          "test_pandas_stubs_false_positives"
-                          ;; TypeError: type 'Series' is not subscriptable
-                          "test_pandas_modules_importable")
+                    ;; Network access is required.
+                    (list "not test_items_endpoint"
+                          "test_transactions_endpoint"
+                          "test_upload_file_endpoint"
+                          ;; AssertionError: assert dtype('bool') == 'object'
+                          "test_index_dtypes[dask-Index-True-bool]"
+                          "test_index_dtypes[dask-Index-False-bool]"
+                          ;; TypeError: __class__ assignment: 'GeoDataFrame'
+                          ;; object layout differs from 'DataFrame'
+                          "test_schema_model[data0-True]"
+                          "test_schema_from_dataframe[data1-True]"
+                          "test_schema_no_geometry")
                     " and not "))))
-    ;; Pandera comes with a lot of extras. We test as many as possible, but do
-    ;; not include all of them in the propagated-inputs. Currently, we have to
-    ;; skip the pyspark and io tests due to missing packages python-pyspark
-    ;; and python-frictionless.
-    (propagated-inputs (list python-hypothesis-next ;strategies extra
-                             python-modin
-                             python-multimethod
-                             python-numpy
-                             python-packaging
-                             python-pandas
-                             python-pandas-stubs ;mypy extra
-                             python-pydantic-2
-                             python-scipy ;hypotheses extra
-                             python-typeguard
-                             python-typing-inspect
-                             python-wrapt))
-    (native-inputs (list python-dask ;dask extra
-                         python-fastapi ;fastapi extra
-                         python-geopandas ;geopandas extra
-                         python-pyarrow ;needed to run fastapi tests
-                         python-pytest
-                         python-pytest-asyncio
-                         python-pytest-xdist
-                         python-setuptools
-                         python-sphinx
-                         python-uvicorn ;needed to run fastapi tests
-                         python-wheel))
+    (native-inputs
+     (list python-joblib
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm
+           python-uvicorn))
+    (inputs
+     ;; [optional]
+     ;; Pandera comes with a lot of extras. We test as many as possible, but do
+     ;; not include all of them in the propagated-inputs. Currently, we have to
+     ;; skip the pyspark and io tests due to missing packages python-pyspark
+     ;; and python-frictionless.
+     (list python-dask
+           python-distributed
+           python-geopandas
+           python-hypothesis
+           ;; python-ibis-framework ;missing from Guix
+           python-modin
+           python-numpy
+           python-pandas
+           ;; python-polars         ;missing from Guix
+           ;; python-pyspark        ;missing from Guix
+           ;; python-ray            ;missing from Guix
+           python-scipy
+           python-shapely))
+    (propagated-inputs
+     (list python-packaging
+           python-pydantic-2
+           python-typeguard
+           python-typing-extensions
+           python-typing-inspect))
     (home-page "https://github.com/unionai-oss/pandera")
     (synopsis "Perform data validation on dataframe-like objects")
     (description
