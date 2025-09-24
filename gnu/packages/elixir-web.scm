@@ -407,6 +407,33 @@ framework.")
     (home-page "https://hexdocs.pm/phoenix_html/")
     (license license:expat)))
 
+(define-public elixir-phoenix-live-reload
+  (package
+    (name "elixir-phoenix-live-reload")
+    (version "1.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hexpm-uri "phoenix_live_reload" version))
+       (sha256
+        (base32 "1875i11fl7nr1hx645cjwq43ziiy7vrrjxf1pgqgxr56sm1kh9vl"))))
+    (build-system mix-build-system)
+    (arguments
+     ;; Tests fail with:
+     ;;
+     ;; [warning] Could not start Phoenix live-reload because we cannot listen
+     ;; to the file system.
+     ;; You don't need to worry! This is an optional feature used during
+     ;; development to refresh your browser when you save files and it does not
+     ;; affect production.
+     (list #:tests? #f))
+    (propagated-inputs (list elixir-file-system elixir-phoenix))
+    (synopsis "Live-reload functionality for Phoenix")
+    (description
+     "This package provides live-reload functionality for Phoenix.")
+    (home-page "https://hexdocs.pm/phoenix_live_reload/")
+    (license license:expat)))
+
 (define-public elixir-phoenix-pubsub
   (package
     (name "elixir-phoenix-pubsub")
