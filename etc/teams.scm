@@ -797,7 +797,6 @@ asdf-build-system."
         "Localization of your system to specific languages."
         #:scope (list "gnu/packages/anthy.scm"
                       "gnu/packages/fcitx5.scm"
-                      "gnu/packages/fcitx.scm"
                       "gnu/packages/fonts.scm"
                       "gnu/packages/ibus.scm")))
 

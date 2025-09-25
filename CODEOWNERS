@@ -240,7 +240,6 @@ guix/build-system/asdf\.scm                        @guix/lisp
 
 gnu/packages/anthy\.scm                            @guix/localization
 gnu/packages/fcitx5\.scm                           @guix/localization
-gnu/packages/fcitx\.scm                            @guix/localization
 gnu/packages/fonts\.scm                            @guix/localization
 gnu/packages/ibus\.scm                             @guix/localization
 
