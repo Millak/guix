@@ -724,8 +724,8 @@ API key.")
 
 (define-public emacs-gptel-prompts
   ;; No releases.
-  (let ((commit "deca98e1aff1b0570cd1672addfb6dcc74402332")
-        (revision "0"))
+  (let ((commit "17fd35aca76f2b6681a1807e9f3123fe5ba0b60d")
+        (revision "1"))
     (package
       (name "emacs-gptel-prompts")
       (version (git-version "1.0" revision commit))
@@ -736,7 +736,7 @@ API key.")
                 (commit commit)))
          (method git-fetch)
          (sha256
-          (base32 "0wh2ydiy1k6j0hdw7n7qyzx6c2g4mcpd3gp79h1ay1hh0f85596b"))
+          (base32 "0s6hl2s1cxj75v6xb4xxsriqqb4rww32yxmybvarx2hpnlr701y8"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (arguments (list #:tests? #f))    ;no tests
