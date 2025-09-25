@@ -38712,7 +38712,7 @@ parsing rules in a single place.")
        (sha256
         (base32 "0g4cn522n4dv6ly8pwf97dc62rr4f7my38v0bh6vmac7jmrip7pv"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools python-pytest))
     (home-page "https://github.com/pR0Ps/iterable-io")
     (synopsis "Adapt generators and other iterables to a file-like interface")
     (description
