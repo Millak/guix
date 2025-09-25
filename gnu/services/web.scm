@@ -2071,7 +2071,7 @@ WSGIPassAuthorization On
                       (calendar-event #:minutes '#$(iota 12 0 5))
                       (command (list #$(mumi-rsync-and-index config)))
                       #:log-file #$%mumi-rsync-and-index-log
-                      #:max-duration (* 60 60)
+                      #:max-duration (* 2 60 60)
                       #:wait-for-termination? #t))
             (stop #~(make-timer-destructor))
             (actions (list shepherd-trigger-action))
