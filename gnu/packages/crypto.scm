@@ -1455,18 +1455,16 @@ SHA-256, SHA-512, and WHIRLPOOL hashes.")
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; no test suite
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'set-cflags
-           (lambda _
-             (setenv "CFLAGS" "-O3")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((outdir (assoc-ref outputs "out"))
-                    (bindir (string-append outdir "/bin")))
-               (install-file "mkp224o" bindir)
-               #t))))))
+     (list
+      #:tests? #f ; no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-cflags
+            (lambda _
+              (setenv "CFLAGS" "-O3")))
+          (replace 'install
+            (lambda _
+              (install-file "mkp224o" (string-append #$output "/bin")))))))
     (native-inputs
      (list autoconf))
     (inputs
