@@ -294,10 +294,10 @@ set."
   (false-if-EEXIST (symlink "/servers/socket/2" (scope "servers/socket/inet")))
   (false-if-EEXIST (symlink "/servers/socket/26" (scope "servers/socket/inet6")))
 
-  ;; Make sure /etc/mtab is a symlink to /proc/mounts.
-  (false-if-exception (delete-file (scope "etc/mtab")))
-  (mkdir* (scope "etc"))
-  (symlink "/proc/mounts" (scope "etc/mtab")))
+  ;; Make sure /var/run/mtab is a symlink to /proc/mounts.
+  (false-if-exception (delete-file (scope "var/run/mtab")))
+  (mkdir* (scope "var/run"))
+  (symlink "/proc/mounts" (scope "var/run/mtab")))
 
 
 (define* (boot-hurd-system #:key (on-error 'debug))
