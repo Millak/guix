@@ -9663,8 +9663,8 @@ code.  It was created based on the usage of @code{ob-C}.")
       (license license:gpl3+))))
 
 (define-public emacs-ob-gptel
-  (let ((commit "e8eaa098b71f0f29ddbb5ea078514dc584e331e0")
-        (revision "1"))
+  (let ((commit "60e704a390d767a7d06c8d3845ba8786b75f7da3")
+        (revision "2"))
     (package
       (name "emacs-ob-gptel")
       (version (git-version "0.1.0" revision commit))
@@ -9677,7 +9677,7 @@ code.  It was created based on the usage of @code{ob-C}.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0rfg2kklj18smhyc15a8j15r9x5q6dq46isyh9ss49wx791bw652"))))
+           "0l4abglx5q8ym2ii6my58001v98jhqd0c0jpvbk4dz2i3h9rsxqv"))))
       (build-system emacs-build-system)
       (arguments (list #:tests? #f))    ;no tests
       (propagated-inputs
