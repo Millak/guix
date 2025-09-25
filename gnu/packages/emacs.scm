@@ -744,7 +744,12 @@ Started in 2014 as a GSOC project, Guile-Emacs was resurrected in 2024.")
        (substitute-keyword-arguments `(#:strip-binaries? #f
                                        ,@(package-arguments emacs))
          ((#:configure-flags flags ''())
-          #~`("CFLAGS=-Og -ggdb3"
+          #~`(#$(string-append "CFLAGS=-Og -ggdb3"
+                               " -Wno-error=implicit-function-declaration"
+                               " -Wno-error=implicit-int"
+                               " -Wno-error=incompatible-pointer-types"
+                               " -Wno-error=int-conversion"
+                               " -Wno-error=shift-count-negative")
               "--with-native-compilation=no"
               "--without-modules"
               "--without-threads"
@@ -752,9 +757,11 @@ Started in 2014 as a GSOC project, Guile-Emacs was resurrected in 2024.")
               "--without-cairo"
               "--without-tree-sitter"
               "--with-imagemagick"
-              ,@(fold delete #$flags '("--with-cairo"
-                                       "--with-modules"
-                                       "--with-native-compilation=aot"))))
+              ,@(fold delete #$flags
+                      '("CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"
+                        "--with-cairo"
+                        "--with-modules"
+                        "--with-native-compilation=aot"))))
          ((#:make-flags flags #~'())
           #~(list "V=1"))
          ((#:phases phases)
