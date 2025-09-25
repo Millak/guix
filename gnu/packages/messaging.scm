@@ -2642,11 +2642,10 @@ replacement.")
     (license license:gpl2+)))
 
 (define-public tdlib
-  (let ((commit "5c77c4692c28eb48a68ef1c1eeb1b1d732d507d3")
-        (revision "0"))
+  (let ((commit "7d257dcda5dd2c616c1146540ef51147c5bb2c69"))
     (package
       (name "tdlib")
-      (version (git-version "1.8.52" revision commit))
+      (version "1.8.55")
       (source
        (origin
          (method git-fetch)
@@ -2654,7 +2653,7 @@ replacement.")
                (url "https://github.com/tdlib/td")
                (commit commit)))
          (sha256
-          (base32 "1a2hh3f2m7vg7jky1144rfw5jxly3i278ck9zsh9v4kkvxrhy41q"))
+          (base32 "0w36jwblwi4rb61id0jkfasy01p69c9myvm51qgmv3hlw60kwq51"))
          (file-name (git-file-name name version))))
       (build-system cmake-build-system)
       (arguments
