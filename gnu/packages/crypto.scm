@@ -1337,7 +1337,7 @@ Trusted comments are signed, thus verified, before being displayed.")
 (define-public olm
   (package
     (name "olm")
-    (version "3.2.14")
+    (version "3.2.16")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1345,7 +1345,7 @@ Trusted comments are signed, thus verified, before being displayed.")
                     (commit version)))
               (sha256
                (base32
-                "0pj7gs32ixhlls792wah7xf49j5pra0avp7dpvy9cndkdkg6biq5"))
+                "19yibssxn12q6ddl15nvqzvcf1hwqial48ng6llfafwbkfdb8z95"))
               (file-name (git-file-name name version))
               ;; Delete the bundled blob.  It's free, but unauditable,
               ;; and apparently only required for android.
@@ -1353,18 +1353,19 @@ Trusted comments are signed, thus verified, before being displayed.")
                          "android/gradle/wrapper/gradle-wrapper.jar"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (with-directory-excursion "tests"
-                 (invoke "ctest" "."))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "tests"
+                  (invoke "ctest" "."))))))))
     (synopsis "Implementation of the Olm and Megolm cryptographic ratchets")
     (description "The Olm library implements the Double Ratchet
 cryptographic ratchet.  It is written in C and C++11, and exposed as a C
 API.")
-    (home-page "https://matrix.org/docs/projects/other/olm/")
+    (home-page "https://gitlab.matrix.org/matrix-org/olm/")
     (license license:asl2.0)))
 
 (define-deprecated-package libolm
