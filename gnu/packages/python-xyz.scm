@@ -36908,6 +36908,35 @@ systems in Python.")
 key-value pairs from a @code{.env} file and set them as environment variables.")
     (license license:bsd-3)))
 
+;; Old version just for docker-compose; remove once that is updated.
+(define-public python-dotenv-0.13.0
+  (package (inherit python-dotenv)
+    (name "python-dotenv")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python-dotenv" version))
+       (sha256
+        (base32
+         "0x5dagmfn31phrbxlwacw3s4w5vibv8fxqc62nqcdvdhjsy0k69v"))))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
+             (when tests?
+               (add-installed-pythonpath inputs outputs)
+               (setenv "PATH" (string-append (getenv "PATH") ":"
+                                             (assoc-ref outputs "out") "/bin"))
+               ;; Skip the ipython tests.
+               (delete-file "tests/test_ipython.py")
+               (invoke "python" "-m" "pytest")))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs python-dotenv)
+       (append python-mock)
+       (replace "python-sh" python-sh-1)))))
+
 (define-public date2name
   (let ((commit "6c8f37277e8ec82aa50f90b8921422be30c4e798")
         (revision "1"))

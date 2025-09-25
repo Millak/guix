@@ -211,7 +211,7 @@ client.")
            python-docker-5
            python-dockerpty
            python-docopt
-           python-dotenv
+           python-dotenv-0.13.0
            python-jsonschema-3
            python-pyyaml
            python-requests
