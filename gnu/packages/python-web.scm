@@ -5294,7 +5294,10 @@ WebSocket usage in Python programs.")
        (method url-fetch)
        (uri (pypi-uri "websocket-client" version))
        (sha256
-        (base32 "0p0cz2mdissq7iw1n7jrmsfir0jfmgs1dvnpnrx477ffx9hbsxnk"))))))
+        (base32 "0p0cz2mdissq7iw1n7jrmsfir0jfmgs1dvnpnrx477ffx9hbsxnk"))))
+    (native-inputs
+     (modify-inputs (package-native-inputs python-websocket-client)
+       (append python-six)))))
 
 (define-public python-purl
   (package
