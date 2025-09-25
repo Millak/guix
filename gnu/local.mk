@@ -276,7 +276,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/erlang-xyz.scm			\
   %D%/packages/esolangs.scm			\
   %D%/packages/fabric-management.scm		\
-  %D%/packages/fcitx.scm			\
   %D%/packages/fcitx5.scm			\
   %D%/packages/fediverse.scm			\
   %D%/packages/figlet.scm			\

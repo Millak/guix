@@ -146,7 +146,6 @@ gnu/packages/erlang-xyz.scm
 gnu/packages/erlang.scm
 gnu/packages/esolangs.scm
 gnu/packages/fabric-management.scm
-gnu/packages/fcitx.scm
 gnu/packages/fcitx5.scm
 gnu/packages/fediverse.scm
 gnu/packages/figlet.scm
