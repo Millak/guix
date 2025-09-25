@@ -380,54 +380,6 @@ inappropriate content.")
       license:gpl2+
       license:lgpl2.1+))))
 
-(define-public maliit-framework
-  (package
-    (name "maliit-framework")
-    (version "2.3.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/maliit/framework")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1dkjxvfxg56hfy70j6ibfklfyv57jiha4vgc3ggl60r5kjx65s5b"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; The Ft_MIMPluginManager::testPluginDescriptions test fails
-                ;; with a QFATAL error: received signal 11, while
-                ;; ut_mimpluginmanager fails at least on powerpc64le with a
-                ;; subprocess aborted error (see:
-                ;; https://github.com/maliit/framework/issues/120).
-                (invoke "ctest" "-E"
-                        "(ft_mimpluginmanager|ut_mimpluginmanager)")))))))
-    (native-inputs (list extra-cmake-modules
-                         wayland-protocols
-                         pkg-config
-                         doxygen
-                         graphviz
-                         `(,glib "bin"))) ;for gdbus-codegen))
-    (inputs (list qtbase-5
-                  qtdeclarative-5
-                  qtwayland-5
-                  wayland
-                  libxkbcommon
-                  dbus
-                  eudev
-                  glib))
-    (home-page "https://github.com/maliit/framework")
-    (synopsis "Core libraries of Maliit")
-    (description "This package provides Maliit provides a flexible input
-method framework.")
-    (license license:lgpl2.1+)))
-
 ;; Private package used by shared-mime-info.
 (define xdgmime
   ;; No public release, match commit to the one used in the
