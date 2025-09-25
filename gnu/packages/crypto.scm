@@ -1273,27 +1273,24 @@ utility/testing functions.")
                 "1fb5yi3d2k8kd4zm7liiqagpz610y168xrr1cvn7cbq314jm2my1"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; No test suite
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             ;; Build the program and the docs.
-             "SUBDIRS=src doc")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ; No ./configure script
-         (add-after 'unpack 'patch-path
-           (lambda _
-             (substitute* '("src/Makefile" "doc/Makefile")
-               (("/usr/bin/install")
-                "install"))))
-         (add-before 'install 'make-output-directories
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (man1 (string-append out "/share/man/man1")))
-               (mkdir-p bin)
-               (mkdir-p man1)
-               #t))))))
+     (list
+      #:tests? #f ; No test suite
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              ;; Build the program and the docs.
+              "SUBDIRS=src doc")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure) ; No ./configure script
+          (add-after 'unpack 'patch-path
+            (lambda _
+              (substitute* '("src/Makefile" "doc/Makefile")
+                (("/usr/bin/install")
+                 "install"))))
+          (add-before 'install 'make-output-directories
+            (lambda _
+              (mkdir-p (string-append #$output "/bin"))
+              (mkdir-p (string-append #$output "/share/man/man1")))))))
     (inputs
      (list libsodium openssl))
     (synopsis "High-performance command-line tool for stream encryption")
