@@ -20729,7 +20729,7 @@ efficiently.")
 (define-public python-hic2cool
   (package
     (name "python-hic2cool")
-    (version "0.8.3")
+    (version "1.0.1")
     ;; pypi sources do not contain the test_data directory and no test can be
     ;; run
     (source
@@ -20741,32 +20741,15 @@ efficiently.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0dlnf0qfcp4jrc1nyya32a035c13xicyq16bwfnwhbb9s47mz7gl"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; Two of the test-data files need to be writable.
-         (add-after 'unpack 'make-test-data-writable
-           (lambda _
-             (for-each make-file-writable
-                       (list "test_data/hic2cool_0.4.2_single_res.cool"
-                             "test_data/hic2cool_0.7.0_multi_res.mcool"))))
-         ;; See https://github.com/4dn-dcic/hic2cool/issues/58
-         (add-after 'unpack 'fix-incompatibility-with-h5py-3
-           (lambda _
-             (substitute* "test.py"
-               (("h5py.File\\(fname\\)") "h5py.File(fname, 'r')"))
-             (substitute* "hic2cool/hic2cool_updates.py"
-               (("h5py.File\\(writefile\\)")
-                "h5py.File(writefile, 'a')"))))
-         ;; These two tests fail for unknown reasons.
-         (add-after 'unpack 'disable-broken-tests
-           (lambda _
-             (substitute* "test.py"
-               (("def test_convert") "def _test_convert")))))))
+         "0k0i43z43rxbpna4hfci406ma906w893frfj3cha1n8drvhdql6c"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core))
     (propagated-inputs
-     (list python-cooler python-h5py python-numpy python-pandas
+     (list python-cooler
+           python-h5py
+           python-numpy
+           python-pandas
            python-scipy))
     (home-page "https://github.com/4dn-dcic/hic2cool")
     (synopsis "Converter for .hic and .cool files")
