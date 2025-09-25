@@ -1,0 +1,58 @@
+diff --git a/cmake/build_utils.cmake b/cmake/build_utils.cmake
+index 83db1be..6f62931 100644
+--- a/cmake/build_utils.cmake
++++ b/cmake/build_utils.cmake
+@@ -1010,7 +1010,7 @@ macro(add_bundled_libraries)
+         add_subdirectory(${FMT_SOURCE_DIR} EXCLUDE_FROM_ALL)
+         set(FMT_LIBRARIES fmt::fmt-header-only)
+     else()
+-        find_package(${FMT_PACKAGE_NAME} REQUIRED ${FMT_PKG_MINIMUM_REQUIRED_VERSION})
++        find_package(${FMT_PACKAGE_NAME} ${FMT_PKG_MINIMUM_REQUIRED_VERSION} REQUIRED)
+         set(FMT_LIBRARIES fmt::fmt)
+     endif()
+     list(APPEND 3RD_PARTY_TARGET_LIST ${FMT_LIBRARIES})
+@@ -1020,8 +1020,8 @@ macro(add_bundled_libraries)
+     #   Note:   C++23+ we can use std::stacktrace for the traces.
+     #           Some older compilers/systems will not allow that. We will force/use boost::stacktrace for now.
+     #           Check for 'Boost'
+-    set(BOOST_PACKAGE_NAME "boost")
+-    set(BOOST_LIBRARY_NAME "boost")
++    set(BOOST_PACKAGE_NAME "Boost")
++    set(BOOST_LIBRARY_NAME "Boost")
+     set(BOOST_REPO_URL "https://github.com/boostorg/boost.git")
+     set(BOOST_PKG_MINIMUM_REQUIRED_VERSION "1.74.0")
+     set(BOOST_REPO_VERSION "boost-1.88.0")
+@@ -1128,7 +1128,7 @@ macro(add_bundled_libraries)
+         add_subdirectory(${SPDLOG_SOURCE_DIR} EXCLUDE_FROM_ALL)
+         set(SPDLOG_LIBRARIES spdlog::spdlog_header_only)
+     else()
+-        find_package(${SPDLOG_PACKAGE_NAME} REQUIRED ${SPDLOG_PKG_MINIMUM_REQUIRED_VERSION})
++        find_package(${SPDLOG_PACKAGE_NAME} ${SPDLOG_PKG_MINIMUM_REQUIRED_VERSION} REQUIRED)
+         set(SPDLOG_LIBRARIES spdlog::spdlog)
+     endif()
+     list(APPEND 3RD_PARTY_TARGET_LIST ${SPDLOG_LIBRARIES})
+@@ -1162,7 +1162,7 @@ macro(add_bundled_libraries)
+     #    find_package(Boost 1.74 REQUIRED COMPONENTS stacktrace_basic)
+     #    set(BOOST_LIBRARIES boost::boost)
+     #endif()
+-    set(CATCH2_PACKAGE_NAME "catch2")
++    set(CATCH2_PACKAGE_NAME "Catch2")
+     set(CATCH2_LIBRARY_NAME "Catch2")
+     set(CATCH2_REPO_URL "https://github.com/catchorg/Catch2.git")
+     set(CATCH2_PKG_MINIMUM_REQUIRED_VERSION "3.5.1")
+diff --git a/main/cmdline/CMakeLists.txt b/main/cmdline/CMakeLists.txt
+index ad8219e..f507a2b 100644
+--- a/main/cmdline/CMakeLists.txt
++++ b/main/cmdline/CMakeLists.txt
+@@ -54,7 +54,7 @@ if(NOT USE_LOCAL_CLI11)
+     set(CLI11_LIBRARIES CLI11::CLI11)
+     set(CLI11_INCLUDE_DIRS)
+ else()
+-    find_package(CLI11 CONFIG QUIT)
++    find_package(CLI11 CONFIG QUIET)
+ endif()
+ 
+ 
+-- 
+2.51.0
+

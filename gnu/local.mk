@@ -2288,6 +2288,9 @@ dist_patch_DATA =						\
   %D%/packages/patches/rng-tools-revert-build-randstat.patch	\
   %D%/packages/patches/rocclr-5.6.0-enable-gfx800.patch		\
   %D%/packages/patches/rocm-opencl-runtime-4.3-noclinfo.patch 	\
+  %D%/packages/patches/rocm-bandwidth-test-fix-external-packages-search.patch	\
+  %D%/packages/patches/rocm-bandwidth-test-fix-hsa-include-file-lookup.patch	\
+  %D%/packages/patches/rocm-bandwidth-test-take-default-gpus-from-environment.patch	\
   %D%/packages/patches/rottlog-direntry.patch 			\
   %D%/packages/patches/ruby-actionpack-remove-browser-tests.patch	\
   %D%/packages/patches/ruby-activesupport-fix-deprecation-warning.patch	\

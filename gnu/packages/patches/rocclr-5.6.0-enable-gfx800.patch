@@ -17,8 +17,8 @@ Signed-off-by: Jeremy Newton <Jeremy.Newton@amd.com>
 
 diff --git a/rocclr/device/device.hpp b/rocclr/device/device.hpp
 index ef82630325..6409cebc90 100644
---- a/rocclr/device/device.hpp
-+++ b/rocclr/device/device.hpp
+--- a/projects/clr/rocclr/device/device.hpp
++++ b/projects/clr/rocclr/device/device.hpp
 @@ -1431,8 +1431,5 @@ class Isa {
  
    /// @returns If the ROCm runtime supports the ISA.

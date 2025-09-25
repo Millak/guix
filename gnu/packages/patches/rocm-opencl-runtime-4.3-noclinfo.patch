@@ -2,8 +2,8 @@ Do not build and install clinfo.
 
 diff --git a/opencl/CMakeLists.txt b/opencl/CMakeLists.txt
 index 7b97cfdef..23eec15b2 100644
---- a/opencl/CMakeLists.txt
-+++ b/opencl/CMakeLists.txt
+--- a/projects/clr/opencl/CMakeLists.txt
++++ b/projects/clr/opencl/CMakeLists.txt
 @@ -33,7 +33,7 @@ if(BUILD_ICD)
    add_subdirectory(khronos/icd)
  endif()
@@ -15,8 +15,8 @@ index 7b97cfdef..23eec15b2 100644
    add_subdirectory(tests/ocltst)
 diff --git a/opencl/packaging/CMakeLists.txt b/opencl/packaging/CMakeLists.txt
 index 7d9e6366f..f8d08e0fc 100644
---- a/opencl/packaging/CMakeLists.txt
-+++ b/opencl/packaging/CMakeLists.txt
+--- a/projects/clr/opencl/packaging/CMakeLists.txt
++++ b/projects/clr/opencl/packaging/CMakeLists.txt
 @@ -16,7 +16,7 @@ endif()
  set(CPACK_DEB_COMPONENT_INSTALL ON)
  set(CPACK_RPM_COMPONENT_INSTALL ON)

@@ -1,0 +1,29 @@
+diff --git a/plugins/tb/transferbench/CMakeLists.txt b/plugins/tb/transferbench/CMakeLists.txt
+index 8e4588e..1d0e12f 100644
+--- a/plugins/tb/transferbench/CMakeLists.txt
++++ b/plugins/tb/transferbench/CMakeLists.txt
+@@ -61,20 +61,7 @@ option(ENABLE_NIC_EXEC             "Enable RDMA NIC Executor in TransferBench"
+ 
+ # Default GPU architectures to build
+ #==================================================================================================
+-set(DEFAULT_GPUS
+-      gfx906
+-      gfx908
+-      gfx90a
+-      gfx942
+-      gfx950
+-      gfx1030
+-      gfx1100
+-      gfx1101
+-      gfx1102
+-      gfx1150
+-      gfx1151
+-      gfx1200
+-      gfx1201)
++set(DEFAULT_GPUS ENV{AMDGPU_TARGETS})
+ 
+ # Build only for local GPU architecture
+ if (BUILD_LOCAL_GPU_TARGET_ONLY)
+-- 
+2.51.0
+

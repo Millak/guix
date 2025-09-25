@@ -67,6 +67,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages cmake)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages bootstrap)           ;glibc-dynamic-linker
@@ -86,6 +87,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages rocm)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages vulkan)
   #:use-module (gnu packages xml)
@@ -1283,39 +1285,281 @@ Library.")
 (define-public clang clang-13)
 (define-public clang-toolchain clang-toolchain-13)
 
-(define-public llvm-for-rocm
+
+
+;; ROCm compiler infrastructure elements are compiled from a monorepo at
+;; https://github.com/ROCm/llvm-project.  Due to some of these parts
+;; referencing both a common origin and llvm helpers (in particular related to
+;; patches and base packages).  Other ROCm elements are part of rocm.scm
+
+;; This must match '%rocm-version' in rocm.scm.  They cannot be shared because
+;; toplevel variables cannot be called from one file to another.
+(define %rocm-llvm-version "7.1.0")
+
+(define (make-llvm-rocm llvm-base)
   (package
-    ;; Currently based on LLVM 19.
-    (inherit llvm-19)
-    (name "llvm-for-rocm")
-    (version "6.4.2")                         ;this must match '%rocm-version'
+    (inherit llvm-base)
+    ;; XXX A lot of llvm package phases are dependent on llvm version.  Are
+    ;; these resolved early, so that we can override the package version easily?
+    (version %rocm-llvm-version)
+    (name "llvm-rocm")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/ROCm/llvm-project.git")
-                    (commit (string-append "rocm-" version))))
-              (file-name (git-file-name name version))
+                     (url "https://github.com/ROCm/llvm-project")
+                     (commit (string-append "rocm-" %rocm-llvm-version))))
+              (file-name (git-file-name "rocm-llvm" %rocm-llvm-version))
               (sha256
                (base32
-                "1j2cr362k7snsh5c1z38ikyihmjvy0088rj0f0dhng6cjwgysryp"))))
+                "1nwbj2cz99psgq9s9l4wbsxj41l2d2dga5l9rw9jndk05jsn4n7s"))
+              ;; Some of these patches require a further dynamic substitution during
+              ;; package build.  Therefore, it is important to derive from the base
+              ;; packages or to duplicate such substitutions.  Additionally, some of
+              ;; those substitutions are only applied on specific subcomponents
+              ;; (llvm-clang), so duplicating the base-llvm structure with subcomponents
+              ;; is necessary.
+              (patches
+               (map search-patch
+                    (assoc-ref %llvm-patches (package-version llvm-base))))))
     (arguments
-     (substitute-keyword-arguments (package-arguments llvm-19)
+     (substitute-keyword-arguments (package-arguments llvm-base)
        ((#:configure-flags flags)
-        #~(list "-DLLVM_ENABLE_PROJECTS=llvm;clang;lld"
-                "-DLLVM_TARGETS_TO_BUILD=AMDGPU;X86"
-                "-DCMAKE_SKIP_BUILD_RPATH=FALSE"
-                "-DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE"
-                "-DBUILD_SHARED_LIBS:BOOL=TRUE"
-                "-DLLVM_VERSION_SUFFIX="))))
+        #~(append #$flags
+                  (list "-DLLVM_TARGETS_TO_BUILD=AMDGPU;X86"
+                        "-DLLVM_VERSION_SUFFIX=")))))
     (properties `((hidden? . #t)
-                  ,@(package-properties llvm-19)))
+                  ,@(package-properties llvm-base)))
     (home-page "https://github.com/ROCm/llvm-project")
     (synopsis
-     (string-append (package-synopsis llvm-19) " (AMD fork)"))
+     (string-append (package-synopsis llvm-base) " (AMD fork)"))
     (description
-     (string-append (package-description llvm-19) "
+     (string-append (package-description llvm-base) "
 
 This AMD fork includes AMD-specific additions."))))
+
+(define-public llvm-rocm (make-llvm-rocm llvm-20))
+
+(define (make-clang-runtime-rocm clang-runtime-base)
+  (package
+    (inherit clang-runtime-base)
+    (name "clang-runtime-rocm")
+    (version (package-version llvm-rocm))
+    (source (package-source llvm-rocm))
+    (inputs (modify-inputs (package-inputs clang-runtime-base)
+              (replace "llvm" llvm-rocm)))))
+
+(define-public clang-runtime-rocm (make-clang-runtime-rocm clang-runtime-20))
+
+(define (make-clang-rocm clang-base)
+  ;; note: tools-extra is embedded in the checkout
+  (package
+    (inherit clang-base)
+    (name "clang-rocm")
+    (version (package-version llvm-rocm))
+    (source (package-source llvm-rocm))
+    (inputs (modify-inputs (package-inputs clang-base)
+              (delete "clang-tools-extra")))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs clang-base)
+       (replace "llvm" llvm-rocm)
+       (replace "clang-runtime" clang-runtime-rocm)
+       (append python-lit)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments clang-base)
+       ;;  The tests can be run, as allowed by check phase rewrite and
+       ;;  LLVM_EXTERNAL_LIT setting.  However, 84/46171 are failing. Most
+       ;;  should probably be disabled.
+       ;;
+       ;;  - CUDA tests are failing.
+       ;;
+       ;;  - Checking for some -L[[SYSROOT]] is failing, which I guess is
+       ;;  expected, given the patches we apply, which are mangling directory
+       ;;  searching for libraries.
+       ;;
+       ;;  Getting the test suite to pass doesn't seem out of reach.  We
+       ;;  probably should start with the standard llvm-clang-20x package.
+       ((#:tests? _ #t) #f)
+       ((#:configure-flags flags)
+        #~(append #$flags
+                  (list
+                   "-DLLVM_TARGETS_TO_BUILD=AMDGPU;X86"
+                   ;; WARNING: we could patch
+                   ;; #$llvm-rocm/lib/cmake/llvm/AddLLVM.cmake to simplify, by
+                   ;; substituting set(LIT_COMMAND
+                   ;; "${Python3_EXECUTABLE};${lit_base_dir}/${lit_file_name}")
+                   ;; pending this, having a correct python script here is a
+                   ;; must-have.
+                   ;; TODO: test this on llvm-rocm.
+                   (string-append
+                    "-DLLVM_EXTERNAL_LIT="
+                    (search-input-file %build-inputs "bin/.lit-real"))
+                   ;; Disable clang wrapper which depends on lld as well.
+                   "-DCLANG_ENABLE_AMDCLANG=OFF")))
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (replace 'check
+              (lambda* (#:rest args)
+                (setenv "HOME" "/tmp")
+                (apply (assoc-ref
+                        (@ (guix build gnu-build-system) %standard-phases)
+                        'check)
+                       #:test-target "check-clang" args)))
+            (replace 'add-tools-extra
+              (lambda _
+                (copy-recursively "../clang-tools-extra" "tools/extra")))))))))
+
+(define-public clang-rocm (make-clang-rocm clang-20))
+
+(define-public rocm-device-libs
+  (package
+    (name "rocm-device-libs")
+    (version (package-version llvm-rocm))
+    (source (package-source llvm-rocm))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; Not sure how to run them.
+      #:build-type "Release"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "amd/device-libs")))
+          (add-after 'install 'copy-include-directories
+            (lambda _
+              ;; at this point we're within amd/build; i guess the build
+              ;; directory should be at the same level as source, but due to
+              ;; the chdir above...
+              (with-directory-excursion "../device-libs"
+                (for-each
+                 (lambda (directory)
+                   (let ((include-directory (string-append directory "/inc")))
+                     (copy-recursively
+                      include-directory
+                      (string-append #$output "/" include-directory))))
+                 (list "irif" "oclc" "ockl" "ocml"))))))))
+    (inputs (list clang-rocm))
+    (home-page "https://github.com/ROCm/llvm-project/")
+    (synopsis "ROCm Device libraries")
+    (description "ROCm device libraries provide AMD-specific device-side language runtime
+libraries, namely oclc, ocml, ockl, opencl, hip and hc.")
+    (license license:ncsa)))
+
+;; Usage note from amd/comgr/src/comgr-env.cpp: at runtime, comgr either needs
+;; the awful ROCM_PATH set, or the more palatable LLVM_PATH and HIP_PATH, set.
+(define-public rocm-comgr
+  (package
+    (name "rocm-comgr")
+    (version (package-version llvm-rocm))
+    (source (package-source llvm-rocm))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:build-type "Release"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-to-build
+            (lambda _
+              (chdir "amd/comgr")
+              (setenv "ROCM_PATH"
+                      #$(this-package-input "rocm-device-libs")))))))
+    (inputs (list libffi rocm-device-libs))
+    (native-inputs (list
+                    clang-rocm
+                    lld-rocm
+                    python))
+    (home-page "https://github.com/ROCm/ROCm-CompilerSupport")
+    (synopsis "ROCm Code Object Manager")
+    (description "The Comgr library provides APIs for compiling and inspecting
+AMDGPU code objects.")
+    (license license:ncsa)))
+
+(define-public rocm-hipcc
+  (package
+    (name "rocm-hipcc")
+    (version (package-version llvm-rocm))
+    (source (package-source llvm-rocm))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; Not sure how to run them.
+      #:build-type "Release"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "amd/hipcc")))
+          (add-after 'chdir 'patch-rocm-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (find-files "src" "\\.h$")
+                (("roccmPath \\+ \"/bin/rocm_agent_enumerator\"")
+                 (format #f "~s" (search-input-file
+                                  inputs
+                                  "/bin/rocm_agent_enumerator"))))))
+          ;; This version file very important, as it is parsed under
+          ;; $#{llvm-rocm}/clang/lib/Driver/ToolChains/AMDGPU.cpp and its
+          ;; contents decides on some includes for hipcc.
+          (add-after 'install 'info-version
+            (lambda _
+              (let ((hip-version-dir (string-append #$output "/share/hip")))
+                (mkdir hip-version-dir)
+                (with-directory-excursion hip-version-dir
+                  (with-output-to-file "version"
+                    (lambda _
+                      (apply format #t
+                             "HIP_VERSION_MAJOR=~a~%~
+                              HIP_VERSION_MINOR=~a~%~
+                              HIP_VERSION_PATCH=~a~%~
+                              HIP_VERSION_GITHASH=0~%"
+                             (string-split
+                              #$(version-major+minor+point version) #\.))))))))
+          (add-after 'install 'wrap-programs
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((output-bindir (string-append (assoc-ref outputs "out") "/bin")))
+                (for-each
+                 (lambda (file)
+                   (wrap-program (string-append output-bindir "/" file)
+                     ;; The following definitions and their meaning can be
+                     ;; found in hibBin_base.h.  We've defined neither
+                     ;; HIP_RUNTIME nor HIP_ROCCLR_HOME.
+
+                     ;; HIP_ROCCLR_HOME unfortunately cannot be set here
+                     ;; (circular dependency problem) -- it should be set to
+                     ;; #$rocm-hip-runtime.
+
+                     ;;(list "HIP_ROCCLR_HOME" '= (list #$rocm-hip-runtime))
+                     (list "HIP_PATH" '= (list #$output))
+                     (list "HIP_CLANG_PATH"
+                           '=
+                           (list (string-append
+                                  #$(this-package-input "clang-rocm")
+                                  "/bin")))
+                     (list "DEVICE_LIB_PATH"
+                           '=
+                           (list (string-append
+                                  #$(this-package-input "rocm-device-libs")
+                                  "/amdgcn/bitcode")))
+
+                     ;; This is done in order to please check_config, which
+                     ;; checks that HSA_PATH is in LD_LIBRARY_PATH
+                     (list "LD_LIBRARY_PATH"
+                           'suffix
+                           (list #$(this-package-input "rocr-runtime")))
+                     ;; checks hipconfig is in PATH
+                     (list "PATH" 'suffix (list output-bindir))))
+                 '( "hipcc" "hipconfig" ))))))))
+    (inputs (list clang-rocm
+                  rocm-device-libs
+                  rocr-runtime
+                  rocminfo
+                  perl
+                  bash-minimal))
+    (home-page "https://github.com/ROCm/llvm-project/")
+    (synopsis "ROCm HIP compiler driver (@command{hipcc})")
+    (description "The HIP compiler driver (@command{hipcc}) is a compiler utility that will
+call @command{clang} and pass the appropriate include and library options for
+the target compiler and HIP infrastructure.")
+    (license license:expat)))
 
 
 
@@ -1727,6 +1971,26 @@ existing compilers together.")
 (define-public python-clang-13
   (clang-python-bindings clang-13))
 
+;; XXX
+;; I would move all of rocm packages here and define a ROCm section.
+
+(define (make-lld-rocm lld-base)
+  (package
+    (inherit lld-base)
+    (name "lld-rocm")
+    (version (package-version llvm-rocm))
+    (source (package-source llvm-rocm))
+    (inputs (list llvm-rocm))
+    (arguments
+     (substitute-keyword-arguments (package-arguments lld-base)
+       ((#:configure-flags flags)
+        #~(append #$flags
+                  '("-DLLVM_TARGETS_TO_BUILD=AMDGPU;X86")))))))
+
+(define-public lld-rocm (make-lld-rocm lld-20))
+
+
+
 (define-public include-what-you-use
   (package
     (name "include-what-you-use")
@@ -1737,8 +2001,8 @@ existing compilers together.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/include-what-you-use/include-what-you-use")
-             (commit version)))
+              (url "https://github.com/include-what-you-use/include-what-you-use")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0dkk65y6abf7bzv10q1ch3dyzj4d5y89qhh43jn189l861d6pzs0"))))
