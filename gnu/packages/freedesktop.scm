@@ -94,7 +94,6 @@
   #:use-module (gnu packages disk)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
-  #:use-module (gnu packages fcitx)
   #:use-module (gnu packages file)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gawk)
