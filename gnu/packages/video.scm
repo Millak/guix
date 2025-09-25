@@ -2696,14 +2696,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
               (substitute* "player/lua/ytdl_hook.lua"
                 (("\"yt-dlp\",")
                  (string-append
-                  "\"" (search-input-file inputs "bin/yt-dlp") "\",")))))
-          (add-before 'configure 'build-reproducibly
-            (lambda _
-              ;; Somewhere in the build system library dependencies are enumerated
-              ;; and passed as linker flags, but the order in which they are added
-              ;; varies.  See <https://github.com/mpv-player/mpv/issues/7855>.
-              ;; Set PYTHONHASHSEED as a workaround for deterministic results.
-              (setenv "PYTHONHASHSEED" "1"))))
+                  "\"" (search-input-file inputs "bin/yt-dlp") "\","))))))
       #:configure-flags
       #~(list "-Dlibmpv=true"
               "-Dcdda=enabled"
