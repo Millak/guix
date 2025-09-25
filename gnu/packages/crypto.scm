@@ -1127,17 +1127,19 @@ OpenBSD signatures, but it cannot sign messages in OpenBSD format yet.")
                 (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target         '
-       #:make-flags (list ,(string-append "CC=" (cc-for-target))
-                          "PREFIX=$(out)")
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure)
-                  (add-after 'install 'post-install
-                    (lambda _
-                      (let* ((out (assoc-ref %outputs "out"))
-                             (lisp (string-append out "/share/emacs/site-lisp")))
-                        (install-file "enchive-mode.el" lisp)
-                        #t))))))
+     (list
+      #:tests? #f                      ;no check target         '
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'install 'post-install
+            (lambda _
+              (install-file
+               "enchive-mode.el"
+               (string-append #$output "/share/emacs/site-lisp")))))))
     (synopsis "Encrypted personal archives")
     (description
      "Enchive is a tool to encrypt files to yourself for long-term
