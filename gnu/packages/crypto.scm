@@ -1055,8 +1055,8 @@ security.")
     (license license:gpl2)))
 
 (define-public asignify
-  (let ((commit "08af003e1f4833713db28b871759d94f9b2b1469")
-        (revision "1"))
+  (let ((commit "d6b3651fa96f05aeefc318f75503fc9ca77b1f58")
+        (revision "2"))
     (package
       (name "asignify")
       (version (git-version "1.1" revision commit))
@@ -1068,26 +1068,28 @@ security.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1zacpqa8b5lg270z1g06r5ik9vnb91crb4ivyy20381dny82xvr1"))))
+                  "0a6k21gb2n45bj1d2qy34lgi4qsd3ck59jxcycbxafs0wdglsyl9"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:configure-flags
-         (list "--enable-openssl"
-               (string-append "--with-openssl="
-                              (assoc-ref %build-inputs "openssl")))))
+       (list
+        #:configure-flags
+        #~(list "--enable-openssl"
+                (string-append "--with-openssl="
+                               #$(this-package-input "openssl")))))
       (native-inputs
        (list autoconf automake libtool))
       (inputs
        (list openssl))
       (home-page "https://github.com/vstakhov/asignify")
-      (synopsis "Cryptographic authentication and encryption tool and library")
+      (synopsis
+       "Cryptographic authentication and encryption tool and library")
       (description "Asignify offers public cryptographic signatures and
-encryption with a library or a command-line tool.  The tool is heavily inspired
-by signify as used in OpenBSD.  The main goal of this project is to define a
-high level API for signing files, validating signatures and encrypting using
-public-key cryptography.  Asignify is designed to be portable and self-contained
-with zero external dependencies.  Asignify can verify OpenBSD signatures, but it
-cannot sign messages in OpenBSD format yet.")
+encryption with a library or a command-line tool.  The tool is heavily
+inspired by signify as used in OpenBSD.  The main goal of this project is to
+define a high level API for signing files, validating signatures and
+encrypting using public-key cryptography.  Asignify is designed to be portable
+and self-contained with zero external dependencies.  Asignify can verify
+OpenBSD signatures, but it cannot sign messages in OpenBSD format yet.")
       (license license:bsd-2))))
 
 (define-public enchive
