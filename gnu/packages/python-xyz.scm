@@ -29198,6 +29198,7 @@ submitting it.")
        (sha256
         (base32 "0ymdwrx544a6gn6wm9dixpgzbfrbpxvcj5ys7m41cgb4lvpvx691"))))
     (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;No test suite.
     (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/iwalton3/python-mpv-jsonipc")
     (synopsis "Python API to control MPV using JSON IPC")
