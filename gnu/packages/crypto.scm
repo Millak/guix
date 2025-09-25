@@ -1480,7 +1480,7 @@ addresses using a brute-force method.")
 (define-public transcrypt
   (package
     (name "transcrypt")
-    (version "2.1.0")
+    (version "2.3.1")
     (source
      (origin
        (method git-fetch)
@@ -1488,19 +1488,20 @@ addresses using a brute-force method.")
              (url "https://github.com/elasticdog/transcrypt")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0bpz1hazbhfb6pqi68x55kq6a31bgh6vwij836slmi4jqiwvnh5a"))
+        (base32 "1yp1s69wphhsaks46rfj2ann8z397jgvbbq22ikdwxcw96f49pmk"))
        (file-name (git-file-name name version))))
     (inputs
      (list git openssl))
     (build-system copy-build-system)
     (arguments
-     `(#:install-plan
-       '(("transcrypt" "bin/transcrypt")
-         ("man/transcrypt.1" "share/man/man1/transcrypt.1")
-         ("contrib/bash/transcrypt"
-          "share/bash-completion/completions/transcrypt")
-         ("contrib/zsh/_transcrypt"
-          "share/zsh/site-functions/_transcrypt"))))
+     (list
+      #:install-plan
+      #~'(("transcrypt" "bin/transcrypt")
+          ("man/transcrypt.1" "share/man/man1/transcrypt.1")
+          ("contrib/bash/transcrypt"
+           "share/bash-completion/completions/transcrypt")
+          ("contrib/zsh/_transcrypt"
+           "share/zsh/site-functions/_transcrypt"))))
     (home-page "https://github.com/elasticdog/transcrypt")
     (synopsis "Transparently encrypt files within a git repository")
     (description
