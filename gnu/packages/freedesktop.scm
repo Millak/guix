@@ -428,47 +428,6 @@ inappropriate content.")
 method framework.")
     (license license:lgpl2.1+)))
 
-(define-public maliit-keyboard
-  (package
-    (name "maliit-keyboard")
-    (version "2.3.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/maliit/keyboard")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0g89lckl4wzwamc89hs8871fbiyrsjwzk5b6ic4vhc4d1clyqzaw"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list #:tests? #f
-           #:phases #~(modify-phases %standard-phases
-                        (add-after 'install 'install-schemas
-                          (lambda* (#:key source outputs #:allow-other-keys)
-                            (with-directory-excursion (string-append #$output
-                                                       "/share/glib-2.0/schemas")
-                              (invoke "glib-compile-schemas" ".")))))))
-    (native-inputs (list extra-cmake-modules pkg-config gettext-minimal
-                         `(,glib "bin")))
-    (inputs (list hunspell
-                  glib
-                  libchewing
-                  libpinyin
-                  maliit-framework
-                  presage
-                  qtbase-5
-                  qtdeclarative-5
-                  qtmultimedia-5
-                  qtquickcontrols2-5))
-    (home-page "https://github.com/maliit/keyboard")
-    (synopsis "Maliit Keyboard")
-    (description
-     "This package provides virtual keyboard for Wayland and X11
-display servers.  It supports many different languages and emoji.")
-    (license license:gpl3+)))
-
 ;; Private package used by shared-mime-info.
 (define xdgmime
   ;; No public release, match commit to the one used in the
