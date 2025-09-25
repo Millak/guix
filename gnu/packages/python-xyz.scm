@@ -1622,6 +1622,62 @@ Form (EBNF) as input, and outputs a memoizing Parsing Expression Grammar (PEG)
 or Packrat parser in Python.")
     (license license:bsd-2)))
 
+(define-public python-term-image
+  (package
+    (name "python-term-image")
+    (version "0.7.2")
+    (source
+     (origin
+       ;; We need the full repo to run the tests.
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/AnonymouX47/term-image")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lsd5m0k5m99arkca2rzrrlln10c8ax6xfawqwjnspcbf8l3h3dq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           #~(list "tests"
+                   ;; These tests require network access.
+                   "-k" (string-append "not test_from_url"
+                                       " and not test_source"
+                                       " and not test_close"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'adjust-dependencies
+                 (lambda _
+                   (substitute* "setup.py"
+                     (("pillow>=9.1,<11") "pillow>=9.1,<12")))))))
+    (propagated-inputs (list python-pillow python-requests))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-urwid))
+    (home-page "https://github.com/AnonymouX47/term-image")
+    (synopsis "Display images in the terminal")
+    (description "term-image is a library and program to display images on
+compatible terminals.
+
+Features:
+@enumerate
+@item Multiple image formats (basically all formats supported by
+@code{PIL.Image.open()})
+@item Multiple image source types: PIL image instance, local file, URL
+@item Multiple image render styles (with automatic support detection)
+@item Support for multiple terminal graphics protocols, including Kitty
+@item Transparency support (with multiple options)
+@item Animated image support (including transparent ones)
+@item Integration into various TUI / terminal-based output libraries
+@item Terminal size awareness
+@item Automatic and manual image sizing
+@item Horizontal and vertical alignment
+@item Automatic and manual font ratio adjustment (to preserve image aspect
+ratio)
+@end enumerate")
+    (license license:expat)))
+
 (define-public python-trubar
   (package
     (name "python-trubar")
