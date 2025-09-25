@@ -251,7 +251,7 @@ communication, encryption, decryption, signatures, etc.")
 (define-public libmd
   (package
     (name "libmd")
-    (version "1.0.4")
+    (version "1.1.0")
     (source (origin
             (method url-fetch)
             (uri
@@ -262,11 +262,12 @@ communication, encryption, decryption, signatures, etc.")
                              version ".tar.xz")))
             (sha256
              (base32
-              "03skgv013v0y9hxh6j143xdwynb5cmbmbdylvvgfsjz38889477m"))))
+              "0cmkfq3v0hqzjwpsyp02i3a1z2sfjrdjxky784qsy4sk4x1ammhv"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--disable-static")))
+     (list
+      #:configure-flags
+      #~(list "--disable-static")))
     (synopsis "Message Digest functions from BSD systems")
     (description
      "The currently provided message digest algorithms are:
