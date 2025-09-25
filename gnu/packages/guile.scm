@@ -502,7 +502,7 @@ without requiring the source code to be rewritten.")
                 ;; The main goal here is to allow for '--with-branch'.
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.savannah.gnu.org/git/guile.git")
+                      (url "https://codeberg.org/guile/guile.git")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
