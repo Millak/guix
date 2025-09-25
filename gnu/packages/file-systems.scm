@@ -48,7 +48,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system linux-module)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -109,6 +109,7 @@
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -2037,7 +2038,7 @@ compatible directories.")
                   ;; Don't check for package updates.
                   (substitute* "dbxfs/main.py"
                     (("if version") "if False"))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      '(#:tests? #f
        #:phases
@@ -2055,6 +2056,8 @@ compatible directories.")
            python-keyrings-alt
            python-privy
            python-userspacefs))
+    (native-inputs
+     (list python-setuptools))
   (home-page "https://thelig.ht/code/dbxfs/")
   (synopsis "User-space file system for Dropbox")
   (description
