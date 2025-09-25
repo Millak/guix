@@ -58,6 +58,7 @@
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2025 Isidor Zeuner <guix@quidecco.pl>
+;;; Copyright © 2025 Evgenii Klimov <eugene.dev@lipklim.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -248,6 +249,39 @@ hardware and software audio capabilities, reducing implementation effort, and
 promoting the market for advanced audio.")
     (home-page "https://www.khronos.org/opensles/")
     (license (license:non-copyleft "file:///LICENSE.txt"))))
+
+(define-public python-sounddevice
+  (package
+    (name "python-sounddevice")
+    (version "0.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sounddevice" version))
+       (sha256
+        (base32 "0b4vcaj79sy9aqsrgcszkp35x2fc0i4pqzk96d2viflg35h2pb6b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #false		; no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'patch-generated-file-shebangs 'add-path-to-portaudio
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "sounddevice.py"
+                     (("_find_library\\(_libname\\)")
+                      (string-append "\""
+                                     (search-input-file inputs
+                                                        "/lib/libportaudio.so.2")
+                                     "\""))))))))
+    (inputs (list portaudio))
+    (propagated-inputs (list python-cffi python-numpy))
+    (native-inputs (list python-setuptools))
+    (home-page "https://python-sounddevice.readthedocs.io/")
+    (synopsis "Play and record sound with Python")
+    (description "This Python module provides bindings for the PortAudio
+library and a few convenience functions to play and record NumPy arrays
+containing audio signals.")
+    (license license:expat)))
 
 (define-public wildmidi
   (package
