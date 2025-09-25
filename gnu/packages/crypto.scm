@@ -1400,11 +1400,11 @@ API.")
 cryptographic ratchet.  This package contains its Python bindings.")))
 
 (define-public hash-extender
-  (let ((commit "cb8aaee49f93e9c0d2f03eb3cafb429c9eed723d")
-        (revision "2"))
+  (let ((commit "f00b1a02eca02b0907e26726f7efe437bc396aa4")
+        (revision "0"))
     (package
       (name "hash-extender")
-      (version (git-version "0.0" revision commit))
+      (version (git-version "0.02" revision commit)) ;from hash_extender.c
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1412,26 +1412,23 @@ cryptographic ratchet.  This package contains its Python bindings.")))
                       (commit commit)))
                 (sha256
                  (base32
-                  "1fj118566hr1wv03az2w0iqknazsqqkak0mvlcvwpgr6midjqi9b"))
+                  "12hh2vs8ppavjj47rgyp60cdw70lm2zqdpdv1zdgb3jgdzkg7bf2"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (replace 'check
-             (lambda _
-               (invoke "./hash_extender_test")))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((outdir (assoc-ref outputs "out"))
-                      (bindir (string-append outdir "/bin"))
-                      (docdir (string-append outdir
-                                             "/share/doc/hash-extender-"
-                                             ,version)))
-                 (install-file "hash_extender" bindir)
-                 (install-file "README.md" docdir)
-                 #t))))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            ;; See: https://github.com/iagox86/hash_extender/issues/29
+            (delete 'check)
+            (replace 'install
+              (lambda _
+                (install-file "hash_extender" (string-append #$output "/bin"))
+                (install-file
+                 "README.md"
+                 (string-append
+                  #$output "/share/doc/hash-extender-" #$version)))))))
       (inputs
        (list openssl))
       (synopsis "Tool for hash length extension attacks")
