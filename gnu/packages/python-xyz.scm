@@ -4809,6 +4809,31 @@ Unicode-to-LaTeX conversion.")
 @code{subprocess} feature.")
     (license license:expat)))
 
+;; Old version just for python-dotenv-0.13.0 for docker-compose; remove once
+;; that is updated.
+(define-public python-sh-1
+  (package
+    (inherit python-sh)
+    (version "1.14.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sh" version))
+       (sha256
+        (base32
+         "03gyss1rhj4in7pgysg4q0hxp3230whinlpy1532ljs99lrx0ywx"))))
+    ;(build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda _
+             ;; XXX: A Python 2 test fails when HOME=/homeless-shelter.
+             (setenv "HOME" "/tmp")
+             (invoke "python" "sh.py" "test"))))))
+    (native-inputs
+     (list python-setuptools))))
+
 (define-public python-cftime
   (package
     (name "python-cftime")
