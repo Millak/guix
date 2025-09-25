@@ -5,7 +5,7 @@
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2023 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2023, 2025 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -575,10 +575,16 @@ current settings unchanged."
                        (string-append "origin/" branch))))
       (_ ref)))
 
-  (define symref-list
-    (match ref
-      (('symref . symref) (list symref))
-      (_ '())))
+  (define symref?
+    (match-lambda
+      (('symref . _) #t)
+      (_ #f)))
+
+  (define ref->refspecs
+    (match-lambda
+      (('symref . symref)
+       (list (string-append "+" symref ":" symref)))
+       (_ '())))
 
   (with-libgit2
    (set-git-timeouts connection-timeout read-timeout)
@@ -595,7 +601,7 @@ current settings unchanged."
 
      ;; When using symrefs, fetch remote again even if it has been cloned just
      ;; before as the requested reference are not fetched when cloning.
-     (when (and cache-exists?
+     (when (and (or cache-exists? (symref? ref))
                 (not (reference-available? repository ref)))
        (remote-fetch (remote-lookup repository "origin")
                      #:fetch-options (make-default-fetch-options
@@ -603,9 +609,7 @@ current settings unchanged."
                                       verify-certificate?)
                      ;; Build refspecs from symbolic references so they are
                      ;; created locally and updated if necessary.
-                     #:refspecs (map (lambda (ref)
-                                       (string-append "+" ref ":" ref))
-                                     symref-list)))
+                     #:refspecs (ref->refspecs ref)))
      (when recursive?
        (update-submodules repository #:log-port log-port
                           #:fetch-options
