@@ -1189,7 +1189,20 @@ is not available for Guile 2.0.")
               (base32
                "15ynxr3pfjscd6mz641zagv6i84jh9y65i5dnbb3j3q72j6bbvnb"))
              (patches '())))
-    (arguments '())))
+    (arguments
+     (if (target-aarch64?)
+         (list #:phases
+               #~(modify-phases %standard-phases
+                   (add-before 'check 'disable-jit
+                     (lambda _
+                       ;; XXX: Due to a JIT bug in Guile 3.0.9 on AArch64,
+                       ;; some tests would hang:
+                       ;; <https://codeberg.org/fibers/fibers/issues/83>.
+                       ;; Disable JIT for now; re-enable it when Guile 3.0.10+
+                       ;; is used.  (Note: The Shepherd disables JIT on
+                       ;; AArch64 so it can safely use Fibers.)
+                       (setenv "GUILE_JIT_THRESHOLD" "-1")))))
+         '()))))
 
 (define-public guile-fibers guile-fibers-1.4)
 
