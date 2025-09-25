@@ -5220,13 +5220,16 @@ sanitizer Rust crate.")
     (version "0.3.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "noiseprotocol" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/plizonczyk/noiseprotocol")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0ifnj0mpbqsfqba9n12vf5yzxj4qf2gxql3ry43qyshgnrqsi4mh"))))
+        (base32 "1mk0rqpjifdv3v1cjwkdnjbrfmzzjm9f3qqs1r8vii4j2wvhm6am"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-cryptography))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools python-pytest))
     (home-page "https://github.com/plizonczyk/noiseprotocol")
     (synopsis "Implementation of Noise Protocol Framework")
     (description
