@@ -5,8 +5,9 @@
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2017, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2019 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
@@ -439,6 +440,43 @@ the Net to search for documents which are not on the local system.")
     (description "Zeal is a simple offline documentation browser
 inspired by Dash.")
     (license license:gpl3+)))
+
+;; XXX: Potential abandonware, no updates or fixes since 2019, consider to
+;; find a replacement and re-allocate, see:
+;; <https://codeberg.org/guix/guix/issues/1200>.
+(define-public mallard-ducktype
+  (package
+    (name "mallard-ducktype")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       ;; git-reference because tests are not included in pypi source tarball
+       ;; https://issues.guix.gnu.org/issue/36755#2
+       (uri (git-reference
+             (url "https://github.com/projectmallard/mallard-ducktype")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1jk9bfz7g04ip78s03b0xak6d54rj4h9zpgadkziy1ji216g6y4c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda _
+             (with-directory-excursion "tests"
+               (invoke "sh" "runtests")))))))
+    (native-inputs (list python-setuptools))
+    (home-page "http://projectmallard.org")
+    (synopsis "Convert Ducktype to Mallard documentation markup")
+    (description
+     "Ducktype is a lightweight syntax that can represent all the semantics
+of the Mallard XML documentation system.  Ducktype files can be converted to
+Mallard using the @command{ducktype} tool.  The yelp-tools package
+provides additional functionality on the produced Mallard documents.")
+    (license license:expat)))
 
 (define-public markdeep
   (package

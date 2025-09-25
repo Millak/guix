@@ -10380,43 +10380,6 @@ Markdown input files, and more.  Pelican uses Jinja2 for templating
 and is very extensible.")
     (license license:agpl3+)))
 
-;; XXX: Potential abandonware, no updates or fixes since 2019, consider to
-;; find a replacement and re-allocate, see:
-;; <https://codeberg.org/guix/guix/issues/1200>.
-(define-public mallard-ducktype
-  (package
-    (name "mallard-ducktype")
-    (version "1.0.2")
-    (source
-     (origin
-       (method git-fetch)
-       ;; git-reference because tests are not included in pypi source tarball
-       ;; https://issues.guix.gnu.org/issue/36755#2
-       (uri (git-reference
-             (url "https://github.com/projectmallard/mallard-ducktype")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1jk9bfz7g04ip78s03b0xak6d54rj4h9zpgadkziy1ji216g6y4c"))))
-    (build-system pyproject-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (with-directory-excursion "tests"
-               (invoke "sh" "runtests")))))))
-    (native-inputs (list python-setuptools))
-    (home-page "http://projectmallard.org")
-    (synopsis "Convert Ducktype to Mallard documentation markup")
-    (description
-     "Ducktype is a lightweight syntax that can represent all the semantics
-of the Mallard XML documentation system.  Ducktype files can be converted to
-Mallard using the @command{ducktype} tool.  The yelp-tools package
-provides additional functionality on the produced Mallard documents.")
-    (license license:expat)))
-
 (define-public python-cykhash
   (package
     (name "python-cykhash")
