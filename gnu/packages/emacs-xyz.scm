@@ -26445,8 +26445,8 @@ region of the buffer, while the latter works on rectangular selections.")
     (license license:gpl3+)))
 
 (define-public emacs-emmet-mode
-  (let ((commit "1acb821e0142136344ccf40c1e5fb664d7db2e70")
-        (revision "1"))
+  (let ((commit "322d3bb112fced57d63b44863357f7a0b7eee1e3")
+        (revision "2"))
     (package
       (name "emacs-emmet-mode")
       (version (git-version "1.0.8" revision commit))
@@ -26458,7 +26458,7 @@ region of the buffer, while the latter works on rectangular selections.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1p25h191bm0h5b3w5apg7wks51k7pb7h4dlww4jbl9ri4d33fzcl"))))
+                  "1y41iqlybfls1rsagi9g1s879vw020r252j8m9jc89lsp5vkhawk"))))
       (build-system emacs-build-system)
       (arguments (list #:test-command
                        #~(list "emacs" "-Q" "--script" "src/test.el")))
