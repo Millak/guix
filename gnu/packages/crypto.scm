@@ -1031,6 +1031,24 @@ using ctypes is included, and several other language bindings are available.")
     (home-page "https://botan.randombit.net")
     (license license:bsd-2)))
 
+;; Needed explicitly by biboumi
+(define-public botan-2
+  (hidden-package
+   (package
+     (inherit botan)
+     (name "botan")
+     (version "2.19.3")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/randombit/botan/")
+               (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32
+          "16dsrxb7z245hvbjzapq7qf65ip1fh2390qap30hpfd383dyvilw")))))))
+
 (define-public ccrypt
   (package
     (name "ccrypt")

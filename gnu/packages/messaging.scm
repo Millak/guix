@@ -203,7 +203,7 @@
              (substitute* "CMakeLists.txt"
                (("/etc") (string-append (assoc-ref outputs "out") "/etc"))))))))
    (build-system cmake-build-system)
-   (inputs (list botan
+   (inputs (list botan-2
                  expat
                  libiconv
                  libidn
