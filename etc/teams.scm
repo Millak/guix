@@ -1058,8 +1058,8 @@ the \"texlive\" importer."
 (define-member (person "Ludovic Courtès"
                        "ludo@gnu.org"
                        "civodul")
-  core home bootstrap core-packages installer
-  documentation mentors)
+  core core-packages hpc installer
+  mentors)
 
 (define-member (person "Andreas Enge"
                        "andreas@enge.fr"
