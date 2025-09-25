@@ -7310,7 +7310,9 @@ trees (phylogenies) and characters.")
         (base32
          "0w1p4l1jwg9kkifm0jsg33a212ps0jn61islmnng2afp77y5nkr6"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-setuptools-scm python-wheel))
+    (arguments
+     (list #:test-flags #~(list "py2bitTest/test.py")))
+    (native-inputs (list python-pytest python-setuptools python-setuptools-scm))
     (home-page "https://github.com/dpryan79/py2bit")
     (synopsis "Access 2bit files using lib2bit")
     (description
