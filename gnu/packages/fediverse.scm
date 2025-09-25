@@ -116,36 +116,27 @@ the federation of interconnected video hosting services.")
 (define-public toot
   (package
     (name "toot")
-    (version "0.42.0")
+    (version "0.50.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "toot" version))
         (sha256
-         (base32 "1vw3j504dxmq22s40kysps3d09hl7l48cwznwrfr9zqif67i4v3g"))))
+         (base32 "1ng0aq7nlh3agdxri6izxzky4m93mm6ki71l0bcz81jhk31ya63i"))))
     (build-system pyproject-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "py.test")))))))
     (native-inputs
-     (list python-psycopg2-binary
+     (list python-pillow
            python-pytest
-           python-pyyaml
            python-setuptools
-           python-typing-extensions
+           python-setuptools-scm
            python-wheel))
     (inputs
      (list python-beautifulsoup4
            python-click
+           python-dateutil
            python-requests
            python-tomlkit
-           python-urwid
-           python-urwidgets
+           python-urwid-3
            python-wcwidth))
     (home-page "https://github.com/ihabunek/toot/")
     (synopsis "Mastodon CLI client")
