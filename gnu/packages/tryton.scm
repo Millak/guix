@@ -906,16 +906,18 @@ payments for receivable or payable Account Move Lines.")
 (define-public trytond-account-payment-braintree
   (package
     (name "trytond-account-payment-braintree")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_payment_braintree" version))
        (sha256
-        (base32 "0s8li1ynb89nx5isxmg0rbbk6aw85i0218391z9nzgkj8kxgww9j"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "account_payment_braintree"))
-    (native-inputs (%standard-trytond-native-inputs))
+        (base32 "0kix59xjfdq9wa6f1aknf9rf1a8zdf5a8x1r765349w5xlla66mk"))))
+    (build-system pyproject-build-system)
+    ;; doctest requires network and an api key
+    (arguments (tryton-arguments "account_payment_braintree"
+                                 "-k not scenario"))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list python-braintree trytond trytond-account
            trytond-account-payment trytond-party))
