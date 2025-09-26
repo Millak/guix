@@ -50,8 +50,49 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
+
+(define-public libadapta
+  (package
+    (name "libadapta")
+    (version "1.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/xapp-project/libadapta")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07zl1wswvqqxana1x59dxhpbm2biqn06jr5z0qvg03hdyh7isp2d"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda* (#:key inputs #:allow-other-keys)
+             ;; Tests require a running X server.
+             (system "Xvfb :1 &")
+             (setenv "DISPLAY" ":1"))))))
+    (native-inputs
+     (list gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           gtk-doc/stable
+           pkg-config
+           sassc
+           vala
+           xorg-server-for-tests))
+    (propagated-inputs
+     (list appstream gtk))
+    (home-page "https://github.com/xapp-project/libadapta")
+    (synopsis "Building blocks for GTK-based applications")
+    (description
+     "@code{libadapta} is a soft fork of @code{libadwaita}, providing support
+for theming and features used in desktop environments outside of GNOME.")
+    (license license:lgpl2.1+)))
 
 (define-public libxapp
   (package
