@@ -4504,20 +4504,23 @@ price.  This cost is added to the product margin reports.")
 (define-public trytond-stock-shipment-measurements
   (package
     (name "trytond-stock-shipment-measurements")
-    (version "6.2.1")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_shipment_measurements" version))
        (sha256
-        (base32 "0a2p3c1780waa779kx24vpknjr9g6z8097ika9kl047xzdnw4n00"))))
-    (build-system python-build-system)
+        (base32 "1w7xaxkqwwgxjlypk1gh1765nd0p28hqnqc4m0qab4r4gl4jgr56"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_shipment_measurements"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-stock-package" ,trytond-stock-package)))
+     (cons* trytond-stock-package
+            %standard-trytond-native-inputs))
     (propagated-inputs
-     (list trytond trytond-product trytond-product-measurements
+     (list trytond
+           trytond-company
+           trytond-product
+           trytond-product-measurements
            trytond-stock))
     (home-page
      "https://docs.tryton.org/projects/modules-stock-shipment-measurements")
