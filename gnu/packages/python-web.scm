@@ -1699,9 +1699,8 @@ It features a minimal TLS 1.3 implementation, a QUIC stack and an HTTP/3 stack."
       ;; This test opens a remote connection.
       #~(list "-k" "not test_create_connection_resolve_good")))
     (native-inputs (list python-pytest
-                         python-pytest-asyncio
-                         python-setuptools
-                         python-wheel))
+                         python-pytest-asyncio-0.26
+                         python-setuptools))
     (propagated-inputs
      (list python-attrs python-websockets))
     (home-page "https://github.com/kyuupichan/aiorpcX")
