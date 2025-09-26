@@ -1721,24 +1721,27 @@ the weight is greater or equal but smaller than the next line.")
 (define-public trytond-commission
   (package
     (name "trytond-commission")
-    (version "6.2.0")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_commission" version))
        (sha256
-        (base32 "1m8cg6vb08paymi3bckqwp2vg0as36p6jadg86dc4b1axabas144"))))
-    (build-system python-build-system)
+        (base32 "0xvlkx45r4mrn86jib9mc98vlwx8c03c9py4dzfhpiy1lngz5hg8"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "commission"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-sale" ,trytond-sale)))
+     (cons* trytond-account-invoice-stock
+            trytond-sale
+            trytond-stock
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list python-simpleeval
            trytond
            trytond-account
            trytond-account-invoice
            trytond-account-product
+           trytond-company
            trytond-party
            trytond-product))
     (home-page "https://docs.tryton.org/projects/modules-commission")
