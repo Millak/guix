@@ -153,8 +153,7 @@ environment with the store shared with the host.  MAPPINGS is a list of
     (remove (lambda (fs)
               (let ((target (file-system-mount-point fs))
                     (source (file-system-device fs)))
-                (or (string=? target (%store-prefix))
-                    (string=? target "/")
+                (or (string=? target "/")
                     (and (string? source)
                          (string-prefix? "/dev/" source))
 
