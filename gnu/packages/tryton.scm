@@ -2057,16 +2057,16 @@ information system) support to Tryton.")
 (define-public trytond-google-maps
   (package
     (name "trytond-google-maps")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_google_maps" version))
        (sha256
-        (base32 "0g6hag2n7rc7avcawwhdkndbqxc957nyrwq4arkrlkidpbipw37n"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "trytond_google_maps"))
-    (native-inputs (%standard-trytond-native-inputs))
+        (base32 "1sb1mp991szg9bfjbn2pvri52sndk33ffx19r7d2cybnkihnhydv"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "google_maps"))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs (list trytond trytond-party))
     (home-page "https://docs.tryton.org/projects/modules-google-maps")
     (synopsis "Tryton module to link addresses to Google Maps")
