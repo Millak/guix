@@ -4357,7 +4357,7 @@ It is a replacement for the @command{urlview} program.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://git.savannah.gnu.org/git/guix/mumi.git/")
+                    (url "https://codeberg.org/guix/mumi.git")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
