@@ -825,16 +825,16 @@ a secondary unit of measure on invoice line.")
 (define-public trytond-account-invoice-stock
   (package
     (name "trytond-account-invoice-stock")
-    (version "6.2.1")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_invoice_stock" version))
        (sha256
-        (base32 "0q12v6xdpsw4fjm9pqp73bffdixi2hm9j2vxxx6n2p9r0c3g1gj1"))))
-    (build-system python-build-system)
+        (base32 "10nysdhm770m4s4nqn8zp8f5ajpi5aqhd3vp4lsfib940lgwrzbx"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_invoice_stock"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account-invoice trytond-product trytond-stock))
     (home-page "https://www.tryton.org/")
