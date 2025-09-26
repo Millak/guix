@@ -102,6 +102,7 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -5603,7 +5604,8 @@ APIs.")
 than Python’s urllib2 library.")
     (license license:asl2.0)))
 
-(define-public python-requests-next python-requests)
+(define-deprecated/public-alias python-requests-next
+  python-requests)                     ;may be removed after 2025-12-01
 
 (define-public python-requests-kerberos
   (package
