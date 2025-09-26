@@ -494,18 +494,18 @@ emails.")
 (define-public trytond-account-dunning-fee
   (package
     (name "trytond-account-dunning-fee")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_dunning_fee" version))
        (sha256
-        (base32 "0v88xkigxqr1py2l25z3qfrr1irpllsi7zzwg3sxmp12d8pi8szk"))))
-    (build-system python-build-system)
+        (base32 "00rvw1720rz9x2kl6kss0w85w3ch8lygp4nfljw5hqw1fyxwsq2z"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_dunning_fee"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-account-dunning-letter" ,trytond-account-dunning-letter)))
+     (cons* trytond-account-dunning-letter
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-account-dunning trytond-account-product))
     (home-page "https://docs.tryton.org/projects/modules-account-dunning-fee")
