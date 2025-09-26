@@ -2157,20 +2157,23 @@ fundamentals for marketing modules.")
 (define-public trytond-marketing-automation
   (package
     (name "trytond-marketing-automation")
-    (version "6.2.1")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_marketing_automation" version))
        (sha256
-        (base32 "17x4pikw2i513wwrfv8g8xim65ksk3dwijahk1qhf3yqpa506kp2"))))
-    (build-system python-build-system)
+        (base32 "0cnnaijg9f7l92gir3sbr066b67zzbhqqxxrlypiyk83wwca9l76"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "marketing_automation"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-party" ,trytond-party)))
+     (cons* trytond-sale
+            %standard-trytond-native-inputs))
     (propagated-inputs
-     (list trytond trytond-marketing trytond-web-shortener))
+     (list trytond
+           trytond-marketing
+           trytond-party
+           trytond-web-shortener))
     (home-page "https://docs.tryton.org/projects/modules-marketing-automation")
     (synopsis "Tryton module to plan, coordinate and manage marketing
 campaigns")
