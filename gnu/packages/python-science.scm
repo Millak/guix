@@ -3930,19 +3930,25 @@ production-critical data pipelines or reproducible research settings.  With
     ;; marked turtle can be skipped using "-m" "not turtle".
     (arguments
      (list
-      #:test-flags '(list
-                     "-n" (number->string (parallel-job-count))
-                     ;; Tries to connect to the internet.
-                     "-k" (string-append "not test_is_connected"
-                                         ;; Test files are not included
-                                         " and not test_read_commandline_bad_cmd")
-                     ;; Test files are not included
-                     "--ignore=tests/io/test_read_csvs.py"
-                     ;; Polars has not been packaged yet.
-                     "--ignore=tests/polars"
-                     ;; PySpark has not been packaged yet.
-                     "--ignore=tests/spark/functions/test_clean_names_spark.py"
-                     "--ignore=tests/spark/functions/test_update_where_spark.py")
+      ;; tests: 1042 passed, 2 skipped, 2 deselected, 45 xfailed, 6 xpassed,
+      ;;        735 warnings
+      #:test-flags
+      ;; The tests take quite long, so consider adding the "-n" line and
+      ;; adding python-pytest-xdist to the native-inputs when testing.
+      ;; However, the tests are not deterministic when ran with -n, so
+      ;; disable again before committing.
+      #~(list ;; "-n" (number->string (parallel-job-count))
+              ;; Test files are not included.
+              "--ignore=tests/io/test_read_csvs.py"
+              ;; Polars has not been packaged yet.
+              "--ignore=tests/polars"
+              ;; PySpark has not been packaged yet.
+              "--ignore=tests/spark/functions/test_clean_names_spark.py"
+              "--ignore=tests/spark/functions/test_update_where_spark.py"
+              ;; Tries to connect to the internet.
+              "-k" (string-append "not test_is_connected"
+                                  ;; Test files are not included.
+                                  " and not test_read_commandline_bad_cmd"))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-env-ci
@@ -3950,20 +3956,22 @@ production-critical data pipelines or reproducible research settings.  With
               ;; Some tests are skipped if the JANITOR_CI_MACHINE
               ;; variable is not set.
               (setenv "JANITOR_CI_MACHINE" "1"))))))
+    ;; TODO: Remove python-requests and inject its target data to make the
+    ;; package behaviour reproducible.
     (propagated-inputs (list python-multipledispatch
                              python-natsort
                              python-pandas-flavor
+                             python-requests
                              python-scipy
                              ;; Optional imports.
                              python-biopython ;biology submodule
                              python-unyt)) ;engineering submodule
     (native-inputs (list python-pytest
-                         python-pytest-xdist
+                         ;;python-pytest-xdist ;only for -n when testing
+                         python-setuptools
                          ;; Optional imports. We do not propagate them due to
                          ;; their size.
                          python-numba ;speedup of joins
-                         python-setuptools
-                         python-wheel
                          rdkit)) ;chemistry submodule
     (home-page "https://github.com/pyjanitor-devs/pyjanitor")
     (synopsis "Tools for cleaning and transforming pandas DataFrames")
