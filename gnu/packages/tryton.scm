@@ -377,20 +377,21 @@ amounts to be rounded using the cash rounding factor of the currency.")
 (define-public trytond-account-credit-limit
   (package
     (name "trytond-account-credit-limit")
-    (version "6.2.0")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_credit_limit" version))
        (sha256
-        (base32 "1j3krz4qm04366d1k4sdf089vwbjl29lw8wbpd002hr2lb2lppm3"))))
-    (build-system python-build-system)
+        (base32 "12p2ryn9lywnxm6839wv9s9jgx8k6cnjaffdxyv2m0vkj2hpvm7r"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_credit_limit"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-account-dunning" ,trytond-account-dunning)))
+     (cons* trytond-account-dunning
+            %standard-trytond-native-inputs))
     (propagated-inputs
-     (list trytond trytond-account trytond-company trytond-party))
+     (list trytond trytond-account trytond-company trytond-currency
+           trytond-party))
     (home-page "https://docs.tryton.org/projects/modules-account-credit-limit")
     (synopsis "Tryton module for account credit limit")
     (description "The @emph{Account Credit Limit} Tryton module for manages
