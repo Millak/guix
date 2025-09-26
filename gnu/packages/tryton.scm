@@ -2439,16 +2439,16 @@ first-in-first-out option in the `Cost Method` field of the product form.")
 (define-public trytond-product-cost-history
   (package
     (name "trytond-product-cost-history")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_product_cost_history" version))
        (sha256
-        (base32 "16gnqa04fv7525ax12xfmh4phk4fvm577j3c80cahxqpvsp2a0q6"))))
-    (build-system python-build-system)
+        (base32 "19dmw7319q3nrn9hj1i7zzbi034y7sb8870376sln8yw5rfacqvz"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "product_cost_history"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-product trytond-stock))
     (home-page "https://docs.tryton.org/projects/modules-product-cost-history")
