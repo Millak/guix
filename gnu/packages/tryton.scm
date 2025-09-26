@@ -4715,16 +4715,16 @@ employee.")
 (define-public trytond-user-role
   (package
     (name "trytond-user-role")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_user_role" version))
        (sha256
-        (base32 "0kx6vqmhny8xjzm2wsy0kf14ybgcdig1cjhyir9b0v11fbavhbw7"))))
-    (build-system python-build-system)
+        (base32 "08mds3hfzwfhk7cgdanhz9p943naqi355ih9w15psri4h87234i1"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "user_role"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond))
     (home-page "https://docs.tryton.org/projects/modules-user-role")
