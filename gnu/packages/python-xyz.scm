@@ -40217,7 +40217,15 @@ interfaces.")
                 "0mikjfvq26kh8asnn9v55z41pap4c5ypymqnwwi4xkavc3mzyda2"))
               (patches
                (search-patches
-                "python-zeroc-ice-3.6.5-python-3.11-support.patch"))))))
+                "python-zeroc-ice-3.6.5-python-3.11-support.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-zeroc-ice)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'build 'relax-gcc-14-strictness
+              (lambda _
+                (setenv "CFLAGS"
+                        "-g -O2  -Wno-error=implicit-function-declaration")))))))))
 
 (define-public python-islenska
   (package
