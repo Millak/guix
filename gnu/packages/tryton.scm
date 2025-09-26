@@ -988,16 +988,16 @@ generating SEPA files for a Payment Group.")
 (define-public trytond-account-payment-sepa-cfonb
   (package
     (name "trytond-account-payment-sepa-cfonb")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_payment_sepa_cfonb" version))
        (sha256
-        (base32 "1a4g2jzk8f98iy3plzanz8wfw5jixqpbsljqfigcp05nykbcfwzf"))))
-    (build-system python-build-system)
+        (base32 "0ic3j1rzb8fsxxrcxzpnahjzrz7w7zsbmwjhcaivryvbgyzdzq89"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_payment_sepa_cfonb"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond
            trytond-account-payment
