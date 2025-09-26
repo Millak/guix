@@ -4411,18 +4411,18 @@ warehouse.")
 (define-public trytond-stock-quantity-early-planning
   (package
     (name "trytond-stock-quantity-early-planning")
-    (version "6.2.2")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_quantity_early_planning" version))
        (sha256
-        (base32 "04fj6h21kl4ab8vl1w9vhnvsxgjg6qd1gxcf1i6r7pfsbhjz8gfj"))))
-    (build-system python-build-system)
+        (base32 "0zk6y57yykm8yb2qnbcypkfaw3a9g0isqz2v6hl21kpxnyz4sicc"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_quantity_early_planning"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-production" ,trytond-production)))
+     (cons* trytond-production
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-company trytond-stock))
     (home-page
