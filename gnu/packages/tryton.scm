@@ -3764,18 +3764,18 @@ raised.")
 (define-public trytond-sale-stock-quantity
   (package
     (name "trytond-sale-stock-quantity")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_stock_quantity" version))
        (sha256
-        (base32 "0bn06a752rp16ki5xa0dr3in5xj1hry6020qgz6mji8kxl24v7sv"))))
-    (build-system python-build-system)
+        (base32 "0q5kffgg8cpgwyzn283aghrqbqsnjayvq70q9va2khqnjbl1h9rh"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_stock_quantity"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-stock-supply" ,trytond-stock-supply)))
+     (cons* trytond-stock-supply
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-product trytond-sale trytond-stock))
     (home-page "https://docs.tryton.org/projects/modules-sale-stock-quantity")
