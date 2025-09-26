@@ -7786,6 +7786,7 @@ something else) to Python data-types.")
         (base32
          "10zqvpaky51kgb8nd42bk7jwl8cn2zvayxjpdc1wwmpybj92x67s"))))))
 
+;; XXX: See: <https://codeberg.org/guix/guix/issues/3029>.
 (define-public python-kconfiglib
   (package
     (name "python-kconfiglib")
@@ -7797,9 +7798,10 @@ something else) to Python data-types.")
        (sha256
         (base32 "0g690bk789hsry34y4ahvly5c8w8imca90ss4njfqf7m2qicrlmy"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;tests require complex set up
     (native-inputs
      (list python-setuptools
-           python-wheel
            `(,python "tk")))
     (home-page "https://github.com/ulfalizer/Kconfiglib")
     (synopsis
