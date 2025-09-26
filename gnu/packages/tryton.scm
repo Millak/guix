@@ -4479,18 +4479,21 @@ secondary unit of measure on the stock move.")
 (define-public trytond-stock-shipment-cost
   (package
     (name "trytond-stock-shipment-cost")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_shipment_cost" version))
        (sha256
-        (base32 "0abl4lw0mz7c1chv5c5r3341cqcfz49nw00g9y12kxbxib17h3fc"))))
-    (build-system python-build-system)
+        (base32 "04v7s9amb225r60zrhlp3kv4xykaws7gwvg1sdvxflq6zkxn0brv"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_shipment_cost"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
-     (list trytond trytond-carrier trytond-product trytond-stock))
+     (list trytond
+           trytond-carrier
+           trytond-product
+           trytond-stock))
     (home-page "https://docs.tryton.org/projects/modules-stock-shipment-cost")
     (synopsis "Tryton module for stock shipment cost")
     (description "The @emph{Stock Shipment Cost} Tryton Module adds a shipment
