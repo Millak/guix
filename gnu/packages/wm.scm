@@ -3966,7 +3966,7 @@ read and write, and compatible with JSON.")
 (define-public labwc
   (package
     (name "labwc")
-    (version "0.8.4")
+    (version "0.9.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3975,7 +3975,7 @@ read and write, and compatible with JSON.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wbza00y2xf2zn34q5c8g5k2dn2xjzbbqmsnjv6c90mh2bbk1q95"))))
+                "0p475vjn9gg314spf89di6i1l2lr9xx59mz4hq4shvbh64hr48pi"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config gettext-minimal scdoc))
@@ -3988,7 +3988,7 @@ read and write, and compatible with JSON.")
            libxcb
            libxml2
            pango
-           wlroots))
+           wlroots-0.19))
     (home-page "https://labwc.github.io")
     (synopsis "Window-stacking compositor for Wayland")
     (description
