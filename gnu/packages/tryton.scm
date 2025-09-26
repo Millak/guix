@@ -3738,16 +3738,16 @@ define how stock moves generated from sales will be grouped.")
 (define-public trytond-sale-shipment-tolerance
   (package
     (name "trytond-sale-shipment-tolerance")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_shipment_tolerance" version))
        (sha256
-        (base32 "1vggdhnfg05dad2gmyi49ydhrq3sjqva4shn9zygj8fyjpkppx2y"))))
-    (build-system python-build-system)
+        (base32 "0cqia2qlf6f6yjn673amicjraggb59z0g00cbrdfpyv4g2zgv6qr"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_shipment_tolerance"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-sale trytond-stock))
     (home-page
