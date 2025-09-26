@@ -5047,6 +5047,30 @@ https://github.com/cowsql/cowsql} C library and a pure Golang client for the
 https://github.com/cowsql/cowsql/blob/main/doc/protocol.md}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-cpuguy83-dockercfg
+  (package
+    (name "go-github-com-cpuguy83-dockercfg")
+    (version "0.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cpuguy83/dockercfg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "055gxyq0wvyr9lap6rd49ijyg846mcpd1kwx9w69qj0pszvh2v96"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cpuguy83/dockercfg"))
+    (home-page "https://github.com/cpuguy83/dockercfg")
+    (synopsis "Library to load Docker CLI configs")
+    (description
+     "Go library to load docker CLI configs, auths, etc.  with minimal deps.
+  So far the only deps are on the stdlib.")
+    (license license:expat)))
+
 (define-public go-github-com-crackcomm-go-gitignore
   (package
     (name "go-github-com-crackcomm-go-gitignore")
