@@ -1754,16 +1754,16 @@ invoice, following the agent's commission plan.")
 (define-public trytond-commission-waiting
   (package
     (name "trytond-commission-waiting")
-    (version "6.2.1")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_commission_waiting" version))
        (sha256
-        (base32 "16y11dc33x1h55v94rab8wzbh4d1pc35vd64ys8915rvijpm6xm5"))))
-    (build-system python-build-system)
+        (base32 "0iwsrcp2gxa13mcvqag063wq3fxpq8qm2ws9qkv8v2k6ypbqvp43"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "commission_waiting"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account trytond-account-invoice
            trytond-commission))
