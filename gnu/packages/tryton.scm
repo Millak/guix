@@ -3121,16 +3121,16 @@ supplier.")
 (define-public trytond-purchase-requisition
   (package
     (name "trytond-purchase-requisition")
-    (version "6.2.0")
+    (version "7.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_purchase_requisition" version))
        (sha256
-        (base32 "0wm4xrxklwd5bbdzlwr5ca4h0zm6jx9pm08mspk15nbvf23qz5n3"))))
-    (build-system python-build-system)
+        (base32 "000n2fhx38yxxg6czsd2ir1qlb4fv0zx720w4p6lfi8g3xgri01c"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "purchase_requisition"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond
            trytond-company
