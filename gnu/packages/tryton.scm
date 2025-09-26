@@ -1508,16 +1508,16 @@ analytic accounts on a purchase line.")
 (define-public trytond-analytic-sale
   (package
     (name "trytond-analytic-sale")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_analytic_sale" version))
        (sha256
-        (base32 "00b3xiykm9j0kf1f9kmsy22413rdjsmvg5li7bd4xrxk22j8v4wv"))))
-    (build-system python-build-system)
+        (base32 "06ydgb2x3mwp3g1nnsmm1k449nnn29whl82hgvlp1n5z58lcjmvh"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "analytic_sale"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-analytic-account trytond-analytic-invoice
            trytond-sale))
