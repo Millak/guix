@@ -351,20 +351,20 @@ budgeted amount.")
 (define-public trytond-account-cash-rounding
   (package
     (name "trytond-account-cash-rounding")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_cash_rounding" version))
        (sha256
-        (base32 "0lxwz3f1p8szphvl64w8fhjnnvn30fin5k1rh47ikvcmlpq8xb67"))))
-    (build-system python-build-system)
+        (base32 "1ap0ndymlkazk3q0crn6ll27w8zmq8ykm9j4qvz5i051kf05k250"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_cash_rounding"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-account-invoice" ,trytond-account-invoice)
-       ("trytond-purchase" ,trytond-purchase)
-       ("trytond-sale" ,trytond-sale)))
+     (cons* trytond-account-invoice
+            trytond-purchase
+            trytond-sale
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-account trytond-currency))
     (home-page
