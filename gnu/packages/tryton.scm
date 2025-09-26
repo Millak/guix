@@ -1462,18 +1462,19 @@ transactions against the budgeted amount.")
 (define-public trytond-analytic-invoice
   (package
     (name "trytond-analytic-invoice")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_analytic_invoice" version))
        (sha256
-        (base32 "0416knbcn7wcx4anzvl0hw7qcdn3xndlh5i0pa0xffvw6kw1ijp9"))))
-    (build-system python-build-system)
+        (base32 "0cj20yzaxsmc8ifzqk1d1vvs1bb8r3dlivpqkq0gdjn3mqblfplx"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "analytic_invoice"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-account-asset" ,trytond-account-asset)))
+     (cons* trytond-account-asset
+            trytond-account-invoice-defer
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-account-invoice trytond-analytic-account))
     (home-page "https://docs.tryton.org/projects/modules-analytic-invoice")
