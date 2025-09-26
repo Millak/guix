@@ -2870,16 +2870,16 @@ methods on projects.  The methods are:
 (define-public trytond-project-plan
   (package
     (name "trytond-project-plan")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_project_plan" version))
        (sha256
-        (base32 "1rijwxx1sypgv3fapw7sv0i6xbci2b6h3ij42aq693yvn0wm46q4"))))
-    (build-system python-build-system)
+        (base32 "06411x4iswy09pjxxiwxrha5r272df1rkyd5w42b192vxbjfshy7"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "project_plan"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-company trytond-project trytond-timesheet))
     (home-page "https://docs.tryton.org/projects/modules-project-plan")
