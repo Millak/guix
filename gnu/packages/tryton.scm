@@ -3322,16 +3322,16 @@ composed of action lines which can:")
 (define-public trytond-sale-credit-limit
   (package
     (name "trytond-sale-credit-limit")
-    (version "6.2.0")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_credit_limit" version))
        (sha256
-        (base32 "0rx3zi0m4cbpbmjlzkii08424yz68y31nqqkgj6rl9swaqins67h"))))
-    (build-system python-build-system)
+        (base32 "15lkdvhxhr3wk9s20g2ypaqmal4kc0cr40gj51jamfqj8s1yj79p"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_credit_limit"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond
            trytond-account-credit-limit
