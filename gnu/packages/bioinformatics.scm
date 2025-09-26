@@ -8691,52 +8691,48 @@ comment or quality sections.")
 (define-public gemma
   (package
     (name "gemma")
-    (version "v0.98.5")
+    (version "0.98.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/genetics-statistics/GEMMA")
-                    (commit version)))
+                     (url "https://github.com/genetics-statistics/GEMMA")
+                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
                 "1dm8pf1fbdmv2yiz5aybcvk3050m5350gq8xlr4j6swzm3wwhydn"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  (delete-file-recursively "contrib")
-                  #t))))
+               #~(begin
+                   (delete-file-recursively "contrib")))))
     (build-system gnu-build-system)
     (inputs
      (list gsl openblas zlib))
     (native-inputs
-     `(("catch" ,catch2-1)
-       ("perl" ,perl)
-       ("shunit2" ,shunit2)
-       ("which" ,which)))
+     (list catch2-1
+           perl
+           shunit2
+           which))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'prepare-build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (mkdir-p "bin")
-             (substitute* "Makefile"
-               (("/usr/local/opt/openblas")
-                (assoc-ref inputs "openblas")))
-             #t))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; 'make slow-check' expects shunit2-2.0.3.
-               (with-directory-excursion "test"
-                 (invoke "./test_suite.sh"))
-               #t)))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (install-file "bin/gemma"
-                           (string-append (assoc-ref outputs "out") "/bin"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'prepare-build
+            (lambda _
+              (mkdir-p "bin")
+              (substitute* "Makefile"
+                (("/usr/local/opt/openblas")
+                 #$(this-package-input "openblas")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; 'make slow-check' expects shunit2-2.0.3.
+                (with-directory-excursion "test"
+                  (invoke "./test_suite.sh")))))
+          (replace 'install
+            (lambda _
+              (install-file "bin/gemma" (string-append #$output "/bin")))))))
     (home-page "https://github.com/genetics-statistics/GEMMA")
     (synopsis "Tool for genome-wide efficient mixed model association")
     (description
