@@ -2207,21 +2207,21 @@ mailing lists.")
 (define-public trytond-notification-email
   (package
     (name "trytond-notification-email")
-    (version "6.2.2")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_notification_email" version))
        (sha256
-        (base32 "1i0h7spdnf3gryzbzjm8khc0jxzj6g6ljsjgsd28h39kqpdxyffz"))))
-    (build-system python-build-system)
+        (base32 "1vyvxp612wb1v173zmd9jf24kz49aw51399gjpj6mwip06q54r6d"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "notification_email"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-commission" ,trytond-commission)
-       ("trytond-company" ,trytond-company)
-       ("trytond-party" ,trytond-party)
-       ("trytond-web-user" ,trytond-web-user)))
+     (cons* trytond-commission
+            trytond-company
+            trytond-party
+            trytond-web-user
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond))
     (home-page "https://docs.tryton.org/projects/modules-notification-email")
