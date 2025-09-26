@@ -3186,24 +3186,24 @@ the product with its factor against the purchase unit.")
 (define-public trytond-purchase-shipment-cost
   (package
     (name "trytond-purchase-shipment-cost")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_purchase_shipment_cost" version))
        (sha256
-        (base32 "1xpkqicv32vrhi89wpn073bc58x6xl189yv0f7h1i9m9q613w9ps"))))
-    (build-system python-build-system)
+        (base32 "1mvn0cwr5c9ndrghir7yd9djvdlk4sshnlq0qxw9wp613qlcwp6x"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "purchase_shipment_cost"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-account-invoice-stock" ,trytond-account-invoice-stock)
-       ("trytond-account-stock-anglo-saxon" ,trytond-account-stock-anglo-saxon)
-       ("trytond-account-stock-continental" ,trytond-account-stock-continental)
-       ("trytond-purchase" ,trytond-purchase)))
+     (cons* trytond-account-invoice-stock
+            trytond-account-stock-anglo-saxon
+            trytond-account-stock-continental
+            trytond-purchase
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-carrier trytond-currency trytond-product
-           trytond-stock))
+           trytond-stock trytond-stock-shipment-cost))
     (home-page
      "https://docs.tryton.org/projects/modules-purchase-shipment-cost")
     (synopsis "Tryton module for purchase shipment costs")
