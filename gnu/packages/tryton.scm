@@ -540,23 +540,30 @@ letters.")
 (define-public trytond-account-es
   (package
     (name "trytond-account-es")
-    (version "6.2.0")
+    (version "7.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_es" version))
        (sha256
-        (base32 "0wwfkqxlppaild62labldabcnzgdmiqd36sknqdb69jn4ljhw4im"))))
-    (build-system python-build-system)
+        (base32 "009wx8ihx8i976hpfpqjlp0gbvfzpdgmpdigwla19416yqjkpvka"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_es"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-account-asset" ,trytond-account-asset)
-       ("trytond-account-payment-sepa" ,trytond-account-payment-sepa)
-       ("trytond-sale-advance-payment" ,trytond-sale-advance-payment)))
+     (cons* trytond-account-asset
+            trytond-account-payment-sepa
+            trytond-sale-advance-payment
+            trytond-sale-gift-card
+            %standard-trytond-native-inputs))
     (propagated-inputs
-     (list trytond trytond-account trytond-account-eu trytond-account-invoice
-           trytond-company trytond-currency trytond-party))
+     (list python-phonenumbers
+           trytond
+           trytond-account
+           trytond-account-eu
+           trytond-account-invoice
+           trytond-company
+           trytond-currency
+           trytond-party))
     (home-page "https://docs.tryton.org/projects/modules-account-es")
     (synopsis "Tryton with Spanish chart of accounts")
     (description "This package provides the following Spanish charts of
