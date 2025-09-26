@@ -2204,26 +2204,38 @@ intended to behave exactly the same as the original BWK awk.")
 (define-public python-bcbio-gff
   (package
     (name "python-bcbio-gff")
-    (version "0.6.9")
+    ;; python-bcbio-gff can only be refreshed manually, because guix refresh
+    ;; does not understand the tags on the github repository.
+    (version "0.7.1")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "bcbio-gff" version))
+              ;; No tests in PyPI package.
+              (method git-fetch)
+              (uri (git-reference
+               (url "https://github.com/chapmanb/bcbb")
+               (commit (string-append "bcbio-gff-v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1pm1szyxabhn8jismrj9cjhf88ajgcmm39f0cgf36iagw5qakprl"))))
+                "0144xxzibq4mrg8a1w2scs120rd9svq07hm5ccs91n3a4nvwjfsd"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'enter-directory
+            (lambda _ (chdir "gff"))))))
     (native-inputs
-     (list python-pytest))
+     (list python-setuptools python-pytest))
     (propagated-inputs
      (list python-biopython
-           python-setuptools
-           python-six
-           python-wheel))
+           python-six))
     (home-page "https://github.com/chapmanb/bcbb/tree/master/gff")
     (synopsis "Read and write GFF files with Biopython integration")
     (description
      "This package lets you read and write files in Generic Feature
 Format (GFF) with Biopython integration.")
+    (properties
+     '((upstream-name . "bcbio-gff")))
     (license (license:non-copyleft "http://www.biopython.org/DIST/LICENSE"))))
 
 (define-public python-bcbio-gff/biopython-1.73
