@@ -3574,18 +3574,19 @@ price list on sale.  A price list can be set per party or as default.")
 (define-public trytond-sale-product-customer
   (package
     (name "trytond-sale-product-customer")
-    (version "6.2.2")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_product_customer" version))
        (sha256
-        (base32 "01nyhimg00z33zzlxyg8incpfbgcqa7svmzzv5n0x2dafnx5n7wl"))))
-    (build-system python-build-system)
+        (base32 "0zgzkif68sf9klpdp88rmns9ga5c3ir0jkg88yqa5gv3rma3sh3a"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_product_customer"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-sale-amendment" ,trytond-sale-amendment)))
+     (cons* trytond-sale-amendment
+            trytond-sale-blanket-agreement
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-product trytond-sale))
     (home-page
