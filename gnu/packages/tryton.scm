@@ -2,7 +2,7 @@
 ;;; Copyright © 2017 Adriano Peluso <catonano@gmail.com>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2021,2024,2025 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;;
@@ -65,13 +65,13 @@ installed in the same environments.  Collecting only paths actually containing
 (define-public trytond
   (package
     (name "trytond")
-    (version "7.4.4")
+    (version "7.0.37")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond" version))
        (sha256
-        (base32 "1bwa631qz07k6s5fbki3ph6sx0ch9yss2q4sa1jb67z6angiwv5f"))
+        (base32 "1i51yd5kvmcny5k36pj0l3rblyig9zxv5pvvln9c2xq2nkndqqr6"))
        (patches (search-patches "trytond-add-guix_trytond_path.patch"))))
     (build-system pyproject-build-system)
     (arguments
@@ -88,6 +88,7 @@ installed in the same environments.  Collecting only paths actually containing
          (add-before 'check 'preparations
            (lambda _
              (setenv "DB_NAME" ":memory:")
+             (setenv "DB_CACHE" "/tmp")
              (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-dateutil
@@ -96,18 +97,18 @@ installed in the same environments.  Collecting only paths actually containing
            python-lxml
            python-passlib
            python-polib
+           python-psycopg2
            python-relatorio
            python-sql
            python-werkzeug))
     (native-inputs
-     (list python-pillow
-           python-pydot
-           python-pytest
-           python-setuptools
-           python-wheel
-           tzdata-for-tests))
+     (list python-html2text python-pillow python-pydot python-pytest
+           python-setuptools tzdata-for-tests))
     (native-search-paths
-     (list (guix-trytonpath-search-path (package-version python))))
+     (list (guix-trytonpath-search-path (package-version python))
+           ;; Required to pick up entry-points from profile for Tryton modules
+           ;; which are not in named 'trytond.modules.…'
+           (guix-pythonpath-search-path (package-version python))))
     (home-page "https://www.tryton.org/")
     (synopsis "Tryton Server")
     (description "Tryton is a three-tier high-level general purpose
