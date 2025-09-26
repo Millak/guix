@@ -75,6 +75,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages node)
+  #:use-module (gnu packages parallel)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -216,16 +217,25 @@ This package produces a native @command{ocamlc} and a bytecode @command{ocamllex
             (files (list "lib/ocaml/site-lib/stubslibs"
                          "lib/ocaml/site-lib/stublibs")))))
     (native-inputs
-     (list perl pkg-config))
+     (list parallel perl pkg-config))
     (inputs
      (list libx11 libiberty ;needed for objdump support
            zlib))                       ;also needed for objdump support
     (arguments
      `(#:configure-flags '("--enable-ocamltest")
        #:test-target "tests"
+       ;; This doesn't have the desired effect and makes test runs less
+       ;; stable. See https://codeberg.org/guix/guix/pulls/2933.
+       #:parallel-tests? #f
        #:make-flags '("defaultentry")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'enable-parallel-tests
+           (lambda _
+             ;; Patch the `tests` build target to enable a special parallel
+             ;; execution mode based on GNU Parallel.
+             (substitute* "Makefile"
+               (("-C testsuite all") "-C testsuite parallel"))))
          (add-after 'unpack 'patch-/bin/sh-references
            (lambda* (#:key inputs #:allow-other-keys)
              (let* ((sh (search-input-file inputs "/bin/sh"))
