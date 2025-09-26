@@ -2115,16 +2115,16 @@ versions of 2010 and 2020.")
 (define-public trytond-ldap-authentication
   (package
     (name "trytond-ldap-authentication")
-    (version "6.2.1")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_ldap_authentication" version))
        (sha256
-        (base32 "0c3g2y8zqh17wwg9w3bk9q1gwm4hq7h8avchmbfawi6cq3g6ch5b"))))
-    (build-system python-build-system)
+        (base32 "0pnmv39hdw4a61ml8s2sh5c9dxxgsmnjfg27w490l0mvrnb394n4"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "ldap_authentication"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list python-ldap3 trytond))
     (home-page "https://docs.tryton.org/projects/modules-ldap-authentication")
