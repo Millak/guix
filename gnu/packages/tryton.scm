@@ -736,16 +736,16 @@ original quantity, once with the inverted quantity.")
 (define-public trytond-account-invoice-defer
   (package
     (name "trytond-account-invoice-defer")
-    (version "6.2.2")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_invoice_defer" version))
        (sha256
-        (base32 "1jjsadia1bxx0h80aqhm0alzxdqbkg3by0i7i6qfk7wwikim6lkm"))))
-    (build-system python-build-system)
+        (base32 "1q281cl0dhmm5d1cc4sjpx6wk97vrva35sldxwydrpw460df9lh9"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_invoice_defer"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account trytond-account-invoice
            trytond-company))
