@@ -4374,20 +4374,30 @@ you to generate the UPS labels per package using the UPS webservices.")
 (define-public trytond-stock-product-location
   (package
     (name "trytond-stock-product-location")
-    (version "6.2.0")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_product_location" version))
        (sha256
-        (base32 "18r7j40zdbva8rcxyhianjwb7m30db7qf85709kivvbvbk93rabh"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "stock_product_location"))
+        (base32 "1pd9qvfzw89c8dx75i2mn23h1gn44mxviji5msm466ig3zi21qhx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases #$(tryton-phases "stock_product_location")
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; DB_CACHE and pytest don't work together here
+                (invoke "python" "-m" "unittest" "discover")))))))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-production" ,trytond-production)))
+     (cons* trytond-production
+            %standard-trytond-native-inputs))
     (propagated-inputs
-     (list trytond trytond-product trytond-stock))
+     (list trytond
+           trytond-product
+           trytond-stock))
     (home-page
      "https://docs.tryton.org/projects/modules-stock-product-location")
     (synopsis "Tryton module to add default location on product")
