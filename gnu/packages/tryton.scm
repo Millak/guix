@@ -450,16 +450,16 @@ the party.")
 (define-public trytond-account-dunning
   (package
     (name "trytond-account-dunning")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_dunning" version))
        (sha256
-        (base32 "0kzafh99055ghg5d8vs411y5c8v1xjqqf23n1sa9a4dzj10wlq97"))))
-    (build-system python-build-system)
+        (base32 "0vxz71gwp2s5cm6y8c770aaw4mwgbdf8brl75p404lp6mwh3fqay"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_dunning"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account trytond-company trytond-party))
     (home-page "https://docs.tryton.org/projects/modules-account-dunning")
