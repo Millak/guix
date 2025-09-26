@@ -1802,16 +1802,16 @@ company and employee and extend the user model.")
 (define-public trytond-company-work-time
   (package
     (name "trytond-company-work-time")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_company_work_time" version))
        (sha256
-        (base32 "08nhnlxy1z5drlmxdsd6ad166qx5ckymzx94ja824n1qqac17zqw"))))
-    (build-system python-build-system)
+        (base32 "1y6c3p51jp2hcvby12b3pmn0h7jmsd7qigfxznmj17k6bqmm7b6b"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "company_work_time"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-company))
     (home-page "https://docs.tryton.org/projects/modules-company-work-time")
