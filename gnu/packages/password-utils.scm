@@ -1404,8 +1404,8 @@ winner of the 2015 Password Hashing Competition.")
 
 (define-public secretsd
   ;; there are neither tags nor releases in the repository
-  (let ((commit "4ea56226b8f7c8739eea7fc8d1ffca8e18cf58c9")
-        (revision "0"))
+  (let ((commit "d12eefee00dbd4b0f756dcf7c52d31539dbcfc67")
+        (revision "1"))
     (package
       (name "secretsd")
       (version (git-version "1.0" revision commit))
@@ -1417,7 +1417,7 @@ winner of the 2015 Password Hashing Competition.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0ka21vmvm25kal3sa8zmrifh4zac878hk24y7y3jj3ig8dkv0vfy"))
+          (base32 "1cr6vpb1mc48b60mjbnzalp58vx07sh7hg9r65j0cppk0n4gc0aj"))
          (modules '((guix build utils)))
          (snippet
           ;; don't install platform dependencies
@@ -1425,6 +1425,7 @@ winner of the 2015 Password Hashing Competition.")
       (build-system pyproject-build-system)
       (arguments
        (list
+        #:tests? #f ; no tests
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'create-entrypoints 'wrap-program
@@ -1433,7 +1434,7 @@ winner of the 2015 Password Hashing Competition.")
                   `("GI_TYPELIB_PATH" ":" prefix
                     (,(getenv "GI_TYPELIB_PATH")))))))))
       (inputs (list python-dbus python-platformdirs python-cryptography
-                    python-xdg python-pygobject))
+                    python-pygobject))
       (native-inputs (list bash-minimal python-setuptools python-wheel))
       (home-page "https://github.com/grawity/secretsd")
       (synopsis "Basic FreeDesktop.org Secret Service backend")
