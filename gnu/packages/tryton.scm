@@ -803,16 +803,16 @@ allows creating an invoice line not linked to an invoice.")
 (define-public trytond-account-invoice-secondary-unit
   (package
     (name "trytond-account-invoice-secondary-unit")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_invoice_secondary_unit" version))
        (sha256
-        (base32 "1wmc8zx51saqxbg26b7jnhl7ss3gjrhzxn7zqqsis9dps6l07jwf"))))
-    (build-system python-build-system)
+        (base32 "1qqr70xw5ybn1xywgdznqc2lqsvs592qiam0rr75zyjzv3g3bfxc"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_invoice_secondary_unit"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account-invoice trytond-product))
     (home-page
