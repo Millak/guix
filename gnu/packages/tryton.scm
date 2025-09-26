@@ -3152,20 +3152,23 @@ be created.")
 (define-public trytond-purchase-secondary-unit
   (package
     (name "trytond-purchase-secondary-unit")
-    (version "6.2.0")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_purchase_secondary_unit" version))
        (sha256
-        (base32 "04fnrim6dimrd63rqbqginlklpih7sb4x3zai5idxjn6hc1l398y"))))
-    (build-system python-build-system)
+        (base32 "1sg7jc9aw1wa7xbhn2l4g6b8q161zf4118jfy1i6968dx6z2ask7"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "purchase_secondary_unit"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-account-invoice-secondary-unit"
-        ,trytond-account-invoice-secondary-unit)
-       ("trytond-stock-secondary-unit" ,trytond-stock-secondary-unit)))
+     (cons* trytond-account-invoice-secondary-unit
+            trytond-purchase-amendment
+            trytond-purchase-blanket-agreement
+            trytond-purchase-request
+            trytond-purchase-requisition
+            trytond-stock-secondary-unit
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-account-invoice trytond-product
            trytond-purchase trytond-stock))
