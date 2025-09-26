@@ -209,19 +209,23 @@ the build system."
 ;;;  Tryton modules - please sort alphabetically
 ;;;
 
-(define (%standard-trytond-native-inputs)
-  ;; native-inputs required by most of the tryton module for running the test
-  `(("python-dateutil" ,python-dateutil)
-    ("python-genshi" ,python-genshi)
-    ("python-lxml" ,python-lxml)
-    ("python-magic" ,python-magic)
-    ("python-passlib" ,python-passlib)
-    ("python-polib" ,python-polib)
-    ("python-proteus" ,python-proteus)
-    ("python-relatorio" ,python-relatorio)
-    ("python-sql" ,python-sql)
-    ("python-werkzeug" ,python-werkzeug-1.0)
-    ("python-wrapt" ,python-wrapt)))
+(define %standard-trytond-native-inputs
+  ;; native-inputs required for building and by most of the trytond modules
+  ;; for running the test
+  (list python-dateutil
+        python-genshi
+        python-lxml
+        python-magic
+        python-passlib
+        python-polib
+        python-proteus
+        python-pytest ; see tryton-phases above
+        python-setuptools ; for pyproject-build-system
+        python-relatorio
+        python-sql
+        python-werkzeug
+        python-wrapt
+        tzdata-for-tests))
 
 (define-public trytond-account
   (package
@@ -315,6 +319,9 @@ to set budgets for accounts over a defined period of time.  These budgets can
 then be used to track the total amount from relevant transactions against the
 budgeted amount.")
     (license license:gpl3+)))
+
+(define (standard-trytond-native-inputs 1stmodule . more-modules)
+  (apply list 1stmodule more-modules %standard-trytond-native-inputs))
 
 (define-public trytond-account-cash-rounding
   (package
