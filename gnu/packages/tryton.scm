@@ -2030,17 +2030,24 @@ from the UNECE.  Supported formats are:
 (define-public trytond-gis
   (package
     (name "trytond-gis")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_gis" version))
        (sha256
-        (base32 "0zfvbqzxhvjja03pv9ja9rml2i2fqiir5a92rz0vj3lx9azjbkvw"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "trytond_gis"))
-    (native-inputs (%standard-trytond-native-inputs))
-    (propagated-inputs (list python-geomet  trytond))
+        (base32 "1kx62p7jl27ihh0j952f4r0bfn1a1zz15wgvd254yyhc3h57pc7b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f  ;; tests require postgis database
+      #:phases (tryton-phases "gis")))
+    (native-inputs
+     (cons* python-psycopg2
+            %standard-trytond-native-inputs))
+    (propagated-inputs
+     (list python-geomet
+           trytond))
     (home-page "https://docs.tryton.org/projects/backend-gis")
     (synopsis "Geographic Information System support from Tryton")
     (description "The @emph{Trytond GIS} Tryton module adds GIS (Geographic
