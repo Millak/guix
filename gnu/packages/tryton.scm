@@ -422,16 +422,18 @@ Tryton.")
 (define-public trytond-account-deposit
   (package
     (name "trytond-account-deposit")
-    (version "6.2.0")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_deposit" version))
        (sha256
-        (base32 "0axp72p00fk1r6mr9pip8g4276wvb55vfbp962f3gdsijslj9mqi"))))
-    (build-system python-build-system)
+        (base32 "055v9b30q1drrkzq6xdcd5v20ysa7mqqsvzibrrbjjapx9hi6vp2"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_deposit"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs
+     (cons* trytond-account-payment-clearing
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-account trytond-account-invoice
            trytond-company trytond-party))
