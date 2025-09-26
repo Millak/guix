@@ -1439,15 +1439,15 @@ required to analyse accounting using multiple different axes.")
 (define-public trytond-analytic-budget
   (package
     (name "trytond-analytic-budget")
-    (version "6.2.1")
+    (version "7.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "trytond_analytic_budget" version))
               (sha256
-               (base32 "080a1s9w6n50xi2r7d3jkyk84rdqzggbqzhab9qjgppl67q85m8p"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "trytond_analytic_budget"))
-    (native-inputs (%standard-trytond-native-inputs))
+               (base32 "1j3lxb3nxhis7w4snds0m9yvr70mcr2mj8rbs3vvnmg99ysgrrci"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "analytic_budget"))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs (list trytond trytond-account-budget
                              trytond-analytic-account
                              trytond-company))
