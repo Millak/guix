@@ -4669,18 +4669,20 @@ supply mechanisms via production request.")
 (define-public trytond-timesheet
   (package
     (name "trytond-timesheet")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_timesheet" version))
        (sha256
-        (base32 "0lbdb0743mj33vrzrb3fq93d3ksj3395d7q0ivbplp1nn3hrh6sq"))))
-    (build-system python-build-system)
+        (base32 "1f4js2aykh68b272mijlqlzphkim2c37qb9dnbgcydqaydvy9025"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "timesheet"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
-     (list trytond trytond-company trytond-company-work-time))
+     (list trytond
+           trytond-company
+           trytond-company-work-time))
     (home-page "https://docs.tryton.org/projects/modules-timesheet")
     (synopsis "Tryton module with timesheets")
     (description "The @emph{Timesheet} Tryton module allows tracking the time
