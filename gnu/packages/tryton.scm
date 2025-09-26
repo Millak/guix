@@ -1609,16 +1609,16 @@ and account.")
 (define-public trytond-carrier
   (package
     (name "trytond-carrier")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_carrier" version))
        (sha256
-        (base32 "1fr12m4qi0fkxnbjq5v1sf5dkic9xb2j0bvb8y18if3hh0csfcy7"))))
-    (build-system python-build-system)
+        (base32 "0n5jpry7yjc0w1h9z4kkp498v46hbd9gn76b4gwypscd7anpgziy"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "carrier"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-country trytond-party trytond-product))
     (home-page "https://docs.tryton.org/projects/modules-carrier")
