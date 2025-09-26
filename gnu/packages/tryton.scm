@@ -401,16 +401,16 @@ credit limit of parties.")
 (define-public trytond-account-de-skr03
   (package
     (name "trytond-account-de-skr03")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_de_skr03" version))
        (sha256
-        (base32 "1igag4nbafr5il6fqw7piak0wma6mgxhzy59zpsnl8gcl96jijv1"))))
-    (build-system python-build-system)
+        (base32 "0id7qvjahgnv3nn0q5sb451zfa61qd04cgpf24y9jcbscb42bs5z"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_de_skr03"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account))
     (home-page "https://docs.tryton.org/projects/modules-account-de-skr03")
