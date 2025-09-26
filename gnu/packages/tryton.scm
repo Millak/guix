@@ -2418,16 +2418,16 @@ adds the taxonomic classification to the products.")
 (define-public trytond-product-cost-fifo
   (package
     (name "trytond-product-cost-fifo")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_product_cost_fifo" version))
        (sha256
-        (base32 "1lqd960z7dmy3000fhhqqbmq7c4lk2l2dqw383sd62ka5j57kpf4"))))
-    (build-system python-build-system)
+        (base32 "130vq1wqxxlcdxdlyf3apg0f2xpy4farbl49mplz6ihiwpvzh1ka"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "product_cost_fifo"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-product trytond-stock))
     (home-page "https://docs.tryton.org/projects/modules-product-cost-fifo")
