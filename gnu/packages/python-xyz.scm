@@ -23224,7 +23224,7 @@ specified in POSIX.1-2001 and POSIX.1-2008.")
        (sha256
         (base32 "1clb3lfw694crq8m767q0yjaazkplcrbzdr9fr2w39hhndivhcd6"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/rocky/pycolumnize")
     (synopsis "Format a simple (i.e. not nested) list into aligned columns.")
     (description
