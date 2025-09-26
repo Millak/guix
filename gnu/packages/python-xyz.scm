@@ -40186,8 +40186,16 @@ read all zbar supported codes.")
                (base32
                 "0r46q4hd7xbpvnidbra1prkg4xhmajxjjmclfqgp3pv0lgyslqxh"))))
     (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: No tests in PyPI, tere are tests in Git, but there is no 3.7.10.1
+     ;; tag.
+     ;;
+     ;; See:
+     ;; - URL: <https://raw.githubusercontent.com/zeroc-ice>
+     ;; - File: <ice/refs/heads/main/python/allTests.py>
+     (list #:tests? #f))
     (inputs (list openssl))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (home-page "https://zeroc.com")
     (synopsis "RPC framework")
     (description
