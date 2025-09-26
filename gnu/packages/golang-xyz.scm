@@ -14709,6 +14709,33 @@ names.")
 Windows.")
     (license license:asl2.0)))
 
+(define-public go-github-com-moby-sys-signal
+  (package
+    (name "go-github-com-moby-sys-signal")
+    (version "0.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moby/sys")
+             (commit (go-version->git-ref version
+                                          #:subdir "signal"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i1phx1kk9qa4jf1i1nl23d3f6k9fn2w46274cl76cqw9hjqg868"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/sys/signal"
+      #:unpack-path "github.com/moby/sys"))
+    (propagated-inputs (list go-golang-org-x-sys))
+    (home-page "https://github.com/moby/sys")
+    (synopsis "Helper functions for dealing with OS signals")
+    (description
+     "This provides helper functions for dealing with signals across various
+operating systems.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-moby-sys-symlink
   (package
     (name "go-github-com-moby-sys-symlink")
