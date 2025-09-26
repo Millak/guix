@@ -1953,16 +1953,16 @@ duty based on the tariff code.")
 (define-public trytond-dashboard
   (package
     (name "trytond-dashboard")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_dashboard" version))
        (sha256
-        (base32 "1b8dalnbj69ppk8q7znw1ljyv5515r16m6gfd9a3l25dpvj0cxz2"))))
-    (build-system python-build-system)
+        (base32 "0cdxmyzs23bdksqgg87y7r4zvpzx63pvjgvhjck6hm49nyicqlmf"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "dashboard"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond))
     (home-page "https://docs.tryton.org/projects/modules-dashboard")
