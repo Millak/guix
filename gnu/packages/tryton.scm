@@ -2787,16 +2787,16 @@ work cost.")
 (define-public trytond-production-work-timesheet
   (package
     (name "trytond-production-work-timesheet")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_production_work_timesheet" version))
        (sha256
-        (base32 "19d9sasviayn4vkbwgxmgqbn2fd61qqh4sk35vzlmkbwycrbczhi"))))
-    (build-system python-build-system)
+        (base32 "0c737kxdqpjc1h9vb00sz69zh6y76d3ll71nrs2nxidqjdwyhhz5"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "production_work_timesheet"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-production-routing trytond-production-work
            trytond-timesheet))
