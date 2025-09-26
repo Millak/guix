@@ -1974,21 +1974,21 @@ configure their dashboard.")
 (define-public trytond-edocument-uncefact
   (package
     (name "trytond-edocument-uncefact")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_edocument_uncefact" version))
        (sha256
-        (base32 "0nf72c5sw33c77y87idkhf8fz39a7qlgmlrbnzz1cwcpky4hrmdg"))))
-    (build-system python-build-system)
+        (base32 "1zk7nzfrsxq3h9n1dkmqpxvjmzax2p0snqhgg99q7zs9s1x9wm2k"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "edocument_uncefact"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("python-lxml" ,python-lxml)
-       ("trytond-account-invoice" ,trytond-account-invoice)))
+     (cons* trytond-account-invoice
+            %standard-trytond-native-inputs))
     (propagated-inputs
-     (list trytond trytond-edocument-unece))
+     (list trytond
+           trytond-edocument-unece))
     (home-page "https://docs.tryton.org/projects/modules-edocument-uncefact")
     (synopsis "Tryton module for electronic document UN/CEFACT")
     (description "The @emph{Edocument UN/CEFACT} Tryton module implements
