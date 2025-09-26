@@ -3790,16 +3790,16 @@ stock forecasts.")
 (define-public trytond-sale-subscription
   (package
     (name "trytond-sale-subscription")
-    (version "6.2.0")
+    (version "7.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_subscription" version))
        (sha256
-        (base32 "095zdy6031lqffm3yddhsrv93dl2dgqjpbskp539knvd72bdaqdd"))))
-    (build-system python-build-system)
+        (base32 "1jdpg6g8w0q5slsfdzz6bkacv78x4gw5nr2afi7m9givqr8vivrm"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_subscription"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond
            trytond-account
