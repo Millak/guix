@@ -3248,21 +3248,25 @@ to be generated that contain aggregated sales figures.")
 (define-public trytond-sale-advance-payment
   (package
     (name "trytond-sale-advance-payment")
-    (version "6.2.0")
+    (version "7.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_advance_payment" version))
        (sha256
-        (base32 "00rlg4jax212qha2w6acris7knj3b17a0rrlm7xyw0bp2vfzgb69"))))
-    (build-system python-build-system)
+        (base32 "08qcfa5sif1a3l02f5vr5668bzca8mndg0h917r2x43z6gd1g8z9"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_advance_payment"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-sale-supply" ,trytond-sale-supply)))
+     (cons* trytond-sale-supply
+            %standard-trytond-native-inputs))
     (propagated-inputs
-     (list python-simpleeval trytond trytond-account
-           trytond-account-invoice trytond-sale))
+     (list python-simpleeval
+           trytond
+           trytond-account
+           trytond-account-invoice
+           trytond-company
+           trytond-sale))
     (home-page
      "https://docs.tryton.org/projects/modules-sale-advance-payment")
     (synopsis "Tryton module for sale advance payment")
