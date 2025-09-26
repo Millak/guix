@@ -326,15 +326,15 @@ chart of account for Belgium.")
 (define-public trytond-account-budget
   (package
     (name "trytond-account-budget")
-    (version "6.2.2")
+    (version "7.0.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "trytond_account_budget" version))
               (sha256
-               (base32 "055y9jjpx4xfrc6dlssvjzmjz7rrvfljlaljx0v6c6s87mpzi3m5"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "trytond_account_budget"))
-    (native-inputs (%standard-trytond-native-inputs))
+               (base32 "0ycxy7p54gssw4mzb62gmlkhkyfa9s8bqaps30zyw0jd79pll2xy"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "account_budget"))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs (list trytond trytond-account
                              trytond-company trytond-currency))
     (home-page "https://docs.tryton.org/projects/modules-account-budget")
