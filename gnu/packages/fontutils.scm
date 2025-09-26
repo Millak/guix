@@ -1953,51 +1953,53 @@ API-compatible with defcon.")
 ;;; A variant used to break a cycle between python-fontpens and
 ;;; python-fontparts.
 (define-public python-defcon-bootstrap
-  (package
-    (name "python-defcon-bootstrap")
-    (version "0.11.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/robotools/defcon")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "06w5kd5ac63m6m8x8j4xwdl7ncbpjl7pdpfpy9i6c8nhbd8sbjfm"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-version
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
-    (propagated-inputs (list python-fontpens-bootstrap python-fonttools))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm
-           unzip))
-    (home-page "https://github.com/robotools/defcon")
-    (synopsis "Flexible objects for representing UFO data")
-    (description
-     "Defcon is a set of @acronym{UFO, unified font object} based
+  (hidden-package
+   (package
+     (name "python-defcon-bootstrap")
+     (version "0.12.2")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/robotools/defcon")
+               (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1zx4xas6qcpp54d1vcfy5wjv17aazkpfmb7hkjy99g47xsi6crrh"))))
+     (build-system pyproject-build-system)
+     (arguments
+      (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'set-version
+             (lambda _
+               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+     (propagated-inputs (list python-fontpens-bootstrap python-fonttools))
+     (native-inputs
+      (list python-pytest
+            python-setuptools
+            python-setuptools-scm))
+     (home-page "https://github.com/robotools/defcon")
+     (synopsis "Flexible objects for representing UFO data")
+     (description
+      "Defcon is a set of @acronym{UFO, unified font object} based
 objects optimized for use in font editing applications.  The objects are built
 to be lightweight, fast and flexible.  The objects are very bare-bones and
 they are not meant to be end-all, be-all objects.  Rather, they are meant to
 provide base functionality so that you can focus on your application’s
 behavior, not object observing or maintaining cached data.  Defcon implements
 UFO3 as described by the UFO font format.")
-    (license license:expat)))
+     (license license:expat))))
 
 (define-public python-defcon
-  (hidden-package
-   (package/inherit python-defcon-bootstrap
-     (name "python-defcon")
-     (propagated-inputs
-      (modify-inputs (package-propagated-inputs python-defcon-bootstrap)
-        (replace "python-fontpens-bootstrap" python-fontpens))))))
+  (package/inherit python-defcon-bootstrap
+    (name "python-defcon")
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-defcon-bootstrap)
+       (replace "python-fontpens-bootstrap" python-fontpens)))
+    (properties
+     (alist-delete 'hidden?
+                   (package-properties python-fontparts-bootstrap)))))
 
 (define-public nototools
   (package
