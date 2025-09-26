@@ -1486,16 +1486,16 @@ analytic accounts on an invoice line.")
 (define-public trytond-analytic-purchase
   (package
     (name "trytond-analytic-purchase")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_analytic_purchase" version))
        (sha256
-        (base32 "098sdhmr1idqqaxms3c05pgmvb27bykwfhgibxi9l1lr6k06d2cr"))))
-    (build-system python-build-system)
+        (base32 "1vpvn3k5zfdhkbv40q91ln1i2014xfcqhi7p4rky1hh9yy2szjl2"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "analytic_purchase"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-analytic-account trytond-analytic-invoice
            trytond-purchase))
