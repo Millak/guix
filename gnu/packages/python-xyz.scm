@@ -31004,6 +31004,7 @@ module.")
     (properties '((upstream-name . "Wikidata")))
     (license license:gpl3+)))
 
+;; XXX: Not maintained since 2022, leaf package.
 (define-public python-attr
   (package
     (name "python-attr")
@@ -31015,8 +31016,11 @@ module.")
        (sha256
         (base32 "1x2627x0n2rxx8wib4cksbjjnncff8finq97k37dq70qd2kvrvhw"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "-c" "import dry_attr; dry_attr.test()")))
     (native-inputs
-     (list python-setuptools python-wheel))
+     (list python-setuptools))
     (home-page "https://github.com/denis-ryzhkov/attr")
     (synopsis "Decorator for attributes of target function or class")
     (description "Simple decorator to set attributes of target function or
