@@ -8210,33 +8210,44 @@ instruction sets.  Thus, an application written with Vc can be compiled for:
         (revision "1"))
     (package
       (name "reducelcs")
-      (version (string-append "1.0-" revision "." (string-take commit 7)))
+      (version (git-version "1.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/gdv/Reduce-Expand-for-LCS")
                (commit commit)))
-         (file-name (string-append name "-" version "-checkout"))
+         (file-name (git-file-name name version))
          (sha256
           (base32
            "1rllzcfwc042c336mhq262a8ha90x6afq30kvk60r7i4761j4yjm"))))
       (build-system gnu-build-system)
-      (inputs
-       (list openlibm))
+      (inputs (list openlibm))
       (arguments
-       `(#:tests? #f ; no tests
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure) ; No configure script exists.
-           (replace 'install ; No install phase exists.
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin")))
-                 (install-file "Approximation" bin)
-                 (install-file "CollectResults" bin)
-                 (install-file "GenerateInstances" bin)
-                 #t))))))
+       (list
+        #:tests? #f ; no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure) ; No configure script exists.
+            (add-after 'unpack 'patch-source
+              ;; See: <https://github.com/gdv/Reduce-Expand-for-LCS/pull/1>
+              (lambda _
+                (substitute* "Approximation.c"
+                  (("char min_alphabet,max_alphabet;\n$" all)
+                   (string-append all "
+int ExactLcs2(char lcs[MAXLEN], char *seq1, char *seq2);")))
+                (substitute* "GenerateInstances.c"
+                  (("#include <float.h>" all)
+                   (string-append all "
+#include <time.h>
+#include <string.h>")))))
+            (replace 'install ; No install phase exists.
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let* ((out (assoc-ref outputs "out"))
+                       (bin (string-append out "/bin")))
+                  (install-file "Approximation" bin)
+                  (install-file "CollectResults" bin)
+                  (install-file "GenerateInstances" bin)))))))
       (synopsis "Approximate Longest Commons Subsequence computation tool")
       (description
        "@code{reduceLCS} is an implementation of the Reduce-Expand
