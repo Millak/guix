@@ -1040,19 +1040,20 @@ checkout form to handle Setup Intent and Payment Intent by card.")
 (define-public trytond-account-product
   (package
     (name "trytond-account-product")
-    (version "6.2.1")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_product" version))
        (sha256
-        (base32 "1z1ri2plsmdnhgw64r5yxk2m346zcnva8nddmcwcalis35krgjcx"))))
-    (build-system python-build-system)
+        (base32 "17hgqn52li1sdwl9ppa6h2fx1x3hvnbaqb2lvpi0r97zz92wc75x"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_product"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs
+     (cons* trytond-analytic-account
+            %standard-trytond-native-inputs))
     (propagated-inputs
-     (list trytond trytond-account trytond-analytic-account
-           trytond-company trytond-product))
+     (list trytond trytond-account trytond-company trytond-product))
     (home-page "https://www.tryton.org/")
     (synopsis "Tryton module to add accounting on product")
     (description
