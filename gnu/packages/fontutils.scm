@@ -471,7 +471,7 @@ other operations on paths.")
 (define-public python-cffsubr
   (package
     (name "python-cffsubr")
-    (version "0.2.9.post1")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
@@ -479,7 +479,7 @@ other operations on paths.")
        (modules '((guix build utils)))
        (snippet '(delete-file-recursively "external")) ;unbundle ADFKO
        (sha256
-        (base32 "0p7wyagkmwf4agr6ysgswrpmpifx5rz8dnjbcs2gmj29rwnl2cbb"))))
+        (base32 "1yrfjn3mdi48pg78yzlmskdz9i4nf2wg7h8ivnn9yrw1vc5iaibp"))))
     (build-system python-build-system)
     (arguments
      (list
