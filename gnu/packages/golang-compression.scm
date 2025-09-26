@@ -329,6 +329,45 @@ Supported archive formats:
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-moby-go-archive
+  (package
+    (name "go-github-com-moby-go-archive")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/moby/go-archive")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vyz6nxbs368wf4ndn0l6b190rb303frf1sbp5c5s09law14cs24"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/go-archive"))
+    (native-inputs
+     (list go-github-com-adalogics-go-fuzz-headers
+           go-gotest-tools-v3))
+    (propagated-inputs
+     (list go-github-com-containerd-log
+           go-github-com-google-go-cmp
+           go-github-com-klauspost-compress
+           go-github-com-moby-patternmatcher
+           go-github-com-moby-sys-mount
+           go-github-com-moby-sys-mountinfo
+           go-github-com-moby-sys-reexec
+           go-github-com-moby-sys-sequential
+           go-github-com-moby-sys-user
+           go-github-com-moby-sys-userns
+           go-golang-org-x-sys))
+    (home-page "https://github.com/moby/go-archive")
+    (synopsis "Utility for packing and unpacking container tar archives")
+    (description
+     "Package archive provides helper functions for dealing with archive
+files.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-nwaples-rardecode
   (package
     (name "go-github-com-nwaples-rardecode")
