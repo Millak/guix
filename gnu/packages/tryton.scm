@@ -1232,21 +1232,20 @@ linked to the origin.")
 (define-public trytond-account-stock-anglo-saxon
   (package
     (name "trytond-account-stock-anglo-saxon")
-    (version "6.2.1")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_stock_anglo_saxon" version))
        (sha256
-        (base32 "1jgj5kb85qj3kb1hcyb9jps1x062cqa32x5rp4rvgg64824d8hwz"))))
-    (build-system python-build-system)
+        (base32 "088qygd6abz63dhd241mg5px2wwzzq7bv1jj3y0prncxzzyrkl9j"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_stock_anglo_saxon"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-purchase" ,trytond-purchase)
-       ("trytond-sale" ,trytond-sale)
-       ("trytond-sale-supply-drop-shipment"
-        ,trytond-sale-supply-drop-shipment)))
+     (cons* trytond-purchase
+            trytond-sale
+            trytond-sale-supply-drop-shipment
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond
            trytond-account
