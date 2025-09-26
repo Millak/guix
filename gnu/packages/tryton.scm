@@ -3300,16 +3300,16 @@ composed of action lines which can:")
 (define-public trytond-sale-complaint
   (package
     (name "trytond-sale-complaint")
-    (version "6.2.1")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_complaint" version))
        (sha256
-        (base32 "172650xyn2k1ay6jd4vy6f71s9rfv8qalfx9j8jz0i4cn320z272"))))
-    (build-system python-build-system)
+        (base32 "18840gqa97bmw6yksy18a65qn3lidcy2vn5h35mp1pzq6rb5rc6i"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_complaint"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account-invoice trytond-company trytond-party
            trytond-sale))
