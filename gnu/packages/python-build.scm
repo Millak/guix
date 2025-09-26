@@ -238,7 +238,8 @@ Included are implementations of:
 @end enumerate\n")
     (license license:psfl)))
 
-(define-public python-typing-extensions-next python-typing-extensions)
+(define-deprecated/public-alias python-typing-extensions-next
+  python-typing-extensions)            ;may be removed after 2025-12-01
 
 
 ;;;
