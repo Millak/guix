@@ -27000,9 +27000,10 @@ filetypes can be easily added by creating plugins for them.")
        (sha256
         (base32 "0c3dgm1rf7ih79pgkj7adffn8hlyqh5qah8rbzlq436kz3srk83q"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests in PyPI or Git
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (home-page "https://github.com/benknight/hue-python-rgb-converter")
     (synopsis "RGB conversion tool in Python")
     (description
