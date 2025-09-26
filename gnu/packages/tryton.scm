@@ -933,21 +933,22 @@ methods.")
 (define-public trytond-account-payment-clearing
   (package
     (name "trytond-account-payment-clearing")
-    (version "6.2.1")
+    (version "7.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_payment_clearing" version))
        (sha256
-        (base32 "037d759nzfs5qh97a5hq24argrga9i3p0b966xckss38cwyq7ixq"))))
-    (build-system python-build-system)
+        (base32 "15q0jmkckxq4nhvkyhh88jm7gmcw54p6zgragw0d502c7l8bargx"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_payment_clearing"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-account-statement" ,trytond-account-statement)
-       ("trytond-account-statement-rule" ,trytond-account-statement-rule)))
+     (cons* trytond-account-invoice
+            trytond-account-statement
+            trytond-account-statement-rule
+            %standard-trytond-native-inputs))
     (propagated-inputs
-     (list trytond trytond-account-payment))
+     (list trytond trytond-account trytond-account-payment trytond-company))
     (home-page
      "https://docs.tryton.org/projects/modules-account-payment-clearing")
     (synopsis "Tryton module for payment clearing")
