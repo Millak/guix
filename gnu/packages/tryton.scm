@@ -3682,19 +3682,22 @@ unit is defined on the product with its factor against the sale unit.")
 (define-public trytond-sale-shipment-cost
   (package
     (name "trytond-sale-shipment-cost")
-    (version "6.2.2")
+    (version "7.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_shipment_cost" version))
        (sha256
-        (base32 "1r6jcsfxa2q448ks5s23apbj3b35rc5596qk7f3hzwiw6nm168k5"))))
-    (build-system python-build-system)
+        (base32 "011hjaqwd3m4ncz15rs3czp8rcwcr4ak4rjzb15zznb0ghkz1kgx"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_shipment_cost"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-sale-promotion" ,trytond-sale-promotion)
-       ("trytond-stock-shipment-cost" ,trytond-stock-shipment-cost)))
+     (cons* trytond-account
+            trytond-party
+            trytond-sale-promotion
+            trytond-sale-shipment-grouping
+            trytond-stock
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond
            trytond-account-invoice
@@ -3702,7 +3705,8 @@ unit is defined on the product with its factor against the sale unit.")
            trytond-currency
            trytond-product
            trytond-sale
-           trytond-stock))
+           trytond-stock
+           trytond-stock-shipment-cost))
     (home-page "https://docs.tryton.org/projects/modules-sale-shipment-cost")
     (synopsis "Tryton module for sale shipment cost")
     (description "The @emph{Sale Shipment Cost} Tryton module adds shipment
