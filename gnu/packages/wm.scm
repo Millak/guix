@@ -2244,7 +2244,7 @@ XDG-Output for wlclock to work.")
 (define-public wlroots
   (package
     (name "wlroots")
-    (version "0.18.2")
+    (version "0.19.1")
     (source
      (origin
        (method git-fetch)
@@ -2253,7 +2253,7 @@ XDG-Output for wlclock to work.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1l1c4m8m1h8rl00y9yi6qjma5m3lhai9hqv5578q69yg2dcwraxw"))))
+        (base32 "1w3nlrvy7625jh4f0l923f7irywzfdashcw5hbf8jq9kpjhpm323"))))
     (build-system meson-build-system)
     (arguments
      (list #:phases
@@ -2304,19 +2304,7 @@ modules for building a Wayland compositor.")
 
 ;; Allow packages refering to stable wlroots version, because
 ;; wlroots updates are backward incompatible.
-(define-public wlroots-0.19
-  (package
-    (inherit wlroots)
-    (version "0.19.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://gitlab.freedesktop.org/wlroots/wlroots")
-              (commit version)))
-       (file-name (git-file-name "wlroots" version))
-       (sha256
-        (base32 "1w3nlrvy7625jh4f0l923f7irywzfdashcw5hbf8jq9kpjhpm323"))))))
+(define-public wlroots-0.19 wlroots)
 
 (define-public wlroots-0.18
   (package
