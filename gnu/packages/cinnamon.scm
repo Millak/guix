@@ -37,9 +37,12 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bootstrap)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cups)
+  #:use-module (gnu packages docbook)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
@@ -48,8 +51,11 @@
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages nss)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages photo)
+  #:use-module (gnu packages polkit)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -349,6 +355,92 @@ panel used in GNOME 3.0's control center.")
 as well as some desktop-wide documents.")
     (license (list license:gpl2+ license:lgpl2.0+
                    license:expat)))) ;display-name.c , edid-parse.c
+
+(define-public cinnamon-settings-daemon
+  (package
+    (name "cinnamon-settings-daemon")
+    (version "6.6.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/linuxmint/cinnamon-settings-daemon")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0mng9wx0a64gwfb7hjxfxxc865kkwav20rf6sjhas2xzszvd7nnd"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      #~(list ;; Otherwise, the RUNPATH will lack the final path component.
+              (string-append "-Dc_link_args=-Wl,-rpath=" #$output
+                             "/lib/cinnamon-settings-daemon-3.0:"
+                             ;; Also add NSS because for some reason Meson
+                             ;; > 0.60 does not add it automatically (XXX).
+                             (search-input-directory %build-inputs "lib/nss")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'set-baobab-file-name
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Hard-code the file name of Baobab instead of looking
+              ;; it up in $PATH.  This ensures users get the "Examine"
+              ;; button in the low disk space notification of CDM even
+              ;; if they don't have Cinnamon in their main profile.
+              (substitute* "plugins/housekeeping/csd-disk-space.c"
+                (("g_find_program_in_path \\(DISK_SPACE_ANALYZER\\)")
+                 (format #f "g_strdup (~s)"
+                         (search-input-file inputs "bin/baobab"))))))
+          (add-after 'unpack 'skip-update-icon-cache
+            (lambda _
+              (substitute* "install-scripts/meson_update_icon_cache.py"
+                (("gtk-update-icon-cache") "true")))))))
+    (native-inputs
+     (list docbook-xml-4.2
+           docbook-xsl
+           gettext-minimal
+           `(,glib "bin")               ;for glib-mkenums
+           libxslt
+           perl
+           pkg-config))
+    (inputs
+     (list alsa-lib
+           baobab
+           cinnamon-desktop
+           colord
+           cups
+           gcr
+           geoclue
+           geocode-glib
+           gsettings-desktop-schemas
+           lcms
+           libcanberra
+           libgnomekbd
+           libgudev
+           libgweather
+           libnotify
+           (librsvg-for-system)
+           libwacom
+           libx11
+           libxtst
+           modem-manager
+           network-manager
+           nss
+           polkit
+           pulseaudio
+           upower
+           wayland
+           xf86-input-wacom))
+    (home-page "https://github.com/linuxmint/cinnamon-settings-daemon")
+    (synopsis "Cinnamon settings daemon")
+    (description
+     "This package contains the daemon responsible for setting the various
+parameters of a Cinnamon session and the applications that run under it.  It
+handles settings such keyboard layout, shortcuts, and accessibility, clipboard
+settings, themes, mouse settings, and startup of other daemons.")
+    (license license:gpl2+)))
 
 (define-public muffin
   (package
