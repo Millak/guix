@@ -2673,7 +2673,10 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0w0qk61ll0mddbkiwavqfx048sacyvp6fwglms58ypw869rh7iy7"))))
+               (base32 "0w0qk61ll0mddbkiwavqfx048sacyvp6fwglms58ypw869rh7iy7"))
+              (patches
+               (search-patches
+                "mpv-0.40.0-fix-ffmpeg-8.0.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
