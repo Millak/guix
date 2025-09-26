@@ -14879,7 +14879,7 @@ standard library.")
 (define-public go-github-com-moby-sys-user
   (package
     (name "go-github-com-moby-sys-user")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -14889,7 +14889,7 @@ standard library.")
                                           #:subdir "user"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1clr9x412gr1cq3jxf9lxblh9pkf8c42gz57wr14miy0nqsimx7j"))))
+        (base32 "1ayv2f12za923fzyf6j4d39l54xwaijbq0xfrlfdb8xsif4nlfnb"))))
     (build-system go-build-system)
     (arguments
      (list
