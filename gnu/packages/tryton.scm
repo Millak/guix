@@ -4208,16 +4208,16 @@ packaging information about customer and supplier return shipments.")
 (define-public trytond-stock-package-shipping
   (package
     (name "trytond-stock-package-shipping")
-    (version "6.2.0")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_package_shipping" version))
        (sha256
-        (base32 "0j902bvkmfhn353z6dgfbik7jh5yps13jz4dq785rqj2ia5az9iq"))))
-    (build-system python-build-system)
+        (base32 "1md2rxdgsgblk2vsicr0xx7pjdixc69awy3wsdlq0vxmxaicahfa"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_package_shipping"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond
            trytond-carrier
