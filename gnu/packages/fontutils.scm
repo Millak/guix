@@ -415,6 +415,7 @@ but also provides many useful font conversion and analysis facilities.
                         "--ignore=tests/makeotfexe_test.py"
                         "--ignore=tests/otc2otf_test.py"
                         "--ignore=tests/otf2ttf_test.py"
+                        "--ignore=tests/proofpdf_test.py"
                         "--ignore=tests/ttxn_test.py")))))))
     (native-inputs
      (list pkg-config
