@@ -2235,17 +2235,18 @@ to the email.")
 (define-public trytond-party
   (package
     (name "trytond-party")
-    (version "6.2.1")
+    (version "7.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_party" version))
        (sha256
-        (base32 "1g62kzdqr4rq6k8zswil4anwhd22d8nzz0i852fmkdsb97yqg4id"))))
-    (build-system python-build-system)
-    ;; Doctest 'scenario_party_phone_number.rst' fails.
-    (arguments (tryton-arguments "party" "--no-doctest"))
-    (native-inputs (%standard-trytond-native-inputs))
+        (base32 "19mlqkykih95h28r6d9ibmdvh93hxjw4ykgr6svc204rvpjqlbmg"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "party"))
+    (native-inputs
+     (cons* python-phonenumbers
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list python-stdnum trytond trytond-country))
     (home-page "https://www.tryton.org/")
