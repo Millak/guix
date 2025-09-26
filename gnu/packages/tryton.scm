@@ -644,20 +644,23 @@ for Tryton.")
 (define-public trytond-account-fr-chorus
   (package
     (name "trytond-account-fr-chorus")
-    (version "6.2.1")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_fr_chorus" version))
        (sha256
-        (base32 "14rcfk825m7wi73a4ahps5wqrz2aws3a7spz402mmbfxz84ypvbg"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "account_fr_chorus"))
+        (base32 "1cim1zy34inp9162lcblldwfksxhqvcmcndgvj9l75dsrv53zg9h"))))
+    (build-system pyproject-build-system)
+    ;; doctest requires network and an api key
+    (arguments (tryton-arguments "account_fr_chorus" "-k not scenario"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-edocument-uncefact" ,trytond-edocument-uncefact)))
+     (cons* trytond-account-fr
+            trytond-edocument-uncefact
+            %standard-trytond-native-inputs))
     (propagated-inputs
-     (list python-requests
+     (list python-oauthlib
+           python-requests-oauthlib
            trytond
            trytond-account
            trytond-account-invoice
