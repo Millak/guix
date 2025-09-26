@@ -4694,16 +4694,16 @@ periods.")
 (define-public trytond-timesheet-cost
   (package
     (name "trytond-timesheet-cost")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_timesheet_cost" version))
        (sha256
-        (base32 "1b1xi7fa371kdsci0naskspvznswb8z8yay7nrzzi8rv622g0cjw"))))
-    (build-system python-build-system)
+        (base32 "0j01gmci9kzjlp0jplg3k36hzwa4cws51jxbjlni65szmm4vsvkw"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "timesheet_cost"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-company trytond-party trytond-timesheet))
     (home-page "https://docs.tryton.org/projects/modules-timesheet-cost")
