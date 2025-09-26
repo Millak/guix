@@ -4085,16 +4085,16 @@ defining some Locations as movable
 (define-public trytond-stock-location-sequence
   (package
     (name "trytond-stock-location-sequence")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_location_sequence" version))
        (sha256
-        (base32 "0ab2jf36mmbkg0hrhwrmpjh5m9kpl60mz1gdkb2zhv629z9bxr13"))))
-    (build-system python-build-system)
+        (base32 "12ahqcxxfsk5iwxyyx7fz1hplp4yjdrw11ybyd1cdvcx3zsjblag"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_location_sequence"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-stock))
     (home-page
