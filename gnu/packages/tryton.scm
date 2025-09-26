@@ -3034,21 +3034,22 @@ makes purchase to generate invoice lines instead of invoices.")
 (define-public trytond-purchase-price-list
   (package
     (name "trytond-purchase-price-list")
-    (version "6.2.1")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_purchase_price_list" version))
        (sha256
-        (base32 "0xqry794l9vy5v5ck0qqy9yli57av4zzmpv1g8f9hkg7lm9ypg0v"))))
-    (build-system python-build-system)
+        (base32 "1zpyd9vryh9lwl3n8pnfa222815n7lcmwhs82p734v5l7c9cwfwg"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "purchase_price_list"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond
            trytond-account
            trytond-company
            trytond-party
+           trytond-product
            trytond-product-price-list
            trytond-purchase))
     (home-page "https://docs.tryton.org/projects/modules-purchase-price-list")
