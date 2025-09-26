@@ -1067,17 +1067,31 @@ and category.")
 (define-public trytond-account-rule
   (package
     (name "trytond-account-rule")
-    (version "6.2.1")
+    (version "7.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "trytond_account_rule" version))
               (sha256
-               (base32 "1rn0xdqk5pcjybpyw09fqag6lyha06dq9qb3v0jc31cvwmd17ckl"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "trytond_account_rule"))
-    (native-inputs (%standard-trytond-native-inputs))
-    (propagated-inputs (list trytond trytond-account
-                             trytond-company trytond-party))
+               (base32 "0p9blifdzx97arzs8djpqqgg3lpyk8saxjd4q4xxzjghk22gf04c"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "account_rule"))
+    (native-inputs
+     (cons* trytond-account-invoice-stock
+            trytond-account-stock-anglo-saxon
+            trytond-account-stock-continental
+            trytond-product
+            trytond-purchase
+            trytond-purchase-shipment-cost
+            trytond-sale
+            trytond-sale-gift-card
+            trytond-stock
+            trytond-stock-consignment
+            %standard-trytond-native-inputs))
+    (propagated-inputs
+     (list trytond
+           trytond-account
+           trytond-company
+           trytond-party))
     (home-page "https://docs.tryton.org/projects/modules-account-rule")
     (synopsis "Tryton module to change accounts based on rules")
     (description "The @emph{Account Rule} Tryton module allows rules which
