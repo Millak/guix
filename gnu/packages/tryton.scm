@@ -3716,16 +3716,16 @@ cost for sale.")
 (define-public trytond-sale-shipment-grouping
   (package
     (name "trytond-sale-shipment-grouping")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_shipment_grouping" version))
        (sha256
-        (base32 "0v8inxsgdhmkiaj0l3c2gjzbs96qbbxmbw67f14mx9axjvcvkkwy"))))
-    (build-system python-build-system)
+        (base32 "1hb4h00xsx9r6cri6c5ys7gx0181h8lv2q366djsxfsci76zim8g"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_shipment_grouping"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-party trytond-sale trytond-stock))
     (home-page
