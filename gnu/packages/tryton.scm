@@ -1128,21 +1128,20 @@ statements.  Statement can be used for bank statement, cash daybook etc.")
 (define-public trytond-account-statement-aeb43
   (package
     (name "trytond-account-statement-aeb43")
-    (version "6.2.1")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_statement_aeb43" version))
        (sha256
-        (base32 "1snjabg4qixsb99lsrirpx7zrz0f21wy46d61rar5704657yxyc9"))))
-    (build-system python-build-system)
+        (base32 "0vgcbh7gfgcdqc7fcc90hsib0d5sbianw53vxb61bax8dgzj4cyr"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_statement_aeb43"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
-     (list python-csb43 python-stdnum trytond trytond-account-statement
-           trytond-bank))
+     (list python-csb43 trytond trytond-account-statement trytond-bank))
     (home-page
-     "https://docs.tryton.org/projects/trytond-account-statement-aeb43")
+     "https://docs.tryton.org/projects/modules-account-statement-aeb43")
     (synopsis "Tryton module to import AEB43 statements")
     (description "The @emph{Account Statement AEB43} Tryton module implements
 the import of @emph{Norm 43} files as statement.  @emph{Norm 43} is a standard
