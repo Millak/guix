@@ -4895,16 +4895,16 @@ optionally triggers action.")
 (define-public trytond-web-user
   (package
     (name "trytond-web-user")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_web_user" version))
        (sha256
-        (base32 "04b3mb4kxibz073746c90i9k4gsc3vnnk47fcn4wqj2b2wq6smng"))))
-    (build-system python-build-system)
+        (base32 "1ww3074ywgvh7rl007m85lndnhywkx71gsi302nxrsvrkjnxjjyc"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "web_user"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-party))
     (home-page "https://docs.tryton.org/projects/modules-web-user")
