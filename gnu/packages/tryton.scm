@@ -1291,16 +1291,16 @@ continental accounting model for stock valuation.")
 (define-public trytond-account-stock-landed-cost
   (package
     (name "trytond-account-stock-landed-cost")
-    (version "6.2.2")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_stock_landed_cost" version))
        (sha256
-        (base32 "01yfkhwxw86s354y51bhs799cvfhwkmjrnmhaspbn889mkpir0wg"))))
-    (build-system python-build-system)
+        (base32 "1wjd6c4dp266b5vcw99yas2p42mr86mdzir110w0s3ml46qqwr1j"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_stock_landed_cost"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account trytond-account-invoice
            trytond-product trytond-stock))
