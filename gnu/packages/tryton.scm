@@ -184,26 +184,51 @@ and security.")
      "This package provides a library to access Tryton server as a client.")
     (license license:lgpl3+)))
 
-(define (tryton-phases module . extra-arguments)
+;; Suppress common useless warnings to avoid cluttering output
+(define %pytest.ini "
+[pytest]
+filterwarnings =
+  ignore:.*SQLite backend.*:UserWarning
+  ignore:Can not create index with parameters:UserWarning
+  ignore::DeprecationWarning
+")
+
+(define (tryton-phases module . extra-test-arguments)
   "Return the phases for building and testing a Tryton module named MODULE.
-If present, pass EXTRA-ARGUMENTS to runtest as well."
-  `(modify-phases %standard-phases
-     (replace 'check
-       (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-         (let ((runtest
-                (string-append
-                 (assoc-ref inputs "trytond")
-                 "/lib/python"
-                 ,(version-major+minor (package-version python))
-                 "/site-packages/trytond/tests/run-tests.py")))
-           (when tests?
-             (add-installed-pythonpath inputs outputs)
-             (invoke "python" runtest "-m" ,module ,@extra-arguments)))))))
+If present, pass EXTRA-TEST-ARGUMENTS to pytest as well."
+  #~(modify-phases %standard-phases
+      (add-before 'check 'prepare-check
+        (lambda* (#:key tests? #:allow-other-keys)
+          (when tests?
+            (setenv "DB_NAME" ":memory:")
+            (setenv "DB_CACHE" "/tmp")
+            (setenv "HOME" "/tmp")
+            ;; Fake this directory as a tryton.module.… sub-module.
+            (mkdir-p "/tmp/dummy/trytond/modules")
+            (symlink (getcwd) (string-append "/tmp/dummy/trytond/modules/" #$module))
+            (setenv "GUIX_TRYTOND_MODULES_PATH"
+                    (string-append (getenv "GUIX_TRYTOND_MODULES_PATH")
+                                   ":/tmp/dummy/trytond/modules"))
+            ;; Create pytest.ini in sub-dir to make that dir pytest's
+            ;; "rootdir" and avoid that the module's files get scanned (which
+            ;; will fail since here they are not part of a package).
+            (with-output-to-file "tests/pytest.ini"
+              (lambda ()
+                (format #t #$%pytest.ini))))))
+      (replace 'check
+        (lambda* (#:key tests? #:allow-other-keys)
+          (when tests?
+            ;; Use pytest to allow excluding failing tests via command line
+            ;; args (resp. arguments to '(tryton-arguments)')
+            (invoke "pytest" "--tb=short" "-v"
+                    "--config-file=tests/pytest.ini"
+                    "tests"
+                    #$@extra-test-arguments))))))
 
 (define (tryton-arguments module . extra-arguments)
   "Like ’tryton-phases’, but directly return all arguments for
 the build system."
-  `(#:phases ,(apply tryton-phases module extra-arguments)))
+  (list #:phases (apply tryton-phases module extra-arguments)))
 
 ;;;
 ;;;  Tryton modules - please sort alphabetically
