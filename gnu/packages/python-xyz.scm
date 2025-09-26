@@ -40196,6 +40196,21 @@ software by taking care of all interactions with low-level network programming
 interfaces.")
     (license license:gpl2)))
 
+;; Package variant to build python-omero-py@5.20.0
+(define-public python-zeroc-ice-3.6
+  (package
+    (inherit python-zeroc-ice)
+    (version "3.6.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "zeroc-ice" version))
+              (sha256
+               (base32
+                "0mikjfvq26kh8asnn9v55z41pap4c5ypymqnwwi4xkavc3mzyda2"))
+              (patches
+               (search-patches
+                "python-zeroc-ice-3.6.5-python-3.11-support.patch"))))))
+
 (define-public python-islenska
   (package
     (name "python-islenska")
@@ -40295,20 +40310,6 @@ bigrams (pairs of two words or tokens), or of trigrams.  Icegrams is useful for
 instance in spelling correction, predictive typing, to help disabled people
 write text fast, and for various text generation, statistics, and modeling tasks.")
     (license license:expat)))
-
-(define-public python-zeroc-ice-3.6
-  (package
-    (inherit python-zeroc-ice)
-    (version "3.6.5")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "zeroc-ice" version))
-              (sha256
-               (base32
-                "0mikjfvq26kh8asnn9v55z41pap4c5ypymqnwwi4xkavc3mzyda2"))
-              (patches
-               (search-patches
-                "python-zeroc-ice-3.6.5-python-3.11-support.patch"))))))
 
 (define-public python-whenever
   (package
