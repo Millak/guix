@@ -4161,18 +4161,18 @@ it is no more used to compute the forecast quantity of the stock.")
 (define-public trytond-stock-lot-unit
   (package
     (name "trytond-stock-lot-unit")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_lot_unit" version))
        (sha256
-        (base32 "1m6vbz57y0yrjv4z447gggqgcwd6dzk0hrycv5zvbq4h1kscrh6z"))))
-    (build-system python-build-system)
+        (base32 "0zpyhspnfbcr45x5c5w8dgz1ssl5z72l36c3w4j05z3c0lxs50vz"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_lot_unit"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-production" ,trytond-production)))
+     (cons* trytond-production
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-product trytond-stock trytond-stock-lot))
     (home-page "https://docs.tryton.org/projects/modules-stock-lot-unit")
