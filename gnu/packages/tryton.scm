@@ -255,16 +255,16 @@ the build system."
 (define-public trytond-account
   (package
     (name "trytond-account")
-    (version "6.2.7")
+    (version "7.0.22")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account" version))
        (sha256
-        (base32 "1jjffyfkax36v6znhdyvlrr314h3d5rn13iwv3kvhsm6paddbmwi"))))
-    (build-system python-build-system)
+        (base32 "10m6743h2qjdfrbzvcm11bg7b3rk4570vfg5ng0zi69yv8hd8zak"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list python-simpleeval trytond trytond-company trytond-currency
            trytond-party))
