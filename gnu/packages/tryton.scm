@@ -471,16 +471,16 @@ receivable move lines.")
 (define-public trytond-account-dunning-email
   (package
     (name "trytond-account-dunning-email")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_dunning_email" version))
        (sha256
-        (base32 "01d0cwgvl40i7zq9s3yrmf504j8s6395vs8mm1hgg0s9dpi7pl46"))))
-    (build-system python-build-system)
+        (base32 "0ry043b8fa0sphamm7xaybf836c5q75w18158zgzg9wm2xbbqjsg"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_dunning_email"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account-dunning trytond-account-dunning-letter
            trytond-party))
