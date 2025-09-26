@@ -14721,6 +14721,33 @@ about OS mounts as seen by the current process is available from
 names.")
     (license license:asl2.0)))
 
+(define-public go-github-com-moby-sys-reexec
+  (package
+    (name "go-github-com-moby-sys-reexec")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moby/sys")
+             (commit (go-version->git-ref version
+                                          #:subdir "reexec"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n2z0zqfdyw6rllqdljddczh758kq22k4ajrhv27shv7m3fnvm0p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/sys/reexec"
+      #:unpack-path "github.com/moby/sys"))
+    (home-page "https://github.com/moby/sys")
+    (synopsis "BusyBox style reexec of a binary for Golang")
+    (description
+     "This package facilitates the BusyBox style reexec of a binary.
+Handlers can be registered with a name and the argv 0 of the exec of the
+binary will be used to find and execute custom init paths.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-moby-sys-sequential
   (package
     (name "go-github-com-moby-sys-sequential")
