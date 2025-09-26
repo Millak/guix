@@ -172,7 +172,7 @@ information.")
     (arguments
      `(#:tests? #f  ; No tests exist.
        #:make-flags
-       '("CC=gcc")
+       '("CC=gcc -g -O2 -Wno-error=implicit-function-declaration")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch
