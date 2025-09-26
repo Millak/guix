@@ -2396,16 +2396,16 @@ reference field classification to the product template.")
 (define-public trytond-product-classification-taxonomic
   (package
     (name "trytond-product-classification-taxonomic")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_product_classification_taxonomic" version))
        (sha256
-        (base32 "1933kqhab8ky2mman13mmg06rdmlbak3sjgm5qbk615x5fzbl4s4"))))
-    (build-system python-build-system)
+        (base32 "04rr76kwxv05z0m5dy3p5sk5cq4jf0wab8wzrwl8g62ajrs8m697"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "product_classification_taxonomic"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-product-classification))
     (home-page
