@@ -2511,16 +2511,19 @@ product and variant.")
 (define-public trytond-product-image-attribute
   (package
     (name "trytond-product-image-attribute")
-    (version "6.2.0")
+    (version "7.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "trytond_product_image_attribute" version))
               (sha256
-               (base32 "1ywyh158325v461qkka5svp4gygsfkkrxd6yl9dgfgypd483qjs8"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "trytond_product_image_attribute"))
-    (native-inputs (%standard-trytond-native-inputs))
-    (propagated-inputs (list trytond trytond-product
+               (base32 "0avbq2bvcynfb70148nmkm2pgzy6f40qm2hmh2ms5nsyn2r9bfz4"))))
+    (build-system pyproject-build-system)
+    ;; tests require network - unfortunately this disables the main test case
+    (arguments (tryton-arguments "product_image_attribute"
+                                 "-k not test_image_attribute"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs (list trytond
+                             trytond-product
                              trytond-product-attribute
                              trytond-product-image))
     (home-page "https://docs.tryton.org/projects/modules-product-image-attribute")
