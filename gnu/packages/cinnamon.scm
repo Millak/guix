@@ -356,6 +356,31 @@ as well as some desktop-wide documents.")
     (license (list license:gpl2+ license:lgpl2.0+
                    license:expat)))) ;display-name.c , edid-parse.c
 
+(define-public cinnamon-menus
+  (package
+    (name "cinnamon-menus")
+    (version "6.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/linuxmint/cinnamon-menus")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "080dsaar27cfwn4ilhzd5vjcl4hbn4dvr9kqr9b44ik6acy1cf5y"))))
+    (build-system meson-build-system)
+    (inputs (list glib))
+    (native-inputs
+     (list gettext-minimal gobject-introspection pkg-config))
+    (synopsis "Menu support for Cinnamon desktop")
+    (description "Cinnamon Menus contains the libcinnamon-menu library,
+the layout configuration files for the Cinnamon menu, as well as a simple
+menu editor.")
+    (home-page "https://github.com/linuxmint/cinnamon-menus")
+    (license license:lgpl2.0+)))
+
 (define-public cinnamon-settings-daemon
   (package
     (name "cinnamon-settings-daemon")
