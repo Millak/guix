@@ -14709,6 +14709,40 @@ names.")
 Windows.")
     (license license:asl2.0)))
 
+(define-public go-github-com-moby-sys-symlink
+  (package
+    (name "go-github-com-moby-sys-symlink")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moby/sys")
+             (commit (go-version->git-ref version
+                                          #:subdir "symlink"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i1phx1kk9qa4jf1i1nl23d3f6k9fn2w46274cl76cqw9hjqg868"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/sys/symlink"
+      #:unpack-path "github.com/moby/sys"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/moby/sys")
+    (synopsis "Extension of Golang's @code{path/filepath} library")
+    (description
+     "This package implements @code{FollowSymlinkInScope} which is an
+ extension of @code{path/filepath.EvalSymlinks}, as well as a Windows
+long-path aware version of @code{path/filepath.EvalSymlinks} from the Go
+standard library.")
+    ;; The code from [path/filepath.EvalSymlinks] has been adapted in fs.go.
+    ;; Read the [LICENSE.BSD] file that governs fs.go and [LICENSE.APACHE] for
+    ;; fs_unix_test.go.
+    (license (list license:asl2.0
+                   license:bsd-3))))
+
 (define-public go-github-com-moby-sys-user
   (package
     (name "go-github-com-moby-sys-user")
