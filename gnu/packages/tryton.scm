@@ -4738,23 +4738,26 @@ user for a period of time only.")
 (define-public trytond-web-shop
   (package
     (name "trytond-web-shop")
-    (version "6.2.0")
+    (version "7.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_web_shop" version))
        (sha256
-        (base32 "182mawahm74lkns2cpy9lrczhllpa8p8np1d7k9agv9kypaqq582"))))
-    (build-system python-build-system)
+        (base32 "19i8c34jcgni6q6fyr0dbfpcbcri9cw2nrwh7j609yspvi4x2was"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "web_shop"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-product-attribute" ,trytond-product-attribute)
-       ("trytond-product-image" ,trytond-product-image)))
+     (cons* trytond-account-tax-rule-country
+            trytond-product-attribute
+            trytond-product-image
+            trytond-sale-price-list
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond
            trytond-account
            trytond-company
+           trytond-country
            trytond-currency
            trytond-product
            trytond-sale
