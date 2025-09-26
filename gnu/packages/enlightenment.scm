@@ -561,6 +561,7 @@ directories.
 @dfn{Enlightenment Foundation Libraries} (EFL).")
     (license license:bsd-2)))
 
+;; XXX: See: <https://codeberg.org/guix/guix/issues/3014>.
 (define-public epour
   (package
     (name "epour")
@@ -583,8 +584,8 @@ directories.
               (substitute* "epour/gui/__init__.py"
                 (("join\\(data_path")
                  (string-append "join(\"" #$output "/share/epour\""))))))))
-    (native-inputs (list intltool python-distutils-extra python-setuptools
-                         python-wheel))
+    (native-inputs (list intltool python-distutils-extra python-setuptools-67
+                         python-wheel-0.40))
     (inputs (list libtorrent-rasterbar-1.2 python-dbus python-efl python-pyxdg))
     (home-page "https://www.enlightenment.org")
     (synopsis "EFL Bittorrent client")
