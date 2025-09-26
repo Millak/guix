@@ -3552,16 +3552,16 @@ be handled and recorded.")
 (define-public trytond-sale-price-list
   (package
     (name "trytond-sale-price-list")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_price_list" version))
        (sha256
-        (base32 "037h107wl3p3ig9w8db2878x80gzdf4dsa9wjrrcxdaz7yp7iwhn"))))
-    (build-system python-build-system)
+        (base32 "0r0rklqqa8aw97yk910l4vzx953a3q4hlbn53l22pq0f30j2gqlf"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_price_list"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-company trytond-party
            trytond-product-price-list trytond-sale))
