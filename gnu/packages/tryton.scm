@@ -1412,16 +1412,16 @@ criteria.")
 (define-public trytond-analytic-account
   (package
     (name "trytond-analytic-account")
-    (version "6.2.0")
+    (version "7.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_analytic_account" version))
        (sha256
-        (base32 "1ys9admjlgvn2m2zjp74liplzmc8q12x8i004cgb5m43x2mhrj8d"))))
-    (build-system python-build-system)
+        (base32 "14qrx6nf1x939sd20hm905bfj9r1gjfpbs8cs9myjwxrqq2m191l"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "analytic_account"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account trytond-company trytond-currency
            trytond-party))
