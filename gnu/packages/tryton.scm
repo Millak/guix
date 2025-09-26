@@ -2306,16 +2306,16 @@ different types of relations between parties.")
 (define-public trytond-party-siret
   (package
     (name "trytond-party-siret")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_party_siret" version))
        (sha256
-        (base32 "0ab5g3rs2k73wk01ykzh1s4pgrnypdv4l75lr3pn8hyxw9q4b5vk"))))
-    (build-system python-build-system)
+        (base32 "0bvn22hpj8a65kcvd1g8b51dxylpi6dm77fzivpklmpjqln5wgl3"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "party_siret"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-party))
     (home-page "https://docs.tryton.org/projects/modules-party-siret")
