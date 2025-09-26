@@ -4302,17 +4302,23 @@ package labels to be generated for shipments using MyGLS webservices.")
 (define-public trytond-stock-package-shipping-sendcloud
   (package
     (name "trytond-stock-package-shipping-sendcloud")
-    (version "6.2.1")
+    (version "7.0.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "trytond_stock_package_shipping_sendcloud" version))
               (sha256
-               (base32 "1hvlyrdz1nv1l06qrdj1np8yfyip8hhw0l7wbin1rab63hbxa8rf"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "trytond_stock_package_shipping_sendcloud"))
-    (native-inputs (%standard-trytond-native-inputs))
+               (base32 "04jm3ippy3ym79c1akx9fypw7nj80drbywsa3j7aa5bj043jk269"))))
+    (build-system pyproject-build-system)
+    ;; doctest requires network and an api key
+    (arguments (tryton-arguments "stock_package_shipping_sendcloud"
+                                 "-k not scenario_shipping_sendcloud"))
+    (native-inputs
+     (cons* trytond-sale
+            trytond-sale-shipment-cost
+            %standard-trytond-native-inputs))
     (propagated-inputs (list python-requests
                              trytond
+                             trytond-carrier
                              trytond-company
                              trytond-party
                              trytond-product
