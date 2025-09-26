@@ -1530,18 +1530,26 @@ analytic accounts on a sale line.")
 (define-public trytond-attendance
   (package
     (name "trytond-attendance")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_attendance" version))
        (sha256
-        (base32 "0g9b0x4zdz6djmd592ll8zj4q3lhz5gj97phc38kkzvwgvpq9xw2"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "attendance"))
+        (base32 "1j5pldlgdkhllsqlnpjd4l56h933pyfwllxrfr1dd47730ky7rw9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases #$(tryton-phases "attendance")
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; DB_CACHE and pytest don't work together here
+                (invoke "python" "-m" "unittest" "discover")))))))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-timesheet" ,trytond-timesheet)))
+     (cons* trytond-timesheet
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-company))
     (home-page "https://docs.tryton.org/projects/modules-attendance")
