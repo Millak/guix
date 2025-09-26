@@ -4556,16 +4556,16 @@ there can be a move with the remaining quantity.")
 (define-public trytond-stock-supply
   (package
     (name "trytond-stock-supply")
-    (version "6.2.2")
+    (version "7.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_supply" version))
        (sha256
-        (base32 "1kb6rnb1xk8hnqr9znfpgh8m66590zqbar62xr7094bwaym2ymaa"))))
-    (build-system python-build-system)
+        (base32 "14sckfm145awpx9flcsrfc16yl4wxg2asjsmpz57clm2c6nnrhmr"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_supply"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond
            trytond-account
