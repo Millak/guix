@@ -3061,17 +3061,18 @@ lists to be defined for suppliers.")
 (define-public trytond-purchase-request
   (package
     (name "trytond-purchase-request")
-    (version "6.2.1")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_purchase_request" version))
        (sha256
-        (base32 "0as8lb6bgjigpg926fjfyfy25758m45ihl1xish5vlfcxmccpyn3"))))
-    (build-system python-build-system)
-    ;; Doctest 'scenario_purchase_request.rst' fails.
-    (arguments (tryton-arguments "purchase_request" "--no-doctest"))
-    (native-inputs (%standard-trytond-native-inputs))
+        (base32 "0s6i8s0s3k8wj2xkyncfnn9zd4l7d73wyz7x6glqyjx7x69qc74p"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "purchase_request"))
+    (native-inputs
+     (cons* trytond-stock-supply-bootstrap
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-product trytond-purchase))
     (home-page "https://www.tryton.org/")
