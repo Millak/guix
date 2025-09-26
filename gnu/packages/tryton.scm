@@ -2956,16 +2956,16 @@ the linked time sheets and the linked purchase lines.")
 (define-public trytond-purchase-amendment
   (package
     (name "trytond-purchase-amendment")
-    (version "6.2.1")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_purchase_amendment" version))
        (sha256
-        (base32 "0zprgfxpif2bbjbv8b4aci7s5si9sp3rjizr7nf31mvsjnwx7i06"))))
-    (build-system python-build-system)
+        (base32 "0s8kp88s73jn9z5bnj5n91fl67hpycrzcxl6hkdx4l2vha6r2f65"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "purchase_amendment"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account-invoice trytond-purchase
            trytond-purchase-history trytond-stock))
