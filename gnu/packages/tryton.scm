@@ -3652,21 +3652,22 @@ to the promotions.")
 (define-public trytond-sale-secondary-unit
   (package
     (name "trytond-sale-secondary-unit")
-    (version "6.2.0")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_secondary_unit" version))
        (sha256
-        (base32 "0as7vc8wp2i3402h5r90zg6170y3av41a6k5ivdfbaxlhsjq8lxa"))))
-    (build-system python-build-system)
+        (base32 "1pd3a4ykjyiipacy0pksv30mb6kf7n203mp6qh8jn4c2wwvjn06g"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_secondary_unit"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-account-invoice-secondary-unit"
-        ,trytond-account-invoice-secondary-unit)
-       ("trytond-sale-product-customer" ,trytond-sale-product-customer)
-       ("trytond-stock-secondary-unit" ,trytond-stock-secondary-unit)))
+     (cons* trytond-account-invoice-secondary-unit
+            trytond-sale-amendment
+            trytond-sale-blanket-agreement
+            trytond-sale-product-customer
+            trytond-stock-secondary-unit
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-account-invoice trytond-product trytond-sale
            trytond-stock))
