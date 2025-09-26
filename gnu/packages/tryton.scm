@@ -2608,18 +2608,20 @@ to compute prices per product or category.")
 (define-public trytond-product-price-list-dates
   (package
     (name "trytond-product-price-list-dates")
-    (version "6.2.1")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_product_price_list_dates" version))
        (sha256
-        (base32 "0312s99fqfjwyn5lp3b8qd7j0ac0208jbalgxxazfks1h2g22nj5"))))
-    (build-system python-build-system)
+        (base32 "075xhsp94mniwd97qrbhizjy3ijcslm6ygl3fpi275cvz5dx3qad"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "product_price_list_dates"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-sale-price-list" ,trytond-sale-price-list)))
+     (cons* trytond-product-price-list-cache
+            trytond-purchase-price-list
+            trytond-sale-price-list
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-product-price-list))
     (home-page
