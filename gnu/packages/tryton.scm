@@ -3499,20 +3499,22 @@ lead/opportunity model.")
 (define-public trytond-sale-payment
   (package
     (name "trytond-sale-payment")
-    (version "6.2.1")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_payment" version))
        (sha256
-        (base32 "02zq3smfj55n70kqgipi2q869lp7hlfm0qbw74qx7pina28pipf4"))))
-    (build-system python-build-system)
+        (base32 "03rd22bim95z9frpmvb5vk2h2p4pybbds3jy3y8rkz3vhizv61j4"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_payment"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-account-payment-clearing" ,trytond-account-payment-clearing)))
+     (cons* trytond-account-payment-clearing
+            %standard-trytond-native-inputs))
     (propagated-inputs
-     (list trytond trytond-account-invoice trytond-account-payment
+     (list trytond
+           trytond-account-invoice
+           trytond-account-payment
            trytond-sale))
     (home-page "https://docs.tryton.org/projects/modules-sale-payment")
     (synopsis "Tryton module that manage payments on sale")
