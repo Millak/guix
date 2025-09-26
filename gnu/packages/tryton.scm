@@ -4039,16 +4039,16 @@ other stock mechanisms to anticipate customer demand.")
 (define-public trytond-stock-inventory-location
   (package
     (name "trytond-stock-inventory-location")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_inventory_location" version))
        (sha256
-        (base32 "1x35rq6hzxb9wzsflvlsbl1fjgqcp6byrj4rk20fvgbhnv02s4x0"))))
-    (build-system python-build-system)
+        (base32 "1z79j28liyrf1wk34vpnqrvv0d9pil74scmghyn6s3d5a0hvaia6"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_inventory_location"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-company trytond-product trytond-stock))
     (home-page
