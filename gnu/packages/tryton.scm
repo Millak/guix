@@ -2464,21 +2464,21 @@ and assets.")
 (define-public trytond-product-cost-warehouse
   (package
     (name "trytond-product-cost-warehouse")
-    (version "6.2.1")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_product_cost_warehouse" version))
        (sha256
-        (base32 "0anz5071j1yzg9xp00qqcc3a4wb3zvl6605bzici76558zj7fl38"))))
-    (build-system python-build-system)
+        (base32 "075qjhwpc1a9hg8hzrzbwhaa9bnyz8a9y55jgl88b013zc2aic5h"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "product_cost_warehouse"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-account-invoice-stock" ,trytond-account-invoice-stock)
-       ("trytond-account-stock-continental" ,trytond-account-stock-continental)
-       ("trytond-product-cost-fifo" ,trytond-product-cost-fifo)
-       ("trytond-product-cost-history" ,trytond-product-cost-history)))
+     (cons* trytond-account-invoice-stock
+            trytond-account-stock-continental
+            trytond-product-cost-fifo
+            trytond-product-cost-history
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-company trytond-product trytond-stock))
     (home-page
