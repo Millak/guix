@@ -2352,16 +2352,16 @@ Template and Product.")
 (define-public trytond-product-attribute
   (package
     (name "trytond-product-attribute")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_product_attribute" version))
        (sha256
-        (base32 "10656g9na098ndjhy4iv1iv0020jin7yw38bb79zxynck39vld29"))))
-    (build-system python-build-system)
+        (base32 "15sdcmjnkyznay4ib4ccwlhhl6aymdpd7w0f6d28dfv41y4viw1y"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "product_attribute"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-product))
     (home-page "https://docs.tryton.org/projects/modules-product-attribute")
