@@ -4273,16 +4273,20 @@ different web services, the module supports:")
 (define-public trytond-stock-package-shipping-mygls
   (package
     (name "trytond-stock-package-shipping-mygls")
-    (version "6.2.1")
+    (version "7.0.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "trytond_stock_package_shipping_mygls" version))
               (sha256
-               (base32 "0pwq720mqv473s5aqib89z5bjdl127l8nqw91prxsna82bm16kv2"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "trytond_stock_package_shipping_mygls"))
-    (native-inputs (%standard-trytond-native-inputs))
-    (propagated-inputs (list python-pypdf2
+               (base32 "1qm1a9mkb8w2jaz149zk7rvv7w9s0irmv9fdnwhp3jmxlfrvh7xm"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "stock_package_shipping_mygls"
+                                 "-k not scenario_shipping_mygls"))
+    (native-inputs
+     (cons* trytond-sale
+            trytond-sale-shipment-cost
+            %standard-trytond-native-inputs))
+    (propagated-inputs (list python-pypdf
                              trytond
                              trytond-carrier
                              trytond-stock
