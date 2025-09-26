@@ -2302,6 +2302,22 @@ Wayland compositor")
 modules for building a Wayland compositor.")
     (license license:expat)))  ; MIT license
 
+;; Allow packages refering to stable wlroots version, because
+;; wlroots updates are backward incompatible.
+(define-public wlroots-0.19
+  (package
+    (inherit wlroots)
+    (version "0.19.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.freedesktop.org/wlroots/wlroots")
+              (commit version)))
+       (file-name (git-file-name "wlroots" version))
+       (sha256
+        (base32 "1w3nlrvy7625jh4f0l923f7irywzfdashcw5hbf8jq9kpjhpm323"))))))
+
 (define-public wlroots-0.18
   (package
     (inherit wlroots)
