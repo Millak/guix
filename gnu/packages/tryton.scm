@@ -4458,16 +4458,16 @@ stock quantity issues.")
 (define-public trytond-stock-secondary-unit
   (package
     (name "trytond-stock-secondary-unit")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_secondary_unit" version))
        (sha256
-        (base32 "0ihhgf4xs5rrf12v9mfj4rpsxjrqfl7schp3r66cdmrm0ccnrj29"))))
-    (build-system python-build-system)
+        (base32 "0xb85s763yf1icl05f09m4wizk1klby6bqj7addwnld2ycm906ga"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_secondary_unit"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-product trytond-stock))
     (home-page "https://docs.tryton.org/projects/modules-stock-secondary-unit")
