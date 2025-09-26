@@ -43,6 +43,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gnuzilla)
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
@@ -51,6 +52,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages readline)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
@@ -207,6 +209,72 @@ cross-DE solutions.")
      "Provides Python 3 bindings for libxapp, including a toolkit to build and
 persist XApp settings windows using GSettings.")
     (license license:lgpl2.0+)))
+
+(define-public cjs
+  (package
+    (name "cjs")
+    (version "128.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/linuxmint/cjs")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1dcaw0ij8nm5xmpbdbvalm12c9iw6mwq3nj34m9h17qfl4a37730"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (substitute* "installed-tests/scripts/testCommandLine.sh"
+                    (("Valentín") "")
+                    (("☭") ""))))))
+    (build-system meson-build-system)
+    (arguments
+     '(#:configure-flags '("-Dinstalled_tests=false")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'pre-check
+           (lambda _
+             ;; The test suite requires a running X server.
+             (system "Xvfb :1 &")
+             (setenv "DISPLAY" ":1")
+
+             ;; For the missing /etc/machine-id.
+             (setenv "DBUS_FATAL_WARNINGS" "0")))
+         (add-after 'install 'wrap-gi
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (wrap-program (string-append (assoc-ref outputs "out")
+                                          "/bin/cjs")
+               `("GI_TYPELIB_PATH" suffix
+                 (,(dirname
+                    (search-input-file
+                     inputs
+                     "lib/girepository-1.0/GObject-2.0.typelib"))
+                  ,(dirname
+                    (search-input-file
+                     inputs
+                     "lib/girepository-1.0/GIRepository-2.0.typelib"))))))))))
+    (native-inputs
+     (list `(,glib "bin")               ;for glib-compile-resources
+           pkg-config
+           libxml2
+           ;; For testing
+           dbus
+           dconf                        ;required to properly store settings
+           util-linux
+           xorg-server-for-tests))
+    (propagated-inputs
+     ;; These are all in the Requires.private field of cjs-1.0.pc.
+     ;; Check the version of mozjs required in meson.build.
+     (list cairo gobject-introspection mozjs-128))
+    (inputs
+     (list gtk+ readline))
+    (synopsis "Javascript bindings for Cinnamon")
+    (home-page "https://github.com/linuxmint/cjs/")
+    (description
+     "CJS is a javascript binding for Cinnamon, forked from GJS.")
+    (license license:gpl2+)))
 
 (define-public cinnamon-desktop
   (package
