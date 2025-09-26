@@ -517,16 +517,16 @@ accounting moves as fees when processing dunning.")
 (define-public trytond-account-dunning-letter
   (package
     (name "trytond-account-dunning-letter")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_dunning_letter" version))
        (sha256
-        (base32 "1jx1ad7kwlk7cm5j2b15bf4lcy5d2c13j8ag48v0pfy3kiglr2z3"))))
-    (build-system python-build-system)
+        (base32 "0ad0jyxmqiyfc5kgxrfzipllxmcn8kzgxmnjjil7w2pv3fw5jcr8"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_dunning_letter"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account trytond-account-dunning
            trytond-company trytond-party))
