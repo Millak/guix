@@ -1586,16 +1586,18 @@ configuration file.")
 (define-public trytond-bank
   (package
     (name "trytond-bank")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_bank" version))
        (sha256
-        (base32 "1gvsd8yyrba9bsql9zi4wlmg1jyjb7m13m15av0szkwxylcy0c0q"))))
-    (build-system python-build-system)
+        (base32 "0m5agk7dl2f51sg85s885b8wkfynvli9z8bra0i0f1k65q1qcpcp"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "bank"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs
+     (cons* python-schwifty
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list python-stdnum trytond trytond-currency trytond-party))
     (home-page "https://docs.tryton.org/projects/modules-bank")
