@@ -561,13 +561,13 @@ for fontTools.")
 (define-public python-cu2qu
   (package
     (name "python-cu2qu")
-    (version "1.6.7.post1")
+    (version "1.6.7.post2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cu2qu" version ".zip"))
        (sha256
-        (base32 "1x762r7bf39g6aivfvrmq00h6f07abvs9x1xm0fz8l81vq8jz64c"))))
+        (base32 "022qpzbpi6j56wqz48rnqs6dvksipw13fi4g10k941fnkgcn5x8x"))))
     (build-system pyproject-build-system)
     (arguments
      ;; XXX: Try to remove it when updating python-fonttools.
