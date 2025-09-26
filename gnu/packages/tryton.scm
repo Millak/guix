@@ -305,16 +305,16 @@ of fixed assets.")
 (define-public trytond-account-be
   (package
     (name "trytond-account-be")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_be" version))
        (sha256
-        (base32 "0ff27b9g1nf1gqlbv71kq7nm25r85vqpn8b0piajcxln1pbwgnmw"))))
-    (build-system python-build-system)
+        (base32 "1lx2dgvp84ib18z47fk7chxr04jlqm3jyk5pkb32q0air5d95j2f"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_be"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account trytond-account-eu))
     (home-page "https://docs.tryton.org/projects/modules-account-be")
