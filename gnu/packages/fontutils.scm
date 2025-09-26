@@ -1924,13 +1924,13 @@ with @samp{nameIDs}.")
 (define-public python-ufolib2
   (package
     (name "python-ufolib2")
-    (version "0.13.1")
+    (version "0.18.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "ufoLib2" version))
+       (uri (pypi-uri "ufolib2" version))
        (sha256
-        (base32 "0yx4i8q5rfyqhr2fj70a7z1bp1jv7bdlr64ww9z4nv9ycbda4x9j"))))
+        (base32 "1971ibdsgji8x0jzlk1hc6dv2r5wnfyylz7f6wjkymqw6v6fzq3x"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
