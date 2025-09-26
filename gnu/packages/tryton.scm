@@ -3599,20 +3599,21 @@ customer's names and codes for products or variants.")
 (define-public trytond-sale-promotion
   (package
     (name "trytond-sale-promotion")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_promotion" version))
        (sha256
-        (base32 "1nd4f5j25v3g25hr0xr6kqzv0rqavnwkc5wyn8r0if1y9b2scwnc"))))
-    (build-system python-build-system)
+        (base32 "1vc7ij8pgnfgp5w557kf1lnbir5xcq1i6zqhvv9pa0rpnrsmnh5z"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_promotion"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list python-simpleeval
            trytond
            trytond-company
+           trytond-currency
            trytond-product
            trytond-product-price-list
            trytond-sale
