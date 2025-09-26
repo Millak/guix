@@ -3370,16 +3370,16 @@ line.")
 (define-public trytond-sale-extra
   (package
     (name "trytond-sale-extra")
-    (version "6.2.0")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_extra" version))
        (sha256
-        (base32 "0j9ya68p6bfyr2ixh1dqfqnmfa4mn5ayf9hn5pfm2z7nih8bys3r"))))
-    (build-system python-build-system)
+        (base32 "1vvw7h2q0c6ifbwl3z60sna022npsqby29hrxcpgd5izcphk8jja"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_extra"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond
            trytond-company
