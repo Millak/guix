@@ -2078,32 +2078,33 @@ default browser with the map centered on the selected address.")
 (define-public trytond-incoterm
   (package
     (name "trytond-incoterm")
-    (version "6.2.0")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_incoterm" version))
        (sha256
-        (base32 "08sz2j3610iqqzz3qdl51pxdj8mncyjp8lg29y6sskfd0s4fhax5"))))
-    (build-system python-build-system)
+        (base32 "1p5p6nddx8qavs02355378ayy620lf884v35blvffz870mybz7i7"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "incoterm"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-account" ,trytond-account)
-       ("trytond-account-invoice" ,trytond-account-invoice)
-       ("trytond-account-invoice-stock" ,trytond-account-invoice-stock)
-       ("trytond-carrier" ,trytond-carrier)
-       ("trytond-purchase" ,trytond-purchase)
-       ("trytond-purchase-request-quotation"
-        ,trytond-purchase-request-quotation)
-       ("trytond-sale" ,trytond-sale)
-       ("trytond-sale-invoice-grouping" ,trytond-sale-invoice-grouping)
-       ("trytond-sale-opportunity" ,trytond-sale-opportunity)
-       ("trytond-sale-shipment-cost" ,trytond-sale-shipment-cost)
-       ("trytond-stock" ,trytond-stock)
-       ("trytond-stock-shipment-cost" ,trytond-stock-shipment-cost)))
+     (cons* trytond-account
+            trytond-account-invoice
+            trytond-account-invoice-stock
+            trytond-carrier
+            trytond-purchase
+            trytond-purchase-request-quotation
+            trytond-sale
+            trytond-sale-invoice-grouping
+            trytond-sale-opportunity
+            trytond-sale-shipment-cost
+            trytond-stock
+            %standard-trytond-native-inputs))
     (propagated-inputs
-     (list trytond trytond-company trytond-party))
+     (list trytond
+           trytond-company
+           trytond-country
+           trytond-party))
     (home-page "https://docs.tryton.org/projects/modules-incoterm")
     (synopsis "Tryton module for incoterms")
     (description "The @emph{Incoterm} Tryton module is used to manage the
