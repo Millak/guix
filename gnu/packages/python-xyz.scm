@@ -17558,16 +17558,14 @@ number of lines in the contained files easily.")
   (hidden-package
    (package
      (name "python-fonttools-minimal")
-     (version "4.39.3")
+     (version "4.59.2")
      (source (origin
                (method url-fetch)
-               (uri (pypi-uri "fonttools" version ".zip"))
+               (uri (pypi-uri "fonttools" version ".tar.gz"))
                (sha256
                 (base32
-                 "1msibi5cmi5znykkg66dq7xshl07lkqjxhrz5hcipqvlggsvjd4j"))))
+                 "08pgq9nrj3r81gzb6gbf5mcak0xyqrj26cw0rc5za4v1n14hfb77"))))
      (build-system python-build-system)
-     (native-inputs
-      (list unzip))
      (arguments '(#:tests? #f))
      (home-page "https://github.com/fonttools/fonttools")
      (synopsis "Tools to manipulate font files")
@@ -17594,14 +17592,17 @@ from an XML-based format.")
                  (when tests?
                    (invoke "pytest" "-vv"
                            "-k"
-                           ;; XXX: These tests need .trm files that are
-                           ;; not shipped with the PyPI release.
+                           ;; XXX: These tests need data files that are not
+                           ;; shipped with the PyPI release.
                            (format #f "not ~a"
                                    (string-join
-                                    '("test_read_fontdimens_mathsy"
+                                    '("test_cli_vtp"
+                                      "test_group_order"
+                                      "test_read_fontdimens_mathsy"
                                       "test_read_fontdimens_mathex"
                                       "test_read_fontdimens_vanilla"
                                       "test_read_boundary_char"
+                                      "test_reading_supplement_encoding"
                                       "fontTools.tfmLib"
                                       ;; The MtiTest tests fail for unknown
                                       ;; reasons (see:
