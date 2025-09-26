@@ -585,16 +585,16 @@ A wizard allows generating the following AEAT files:
 (define-public trytond-account-eu
   (package
     (name "trytond-account-eu")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_eu" version))
        (sha256
-        (base32 "1k11ncamp4cd5bdpj4va9p0vga2vcgfwd7wbivf1w4m1bzpisvm8"))))
-    (build-system python-build-system)
+        (base32 "115pvxvb4wnlsnbz8qk9z7a9kgvgzjfkxdyvlyffpllq5fwj5dym"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_eu"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond
            trytond-account
