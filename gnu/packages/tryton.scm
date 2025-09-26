@@ -3867,16 +3867,19 @@ supply method.")
 (define-public trytond-sale-supply-drop-shipment
   (package
     (name "trytond-sale-supply-drop-shipment")
-    (version "6.2.1")
+    (version "7.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_supply_drop_shipment" version))
        (sha256
-        (base32 "1i3a8amm3nacc7wis3amr4z9pl47sjzy7gds5qv1xg3fl1awm4ic"))))
-    (build-system python-build-system)
+        (base32 "04ydxw9jqbq07z5hl4aw31riyp9pv097v50zg9i4d7j2aykkldir"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_supply_drop_shipment"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs
+     (cons* trytond-sale-amendment
+            trytond-stock-split
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond
            trytond-company
