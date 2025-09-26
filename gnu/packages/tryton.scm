@@ -4815,23 +4815,22 @@ to Shopify, and downloads orders, transactions and creates fulfilments.")
 (define-public trytond-web-shop-vue-storefront
   (package
     (name "trytond-web-shop-vue-storefront")
-    (version "6.2.1")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_web_shop_vue_storefront" version))
        (sha256
-        (base32 "18rc77crfdckzxcz5wryqk0iqccm3mx2a6b956274643sa8kbhvs"))))
-    (build-system python-build-system)
+        (base32 "051xsffvhigra6xf7vnl9vnsd9d393xg9b2alcfy6h5fz5f2zxcr"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "web_shop_vue_storefront"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-carrier" ,trytond-carrier)
-       ("trytond-product-attribute" ,trytond-product-attribute)
-       ("trytond-product-image" ,trytond-product-image)
-       ("trytond-sale-promotion-coupon" ,trytond-sale-promotion-coupon)
-       ("trytond-sale-shipment-cost" ,trytond-sale-shipment-cost)
-       ("trytond-stock-shipment-cost" ,trytond-stock-shipment-cost)))
+     (cons* trytond-carrier
+            trytond-product-attribute
+            trytond-product-image
+            trytond-sale-promotion-coupon
+            trytond-sale-shipment-cost
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list python-elasticsearch
            python-stdnum
