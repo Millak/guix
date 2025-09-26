@@ -14663,6 +14663,46 @@ capabilities.  It's a maintained fork of
 https://github.com/syndtr/gocapability.")
     (license license:bsd-2)))
 
+(define-public go-github-com-moby-sys-mount
+  (package
+    (name "go-github-com-moby-sys-mount")
+    (version "0.3.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/moby/sys")
+              (commit (go-version->git-ref version
+                                           #:subdir "mount"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nh1disclgydvq7k10awzks6k8kw9cjj3q19f83ksi4b76p5l475"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "mount")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/sys/mount"
+      #:unpack-path "github.com/moby/sys"))
+    (propagated-inputs
+     (list go-github-com-moby-sys-mountinfo
+           go-golang-org-x-sys))
+    (home-page "https://github.com/moby/sys")
+    (synopsis "Mount/unmount functions in Golang")
+    (description
+     "This package provides a set of functions to mount and unmount mounts.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-moby-sys-mountinfo
   (package
     (name "go-github-com-moby-sys-mountinfo")
