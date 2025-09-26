@@ -4555,11 +4555,11 @@ cache visualization.  Developed at FEE CTU for computer architecture classes.")
     (license license:zlib)))
 
 (define-public uxn
-  (let ((commit "83237c9641490d303a42c81ca247314d11055dea")
+  (let ((commit "f2e858273890abcffe7451b0566669e610036f49")
         (revision "1"))
     (package
       (name "uxn")
-      (version (git-version "0.1.0" revision commit))
+      (version (git-version "1.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -4568,7 +4568,7 @@ cache visualization.  Developed at FEE CTU for computer architecture classes.")
                 (file-name (string-append name "-" version))
                 (sha256
                  (base32
-                  "159qfz66k1jc43jhyl8by3yiphsr2dyiyclw1x7mkr3zciwc29z3"))))
+                  "1li0ly8di2vpzvi3wzlcm355dg38m6sfp0i6mryp9x4ibq7kqmy0"))))
       (build-system gnu-build-system)
       (arguments
        (list #:tests? #f ;no tests
@@ -4584,12 +4584,10 @@ cache visualization.  Developed at FEE CTU for computer architecture classes.")
                                     (share (string-append #$output
                                                           "/share/uxn")))
                                 (with-directory-excursion "bin"
-                                  (for-each (lambda (x)
-                                              (install-file x bin))
-                                            '("uxnasm" "uxncli" "uxnemu"))
-                                  (for-each (lambda (x)
-                                              (install-file x share))
-                                            '("asma.rom" "launcher.rom")))))))))
+                                  (for-each
+                                   (lambda (x)
+                                     (install-file x bin))
+                                   '("uxnasm" "uxncli" "uxnemu")))))))))
       (inputs (list sdl2))
       (home-page "https://100r.co/site/uxn.html")
       (synopsis "Assembler and emulator for the Uxn stack-machine")
