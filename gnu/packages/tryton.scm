@@ -2657,16 +2657,26 @@ which contains the unit price computed by the parent price list.")
 (define-public trytond-production
   (package
     (name "trytond-production")
-    (version "6.2.1")
+    (version "7.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_production" version))
        (sha256
-        (base32 "1sjrpyh4cxllmcxh085nfkq4hhdaz2mcgs1x9hwcsk9scqbi8fkw"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "production"))
-    (native-inputs (%standard-trytond-native-inputs))
+        (base32 "1jlhipmcvr09xdjh8f6qzmfas5yjii31ymhb2cgkp52b1kp563xw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases #$(tryton-phases "production")
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; DB_CACHE and pytest don't work together here
+                (invoke "python" "-m" "unittest" "discover")))))))
+    (native-inputs
+     (cons* trytond-stock-lot
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-company trytond-product trytond-stock))
     (home-page "https://docs.tryton.org/projects/modules-production")
