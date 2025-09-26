@@ -3817,16 +3817,16 @@ services and recurrence rule models.")
 (define-public trytond-sale-subscription-asset
   (package
     (name "trytond-sale-subscription-asset")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_subscription_asset" version))
        (sha256
-        (base32 "0bkksk3l3ydxmqglsrrqgwgrak6iwc740vmj0dpw93h4f127haiv"))))
-    (build-system python-build-system)
+        (base32 "1xg9wypsmv701w7mv49mw8glgkhfbvijsx97n0fr23h7w9pm7lnr"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_subscription_asset"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-sale-subscription trytond-stock-lot))
     (home-page
