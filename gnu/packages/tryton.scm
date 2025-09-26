@@ -781,16 +781,16 @@ the historization of the invoice and its related fields.")
 (define-public trytond-account-invoice-line-standalone
   (package
     (name "trytond-account-invoice-line-standalone")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_invoice_line_standalone" version))
        (sha256
-        (base32 "15ld3iixh8kgil5zw3q4acci4xvdcd56lyin154qaak12f7rms0z"))))
-    (build-system python-build-system)
+        (base32 "1gihaiabl9pk9k8b9hmd0b2ih7i6dmyi2p3s1ycl395y8rc3d58d"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_invoice_line_standalone"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account-invoice))
     (home-page
