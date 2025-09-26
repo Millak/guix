@@ -4646,16 +4646,16 @@ forecast into account to compute purchase requests.")
 (define-public trytond-stock-supply-production
   (package
     (name "trytond-stock-supply-production")
-    (version "6.2.0")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_supply_production" version))
        (sha256
-        (base32 "03cs9g9yfw885ia03x2lxkpjnh919ynizimvvx1jay62i3adk7a2"))))
-    (build-system python-build-system)
+        (base32 "0anghn1h2afv7j6wr4b4ymwwyr1kf7j98l01v857p1q6086k898m"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_supply_production"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-product trytond-production trytond-stock
            trytond-stock-supply))
