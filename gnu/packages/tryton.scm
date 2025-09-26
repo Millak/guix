@@ -871,18 +871,29 @@ view that displays move lines grouped.")
 (define-public trytond-account-payment
   (package
     (name "trytond-account-payment")
-    (version "6.2.2")
+    (version "7.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_payment" version))
        (sha256
-        (base32 "0gsg53fiqdmrdpckpfh5sm56ycqjdpa26calmng4p0v2rz557l1f"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "account_payment"))
+        (base32 "06hm5lwp3y9azzjwwrk52r28qw5hv440wn42iv5xg50jm4dzag8d"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases #$(tryton-phases "account_payment")
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; DB_CACHE and pytest don't work together here
+                (invoke "python" "-m" "unittest" "discover")))))))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-account-invoice" ,trytond-account-invoice)))
+     (cons* trytond-account-dunning
+            trytond-account-invoice
+            trytond-account-statement
+            trytond-account-statement-rule
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-account trytond-company trytond-currency
            trytond-party))
