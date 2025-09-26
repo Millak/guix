@@ -1263,24 +1263,24 @@ anglo-saxon accounting model for stock valuation.")
 (define-public trytond-account-stock-continental
   (package
     (name "trytond-account-stock-continental")
-    (version "6.2.3")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_stock_continental" version))
        (sha256
-        (base32 "1dzldnasshpx2gn15scycj72z85z5xli5wq1h39y8brb49ib7nvy"))))
-    (build-system python-build-system)
+        (base32 "1hwfv06mg0x1zhpqkbvywkyfdj3fn9p92yxfw6f28da4n3k6id1r"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_stock_continental"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-account-invoice" ,trytond-account-invoice)
-       ("trytond-purchase" ,trytond-purchase)
-       ("trytond-sale" ,trytond-sale)
-       ("trytond-sale-supply-drop-shipment"
-        ,trytond-sale-supply-drop-shipment)))
+     (cons* trytond-account-invoice
+            trytond-purchase
+            trytond-sale
+            trytond-sale-supply-drop-shipment
+            %standard-trytond-native-inputs))
     (propagated-inputs
-     (list trytond trytond-account trytond-account-product trytond-stock))
+     (list trytond trytond-account trytond-account-product trytond-product
+           trytond-stock))
     (home-page
      "https://docs.tryton.org/projects/modules-account-stock-continental")
     (synopsis "Tryton module for continental real-time stock valuation")
