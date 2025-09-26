@@ -2002,16 +2002,16 @@ electronic document from UN/CEFACT.  Supported formats are:
 (define-public trytond-edocument-unece
   (package
     (name "trytond-edocument-unece")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_edocument_unece" version))
        (sha256
-        (base32 "1ikrh9yk5if8v1sw1aihnysbpipmly6r6ka6zccjcywm1cmabhx0"))))
-    (build-system python-build-system)
+        (base32 "1ncagmd0ydvxplvih1bjzmjvx2hpbxyrqfnzwwd6f9ixk9vz60wl"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "edocument_unece"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account trytond-product))
     (home-page "https://docs.tryton.org/projects/modules-edocument-unece")
