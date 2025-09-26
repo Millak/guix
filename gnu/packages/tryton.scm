@@ -1655,19 +1655,19 @@ method \"on percentage\" on carrier.")
 (define-public trytond-carrier-subdivision
   (package
     (name "trytond-carrier-subdivision")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_carrier_subdivision" version))
        (sha256
-        (base32 "1a4jpi6iaah3f1zsdsjz2zak6wd9jai4jcqzijl2li4pcnkc0x8a"))))
-    (build-system python-build-system)
+        (base32 "0vpp0pk7mh8ir6jbqcyc9q5g872750g8ikhiichph2w9bjjkq2rx"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "carrier_subdivision"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-sale-shipment-cost" ,trytond-sale-shipment-cost)
-       ("trytond-stock-shipment-cost" ,trytond-stock-shipment-cost)))
+     (cons* trytond-carrier-carriage
+            trytond-sale-shipment-cost
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-carrier))
     (home-page "https://docs.tryton.org/projects/modules-carrier-subdivision")
