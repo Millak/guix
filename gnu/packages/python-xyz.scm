@@ -20156,18 +20156,22 @@ and dataclasses.")
 (define-public python-argparse-manpage
   (package
     (name "python-argparse-manpage")
-    (version "4.5")
+    (version "4.7")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "argparse-manpage" version))
+       (uri (pypi-uri "argparse_manpage" version))
        (sha256
-        (base32
-         "1nq4sq1zk1xzdsqq61hd27jhj978ys136aba1zjg02x1g0c0cg11"))))
+        (base32 "0clb20scp408gxac675v731vnj89pk9d5fb7pcy7bj1a45mvgshx"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Tests require PIP.
+      #~(list "--ignore=tests/test_examples.py")))
     (native-inputs
-     (list python-pip python-pytest python-setuptools python-tomli
-           python-wheel))
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/praiskup/argparse-manpage")
     (synopsis "Build manual page from Python's ArgumentParser object")
     (description
