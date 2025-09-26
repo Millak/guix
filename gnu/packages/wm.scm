@@ -1612,7 +1612,7 @@ the XDG Autostart specification.")
            tllist
            scdoc))
     (inputs
-     (list wlroots wayland fcft dbus libpng))
+     (list wayland fcft dbus libpng))
     (home-page "https://codeberg.org/dnkl/fnott")
     (synopsis "Keyboard driven and lightweight Wayland notification daemon")
     (description "Fnott is a keyboard driven and lightweight notification daemon
