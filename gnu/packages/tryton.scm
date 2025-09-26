@@ -961,19 +961,20 @@ journal.")
 (define-public trytond-account-payment-sepa
   (package
     (name "trytond-account-payment-sepa")
-    (version "6.2.2")
+    (version "7.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_payment_sepa" version))
        (sha256
-        (base32 "0c3ij24l8mxad2ppd3r24mx92l2xm52ip2syf88wlxqhsja9p945"))))
-    (build-system python-build-system)
+        (base32 "0q0laf89rj8kh834c7201vq3v6did3xzrpaai7mkyabwdpbvm4ah"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_payment_sepa"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list python-stdnum
            trytond
+           trytond-account
            trytond-account-payment
            trytond-bank
            trytond-company
