@@ -1777,16 +1777,16 @@ to a waiting account defined on the agent.")
 (define-public trytond-company
   (package
     (name "trytond-company")
-    (version "6.2.0")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_company" version))
        (sha256
-        (base32 "03ss7cwxbynn8ly5y32bj1cl2ikji9ydsby62l440jb025sn9x8v"))))
-    (build-system python-build-system)
+        (base32 "19j2msxjis7sw6gvgp89gbhm44364wgl03w0s2i6kd52jy40jpdv"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "company"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-currency trytond-party))
     (home-page "https://www.tryton.org/")
