@@ -4206,8 +4206,8 @@ websites such as Libre.fm.")
     (license license:asl2.0)))
 
 (define-public instantmusic
-  (let ((commit "300891d09c703525215fa5a116b9294af1c923c8")
-        (revision "1"))
+  (let ((commit "0477dd310e0aeb11d4d113bb96baa40d824cc330")
+        (revision "2"))
     (package
       (name "instantmusic")
       (version (git-version "1.0" revision commit))
@@ -4219,10 +4219,11 @@ websites such as Libre.fm.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0j7qivaa04bpdz3anmgci5833dgiyfqqwq9fdrpl9m68b34gl773"))))
+                  "0pxp1h0q4j7bidgdh4wgrvnm4ckdr4bvgk1wccr02mynfsjq8x5c"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #f ;no tests
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'change-directory
@@ -4243,7 +4244,7 @@ websites such as Libre.fm.")
                           (chmod file #o644))
                         (find-files "instantmusic.egg-info"
                                     "PKG-INFO|.*\\.txt")))))))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (inputs (list yt-dlp))
     (propagated-inputs (list python-requests eyed3 python-beautifulsoup4))
     (home-page "https://github.com/yask123/Instant-Music-Downloader")
