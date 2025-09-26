@@ -38082,14 +38082,14 @@ offers access to an XPath \"interpreter\".")
 (define-public r-xml2
   (package
     (name "r-xml2")
-    (version "1.3.8")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "xml2" version))
        (sha256
         (base32
-         "01qhmlr5rhsn25ddb8cm3vl9vyqk5c5cgpc6c0krs9wccd1j4pbj"))))
+         "0qnw4id8bknm3anvd9dlpg344s18dnxzm8lhbyqkcpgqfya84bhc"))))
     (properties
      ;; Avoid dependency cycle.
      '((updater-ignored-native-inputs . ("r-httr"))))
