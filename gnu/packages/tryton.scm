@@ -3472,26 +3472,24 @@ option to define how invoice lines generated from sales will be grouped.")
 (define-public trytond-sale-opportunity
   (package
     (name "trytond-sale-opportunity")
-    (version "6.2.0")
+    (version "7.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_opportunity" version))
        (sha256
-        (base32 "05zliwc39zandn7amjzf1n7fqxq7yrwrx5b418ikh09pfz4alq21"))))
-    (build-system python-build-system)
+        (base32 "1r2xa0y60yc4f13w0pm7w48jnwh60hrn2w4jld251wjf56cb1yjr"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_opportunity"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond
-           trytond-account
            trytond-account-invoice
            trytond-company
            trytond-currency
            trytond-party
            trytond-product
-           trytond-sale
-           trytond-stock))
+           trytond-sale))
     (home-page "https://docs.tryton.org/projects/modules-sale-opportunity")
     (synopsis "Tryton module with leads and opportunities")
     (description "The @emph{Sale Opportunity} Tryton module defines the
