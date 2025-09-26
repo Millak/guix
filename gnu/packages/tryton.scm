@@ -3627,18 +3627,21 @@ on a sale based on criteria.")
 (define-public trytond-sale-promotion-coupon
   (package
     (name "trytond-sale-promotion-coupon")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_promotion_coupon" version))
        (sha256
-        (base32 "18086y4xszb5iq6v5ibq3kylzc3b8zbyn6pn6pm61mdbdpqav7mg"))))
-    (build-system python-build-system)
+        (base32 "1xywa7b3mfq6x9xzmxdxr3j5i5vy91wjxmf1f2s3q8hya92djjnr"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_promotion_coupon"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
-     (list trytond trytond-sale trytond-sale-promotion))
+     (list trytond
+           trytond-company
+           trytond-sale
+           trytond-sale-promotion))
     (home-page
      "https://docs.tryton.org/projects/modules-sale-promotion-coupon")
     (synopsis "Tryton module for sale promotion coupon")
