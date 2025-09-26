@@ -1931,7 +1931,7 @@ This package just includes the agent component.")))
 (define-public guix-jupyter
   (package
     (name "guix-jupyter")
-    (version "0.3.0")
+    (version "0.3.1")
     (home-page "https://codeberg.org/guix-science/guix-jupyter")
     (source (origin
               (method git-fetch)
@@ -1939,7 +1939,7 @@ This package just includes the agent component.")))
                                   (commit (string-append "v" version))))
               (sha256
                (base32
-                "0cvjxv60la2bqmwb7m2bfpvjy8hx1hmjk2qy9wfzaffcabgr0x44"))
+                "1yvrmaj4qcb9vn2nfjz1q0cil830hvmxpp8cgi76aylbnv36aask"))
               (file-name (string-append "guix-jupyter-" version "-checkout"))))
     (build-system gnu-build-system)
     (arguments
