@@ -2634,16 +2634,16 @@ date and end date conditions to the price list lines.")
 (define-public trytond-product-price-list-parent
   (package
     (name "trytond-product-price-list-parent")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_product_price_list_parent" version))
        (sha256
-        (base32 "0w5fmr2p56p44yq33qgjxp5b8r7bpyixwpdp6xgbrd36ig9wcg3z"))))
-    (build-system python-build-system)
+        (base32 "12icwym955ip9wk667yyzarc2qjp8xf6dq12fy0blsqf17jfn91j"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "product_price_list_parent"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-product-price-list))
     (home-page
