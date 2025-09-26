@@ -4184,18 +4184,21 @@ unit and quantity on stock lot.")
 (define-public trytond-stock-package
   (package
     (name "trytond-stock-package")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_package" version))
        (sha256
-        (base32 "1jy7qz62h29rf10mjr9d9pm6g53ira26m77iccs0cwv3qlrv87rg"))))
-    (build-system python-build-system)
+        (base32 "1ambw85d8ibi5b5pki8frc401m5xiyjikwrkqlnbi86h6r3agacc"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_package"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
-     (list trytond trytond-company trytond-product trytond-stock))
+     (list trytond
+           trytond-company
+           trytond-product
+           trytond-stock))
     (home-page "https://docs.tryton.org/projects/modules-stock-package")
     (synopsis "Tryton module for stock packaging")
     (description "The @emph{Stock Package} Tryton module allows storing
