@@ -708,13 +708,13 @@ implementing the pen protocol for manipulating glyphs.")
   (hidden-package
    (package
      (name "python-fontparts-bootstrap")
-     (version "0.11.0")
+     (version "0.13.3")
      (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "fontParts" version ".zip"))
+        (uri (pypi-uri "fontparts" version ".tar.gz"))
         (sha256
-         (base32 "0j4h8hszky639gmfy1avmw670y80ya49kca8yc635h5ihl0c3v8x"))))
+         (base32 "0ddyfa975hskaip6l4hn7n2jh50y5s0pw911phyx2fsws54pw5s7"))))
      (build-system pyproject-build-system)
      (arguments
       (list #:test-backend #~'custom
@@ -726,8 +726,7 @@ implementing the pen protocol for manipulating glyphs.")
             python-fonttools-minimal))
      (native-inputs
       (list python-setuptools
-            python-setuptools-scm
-            unzip))
+            python-setuptools-scm))
      (home-page "https://github.com/robotools/fontParts")
      (synopsis "Library for interacting with font parts")
      (description "FontParts is an @acronym{API, Application Programming
