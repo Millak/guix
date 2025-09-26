@@ -48,10 +48,13 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnuzilla)
+  #:use-module (gnu packages ibus)
   #:use-module (gnu packages iso-codes)
+  #:use-module (gnu packages kerberos)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages nss)
+  #:use-module (gnu packages password-utils)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages photo)
@@ -61,6 +64,8 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages samba)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages window-management)
   #:use-module (gnu packages xdisorg)
@@ -310,6 +315,118 @@ panel used in GNOME 3.0's control center.")
     (home-page "https://github.com/linuxmint/cjs/")
     (description
      "CJS is a javascript binding for Cinnamon, forked from GJS.")
+    (license license:gpl2+)))
+
+(define-public cinnamon-control-center
+  (package
+    (name "cinnamon-control-center")
+    (version "6.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/linuxmint/cinnamon-control-center")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1425fq7nbaf46ch133mf555spl96k664rgd7w802x22v66sz0d2f"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("panels/network/net-device-mobile.c"
+                             "panels/network/connection-editor/net-connection-editor.c")
+                (("\"nm-connection-editor")
+                 (string-append "\"" (search-input-file
+                                      inputs "bin/nm-connection-editor"))))))
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
+          (replace 'check
+            (lambda* (#:key parallel-tests? tests? #:allow-other-keys)
+              (when tests?
+                ;; Tests require a running X server.
+                (system "Xvfb :1 &")
+                (setenv "DISPLAY" ":1")
+                ;; For the missing /var/lib/dbus/machine-id
+                (setenv "DBUS_FATAL_WARNINGS" "0")
+                (setenv "NO_AT_BRIDGE" "1")
+                (setenv "HOME" "/tmp")
+                (setenv "XDG_RUNTIME_DIR" (string-append (getcwd) "/runtime-dir"))
+                (mkdir (getenv "XDG_RUNTIME_DIR"))
+                (chmod (getenv "XDG_RUNTIME_DIR") #o700)
+                (setenv "MESON_TESTTHREADS"
+                        (if parallel-tests?
+                            (number->string (parallel-job-count))
+                            "1"))
+                (invoke "dbus-run-session" "--"
+                        "meson" "test" "-t" "0")))))))
+    (native-inputs
+     (list docbook-xsl
+           gettext-minimal
+           `(,glib "bin")               ;for glib-mkenums, etc.
+           libxslt
+           pkg-config
+           python
+           python-dbusmock
+           xorg-server-for-tests
+           setxkbmap))
+    (inputs
+     (list accountsservice
+           cinnamon-desktop
+           cinnamon-menus
+           cinnamon-settings-daemon
+           colord-gtk
+           cups
+           dconf
+           gcr
+           gnome-bluetooth
+           gnome-online-accounts
+           gnome-session
+           gnutls
+           grilo
+           gsound
+           ibus
+           iso-codes
+           json-glib
+           libadwaita
+           libgnomekbd
+           libgudev
+           libgtop
+           libnma
+           libnotify
+           libpwquality
+           (librsvg-for-system)             ;for loading SVG files
+           libsecret
+           libsoup
+           libxml2
+           libwacom
+           mesa
+           mit-krb5
+           modem-manager
+           network-manager-applet
+           polkit
+           pulseaudio
+           samba
+           tecla
+           tzdata
+           udisks
+           upower))
+    (synopsis "Utilities to configure the GNOME desktop")
+    (home-page "https://www.gnome.org/")
+    (description
+     "This package contains configuration applets for the GNOME desktop,
+allowing to set accessibility configuration, desktop fonts, keyboard and mouse
+properties, sound setup, desktop theme and background, user interface
+properties, screen resolution, and other GNOME parameters.")
     (license license:gpl2+)))
 
 (define-public cinnamon-desktop
