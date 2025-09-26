@@ -1151,16 +1151,16 @@ defined by the Spanish banking association.")
 (define-public trytond-account-statement-coda
   (package
     (name "trytond-account-statement-coda")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_statement_coda" version))
        (sha256
-        (base32 "0flz8rkavfcwq3przw9sq8jnpf6hdmyi3ip7vc89s3ykdx4qcrh0"))))
-    (build-system python-build-system)
+        (base32 "1w38h95v9ix4p7qmvwbfn6mi36r2x6rskj6mci8wdhkl55szyf80"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_statement_coda"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list python-febelfin-coda trytond trytond-account-statement
            trytond-bank))
