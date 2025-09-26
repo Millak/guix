@@ -2760,16 +2760,16 @@ quantity.")
 (define-public trytond-production-work
   (package
     (name "trytond-production-work")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_production_work" version))
        (sha256
-        (base32 "1bff8rfdrlx14ahjnmq3lw7z816qnk22cjk9wwmwkcpl99faw3bd"))))
-    (build-system python-build-system)
+        (base32 "031673vvqmdhrfkib5nikza4a5w5hgq4x14mdzgwny3ln7vdmis9"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "production_work"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond
            trytond-company
