@@ -4061,18 +4061,18 @@ wizard \"Create Inventories\" under the \"Inventories\" sub-menu.")
 (define-public trytond-stock-location-move
   (package
     (name "trytond-stock-location-move")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_location_move" version))
        (sha256
-        (base32 "07f0xq26wc0vpxf94655gsya3nxsa2xpi6v1c74q5a2qan4gkv9k"))))
-    (build-system python-build-system)
+        (base32 "0qm25pa1w7cark6bphxfqvb0rw0zrr3izn7rllzsy4drvnh7ad1k"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_location_move"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-stock-supply" ,trytond-stock-supply)))
+     (cons* trytond-stock-supply
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-stock))
     (home-page "https://docs.tryton.org/projects/modules-stock-location-move")
