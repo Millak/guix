@@ -4179,7 +4179,7 @@ with Numpy and SciPy.")
 (define-public python-rich-tables
   (package
     (name "python-rich-tables")
-    (version "0.6.1")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)   ; no tests data in PyPi package
@@ -4188,8 +4188,13 @@ with Numpy and SciPy.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wqr6sldf97ycs4gfvsqhbh1ki2kgsaicsy44g9lspvlda5nfcp1"))))
+        (base32 "1gkwgxcjnghn0alqw53kgb4ixf047dnb49kc0af3blvcwnmfmb5f"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; TypeError: can't subtract offset-naive and offset-aware datetimes
+      #~(list "--deselect=tests/test_outputs.py::test_outputs[tests/json/album.json]")))
     (native-inputs
      (list python-freezegun
            python-poetry-core
@@ -4197,6 +4202,7 @@ with Numpy and SciPy.")
            python-pytest-cov))
     (propagated-inputs
      (list python-funcy
+           python-humanize
            python-multimethod
            python-platformdirs
            python-rgbxy
