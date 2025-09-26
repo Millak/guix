@@ -3984,18 +3984,18 @@ location to pick products.")
 (define-public trytond-stock-consignment
   (package
     (name "trytond-stock-consignment")
-    (version "6.2.0")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_consignment" version))
        (sha256
-        (base32 "0c26gvqmh98hj7zp1kx3q30wdwnvy8j101m9kmsi21j9n2nw7maj"))))
-    (build-system python-build-system)
+        (base32 "0q8kszbcndm58x6yngyi1phqqzmsd9rawv6rdc00q8x4xyjsc9wr"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_consignment"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-stock-supply" ,trytond-stock-supply)))
+     (cons* trytond-stock-supply
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond
            trytond-account-invoice
