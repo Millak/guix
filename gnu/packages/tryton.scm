@@ -4435,18 +4435,18 @@ reducing stock level by proposing to consume earlier.")
 (define-public trytond-stock-quantity-issue
   (package
     (name "trytond-stock-quantity-issue")
-    (version "6.2.1")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_quantity_issue" version))
        (sha256
-        (base32 "0ig2lix5qw8ql1gax8dymwc7advmf9x3xc8djhw5sgb8v0bvknrv"))))
-    (build-system python-build-system)
+        (base32 "19vpka6czcg4s93wx8r7j4rx4i327gr5fpiys1bwzjyqqpw08apa"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_quantity_issue"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-production" ,trytond-production)))
+     (cons* trytond-production
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-company trytond-product trytond-stock))
     (home-page "https://docs.tryton.org/projects/modules-stock-quantity-issue")
