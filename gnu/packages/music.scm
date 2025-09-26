@@ -6091,40 +6091,44 @@ Recording Code} (ISRC) can be extracted.}")
     (license license:lgpl3+)))
 
 (define-public libmusicbrainz
-  (package
-    (name "libmusicbrainz")
-    (version "5.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/metabrainz/libmusicbrainz/releases/download/release-"
-             version "/libmusicbrainz-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0ikb9igyyk28jm34raxfzkw2qyn4nzzwsymdyprp7cmvi6g2ajb7"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-build
-           (lambda _
-             (substitute* "src/CMakeLists.txt"
-               (("\\*.inc") ""))))
-         (replace 'check
-           (lambda _
-             ;; requires network connections
-             ;; (invoke "tests/mbtest")
-             (invoke "tests/ctest")
-             #t)))))
-    (inputs (list neon libxml2))
-    (native-inputs (list pkg-config))
-    (home-page "https://musicbrainz.org/doc/libmusicbrainz")
-    (synopsis "MusicBrainz client library")
-    (description "The MusicBrainz Client Library (libmusicbrainz), also known as
+  ;; The latest release is more than a decade old, doesn't build with the
+  ;; latest libxml2 release.
+  (let ((commit "4efbed3afae11ef68281816088d7cf3d0f704dfe")
+        (revision "0"))
+    (package
+      (name "libmusicbrainz")
+      (version (git-version "5.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/metabrainz/libmusicbrainz")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1h1q0gg3xzhw115ifr5ja9gbd2k6ggkpm2f4sdqp313wp3lj86g9"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-build
+             (lambda _
+               (substitute* "src/CMakeLists.txt"
+                 (("\\*.inc") ""))))
+           (replace 'check
+             (lambda _
+               ;; requires network connections
+               ;; (invoke "tests/mbtest")
+               (invoke "tests/ctest"))))))
+      (inputs (list neon libxml2))
+      (native-inputs (list pkg-config))
+      (home-page "https://musicbrainz.org/doc/libmusicbrainz")
+      (synopsis "MusicBrainz client library")
+      (description "The MusicBrainz Client Library (libmusicbrainz), also known as
 mb_client, is a development library geared towards developers who wish to add
 MusicBrainz lookup capabilities to their applications.")
-    (license license:lgpl2.1+)))
+      (license license:lgpl2.1+))))
 
 (define-public perl-musicbrainz-discid
   (package
