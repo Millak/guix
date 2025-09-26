@@ -2891,18 +2891,18 @@ on top of the Project module.")
 (define-public trytond-project-revenue
   (package
     (name "trytond-project-revenue")
-    (version "6.2.1")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_project_revenue" version))
        (sha256
-        (base32 "0hpqwjpd6d0a291yssa8f0x89xxqvdzq8a3f10csibsq7bssqzki"))))
-    (build-system python-build-system)
+        (base32 "1j8qdliylg1jjas51z34gvi78q9qv81ssk4blp9y4kr1svq8wpjk"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "project_revenue"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-purchase" ,trytond-purchase)))
+     (cons* trytond-purchase
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond
            trytond-company
