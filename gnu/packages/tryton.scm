@@ -1563,16 +1563,16 @@ detail of the time of entrance and exit")
 (define-public trytond-authentication-sms
   (package
     (name "trytond-authentication-sms")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_authentication_sms" version))
        (sha256
-        (base32 "17237qrmk8pm7lifrn5zjvsf42cs2q6p2h6qw2vk9fixdz1gxk9x"))))
-    (build-system python-build-system)
+        (base32 "0gnqnc0mcwspby663h91kf2y7pgw25zms3iqh0gs18sygx291a7y"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "authentication_sms"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond))
     (home-page "https://docs.tryton.org/projects/modules-authentication-sms")
