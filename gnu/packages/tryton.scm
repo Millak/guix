@@ -3839,16 +3839,18 @@ notion of asset to the sale subscription module.")
 (define-public trytond-sale-supply
   (package
     (name "trytond-sale-supply")
-    (version "6.2.0")
+    (version "7.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_supply" version))
        (sha256
-        (base32 "05ik819spy8jmc5k10mki6kxdjxdqrr4x0g3rgvvlnmadn5igykf"))))
-    (build-system python-build-system)
+        (base32 "0rgyrimkfali4ak7b0052rp3m8m07qk1fhd10vi98zynz5bqs73g"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_supply"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs
+     (cons* trytond-stock-supply
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-purchase trytond-purchase-request trytond-sale
            trytond-stock))
