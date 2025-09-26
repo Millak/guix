@@ -2535,23 +2535,25 @@ attributes to product images.")
 (define-public trytond-product-kit
   (package
     (name "trytond-product-kit")
-    (version "6.2.2")
+    (version "7.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_product_kit" version))
        (sha256
-        (base32 "1s41jng93cmf4pahz59jmza1k6nj6pb532k0mn2xnr0pgnh26w9m"))))
-    (build-system python-build-system)
+        (base32 "00479fq97ldrg3hkwzhwaaadd430rcs9rg4dd13lbijckzhapj86"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "product_kit"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-account-invoice" ,trytond-account-invoice)
-       ("trytond-account-invoice-stock" ,trytond-account-invoice-stock)
-       ("trytond-company" ,trytond-company)
-       ("trytond-purchase" ,trytond-purchase)
-       ("trytond-sale" ,trytond-sale)
-       ("trytond-stock" ,trytond-stock)))
+     (cons* trytond-account-invoice
+            trytond-account-invoice-stock
+            trytond-company
+            trytond-purchase
+            trytond-purchase-amendment
+            trytond-sale
+            trytond-sale-amendment
+            trytond-stock
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-product))
     (home-page "https://docs.tryton.org/projects/modules-product-kit")
