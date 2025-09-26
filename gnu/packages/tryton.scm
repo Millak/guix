@@ -4135,18 +4135,21 @@ ordering to location.")
 (define-public trytond-stock-lot-sled
   (package
     (name "trytond-stock-lot-sled")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_lot_sled" version))
        (sha256
-        (base32 "14bx84snw6kd896h6gdd825qrg2p7nmm341xl8qvrpn34jq3p2p1"))))
-    (build-system python-build-system)
+        (base32 "1bvdd4jlw3rplpqpjl3k34hzlpv4mmahc1ga3qacr3n03w1040sc"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_lot_sled"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
-     (list trytond trytond-product trytond-stock trytond-stock-lot))
+     (list trytond
+           trytond-product
+           trytond-stock
+           trytond-stock-lot))
     (home-page "https://docs.tryton.org/projects/modules-stock-lot-sled")
     (synopsis "Tryton module for shelf life expiration date of product lots")
     (description "The @emph{Stock Lot Sled} Tryton module adds the \"Shelf
