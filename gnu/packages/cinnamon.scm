@@ -176,8 +176,7 @@ cross-DE solutions.")
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/linuxmint/python3-xapp")
-             (recursive? #f)
-             (commit "master")))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "06v84bvhhhx7lf7bsl2wdxh7vlkpb2fczjh6717b9jjr7xhvif8r"))))
