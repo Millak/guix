@@ -3960,18 +3960,18 @@ inventory to control and update stock levels.")
 (define-public trytond-stock-assign-manual
   (package
     (name "trytond-stock-assign-manual")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_assign_manual" version))
        (sha256
-        (base32 "0jn5rbbgmr7jnddrbmy49r2vpfbbfsrgx1bkgjkg687d922lwnrh"))))
-    (build-system python-build-system)
+        (base32 "0rh6fap18m0pglc0rpvwy0px8gxkj5cy93pln9b2d98saxndiirc"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_assign_manual"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-production" ,trytond-production)))
+     (cons* trytond-production
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-stock))
     (home-page "https://docs.tryton.org/projects/modules-stock-assign-manual")
