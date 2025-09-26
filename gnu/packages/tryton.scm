@@ -4850,16 +4850,16 @@ Vue Storefront 1.x.")
 (define-public trytond-web-shop-vue-storefront-stripe
   (package
     (name "trytond-web-shop-vue-storefront-stripe")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_web_shop_vue_storefront_stripe" version))
        (sha256
-        (base32 "0qzcflcrkd35da9vb9gl9mnxg7dis1sz9kp9hb6hbnmyjbhdz17k"))))
-    (build-system python-build-system)
+        (base32 "1350gyrvx8r845cikvl0p3z9rpnkz2apcqz5blx26pzhdlvkk5x5"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "web_shop_vue_storefront_stripe"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account-payment-stripe trytond-sale-payment
            trytond-web-shop trytond-web-shop-vue-storefront))
