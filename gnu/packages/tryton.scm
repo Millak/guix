@@ -2136,16 +2136,16 @@ authenticating users via a LDAP server.")
 (define-public trytond-marketing
   (package
     (name "trytond-marketing")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_marketing" version))
        (sha256
-        (base32 "1ljv23ldva3cd07k0knncnawwrig8q6lgsxlm392dcqkyb8gvbjg"))))
-    (build-system python-build-system)
+        (base32 "1pihlkwa54wjv8hjmsjfmrajfjhdk6ja8pnqkfxqx5s26qzp5x1w"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "marketing"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond))
     (home-page "https://docs.tryton.org/projects/modules-marketing")
