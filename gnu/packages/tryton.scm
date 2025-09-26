@@ -1363,16 +1363,16 @@ allocates shipment cost based on invoice.")
 (define-public trytond-account-tax-cash
   (package
     (name "trytond-account-tax-cash")
-    (version "6.2.0")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_tax_cash" version))
        (sha256
-        (base32 "0hy5929697lsa84xyy535gh4s2j1yv4vdfxyi93md17pjf95hwpg"))))
-    (build-system python-build-system)
+        (base32 "0q2nr9fwfb0jv4yiy2xq3r3065lvsji5zj9aj9arbd9kwpzqi51p"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_tax_cash"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account trytond-account-invoice trytond-party))
     (home-page "https://docs.tryton.org/projects/modules-account-tax-cash")
