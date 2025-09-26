@@ -3214,16 +3214,16 @@ shipment costs to Supplier Shipment.")
 (define-public trytond-sale
   (package
     (name "trytond-sale")
-    (version "6.2.4")
+    (version "7.0.15")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale" version))
        (sha256
-        (base32 "124cx2h93dw61rnavc2q7isjy9008qc379g82myihq9gh4z6rbpr"))))
-    (build-system python-build-system)
+        (base32 "171ihl762iizlyvhn4zvg52waffsaxr9yh7d7gy4vsdciym6vm8k"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond
            trytond-account
