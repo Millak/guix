@@ -1931,16 +1931,16 @@ National Bank as a source for currency exchange rates.")
 (define-public trytond-customs
   (package
     (name "trytond-customs")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_customs" version))
        (sha256
-        (base32 "1zx9cwiq9q4802bj2ga3bilyjls60vpycp3cncqfqh2n4mg23xlq"))))
-    (build-system python-build-system)
+        (base32 "0v6rzrdphys3davkc3d46mlq6hkd8xl6x444ddl23fw0b08mvrna"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "customs"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list python-simpleeval trytond trytond-country trytond-currency
            trytond-product))
