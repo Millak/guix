@@ -1295,9 +1295,9 @@ Library.")
                   ,@(package-properties llvm-19)))
     (home-page "https://github.com/ROCm/llvm-project")
     (synopsis
-     (string-append (package-synopsis llvm-14) " (AMD fork)"))
+     (string-append (package-synopsis llvm-19) " (AMD fork)"))
     (description
-     (string-append (package-description llvm-14) "
+     (string-append (package-description llvm-19) "
 
 This AMD fork includes AMD-specific additions."))))
 
