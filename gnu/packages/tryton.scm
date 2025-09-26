@@ -1314,16 +1314,16 @@ allocating landed cost on Supplier Shipments after their reception.")
 (define-public trytond-account-stock-landed-cost-weight
   (package
     (name "trytond-account-stock-landed-cost-weight")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_stock_landed_cost_weight" version))
        (sha256
-        (base32 "1dx5m5l1ccnffkqgwxpfk57g1wndxq1q1jrmrbf4cj6q47x1y0xx"))))
-    (build-system python-build-system)
+        (base32 "0msa79mf81prf14p4hfy1b98a9w9x49j138r5bc3c99ymmc3vljk"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_stock_landed_cost_weight"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account-stock-landed-cost trytond-product
            trytond-product-measurements trytond-stock-shipment-measurements))
