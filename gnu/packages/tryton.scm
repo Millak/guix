@@ -2810,16 +2810,16 @@ entering a timesheet for production works.")
 (define-public trytond-project
   (package
     (name "trytond-project")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_project" version))
        (sha256
-        (base32 "0rr1ar7ah753afqi16yklirwv3ikmcv4xhnbv5vixna1kqhg8n43"))))
-    (build-system python-build-system)
+        (base32 "0y8ymmfp91z89ylwwfwkl66l227phz3c0dj1r3k8ahlv7q4rrlsg"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "project"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-company trytond-company-work-time
            trytond-party trytond-timesheet))
