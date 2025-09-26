@@ -3108,6 +3108,15 @@ cross-validation.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          #$@(if (target-x86-32?)
+                 #~((add-after 'unpack 'apply-i686-patch
+                      (lambda _
+                        (let ((patch-file
+                               #$(local-file
+                                  (search-patch "python-scipy-i686.patch"))))
+                          (invoke "patch" "--force" "-p1" "-i"
+                                  patch-file)))))
+                 #~())
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
