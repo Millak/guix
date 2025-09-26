@@ -3277,16 +3277,16 @@ for advance payment management on the sale.")
 (define-public trytond-sale-amendment
   (package
     (name "trytond-sale-amendment")
-    (version "6.2.1")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_amendment" version))
        (sha256
-        (base32 "0mrnqlgihkvn4z2p1k90c9cha8kqa28ss1ycjzsalxmngnw27hfg"))))
-    (build-system python-build-system)
+        (base32 "0p4v44hcby6s7l07hzdxj5z8lzb4xn4r4z5j1rlnkfvgccgmfvpc"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_amendment"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account-invoice trytond-sale
            trytond-sale-history trytond-stock))
