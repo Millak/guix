@@ -281,18 +281,18 @@ most of accounting needs.")
 (define-public trytond-account-asset
   (package
     (name "trytond-account-asset")
-    (version "6.2.1")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_asset" version))
        (sha256
-        (base32 "0zs0bqa3crfqc39z7c5hcj60w2aws2fv2l9y59v9sfy8azi32533"))))
-    (build-system python-build-system)
+        (base32 "0v11scsbzgfx9k89dqb3fil9ynccvqxm0ph1jhyhls3i09d1vpga"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_asset"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-purchase" ,trytond-purchase)))
+     (cons* trytond-purchase
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-account trytond-account-invoice
            trytond-account-product trytond-product))
