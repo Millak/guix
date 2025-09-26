@@ -4337,19 +4337,27 @@ supported carriers.")
 (define-public trytond-stock-package-shipping-ups
   (package
     (name "trytond-stock-package-shipping-ups")
-    (version "6.2.0")
+    (version "7.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_package_shipping_ups" version))
        (sha256
-        (base32 "198i6fdb9ghcsd7z1cb1f3m261dl9w9hxmzzvs7h51f2lbw07n58"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "stock_package_shipping_ups"))
-    (native-inputs (%standard-trytond-native-inputs))
+        (base32 "0zpcpfdc0fp258n7kfdmdscal4d922121jxfh6lcgjs5pjfbn8r5"))))
+    (build-system pyproject-build-system)
+    ;; doctest requires network and an api key
+    (arguments (tryton-arguments "stock_package_shipping_ups"
+                                 "-k not scenario_shipping_ups"))
+    (native-inputs
+     (cons* trytond-sale
+            trytond-sale-shipment-cost
+            %standard-trytond-native-inputs))
     (propagated-inputs
-     (list python-requests
+     (list python-oauthlib
+           python-requests
+           python-requests-oauthlib
            trytond
+           trytond-carrier
            trytond-party
            trytond-product
            trytond-stock
