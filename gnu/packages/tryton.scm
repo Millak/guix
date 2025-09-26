@@ -1384,21 +1384,21 @@ report on cash basis.")
 (define-public trytond-account-tax-rule-country
   (package
     (name "trytond-account-tax-rule-country")
-    (version "6.2.0")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_tax_rule_country" version))
        (sha256
-        (base32 "0bg831hha4j71lm9xhpv4al2qaxmk8qgli5s9hx2h4bcy1hbf5wf"))))
-    (build-system python-build-system)
+        (base32 "0jpp11rlskpqp3dzfm8ml2kqn4855vrcrcmwk6jrjkpsh2m8f6s3"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_tax_rule_country"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-account-invoice" ,trytond-account-invoice)
-       ("trytond-purchase" ,trytond-purchase)
-       ("trytond-sale" ,trytond-sale)
-       ("trytond-stock" ,trytond-stock)))
+     (cons* trytond-account-invoice
+            trytond-purchase
+            trytond-sale
+            trytond-stock
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-account trytond-country))
     (home-page
