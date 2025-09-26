@@ -1856,22 +1856,22 @@ month and a year of work.")
 (define-public trytond-currency
   (package
     (name "trytond-currency")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_currency" version))
        (sha256
-        (base32 "1sx9wanb4r95gs5hsl6hgy0gcvsfh0yr17rnhaa908286f88wa4f"))))
-    (build-system python-build-system)
-    ;; Doctest 'scenario_currency_rate_update.rst' fails.
-    (arguments (tryton-arguments "currency" "--no-doctest"))
+        (base32 "1gw82jfvlnbyr3wkh5r8gsd7b7m3jz0szvqqd9fccm1yb229k91w"))))
+    (build-system pyproject-build-system)
+    ;; Quite some tests require network access.
+    (arguments (tryton-arguments "currency"
+                "-k not (scenario_currency_rate_update.rst or ECBtestCase)"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("python-forex-python" ,python-forex-python)
-       ("python-pycountry" ,python-pycountry)))
+     (cons* python-pycountry
+            %standard-trytond-native-inputs))
     (propagated-inputs
-     (list python-sql trytond))
+     (list trytond))
     (home-page "https://www.tryton.org/")
     (synopsis "Tryton module with currencies")
     (description
