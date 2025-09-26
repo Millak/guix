@@ -2587,16 +2587,16 @@ following measurements to Product:")
 (define-public trytond-product-price-list
   (package
     (name "trytond-product-price-list")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_product_price_list" version))
        (sha256
-        (base32 "0x85317skmqkq12i9qqyjiny37rn2dccx7rk7lan87jj2cam70q4"))))
-    (build-system python-build-system)
+        (base32 "1n1zbq7jwqkida4qx7pp4ybys7pskppxqd86kl1vdw5fj43nhm7n"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "product_price_list"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list python-simpleeval trytond trytond-company trytond-product))
     (home-page "https://docs.tryton.org/projects/modules-product-price-list")
