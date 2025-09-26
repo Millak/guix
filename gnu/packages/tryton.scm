@@ -4873,16 +4873,16 @@ provides support of Stripe payment for Vue Storefront integration.")
 (define-public trytond-web-shortener
   (package
     (name "trytond-web-shortener")
-    (version "6.2.1")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_web_shortener" version))
        (sha256
-        (base32 "0mjcp97f5dh6lzgw4yhd7k01jlmaga1jvsc07as1snz9y7r06kpk"))))
-    (build-system python-build-system)
+        (base32 "052c4sylpqjgwgk02zy9kq1pdxbnfciga7lf8aip8sxry55n95in"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "web_shortener"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond))
     (home-page "https://docs.tryton.org/projects/modules-web-shortener")
