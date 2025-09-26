@@ -4772,29 +4772,39 @@ configuration of an online web shop.")
 (define-public trytond-web-shop-shopify
   (package
     (name "trytond-web-shop-shopify")
-    (version "6.2.2")
+    (version "7.0.10")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "trytond_web_shop_shopify" version))
               (sha256
-               (base32 "1nd2wnzr6cibqcsidk0k98iy4vs7dy7crhld60wkbza8pgc23hc4"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "trytond_web_shop_shopify"))
-    (native-inputs (%standard-trytond-native-inputs))
-    (propagated-inputs (list python-dateutil
-                             python-pyactiveresource
-                             python-shopifyapi
-                             python-sql
-                             trytond
-                             trytond-account-payment
-                             trytond-currency
-                             trytond-party
-                             trytond-product
-                             trytond-product-attribute
-                             trytond-sale
-                             trytond-sale-payment
-                             trytond-stock
-                             trytond-web-shop))
+               (base32 "1jfjj52gxp0hrkh43wydaly4czzip4xx0ck39mpnqqla5ax2jq9i"))))
+    (build-system pyproject-build-system)
+    ;; doctest requires network and an account at shopify
+    (arguments
+     (tryton-arguments "web_shop_shopify" "-k not scenario_web_shop_shopify"))
+    (native-inputs
+     (cons* trytond-account-payment-clearing
+            trytond-customs
+            trytond-product-image
+            trytond-product-measurements
+            trytond-sale-discount
+            trytond-sale-secondary-unit
+            trytond-sale-shipment-cost
+            %standard-trytond-native-inputs))
+    (propagated-inputs
+     (list python-pyactiveresource
+           python-shopifyapi
+           trytond
+           trytond-account-payment
+           trytond-currency
+           trytond-party
+           trytond-product
+           trytond-product-attribute
+           trytond-sale
+           trytond-sale-amendment
+           trytond-sale-payment
+           trytond-stock
+           trytond-web-shop))
     (home-page "https://docs.tryton.org/projects/modules-web-shop-shopify")
     (synopsis "Integrate Tryton with Shopify")
     (description "The @emph{Web Shop Shopify} Tryton module provides a way to
