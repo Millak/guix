@@ -2373,16 +2373,16 @@ models `Attribute` and `Attribute Set` for products.")
 (define-public trytond-product-classification
   (package
     (name "trytond-product-classification")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_product_classification" version))
        (sha256
-        (base32 "1a5rdvscp3hb7jddciqmpzb095yzmyvsj5jc06jiilvynrawwzsh"))))
-    (build-system python-build-system)
+        (base32 "0xd67s2d6n6a9kna5a1fvx3kcbb6wnkk4337pcfs4b7zkls4q4m8"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "product_classification"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-product))
     (home-page
