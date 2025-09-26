@@ -3450,16 +3450,16 @@ time the sale is reset to draft.")
 (define-public trytond-sale-invoice-grouping
   (package
     (name "trytond-sale-invoice-grouping")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_invoice_grouping" version))
        (sha256
-        (base32 "1c70s1lnxzhg6yqv7vjxyqvxp4myh26i9hnnf1k045d6hwf80hvf"))))
-    (build-system python-build-system)
+        (base32 "06awrzvq8c4v7133by95njiq1n3j85x362r4fhb6z7fyrn03kzx6"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_invoice_grouping"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account-invoice trytond-party trytond-sale))
     (home-page
