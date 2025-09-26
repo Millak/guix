@@ -181,13 +181,13 @@ them as it goes.")
 (define-public python-afdko
   (package
     (name "python-afdko")
-    (version "3.9.5")
+    (version "4.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "afdko" version))
        (sha256
-        (base32 "02c1rjx7ggbd1m9vqgsc2r28yiw66cjgvs5cq1a2fz0lkadbvrnb"))
+        (base32 "0c6ribidsmcd9rihy32gknfrr3iw8dy2jlmq6lk05pc33s3ix8z1"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
