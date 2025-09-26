@@ -4237,20 +4237,31 @@ interact with shipping service providers.")
 (define-public trytond-stock-package-shipping-dpd
   (package
     (name "trytond-stock-package-shipping-dpd")
-    (version "6.2.3")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_package_shipping_dpd" version))
        (sha256
-        (base32 "0q7g5qg9j32kn51yigiahd939k2x9gfsnb8k6kinyc9vhq3anbkx"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "stock_package_shipping_dpd"))
-    (native-inputs (%standard-trytond-native-inputs))
+        (base32 "18sdjrg6p4bjlv2jahial0as3j54r9r6a915fbw6ji7bvrk9ify6"))))
+    (build-system pyproject-build-system)
+    ;; doctest requires network and an api key
+    (arguments (tryton-arguments "stock_package_shipping_dpd"
+                                 "-k not scenario_shipping_dpd"))
+    (native-inputs
+     (cons* trytond-sale
+            trytond-sale-shipment-cost
+            %standard-trytond-native-inputs))
     (propagated-inputs
-     (list python-pypdf2 trytond trytond-party trytond-product trytond-stock
-           trytond-stock-package trytond-stock-package-shipping
-           trytond-stock-shipment-measurements python-zeep))
+     (list python-pypdf
+           python-zeep
+           trytond
+           trytond-party
+           trytond-product
+           trytond-stock
+           trytond-stock-package
+           trytond-stock-package-shipping
+           trytond-stock-shipment-measurements))
     (home-page
      "https://docs.tryton.org/projects/modules-stock-package-shipping-dpd")
     (synopsis "DPD connector for the Tryton application platform")
