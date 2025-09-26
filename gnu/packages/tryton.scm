@@ -852,16 +852,16 @@ average price of the posted invoice lines that are linked to it.")
 (define-public trytond-account-move-line-grouping
   (package
     (name "trytond-account-move-line-grouping")
-    (version "6.2.0")
+    (version "7.0.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "trytond_account_move_line_grouping" version))
               (sha256
-               (base32 "1mrh17a55hkfj89vyx1jrmgzps4ig0m03c10ngsy4my6v6rnnn2r"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "trytond_account_move_line_grouping"))
-    (native-inputs (%standard-trytond-native-inputs))
-    (propagated-inputs (list python-sql trytond trytond-account))
+               (base32 "167z9djgraijy7py64ic9a4y5dp2f57j5j349lpz857qr75zxrv3"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "account_move_line_grouping"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs (list trytond trytond-account))
     (home-page "https://docs.tryton.org/projects/modules-account-move-line-grouping")
     (synopsis "Tryton module to display account move lines grouped")
     (description "The @emph{Account Move Line Grouping} Tryton module adds a
