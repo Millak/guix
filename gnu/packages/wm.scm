@@ -245,7 +245,7 @@ the leaves of a full binary tree.")
     (native-inputs (list pkg-config scdoc
                          ;; for wayland-scanner
                          wayland))
-    (inputs (list wayland wlroots libxkbcommon))
+    (inputs (list wayland wlroots-0.18 libxkbcommon))
     (home-page "https://github.com/cage-kiosk/cage")
     (synopsis "Wayland kiosk")
     (description "This package provides a Wayland @dfn{kiosk}, which runs a
