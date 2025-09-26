@@ -2566,16 +2566,16 @@ purchased using a single line.")
 (define-public trytond-product-measurements
   (package
     (name "trytond-product-measurements")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_product_measurements" version))
        (sha256
-        (base32 "111q382lv3yg76r7jxfhnvr35kgi2fhiyxyj07immvwm5k3z0vi1"))))
-    (build-system python-build-system)
+        (base32 "133d2rsipfakjx35m685qclis5b1y288wpb03sqny41h1sd0h2qr"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "product_measurements"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-product))
     (home-page "https://docs.tryton.org/projects/modules-product-measurements")
