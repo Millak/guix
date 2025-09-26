@@ -2713,18 +2713,18 @@ the production.")
 (define-public trytond-production-routing
   (package
     (name "trytond-production-routing")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_production_routing" version))
        (sha256
-        (base32 "1a6cw0yc60ijd8bnrk84rzx4swqi294g3dsapp03hapn9rgdjbpj"))))
-    (build-system python-build-system)
+        (base32 "0n9xay9s12lzkcra30npnsh0589zrfkhk7al5whla58i123a7vwi"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "production_routing"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-stock-supply-production" ,trytond-stock-supply-production)))
+     (cons* trytond-stock-supply-production
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-production))
     (home-page "https://docs.tryton.org/projects/modules-production-routing")
