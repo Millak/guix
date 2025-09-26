@@ -6121,12 +6121,14 @@ simple speech recognition.")
       (build-system pyproject-build-system)
       (arguments
        (list
+        #:test-backend #~'custom
+        #:test-flags #~(list "../../tests/from_words_to_digits.py")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'chdir
               (lambda _
                 (chdir "package/python"))))))
-      (native-inputs (list python-setuptools python-wheel))
+      (native-inputs (list python-setuptools))
       (propagated-inputs (list python-vosk))
       (home-page "https://github.com/ideasman42/nerd-dictation")
       (synopsis "Offline speech-to-text for desktop Linux")
