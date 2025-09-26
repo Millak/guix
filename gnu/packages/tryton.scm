@@ -3011,19 +3011,19 @@ time the purchase is reset to draft.")
 (define-public trytond-purchase-invoice-line-standalone
   (package
     (name "trytond-purchase-invoice-line-standalone")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_purchase_invoice_line_standalone" version))
        (sha256
-        (base32 "169y69an6i796m8bmp8sanfn0qh7bcws8nangp96q07dsv51wrvb"))))
-    (build-system python-build-system)
+        (base32 "1djvnlqlhc3q77r07il8hx5j13qzjdnwfxfnrj3sf8nkpdbi12ac"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "purchase_invoice_line_standalone"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account-invoice-line-standalone
-           trytond-purchase))
+           trytond-party trytond-purchase))
     (home-page
      "https://docs.tryton.org/projects/modules-purchase-invoice-line-standalone")
     (synopsis "Tryton module for standalone invoice line from purchase")
