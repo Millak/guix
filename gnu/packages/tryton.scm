@@ -1828,19 +1828,22 @@ month and a year of work.")
 (define-public trytond-country
   (package
     (name "trytond-country")
-    (version "6.2.1")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_country" version))
        (sha256
-        (base32 "1mlf6fwngdbqy6c7xi7nmg4dph3nnac61rkzhn79x5zqg2mgnv53"))))
-    (build-system python-build-system)
+        (base32 "1qvnbq9c0kymzgl82p56z31nvqshsqwqh746z229sbrln39i7miv"))))
+    (build-system pyproject-build-system)
     ;; Doctest contains one test that requires internet access.
-    (arguments (tryton-arguments "country" "--no-doctest"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (arguments (tryton-arguments "country"
+                "-k not scenario_country_import.rst"))
+    (native-inputs
+     (cons* python-pycountry
+            %standard-trytond-native-inputs))
     (propagated-inputs
-     (list python-pycountry-20.7.3 trytond))
+     (list trytond))
     (home-page "http://www.tryton.org/")
     (synopsis "Tryton module with countries")
     (description
