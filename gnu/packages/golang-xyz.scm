@@ -14597,6 +14597,45 @@ parsing.")
      "This package provides a multiplexed stream library using spdy.")
     (license license:asl2.0)))
 
+(define-public go-github-com-moby-sys-atomicwriter
+  (package
+    (name "go-github-com-moby-sys-atomicwriter")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moby/sys")
+             (commit (go-version->git-ref version
+                                          #:subdir "atomicwriter"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0an8ypp8v9gfxbbb71mpimb1g9labl4v7lgazcphysn6c5smgmiw"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "atomicwriter")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/sys/atomicwriter"
+      #:unpack-path "github.com/moby/sys"))
+    (propagated-inputs (list go-github-com-moby-sys-sequential))
+    (home-page "https://github.com/moby/sys")
+    (synopsis "File atomic write utilities")
+    (description
+     "This package provides utilities to perform atomic writes to a file or
+set of files.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-moby-sys-capability
   (package
     (name "go-github-com-moby-sys-capability")
