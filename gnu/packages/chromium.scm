@@ -411,7 +411,6 @@
 	 "system/openjpeg.patch"
 	 ;; adler2 is not part of our rust toolchain, check on next version.
 	 "trixie/adler1.patch"
-         "trixie/libxml-parseerr.patch"
          ;; Remove after rust is past
          ;; <https://github.com/rust-lang/rust/pull/141061>.
          "trixie/rust-no-alloc-shim.patch")))
