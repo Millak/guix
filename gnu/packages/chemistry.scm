@@ -701,10 +701,20 @@ symmetries written in C.  Spglib can be used to:
        (sha256
         (base32 "0w3c71wvhnc44pfafcjfgqkjimkcdkpjk3bahg9v6l1z8c0cyhfy"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-six
+            (lambda _
+              (substitute* "geometric/nifty.py"
+                (("import six") "")
+                (("six\\.string_types") "str"))
+              (substitute* "setup.py"
+                (("'six',") "")))))))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-numpy
            python-scipy
