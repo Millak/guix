@@ -2262,18 +2262,18 @@ addresses.")
 (define-public trytond-party-avatar
   (package
     (name "trytond-party-avatar")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_party_avatar" version))
        (sha256
-        (base32 "00gjjvslvcvfkdb0293n9yd9pmsnlbjvcnxrjg99vxkrn6dcwxzh"))))
-    (build-system python-build-system)
+        (base32 "1dvr1k5nd4pk8j3ix1x289ln35mlb6hf2i0qn19kyj27nlmb8p99"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "party_avatar"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-company" ,trytond-company)))
+     (cons* trytond-company
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-party))
     (home-page "https://docs.tryton.org/projects/modules-party-avatar")
