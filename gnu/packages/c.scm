@@ -150,7 +150,7 @@ slicing.")
 
 (define-public cproc
   (let ((commit "70fe9ef1810cc6c05bde9eb0970363c35fa7e802")
-        (revision "1"))
+        (revision "2"))
     (package
       (name "cproc")
       (version (git-version "0.0" revision commit))
@@ -162,7 +162,8 @@ slicing.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1qmgzll7z7mn587azkj4cizyyd8ii6iznfxpc66ja08140sbn9yx"))))
+          (base32 "1qmgzll7z7mn587azkj4cizyyd8ii6iznfxpc66ja08140sbn9yx"))
+         (patches (search-patches "cproc-extra-linkflags.patch"))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -171,25 +172,50 @@ slicing.")
                 (string-append "PREFIX=" #$output))
         #:phases
         #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-glibc-library-directory
+              (lambda* (#:key inputs #:allow-other-keys)
+                (setenv "LINKFLAGS_EXTRA"
+                        (string-append
+                          "-L"
+                          (dirname (search-input-file inputs "/lib/libc.so"))))))
             (replace 'configure
               (lambda* (#:key inputs #:allow-other-keys)
                 (let ((gcc-lib (assoc-ref inputs "gcc:lib"))
-                      (host-system #$(nix-system->gnu-triplet
-                                      (%current-system)))
+                      (host-system #$(nix-system->gnu-triplet (%current-system)))
                       (target-system #$(nix-system->gnu-triplet
-                                        (or (%current-target-system)
-                                            (%current-system)))))
+                                         (or (%current-target-system)
+                                             (%current-system)))))
                   (invoke "./configure"
-                          (string-append "--prefix=" #$output)
+                          (string-append "--prefix="
+                                         #$output)
                           (string-append "--host=" host-system)
                           (string-append "--target=" target-system)
-                          (string-append "--with-ld=" #$(ld-for-target))
-                          (string-append "--with-gcc-libdir=" gcc-lib))))))))
+                          (string-append "--with-as="
+                                         (search-input-file inputs
+                                                            (string-append
+                                                             "/bin/"
+                                                             #$(as-for-target))))
+                          (string-append "--with-ld="
+                                         (search-input-file inputs
+                                                            (string-append
+                                                             "/bin/"
+                                                             #$(ld-for-target))))
+                          (string-append "--with-ldso="
+                                         (search-input-file inputs
+                                                            #$(glibc-dynamic-linker)))
+                          (string-append "--with-cpp="
+                                         (search-input-file inputs "/bin/cpp"))
+                          (string-append "--with-qbe="
+                                         (search-input-file inputs "/bin/qbe"))
+                          (string-append "--with-gcc-libdir="
+                                         (dirname (car (find-files gcc-lib
+                                                        "crtbegin\\.o")))))))))))
       (inputs `(("qbe" ,qbe)
                 ("gcc:lib" ,gcc "lib")))
       (supported-systems (list "x86_64-linux" "aarch64-linux"))
       (synopsis "Simple C11 compiler backed by QBE")
-      (description "@code{cproc} is a C compiler using QBE as a backend,
+      (description
+       "@code{cproc} is a C compiler using QBE as a backend,
  supporting most of C11 along with some GCC and C2x extensions.")
       (home-page "https://sr.ht/~mcf/cproc")
       (license license:expat))))

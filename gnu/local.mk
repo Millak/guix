@@ -1132,6 +1132,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/corrosion-honor-CARGO_BUILD_TARGET.patch	\
   %D%/packages/patches/cppcheck-fix-basedir-test.patch	\
   %D%/packages/patches/cppdap-add-CPPDAP_USE_EXTERNAL_GTEST_PACKAGE.patch\
+  %D%/packages/patches/cproc-extra-linkflags.patch	\
   %D%/packages/patches/cpulimit-with-glib-2.32.patch		\
   %D%/packages/patches/crawl-upgrade-saves.patch		\
   %D%/packages/patches/crc32c-unbundle-googletest.patch		\

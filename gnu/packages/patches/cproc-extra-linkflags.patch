@@ -1,0 +1,18 @@
+Contrary to other Linux distributions, the glibc library files are not in the
+standard ld(1) search path on Guix.  However, cproc only allows us to specify
+the gcclibdir.  To workaround that we manually add a feature to cproc's
+configure script which allows us to pass extra linkflags via an environment
+variable.
+
+diff --git a/configure b/configure
+index dab1bf3..a31b456 100755
+--- a/configure
++++ b/configure
+@@ -159,7 +159,7 @@ static const char *const preprocesscmd[] = {
+ $defines};
+ static const char *const codegencmd[]    = {"$DEFAULT_QBE"};
+ static const char *const assemblecmd[]   = {"$DEFAULT_ASSEMBLER"};
+-static const char *const linkcmd[]       = {"$DEFAULT_LINKER", $linkflags};
++static const char *const linkcmd[]       = {"$DEFAULT_LINKER", ${LINKFLAGS_EXTRA:+\"$LINKFLAGS_EXTRA\", }$linkflags};
+ EOF
+ echo done
