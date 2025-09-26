@@ -1690,20 +1690,20 @@ or a specific postal code.")
 (define-public trytond-carrier-weight
   (package
     (name "trytond-carrier-weight")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_carrier_weight" version))
        (sha256
-        (base32 "0mvz7q2hb4bcj3abvi4dxmnqbrph1g49s2bvyf3lx9ykbmr6v3n7"))))
-    (build-system python-build-system)
+        (base32 "0s6120k2glc18z6jhdm870vh8l575sq11a6sa262bmi1hqgmk2gp"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "carrier_weight"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-purchase-shipment-cost" ,trytond-purchase-shipment-cost)
-       ("trytond-sale-shipment-cost" ,trytond-sale-shipment-cost)
-       ("trytond-stock-shipment-cost" ,trytond-stock-shipment-cost)))
+     (cons* trytond-purchase-shipment-cost
+            trytond-sale-shipment-cost
+            trytond-stock-shipment-cost
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond
            trytond-carrier
