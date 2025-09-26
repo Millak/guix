@@ -1175,16 +1175,16 @@ defined by Belgian \"febelfin\".")
 (define-public trytond-account-statement-ofx
   (package
     (name "trytond-account-statement-ofx")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_statement_ofx" version))
        (sha256
-        (base32 "01ncqvz4nx277q7x50sqwwvcy3hcpgp7bwhbp2l5aa2habprki8x"))))
-    (build-system python-build-system)
+        (base32 "00dg1dq71qllhnq9ngjb4br3y6qa34hi3gjx93ibwkfy0rj84hni"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_statement_ofx"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list python-ofxparse trytond trytond-account-statement trytond-bank
            trytond-party))
