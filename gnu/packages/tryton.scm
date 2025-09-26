@@ -1630,20 +1630,20 @@ of carrier.")
 (define-public trytond-carrier-percentage
   (package
     (name "trytond-carrier-percentage")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_carrier_percentage" version))
        (sha256
-        (base32 "0lnahli4bc4zspr86i8qchza96k4cmsfcdg3wp7wicp1s2ki7bbw"))))
-    (build-system python-build-system)
+        (base32 "10gp67rdv9qlprq8381k8pxsswc8022idkim2fhxivglghic3i4r"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "carrier_percentage"))
     (native-inputs
-     `(,@(%standard-trytond-native-inputs)
-       ("trytond-purchase-shipment-cost" ,trytond-purchase-shipment-cost)
-       ("trytond-sale-shipment-cost" ,trytond-sale-shipment-cost)
-       ("trytond-stock-shipment-cost" ,trytond-stock-shipment-cost)))
+     (cons* trytond-purchase-shipment-cost
+            trytond-sale-shipment-cost
+            trytond-stock-shipment-cost
+            %standard-trytond-native-inputs))
     (propagated-inputs
      (list trytond trytond-carrier trytond-currency))
     (home-page "https://docs.tryton.org/projects/modules-carrier-percentage")
