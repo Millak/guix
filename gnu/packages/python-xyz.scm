@@ -6524,9 +6524,11 @@ other Python program.")
                (base32
                 "0skrs5i5pvpzvihgxw766zi1c9bbp33aisdldxgj470mlchvdgyy"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "tests/functional/tests.py")))
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (home-page "https://agateau.com/projects/doxyqml")
     (synopsis "Doxygen input filter for QML files")
     (description
