@@ -615,16 +615,24 @@ accounting requirements in Europe.  It includes:
 (define-public trytond-account-fr
   (package
     (name "trytond-account-fr")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_fr" version))
        (sha256
-        (base32 "18wmijaxah125skhgpqc7iaw6a8md5mpv7m5yazcrscx9pk1z5jz"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "account_fr"))
-    (native-inputs (%standard-trytond-native-inputs))
+        (base32 "0cigsrh2d2bj9h87lxmi8hancghwhxs3mam581knygi8r4n1c7aj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases #$(tryton-phases "account_fr")
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; doctests uses '__file__' which is unset in pytest
+                (invoke "python" "-m" "unittest" "discover")))))))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-account trytond-party-siret))
     (home-page "https://docs.tryton.org/projects/modules-account-fr")
