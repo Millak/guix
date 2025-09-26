@@ -2285,16 +2285,16 @@ party.")
 (define-public trytond-party-relationship
   (package
     (name "trytond-party-relationship")
-    (version "6.2.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_party_relationship" version))
        (sha256
-        (base32 "0vhm7zl29z8al4ay4n6gw3zazq07dsdhjc54il7sg3z9kz21xv6k"))))
-    (build-system python-build-system)
+        (base32 "1jqxg281ndxhg64bgnzb5rl53cv7clz8q9qs3qqsncj7vawxcwx2"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "party_relationship"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-party))
     (home-page "https://docs.tryton.org/projects/modules-party-relationship")
