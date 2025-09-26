@@ -4624,16 +4624,16 @@ a supplying may happens at any day of the week.")
 (define-public trytond-stock-supply-forecast
   (package
     (name "trytond-stock-supply-forecast")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_supply_forecast" version))
        (sha256
-        (base32 "0b7d8csjcn74086wgm6cydirsl1ygrd9hysd7l4kmd3jz8bb8dzs"))))
-    (build-system python-build-system)
+        (base32 "1wp0ajsxpnw03az5xrhd24lyh64d2w357x6456c622yi4bgg957v"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_supply_forecast"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-stock-forecast trytond-stock-supply))
     (home-page
