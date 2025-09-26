@@ -646,7 +646,8 @@ line drawing algorithm}.")
        (sha256
         (base32 "08dmi4chamk5dbdpvrc0nb09iybfhj3wqwxgffiqnkj7030qhqb8"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    ;; tests: 797 passed, 1 warning
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-ply))
     (home-page "https://github.com/calmjs/calmjs.parse/")
     (synopsis "Parsers for ECMA standards")
