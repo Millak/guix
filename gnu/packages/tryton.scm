@@ -3525,24 +3525,24 @@ payments prior to the creation of any invoice.")
 (define-public trytond-sale-point
   (package
     (name "trytond-sale-point")
-    (version "6.2.2")
+    (version "7.0.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "trytond_sale_point" version))
               (sha256
-               (base32 "0brysadw75rm80yk66wq68gqkyb28zk65sw530fyacx9ma0sq0pj"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "trytond_sale_point"))
-    (native-inputs (%standard-trytond-native-inputs))
-    (propagated-inputs (list python-sql
-                             trytond
-                             trytond-account
-                             trytond-account-product
-                             trytond-company
-                             trytond-party
-                             trytond-product
-                             trytond-sale
-                             trytond-stock))
+               (base32 "1b7jjs14h6n8vipj5wyk07jaa5i71nb1x0x8g1zwgzh49k6pjl9l"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "sale_point"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs
+     (list trytond
+           trytond-account
+           trytond-account-product
+           trytond-company
+           trytond-party
+           trytond-product
+           trytond-sale
+           trytond-stock))
     (home-page "https://docs.tryton.org/projects/modules-sale-point")
     (synopsis "Tryton module for Point of Sales")
     (description "The @emph{Sale Point} Tryton module allows retail sales to
