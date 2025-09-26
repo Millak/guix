@@ -3195,8 +3195,8 @@ time by mocking the datetime module.")
                (base32
                 "18dcr7mpldf3cxsqi9rak75n4z7x3j544l4ixdspairm7cf6cp23"))))
     (build-system pyproject-build-system)
-    (native-inputs (list poetry python-pytest))
-    (home-page "https://flexmock.readthedocs.org")
+    (native-inputs (list python-poetry-core python-pytest))
+    (home-page "https://flexmock.readthedocs.io/")
     (synopsis "Testing library for Python")
     (description
      "flexmock is a testing library for Python that makes it easy to create
