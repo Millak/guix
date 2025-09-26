@@ -3902,16 +3902,16 @@ shipment is created and linked to both the purchase and the sale.")
 (define-public trytond-sale-supply-production
   (package
     (name "trytond-sale-supply-production")
-    (version "6.2.1")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_supply_production" version))
        (sha256
-        (base32 "08ky3mqprlqyksw91mqlb7mjkfpdrgzgnc862wm2q28s0aydn3dv"))))
-    (build-system python-build-system)
+        (base32 "062nmykl8q9cypza05rr9japx2z0h63310m78qkbwnqvmlfih8jn"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_supply_production"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-production trytond-sale-supply))
     (home-page
