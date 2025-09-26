@@ -2832,21 +2832,22 @@ project and task and the basis for simple project management.")
 (define-public trytond-project-invoice
   (package
     (name "trytond-project-invoice")
-    (version "6.2.3")
+    (version "7.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_project_invoice" version))
        (sha256
-        (base32 "1hdyds6k2k0hjk8za8xa64qvqx9pnyv1a6g7mq80ag8hscx2s282"))))
-    (build-system python-build-system)
+        (base32 "031bjkh6dyixs4rkmdpaf28xa8cx5yr3hh51gkcd4mcnz2pbflxx"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "project_invoice"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond
            trytond-account
            trytond-account-invoice
            trytond-account-product
+           trytond-currency
            trytond-product
            trytond-project
            trytond-project-revenue
