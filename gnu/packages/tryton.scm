@@ -120,16 +120,17 @@ and security.")
 (define-public tryton
   (package
     (name "tryton")
-    (version "7.4.4")
+    (version "7.0.27")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tryton" version))
        (sha256
-        (base32 "0q0qa4pjbpc0h8r9hlnm5dh315w5i7mzqpdrlw1c8qvigpl1rf7g"))))
+        (base32 "0hqni5nhy29a0zs1r6w734dw2skpbnq7yn6s1f7ziq6rpxd57adl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-backend #~'unittest #:test-flags #~(list "discover")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'change-home
@@ -145,8 +146,7 @@ and security.")
      (list `(,glib "bin")
            gobject-introspection
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (inputs (list bash-minimal))        ;for wrap-program
     (propagated-inputs
      (list (librsvg-for-system)
@@ -156,7 +156,7 @@ and security.")
            python-pycairo
            python-pygobject))
     (home-page "https://www.tryton.org/")
-    (synopsis "Tryton Client")
+    (synopsis "Desktop client for Tryton")
     (description
      "This package provides the Tryton GTK client.")
     (license license:gpl3+)))
