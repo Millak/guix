@@ -1338,21 +1338,22 @@ from the Product Measurements")
 (define-public trytond-account-stock-shipment-cost
   (package
     (name "trytond-account-stock-shipment-cost")
-    (version "6.2.1")
+    (version "7.0.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "trytond_account_stock_shipment_cost" version))
               (sha256
-               (base32 "1iyz76cma63kp2alqr4rcrm3zjj6ifsvv9hsylbfkamfgy84brsr"))))
-    (build-system python-build-system)
-    (arguments (tryton-arguments "trytond_account_stock_shipment_cost"))
-    (native-inputs (%standard-trytond-native-inputs))
-    (propagated-inputs (list trytond
-                             trytond-account
-                             trytond-account-invoice
-                             trytond-product
-                             trytond-stock
-                             trytond-stock-shipment-cost))
+               (base32 "0gxjhry3hpm0j72ai22q9fgay9w5087xnrisc18ynwv4zzyr84vq"))))
+    (build-system pyproject-build-system)
+    (arguments (tryton-arguments "account_stock_shipment_cost"))
+    (native-inputs %standard-trytond-native-inputs)
+    (propagated-inputs
+     (list trytond
+           trytond-account
+           trytond-account-invoice
+           trytond-product
+           trytond-stock
+           trytond-stock-shipment-cost))
     (home-page "https://docs.tryton.org/projects/modules-account-stock-shipment-cost")
     (synopsis "Tryton module to allocate shipment cost based on invoice")
     (description "The @emph{Account Stock Shipment Cost} Tryton module
