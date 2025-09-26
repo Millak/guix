@@ -3928,16 +3928,16 @@ back to the default supply method.")
 (define-public trytond-stock
   (package
     (name "trytond-stock")
-    (version "6.2.7")
+    (version "7.0.16")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock" version))
        (sha256
-        (base32 "02klx6qk2vrwiynxcdjnpqx593wr1wjg9sygh5zjzrqqwmjb16yi"))))
-    (build-system python-build-system)
+        (base32 "0kbp2s6dn8dp8h8pjasqylr8adicz52z02cqc6bpxr529aj7sa55"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list python-simpleeval
            trytond
