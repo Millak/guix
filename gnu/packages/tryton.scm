@@ -2185,16 +2185,16 @@ that are executed on selected records.")
 (define-public trytond-marketing-email
   (package
     (name "trytond-marketing-email")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_marketing_email" version))
        (sha256
-        (base32 "1z38c3lw8chqbm23y0wfsnp268kq2f9azly4ix6imis74zdjnzkl"))))
-    (build-system python-build-system)
+        (base32 "00ycqv3x22hxz9kfc10w9z2fn0bicb8p63szj2k4x30val22bxb6"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "marketing_email"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-marketing trytond-party trytond-web-shortener
            trytond-web-user))
