@@ -40,11 +40,13 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnuzilla)
   #:use-module (gnu packages iso-codes)
+  #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages photo)
@@ -54,6 +56,8 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages web)
+  #:use-module (gnu packages window-management)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
@@ -319,6 +323,137 @@ persist XApp settings windows using GSettings.")
 as well as some desktop-wide documents.")
     (license (list license:gpl2+ license:lgpl2.0+
                    license:expat)))) ;display-name.c , edid-parse.c
+
+(define-public muffin
+  (package
+    (name "muffin")
+    (version "6.6.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/linuxmint/muffin")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1rf53mal8fzin3wnv1pfg3vvwd4i17mhk550j8zdp7b20qygmliw"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:modules '((guix build meson-build-system)
+                  (guix build utils)
+                  (ice-9 match))
+      #:glib-or-gtk? #t
+      #:configure-flags
+      #~(list
+         ;; Otherwise, the RUNPATH will lack the final path component.
+         (string-append "-Dc_link_args=-Wl,-rpath="
+                        #$output "/lib,-rpath="
+                        #$output "/lib/muffin")
+         ;; Don't install tests.
+         "-Dinstalled_tests=false"
+         ;; The following flags are needed for the bundled clutter
+         (string-append "-Dxwayland_path="
+                        (search-input-file %build-inputs "bin/Xwayland"))
+         ;; the remaining flags are needed for the bundled cogl
+         (string-append "-Dopengl_libname="
+                        (search-input-file %build-inputs "lib/libGL.so"))
+         (string-append "-Dgles2_libname="
+                        (search-input-file %build-inputs "lib/libGLESv2.so"))
+         "-Degl_device=true"            ;false by default
+         "-Dwayland_eglstream=true"     ;false by default
+         )
+      #:test-options #~(list "--verbose")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-SOURCE_DIR
+            (lambda _
+              ;; Just to make our life easier later.
+              (setenv "SOURCE_DIR" (getcwd))))
+          (add-after 'unpack 'use-RUNPATH-instead-of-RPATH
+            (lambda _
+              ;; The build system disables RUNPATH in favor of RPATH to work
+              ;; around a peculiarity of their CI system.  Ignore that.
+              (substitute* "meson.build"
+                (("disable-new-dtags")
+                 "enable-new-dtags"))))
+          (add-after 'unpack 'patch-dlopen-calls
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/wayland/meta-wayland-egl-stream.c"
+                (("libnvidia-egl-wayland.so.1")
+                 (search-input-file inputs "lib/libnvidia-egl-wayland.so.1")))))
+          (add-before 'configure 'set-udev-dir
+            (lambda _
+              (setenv "PKG_CONFIG_UDEV_UDEVDIR"
+                      (string-append #$output "/lib/udev")))))))
+    (native-inputs
+     (list desktop-file-utils           ;for update-desktop-database
+           `(,glib "bin")               ;for glib-compile-schemas, etc.
+           gettext-minimal
+           gobject-introspection
+           pkg-config
+           xvfb-run
+           wayland-protocols
+           ;; For tests.
+           ;; Warnings are configured to be fatal during the tests; add an icon
+           ;; theme to please libxcursor.
+           adwaita-icon-theme
+           libei
+           libxcursor                   ;for XCURSOR_PATH
+           pipewire
+           python
+           python-dbus
+           python-dbusmock
+           wireplumber-minimal))
+    (propagated-inputs
+     (list gsettings-desktop-schemas
+           at-spi2-core
+           cairo
+           eudev
+           gdk-pixbuf
+           glib
+           gtk+
+           graphene
+           json-glib
+           libinput
+           libx11
+           libxcomposite
+           libxcvt
+           libxdamage
+           libxext
+           libxfixes
+           libxkbcommon
+           libxml2
+           libxrandr
+           mesa
+           pango
+           xinput))
+    (inputs
+     (list colord
+           egl-wayland                  ;for wayland-eglstream-protocols
+           elogind
+           cinnamon-desktop
+           libcanberra
+           libdisplay-info
+           libgudev
+           libice
+           libsm
+           libwacom
+           libxkbfile
+           libxrandr
+           libxtst
+           pipewire
+           startup-notification
+           sysprof
+           upower
+           xkeyboard-config
+           xorg-server-xwayland))
+    (home-page "https://github.com/linuxmint/muffin")
+    (synopsis "Window and compositing manager")
+    (description
+     "Muffin is a  fork of Mutter, specifically adapted to work as the
+window manager for the Cinnamon desktop environment.")
+    (license license:gpl2+)))
 
 (define-public nemo
   (package
