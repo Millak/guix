@@ -4014,18 +4014,21 @@ consignment stock from supplier or at customer warehouse.")
 (define-public trytond-stock-forecast
   (package
     (name "trytond-stock-forecast")
-    (version "6.2.1")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_forecast" version))
        (sha256
-        (base32 "19w4q71rm4j0rlsdp6d2ykyjcdkrvq5mjlprsdk6890dmnxm6czx"))))
-    (build-system python-build-system)
+        (base32 "0avj0j3aphfqr97j7yy5kx2xz1znlf2bsls7c6dxkxwmr9k8p6w0"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_forecast"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
-     (list trytond trytond-company trytond-product trytond-stock))
+     (list trytond
+           trytond-company
+           trytond-product
+           trytond-stock))
     (home-page "https://docs.tryton.org/projects/modules-stock-forecast")
     (synopsis "Tryton module with stock forecasts")
     (description "The @emph{Stock Forecast} Tryton module provide a simple way
