@@ -4601,16 +4601,16 @@ mechanisms and introduces the concepts of order point.")
 (define-public trytond-stock-supply-day
   (package
     (name "trytond-stock-supply-day")
-    (version "6.2.0")
+    (version "7.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_stock_supply_day" version))
        (sha256
-        (base32 "112xzrzw2k4badync2qd9aanvni43nh86qhrdh754f311km5gh7q"))))
-    (build-system python-build-system)
+        (base32 "1bh8wn40s6i6agr67zl7a7k4l537haadp8czgvdcwckz3nlh0flq"))))
+    (build-system pyproject-build-system)
     (arguments (tryton-arguments "stock_supply_day"))
-    (native-inputs (%standard-trytond-native-inputs))
+    (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
      (list trytond trytond-purchase))
     (home-page "https://docs.tryton.org/projects/modules-stock-supply-day")
