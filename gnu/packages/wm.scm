@@ -4654,7 +4654,7 @@ battery efficient---polling is only done when absolutely necessary.")
 (define-public wideriver
   (package
     (name "wideriver")
-    (version "1.2.0")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -4663,7 +4663,7 @@ battery efficient---polling is only done when absolutely necessary.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16i0mzgxn32nrh5ajn0kb4xdwmsjg03amhasxhwyvspar5y4flhg"))))
+        (base32 "1ljl1finfajinvrj073dbwk9vm352jwr6rm9vn5fkrqi296s1n8x"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -4674,7 +4674,7 @@ battery efficient---polling is only done when absolutely necessary.")
       #:phases #~(modify-phases %standard-phases
                    (delete 'configure)))) ; no configure script
     (native-inputs (list pkg-config cmocka))
-    (inputs (list wayland wayland-protocols wlroots))
+    (inputs (list wayland wayland-protocols))
     (home-page "https://github.com/alex-courtis/wideriver")
     (synopsis "A set of riverWM layouts")
     (description
