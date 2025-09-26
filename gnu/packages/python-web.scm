@@ -6026,7 +6026,8 @@ can reuse the same socket connection for multiple requests, it can POST files,
 supports url redirection and retries, and also gzip and deflate decoding.")
     (license license:expat)))
 
-(define-public python-urllib3-next python-urllib3)
+(define-deprecated/public-alias python-urllib3-next
+  python-urllib3)                      ;may be removed after 2025-12-01
 
 (define-public python-urllib3-1.25
   (package
