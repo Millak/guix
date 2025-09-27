@@ -2818,7 +2818,7 @@ corners, shadows, inactive window dimming, etc.")
         (revision "1"))          ; commit fixes elogind build
   (package
     (name "sway-audio-idle-inhibit")
-    (version (git-version "v0.2.0" revision commit))
+    (version (git-version "0.2.0" revision commit))
     (source
      (origin
        (method git-fetch)
@@ -2836,7 +2836,7 @@ corners, shadows, inactive window dimming, etc.")
     (home-page "https://github.com/ErikReider/SwayAudioIdleInhibit")
     (synopsis "Idle inhibit for Sway/Hyprland")
     (description "Prevents swayidle/hypridle from sleeping while any
-                 application is outputting or receiving audio.")
+     application is outputting or receiving audio.")
     (license license:gpl3))))
 
 (define-public swaylock
