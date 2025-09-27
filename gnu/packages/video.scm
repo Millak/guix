@@ -2442,7 +2442,7 @@ media, 2D/3D graphics and ECMAScript.")
            dav1d
            dbus
            eudev
-           ffmpeg
+           ffmpeg-6
            flac
            fontconfig
            freetype
