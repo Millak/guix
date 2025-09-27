@@ -154,6 +154,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-viewers)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages java)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libevent)

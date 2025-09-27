@@ -33,6 +33,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -1739,7 +1740,7 @@ month and a year of work.")
     (arguments (tryton-arguments "country" "--no-doctest"))
     (native-inputs (%standard-trytond-native-inputs))
     (propagated-inputs
-     (list python-pycountry@20.7.3 trytond))
+     (list python-pycountry-20.7.3 trytond))
     (home-page "http://www.tryton.org/")
     (synopsis "Tryton module with countries")
     (description

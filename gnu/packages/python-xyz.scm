@@ -237,6 +237,7 @@
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages inkscape)
+  #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages java)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages kerberos)
@@ -26033,46 +26034,6 @@ converting text with ANSI color codes to HTML or LaTeX.")
      a tool to quickly create nice-looking screens in your terminal window.  You
      can even create animations with the cursor controls.")
     (license license:expat)))
-
-(define-public python-pycountry
-  (package
-    (name "python-pycountry")
-    (version "22.3.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pycountry" version))
-       (sha256
-        (base32
-         "0ihnkh86zz01vi46gcwgq6h71jrpj7hq71zi13c98n2qdhj3l5mj"))))
-    (build-system python-build-system)
-    (home-page "https://bitbucket.org/flyingcircus/pycountry")
-    (synopsis "ISO databases for languages, countries, currencies, etc.")
-    (description
-     "@code{pycountry} provides the ISO databases for the standards:
-     @enumerate
-     @item 639-3 (Languages)
-     @item 3166 (Countries)
-     @item 3166-3 (Deleted Countries)
-     @item 3166-2 (Subdivisions of countries)
-     @item 4217 (Currencies)
-     @item 15924 (Scripts)
-     @end enumerate
-     It includes a copy from Debian’s pkg-isocodes and makes the data accessible
-     through a Python API.")
-    (license license:lgpl2.1+)))
-
-(define-public python-pycountry@20.7.3
-  (package
-    (inherit python-pycountry)
-    (name "python-pycountry")
-    (version "20.7.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pycountry" version))
-       (sha256
-        (base32 "0hnbabsmqimx5hqh0jbd2f64i8fhzhhbrvid57048hs5sd9ll241"))))))
 
 (define-public python-pycosat
   (package
