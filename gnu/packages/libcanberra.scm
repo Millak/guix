@@ -26,7 +26,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
@@ -34,6 +34,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages xiph))
 
 (define-public libcanberra
@@ -133,15 +134,13 @@ sounds for various system events.")
        (uri (string-append "http://ftp.n0.is/pub/releases/"
                            "pycanberra-" version ".tar.xz"))
        (sha256
-        (base32
-         "16jjf8fcgaprmz6jacsxrh17l1ad891fns38bxv49lg3s3mn1nj2"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ;No tests included.
-    (propagated-inputs
-     (list libcanberra))
+        (base32 "16jjf8fcgaprmz6jacsxrh17l1ad891fns38bxv49lg3s3mn1nj2"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;No tests included.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list libcanberra))
+    (home-page "https://github.com/totdb/pycanberra")
     (synopsis "Ctypes wrapper for the libcanberra API")
     (description
      "Pycanberra is a basic Python wrapper for libcanberra.")
-    (home-page "http://c.n0.is/ng0/pycanberra/")
     (license lgpl2.1+)))
