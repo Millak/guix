@@ -18,9 +18,10 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages genealogy)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -34,6 +35,7 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages version-control)
@@ -52,11 +54,48 @@
        (file-name (git-file-name name version))
        (sha256
         (base32 "1gzhi5hxpgc6pxs40xsxf67hndjifnfhm89s3ly68c70x83qmwhd"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:imported-modules
+      `((guix build glib-or-gtk-build-system)
+        ,@%pyproject-build-system-modules)
+      #:modules
+      `((ice-9 match)
+        (srfi srfi-1)
+        (guix build pyproject-build-system)
+        ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+        (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'prepare-tests
+            (lambda _
+              (setenv "HOME" (getenv "TMPDIR"))
+              ;; Presence of .git directory is used to determine whether this
+              ;; is a final installation.  Without it, tests fail to determine
+              ;; resource path.
+              (mkdir ".git")
+              ;; Test is failing
+              (delete-file "gramps/gen/utils/test/file_test.py")))
+          (add-before 'wrap 'wrap-with-GI_TYPELIB_PATH
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/gramps")
+                `("GI_TYPELIB_PATH" ":" prefix
+                  ,(filter-map
+                    (match-lambda
+                      ((output . directory)
+                       (let ((girepodir (string-append
+                                         directory
+                                         "/lib/girepository-1.0")))
+                         (and (file-exists? girepodir)
+                              girepodir))))
+                    inputs)))))
+          (add-after 'wrap 'glib-or-gtk-wrap
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("intltool" ,intltool)
-       ("glibc-utf8-locales" ,glibc-utf8-locales))) ;; for one test
+     (list gettext-minimal intltool
+           glibc-utf8-locales ;for one test
+           python-setuptools))
     (inputs
      (list bash-minimal
            cairo
@@ -81,42 +120,6 @@
            rcs
            sqlite
            xdg-utils))
-    (arguments
-     `(#:imported-modules ((guix build glib-or-gtk-build-system)
-                           ,@%python-build-system-modules)
-       #:modules ((ice-9 match)
-                  (guix build python-build-system)
-                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
-                  (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-home-for-tests
-           (lambda _
-             (setenv "HOME" (getenv "TMPDIR"))))
-         (add-before 'check 'prepare-tests
-           (lambda _
-             ;; Presence of .git directory is used to determine whether this
-             ;; is a final installation.  Without it, tests fail to determine
-             ;; resource path.
-             (mkdir ".git")
-             ;; Test is failing
-             (delete-file "gramps/gen/utils/test/file_test.py")))
-         (add-before 'wrap 'wrap-with-GI_TYPELIB_PATH
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (paths (map (match-lambda
-                                 ((output . directory)
-                                  (let ((girepodir (string-append
-                                                    directory
-                                                    "/lib/girepository-1.0")))
-                                    (if (file-exists? girepodir)
-                                        girepodir
-                                        #f))))
-                               inputs)))
-               (wrap-program (string-append out "/bin/gramps")
-                 `("GI_TYPELIB_PATH" ":" prefix ,(filter identity paths))))))
-         (add-after 'wrap 'glib-or-gtk-wrap
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))))
     (home-page "https://gramps-project.org")
     (synopsis "Genealogical research software")
     (description
