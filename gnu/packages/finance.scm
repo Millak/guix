@@ -799,6 +799,11 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
               (substitute* "electroncash/secp256k1.py"
                 (("libsecp256k1.so.0")
                  (search-input-file inputs "lib/libsecp256k1.so.0")))))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "contrib/requirements/requirements.txt"
+                (("python-dateutil<2\\.9")
+                 "python-dateutil"))))
           (add-after 'install 'wrap-qt
             (lambda* (#:key outputs inputs #:allow-other-keys)
               (let ((out (assoc-ref outputs "out")))
