@@ -822,7 +822,8 @@ devices that are supported by the SoapySDR library.")
            python-simplesoapy
            soapy-power))
     (arguments
-     (list #:phases
+     (list #:tests? #f ; No tests
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'install 'wrap-path
                  ;; Add the location of the default backend to PATH.
