@@ -1514,37 +1514,30 @@ satisfied.
 @subsection Python Modules
 
 @cindex python
-We currently package Python 2 and Python 3, under the Scheme variable names
-@code{python-2} and @code{python} as explained in @ref{Version Numbers}.
-To avoid confusion and naming clashes with other programming languages, it
-seems desirable that the name of a package for a Python module contains
-the word @code{python}.
+The standard way to generate a package definition is to use
+@code{guix import pypi <name>}, where @var{name} is the name of the
+Python package on @url{https://pypi.org, PyPI}, see @pxref{Invoking guix
+import}.  Please check with @code{guix lint <package-name>} that the
+generated package is valid.
 
-Some modules are compatible with only one version of Python, others with
-both.  If the package Foo is compiled with Python 3, we name it
-@code{python-foo}.  If it is compiled with Python 2, we name it
-@code{python2-foo}.  Python 2 packages are being removed from the
-distribution; please do no not submit any new Python 2 packages.
+To avoid confusion and naming clashes with other programming languages,
+Python module packages should be prefixed with @code{python-}.
 
-If a project already contains the word @code{python}, we drop this;
-for instance, the module python-dateutil is packaged under the names
-@code{python-dateutil} and @code{python2-dateutil}.  If the project name
-starts with @code{py} (e.g.@: @code{pytz}), we keep it and prefix it as
-described above.
+If a project already contains the word @code{python}, please do not
+repeat it; for instance, the module python-dateutil is packaged under
+the name @code{python-dateutil}.  If the project name starts with
+@code{py}, it is kept and prefixed as described above (e.g.@:
+@code{python-pytz}).
 
 @quotation Note
-Currently there are two different build systems for Python packages in Guix:
-@var{python-build-system} and @var{pyproject-build-system}.  For the
-longest time, Python packages were built from an informally specified
-@file{setup.py} file.  That worked amazingly well, considering Python's
-success, but was difficult to build tooling around.  As a result, a host
-of alternative build systems emerged and the community eventually settled on a
-@url{https://peps.python.org/pep-0517/, formal standard} for specifying build
-requirements.  @var{pyproject-build-system} is Guix's implementation of this
-standard.  It is considered ``experimental'' in that it does not yet support
-all the various PEP-517 @emph{build backends}, but you are encouraged to try
-it for new Python packages and report any problems.  It will eventually be
-deprecated and merged into @var{python-build-system}.
+The standard build system for Python packages is Guix's implementation
+of the @url{https://peps.python.org/pep-0517/, formal Python standard}
+for specifying build requirements: @var{pyproject-build-system}.
+The @var{python-build-system} which corresponds to the way Python
+packages were built before PEP517, using the informally specified
+@file{setup.py} file, is now deprecated.  @var{pyproject-build-system}
+will eventually be deprecated and renamed into
+@var{python-build-system} after its removal.
 @end quotation
 
 @subsubsection Specifying Dependencies
@@ -1556,21 +1549,21 @@ package source tree, with varying degrees of accuracy: in the
 @file{requirements.txt}, or in @file{tox.ini} (the latter mostly for
 test dependencies).
 
-Your mission, when writing a recipe for a Python package, is to map
-these dependencies to the appropriate type of ``input'' (@pxref{package
+When editing a recipe for a Python package, the goal is to map these
+dependencies to the appropriate type of ``input'' (@pxref{package
 Reference, inputs}).  Although the @code{pypi} importer normally does a
-good job (@pxref{Invoking guix import}), you may want to check the
-following check list to determine which dependency goes where.
+good job (@pxref{Invoking guix import}), please verify the following
+check list to determine which dependency goes where.
 
 @itemize
 
 @item
-We currently package Python with @code{setuptools} and @code{pip}
-installed per default.  This is about to change, and users are encouraged
-to use @code{python-toolchain} if they want a build environment for Python.
+Python is packaged @emph{without} @code{setuptools} and @code{pip}
+installed per default.  @code{python-toolchain} provides a build
+environment for Python.
 
-@command{guix lint} will warn if @code{setuptools} or @code{pip} are
-added as native-inputs because they are generally not necessary.
+@command{guix lint} will warn if @code{pip} or other unneeded
+native-inputs are added.
 
 @item
 Python dependencies required at run time go into
@@ -1585,9 +1578,9 @@ Python packages required only at build time---e.g., those listed under
 for testing---e.g., those in @code{tests_require} or @file{tox.ini}---go into
 @code{native-inputs}.  The rationale is that (1) they do not need to be
 propagated because they are not needed at run time, and (2) in a
-cross-compilation context, it's the ``native'' input that we'd want.
+cross-compilation context, it's the target ``native'' input.
 
-Examples are the @code{pytest}, @code{mock}, and @code{nose} test
+Examples are the @code{pytest}, @code{mock}, and @code{stestr} test
 frameworks.  Of course if any of these packages is also required at
 run-time, it needs to go to @code{propagated-inputs}.
 
