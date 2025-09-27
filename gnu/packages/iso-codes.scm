@@ -26,7 +26,6 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (gnu packages check)
   #:use-module (gnu packages gettext)
@@ -243,13 +242,18 @@ concerned with representation of names for languages and language groups.")
     (license license:lgpl2.1+)))
 
 (define-public python-pycountry-20.7.3
-  (package
-    (inherit python-pycountry)
-    (name "python-pycountry")
-    (version "20.7.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pycountry" version))
-       (sha256
-        (base32 "0hnbabsmqimx5hqh0jbd2f64i8fhzhhbrvid57048hs5sd9ll241"))))))
+  (hidden-package
+   (package
+     (inherit python-pycountry)
+     (name "python-pycountry")
+     (version "20.7.3")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/pycountry/pycountry")
+               (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1aqzbdqvy3pg0x33ay099vriazs28v6kw7fwc8ajg3avdcws2mgm"))))
+     (native-inputs (list python-pytest python-pytest-cov python-setuptools)))))
