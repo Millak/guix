@@ -793,7 +793,7 @@ infamous 'Wanda the Fish'.")
 (define-public atril
   (package
     (name "atril")
-    (version "1.28.0")
+    (version "1.28.1")
     (source
      (origin
        (method url-fetch)
@@ -801,42 +801,41 @@ infamous 'Wanda the Fish'.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0qji6nsf0r3rp5x7mah8pafx42dyqcygqsv7cgmc8wcvdrgp5m6f"))))
+         "0ghrx1nhjjs016swj0qy88azgmvas1478xi3xwnxbspkg4lz9i3l"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(#:configure-flags (list (string-append "--with-openjpeg="
-                                              (assoc-ref %build-inputs "openjpeg"))
-                               "--enable-introspection"
-                               "--disable-schemas-compile"
-                               ;; FIXME: Enable build of Caja extensions.
-                               "--disable-caja")
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-mathjax-path
-           (lambda _
-             (let* ((mathjax (assoc-ref %build-inputs "js-mathjax"))
-                    (mathjax-path (string-append mathjax
-                                                 "/share/javascript/mathjax")))
-               (substitute* "backend/epub/epub-document.c"
-                 (("/usr/share/javascript/mathjax")
-                  mathjax-path)))
-             #t))
-         (add-after 'unpack 'fix-introspection-install-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* '("configure")
-                 (("\\$\\(\\$PKG_CONFIG --variable=girdir gobject-introspection-1.0\\)")
-                  (string-append "\"" out "/share/gir-1.0/\""))
-                 (("\\$\\(\\$PKG_CONFIG --variable=typelibdir gobject-introspection-1.0\\)")
-                  (string-append out "/lib/girepository-1.0/")))
-               #t)))
-         (add-before 'install 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "data/Makefile"
-               (("gtk-update-icon-cache") "true"))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list "--enable-introspection" "--disable-schemas-compile"
+              ;; FIXME: Enable build of Caja extensions.
+              "--disable-caja"
+              (string-append "--with-openjpeg="
+                             #$(this-package-input "openjpeg")))
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-mathjax-path
+            (lambda _
+              (let* ((mathjax (assoc-ref %build-inputs "js-mathjax"))
+                     (mathjax-path (string-append mathjax
+                                                  "/share/javascript/mathjax")))
+                (substitute* "backend/epub/epub-document.c"
+                  (("/usr/share/javascript/mathjax")
+                   mathjax-path))) #t))
+          (add-after 'unpack 'fix-introspection-install-dir
+            (lambda _
+              (substitute* '("configure")
+                (("\\$\\(\\$PKG_CONFIG --variable=girdir gobject-introspection-1.0\\)")
+                 (string-append "\""
+                                #$output "/share/gir-1.0/\""))
+                (("\\$\\(\\$PKG_CONFIG --variable=typelibdir gobject-introspection-1.0\\)")
+                 (string-append #$output "/lib/girepository-1.0/")))))
+          (add-before 'install 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "data/Makefile"
+                (("gtk-update-icon-cache")
+                 "true")) #t)))))
     (native-inputs
      (list pkg-config
            intltool
