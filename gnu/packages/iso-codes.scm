@@ -185,16 +185,19 @@ groups.")
 (define-public python-pycountry
   (package
     (name "python-pycountry")
-    (version "22.3.5")
+    (version "24.6.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pycountry" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pycountry/pycountry")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0ihnkh86zz01vi46gcwgq6h71jrpj7hq71zi13c98n2qdhj3l5mj"))))
-    (build-system python-build-system)
-    (home-page "https://bitbucket.org/flyingcircus/pycountry")
+        (base32 "0qs99acz1vsj96s8pcwbnp3z3s01mzzvdayk7fm0nnl6lf3lz1g1"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-poetry-core python-pytest python-pytest-cov))
+    (home-page "https://github.com/pycountry/pycountry")
     (synopsis "ISO databases for languages, countries, currencies, etc.")
     (description
      "@code{pycountry} provides the ISO databases for the standards:
