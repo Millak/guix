@@ -4793,6 +4793,8 @@ PySide2, PyQt6, PySide6) and additional custom QWidgets.")
         (base32 "07rvfwzjl378j75j2va0c6xylwx16icxa6dycsjgjc329pgpng40"))))
     (build-system python-build-system)
     (native-inputs (list python-pyqt))
+    (arguments
+     (list #:tests? #f)) ; No tests
     (home-page "https://github.com/mottosso/Qt.py")
     (synopsis "Abstraction layer for Python Qt bindings")
     (description
