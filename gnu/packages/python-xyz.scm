@@ -29465,29 +29465,32 @@ supports the globstar @code{**} operator to match an arbitrary number of
 path components.")
     (license license:asl2.0)))
 
+;; XXX: Not maintained since 2021.
 (define-public python-git-hammer
   (package
     (name "python-git-hammer")
-    (version "0.3.1")
+    (version "0.3.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/asharov/git-hammer")
-             (commit version)))
+              (url "https://github.com/asharov/git-hammer")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0f9xlk86ijzpdj25hr1q4wcy8k72v3w470ngwm9mpdkfj8ng84wr"))))
-    (build-system python-build-system)
+        (base32 "0j0skpbhi7js45hp1w2n87093yz1hjdg5y3kicwvm84fb8i38gvx"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-setup.py
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
            (lambda _
              (substitute* "setup.py"
-               (("setup\\(")
-                "setup(\n    test_suite=\"test\",")))))))
+               (("matplotlib <3.1") "matplotlib")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-beautifultable
            python-dateutil
@@ -29499,8 +29502,8 @@ path components.")
     (home-page "https://github.com/asharov/git-hammer")
     (synopsis "Provide statistics for git repositories")
     (description
-     "Git Hammer is a statistics tool for projects in git repositories.
-Its major feature is tracking the number of lines authored by each person for every
+     "Git Hammer is a statistics tool for projects in git repositories. Its major
+feature is tracking the number of lines authored by each person for every
 commit, but it also includes some other useful statistics.")
     (license license:asl2.0)))
 
