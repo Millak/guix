@@ -32158,6 +32158,7 @@ register custom encoders and decoders.")
 bindings for Python 3.")
     (license license:bsd-3)))
 
+;; XXX: See: <https://codeberg.org/guix/guix/issues/3054>.
 (define-public python-iocapture
   ;; The latest release is more than a year older than this commit.
   (let ((commit "fdc021c431d0840303908dfc3ca8769db383595c")
@@ -32175,8 +32176,12 @@ bindings for Python 3.")
          (sha256
           (base32 "1mkbhqibxvgwg0p7slr8dfraa3g2s6bsayladhax2jccwj4kcndz"))))
       (build-system pyproject-build-system)
-      (native-inputs (list python-flexmock python-pytest python-pytest-cov
-                           python-setuptools python-wheel))
+      (native-inputs
+       (list python-flexmock
+             python-pytest
+             python-pytest-cov
+             python-setuptools
+             python-six))
       (home-page "https://github.com/oinume/iocapture")
       (synopsis "Python capturing tool for stdout and stderr")
       (description
