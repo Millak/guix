@@ -25,17 +25,18 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
-  #:use-module (gnu packages python)
-  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
-  #:use-module (gnu packages webkit)
-  #:use-module (gnu packages python-xyz))
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages webkit))
 
 (define-public rednotebook
   (package
     (name "rednotebook")
-    (version "2.22")
+    (version "2.41")
     (source
      (origin
        (method git-fetch)
@@ -44,19 +45,23 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11n970ad0j57vlll5j30ngkrfyil23v1b29ickbnblcldvjbgwa5"))))
+        (base32 "1nljj227lykl4gq1qvvv0pj00k8pbi3njm4agz7wsfcihz6dlrxi"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:imported-modules `((guix build glib-or-gtk-build-system)
-                           ,@%pyproject-build-system-modules)
-      #:modules `((ice-9 match)
-                  (guix build pyproject-build-system)
-                  ((guix build glib-or-gtk-build-system)
-                   #:prefix glib-or-gtk:)
-                  (guix build utils))
+      #:imported-modules
+      `((guix build glib-or-gtk-build-system)
+        ,@%pyproject-build-system-modules)
+      #:modules
+      `((ice-9 match)
+        (guix build pyproject-build-system)
+        ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+        (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'check 'configure-tests
+            (lambda _
+              (setenv "HOME" (getcwd))))
           ;; Make sure rednotebook can find the typelibs and webkitgtk shared
           ;; libraries.
           (add-before 'wrap 'wrap-with-library-paths
@@ -69,7 +74,7 @@
                   `("LD_LIBRARY_PATH" ":" prefix
                     (,(string-append (dirname (dirname webkitgtk-bin))
                                      "/lib"))))))))))
-    (native-inputs (list python-pytest python-setuptools))
+    (native-inputs (list gettext-minimal python-pytest python-setuptools))
     (inputs
      (list bash-minimal
            gtk+
@@ -79,7 +84,7 @@
            webkitgtk-for-gtk3))
     ;; TODO: package the following for python3 (if possible), add them as
     ;; dependencies, and remove them from rednotebook source:
-    ;; pygtkspellcheck, elib.intl, msgfmt, txt2tags
+    ;; pygtkspellcheck, elib.intl, txt2tags
     ;; TODO: package and add pyenchant for python3 and add it as a dependency.
     (home-page "https://www.rednotebook.app")
     (synopsis "Daily journal with calendar, templates and keyword searching")
