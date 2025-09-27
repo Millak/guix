@@ -11316,8 +11316,12 @@ the Wolfram language.")
        (sha256
         (base32 "1iagdic8f0yjx01kdds40jfcxcpdbrd3i0ywydl01dhyyvd2yjk9"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-mathics-scanner python-pygments))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-mathics-scanner
+           python-pygments))
     (home-page "http://github.com/Mathics3/mathics-pygments/")
     (synopsis "Wolfram language lexer for Pygments")
     (description "This package provides a Wolfram language lexer for Pygments.")
