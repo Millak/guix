@@ -1041,6 +1041,7 @@ CONFIG_TOOLS_KWBIMAGE=n")
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 (invoke "./u_boot_pylib")))))))
+    (native-inputs (list python-setuptools))
     (synopsis "U-Boot Python library")
     (description "This package provides common Python code used by some of the
 commands part of the U-Boot project, such as Patman.")))
