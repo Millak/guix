@@ -349,7 +349,7 @@ FILE-SYSTEMS."
                     ("btrfs" => '("btrfs"))
                     ("iso9660" => '("isofs"))
                     ("jfs" => '("jfs"))
-                    ("f2fs" => '("f2fs" "crc32_generic"))
+                    ("f2fs" => '("f2fs" "crc32_cryptoapi"))
                     ("xfs" => '("xfs"))
                     (else '())))
 
