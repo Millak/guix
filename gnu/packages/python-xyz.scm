@@ -13783,10 +13783,10 @@ memoizing PEG/Packrat parser in Python.")
 (define-public python-grandalf
   (package
     (name "python-grandalf")
-    (version "0.7")
+    ;; `guix refresh` will try to upgrade to v0.55555, but that is older.
+    (version "0.8")
     (source
      (origin
-       ;; There's no source tarball on PyPI.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/bdcht/grandalf")
@@ -13794,16 +13794,18 @@ memoizing PEG/Packrat parser in Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "03p8w8ljpb87qbyldm3s6b7qi30hfcn43h33iwlgqcf31fjsyr4g"))))
-    (build-system python-build-system)
+         "199f86hz3g4p237ma4j27rzwmska3bxzsbgq20i4l4pczf9v7ax0"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "python" "setup.py" "pytest"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'patch-requirements
+            (lambda _
+              (substitute* "setup.py"
+                (("install_requires=\\['pyparsing'],") "")))))))
     (native-inputs
-     (list python-pytest python-pytest-runner))
+     (list python-setuptools python-pytest))
     (propagated-inputs
      (list python-numpy python-ply))
     (home-page "https://github.com/bdcht/grandalf")
