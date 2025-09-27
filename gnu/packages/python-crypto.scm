@@ -1771,6 +1771,7 @@ in different situations.
 @end enumerate")
     (license license:expat)))
 
+;; XXX: Not maintained since 2016.
 (define-public python-pydes
   (package
     (name "python-pydes")
@@ -1782,8 +1783,10 @@ in different situations.
        (sha256
         (base32 "04lh71f47y04vspfrdrq6a0hn060ibxvdp5z1pcr0gmqs8hqxaz2"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "http://twhiteman.netfirms.com/des.html")
+    (arguments
+     (list #:tests? #f))        ;no tests in PyPI, I could not fine Git
+    (native-inputs (list python-setuptools))
+    (home-page "http://twhiteman.netfirms.com/des.html") ;XXX: Dead link
     (synopsis
      "Pure python implementation of the DES and TRIPLE DES encryption algorithms")
     (description
