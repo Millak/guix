@@ -21,6 +21,7 @@
 
 (define-module (gnu packages iso-codes)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -152,17 +153,42 @@ region, WIOD classification, ccTLD.")
     (version "0.4.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "iso-639" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/noumar/iso639")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0jffmh4m20q8j27xb2fqbnlghjj0cx8pgsbzqisdg65qh2wd976w"))))
-    (build-system python-build-system)
+        (base32 "02kx6kr3x43linxqafjlx85zdk04s6ab2fv5ikyglghwr5hsvic4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "tests/tests.py"
+              "-k" (string-join
+                    (list
+                     ;; module 'collections' has no attribute 'Iterable'
+                     "not test_iter"
+                     ;; 'Moroccan Arabic' != 'Arabic'
+                     "test_logic_part2"
+                     ;; 'Languages' object has no attribute 'indices'
+                     "test_compare_alpha2"
+                     "test_compare_bibliographic"
+                     "test_compare_terminology")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'configure-tests
+            (lambda _
+              (setenv "PYTHONPATH"
+                      (string-append (getcwd) ":"
+                                     (getenv "GUIX_PYTHONPATH"))))))))
+    (native-inputs (list python-pycountry python-pytest python-setuptools))
     (home-page "https://github.com/noumar/iso639")
     (synopsis "Python library for ISO 639 standard")
-    (description "This package provides a Python library for ISO 639 standard
-that is concerned with representation of names for languages and language
-groups.")
+    (description
+     "This package provides a Python library for ISO 639 standard that is
+concerned with representation of names for languages and language groups.")
     (license license:agpl3+)))
 
 (define-public python-iso3166
