@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Hendursaga <hendursaga@yahoo.com>
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,12 +27,14 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages readline)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
@@ -106,18 +109,32 @@ whenever possible to the extent that the above points are not compromised.
     (name "folders")
     (version "0.0.8")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "Folders" version))
-        (sha256
-          (base32 "0qh80qx7sjx0zii1hf8fm853d9rcg4rginm6v4gpp0hgn2a4q4gh"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/SinaKhalili/Folders.py")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14fs8c7ilvsw6xbskr688s1dp3nd8vnwv7bg23ab1l6vj6fpzwmw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "Folders" "sample_programs/HelloWorld")
+                  (format #t "test suite not run~%")))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/SinaKhalili/Folders.py")
     (synopsis "Structural programming language")
-    (description "Folders is a programming language, in which programs
-are encoded as (nested) directories.  Note that the switches you pass to
-@command{du} may affect your score when code golfing.")
-    (properties `((lint-hidden-cpe-vendors . ("premio" "jenkins"))))
+    (description
+     "Folders is a programming language, in which programs are encoded as
+(nested) directories.  Note that the switches you pass to @command{du} may
+affect your score when code golfing.")
+    (properties `((lint-hidden-cpe-vendors "premio" "jenkins")))
     (license license:expat)))
 
 (define-public shakespeare-spl
