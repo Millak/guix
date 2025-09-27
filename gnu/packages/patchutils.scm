@@ -36,7 +36,6 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system ocaml)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
@@ -550,47 +549,34 @@ patches do not match perfectly.")
   (package
     (name "pwclient")
     (version "1.3.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/getpatchwork/pwclient")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1xckwvcqklzpyh3xs4k2zm40ifp0q5fdkj2vmgb8vhfvl1ivs6jv"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/getpatchwork/pwclient")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xckwvcqklzpyh3xs4k2zm40ifp0q5fdkj2vmgb8vhfvl1ivs6jv"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-requirements
-           (lambda _
-             (substitute* "test-requirements.txt"
-               ;; The pytest requirement is unnecessarily strict
-               (("pytest>=3.0,<5.0;")
-                "pytest>=3.0,<6.0;"))
-             #t))
-         (add-before 'build 'set-PBR_VERSION
-           (lambda _
-             (setenv "PBR_VERSION"
-                     ,version)
-             #t))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest"))
-             #t))
-         (add-after 'install 'install-man-page
-           (lambda* (#:key outputs #:allow-other-keys)
-             (install-file "man/pwclient.1"
-                           (string-append
-                            (assoc-ref outputs "out")
-                            "/share/man/man1"))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-PBR_VERSION
+            (lambda _
+              (setenv "PBR_VERSION" #$version)))
+          (add-after 'install 'install-man-page
+            (lambda _
+              (install-file "man/pwclient.1"
+                            (string-append #$output "/share/man/man1")))))))
     (native-inputs
-     (list python-pbr python-pytest python-pytest-cov python-mock))
-    (home-page
-     "https://github.com/getpatchwork/pwclient")
+     (list python-pbr
+           python-pytest
+           python-pytest-cov
+           python-mock
+           python-setuptools))
+    (home-page "https://github.com/getpatchwork/pwclient")
     (synopsis "Command-line client for the Patchwork patch tracking tool")
     (description
      "pwclient is a VCS-agnostic tool for interacting with Patchwork, the
