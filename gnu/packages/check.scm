@@ -3184,25 +3184,6 @@ JSON APIs with Behave.")
 time by mocking the datetime module.")
     (license license:asl2.0)))
 
-(define-public python-flexmock
-  (package
-    (name "python-flexmock")
-    (version "0.12.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "flexmock" version))
-              (sha256
-               (base32
-                "18dcr7mpldf3cxsqi9rak75n4z7x3j544l4ixdspairm7cf6cp23"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-poetry-core python-pytest))
-    (home-page "https://flexmock.readthedocs.io/")
-    (synopsis "Testing library for Python")
-    (description
-     "flexmock is a testing library for Python that makes it easy to create
-mocks, stubs and fakes.")
-    (license license:bsd-3)))
-
 (define-public python-flaky
   (package
     (name "python-flaky")

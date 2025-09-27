@@ -2,6 +2,7 @@
 ;;; Copyright © 2015 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2015, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2016 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
 ;;; Copyright © 2018-2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019-2025 Ricardo Wurmus <rekado@elephly.net>
@@ -23,6 +24,7 @@
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2024 Danny Milosavljevic <dannym@friendly-machines.com>
 ;;; Copyright © 2024-2025 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2024, 2025 David Elsing <david.elsing@posteo.net>
@@ -785,6 +787,27 @@ list/set/dict comprehensions.")
      "This flake8 plugin helps you keep up with method deprecations by
 providing hints about what deprecated methods should be replaced with.")
     (license license:gpl2)))
+
+(define-public python-flexmock
+  (package
+    (name "python-flexmock")
+    (version "0.12.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "flexmock" version))
+       (sha256
+        (base32 "18dcr7mpldf3cxsqi9rak75n4z7x3j544l4ixdspairm7cf6cp23"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
+    (home-page "https://flexmock.readthedocs.io/")
+    (synopsis "Testing library for Python")
+    (description
+     "flexmock is a testing library for Python that makes it easy to create
+mocks, stubs and fakes.")
+    (license license:bsd-3)))
 
 (define-public python-gcovr
   (package
