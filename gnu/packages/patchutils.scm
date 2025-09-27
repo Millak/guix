@@ -35,6 +35,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system ocaml)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -367,40 +368,37 @@ you to figure out what is going on in that merge you keep avoiding.")
   (package
     (name "patchwork")
     (version "3.2.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/getpatchwork/patchwork")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "04ikawdyhjwspxvhazbp5f5vym672y0jcw8rd2m75h9ipcpnyxim"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/getpatchwork/patchwork")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04ikawdyhjwspxvhazbp5f5vym672y0jcw8rd2m75h9ipcpnyxim"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(;; TODO: Tests require a running database
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'build)
-         (add-after 'unpack 'replace-wsgi.py
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (delete-file "patchwork/wsgi.py")
-             (call-with-output-file "patchwork/wsgi.py"
-               (lambda (port)
-                 ;; Embed the PYTHONPATH containing the dependencies, as well
-                 ;; as the python modules in this package in the wsgi.py file,
-                 ;; as this will ensure they are available at runtime.
-                 (define pythonpath
-                   (string-append (getenv "GUIX_PYTHONPATH")
-                                  ":"
-                                  (site-packages inputs outputs)))
-                 (display
-                  (string-append "
-import os, sys
-
-sys.path.extend('" pythonpath "'.split(':'))
+     (list
+      #:tests? #f ;TODO: Tests require a running database
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'build)
+          (add-after 'unpack 'replace-wsgi.py
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (delete-file "patchwork/wsgi.py")
+              (call-with-output-file "patchwork/wsgi.py"
+                (lambda (port)
+                  ;; Embed the PYTHONPATH containing the dependencies, as well
+                  ;; as the python modules in this package in the wsgi.py file,
+                  ;; as this will ensure they are available at runtime.
+                  (define pythonpath
+                    (string-append (getenv "GUIX_PYTHONPATH") ":"
+                                   (site-packages inputs outputs)))
+                  (display (string-append
+                            "\nimport os, sys\n\nsys.path.extend('" pythonpath
+                            "'.split(':'))
 
 from django.core.wsgi import get_wsgi_application
 
@@ -415,89 +413,88 @@ os.environ['DJANGO_SETTINGS_MODULE'] = os.getenv(
 )
 
 application = get_wsgi_application()\n") port)))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (setenv "DJANGO_SETTINGS_MODULE" "patchwork.settings.dev")
-               (invoke "python" "-Wonce" "./manage.py" "test" "--noinput"))
-             #t))
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (out-site-packages (site-packages inputs outputs)))
-               (for-each (lambda (directory)
-                           (copy-recursively
-                            directory
-                            (string-append out-site-packages "/" directory)))
-                         '(;; Contains the python code
-                           "patchwork"
-                           ;; Contains the templates for the generated HTML
-                           "templates"))
-               (delete-file-recursively
-                (string-append out-site-packages "/patchwork/tests"))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "DJANGO_SETTINGS_MODULE" "patchwork.settings.dev")
+                (invoke "python" "-Wonce" "./manage.py" "test" "--noinput"))))
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out"))
+                    (out-site-packages (site-packages inputs outputs)))
+                (for-each (lambda (directory)
+                            (copy-recursively directory
+                                              (string-append out-site-packages
+                                               "/" directory)))
+                          '( ;Contains the python code
+                             "patchwork"
+                            ;; Contains the templates for the generated HTML
+                            "templates"))
+                (delete-file-recursively (string-append out-site-packages
+                                                        "/patchwork/tests"))
 
-               ;; Install patchwork related tools
-               (for-each (lambda (file)
-                           (install-file file (string-append out "/bin")))
-                         (list
-                          (string-append out-site-packages
-                                         "/patchwork/bin/parsemail.sh")
-                          (string-append out-site-packages
-                                         "/patchwork/bin/parsemail-batch.sh")))
+                ;; Install patchwork related tools
+                (for-each (lambda (file)
+                            (install-file file
+                                          (string-append out "/bin")))
+                          (list (string-append out-site-packages
+                                               "/patchwork/bin/parsemail.sh")
+                                (string-append out-site-packages
+                                 "/patchwork/bin/parsemail-batch.sh")))
 
-               ;; Collect the static assets, this includes JavaScript, CSS and
-               ;; fonts. This is a standard Django process when running a
-               ;; Django application for regular use, and includes assets for
-               ;; dependencies like the admin site from Django.
-               ;;
-               ;; The intent here is that you can serve files from this
-               ;; directory through a webserver, which is recommended when
-               ;; running Django applications.
-               (let ((static-root
-                      (string-append out "/share/patchwork/htdocs")))
-                 (mkdir-p static-root)
-                 (copy-file "patchwork/settings/production.example.py"
-                            "patchwork/settings/assets.py")
-                 (setenv "DJANGO_SECRET_KEY" "dummyvalue")
-                 (setenv "DJANGO_SETTINGS_MODULE" "patchwork.settings.assets")
-                 (setenv "STATIC_ROOT" static-root)
-                 (invoke "./manage.py" "collectstatic" "--no-input"))
+                ;; Collect the static assets, this includes JavaScript, CSS and
+                ;; fonts. This is a standard Django process when running a
+                ;; Django application for regular use, and includes assets for
+                ;; dependencies like the admin site from Django.
+                ;;
+                ;; The intent here is that you can serve files from this
+                ;; directory through a webserver, which is recommended when
+                ;; running Django applications.
+                (let ((static-root (string-append out
+                                                  "/share/patchwork/htdocs")))
+                  (mkdir-p static-root)
+                  (copy-file "patchwork/settings/production.example.py"
+                             "patchwork/settings/assets.py")
+                  (setenv "DJANGO_SECRET_KEY" "dummyvalue")
+                  (setenv "DJANGO_SETTINGS_MODULE" "patchwork.settings.assets")
+                  (setenv "STATIC_ROOT" static-root)
+                  (invoke "./manage.py" "collectstatic" "--no-input"))
 
-               ;; The lib directory includes example configuration files that
-               ;; may be useful when deploying patchwork.
-               (copy-recursively "lib"
-                                 (string-append
-                                  out "/share/doc/" ,name "-" ,version)))
-             #t))
-         ;; The hasher script is used from the post-receive.hook
-         (add-after 'install 'install-hasher
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (out-site-packages (site-packages inputs outputs))
-                    (out-hasher.py (string-append out-site-packages
-                                                  "/patchwork/hasher.py")))
-               (chmod out-hasher.py #o555)
-               (symlink out-hasher.py (string-append out "/bin/hasher")))
-             #t))
-         ;; Create a patchwork specific version of Django's command line admin
-         ;; utility.
-         (add-after 'install 'install-patchwork-admin
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               (mkdir-p (string-append out "/bin"))
-               (call-with-output-file (string-append out "/bin/patchwork-admin")
-                 (lambda (port)
-                   (simple-format port "#!~A
+                ;; The lib directory includes example configuration files that
+                ;; may be useful when deploying patchwork.
+                (copy-recursively "lib"
+                                  (string-append out "/share/doc/"
+                                                 #$name "-"
+                                                 #$version)))))
+          ;; The hasher script is used from the post-receive.hook
+          (add-after 'install 'install-hasher
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (out-site-packages (site-packages inputs outputs))
+                     (out-hasher.py (string-append out-site-packages
+                                                   "/patchwork/hasher.py")))
+                (chmod out-hasher.py #o555)
+                (symlink out-hasher.py
+                         (string-append out "/bin/hasher")))))
+          ;; Create a patchwork specific version of Django's command line admin
+          ;; utility.
+          (add-after 'install 'install-patchwork-admin
+            (lambda _
+              (mkdir-p (string-append #$output "/bin"))
+              (call-with-output-file (string-append #$output
+                                                    "/bin/patchwork-admin")
+                (lambda (port)
+                  (simple-format port "#!~A
 import os, sys
 
 if __name__ == \"__main__\":
     from django.core.management import execute_from_command_line
 
     execute_from_command_line(sys.argv)" (which "python"))))
-               (chmod (string-append out "/bin/patchwork-admin") #o555))
-             #t)))))
-    (inputs
-     (list python-wrapper))
+              (chmod (string-append #$output "/bin/patchwork-admin")
+                     #o555))))))
+    (native-inputs (list python-setuptools))
+    (inputs (list python-wrapper))
     (propagated-inputs
      (list python-django
            ;; TODO: Make this configurable
