@@ -18,12 +18,15 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages rednotebook)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix git-download)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages webkit)
@@ -42,34 +45,31 @@
        (file-name (git-file-name name version))
        (sha256
         (base32 "11n970ad0j57vlll5j30ngkrfyil23v1b29ickbnblcldvjbgwa5"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     ;; Tests fail to find the "_" function.
-     ;; It should be defined in rednotebook/info.py if '_' is not a member of
-     ;; 'builtins'. It is either not defined or not exported during the check
-     ;; phase. The program does not have this problem after it is installed.
-     ;; TODO: Fix tests.
-     `(#:tests? #f
-       #:imported-modules ((guix build glib-or-gtk-build-system)
-                           ,@%python-build-system-modules)
-       #:modules ((ice-9 match)
-                  (guix build python-build-system)
-                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+     (list
+      #:imported-modules `((guix build glib-or-gtk-build-system)
+                           ,@%pyproject-build-system-modules)
+      #:modules `((ice-9 match)
+                  (guix build pyproject-build-system)
+                  ((guix build glib-or-gtk-build-system)
+                   #:prefix glib-or-gtk:)
                   (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         ;; Make sure rednotebook can find the typelibs and webkitgtk shared
-         ;; libraries.
-         (add-before 'wrap 'wrap-with-library-paths
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (gi-typelib-path (getenv "GI_TYPELIB_PATH"))
-                   (webkitgtk-path (string-append
-                                    (assoc-ref inputs "webkitgtk-for-gtk3")
-                                    "/lib")))
-               (wrap-program (string-append out "/bin/rednotebook")
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
-                 `("LD_LIBRARY_PATH" ":" prefix (,webkitgtk-path)))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Make sure rednotebook can find the typelibs and webkitgtk shared
+          ;; libraries.
+          (add-before 'wrap 'wrap-with-library-paths
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((webkitgtk-bin (search-input-file inputs
+                                                      "bin/WebKitWebDriver")))
+                (wrap-program (string-append #$output "/bin/rednotebook")
+                  `("GI_TYPELIB_PATH" ":" prefix
+                    (,(getenv "GI_TYPELIB_PATH")))
+                  `("LD_LIBRARY_PATH" ":" prefix
+                    (,(string-append (dirname (dirname webkitgtk-bin))
+                                     "/lib"))))))))))
+    (native-inputs (list python-pytest python-setuptools))
     (inputs
      (list bash-minimal
            gtk+
