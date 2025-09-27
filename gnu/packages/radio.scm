@@ -766,6 +766,8 @@ a local network link.")
            python-wheel))
     (propagated-inputs
      (list python-numpy soapysdr))
+    (arguments
+     (list #:tests? #f)) ; No tests
     (home-page "https://github.com/xmikos/simplesoapy")
     (synopsis "Python wrapper for SoapySDR")
     (description
