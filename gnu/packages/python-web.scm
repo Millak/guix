@@ -64,6 +64,8 @@
 ;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
+;;; Copyright © 2024 Fabio Natali <me@fabionatali.com>
+;;; Copyright © 2024 Steve George <steve@futurile.net>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024, 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 normally_js <normally_js@posteo.net>
@@ -204,6 +206,45 @@ Constrained Application Protocol}, http://coap.space/}.  It facilitates
 writing applications that talk to network enabled embedded
 @acronym{IoT,Internet of Things} devices.")
     (license license:expat)))
+
+(define-public python-apprise
+  (package
+    (name "python-apprise")
+    (version "1.9.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "apprise" version))
+       (sha256
+        (base32 "126951n9lnlqrw5lbsvs9xs7jzg33bqqxm7cfnqag2csw6p24ca8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; These tests used to be ran with --numprocesses, but that seems to have
+      ;; made them non-deterministic.
+      #:test-flags
+      #~(list "--ignore=tests/test_plugin_macosx.py"
+              "-k" "not test_plugin_glib_send_raises_generic")))
+    (native-inputs
+     (list python-babel
+           python-pytest
+           python-pytest-mock
+           python-setuptools))
+    (propagated-inputs
+     (list python-certifi
+           python-click
+           python-markdown
+           python-pygobject
+           python-pyyaml
+           python-requests
+           python-requests-oauthlib))
+    (home-page "https://github.com/caronc/apprise")
+    (synopsis "Push notification library")
+    (description
+     "Apprise is a Python library that allows sending push notifications to a
+broad range of notification services, such as Telegram, Discord, Slack, Amazon
+SNS, Gotify, etc.")
+    (license license:bsd-2)))
 
 (define-public python-devpi-common
   (package

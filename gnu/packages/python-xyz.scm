@@ -345,45 +345,6 @@ protocol of git-annex, while leaving the behavior of the remote up to the
 user.")
     (license license:gpl3)))
 
-(define-public python-apprise
-  (package
-    (name "python-apprise")
-    (version "1.9.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "apprise" version))
-       (sha256
-        (base32 "126951n9lnlqrw5lbsvs9xs7jzg33bqqxm7cfnqag2csw6p24ca8"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; These tests used to be ran with --numprocesses, but that seems to have
-      ;; made them non-deterministic.
-      #:test-flags
-      #~(list "--ignore=tests/test_plugin_macosx.py"
-              "-k" "not test_plugin_glib_send_raises_generic")))
-    (native-inputs
-     (list python-babel
-           python-pytest
-           python-pytest-mock
-           python-setuptools))
-    (propagated-inputs
-     (list python-certifi
-           python-click
-           python-markdown
-           python-pygobject
-           python-pyyaml
-           python-requests
-           python-requests-oauthlib))
-    (home-page "https://github.com/caronc/apprise")
-    (synopsis "Push notification library")
-    (description
-     "Apprise is a Python library that allows sending push notifications to a
-broad range of notification services, such as Telegram, Discord, Slack, Amazon
-SNS, Gotify, etc.")
-    (license license:bsd-2)))
-
 (define-public python-archspec
   (package
     (name "python-archspec")
