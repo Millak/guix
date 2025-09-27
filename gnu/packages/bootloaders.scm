@@ -1077,6 +1077,7 @@ commands part of the U-Boot project, such as Patman.")))
                    ,(dirname (search-input-file
                               inputs
                               "libexec/git-core/git-send-email"))))))))))
+    (native-inputs (list python-setuptools))
     (inputs
      (list git
            `(,git "send-email")
