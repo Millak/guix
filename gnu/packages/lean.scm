@@ -24,11 +24,12 @@
   #:use-module (ice-9 match)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix gexp)
   #:use-module (guix packages)
@@ -165,18 +166,33 @@ interactive and automated theorem proving.")
   (package
     (name "python-mathlibtools")
     (version "1.1.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "mathlibtools" version))
-              (sha256
-               (base32
-                "089pql105imx8z7ar1wiz9fn000jp6xqdfixw4jf2vric94vn9fj"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/leanprover-community/mathlib-tools")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kllk99cd9vsbmb0ifi21gkhrg2w803z4y5xhx0a7hx3viyjb3cv"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'fix-home-directory
-                    (lambda _
-                      (setenv "HOME" "/tmp"))))))
+     (list
+      #:test-flags
+      #~(list "-k"
+              ;; These tests require network access.
+              (string-join (list "not test_new"
+                                 "test_add"
+                                 "test_upgrade_project"
+                                 "test_upgrade_mathlib"
+                                 "test_get_tutorials")
+                           " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fix-home-directory
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs (list python-pytest python-setuptools))
     (inputs (list python-toml
                   python-pygithub
                   python-certifi
