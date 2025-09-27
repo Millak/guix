@@ -828,7 +828,7 @@ hardware works with a fully free operating system or not.")
 (define-public headsetcontrol
   (package
     (name "headsetcontrol")
-    (version "2.7.0")
+    (version "3.1.0")
     (source
      (origin
        (method git-fetch)
@@ -837,8 +837,11 @@ hardware works with a fully free operating system or not.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l8bvdaj70s6qf8pds8bl367355j9lqb9mvc4lskz0n4ya8xs2dl"))))
+        (base32 "1i251r2kpac2qac8a3c6iqbzkhlh6mzi4hl62mjknc8cbmhjmdgl"))))
     (build-system cmake-build-system)
+    (arguments
+      (list
+        #:generator "Ninja"))
     (inputs
      (list hidapi))
     (home-page "https://github.com/Sapd/HeadsetControl")
