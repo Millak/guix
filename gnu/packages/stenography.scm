@@ -45,17 +45,21 @@
   (package
     (name "python-plover-stroke")
     (version "1.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "plover_stroke" version))
-              (sha256
-               (base32
-                "0lyifam9xqpx2jzqcbah84sv909n4g2frm7pd5gvcrpf98zv40yy"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/benoit-pierre/plover_stroke")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "104ab1lr2xr8nbq98n7h3jvskfzzg8m41rhb1ik4b7w474rlxgh3"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/benoit-pierre/plover_stroke")
     (synopsis "Stroke handling helper library for Plover")
-    (description "This package provides a helper class for working with steno strokes.")
+    (description
+     "This package provides a helper class for working with steno strokes.")
     (license license:gpl2+)))
 
 (define-public plover
