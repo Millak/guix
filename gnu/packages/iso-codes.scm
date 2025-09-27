@@ -197,12 +197,15 @@ concerned with representation of names for languages and language groups.")
     (version "2.1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "iso3166" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/deactivated/python-iso3166")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "068p94gavc8gbmp5a2kw8hi5l551wfzbpmp6z7ll8sx6vnw53mgw"))))
-    (build-system python-build-system)
+        (base32 "0j0bnm4bd23cyb7dga00gb20myg9skylchkw4d23yh31b7a315m8"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/deactivated/python-iso3166")
     (synopsis "Self-contained ISO 3166-1 country definitions")
     (description "This package provides the ISO 3166-1 country definitions.")
