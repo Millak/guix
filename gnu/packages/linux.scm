@@ -85,6 +85,7 @@
 ;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 ;;; Copyright © 2025 Mathieu Laparie <mlaparie@disr.it>
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2025 Arjan Adriaanse <arjan@adriaan.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2767,6 +2768,32 @@ monitors in @file{/dev/bus/ddcci/[I²C busnumber]}.  While the ddcci-backlight
 module allows the control of the backlight level or luminance property when
 supported under @file{/sys/class/backlight/}.")
       (license license:gpl2+))))
+
+(define-public reform2-lpc-module
+  (package
+    (name "reform2-lpc-module")
+    (version "1.79")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://source.mnt.re/reform/reform-tools.git")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16xzdygf14zksvqjbp5gwiqsn0mb7kphvzrmqbl9db4kvyj4ajqa"))))
+    (build-system linux-module-build-system)
+    (arguments
+     '(#:tests? #f ;no tests
+       #:source-directory "lpc"))
+    (synopsis "Linux kernel module for the Reform 2 system controller")
+    (description
+     "The reform2_lpc module allows for interaction with the NXP LPC11U24
+Cortex-M0 MCU system controller in the Reform 2 open hardware laptop.  It
+provides battery status information and is necessary to completely shut down
+the system when powering it off via userspace.")
+    (home-page "https://source.mnt.re/reform/reform-tools/")
+    (license license:gpl3+)))
 
 (define-public v4l2loopback-linux-module
   (package
