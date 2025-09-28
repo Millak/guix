@@ -977,6 +977,8 @@ package. ")
 It also supports IPython/Jupyter.")
     (license license:expat)))
 
+;; TODO: Move to ci or task-runners, see:
+;; <https://codeberg.org/guix/guix/issues/3096>.
 (define-public python-huey
   (package
     (name "python-huey")
