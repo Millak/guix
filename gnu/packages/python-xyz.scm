@@ -12294,19 +12294,19 @@ from a program in a @dfn{pager} such as @command{less}.")
 (define-public python-autopep8
   (package
     (name "python-autopep8")
-    (version "2.0.4")
+    (version "2.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "autopep8" version))
        (sha256
         (base32
-         "037yhzmc9lssmn6cifa5gvw23f1c0hgsfgn83jfl3cwppm50c4r9"))))
+         "0n0pjdk39n6vlddjqvbpkxd4a7q33dkf0k2yk6dbd5wijr7hli49"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-pycodestyle python-tomli))
     (native-inputs
-     (list python-setuptools python-wheel))
+     (list python-setuptools))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
