@@ -722,7 +722,7 @@ imaging.  It supports several HDR and LDR image formats, and it can:
         (base32
          "09y4nhlcqvvhz0wscx4zpqxmyhiwh8wrjnhk52awxhzvgyx6wa7r"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-wheel))
+    (native-inputs (list python-setuptools))
     (inputs
      (list p7zip python python-pillow python-pygobject python-pycairo gtk+))
     (arguments
