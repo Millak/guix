@@ -48,7 +48,6 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -1109,21 +1108,31 @@ saved to a file for further viewing in another window.")
 (define-public av-98
   (package
     (name "av-98")
-    (version "1.0.1")
-    (properties
-     '((upstream-name . "AV-98")))
+    (version "1.4")
+    (properties '((upstream-name . "AV-98")))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "AV-98" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~solderpunk/AV-98")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "02fjnc2rvm010gb3i07p8r4xlhrmnv1wca1qymfjcymr7vm68h0i"))))
-    (build-system python-build-system)
-    (home-page "https://tildegit.org/solderpunk/AV-98/")
+        (base32 "04dzkzsan1cnrslsvfgn1whpwald8xy34wqzvq81hd2mvw9a2n69"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; No tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'sanity-check 'configure-sanity-check
+            (lambda _
+              (setenv "HOME" (getcwd)))))))
+    (native-inputs (list python-setuptools))
+    (home-page "https://git.sr.ht/~solderpunk/AV-98")
     (synopsis "Command line Gemini client")
-    (description "AV-98 is an experimental client for the Gemini protocol.
-Features include
+    (description
+     "AV-98 is an experimental client for the Gemini protocol. Features include
 @itemize
 @item TOFU or CA server certificate validation;
 @item Extensive client certificate support if an openssl binary is available;
