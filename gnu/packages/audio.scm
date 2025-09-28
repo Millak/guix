@@ -872,120 +872,129 @@ purposes developed at Queen Mary, University of London.")
     (license license:gpl2+)))
 
 (define-public jamesdsp
-  (package
-    (name "jamesdsp")
-    (version "2.7.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-          (url "https://github.com/Audio4Linux/JDSP4Linux")
-          (commit version)
-          ;; Recurse GraqhicEQWidget, FlatTabWidget, LiquidEqualizerWidget and
-          ;; EELEditor.
-          (recursive? #t)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "17vx12kbvwxvb69vzrlb82mrgf6sl3plyk71g9f39p49ialdsnbr"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Unbundle 3rd party libraries.
-        '(begin
-           ;; Delete the bundled 3rd party libraries.
-           (for-each delete-file-recursively
-            (list "3rdparty"
-                  "src/subprojects/EELEditor/3rdparty"
-                  "src/subprojects/EELEditor/QCodeEditor"
-                  "src/subprojects/EELEditor/src/EELEditor-Linker.pri"))
-           (with-directory-excursion "src"
-             (substitute* "src.pro"
-               ;; Do not use bundled 3rd party libraries.
-               ((".*3rdparty.*") "")
-               ;; Link required libraries from system.
-               (("-ldl")
-                (string-join '("-ldl"
-                               "-lasync++"
-                               "-lQCodeEditor"
-                               "-lqcustomplot"
-                               "-lqtadvanceddocking-qt6"
-                               "-lqtcsv"
-                               "-lwaf")
-                               " ")))
-             ;; Fix including WAF headers.
-             (substitute* "MainWindow.cpp"
-                       (("<Animation") "<WAF/Animation"))
-             ;; Do not use resources from the bundled docking-system.
-             (substitute* '("interface/fragment/AppManagerFragment.ui")
-               ((".*location.*3rdparty.*") "")
-               ((" resource=.*>") ">"))
-             (with-directory-excursion "subprojects/EELEditor/src"
-               ;; Do not use bundled QCodeEditor and docking-system.
-               (substitute* "EELEditor.pri"
-                 ((".*(QCodeEditor|docking-system).*") ""))
-               ;; Do not link to bundled docking-system.
+  (let ((commit "53cf0989681ba38755208c8aec063f29ed8586d3")
+        (revision "0"))
+    (package
+      (name "jamesdsp")
+      (version (git-version "2.7.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+            (url "https://github.com/Audio4Linux/JDSP4Linux")
+            (commit commit)
+            ;; Recurse GraqhicEQWidget, FlatTabWidget, LiquidEqualizerWidget and
+            ;; EELEditor.
+            (recursive? #t)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1b5612gr2gfmj1h5hdzfa9xxdwixia06a34n2zs04cra94clif9i"))
+         (modules '((guix build utils)))
+         (snippet
+          ;; Unbundle 3rd party libraries.
+          '(begin
+             ;; Delete the bundled 3rd party libraries.
+             (for-each delete-file-recursively
+              (list "3rdparty"
+                    "src/subprojects/EELEditor/3rdparty"
+                    "src/subprojects/EELEditor/QCodeEditor"
+                    "src/subprojects/EELEditor/src/EELEditor-Linker.pri"))
+             (with-directory-excursion "src"
                (substitute* "src.pro"
-                 ((".*EELEditor-Linker.*") ""))
-               ;; Fix including headers from the system.
-               (substitute* (find-files "." "\\.(cpp|h)$")
-                 (("#include <Dock") "#include <qtadvanceddocking-qt6/Dock")
-                 (("#include <FloatingDock")
-                  "#include <qtadvanceddocking-qt6/FloatingDock")
-                 (("#include <QSyntaxStyle")
-                  "#include <QCodeEditor/QSyntaxStyle")
-                 (("#include <QStyleSyntaxHighlighter")
-                  "#include <QCodeEditor/QStyleSyntaxHighlighter")
-                 (("#include <QHighlightRule")
-                  "#include <QCodeEditor/QHighlightRule")
-                 (("#include <QLanguage") "#include <QCodeEditor/QLanguage")
-                 (("#include <QCodeEditor\\.hpp")
-                  "#include <QCodeEditor/QCodeEditor.hpp"))))))
-       (patches (search-patches "jamesdsp-fix-bulid-on-pipewire-1.4.0.patch"))))
-    (build-system qt-build-system)
-    (arguments
-     (list #:qtbase qtbase
-           #:tests? #f ;no tests
-           #:phases
-           #~(modify-phases %standard-phases
-               ;; Configure using qmake.
-               (replace 'configure
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (invoke "qmake" (string-append "PREFIX=" #$output))))
-               (add-after 'install 'install-icon
-                 (lambda _
-                   (let ((pixmaps (string-append #$output "/share/pixmaps")))
-                     (mkdir-p pixmaps)
-                     (copy-file "resources/icons/icon.png"
-                                (string-append pixmaps "/jamesdsp.png")))))
-               (add-after 'install-icon 'create-desktop-entry-file
-                 (lambda _
-                   (make-desktop-entry-file
-                    (string-append #$output
-                                  "/share/applications/jamesdsp.desktop")
-                    #:name "JamesDSP"
-                    #:comment "Audio effect processor"
-                    #:keywords '("equalizer" "audio" "effect")
-                    #:categories '("AudioVideo" "Audio")
-                    #:exec (string-append #$output "/bin/jamesdsp")
-                    #:icon (string-append #$output "/share/pixmaps/jamesdsp.png")
-                    #:startup-notify #f))))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list asyncplusplus
-           glibmm-2.66
-           libarchive
-           pipewire
-           qcodeeditor
-           qcustomplot
-           qt-advanced-docking-system
-           qtcsv
-           qtpromise
-           qtsvg
-           qtwidgetanimationframework))
-    (home-page "https://github.com/Audio4Linux/JDSP4Linux")
-    (synopsis "Audio effect processor for PipeWire and PulseAudio clients")
-    (description "JamesDSP is an audio effect processor for PipeWire and
+                 ;; Do not use bundled 3rd party libraries.
+                 ((".*3rdparty.*") "")
+                 ;; Link required libraries from system.
+                 (("-ldl")
+                  (string-join '("-ldl"
+                                 "-lasync++"
+                                 "-lQCodeEditor"
+                                 "-lqcustomplot"
+                                 "-lqtadvanceddocking-qt6"
+                                 "-lqtcsv"
+                                 "-lwaf")
+                                 " ")))
+               ;; Fix including WAF headers.
+               (substitute* "MainWindow.cpp"
+                         (("<Animation") "<WAF/Animation"))
+               ;; Do not use resources from the bundled docking-system.
+               (substitute* '("interface/fragment/AppManagerFragment.ui")
+                 ((".*location.*3rdparty.*") "")
+                 ((" resource=.*>") ">"))
+               (with-directory-excursion "subprojects/EELEditor/src"
+                 ;; Do not use bundled QCodeEditor and docking-system.
+                 (substitute* "EELEditor.pri"
+                   ((".*(QCodeEditor|docking-system).*") ""))
+                 ;; Do not link to bundled docking-system.
+                 (substitute* "src.pro"
+                   ((".*EELEditor-Linker.*") ""))
+                 ;; Fix including headers from the system.
+                 (substitute* (find-files "." "\\.(cpp|h)$")
+                   (("#include <Dock") "#include <qtadvanceddocking-qt6/Dock")
+                   (("#include <FloatingDock")
+                    "#include <qtadvanceddocking-qt6/FloatingDock")
+                   (("#include <QSyntaxStyle")
+                    "#include <QCodeEditor/QSyntaxStyle")
+                   (("#include <QStyleSyntaxHighlighter")
+                    "#include <QCodeEditor/QStyleSyntaxHighlighter")
+                   (("#include <QHighlightRule")
+                    "#include <QCodeEditor/QHighlightRule")
+                   (("#include <QLanguage") "#include <QCodeEditor/QLanguage")
+                   (("#include <QCodeEditor\\.hpp")
+                    "#include <QCodeEditor/QCodeEditor.hpp"))))))))
+      (build-system qt-build-system)
+      (arguments
+       (list #:qtbase qtbase
+             #:tests? #f ;no tests
+             #:parallel-build? #f ;fails on some systems
+             #:modules '((guix build qt-build-system)
+                         ((guix build gnu-build-system) #:prefix gnu:)
+                         (guix build utils))
+             #:phases
+             #~(modify-phases %standard-phases
+                 ;; Configure using qmake.
+                 (replace 'configure
+                   (lambda _
+                     (invoke "qmake" (string-append "PREFIX=" #$output))))
+                 (replace 'build (assoc-ref gnu:%standard-phases 'build))
+                 (replace 'check (assoc-ref gnu:%standard-phases 'check))
+                 (replace 'install (assoc-ref gnu:%standard-phases 'install))
+                 (add-after 'install 'install-icon
+                   (lambda _
+                     (let ((pixmaps (string-append #$output "/share/pixmaps")))
+                       (mkdir-p pixmaps)
+                       (copy-file "resources/icons/icon.png"
+                                  (string-append pixmaps "/jamesdsp.png")))))
+                 (add-after 'install-icon 'create-desktop-entry-file
+                   (lambda _
+                     (make-desktop-entry-file
+                      (string-append #$output
+                                    "/share/applications/jamesdsp.desktop")
+                      #:name "JamesDSP"
+                      #:comment "Audio effect processor"
+                      #:keywords '("equalizer" "audio" "effect")
+                      #:categories '("AudioVideo" "Audio")
+                      #:exec (string-append #$output "/bin/jamesdsp")
+                      #:icon (string-append #$output
+                                            "/share/pixmaps/jamesdsp.png")
+                      #:startup-notify #f))))))
+      (native-inputs
+       (list pkg-config))
+      (inputs
+       (list asyncplusplus
+             glibmm-2.66
+             libarchive
+             pipewire
+             qcodeeditor
+             qcustomplot
+             qt-advanced-docking-system
+             qtcsv
+             qtpromise
+             qtsvg
+             qtwidgetanimationframework))
+      (home-page "https://github.com/Audio4Linux/JDSP4Linux")
+      (synopsis "Audio effect processor for PipeWire and PulseAudio clients")
+      (description "JamesDSP is an audio effect processor for PipeWire and
 PulseAudio clients, featuring:
 @itemize
 @item Automatic bass boost: Frequency-detecting bass-boost
@@ -1007,7 +1016,7 @@ PulseAudio clients, featuring:
  dynamic code outline window, console output support and detailed error
  messages with inline code highlighting
 @end itemize")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define ardour-bundled-media
   (origin
