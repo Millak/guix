@@ -6312,6 +6312,10 @@ alias cysdig=sudo csysdig --modern-bpf
                              "fail2ban/client/fail2banregex.py")
                 (("/etc/fail2ban")
                  (string-append #$output "/etc/fail2ban")))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (invoke "./bin/fail2ban-testcases"))))
           (add-after 'fix-default-config 'set-action-dependencies
             (lambda* (#:key inputs #:allow-other-keys)
               ;; deleting things that are not feasible to fix
@@ -6392,7 +6396,8 @@ alias cysdig=sudo csysdig --modern-bpf
                             "fail2ban-regex" "fail2ban-server"
                             "fail2ban-testcases"))
                 ((install-man "5") "jail.conf")))))))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-aiosmtpd
+                         python-setuptools))
     (inputs (list gawk
                   coreutils-minimal
                   curl
