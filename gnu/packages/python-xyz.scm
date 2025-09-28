@@ -30689,7 +30689,7 @@ values.  Partd excels at shuffling operations.")
 (define-public python-fsspec
   (package
     (name "python-fsspec")
-    (version "2025.7.0")
+    (version "2025.9.0")
     (source
      (origin
        (method git-fetch)
@@ -30698,7 +30698,7 @@ values.  Partd excels at shuffling operations.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r7vv64qf7ynw81jn0xn5axz709a8fd0bl7w9131aqzqj7a00ppy"))))
+        (base32 "1f11jjp7xd4q9a5lmb00i5l9v36162gjr6h1hkfzvgq78xa735xp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -30729,7 +30729,7 @@ values.  Partd excels at shuffling operations.")
            python-pytest-asyncio
            python-pytest-mock
            python-pytest-rerunfailures))
-    (home-page "https://github.com/intake/filesystem_spec")
+    (home-page "https://github.com/fsspec/filesystem_spec")
     (synopsis "File-system specification")
     (description "The purpose of this package is to produce a template or
 specification for a file-system interface, that specific implementations
