@@ -65,28 +65,32 @@
   (package
     (name "mygnuhealth")
     (version "2.2.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "MyGNUHealth" version))
-              (sha256
-               (base32
-                "1jcrriccqzb4jx7zayhiqmpvi3cvfy3bbf9zr3m83878f94yww8j"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "MyGNUHealth" version))
+       (sha256
+        (base32 "1jcrriccqzb4jx7zayhiqmpvi3cvfy3bbf9zr3m83878f94yww8j"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:imported-modules `(,@%python-build-system-modules
-                           ,@%qt-build-system-modules)
-      #:modules `(((guix build qt-build-system) #:prefix qt:)
-                  (guix build python-build-system)
-                  (guix build utils))
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'install 'qt-wrap
-                     (assoc-ref qt:%standard-phases 'qt-wrap))
-                   (add-before 'check 'env-setup
-                     (lambda _
-                       (mkdir-p "/tmp/mygh/")
-                       (setenv "HOME" "/tmp"))))))
-    (native-inputs (list python-pyside-2))
+      #:tests? #f                       ; no tests.
+      #:imported-modules
+      `(,@%pyproject-build-system-modules
+        ,@%qt-build-system-modules)
+      #:modules
+      `(((guix build qt-build-system) #:prefix qt:)
+        (guix build pyproject-build-system)
+        (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'qt-wrap
+            (assoc-ref qt:%standard-phases 'qt-wrap))
+          (add-before 'check 'env-setup
+            (lambda _
+              (mkdir-p "/tmp/mygh/")
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs (list python-pyside-2 python-setuptools))
     (inputs (list bash-minimal
                   kirigami-5
                   python
