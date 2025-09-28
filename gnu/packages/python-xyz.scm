@@ -1000,9 +1000,12 @@ It also supports IPython/Jupyter.")
               (substitute* "huey/tests/test_kt_huey.py"
                 (("^has_ktserver = sp.call\\(\\['which', 'ktserver'\\].*$")
                  "has_ktserver = False"))))
-          (add-before 'check 'pre-check
-            (lambda _ (spawn "redis-server" '("redis-server")))))))
-    (native-inputs (list python-setuptools python-wheel redis tzdata-for-tests))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (spawn "redis-server" '("redis-server"))
+                (invoke "python3" "-m" "runtests" "--verbosity" "2")))))))
+    (native-inputs (list python-setuptools redis tzdata-for-tests))
     (propagated-inputs (list python-redis))
     (home-page "https://huey.readthedocs.io")
     (synopsis "Lightweight task queue for Python")
