@@ -6061,7 +6061,7 @@ server.")
         (base32 "17z6rrvv3q1axy9r13c2hln2pazfn9n5bhkzrbjcjakgbfjl6mss"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-lxml
+     (list python-lxml-4.9
            python-pillow
            python-pytest
            python-setuptools))
