@@ -92,6 +92,7 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages opencl)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
@@ -1865,6 +1866,7 @@ and Scan Tailor Enhanced versions as well as including many more bug fixes.")
     (native-inputs
      (list googletest
            lua
+           nss-certs-for-test           ;for 'pip install'
            python-numpy                 ;for tests
            python-pip
            python-setuptools
