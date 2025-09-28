@@ -530,7 +530,7 @@ only provides @code{MPI_THREAD_FUNNELED}.")))
 (define-public python-mpi4py
   (package
     (name "python-mpi4py")
-    (version "3.1.4")
+    (version "4.1.0")
     (source
      (origin
        (method git-fetch)
@@ -539,21 +539,31 @@ only provides @code{MPI_THREAD_FUNNELED}.")))
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iy6087w7r2ip2kzinvfvjvqy7idbk0jn9ing44q1ggmgk2kx8sc"))))
+        (base32 "1r4n2d3nacpa6sq18jp0xk4a81ha0iipgvlsdv0bhfmdvgpv2vqy"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list ;; MPI errors are unrecoverable.
+         "--ignore=test/test_spawn.py"
+         "--ignore=test/test_util_pool.py"
+         "--ignore=demo/futures/test_futures.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'build 'mpi-setup #$%openmpi-setup)
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Skip BaseTestSpawn class (causes error 'ompi_dpm_dyn_init()
-             ;; failed --> Returned "Unreachable"' in chroot environment).
-             (substitute* "test/test_spawn.py"
-               (("unittest.skipMPI\\('openmpi\\(<3.0.0\\)'\\)")
-                 "unittest.skipMPI('openmpi')")))))))
-    (native-inputs (list python-cython-0 python-pytest python-setuptools))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Skip BaseTestSpawn class (causes error 'ompi_dpm_dyn_init()
+              ;; failed --> Returned "Unreachable"' in chroot environment).
+              (substitute* "test/test_spawn.py"
+                (("unittest.skipMPI\\('openmpi\\(<3.0.0\\)'\\)")
+                 "unittest.skipMPI('openmpi')"))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (if tests?
+                  (apply invoke "mpiexec" "pytest" "-vv" test-flags)
+                  (format #t "test suite not run~%")))))))
+    (native-inputs (list python-cython python-pytest python-setuptools))
     (inputs (list openmpi))
     (properties '((updater-extra-inputs "openmpi")))
     (home-page "https://github.com/mpi4py/mpi4py")
