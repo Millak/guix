@@ -4760,38 +4760,40 @@ DKIM and ARC sign messages and output the corresponding signature headers.")
     (license (list license:zpl2.1 license:zlib license:mpl2.0))))
 
 (define-public python-aiosmtpd
-  (package
-    (name "python-aiosmtpd")
-    (version "1.4.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/aio-libs/aiosmtpd")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32 "0b5y94zc8pq75sjwsifblzgjnliyclkwypi68b2zffrxcdnz27r2"))
-       (file-name (git-file-name name version))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; This QA test requires git.
-     (list #:test-flags ''("-k" "not test_ge_master")))
-    (native-inputs
-     (list python-pytest
-           python-pytest-asyncio
-           python-pytest-cov
-           python-pytest-mock
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-atpublic))
-    (home-page "https://aiosmtpd.readthedocs.io/")
-    (synopsis "Asyncio based SMTP server")
-    (description
-     "This project is a reimplementation of the Python stdlib @code{smtpd.py}
+  ;; Tests run fixed on not yet released version.
+  (let ((commit "98f578389ae86e5345cc343fa4e5a17b21d9c96d")
+        (revision "0"))
+    (package
+      (name "python-aiosmtpd")
+      (version (git-version "1.4.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/aio-libs/aiosmtpd")
+                (commit commit)))
+         (sha256
+          (base32 "1pmvlzxfcqjplvn2bzi9jd3m3941ff7nlgxxfwc7pzhmazlkqf8z"))
+         (file-name (git-file-name name version))))
+      (build-system pyproject-build-system)
+      (arguments
+       ;; This QA test requires git.
+       (list #:test-flags ''("-k" "not test_ge_master")))
+      (native-inputs
+       (list python-pytest
+             python-pytest-cov
+             python-pytest-mock
+             python-setuptools))
+      (propagated-inputs
+       (list python-atpublic
+             python-attrs))
+      (home-page "https://aiosmtpd.readthedocs.io/")
+      (synopsis "Asyncio based SMTP server")
+      (description
+       "This project is a reimplementation of the Python stdlib @code{smtpd.py}
 based on asyncio.")
-    (license (list license:asl2.0
-                   license:lgpl3))))    ; only for setup_helpers.py
+      (license (list license:asl2.0
+                     license:lgpl3)))))    ; only for setup_helpers.py
 
 (define-public python-imaplib2
   (package
