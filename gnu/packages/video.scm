@@ -74,6 +74,7 @@
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.ccom>
 ;;; Copyright © 2025 VnPower <vnpower@loang.net>
 ;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3172,7 +3173,7 @@ video streaming services of the Finnish national broadcasting company Yle.")
                   "'\n")))))
           (add-before 'build 'build-generated-files
             (lambda* (#:key inputs #:allow-other-keys)
-              (if (search-input-file inputs "bin/pandoc")
+              (if (which "pandoc")
                   (invoke "make"
                           "PYTHON=python"
                           "yt-dlp"
