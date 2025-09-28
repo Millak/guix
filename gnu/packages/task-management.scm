@@ -92,20 +92,16 @@
          (file-name (git-file-name name version))
          (sha256
           (base32 "1nyx80z53xxlbhpb5k22jnv4jajxqhjm0gz7qb18w9pqqlrvkqd4"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
        (list
         #:phases
         #~(modify-phases %standard-phases
-            (replace 'check
-              (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-                (setenv "HOME" (getenv "TEMP"))
-                (when tests?
-                  (add-installed-pythonpath inputs outputs)
-                  (invoke "pytest" "-vv")))))))
+            (add-before 'check 'configure-tests
+              (lambda _
+                (setenv "HOME" (getenv "TEMP")))))))
       (native-inputs
-       (list python-pytest
-             python-click))
+       (list python-pytest python-click python-setuptools))
       (inputs
        (list python-click
              python-click-default-group
