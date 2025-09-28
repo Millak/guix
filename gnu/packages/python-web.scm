@@ -122,6 +122,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages groff)
+  #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libidn)
@@ -10829,19 +10830,44 @@ can be handled by the @code{colorsys} module in the Python standard library.")
     (license license:bsd-3)))
 
 (define-public python-woob
+  ;; TODO: woob requires backends which are currently installed on the fly in
+  ;; ~/.local/share/woob/modules/3.7/woob_modules/ , perhaps we should install
+  ;; them in the store instead. Many modules are included in the modules
+  ;; directory in the source tree, but it is unclear how to install them.
+  ;; Many modules require extra dependencies though, so maybe they should be
+  ;; packaged independently of woob itself.
   (package
     (name "python-woob")
-    (version "3.0")
+    (version "3.7")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "woob" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/woob/woob.git")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "09hpxy5zhn2b8li0xjf3zd7s46lawb0315p5mdcsci3bj3s4v1j7"))))
-    (build-system python-build-system)
-    ;; A small number of tests for optional applications fails due to missing
-    ;; inputs.
-    (arguments `(#:tests? #f))
+        (base32 "1sy0aykff56xs4dnc7ak6m8is2zgz9fprf3i1pk8n861xz1z748i"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Deselect tests that require DNS lookup.
+      #~(list
+         "--deselect=tests/browser/adapters.py::TestAdapter::test_ciphers"
+         "--deselect=tests/browser/browsers.py::TestBrowser::test_verify")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'relax-requirements
+            (lambda _
+              ;; "packaging ~= 23.0",
+              (substitute* "pyproject.toml"
+                (("\"packaging .*\",")
+                 "")))))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-babel
            python-colorama
@@ -10850,19 +10876,20 @@ can be handled by the @code{colorsys} module in the Python standard library.")
            python-feedparser
            python-html2text
            python-lxml
+           python-packaging
            python-pillow
            python-prettytable
-           python-pyqt
+           python-pycountry
            python-pyyaml
            python-requests
-           python-six
+           python-responses
+           python-rich
+           python-termcolor
            python-unidecode))
-    (native-inputs
-     (list python-coverage python-flake8 python-nose python-selenium
-           python-xunitparser))
     (home-page "https://woob.tech/")
     (synopsis "Woob, Web Outside Of Browsers")
-    (description "Woob is a collection of applications able to interact with
+    (description
+     "Woob is a collection of applications able to interact with
 websites, without requiring the user to open them in a browser.  It also
 provides well-defined APIs to talk to websites lacking one.")
     (license license:lgpl3+)))
