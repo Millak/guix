@@ -1095,7 +1095,9 @@ with a terminal interface, for Gemini also a GUI is available.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "0jp4v4jw82qqynqqs7x35g5yvm1sd48cvbqh7j2r1ixw1z6ldhc4"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
+      (arguments (list #:tests? #f))    ; No tests.
+      (native-inputs (list python-setuptools))
       (home-page "https://github.com/xyzshantaram/leo")
       (synopsis "Gemini client written in Python")
       (description
