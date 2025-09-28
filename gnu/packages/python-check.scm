@@ -1,9 +1,11 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015 Cyril Roelandt <tipecaml@gmail.com>
+;;; Copyright © 2015, 2017 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2015, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
+;;; Copyright © 2017 Thomas Danckaert <thomas.danckaert@gmail.com>
+;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
 ;;; Copyright © 2018-2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019-2024 Maxim Cournoyer <maxim@guixotic.coop>
@@ -227,6 +229,38 @@ it, the declaration of a name's public export semantics are not separated from
 the implementation of that name.")
     (license (list license:asl2.0
                    license:lgpl3))))    ; only for setup_helpers.py
+
+(define-public python-autopep8
+  (package
+    (name "python-autopep8")
+    (version "2.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "autopep8" version))
+       (sha256
+        (base32 "0n0pjdk39n6vlddjqvbpkxd4a7q33dkf0k2yk6dbd5wijr7hli49"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-pycodestyle python-tomli))
+    (native-inputs
+     (list python-setuptools))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'prepare-check
+           (lambda _
+             (setenv "HOME" "/tmp"))))))
+    (home-page "https://github.com/hhatto/autopep8")
+    (synopsis "Format Python code according to the PEP 8 style guide")
+    (description
+     "@code{autopep8} automatically formats Python code to conform to
+the PEP 8 style guide.  It uses the pycodestyle utility to determine
+what parts of the code needs to be formatted.  @code{autopep8} is
+capable of fixing most of the formatting issues that can be reported
+by pycodestyle.")
+    (license (license:non-copyleft
+              "https://github.com/hhatto/autopep8/blob/master/LICENSE"))))
 
 (define-public python-avocado-framework
   (package

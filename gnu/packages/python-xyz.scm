@@ -12291,39 +12291,6 @@ run simple @code{argparse} parsers from function signatures.")
 from a program in a @dfn{pager} such as @command{less}.")
     (license license:asl2.0)))
 
-(define-public python-autopep8
-  (package
-    (name "python-autopep8")
-    (version "2.3.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "autopep8" version))
-       (sha256
-        (base32
-         "0n0pjdk39n6vlddjqvbpkxd4a7q33dkf0k2yk6dbd5wijr7hli49"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-pycodestyle python-tomli))
-    (native-inputs
-     (list python-setuptools))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'prepare-check
-           (lambda _
-             (setenv "HOME" "/tmp"))))))
-    (home-page "https://github.com/hhatto/autopep8")
-    (synopsis "Format Python code according to the PEP 8 style guide")
-    (description
-     "@code{autopep8} automatically formats Python code to conform to
-the PEP 8 style guide.  It uses the pycodestyle utility to determine
-what parts of the code needs to be formatted.  @code{autopep8} is
-capable of fixing most of the formatting issues that can be reported
-by pycodestyle.")
-    (license (license:non-copyleft
-              "https://github.com/hhatto/autopep8/blob/master/LICENSE"))))
-
 (define-public python-dirty-equals
   (package
     (name "python-dirty-equals")
