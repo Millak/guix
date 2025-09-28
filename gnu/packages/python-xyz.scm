@@ -171,6 +171,7 @@
 ;;; Copyright © 2025 Luis Felipe López Acevedo <sirgazil@zoho.com>
 ;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2025 Matthias Riße <matrss@0px.xyz>
+;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -730,6 +731,27 @@ Configurations:
 features string-like objects which carry formatting information, per-line
 fullscreen terminal rendering, and keyboard input event reporting.")
     (license license:expat)))
+
+(define-public python-darkdetect
+  (package
+    (name "python-darkdetect")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "darkdetect" version))
+       (sha256
+        (base32 "1cgqgpz36dfn7hsqc29ha9pmxmzdjlwdq9aclkgbagi6f08qwhmm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f))  ;no tests in PyPI or Git.
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/albertosottile/darkdetect")
+    (synopsis "Detect OS dark mode from Python")
+    (description
+     "This package allows to detect if the user is using Dark Mode.")
+    (license license:bsd-3)))
 
 (define-public python-distance
   (let ((commit "ad7f9dc7e9b0e88a08d0cefd1442f4ab1dd1779b")
