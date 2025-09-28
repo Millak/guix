@@ -4131,6 +4131,8 @@ changed, it made sense to abstract away the nuisance of having to re-learn
 them.")
   (license license:bsd-3)))
 
+;; XXX: Not maintained since 2019. The project was archived by the owner on
+;; Nov 2, 2020. It is now read-only.
 (define-public python-fbpca
   (package
     (name "python-fbpca")
@@ -4141,7 +4143,10 @@ them.")
               (sha256
                (base32
                 "1lbjqhqsdmqk86lb86q3ywf7561zmdny1dfvgwqkyrkr4ij7f1hm"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list "fbpca.py")))
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-numpy python-scipy))
     (home-page "https://fbpca.readthedocs.io/")
