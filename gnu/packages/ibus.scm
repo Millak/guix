@@ -89,19 +89,20 @@
 (define-public ibus-minimal
   (package
     (name "ibus")
-    (version "1.5.29")
+    (version "1.5.32")
     (source (origin
       (method git-fetch)
       (uri (git-reference
         (url "https://github.com/ibus/ibus")
         (commit version)))
       (file-name (git-file-name name version))
-      (sha256 (base32 "04f7h6k3vssklw4r4hpd07lxhqp8ki2fbipwfv3vgwig1li190bp"))))
+      (sha256 (base32 "1rn2xpzi6x57n01rjin4a2h8yy1wdmvadgnglw0p6bdnc31q17a6"))))
     (build-system glib-or-gtk-build-system)
     (outputs '("out" "doc"))
     (arguments
      (list
       #:configure-flags #~(list "--disable-gtk2"
+                                "--disable-gtk4"
                                 "--enable-gtk-doc"
                                 "--enable-memconf"
                                 (string-append
@@ -141,9 +142,6 @@
                 (("dconf update") "echo dconf update"))))
           (add-after 'unpack 'fix-paths
             (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "src/ibusenginesimple.c"
-                (("/usr/share/X11/locale")
-                 (search-input-directory inputs "share/X11/locale")))
               (substitute* "ui/gtk3/xkblayout.vala"
                 (("\"(setxkbmap|xmodmap)\"" _ prog)
                  (format #f "~s" (search-input-file
@@ -240,9 +238,8 @@ may also simplify input method development.")
     (arguments
      (substitute-keyword-arguments (package-arguments ibus-minimal)
        ((#:configure-flags flags)
-        #~(cons* "--enable-gtk4"
-                 "--enable-python-library"
-                 #$flags))
+        #~(cons* "--enable-python-library"
+                 (delete "--disable-gtk4" #$flags)))
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'disable-registry-cache
