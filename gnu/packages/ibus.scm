@@ -15,6 +15,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Charles <charles@charje.net>
 ;;; Copyright © 2025 Kurome <hunt31999@gmail.com>
+;;; Copyright © 2025 Daniel Khodabakhsh <d@niel.khodabakh.sh>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -90,13 +91,12 @@
     (name "ibus")
     (version "1.5.29")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/ibus/ibus/"
-                                  "releases/download/"
-                                  version "/ibus-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0vjybn3xq5sz616fdy21f5c4b4ajrj4wmfnbjqz6584xw887yiaa"))))
+      (method git-fetch)
+      (uri (git-reference
+        (url "https://github.com/ibus/ibus")
+        (commit version)))
+      (file-name (git-file-name name version))
+      (sha256 (base32 "04f7h6k3vssklw4r4hpd07lxhqp8ki2fbipwfv3vgwig1li190bp"))))
     (build-system glib-or-gtk-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -135,30 +135,10 @@
                 (substitute* '("ibus-share.c" "ibus-compose.c"
                                "ibus-keypress.c")
                   (("[ \t]*return g_test_run \\(\\);") "")))))
-          (add-after 'unpack 'patch-python-target-directories
-            (lambda _
-              (let ((root (string-append #$output
-                                         "/lib/python"
-                                         #$(version-major+minor
-                                            (package-version python))
-                                         "/site-packages")))
-                (substitute* "configure"
-                  (("(py2?overridesdir)=.*" _ var)
-                   (string-append var "=" root "/gi/overrides/"))
-                  (("(pkgpython2dir=).*" _ var)
-                   (string-append var root "/ibus"))))))
           (add-before 'configure 'disable-dconf-update
             (lambda _
               (substitute* "data/dconf/Makefile.in"
                 (("dconf update") "echo dconf update"))))
-          (add-after 'unpack 'delete-generated-files
-            (lambda _
-              (for-each (lambda (file)
-                          (let ((c (string-append (string-drop-right file 4) "c")))
-                            (when (file-exists? c)
-                              (format #t "deleting ~a\n" c)
-                              (delete-file c))))
-                        (find-files "." "\\.vala"))))
           (add-after 'unpack 'fix-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "src/ibusenginesimple.c"
@@ -168,6 +148,18 @@
                 (("\"(setxkbmap|xmodmap)\"" _ prog)
                  (format #f "~s" (search-input-file
                                   inputs (string-append "bin/" prog)))))))
+          (add-before 'configure 'patch-python-target-directories
+            (lambda _
+              (let ((root (string-append #$output
+                                         "/lib/python"
+                                         #$(version-major+minor
+                                            (package-version python))
+                                         "/site-packages")))
+                (substitute* "configure"
+                  (("(py2?overridesdir)=.*" _ var)
+                   (string-append var "=" root "/gi/overrides/\n"))
+                  (("(pkgpython2dir=).*" _ var)
+                   (string-append var root "/ibus\n"))))))
           (add-before 'check 'pre-check
             (lambda _
               ;; Tests write to $HOME.
@@ -214,13 +206,16 @@
            wayland
            xmodmap))
     (native-inputs
-     (list docbook-xml-4.1.2
+     (list autoconf
+           automake
+           docbook-xml-4.1.2
            `(,glib "bin")               ;for glib-genmarshal
            gettext-minimal
            gnome-common
            gobject-introspection        ;for g-ir-compiler
            `(,gtk+ "bin")
            gtk-doc/stable
+           libtool
            perl
            pkg-config
            python-wrapper
