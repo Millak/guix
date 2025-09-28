@@ -826,7 +826,20 @@ and export to various formats including the format used by Magicavoxel.")
                    (substitute* "test/CMakeLists.txt"
                      ;; Leave the test binary where ctest will look for it.
                      (("TARGET_USE_COMMON_OUTPUT_DIRECTORY\\(unit\\)")
-                      "")))))))
+                      ""))
+
+                   ;; Some tests fail on aarch64:
+                   ;; <https://github.com/assimp/assimp/issues/6246>.
+                   (when #$(target-aarch64?)
+                     (substitute* "test/unit/AssimpAPITest_aiMatrix3x3.cpp"
+                       (("aiMatrix3FromToTest")
+                        "DISABLED_aiMatrix3FromToTest"))
+                     (substitute* "test/unit/AssimpAPITest_aiMatrix4x4.cpp"
+                       (("aiMatrix4FromToTest")
+                        "DISABLED_aiMatrix4FromToTest"))
+                     (substitute* "test/unit/AssimpAPITest_aiQuaternion.cpp"
+                       (("aiQuaternionFromNormalizedQuaternionTest")
+                        "DISABLED_aiQuaternionFromNormalizedQuaternionTest"))))))))
     (build-system cmake-build-system)
     (inputs
      (list zlib))
