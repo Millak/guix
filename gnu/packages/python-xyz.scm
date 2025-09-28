@@ -1082,6 +1082,37 @@ supports:
 identities.")
     (license license:asl2.0)))
 
+(define-public python-inotify
+  (package
+    (name "python-inotify")
+    (version "0.2.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dsoprea/PyInotify")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n1rqpzk70ap2i4zk2k0znz407i909y2001v65agy7y30apjzb67"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-requirements
+            (lambda _
+              (substitute* "inotify/resources/requirements.txt"
+                (("build")
+                 "")))))))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/dsoprea/PyInotify")
+    (synopsis "Linux filesystem activity monitor library for Python")
+    (description
+     "This package provides an efficient and elegant inotify (Linux filesystem
+activity monitor) library for Python.")
+    (license license:gpl2)))
+
 (define-public python-jsonpath-ng
   (package
     (name "python-jsonpath-ng")
