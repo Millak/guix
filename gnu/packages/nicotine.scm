@@ -23,7 +23,7 @@
   #:use-module (guix packages)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
@@ -31,6 +31,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages mp3)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages xorg))
 
 (define-public nicotine+
@@ -45,43 +46,42 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xj7hlhgirgjyfmdchksvwhjhaqaf5n84brzih6fqlbsrr9gxkw9"))
-       (modules '((guix build utils)))
-       ;; Remove test that relies on network access.
-       (snippet '(delete-file-recursively
-                  "pynicotine/tests/unit/test_version.py"))))
-    (build-system python-build-system)
+        (base32 "0xj7hlhgirgjyfmdchksvwhjhaqaf5n84brzih6fqlbsrr9gxkw9"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:imported-modules `((guix build glib-or-gtk-build-system)
-                           ,@%python-build-system-modules)
-      #:modules `((guix build utils)
-                  (guix build python-build-system)
-                  ((guix build glib-or-gtk-build-system)
-                   #:prefix glib-or-gtk:))
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'install 'wrap-program
-                     (lambda _
-                       (wrap-program (string-append #$output "/bin/nicotine")
-                         `("GI_TYPELIB_PATH" ":" prefix
-                           (,(getenv "GI_TYPELIB_PATH"))))))
-                   (add-after 'wrap-program 'glib-or-gtk-wrap
-                     (assoc-ref glib-or-gtk:%standard-phases
-                                'glib-or-gtk-wrap))
-                   (add-after 'glib-or-gtk-wrap 'glib-or-gtk-compile-schemas
-                     (assoc-ref glib-or-gtk:%standard-phases
-                                'glib-or-gtk-compile-schemas))
-                   (replace 'check
-                     (lambda* (#:key tests? #:allow-other-keys)
-                       (when tests?
-                         (invoke "xvfb-run" "python" "-m" "unittest")))))))
+      #:imported-modules
+      `((guix build glib-or-gtk-build-system)
+        ,@%pyproject-build-system-modules)
+      #:modules
+      `((guix build utils)
+        (guix build pyproject-build-system)
+        ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-program
+            (lambda _
+              (wrap-program (string-append #$output "/bin/nicotine")
+                `("GI_TYPELIB_PATH" ":" prefix
+                  (,(getenv "GI_TYPELIB_PATH"))))))
+          (add-after 'wrap-program 'glib-or-gtk-wrap
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+          (add-after 'glib-or-gtk-wrap 'glib-or-gtk-compile-schemas
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'glib-or-gtk-compile-schemas))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Remove test that relies on network access.
+                (delete-file "pynicotine/tests/unit/test_version.py")
+                (invoke "xvfb-run" "python" "-m" "unittest")))))))
     (inputs (list bash-minimal
                   gspell
                   gtk
                   python-pygobject
                   libappindicator
                   python-pytaglib))
-    (native-inputs (list gettext-minimal xvfb-run))
+    (native-inputs (list gettext-minimal python-setuptools xvfb-run))
     (home-page "https://nicotine-plus.org/")
     (synopsis "Graphical client for Soulseek")
     (description
