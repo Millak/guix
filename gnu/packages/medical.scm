@@ -477,3 +477,14 @@ Network Graphics}, and @acronym{GIF, Graphics Interchange Format}87a/89a.
 This package includes a command-line utility (@code{medcon}) and a GTK+ based
 GUI application (@code{xmedcon}).")
     (license license:lgpl2.0+)))
+
+(define-public xmedcon-minimal
+  (package/inherit xmedcon
+    (name "xmedcon-minimal")
+    (arguments
+     (substitute-keyword-arguments (package-arguments xmedcon)
+       ((#:configure-flags flags #~'())
+        #~(append (list "--disable-glib" "--disable-gui") #$flags))))
+    (inputs (modify-inputs (package-inputs xmedcon)
+              (delete "glib" "gtk+")))
+    (synopsis "Medical image conversion utility (variant with CLI only)")))
