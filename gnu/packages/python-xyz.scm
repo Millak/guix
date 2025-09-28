@@ -1266,6 +1266,34 @@ for Python.")
 processes, in parallel, in the console, with an interactive TUI.")
     (license license:expat)))
 
+(define-public python-num2words
+  (package
+    (name "python-num2words")
+    (version "0.5.14")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/savoirfairelinux/num2words")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h52kgh1h4q9nkkplpwix2xs6f6wwvlxq09clznr2589xv39iqlz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore" "tests/test_cli.py"))) ;Requires delegator.py.
+    (inputs (list python-docopt))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/savoirfairelinux/num2words")
+    (synopsis "Convert numbers to words in multiple languages")
+    (description
+     "@code{num2words} is a library that converts numbers like 42 to words like
+forty-two.  It supports multiple languages, and can even generate ordinal
+numbers like forty-second.")
+    (license license:lgpl2.1)))
+
 (define-public python-orderly-set
   (package
     (name "python-orderly-set")
