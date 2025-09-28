@@ -15100,6 +15100,28 @@ values pointed to.  Unexported field values are not copied.")
      "This package provides a fast gitignore matching library for Go.")
     (license license:expat)))
 
+(define-public go-github-com-morikuni-aec
+  (package
+    (name "go-github-com-morikuni-aec")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/morikuni/aec")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qaqh0lk9wrqgff0yrxnbznvmwyhdxy3g9b2hjpazp5bw4nj0dp7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/morikuni/aec"))
+    (home-page "https://github.com/morikuni/aec")
+    (synopsis "Go wrapper for ANSI escape code")
+    (description "This package provides a wrapper for ANSI escape code.")
+    (license license:expat)))
+
 (define-public go-github-com-motemen-go-colorine
   (package
     (name "go-github-com-motemen-go-colorine")
