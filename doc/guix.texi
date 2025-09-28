@@ -21556,10 +21556,10 @@ be a @code{log-rotation-configuration} record, as discussed below.
 Available @code{log-rotation-configuration} fields are:
 
 @table @asis
-@item @code{provision} (default: @code{'(log-rotation)}) (type: list-of-symbols)
+@item @code{provision} (default: @code{(log-rotation)}) (type: list-of-symbols)
 The name(s) of the log rotation Shepherd service.
 
-@item @code{requirement} (default: @code{'(user-processes)}) (type: list-of-symbols)
+@item @code{requirement} (default: @code{(user-processes)}) (type: list-of-symbols)
 Dependencies of the log rotation Shepherd service.
 
 @item @code{calendar-event} (type: gexp)
@@ -21570,9 +21570,11 @@ on calendar events.
 @item @code{external-log-files} (default: @code{()}) (type: list-of-strings)
 List of file names, external log files that should also be rotated.
 
-@item @code{compression} (default: @code{zstd}) (type: symbol)
+@item @code{compression} (default: @code{zstd}) (type: gexp-or-symbol)
 The compression method used for rotated log files, one of @code{'none},
-@code{'gzip}, and @code{'zstd}.
+@code{'gzip}, and @code{'zstd}.  Alternatively, it can be a gexp that
+evaluates to a procedure; that procedure gets called with the file to be
+rotated.
 
 @item @code{expiry} (type: gexp-or-integer)
 Age in seconds after which a log file is deleted.

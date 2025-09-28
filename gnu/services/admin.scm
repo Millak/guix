@@ -123,6 +123,9 @@
 (define (gexp-or-integer? x)
   (or (gexp? x) (integer? x)))
 
+(define (gexp-or-symbol? x)
+  (or (gexp? x) (symbol? x)))
+
 (define-configuration log-rotation-configuration
   (provision
    (list-of-symbols '(log-rotation))
@@ -144,9 +147,10 @@ calendar events."
 rotated."
    empty-serializer)
   (compression
-   (symbol 'zstd)
-   "The compression method used for rotated log files, one of
-@code{'none}, @code{'gzip}, and @code{'zstd}."
+   (gexp-or-symbol 'zstd)
+   "The compression method used for rotated log files, one of @code{'none},
+@code{'gzip}, and @code{'zstd}. Alternatively, it can be a gexp that evaluates
+to a procedure; that procedure gets called with the file to be rotated."
    empty-serializer)
   (expiry
    (gexp-or-integer #~(%default-log-expiry))
@@ -158,27 +162,32 @@ rotated."
    empty-serializer))
 
 (define (log-rotation-shepherd-services config)
-  (list (shepherd-service
-         (provision (log-rotation-configuration-provision config))
-         (requirement (log-rotation-configuration-requirement config))
-         (modules '((shepherd service timer)      ;for 'calendar-event'
-                    (shepherd service log-rotation)))
-         (free-form #~(log-rotation-service
-                       #$(log-rotation-configuration-calendar-event config)
-                       #:provision
-                       '#$(log-rotation-configuration-provision config)
-                       #:requirement
-                       '#$(log-rotation-configuration-requirement config)
-                       #:external-log-files
-                       '#$(log-rotation-configuration-external-log-files
-                           config)
-                       #:compression
-                       '#$(log-rotation-configuration-compression config)
-                       #:expiry
-                       #$(log-rotation-configuration-expiry config)
-                       #:rotation-size-threshold
-                       #$(log-rotation-configuration-size-threshold
-                          config))))))
+  (let* ((compression-raw (log-rotation-configuration-compression config))
+         (compression
+           (if (symbol? compression-raw)
+             #~'#$compression-raw
+             compression-raw)))
+    (list (shepherd-service
+           (provision (log-rotation-configuration-provision config))
+           (requirement (log-rotation-configuration-requirement config))
+           (modules '((shepherd service timer)      ;for 'calendar-event'
+                      (shepherd service log-rotation)))
+           (free-form #~(log-rotation-service
+                         #$(log-rotation-configuration-calendar-event config)
+                         #:provision
+                         '#$(log-rotation-configuration-provision config)
+                         #:requirement
+                         '#$(log-rotation-configuration-requirement config)
+                         #:external-log-files
+                         '#$(log-rotation-configuration-external-log-files
+                             config)
+                         #:compression
+                         #$compression
+                         #:expiry
+                         #$(log-rotation-configuration-expiry config)
+                         #:rotation-size-threshold
+                         #$(log-rotation-configuration-size-threshold
+                            config)))))))
 
 (define log-rotation-service-type
   (service-type
