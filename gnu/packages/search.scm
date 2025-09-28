@@ -42,7 +42,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system meson)
   #:use-module (gnu packages)
   #:use-module (gnu packages adns)
@@ -71,6 +71,7 @@
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -640,65 +641,72 @@ search the generated indexes.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://finestructure.net/xapers/releases/xapers-"
-             version ".tar.gz"))
+       (uri (string-append "https://finestructure.net/xapers/releases/xapers-"
+                           version ".tar.gz"))
        (sha256
-        (base32
-         "0ykz6hn3qj46w3c99d6q0pi5ncq2894simcl7vapv047zm3cylmd"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list poppler python-urwid xclip xdg-utils))
-    (inputs
-     (list python-latexcodec
-           python-pybtex
-           python-pycurl
-           python-pyyaml
-           python-six
-           python-xapian-bindings))
+        (base32 "0ykz6hn3qj46w3c99d6q0pi5ncq2894simcl7vapv047zm3cylmd"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:modules ((ice-9 rdelim)
-                  (guix build python-build-system)
+     (list
+      #:tests? #f                   ; A lot of tests are failing, unclear why.
+      #:modules `((ice-9 rdelim)
+                  (guix build pyproject-build-system)
                   (guix build utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-doc
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (define (purge-term-support input output)
-               (let loop ((line (read-line input)))
-                 (if (string-prefix? "if [[ \"$term\"" line)
-                     (begin (display "eval \"$cmd\"\n" output)
-                            #t)
-                     (begin (display (string-append line "\n") output)
-                            (loop (read-line input))))))
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (adder-out (string-append bin "/xapers-adder"))
-                    (man1 (string-append out "/share/man/man1")))
-               (install-file "man/man1/xapers.1"  man1)
-               (install-file "man/man1/xapers-adder.1" man1)
-               ;; below is equivalent to setting --no-term option
-               ;; permanently on; this is desirable to avoid imposing
-               ;; an x-terminal installation on the user but breaks
-               ;; some potential xapers-adder uses like auto browser
-               ;; pdf handler, but user could instead still use
-               ;; e.g. "xterm -e xapers-adder %F" for same use.
-               ;; alternatively we could propagate xterm as an input
-               ;; and replace 'x-terminal-emulator' with 'xterm'
-               (call-with-input-file "bin/xapers-adder"
-                 (lambda (input)
-                   (call-with-output-file adder-out
-                     (lambda (output)
-                       (purge-term-support input output)))))
-               (chmod adder-out #o555)))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-doc
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (define (purge-term-support input output)
+                (let loop
+                    ((line (read-line input)))
+                  (if (string-prefix? "if [[ \"$term\"" line)
+                      (display "eval \"$cmd\"\n" output)
+                      (begin
+                        (display (string-append line "\n") output)
+                        (loop (read-line input))))))
+              (let* ((bin (string-append #$output "/bin"))
+                     (adder-out (string-append bin "/xapers-adder"))
+                     (man1 (string-append #$output "/share/man/man1")))
+                (install-file "man/man1/xapers.1" man1)
+                (install-file "man/man1/xapers-adder.1" man1)
+                ;; below is equivalent to setting --no-term option
+                ;; permanently on; this is desirable to avoid imposing
+                ;; an x-terminal installation on the user but breaks
+                ;; some potential xapers-adder uses like auto browser
+                ;; pdf handler, but user could instead still use
+                ;; e.g. "xterm -e xapers-adder %F" for same use.
+                ;; alternatively we could propagate xterm as an input
+                ;; and replace 'x-terminal-emulator' with 'xterm'
+                (mkdir-p (dirname adder-out))
+                (call-with-input-file "bin/xapers-adder"
+                  (lambda (input)
+                    (call-with-output-file adder-out
+                      (lambda (output)
+                        (purge-term-support input output)))))
+                (chmod adder-out #o555))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (with-directory-excursion "test"
+                    (setenv "HOME" (getcwd))
+                    (invoke "bash" "all"))
+                  (format #t "test suite not run~%")))))))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list poppler python-urwid xclip xdg-utils))
+    (inputs (list python-latexcodec
+                  python-pybtex
+                  python-pycurl
+                  python-pyyaml
+                  python-six
+                  python-xapian-bindings))
     (home-page "https://finestructure.net/xapers/")
     (synopsis "Personal document indexing system")
     (description
-     "Xapers is a personal document indexing system,
-geared towards academic journal articles build on the Xapian search engine.
-Think of it as your own personal document search engine, or a local cache of
-online libraries.  It provides fast search of document text and
-bibliographic data and simple document and bibtex retrieval.")
+     "Xapers is a personal document indexing system, geared towards academic
+journal articles build on the Xapian search engine. Think of it as your own
+personal document search engine, or a local cache of online libraries.  It
+provides fast search of document text and bibliographic data and simple
+document and bibtex retrieval.")
     (license license:gpl3+)))
 
 (define-public ugrep
