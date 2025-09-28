@@ -7694,6 +7694,45 @@ compatible object storage.")
            go-golang-org-x-crypto
            go-golang-org-x-net))))
 
+(define-public go-github-com-moby-moby-api
+  (package
+    (name "go-github-com-moby-moby-api")
+    (version "1.52.0-beta.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/moby/moby")
+              (commit (go-version->git-ref version
+                                           #:subdir "api"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dzvs6byzn29qk06kpvr0gwdkznmjl6z4jd52xjwlxhj473gdj3f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/moby/moby/api"
+      #:unpack-path "github.com/moby/moby"))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-gotest-tools-v3
+           go-pgregory-net-rapid))
+    (propagated-inputs
+     (list go-github-com-docker-go-connections
+           go-github-com-docker-go-units
+           go-github-com-moby-docker-image-spec
+           go-github-com-opencontainers-go-digest
+           go-github-com-opencontainers-image-spec
+           go-golang-org-x-time))
+    (home-page "https://github.com/moby/moby")
+    (synopsis "Docker Engine API")
+    (description
+     "The Docker Engine API is an HTTP API used by the command-line client to
+communicate with the daemon.  It can also be used by third-party software to
+control the daemon.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-muhlemmer-httpforwarded
   (package
     (name "go-github-com-muhlemmer-httpforwarded")
