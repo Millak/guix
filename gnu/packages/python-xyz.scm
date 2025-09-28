@@ -38804,6 +38804,42 @@ multiple Unicode code points, e.g. \"G\" + acute-accent)
 @end enumerate")
     (license license:expat)))
 
+(define-public python-universal-pathlib
+  (package
+    (name "python-universal-pathlib")
+    (version "0.2.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fsspec/universal_pathlib")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y2czk4civjjy9v8vhv6icivk4lapjcjzhdxjrrm3629apqja7wp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f  ;requires network
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-fsspec
+           python-pathlib-abc))
+    (home-page "https://github.com/fsspec/universal_pathlib")
+    (synopsis
+     "@code{pathlib} API extended to use @code{fsspec} backends")
+    (description
+     "Universal Pathlib is a Python library that extends the @code{pathlib.Path}
+API to support a variety of backend filesystems via filesystem_spec.")
+    (license license:expat)))
+
 (define-public python-unpaddedbase64
   (package
     (name "python-unpaddedbase64")
