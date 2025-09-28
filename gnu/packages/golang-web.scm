@@ -7733,6 +7733,57 @@ communicate with the daemon.  It can also be used by third-party software to
 control the daemon.")
     (license license:asl2.0)))
 
+(define-public go-github-com-moby-moby-client
+  (package
+    (name "go-github-com-moby-moby-client")
+    (version "0.1.0-beta.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/moby/moby")
+              (commit (go-version->git-ref version
+                                           #:subdir "client"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1624z57hqqw1b473arfa5m936rsrhc8h3hs2jg4645b3dykfyawn"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "client")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/moby/client"
+      #:unpack-path "github.com/moby/moby"))
+    (native-inputs
+     (list go-gotest-tools-v3))
+    (propagated-inputs
+     (list go-github-com-containerd-errdefs
+           go-github-com-containerd-errdefs-pkg
+           go-github-com-distribution-reference
+           go-github-com-docker-go-connections
+           go-github-com-docker-go-units
+           ;; go-github-com-microsoft-go-winio ; for Windows only
+           go-github-com-moby-moby-api
+           go-github-com-moby-term
+           go-github-com-opencontainers-go-digest
+           go-github-com-opencontainers-image-spec
+           go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+           go-go-opentelemetry-io-otel-trace))
+    (home-page "https://github.com/moby/moby")
+    (synopsis "Go client for the Docker Engine API")
+    (description "Package client is a Go client for the Docker Engine API.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-muhlemmer-httpforwarded
   (package
     (name "go-github-com-muhlemmer-httpforwarded")
