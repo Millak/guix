@@ -899,6 +899,15 @@ which will be used as a snippet in origin."
    "0.7.0"
    #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-vim"))
 
+(define-public tree-sitter-vimdoc
+  (tree-sitter-grammar "vimdoc"
+   "Vimdoc"
+   "1gi16hmh4vk9hdfkg9kvwxd7m4rq8r6vymk7fgxqqrbyrks9f0mw"
+   "4.0.0"
+   #:repository-url
+   "https://github.com/neovim/tree-sitter-vimdoc"
+   #:license license:expat))
+
 (define* (python-tree-sitter-grammar pkg #:key tests?)
   "Returns a package for Python bindings of a Tree-sitter grammar.  PKG is a
 package for a Tree-sitter grammar; its name will be used with python- prefix
