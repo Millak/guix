@@ -734,17 +734,27 @@ queries done via the Django ORM, SQLAlchemy generated queries are displayed.")
     (version "1.4.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "django-gravatar2" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/twaddington/django-gravatar")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0r03m1qkh56g92x136xdq8n92mj7gbi1fh0djarxhp9rbr35dfrd"))))
-    (build-system python-build-system)
+        (base32 "0brh1176gx758cimkz36g8v760a1hadxspqanp8kc59kvx50qvm0"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(;; TODO: The django project for the tests is missing from the release.
-       #:tests? #f))
-    (inputs
-     (list python-django))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "example_project"
+                  (invoke "python" "./manage.py" "test"
+                          "-k" "not test_has_gravatar"
+                          "django_gravatar"))))))))
+    (native-inputs (list python-setuptools))
+    (inputs (list python-django))
     (home-page "https://github.com/twaddington/django-gravatar")
     (synopsis "Gravatar support for Django, improved version")
     (description
