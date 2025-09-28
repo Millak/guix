@@ -335,22 +335,34 @@ reduces the code overhead typically encountered when using a mostly
 object-oriented library such as @code{scikit-learn}.")
     (license license:bsd-3)))
 
+;; XXX: See: <https://codeberg.org/guix/guix/issues/3093>.
 (define-public python-aplus
-  (package
-    (name "python-aplus")
-    (version "0.11.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "aplus" version))
-       (sha256
-        (base32 "1rznc26nlp641rn8gpdngfp79a3fji38yavqakxi35mx2da04msg"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/xogeny/aplus")
-    (synopsis "Promises/A+ for Python")
-    (description "This package is an implementation of the Promises/A+
-specification and test suite in Python.")
-    (license license:expat)))
+  ;; PyPI release lacks the latest version, Git has no tags.
+  (let ((commit "1ab8ebec987fb7213766784aad02cbf4410d9036")
+        (revision "0"))
+    (package
+      (name "python-aplus")
+      (version (git-version "0.11.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/xogeny/aplus")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "02jcfj7dywvs0sd60c85pxwh0mwsj9p1q27445pba6j489x3dffj"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list #:tests? #f))      ;they depend on Nose test runner
+      (native-inputs
+       (list python-setuptools))
+      (home-page "https://github.com/xogeny/aplus")
+      (synopsis "Promises/A+ for Python")
+      (description
+       "This package is an implementation of the Promises/A+ specification and
+test suite in Python.")
+      (license license:expat))))
 
 (define-public python-apted
   ;; PyPI release lacks tests and there is no Git tag.
