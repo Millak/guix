@@ -1091,33 +1091,28 @@ prompt.")
       (build-system pyproject-build-system)
       (arguments
        (list
+        #:test-flags
+        #~(list "tests")
         #:phases
         #~(modify-phases %standard-phases
-            (replace 'check
+            (add-before 'check 'pre-check
+              ;; tests/test_functional.py moves windows around and thus needs
+              ;; access to an X server.
               (lambda* (#:key tests? #:allow-other-keys)
                 (when tests?
                   (setenv "HOME" "/tmp")
                   (mkdir-p "/tmp/.config")
+                  (system "Xvfb :1 &")
+                  (setenv "DISPLAY" ":1")
                   ;; First run creates /tmp/.config/quicktile.cfg.
-                  (invoke "xvfb-run"
-                          "-a"
-                          "./quicktile.sh")
-                  ;; test_functional.py moves windows around and thus needs
-                  ;; access to an X server.
-                  (invoke "xvfb-run"
-                          "-a"
-                          "python3"
-                          "-m"
-                          "pytest"
-                          "-vv"
-                          "tests")))))))
+                  (invoke "./quicktile.sh")))))))
       (native-inputs
        (list openbox ;necessary for test_functional.py
              python-pluggy
              python-pytest
              python-pytest-cov
              python-setuptools
-             xvfb-run))
+             xorg-server-for-tests))
       (inputs
        (list gtk+
              libwnck
