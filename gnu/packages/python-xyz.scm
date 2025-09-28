@@ -34102,6 +34102,8 @@ to minimize duplication of information across files.  The format supports schema
 validation.")
     (license license:lgpl3)))
 
+;; XXX: Not maintained since 2021, there is no git available as seen in
+;; <https://pypi.org/project/flufl.bounce>.
 (define-public python-flufl-bounce
   (package
     (name "python-flufl-bounce")
@@ -34113,7 +34115,7 @@ validation.")
         (sha256
          (base32
           "0c9qc2l47lyqnpwskp6vvi7m3jqh6hx42v6d35dgxh3fjzmlll15"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
@@ -34126,7 +34128,7 @@ validation.")
     (propagated-inputs
      (list python-atpublic python-zope-interface))
     (native-inputs
-     (list python-flufl-testing python-nose2))
+     (list python-flufl-testing python-nose2 python-setuptools))
     (home-page "https://fluflbounce.readthedocs.io/en/latest/")
     (synopsis "Email bounce detectors")
     (description "The @code{flufl.bounce} library provides a set of heuristics
