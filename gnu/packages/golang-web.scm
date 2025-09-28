@@ -7694,6 +7694,38 @@ compatible object storage.")
            go-golang-org-x-crypto
            go-golang-org-x-net))))
 
+(define-public go-github-com-moby-ipvs
+  (package
+    (name "go-github-com-moby-ipvs")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/moby/ipvs")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gi7cjxs5s1db7nssj3r46fp44x94j5mlcrzng3ma663sbpmsrj2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/ipvs"
+      ;; Failed to enter netns: operation not permitted
+      #:test-flags #~(list "-skip" "TestService|TestDestination|TestTimeouts")))
+    (propagated-inputs
+     (list go-github-com-sirupsen-logrus
+           go-github-com-vishvananda-netlink
+           go-github-com-vishvananda-netns
+           go-golang-org-x-sys))
+    (home-page "https://github.com/moby/ipvs")
+    (synopsis "Networking for containers")
+    (description
+     "ipvs provides a native Go implementation for communicating with
+@url{https://en.wikipedia.org/wiki/IP_Virtual_Server, IPVS} kernel module
+using a netlink socket.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-moby-moby-api
   (package
     (name "go-github-com-moby-moby-api")
