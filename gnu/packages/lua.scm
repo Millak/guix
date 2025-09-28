@@ -25,6 +25,7 @@
 ;;; Copyright © 2024, 2026 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 Aaron Boyd <aaron.boyd.org@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1545,6 +1546,37 @@ multiple local rocks trees.")
 
 (define-public luarocks
   (make-luarocks "luarocks" lua))
+
+(define-public dkjson
+  (package
+    (name "dkjson")
+    (version "2.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://dkolf.de/dkjson-lua/dkjson-" version ".lua"))
+       (sha256
+        (base32 "0i3x9qzx2m25fpf1pd6j45imm1gpykpjxibbvfi9bcwgd1hg2fzb"))))
+    (build-system trivial-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(begin
+          (use-modules (guix build utils))
+          (let* ((luajit-major+minor
+                  #$(version-major+minor (package-version lua)))
+                 (lua-dir
+                  (string-append #$output "/share/lua/" luajit-major+minor)))
+            (mkdir-p lua-dir)
+            (copy-file #$source (string-append lua-dir "/dkjson.lua"))))))
+    (inputs (list lua))
+    (synopsis "JSON module for Lua")
+    (description
+     "dkjson is a lua module for processing json in lua. It can handle tasks
+ like encoding or decoding JSON objects to and from lua tables.")
+    (home-page "https://dkolf.de/dkjson-lua/")
+    (license license:expat)))
 
 (define-public fennel
   (package
