@@ -3611,21 +3611,24 @@ for notification of events.")
     (license license:gpl3+)))
 
 (define-public python-harmony
+  ;; TODO: Remove python-harmony? Repository is archived.
   (package
     (name "python-harmony")
-    (version "0.7.1")
+    (version "0.7.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/taylordotfish/harmony.git")
+                     (url "https://github.com/taylordotfish/harmony")
                      (commit version)))
-              (file-name (string-append name "-" version "-checkout"))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bm9xcnzpnpj6rlhbrnl2abwclzl7ivgh1vb5644y9mnhcs489js"))))
-    (build-system python-build-system)
+                "1d202pymabzvkzmxpplyjv55x74g937abxmnxdg9bxjjvp85c1nv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests in repository
     (native-inputs
-     (list python-tox))
+     (list python-setuptools))
     (inputs
      (list python-librecaptcha python-keyring python-requests))
     (synopsis "Discord account management")
