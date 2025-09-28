@@ -3,6 +3,7 @@
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,6 +25,8 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages mail)
+  #:use-module (gnu packages scheme)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix download)
@@ -32,6 +35,31 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils))
+
+(define-public faber
+  (package
+    (name "faber")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Junker/faber")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17xjg92vwg7n06lx4xbsnd7wvsgqcw8h10ha5365rsfs49bd3cyf"))))
+    (inputs (list gauche))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("faber" "bin/"))))
+    (synopsis "Task runner with power of Scheme")
+    (description "Faber is a CLI task runner designed to leverage the power and
+flexibility of Gauche Scheme.
+Unlike other build systems that rely on custom formats, Faber uses Gauche
+Scheme, allowing you to write build scripts using familiar Scheme syntax.")
+    (home-page "https://github.com/Junker/faber")
+    (license license:expat)))
 
 (define-public run
   (package
