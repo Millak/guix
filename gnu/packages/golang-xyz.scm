@@ -16713,6 +16713,60 @@ containers on Linux according to the OCI specification.")
 specification-runtime-spec.")
     (license license:asl2.0)))
 
+(define-public go-github-com-opencontainers-runtime-tools
+  (package
+    (name "go-github-com-opencontainers-runtime-tools")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/opencontainers/runtime-tools")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pli3jb1rq9lkzzz83f7jw788vijg7x6ly3vgasdlwri7kiph1sa"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      ;; XXX: See: <https://github.com/opencontainers/runtime-tools/issues/792>.
+      #:tests? #f
+      #:import-path "github.com/opencontainers/runtime-tools"
+      #:build-flags
+      #~(list (format #f "-ldflags=-X ~s"
+                      (string-append "main.version=" #$version)))
+      #:test-flags
+      #~(list "-vet=off"
+              ;; Network is required.
+              "-skip" "TestGenerateValid|TestJSONSchema")))
+    (native-inputs
+     (list go-github-com-mndrix-tap-go
+           go-github-com-stretchr-testify
+           go-github-com-urfave-cli))
+    (propagated-inputs
+     (list go-github-com-blang-semver
+           go-github-com-hashicorp-go-multierror
+           go-github-com-mrunalp-fileutils
+           go-github-com-opencontainers-runtime-spec
+           go-github-com-opencontainers-selinux
+           go-github-com-satori-go-uuid
+           go-github-com-sirupsen-logrus
+           go-github-com-syndtr-gocapability
+           go-github-com-xeipuuv-gojsonschema
+           go-golang-org-x-sys))
+    (home-page "https://github.com/opencontainers/runtime-tools")
+    (synopsis "OCI Runtime Tools")
+    (description
+     "This package provides a collection of tools for working with the
+@url{https://github.com/opencontainers/runtime-spec, OCI runtime
+specification}.  To build from source code, runtime-tools requires Go 1.10.x
+or above.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-opencontainers-selinux
   (package
     (name "go-github-com-opencontainers-selinux")
@@ -25143,6 +25197,49 @@ tool."))))
        ((#:install-source? _ #t) #f)
        ((#:skip-build? _ #t) #f)))
     (native-inputs (package-propagated-inputs go-github-com-google-gops))
+    (propagated-inputs '())
+    (inputs '())))
+
+(define-public oci-runtime-tool
+  (package/inherit go-github-com-opencontainers-runtime-tools
+    (name "oci-runtime-tool")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-opencontainers-runtime-tools)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:import-path "github.com/opencontainers/runtime-tools")
+        "github.com/opencontainers/runtime-tools/cmd/oci-runtime-tool")
+       ((#:unpack-path _ "") "github.com/opencontainers/runtime-tools")
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'install 'install-man-pages
+              (lambda* (#:key unpack-path #:allow-other-keys)
+                (with-directory-excursion (string-append "src/" unpack-path)
+                  (let ((man (string-append #$output "/share/man/man1")))
+                    (mkdir-p man)
+                    (invoke "go-md2man"
+                            "-in" "man/oci-runtime-tool.1.md"
+                            "-out" (string-append man "/oci-runtime-tool.1"))
+                    (invoke "go-md2man"
+                            "-in" "man/oci-runtime-tool-generate.1.md"
+                            "-out" (string-append man "/oci-runtime-tool-generate.1"))
+                    (invoke "go-md2man"
+                            "-in" "man/oci-runtime-tool-validate.1.md"
+                            "-out" (string-append man "/oci-runtime-tool-validate.1"))))))
+            (add-after 'install 'install-bash-completions
+              (lambda* (#:key unpack-path #:allow-other-keys)
+                (with-directory-excursion (string-append "src/" unpack-path)
+                  (let ((bash (string-append #$output "/share/bash-completion")))
+                    (mkdir-p bash)
+                    (copy-file "completions/bash/oci-runtime-tool"
+                                 (string-append bash "/completions"))))))))))
+    (native-inputs
+     (append
+      (modify-inputs (package-native-inputs go-github-com-opencontainers-runtime-tools)
+        (append go-md2man))
+      (package-propagated-inputs go-github-com-opencontainers-runtime-tools)))
     (propagated-inputs '())
     (inputs '())))
 
