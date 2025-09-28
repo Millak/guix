@@ -36,6 +36,7 @@
 ;;; Copyright © 2025 Mark Walker <mark.damon.walker@gmail.com>
 ;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
+;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5295,6 +5296,54 @@ Toolkit (VTK);
 This package provides a Pythonic, well-documented interface exposing VTK's
 powerful visualization backend to facilitate rapid prototyping, analysis, and
 visual integration of spatially referenced datasets.")
+    (license license:expat)))
+
+(define-public python-pyvistaqt
+  (package
+    (name "python-pyvistaqt")
+    (version "0.11.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pyvista/pyvistaqt")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04f9cd98k463pdrpi8jby411x9mc0ih62gl0nv0h9w3r7pwl61yl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest
+            (lambda _
+              (substitute* "tests/conftest.py"
+                (("pytest.skip")
+                 "pytest.mark.skipif"))))
+          (add-before 'check 'before-check
+            (lambda _
+              ;; Testing requires write access.
+              (setenv "HOME" "/tmp")
+              ;; Testing requires a running xorg server.
+              (system "Xvfb :99 -screen 0 1024x768x24 &")
+              (setenv "DISPLAY" ":99.0"))))))
+    (propagated-inputs (list python-pyvista python-qtpy))
+    (native-inputs (list python-ipython
+                         python-matplotlib
+                         python-numpy
+                         python-pytest
+                         python-pytest-cov
+                         python-pytest-qt
+                         python-setuptools
+                         python-sphinx-gallery
+                         xorg-server))
+    (home-page "https://github.com/pyvista/pyvistaqt")
+    (synopsis "Qt support for PyVista")
+    (description
+     "@code{pyvistaqt} is a helper module for @code{pyvista} to enable you to
+plot using Qt by placing a vtk-widget into a background renderer.  This can be
+quite useful when you desire to update your plot in real-time.")
     (license license:expat)))
 
 (define-public python-simplespectral
