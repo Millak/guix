@@ -14598,6 +14598,30 @@ parsing.")
      "This directory contains documents about Docker Image Specification v1.X.")
     (license license:asl2.0)))
 
+(define-public go-github-com-moby-locker
+  (package
+    (name "go-github-com-moby-locker")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moby/locker")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07rc2c6h35f9mcy81jp382a030f6xmcifi9n5jnlayybfwxmpjir"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/locker"))
+    (home-page "https://github.com/moby/locker")
+    (synopsis "Golang std @code{sync.Mutex} locker alternative")
+    (description
+     "Package locker provides a mechanism for creating finer-grained locking
+to help free up more global locks to handle other tasks.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-moby-spdystream
   (package
     (name "go-github-com-moby-spdystream")
