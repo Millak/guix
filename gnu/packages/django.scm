@@ -957,20 +957,27 @@ for Django sites.")
 (define-public python-django-contrib-comments
   (package
     (name "python-django-contrib-comments")
-    (version "1.9.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "django-contrib-comments" version))
-              (sha256
-               (base32
-                "0ccdiv784a5vnpfal36km4dyg12340rwhpr0riyy0k89wfnjn8yi"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-django python-six))
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/django/django-contrib-comments")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17mymw64bm5f19iq6dlpcbbycamy2a0wrnfzrbnw8diysc3fsnpr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "tests/runtests.py")))
+    (native-inputs (list python-setuptools tzdata-for-tests))
+    (propagated-inputs (list python-django))
     (home-page "https://github.com/django/django-contrib-comments")
     (synopsis "Comments framework")
     (description
-      "Django used to include a comments framework; since Django 1.6 it's been
+     "Django used to include a comments framework; since Django 1.6 it's been
 separated to a separate project.  This is that project.  This framework can be
 used to attach comments to any model, so you can use it for comments on blog
 entries, photos, book chapters, or anything else.")
