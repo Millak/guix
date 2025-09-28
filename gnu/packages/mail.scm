@@ -4743,11 +4743,15 @@ the RFC 8617 Authenticated Received Chain (ARC) protocol.")
          (base32
           "12hl93336w64iyqalpv4rma2ijigav68qy1xmgziibdi7inxr3hi"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; dns.resolver.NoResolverConfiguration: cannot open /etc/resolv.conf
+      #:test-flags #~(list "-k" "not test_authenticate_dmarc_psdsub")))
     (propagated-inputs
      (list python-authres python-dkimpy python-dnspython
            python-publicsuffix2))
     (native-inputs
-     (list python-setuptools python-wheel))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/ValiMail/authentication-headers")
     (synopsis "Library wrapping email authentication header verification and generation")
     (description
