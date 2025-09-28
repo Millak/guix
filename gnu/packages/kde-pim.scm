@@ -56,6 +56,36 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml))
 
+(define-public grantleetheme
+  (package
+    (name "grantleetheme")
+    (version "24.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/grantleetheme-" version ".tar.xz"))
+       (sha256
+        (base32 "0imf47wf4v8vzzyk9sq6plh9pp2l2q0dycyhdb7hp4jxlj3n4jcg"))))
+    (build-system qt-build-system)
+    (arguments (list
+                #:qtbase qtbase
+                #:tests? #f))  ; unexpected error in the test suite.
+    (native-inputs
+     (list extra-cmake-modules libxml2)) ;; xmllint required for tests
+    (inputs
+     (list kguiaddons
+           ki18n
+           kiconthemes
+           knewstuff
+           kxmlgui))
+    (propagated-inputs (list ktexttemplate))
+    (home-page "https://invent.kde.org/pim/grantleetheme")
+    (synopsis "Library providing Grantlee theme support")
+    (description "This library provides Grantlee theme support.")
+    (license ;; LGPL for libraries, FDL for documentation
+     (list license:lgpl2.1+ license:fdl1.2+))))
+
 (define-public akonadi
   (package
     (name "akonadi")
