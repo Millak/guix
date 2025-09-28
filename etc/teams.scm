@@ -1305,7 +1305,7 @@ the \"texlive\" importer."
 
 (define-member (person "Nicolas Graves"
                        "ngraves@ngraves.fr"
-                       "ngraves")
+                       "nicolas-graves")
   javascript python ruby)
 
 (define-member (person "Yelninei"
