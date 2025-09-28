@@ -68,6 +68,7 @@
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
@@ -1716,3 +1717,67 @@ This compiler does the opposite of what the Fennel compiler does.")
      "Fnlfmt is a tool for automatically formatting Fennel code in a consistent
 way, following established lisp conventions.")
     (license license:lgpl3+)))
+
+(define-public fennel-ls
+  (package
+    (name "fennel-ls")
+    (version "0.2.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~xerool/fennel-ls")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fyyd6yg8xrb572hvk76yi9ga1ysrn6j40phf8ickav3s28i4k85"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list "VENDOR=false")
+      #:tests? #f                ; tests require additional dependencies
+      #:phases 
+      #~(let ((luajit-major+minor
+               #$(version-major+minor (package-version lua))))
+         (modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'rm-vendored-deps
+            (lambda _
+              (delete-file-recursively "fennel")
+              (delete-file-recursively "deps/")))
+          (add-before 'build 'set-lua-path
+            (lambda _
+              (setenv "LUA_PATH"
+                      (string-join
+                       (list
+                        (string-append
+                         #$fennel "/share/lua/" luajit-major+minor "/?.lua")
+                        (string-append
+                         #$dkjson "/share/lua/" luajit-major+minor "/?.lua")
+                        "?.lua")
+                       ";"))))
+          (replace 'install
+            (lambda _
+              (install-file "fennel-ls"
+                            (string-append #$output "/bin"))))
+          (add-after 'install 'wrap
+            (lambda _
+              (wrap-program (string-append #$output "/bin/fennel-ls")
+                `("LUA_PATH" ";" suffix
+                  (,(string-append
+                     #$fennel
+                     "/share/lua/"
+                     luajit-major+minor
+                     "/?.lua")
+                   ,(string-append
+                     #$dkjson
+                     "/share/lua/"
+                     luajit-major+minor
+                     "/?.lua"))))))))))
+    (inputs (list bash-minimal lua fennel pandoc dkjson))
+    (synopsis "Language server for Fennel")
+    (description
+     "Fennel Language Server is a language server for the Fennel programming
+ language.")
+    (home-page "https://git.sr.ht/~xerool/fennel-ls")
+    (license license:expat)))
