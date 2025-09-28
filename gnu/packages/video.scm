@@ -75,6 +75,7 @@
 ;;; Copyright © 2025 VnPower <vnpower@loang.net>
 ;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2025 John Kehayias <john@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1911,16 +1912,22 @@ audio/video codec library.")
                (base32
                 "1g8116rp4fgq82br8lclb2dmw3fvyh2zkzhnngm7z97pg1i0dypl"))))
     (arguments
-     (if (target-x86-32?)
-         (substitute-keyword-arguments (package-arguments ffmpeg)
-           ((#:phases phases)
+     (substitute-keyword-arguments (package-arguments ffmpeg)
+       ((#:modules modules %default-gnu-modules)
+        `((srfi srfi-1) ,@modules))
+       ((#:phases phases)
+        (if (target-x86-32?)
             #~(modify-phases #$phases
                 (replace 'bypass-openal-check
                   (lambda _
                     (substitute* "configure"
                       (("die \"ERROR: openal not found\"")
-                       "true")))))))
-         (package-arguments ffmpeg)))))
+                       "true")))))
+            phases))
+       ((#:configure-flags flags ''())
+        #~(fold delete #$flags '("--enable-libplacebo")))))
+    (inputs (modify-inputs (package-inputs ffmpeg)
+              (delete "libplacebo")))))
 
 (define-public ffmpeg-4
   (package
@@ -1933,14 +1940,13 @@ audio/video codec library.")
              (sha256
               (base32
                "05q6bpid5hfr9djp6cf3sq8majkjiqnl3v9i2y0an23w8qgld412"))))
+    (inputs (modify-inputs (package-inputs ffmpeg-5)
+              (replace "sdl2" sdl2-2.0)))
     (arguments
      (substitute-keyword-arguments (package-arguments ffmpeg-5)
-       ((#:modules modules %default-gnu-modules)
-        `((srfi srfi-1) ,@modules))
        ((#:configure-flags flags ''())
         #~(cons "--enable-avresample"
-                (fold delete #$flags '("--enable-libplacebo"
-                                       "--enable-libshaderc"))))))))
+                (fold delete #$flags '("--enable-libshaderc"))))))))
 
 (define-public ffmpeg-for-stepmania
   (hidden-package
