@@ -59,14 +59,14 @@
 (define-public grantleetheme
   (package
     (name "grantleetheme")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/grantleetheme-" version ".tar.xz"))
        (sha256
-        (base32 "0imf47wf4v8vzzyk9sq6plh9pp2l2q0dycyhdb7hp4jxlj3n4jcg"))))
+        (base32 "1wg7swmcgijy7ia9x1s09d9nd1ginwmcgsnwlcqa68xsqki9m7gi"))))
     (build-system qt-build-system)
     (arguments (list
                 #:qtbase qtbase
