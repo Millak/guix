@@ -31,6 +31,7 @@
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Mathieu Laparie <mlaparie@disr.it>
+;;; Copyright © 2025 Joaquín Aguirrezabalaga <kinote@kinote.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -722,9 +723,6 @@ imaging.  It supports several HDR and LDR image formats, and it can:
         (base32
          "09y4nhlcqvvhz0wscx4zpqxmyhiwh8wrjnhk52awxhzvgyx6wa7r"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools))
-    (inputs
-     (list p7zip python python-pillow python-pygobject python-pycairo gtk+))
     (arguments
      (list
       #:imported-modules `(,@%pyproject-build-system-modules
@@ -746,31 +744,28 @@ imaging.  It supports several HDR and LDR image formats, and it can:
                 (("assert name not in supported_formats_gdk")
                  "if name in supported_formats_gdk: continue"))))
          (add-after 'install 'install-data
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda* (#:key inputs outputs #:allow-other-keys)
              (with-directory-excursion "mcomix"
                (for-each
                 (lambda (subdir)
                   (copy-recursively
                    subdir
                    (string-append
-                    (assoc-ref outputs "out")
-                    "/lib/python"
-                    #$(version-major+minor
-                       (package-version (this-package-input "python")))
-                    "/site-packages/mcomix/" subdir)))
+                    (site-packages inputs outputs)
+                    "/mcomix/" subdir)))
                 '("images" "messages")))))
          (add-after 'install 'glib-or-gtk-compile-schemas
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-compile-schemas))
          (add-after 'glib-or-gtk-compile-schemas 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
          (add-after 'wrap 'gi-wrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-               (for-each
-                (lambda (prog)
-                  (wrap-program prog
-                    `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))
-                (list (string-append bin "/mcomix")))))))))
+           (lambda _
+             (let ((prog (string-append #$output "/bin/mcomix")))
+               (wrap-program prog
+                 `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
+    (native-inputs (list python-setuptools))
+    (inputs
+     (list bash-minimal p7zip python python-pillow python-pygobject python-pycairo gtk+))
     (home-page "https://sourceforge.net/p/mcomix/wiki/Home/")
     (synopsis "Image viewer for comics")
     (description "MComix is a customizable image viewer that specializes as
