@@ -570,7 +570,7 @@ API.  It also comprises a simple HTTP/HTTPS client implementation.")
 (define-public mediastreamer2
   (package
     (name "mediastreamer2")
-    (version "5.3.57")
+    (version "5.3.112")
     (source
      (origin
        (method git-fetch)
@@ -579,7 +579,7 @@ API.  It also comprises a simple HTTP/HTTPS client implementation.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zv13icfdpaq7fa325mnqf340vbvif9791hb9h22qpc0f2wcwvjb"))))
+        (base32 "1z46vpcg4n2i28vv09p6g69wa6bh6pbwzkmygy5653rn55vhd9ng"))))
     (outputs '("out" "doc" "tester"))
     (build-system cmake-build-system)
     (arguments
