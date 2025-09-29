@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018 Sou Bunnbu <iyzsong@member.fsf.org>
+;;; Copyright © 2018, 2025 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
@@ -30,6 +30,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
@@ -42,7 +43,7 @@
 (define-public liblcf
   (package
     (name "liblcf")
-    (version "0.8")
+    (version "0.8.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -50,28 +51,20 @@
                     "/liblcf-" version ".tar.gz"))
               (sha256
                (base32
-                "0kskflh2izc8q5p5x0rfxw8xa3591xfkmqf74rj72ff34xri4nj1"))))
+                "1b68yhs14b4ql1wfbm0jzklyqyi3b2wm3pm9zhx0ij2a98c8cnli"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
     (propagated-inputs
      ;; Required by 'liblcf.pc'.
-     (list expat icu4c))
+     (list expat icu4c libinih))
     (home-page "https://easyrpg.org/")
     (synopsis "Library to handle RPG Maker 2000 and 2003 game data")
     (description
      "@code{liblcf} is a library to handle RPG Maker 2000 and 2003 game data.
 It can read and write LCF and XML files.")
-    ;; It includes a copy of Boost Preprocessor Cat and Stringize (boost-1.0):
-    ;;   src/boost/preprocessor/config.hpp
-    ;;   src/boost/preprocessor/cat.hpp
-    ;;   src/boost/preprocessor/stringize.hpp
-    ;; and a copy of inih (bsd-3):
-    ;;   src/ini.h
-    ;;   src/ini.cpp
-    ;;   src/inireader.h
-    ;;   src/inireader.cpp
-    ;; TODO: Unbundle them.
+    ;; It includes a copy of span-lite (boost-1.0):
+    ;;   src/lcf/third_party/span.h
     (license license:expat)))
 
 (define-public easyrpg-player
