@@ -190,7 +190,7 @@ Communications software like belle-sip, mediastreamer2 and linphone.")
 (define-public belr
   (package
     (name "belr")
-    (version "5.3.57")
+    (version "5.3.112")
     (source
      (origin
        (method git-fetch)
@@ -199,7 +199,7 @@ Communications software like belle-sip, mediastreamer2 and linphone.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jqv2rfclzwsglwgvx7ypy0yhwbjxrsbik6xipf48770qmdz3bj9"))))
+        (base32 "00gmdh8nchn4frxzli62w8slqpizln9bd1czrmpj8laiqdy1ihvk"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug" "tester"))
     (arguments
