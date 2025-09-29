@@ -139,6 +139,36 @@ a system that allows you to easily communicate between processes, and separate
 your project into different processes.")
     (license license:bsd-3)))
 
+(define-public python-crispy-bootstrap3
+  (package
+    (name "python-crispy-bootstrap3")
+    (version "2024.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/django-crispy-forms/crispy-bootstrap3")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ncf8hz3yf8h0asvyi1g54ds0glp46zfcr6sklhsynbqzmcqd463"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "PYTHONPATH" "."))))))
+    (propagated-inputs (list python-django python-django-crispy-forms))
+    (native-inputs (list python-pytest python-pytest-django python-setuptools))
+    (home-page "https://github.com/django-crispy-forms/crispy-bootstrap3")
+    (synopsis "Bootstrap3 template pack for django-crispy-forms")
+    (description
+     "This package provides a bootstrap3 template pack for
+@code{python-django-crispy-forms}.")
+    (license license:expat)))
+
 (define-public python-django
   (package
     (name "python-django")
