@@ -80,6 +80,7 @@
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
+;;; Copyright © 2025 Artur Wroblewski <wrobell@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -251,7 +252,7 @@ SNS, Gotify, etc.")
 (define-public python-blacksheep
   (package
     (name "python-blacksheep")
-    (version "2.4.0")
+    (version "2.4.1")
     (source
      (origin
        (method git-fetch)
@@ -260,20 +261,16 @@ SNS, Gotify, etc.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iwlj6vl0rnvddbn9zsdgpya88z0lifr86wz3ci1d67li7w5bjiq"))))
+        (base32 "0znkqj4cipdr1qdsdlbb48b82cpvj24dqiwi0nyiy50b8nd7g5np"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1443 passed, 3 skipped
+      ;; tests: 1609 passed, 3 skipped
       ;;
-      ;; 1. Ignore integration tests.
-      ;; 2. Client tests use test fixture no longer available in
-      ;; pytest-asyncio,
-      ;;
-      ;; See: <https://github.com/Neoteroi/BlackSheep/issues/596>.
+      ;; Run all unit tests, but do not run integration tests from `itests`
+      ;; directory.
       #:test-flags
-      #~(list "--ignore=itests"
-              "--ignore=tests/client")
+      #~(list "tests")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'cythonize
@@ -283,7 +280,8 @@ SNS, Gotify, etc.")
                             (invoke "cython" "-3" file "-I" "."))
                           (find-files "." ".*\\.pyx$"))))))))
     (native-inputs
-     (list python-cython
+     (list nss-certs-for-test
+           python-cython
            python-flask
            python-jinja2
            python-pydantic
@@ -293,7 +291,6 @@ SNS, Gotify, etc.")
            python-setuptools))
     (propagated-inputs
      (list python-certifi
-           python-dateutil
            python-essentials-openapi
            python-guardpost
            python-itsdangerous))
