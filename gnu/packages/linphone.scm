@@ -239,16 +239,16 @@ IETF.")
 (define-public belcard
   (package
     (name "belcard")
-    (version "5.3.57")
+    (version "5.3.112")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.linphone.org/BC/public/belcard.git")
-             (commit version)))
+              (url "https://gitlab.linphone.org/BC/public/belcard.git")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d69s7v3yd276nasfxnsjp3q820pcchdpdpw4y7ak7sf6gr6mrrh"))))
+        (base32 "190l1f7f2dhm887xw34gcawa9c4cmcndikfd8qc1xpn16fals4kd"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug" "tester"))
     (arguments
@@ -258,12 +258,10 @@ IETF.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-vcard-grammar-location
             (lambda _
-              (let ((vcard-grammar
-                     (string-append #$output
-                                    "/share/belr/grammars/vcard_grammar")))
-                (substitute* "include/belcard/vcard_grammar.hpp"
-                  (("define VCARD_GRAMMAR \"vcard_grammar\"")
-                   (format #f "define VCARD_GRAMMAR ~s" vcard-grammar))))))
+              (substitute* "include/belcard/vcard_grammar.hpp"
+                (("define VCARD3?_GRAMMAR \"" all)
+                 (string-append all (string-append
+                                     #$output "/share/belr/grammars/"))))))
           (add-after 'install 'install-tester
             (lambda _
               (let ((test-name (string-append #$name "-tester")))
