@@ -1915,16 +1915,14 @@ audio/video codec library.")
 (define-public ffmpeg-4
   (package
     (inherit ffmpeg-5)
-    (version "4.4.5")
+    (version "4.4.6")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                  version ".tar.xz"))
              (sha256
               (base32
-               "01xb2vj4n52fv2y56n5ifirgzlg16qbgfg98f6ifbbhm6l6lwlgr"))))
-    (inputs (modify-inputs (package-inputs ffmpeg)
-              (replace "sdl2" sdl2-2.0)))
+               "05q6bpid5hfr9djp6cf3sq8majkjiqnl3v9i2y0an23w8qgld412"))))
     (arguments
      (substitute-keyword-arguments (package-arguments ffmpeg-5)
        ((#:configure-flags flags ''())
