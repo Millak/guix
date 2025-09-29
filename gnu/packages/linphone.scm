@@ -987,7 +987,7 @@ codec.  It is based on the Skype's SILK implementation.")
   ;; latest one available.
   (package
     (name "mswebrtc")
-    (version "1.1.2")
+    (version "5.4.0")
     (source
      (origin
        (method git-fetch)
@@ -996,7 +996,7 @@ codec.  It is based on the Skype's SILK implementation.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10j124vd9zm03s1vzb74n3zjrf6x1nfvji7vryih4dq2xlgrqxx6"))
+        (base32 "0dgkqxwqp05n14wwg805zfycy1rryrmpp25p8gfzdsxgljk29phn"))
        (patches (search-patches "mswebrtc-b64-refactor.patch"
                                 "mswebrtc-cmake.patch"))))
     (build-system cmake-build-system)
