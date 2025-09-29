@@ -244,8 +244,7 @@ installed as well as Yelp, the Gnome help browser.")
        (list docbook-xml
              docbook-xsl
              libxml2
-             libxslt
-             scrollkeeper))
+             libxslt))
       (arguments
        `(#:tests? #f))                  ;no test target
       (home-page "https://www.gnucash.org/")
