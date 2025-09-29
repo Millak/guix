@@ -1902,14 +1902,30 @@ to ElasticSearch.")
   (package
     (name "python-django-netfields")
     (version "1.3.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "django-netfields" version))
-              (sha256
-               (base32
-                "0q2s6b689hwql4qcw02m3zj2fwsx1w4ffhw81yvp71dq3dh46jg5"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))      ;XXX: Requires a running PostgreSQL server
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jimfunk/django-postgresql-netfields")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "176dmdlhd6bka4k6b4mlha3ags6mqf2qy3rxvpgnk9v5nncqm7l9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f                   ;XXX: Requires a running PostgreSQL server
+      ;; XXX: Requires rest_framework.
+      #:test-flags
+      #~(list "--ignore=test/tests/test_rest_framework_fields.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "DJANGO_SETTINGS_MODULE" "testsettings")
+              (setenv "PYTHONPATH" "."))))))
+    (native-inputs
+     (list python-pytest python-pytest-django python-setuptools))
     (propagated-inputs
      (list python-django python-netaddr python-psycopg2 python-six))
     (home-page "https://github.com/jimfunk/django-postgresql-netfields")
