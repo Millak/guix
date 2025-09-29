@@ -14868,7 +14868,7 @@ expansion and overwriting the marked region with a new snippet completion.")
 (define-public emacs-marginalia
   (package
     (name "emacs-marginalia")
-    (version "2.2")
+    (version "2.3")
     (source
      (origin
        (method git-fetch)
@@ -14877,7 +14877,7 @@ expansion and overwriting the marked region with a new snippet completion.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1grn94v5pidb9wk2vgxx5n3fmhcgx9i14lrwm5clvsvncysy7zhg"))))
+        (base32 "1x4x0v0cqhk8kpp4nngkdavs383aacd5xxzc1pvgchvmqhck70hy"))))
     (build-system emacs-build-system)
     (arguments
      (list
