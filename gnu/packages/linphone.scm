@@ -395,7 +395,7 @@ such as conferencing.")
 (define-public ortp
   (package
     (name "ortp")
-    (version "5.3.57")
+    (version "5.3.112")
     (source
      (origin
        (method git-fetch)
@@ -404,7 +404,7 @@ such as conferencing.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bl3ig1xbxprcdid9i8bnl433x4crxqnj30x5lxiy9ka79b8s8r6"))))
+        (base32 "0vgzn9ll7i6x1rprknzmam5npnm2sbhnkr3fvz6ilanckznqvzar"))))
     (build-system cmake-build-system)
     (outputs '("out" "tester"
                "doc"))                  ;1.5 MiB of HTML doc
