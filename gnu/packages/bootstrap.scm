@@ -164,7 +164,8 @@
 
 (define %bootstrap-executable-base-urls
   ;; This is where the bootstrap executables come from.
-  '("https://git.savannah.gnu.org/cgit/guix.git/plain/gnu/packages/bootstrap/"
+  '("https://ftpmirror.gnu.org/guix/bootstrap/"
+    "https://git.savannah.gnu.org/cgit/guix.git/plain/gnu/packages/bootstrap/"
     "https://alpha.gnu.org/gnu/guix/bootstrap/"
     "http://flashner.co.il/guix/bootstrap/"
     "http://lilypond.org/janneke/guix/"))
@@ -358,7 +359,8 @@ or false to signal an error."
 
 (define %bootstrap-base-urls
   ;; This is where the initial binaries come from.
-  '("https://ftp.gnu.org/gnu/guix/bootstrap"
+  '("https://ftpmirror.gnu.org/guix/bootstrap/"
+    "https://ftp.gnu.org/gnu/guix/bootstrap"
     "https://alpha.gnu.org/gnu/guix/bootstrap"
     "http://ftp.gnu.org/gnu/guix/bootstrap"
     "http://alpha.gnu.org/gnu/guix/bootstrap"
