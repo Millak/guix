@@ -65,7 +65,7 @@
 (define-public bcunit
   (package
     (name "bcunit")
-    (version "5.3.57")
+    (version "5.3.101")
     (source
      (origin
        (method git-fetch)
@@ -74,7 +74,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02aqc8052vidc8ylkwiv2rqddl58fccrjz561j8zfqlwm2irnsg3"))))
+        (base32 "0rpkc9bjlf370p5fsrbp9b481zakdndmfxyg5vwza0a9z19f81vb"))))
     (build-system cmake-build-system)
     (arguments
      (list
