@@ -734,7 +734,7 @@ device.")
 (define-public liblinphone
   (package
     (name "liblinphone")
-    (version "5.3.57")
+    (version "5.3.112")
     (source
      (origin
        (method git-fetch)
@@ -743,7 +743,7 @@ device.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1f3hcbdkd8nqvjm5avylz226a8in360yiafcsxpa69wvh1a03i4h"))
+        (base32 "0a8v3mbv05xgnljls7y5xb7bcxvy8dl6k10jg421nihd5vab1jl3"))
        (patches (search-patches "liblinphone-jsoncpp.patch"))))
     (outputs '("out" "tester"))
     (build-system cmake-build-system)
@@ -799,7 +799,7 @@ device.")
      (list belle-sip
            jsoncpp
            mediastreamer2
-           libxml2
+           libxml2-2.11
            lime
            ortp
            sqlite))
