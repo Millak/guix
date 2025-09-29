@@ -1024,9 +1024,6 @@ coding footprint.")
         (base32
          "0441cwfh3z0xnik0wsafih599s4kzyc8pnrh7s6gjg2rdj5b2dgc"))))))
 
-(define-public mbedtls-apache
-  (deprecated-package "mbedtls-apache" mbedtls-lts))
-
 ;; The Hiawatha Web server requires some specific features to be enabled.
 (define-public mbedtls-for-hiawatha
   (hidden-package
