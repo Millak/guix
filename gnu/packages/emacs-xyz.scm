@@ -5287,6 +5287,33 @@ customizability and asynchronous upgrading.")
 listing type errors via Flycheck, as well as REPL support for Carp.")
       (license license:asl2.0))))
 
+(define-public emacs-cond-let
+  (package
+    (name "emacs-cond-let")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tarsius/cond-let/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hsxl42dysbrkmgnbd954zjv28cms73r7nask5ip4f07qzgaj1gi"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command
+      #~(list "emacs" "--batch"
+              "-l" "cond-let-tests.el"
+              "-f" "ert-run-tests-batch-and-exit")))
+    (home-page "https://github.com/tarsius/cond-let/")
+    (synopsis "Additional and improved binding conditionals")
+    (description "This package implements binding conditionals @code{and-let}
+and @code{while-let*}, and the original @code{cond-let}, @code{cond-let*},
+@code{and$} and @code{and>}.")
+    (license license:gpl3+)))
+
 (define-public emacs-coterm
   (package
     (name "emacs-coterm")
