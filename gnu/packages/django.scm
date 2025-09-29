@@ -1607,22 +1607,43 @@ a single block.")
 (define-public python-django-crispy-forms
   (package
     (name "python-django-crispy-forms")
-    (version "1.9.2")
+    (version "2.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "django-crispy-forms" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/django-crispy-forms/django-crispy-forms")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0fxlf233f49hjax786p4r650rd0ilvhnpyvw8hv1d1aqnkxy1wgj"))))
-    (build-system python-build-system)
+        (base32 "1xrrcsv534p989hh1jgy4nk6sxay7g913z6zxwgpgnadzr9dfpk1"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(;; No included tests
-       #:tests? #f))
-    (propagated-inputs
-     (list python-django))
-    (home-page
-     "http://github.com/maraujop/django-crispy-forms")
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "PYTHONPATH" "."))))))
+    (native-inputs
+     (append
+      ;; XXX: python-crispy-boostrap packages and this package have a
+      ;; circular dependency.  Get a bootstrap version for them.
+      (map (lambda (pkg)
+             (package/inherit pkg
+               (arguments
+                (list
+                 #:tests? #f
+                 #:phases
+                 #~(modify-phases %standard-phases
+                     (delete 'sanity-check))))
+               (propagated-inputs
+                (modify-inputs (package-propagated-inputs pkg)
+                  (delete "python-django-crispy-forms")))))
+           (list python-crispy-bootstrap3 python-crispy-bootstrap4))
+      (list python-pytest python-pytest-django python-setuptools)))
+    (propagated-inputs (list python-django))
+    (home-page "https://github.com/django-crispy-forms/django-crispy-forms")
     (synopsis "Tool to control Django forms without custom templates")
     (description
      "@code{django-crispy-forms} lets you easily build, customize and reuse
