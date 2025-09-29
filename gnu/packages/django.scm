@@ -1869,19 +1869,25 @@ backends in a single library.")
 (define-public python-django-logging-json
   (package
     (name "python-django-logging-json")
-    (version "1.15")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "django-logging-json" version))
-              (sha256
-               (base32
-                "06041a8icazzp73kg93c7k1ska12wvkq7fpcad0l0sm1qnxx5yx7"))))
-    (build-system python-build-system)
+    (version "1.16")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cipriantarta/django-logging")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1big7mv0274wgbr06v2qlq61pzh7h2rcn0la212shnh5b4fvhg56"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f                      ;no tests
-       #:phases (modify-phases %standard-phases
-                  ;; Importing this module requires a Django project.
-                  (delete 'sanity-check))))
+     (list
+      #:tests? #f ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Importing this module requires a Django project.
+          (delete 'sanity-check))))
+    (native-inputs (list python-setuptools))
     (propagated-inputs
      (list python-certifi python-django python-elasticsearch python-six))
     (home-page "https://github.com/cipriantarta/django-logging")
