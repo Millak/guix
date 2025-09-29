@@ -42358,7 +42358,7 @@ using org mode; faster than org-roam.")
 (define-public emacs-org-mem
   (package
     (name "emacs-org-mem")
-    (version "0.18.1")
+    (version "0.20.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -42367,20 +42367,25 @@ using org mode; faster than org-roam.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nm1avc0hbvhr43vkfw3jssiqyckd7ba6jw0qhvgcvk49df393wf"))))
+                "0yxmsh96zx41vr98qrxr93cnx92pwzbqdpa4hn52zdjb45vhk3gn"))))
     (build-system emacs-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'move-source-files
+            (lambda _
+              (let ((el-files (find-files "./lisp" ".*\\.el$")))
+                (for-each (lambda (f)
+                            (rename-file f (basename f)))
+                          el-files))))
           (add-after 'unpack 'disable-failing-tests
             (lambda _
               (substitute* (find-files "test/" "\\.el$")
                 (((string-append
                    "\\(ert-deftest "
                    "test-split-refs-field .*") all)
-                 (string-append all "(skip-unless nil)\n"))))))
-      #:test-command #~(list "ert-runner")))
+                 (string-append all "(skip-unless nil)\n"))))))))
     (native-inputs (list emacs-ert-runner))
     (propagated-inputs
      (list emacs-el-job emacs-llama))
