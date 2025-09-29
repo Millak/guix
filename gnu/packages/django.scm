@@ -1994,7 +1994,9 @@ filtering system in ORM).")
        (file-name (git-file-name name version))
        (sha256
         (base32 "131m545khn8l20j4x2bvlvz36dlbnhj9pc98i2dw72s3bw8pgws0"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests.
+    (native-inputs (list python-setuptools))
     (propagated-inputs
      (list python-defusedxml python-django python-pillow))
     (home-page "https://github.com/artrey/django-svg-image-form-field")
