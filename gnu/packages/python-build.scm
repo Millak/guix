@@ -36,6 +36,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
   #:use-module (guix gexp)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix packages))
@@ -614,7 +615,8 @@ specified by PEP 517, @code{flit_core.buildapi}.")
        (delete "python-toml")
        (prepend python-tomli)))))
 
-(define-public python-flit-core-next python-flit-core)
+(define-deprecated/public-alias python-flit-core-next
+  python-flit-core)                    ;may be removed after 2025-12-01
 
 (define-public python-flit-scm
   (package

@@ -3783,7 +3783,7 @@ possibly work.")
     (native-inputs
      (list python-ddt
            python-iso8601
-           python-flit-core-next ;requires >=3.12
+           python-flit-core
            python-setuptools))
     (propagated-inputs
      (list python-cliff-bootstrap

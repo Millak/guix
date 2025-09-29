@@ -411,7 +411,7 @@ APIs to detect, query, and compare them.")
                 (("from click") "from asyncclick")))))))
     (native-inputs
      (list python-anyio
-           python-flit-core-next
+           python-flit-core
            python-pytest
            python-trio))
     (home-page "https://github.com/python-trio/asyncclick")

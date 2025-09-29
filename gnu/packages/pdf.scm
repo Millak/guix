@@ -1484,7 +1484,7 @@ converter using the Poppler and Cairo libraries.")
                     " and not "))))
     (native-inputs
      (list python-flit
-           python-flit-core-next
+           python-flit-core
            python-pytest
            python-pytest-socket
            python-pytest-timeout

@@ -4979,7 +4979,7 @@ in the audio domain.")
              python-xxhash))
       (native-inputs
        (list openssl
-             python-flit-core-next
+             python-flit-core
              python-pytest
              python-pytest-cov))
       (home-page "https://pyg.org")
