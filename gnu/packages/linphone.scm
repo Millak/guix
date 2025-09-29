@@ -684,7 +684,7 @@ including media capture, encoding and decoding, and rendering.")
 (define-public lime
   (package
     (name "lime")
-    (version "5.3.57")
+    (version "5.3.112")
     (source
      (origin
        (method git-fetch)
@@ -693,7 +693,7 @@ including media capture, encoding and decoding, and rendering.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jd549f4cky5rcvq3d2zn8d383jahdi71nhkzblnr6mqqbn6b7sa"))))
+        (base32 "00m96pznkawdmzhz25igyiiy3nx6ql5r5k14kcc3h8fqkg917vjf"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (arguments
