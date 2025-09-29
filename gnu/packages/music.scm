@@ -4052,7 +4052,7 @@ event-based scripts for scrobbling, notifications, etc.")
      (list gettext-minimal python-dateutil))
     (inputs
      (list chromaprint
-           python-charset-normalizer-3
+           python-charset-normalizer
            python-discid
            python-pyqt
            python-mutagen

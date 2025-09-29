@@ -8619,7 +8619,7 @@ for HTTP/2 is planned.")
      (list python-pytest
            python-setuptools))
     (propagated-inputs
-     (list python-charset-normalizer-3
+     (list python-charset-normalizer
            python-ruamel.yaml
            python-weblate-language-data))
     (home-page "https://weblate.org/")
