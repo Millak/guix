@@ -1758,27 +1758,27 @@ Amazon S3, Dropbox, local file storage or any Django storage.")
 (define-public python-django-override-storage
   (package
     (name "python-django-override-storage")
-    (version "0.3.0")
-    (home-page "https://github.com/danifus/django-override-storage")
+    (version "0.3.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url home-page)
+             (url "https://github.com/danifus/django-override-storage")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "081kzfk7mmybhihvc92d3hsdg0r2k20ydq88fs1fgd348sq1ax51"))))
-    (build-system python-build-system)
+        (base32 "1zxfzawhcm1lnxl0d025z6ipgfarvqr2jyl4cg7680gs73m5ikw5"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "python" "runtests.py"))))))
-    (native-inputs
-     (list python-mock))
-    (propagated-inputs
-     (list python-django))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda _
+              (invoke "python" "runtests.py"))))))
+    (native-inputs (list python-mock python-setuptools))
+    (propagated-inputs (list python-django))
+    (home-page "https://github.com/danifus/django-override-storage")
     (synopsis "Django test helpers to manage file storage side effects")
     (description
      "This project provides tools to help reduce the side effects of using
