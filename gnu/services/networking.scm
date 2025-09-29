@@ -64,6 +64,7 @@
   #:use-module (gnu packages usb-modeswitch)
   #:use-module (gnu packages messaging)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages ntp)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages ipfs)
@@ -1307,7 +1308,13 @@ HiddenServicePort ~a ~a~%"
                                     (writable? #t))
                                    (file-system-mapping
                                     (source torrc)
-                                    (target source)))
+                                    (target source))
+
+                                   ;; Transport plugins like the lyrebird
+                                   ;; webtunnel need X.509 certificates.
+                                   (file-system-mapping
+                                     (source (file-append nss-certs "/etc/ssl/certs"))
+                                     (target "/etc/ssl/certs")))
                              (map (lambda (plugin)
 				    (file-system-mapping
 				     (source (tor-plugin-program plugin))
