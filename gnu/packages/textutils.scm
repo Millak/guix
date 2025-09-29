@@ -1317,7 +1317,7 @@ OpenDocument presentations (*.odp).")
            python-pytest
            python-pytest-asyncio
            python-pytest-textual-snapshot
-           python-setuptools-next))
+           python-setuptools))
     (propagated-inputs
      (list python-beautifulsoup4
            python-bibtexparser

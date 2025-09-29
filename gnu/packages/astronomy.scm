@@ -2273,7 +2273,7 @@ support for reading and writing various compression algorithms including:
      (native-inputs
       (list python-pytest
             python-pytest-xdist
-            python-setuptools-next
+            python-setuptools
             python-setuptools-scm
             python-wheel))
      (propagated-inputs
@@ -2304,7 +2304,7 @@ implementation package such as asdf-astropy.")
            python-pytest
            python-pytest-asdf-plugin
            python-pyyaml
-           python-setuptools-next
+           python-setuptools
            python-setuptools-scm))
     (home-page "https://asdf-standard.readthedocs.io/")
     (synopsis "ASDF standard schemas")
@@ -5093,7 +5093,7 @@ satellite.")
                 (with-directory-excursion "ci"
                   (invoke "python" "-m" "unittest" "test"))))))))
     (native-inputs
-     (list python-setuptools-next))
+     (list python-setuptools))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/brandon-rhodes/python-jplephem")
@@ -7054,7 +7054,7 @@ wiggles are caused by resampling noise or aliasing artifacts.")
            python-pytest-asdf-plugin
            python-pytest-doctestplus
            python-semantic-version
-           python-setuptools-next
+           python-setuptools
            python-setuptools-scm))
     (propagated-inputs
      (list python-asdf

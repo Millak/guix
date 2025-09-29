@@ -627,7 +627,7 @@ OpenSSL library.")
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests? (invoke "python" "test_ed25519_kat.py")))))))
-    (native-inputs (list python-setuptools-next))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/warner/python-ed25519")
     (synopsis "Ed25519 public-key signatures")
     (description

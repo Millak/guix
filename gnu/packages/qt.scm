@@ -4372,9 +4372,9 @@ Python.")
     (arguments
      (list #:tests? #f))        ; No test system found.
     (native-inputs
-     (list python-setuptools-next python-setuptools-scm-next python-wheel))
+     (list python-setuptools python-setuptools-scm-next python-wheel))
     (propagated-inputs
-     (list python-packaging python-setuptools-next python-tomli))
+     (list python-packaging python-setuptools python-tomli))
     (home-page "https://www.riverbankcomputing.com/software/sip/intro")
     (synopsis "Python binding creator for C and C++ libraries")
     (description
@@ -4724,7 +4724,7 @@ set of three modules.")))
         (base32
          "1g40j5iyad8bw8113rsxxkbkdi7g1lcjj0lb1j7pma442i3fmpsn"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools-next
+    (native-inputs (list python-setuptools
                          python-setuptools-scm-next
                          python-wheel))
     (inputs

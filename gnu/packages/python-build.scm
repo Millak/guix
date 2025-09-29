@@ -350,7 +350,8 @@ facilitate packaging Python projects, where packaging includes:
     (native-inputs
      (list python-wheel-0.40))))
 
-(define-public python-setuptools-next python-setuptools)
+(define-deprecated/public-alias python-setuptools-next
+  python-setuptools)                   ;may be removed after 2025-12-01
 
 (define-public python-wheel
   (package
