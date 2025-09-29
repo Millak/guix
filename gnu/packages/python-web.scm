@@ -3530,6 +3530,14 @@ and written in Python.")
                (base32
                 "195wgxls3df7djry9cz3p2k9644l6bfd66fczbaw55fsq0c48agr"))))
     (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-configure-flags
+            (lambda _
+              (setenv "CFLAGS"
+                      "-Wno-error=implicit-function-declaration"))))))
     (native-inputs
      (list pkg-config))
     (inputs
