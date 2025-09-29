@@ -11,7 +11,7 @@
 ;;; Copyright © 2016-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2016, 2017, 2020, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016, 2017, 2020, 2021, 2022, 2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016, 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017,2019,2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -95,6 +95,7 @@
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages ragel)
@@ -2986,7 +2987,7 @@ Wacom-style graphics tablets.")
     (inputs
      (list bash-minimal perl-image-exiftool python python-tqdm))
     (native-inputs
-     (list python-pytest python-pytest-mock))
+     (list python-pytest python-pytest-mock python-pytest-socket))
     (home-page "https://github.com/ivandokov/phockup")
     (synopsis "Organize photos and videos in folders")
     (description "Phockup is a media sorting tool that uses creation date and
