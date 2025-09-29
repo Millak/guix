@@ -11624,7 +11624,7 @@ text views, and buttons to choose the language.")
 (define-public gnome-planner
   (package
     (name "gnome-planner")
-    (version "0.14.6")
+    (version "0.14.92")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/planner/"
@@ -11632,30 +11632,33 @@ text views, and buttons to choose the language.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "15h6ps58giy5r1g66sg1l4xzhjssl362mfny2x09khdqsvk2j38k"))))
-    (build-system glib-or-gtk-build-system)
+                "0cyqs1ly6cp96pjw0yjk1r0dshp0c3869wgknxpp97dnbppsg8px"))))
+    (build-system meson-build-system)
     (arguments
-     ;; Disable the Python bindings because the Planner program functions
-     ;; without them, and (as of 2017-06-13) we have not packaged all of
-     ;; packages that are necessary for building the Python bindings.
-     `(#:configure-flags
-       (list "--disable-python"
-             ,@(if (string=? "aarch64-linux" (%current-system))
-                   '("--build=aarch64-unknown-linux-gnu")
-                   '()))))
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      ;; Otherwise, the RUNPATH will lack the final 'planner' path component.
+      #~(list (string-append "-Dc_link_args=-Wl,-rpath="
+                             #$output "/lib/planner"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson_post_install.sh"
+                (("gtk-update-icon-cache") (which "true"))))))))
     (inputs
-     (list libgnomecanvas
-           libgnomeui
-           libglade
-           gnome-vfs
-           gconf
+     (list gconf
            libxml2
            libxslt
            gtk+
            glib))
     (native-inputs
-     (list intltool scrollkeeper pkg-config))
-    (home-page "https://wiki.gnome.org/Apps/Planner")
+     (list `(,glib "bin")               ;for glib-genmarshal, etc.
+           desktop-file-utils           ;for update-desktop-database
+           gettext-minimal
+           pkg-config))
+    (home-page "https://gitlab.gnome.org/World/planner")
     (synopsis "Project management software for the GNOME desktop")
     (description
      "GNOME Planner is a project management tool based on the Work Breakdown
