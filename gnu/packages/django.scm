@@ -1939,48 +1939,46 @@ to ElasticSearch.")
   (package
     (name "python-django-url-filter")
     (version "0.3.15")
-    (home-page "https://github.com/miki725/django-url-filter")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page) (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0r4zhqhs8y6cnplwyvcb0zpijizw1ifnszs38n4w8138657f9026"))
-              (modules '((guix build utils)))
-              (snippet
-               ;; Patch for Django 4.0 compatibility, taken from upstream pull
-               ;; request: https://github.com/miki725/django-url-filter/pull/103
-               '(substitute* "url_filter/validators.py"
-                  ((" ungettext_lazy")
-                   " ngettext_lazy")))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/miki725/django-url-filter")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r4zhqhs8y6cnplwyvcb0zpijizw1ifnszs38n4w8138657f9026"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f            ;FIXME: Django raises "Apps aren't loaded yet"!?
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'loosen-requirements
-                    (lambda _
-                      ;; Do not depend on compatibility package for old
-                      ;; Python versions.
-                      (substitute* "requirements.txt"
-                        (("enum-compat") ""))))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (begin
-                            (setenv "DJANGO_SETTINGS_MODULE"
-                                    "test_project.settings")
-                            (invoke "pytest" "-vv" "--doctest-modules"
-                                    "tests/" "url_filter/"))
-                          (format #t "test suite not run~%")))))))
-    (propagated-inputs
-     (list python-cached-property python-django python-six))
+     (list
+      #:tests? #f ;FIXME: Django raises "Apps aren't loaded yet"!?
+      #:test-flags #~(list "--doctest-modules" "tests/" "url_filter/")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'loosen-requirements
+            (lambda _
+              ;; Do not depend on compatibility package for old
+              ;; Python versions.
+              (substitute* "requirements.txt"
+                (("enum-compat")
+                 ""))
+              ;; Patch for Django 4.0 compatibility, taken from upstream pull
+              ;; request: https://github.com/miki725/django-url-filter/pull/103
+              (substitute* "url_filter/validators.py"
+                ((" ungettext_lazy")
+                 " ngettext_lazy"))))
+          (add-before 'check 'configure-tests
+            (lambda _
+              (setenv "DJANGO_SETTINGS_MODULE" "test_project.settings"))))))
+    (native-inputs (list python-mock python-pytest python-setuptools python-sqlalchemy))
+    (propagated-inputs (list python-cached-property python-django python-six))
+    (home-page "https://github.com/miki725/django-url-filter")
     (synopsis "Filter data via human-friendly URLs")
     (description
      "The main goal of Django URL Filter is to provide an easy URL interface
 for filtering data.  It allows the user to safely filter by model attributes
-and also specify the lookup type for each filter (very much like
-Django's filtering system in ORM).")
+and also specify the lookup type for each filter (very much like Django's
+filtering system in ORM).")
     (license license:expat)))
 
 (define-public python-django-svg-image-form-field
