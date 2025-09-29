@@ -686,7 +686,8 @@ system, then @code{flit_core} to build the package.")
 them as the version argument or in a SCM managed file.")
     (license license:expat)))
 
-(define-public python-setuptools-scm-next python-setuptools-scm)
+(define-deprecated/public-alias python-setuptools-scm-next
+  python-setuptools-scm)               ;may be removed after 2025-12-01
 
 (define-public python-editables
   (package
