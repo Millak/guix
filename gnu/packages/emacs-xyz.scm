@@ -5897,7 +5897,7 @@ searches.  Unlike @code{emacs-wiki.el}, it can be combined with any format.")
 (define-public emacs-mediawiki
   (package
     (name "emacs-mediawiki")
-    (version "2.3.1")
+    (version "2.4.8")
     (source
      (origin
        (method git-fetch)
@@ -5906,13 +5906,18 @@ searches.  Unlike @code{emacs-wiki.el}, it can be combined with any format.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d05jw2sa19rgzskvavh21bfmbh07yza1drfbgypsvay3nkjfd2z"))))
+        (base32 "0qgydr8ll1g0d28yy7p8k2sij7769bxx4fhd7c0s5c8cg7mrl666"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command
+      #~(list "make" "test-mediawiki-simple" "test-mediawiki-core"
+              "test-mediawiki-utils" "test-mediawiki-mode")))
     (synopsis "Mediawiki editor for Emacs")
-    (description "This package provides a way to edit mediawiki sites from
-within emacs.")
+    (description
+     "This package provides a way to edit mediawiki sites from within emacs.")
     (home-page "https://github.com/hexmode/mediawiki-el")
-    (license license:agpl3+)))
+    (license license:gpl3+)))
 
 (define-deprecated/public emacs-mediawiki-el emacs-mediawiki
   (deprecated-package "emacs-mediawiki-el" emacs-mediawiki))
