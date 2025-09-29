@@ -144,14 +144,14 @@
 (define-public newsboat
   (package
     (name "newsboat")
-    (version "2.39")
+    (version "2.41")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://newsboat.org/releases/" version
                            "/newsboat-" version ".tar.xz"))
        (sha256
-        (base32 "00z57dk0cjsv4v1andkir8h98kayg78dpyc7gapv6zsdaxyilmb2"))))
+        (base32 "194945xyacrkpwkd3246p50f8y59gw91kjrpp59z9ycrp7dbr61a"))))
     (build-system cargo-build-system)
     (native-inputs
      (append
