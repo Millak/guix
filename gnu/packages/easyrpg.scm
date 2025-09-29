@@ -20,9 +20,12 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages easyrpg)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
+  #:use-module (guix git-download)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages compression)
@@ -116,3 +119,37 @@ data.")
     ;; and WAV audio loader and writer (public-domain):
     ;;   src/external/dr_wav.h
     (license license:gpl3+)))
+
+(define-public libretro-easyrpg
+  (let ((libretro-common
+         (origin
+           (method git-fetch)
+           (uri (git-reference
+                  (url "https://github.com/libretro/libretro-common")
+                  (commit "668749ae38a9e85744d1c15a652a1e8db8ab9e82")))
+           (file-name "libretro-common-checkout")
+           (sha256
+            (base32
+             "007hd1ys3ikyjx4zigkxl2h0172p7d9p9vj09739yqfkvxkwlbl2")))))
+    (package
+      (inherit easyrpg-player)
+      (name "libretro-easyrpg")
+      (source (origin
+                (inherit (package-source easyrpg-player))
+                (modules '((guix build utils)))
+                (snippet
+                 #~(begin
+                     (copy-recursively #$libretro-common
+                                       "builds/libretro/libretro-common")))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:tests? #f                ;no tests
+             #:configure-flags #~'("-DPLAYER_TARGET_PLATFORM=libretro")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (replace 'install
+                   (lambda _
+                     (install-file
+                      "easyrpg_libretro.so"
+                      (string-append #$output "/lib/libretro/")))))))
+      (synopsis "Libretro core to play RPG Maker 2000 and 2003 games"))))
