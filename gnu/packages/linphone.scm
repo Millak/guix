@@ -480,7 +480,7 @@ including both ARM and x86.")
 (define-public belle-sip
   (package
     (name "belle-sip")
-    (version "5.3.57")
+    (version "5.3.112")
     (source
      (origin
        (method git-fetch)
@@ -489,7 +489,7 @@ including both ARM and x86.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jmvf1s54ppc0qfi2wl6whk7s3lghpzzp6597nblncjsr2i6ha6c"))))
+        (base32 "198pa42abby9hyznckl7h1pmh31nhia6nd6sjfqs61zsrzf8flxn"))))
     (build-system cmake-build-system)
     (outputs '("out" "tester"))
     (arguments
