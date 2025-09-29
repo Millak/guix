@@ -4144,7 +4144,7 @@ linux/libcurl_wrapper.h"
            curl
            dbus
            eudev
-           ffmpeg
+           ffmpeg-6
            fontconfig
            fxdiv
            harfbuzz
