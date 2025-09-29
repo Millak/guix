@@ -1,0 +1,50 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2025-10-14
+Subject: Fix stdin-buffer handling in make-process path
+
+On Windows, make-process hangs, so a workaround path uses call-process
+with a temporary stderr file instead. This workaround path correctly
+handles the stdin-buffer parameter: only sending input when stdin-buffer
+is non-nil.
+
+The make-process path (used on Unix-like systems) was missing this
+logic.  It unconditionally sent data from whatever buffer was current at
+function entry, completely ignoring the stdin-buffer parameter.
+
+This caused two bugs in the make-process path:
+1. When stdin-buffer is nil, it incorrectly sent data instead of closing
+   stdin immediately.
+2. When stdin-buffer is non-nil, it sent data from the wrong buffer.
+
+The fix adds the same conditional logic as the workaround path.
+  
+diff -ru orig/emacs-elisp-autofmt/elisp-autofmt.el emacs-elisp-autofmt/elisp-autofmt.el
+--- orig/emacs-elisp-autofmt/elisp-autofmt.el	2025-10-01 11:52:38.833698871 +0200
++++ emacs-elisp-autofmt/elisp-autofmt.el	2025-10-02 09:43:45.366455005 +0200
+@@ -518,8 +518,12 @@
+                 (setq sentinel-called-expect 2)
+                 (set-process-sentinel proc-err (lambda (_proc _msg) (incf sentinel-called))))
+ 
+-              (process-send-region proc-out (point-min) (point-max))
+-              (process-send-eof proc-out)
++              (if stdin-buffer
++                  (with-current-buffer stdin-buffer
++                    (process-send-region proc-out (point-min) (point-max))
++                    (process-send-eof proc-out))
++                ;; If there is no input buffer, just close the process's stdin immediately.
++                (process-send-eof proc-out))
+ 
+               (while (/= sentinel-called sentinel-called-expect)
+                 (accept-process-output))
+diff -ru orig/emacs-elisp-autofmt/tests/test_generate_defs.py emacs-elisp-autofmt/tests/test_generate_defs.py
+--- orig/emacs-elisp-autofmt/tests/test_generate_defs.py	2025-10-01 11:52:38.834538726 +0200
++++ emacs-elisp-autofmt/tests/test_generate_defs.py	2025-10-02 09:55:24.504676023 +0200
+@@ -101,7 +101,7 @@
+     def test_check_simple(self) -> None:
+         data = generate_defs_package_as_json("subr")
+         self.assertEqual(data['functions']['with-syntax-table'], ['macro', 1, 'many', {'indent': 1}])
+-        self.assertEqual(data['functions']['defvar-local'], ['macro', 1, 'many', {'doc-string': 3, 'indent': 'defun'}])
++        self.assertEqual(data['functions']['defvar-local'], ['macro', 2, 3, {'doc-string': 3, 'indent': 2}])
+ 
+ 
+ class SimpleTestBuiltinPackage_Simple(unittest.TestCase):

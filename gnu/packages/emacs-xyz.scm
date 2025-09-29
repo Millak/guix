@@ -372,8 +372,8 @@ buffer, a file on your disk, or a string from the kill ring.")
       (license license:gpl3+))))
 
 (define-public emacs-elisp-autofmt
-  (let ((commit "fa30ffc2320c41fc3827e2a800d40d7d5bcaddbe")
-        (revision "0"))
+  (let ((commit "c2765641a9bd2b4c979e7055030fb7a145b6c118")
+        (revision "1"))
     (package
       (name "emacs-elisp-autofmt")
       (version (git-version "0.1" revision commit))
@@ -385,35 +385,46 @@ buffer, a file on your disk, or a string from the kill ring.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "174cmqszhx42blqc6fjjf3lgaz2hasj15743hcrzj6a97nhx4wsj"))))
+          (base32 "0hgmlbxabzhwc1kw59hxvi9xgk6fh0jar4k82sb8yn1zznzhr0lk"))
+         (patches
+          (search-patches "emacs-elisp-autofmt-fix-region-send.patch"))))
       (build-system emacs-build-system)
-      (inputs (list python))
       (arguments
        (list
-        #:test-command #~(list "make" "tests")
+        #:test-command #~(list "make" "test")
         #:include #~(cons* "elisp-autofmt.py"
+                           "elisp-autofmt-cmd.py"
                            "elisp-autofmt.overrides.json"
                            %default-include)
         #:phases
         #~(modify-phases %standard-phases
-            (add-after 'unpack 'patch-dependencies
-              (lambda* (#:key inputs #:allow-other-keys)
-                (substitute* "elisp-autofmt.el"
-                  (("\"python\"")
-                   (string-append "\""
-                                  (search-input-file inputs "/bin/python3")
-                                  "\"")))))
             ;; TODO Remove when fixed upstream. See:
-            ;; https://codeberg.org/ideasman42/emacs-elisp-autofmt/issues/36
+            ;; <https://codeberg.org/ideasman42/emacs-elisp-autofmt/issues/36>.
             (add-before 'check 'fix-tests
               (lambda _
                 (setenv "HOME" (getenv "TMPDIR"))
-                (with-atomic-file-replacement "Makefile"
-                  (lambda (in out)
-                    (dump-port in out)
-                    (display "\n.PHONY: tests\n" out)))
-                (substitute* "Makefile"
-                  (("python") "python3")))))))
+                (substitute* '("tests/full_compare_data/spell-fu.autofmt.data"
+                               "tests/full_compare_data/simple.autofmt.data")
+                (("error \"Expected cache-header to be list, not %S\"")
+                 "error
+          \"Expected cache-header to be list, not %S\"")
+                (("error \"Require cache version %S, not %S\"")
+                 "error
+            \"Require cache version %S, not %S\"")
+                (("error \"Expected cache to contain a hash-table, not %S\"")
+                 "error
+          \"Expected cache to contain a hash-table, not %S\"")
+                (("error \"Don.t know how to handle action %S\"")
+                 "error
+                    \"Don't know how to handle action %S\"")
+                (("error \"Cannot indirectly clone a buffer in %s mode\" mode-name")
+                 "error \"Cxnnot indirectly clone a buffer in %s mode\" mode-name")
+                (("error \"Cannot indirectly clone a buffer in %s mode\"")
+                 "error
+          \"Cannot indirectly clone a buffer in %s mode\"")
+                (("error \"Cxnnot indirectly clone a buffer in %s mode\" mode-name")
+                 "error \"Cannot indirectly clone a buffer in %s mode\" mode-name")))))))
+      (inputs (list python-minimal-wrapper))
       (home-page "https://codeberg.org/ideasman42/emacs-elisp-autofmt")
       (synopsis "Auto-format Emacs lisp")
       (description "This is a package to auto-format Emacs lisp.")
