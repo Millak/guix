@@ -1027,8 +1027,7 @@ coding footprint.")
 ;; The Hiawatha Web server requires some specific features to be enabled.
 (define-public mbedtls-for-hiawatha
   (hidden-package
-   (package
-     (inherit mbedtls)
+   (package/inherit mbedtls
      (arguments
       (substitute-keyword-arguments (package-arguments mbedtls)
         ((#:phases phases)
