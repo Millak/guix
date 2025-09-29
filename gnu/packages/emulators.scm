@@ -2950,7 +2950,7 @@ GLSL (@file{.slang}) shaders for use with RetroArch.")
      (list alsa-lib
            dbus
            eudev
-           ffmpeg
+           ffmpeg-6
            flac
            fontconfig
            freetype
