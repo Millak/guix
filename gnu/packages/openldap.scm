@@ -7,7 +7,7 @@
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2023 Brian Cully <bjc@spork.org>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
@@ -119,28 +119,31 @@
 ;; This is an incompatible fork of openldap that adds types needed for
 ;; liblinphone.
 (define-public openldap-for-linphone
-  (hidden-package
-   (package
-     (inherit openldap)
-     (name "openldap")
-     (version "2.6.4")
-     (source (origin
-               (method git-fetch)
-               (uri (git-reference
-                     (url "https://gitlab.linphone.org/BC/public/external/openldap/")
-                     (commit "8a885896a3fb88098d970ab96316c0b7f18367b8")))
-               (file-name (git-file-name name version))
-               (sha256
-                (base32
-                 "1yd3cnngr5z3nymnml8fynspxgdzap7y7glp601nbkdj67wyg0k8"))))
-     (arguments
-      (substitute-keyword-arguments (package-arguments openldap)
-        ((#:configure-flags flags)
-         #~(append
-            (list #$(string-append "CFLAGS=-g -O2"
-                                   " -Wno-error=implicit-int"
-                                   " -Wno-error=int-conversion"))
-            #$flags)))))))
+  (let ((commit "8511a0f54d270ff529d83b4a8ba113819b18b856")
+        (revision "0"))
+    (hidden-package
+     (package
+       (inherit openldap)
+       (name "openldap")
+       (version (git-version "2.6.4" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://gitlab.linphone.org/BC/public/external/openldap/")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32
+            "06qf8lcalvgzr3w1m697xrj12ikav5im00wjmxa62qdmsg5rvji1"))))
+       (arguments
+        (substitute-keyword-arguments (package-arguments openldap)
+          ((#:configure-flags flags)
+           #~(append
+              (list #$(string-append "CFLAGS=-g -O2"
+                                     " -Wno-error=implicit-int"
+                                     " -Wno-error=int-conversion"))
+              #$flags))))))))
 
 (define-public nss-pam-ldapd
   (package
