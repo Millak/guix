@@ -290,7 +290,7 @@ format.")
 (define-public bcmatroska2
   (package
     (name "bcmatroska2")
-    (version "5.3.57")
+    (version "5.3.101")
     (source
      (origin
        (method git-fetch)
@@ -299,7 +299,7 @@ format.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fdlvsca34armxasj2g4vxjzm9iiqfl7832qqlggh04yw21cfa5c"))))
+        (base32 "0m1qf0jiz58r6vyy9gzc563hrcxvmmq5m1if2cq0qbxmanvqbgns"))))
     (build-system cmake-build-system)
     (arguments
      (list
