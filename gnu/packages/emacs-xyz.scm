@@ -36171,17 +36171,18 @@ commands (a prefix and a suffix) we prefer to call it just a \"transient\".")
         (base32 "1vr7qrrcj2vdh5h3w43jzqym33ax58218jq3idjrr8wnlh7vdj18"))))
     (build-system emacs-build-system)
     (arguments
-     `(#:tests? #f                     ;no tests
-       #:lisp-directory "lisp"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'build-info-manual
-           (lambda _
-             (with-directory-excursion ".."
-               (invoke "make" "info")
-               ;; Move the info file to lisp so that it gets installed by the
-               ;; emacs-build-system.
-               (rename-file "docs/forge.info" "lisp/forge.info")))))))
+     (list
+      #:tests? #f                     ;no tests
+      #:lisp-directory "lisp"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'build-info-manual
+            (lambda _
+              (with-directory-excursion ".."
+                (invoke "make" "info")
+                ;; Move the info file to lisp so that it gets installed by the
+                ;; emacs-build-system.
+                (rename-file "docs/forge.info" "lisp/forge.info")))))))
     (native-inputs
      (list texinfo))
     (propagated-inputs
