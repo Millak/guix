@@ -1617,7 +1617,7 @@ Luhn and family of ISO/IEC 7064 check digit algorithms.")
         (base32 "1ysh9b5lzg053hv4iw3zbn7hid05qssiwmrl8sir8qlk958r8x60"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-poetry-core-next
+     (list python-poetry-core
            python-pytest))
     (propagated-inputs
      (list python-base58
