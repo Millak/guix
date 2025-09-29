@@ -530,7 +530,7 @@ which is useful for partly encrypted files with only one encrypted line.")
 (define-public emacs-age
   (package
     (name "emacs-age")
-    (version "0.1.7")
+    (version "0.1.9")
     (source
      (origin
        (method git-fetch)
@@ -539,8 +539,10 @@ which is useful for partly encrypted files with only one encrypted line.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "014zdv86qsi48yyy6z40ix514ssixw39jd34sj5wsxbngm03w14l"))))
+        (base32 "09rfk9aijjgacff7n8d1cmsg7yb6cc3fppjxzs07dm9vcakcdvbh"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f))                ;no tests
     (home-page "https://github.com/anticomputer/age.el")
     (synopsis "Age Encryption support for Emacs")
     (description
