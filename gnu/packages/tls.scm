@@ -15,7 +15,7 @@
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2023, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2020, 2021, 2023, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020, 2021, 2023-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -971,6 +971,8 @@ correct OpenSSL include path.  It is intended for use in your
 number generator")
   (license license:perl-license)))
 
+;;; TODO: No longer maintained, migrate dependents to current mbedtls v3
+;;; (which is the new LTS).
 (define-public mbedtls-lts
   (package
     (name "mbedtls")
@@ -1011,16 +1013,16 @@ coding footprint.")
   (package
     (inherit mbedtls-lts)
     (name "mbedtls")
-    (version "3.5.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/ARMmbed/mbedtls")
-                    (commit (string-append "mbedtls-" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1wsjrx98h74q0q4zqwsghiqvjz4aqgvigpxb9f8xjw0w4sfsclcm"))))))
+    (version "3.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/Mbed-TLS/mbedtls/releases"
+                           "/download/mbedtls-" version
+                           "/mbedtls-" version ".tar.bz2"))
+       (sha256
+        (base32
+         "0441cwfh3z0xnik0wsafih599s4kzyc8pnrh7s6gjg2rdj5b2dgc"))))))
 
 (define-public mbedtls-apache
   (deprecated-package "mbedtls-apache" mbedtls-lts))
