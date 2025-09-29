@@ -192,7 +192,8 @@ of parts of the Windows API.")
         (search-patches "freerdp-3.16.0-rpath.patch"))))
     (inputs
      (modify-inputs (package-inputs freerdp)
-      (prepend fuse icu4c mit-krb5 sdl3 sdl3-gfx sdl3-ttf)))
+       (replace "ffmpeg" ffmpeg)
+       (prepend fuse icu4c mit-krb5 sdl3 sdl3-gfx sdl3-ttf)))
     (arguments
      (list #:build-type "Release"
            #:configure-flags
