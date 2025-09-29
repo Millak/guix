@@ -70,7 +70,7 @@ It can read and write LCF and XML files.")
 (define-public easyrpg-player
   (package
     (name "easyrpg-player")
-    (version "0.8")
+    (version "0.8.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -78,7 +78,7 @@ It can read and write LCF and XML files.")
                     "/easyrpg-player-" version ".tar.gz"))
               (sha256
                (base32
-                "1brx2iix9d5i2lyjjcs03pq1xgl1gyh0yas8avazahgd9sn47696"))))
+                "0aa60568cvhxf93065wn2r6js7xh81vhsl2nw3bhs5g3l1smq28z"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
@@ -100,7 +100,6 @@ It can read and write LCF and XML files.")
            mpg123
            opusfile
            pixman
-           sdl2-mixer
            sdl2
            speexdsp
            wildmidi
@@ -114,7 +113,6 @@ data.")
     ;; It bundles FMMidi YM2608 FM synthesizer emulator (bsd-3):
     ;;   src/midisynth.h
     ;;   src/midisynth.cpp
-    ;; and PicoJSON JSON parser/serializer (bsd-2):
-    ;;   src/picojson.h
-    ;; TODO: Unbundle them.
+    ;; and WAV audio loader and writer (public-domain):
+    ;;   src/external/dr_wav.h
     (license license:gpl3+)))
