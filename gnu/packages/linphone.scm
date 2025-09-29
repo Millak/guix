@@ -125,24 +125,26 @@ writing, administering, and running unit tests in C.")
 (define-public bctoolbox
   (package
     (name "bctoolbox")
-    (version "5.3.57")
+    (version "5.3.112")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.linphone.org/BC/public/bctoolbox.git")
-             (commit version)))
+              (url "https://gitlab.linphone.org/BC/public/bctoolbox.git")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "178axy7gmmi6fzjbz7aaawcx0qg50i4hnn7ab6w642b02vxfr386"))))
+        (base32 "1bmn3q318wfwnpv017sa1qgffb4bm8lfhm9xaa345fpp5ws2h4an"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
      (list
-      #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
-                                ;; Do not use -Werror, because due to skipping
-                                ;; a test there are unused procedures.
-                                "-DENABLE_STRICT=OFF")
+      #:configure-flags
+      #~(list
+         "-DBUILD_SHARED_LIBS=ON"
+         ;; Do not use -Werror, because due to skipping
+         ;; a test there are unused procedures.
+         "-DENABLE_STRICT=OFF")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-cmake
