@@ -2941,7 +2941,7 @@ Wacom-style graphics tablets.")
 (define-public phockup
   (package
     (name "phockup")
-    (version "1.9.2")
+    (version "1.13.0")
     (source
      (origin
        (method git-fetch)
@@ -2950,7 +2950,7 @@ Wacom-style graphics tablets.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j4mnsy12bhsmd80vgqknv004xbqd165y8gpalw87gp8i8xv172r"))))
+        (base32 "1kwz2qy8mx0j25g3gyda08qaz5rgwm6vycsrqhgkd5cqqz76bbmc"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan '(("src" "share/phockup/")
