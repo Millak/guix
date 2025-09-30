@@ -63,14 +63,14 @@
 (define-public php
   (package
     (name "php")
-    (version "8.3.13")
+    (version "8.3.26")
     (home-page "https://www.php.net/")
     (source
      (origin
        (method url-fetch)
        (uri (string-append home-page "distributions/" "php-" version ".tar.xz"))
        (sha256
-        (base32 "061hhx0f6m7q0jajxym72c9a4v4nqixk5mizwm7i42d2riwbkbc9"))
+        (base32 "1lnbcc3b9k1j4c85a7sabvwp3iyl9xfg41qdc6a0qh1cl3pjwlig"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "ext"
@@ -241,21 +241,11 @@
                  "ext/standard/tests/strings/setlocale_basic2.phpt"
                  "ext/standard/tests/strings/setlocale_basic3.phpt"
                  "ext/standard/tests/strings/setlocale_variation1.phpt"
-                 ;; This bug should have been fixed in gd 2.2.2.
-                 ;; Is it a regression?
-                 "ext/gd/tests/bug65148.phpt"
-                 ;; This bug should have been fixed in the gd 2.2
-                 ;; series.  Perhaps a regression introduced by gd
-                 ;; 2.3.0?
-                 "ext/gd/tests/bug66590.phpt"
-                 ;; This bug should have been fixed in the php-5.5
-                 ;; series.  Perhaps a regression introduced by gd
-                 ;; 2.3.0?
-                 "ext/gd/tests/bug70102.phpt"
-                 ;; This bug should have been fixed in the php-5.6
-                 ;; series.  Perhaps a regression introduced by gd
-                 ;; 2.3.0?
-                 "ext/gd/tests/bug73869.phpt"
+
+                 ;; This test fails for unknown reason (see:
+                 ;; <https://github.com/php/php-src/issues/19996>).
+                 "ext/gd/tests/gh16559.phpt"
+
                  ;; Some WebP related tests fail.
                  "ext/gd/tests/webp_basic.phpt"
                  "ext/gd/tests/imagecreatefromstring_webp.phpt"
