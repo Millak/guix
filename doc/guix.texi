@@ -39643,6 +39643,9 @@ The QEMU package to use.
 @item @code{dmidecode} (default: @code{dmidecode}) (type: file-like)
 The Dmidecode package to use.
 
+@item @code{requirement} (default: @code{'()}) (type: list-of-symbols)
+Shepherd services dependencies to the provisioned Shepherd service.
+
 @item @code{firmwares} (default: @code{(ovmf-x86-64)}) (type: list-of-file-likes)
 List of UEFI/BIOS firmware packages to make available.  Each firmware
 package should contain a @file{share/qemu/firmware/@var{NAME}.json} QEMU

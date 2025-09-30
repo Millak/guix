@@ -135,6 +135,7 @@
             libvirt-configuration-ovs-timeout
             libvirt-configuration-prio-workers
             libvirt-configuration-qemu
+            libvirt-configuration-requirement
             libvirt-configuration-sasl-allowed-usernames
             libvirt-configuration-tcp-port
             libvirt-configuration-tls-allowed-dn-list
@@ -214,6 +215,12 @@
 (define list-of-file-likes?
   (list-of file-like?))
 
+(define list-of-symbols?
+  (list-of symbol?))
+
+(define (serialize-list-of-symbols field-name val)
+  val)
+
 (define-configuration libvirt-configuration
   (libvirt
    (file-like libvirt)
@@ -224,6 +231,9 @@
   (dmidecode
    (file-like dmidecode)
    "The Dmidecode package to use.")
+  (requirement
+   (list-of-symbols '(dbus-system))
+   "Shepherd services dependencies to the provisioned Shepherd service.")
   (firmwares
    (list-of-file-likes (list ovmf-x86-64))
    "List of UEFI/BIOS firmware packages to make available.  Each firmware
@@ -495,7 +505,7 @@ avoid potential infinite waits blocking libvirt."))
     (list (shepherd-service
            (documentation "Run the libvirt daemon.")
            (provision '(libvirtd))
-           (requirement '(dbus-system))
+           (requirement (libvirt-configuration-requirement config))
            (start #~(make-forkexec-constructor
                      (list (string-append #$libvirt "/sbin/libvirtd")
                            "-f" #$config-file
