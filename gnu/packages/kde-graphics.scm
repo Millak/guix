@@ -34,7 +34,9 @@
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages djvu)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages ebook)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -47,13 +49,16 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages image-processing)
+  #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages markup)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages tex)
@@ -418,4 +423,91 @@ expression library, that is used in Krita.")
     (synopsis "Manipulate the metadata of images")
     (description "Libkexiv2 wraps the Exiv2 library, allowing to manipulate
 picture metadata as EXIF/IPTC and XMP.")
+    (license license:gpl2+)))
+
+(define-public okular
+  (package
+    (name "okular")
+    (version "24.12.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/" name "-" version ".tar.xz"))
+       (sha256
+        (base32 "1836wiiq6frvz4ddsi1iir4dkmd9p0lc4mwd5pn5swbb03f9824d"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:qtbase qtbase
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'check)
+          ;; use installed data to check.
+          (add-after 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ctest"
+                        "--output-on-failure"
+                        "--rerun-failed"
+                        "-E"
+                        "(annotationtoolbartest|mainshelltest|parttest|\
+chmgeneratortest)"))))
+          (add-before 'check 'check-setup
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((share (string-append (assoc-ref outputs "out") "/share")))
+                (setenv "QT_QPA_PLATFORM" "offscreen")
+                (setenv "HOME" ".")
+                (setenv "XDG_DATA_DIRS"
+                        (string-append
+                         share ":" (getenv "XDG_DATA_DIRS")))
+                (invoke "update-desktop-database" "-v" share)))))))
+    (native-inputs
+     (list extra-cmake-modules kdoctools pkg-config
+           ;; for test
+           desktop-file-utils
+           python-wrapper))
+    (inputs
+     (list ebook-tools
+           breeze-icons
+           discount
+           djvulibre
+           plasma-activities
+           chmlib
+           kdegraphics-mobipocket
+           karchive
+           kbookmarks
+           kcompletion
+           kconfig
+           libjpeg-turbo
+           libtiff
+           kirigami
+           purpose
+           freetype
+           ki18n
+           kiconthemes
+           kio
+           kparts
+           kpty
+           ktextwidgets
+           qtspeech
+           kwallet
+           kwindowsystem
+           libkexiv2
+           libspectre
+           libzip
+           libxkbcommon
+           phonon
+           poppler-qt6
+           qca
+           qtdeclarative
+           qtsvg
+           qtwayland
+           threadweaver
+           kcrash))
+    (home-page "https://apps.kde.org/okular/")
+    (synopsis "Document viewer")
+    (description
+     "Okular is a document viewer developed for KDE.  It can display files in
+a variety of formats, including PDF, PostScript, DejaVu, and EPub.")
     (license license:gpl2+)))
