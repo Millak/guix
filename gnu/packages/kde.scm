@@ -294,33 +294,6 @@ KDSoap.")
 and desktop experiences.")
     (license license:lgpl2.0+)))
 
-(define-public kseexpr
-  (package
-    (name "kseexpr")
-    (version "4.0.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://invent.kde.org/graphics/kseexpr")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "888q3kkv2wq426w000iq14wy3a45rrnn0bmsdks6caz4vq04ccay"))))
-    (build-system qt-build-system)
-    (arguments
-     `(#:tests? #f
-       #:configure-flags (list "-DBUILD_TESTS=ON"))) ; disabled by default
-    (native-inputs
-     (list bison doxygen extra-cmake-modules flex googletest))
-    (inputs
-     (list ki18n libpng qtbase-5))
-    (home-page "https://invent.kde.org/graphics/kseexpr")
-    (synopsis "Embeddable expression evaluation engine")
-    (description "This package contains the fork of Disney Animation's SeExpr
-expression library, that is used in Krita.")
-    (license license:gpl3+)))
-
 (define-public kcolorchooser
   (package
     (name "kcolorchooser")
