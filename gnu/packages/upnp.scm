@@ -148,7 +148,8 @@ and others.")
                       "v" (string-replace-substring version "." "_")))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1al04jx72bxwqch1nv9lx536mb6pvj7pgnqzy6lm32q6xa114yr2"))))
+        (base32 "1al04jx72bxwqch1nv9lx536mb6pvj7pgnqzy6lm32q6xa114yr2"))
+       (patches (search-patches "readymedia-ffmpeg7.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list

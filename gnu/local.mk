@@ -2238,6 +2238,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/raptor2-libxml2.patch			\
   %D%/packages/patches/racket-rktio-bin-sh.patch		\
   %D%/packages/patches/re2c-Use-maximum-alignment.patch         \
+  %D%/packages/patches/readymedia-ffmpeg7.patch         \
   %D%/packages/patches/reduce-unbundle-libffi.patch             \
   %D%/packages/patches/remake-impure-dirs.patch			\
   %D%/packages/patches/restartd-update-robust.patch             \
