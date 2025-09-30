@@ -1148,16 +1148,9 @@ updating the value you want to compare with.  The value is converted with
                 (sha256
                  (base32
                   "0b8kbjhk3j10rk0vcniy695m3h43yip6y93h1bd6jjh0cp7s09c7"))))
-      (build-system python-build-system)
-      (arguments
-       `(#:phases (modify-phases %standard-phases
-                    (replace 'check
-                      (lambda _
-                        (invoke "pytest" "-vv"))))))
-      (native-inputs
-       (list python-pytest))
-      (propagated-inputs
-       (list python-six))
+      (build-system pyproject-build-system)
+      (native-inputs (list python-pytest python-setuptools))
+      (propagated-inputs (list python-six))
       (synopsis "Create JUnit XML test results")
       (description
        "This package provides a Python module for creating JUnit XML test
