@@ -965,17 +965,21 @@ modules are patched within the contexts exposed.")
     (name "python-httmock")
     (version "1.3.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "httmock" version))
-        (sha256
-         (base32
-          "1zj1fcm0n6f0wr9mr0hmlqz9430fnr5cdwd5jkcvq9j44bnsrfz0"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/patrys/httmock")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dy7pjq4gz476jcnbbpzk8w8qxr9l8wwgw9x2c7lf6fzsgnf404q"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f)); no tests
-    (propagated-inputs
-     (list python-requests))
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "tests.py")))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-requests))
     (home-page "https://github.com/patrys/httmock")
     (synopsis "Mocking library for requests")
     (description "This package provides a library for replying fake data to
