@@ -510,6 +510,68 @@ PIM data into Akonadi for use in KDE PIM applications.")
     (license
      (list license:gpl2+ license:lgpl2.0+))))
 
+(define-public akregator
+  (package
+    (name "akregator")
+    (version "24.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/akregator-" version ".tar.xz"))
+       (sha256
+        (base32 "0gimz1k5yzkmpn4mq1dfvx3x5n6y7jmm74npy2mn3mdmi9lrg6hh"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase))
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list akonadi
+           akonadi-contacts
+           akonadi-mime
+           bash-minimal
+           boost
+           breeze-icons
+           gpgme
+           grantleetheme
+           kcmutils
+           kcontacts
+           kcrash
+           kiconthemes
+           kimap
+           kitemmodels
+           kmessagelib
+           kmime
+           knotifications
+           knotifyconfig
+           kontactinterface
+           kpimcommon
+           kpimtextedit
+           kquickcharts
+           kstatusnotifieritem
+           ktextaddons
+           ktexteditor
+           ktextwidgets
+           kuserfeedback
+           libkdepim
+           libkleo
+           qgpgme-qt6
+           qtdeclarative
+           qtwebchannel
+           qtwebengine
+           syndication))
+    (home-page "https://apps.kde.org/en/akregator")
+    (synopsis "KDE Feed Reader")
+    (description
+     "Akregator is a news feed reader.  It enables you to follow news
+sites, blogs and other RSS/Atom-enabled websites without the need to manually
+check for updates using a web browser.  Akregator is designed to be both easy to
+use and to be powerful enough to read hundreds of news sources conveniently.
+It comes with a fast search, advanced archiving functionality and an internal
+browser for easy news reading.")
+    (license license:gpl2+)))
+
 (define-public itinerary
   (package
     (name "itinerary")
