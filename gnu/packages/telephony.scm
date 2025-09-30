@@ -26,6 +26,7 @@
 ;;; Copyright © 2023 Ivan Gankevich <igankevich@capybaramail.xyz>
 ;;; Copyright © 2025 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Igorj Gorjaĉev <igor@goryachev.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -983,7 +984,7 @@ telephony functionality into custom Telegram clients.")
 (define-public coturn
   (package
     (name "coturn")
-    (version "4.6.2")
+    (version "4.7.0")
     (source
      (origin
        (method git-fetch)
@@ -992,7 +993,7 @@ telephony functionality into custom Telegram clients.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16rr8666spi84qcc8l2qga42hpskjmvrpj1w58jbanxnpsijv8h4"))))
+        (base32 "13pldggbfhz5pdid1fxsf5amv69amizwalx2pzlv2w9ga1x2dwly"))))
     (inputs
      (list openssl
            sqlite
