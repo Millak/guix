@@ -680,8 +680,7 @@ FIELD will be bound to its FIELD name within the returned procedure.  A syntax e
 is raised if an unknown field is queried."
     ((_ type (field ...) body ...)
      (lambda (record)
-       (if (eq? (struct-vtable record) type)
-           (match-record-inner record type (field ...) body ...)
-           (throw 'wrong-type-arg record))))))
+       (match-record record type (field ...)
+         body ...)))))
 
 ;;; records.scm ends here
