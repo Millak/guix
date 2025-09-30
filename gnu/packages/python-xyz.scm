@@ -39115,7 +39115,7 @@ written in C.")
 (define-public python-murmurhash
   (package
     (name "python-murmurhash")
-    (version "1.0.7")
+    (version "1.0.10")
     (source
      (origin
        (method git-fetch)
@@ -39124,7 +39124,7 @@ written in C.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0p8afy51nfvswl2fcimy5vc584zv89349rq12ymbcpp06yidzdfh"))))
+        (base32 "02ny4391kbrssq9bf7kq75615ragvbjhsqi9hgv7wiaiz6yai1k8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -39152,8 +39152,7 @@ written in C.")
      (list python-cython
            python-murmurhash3
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://github.com/explosion/murmurhash")
     (synopsis "Cython bindings for MurmurHash2")
     (description
