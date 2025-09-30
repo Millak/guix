@@ -79,6 +79,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages kde-graphics)
   #:use-module (gnu packages kde-pim)
   #:use-module (gnu packages kde-plasma)
   ;; Including this module breaks the build.
@@ -229,36 +230,6 @@ expressions and let you evaluate and draw them.")
     (description "KAlgebra is a calculator that lets you plot different types
 of 2D and 3D functions and to calculate easy (and not so easy) calculations,
 such as addition, trigonometric functions or derivatives.")
-    (license license:gpl2+)))
-
-(define-public kdiagram
-  (package
-    (name "kdiagram")
-    (version "3.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/kdiagram/" version
-                           "/kdiagram-" version ".tar.xz"))
-       (sha256
-        (base32 "0vcw339v6nl1haznp58spimanfhw143cindbym1q3ccxrp1b0na6"))
-       (patches (search-patches
-                 "kdiagram-Fix-missing-link-libraries.patch"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules qttools))
-    (inputs
-     (list qtsvg))
-    (arguments (list #:qtbase qtbase))
-    (home-page "https://invent.kde.org/graphics/kdiagram")
-    (synopsis "Libraries for creating business diagrams")
-    (description "This package provides libraries for integrating business
-diagrams in Qt-based applications.
-
-@code{KCharts} provides an implementation of the ODF Chart specification.  It
-supports stock charts, box charts, and whisker charts.  @code{KGantt} provides
-a module for implementing ODF Gantt charts, which are bar charts that
-illustrate project schedules.")
     (license license:gpl2+)))
 
 (define-public kdsoap-ws-discovery-client

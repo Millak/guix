@@ -20,6 +20,7 @@
   #:use-module (guix build-system qt)
   #:use-module (guix download)
   #:use-module (guix gexp)
+  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (gnu packages)
@@ -95,4 +96,34 @@
     (description
      "Gwenview is an image viewer for KDE.  It also provides image editing and
 annotating features.")
+    (license license:gpl2+)))
+
+(define-public kdiagram
+  (package
+    (name "kdiagram")
+    (version "3.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/kdiagram/" version
+                           "/kdiagram-" version ".tar.xz"))
+       (sha256
+        (base32 "0vcw339v6nl1haznp58spimanfhw143cindbym1q3ccxrp1b0na6"))
+       (patches (search-patches
+                 "kdiagram-Fix-missing-link-libraries.patch"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules qttools))
+    (inputs
+     (list qtsvg))
+    (arguments (list #:qtbase qtbase))
+    (home-page "https://invent.kde.org/graphics/kdiagram")
+    (synopsis "Libraries for creating business diagrams")
+    (description "This package provides libraries for integrating business
+diagrams in Qt-based applications.
+
+@code{KCharts} provides an implementation of the ODF Chart specification.  It
+supports stock charts, box charts, and whisker charts.  @code{KGantt} provides
+a module for implementing ODF Gantt charts, which are bar charts that
+illustrate project schedules.")
     (license license:gpl2+)))

@@ -48,6 +48,7 @@
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-plasma)
+  #:use-module (gnu packages kde-graphics)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages pdf)
