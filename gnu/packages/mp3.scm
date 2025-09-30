@@ -656,14 +656,14 @@ command-line tool.")
 (define-public chromaprint
   (package
     (name "chromaprint")
-    (version "1.5.1")
+    (version "1.6.0")
     (source (origin
       (method url-fetch)
       (uri (string-append
             "https://github.com/acoustid/chromaprint/releases/download/v"
             version "/chromaprint-" version ".tar.gz"))
       (sha256
-       (base32 "072y6c7ijkm6r674f6z089rbdazrmxzpdcsm6y6vf64b7gxdiam1"))))
+       (base32 "1nj0rfr3vf926802jgd6p3il7yirc4vjqx6nl0vrlf51aqp4hcwx"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f ; tests require googletest *sources*
@@ -672,7 +672,7 @@ command-line tool.")
     (inputs
      ;; requires one of FFmpeg (prefered), FFTW3 or vDSP
      ;; use the same ffmpeg version as for acoustid-fingerprinter
-     (list ffmpeg-4 boost))
+     (list ffmpeg boost))
     (home-page "https://acoustid.org/chromaprint")
     (synopsis "Audio fingerprinting library")
     (description "Chromaprint is a library for calculating audio
