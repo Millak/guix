@@ -131,18 +131,17 @@ on @url{https://github.com/tulir/whatsmeow, whatsmeow}.")
     (version "0.3.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "matrix-client" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/matrix-org/matrix-python-sdk")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1mgjd0ymf9mvqjkvgx3xjhxap7rzdmpa21wfy0cxbw2xcswcrqyw"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-requests))
-    (native-inputs
-     (list python-pytest python-pytest-runner python-responses))
-    (home-page
-     "https://github.com/matrix-org/matrix-python-sdk")
+        (base32 "01ppn2vxyd7c01ww9bicj7qlyycdyf89b2wbikdb9d2k1h03rfml"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-requests))
+    (native-inputs (list python-pytest python-responses python-setuptools))
+    (home-page "https://github.com/matrix-org/matrix-python-sdk")
     (synopsis "Client-Server SDK for Matrix")
     (description "This package provides client-server SDK for Matrix.")
     (license license:asl2.0)))
