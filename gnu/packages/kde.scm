@@ -321,38 +321,6 @@ and desktop experiences.")
     (description "KColorChooser is a utility to select a color.")
     (license license:expat)))
 
-(define-public kolourpaint
-  (package
-    (name "kolourpaint")
-    (version "24.12.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
-                           "/src/kolourpaint-" version ".tar.xz"))
-       (sha256
-        (base32 "0fg72dfk5jh2hqf2lplivc0a6gilzgz8l14wfk95s8fmmcsilxxs"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules kdoctools))
-    (inputs
-     (list kcrash
-           kguiaddons
-           ki18n
-           kio
-           kjobwidgets
-           ktextwidgets
-           kwidgetsaddons
-           kxmlgui))
-    (arguments
-     (list #:qtbase qtbase
-           #:tests? #f))
-    (home-page "http://kolourpaint.org/")
-    (synopsis "Paint program for KDE")
-    (description "KolourPaint is a paint program for KDE.  It is useful for
-painting, image manipulating and icon editing.")
-    (license (list license:lgpl2.0+ license:bsd-2))))
-
 (define-public krita
   (package
     (name "krita")
