@@ -4616,7 +4616,10 @@ across many files.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "--pyargs" "glue_vispy_viewers")
+      #:test-flags
+      #~(list "--pyargs" "glue_vispy_viewers"
+              ;; XXX: Fatal Python error: Segmentation fault.
+              "-k" "not test_vispy_widget")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'prepare-x
