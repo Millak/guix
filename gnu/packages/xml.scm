@@ -249,7 +249,9 @@ hierarchical form with variable field lengths.")
                   (("^old_library='libxml2.a'") "old_library=''"))))))))
     (home-page "http://www.xmlsoft.org/")
     (synopsis "C parser for XML")
-    (inputs (list xz))
+    ;; TODO: Remove python, xz and zlib when upgrading.
+    ;; See https://codeberg.org/guix/guix/pulls/3161#issuecomment-7521193
+    (inputs (list python-minimal xz))
     (propagated-inputs (list zlib)) ; libxml2.la says '-lz'.
     (native-inputs (append (if (target-loongarch64?)
                                (list config)
