@@ -5,7 +5,7 @@
 ;;; Copyright © 2015-2017, 2019, 2021-2022, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
-;;; Copyright © 2016, 2017, 2019, 2021-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2021-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018 Mark H Weaver <mhw@netris.org>
@@ -603,7 +603,16 @@ freedesktop.org project.")
        ;; XXX: Using 'debug' or 'debugoptimized' pulls in an additional test that
        ;; hangs, and the comments around it suggests that we should be using this
        ;; Meson target anyway.
-       #:build-type "release"))
+       #:build-type "release"
+       #:phases
+       ,@(if (target-64bit?)
+             `(%standard-phases)
+             `((modify-phases %standard-phases
+                 ;; Backported from a commit after the 1.29.0 release.
+                 (add-after 'unpack 'correct-value-type-in-atou64_test
+                   (lambda _
+                     (substitute* "test/test-utils.c"
+                       (("unsigned long val") "uint64_t val")))))))))
     (native-inputs
      (append (list check pkg-config python-minimal-wrapper python-pytest)
              (if (%current-target-system)
