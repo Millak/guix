@@ -7350,7 +7350,8 @@ with more precise location control.")
                   "1dch7cwwslffgnzp1djlhz6a792ci42p4bvazxd9lqzhzal0rsbb"))))
       (build-system emacs-build-system)
       (arguments
-       (list #:phases
+       (list #:include #~(cons "\\.py$" %default-include)
+             #:phases
              #~(modify-phases %standard-phases
                  ;; Fix duplicate tests in test file.
                  (add-before 'check 'remove-duplicate-test
