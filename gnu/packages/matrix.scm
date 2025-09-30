@@ -152,18 +152,22 @@ on @url{https://github.com/tulir/whatsmeow, whatsmeow}.")
     (version "0.1.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "matrix-synapse-ldap3" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/matrix-org/matrix-synapse-ldap3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "01bms89sl16nyh9f141idsz4mnhxvjrc3gj721wxh1fhikps0djx"))))
-    (build-system python-build-system)
+        (base32 "1p49h4k216iwap3axws7ffz94zn25j85f7kkv3wky1fvsb8i1r4h"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; tests require synapse, creating a circular dependency.
-     '(#:tests? #f
-       #:phases (modify-phases %standard-phases
-                  ;; Also, auth_provider.py attempts to import synapse.
-                  (delete 'sanity-check))))
+     (list
+      #:tests? #f     ; tests require synapse, creating a circular dependency.
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Also, auth_provider.py attempts to import synapse.
+          (delete 'sanity-check))))
+    (native-inputs (list python-setuptools))
     (propagated-inputs
      (list python-twisted python-ldap3 python-service-identity))
     (home-page "https://github.com/matrix-org/matrix-synapse-ldap3")
