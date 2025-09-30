@@ -1000,9 +1000,17 @@ which allows one to install the M8 firmware on any Teensy.")
                    (string-append "--with-bash-completion=" #$output
                                   "/share/bash-completion/completions"))
            #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'clean-up
+                        (add-after 'unpack 'fix-autogen
                           (lambda _
-                            (delete-file "autogen.sh"))))))
+                            (substitute* "autogen.sh"
+                              (("cd") "# cd"))))
+                        ;; This scripts is necessary for testing osvvm.
+                        (add-after 'install 'keep-osvvm-tests
+                          (lambda _
+                            (mkdir-p (string-append #$output "/test"))
+                            (install-file
+                             "../source/test/test-osvvm.tcl"
+                             (string-append #$output "/test")))))))
     (native-inputs
      (list automake
            autoconf
