@@ -1940,8 +1940,6 @@ audio/video codec library.")
              (sha256
               (base32
                "05q6bpid5hfr9djp6cf3sq8majkjiqnl3v9i2y0an23w8qgld412"))))
-    (inputs (modify-inputs (package-inputs ffmpeg-5)
-              (replace "sdl2" sdl2-2.0)))
     (arguments
      (substitute-keyword-arguments (package-arguments ffmpeg-5)
        ((#:configure-flags flags ''())
