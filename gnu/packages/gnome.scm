@@ -180,7 +180,6 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
-  #:use-module (gnu packages ninja)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages ocr)
   #:use-module (gnu packages openldap)
@@ -11638,7 +11637,8 @@ text views, and buttons to choose the language.")
      (list
       #:glib-or-gtk? #t
       #:configure-flags
-      ;; Otherwise, the RUNPATH will lack the final 'planner' path component.
+      ;; Otherwise, the RUNPATH will lack the final 'planner' path component
+      ;; (see: <https://gitlab.gnome.org/World/planner/-/issues/274>).
       #~(list (string-append "-Dc_link_args=-Wl,-rpath="
                              #$output "/lib/planner"))
       #:phases
@@ -11649,10 +11649,10 @@ text views, and buttons to choose the language.")
                 (("gtk-update-icon-cache") (which "true"))))))))
     (inputs
      (list gconf
-           libxml2
-           libxslt
+           glib
            gtk+
-           glib))
+           libxml2
+           libxslt))
     (native-inputs
      (list `(,glib "bin")               ;for glib-genmarshal, etc.
            desktop-file-utils           ;for update-desktop-database
