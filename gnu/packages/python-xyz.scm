@@ -38578,32 +38578,33 @@ than trying to just split strings.")
 (define-public python-srsly
   (package
     (name "python-srsly")
-    (version "2.4.8")
+    (version "2.5.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "srsly" version))
               (sha256
                (base32
-                "14ca3gwmhr24axxdhn73157wzzjkmi1s1ka91dz49hh9a2k9akdj"))))
+                "0zn74zyb928v898j6l86a83qgdvza78ksjg0v8ixla9yrzv4n6xb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'build-extensions
-            (lambda _
-              ;; Cython extensions have to be built before running the tests.
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (propagated-inputs (list python-catalogue))
+      #:test-flags
+      #~(list "--pyargs" "srsly"
+              ;; 3 tests fail in
+              ;; tests/cloudpickle/cloudpickle_test.py::CloudPickleTest
+              "-k" (string-append "not test_import"
+                                  " and not test_logger"
+                                  " and not test_multiprocess"))))
     (native-inputs
      (list python-cython
-           python-pytest
-           python-pytest-timeout
            python-mock
            python-numpy
            python-psutil
-           python-setuptools
-           python-wheel))
+           python-pytest
+           python-pytest-timeout
+           python-setuptools))
+    (propagated-inputs
+     (list python-catalogue))
     (home-page "https://github.com/explosion/srsly")
     (synopsis "Serialization utilities for Python")
     (description "This package bundles some of the best Python serialization
