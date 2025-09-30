@@ -3,7 +3,7 @@
 ;;; Copyright © 2018, 2020-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020, 2021, 2023, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2022, 2025 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
@@ -111,6 +111,7 @@
             libvirt-configuration-ca-file
             libvirt-configuration-cert-file
             libvirt-configuration-crl-file
+            libvirt-configuration-dmidecode
             libvirt-configuration-firmwares
             libvirt-configuration-host-uuid
             libvirt-configuration-host-uuid-source
@@ -220,6 +221,9 @@
   (qemu
    (file-like qemu)
    "The QEMU package to use.")
+  (dmidecode
+   (file-like dmidecode)
+   "The Dmidecode package to use.")
   (firmwares
    (list-of-file-likes (list ovmf-x86-64))
    "List of UEFI/BIOS firmware packages to make available.  Each firmware
@@ -529,7 +533,8 @@ avoid potential infinite waits blocking libvirt."))
                         (compose list libvirt-configuration-libvirt))
      (service-extension profile-service-type
                         (lambda (config)
-                          (list (libvirt-configuration-libvirt config)
+                          (list (libvirt-configuration-dmidecode config)
+                                (libvirt-configuration-libvirt config)
                                 (libvirt-configuration-qemu config))))
      ;; Libvirt only considers the $libvirt/share/qemu/firmware and
      ;; /etc/qemu/firmware directories to locate the QEMU firmware metadata

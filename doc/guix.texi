@@ -56,7 +56,7 @@ Copyright @copyright{} 2017 Andy Wingo@*
 Copyright @copyright{} 2017, 2018, 2019, 2020, 2023, 2024, 2025 Arun Isaac@*
 Copyright @copyright{} 2017 nee@*
 Copyright @copyright{} 2018 Rutger Helling@*
-Copyright @copyright{} 2018, 2021, 2023 Oleg Pykhalov@*
+Copyright @copyright{} 2018, 2021, 2023, 2025 Oleg Pykhalov@*
 Copyright @copyright{} 2018 Mike Gerwitz@*
 Copyright @copyright{} 2018 Pierre-Antoine Rouby@*
 Copyright @copyright{} 2018, 2019 Gábor Boskovits@*
@@ -39639,6 +39639,9 @@ Libvirt package.
 
 @item @code{qemu} (default: @code{qemu}) (type: file-like)
 The QEMU package to use.
+
+@item @code{dmidecode} (default: @code{dmidecode}) (type: file-like)
+The Dmidecode package to use.
 
 @item @code{firmwares} (default: @code{(ovmf-x86-64)}) (type: list-of-file-likes)
 List of UEFI/BIOS firmware packages to make available.  Each firmware
