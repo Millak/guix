@@ -1,0 +1,25 @@
+From 462a541db904405ede8446c48ba0c71ad41c544d Mon Sep 17 00:00:00 2001
+From: Eli Zaretskii <eliz@gnu.org>
+Date: Thu, 17 Jul 2025 19:34:50 +0300
+Subject: [PATCH] ; * test/lisp/net/shr-tests.el (shr-test/zoom-image): Fix
+ <img> (bug#79041).
+
+---
+ test/lisp/net/shr-tests.el | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/test/lisp/net/shr-tests.el b/test/lisp/net/shr-tests.el
+index 363cd144e8f3..a931d07a1631 100644
+--- a/test/lisp/net/shr-tests.el
++++ b/test/lisp/net/shr-tests.el
+@@ -145,8 +145,8 @@ settings, then once more for each (OPTION . VALUE) pair.")
+     (dolist (alt '(nil "" "nothing to see here"))
+       (with-temp-buffer
+         (ert-info ((format "image with alt=%S" alt))
+-          (let ((attrs (if alt (format " alt=\"%s\"" alt) "")))
+-            (insert (format "<img src=\"%s\" %s" image-url attrs)))
++          (let ((attrs (if alt (format " alt=\"%s\">" alt) ">")))
++            (insert (format "<img src=\"%s\"%s" image-url attrs)))
+           (cl-letf* (;; Pretend we're a graphical display.
+                      ((symbol-function 'display-graphic-p) #'always)
+                      ((symbol-function 'url-queue-retrieve)

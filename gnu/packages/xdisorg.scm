@@ -53,7 +53,7 @@
 ;;; Copyright © 2021 ikasero <ahmed@ikasero.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021, 2025 jgart <jgart@dismail.de>
-;;; Copyright © 2022, 2024 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022, 2024, 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Derek Chuank <derekchuank@outlook.com>
 ;;; Copyright © 2022, 2023 Wamm K. D. <jaft.r@outlook.com>
@@ -633,14 +633,16 @@ avoiding password prompts when X11 forwarding has already been setup.")
 (define-public libxkbcommon
   (package
     (name "libxkbcommon")
-    (version "1.6.0")
+    (version "1.11.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://xkbcommon.org/download/libxkbcommon-"
-                                  version ".tar.xz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/xkbcommon/libxkbcommon")
+                     (commit (string-append "xkbcommon-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0awwz5pg9x5bj0d7dpg4a7bd4gl6k55mlpxwb12534fkrpn19p0f"))))
+                "1swa6rf63c0wi0qq5r661g63yk2iwa9l66148078xkrwcf05sp91"))))
     (outputs '("out" "doc"))
     (build-system meson-build-system)
     (inputs
@@ -652,12 +654,19 @@ avoiding password prompts when X11 forwarding has already been setup.")
            xkeyboard-config))
     (native-inputs
      (append
-       (list bison doxygen pkg-config python
-             ;; wayland-scanner is required at build time.
-             wayland)
-       (if (%current-target-system)
-         (list pkg-config-for-build)
-         '())))
+      (list bison
+            doxygen
+            pkg-config
+            python
+            ;; wayland-scanner is required at build time.
+            wayland
+            ;; Xvfb for tests.
+            xorg-server-for-tests
+            ;; xkbcomp for tests.
+            xkbcomp)
+      (if (%current-target-system)
+          (list pkg-config-for-build)
+          '())))
     (arguments
      (list
       #:configure-flags
@@ -666,7 +675,8 @@ avoiding password prompts when X11 forwarding has already been setup.")
                               %build-inputs "share/X11/xkb"))
               (string-append "-Dx-locale-root="
                              (search-input-directory
-                              %build-inputs "share/X11/locale")))
+                              %build-inputs "share/X11/locale"))
+              "-Denable-docs=true")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'move-doc
@@ -694,41 +704,6 @@ X11 (yet).")
     (license (license:x11-style "file://COPYING"
                                 "See 'COPYING' in the distribution."))
     (properties '((cpe-name . "xkbcommon")))))
-
-(define-public libxkbcommon-1.5
-  (package
-    (inherit libxkbcommon)
-    (version "1.5.0")
-    (source (origin
-              (inherit (package-source libxkbcommon))
-              (method url-fetch)
-              (uri (string-append "https://xkbcommon.org/download/libxkbcommon-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "05z08rpa464x8myjxddhix7jp9jcmakd7xrybx4hz8dwpg2123sn"))))))
-
-(define-public libxkbcommon-1.8
-  (package
-    (inherit libxkbcommon)
-    (version "1.8.1")
-    (source (origin
-              (inherit (package-source libxkbcommon))
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/xkbcommon/libxkbcommon")
-                    (commit (string-append "xkbcommon-" version))))
-              (file-name (git-file-name (package-name libxkbcommon) version))
-              (sha256
-               (base32
-                "0fz6mf99lyp7x6g6v33210hhpykbg32fjmckyvxfpd805cza0xrj"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments libxkbcommon)
-       ((#:configure-flags flags #~(list))
-        #~(cons "-Denable-docs=true" #$flags))))
-    (native-inputs (modify-inputs (package-native-inputs libxkbcommon)
-                     (append xorg-server  ;; Xvfb for tests
-                             xkbcomp)))))   ;; xkbcomp for tests
 
 (define-public libfakekey
   (package
@@ -902,31 +877,29 @@ typing tool (@code{wtype}, @code{xdotool}, etc.), or via standard output.")
 (define-public pixman
   (package
     (name "pixman")
-    (version "0.42.2")
+    (version "0.46.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.cairographics.org/releases/pixman-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0pk298iqxqr64vk3z6nhjwr6vjg1971zfrjkqy5r9zd2mppq057a"))
+        (base32 "072rd8sd454rzybmxx90fdzvabzvx0pr57y745qfwnxxqgml976h"))
        (patches (search-patches "pixman-CVE-2016-5296.patch"))))
-    (build-system gnu-build-system)
+    (build-system meson-build-system)
     (arguments
-     `(#:configure-flags
-       (list "--disable-static"
-             "--enable-timers"
-             "--enable-gnuplot"
-             ,@(if (target-arm32?)
-                   `("--disable-arm-simd")
-                   '()))))
-    (native-inputs (list pkg-config))
-    (inputs (list libpng zlib))
+     (list
+      #:configure-flags
+      #~(list "-Dtimers=true"
+              "-Dgnuplot=true"
+              #$@(if (target-arm32?)
+                     '("-Darm-simd=false")
+                     '()))))
     (synopsis "Low-level pixel manipulation library")
     (description "Pixman is a low-level software library for pixel
 manipulation, providing features such as image compositing and trapezoid
 rasterisation.")
-    (home-page "http://www.pixman.org/")
+    (home-page "https://www.pixman.org/")
     (license license:expat)))
 
 (define-public libdrm

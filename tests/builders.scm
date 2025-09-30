@@ -140,6 +140,7 @@
          (lambda (dir)
            (with-directory-excursion dir
              (unpack #:source file)
+             (sync)
              (call-with-input-file name get-string-all))))))))
  compressors)
 

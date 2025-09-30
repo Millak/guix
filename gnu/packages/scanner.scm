@@ -42,18 +42,20 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xml)
   #:use-module (guix build-system gnu)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module ((guix licenses)
                 #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix search-paths)
   #:use-module (guix utils))
 
 (define-public sane-airscan
   (package
     (name "sane-airscan")
-    (version "0.99.27")
+    (version "0.99.36")
     (source
      (origin
        (method git-fetch)
@@ -62,7 +64,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1syxsih1kdnz9slsg5a92bqnllagm4cybqk4n2y6mbkqn6h0zlnv"))))
+        (base32 "1dh7rq1g120gqhkr7ac3p7yizm330dj3xqrrg08dff7ra1jx955y"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -78,8 +80,9 @@
            gnutls
            libjpeg-turbo
            libpng
+           libtiff
            libxml2
-           sane-backends))
+           sane))
     (home-page "https://github.com/alexpevzner/sane-airscan")
     (synopsis "SANE backend for eSCL (AirScan) and WSD document scanners")
     (description ; no @acronym{eSCL} because the meaning isn't officially known
@@ -103,10 +106,11 @@ both WSD and eSCL.")
     (license (list license:gpl2+        ; the combined work
                    license:expat))))    ; http_parser.[ch]
 
-(define-public sane-backends-minimal
+(define-deprecated/public-alias sane-backends-minimal sane)
+(define-public sane
   (package
-    (name "sane-backends-minimal")
-    (version "1.3.1")
+    (name "sane")
+    (version "1.4.0")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -114,7 +118,9 @@ both WSD and eSCL.")
                    (commit version)))
              (file-name (git-file-name name version))
              (sha256
-              (base32 "1fb6shx9bz0svcyasmyqs93rbbwq7kzg6l0h1zh3kjvcwhchyv72"))
+              (base32 "09hcqrli127amdxjlj6xd9lvc0rhlhhm8vxrnldbd8c2mxss7dbv"))
+             (patches (search-patches
+                       "sane-look-for-plugins-in-SANE_BACKEND_LIB_PATH.patch"))
              (modules '((guix build utils)))
              (snippet
               ;; Generated HTML files and udev rules normally embed a
@@ -186,6 +192,11 @@ both WSD and eSCL.")
                           (string-append out
                                          "/lib/udev/rules.d/"
                                          "60-libsane.rules")))))
+         (add-after 'install 'remove-dll.conf
+           (lambda _
+             ;; dll.conf lists enabled backends, so it should be removed as
+             ;; there are none in this package
+             (delete-file (string-append %output "/etc/sane.d/dll.conf"))))
          (add-after 'install 'make-reproducible
            ;; XXX Work around an old bug <https://issues.guix.gnu.org/26247>.
            ;; Then work around "Throw to key `decoding-error' ..." by using sed.
@@ -197,6 +208,14 @@ both WSD and eSCL.")
                              (invoke "sed" "-i" "/^PO-Revision-Date:/d" file))
                            (list "en@boldquot/LC_MESSAGES/sane-backends.mo"
                                  "en@quot/LC_MESSAGES/sane-backends.mo")))))))))
+    (native-search-paths
+     (list
+      (search-path-specification
+        (variable "SANE_CONFIG_DIR")
+        (files '("etc/sane.d")))
+      (search-path-specification
+        (variable "SANE_BACKEND_LIB_PATH")
+        (files '("lib/sane")))))
     (home-page "http://www.sane-project.org")
     (synopsis
      "Raster image scanner library and drivers, without scanner support")
@@ -206,20 +225,16 @@ hand-held scanner, video- and still-cameras, frame-grabbers, etc.).  The
 package contains the library, but no drivers.")
     (license license:gpl2+))) ; plus linking exception
 
-;; This variant links in the hpaio backend provided by hplip, which adds
-;; support for HP scanners whose backends are not maintained by the SANE
-;; project, and builds all of those backends.
 (define-public sane-backends
-  (package/inherit sane-backends-minimal
+  (package/inherit sane
     (name "sane-backends")
     (inputs
-     `(("hplip" ,(@ (gnu packages cups) hplip))
-       ("libjpeg" ,libjpeg-turbo)       ; for pixma/epsonds/other back ends
+     `(("libjpeg" ,libjpeg-turbo)       ; for pixma/epsonds/other back ends
        ("libpng" ,libpng)               ; support ‘scanimage --format=png’
        ("libxml2" ,libxml2)             ; for pixma back end
-       ,@(package-inputs sane-backends-minimal)))
+       ,@(package-inputs sane)))
     (arguments
-     (substitute-keyword-arguments (package-arguments sane-backends-minimal)
+     (substitute-keyword-arguments (package-arguments sane)
        ((#:phases phases)
         `(modify-phases ,phases
            (delete 'disable-backends)
@@ -229,22 +244,6 @@ package contains the library, but no drivers.")
                ;;   <https://bugs.gnu.org/39449>
                (substitute* "testsuite/backend/genesys/Makefile.in"
                  ((" genesys_unit_tests\\$\\(EXEEXT\\)") ""))
-               #t))
-           (add-after 'unpack 'add-backends
-             (lambda _
-               (substitute* "backend/dll.conf.in"
-                 (("hp5590" all) (format #f "~a~%~a" all "hpaio")))
-               #t))
-           (add-after 'install 'install-hpaio
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (define hplip (string-append (assoc-ref inputs "hplip")
-                                            "/lib/sane"))
-               (define out (string-append (assoc-ref outputs "out")
-                                          "/lib/sane"))
-               (for-each
-                (lambda (file)
-                  (symlink file (string-append out "/" (basename file))))
-                (find-files hplip))
                #t))))))
     (synopsis
      "Raster image scanner library and drivers, with scanner support")
@@ -288,7 +287,7 @@ package contains the library and drivers.")))
                                                   "/lib/udev/rules.d")))))))
       (inputs (list boost
                     eudev
-                    sane-backends-minimal
+                    sane
                     libusb
                     libjpeg-turbo
                     imagemagick
@@ -350,11 +349,7 @@ standard.")
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("dbus" ,dbus)
-       ("libconfuse" ,libconfuse)
-       ("sane-backends" ,sane-backends)
-       ("udev" ,eudev)
-       ("zlib" ,zlib)))
+     (list dbus libconfuse sane eudev zlib))
     (home-page "https://scanbd.sourceforge.io")
     (synopsis "Configurable scanner button monitor")
     (description "Scanbd stands for scanner button daemon.  It regularly polls
@@ -435,7 +430,7 @@ provided the driver also exposes the buttons.")
            lcms
            libjpeg-turbo
            libtiff
-           sane-backends
+           sane
            xdg-utils))                  ;to open the manual from the Help menu
     (home-page "https://gitlab.com/sane-project/frontend/xsane")
     (synopsis "Featureful graphical interface for document and image scanners")

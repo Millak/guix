@@ -306,7 +306,10 @@ update would trigger a complete rebuild."
                           (list (resolve-interface mod)))
                          (_ (all-modules (%package-module-path)
                                          #:warn
-                                         warn-about-load-error)))))
+                                         warn-about-load-error))))
+             (update-spec (if target-version
+                              (cut update-spec <> target-version #t)
+                              update-spec)))
          (map update-spec
               (fold-packages (lambda (package result)
                                (if (select? package)

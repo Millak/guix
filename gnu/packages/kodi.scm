@@ -434,7 +434,7 @@ secondary errors.")
            dcadec
            dbus
            eudev
-           ffmpeg
+           ffmpeg-6
            flac
            flatbuffers
            fmt

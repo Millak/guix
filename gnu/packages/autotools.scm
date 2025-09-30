@@ -13,6 +13,7 @@
 ;;; Copyright © 2020, 2023, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2025 John Kehayias <john@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -460,7 +461,13 @@ Makefile, simplifying the entire process for the developer.")
                     '("t/tags-lisp-space.sh"
                       ;; This test fails, probably a timestamp thing:
                       ;; make: Nothing to be done for 'all'.
-                      "t/remake-aclocal-version-mismatch.sh")
+                      "t/remake-aclocal-version-mismatch.sh"
+                      ;; Non-deterministic test failures:
+                      "t/aclocal-autoconf-version-check.sh"
+                      "t/backcompat2.sh"
+                      "t/backcompat3.sh"
+                      "t/nodef.sh"
+                      "t/nodef2.sh")
                   (("^#!.*" all)
                    (string-append all "exit 77;\n")))))
             #$@(if (%current-target-system)

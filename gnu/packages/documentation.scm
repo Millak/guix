@@ -187,7 +187,7 @@ markup) can be customized and extended by the user.")
 (define-public doxygen
   (package
     (name "doxygen")
-    (version "1.9.8")
+    (version "1.14.0")
     (home-page "https://www.doxygen.nl/")
     (source (origin
               (method url-fetch)
@@ -198,7 +198,7 @@ markup) can be customized and extended by the user.")
                                         ".src.tar.gz")))
               (sha256
                (base32
-                "0qjgw7bnx668hpi4r8m366vsq118s9365zf8z4x5yjrqx0ld5qq5"))))
+                "0pbbdvc1zxps6mi58bry16rcrdw6b9gvf9nhv0kp60qkmc8nslyl"))))
     (build-system cmake-build-system)
     (native-inputs
      (list bison
@@ -219,12 +219,15 @@ markup) can be customized and extended by the user.")
           #~'())
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-bibtex-test
+          (add-after 'unpack 'disable-some-tests
             (lambda _
-              ;; Disable test that requires bibtex to avoid a
-              ;; circular dependency.
               (for-each delete-file-recursively
-                        '("testing/012" "testing/012_cite.dox"))))
+                        ;; Disable test that requires bibtex to avoid a
+                        ;; circular dependency.
+                        '("testing/012" "testing/012_cite.dox"
+                          ;; Reported upstream, see
+                          ;; <https://github.com/doxygen/doxygen/issues/11772>.
+                          "testing/009" "testing/009_bug.cpp"))))
           (add-before 'configure 'patch-sh
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((/bin/sh (search-input-file inputs "/bin/sh")))

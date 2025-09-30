@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
+;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,7 +20,7 @@
 (define-module (gnu packages data-language)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
-  #:use-module (guix git-download)
+  #:use-module (guix download)
   #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
@@ -42,16 +43,17 @@
 (define-public gnudatalanguage
   (package
     (name "gnudatalanguage")
-    (version "1.0.1")
+    (version "1.1.1")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/gnudatalanguage/gdl")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/gnudatalanguage/gdl/releases/download/v"
+             version "/gdl-v" version ".tar.gz"))
+
        (sha256
-        (base32 "1bb3nin3qrzx2dwdk08vffp4bblrcpv6vv1ybaj499qhqcpqpc12"))))
+        (base32
+         "0qln7851dpfy78yyx5k01ch2yrik3k1a1a2727rvpqf5rnmx6kkl"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config python python-numpy))
@@ -75,6 +77,7 @@
            netcdf
            plplot
            proj
+           qhull
            readline
            shapelib
            udunits

@@ -77,7 +77,8 @@
                                  "-" version ".tar.gz"))
              (sha256
               (base32
-               "1026whyxpajwijlr4k5c0iliwn09mwxrg7gkvd5kb0n9ga6vg788"))))
+               "1026whyxpajwijlr4k5c0iliwn09mwxrg7gkvd5kb0n9ga6vg788"))
+             (patches (search-patches "raptor2-libxml2.patch"))))
     (build-system gnu-build-system)
     (inputs
      (list curl libxml2 libxslt zlib))

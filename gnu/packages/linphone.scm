@@ -65,7 +65,7 @@
 (define-public bcunit
   (package
     (name "bcunit")
-    (version "5.3.57")
+    (version "5.3.101")
     (source
      (origin
        (method git-fetch)
@@ -74,7 +74,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02aqc8052vidc8ylkwiv2rqddl58fccrjz561j8zfqlwm2irnsg3"))))
+        (base32 "0rpkc9bjlf370p5fsrbp9b481zakdndmfxyg5vwza0a9z19f81vb"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -125,24 +125,26 @@ writing, administering, and running unit tests in C.")
 (define-public bctoolbox
   (package
     (name "bctoolbox")
-    (version "5.3.57")
+    (version "5.3.112")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.linphone.org/BC/public/bctoolbox.git")
-             (commit version)))
+              (url "https://gitlab.linphone.org/BC/public/bctoolbox.git")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "178axy7gmmi6fzjbz7aaawcx0qg50i4hnn7ab6w642b02vxfr386"))))
+        (base32 "1bmn3q318wfwnpv017sa1qgffb4bm8lfhm9xaa345fpp5ws2h4an"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
      (list
-      #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
-                                ;; Do not use -Werror, because due to skipping
-                                ;; a test there are unused procedures.
-                                "-DENABLE_STRICT=OFF")
+      #:configure-flags
+      #~(list
+         "-DBUILD_SHARED_LIBS=ON"
+         ;; Do not use -Werror, because due to skipping
+         ;; a test there are unused procedures.
+         "-DENABLE_STRICT=OFF")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-cmake
@@ -188,7 +190,7 @@ Communications software like belle-sip, mediastreamer2 and linphone.")
 (define-public belr
   (package
     (name "belr")
-    (version "5.3.57")
+    (version "5.3.112")
     (source
      (origin
        (method git-fetch)
@@ -197,7 +199,7 @@ Communications software like belle-sip, mediastreamer2 and linphone.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jqv2rfclzwsglwgvx7ypy0yhwbjxrsbik6xipf48770qmdz3bj9"))))
+        (base32 "00gmdh8nchn4frxzli62w8slqpizln9bd1czrmpj8laiqdy1ihvk"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug" "tester"))
     (arguments
@@ -237,16 +239,16 @@ IETF.")
 (define-public belcard
   (package
     (name "belcard")
-    (version "5.3.57")
+    (version "5.3.112")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.linphone.org/BC/public/belcard.git")
-             (commit version)))
+              (url "https://gitlab.linphone.org/BC/public/belcard.git")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d69s7v3yd276nasfxnsjp3q820pcchdpdpw4y7ak7sf6gr6mrrh"))))
+        (base32 "190l1f7f2dhm887xw34gcawa9c4cmcndikfd8qc1xpn16fals4kd"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug" "tester"))
     (arguments
@@ -256,12 +258,10 @@ IETF.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-vcard-grammar-location
             (lambda _
-              (let ((vcard-grammar
-                     (string-append #$output
-                                    "/share/belr/grammars/vcard_grammar")))
-                (substitute* "include/belcard/vcard_grammar.hpp"
-                  (("define VCARD_GRAMMAR \"vcard_grammar\"")
-                   (format #f "define VCARD_GRAMMAR ~s" vcard-grammar))))))
+              (substitute* "include/belcard/vcard_grammar.hpp"
+                (("define VCARD3?_GRAMMAR \"" all)
+                 (string-append all (string-append
+                                     #$output "/share/belr/grammars/"))))))
           (add-after 'install 'install-tester
             (lambda _
               (let ((test-name (string-append #$name "-tester")))
@@ -290,7 +290,7 @@ format.")
 (define-public bcmatroska2
   (package
     (name "bcmatroska2")
-    (version "5.3.57")
+    (version "5.3.101")
     (source
      (origin
        (method git-fetch)
@@ -299,7 +299,7 @@ format.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fdlvsca34armxasj2g4vxjzm9iiqfl7832qqlggh04yw21cfa5c"))))
+        (base32 "0m1qf0jiz58r6vyy9gzc563hrcxvmmq5m1if2cq0qbxmanvqbgns"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -395,7 +395,7 @@ such as conferencing.")
 (define-public ortp
   (package
     (name "ortp")
-    (version "5.3.57")
+    (version "5.3.112")
     (source
      (origin
        (method git-fetch)
@@ -404,7 +404,7 @@ such as conferencing.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bl3ig1xbxprcdid9i8bnl433x4crxqnj30x5lxiy9ka79b8s8r6"))))
+        (base32 "0vgzn9ll7i6x1rprknzmam5npnm2sbhnkr3fvz6ilanckznqvzar"))))
     (build-system cmake-build-system)
     (outputs '("out" "tester"
                "doc"))                  ;1.5 MiB of HTML doc
@@ -450,7 +450,7 @@ implements the RFC 3550 standard.")
 (define-public bzrtp
   (package
     (name "bzrtp")
-    (version "5.3.57")
+    (version "5.3.112")
     (source
      (origin
        (method git-fetch)
@@ -459,7 +459,7 @@ implements the RFC 3550 standard.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q8w5blf2cjmzyv4bdd7zg4lv3pfjq6w6cfm6d75az4xqzg023kp"))))
+        (base32 "1bi82isc8r3h6pwiwqfxd089dfzx1ijfl4nhp75yqwr6dvqhrz68"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -480,7 +480,7 @@ including both ARM and x86.")
 (define-public belle-sip
   (package
     (name "belle-sip")
-    (version "5.3.57")
+    (version "5.3.112")
     (source
      (origin
        (method git-fetch)
@@ -489,7 +489,7 @@ including both ARM and x86.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jmvf1s54ppc0qfi2wl6whk7s3lghpzzp6597nblncjsr2i6ha6c"))))
+        (base32 "198pa42abby9hyznckl7h1pmh31nhia6nd6sjfqs61zsrzf8flxn"))))
     (build-system cmake-build-system)
     (outputs '("out" "tester"))
     (arguments
@@ -570,7 +570,7 @@ API.  It also comprises a simple HTTP/HTTPS client implementation.")
 (define-public mediastreamer2
   (package
     (name "mediastreamer2")
-    (version "5.3.57")
+    (version "5.3.112")
     (source
      (origin
        (method git-fetch)
@@ -579,7 +579,7 @@ API.  It also comprises a simple HTTP/HTTPS client implementation.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zv13icfdpaq7fa325mnqf340vbvif9791hb9h22qpc0f2wcwvjb"))))
+        (base32 "1z46vpcg4n2i28vv09p6g69wa6bh6pbwzkmygy5653rn55vhd9ng"))))
     (outputs '("out" "doc" "tester"))
     (build-system cmake-build-system)
     (arguments
@@ -684,7 +684,7 @@ including media capture, encoding and decoding, and rendering.")
 (define-public lime
   (package
     (name "lime")
-    (version "5.3.57")
+    (version "5.3.112")
     (source
      (origin
        (method git-fetch)
@@ -693,7 +693,7 @@ including media capture, encoding and decoding, and rendering.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jd549f4cky5rcvq3d2zn8d383jahdi71nhkzblnr6mqqbn6b7sa"))))
+        (base32 "00m96pznkawdmzhz25igyiiy3nx6ql5r5k14kcc3h8fqkg917vjf"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -734,7 +734,7 @@ device.")
 (define-public liblinphone
   (package
     (name "liblinphone")
-    (version "5.3.57")
+    (version "5.3.112")
     (source
      (origin
        (method git-fetch)
@@ -743,7 +743,7 @@ device.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1f3hcbdkd8nqvjm5avylz226a8in360yiafcsxpa69wvh1a03i4h"))
+        (base32 "0a8v3mbv05xgnljls7y5xb7bcxvy8dl6k10jg421nihd5vab1jl3"))
        (patches (search-patches "liblinphone-jsoncpp.patch"))))
     (outputs '("out" "tester"))
     (build-system cmake-build-system)
@@ -799,7 +799,7 @@ device.")
      (list belle-sip
            jsoncpp
            mediastreamer2
-           libxml2
+           libxml2-2.11
            lime
            ortp
            sqlite))
@@ -987,7 +987,7 @@ codec.  It is based on the Skype's SILK implementation.")
   ;; latest one available.
   (package
     (name "mswebrtc")
-    (version "1.1.2")
+    (version "5.4.0")
     (source
      (origin
        (method git-fetch)
@@ -996,7 +996,7 @@ codec.  It is based on the Skype's SILK implementation.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10j124vd9zm03s1vzb74n3zjrf6x1nfvji7vryih4dq2xlgrqxx6"))
+        (base32 "0dgkqxwqp05n14wwg805zfycy1rryrmpp25p8gfzdsxgljk29phn"))
        (patches (search-patches "mswebrtc-b64-refactor.patch"
                                 "mswebrtc-cmake.patch"))))
     (build-system cmake-build-system)

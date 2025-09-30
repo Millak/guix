@@ -314,7 +314,7 @@ also known as DXTn or DXTC) for Mesa.")
 (define-public mesa
   (package
     (name "mesa")
-    (version "25.1.3")
+    (version "25.2.3")
     (source
      (origin
        (method url-fetch)
@@ -324,7 +324,7 @@ also known as DXTn or DXTC) for Mesa.")
                                  "mesa-" version ".tar.xz")))
        (sha256
         (base32
-         "0zxsvly6xjinaicgcf81ycljjjzy3mj0hqwf01b6sdgxnnnnrjzz"))))
+         "1y5lj9zy2hfvx9ji1rvsjapmzap7mpp5i3pf2yfcpmpica2v5mpj"))))
     (build-system meson-build-system)
     (propagated-inputs
      ;; The following are in the Requires.private field of gl.pc.
@@ -357,7 +357,6 @@ also known as DXTn or DXTC) for Mesa.")
             glslang
             libclc
             pkg-config
-            python-libxml2              ;for OpenGL ES 1.1 and 2.0 support
             python-mako
             python-ply
             python-pyyaml
@@ -406,13 +405,12 @@ panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
          "-Dglx=dri"               ;Thread Local Storage, improves performance
          ;; "-Dopencl=true"
          ;; "-Domx=true"
-         "-Dosmesa=true"
-         "-Dgallium-xa=enabled"
 
          ;; features required by wayland
          "-Dgles2=enabled"
          "-Dgbm=enabled"
          "-Dshared-glapi=enabled"
+         "--wrap-mode=nodownload"       ; XXX: disable
 
          #$@(cond
              ((target-x86-32?)
@@ -438,6 +436,9 @@ panfrost,r300,r600,svga,softpipe,llvmpipe,tegra,v3d,vc4,virgl,zink"))
 
          ;; Also enable the tests.
          "-Dbuild-tests=true"
+
+         ;; Re-enable X11 protocol support for the DRI2 extension.
+         "-Dlegacy-x11=dri2"
 
          "-Dllvm=enabled")              ; default is x86/x86_64 only
 

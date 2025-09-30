@@ -6061,7 +6061,7 @@ server.")
         (base32 "17z6rrvv3q1axy9r13c2hln2pazfn9n5bhkzrbjcjakgbfjl6mss"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-lxml
+     (list python-lxml-4.9
            python-pillow
            python-pytest
            python-setuptools))
@@ -13102,8 +13102,7 @@ experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
            python-pytest
            python-setuptools
            python-wheel))
-    (inputs
-     (list ffmpeg-7))
+    (inputs (list ffmpeg))
     (home-page "https://github.com/PyAV-Org/PyAV")
     (synopsis "Pythonic bindings for FFmpeg's libraries")
     (description
@@ -15602,14 +15601,14 @@ the GObject Introspection bindings to libnotify for non-GTK applications.")
 (define-public python-beautifulsoup4
   (package
     (name "python-beautifulsoup4")
-    (version "4.13.4")
+    (version "4.13.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "beautifulsoup4" version))
        (sha256
         (base32
-         "15bi8fl51aibdz33h3j1191n5l0c4r3k4hpjvbmyysmfrvhw9cyv"))))
+         "159niwk99m9lbcxb9sl6jfqy9mb39bss4l1lwcypq3lkh89i6w2y"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-hatchling
@@ -17559,16 +17558,14 @@ number of lines in the contained files easily.")
   (hidden-package
    (package
      (name "python-fonttools-minimal")
-     (version "4.39.3")
+     (version "4.59.2")
      (source (origin
                (method url-fetch)
-               (uri (pypi-uri "fonttools" version ".zip"))
+               (uri (pypi-uri "fonttools" version ".tar.gz"))
                (sha256
                 (base32
-                 "1msibi5cmi5znykkg66dq7xshl07lkqjxhrz5hcipqvlggsvjd4j"))))
+                 "08pgq9nrj3r81gzb6gbf5mcak0xyqrj26cw0rc5za4v1n14hfb77"))))
      (build-system python-build-system)
-     (native-inputs
-      (list unzip))
      (arguments '(#:tests? #f))
      (home-page "https://github.com/fonttools/fonttools")
      (synopsis "Tools to manipulate font files")
@@ -17595,14 +17592,17 @@ from an XML-based format.")
                  (when tests?
                    (invoke "pytest" "-vv"
                            "-k"
-                           ;; XXX: These tests need .trm files that are
-                           ;; not shipped with the PyPI release.
+                           ;; XXX: These tests need data files that are not
+                           ;; shipped with the PyPI release.
                            (format #f "not ~a"
                                    (string-join
-                                    '("test_read_fontdimens_mathsy"
+                                    '("test_cli_vtp"
+                                      "test_group_order"
+                                      "test_read_fontdimens_mathsy"
                                       "test_read_fontdimens_mathex"
                                       "test_read_fontdimens_vanilla"
                                       "test_read_boundary_char"
+                                      "test_reading_supplement_encoding"
                                       "fontTools.tfmLib"
                                       ;; The MtiTest tests fail for unknown
                                       ;; reasons (see:
@@ -17616,7 +17616,7 @@ from an XML-based format.")
       (propagated-inputs
        (list python-brotli
              python-fs
-             python-lxml-4.9
+             python-lxml
              python-lz4
              python-scipy
              python-unicodedata2
@@ -21028,13 +21028,13 @@ expression.")
 (define-public python-unicodedata2
   (package
     (name "python-unicodedata2")
-    (version "15.0.0")
+    (version "16.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "unicodedata2" version))
        (sha256
-        (base32 "0bcgls7m2zndpd8whgznnd5908jbsa50si2bh88wsn0agcznhv7d"))))
+        (base32 "1z3llixb4cd6cc6nmyps5vv2sss14n3x6dzcc65xg75mj9jqsj05"))))
     (build-system python-build-system)
     (home-page "https://github.com/fonttools/unicodedata2")
     (synopsis "Python unicodedata backport")
@@ -35541,7 +35541,7 @@ restores the original state after the string is printed.")
     (native-inputs
      (list python-pytest))
     (inputs
-     (list sane-backends))
+     (list sane))
     (home-page "https://github.com/python-pillow/Sane")
     (synopsis "Python interface to the SANE scanner")
     (description "This package provides Python interface to the SANE scanner

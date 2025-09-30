@@ -75,6 +75,7 @@
 ;;; Copyright © 2025 VnPower <vnpower@loang.net>
 ;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2025 John Kehayias <john@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1528,7 +1529,7 @@ libebml is a C++ library to read and write EBML files.")
 (define-public libplacebo
   (package
     (name "libplacebo")
-    (version "7.349.0")
+    (version "7.351.0")
     (source
      (origin
        (method git-fetch)
@@ -1537,7 +1538,7 @@ libebml is a C++ library to read and write EBML files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q12yf04z570a2l3vkig2iqm7bgqr90hdxmn78sk2injrsyx124q"))))
+        (base32 "094mzr4cvvryxr7rpxqhvrs018r89m116cpkmmfy3d3sk8b09jki"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
@@ -1645,17 +1646,17 @@ These tools require a supported graphics chip, driver, and VA-API back end to
 operate properly.")
     (license license:expat)))
 
-(define-public ffmpeg-7
+(define-public ffmpeg
   (package
     (name "ffmpeg")
-    (version "7.0.2")
+    (version "8.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "12dkv17mrsdqrm70c30azjw7qi1lfxca7xisw81x6flacddm2il6"))))
+                "13kvs9rh5mp21gx64hdj0jlnz6q5c6spik8kh5q7fk6cnv61yxdj"))))
     (outputs '("out" "debug"))
     (build-system gnu-build-system)
     (inputs
@@ -1675,6 +1676,8 @@ operate properly.")
             libcaca
             libcdio-paranoia
             libdrm
+            libgme
+            libplacebo
             libtheora
             libva
             libvdpau
@@ -1686,13 +1689,16 @@ operate properly.")
             mesa
             openal
             pulseaudio
+            shaderc
             sdl2
             soxr
             speex
+            spirv-tools
             srt
             svt-av1
             twolame
             vidstab
+            vulkan-loader
             x265
             xvid
             zlib)))
@@ -1702,7 +1708,8 @@ operate properly.")
            pkg-config
            texinfo
            speex
-           yasm))
+           vulkan-headers
+           nasm))
     (arguments
      (list
       #:test-target "fate"
@@ -1717,7 +1724,6 @@ operate properly.")
       ;;   --enable-libfdk-aac      enable AAC de/encoding via libfdk-aac [no]
       ;;   --enable-libflite        enable flite (voice synthesis) support via
       ;;                            libflite [no]
-      ;;   --enable-libgme          enable Game Music Emu via libgme [no]
       ;;   --enable-libgsm          enable GSM de/encoding via libgsm [no]
       ;;   --enable-libiec61883     enable iec61883 via libiec61883 [no]
       ;;   --enable-libilbc         enable iLBC de/encoding via libilbc [no]
@@ -1770,12 +1776,15 @@ operate properly.")
          "--enable-libcdio"
          "--enable-libdav1d"
          "--enable-libfreetype"
+         "--enable-libgme"
          "--enable-libmp3lame"
          "--enable-libopus"
+         "--enable-libplacebo"
          "--enable-libpulse"
          #$@(if (this-package-input "rav1e")
                 '("--enable-librav1e")
                 '())
+         "--enable-libshaderc"
          "--enable-libsoxr"
          "--enable-libspeex"
          "--enable-libsrt"
@@ -1793,6 +1802,7 @@ operate properly.")
          "--enable-opengl"
          "--enable-libdrm"
          "--enable-vaapi"
+         "--enable-vulkan"
 
          "--enable-runtime-cpudetect"
 
@@ -1837,7 +1847,7 @@ operate properly.")
             (lambda* (#:key outputs configure-flags #:allow-other-keys)
               (let ((out (assoc-ref outputs "out")))
                 (substitute* "configure"
-                  (("#! /bin/sh") (string-append "#!" (which "sh"))))
+                  (("#! */bin/sh") (string-append "#!" (which "sh"))))
                 (setenv "SHELL" (which "bash"))
                 (setenv "CONFIG_SHELL" (which "bash"))
                 (apply invoke
@@ -1862,23 +1872,23 @@ convert and stream audio and video.  It includes the libavcodec
 audio/video codec library.")
     (license license:gpl2+)))
 
-(define-public ffmpeg
+(define-public ffmpeg-6
   (package
-    (inherit ffmpeg-7)
-    (version "6.1.1")
+    (inherit ffmpeg)
+    (version "6.1.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0s7r2qv8gh2a3w568n9xxgcz0q8j5ww1jdsci1hm9f4l1yqg9146"))
+                "0f2fr8ywchhlkdff88lr4d4vscqzsi1ndjh3r5jwbkayf94lcqiv"))
               (patches
                (search-patches
                 "ffmpeg-add-av_stream_get_first_dts-for-chromium.patch"))))
     (arguments
      (if (target-x86-32?)
-         (substitute-keyword-arguments (package-arguments ffmpeg-7)
+         (substitute-keyword-arguments (package-arguments ffmpeg)
            ((#:phases phases)
             #~(modify-phases #$phases
                 (add-before 'configure 'relax-gcc-14-strictness
@@ -1886,8 +1896,9 @@ audio/video codec library.")
                     (setenv
                      "CFLAGS"
                      (string-append "-g -O2"
-                                    " -Wno-error=incompatible-pointer-types")))))))
-         (package-arguments ffmpeg-7)))))
+                                    " -Wno-error=incompatible-pointer-types"
+                                    " -Wno-error=int-conversion")))))))
+         (package-arguments ffmpeg)))))
 
 (define-public ffmpeg-5
   (package
@@ -1901,16 +1912,22 @@ audio/video codec library.")
                (base32
                 "1g8116rp4fgq82br8lclb2dmw3fvyh2zkzhnngm7z97pg1i0dypl"))))
     (arguments
-     (if (target-x86-32?)
-         (substitute-keyword-arguments (package-arguments ffmpeg)
-           ((#:phases phases)
+     (substitute-keyword-arguments (package-arguments ffmpeg)
+       ((#:modules modules %default-gnu-modules)
+        `((srfi srfi-1) ,@modules))
+       ((#:phases phases)
+        (if (target-x86-32?)
             #~(modify-phases #$phases
                 (replace 'bypass-openal-check
                   (lambda _
                     (substitute* "configure"
                       (("die \"ERROR: openal not found\"")
-                       "true")))))))
-         (package-arguments ffmpeg)))))
+                       "true")))))
+            phases))
+       ((#:configure-flags flags ''())
+        #~(fold delete #$flags '("--enable-libplacebo")))))
+    (inputs (modify-inputs (package-inputs ffmpeg)
+              (delete "libplacebo")))))
 
 (define-public ffmpeg-4
   (package
@@ -1923,10 +1940,13 @@ audio/video codec library.")
              (sha256
               (base32
                "05q6bpid5hfr9djp6cf3sq8majkjiqnl3v9i2y0an23w8qgld412"))))
+    (inputs (modify-inputs (package-inputs ffmpeg-5)
+              (replace "sdl2" sdl2-2.0)))
     (arguments
      (substitute-keyword-arguments (package-arguments ffmpeg-5)
        ((#:configure-flags flags ''())
-        #~(cons "--enable-avresample" #$flags))))))
+        #~(cons "--enable-avresample"
+                (fold delete #$flags '("--enable-libshaderc"))))))))
 
 (define-public ffmpeg-for-stepmania
   (hidden-package
@@ -1968,270 +1988,271 @@ audio/video codec library.")
 
 ;;; Custom ffmpeg package used by Jami, which incorporates custom patches.
 (define-public ffmpeg-jami
-  (package
-    (inherit ffmpeg)
-    (name "ffmpeg-jami")
-    (source (let ((ffmpeg-origin (package-source ffmpeg)))
-              (origin
-                (inherit ffmpeg-origin)
-                ;; These patches originate come from
-                ;; <https://review.jami.net/plugins/gitiles/jami-daemon/+/refs/heads/master/contrib/src/ffmpeg/>.
-                ;; Make sure to keep them update and/or register any new ones
-                ;; here.
-                (patches
-                 (append
-                  (origin-patches ffmpeg-origin)
-                  (search-patches
-                   "ffmpeg-jami-remove-mjpeg-log.patch"
-                   "ffmpeg-jami-change-RTCP-ratio.patch"
-                   "ffmpeg-jami-rtp_ext_abs_send_time.patch"
-                   "ffmpeg-jami-libopusdec-enable-FEC.patch"
-                   "ffmpeg-jami-libopusenc-reload-packet-loss-at-encode.patch"
-                   "ffmpeg-jami-screen-sharing-x11-fix.patch"
-                   "ffmpeg-jami-pipewiregrab-source-filter.patch"))))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments ffmpeg)
-       ((#:configure-flags _ '())
-        ;; The base configure flags preserved from ffmpeg appear first.
-        #~(list "--disable-static"
-                "--enable-shared"
-                "--disable-stripping"
+  (let ((ffmpeg ffmpeg-6))
+    (package
+      (inherit ffmpeg)
+      (name "ffmpeg-jami")
+      (source (let ((ffmpeg-origin (package-source ffmpeg)))
+                (origin
+                  (inherit ffmpeg-origin)
+                  ;; These patches originate come from
+                  ;; <https://review.jami.net/plugins/gitiles/jami-daemon/+/refs/heads/master/contrib/src/ffmpeg/>.
+                  ;; Make sure to keep them update and/or register any new ones
+                  ;; here.
+                  (patches
+                   (append
+                    (origin-patches ffmpeg-origin)
+                    (search-patches
+                     "ffmpeg-jami-remove-mjpeg-log.patch"
+                     "ffmpeg-jami-change-RTCP-ratio.patch"
+                     "ffmpeg-jami-rtp_ext_abs_send_time.patch"
+                     "ffmpeg-jami-libopusdec-enable-FEC.patch"
+                     "ffmpeg-jami-libopusenc-reload-packet-loss-at-encode.patch"
+                     "ffmpeg-jami-screen-sharing-x11-fix.patch"
+                     "ffmpeg-jami-pipewiregrab-source-filter.patch"))))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments ffmpeg)
+         ((#:configure-flags _ '())
+          ;; The base configure flags preserved from ffmpeg appear first.
+          #~(list "--disable-static"
+                  "--enable-shared"
+                  "--disable-stripping"
 
-                ;; Extra Guix-added flags that make sense for this custom
-                ;; package; these could be contributed upstream.
-                "--disable-doc"
+                  ;; Extra Guix-added flags that make sense for this custom
+                  ;; package; these could be contributed upstream.
+                  "--disable-doc"
 
-                ;; The following flags are those specified by Jami.
-                ;; They're from the jami/daemon/contrib/src/ffmpeg/rules.mak
-                ;; file.  We try to keep it as close to the official Jami
-                ;; package as possible, to provide all the codecs and extra
-                ;; features that are expected (see:
-                ;; https://review.jami.net/plugins/gitiles/jami-daemon/+/
-                ;; refs/heads/master/contrib/src/ffmpeg/rules.mak).
-                "--disable-everything"
-                "--enable-zlib"
-                "--enable-gpl"
-                "--enable-swscale"
-                "--enable-bsfs"
-                "--disable-filters"
-                "--disable-programs"
-                "--disable-postproc"
+                  ;; The following flags are those specified by Jami.
+                  ;; They're from the jami/daemon/contrib/src/ffmpeg/rules.mak
+                  ;; file.  We try to keep it as close to the official Jami
+                  ;; package as possible, to provide all the codecs and extra
+                  ;; features that are expected (see:
+                  ;; https://review.jami.net/plugins/gitiles/jami-daemon/+/
+                  ;; refs/heads/master/contrib/src/ffmpeg/rules.mak).
+                  "--disable-everything"
+                  "--enable-zlib"
+                  "--enable-gpl"
+                  "--enable-swscale"
+                  "--enable-bsfs"
+                  "--disable-filters"
+                  "--disable-programs"
+                  "--disable-postproc"
 
-                "--enable-libpipewire"
-                "--enable-filter=pipewiregrab"
-                "--enable-indev=lavfi"
-                "--enable-decoder=wrapped_avframe"
+                  "--enable-libpipewire"
+                  "--enable-filter=pipewiregrab"
+                  "--enable-indev=lavfi"
+                  "--enable-decoder=wrapped_avframe"
 
-                "--disable-protocols"
-                "--enable-protocol=crypto"
-                "--enable-protocol=file"
-                "--enable-protocol=rtp"
-                "--enable-protocol=srtp"
-                "--enable-protocol=tcp"
-                "--enable-protocol=udp"
-                "--enable-protocol=unix"
-                "--enable-protocol=pipe"
+                  "--disable-protocols"
+                  "--enable-protocol=crypto"
+                  "--enable-protocol=file"
+                  "--enable-protocol=rtp"
+                  "--enable-protocol=srtp"
+                  "--enable-protocol=tcp"
+                  "--enable-protocol=udp"
+                  "--enable-protocol=unix"
+                  "--enable-protocol=pipe"
 
-                ;; Enable muxers/demuxers.
-                "--disable-demuxers"
-                "--disable-muxers"
-                "--enable-muxer=rtp"
-                "--enable-muxer=g722"
-                "--enable-muxer=g723_1"
-                "--enable-muxer=g726"
-                "--enable-muxer=g726le"
-                "--enable-muxer=h263"
-                "--enable-muxer=h264"
-                "--enable-muxer=hevc"
-                "--enable-muxer=matroska"
-                "--enable-muxer=webm"
-                "--enable-muxer=ogg"
-                "--enable-muxer=pcm_s16be"
-                "--enable-muxer=pcm_s16le"
-                "--enable-muxer=wav"
-                "--enable-demuxer=rtp"
-                "--enable-demuxer=mjpeg"
-                "--enable-demuxer=mjpeg_2000"
-                "--enable-demuxer=mpegvideo"
-                "--enable-demuxer=gif"
-                "--enable-demuxer=image_jpeg_pipe"
-                "--enable-demuxer=image_png_pipe"
-                "--enable-demuxer=image_webp_pipe"
-                "--enable-demuxer=matroska"
-                "--enable-demuxer=m4v"
-                "--enable-demuxer=mp3"
-                "--enable-demuxer=ogg"
-                "--enable-demuxer=flac"
-                "--enable-demuxer=wav"
-                "--enable-demuxer=ac3"
-                "--enable-demuxer=g722"
-                "--enable-demuxer=g723_1"
-                "--enable-demuxer=g726"
-                "--enable-demuxer=g726le"
-                "--enable-demuxer=pcm_mulaw"
-                "--enable-demuxer=pcm_alaw"
-                "--enable-demuxer=pcm_s16be"
-                "--enable-demuxer=pcm_s16le"
-                "--enable-demuxer=h263"
-                "--enable-demuxer=h264"
-                "--enable-demuxer=hevc"
+                  ;; Enable muxers/demuxers.
+                  "--disable-demuxers"
+                  "--disable-muxers"
+                  "--enable-muxer=rtp"
+                  "--enable-muxer=g722"
+                  "--enable-muxer=g723_1"
+                  "--enable-muxer=g726"
+                  "--enable-muxer=g726le"
+                  "--enable-muxer=h263"
+                  "--enable-muxer=h264"
+                  "--enable-muxer=hevc"
+                  "--enable-muxer=matroska"
+                  "--enable-muxer=webm"
+                  "--enable-muxer=ogg"
+                  "--enable-muxer=pcm_s16be"
+                  "--enable-muxer=pcm_s16le"
+                  "--enable-muxer=wav"
+                  "--enable-demuxer=rtp"
+                  "--enable-demuxer=mjpeg"
+                  "--enable-demuxer=mjpeg_2000"
+                  "--enable-demuxer=mpegvideo"
+                  "--enable-demuxer=gif"
+                  "--enable-demuxer=image_jpeg_pipe"
+                  "--enable-demuxer=image_png_pipe"
+                  "--enable-demuxer=image_webp_pipe"
+                  "--enable-demuxer=matroska"
+                  "--enable-demuxer=m4v"
+                  "--enable-demuxer=mp3"
+                  "--enable-demuxer=ogg"
+                  "--enable-demuxer=flac"
+                  "--enable-demuxer=wav"
+                  "--enable-demuxer=ac3"
+                  "--enable-demuxer=g722"
+                  "--enable-demuxer=g723_1"
+                  "--enable-demuxer=g726"
+                  "--enable-demuxer=g726le"
+                  "--enable-demuxer=pcm_mulaw"
+                  "--enable-demuxer=pcm_alaw"
+                  "--enable-demuxer=pcm_s16be"
+                  "--enable-demuxer=pcm_s16le"
+                  "--enable-demuxer=h263"
+                  "--enable-demuxer=h264"
+                  "--enable-demuxer=hevc"
 
-                ;; Enable parsers.
-                "--enable-parser=h263"
-                "--enable-parser=h264"
-                "--enable-parser=hevc"
-                "--enable-parser=mpeg4video"
-                "--enable-parser=vp8"
-                "--enable-parser=vp9"
-                "--enable-parser=opus"
+                  ;; Enable parsers.
+                  "--enable-parser=h263"
+                  "--enable-parser=h264"
+                  "--enable-parser=hevc"
+                  "--enable-parser=mpeg4video"
+                  "--enable-parser=vp8"
+                  "--enable-parser=vp9"
+                  "--enable-parser=opus"
 
-                ;; Encoders/decoders.
-                "--enable-encoder=adpcm_g722"
-                "--enable-decoder=adpcm_g722"
-                "--enable-encoder=adpcm_g726"
-                "--enable-decoder=adpcm_g726"
-                "--enable-encoder=adpcm_g726le"
-                "--enable-decoder=adpcm_g726le"
-                "--enable-decoder=g729"
-                "--enable-encoder=g723_1"
-                "--enable-decoder=g723_1"
-                "--enable-encoder=rawvideo"
-                "--enable-decoder=rawvideo"
-                "--enable-encoder=libx264"
-                "--enable-decoder=h264"
-                "--enable-encoder=pcm_alaw"
-                "--enable-decoder=pcm_alaw"
-                "--enable-encoder=pcm_mulaw"
-                "--enable-decoder=pcm_mulaw"
-                "--enable-encoder=mpeg4"
-                "--enable-decoder=mpeg4"
-                "--enable-encoder=libvpx_vp8"
-                "--enable-decoder=vp8"
-                "--enable-decoder=vp9"
-                "--enable-encoder=h263"
-                "--enable-encoder=h263p"
-                "--enable-decoder=h263"
-                "--enable-encoder=mjpeg"
-                "--enable-decoder=mjpeg"
-                "--enable-decoder=mjpegb"
-                "--enable-libspeex"
-                "--enable-libopus"
-                "--enable-libvpx"
-                "--enable-libx264"
-                "--enable-encoder=libspeex"
-                "--enable-decoder=libspeex"
-                "--enable-encoder=libopus"
-                "--enable-decoder=libopus"
+                  ;; Encoders/decoders.
+                  "--enable-encoder=adpcm_g722"
+                  "--enable-decoder=adpcm_g722"
+                  "--enable-encoder=adpcm_g726"
+                  "--enable-decoder=adpcm_g726"
+                  "--enable-encoder=adpcm_g726le"
+                  "--enable-decoder=adpcm_g726le"
+                  "--enable-decoder=g729"
+                  "--enable-encoder=g723_1"
+                  "--enable-decoder=g723_1"
+                  "--enable-encoder=rawvideo"
+                  "--enable-decoder=rawvideo"
+                  "--enable-encoder=libx264"
+                  "--enable-decoder=h264"
+                  "--enable-encoder=pcm_alaw"
+                  "--enable-decoder=pcm_alaw"
+                  "--enable-encoder=pcm_mulaw"
+                  "--enable-decoder=pcm_mulaw"
+                  "--enable-encoder=mpeg4"
+                  "--enable-decoder=mpeg4"
+                  "--enable-encoder=libvpx_vp8"
+                  "--enable-decoder=vp8"
+                  "--enable-decoder=vp9"
+                  "--enable-encoder=h263"
+                  "--enable-encoder=h263p"
+                  "--enable-decoder=h263"
+                  "--enable-encoder=mjpeg"
+                  "--enable-decoder=mjpeg"
+                  "--enable-decoder=mjpegb"
+                  "--enable-libspeex"
+                  "--enable-libopus"
+                  "--enable-libvpx"
+                  "--enable-libx264"
+                  "--enable-encoder=libspeex"
+                  "--enable-decoder=libspeex"
+                  "--enable-encoder=libopus"
+                  "--enable-decoder=libopus"
 
-                ;; Encoders/decoders for ringtones and audio streaming.
-                "--enable-decoder=flac"
-                "--enable-decoder=vorbis"
-                "--enable-decoder=aac"
-                "--enable-decoder=ac3"
-                "--enable-decoder=eac3"
-                "--enable-decoder=mp3"
-                "--enable-decoder=pcm_u24le"
-                "--enable-decoder=pcm_u32le"
-                "--enable-decoder=pcm_u8"
-                "--enable-decoder=pcm_f16le"
-                "--enable-decoder=pcm_f32le"
-                "--enable-decoder=pcm_f64le"
-                "--enable-decoder=pcm_s16le"
-                "--enable-decoder=pcm_s24le"
-                "--enable-decoder=pcm_s32le"
-                "--enable-decoder=pcm_s64le"
-                "--enable-decoder=pcm_u16le"
-                "--enable-encoder=pcm_u8"
-                "--enable-encoder=pcm_f32le"
-                "--enable-encoder=pcm_f64le"
-                "--enable-encoder=pcm_s16le"
-                "--enable-encoder=pcm_s32le"
-                "--enable-encoder=pcm_s64le"
+                  ;; Encoders/decoders for ringtones and audio streaming.
+                  "--enable-decoder=flac"
+                  "--enable-decoder=vorbis"
+                  "--enable-decoder=aac"
+                  "--enable-decoder=ac3"
+                  "--enable-decoder=eac3"
+                  "--enable-decoder=mp3"
+                  "--enable-decoder=pcm_u24le"
+                  "--enable-decoder=pcm_u32le"
+                  "--enable-decoder=pcm_u8"
+                  "--enable-decoder=pcm_f16le"
+                  "--enable-decoder=pcm_f32le"
+                  "--enable-decoder=pcm_f64le"
+                  "--enable-decoder=pcm_s16le"
+                  "--enable-decoder=pcm_s24le"
+                  "--enable-decoder=pcm_s32le"
+                  "--enable-decoder=pcm_s64le"
+                  "--enable-decoder=pcm_u16le"
+                  "--enable-encoder=pcm_u8"
+                  "--enable-encoder=pcm_f32le"
+                  "--enable-encoder=pcm_f64le"
+                  "--enable-encoder=pcm_s16le"
+                  "--enable-encoder=pcm_s32le"
+                  "--enable-encoder=pcm_s64le"
 
-                ;; Encoders/decoders for images.
-                "--enable-encoder=gif"
-                "--enable-decoder=gif"
-                "--enable-encoder=jpegls"
-                "--enable-decoder=jpegls"
-                "--enable-encoder=ljpeg"
-                "--enable-decoder=jpeg2000"
-                "--enable-encoder=png"
-                "--enable-decoder=png"
-                "--enable-encoder=bmp"
-                "--enable-decoder=bmp"
-                "--enable-encoder=tiff"
-                "--enable-decoder=tiff"
+                  ;; Encoders/decoders for images.
+                  "--enable-encoder=gif"
+                  "--enable-decoder=gif"
+                  "--enable-encoder=jpegls"
+                  "--enable-decoder=jpegls"
+                  "--enable-encoder=ljpeg"
+                  "--enable-decoder=jpeg2000"
+                  "--enable-encoder=png"
+                  "--enable-decoder=png"
+                  "--enable-encoder=bmp"
+                  "--enable-decoder=bmp"
+                  "--enable-encoder=tiff"
+                  "--enable-decoder=tiff"
 
-                ;; Filters.
-                "--enable-filter=scale"
-                "--enable-filter=overlay"
-                "--enable-filter=amix"
-                "--enable-filter=amerge"
-                "--enable-filter=aresample"
-                "--enable-filter=format"
-                "--enable-filter=aformat"
-                "--enable-filter=fps"
-                "--enable-filter=transpose"
-                "--enable-filter=pad"
+                  ;; Filters.
+                  "--enable-filter=scale"
+                  "--enable-filter=overlay"
+                  "--enable-filter=amix"
+                  "--enable-filter=amerge"
+                  "--enable-filter=aresample"
+                  "--enable-filter=format"
+                  "--enable-filter=aformat"
+                  "--enable-filter=fps"
+                  "--enable-filter=transpose"
+                  "--enable-filter=pad"
 
-                ;; Decoders for ringtones and audio streaming.
-                "--enable-decoder=pcm_s16be"
-                "--enable-decoder=pcm_s16be_planar"
-                "--enable-decoder=pcm_s16le_planar"
-                "--enable-decoder=pcm_s24be"
-                "--enable-decoder=pcm_s24le_planar"
-                "--enable-decoder=pcm_s32be"
-                "--enable-decoder=pcm_s32le_planar"
-                "--enable-decoder=pcm_s64be"
-                "--enable-decoder=pcm_s8"
-                "--enable-decoder=pcm_s8_planar"
-                "--enable-decoder=pcm_u16be"
+                  ;; Decoders for ringtones and audio streaming.
+                  "--enable-decoder=pcm_s16be"
+                  "--enable-decoder=pcm_s16be_planar"
+                  "--enable-decoder=pcm_s16le_planar"
+                  "--enable-decoder=pcm_s24be"
+                  "--enable-decoder=pcm_s24le_planar"
+                  "--enable-decoder=pcm_s32be"
+                  "--enable-decoder=pcm_s32le_planar"
+                  "--enable-decoder=pcm_s64be"
+                  "--enable-decoder=pcm_s8"
+                  "--enable-decoder=pcm_s8_planar"
+                  "--enable-decoder=pcm_u16be"
 
-                ;; More filters.
-                "--enable-filter=afir"
-                "--enable-filter=split"
-                "--enable-filter=drawbox"
-                "--enable-filter=drawtext"
-                "--enable-filter=rotate"
-                "--enable-filter=loop"
-                "--enable-filter=setpts"
-                "--enable-filter=movie"
-                "--enable-filter=alphamerge"
-                "--enable-filter=boxblur"
-                "--enable-filter=lut"
-                "--enable-filter=negate"
-                "--enable-filter=colorkey"
-                "--enable-filter=transpose"
+                  ;; More filters.
+                  "--enable-filter=afir"
+                  "--enable-filter=split"
+                  "--enable-filter=drawbox"
+                  "--enable-filter=drawtext"
+                  "--enable-filter=rotate"
+                  "--enable-filter=loop"
+                  "--enable-filter=setpts"
+                  "--enable-filter=movie"
+                  "--enable-filter=alphamerge"
+                  "--enable-filter=boxblur"
+                  "--enable-filter=lut"
+                  "--enable-filter=negate"
+                  "--enable-filter=colorkey"
+                  "--enable-filter=transpose"
 
-                "--enable-libfreetype"
+                  "--enable-libfreetype"
 
-                #$@(if (string-contains (%current-system) "linux")
-                       ;; Leave out the '--enable-cuvid' ... '--enable-encoder=hevc_nvenc'
-                       ;; flags, as there's no support for ffnvcodec in Guix;
-                       ;; it would not work with Mesa anyway.
-                       '("--enable-pic"
-                         "--extra-cxxflags=-fPIC"
-                         "--extra-cflags=-fPIC"
-                         "--target-os=linux"
-                         "--enable-indev=v4l2"
-                         "--enable-indev=xcbgrab"
-                         "--enable-vdpau"
-                         "--enable-hwaccel=h264_vdpau"
-                         "--enable-hwaccel=mpeg4_vdpau"
-                         "--enable-vaapi"
-                         "--enable-hwaccel=h264_vaapi"
-                         "--enable-hwaccel=mpeg4_vaapi"
-                         "--enable-hwaccel=h263_vaapi"
-                         "--enable-hwaccel=vp8_vaapi"
-                         "--enable-hwaccel=mjpeg_vaapi"
-                         "--enable-hwaccel=hevc_vaapi"
-                         "--enable-encoder=h264_vaapi"
-                         "--enable-encoder=vp8_vaapi"
-                         "--enable-encoder=mjpeg_vaapi"
-                         "--enable-encoder=hevc_vaapi")
-                       '())))))
-    (inputs (modify-inputs (package-inputs ffmpeg)
-              (append pipewire)))))
+                  #$@(if (string-contains (%current-system) "linux")
+                         ;; Leave out the '--enable-cuvid' ... '--enable-encoder=hevc_nvenc'
+                         ;; flags, as there's no support for ffnvcodec in Guix;
+                         ;; it would not work with Mesa anyway.
+                         '("--enable-pic"
+                           "--extra-cxxflags=-fPIC"
+                           "--extra-cflags=-fPIC"
+                           "--target-os=linux"
+                           "--enable-indev=v4l2"
+                           "--enable-indev=xcbgrab"
+                           "--enable-vdpau"
+                           "--enable-hwaccel=h264_vdpau"
+                           "--enable-hwaccel=mpeg4_vdpau"
+                           "--enable-vaapi"
+                           "--enable-hwaccel=h264_vaapi"
+                           "--enable-hwaccel=mpeg4_vaapi"
+                           "--enable-hwaccel=h263_vaapi"
+                           "--enable-hwaccel=vp8_vaapi"
+                           "--enable-hwaccel=mjpeg_vaapi"
+                           "--enable-hwaccel=hevc_vaapi"
+                           "--enable-encoder=h264_vaapi"
+                           "--enable-encoder=vp8_vaapi"
+                           "--enable-encoder=mjpeg_vaapi"
+                           "--enable-encoder=hevc_vaapi")
+                         '())))))
+      (inputs (modify-inputs (package-inputs ffmpeg)
+                (append pipewire))))))
 
 (define-public ffmpegthumbnailer
   (package
@@ -2421,7 +2442,7 @@ media, 2D/3D graphics and ECMAScript.")
            dav1d
            dbus
            eudev
-           ffmpeg
+           ffmpeg-6
            flac
            fontconfig
            freetype
@@ -2658,7 +2679,10 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0w0qk61ll0mddbkiwavqfx048sacyvp6fwglms58ypw869rh7iy7"))))
+               (base32 "0w0qk61ll0mddbkiwavqfx048sacyvp6fwglms58ypw869rh7iy7"))
+              (patches
+               (search-patches
+                "mpv-0.40.0-fix-ffmpeg-8.0.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -2967,7 +2991,7 @@ To load this plugin, specify the following option when starting mpv:
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
      (inputs
-      (list mpv libdisplay-info wlroots))
+      (list mpv libdisplay-info))
      (native-inputs
       (list pkg-config cmake-minimal))
      (home-page "https://github.com/GhostNaN/mpvpaper")

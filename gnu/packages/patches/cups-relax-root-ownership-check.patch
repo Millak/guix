@@ -1,0 +1,34 @@
+From 943e44dafa192b54fadcbb24f5f87d62a22c9f84 Mon Sep 17 00:00:00 2001
+From: Sergey Trofimov <sarg@sarg.org.ru>
+Date: Wed, 17 Sep 2025 12:09:34 +0200
+Subject: [PATCH] Exempt files in /gnu/store from root ownership check.
+
+---
+ cups/file.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/cups/file.c b/cups/file.c
+index 95054f3c8..9822619d4 100644
+--- a/cups/file.c
++++ b/cups/file.c
+@@ -159,7 +159,8 @@ _cupsFileCheck(
+   * 4. Must not be writable by others
+   */
+ 
+-  if (fileinfo.st_uid ||		/* 1. Must be owned by root */
++  int in_gnu_store = !strncmp(filename, "/gnu/store/", 11);
++  if ((fileinfo.st_uid && !in_gnu_store) ||		/* 1. Must be owned by root or be in /gnu/store */
+       (fileinfo.st_mode & S_IWGRP)  ||	/* 2. Must not be writable by group */
+       (fileinfo.st_mode & S_ISUID) ||	/* 3. Must not be setuid */
+       (fileinfo.st_mode & S_IWOTH))	/* 4. Must not be writable by others */
+@@ -198,7 +199,7 @@ _cupsFileCheck(
+     goto finishup;
+   }
+ 
+-  if (fileinfo.st_uid ||		/* 1. Must be owned by root */
++  if ((fileinfo.st_uid && !in_gnu_store) ||		/* 1. Must be owned by root or be in /gnu/store */
+       (fileinfo.st_mode & S_IWGRP) ||	/* 2. Must not be writable by group */
+       (fileinfo.st_mode & S_ISUID) ||	/* 3. Must not be setuid */
+       (fileinfo.st_mode & S_IWOTH))	/* 4. Must not be writable by others */
+-- 
+2.51.0

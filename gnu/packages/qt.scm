@@ -2117,7 +2117,7 @@ Vulkan, OpenGL and other main graphic APIs.")
            vulkan-headers))
     (inputs
      (list alsa-lib
-           ffmpeg
+           ffmpeg-6
            glib
            libxkbcommon
            libxrandr
@@ -4144,7 +4144,7 @@ linux/libcurl_wrapper.h"
            curl
            dbus
            eudev
-           ffmpeg
+           ffmpeg-6
            fontconfig
            fxdiv
            harfbuzz

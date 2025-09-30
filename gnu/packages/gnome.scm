@@ -180,7 +180,6 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
-  #:use-module (gnu packages ninja)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages ocr)
   #:use-module (gnu packages openldap)
@@ -443,7 +442,7 @@ services.")
                                                      "/share/gtk-doc/html"))))
     (native-inputs (list docbook-xml-4.1.2 gobject-introspection gtk-doc/stable
                          pkg-config))
-    (propagated-inputs (list glib libsoup-minimal-2 libxml2-next-for-grafting))
+    (propagated-inputs (list glib libsoup-minimal-2 libxml2))
     (synopsis "Glib library for feeds")
     (description "LibGRSS is a Glib abstraction to handle feeds in RSS, Atom,
 and other formats.")
@@ -1223,7 +1222,7 @@ Library reference documentation.")
      ;; These inputs are required by the pkg-config file.
      (list glib
            libsoup
-           libxml2-next-for-grafting))
+           libxml2))
     (synopsis "WebDav server implementation using libsoup")
     (description "PhoDav was initially developed as a file-sharing mechanism for Spice,
 but it is generic enough to be reused in other projects,
@@ -1433,7 +1432,7 @@ a debugging tool, @command{gssdp-device-sniffer}.")
            gsettings-desktop-schemas    ;for ‘org.gnome.system.proxy’.
            gssdp
            libsoup
-           libxml2-next-for-grafting))
+           libxml2))
     (synopsis "PnP API for GNOME")
     (description "This package provides GUPnP, an object-oriented framework
 for creating UPnP devices and control points, written in C using
@@ -1476,7 +1475,7 @@ given profile, etc.  DLNA is a subset of UPnP A/V.")
 (define-public gupnp-av
   (package
    (name "gupnp-av")
-   (version "0.14.1")
+   (version "0.14.4")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1484,7 +1483,7 @@ given profile, etc.  DLNA is a subset of UPnP A/V.")
                                 name "-" version ".tar.xz"))
             (sha256
              (base32
-              "0kry7arwmvs8b4175wia3l0s02ap1shq68f29g2xjrhc9g6f175p"))))
+              "1izq71qphyac02ynypwk0skxqzhfr0zrl7dap3sxrdaw4yrp9n91"))))
    (build-system meson-build-system)
    (native-inputs
     (list gettext-minimal
@@ -2018,7 +2017,7 @@ and system administrators.")
       (inputs
        (list graphene
              gtk+
-             libxml2-next-for-grafting
+             libxml2
              libxslt
              poppler
              python-minimal
@@ -2068,7 +2067,7 @@ formats like PNG, SVG, PDF and EPS.")
        ("json-glib" ,json-glib)
        ("liboauth" ,liboauth)
        ("libsoup" ,libsoup-minimal-2)
-       ("libxml2" ,libxml2-next-for-grafting)))
+       ("libxml2" ,libxml2)))
     (home-page "https://wiki.gnome.org/Projects/libgdata")
     (synopsis "Library for accessing online service APIs")
     (description
@@ -3600,7 +3599,7 @@ XML/CSS rendering engine.")
            zlib))
     (propagated-inputs
      (list glib
-           libxml2-next-for-grafting))
+           libxml2))
     (synopsis "G Structured File Library")
     (description "Libgsf aims to provide an efficient extensible I/O abstraction
 for dealing with different structured file formats.")
@@ -3802,7 +3801,7 @@ diagrams.")
            `(,glib "bin") ; glib-mkenums, etc.
            gobject-introspection)) ; g-ir-compiler, etc.
     (inputs
-     (list pango libcroco libxml2))
+     (list pango libcroco libxml2-2.11))
     (propagated-inputs
      ;; librsvg-2.0.pc refers to all of that.
      (list cairo gdk-pixbuf glib))
@@ -4215,7 +4214,7 @@ ported to GTK+.")
     (inputs
      (list python)) ;; needed for the optional libglade-convert program
     (propagated-inputs
-     (list gtk+-2 libxml2-next-for-grafting)) ; required by libglade-2.0.pc
+     (list gtk+-2 libxml2)) ; required by libglade-2.0.pc
     (native-inputs
      (list pkg-config))
     (home-page "https://developer.gnome.org/libglade")
@@ -4254,7 +4253,7 @@ widgets built in the loading process.")
                ;; Therefore we must do it.
                (zero? (system (format #f "~a/bin/Xvfb ~a &" xorg-server disp)))))))))
     ;; Mentioned as Required by the .pc file
-    (propagated-inputs (list libxml2-next-for-grafting))
+    (propagated-inputs (list libxml2))
     (inputs
      (list popt pangox-compat libgnome libgnomecanvas libglade))
     (native-inputs
@@ -4911,7 +4910,7 @@ GLib and GObject, and integrates JSON with GLib data types.")
        ("libtool" ,libtool)))
     (propagated-inputs
      ;; Required by libxklavier.pc.
-     (list glib libxml2-next-for-grafting))
+     (list glib libxml2))
     (inputs
      (list iso-codes/pinned libxi libxkbfile xkbcomp xkeyboard-config))
     (home-page "https://www.freedesktop.org/wiki/Software/LibXklavier/")
@@ -5021,7 +5020,6 @@ files.")
 
 (define-public rest
   (package
-    (replacement rest/fixed)
     (name "rest")
     (version "0.8.1")
     (source (origin
@@ -5049,13 +5047,6 @@ files.")
 claim to be \"RESTful\".  It includes convenience wrappers for libsoup and
 libxml to ease remote use of the RESTful API.")
     (license license:lgpl2.1+)))
-
-(define-public rest/fixed
-  (package
-    (inherit rest)
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs rest)
-       (replace "libxml2" libxml2-next-for-grafting)))))
 
 (define-public rest-next
   (package
@@ -5210,7 +5201,7 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
            libpsl
            nghttp2 ;for pkg-config
            `(,nghttp2 "lib")
-           libxml2-next-for-grafting
+           libxml2
            sqlite
            zlib))
     (inputs
@@ -5799,7 +5790,7 @@ output devices.")
                docbook-xsl
                gtk-doc/stable
                libxslt
-               sane-backends
+               sane
                vala)))))                ;for VAPI, needed by simple-scan
 
 (define-public geoclue
@@ -6018,7 +6009,7 @@ service via the system message bus.")
      (list gtk+
            gdk-pixbuf
            json-glib
-           libxml2-next-for-grafting
+           libxml2
            libsoup
            geocode-glib))
     (inputs
@@ -6137,7 +6128,7 @@ settings, themes, mouse settings, and startup of other daemons.")
     (list intltool
           `(,glib "bin") gobject-introspection pkg-config))
    (propagated-inputs
-    (list glib gmime libarchive libgcrypt libxml2-next-for-grafting))
+    (list glib gmime libarchive libgcrypt libxml2))
    (inputs
     (list libsoup))
    (home-page "https://projects.gnome.org/totem")
@@ -7238,7 +7229,7 @@ USB transfers with your high-level application or system daemon.")
            gdk-pixbuf
            gusb
            libadwaita
-           sane-backends))
+           sane))
     (home-page "https://gitlab.gnome.org/GNOME/simple-scan")
     (synopsis "Document and image scanner")
     (description
@@ -8122,7 +8113,7 @@ to display dialog boxes from the commandline and shell scripts.")
            libxext
            libxfixes
            libxkbcommon
-           libxml2-next-for-grafting
+           libxml2
            libxrandr
            mesa
            pango
@@ -8948,7 +8939,7 @@ the available networks and allows users to easily switch between them.")
         (base32 "0gp8irc5ny9i6bw9fp21p8djgksi1s8l5flbn5blisgfpcb2w820"))))
     (build-system gnu-build-system)
     (propagated-inputs
-     (list libxml2-next-for-grafting))  ;required by .pc file
+     (list libxml2))  ;required by .pc file
     (native-inputs
      (list autoconf
            automake
@@ -9726,7 +9717,8 @@ easy, safe, and automatic.")
                              #$output "/lib:"
                              #$output "/lib/tracker-3.0")
               "-Ddocs=false"
-              "-Dsystemd_user_services=false")
+              "-Dsystemd_user_services=false"
+              "--wrap-mode=nodownload") ; XXX: to be disabled
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
@@ -11631,7 +11623,7 @@ text views, and buttons to choose the language.")
 (define-public gnome-planner
   (package
     (name "gnome-planner")
-    (version "0.14.6")
+    (version "0.14.92")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/planner/"
@@ -11639,30 +11631,34 @@ text views, and buttons to choose the language.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "15h6ps58giy5r1g66sg1l4xzhjssl362mfny2x09khdqsvk2j38k"))))
-    (build-system glib-or-gtk-build-system)
+                "0cyqs1ly6cp96pjw0yjk1r0dshp0c3869wgknxpp97dnbppsg8px"))))
+    (build-system meson-build-system)
     (arguments
-     ;; Disable the Python bindings because the Planner program functions
-     ;; without them, and (as of 2017-06-13) we have not packaged all of
-     ;; packages that are necessary for building the Python bindings.
-     `(#:configure-flags
-       (list "--disable-python"
-             ,@(if (string=? "aarch64-linux" (%current-system))
-                   '("--build=aarch64-unknown-linux-gnu")
-                   '()))))
+     (list
+      #:glib-or-gtk? #t
+      #:configure-flags
+      ;; Otherwise, the RUNPATH will lack the final 'planner' path component
+      ;; (see: <https://gitlab.gnome.org/World/planner/-/issues/274>).
+      #~(list (string-append "-Dc_link_args=-Wl,-rpath="
+                             #$output "/lib/planner"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "meson_post_install.sh"
+                (("gtk-update-icon-cache") (which "true"))))))))
     (inputs
-     (list libgnomecanvas
-           libgnomeui
-           libglade
-           gnome-vfs
-           gconf
-           libxml2
-           libxslt
+     (list gconf
+           glib
            gtk+
-           glib))
+           libxml2
+           libxslt))
     (native-inputs
-     (list intltool scrollkeeper pkg-config))
-    (home-page "https://wiki.gnome.org/Apps/Planner")
+     (list `(,glib "bin")               ;for glib-genmarshal, etc.
+           desktop-file-utils           ;for update-desktop-database
+           gettext-minimal
+           pkg-config))
+    (home-page "https://gitlab.gnome.org/World/planner")
     (synopsis "Project management software for the GNOME desktop")
     (description
      "GNOME Planner is a project management tool based on the Work Breakdown
@@ -13885,7 +13881,7 @@ developed with the aim of being used with the Librem 5 phone.")
            sqlite
            vala))
     (propagated-inputs
-     (list libxml2-next-for-grafting))  ; required by libgda-5.0.pc
+     (list libxml2))  ; required by libgda-5.0.pc
     (home-page "https://gitlab.gnome.org/GNOME/libgda")
     (synopsis "Uniform data access")
     (description
@@ -14000,7 +13996,7 @@ world.")
        ("python-pyenchant" ,python-pyenchant)
        ("python-reportlab" ,python-reportlab)
        ("python-sane" ,python-sane)
-       ("sane-backends" ,sane-backends)
+       ("sane" ,sane)
        ("tesseract-ocr" ,tesseract-ocr)))
     (home-page "https://wiki.gnome.org/Apps/OCRFeeder")
     (synopsis "Complete OCR Suite")

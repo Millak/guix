@@ -27,6 +27,7 @@
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
+;;; Copyright © 2025 John Kehayias <john@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -158,7 +159,8 @@
                                        "emacs-native-comp-driver-options.patch"
                                        "emacs-native-comp-fix-filenames.patch"
                                        "emacs-native-comp-pin-packages.patch"
-                                       "emacs-pgtk-super-key-fix.patch"))
+                                       "emacs-pgtk-super-key-fix.patch"
+                                       "emacs-zoom-image-test-fix.patch"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "lisp"
@@ -688,7 +690,10 @@ editor (with wide ints)" )
                         "emacs-native-comp-driver-options.patch"
                         "emacs-next-native-comp-fix-filenames.patch"
                         "emacs-native-comp-pin-packages.patch"
-                        "emacs-pgtk-super-key-fix.patch")))))))
+                        "emacs-pgtk-super-key-fix.patch"
+                        ;; XXX This commit should already be on 31.0 but
+                        ;; without this emacs-next will fail a test.
+                        "emacs-zoom-image-test-fix.patch")))))))
 
 (define* (emacs->emacs-next emacs #:optional name
                             #:key (version (package-version emacs-next-minimal))

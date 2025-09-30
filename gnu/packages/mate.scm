@@ -303,7 +303,7 @@ desktop and the mate-about program.")
     (propagated-inputs
      ;; both of these are requires.private in mateweather.pc
      (list libsoup-minimal-2
-           libxml2-next))
+           libxml2))
     (home-page "https://mate-desktop.org/")
     (synopsis "MATE library for weather information from the Internet")
     (description
@@ -538,7 +538,6 @@ assorted menu related utility programs.")
            intltool
            libxslt
            yelp-tools
-           scrollkeeper
            gettext-minimal
            docbook-xml
            gobject-introspection))
@@ -1412,7 +1411,6 @@ can be used as backgrounds in the MATE Desktop environment.")
            libice
            libsm
            pkg-config
-           scrollkeeper
            xorgproto
            yelp-tools))
     (inputs
@@ -1591,7 +1589,6 @@ can be used as backgrounds in the MATE Desktop environment.")
            packagekit
            pango
            python
-           scrollkeeper
            startup-notification))
     (home-page "https://mate-desktop.org/")
     (synopsis "Text Editor for MATE")

@@ -245,7 +245,7 @@ the leaves of a full binary tree.")
     (native-inputs (list pkg-config scdoc
                          ;; for wayland-scanner
                          wayland))
-    (inputs (list wayland wlroots libxkbcommon))
+    (inputs (list wayland wlroots-0.18 libxkbcommon))
     (home-page "https://github.com/cage-kiosk/cage")
     (synopsis "Wayland kiosk")
     (description "This package provides a Wayland @dfn{kiosk}, which runs a
@@ -430,7 +430,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
            hyprland-qtutils
            hyprlang
            hyprutils
-           libinput-minimal-next
+           libinput-minimal
            libxcursor
            libxkbcommon
            mesa
@@ -1612,7 +1612,7 @@ the XDG Autostart specification.")
            tllist
            scdoc))
     (inputs
-     (list wlroots wayland fcft dbus libpng))
+     (list wayland fcft dbus libpng))
     (home-page "https://codeberg.org/dnkl/fnott")
     (synopsis "Keyboard driven and lightweight Wayland notification daemon")
     (description "Fnott is a keyboard driven and lightweight notification daemon
@@ -2049,7 +2049,7 @@ started automatically on the first call via D-Bus.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list wlroots))
+     (list wlroots-0.18))
     (home-page "https://codeberg.org/dwl/dwl")
     (synopsis "Dynamic window manager for Wayland")
     (description
@@ -2244,7 +2244,7 @@ XDG-Output for wlclock to work.")
 (define-public wlroots
   (package
     (name "wlroots")
-    (version "0.18.2")
+    (version "0.19.1")
     (source
      (origin
        (method git-fetch)
@@ -2253,7 +2253,7 @@ XDG-Output for wlclock to work.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1l1c4m8m1h8rl00y9yi6qjma5m3lhai9hqv5578q69yg2dcwraxw"))))
+        (base32 "1w3nlrvy7625jh4f0l923f7irywzfdashcw5hbf8jq9kpjhpm323"))))
     (build-system meson-build-system)
     (arguments
      (list #:phases
@@ -2301,6 +2301,24 @@ Wayland compositor")
     (description "wlroots is a set of pluggable, composable, unopinionated
 modules for building a Wayland compositor.")
     (license license:expat)))  ; MIT license
+
+;; Allow packages refering to stable wlroots version, because
+;; wlroots updates are backward incompatible.
+(define-public wlroots-0.19 wlroots)
+
+(define-public wlroots-0.18
+  (package
+    (inherit wlroots)
+    (version "0.18.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/wlroots/wlroots")
+             (commit version)))
+       (file-name (git-file-name "wlroots" version))
+       (sha256
+        (base32 "1l1c4m8m1h8rl00y9yi6qjma5m3lhai9hqv5578q69yg2dcwraxw"))))))
 
 (define-public wlroots-0.17
   (package
@@ -2450,7 +2468,7 @@ narrow the items to those matching the tokens in the input.")
                   pcre2
                   swaybg
                   wayland
-                  wlroots))
+                  wlroots-0.18))
     (native-inputs
      (cons* linux-pam mesa pkg-config scdoc wayland-protocols
             (if (%current-target-system)
@@ -2489,7 +2507,7 @@ narrow the items to those matching the tokens in the input.")
                   scenefx
                   swaybg
                   wayland
-                  wlroots))
+                  wlroots-0.18))
     (home-page "https://github.com/WillPower3309/swayfx")
     (synopsis "Sway Fork with extra options and effects")
     (description
@@ -3936,7 +3954,7 @@ read and write, and compatible with JSON.")
 (define-public labwc
   (package
     (name "labwc")
-    (version "0.8.4")
+    (version "0.9.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3945,7 +3963,7 @@ read and write, and compatible with JSON.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wbza00y2xf2zn34q5c8g5k2dn2xjzbbqmsnjv6c90mh2bbk1q95"))))
+                "0p475vjn9gg314spf89di6i1l2lr9xx59mz4hq4shvbh64hr48pi"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config gettext-minimal scdoc))
@@ -3958,7 +3976,7 @@ read and write, and compatible with JSON.")
            libxcb
            libxml2
            pango
-           wlroots))
+           wlroots-0.19))
     (home-page "https://labwc.github.io")
     (synopsis "Window-stacking compositor for Wayland")
     (description
@@ -4624,7 +4642,7 @@ battery efficient---polling is only done when absolutely necessary.")
 (define-public wideriver
   (package
     (name "wideriver")
-    (version "1.2.0")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -4633,7 +4651,7 @@ battery efficient---polling is only done when absolutely necessary.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16i0mzgxn32nrh5ajn0kb4xdwmsjg03amhasxhwyvspar5y4flhg"))))
+        (base32 "1ljl1finfajinvrj073dbwk9vm352jwr6rm9vn5fkrqi296s1n8x"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -4644,7 +4662,7 @@ battery efficient---polling is only done when absolutely necessary.")
       #:phases #~(modify-phases %standard-phases
                    (delete 'configure)))) ; no configure script
     (native-inputs (list pkg-config cmocka))
-    (inputs (list wayland wayland-protocols wlroots))
+    (inputs (list wayland wayland-protocols))
     (home-page "https://github.com/alex-courtis/wideriver")
     (synopsis "A set of riverWM layouts")
     (description
@@ -4695,7 +4713,7 @@ configure input, and customize Wayfire plugins.")
                   mesa
                   libxkbcommon
                   libdrm
-                  wlroots))
+                  wlroots-0.18))
     (home-page "https://github.com/wlrfx/scenefx")
     (synopsis "Drop-in replacement for the wlroots scene API")
     (description

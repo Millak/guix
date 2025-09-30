@@ -6,18 +6,18 @@ that 'itstool' stumbles upon when processing UTF-8 data:
 Patch by Jan Matejek
 from <https://bugzilla.opensuse.org/show_bug.cgi?id=1065270>.
 
---- libxml2-2.9.5.orig/python/libxml.c
-+++ libxml2-2.9.5/python/libxml.c
-@@ -1620,6 +1620,7 @@ libxml_xmlErrorFuncHandler(ATTRIBUTE_UNU
+--- a/python/libxml.c
++++ b/python/libxml.c
+@@ -1499,6 +1499,7 @@ libxml_xmlErrorFuncHandler(ATTRIBUTE_UNUSED void *ctx, const char *msg,
      PyObject *message;
      PyObject *result;
      char str[1000];
 +    unsigned char *ptr = (unsigned char *)str;
  
- #ifdef DEBUG_ERROR
-     printf("libxml_xmlErrorFuncHandler(%p, %s, ...) called\n", ctx, msg);
-@@ -1636,12 +1637,20 @@ libxml_xmlErrorFuncHandler(ATTRIBUTE_UNU
- 	    str[999] = 0;
+     if (libxml_xmlPythonErrorFuncHandler == NULL) {
+         va_start(ap, msg);
+@@ -1510,12 +1511,20 @@ libxml_xmlErrorFuncHandler(ATTRIBUTE_UNUSED void *ctx, const char *msg,
+            str[999] = 0;
          va_end(ap);
  
 +#if PY_MAJOR_VERSION >= 3
@@ -32,7 +32,7 @@ from <https://bugzilla.opensuse.org/show_bug.cgi?id=1065270>.
 -        message = libxml_charPtrConstWrap(str);
 +        message = libxml_charPtrConstWrap(ptr);
          PyTuple_SetItem(list, 1, message);
-         result = PyEval_CallObject(libxml_xmlPythonErrorFuncHandler, list);
+         result = PyObject_CallObject(libxml_xmlPythonErrorFuncHandler, list);
 +        /* Forget any errors caused in the error handler. */
 +        PyErr_Clear();
          Py_XDECREF(list);

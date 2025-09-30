@@ -12,6 +12,7 @@
 ;;; Copyright © 2025 Lukas Gradl <lgradl@posteo.net>
 ;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 John Kehayias <john@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -321,7 +322,7 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
 (define-public cups-minimal
   (package
     (name "cups-minimal")
-    (version "2.4.9")
+    (version "2.4.14")
     (source
      (origin
        (method git-fetch)
@@ -331,8 +332,8 @@ filters for the PDF-centric printing workflow introduced by OpenPrinting.")
        ;; Avoid NAME confusion: these are the complete CUPS sources.
        (file-name (git-file-name "cups" version))
        (sha256
-        (base32 "08wjd1flyaslhnwvxl39403qi3g675rk532ysiyk6cda4r8ks1g1"))
-       (patches (search-patches "cups-minimal-Address-PPD-injection-issues.patch"))))
+        (base32 "1dk5salizxy1qm19gw93ffdd34hsn1cd4s57nwl7nfhwwirkiri2"))
+       (patches (search-patches "cups-relax-root-ownership-check.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -703,6 +704,14 @@ should only be used as part of the Guix cups-pk-helper service.")
                    (string-append "rulessystemdir = " out "/lib/systemd/system"))
                   (("/etc/sane.d")
                    (string-append out "/etc/sane.d"))))))
+          (add-after 'install 'move-sane-config-to-dll.d
+            (lambda _
+              ;; move dll.conf to dll.d - the directory intended for 3rd-party
+              ;; backend configurations.
+              (let ((dll.d (string-append #$output "/etc/sane.d/dll.d"))
+                    (dll.conf (string-append #$output "/etc/sane.d/dll.conf")))
+                (mkdir-p dll.d)
+                (rename-file dll.conf (string-append dll.d "/hpaio")))))
           (add-after 'install 'install-models-dat
             (lambda* (#:key outputs #:allow-other-keys)
               (install-file "data/models/models.dat"
@@ -751,7 +760,7 @@ should only be used as part of the Guix cups-pk-helper service.")
            python-pygobject
            python-pyqt
            python-wrapper
-           sane-backends-minimal
+           sane
            net-snmp
            openssl
            avahi
@@ -789,7 +798,7 @@ should only be used as part of the Guix cups-pk-helper service.")
            dbus
            libjpeg-turbo
            libusb
-           sane-backends-minimal
+           sane
            zlib))
     (synopsis "GUI-less version of hplip")))
 

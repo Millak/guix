@@ -586,7 +586,7 @@ freedesktop.org project.")
   ;; Updating this will rebuild over 700 packages through libinput-minimal.
   (package
     (name "libinput")
-    (version "1.26.2")
+    (version "1.29.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -595,7 +595,7 @@ freedesktop.org project.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zwwq7a0a6yznc6jxhp6gb50yw5vpfkvgbrabrpc5pwldpckfbrg"))))
+                "1kgr18p7n9bvim9bx24jbr5nwp6icla3bgzfskr04f68mirmx561"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Ddocumentation=false")
@@ -641,21 +641,6 @@ other applications that need to directly deal with input devices.")
        `(cons* "-Dlibwacom=false"
                "-Ddebug-gui=false"    ;requires gtk+@3
                ,flags))))))
-
-;; TODO: Remove this package when libinput-minimal >= 1.28
-(define-public libinput-minimal-next
-  (package/inherit libinput-minimal
-    (name "libinput-minimal")
-    (version "1.28.903")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://gitlab.freedesktop.org/libinput/libinput.git")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0i5yljdff4fjchpa8ifscbcssnmiim58ai1zy3v41vim2illprv5"))))))
 
 (define-public libei
   (package
@@ -1363,7 +1348,7 @@ in and for C++.")
 (define-public wayland
   (package
     (name "wayland")
-    (version "1.23.1")
+    (version "1.24.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gitlab.freedesktop.org/" name
@@ -1371,12 +1356,11 @@ in and for C++.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1vg5h6d94hglh7724q6wx9dpg4y0afvxksankp1hwbcy76lb4kw6"))))
+                "0dh5bldg24ajxz7xmylwm01nmj572x1vb0ya9qrppmhsl23j92c2"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
-     (list #:parallel-tests? #f
-           #:phases
+     (list #:phases
            #~(modify-phases %standard-phases
                (add-after 'install 'move-doc
                  (lambda _
@@ -1414,7 +1398,7 @@ fullscreen) or other display servers.")
 (define-public wayland-protocols
   (package
     (name "wayland-protocols")
-    (version "1.44")
+    (version "1.45")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1423,7 +1407,7 @@ fullscreen) or other display servers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gjhfiah8hkhqlfan2pr8jvf9h8rjkyz79kkxddi8js2q7dy4bbq"))))
+                "1d2fv41vq75pvgkd3ykjypnp8zv0afv71p36cd91h19lbmwaia8h"))))
     (build-system meson-build-system)
     (inputs
      (list wayland))
@@ -2250,7 +2234,7 @@ between protocols to provide a unified interface for applications.")
       (inputs (list sqlite))
       (propagated-inputs
        ;; telepathy-logger-0.2.pc refers to all these.
-       (list libxml2-next telepathy-glib))
+       (list libxml2 telepathy-glib))
       (synopsis "Telepathy logger library")
       (home-page "https://telepathy.freedesktop.org/")
       (description

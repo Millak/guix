@@ -286,7 +286,7 @@ into other word processors.")
     (native-inputs
      (list cppunit gperf pkg-config))
     (propagated-inputs ; in Requires or Requires.private field of .pkg
-     (list icu4c liblangtag librevenge libxml2-next))
+     (list icu4c liblangtag librevenge libxml2))
     (inputs
       (list boost))
     (arguments
@@ -372,7 +372,7 @@ working with graphics in the WPG (WordPerfect Graphics) format.")
     (native-inputs
      (list autoconf automake libtool cppunit pkg-config))
     (propagated-inputs                  ;in Requires field of .pkg
-     (list curl libxml2-next))
+     (list curl libxml2))
     (inputs
      (list boost cyrus-sasl openssl))
     (arguments
@@ -413,7 +413,7 @@ as Alfresco or Nuxeo.")
     (native-inputs
      (list doxygen gperf perl pkg-config))
     (propagated-inputs ; in Requires or Requires.private field of .pkg
-     (list librevenge libxml2-next))
+     (list librevenge libxml2))
     (inputs
      (list boost))
     (home-page "https://wiki.documentfoundation.org/DLP/Libraries/libabw")
@@ -467,7 +467,7 @@ CorelDRAW documents of all versions.")
     (native-inputs
      (list cppunit doxygen gperf pkg-config))
     (propagated-inputs ; in Requires or Requires.private field of .pkg
-     (list liblangtag librevenge libxml2-next zlib))
+     (list liblangtag librevenge libxml2 zlib))
     (inputs
      (list boost glm mdds))
     (home-page "https://wiki.documentfoundation.org/DLP/Libraries/libetonyek")
@@ -479,14 +479,14 @@ Apple Keynote documents.  It currently supports Keynote versions 2 to 5.")
 (define-public liblangtag
   (package
     (name "liblangtag")
-    (version "0.6.4")
+    (version "0.6.7")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://bitbucket.org/tagoh/liblangtag/downloads/"
                             "liblangtag-" version ".tar.bz2"))
         (sha256
-         (base32 "0r55r30ih8dgq1hwbpl834igilj7bpxcnmlrlkd3vryk2wn0c0ap"))))
+         (base32 "03h33sjqsrmmkyj2kxs7c6226hd4s5n22bz62b4hag1zmvabrmjy"))))
     (build-system gnu-build-system)
     (native-inputs
      (list libtool pkg-config))
@@ -772,15 +772,28 @@ Works word processor file format.")
       (uri (string-append "http://dev-www.libreoffice.org/src/libzmf/libzmf-"
                           version ".tar.xz"))
       (sha256 (base32
-               "08mg5kmkjrmqrd8j5rkzw9vdqlvibhb1ynp6bmfxnzq5rcq1l197"))))
+               "08mg5kmkjrmqrd8j5rkzw9vdqlvibhb1ynp6bmfxnzq5rcq1l197"))
+      (patches (search-patches "libzmf-doxygen-1.14.patch"))))
    (build-system gnu-build-system)
    (arguments
-    ;; A harmless 'sign-compare' error pops up on i686 so disable '-Werror'.
-    '(#:configure-flags '("--disable-werror")))
+    (list
+     ;; A harmless 'sign-compare' error pops up on i686 so disable '-Werror'.
+     #:configure-flags #~'("--disable-werror")
+     #:phases
+     #~(modify-phases %standard-phases
+          (replace 'bootstrap
+            (lambda _
+              ;; Override the bootstrap phase as a makefile has been patched.
+              (invoke "autoreconf" "-vif"))))))
    (inputs
     (list boost icu4c libpng librevenge zlib))
     (native-inputs
-     (list cppunit doxygen pkg-config))
+     (list autoconf
+           automake
+           libtool
+           cppunit
+           doxygen
+           pkg-config))
     (home-page "https://wiki.documentfoundation.org/DLP/Libraries/libzmf")
     (synopsis "Parses file format of Zoner Callisto/Draw documents")
     (description "Libzmf is a library that parses the file format of Zoner
@@ -1177,7 +1190,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
            python-lxml
            qrcodegen-cpp
            redland
-           sane-backends
+           sane
            unixodbc
            unzip
            vigra

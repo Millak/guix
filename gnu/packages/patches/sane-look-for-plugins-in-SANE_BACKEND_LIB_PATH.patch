@@ -1,0 +1,25 @@
+From 324ad2e5b5d4b08fb682fa05d5baaaf087d13f5c Mon Sep 17 00:00:00 2001
+From: Sergey Trofimov <sarg@sarg.org.ru>
+Date: Sat, 20 Sep 2025 18:26:44 +0200
+Subject: [PATCH] Look for plugins in SANE_BACKEND_LIB_PATH.
+
+---
+ backend/dll.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/backend/dll.c b/backend/dll.c
+index bf34c4f6d..d52e81206 100644
+--- a/backend/dll.c
++++ b/backend/dll.c
+@@ -461,6 +461,8 @@ load (struct backend *be)
+     be->op[i] = op_unsupported;
+ 
+   path = getenv ("LD_LIBRARY_PATH");
++  if (!path)
++    path = getenv ("SANE_BACKEND_LIB_PATH");	/* for guix */
+   if (!path)
+     path = getenv ("SHLIB_PATH");	/* for HP-UX */
+   if (!path)
+-- 
+2.51.0
+

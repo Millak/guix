@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017-2021, 2023, 2024 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2023 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2024 Noé Lopez <noelopez@free.fr>
 ;;;
@@ -60,17 +60,6 @@
 (define %tar-bootstrap %bootstrap-coreutils&co)
 
 (define %ar-bootstrap %bootstrap-binutils)
-
-;;; This is a variant of the RPM package configured so that its database can
-;;; be created on a writable location readily available inside the build
-;;; container ("/tmp").
-(define rpm-for-tests
-  (package
-    (inherit rpm)
-    (arguments (substitute-keyword-arguments (package-arguments rpm)
-                 ((#:configure-flags flags '())
-                  #~(cons "--localstatedir=/tmp"
-                          (delete "--localstatedir=/var" #$flags)))))))
 
 
 (test-begin "pack")
@@ -517,14 +506,15 @@
                  (use-modules (guix build utils))
 
                  (define fakeroot #+(file-append fakeroot "/bin/fakeroot"))
-                 (define rpm #+(file-append rpm-for-tests "/bin/rpm"))
-                 (mkdir-p "/tmp/lib/rpm")
+                 (define rpm #+(file-append rpm "/bin/rpm"))
+                 (define dbpath (string-append (getcwd) "/var/lib/rpm"))
+                 (mkdir-p dbpath)
 
                  ;; Install the RPM package.  This causes RPM to validate the
                  ;; signatures, header as well as the file digests, which
                  ;; makes it a rather thorough test.
                  (mkdir "test-prefix")
-                 (invoke fakeroot rpm "--install"
+                 (invoke fakeroot rpm "--dbpath" dbpath "--install"
                          (string-append "--prefix=" (getcwd) "/test-prefix")
                          #$rpm-pack)
 
@@ -532,7 +522,8 @@
                  (invoke "./test-prefix/bin/guile" "--version")
 
                  ;; Uninstall the RPM package.
-                 (invoke fakeroot rpm "--erase" "guile-bootstrap")
+                 (invoke fakeroot rpm "--dbpath" dbpath
+                         "--erase" "guile-bootstrap")
 
                  ;; Required so the above is run.
                  (mkdir #$output))))))

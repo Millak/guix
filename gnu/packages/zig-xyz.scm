@@ -445,7 +445,7 @@ interface.")
                           `(,@args #:install-source? #f))
                    (chdir ".."))))))
     (propagated-inputs
-     (list wlroots
+     (list wlroots-0.18
            zig-pixman
            zig-wayland
            zig-xkbcommon))

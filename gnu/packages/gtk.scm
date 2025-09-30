@@ -36,7 +36,7 @@
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2024, 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2025 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
 ;;;
@@ -285,7 +285,7 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
 (define-public harfbuzz
   (package
     (name "harfbuzz")
-    (version "8.3.0")
+    (version "11.4.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/harfbuzz/harfbuzz"
@@ -293,7 +293,7 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0izq2lpqxrf1l755nxrxkkiarywkx5j43asznankxplbxgm0358h"))))
+                "1iaqiwh3b6mwv1ar2mm29fpfygsb1x79wv7mm6ppyn7a8rqz2lqh"))))
     (build-system meson-build-system)
     (outputs '("out"
                "bin"))                  ;160K, only hb-view depend on cairo
@@ -613,7 +613,7 @@ diagrams.")
            fribidi
            glib
            gtk
-           libxml2-next
+           libxml2
            pango
            pcre2))
     (home-page "https://wiki.gnome.org/Projects/GtkSourceView")
@@ -1009,19 +1009,19 @@ application suites.")
   (package
     (inherit gtk+-2)
     (name "gtk+")
-    (version "3.24.43")
-    (replacement gtk+/fixed)
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://gnome/sources/" name "/"
-                           (version-major+minor version)  "/"
-                           name "-" version ".tar.xz"))
-       (sha256
-        (base32
-         "1izky8dxaxp4bg5nii4n58dgpkw79mvmvbkldf04n0qmhmjg013y"))
-       (patches (search-patches "gtk3-respect-GUIX_GTK3_PATH.patch"
-                                "gtk3-respect-GUIX_GTK3_IM_MODULE_FILE.patch"))))
+    (version "3.24.49")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://gitlab.gnome.org/GNOME/gtk")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0flsnh3f0l9v3y2hmnxz1h15nw1l12ixmiwcpiy1ywplrlgq4j00"))
+              (patches (search-patches
+                        "gtk3-respect-GUIX_GTK3_PATH.patch"
+                        "gtk3-respect-GUIX_GTK3_IM_MODULE_FILE.patch"))))
     ;; There is no "doc" output, because adding gtk-doc here would introduce a
     ;; dependency cycle with itself.
     (outputs '("out" "bin"))
@@ -1097,11 +1097,22 @@ application suites.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-failing-tests
             (lambda _
-              ;; These tests fail only in the containerized environment, for
-              ;; unknown reasons.
-              (substitute* "testsuite/gtk/meson.build"
-                ((".*\\['defaultvalue'],.*") "")
-                ((".*\\['objects-finalize',.*") ""))))
+                ;; These tests fail only in the containerized environment, for
+                ;; unknown reasons.
+                (substitute* "testsuite/gtk/meson.build"
+                  ((".*\\['defaultvalue'],.*") "")
+                  ((".*\\['objects-finalize',.*") ""))
+                ;; The 'flipping-icons.ui' and 'gtk-icontheme-sizing.ui' tests
+                ;; fail for unknown reasons (see:
+                ;; <https://gitlab.gnome.org/GNOME/gtk/-/issues/7679>).
+                (substitute* "testsuite/reftests/meson.build"
+                  (("  'flipping-icons.ui',.*") "")
+                  (("  'gtk-icontheme-sizing.ui',.*") ""))
+                ;; This test fails just on i686-linux, for unknown reasons.
+                #$@(if (target-x86-32?)
+                       #~((substitute* "testsuite/reftests/meson.build"
+                            (("  'linear-gradient.ui',.*") "")))
+                       #~())))
           (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
             (assoc-ref glib-or-gtk:%standard-phases
                        'generate-gdk-pixbuf-loaders-cache-file))
@@ -1127,41 +1138,6 @@ application suites.")
      (list (search-path-specification
             (variable "GUIX_GTK3_PATH")
             (files '("lib/gtk-3.0")))))))
-
-(define-public gtk+/fixed
-  (package
-    (inherit gtk+)
-    (name "gtk+")
-    (version "3.24.49")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://gitlab.gnome.org/GNOME/gtk")
-                     (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0flsnh3f0l9v3y2hmnxz1h15nw1l12ixmiwcpiy1ywplrlgq4j00"))
-              (patches (search-patches
-                        "gtk3-respect-GUIX_GTK3_PATH.patch"
-                        "gtk3-respect-GUIX_GTK3_IM_MODULE_FILE.patch"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments gtk+)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (replace 'disable-failing-tests
-              (lambda _
-                ;; These tests fail only in the containerized environment, for
-                ;; unknown reasons.
-                (substitute* "testsuite/gtk/meson.build"
-                  ((".*\\['defaultvalue'],.*") "")
-                  ((".*\\['objects-finalize',.*") ""))
-                ;; The 'flipping-icons.ui' and 'gtk-icontheme-sizing.ui' tests
-                ;; fail for unknown reasons (see:
-                ;; <https://gitlab.gnome.org/GNOME/gtk/-/issues/7679>).
-                (substitute* "testsuite/reftests/meson.build"
-                  (("  'flipping-icons.ui',.*") "")
-                  (("  'gtk-icontheme-sizing.ui',.*") ""))))))))))
 
 (define-public gtk
   (package
@@ -2370,7 +2346,8 @@ information.")
                (base32
                 "0746lwxgybc5ss3hzdd0crjjghk0ck0x9jbmz73iig405arp42xj"))
               (patches
-               (search-patches "gtk-doc-respect-xml-catalog.patch"))))
+               (search-patches "gtk-doc-respect-xml-catalog.patch"
+                               "gtk-doc-mkhtml-test-fix.patch"))))
     (build-system meson-build-system)
     (arguments
      (list

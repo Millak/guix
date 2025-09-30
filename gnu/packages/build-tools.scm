@@ -19,6 +19,7 @@
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Aiden Isik <aidenisik+git@member.fsf.org>
 ;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
+;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -308,7 +309,7 @@ files and generates build instructions for the Ninja build system.")
 (define-public meson
   (package
     (name "meson")
-    (version "1.5.2")
+    (version "1.9.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/mesonbuild/meson/"
@@ -316,8 +317,8 @@ files and generates build instructions for the Ninja build system.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "02wi62k9w7716xxdgrrx68q89vaq3ncnbpw5ms0g27npn2df0mgr"))))
-    (build-system python-build-system)
+                "13a9pj7d2mxgv5gbd78di4pb4w722vjis0vmk38m1vdm95v2f9yd"))))
+    (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f                  ;disabled to avoid extra dependencies
            #:phases
@@ -327,12 +328,14 @@ files and generates build instructions for the Ninja build system.")
                (replace 'wrap
                  (lambda* (#:key inputs outputs #:allow-other-keys)
                    (substitute* (search-input-file outputs "bin/meson")
-                     (("# EASY-INSTALL-ENTRY-SCRIPT")
-                      (format #f "\
-import sys
-sys.path.insert(0, '~a')
-# EASY-INSTALL-ENTRY-SCRIPT" (site-packages inputs outputs)))))))))
-    (inputs (list python ninja/pinned))
+                     (("import sys" all)
+                      (string-append
+                       all "\n"
+                       "sys.path.insert(0, '"
+                       (site-packages inputs outputs)
+                       "')"))))))))
+    (native-inputs (list python-setuptools))
+    (inputs (list python ninja))
     (home-page "https://mesonbuild.com/")
     (synopsis "Build system designed to be fast and user-friendly")
     (description

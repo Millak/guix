@@ -244,7 +244,10 @@ provided, as well as a framework to add new color models and data types.")
         (base32 "0v2wa2a3vnz1g4z5h9s8ili5h5kzk95hxlcp0zlxkwgbf5img1sq"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
+     `(#:configure-flags
+       ;; TODO: properly unbundle.
+       '("--wrap-mode=nodownload")
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'extend-test-time-outs
            (lambda _
