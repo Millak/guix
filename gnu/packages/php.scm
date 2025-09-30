@@ -27,6 +27,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages aspell)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages compression)
@@ -351,7 +352,8 @@
            tidy-html
            zlib))
     (native-inputs
-     (list bison
+     (list autoconf                     ;to save the test report
+           bison
            gettext-minimal
            pkg-config
            procps))                     ;for tests
