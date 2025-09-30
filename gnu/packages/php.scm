@@ -162,7 +162,7 @@
                 (("/bin/sh")
                  (which "sh")))))
           (add-before 'check 'prepare-tests
-            (lambda _
+            (lambda* (#:key parallel-tests? #:allow-other-keys)
               ;; Some of these files have ISO-8859-1 encoding, whereas others
               ;; use ASCII, so we can't use a "catch-all" find-files here.
               (with-fluids ((%default-port-encoding "ISO-8859-1"))
@@ -323,7 +323,12 @@
               (setenv "REPORT_EXIT_STATUS" "1")
               ;; Skip tests requiring I/O facilities that are unavailable in the
               ;; build environment
-              (setenv "SKIP_IO_CAPTURE_TESTS" "1"))))
+              (setenv "SKIP_IO_CAPTURE_TESTS" "1")
+              ;; Run tests in parallel.
+              (setenv "TEST_PHP_ARGS"
+                      (format #f "-j~a" (if parallel-tests?
+                                            (parallel-job-count)
+                                            1))))))
       #:test-target "test"))
     (inputs
      (list aspell
