@@ -327,9 +327,14 @@ fledged batteries-included asyncio layer using aiohttp.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "1i18mjlc143d2xwlha09i5ny06vipmy8fii05427zq5vjz8rysgx"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
        (list
+        #:test-flags
+        #~(list "tests"
+                ;; These tests hang.
+                "--ignore=tests/proxy_test.py"
+                "-k" "not test_start_loop")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'relax-requirements
@@ -344,21 +349,15 @@ fledged batteries-included asyncio layer using aiohttp.")
                   (let ((man (string-append #$output "/share/man")))
                     (install-file "panctl.1" (string-append man "/man1"))
                     (install-file "pantalaimon.5" (string-append man "/man5"))
-                    (install-file "pantalaimon.8" (string-append man "/man8"))))))
-            (replace 'check
-              (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-                (when tests?
-                  (add-installed-pythonpath inputs outputs)
-                  (invoke "pytest" "-vv" "tests"
-                          ;; These tests hang.
-                          "--ignore=tests/proxy_test.py"
-                          "-k" "not test_start_loop")))))))
+                    (install-file "pantalaimon.8"
+                                  (string-append man "/man8")))))))))
       (native-inputs
        (list python-aioresponses
              python-faker
              python-pytest
              python-pytest-aiohttp
-             python-pytest-asyncio))
+             python-pytest-asyncio
+             python-setuptools))
       (propagated-inputs
        (list python-aiohttp
              python-attrs
