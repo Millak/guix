@@ -56,6 +56,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages tex)
   #:use-module (gnu packages unicode)
   #:use-module (gnu packages video)
   #:use-module (gnu packages xdisorg)
@@ -148,6 +149,51 @@ annotating features.")
     (description "This package provides a KDE plugin that shows thumbnails of
 Mobipocket e-books in Dolphin and other KDE apps.")
     (license license:gpl2+)))
+
+(define-public kdegraphics-thumbnailers
+  (package
+    (name "kdegraphics-thumbnailers")
+    (version "24.12.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://invent.kde.org/graphics/kdegraphics-thumbnailers")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vlrn6wg9rpg2cnm6y243accbrgcpdmkg4y8qasw6ify2hjhgfmi"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ;No tests.
+      #:configure-flags
+      #~'("-DQT_MAJOR_VERSION=6")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "ps/gscreator.cpp"
+                (("\"gs\",")
+                 (string-append "\""
+                                (search-input-file inputs "bin/gs") "\","))
+                (("\"dvips\",")
+                 (string-append "\""
+                                (search-input-file inputs "bin/dvips") "\","))))))))
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list ghostscript
+                  karchive
+                  kdegraphics-mobipocket
+                  kio
+                  libkdcraw
+                  libkexiv2
+                  qtbase
+                  texlive-dvips-bin))
+    (home-page "https://apps.kde.org/kdegraphics_thumbnailers")
+    (synopsis "KDE thumbnailer for media files")
+    (description "These plugins allow KDE software to display thumbnails for
+PostScript, PDF, RAW, Mobipocket, and Blender files.")
+    (license license:gpl2)))
 
 (define-public kdiagram
   (package
