@@ -39577,15 +39577,15 @@ install @code{python-language-data}.")
 (define-public python-anyascii
   (package
     (name "python-anyascii")
-    (version "0.3.2")
+    (version "0.3.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "anyascii" version))
               (sha256
                (base32
-                "0c27rr3fmc1cx9mkmgx94zdf9yil0napzfkwpjw2bqjghkpk4pcx"))))
+                "1hwmzg3kxyj6lxdgibrj3azv803x8kwzw1d3xja98gbvskcrskn9"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-flit-core python-setuptools))
+    (native-inputs (list python-pytest python-flit-core))
     (home-page "https://anyascii.com")
     (synopsis "Unicode to ASCII transliteration")
     (description "@code{anyascii} converts Unicode characters to their best
