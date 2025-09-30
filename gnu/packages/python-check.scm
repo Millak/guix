@@ -94,27 +94,30 @@
     (version "0.7.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "aioresponses" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pnuckowski/aioresponses")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "16p8mdyfirddrsay62ji7rwcrqmmzxzf2isdbfm9cj5p338rbr42"))))
-    (build-system python-build-system)
+        (base32 "0fcm1rl1h91c2ca446kl5r2q229a8cfad2xn9gmsmdvn29wm35kc"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke
-                "pytest" "-vv" "tests" "-k"
-                (string-append
-                 ;; These tests require network access.
-                 "not test_address_as_instance_of_url_combined_with_pass_through "
-                 "and not test_pass_through_with_origin_params"))))))))
-    (native-inputs
-     (list python-pbr python-ddt python-pytest))
-    (propagated-inputs
-     (list python-aiohttp python-setuptools))
+     (list
+      #:test-flags
+      #~(list
+         "tests" "-k"
+         (string-append
+          ;; These tests require network access.
+          "not test_address_as_instance_of_url_combined_with_pass_through "
+          "and not test_pass_through_with_origin_params"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-pbr-version
+            (lambda _
+              (setenv "PBR_VERSION" #$version))))))
+    (native-inputs (list python-pbr python-ddt python-pytest python-setuptools))
+    (propagated-inputs (list python-aiohttp))
     (home-page "https://github.com/pnuckowski/aioresponses")
     (synopsis "Mock out requests made by ClientSession from aiohttp package")
     (description
