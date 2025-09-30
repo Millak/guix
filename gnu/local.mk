@@ -406,6 +406,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/kde.scm				\
   %D%/packages/kde-frameworks.scm		\
   %D%/packages/kde-games.scm			\
+  %D%/packages/kde-graphics.scm			\
   %D%/packages/kde-internet.scm			\
   %D%/packages/kde-multimedia.scm		\
   %D%/packages/kde-office.scm			\
