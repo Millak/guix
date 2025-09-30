@@ -12,7 +12,7 @@
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.ccom>
 ;;; Copyright © 2021, 2022, 2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
-;;; Copyright © 2021, 2023, 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2023-2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Nicolas Graves <ngraves@ngraves.fr>
@@ -2559,13 +2559,18 @@ support, watch support (like @command{top}) and a tree view.")
                  (string-append share "/elvish/lib/bindgen")
                  (lambda _
                    (invoke bindgen "--generate-shell-completions" "elvish")))))))))
-    (inputs (cons* bash-minimal clang-18 (cargo-inputs 'rust-bindgen-cli)))
+    (inputs (cons* bash-minimal clang (cargo-inputs 'rust-bindgen-cli)))
     (home-page "https://rust-lang.github.io/rust-bindgen/")
     (synopsis "Generate Rust FFI bindings to C and C++ libraries")
     (description "This package can be used to automatically generate Rust FFI
 bindings to C and C++ libraries.  This package provides the @command{bindgen}
 command.")
     (license license:bsd-3)))
+
+(define-public rust-bindgen-cli-next
+  (package/inherit rust-bindgen-cli
+    (inputs (modify-inputs (package-inputs rust-bindgen-cli)
+              (replace "clang" clang-18)))))
 
 (define-public sniffglue
   (package

@@ -62,6 +62,7 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rust)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vulkan)
@@ -679,7 +680,9 @@ from software emulation to complete hardware acceleration for modern GPUs.")
                                                 (string-trim-both old-path))))
                   (if (file-exists? new-path)
                       (call-with-output-file rusticl.icd
-                        (lambda (port) (format port "~a\n" new-path)))))))))))))
+                        (lambda (port) (format port "~a\n" new-path)))))))))))
+    (native-inputs (modify-inputs (package-native-inputs mesa)
+                     (replace "rust-bindgen-cli" rust-bindgen-cli-next)))))
 
 ;;; ICD was part of the Gallium (Clover) OpenCL driver, which was replaced
 ;;; with Rusticl.
