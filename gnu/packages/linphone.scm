@@ -1053,7 +1053,7 @@ WebRTC codec.  It includes features from WebRTC, such as, iSAC and AECM.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "05s8czh84qc63pmgwvwb39w07zy47145dl85397pnymsx8wv7r7q"))))
+          (base32 "0zp5vmhgp18812j2pbys7g3v0slkc70q9qp7k26bk7iddg1yy9x2"))))
       (build-system cmake-build-system)
       (arguments
        (list
