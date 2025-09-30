@@ -39598,15 +39598,21 @@ Wikipedia}.")
 (define-public python-langcodes
   (package
     (name "python-langcodes")
-    (version "3.3.0")
+    (version "3.5.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "langcodes" version))
               (sha256
                (base32
-                "1xkyh3qdcigb18qiimbwl2669y22hhdmd89mqcd270c7lbahfkbr"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest))
+                "00gqlqs1gi8mvjwf6fkwiqhgcqxnsk5gwzs9l8qy2lbys1l83vqy"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     ;; [optional:data]
+     (list python-language-data))
     (home-page "https://github.com/rspeer/langcodes")
     (synopsis "Python library for working with language codes")
     (description
