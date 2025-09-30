@@ -26,6 +26,7 @@
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023, 2025 Zheng Junjie <z572@z572.online>
@@ -131,6 +132,53 @@ on the Blowfish password hashing algorithm, as described in
 @url{http://static.usenix.org/events/usenix99/provos.html,\"A Future-Adaptable
 Password Scheme\"} by Niels Provos and David Mazieres.")
     (license license:asl2.0)))
+
+(define-public python-murmurhash
+  (package
+    (name "python-murmurhash")
+    (version "1.0.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/explosion/murmurhash")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02ny4391kbrssq9bf7kq75615ragvbjhsqi9hgv7wiaiz6yai1k8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'fix-installation
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (with-directory-excursion
+                  (string-append (site-packages inputs outputs) "/murmurhash")
+                (delete-file-recursively "tests")
+                (delete-file "mrmr.pyx")
+                (for-each
+                 (lambda (file)
+                   (chmod file #o555))
+                 (find-files "." "\\.so$")))))
+          ;; XXX: Otherwise ModuleNotFoundError, and --pyargs doesn't seem
+          ;; to fix the issue.
+          (replace 'check
+            (lambda args
+              (copy-recursively "murmurhash/tests" "tests")
+              (delete-file-recursively "murmurhash")
+              (with-directory-excursion "tests"
+                (apply (assoc-ref %standard-phases 'check) args)))))))
+    (native-inputs
+     (list python-cython
+           python-murmurhash3
+           python-pytest
+           python-setuptools))
+    (home-page "https://github.com/explosion/murmurhash")
+    (synopsis "Cython bindings for MurmurHash2")
+    (description
+     "This package provides Cython bindings for MurmurHash2.")
+    (license license:expat)))
 
 (define-public python-passlib
   (package

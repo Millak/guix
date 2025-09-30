@@ -39112,53 +39112,6 @@ of fast and robust hash functions.  This library is a Python extension module
 written in C.")
       (license license:public-domain))))
 
-(define-public python-murmurhash
-  (package
-    (name "python-murmurhash")
-    (version "1.0.10")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/explosion/murmurhash")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "02ny4391kbrssq9bf7kq75615ragvbjhsqi9hgv7wiaiz6yai1k8"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'fix-installation
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (with-directory-excursion
-                  (string-append (site-packages inputs outputs) "/murmurhash")
-                (delete-file-recursively "tests")
-                (delete-file "mrmr.pyx")
-                (for-each
-                 (lambda (file)
-                   (chmod file #o555))
-                 (find-files "." "\\.so$")))))
-          ;; XXX: Otherwise ModuleNotFoundError, and --pyargs doesn't seem
-          ;; to fix the issue.
-          (replace 'check
-            (lambda args
-              (copy-recursively "murmurhash/tests" "tests")
-              (delete-file-recursively "murmurhash")
-              (with-directory-excursion "tests"
-                (apply (assoc-ref %standard-phases 'check) args)))))))
-    (native-inputs
-     (list python-cython
-           python-murmurhash3
-           python-pytest
-           python-setuptools))
-    (home-page "https://github.com/explosion/murmurhash")
-    (synopsis "Cython bindings for MurmurHash2")
-    (description
-     "This package provides Cython bindings for MurmurHash2.")
-    (license license:expat)))
-
 ;; Scooby requires for its test suite a ‘pyvips’ package that is missing its
 ;; VIPS dependency.
 (define python-pyvips-for-python-scooby
