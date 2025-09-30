@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2017, 2019, 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2017, 2019, 2024-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Sree Harsha Totakura <sreeharsha@totakura.in>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;;
@@ -26,6 +26,7 @@
   #:use-module (guix modules)
   #:use-module (guix packages)
   #:use-module (ice-9 match)
+  #:autoload   (rnrs bytevectors) (bytevector->u8-list)
   #:export (cvs-reference
             cvs-reference?
             cvs-reference-root-directory
@@ -72,7 +73,8 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
 
   (define modules
     (delete '(guix config)
-            (source-module-closure '((guix build cvs)
+            (source-module-closure '((guix swh)
+                                     (guix build cvs)
                                      (guix build download)
                                      (guix build download-nar)))))
   (define build
@@ -83,7 +85,10 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
             (use-modules (guix build cvs)
                          ((guix build download)
                           #:select (download-method-enabled?))
-                         (guix build download-nar))
+                         (guix build download-nar)
+                         (guix swh)
+                         ((rnrs bytevectors)
+                          #:select (u8-list->bytevector)))
 
             (or (and (download-method-enabled? 'upstream)
                      (cvs-fetch '#$(cvs-reference-root-directory ref)
@@ -93,17 +98,33 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                                 #:cvs-command
                                 #+(file-append cvs "/bin/cvs")))
                 (and (download-method-enabled? 'nar)
-                     (download-nar #$output)))))))
+                     (download-nar #$output))
+                (and (download-method-enabled? 'swh)
+                     (parameterize ((%verify-swh-certificate? #f))
+                       (swh-download-directory-by-nar-hash
+                        (u8-list->bytevector
+                         (map string->number
+                              (string-split (getenv "hash") #\,)))
+                        '#$hash-algo
+                        #$output))))))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "cvs-checkout") build
                       #:leaked-env-vars '("http_proxy" "https_proxy"
                                           "LC_ALL" "LC_MESSAGES" "LANG"
                                           "COLUMNS")
-                      #:env-vars (match (getenv "GUIX_DOWNLOAD_METHODS")
-                                   (#f '())
-                                   (value
-                                    `(("GUIX_DOWNLOAD_METHODS" . ,value))))
+                      #:env-vars
+                      `(,@(match (getenv "GUIX_DOWNLOAD_METHODS")
+                            (#f '())
+                            (value
+                             `(("GUIX_DOWNLOAD_METHODS" . ,value))))
+                        ;; To avoid pulling in (guix base32) in the builder
+                        ;; script, use bytevector->u8-list from (rnrs
+                        ;; bytevectors)
+                        ("hash" . ,(string-join
+                                    (map number->string
+                                         (bytevector->u8-list hash))
+                                    ",")))
                       #:system system
                       #:hash-algo hash-algo
                       #:hash hash
