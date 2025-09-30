@@ -172,6 +172,9 @@ for i in /etc/bashrc.d/*.sh; do
     [[ -r $i ]] && source \"$i\"
 done
 unset i
+
+# Increase the history size (default is 500 entries).
+HISTSIZE=10000
 "))
 
 (define %default-bash-profile
