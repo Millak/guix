@@ -23,6 +23,7 @@
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -220,6 +221,46 @@ DHT, µTP, PEX and Magnet Links.")
 of the Transmission BitTorrent client, using its HTTP RPC protocol.")
     (home-page "https://github.com/transmission-remote-gtk/transmission-remote-gtk")
     (license l:gpl2+)))
+
+(define-public stig
+  (package
+    (name "stig")
+    (version "0.14.0a0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rndusr/stig")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jfcgncva94pyzjifar1l6wlmb7aylg0l4fxljc83rkbj1a2aan0"))))
+    (propagated-inputs
+     (list python-urwid
+           python-urwidtrees
+           python-aiohttp
+           python-aiohttp-socks
+           python-pyxdg
+           python-blinker
+           python-natsort
+           python-async-timeout
+           python-setproctitle))
+    (arguments
+     (list
+      #:tests? #f ;tests require network access
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'loosen-version-restrictions
+                     (lambda _
+                       (substitute* "setup.py"
+                         (("urwidtrees==1.0.3") "urwidtrees>=1.0.3")))))))
+    (inputs (list python))
+    (build-system python-build-system)
+    (synopsis "TUI and CLI for the BitTorrent client Transmission")
+    (description
+     "Stig is a @acronym{TUI, Text User Interface} and @acronym{CLI, Command Line
+Interface} client for the BitTorrent client Transmission.")
+    (home-page "https://github.com/rndusr/stig")
+    (license l:gpl3)))
 
 (define-public libtorrent
   (package
