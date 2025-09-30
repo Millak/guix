@@ -12,7 +12,7 @@
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
-;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020, 2021, 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
 ;;; Copyright © 2021-2025 John Kehayias <john.kehayias@protonmail.com>
@@ -351,7 +351,7 @@ also known as DXTn or DXTC) for Mesa.")
     (native-inputs
      (append
       (list bison
-            clang-18
+            clang-18                    ;ensure rust-bindgen-cli uses the same
             flex
             gettext-minimal
             glslang
@@ -656,7 +656,11 @@ from software emulation to complete hardware acceleration for modern GPUs.")
     (arguments
      (substitute-keyword-arguments (package-arguments mesa)
        ((#:configure-flags flags)
-        #~(cons "-Dgallium-opencl=standalone" #$flags))))))
+        #~(cons* "-Dgallium-rusticl=true"
+                 ;; Enable all drivers by default.
+                 (string-append "-Dgallium-rusticl-enable-drivers="
+                                "iris,llvmpipe,nouveau,panfrost,radeonsi,r600")
+                 #$flags))))))
 
 (define-public mesa-opencl-icd
   (package/inherit mesa-opencl

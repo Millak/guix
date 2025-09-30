@@ -2559,7 +2559,7 @@ support, watch support (like @command{top}) and a tree view.")
                  (string-append share "/elvish/lib/bindgen")
                  (lambda _
                    (invoke bindgen "--generate-shell-completions" "elvish")))))))))
-    (inputs (cons* bash-minimal clang (cargo-inputs 'rust-bindgen-cli)))
+    (inputs (cons* bash-minimal clang-18 (cargo-inputs 'rust-bindgen-cli)))
     (home-page "https://rust-lang.github.io/rust-bindgen/")
     (synopsis "Generate Rust FFI bindings to C and C++ libraries")
     (description "This package can be used to automatically generate Rust FFI
