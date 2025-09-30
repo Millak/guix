@@ -1355,7 +1355,16 @@ GUI for sigrok.")
               ;; Default conflicts with read-only /gnu/store.
               (substitute* "osvvm/OsvvmVhdlSettings.pro"
                 (("\\[FindOsvvmSettingsDirectory\\]")
-                 " \"\" ")))))))
+                 " \"\" "))))
+          (add-after 'fix-scripts 'check
+            (lambda _
+              (setenv "OSVVM_DIR" (getcwd))
+              (setenv "OSVVM_MUST_BUILD" (getcwd))
+              (invoke "tclsh"
+                      (string-append #$(this-package-native-input "nvc")
+                                     "/test/test-osvvm.tcl")))))))
+    (native-inputs
+     (list nvc tcl tcllib which))
     (native-search-paths
      (list (search-path-specification
              (variable "OSVVM")
