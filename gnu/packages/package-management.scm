@@ -18,7 +18,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
-;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022, 2023 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2023 jgart <jgart@dismail.de>
@@ -1043,7 +1043,7 @@ features of Stow with some extensions.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:tests? #f                       ; TEST need fhs envirnment.
+      #:tests? #f                       ;tests require FHS environment
       #:configure-flags
       #~(list
          ;; TODO: Add rpm-sequoia
@@ -1073,7 +1073,16 @@ features of Stow with some extensions.")
                    site)))
               (substitute* "plugins/CMakeLists.txt"
                 (("\\$[{]dbus-1_DATADIR[}]")
-                 (string-append #$output "/share"))))))))
+                 (string-append #$output "/share")))))
+          (add-after 'install 'install-macros-file
+            (lambda _
+              (define macros (string-append #$output "/etc/rpm/macros"))
+              (mkdir-p (dirname macros))
+              (call-with-output-file macros
+                (lambda (p)
+                  (format p "\
+%_var			/var
+%_localstatedir		/var~%"))))))))
     (native-inputs
      (list pkg-config
            python
