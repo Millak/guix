@@ -61,6 +61,7 @@
 ;;; Copyright © 2024 Nikita Domnitskii <nikita@domnitskii.me>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -907,6 +908,41 @@ It is a fork of Clementine aimed at music collectors and audiophiles.")
      (description "Cmus is a small and fast console music player.  It supports
 many input formats and provides a customisable Vi-style user interface.")
      (license license:gpl2+)))
+
+(define-public ctune
+  (package
+    (name "ctune")
+    (version "1.3.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/An7ar35/ctune")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (patches (search-patches "ctune-cmake-disable-git-clone.patch"))
+       (sha256
+        (base32 "05gs1a1pc303qrnd1bz0z0wkzxkpm310hqznnq6zz7nl4vs3b9nz"))))
+    (build-system cmake-build-system)
+    (arguments '(#:tests? #f)) ;no check target
+    (native-inputs (list pkg-config
+                         json-c
+                         ffmpeg-6
+                         pandoc ;for documentation
+                         curl))
+    (inputs (list openssl
+                  curl
+                  ncurses
+                  (list util-linux "lib") ;for libuuid
+                  ffmpeg
+                  pulseaudio))
+    (home-page "https://github.com/An7ar35/ctune")
+    (synopsis "Ncurses internet radio player for Linux")
+    (description "cTune is a ncurses based internet radio player written in C
+for Linux.  Aside from playing a radio stream you can search and browse stations
+as well as keep a list of favourites.  It uses the RadioBrowser API to search
+and get radio stream information.")
+    (license license:agpl3+)))
 
 (define-public denemo
   (package
