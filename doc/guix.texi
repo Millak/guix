@@ -21476,7 +21476,6 @@ is also prefixed by a timestamp by GNU Shepherd.
 @node Log Rotation
 @subsection Log Rotation
 
-@cindex rottlog
 @cindex log rotation
 @cindex logging
 Log files such as those found in @file{/var/log} tend to grow endlessly,
@@ -21556,119 +21555,6 @@ Size in bytes below which a log file is @emph{not} rotated.
 
 
 @c %end of fragment
-
-@subheading Rottlog
-
-An alternative log rotation service relying on GNU@tie{}Rot[t]log, a log
-rotation tool (@pxref{Top,,, rottlog, GNU Rot[t]log Manual}), is also
-provided.
-
-@quotation Warning
-The Rottlog service presented here is deprecated in favor of
-@code{log-rotation-service-type} (see above).  The
-@code{rottlog-service-type} variable and related tools will be removed
-after 2025-06-15.
-@end quotation
-
-The example below shows how to extend it with an additional
-@dfn{rotation}, should you need to do that (usually, services that
-produce log files already take care of that):
-
-@lisp
-(use-modules (guix) (gnu))
-(use-service-modules admin)
-
-(define my-log-files
-  ;; Log files that I want to rotate.
-  '("/var/log/something.log" "/var/log/another.log"))
-
-(operating-system
-  ;; @dots{}
-  (services (cons (simple-service 'rotate-my-stuff
-                                  rottlog-service-type
-                                  (list (log-rotation
-                                         (frequency 'daily)
-                                         (files my-log-files))))
-                  %base-services)))
-@end lisp
-
-@defvar rottlog-service-type
-This is the type of the Rottlog service, whose value is a
-@code{rottlog-configuration} object.
-
-Other services can extend this one with new @code{log-rotation} objects
-(see below), thereby augmenting the set of files to be rotated.
-
-This service type can define mcron jobs (@pxref{Scheduled Job
-Execution}) to run the rottlog service.
-@end defvar
-
-@deftp {Data Type} rottlog-configuration
-Data type representing the configuration of rottlog.
-
-@table @asis
-@item @code{rottlog} (default: @code{rottlog})
-The Rottlog package to use.
-
-@item @code{rc-file} (default: @code{(file-append rottlog "/etc/rc")})
-The Rottlog configuration file to use (@pxref{Mandatory RC Variables,,,
-rottlog, GNU Rot[t]log Manual}).
-
-@item @code{rotations} (default: @code{%default-rotations})
-A list of @code{log-rotation} objects as defined below.
-
-@item @code{jobs}
-This is a list of gexps where each gexp corresponds to an mcron job
-specification (@pxref{Scheduled Job Execution}).
-@end table
-@end deftp
-
-@deftp {Data Type} log-rotation
-Data type representing the rotation of a group of log files.
-
-Taking an example from the Rottlog manual (@pxref{Period Related File
-Examples,,, rottlog, GNU Rot[t]log Manual}), a log rotation might be
-defined like this:
-
-@lisp
-(log-rotation
-  (frequency 'daily)
-  (files '("/var/log/apache/*"))
-  (options '("storedir apache-archives"
-             "rotate 6"
-             "notifempty"
-             "nocompress")))
-@end lisp
-
-The list of fields is as follows:
-
-@table @asis
-@item @code{frequency} (default: @code{'weekly})
-The log rotation frequency, a symbol.
-
-@item @code{files}
-The list of files or file glob patterns to rotate.
-
-@vindex %default-log-rotation-options
-@item @code{options} (default: @code{%default-log-rotation-options})
-The list of rottlog options for this rotation (@pxref{Configuration
-parameters,,, rottlog, GNU Rot[t]log Manual}).
-
-@item @code{post-rotate} (default: @code{#f})
-Either @code{#f} or a gexp to execute once the rotation has completed.
-@end table
-@end deftp
-
-@defvar %default-rotations
-Specifies weekly rotation of @code{%rotated-files} and of
-@file{/var/log/guix-daemon.log}.
-@end defvar
-
-@defvar %rotated-files
-The list of syslog-controlled files to be rotated.  By default it is:
-@code{'("/var/log/messages" "/var/log/secure" "/var/log/debug" \
-"/var/log/maillog")}.
-@end defvar
 
 Some log files just need to be deleted periodically once they are old,
 without any other criterion and without any archival step.  This is the

@@ -606,7 +606,6 @@
    (eval . (put 'restic-backup-job 'scheme-indent-function 0))
    (eval . (put 'rngd-configuration 'scheme-indent-function 0))
    (eval . (put 'rootless-podman-configuration 'scheme-indent-function 0))
-   (eval . (put 'rottlog-configuration 'scheme-indent-function 0))
    (eval . (put 'rpcbind-configuration 'scheme-indent-function 0))
    (eval . (put 'rshiny-configuration 'scheme-indent-function 0))
    (eval . (put 'rspamd-configuration 'scheme-indent-function 0))
