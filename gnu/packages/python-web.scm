@@ -10775,6 +10775,25 @@ library for Python.")
 GCS, Azure Blob Storage, gzip, bz2, etc.)")
     (license license:expat)))
 
+(define-public python-smart-open-6
+  (package
+    (inherit python-smart-open)
+    (name "python-smart-open")
+    (version "6.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/piskvorky/smart_open")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vpx37b6lsb6iwi59776ywjrqk1czv8arlhaf9073lrsbilqvj3x"))))
+    (arguments
+     (list
+      ;; XXX: Tests need some older native inputs, disable for now.
+      #:tests? #f))))
+
 (define-public python-w3lib
   (package
     (name "python-w3lib")
