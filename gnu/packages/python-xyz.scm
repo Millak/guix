@@ -38308,15 +38308,17 @@ collection.")
 (define-public python-types-toml
   (package
     (name "python-types-toml")
-    (version "0.10.5")
+    (version "0.10.8.20240310")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "types-toml" version))
        (sha256
-        (base32 "10400bd3yv6rjfnq8galskkbpqz1sfx9sfgr5qwvw04270x4cjgr"))))
+        (base32 "0c83hfw4aqy01vzlh6r84mz6b2b6n98chfdjp2k3c94p089m0h9x"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list #:tests? #f))        ;no tests provided
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for TOML")
     (description
