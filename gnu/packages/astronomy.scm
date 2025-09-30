@@ -9905,11 +9905,30 @@ It can be used to calculate the trajectory of satellites.")
              (commit version)))
        (sha256
         (base32 "1frvi6879zh4bzm5smdy0scpjmj5pg2i81wb2wa4ikq1dq227x8k"))
-       (file-name (git-file-name name version))))
+       (file-name (git-file-name name version))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Remove bundled libraries.
+            (for-each delete-file-recursively
+                      (list "subprojects/healpix_cxx"
+                            ;; TODO: Package htmesh, it's included in KSarts
+                            ;; - URL: <https://invent.kde.org/education/kstars>
+                            ;; - File: <kstars/htmesh>
+                            ;; "subprojects/htmesh"
+                            ;;
+                            ;; TODO: Package kplot - Cairo plotting library
+                            ;; <https://github.com/kristapsdz/kplot>.
+                            ;; "subprojects/kplot"
+                            "subprojects/wcslib"
+                            "subprojects/librtprocess"
+                            "subprojects/yyjson"))))))
     (build-system meson-build-system)
     (arguments
      (list
       #:glib-or-gtk? #t
+      #:configure-flags
+      #~(list "--wrap-mode=nodownload")
       #:imported-modules `(,@%meson-build-system-modules
                            (guix build glib-or-gtk-build-system))
       #:modules '((guix build meson-build-system)
@@ -9943,9 +9962,10 @@ It can be used to calculate the trajectory of satellites.")
            ffms2
            fftwf
            gdk-pixbuf
-           gtksourceview-4
            gsl
            gtk+
+           gtksourceview-4
+           healpix-cxx
            json-glib
            lcms-next
 
