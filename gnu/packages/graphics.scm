@@ -462,7 +462,7 @@ objects!")
                           qt)))))))))
     (inputs
      (list expat
-           ffmpeg ;version 4.2 is recommended; does not work with version 7+.
+           ffmpeg-6
            fontconfig
            freetype
            gperftools-for-friction
