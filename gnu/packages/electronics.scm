@@ -975,7 +975,7 @@ which allows one to install the M8 firmware on any Teensy.")
 (define-public nvc
   (package
     (name "nvc")
-    (version "1.17.2")
+    (version "1.18.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -984,7 +984,7 @@ which allows one to install the M8 firmware on any Teensy.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hr5y9ys5kf096x18mh10wwqa0hbzlmdj7pyayc6szsjla1d3mk0"))))
+                "1b8bsmxv2p9v8g7yzdj8s22l5bx9n58kmbklgnj17gd362lai51y"))))
     (build-system gnu-build-system)
     (arguments
      (list #:out-of-source? #t
