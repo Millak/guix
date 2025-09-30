@@ -1078,6 +1078,32 @@ comparison operators, as defined in the original
 @url{http://goessner.net/articles/JsonPath/, JSONPath} proposal.")
     (license license:asl2.0)))
 
+(define-public python-language-data
+  (package
+    (name "python-language-data")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "language_data" version))
+       (sha256
+        (base32 "1v6pp8z2wxj3hafl62hbx8sbinpp9cr0r7y80rfi8mcmlf5fy03n"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-marisa-trie))
+    (home-page "https://github.com/georgkrause/language_data")
+    (synopsis "Supplementary data about languages used by the langcodes module")
+    (description
+     "language_data is a supplement to the langcodes module, for working with
+standardized codes for human languages.  It stores the more bulky and
+hard-to-index data about languages, particularly what they are named in
+various languages.")
+    (license license:expat)))
+
 (define-public python-log-symbols
   (package
     (name "python-log-symbols")
