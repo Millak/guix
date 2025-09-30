@@ -1339,6 +1339,33 @@ feaatures are:
 in Python 3.13 by PEP-594.")
     (license license:psfl)))
 
+(define-public python-pathy
+  (package
+    (name "python-pathy")
+    (version "0.11.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pathy" version))
+       (sha256
+        (base32 "0vbhcfg8g74g90bzmdgxr1jyvwhadvlr2w9wyvs6xxwb1dmhwgdv"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-mock
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-pathlib-abc
+           python-smart-open-6
+           python-typer))
+    (home-page "https://github.com/justindujardin/pathy")
+    (synopsis "Path interface for local and cloud bucket storage")
+    (description "Pathy is a python package (with type annotations) for
+working with Cloud Bucket storage providers using a @code{pathlib} interface.
+It provides @code{pathlib.Path} subclasses for local and cloud bucket
+storage.")
+    (license license:asl2.0)))
+
 (define-public python-portend
   (package
     (name "python-portend")
