@@ -13,8 +13,9 @@
             (service home-bash-service-type
                      (home-bash-configuration
                       (guix-defaults? #t)
-                      (bash-profile (list (plain-file "bash-profile" "\
-export HISTFILE=$XDG_CACHE_HOME/.bash_history")))))
+                      (variables
+                       `(("HISTFILE" . "$XDG_CACHE_HOME/.bash_history")
+                         ("HISTSIZE" . "50000")))))
 
             (simple-service 'test-config
                             home-xdg-configuration-files-service-type

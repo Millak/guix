@@ -2,6 +2,7 @@
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -120,6 +121,9 @@ service type can be extended with a list of file-like objects.")))
 (define (serialize-boolean field-name val) "")
 (define (serialize-posix-env-vars field-name val)
   (environment-variable-shell-definitions val))
+
+(define (serialize-shell-variables field value)
+  (shell-variable-definitions value))
 
 
 ;;;
@@ -347,6 +351,13 @@ rules for the @code{home-environment-variables-service-type} apply
 here (@pxref{Essential Home Services}).  The contents of this field will be
 added after the contents of the @code{bash-profile} field."
    (serializer serialize-posix-env-vars))
+  (variables
+   (alist '())
+   "Bash variables (not to be confused with environment variables) to be set
+in @file{.bashrc} for use by interactive shells.  A typical example of such
+variables is @code{HISTSIZE} and related history variables (@pxref{Bash
+Variables,,, bash, Bash Reference Manual})."
+   (serializer serialize-shell-variables))
   (aliases
    (alist %default-bash-aliases)
    "Association list of aliases to set for the Bash session.  The aliases will be
@@ -425,10 +436,12 @@ if [ -f ~/.bashrc ]; then source ~/.bashrc; fi
 
      ,@(list (file-if-not-empty
               'bashrc
-              (if (home-bash-configuration-guix-defaults? config)
-                  (list (plain-file-content %default-bashrc) "\n"
-                        (serialize-field 'aliases))
-                  (list (serialize-field 'aliases))))
+              (let ((user-settings (list (serialize-field 'variables) "\n"
+                                         (serialize-field 'aliases))))
+                (if (home-bash-configuration-guix-defaults? config)
+                    (cons* (plain-file-content %default-bashrc) "\n"
+                           user-settings)
+                    user-settings)))
              (file-if-not-empty 'bash-logout)))))
 
 (define (add-bash-packages config)
@@ -440,6 +453,10 @@ if [ -f ~/.bashrc ]; then source ~/.bashrc; fi
    "Additional environment variables to set.  These will be combined with the
 environment variables from other extensions and the base service to form one
 coherent block of environment variables.")
+  (variables
+   (alist '())
+   "Extra Bash variables (not to be confused with environment variables) to be
+set in @file{.bashrc} for use by interactive shells.")
   (aliases
    (alist '())
    "Additional aliases to set.  These will be combined with the aliases from
@@ -459,13 +476,17 @@ with text blocks from other extensions and the base service."))
 
 (define (home-bash-extensions original-config extension-configs)
   (match-record original-config <home-bash-configuration>
-    (environment-variables aliases bash-profile bashrc bash-logout)
+    (environment-variables variables aliases bash-profile bashrc bash-logout)
     (home-bash-configuration
      (inherit original-config)
      (environment-variables
       (append environment-variables
               (append-map
                home-bash-extension-environment-variables extension-configs)))
+     (variables
+      (append variables
+              (append-map
+               home-bash-extension-variables extension-configs)))
      (aliases
       (append aliases
               (append-map

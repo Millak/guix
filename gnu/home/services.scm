@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021-2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
-;;; Copyright © 2022-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 Carlo Zancanaro <carlo@zancanaro.id.au>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -58,6 +58,7 @@
 
             with-shell-quotation-bindings
             environment-variable-shell-definitions
+            shell-variable-definitions
             home-files-directory
             xdg-configuration-files-directory
             xdg-data-files-directory
@@ -236,6 +237,27 @@ ensures variable values are properly quoted."
                                   "\n"))
                 ((key . (? literal-string? value))
                  #~(string-append "export " #$key "="
+                                  (shell-single-quote
+                                   #$(literal-string-value value))
+                                  "\n")))
+              variables))))
+
+(define (shell-variable-definitions variables)
+  "Return a gexp that evaluates to a list of POSIX shell statements defining
+VARIABLES, a list of variable name/value pairs, as shell variables (not
+environment variables).  The returned code ensures variable values are
+properly quoted."
+  (with-shell-quotation-bindings
+   #~(string-append
+      #$@(map (match-lambda
+                ((key . (or (? string? value)
+                            (? file-like? value)
+                            (? gexp? value)))
+                 #~(string-append #$key "="
+                                  (shell-double-quote #$value)
+                                  "\n"))
+                ((key . (? literal-string? value))
+                 #~(string-append #$key "="
                                   (shell-single-quote
                                    #$(literal-string-value value))
                                   "\n")))

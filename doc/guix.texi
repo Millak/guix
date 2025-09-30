@@ -50319,6 +50319,8 @@ Extend home-shell-profile service only if you really know what you do.
 @subsubheading Bash Home Service
 
 @anchor{home-bash-configuration}
+@c %start of fragment
+
 @deftp {Data Type} home-bash-configuration
 Available @code{home-bash-configuration} fields are:
 
@@ -50333,13 +50335,19 @@ use Guix System, is it safe to set this to @code{#f}, as in this case
 this is already taken care of by the globally installed
 @file{/etc/bashrc}.
 
-@item @code{environment-variables} (default: @code{'()}) (type: alist)
-Association list of environment variables to set for the Bash session.  The
-rules for the @code{home-environment-variables-service-type} apply
-here (@pxref{Essential Home Services}).  The contents of this field will be
-added after the contents of the @code{bash-profile} field.
+@item @code{environment-variables} (default: @code{()}) (type: alist)
+Association list of environment variables to set for the Bash session.
+The rules for the @code{home-environment-variables-service-type} apply
+here (@pxref{Essential Home Services}).  The contents of this field will
+be added after the contents of the @code{bash-profile} field.
 
-@item @code{aliases} (default: @code{%default-bash-aliases}) (type: alist)
+@item @code{variables} (default: @code{()}) (type: alist)
+Bash variables (not to be confused with environment variables) to be set
+in @file{.bashrc} for use by interactive shells.  A typical example of
+such variables is @code{HISTSIZE} and related history variables
+(@pxref{Bash Variables,,, bash,Bash Reference Manual}).
+
+@item @code{aliases} (type: alist)
 Association list of aliases to set for the Bash session.  The aliases
 will be defined after the contents of the @code{bashrc} field has been
 put in the @file{.bashrc} file.  The alias will automatically be quoted,
@@ -50355,26 +50363,30 @@ turns into
 alias ls="ls -alF"
 @end example
 
-@item @code{bash-profile} (default: @code{'()}) (type: text-config)
+@item @code{bash-profile} (default: @code{()}) (type: text-config)
 List of file-like objects, which will be added to @file{.bash_profile}.
 Used for executing user's commands at start of login shell (In most
 cases the shell started on tty just after login).  @file{.bash_login}
 won't be ever read, because @file{.bash_profile} always present.
 
-@item @code{bashrc} (default: @code{'()}) (type: text-config)
+@item @code{bashrc} (default: @code{()}) (type: text-config)
 List of file-like objects, which will be added to @file{.bashrc}.  Used
 for executing user's commands at start of interactive shell (The shell
 for interactive usage started by typing @code{bash} or by terminal app
 or any other program).
 
-@item @code{bash-logout} (default: @code{'()}) (type: text-config)
+@item @code{bash-logout} (default: @code{()}) (type: text-config)
 List of file-like objects, which will be added to @file{.bash_logout}.
 Used for executing user's commands at the exit of login shell.  It won't
 be read in some cases (if the shell terminates by exec'ing another
 process for example).
 
 @end table
+
 @end deftp
+
+
+@c %end of fragment
 
 You can extend the Bash service by using the @code{home-bash-extension}
 configuration record, whose fields must mirror that of
@@ -50385,14 +50397,14 @@ Bash Reference Manual}.
 
 For example, here is how you would define a service that extends the
 Bash service such that @file{~/.bash_profile} defines an additional
-environment variable, @env{PS1}:
+shell variable, @env{PS1}:
 
 @lisp
 (define bash-fancy-prompt-service
   (simple-service 'bash-fancy-prompt
                   home-bash-service-type
                   (home-bash-extension
-                   (environment-variables
+                   (variables
                     '(("PS1" . "\\u \\wλ "))))))
 @end lisp
 
@@ -50400,33 +50412,42 @@ You would then add @code{bash-fancy-prompt-service} to the list in the
 @code{services} field of your @code{home-environment}.  The reference of
 @code{home-bash-extension} follows.
 
+@c %start of fragment
+
 @deftp {Data Type} home-bash-extension
 Available @code{home-bash-extension} fields are:
 
 @table @asis
-@item @code{environment-variables} (default: @code{'()}) (type: alist)
-Additional environment variables to set.  These will be combined with the
-environment variables from other extensions and the base service to form one
-coherent block of environment variables.
+@item @code{environment-variables} (default: @code{()}) (type: alist)
+Additional environment variables to set.  These will be combined with
+the environment variables from other extensions and the base service to
+form one coherent block of environment variables.
 
-@item @code{aliases} (default: @code{'()}) (type: alist)
+@item @code{variables} (default: @code{()}) (type: alist)
+Extra Bash variables (not to be confused with environment variables) to
+be set in @file{.bashrc} for use by interactive shells.
+
+@item @code{aliases} (default: @code{()}) (type: alist)
 Additional aliases to set.  These will be combined with the aliases from
 other extensions and the base service.
 
-@item @code{bash-profile} (default: @code{'()}) (type: text-config)
-Additional text blocks to add to @file{.bash_profile}, which will be combined
-with text blocks from other extensions and the base service.
+@item @code{bash-profile} (default: @code{()}) (type: text-config)
+Additional text blocks to add to @file{.bash_profile}, which will be
+combined with text blocks from other extensions and the base service.
 
-@item @code{bashrc} (default: @code{'()}) (type: text-config)
+@item @code{bashrc} (default: @code{()}) (type: text-config)
 Additional text blocks to add to @file{.bashrc}, which will be combined
 with text blocks from other extensions and the base service.
 
-@item @code{bash-logout} (default: @code{'()}) (type: text-config)
-Additional text blocks to add to @file{.bash_logout}, which will be combined
-with text blocks from other extensions and the base service.
+@item @code{bash-logout} (default: @code{()}) (type: text-config)
+Additional text blocks to add to @file{.bash_logout}, which will be
+combined with text blocks from other extensions and the base service.
 
 @end table
+
 @end deftp
+
+@c %end of fragment
 
 @subsubheading Zsh Home Service
 
