@@ -1102,6 +1102,30 @@ comparison operators, as defined in the original
 be displayed on the terminal, with color if possible, for logging purposes.")
     (license license:expat)))
 
+(define-public python-marisa-trie
+  (package
+    (name "python-marisa-trie")
+    (version "1.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "marisa_trie" version))
+       (sha256
+        (base32 "0nzq9yc3qdpnnvhi9zlp6vcpk6id5lx3943pm7zgir1h5z8py44p"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-cython
+           python-hypothesis
+           python-pytest
+           python-readme-renderer
+           python-setuptools))
+    (home-page "https://github.com/pytries/marisa-trie")
+    (synopsis "Static memory-efficient Trie-like structures for Python")
+    (description
+     "This package provides static memory-efficient and fast Trie-like structures
+for Python.")
+    (license license:expat)))
+
 (define-public python-multiplex
   (package
     (name "python-multiplex")
