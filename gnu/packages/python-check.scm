@@ -275,7 +275,7 @@ by pycodestyle.")
        (uri (pypi-uri "avocado-framework" version))
        (sha256
         (base32 "0zhz6423p0b5gqx2mvg7dmq8m9gbsay7wqjdwzirlwcg2v3rcz0m"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       ;; The test suite hangs, due to a serious bug in Python/Avocado (see:
@@ -321,7 +321,8 @@ by pycodestyle.")
                 (setenv "HOME" "/tmp")
                 (setenv "PYTHONPATH" (getcwd))
                 (invoke "./selftests/check.py" "--skip" "static-checks")))))))
-    (native-inputs (list bash-minimal coreutils-minimal perl sudo))
+    (native-inputs (list bash-minimal coreutils-minimal perl sudo
+                         python-setuptools))
     (inputs (list bash-minimal coreutils-minimal))
     (home-page "https://avocado-framework.github.io/")
     (synopsis "Tools and libraries to help with automated testing")
