@@ -41,6 +41,7 @@
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;; Copyright © 2025 Timo Wilken <guix@twilken.net>
 ;;; Copyright © 2025 Igorj Gorjaĉev <igor@goryachev.org>
+;;; Copyright © 2025 Raven Hallsby <karl@hallsby.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2637,6 +2638,37 @@ of the project is to be runnable on untrusted networks without crashing.")
     (description "Speakersafetyd is a userspace daemon written in Rust that
 implements an analogue of the Texas Instruments Smart Amp speaker protection
 model.")
+    (license license:expat)))
+
+(define-public systemd-lsp
+  (package
+    (name "systemd-lsp")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "systemd-lsp" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0a9j93d89pnrmhsp2j219zppp0r0lkrapkf4wlqllycng90grjzb"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (doc (string-append out "/share/doc/" #$name "-" #$version)))
+                (copy-recursively "docs/" doc)))))))
+    (inputs (cargo-inputs 'systemd-lsp))
+    (home-page "https://github.com/jfryy/systemd-lsp")
+    (synopsis "Language Server Protocol implementation for systemd unit files")
+    (description
+     "A @acronym{LSP, Language Server Protocol} implementation for systemd unit
+files, providing editing support with syntax highlighting and analysis,
+diagnostics, autocompletion, documentation, and formatting.")
     (license license:expat)))
 
 (define-public tectonic

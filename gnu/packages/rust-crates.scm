@@ -17053,6 +17053,10 @@
   (crate-source "tower-layer" "0.3.3"
                 "03kq92fdzxin51w8iqix06dcfgydyvx7yr6izjq0p626v9n2l70j"))
 
+(define rust-tower-lsp-server-0.22.0
+  (crate-source "tower-lsp-server" "0.22.0"
+                "1fcxi53451jv7b8xkpwcq9nl6n9dbxqik9cjfkxflx2i1261dkbn"))
+
 (define rust-tower-service-0.3.3
   (crate-source "tower-service" "0.3.3"
                 "1hzfkvkci33ra94xjx64vv3pp0sq346w06fpkcdwjcid7zhvdycd"))
@@ -48271,6 +48275,107 @@
                                  rust-zune-core-0.4.12
                                  rust-zune-inflate-0.2.54
                                  rust-zune-jpeg-0.4.17))
+                     (systemd-lsp =>
+                                  (list rust-addr2line-0.24.2
+                                        rust-adler2-2.0.1
+                                        rust-aho-corasick-1.1.3
+                                        rust-async-stream-0.3.6
+                                        rust-async-stream-impl-0.3.6
+                                        rust-async-trait-0.1.88
+                                        rust-atty-0.2.14
+                                        rust-autocfg-1.5.0
+                                        rust-backtrace-0.3.75
+                                        rust-bitflags-1.3.2
+                                        rust-bitflags-2.9.1
+                                        rust-bytes-1.10.1
+                                        rust-cfg-if-1.0.1
+                                        rust-crossbeam-utils-0.8.21
+                                        rust-dashmap-5.5.3
+                                        rust-dashmap-6.1.0
+                                        rust-env-logger-0.10.2
+                                        rust-fluent-uri-0.1.4
+                                        rust-futures-0.3.31
+                                        rust-futures-channel-0.3.31
+                                        rust-futures-core-0.3.31
+                                        rust-futures-io-0.3.31
+                                        rust-futures-macro-0.3.31
+                                        rust-futures-sink-0.3.31
+                                        rust-futures-task-0.3.31
+                                        rust-futures-util-0.3.31
+                                        rust-gimli-0.31.1
+                                        rust-hashbrown-0.14.5
+                                        rust-hermit-abi-0.1.19
+                                        rust-hermit-abi-0.5.2
+                                        rust-httparse-1.10.1
+                                        rust-humantime-2.2.0
+                                        rust-io-uring-0.7.8
+                                        rust-is-terminal-0.4.16
+                                        rust-itoa-1.0.15
+                                        rust-libc-0.2.174
+                                        rust-lock-api-0.4.13
+                                        rust-log-0.4.27
+                                        rust-lsp-types-0.97.0
+                                        rust-memchr-2.7.5
+                                        rust-miniz-oxide-0.8.9
+                                        rust-mio-1.0.4
+                                        rust-object-0.36.7
+                                        rust-once-cell-1.21.3
+                                        rust-parking-lot-0.12.4
+                                        rust-parking-lot-core-0.9.11
+                                        rust-percent-encoding-2.3.1
+                                        rust-pin-project-lite-0.2.16
+                                        rust-pin-utils-0.1.0
+                                        rust-proc-macro2-1.0.95
+                                        rust-quote-1.0.40
+                                        rust-redox-syscall-0.5.13
+                                        rust-regex-1.11.1
+                                        rust-regex-automata-0.4.9
+                                        rust-regex-syntax-0.8.5
+                                        rust-rustc-demangle-0.1.25
+                                        rust-ryu-1.0.20
+                                        rust-scopeguard-1.2.0
+                                        rust-serde-1.0.219
+                                        rust-serde-derive-1.0.219
+                                        rust-serde-json-1.0.140
+                                        rust-serde-repr-0.1.20
+                                        rust-signal-hook-registry-1.4.5
+                                        rust-slab-0.4.10
+                                        rust-smallvec-1.15.1
+                                        rust-socket2-0.5.10
+                                        rust-syn-2.0.104
+                                        rust-sync-wrapper-1.0.2
+                                        rust-termcolor-1.4.1
+                                        rust-thiserror-1.0.69
+                                        rust-thiserror-impl-1.0.69
+                                        rust-tokio-1.46.1
+                                        rust-tokio-macros-2.5.0
+                                        rust-tokio-stream-0.1.17
+                                        rust-tokio-test-0.4.4
+                                        rust-tokio-util-0.7.15
+                                        rust-tower-0.5.2
+                                        rust-tower-layer-0.3.3
+                                        rust-tower-lsp-server-0.22.0
+                                        rust-tower-service-0.3.3
+                                        rust-tracing-0.1.41
+                                        rust-tracing-attributes-0.1.30
+                                        rust-tracing-core-0.1.34
+                                        rust-unicode-ident-1.0.18
+                                        rust-wasi-0.11.1+wasi-snapshot-preview1
+                                        rust-winapi-0.3.9
+                                        rust-winapi-i686-pc-windows-gnu-0.4.0
+                                        rust-winapi-util-0.1.9
+                                        rust-winapi-x86-64-pc-windows-gnu-0.4.0
+                                        rust-windows-sys-0.52.0
+                                        rust-windows-sys-0.59.0
+                                        rust-windows-targets-0.52.6
+                                        rust-windows-aarch64-gnullvm-0.52.6
+                                        rust-windows-aarch64-msvc-0.52.6
+                                        rust-windows-i686-gnu-0.52.6
+                                        rust-windows-i686-gnullvm-0.52.6
+                                        rust-windows-i686-msvc-0.52.6
+                                        rust-windows-x86-64-gnu-0.52.6
+                                        rust-windows-x86-64-gnullvm-0.52.6
+                                        rust-windows-x86-64-msvc-0.52.6))
                      (tealdeer =>
                                (list rust-addr2line-0.24.2
                                      rust-adler2-2.0.0
