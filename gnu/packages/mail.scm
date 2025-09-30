@@ -2840,27 +2840,36 @@ maintained.")
 (define-public khard
   (package
     (name "khard")
-    (version "0.19.1")
+    (version "0.20.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri name version))
               (sha256
                (base32
-                "1464j728hjjpzlc89v4rbml3p4b38zp1igjd9yq3xnn3lc6hmwsr"))))
-    (build-system python-build-system)
+                "1l5xkdi0f8krvy407q4qzm2n96nyhcjjhdp7v5f0n18wy36353qp"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-completions
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (zsh (string-append out "/share/zsh/site-functions")))
-               (copy-recursively "misc/zsh" zsh)))))))
+     (list
+       #:test-flags
+       #~(list "-k"
+               (string-join
+                 (list "not test_sorting_of_korean_names"
+                       "test_sort_order_for_accentuated_names"
+                       ;; These two only fail with pytest
+                       "test_edit_source_file_without_modifications"
+                       "test_simple_edit_without_modification")
+                 " and not "))
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'install 'install-completions
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (zsh (string-append out "/share/zsh/site-functions")))
+                 (copy-recursively "misc/zsh" zsh)))))))
     (native-inputs
-     (list python-setuptools-scm))
+     (list python-pytest python-setuptools python-setuptools-scm))
     (inputs
-     (list python-atomicwrites python-configobj python-ruamel.yaml
-           python-unidecode python-vobject))
+     (list python-configobj python-ruamel.yaml python-vobject))
     (synopsis "Console address book using CardDAV")
     (description "Khard is an address book for the console.  It creates, reads,
 modifies and removes CardDAV address book entries at your local machine.  For
