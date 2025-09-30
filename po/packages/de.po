@@ -4,13 +4,13 @@
 # Mario Blättermann <mario.blaettermann@gmail.com>, 2014.
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2018, 2020, 2021, 2022, 2025.
 # Cancer Name <notcancername@protonmail.com>, 2025.
-#: gnu/packages/firmware.scm:1579 gnu/packages/firmware.scm:1846
-#: gnu/packages/linux.scm:1246
+#: gnu/packages/firmware.scm:1659 gnu/packages/firmware.scm:1926
+#: gnu/packages/linux.scm:1257
 msgid ""
 msgstr ""
 "Project-Id-Version: guix-packages 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-08-30 03:18+0000\n"
+"POT-Creation-Date: 2025-09-29 03:18+0000\n"
 "PO-Revision-Date: 2025-08-22 16:13+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/packages/de/>\n"
@@ -22,37 +22,21 @@ msgstr ""
 "X-Generator: Weblate 5.12.2\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
-#: gnu/packages/abduco.scm:46
 msgid "Session management in a clean and simple way"
 msgstr "Sitzungsverwaltung auf saubere und einfache Art"
 
-#: gnu/packages/abduco.scm:47
-msgid ""
-"abduco provides session management i.e. it allows programs to\n"
-"be run independently from their controlling terminal.  That is, programs can\n"
-"be detached---run in the background---and then later reattached."
-msgstr ""
-
-#: gnu/packages/abiword.scm:156
 msgid "Word processing program"
 msgstr "Textverarbeitungsprogramm"
 
-#. TRANSLATORS: Dear translator, We would like to inform you that package
-#. descriptions may occasionally include Texinfo markup.  Texinfo markup
-#. looks like "@code{rm -rf}", "@emph{important}", etc.  When translating,
-#. please leave markup as is.
-#: gnu/packages/abiword.scm:165
 msgid ""
 "AbiWord is a word processing program.  It is rapidly\n"
 "becoming a state of the art word processor, with lots of features useful for\n"
 "your daily work, personal needs, or for just some good old typing fun."
 msgstr "AbiWord entwickelt sich schnell zu einem Textverarbeitungsprogramm auf dem Stand der Technik, mit zahlreichen Funktionalitäten, die nützlich sind für Ihre tägliche Arbeit, privaten Gebrauch oder schlicht für die Freude am Tippen."
 
-#: gnu/packages/accessibility.scm:110
 msgid "Portable Braille Library"
 msgstr "Portable Braille-Bibliothek"
 
-#: gnu/packages/accessibility.scm:111
 msgid ""
 "Libbraille is a library to easily access Braille displays and\n"
 "terminals."
@@ -60,40 +44,12 @@ msgstr ""
 "Libbraille ist eine Bibliothek zum einfachen Zugriff auf\n"
 "Braillezeilen."
 
-#: gnu/packages/accessibility.scm:222
-msgid "Braille TTY"
-msgstr ""
-
-#: gnu/packages/accessibility.scm:223
-msgid ""
-"BRLTTY is a background process (daemon) which provides access\n"
-"to the Linux/Unix console (when in text mode) for a blind person using a\n"
-"refreshable braille display.  It drives the braille display, and provides\n"
-"complete screen review functionality.  Some speech capability has also been\n"
-"incorporated."
-msgstr ""
-
-#: gnu/packages/accessibility.scm:261
 msgid "Extensible, scalable virtual keyboard for X11"
 msgstr "Erweiterbare, skalierbare virtuelle Tastatur für X11"
 
-#: gnu/packages/accessibility.scm:263
-msgid ""
-"Florence is an extensible scalable virtual keyboard for X11.\n"
-"It is useful for people who can't use a real hardware keyboard (for\n"
-"example for people with disabilities), but you must be able to use\n"
-"a pointing device (as a mouse, a trackball, a touchscreen or opengazer).\n"
-"\n"
-"Florence stays out of your way when you don't need it: it appears on the\n"
-"screen only when you need it.  A timer-based auto-click input method is\n"
-"available to help to click."
-msgstr ""
-
-#: gnu/packages/accessibility.scm:309
 msgid "Command line utilities for PCsensor and Scythe foot switches"
 msgstr "Kommandozeilenwerkzeuge für PCsensor- und Scythe-Fußschalter"
 
-#: gnu/packages/accessibility.scm:311
 msgid ""
 "This package provides command line utilities for programming PCsensor\n"
 "and Scythe foot switches.  It works for both single pedal and three pedal\n"
@@ -103,241 +59,24 @@ msgstr ""
 "PCsensor- und Scythe-Fußschaltern.  Es funktioniert sowohl für Einfachpedal-\n"
 "als auch für Dreifachpedalgeräte."
 
-#: gnu/packages/accessibility.scm:341
 msgid "Tiny screen magnifier for X11"
 msgstr "Kleine Bildschirmlupe für X11"
 
-#: gnu/packages/accessibility.scm:343
-msgid ""
-"This program magnifies a screen region by an integer positive factor and\n"
-"draws the result on a window.  It is useful as an accessibility tool, which\n"
-"works with every X Window System based GUI (depends only on libX11); or as an\n"
-"assistant for graphic designers, who need to select individual pixels."
-msgstr ""
-
-#: gnu/packages/accessibility.scm:367
-msgid "Bridge for espeak and speakup"
-msgstr ""
-
-#: gnu/packages/accessibility.scm:369
-msgid ""
-"Espeakup is a bridge between the speakup driver implemented in\n"
-"the Linux kernel and the espeak-ng text to speech synthesizer.\n"
-"In order for this package to work, you need to have the following\n"
-"kernel modules built:\n"
-"@itemize @bullet\n"
-"@item\n"
-"CONFIG_SPEAKUP=m\n"
-"@item\n"
-"CONFIG_SPEAKUP_SOFT=m\n"
-"@end itemize"
-msgstr ""
-
-#: gnu/packages/accessibility.scm:416
-msgid "Screen magnifier tool for people with low vision"
-msgstr ""
-
-#: gnu/packages/accessibility.scm:417
-msgid ""
-"MouseLoupe is a kind of magnifying glass combined with the\n"
-"mouse pointer which allows an easy and pleasant web navigation."
-msgstr ""
-
-#: gnu/packages/acct.scm:40
 msgid "Standard login and process accounting utilities"
 msgstr "Standard-Anmelde- und -Prozessverwaltungs-Werkzeuge"
 
-#: gnu/packages/acct.scm:42
-msgid ""
-"GNU acct provides a means for system administrators to determine\n"
-"system usage patterns.  It provides information on, for example, connections,\n"
-"programs executed, and system resources used."
-msgstr ""
-
-#: gnu/packages/acl.scm:90
-msgid "Library and tools for manipulating access control lists"
-msgstr ""
-
-#: gnu/packages/acl.scm:92
-msgid "Library and tools for manipulating access control lists."
-msgstr ""
-
-#: gnu/packages/acl.scm:126
-msgid "POSIX.1e @acronym{ACLs, access control lists} for Python"
-msgstr ""
-
-#: gnu/packages/acl.scm:128
-msgid ""
-"This Python extension module manipulates the POSIX.1e @acronym{ACLs,\n"
-"Access Control Lists} available on many file systems.  These allow more\n"
-"fine-grained access control than traditional user/group permissions."
-msgstr ""
-
-#: gnu/packages/ada.scm:135
-msgid "Ada 83 interpreter"
-msgstr ""
-
-#: gnu/packages/ada.scm:136
-msgid ""
-"Ada/Ed is a translator-interpreter for Ada 83.  It's intended\n"
-"primarily as a teaching tool and lacks the capacity, performance, and robustness\n"
-"of other contemporary or modern-day Ada compilers.\n"
-"\n"
-"Ada/Ed was the first Ada compiler to pass the @acronym{ACVC, Ada Compiler\n"
-"Validation Suite} version 1.7 but fails many newer tests and is not a validated\n"
-"Ada system.  Being an interpreter, it does not implement most representation\n"
-"clauses, and thus does not support systems programming close to the machine\n"
-"level."
-msgstr ""
-
-#: gnu/packages/admin.scm:247
-msgid "File and directory integrity checker"
-msgstr ""
-
-#: gnu/packages/admin.scm:249
-msgid ""
-"AIDE (Advanced Intrusion Detection Environment) is a file and directory\n"
-"integrity checker.  It creates a database from the regular expression rules\n"
-"that it finds from its configuration files.  Once this database is initialized\n"
-"it can be used to verify the integrity of the files.  It has several message\n"
-"digest algorithms that are used to check the integrity of files.  All of the\n"
-"usual file attributes can be checked for inconsistencies."
-msgstr ""
-
-#: gnu/packages/admin.scm:294
-msgid "Tools for managing UNIX style services"
-msgstr ""
-
-#: gnu/packages/admin.scm:296
-msgid ""
-"@code{daemontools} is a collection of tools for managing UNIX\n"
-"services."
-msgstr ""
-
-#: gnu/packages/admin.scm:318
-msgid "Clean up file names"
-msgstr ""
-
-#: gnu/packages/admin.scm:320
-msgid ""
-"Detox is a program that renames files to make them easier to work with\n"
-"under Unix and related operating systems.  Spaces and various other unsafe\n"
-"characters (such as \"$\") get replaced with \"_\".  ISO 8859-1 (Latin-1)\n"
-"characters can be replaced as well, as can UTF-8 characters."
-msgstr ""
-
-#: gnu/packages/admin.scm:366
-msgid "Command-line interface for the Hetzner Cloud service"
-msgstr ""
-
-#: gnu/packages/admin.scm:368
-msgid ""
-"This package provides the @code{hcloud} binary, a command-line interface\n"
-"for interacting with the @url{https://www.hetzner.com/,Hetzner Cloud}\n"
-"service."
-msgstr ""
-
-#: gnu/packages/admin.scm:394
-msgid "Single tool that combines @command{cat} & @command{rm}"
-msgstr ""
-
-#: gnu/packages/admin.scm:396
-msgid ""
-"hungrycat prints the contents of a file to standard output, while\n"
-"simultaneously freeing the disk space it occupied.  It is useful if you need\n"
-"to process a large file, don't have enough space to store both the input and\n"
-"output files, and don't need the input file afterwards.\n"
-"While similar in principle to running @command{cat} immediately followed by\n"
-"@command{rm}, @command{hungrycat} actually frees blocks as soon as they are\n"
-"printed instead of after the entire file has been read, which is often too\n"
-"late."
-msgstr ""
-
-#: gnu/packages/admin.scm:438
-#, fuzzy
-msgid "Graphical front end for @command{su}"
-msgstr "Dieses Paket bietet Steve Harris’ LADSPA-Plugin für einen Stereo-Nachhall-Effekt."
-
-#: gnu/packages/admin.scm:440
-msgid ""
-"Ktsuss stands for ``Keep the @command{su} simple, stupid''.\n"
-"It is a graphical version of @command{su} written in C and GTK+ 2, with\n"
-"simplicity in mind."
-msgstr ""
-
-#: gnu/packages/admin.scm:474
-msgid "Program to view the progress of the coreutils commands"
-msgstr ""
-
-#: gnu/packages/admin.scm:475
-msgid ""
-"A program that looks for coreutils basic commands (cp, mv,\n"
-"dd, tar, gzip/gunzip, cat, etc.) currently running on your system and displays\n"
-"the percentage of copied data.  It can also show estimated time and throughput,\n"
-"and provides a \"top-like\" mode (monitoring)."
-msgstr ""
-
-#: gnu/packages/admin.scm:513
 msgid "System service manager"
 msgstr "Verwaltung von Systemdiensten"
 
-#: gnu/packages/admin.scm:515
-msgid ""
-"The GNU Shepherd is a daemon-managing daemon, meaning that it supervises\n"
-"the execution of system services, replacing similar functionality found in\n"
-"typical init systems.  It provides dependency-handling through a convenient\n"
-"interface and is based on GNU Guile."
-msgstr ""
-
-#: gnu/packages/admin.scm:634
-msgid "The Shepherd for Guix Home, without @command{halt} and @command{reboot}"
-msgstr ""
-
-#: gnu/packages/admin.scm:676
-msgid "Create GNU Shepherd services from the command line"
-msgstr ""
-
-#: gnu/packages/admin.scm:678
-msgid ""
-"Shepherd-run is a script which assists in creating one-off shepherd\n"
-"services from the command line.  It is meant to partially fill the void left\n"
-"by @command{systemd-run}, since GNU Guix uses GNU Shepherd as its system service\n"
-"manager."
-msgstr ""
-
-#: gnu/packages/admin.scm:713
 msgid "System container manager"
 msgstr "Verwaltung von Systemcontainern"
 
-#: gnu/packages/admin.scm:715
-msgid ""
-"This project aims to provide an extension to the Shepherd, retraining it\n"
-"as a swineherd, a manager of crude system containers.  It does this by\n"
-"providing a Shepherd service @code{swineherd} that talks to the Shepherd\n"
-"process to create Guix System containers as Shepherd services.  It also comes\n"
-"with an optional HTTP API server."
-msgstr ""
-
-#: gnu/packages/admin.scm:747
-msgid "Simple terminal file manager with @command{vi}-inspired key bindings"
-msgstr ""
-
-#: gnu/packages/admin.scm:749
-msgid ""
-"The Cactus File Manager (@command{cfm}) helps you manage your files\n"
-"visually from a text terminal.  It aims to be simple and fast, with key bindings\n"
-"inspired by @command{vi}."
-msgstr ""
-
-#: gnu/packages/admin.scm:807
 msgid "Set of utilities for cloud computing environments"
 msgstr "Sammlung von Werkzeugen für Cloud-Computing-Umgebungen"
 
-#: gnu/packages/aspell.scm:94 gnu/packages/hunspell.scm:60
 msgid "Spell checker"
 msgstr "Rechtschreibprüfung"
 
-#: gnu/packages/aspell.scm:96
 msgid ""
 "Aspell is a spell-checker which can be used either as a library or as\n"
 "a standalone program.  Notable features of Aspell include its full support of\n"
@@ -345,25 +84,20 @@ msgid ""
 "dictionaries, including personal ones."
 msgstr "Aspell ist ein Programm zur Rechtschreibprüfung, das entweder als eine Programmbibliothek oder als eigenständiges Programm benutzt werden kann.  Nennenswerte Funktionalitäten von Aspell sind unter anderem seine vollständige Unterstützung für mit der UTF-8-Kodierung geschriebene Dokumente und seine Fähigkeit, mehrere Wörterbücher zu benutzen, einschließlich eigener Wörterbücher."
 
-#: gnu/packages/aspell.scm:144
 msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgstr "Dieses Paket bietet ein Wörterbuch für das GNU-Aspell-Rechtschreibprüfprogramm."
 
-#: gnu/packages/aspell.scm:440
 msgid "Interactive spell-checking tool for Unix"
 msgstr "Interaktives Rechtschreibprüfprogramm für Unix"
 
-#: gnu/packages/aspell.scm:441
 msgid ""
 "Ispell is an interactive spell-checking tool supporting many\n"
 "European languages."
 msgstr "Ispell ist ein interaktives Rechtschreibprüfprogramm für viele europäische Sprachen."
 
-#: gnu/packages/audio.scm:239
 msgid "Embedded Audio Acceleration"
 msgstr "Eingebettete Audio-Beschleunigung"
 
-#: gnu/packages/audio.scm:240
 msgid ""
 "OpenSLES is a royalty-free, cross-platform,\n"
 "hardware-accelerated audio API tuned for embedded systems.  It provides a\n"
@@ -374,21 +108,17 @@ msgid ""
 "promoting the market for advanced audio."
 msgstr "OpenSLES ist eine lizenzfreie, plattformunabhängige Audio-Programmierschnittstelle, die auf eingebettete Systeme zugeschnitten ist. Es bietet Entwicklern von nativen Programmen auf eingebetteten Mobil- und Mediengeräten eine standardisierte, performante Methode mit niedriger Latenz, um auf Audio-Funktionen zuzugreifen. Dies ermöglicht es, unkompliziert plattformübergreifende Hardware- und Software-Tonfunktionen auszurollen, und dadurch den Markt für hoch entwickelte Audiosoftware voranzutreiben."
 
-#: gnu/packages/audio.scm:275
 msgid "Software Synthesizer"
 msgstr "Software-Synthesizer"
 
-#: gnu/packages/audio.scm:276
 msgid ""
 "WildMIDI is a simple software midi player which has a core\n"
 "softsynth library that can be used with other applications."
 msgstr "WildMIDI ist ein einfacher softwaregestützter Midi-Spieler mit einer softsynth-Bibliothek die von anderen Anwendungen genutzt werden kann."
 
-#: gnu/packages/audio.scm:312
 msgid "Measure the roundtrip time of MIDI messages"
 msgstr "Umlaufzeit von MIDI-Nachrichten messen"
 
-#: gnu/packages/audio.scm:314
 msgid ""
 "@code{alsa-midi-latency-test} measures the roundtrip time of a MIDI\n"
 "message in the alsa subsystem of the Linux kernel using a high precision timer.\n"
@@ -396,53 +126,33 @@ msgid ""
 "displays a histogram of the roundtrip time jitter."
 msgstr "@code{alsa-midi-latency-test} misst die Umlaufzeit einer MIDI-Nachricht im ALSA-Subsystem des Linux-Kernels mit einem hoch präzisen Timer. Es bestimmt die schlechteste Umlaufzeit aller versandten MIDI-Nachrichten und zeigt ein Histogramm des Jitter der Umlaufzeit an."
 
-#: gnu/packages/audio.scm:358
 msgid "WebRTC's Audio Processing Library"
 msgstr "Audioverarbeitungsbibliothek von WebRTC"
 
-#: gnu/packages/audio.scm:359
 msgid ""
 "WebRTC-Audio-Processing library based on Google's\n"
 "implementation of WebRTC."
 msgstr "WebRTC-Audioverarbeitungsbibliothek basierend auf Googles Implementierung von WebRTC."
 
-#: gnu/packages/audio.scm:423
 msgid "VisualOn AAC Encoder"
 msgstr "VisualOn AAC-Kodierer"
 
-#: gnu/packages/audio.scm:424
 msgid ""
 "VO-AACENC is the VisualOn implementation of Advanced Audio\n"
 "Coding (AAC) encoder."
 msgstr "VO-AACENC ist die VisualOn-Implementierung eines Advanced Audio Coding (AAC)-Kodierers."
 
-#: gnu/packages/audio.scm:452
 msgid "ALSA interfacing library"
 msgstr "ALSA-Schnittstellenbibliothek"
 
-#: gnu/packages/audio.scm:453
 msgid ""
 "TinyALSA is a small library to interface with ALSA in the\n"
 "Linux kernel."
 msgstr "TinyALSA ist eine schlanke Bibliothek, um ALSA im Linux-Kernel anzusteuern."
 
-#: gnu/packages/audio.scm:496
-msgid "Frequency modulation synthesizer plugin"
-msgstr ""
-
-#: gnu/packages/audio.scm:498
-msgid ""
-"fmsynth is an LV2 plugin which implements an @dfn{FM} (Frequency\n"
-"Modulation) synthesizer.  Unlike most FM synth implementations in software,\n"
-"this FM synthesizer does not aim to emulate or replicate a particular\n"
-"synth (like DX7) or FM chip."
-msgstr ""
-
-#: gnu/packages/audio.scm:525
 msgid "Video game music file playback library"
 msgstr "Bibliothek zum Abspielen von Videospiel-Musikdateien"
 
-#: gnu/packages/audio.scm:527
 msgid ""
 "Game-music-emu is a collection of video game music file emulators that\n"
 "support the following formats and systems:\n"
@@ -489,59 +199,39 @@ msgstr ""
 "Sega Master System/Mark III, Sega Genesis/Mega Drive, BBC Micro\n"
 "@end table"
 
-#: gnu/packages/audio.scm:590
 msgid "Audio tracking library"
 msgstr "Tontracking-Bibliothek"
 
-#: gnu/packages/audio.scm:591
 msgid ""
 "LibOpenMPT is a cross-platform C++ and C module playback\n"
 "library.  It is based on the player code of the Open ModPlug Tracker project."
 msgstr "LibOpenMPT ist eine plattformunabhängige C- und C++-Bibliothek zum Abspielen von Modulen. Sie basiert auf dem Abspielcode des Open ModPlug Tracker-Projekts."
 
-#: gnu/packages/audio.scm:621
-msgid "Open Fingerprint Architecture"
-msgstr ""
-
-#: gnu/packages/audio.scm:622
 msgid ""
 "LibOFA is an audio fingerprint library, created and provided\n"
 "by MusicIP."
 msgstr "LibOFA ist eine Bibliothek zum Fingerprinting von Ton, von MusicIP verfasst und bereitgestellt."
 
-#: gnu/packages/audio.scm:646
 msgid "MIDI to WAVE converter library"
 msgstr "Konvertierungsbibliothek von MIDI zu WAVE"
 
-#: gnu/packages/audio.scm:647
 msgid ""
 "LibTiMidity is a MIDI to WAVE converter library that uses\n"
 "Gravis Ultrasound-compatible patch files to generate digital audio data from\n"
 "General MIDI files."
 msgstr "LibTiMidity ist eine Bibliothek, die MIDI nach WAVE konvertiert. Sie nutzt mit Gravis Ultrasound kompatible Patch-Dateien, um General MIDI-Dateien in digitale Tondaten umzuwandeln."
 
-#: gnu/packages/audio.scm:671 gnu/packages/audio.scm:690
 msgid "Adaptive Multi Rate Codec"
 msgstr "Adaptive Multi Rate Codec"
 
-#: gnu/packages/audio.scm:672
 msgid ""
 "VO-AMR is a library of VisualOn implementation of\n"
 "Adaptive Multi Rate Narrowband and Wideband (AMR-NB and AMR-WB) speech codec."
 msgstr "VO-AMR ist die Bibliothek der VisualOn-Implementierung des Adaptive Multi Rate-Schmalband und -Breitband (AMR-NB und AMR-WB) Sprachcodecs."
 
-#: gnu/packages/audio.scm:691
-msgid ""
-"OpenCore-AMR is a library of OpenCORE Framework\n"
-"implementation of Adaptive Multi Rate Narrowband and Wideband\n"
-"(AMR-NB and AMR-WB) speech codec."
-msgstr ""
-
-#: gnu/packages/audio.scm:722
 msgid "Realtime modular synthesizer and effect processor"
 msgstr "Echtzeitfähiger modularer Synthesizer und Effektverarbeiter"
 
-#: gnu/packages/audio.scm:724
 msgid ""
 "AlsaModularSynth is a digital implementation of a classical analog\n"
 "modular synthesizer system.  It uses virtual control voltages to control the\n"
@@ -550,11 +240,9 @@ msgid ""
 "Filter) modules follow the convention of 1V / Octave."
 msgstr "AlsaModularSynth ist eine digitale Implementierung eines klassischen analogen modularen Synthesizersystems.  Es benutzt virtuelle Steuerungsspannungen, um die Modulparameter zu steuern.  Die Steuerungsspannungen, die die Frequenz z.B. der Module VCO (Voltage Controlled Oscillator, spannungsgesteuerter Oszillator) und VCF (Voltage Controlled Filter, spannungsgesteuertes Filter) steuern, folgen der Konvention von 1V pro Oktave."
 
-#: gnu/packages/audio.scm:770
 msgid "Library for audio labelling"
 msgstr "Programmbibliothek für Audio-Labelling"
 
-#: gnu/packages/audio.scm:772
 msgid ""
 "aubio is a tool designed for the extraction of annotations from audio\n"
 "signals.  Its features include segmenting a sound file before each of its\n"
@@ -562,119 +250,27 @@ msgid ""
 "streams from live audio."
 msgstr "aubio ist ein Werkzeug für die Extraktion von Annotationen aus Audio-Signalen.  Zu seinen Funktionalitäten gehört die Segmentierung einer Ton-Datei vor jeder Anschwellung, Tonhöhenbestimmung, Beat-Extraktion und das Erstellen von MIDI-Strömen aus Live-Audio."
 
-#: gnu/packages/audio.scm:817
-msgid "Audio processing program with an interactive mode"
-msgstr ""
-
-#: gnu/packages/audio.scm:819
-msgid "dsp is an audio processing program with an interactive mode."
-msgstr ""
-
-#: gnu/packages/audio.scm:866
-msgid "C++ library of functions for DSP and Music Informatics purposes"
-msgstr ""
-
-#: gnu/packages/audio.scm:868
-msgid ""
-"QM-DSP is a C++ library of functions for DSP and Music Informatics\n"
-"purposes developed at Queen Mary, University of London."
-msgstr ""
-
-#: gnu/packages/audio.scm:985
-msgid "Audio effect processor for PipeWire and PulseAudio clients"
-msgstr ""
-
-#: gnu/packages/audio.scm:986
-msgid ""
-"JamesDSP is an audio effect processor for PipeWire and\n"
-"PulseAudio clients, featuring:\n"
-"@itemize\n"
-"@item Automatic bass boost: Frequency-detecting bass-boost\n"
-"@item Automatic dynamic range compressor: automated multiband dynamic range\n"
-" adjusting effect\n"
-"@item Complex reverberation IIR network (Progenitor 2)\n"
-"@item Interpolated FIR equalizer with flexible bands\n"
-"@item Arbitrary response equalizer (also known as GraphicEQ from EqualizerAPO)\n"
-"@item AutoEQ database integration (requires network connection)\n"
-"@item Partitioned convolver (Auto segmenting convolution): Mono, stereo,\n"
-" full/true stereo (LL, LR, RL, RR) impulse response\n"
-"@item Crossfeed: Realistic surround effects\n"
-"@item Soundstage wideness: A multiband stereo wideness controller\n"
-"@item ViPER-DDC: Parametric equalization on audio and creating VDC input files\n"
-"@item Analog modeling: An aliasing-free even harmonic generator\n"
-"@item Output limiter\n"
-"@item Scripting engine: Live programmable DSP using the EEL2 scripting language\n"
-"@item Scripting IDE featuring syntax highlighting, basic code completion,\n"
-" dynamic code outline window, console output support and detailed error\n"
-" messages with inline code highlighting\n"
-"@end itemize"
-msgstr ""
-
-#: gnu/packages/audio.scm:1160 gnu/packages/music.scm:5417
 msgid "Digital audio workstation"
 msgstr "Digital Audio Workstation"
 
-#: gnu/packages/audio.scm:1162
 msgid ""
 "Ardour is a multi-channel digital audio workstation, allowing users to\n"
 "record, edit, mix and master audio and MIDI projects.  It is targeted at audio\n"
 "engineers, musicians, soundtrack editors and composers."
 msgstr "Ardour ist eine mehrkanalige Digital Audio Workstation, die es Nutzern ermöglicht, Audio- und MIDI-Projekte aufzunehmen, zu bearbeiten, zu mischen und zu mastern.  Seine Zielgruppe sind Tontechniker, Musiker, Soundtrack-Verfasser und Komponisten."
 
-#: gnu/packages/audio.scm:1288 gnu/packages/audio.scm:1407
 msgid "Software for recording and editing sounds"
 msgstr "Software zum Aufnehmen und Bearbeiten von Ton"
 
-#: gnu/packages/audio.scm:1290
 msgid ""
 "Audacity is a multi-track audio editor designed for recording, playing\n"
 "and editing digital audio.  It features digital effects and spectrum analysis\n"
 "tools."
 msgstr "Audacity ist ein mehrspuriges Audiobearbeitungsprogramm zum Aufnehmen, Abspielen und Bearbeiten von digitalen Tondateien.  Es bietet digitale Effekte und Spektrumsanalysewerkzeuge."
 
-#: gnu/packages/audio.scm:1409
-#, fuzzy
-#| msgid ""
-#| "Audacity is a multi-track audio editor designed for recording, playing\n"
-#| "and editing digital audio.  It features digital effects and spectrum analysis\n"
-#| "tools."
-msgid ""
-"Tenacity is a multi-track audio editor designed for recording, playing\n"
-"and editing digital audio.  It features digital effects and spectrum analysis\n"
-"tools."
-msgstr "Audacity ist ein mehrspuriges Audiobearbeitungsprogramm zum Aufnehmen, Abspielen und Bearbeiten von digitalen Tondateien.  Es bietet digitale Effekte und Spektrumsanalysewerkzeuge."
-
-#: gnu/packages/audio.scm:1464
-msgid "Library to handle various audio file formats"
-msgstr ""
-
-#: gnu/packages/audio.scm:1465
-msgid ""
-"This is a free software version of SGI's audiofile library.\n"
-"It provides a uniform programming interface for processing of audio data to\n"
-"and from audio files of many common formats.\n"
-"\n"
-"Currently supported file formats include AIFF/AIFF-C, WAVE, and NeXT/Sun\n"
-".snd/.au, BICS, and raw data.  Supported compression formats are currently\n"
-"G.711 mu-law and A-law."
-msgstr ""
-
-#: gnu/packages/audio.scm:1505
-msgid "Pitch-correction LADSPA audio plugin"
-msgstr ""
-
-#: gnu/packages/audio.scm:1507
-msgid ""
-"Autotalent is a LADSPA plugin for real-time pitch-correction.  Among its\n"
-"controls are allowable notes, strength of correction, LFO for vibrato and\n"
-"formant warp."
-msgstr ""
-
-#: gnu/packages/audio.scm:1557
 msgid "Tonewheel organ synthesizer"
 msgstr "Tonrad-Orgel-Synthesizer"
 
-#: gnu/packages/audio.scm:1559
 msgid ""
 "AZR-3 is a port of the free VST plugin AZR-3.  It is a tonewheel organ\n"
 "with drawbars, distortion and rotating speakers.  The organ has three\n"
@@ -683,32 +279,9 @@ msgid ""
 "plugins are provided."
 msgstr "AZR-3 ist eine Portierung des freien VST-Plugins AZR-3.  Es handelt sich um eine Tonrad-Orgel mit Zugriegeln, Verzerrung und rotierenden Lautsprechern.  Die Orgel hat drei Teile, zwei mehrtönige mit neun Zugriegeln und einen eintönigen Bass-Teil mit fünf Zugriegeln.  Eine eigenständige JACK-Anwendung und LV2-Plugins stehen zur Verfügung."
 
-#: gnu/packages/audio.scm:1588
-msgid "Barebones, fast LV2 bass enhancement plugin."
-msgstr ""
-
-#: gnu/packages/audio.scm:1590
-#, fuzzy
-msgid "This package provides a barebones, fast LV2 bass enhancement plugin."
-msgstr "Dieses Paket bietet Steve Harris’ LADSPA-Plugin für einen Stereo-Nachhall-Effekt."
-
-#: gnu/packages/audio.scm:1653
-msgid "GUI for pipewire and wireplumber settings and connections"
-msgstr ""
-
-#: gnu/packages/audio.scm:1655
-msgid ""
-"This is a PyQT GUI application to dynamically modify Pipewire and\n"
-"Wireplumber settings at runtime, such as quantum. sample rate, latency offset\n"
-"setting, services restart and more.  It features side-by-side and graph style\n"
-"connections manager, pw-top wrapper, simple ALSA mixer and jack_delay GUI."
-msgstr ""
-
-#: gnu/packages/audio.scm:1689
 msgid "Audio plug-in pack for LV2 and JACK environments"
 msgstr "Audio-Plugin-Sammlung für LV2- und JACK-Umgebungen"
 
-#: gnu/packages/audio.scm:1691
 msgid ""
 "Calf Studio Gear is an audio plug-in pack for LV2 and JACK environments.\n"
 "The suite contains lots of effects (delay, modulation, signal processing,\n"
@@ -717,89 +290,21 @@ msgid ""
 "tools (analyzer, mono/stereo tools, crossovers)."
 msgstr "Calf Studio Gear ist eine Sammlung von Audio-Plugins für LV2- und JACK-Umgebungen.  Die Zusammenstellung enthält zahlreiche Effekte (Verzögerung, Modulation, Signalverarbeitung, Filter, Entzerrer, Dynamik, Verzerrung und Mastering-Effekte), Instrumente (SF2-Spieler, Orgelsimulator und einen monophonen Synthesizer) und Werkzeuge (Analyzer, Mono-/Stereo-Werkzeuge, Crossover)."
 
-#: gnu/packages/audio.scm:1731
-msgid "LV2 port of the CAPS audio plugin collection"
-msgstr ""
-
-#: gnu/packages/audio.scm:1733
-msgid ""
-"LV2 port of CAPS, a collection of audio plugins comprising basic virtual\n"
-"guitar amplification and a small range of classic effects, signal processors and\n"
-"generators of mostly elementary and occasionally exotic nature."
-msgstr ""
-
-#: gnu/packages/audio.scm:1819
-msgid "Physical modeling for analog tape machines"
-msgstr ""
-
-#: gnu/packages/audio.scm:1821
-msgid ""
-"CHOW Tape is an analog tape machine physical model, originally based on\n"
-"the Sony TC-260.  The current version can be used to emulate a wide variety of\n"
-"reel-to-reel tape machines."
-msgstr ""
-
-#: gnu/packages/audio.scm:1850
-msgid "Real-time C++ @acronym{IIR, infinite impulse response} filter library"
-msgstr ""
-
-#: gnu/packages/audio.scm:1852
-msgid ""
-"This C++ library implements the Butterworth, RBJ, and Chebychev\n"
-"@acronym{IIR, infinite impulse response} filters.  Samples are processed one by\n"
-"one, in real time.  It can easily import coefficients generated with Python\n"
-"(@code{scipy}).  It also avoids memory leaks by allocating memory at compile\n"
-"time, using templates, instead of calling @code{malloc()} or @code{new}."
-msgstr ""
-
-#: gnu/packages/audio.scm:1886
 msgid "LV2 plugins for live use"
 msgstr "LV2-Plugins für Liveaufnahmen"
 
-#: gnu/packages/audio.scm:1888
 msgid ""
 "The infamous plugins are a collection of LV2 audio plugins for live\n"
 "performances.  The plugins include a cellular automaton synthesizer, an\n"
 "envelope follower, distortion effects, tape effects and more."
 msgstr "Diese berüchtigten Plugins sind eine Sammlung von LV2-Audio-Plugins für Live-Darbietungen.  Zu den Plugins gehören ein Zellulärer-Automaten-Synthesizer, ein Envelope Follower, Verzerrungseffekte, Tape-Effekte und mehr."
 
-#: gnu/packages/audio.scm:1916
-#, fuzzy
-#| msgid "LV2 plugins for live use"
-msgid "LV2 audio plugins for modular synthesis"
-msgstr "LV2-Plugins für Liveaufnahmen"
-
-#: gnu/packages/audio.scm:1918
-msgid ""
-"Omins-lv2 is a small collection of LV2 audio plugins for modular\n"
-"synthesis."
-msgstr ""
-
-#: gnu/packages/audio.scm:1950
-msgid "Synchronous multiroom audio player"
-msgstr ""
-
-#: gnu/packages/audio.scm:1952
-msgid ""
-"Snapcast is a multi-room client-server audio player.  Clients are time\n"
-"synchronized with the server to play synced audio."
-msgstr ""
-
-#: gnu/packages/audio.scm:1981
-#, fuzzy
-#| msgid "This package provides Steve Harris's LADSPA plugins."
-msgid "The SWH Plugins package for the LADSPA plugin system"
-msgstr "Dieses Paket bietet Steve Harris’ LADSPA-Plugin für einen Stereo-Nachhall-Effekt."
-
-#: gnu/packages/audio.scm:1982
 msgid "This package provides Steve Harris's LADSPA plugins."
 msgstr "Dieses Paket bietet Steve Harris’ LADSPA-Plugins."
 
-#: gnu/packages/audio.scm:2020
 msgid "SWH plugins in LV2 format"
 msgstr "SWH-Plugins im LV2-Format"
 
-#: gnu/packages/audio.scm:2022
 msgid ""
 "Swh-plugins-lv2 is a collection of audio plugins in LV2 format.  Plugin\n"
 "classes include: dynamics (compressor, limiter), time (delay, chorus,\n"
@@ -807,94 +312,34 @@ msgid ""
 "emulation (valve, tape), bit fiddling (decimator, pointer-cast), etc."
 msgstr "Swh-plugins-lv2 ist eine Sammlung von Audio-Plugins im LV2-Format.  Zu den Pluginkategorien gehören Dynamik (Kompressor, Limiter), Zeit (Verzögerung, Chorus, Flanger), Ringmodulator, Verzerrung, Filter, Tonhöhenabweichung, Oszillatoren, Emulation (Ventil, Band), Bit-Fiddling (Decimator, Pointer-Cast) usw."
 
-#: gnu/packages/audio.scm:2047
-msgid "C++ library for access to DJ record libraries"
-msgstr ""
-
-#: gnu/packages/audio.scm:2049
-msgid ""
-"@code{libdjinterop} is a C++ library that allows access to database\n"
-"formats used to store information about DJ record libraries."
-msgstr ""
-
-#: gnu/packages/audio.scm:2110
-msgid "Sound Synthesis with Physical Models"
-msgstr ""
-
-#: gnu/packages/audio.scm:2111 gnu/packages/audio.scm:2142
-msgid ""
-"Tao is a software package for sound synthesis using physical\n"
-"models.  It provides a virtual acoustic material constructed from masses and\n"
-"springs which can be used as the basis for building quite complex virtual\n"
-"musical instruments.  Tao comes with a synthesis language for creating and\n"
-"playing instruments and a C++ API for those who would like to use it as an\n"
-"object library."
-msgstr ""
-
-#: gnu/packages/audio.scm:2141
-msgid "Sound synthesis with physical models"
-msgstr ""
-
-#: gnu/packages/audio.scm:2178
 msgid "Sound and music computing system"
 msgstr "Ton- und Musikrechensystem"
 
-#: gnu/packages/audio.scm:2180
 msgid ""
 "Csound is a user-programmable and user-extensible sound processing\n"
 "language and software synthesizer."
 msgstr "Csound ist eine nutzerprogrammierbare und nutzererweiterbare Tonverarbeitungssprache und ein Software-Synthesizer."
 
-#: gnu/packages/audio.scm:2205
-msgid "Convert SMF MIDI files to and from plain text"
-msgstr ""
-
-#: gnu/packages/audio.scm:2207
-msgid ""
-"midicomp can manipulate SMF (Standard MIDI File) files.  It can both\n"
-"  read and write SMF files in 0 or format 1 and also read and write its own\n"
-"  plain text format.  This means a SMF file can be turned into easily\n"
-"  parseable text, edited with any text editor or filtered through any script\n"
-"  language, and recompiled back into a binary SMF file."
-msgstr ""
-
-#: gnu/packages/audio.scm:2236
-msgid "Pre-GM Roland MIDI device emulator"
-msgstr ""
-
-#: gnu/packages/audio.scm:2238
-msgid ""
-"libmt32emu is a C/C++ library which approximately emulates\n"
-"the Roland MT-32, CM-32L and LAPC-I synthesizer modules. It is part of the\n"
-"Munt project."
-msgstr ""
-
-#: gnu/packages/audio.scm:2280 gnu/packages/audio.scm:5480
 msgid "C++ wrapper around the ALSA API"
 msgstr "C++-Wrapper um die ALSA-Programmierschnittstelle"
 
-#: gnu/packages/audio.scm:2282
 msgid ""
 "clalsadrv is a C++ wrapper around the ALSA API simplifying access to\n"
 "ALSA PCM devices."
 msgstr "clalsadrv ist ein C++-Wrapper um die ALSA-Programmierschnittstelle, der den Zugang zu ALSA-PCM-Geräten vereinfacht."
 
-#: gnu/packages/audio.scm:2319
 msgid "LADSPA ambisonics plugins"
 msgstr "LADSPA-Ambisonics-Plugins"
 
-#: gnu/packages/audio.scm:2321
 msgid ""
 "The AMB plugins are a set of LADSPA ambisonics plugins, mainly to be\n"
 "used within Ardour.  Features include: mono and stereo to B-format panning,\n"
 "horizontal rotator, square, hexagon and cube decoders."
 msgstr "Die AMB-Plugins sind eine Reihe von LADSPA-Ambisonics-Plugins und hauptsächlich für die Nutzung mit Ardour gedacht.  Sie bieten Panning von Mono oder Stereo zum B-Format, horizontalen Rotierer, Quadrat-, Sechseck und Würfel-Decoder."
 
-#: gnu/packages/audio.scm:2356
 msgid "Chorus, phaser, and vintage high-pass and low-pass filters"
 msgstr "Chorus-, Phaser- und Vintage-Hochpass und -Tiefpass-Filter"
 
-#: gnu/packages/audio.scm:2358
 msgid ""
 "This package provides various LADSPA plugins.  @code{cs_chorus} and\n"
 "@code{cs_phaser} provide chorus and phaser effects, respectively;\n"
@@ -906,21 +351,17 @@ msgstr ""
 "Dieses Paket bietet verschiedene LADSPA-Plugins.  @code{cs_chorus} und\n"
 "@code{cs_phaser} bieten jeweils Chorus- und Phaser-Effekte; @code{mvclpf24} bietet vier Implementierungen des Tiefpassfilters, der in Vintage-Moog-Synthesizern benutzt wird; @code{mvchpf24} basiert auf dem spannungsgesteuerten Hochpassfilter von Robert Moog.  Die Filter versuchen, die nicht-linearen Schaltkreiselemente ihrer ursprünglichen analogen Gegenstücke zu emulieren."
 
-#: gnu/packages/audio.scm:2396
 msgid "LADSPA reverb plugin"
 msgstr "LADSPA-Nachhall-Plugin"
 
-#: gnu/packages/audio.scm:2398
 msgid ""
 "This package provides a stereo reverb LADSPA plugin based on the\n"
 "well-known greverb."
 msgstr "Dieses Paket bietet ein Stereo-Nachhall-LADSPA-Plugin basierend auf dem wohlbekannten greverb."
 
-#: gnu/packages/audio.scm:2432
 msgid "LADSPA four-band parametric equalizer plugin"
 msgstr "LADSPA-Vierband-Parametrischer-Equalizer-Plugin"
 
-#: gnu/packages/audio.scm:2434
 msgid ""
 "This package provides a LADSPA plugin for a four-band parametric\n"
 "equalizer.  Each section has an active/bypass switch, frequency, bandwidth and\n"
@@ -940,21 +381,17 @@ msgstr ""
 "\n"
 "Alle Umschalter und Steuerungen werden intern geglättet, damit sie @i{live} ohne Klick- oder Reißgeräusche benutzt werden können.  Dadurch ist das Plugin in Systemen wie z.B. Ardour, die die Automatisierung von Plugin-Steuerungs-Ports ermöglichen, oder auf Bühnen nutzbar."
 
-#: gnu/packages/audio.scm:2477
 msgid "LADSPA stereo width plugin"
 msgstr "LADSPA-Stereobreiten-Plugin"
 
-#: gnu/packages/audio.scm:2479
 msgid ""
 "This package provides a LADSPA plugin to manipulate the stereo width of\n"
 "audio signals."
 msgstr "Dieses Paket bietet ein LADSPA-Plugin, um die Stereobreite von Audiosignalen zu ändern."
 
-#: gnu/packages/audio.scm:2514
 msgid "LADSPA plugin for synthesizer oscillators"
 msgstr "LADSPA-Plugin für Synthesizer-Oszillatoren"
 
-#: gnu/packages/audio.scm:2516
 msgid ""
 "The @code{blvco} LADSPA plugin provides three anti-aliased oscillators:\n"
 "\n"
@@ -979,29 +416,23 @@ msgstr ""
 "\n"
 "Alle Oszillatoren sind tiefpassgefiltert, um Wellenformen ähnlich der Ausgabe von Analog-Synthesizern wie dem Moog Voyager zu bieten."
 
-#: gnu/packages/audio.scm:2558
 msgid "LADSPA Autowah effect plugin"
 msgstr "LADSPA-Autowah-Effekt-Plugin"
 
-#: gnu/packages/audio.scm:2560
 msgid ""
 "This package provides a LADSPA plugin for a Wah effect with envelope\n"
 "follower."
 msgstr "Dieses Paket bietet ein LADSPA-Plugin für einen Wah-Effekt mit Envelope-Follower."
 
-#: gnu/packages/audio.scm:2594
 msgid "LADSPA stereo reverb plugin"
 msgstr "LADSPA-Stereo-Nachhall-Plugin"
 
-#: gnu/packages/audio.scm:2596
 msgid "This package provides a LADSPA plugin for a stereo reverb effect."
 msgstr "Dieses Paket bietet ein LADSPA-Plugin für einen Stereo-Nachhall-Effekt."
 
-#: gnu/packages/audio.scm:2635
 msgid "SoundFont synthesizer"
 msgstr "SoundFont-Synthesizer"
 
-#: gnu/packages/audio.scm:2637
 msgid ""
 "FluidSynth is a real-time software synthesizer based on the SoundFont 2\n"
 "specifications.  FluidSynth reads and handles MIDI events from the MIDI input\n"
@@ -1009,48 +440,29 @@ msgid ""
 "also play midifiles using a Soundfont."
 msgstr "FluidSynth ist ein Echtzeit-Software-Synthesizer basierend auf den SoundFont-2-Spezifikationen.  FluidSynth liest und behandelt MIDI-Ereignisse von dem MIDI-Eingabegerät.  Es ist das Software-Analogon eines MIDI-Synthesizers.  FluidSynth kann auch Midifiles unter Benutzung eines Soundfonts abspielen."
 
-#: gnu/packages/audio.scm:2658
 msgid "MPEG-4 and MPEG-2 AAC decoder"
 msgstr "MPEG-4- und MPEG-2-AAC-Decoder"
 
-#: gnu/packages/audio.scm:2660
 msgid "FAAD2 is an MPEG-4 and MPEG-2 AAC decoder supporting LC, Main, LTP, SBR, -PS, and DAB+."
 msgstr "FAAD2 ist ein MPEG-4- und MPEG-2-AAC-Decoder, der LC, Main, LTP, SBR, PS und DAB+ unterstützt."
 
-#: gnu/packages/audio.scm:2699
 msgid "Signal processing language"
 msgstr "Signalverarbeitungssprache"
 
-#: gnu/packages/audio.scm:2701
 msgid "Faust is a programming language for realtime audio signal processing."
 msgstr "Faust ist eine Programmiersprache für Echtzeit-Audiosignalverarbeitung."
 
-#: gnu/packages/audio.scm:2778
 msgid "GUS compatible patches for MIDI players"
 msgstr "GUS-kompatible Patches für MIDI-Abspieler"
 
-#: gnu/packages/audio.scm:2780
 msgid ""
 "FreePats is a project to create a free and open set of GUS compatible\n"
 "patches that can be used with softsynths such as Timidity and WildMidi."
 msgstr "FreePats ist ein Projekt, eine freie und offene Sammlung von GUS-kompatiblen Patches zu erstellen, die mit Softsynths wie Timidity und WildMidi benutzt werden können."
 
-#: gnu/packages/audio.scm:2822
-msgid "General MIDI sound set"
-msgstr ""
-
-#: gnu/packages/audio.scm:2823
-msgid ""
-"FreePats is a project to create a free (as in free software)\n"
-"collection of digital instruments for music production.  This sound bank is a\n"
-"partial release of the General MIDI sound set."
-msgstr ""
-
-#: gnu/packages/audio.scm:2884
 msgid "Virtual guitar amplifier"
 msgstr "Virtueller Gitarrenverstärker"
 
-#: gnu/packages/audio.scm:2885
 msgid ""
 "Guitarix is a virtual guitar amplifier running JACK.\n"
 "Guitarix takes the signal from your guitar as a mono-signal from your sound\n"
@@ -1063,11 +475,9 @@ msgstr ""
 "Guitarix ist ein virtueller Gitarrenverstärker für JACK.\n"
 "Guitarix nimmt das Signal von Ihrer Gitarre als ein Monosignal Ihrer Soundkarte entgegen.  Die Eingabe wird von einem Hauptverstärker und einer Rack-Section verarbeitet.  Beide können separat geroutet werden und liefern ein verarbeitetes Stereo-Signal via JACK.  Sie können das Rack mit Effekten aus mehr als 25 eingebauten Modulen füllen.  Die Auswahl reicht von einfachen Noise-Gates bis hin zu Modulationseffekten wie Flanger, Phaser oder Auto-Wah."
 
-#: gnu/packages/audio.scm:2939
 msgid "Audio effects processor"
 msgstr "Audioeffektverarbeiter"
 
-#: gnu/packages/audio.scm:2941
 msgid ""
 "Rakarrack is a richly featured multi-effects processor emulating a\n"
 "guitar effects pedalboard.  Effects include compressor, expander, noise gate,\n"
@@ -1079,22 +489,18 @@ msgid ""
 "well suited to all musical instruments and vocals."
 msgstr "Rakarrack ist ein Multi-Effekt-Verarbeitungsprogramm mit reichhaltigen Funktionalitäten, welches ein Gitarreneffekte-Pedalboard emuliert.  Effekte sind unter anderem Kompressor, Expander, Noise-Gate, Equalizer, Exciter, Flanger, Chorus, verschiedene Verzögerungs- und Nachhall-Effekte, Verzerrungsmodule und vieles mehr.  Der Großteil der Effekt-Engine setzt sich zusammen aus Modulen, die im exzellenten Software-Synthesizer ZynAddSubFX zu finden sind.  Voreinstellungen und Benutzerschnittstelle sind optimiert für die Gitarre, aber Rakarrack verarbeitet Signale in Stereo, während es keine interne bandbegrenzende Filterung durchführt, und ist daher für alle Musikinstrumente und Vocals gut geeignet."
 
-#: gnu/packages/audio.scm:2991
 msgid "LV2 convolution reverb"
 msgstr "LV2-Faltungs-Nachhall"
 
-#: gnu/packages/audio.scm:2993
 msgid ""
 "IR is a low-latency, real-time, high performance signal convolver\n"
 "especially for creating reverb effects.  It supports impulse responses with 1,\n"
 "2 or 4 channels, in any soundfile format supported by libsndfile."
 msgstr "IR ist ein Programm für Signalfaltungen mit niedriger Latenz, in Echtzeit und mit hoher Leistung besonders zum Generieren von Nachhall-Effekten.  Es unterstützt Impulsantworten mit 1, 2 oder 4 Kanälen in einem beliebigen Tondateienformat, das von libsndfile unterstützt wird."
 
-#: gnu/packages/audio.scm:3034
 msgid "JACK audio connection kit"
 msgstr "JACK-Audioverbindungs-Kit"
 
-#: gnu/packages/audio.scm:3036
 msgid ""
 "JACK is a low-latency audio server.  It can connect a number of\n"
 "different applications to an audio device, as well as allowing them to share\n"
@@ -1104,2150 +510,35 @@ msgid ""
 "synchronous execution of all clients, and low latency operation."
 msgstr "JACK ist ein Audio-Server mit niedriger Latenz.  Er kann eine Reihe verschiedener Anwendungen mit einem Audiogerät verbinden und ihnen zudem ermöglichen, untereinander Audio auszutauschen.  JACK unterscheidet sich von anderen Audioservern darin, dass JACK von Anfang an für professionelle Audio-Arbeiten entwickelt wurde.  Das bedeutet, dass JACK den Fokus auf zwei Schlüsselbereiche legt: synchrone Ausführung aller Clients und niedrige Latenz."
 
-#: gnu/packages/audio.scm:3131
-msgid "Tools for JACK connections"
-msgstr ""
-
-#: gnu/packages/audio.scm:3132
-msgid ""
-"This package provides tools for managing JACK connections\n"
-"and testing or configuring the JACK session.  Tools include @code{jack_lsp},\n"
-"@code{jack_connect}, and @code{jack_transport}."
-msgstr ""
-
-#: gnu/packages/audio.scm:3173
-msgid "Multi-machine audio system for network music performance"
-msgstr ""
-
-#: gnu/packages/audio.scm:3175
-msgid ""
-"JackTrip is a multi-machine audio system used for network music\n"
-"performance over the Internet.  It supports any number of channels (as many as\n"
-"the computer/network can handle) of bidirectional, high quality, uncompressed\n"
-"audio signal streaming."
-msgstr ""
-
-#: gnu/packages/audio.scm:3232
-msgid "JACK Mixer: A multi-channel audio mixer for the JACK Audio Connection Kit"
-msgstr ""
-
-#: gnu/packages/audio.scm:3234
-msgid ""
-"The jack_mixer is a GTK+ JACK audio mixer app with a look & handling\n"
-"similar to hardware mixing desks.  It has lot of useful features, apart\n"
-"from being able to mix multiple JACK audio streams."
-msgstr ""
-
-#: gnu/packages/audio.scm:3273
 msgid "Simple LV2 host for JACK"
 msgstr "Einfacher LV2-Host für JACK"
 
-#: gnu/packages/audio.scm:3275
 msgid ""
 "Jalv is a simple but fully featured LV2 host for JACK.  It runs LV2\n"
 "plugins and exposes their ports as JACK ports, essentially making any LV2\n"
 "plugin function as a JACK application."
 msgstr "Jalv ist ein einfacher, aber voll funktionsfähiger LV2-Host für JACK.  Er führt LV2-Plugins aus und stellt ihre Ports als JACK-Ports zur Verfügung, wodurch quasi jede LV2-Plugin-Funktion zu einer JACK-Anwendung wird."
 
-#: gnu/packages/audio.scm:3323
 msgid "Linux Audio Developer's Simple Plugin API (LADSPA)"
 msgstr "Linux Audio Developer's Simple Plugin API (LADSPA)"
 
-#: gnu/packages/audio.scm:3325
 msgid ""
 "LADSPA is a standard that allows software audio processors and effects\n"
 "to be plugged into a wide range of audio synthesis and recording packages."
 msgstr "LADSPA ist ein Standard, der es Software-Audioverarbeitungsprogrammen und Effekten ermöglicht, in einer großen Spanne von Audiosynthese- und -aufnahmeprogrammen eingesetzt zu werden."
 
-#: gnu/packages/audio.scm:3344
-msgid "Bauer stereophonic-to-binaural DSP"
-msgstr ""
-
-#: gnu/packages/audio.scm:3346
-msgid ""
-"The Bauer stereophonic-to-binaural DSP (bs2b) library and plugins is\n"
-"designed to improve headphone listening of stereo audio records.  Recommended\n"
-"for headphone prolonged listening to disable superstereo fatigue without\n"
-"essential distortions."
-msgstr ""
-
-#: gnu/packages/audio.scm:3368
-msgid "Bauer stereophonic-to-binaural DSP - LADSPA plugin"
-msgstr ""
-
-#: gnu/packages/audio.scm:3369
-msgid ""
-"The Bauer stereophonic-to-binaural DSP (bs2b) library and\n"
-"plugins is designed to improve headphone listening of stereo audio records.\n"
-"Recommended for headphone prolonged listening to disable superstereo fatigue\n"
-"without essential distortions.  This package contains a LADSPA plugin for use\n"
-"with applications that support them (e.g. PulseAudio)."
-msgstr ""
-
-#: gnu/packages/audio.scm:3393 gnu/packages/lisp-xyz.scm:24311
-msgid "Implementation of the Open Sound Control protocol"
-msgstr ""
-
-#: gnu/packages/audio.scm:3395
-msgid ""
-"liblo is a lightweight library that provides an easy to use\n"
-"implementation of the Open Sound Control (@dfn{OSC}) protocol."
-msgstr ""
-
-#: gnu/packages/audio.scm:3417
-msgid "Common API for real-time audio I/O"
-msgstr ""
-
-#: gnu/packages/audio.scm:3419
-msgid ""
-"RtAudio is a set of C++ classes that provides a common API for real-time\n"
-"audio input/output.  It was designed with the following objectives:\n"
-"\n"
-"@itemize\n"
-"@item object-oriented C++ design\n"
-"@item simple, common API across all supported platforms\n"
-"@item only one source and one header file for easy inclusion in programming\n"
-"projects\n"
-"@item allow simultaneous multi-api support\n"
-"@item support dynamic connection of devices\n"
-"@item provide extensive audio device parameter control\n"
-"@item allow audio device capability probing\n"
-"@item automatic internal conversion for data format, channel number\n"
-"compensation, (de)interleaving, and byte-swapping\n"
-"@end itemize"
-msgstr ""
-
-#: gnu/packages/audio.scm:3465
-msgid "JACK Audio Connection Kit (JACK) client for Python"
-msgstr ""
-
-#: gnu/packages/audio.scm:3466
-msgid ""
-"This package provides a JACK Audio Connection Kit (JACK)\n"
-"client for Python.  This variant uses the compatibility JACK implementation\n"
-"provided by Pipewire."
-msgstr ""
-
-#: gnu/packages/audio.scm:3497
-msgid "Bindings for PortAudio v19"
-msgstr ""
-
-#: gnu/packages/audio.scm:3498
-msgid ""
-"This package provides bindings for PortAudio v19, the\n"
-"cross-platform audio input/output stream library."
-msgstr ""
-
-#: gnu/packages/audio.scm:3525
-#, fuzzy
-#| msgid "Python bindings for Vagrant"
-msgid "Python bindings for mixer-like controls in PulseAudio"
-msgstr "Python-Anbindungen für Vagrant"
-
-#: gnu/packages/audio.scm:3527
-msgid ""
-"This package provides a Python high-level interface and ctypes-based\n"
-"bindings for PulseAudio (libpulse), to use in simple synchronous code.\n"
-"This wrapper is mostly for mixer-like controls and introspection-related\n"
-"operations, as opposed to e.g. submitting sound samples to play and\n"
-"player-like clients."
-msgstr ""
-
-#: gnu/packages/audio.scm:3552 gnu/packages/audio.scm:3577
-#, fuzzy
-#| msgid "Python bindings for Vagrant"
-msgid "Python bindings for liblo"
-msgstr "Python-Anbindungen für Vagrant"
-
-#: gnu/packages/audio.scm:3554 gnu/packages/audio.scm:3579
-msgid ""
-"Pyliblo is a Python wrapper for the liblo Open Sound Control (OSC)\n"
-"library.  It supports almost the complete functionality of liblo, allowing you\n"
-"to send and receive OSC messages using a nice and simple Python API.  Also\n"
-"included are the command line utilities @code{send_osc} and @code{dump_osc}."
-msgstr ""
-
-#: gnu/packages/audio.scm:3616
-#, fuzzy
-#| msgid "Python bindings for Vagrant"
-msgid "Python bindings for libsndfile"
-msgstr "Python-Anbindungen für Vagrant"
-
-#: gnu/packages/audio.scm:3617
-#, fuzzy
-msgid ""
-"This package provides python bindings for libsndfile based on\n"
-"CFFI and NumPy."
-msgstr "Dieses Paket bietet Python-Anbindungen für librsvg, die Bibliothek zum Zeichnen von SVG-Daten."
-
-#: gnu/packages/audio.scm:3662
-msgid "High quality, one-dimensional sample-rate conversion library"
-msgstr ""
-
-#: gnu/packages/audio.scm:3664
-msgid ""
-"Python-SoXR is a Python wrapper of libsoxr, a high quality,\n"
-"one-dimensional sample-rate conversion library."
-msgstr ""
-
-#: gnu/packages/audio.scm:3681
-msgid "Python MIDI API"
-msgstr ""
-
-#: gnu/packages/audio.scm:3682
-#, fuzzy
-msgid ""
-"This package provides a python API to read and write MIDI\n"
-"files."
-msgstr "Dieses Paket bietet ein LADSPA-Plugin, um die Stereobreite von Audiosignalen zu ändern."
-
-#: gnu/packages/audio.scm:3726
-msgid "Pythonic audio file reader and writer"
-msgstr ""
-
-#: gnu/packages/audio.scm:3728
-#, fuzzy
-msgid ""
-"This package provides pythonic libsndfile wrapper to read and write audio\n"
-"files."
-msgstr "Dieses Paket bietet ein LADSPA-Plugin, um die Stereobreite von Audiosignalen zu ändern."
-
-#: gnu/packages/audio.scm:3767
-msgid "Convert audio to multichannel MIDI"
-msgstr ""
-
-#: gnu/packages/audio.scm:3768
-msgid ""
-"@command{audio-to-midi} converts audio files to multichannel\n"
-"MIDI files.  It accomplishes this by performing FFTs on all channels of the\n"
-"audio data at user-specified time steps.  It then separates the resulting\n"
-"frequency analysis into equivalence classes which correspond to the twelve tone\n"
-"scale; the volume of each class being the average volume of its constituent\n"
-"frequencies.  This data is then formatted to MIDI and written to disk."
-msgstr ""
-
-#: gnu/packages/audio.scm:3803
-msgid "Library to simplify use of LV2 plugins in applications"
-msgstr ""
-
-#: gnu/packages/audio.scm:3805
-msgid ""
-"Lilv is a C library to make the use of LV2 plugins as simple as possible\n"
-"for applications.  Lilv is the successor to SLV2, rewritten to be\n"
-"significantly faster and have minimal dependencies."
-msgstr ""
-
-#: gnu/packages/audio.scm:3832
-msgid "LV2 audio plugin specification"
-msgstr ""
-
-#: gnu/packages/audio.scm:3834
-msgid ""
-"LV2 is an open specification for audio plugins and host applications.\n"
-"At its core, LV2 is a simple stable interface, accompanied by extensions which\n"
-"add functionality to support the needs of increasingly powerful audio\n"
-"software."
-msgstr ""
-
-#: gnu/packages/audio.scm:3866
-msgid "Turtle to C header conversion utility for LV2 plugins"
-msgstr ""
-
-#: gnu/packages/audio.scm:3868
-msgid ""
-"This package provides a conversion utility for LV2 Plugin developers to\n"
-"generate C headers from Turtle files."
-msgstr ""
-
-#: gnu/packages/audio.scm:3897
-msgid "LV2 port of the mda Piano plugin"
-msgstr ""
-
-#: gnu/packages/audio.scm:3898
-msgid "An LV2 port of the mda Piano VSTi."
-msgstr ""
-
-#: gnu/packages/audio.scm:3911
-msgid "LV2 port of the mda EPiano plugin"
-msgstr ""
-
-#: gnu/packages/audio.scm:3912
-msgid "An LV2 port of the mda EPiano VSTi."
-msgstr ""
-
-#: gnu/packages/audio.scm:3936 gnu/packages/audio.scm:3977
-msgid "C++ libraries for LV2 plugins"
-msgstr ""
-
-#: gnu/packages/audio.scm:3938 gnu/packages/audio.scm:3979
-msgid ""
-"The LV2 Toolkit (LVTK) contains libraries that wrap the LV2 C API and\n"
-"extensions into easy to use C++ classes.  It is the successor of\n"
-"lv2-c++-tools."
-msgstr ""
-
-#: gnu/packages/audio.scm:4018
-msgid "3D audio API"
-msgstr ""
-
-#: gnu/packages/audio.scm:4020
-msgid ""
-"OpenAL provides capabilities for playing audio in a virtual 3D\n"
-"environment.  Distance attenuation, doppler shift, and directional sound\n"
-"emitters are among the features handled by the API.  More advanced effects,\n"
-"including air absorption, occlusion, and environmental reverb, are available\n"
-"through the EFX extension.  It also facilitates streaming audio, multi-channel\n"
-"buffers, and audio capture."
-msgstr ""
-
-#: gnu/packages/audio.scm:4052
-msgid "Free implementation of OpenAL's ALUT standard"
-msgstr ""
-
-#: gnu/packages/audio.scm:4053
-msgid "freealut is the OpenAL Utility Toolkit."
-msgstr ""
-
-#: gnu/packages/audio.scm:4084
-msgid "OpenAL utility library"
-msgstr ""
-
-#: gnu/packages/audio.scm:4086
-msgid ""
-"ALURE is a utility library to help manage common tasks with OpenAL applications.\n"
-"This includes device enumeration and initialization, file loading, and\n"
-"streaming."
-msgstr ""
-
-#: gnu/packages/audio.scm:4111
-msgid "PulseAudio or PipeWire volume notification"
-msgstr ""
-
-#: gnu/packages/audio.scm:4112
-msgid ""
-"The pa-notify daemon sends notifications about\n"
-"the current volume level of PulseAudio or PipeWire using libnotify."
-msgstr ""
-
-#: gnu/packages/audio.scm:4139
-msgid "Modular patch bay for audio and MIDI systems"
-msgstr ""
-
-#: gnu/packages/audio.scm:4141
-msgid ""
-"Patchage is a modular patch bay for audio and MIDI systems based on JACK\n"
-"and ALSA."
-msgstr ""
-
-#: gnu/packages/audio.scm:4164
-msgid "Portable C audio library"
-msgstr ""
-
-#: gnu/packages/audio.scm:4166
-msgid ""
-"The Portable C Audio Library (pcaudiolib) provides a C@tie{}API to\n"
-"different audio devices such as ALSA or PulseAudio."
-msgstr ""
-
-#: gnu/packages/audio.scm:4196
-msgid "Jack server control application"
-msgstr ""
-
-#: gnu/packages/audio.scm:4197
-msgid ""
-"Control a Jack server.  Allows you to plug various sources\n"
-"into various outputs and to start, stop and configure jackd"
-msgstr ""
-
-#: gnu/packages/audio.scm:4228
-msgid "Stereo audio recorder for JACK"
-msgstr ""
-
-#: gnu/packages/audio.scm:4229
-msgid ""
-"QJackRcd is a simple graphical stereo recorder for JACK\n"
-"supporting silence processing for automatic pause, file splitting, and\n"
-"background file post-processing."
-msgstr ""
-
-#: gnu/packages/audio.scm:4347
-#, fuzzy
-#| msgid "Signal processing language"
-msgid "Synthesis engine and programming language"
-msgstr "Signalverarbeitungssprache"
-
-#: gnu/packages/audio.scm:4348
-msgid ""
-"SuperCollider is a synthesis engine (@code{scsynth} or\n"
-"@code{supernova}) and programming language (@code{sclang}).  It can be used\n"
-"for experimenting with sound synthesis and algorithmic composition.\n"
-"\n"
-"SuperCollider requires jackd to be installed in your user profile and your\n"
-"user must be allowed to access the realtime features of the kernel.  Search\n"
-"for \"realtime\" in the index of the Guix manual to learn how to achieve this\n"
-"using Guix System."
-msgstr ""
-
-#: gnu/packages/audio.scm:4378
-msgid "Broadcast streaming library with IDJC extensions"
-msgstr ""
-
-#: gnu/packages/audio.scm:4379
-#, fuzzy
-msgid "This package provides libshout plus IDJC extensions."
-msgstr "Dieses Paket bietet Steve Harris’ LADSPA-Plugin für einen Stereo-Nachhall-Effekt."
-
-#: gnu/packages/audio.scm:4452
-msgid "Low-level CD/DVD dumper"
-msgstr ""
-
-#: gnu/packages/audio.scm:4453
-msgid ""
-"@command{redumper} is a low-level byte perfect CD disc\n"
-"dumper.  It supports incremental dumps, advanced SCSI/C2 repair, intelligent\n"
-"audio CD offset detection, among other features.  @command{redumper} is also a\n"
-"general purpose DVD/HD-DVD/Blu-ray disc dumper."
-msgstr ""
-
-#: gnu/packages/audio.scm:4473
-#, fuzzy
-#| msgid "Compression and file packing utility"
-msgid "Sampling rate conversion and filter design utilities"
-msgstr "Dateien vergleichen und in Archive bündeln"
-
-#: gnu/packages/audio.scm:4474
-msgid ""
-"This package contains the @command{resample} and\n"
-"@command{windowfilter} command line utilities.  The @command{resample} command\n"
-"allows changing the sampling rate of a sound file, while the\n"
-"@command{windowfilter} command allows designing Finite Impulse Response (FIR)\n"
-"filters using the so-called @emph{window method}."
-msgstr ""
-
-#: gnu/packages/audio.scm:4508
-msgid "Audio time-stretching and pitch-shifting library"
-msgstr ""
-
-#: gnu/packages/audio.scm:4510
-msgid ""
-"Rubber Band is a library and utility program that permits changing the\n"
-"tempo and pitch of an audio recording independently of one another."
-msgstr ""
-
-#: gnu/packages/audio.scm:4532
-msgid "Cross-platform MIDI library for C++"
-msgstr ""
-
-#: gnu/packages/audio.scm:4534
-msgid ""
-"RtMidi is a set of C++ classes (RtMidiIn, RtMidiOut, and API specific\n"
-"classes) that provide a common cross-platform API for realtime MIDI\n"
-"input/output."
-msgstr ""
-
-#: gnu/packages/audio.scm:4570
-msgid "Library for serialising LV2 atoms to/from RDF"
-msgstr ""
-
-#: gnu/packages/audio.scm:4572
-msgid ""
-"Sratom is a library for serialising LV2 atoms to/from RDF, particularly\n"
-"the Turtle syntax."
-msgstr ""
-
-#: gnu/packages/audio.scm:4599
-msgid "Library for loading and wrapping LV2 plugin UIs"
-msgstr ""
-
-#: gnu/packages/audio.scm:4601
-msgid ""
-"Suil is a lightweight C library for loading and wrapping LV2 plugin UIs.\n"
-"\n"
-"Suil makes it possible to load a UI of a toolkit in a host using another\n"
-"toolkit.  The API is designed such that hosts do not need to explicitly\n"
-"support specific toolkits – if Suil supports a particular toolkit, then UIs in\n"
-"that toolkit will work in all hosts that use Suil automatically.\n"
-"\n"
-"Suil currently supports every combination of Gtk, Qt, and X11."
-msgstr ""
-
-#: gnu/packages/audio.scm:4631
-msgid "Library implementing the EBU R 128 loudness standard"
-msgstr ""
-
-#: gnu/packages/audio.scm:4633
-msgid ""
-"@code{libebur128} is a C library that implements the EBU R 128 standard\n"
-"for loudness normalisation."
-msgstr ""
-
-#: gnu/packages/audio.scm:4690
-#, fuzzy
-#| msgid "Software Synthesizer"
-msgid "Software synthesizer for playing MIDI files"
-msgstr "Software-Synthesizer"
-
-#: gnu/packages/audio.scm:4692
-msgid ""
-"TiMidity++ is a software synthesizer.  It can play MIDI files by\n"
-"converting them into PCM waveform data; give it a MIDI data along with digital\n"
-"instrument data files, then it synthesizes them in real-time, and plays.  It\n"
-"can not only play sounds, but also can save the generated waveforms into hard\n"
-"disks as various audio file formats."
-msgstr ""
-
-#: gnu/packages/audio.scm:4730
-msgid "Modular and extensible audio processing system"
-msgstr ""
-
-#: gnu/packages/audio.scm:4732
-msgid ""
-"Vamp is an audio processing plugin system for plugins that extract\n"
-"descriptive information from audio data — typically referred to as audio\n"
-"analysis plugins or audio feature extraction plugins."
-msgstr ""
-
-#: gnu/packages/audio.scm:4775
-msgid "Library for time stretching and pitch scaling of audio"
-msgstr ""
-
-#: gnu/packages/audio.scm:4777
-msgid ""
-"SBSMS (Subband Sinusoidal Modeling Synthesis) is software for time\n"
-"stretching and pitch scaling of audio.  This package contains the library."
-msgstr ""
-
-#: gnu/packages/audio.scm:4840
-msgid "Musical key detection for digital audio"
-msgstr ""
-
-#: gnu/packages/audio.scm:4842
-msgid ""
-"@code{libkeyfinder} is a small C++11 library for estimating the musical\n"
-"key of digital audio."
-msgstr ""
-
-#: gnu/packages/audio.scm:4870
-msgid "Hybrid lossless audio codec"
-msgstr ""
-
-#: gnu/packages/audio.scm:4872
-msgid ""
-"WavPack is an audio compression format with lossless, lossy and hybrid\n"
-"compression modes.  This package contains command-line programs and library to\n"
-"encode and decode wavpack files."
-msgstr ""
-
-#: gnu/packages/audio.scm:4902
-#, fuzzy
-#| msgid "Digital signal processing library"
-msgid "C++ sound library"
-msgstr "Bibliothek für digitale Signalverarbeitung"
-
-#: gnu/packages/audio.scm:4903
-#, fuzzy
-#| msgid ""
-#| "This package provides a dictionary for the Hunspell spell-checking\n"
-#| "library."
-msgid "This package provides a simple sound library for C++."
-msgstr "Dieses Paket bietet ein Wörterbuch für die Hunspell-Rechtschreibbibliothek."
-
-#: gnu/packages/audio.scm:4939
-msgid "Low-level audio mixer pipeline library"
-msgstr ""
-
-#: gnu/packages/audio.scm:4941
-msgid ""
-"Libmixed is a library for real-time audio processing pipelines for use\n"
-"in audio/video/games.  It can serve as a base architecture for complex DSP\n"
-"systems."
-msgstr ""
-
-#: gnu/packages/audio.scm:4962
-msgid "Mod file playing library"
-msgstr ""
-
-#: gnu/packages/audio.scm:4964
-msgid ""
-"Libmodplug renders mod music files as raw audio data, for playing or\n"
-"conversion.  mod, .s3m, .it, .xm, and a number of lesser-known formats are\n"
-"supported.  Optional features include high-quality resampling, bass expansion,\n"
-"surround and reverb."
-msgstr ""
-
-#: gnu/packages/audio.scm:4986
-msgid "Module player library"
-msgstr ""
-
-#: gnu/packages/audio.scm:4988
-msgid ""
-"Libxmp is a library that renders module files to PCM data.  It supports\n"
-"over 90 mainstream and obscure module formats including Protracker (MOD),\n"
-"Scream Tracker 3 (S3M), Fast Tracker II (XM), and Impulse Tracker (IT)."
-msgstr ""
-
-#: gnu/packages/audio.scm:5010
-msgid "Extended module player"
-msgstr ""
-
-#: gnu/packages/audio.scm:5012
-msgid ""
-"Xmp is a portable module player that plays over 90 mainstream and\n"
-"obscure module formats, including Protracker MOD, Fasttracker II XM, Scream\n"
-"Tracker 3 S3M and Impulse Tracker IT files."
-msgstr ""
-
-#: gnu/packages/audio.scm:5035
-msgid "Audio processing library for changing tempo, pitch and playback rate"
-msgstr ""
-
-#: gnu/packages/audio.scm:5037
-msgid ""
-"SoundTouch is an audio processing library for changing the tempo, pitch\n"
-"and playback rates of audio streams or audio files.  It is intended for\n"
-"application developers writing sound processing tools that require tempo/pitch\n"
-"control functionality, or just for playing around with the sound effects."
-msgstr ""
-
-#: gnu/packages/audio.scm:5126
-#, fuzzy
-#| msgid "Signal processing language"
-msgid "Sound processing utility"
-msgstr "Signalverarbeitungssprache"
-
-#: gnu/packages/audio.scm:5128
-msgid ""
-"SoX (Sound eXchange) is a command line utility that can convert\n"
-"various formats of computer audio files to other formats.  It can also\n"
-"apply various effects to these sound files, and, as an added bonus, SoX\n"
-"can play and record audio files."
-msgstr ""
-
-#: gnu/packages/audio.scm:5151
-msgid "One-dimensional sample-rate conversion library"
-msgstr ""
-
-#: gnu/packages/audio.scm:5153
-msgid ""
-"The SoX Resampler library (libsoxr) performs one-dimensional sample-rate\n"
-"conversion.  It may be used, for example, to resample PCM-encoded audio."
-msgstr ""
-
-#: gnu/packages/audio.scm:5174
-msgid "MPEG Audio Layer 2 (MP2) encoder"
-msgstr ""
-
-#: gnu/packages/audio.scm:5176
-msgid ""
-"TwoLAME is an optimised MPEG Audio Layer 2 (MP2) encoder based on\n"
-"tooLAME by Mike Cheng, which in turn is based upon the ISO dist10 code and\n"
-"portions of LAME."
-msgstr ""
-
-#: gnu/packages/audio.scm:5230
-msgid "Audio I/O library"
-msgstr ""
-
-#: gnu/packages/audio.scm:5232
-msgid ""
-"PortAudio is a portable C/C++ audio I/O library providing a simple API\n"
-"to record and/or play sound using a callback function or a blocking read/write\n"
-"interface."
-msgstr ""
-
-#: gnu/packages/audio.scm:5259
-msgid "Graphical user interface for FluidSynth"
-msgstr ""
-
-#: gnu/packages/audio.scm:5261
-msgid ""
-"Qsynth is a GUI front-end application for the FluidSynth SoundFont\n"
-"synthesizer written in C++."
-msgstr ""
-
-#: gnu/packages/audio.scm:5298
-msgid "Networked audio system"
-msgstr ""
-
-#: gnu/packages/audio.scm:5300
-msgid ""
-"RSound allows you to send audio from an application and transfer it\n"
-"directly to a different computer on your LAN network.  It is an audio daemon\n"
-"with a much different focus than most other audio daemons."
-msgstr ""
-
-#: gnu/packages/audio.scm:5328
-msgid "JACK audio frequency analyzer and display"
-msgstr ""
-
-#: gnu/packages/audio.scm:5330
-msgid ""
-"XJackFreak is an audio analysis and equalizing tool for the Jack Audio\n"
-"Connection Kit.  It can display the FFT of any input, modify it and output the\n"
-"result."
-msgstr ""
-
-#: gnu/packages/audio.scm:5380
-msgid "Fast, partitioned convolution engine library"
-msgstr ""
-
-#: gnu/packages/audio.scm:5382
-msgid ""
-"Zita convolver is a C++ library providing a real-time convolution\n"
-"engine."
-msgstr ""
-
-#: gnu/packages/audio.scm:5432
-msgid "C++ library for resampling audio signals"
-msgstr ""
-
-#: gnu/packages/audio.scm:5434
-msgid ""
-"Libzita-resampler is a C++ library for resampling audio signals.  It is\n"
-"designed to be used within a real-time processing context, to be fast, and to\n"
-"provide high-quality sample rate conversion."
-msgstr ""
-
-#: gnu/packages/audio.scm:5482
-msgid ""
-"Zita-alsa-pcmi is a C++ wrapper around the ALSA API.  It provides easy\n"
-"access to ALSA PCM devices, taking care of the many functions required to\n"
-"open, initialise and use a hw: device in mmap mode, and providing floating\n"
-"point audio data."
-msgstr ""
-
-#: gnu/packages/audio.scm:5505
-msgid "Cue and toc file parsers and utilities"
-msgstr ""
-
-#: gnu/packages/audio.scm:5506
-msgid ""
-"Cuetools is a set of programs that are useful for manipulating\n"
-"and using CUE sheet (cue) files and Table of Contents (toc) files.  CUE and TOC\n"
-"files are a way to represent the layout of a data or audio CD in a\n"
-"machine-readable ASCII format."
-msgstr ""
-
-#: gnu/packages/audio.scm:5534
-msgid "Analyze MPEG layer I/II/III files"
-msgstr ""
-
-#: gnu/packages/audio.scm:5535
-msgid ""
-"mp3guessenc is a command line utility that tries to detect the\n"
-"encoder used for an MPEG Layer III (MP3) file, as well as scan any MPEG audio\n"
-"file (any layer) and print a lot of useful information."
-msgstr ""
-
-#: gnu/packages/audio.scm:5555
-msgid "WAVE audio data processing tool"
-msgstr ""
-
-#: gnu/packages/audio.scm:5556
-msgid ""
-"shntool is a multi-purpose WAVE data processing and reporting\n"
-"utility.  File formats are abstracted from its core, so it can process any file\n"
-"that contains WAVE data, compressed or not---provided there exists a format\n"
-"module to handle that particular file type.  It can also generate CUE files, and\n"
-"use them split WAVE data into multiple files."
-msgstr ""
-
-#: gnu/packages/audio.scm:5595 gnu/packages/video.scm:1467
-msgid "DTS Coherent Acoustics decoder"
-msgstr ""
-
-#: gnu/packages/audio.scm:5596
-msgid ""
-"Dcadec is a DTS Coherent Acoustics surround sound decoder\n"
-"with support for HD extensions."
-msgstr ""
-
-#: gnu/packages/audio.scm:5625
-#, fuzzy
-#| msgid "Digital audio workstation"
-msgid "Digital room correction"
-msgstr "Digital Audio Workstation"
-
-#: gnu/packages/audio.scm:5627
-msgid ""
-"DRC is a program used to generate correction filters for acoustic\n"
-"compensation of HiFi and audio systems in general, including listening room\n"
-"compensation.  DRC generates just the FIR correction filters, which can be\n"
-"used with a real time or offline convolver to provide real time or offline\n"
-"correction.  DRC doesn't provide convolution features, and provides only some\n"
-"simplified, although really accurate, measuring tools."
-msgstr ""
-
-#: gnu/packages/audio.scm:5665
-msgid "Tool to adjust loudness of media files"
-msgstr ""
-
-#: gnu/packages/audio.scm:5667
-msgid ""
-"BS1770GAIN is a loudness scanner compliant with ITU-R BS.1770 and its\n"
-"flavors EBU R128, ATSC A/85, and ReplayGain 2.0.  It helps normalizing the\n"
-"loudness of audio and video files to the same level."
-msgstr ""
-
-#: gnu/packages/audio.scm:5704
-msgid "Fast audio loudness scanner & tagger"
-msgstr ""
-
-#: gnu/packages/audio.scm:5706
-msgid ""
-"r128gain is a multi platform command line tool to scan your audio\n"
-"files and tag them with loudness metadata (ReplayGain v2 or Opus R128 gain\n"
-"format), to allow playback of several tracks or albums at a similar\n"
-"loudness level. r128gain can also be used as a Python module from other\n"
-"Python projects to scan and/or tag audio files."
-msgstr ""
-
-#: gnu/packages/audio.scm:5740
-msgid "Lightweight audio filtering library"
-msgstr ""
-
-#: gnu/packages/audio.scm:5741
-msgid ""
-"An easy to use audio filtering library made from webrtc\n"
-"code, used in @code{libtoxcore}."
-msgstr ""
-
-#: gnu/packages/audio.scm:5789
-msgid "GSM 06.10 lossy speech compression library"
-msgstr ""
-
-#: gnu/packages/audio.scm:5790
-msgid ""
-"This C library provides an encoder and a decoder for the GSM\n"
-"06.10 RPE-LTP lossy speech compression algorithm."
-msgstr ""
-
-#: gnu/packages/audio.scm:5812
-msgid "ALSA wrappers for Python"
-msgstr ""
-
-#: gnu/packages/audio.scm:5814
-msgid ""
-"This package contains wrappers for accessing the ALSA API from Python.\n"
-"It is currently fairly complete for PCM devices, and has some support for\n"
-"mixers."
-msgstr ""
-
-#: gnu/packages/audio.scm:5834
-msgid "LDAC Bluetooth encoder and ABR library"
-msgstr ""
-
-#: gnu/packages/audio.scm:5835
-msgid ""
-"This package provides an encoder for the LDAC\n"
-"high-resolution Bluetooth audio streaming codec for streaming at up to 990\n"
-"kbps at 24 bit/96 kHz."
-msgstr ""
-
-#: gnu/packages/audio.scm:5878
-msgid "Bluetooth ALSA backend"
-msgstr ""
-
-#: gnu/packages/audio.scm:5879
-msgid ""
-"This project is a rebirth of a direct integration between\n"
-"Bluez and ALSA.  Since Bluez >= 5, the built-in integration has been removed\n"
-"in favor of 3rd party audio applications.  From now on, Bluez acts as a\n"
-"middleware between an audio application, which implements Bluetooth audio\n"
-"profile, and a Bluetooth audio device.  BlueALSA registers all known Bluetooth\n"
-"audio profiles in Bluez, so in theory every Bluetooth device (with audio\n"
-"capabilities) can be connected.  In order to access the audio stream, one has\n"
-"to connect to the ALSA PCM device called @code{bluealsa}.  The device is based\n"
-"on the ALSA software PCM plugin."
-msgstr ""
-
-#: gnu/packages/audio.scm:5946
 msgid "Sound editor"
 msgstr "Datenstromeditor"
 
-#: gnu/packages/audio.scm:5949
-msgid ""
-"Snd is a sound editor modelled loosely after Emacs.  It can be\n"
-"customized and extended using either the s7 Scheme implementation (included in\n"
-"the Snd sources), Ruby, or Forth."
-msgstr ""
-
-#: gnu/packages/audio.scm:5977
-msgid "LV2 plugin for broadband noise reduction"
-msgstr ""
-
-#: gnu/packages/audio.scm:5978
-msgid ""
-"Noise Repellent is an LV2 plugin to reduce noise.  It has\n"
-"the following features:\n"
-"\n"
-"@enumerate\n"
-"@item Spectral gating and spectral subtraction suppression rule\n"
-"@item Adaptive and manual noise thresholds estimation\n"
-"@item Adjustable noise floor\n"
-"@item Adjustable offset of thresholds to perform over-subtraction\n"
-"@item Time smoothing and a masking estimation to reduce artifacts\n"
-"@item Basic onset detector to avoid transients suppression\n"
-"@item Whitening of the noise floor to mask artifacts and to recover higher\n"
-"  frequencies\n"
-"@item Option to listen to the residual signal\n"
-"@item Soft bypass\n"
-"@item Noise profile saved with the session\n"
-"@end enumerate\n"
-msgstr ""
-
-#: gnu/packages/audio.scm:6044
-msgid "Speech denoise LV2 plugin based on Xiph's RNNoise library"
-msgstr ""
-
-#: gnu/packages/audio.scm:6045
-msgid ""
-"RNNoise is a library that uses deep learning to apply\n"
-"noise suppression to audio sources with voice presence.  This package provides\n"
-"an LV2 audio plugin."
-msgstr ""
-
-#: gnu/packages/audio.scm:6088
-msgid "Command-line audio visualizer"
-msgstr ""
-
-#: gnu/packages/audio.scm:6089
-msgid ""
-"@code{cli-visualizer} displays fast-Fourier\n"
-"transforms (FFTs) of the sound being played, as well as other graphical\n"
-"representations."
-msgstr ""
-
-#: gnu/packages/audio.scm:6138
-msgid "Console audio visualizer for ALSA, MPD, and PulseAudio"
-msgstr ""
-
-#: gnu/packages/audio.scm:6139
-msgid ""
-"C.A.V.A. is a bar audio spectrum visualizer for the terminal\n"
-"using ALSA, MPD, PulseAudio, or a FIFO buffer as its input."
-msgstr ""
-
-#: gnu/packages/audio.scm:6172
-msgid "Pro-quality GM soundfont"
-msgstr ""
-
-#: gnu/packages/audio.scm:6173
-msgid "Fluid-3 is Frank Wen's pro-quality GM soundfont."
-msgstr ""
-
-#: gnu/packages/audio.scm:6194
-msgid "Fraunhofer FDK AAC library"
-msgstr ""
-
-#: gnu/packages/audio.scm:6195
-msgid ""
-"FDK is a library for encoding and decoding Advanced Audio\n"
-"Coding (AAC) format audio, developed by Fraunhofer IIS, and included as part of\n"
-"Android.  It supports several Audio Object Types including MPEG-2 and MPEG-4 AAC\n"
-"LC, HE-AAC (AAC LC + SBR), HE-AACv2 (LC + SBR + PS) as well AAC-LD (low delay)\n"
-"and AAC-ELD (enhanced low delay) for real-time communication.  The encoding\n"
-"library supports sample rates up to 96 kHz and up to eight channels (7.1\n"
-"                                                                     surround)."
-msgstr ""
-
-#: gnu/packages/audio.scm:6223
-msgid "Command-line AAC encoder"
-msgstr ""
-
-#: gnu/packages/audio.scm:6224
-#, fuzzy
-msgid "This package provides a command-line AAC-encoder."
-msgstr "Dieses Paket bietet Steve Harris’ LADSPA-Plugin für einen Stereo-Nachhall-Effekt."
-
-#: gnu/packages/audio.scm:6257
-#, fuzzy
-#| msgid "Digital signal processing library"
-msgid "aptX codec library"
-msgstr "Bibliothek für digitale Signalverarbeitung"
-
-#: gnu/packages/audio.scm:6258
-msgid ""
-"libfreeaptx is an implementation of the Audio Processing\n"
-"Technology codecs aptX and aptX HD, mainly intended for use with an A2DP\n"
-"bluetooth profile."
-msgstr ""
-
-#: gnu/packages/audio.scm:6293
-msgid "Audio editing and playback for OpenShot"
-msgstr ""
-
-#: gnu/packages/audio.scm:6294
-msgid ""
-"OpenShot Audio Library (libopenshot-audio) allows\n"
-"high-quality editing and playback of audio, and is based on the JUCE\n"
-"library."
-msgstr ""
-
-#: gnu/packages/audio.scm:6319
-msgid "XAudio reimplementation"
-msgstr ""
-
-#: gnu/packages/audio.scm:6320
-msgid ""
-"FAudio is an XAudio reimplementation that focuses solely on\n"
-"developing fully accurate DirectX Audio runtime libraries."
-msgstr ""
-
-#: gnu/packages/audio.scm:6346
 msgid "Binaural beat synthesizer"
 msgstr "Synthesizer für binaurale Beats"
 
-#: gnu/packages/audio.scm:6347
-msgid ""
-"Gnaural is a programmable auditory binaural beat synthesizer\n"
-"intended to be used for brainwave entrainment.  Gnaural supports creation of\n"
-"binaural beat tracks of different frequencies and exporting of tracks into\n"
-"different audio formats.  Gnaural can also be linked over the internet with\n"
-"other Gnaural instances, allowing synchronous sessions between many users."
-msgstr ""
-
-#: gnu/packages/audio.scm:6383
-msgid "Live audio streamer"
-msgstr ""
-
-#: gnu/packages/audio.scm:6384
-msgid ""
-"DarkIce is a live audio streamer.  It takes audio input from\n"
-"a sound card, encodes it into Ogg Vorbis and/or mp3, and sends the audio\n"
-"stream to one or more IceCast and/or ShoutCast servers."
-msgstr ""
-
-#: gnu/packages/audio.scm:6406
-msgid "Encode or decode Linear/Longitudinal Time Code (LTC) audio"
-msgstr ""
-
-#: gnu/packages/audio.scm:6407
-msgid ""
-"Libltc is a POSIX-C Library for handling\n"
-"@dfn{Linear/Longitudinal Time Code} (LTC) data."
-msgstr ""
-
-#: gnu/packages/audio.scm:6439
-msgid "TTA lossless audio encoder"
-msgstr ""
-
-#: gnu/packages/audio.scm:6441
-msgid ""
-"TTA performs lossless compression on multichannel 8,16 and 24 bits\n"
-"data of the Wav audio files.  Being lossless means that no data-\n"
-"quality is lost in the compression - when uncompressed, the data will\n"
-"be identical to the original.  The compression ratios of TTA depend on\n"
-"the type of music file being compressed, but the compression size\n"
-"will generally range between 30% - 70% of the original.  TTA format\n"
-"supports both of ID3v1/v2 and APEv2 tags."
-msgstr ""
-
-#: gnu/packages/audio.scm:6473
-msgid "C library for real-time audio input and output"
-msgstr ""
-
-#: gnu/packages/audio.scm:6474
-msgid ""
-"@code{libsoundio} is a C library providing audio input and\n"
-"output.  The API is suitable for real-time software such as digital audio\n"
-"workstations as well as consumer software such as music players."
-msgstr ""
-
-#: gnu/packages/audio.scm:6499
-msgid "Lightweight graphics widget toolkit for embedded GUI"
-msgstr ""
-
-#: gnu/packages/audio.scm:6500
-msgid ""
-"Redkite is a small GUI toolkit developed in C++17 and\n"
-"inspired from other well known GUI toolkits such as Qt and GTK.  It is\n"
-"minimal on purpose and is intended to be statically linked to applications,\n"
-"therefore satisfying any requirements they may have to be self contained,\n"
-"as is the case with audio plugins."
-msgstr ""
-
-#: gnu/packages/audio.scm:6564
-msgid "Audio plugin host"
-msgstr ""
-
-#: gnu/packages/audio.scm:6565
-msgid ""
-"Carla is a modular audio plugin host, with features like\n"
-"transport control, automation of parameters via MIDI CC and remote control\n"
-"over OSC.  Carla currently supports LADSPA (including LRDF), DSSI, LV2, VST2,\n"
-"and VST3 plugin formats, plus SF2 and SFZ file support.  It uses JACK as the\n"
-"default and preferred audio driver but also supports native drivers like ALSA."
-msgstr ""
-
-#: gnu/packages/audio.scm:6619
-msgid "Multitrack audio processing"
-msgstr ""
-
-#: gnu/packages/audio.scm:6620
-msgid ""
-"Ecasound is a software package designed for multitrack audio\n"
-"processing.  It can be used for simple tasks like audio playback, recording and\n"
-"format conversions, as well as for multitrack effect processing, mixing,\n"
-"recording and signal recycling.  Ecasound supports a wide range of audio inputs,\n"
-"outputs and effect algorithms.  Effects and audio objects can be combined in\n"
-"various ways, and their parameters can be controlled by operator objects like\n"
-"oscillators and MIDI-CCs.  A versatile console mode user-interface is included\n"
-"in the package."
-msgstr ""
-
-#: gnu/packages/audio.scm:6657
-#, fuzzy
-#| msgid "Library for audio labelling"
-msgid "Library for reading and resampling audio files"
-msgstr "Programmbibliothek für Audio-Labelling"
-
-#: gnu/packages/audio.scm:6658
-msgid ""
-"libaudec is a wrapper library over ffmpeg, sndfile and\n"
-"libsamplerate for reading and resampling audio files, based on Robin Gareus'\n"
-"@code{audio_decoder} code."
-msgstr ""
-
-#: gnu/packages/audio.scm:6687
-#, fuzzy
-#| msgid "LV2 plugins for live use"
-msgid "LV2 plugin lint tool"
-msgstr "LV2-Plugins für Liveaufnahmen"
-
-#: gnu/packages/audio.scm:6688
-msgid ""
-"lv2lint is an LV2 lint-like tool that checks whether a\n"
-"given plugin and its UI(s) match up with the provided metadata and adhere\n"
-"to well-known best practices."
-msgstr ""
-
-#: gnu/packages/audio.scm:6720
-msgid "Documentation generator for LV2 plugins"
-msgstr ""
-
-#: gnu/packages/audio.scm:6722
-msgid ""
-"lv2toweb allows the user to create an xhtml page with information\n"
-"about the given LV2 plugin, provided that the plugin and its UI(s) match up\n"
-"with the provided metadata and adhere to well-known best practices."
-msgstr ""
-
-#: gnu/packages/audio.scm:6749
-msgid "GUI toolkit for LV2 plugins"
-msgstr ""
-
-#: gnu/packages/audio.scm:6750
-msgid ""
-"ZToolkit (Ztk) is a cross-platform GUI toolkit heavily\n"
-"inspired by GTK.  It handles events and low level drawing on behalf of\n"
-"the user and provides a high-level API for managing the UI and custom\n"
-"widgets.  ZToolkit is written in C and was created to be used for building\n"
-"audio plugin UIs, where the dependencies often need to be kept to a\n"
-"minimum."
-msgstr ""
-
-#: gnu/packages/audio.scm:6767
-msgid "ZToolkit with SVG support"
-msgstr ""
-
-#: gnu/packages/audio.scm:6791
-msgid "Instrument file software library"
-msgstr ""
-
-#: gnu/packages/audio.scm:6793
-msgid ""
-"libInstPatch is a library for processing digital sample based MIDI\n"
-"instrument \"patch\" files.  The types of files libInstPatch supports are used\n"
-"for creating instrument sounds for wavetable synthesis.  libInstPatch provides\n"
-"an object framework (based on GObject) to load patch files, which can then be\n"
-"edited, converted, compressed and saved."
-msgstr ""
-
-#: gnu/packages/audio.scm:6829
 msgid "Digital signal processing library"
 msgstr "Bibliothek für digitale Signalverarbeitung"
 
-#: gnu/packages/audio.scm:6830
-msgid ""
-"The LSP DSP library provides a set of functions that perform\n"
-"SIMD-optimized computing on several hardware architectures.  All functions\n"
-"currently operate on IEEE-754 single-precision floating-point numbers."
-msgstr ""
-
-#: gnu/packages/audio.scm:6859
-msgid "Speech codec"
-msgstr ""
-
-#: gnu/packages/audio.scm:6861
-msgid ""
-"Codec 2 is a speech codec designed for communications quality speech\n"
-"between 700 and 3200 bit/s.  The main application is low bandwidth HF/VHF\n"
-"digital radio."
-msgstr ""
-
-#: gnu/packages/audio.scm:6885
-msgid "P25 Phase 1 and ProVoice vocoder"
-msgstr ""
-
-#: gnu/packages/audio.scm:6887
-msgid ""
-"The mbelib library provides support for the 7200x4400 bit/s codec used\n"
-"in P25 Phase 1, the 7100x4400 bit/s codec used in ProVoice and the @emph{Half\n"
-"Rate} 3600x2250 bit/s vocoder used in various radio systems."
-msgstr ""
-
-#: gnu/packages/audio.scm:6978
-msgid "Synchronize musical beat, tempo, and phase across multiple applications"
-msgstr ""
-
-#: gnu/packages/audio.scm:6980
-msgid ""
-"Ableton Link is a C++ library that synchronizes musical beat, tempo, and phase\n"
-"across multiple applications running on one or more devices.  Applications on devices\n"
-"connected to a local network discover each other automatically and form a musical\n"
-"session in which each participant can perform independently: anyone can start or stop\n"
-"while still staying in time."
-msgstr ""
-
-#: gnu/packages/audio.scm:7040
-msgid "Audio streaming tool"
-msgstr ""
-
-#: gnu/packages/audio.scm:7041
-msgid ""
-"Butt is a tool to stream audio to a ShoutCast or\n"
-"Icecast server."
-msgstr ""
-
-#: gnu/packages/audio.scm:7086
-msgid "Signal generation tools"
-msgstr ""
-
-#: gnu/packages/audio.scm:7087
-msgid ""
-"siggen is a set of tools for imitating a laboratory signal\n"
-"generator, generating audio signals out of Linux's /dev/dsp audio\n"
-"device.  There is support for mono and/or stereo and 8 or 16 bit samples."
-msgstr ""
-
-#: gnu/packages/audio.scm:7131
-#, fuzzy
-#| msgid "C++ wrapper around the ALSA API"
-msgid "Python wrapper around SoX"
-msgstr "C++-Wrapper um die ALSA-Programmierschnittstelle"
-
-#: gnu/packages/audio.scm:7133
-msgid ""
-"@code{python-pysox} is a wrapper around the @command{sox} command line\n"
-"tool.  The API offers @code{Transformer} and @code{Combiner} classes that\n"
-"allow the user to incrementally build up effects and audio manipulations.\n"
-"@code{python-pysox} also provides methods for querying audio information such\n"
-"as sample rate, determining whether an audio file is silent, and much more."
-msgstr ""
-
-#: gnu/packages/audio.scm:7161
-msgid "Efficient signal resampling"
-msgstr ""
-
-#: gnu/packages/audio.scm:7163
-msgid ""
-"@code{python-resampy} implements the band-limited sinc interpolation\n"
-"method for sampling rate conversion as described by Julius O. Smith at the\n"
-"@url{https://ccrma.stanford.edu/~jos/resample/, Digital Audio Resampling\n"
-"Home Page}."
-msgstr ""
-
-#: gnu/packages/audio.scm:7219
-msgid "Python module for audio and music processing"
-msgstr ""
-
-#: gnu/packages/audio.scm:7221
-msgid ""
-"@code{librosa} is a python package for music and audio analysis.  It\n"
-"provides the building blocks necessary to create music information retrieval\n"
-"systems."
-msgstr ""
-
-#: gnu/packages/audio.scm:7243
-#, fuzzy
-#| msgid "Audio plug-in pack for LV2 and JACK environments"
-msgid "Audio plug-in pack for LV2"
-msgstr "Audio-Plugin-Sammlung für LV2- und JACK-Umgebungen"
-
-#: gnu/packages/audio.scm:7245
-msgid ""
-"MDA-LV2 is an LV2 port of the MDA plugins.  It includes effects and a few\n"
-"instrument plugins."
-msgstr ""
-
-#: gnu/packages/audio.scm:7275
-msgid "Library for decoding Super Audio CDs (SACD)"
-msgstr ""
-
-#: gnu/packages/audio.scm:7277
-msgid ""
-"The Odio SACD shared library is a decoding engine which takes a Super\n"
-"Audio CD source and extracts a 24-bit high resolution WAV file.  It handles\n"
-"both DST and DSD streams."
-msgstr ""
-
-#: gnu/packages/audio.scm:7300
-msgid "Rip Super Audio CDs (SACD)"
-msgstr ""
-
-#: gnu/packages/audio.scm:7302
-msgid ""
-"Odio SACD is a command-line application which takes a Super Audio CD\n"
-"source and extracts a 24-bit high resolution WAV file.  It handles both DST\n"
-"and DSD streams."
-msgstr ""
-
-#: gnu/packages/audio.scm:7330
-msgid "PipeWire graph manager"
-msgstr ""
-
-#: gnu/packages/audio.scm:7332
-msgid ""
-"qpwgraph is a graph manager dedicated to PipeWire, using the Qt C++\n"
-"framework.  It provides a visual interface to audio and video connections\n"
-"managed by PipeWire."
-msgstr ""
-
-#: gnu/packages/audio.scm:7391
-#, fuzzy
-#| msgid "Audio application session manager"
-msgid "Audio session manager"
-msgstr "Audioanwendungs-Sitzungsverwaltung"
-
-#: gnu/packages/audio.scm:7392
-msgid ""
-"RaySession is a session manager for audio programs such as\n"
-"Ardour, Carla, QTractor, Guitarix, Patroneo, Jack Mixer, etc.  The principle\n"
-"is to load together audio programs, then be able to save or close all\n"
-"documents together.  Its main purpose is to manage NSM compatible programs,\n"
-"but it also helps for other programs.  It offers a patchbay for visualizing\n"
-"and editing connections."
-msgstr ""
-
-#: gnu/packages/audio.scm:7420
-msgid "Record audio streams to your hard drive"
-msgstr ""
-
-#: gnu/packages/audio.scm:7421
-msgid ""
-"Streamripper records shoutcast-compatible\n"
-"streams.  For shoutcast style streams it finds the “meta data” or track\n"
-"separation data, and uses that as a marker for where the track should\n"
-"be separated."
-msgstr ""
-
-#: gnu/packages/audio.scm:7458
-msgid "Cross-platform audio library"
-msgstr ""
-
-#: gnu/packages/audio.scm:7459
-msgid "Cubeb is Mozilla's cross-platform audio library."
-msgstr ""
-
-#: gnu/packages/audio.scm:7484
-msgid "Command line CD ripper and encoder"
-msgstr ""
-
-#: gnu/packages/audio.scm:7486
-msgid ""
-"cyanrip is a command line tool for ripping CDs.  It uses\n"
-"MusicBrainz to name and tag each track, and to download and embed cover art.\n"
-"cyanrip supports encoding tracks to multiple formats in parallel and automatically\n"
-"verifies checksums."
-msgstr ""
-
-#: gnu/packages/audio.scm:7551
-#, fuzzy
-#| msgid ""
-#| "This package provides a dictionary for the Hunspell spell-checking\n"
-#| "library."
-msgid "Realtime Audio effects interface for Pipewire"
-msgstr "Dieses Paket bietet ein Wörterbuch für die Hunspell-Rechtschreibbibliothek."
-
-#: gnu/packages/audio.scm:7552
-msgid ""
-"EasyEffects is an advanced audio manipulation tool providing\n"
-"a graphical user interface to apply various effects and filters to audio\n"
-"streams using Pipewire.  Effects can be applied in real time to audio inputs or\n"
-"outputs such as a microphone to reduce noise or apply many other effects\n"
-"including:\n"
-"\n"
-"@itemize\n"
-"@item Auto gain\n"
-"@item Bass enhancer\n"
-"@item Bass loudness\n"
-"@item Compressor\n"
-"@item Convolver\n"
-"@item Crossfeed\n"
-"@item Crystalizer\n"
-"@item De-esser\n"
-"@item Delay\n"
-"@item Echo Canceller\n"
-"@item Equalizer\n"
-"@item Exciter\n"
-"@item Filter (low-pass, high-pass, band-pass and band-reject modes)\n"
-"@item Gate\n"
-"@item Limiter\n"
-"@item Loudness\n"
-"@item Maximizer\n"
-"@item Multiband compressor\n"
-"@item Multiband gate\n"
-"@item Noise reduction\n"
-"@item Pitch\n"
-"@item Reverberation\n"
-"@item Speech Processor\n"
-"@item Stereo tools\n"
-"@end itemize"
-msgstr ""
-
-#: gnu/packages/augeas.scm:64
-#, fuzzy
-#| msgid "Configuration files for LaTeX-related formats"
-msgid "Edit configuration files programmatically"
-msgstr "Konfigurationsdateien für LaTeX und verwandte Formate"
-
-#: gnu/packages/augeas.scm:66
-msgid ""
-"Augeas is a library and command line tool for programmatically editing\n"
-"configuration files in a controlled manner.  Augeas exposes a tree of all\n"
-"configuration settings and a simple local API for manipulating the tree.\n"
-"Augeas then modifies underlying configuration files according to the changes\n"
-"that have been made to the tree; it does as little modeling of configurations\n"
-"as possible, and focuses exclusivley on transforming the tree-oriented syntax\n"
-"of its public API to the myriad syntaxes of individual configuration files."
-msgstr ""
-
-#: gnu/packages/augeas.scm:99
-#, fuzzy
-#| msgid "Python bindings for Vagrant"
-msgid "Python bindings for Augeas"
-msgstr "Python-Anbindungen für Vagrant"
-
-#: gnu/packages/augeas.scm:100
-msgid "Pure Python bindings for @url{https://augeas.net, Augeas}."
-msgstr ""
-
-#: gnu/packages/authentication.scm:67
-msgid "One-Time Passwords"
-msgstr ""
-
-#: gnu/packages/authentication.scm:68
-msgid ""
-"This package provides a library to generate\n"
-"@acronym{HOTP, HMAC-base One-Time Password}s as specified in RFC 4226 and\n"
-"@acronym{TOTP, Time-based One-Time Password}s as specified in RFC 6238."
-msgstr ""
-
-#: gnu/packages/authentication.scm:105
-msgid "@acronym{OTP, one-time password} components"
-msgstr ""
-
-#: gnu/packages/authentication.scm:107
-msgid ""
-"The @acronym{OATH, Open AuTHentication} Toolkit provides various\n"
-"components for building @acronym{OTP, One-Time Password} authentication systems:\n"
-"\n"
-"@itemize\n"
-"@item @command{oathtool}, a command-line tool for generating & validating OTPs.\n"
-"@item @code{liboath}, a C library for OATH handling.\n"
-"@item @command{pskctool}, a command-line tool for manipulating secret key\n"
-"files in the @acronym{PSKC, Portable Symmetric Key Container} format\n"
-"described in RFC6030.\n"
-"@item @code{libpskc}, a shared and static C library for PSKC handling.\n"
-"@item @code{pam_oath}, a PAM module for pluggable login authentication.\n"
-"@end itemize\n"
-"\n"
-"Supported technologies include the event-based @acronym{HOTP, Hash-based Message\n"
-"Authentication Code One-Time Password} algorithm (RFC4226), the time-based\n"
-"@acronym{TOTP, Time-based One-Time Password} algorithm (RFC6238), and\n"
-"PSKC (RFC6030) to manage secret key data."
-msgstr ""
-
-#: gnu/packages/authentication.scm:175
-msgid "Simple CLI for interacting with Google API authentication"
-msgstr ""
-
-#: gnu/packages/authentication.scm:177
-msgid ""
-"@code{oauth2l} (pronounced ``oauth tool'') is a simple command-line tool\n"
-"for working with @url{https://developers.google.com/identity/protocols/OAuth2,\n"
-"Google OAuth 2.0} written in Go.  Its primary use is to fetch and print OAuth\n"
-"2.0 access tokens, which can be used with other command-line tools and\n"
-"scripts."
-msgstr ""
-
-#: gnu/packages/authentication.scm:206
-msgid "Yubico pluggable authentication module"
-msgstr ""
-
-#: gnu/packages/authentication.scm:207
-msgid ""
-"The Yubico PAM module provides an easy way to integrate the\n"
-"YubiKey into your existing user authentication infrastructure."
-msgstr ""
-
-#: gnu/packages/authentication.scm:229
-msgid "Utility for testing pluggable authentication modules (PAM) facility"
-msgstr ""
-
-#: gnu/packages/authentication.scm:231
-msgid ""
-"Pamtester is a tiny utility program to test the pluggable authentication\n"
-"modules (PAM) facility, specifically designed to help PAM module authors to\n"
-"intensively test their own modules."
-msgstr ""
-
-#: gnu/packages/autogen.scm:102
-msgid "Automated program generator"
-msgstr ""
-
-#: gnu/packages/autogen.scm:104
-msgid ""
-"AutoGen is a program to ease the maintenance of programs that contain\n"
-"large amounts of repetitive text.  It automates the construction of these\n"
-"sections of the code, simplifying the task of keeping the text in sync.  It\n"
-"also includes an add-on package called AutoOpts, which is specialized for the\n"
-"maintenance and documentation of program options."
-msgstr ""
-
-#: gnu/packages/autotools.scm:107
-msgid "Create source code configuration scripts"
-msgstr ""
-
-#: gnu/packages/autotools.scm:109
-msgid ""
-"Autoconf offers the developer a robust set of M4 macros which expand\n"
-"into shell code to test the features of Unix-like systems and to adapt\n"
-"automatically their software package to these systems.  The resulting shell\n"
-"scripts are self-contained and portable, freeing the user from needing to\n"
-"know anything about Autoconf or M4."
-msgstr ""
-
-#: gnu/packages/autotools.scm:302
-#, fuzzy
-#| msgid "Collection of network utilities"
-msgid "Collection of freely reusable Autoconf macros"
-msgstr "Sammlung von Netzwerkwerkzeugen"
-
-#: gnu/packages/autotools.scm:304
-msgid ""
-"Autoconf Archive is a collection of over 450 new macros for Autoconf,\n"
-"greatly expanding the domain of its functionality.  These macros have been\n"
-"contributed as free software by the community."
-msgstr ""
-
-#: gnu/packages/autotools.scm:322
-msgid "Process generated build logs"
-msgstr ""
-
-#: gnu/packages/autotools.scm:323
-msgid ""
-"Autobuild is a package that processes build logs generated\n"
-"when building software.  Autobuild is primarily focused on packages using\n"
-"Autoconf and Automake, but can be used with other build systems too.\n"
-"Autobuild generates an HTML summary file, containing links to each build log.\n"
-"The summary includes project name, version, build hostname, host type (cross\n"
-"compile aware), date of build, and indication of success or failure.  The\n"
-"output is indexed in many ways to simplify browsing."
-msgstr ""
-
-#: gnu/packages/autotools.scm:429
-msgid "Making GNU standards-compliant Makefiles"
-msgstr ""
-
-#: gnu/packages/autotools.scm:431
-msgid ""
-"Automake the part of the GNU build system for producing\n"
-"standards-compliant Makefiles.  Build requirements are entered in an\n"
-"intuitive format and then Automake works with Autoconf to produce a robust\n"
-"Makefile, simplifying the entire process for the developer."
-msgstr ""
-
-#: gnu/packages/autotools.scm:531
-msgid "Generic shared library support tools"
-msgstr ""
-
-#: gnu/packages/autotools.scm:533
-msgid ""
-"GNU Libtool helps in the creation and use of shared libraries, by\n"
-"presenting a single consistent, portable interface that hides the usual\n"
-"complexity of working with shared libraries across platforms."
-msgstr ""
-
-#: gnu/packages/autotools.scm:580
-msgid "Ubiquitous config.guess and config.sub scripts"
-msgstr ""
-
-#: gnu/packages/autotools.scm:581
-msgid ""
-"The `config.guess' script tries to guess a canonical system triple,\n"
-"and `config.sub' validates and canonicalizes.  These are used as part of\n"
-"configuration in nearly all GNU packages (and many others)."
-msgstr ""
-
-#: gnu/packages/autotools.scm:608
-msgid "System-independent dlopen wrapper of GNU libtool"
-msgstr ""
-
-#: gnu/packages/autotools.scm:635
-msgid "@command{configure} interface for Python-based packages"
-msgstr ""
-
-#: gnu/packages/autotools.scm:637
-msgid ""
-"GNU pyconfigure provides template files for easily implementing\n"
-"standards-compliant configure scripts and Makefiles for Python-based packages.\n"
-"It is designed to work alongside existing Python setup scripts, making it easy\n"
-"to integrate into existing projects.  Powerful and flexible Autoconf macros\n"
-"are available, allowing you to easily make adjustments to the installation\n"
-"procedure based on the capabilities of the target computer."
-msgstr ""
-
-#: gnu/packages/avahi.scm:115
-msgid "Implementation of mDNS/DNS-SD protocols"
-msgstr ""
-
-#: gnu/packages/avahi.scm:117
-msgid ""
-"Avahi is a system which facilitates service discovery on a local\n"
-"network.  It is an implementation of the mDNS (for \"Multicast DNS\") and\n"
-"DNS-SD (for \"DNS-Based Service Discovery\") protocols."
-msgstr ""
-
-#: gnu/packages/avahi.scm:140
-msgid "Multicast DNS Name Service Switch (@dfn{NSS}) plug-in"
-msgstr ""
-
-#: gnu/packages/avahi.scm:142
-msgid ""
-"Nss-mdns is a plug-in for the GNU C Library's Name Service Switch\n"
-"(@dfn{NSS}) that resolves host names via multicast DNS (@dfn{mDNS}).  It is\n"
-"most often used in home and other small networks without a local name server,\n"
-"to resolve host names in the @samp{.local} top-level domain."
-msgstr ""
-
-#: gnu/packages/avr-xyz.scm:101
-msgid "Lean, mean and hackable simulator for AVR CPUs/MCUs"
-msgstr ""
-
-#: gnu/packages/avr-xyz.scm:103
-msgid ""
-"simavr is a new AVR simulator for GNU/Linux or any platform that uses\n"
-"@command{avr-gcc}.  It uses avr-gcc's own register definition to simplify\n"
-"creating new targets for supported AVR devices.  The core was made to be small\n"
-"and compact, and hackable so allow quick prototyping of an AVR project.  The\n"
-"AVR core is now stable for use with parts with <= 128KB flash, and with\n"
-"preliminary support for the bigger parts.  The simulator loads ELF files\n"
-"directly, and there is even a way to specify simulation parameterps directly\n"
-"in the emulated code using an @code{.elf} section.  You can also load\n"
-"multipart HEX files."
-msgstr ""
-
-#: gnu/packages/avr-xyz.scm:187
-msgid "Lightweight USB Framework for AVRs"
-msgstr ""
-
-#: gnu/packages/avr-xyz.scm:188
-msgid ""
-"UFA is a simple to use, lightweight framework which sits\n"
-"atop the hardware USB controller in specific AVR microcontroller models, and\n"
-"allows for the quick and easy creation of complex USB devices and hosts.  This\n"
-"package contains the user-submitted projects and bootloaders for use with\n"
-"compatible microcontroller models, as well as the demos and the\n"
-"documentation."
-msgstr ""
-
-#: gnu/packages/avr-xyz.scm:223
-msgid "Scheme subset for Atmel microcontrollers"
-msgstr ""
-
-#: gnu/packages/avr-xyz.scm:225
-msgid ""
-"Microscheme, or @code{(ms)} for short, is a functional programming\n"
-"language for the Arduino, and for Atmel 8-bit AVR microcontrollers in general.\n"
-"Microscheme is a subset of Scheme, in the sense that every valid @code{(ms)}\n"
-"program is also a valid Scheme program (with the exception of Arduino\n"
-"hardware-specific primitives).  The @code{(ms)} compiler performs function\n"
-"inlining, and features an aggressive tree-shaker, eliminating unused top-level\n"
-"definitions.  Microscheme has a robust @dfn{Foreign Function Interface} (FFI)\n"
-"meaning that C code may be invoked directly from (ms) programs."
-msgstr ""
-
-#: gnu/packages/avr.scm:129
-#, fuzzy
-#| msgid "The GNU C Library"
-msgid "AVR C Library"
-msgstr "Die GNU-C-Bibliothek"
-
-#: gnu/packages/avr.scm:131
-msgid ""
-"AVR Libc is a project whose goal is to provide a high quality C library\n"
-"for use with GCC on Atmel AVR microcontrollers."
-msgstr ""
-
-#: gnu/packages/avr.scm:157
-#, fuzzy
-#| msgid "Complete GCC tool chain for C/C++ development"
-msgid "Complete GCC tool chain for AVR microcontroller development"
-msgstr "Vollständige GCC-Werkzeugsammlung für die Entwicklung in C/C++"
-
-#: gnu/packages/avr.scm:158
-msgid ""
-"This package provides a complete GCC tool chain for AVR\n"
-"microcontroller development.  This includes the GCC AVR cross compiler and\n"
-"avrdude for firmware flashing.  The supported programming languages are C and\n"
-"C++."
-msgstr ""
-
-#: gnu/packages/axoloti.scm:205
-msgid "Audio development environment for the Axoloti core board"
-msgstr ""
-
-#: gnu/packages/axoloti.scm:207
-msgid ""
-"The Axoloti patcher offers a “patcher” environment similar to Pure Data\n"
-"for sketching digital audio algorithms.  The patches run on a standalone\n"
-"powerful microcontroller board: Axoloti Core.  This package provides the\n"
-"runtime."
-msgstr ""
-
-#: gnu/packages/axoloti.scm:347
-msgid ""
-"The Axoloti patcher offers a “patcher” environment similar to Pure Data\n"
-"for sketching digital audio algorithms.  The patches run on a standalone\n"
-"powerful microcontroller board: Axoloti Core.  This package provides the\n"
-"patcher application."
-msgstr ""
-
-#: gnu/packages/axoloti.scm:480
-msgid "Audio development environment for the Ksoloti board"
-msgstr ""
-
-#: gnu/packages/axoloti.scm:482
-msgid ""
-"Ksoloti is an environment for generating and processing digital audio.\n"
-"It can be a programmable virtual modular synthesizer, polysynth, drone box,\n"
-"sequencer, chord generator, multi effect, sample player, looper, granular\n"
-"sampler, MIDI generator/processor, CV or trigger generator, anything in\n"
-"between, and more.\n"
-"\n"
-"The Ksoloti Core is a rework of the discontinued Axoloti Core board.  In\n"
-"short, Ksoloti aims for maximum compatibility with the original Axoloti, but\n"
-"with some layout changes and added features.\n"
-"\n"
-"This package provides the runtime."
-msgstr ""
-
-#: gnu/packages/axoloti.scm:646
-msgid ""
-"Ksoloti is an environment for generating and processing digital audio.\n"
-"It can be a programmable virtual modular synthesizer, polysynth, drone box,\n"
-"sequencer, chord generator, multi effect, sample player, looper, granular\n"
-"sampler, MIDI generator/processor, CV or trigger generator, anything in\n"
-"between, and more.\n"
-"\n"
-"The Ksoloti Core is a rework of the discontinued Axoloti Core board.  In\n"
-"short, Ksoloti aims for maximum compatibility with the original Axoloti, but\n"
-"with some layout changes and added features.\n"
-"\n"
-"This package provides the patcher application."
-msgstr ""
-
-#: gnu/packages/backup.scm:192
-msgid "Encrypted backup using rsync algorithm"
-msgstr ""
-
-#: gnu/packages/backup.scm:194
-msgid ""
-"Duplicity backs up directories by producing encrypted tar-format volumes\n"
-"and uploading them to a remote or local file server.  Because duplicity uses\n"
-"librsync, the incremental archives are space efficient and only record the\n"
-"parts of files that have changed since the last backup.  Because duplicity\n"
-"uses GnuPG to encrypt and/or sign these archives, they will be safe from\n"
-"spying and/or modification by the server."
-msgstr ""
-
-#: gnu/packages/backup.scm:218
-msgid "File verification and repair tools"
-msgstr ""
-
-#: gnu/packages/backup.scm:219
-msgid ""
-"Par2cmdline uses Reed-Solomon error-correcting codes to\n"
-"generate and verify PAR2 recovery files.  These files can be distributed\n"
-"alongside the source files or stored together with back-ups to protect against\n"
-"transmission errors or @dfn{bit rot}, the degradation of storage media over\n"
-"time.\n"
-"Unlike a simple checksum, PAR2 doesn't merely detect errors: as long as the\n"
-"damage isn't too extensive (and smaller than the size of the recovery file), it\n"
-"can even repair them."
-msgstr ""
-
-#: gnu/packages/backup.scm:256
-msgid "Simple incremental backup tool"
-msgstr ""
-
-#: gnu/packages/backup.scm:258
-msgid ""
-"Hdup2 is a backup utility, its aim is to make backup really simple.  The\n"
-"backup scheduling is done by means of a cron job.  It supports an\n"
-"include/exclude mechanism, remote backups, encrypted backups and split\n"
-"backups (called chunks) to allow easy burning to CD/DVD."
-msgstr ""
-
-#: gnu/packages/backup.scm:348
-msgid "Multi-format archive and compression library"
-msgstr ""
-
-#: gnu/packages/backup.scm:350
-msgid ""
-"Libarchive provides a flexible interface for reading and writing\n"
-"archives in various formats such as tar and cpio.  Libarchive also supports\n"
-"reading and writing archives compressed using various compression filters such\n"
-"as gzip and bzip2.  The library is inherently stream-oriented; readers\n"
-"serially iterate through the archive, writers serially add things to the\n"
-"archive.  In particular, note that there is currently no built-in support for\n"
-"random access nor for in-place modification.  This package provides the\n"
-"@command{bsdcat}, @command{bsdcpio} and @command{bsdtar} commands."
-msgstr ""
-
-#: gnu/packages/backup.scm:413
-msgid "Provide a list of files to backup"
-msgstr ""
-
-#: gnu/packages/backup.scm:415
-msgid ""
-"Rdup is a utility inspired by rsync and the plan9 way of doing backups.\n"
-"Rdup itself does not backup anything, it only print a list of absolute\n"
-"file names to standard output.  Auxiliary scripts are needed that act on this\n"
-"list and implement the backup strategy."
-msgstr ""
-
-#: gnu/packages/backup.scm:452
-msgid "Efficient backups using parity snapshots across disk arrays"
-msgstr ""
-
-#: gnu/packages/backup.scm:454
-msgid ""
-"SnapRAID backs up files stored across multiple storage devices, such as\n"
-"disk arrays, in an efficient way reminiscent of its namesake @acronym{RAID,\n"
-"Redundant Array of Independent Disks} level 4.\n"
-"\n"
-"Instead of creating a complete copy of the data like classic backups do, it\n"
-"saves space by calculating one or more sets of parity information that's a\n"
-"fraction of the size.  Each parity set is stored on an additional device the\n"
-"size of the largest single storage volume, and protects against the loss of any\n"
-"one device, up to a total of six.  If more devices fail than there are parity\n"
-"sets, (only) the files they contained are lost, not the entire array.  Data\n"
-"corruption by unreliable devices can also be detected and repaired.\n"
-"\n"
-"SnapRAID is distinct from actual RAID in that it operates on files and creates\n"
-"distinct snapshots only when run.  It mainly targets large collections of big\n"
-"files that rarely change, like home media centers.  One disadvantage is that\n"
-"@emph{all} data not in the latest snapshot may be lost if one device fails.  An\n"
-"advantage is that accidentally deleted files can be recovered, which is not the\n"
-"case with RAID.\n"
-"\n"
-"It's also more flexible than true RAID: devices can have different sizes and\n"
-"more can be added without disturbing others.  Devices that are not in use can\n"
-"remain fully idle, saving power and producing less noise."
-msgstr ""
-
-#: gnu/packages/backup.scm:503
-msgid "Tar-compatible archiver"
-msgstr ""
-
-#: gnu/packages/backup.scm:505
-msgid ""
-"Btar is a tar-compatible archiver which allows arbitrary compression and\n"
-"ciphering, redundancy, differential backup, indexed extraction, multicore\n"
-"compression, input and output serialisation, and tolerance to partial archive\n"
-"errors."
-msgstr ""
-
-#: gnu/packages/backup.scm:530
-msgid "Local/remote mirroring+incremental backup"
-msgstr ""
-
-#: gnu/packages/backup.scm:532
-msgid ""
-"Rdiff-backup backs up one directory to another, possibly over a network.\n"
-"The target directory ends up a copy of the source directory, but extra reverse\n"
-"diffs are stored in a special subdirectory of that target directory, so you\n"
-"can still recover files lost some time ago.  The idea is to combine the best\n"
-"features of a mirror and an incremental backup.  Rdiff-backup also preserves\n"
-"subdirectories, hard links, dev files, permissions, uid/gid ownership,\n"
-"modification times, extended attributes, acls, and resource forks.  Also,\n"
-"rdiff-backup can operate in a bandwidth efficient manner over a pipe, like\n"
-"rsync.  Thus you can use rdiff-backup and ssh to securely back a hard drive up\n"
-"to a remote location, and only the differences will be transmitted.  Finally,\n"
-"rdiff-backup is easy to use and settings have sensible defaults."
-msgstr ""
-
-#: gnu/packages/backup.scm:567
-msgid "Deduplicating snapshot backup utility based on rsync"
-msgstr ""
-
-#: gnu/packages/backup.scm:568
-msgid ""
-"rsnapshot is a file system snapshot utility based on rsync.\n"
-"rsnapshot makes it easy to make periodic snapshots of local machines, and\n"
-"remote machines over SSH.  To reduce the disk space required for each backup,\n"
-"rsnapshot uses hard links to deduplicate identical files."
-msgstr ""
-
-#: gnu/packages/backup.scm:654
-msgid "Tools & library for data backup and distributed storage"
-msgstr ""
-
-#: gnu/packages/backup.scm:656
-msgid ""
-"Libchop is a set of utilities and library for data backup and\n"
-"distributed storage.  Its main application is @command{chop-backup}, an\n"
-"encrypted backup program that supports data integrity checks, versioning,\n"
-"distribution among several sites, selective sharing of stored data, adaptive\n"
-"compression, and more.  The library itself implements storage techniques such\n"
-"as content-addressable storage, content hash keys, Merkle trees, similarity\n"
-"detection, and lossless compression."
-msgstr ""
-
-#: gnu/packages/backup.scm:778
-msgid "Deduplicated, encrypted, authenticated and compressed backups"
-msgstr ""
-
-#: gnu/packages/backup.scm:779
-msgid ""
-"Borg is a deduplicating backup program.  Optionally, it\n"
-"supports compression and authenticated encryption.  The main goal of Borg is to\n"
-"provide an efficient and secure way to backup data.  The data deduplication\n"
-"technique used makes Borg suitable for daily backups since only changes are\n"
-"stored.  The authenticated encryption technique makes it suitable for storing\n"
-"backups on untrusted computers."
-msgstr ""
-
-#: gnu/packages/backup.scm:809
-msgid "WIM file manipulation library and utilities"
-msgstr ""
-
-#: gnu/packages/backup.scm:810
-msgid ""
-"wimlib is a C library and set of command-line utilities for\n"
-"creating, modifying, extracting, and mounting archives in the Windows Imaging\n"
-"Format (@dfn{WIM files}).  It can capture and apply WIMs directly from and to\n"
-"NTFS volumes using @code{ntfs-3g}, preserving NTFS-specific attributes."
-msgstr ""
-
-#: gnu/packages/backup.scm:915
-msgid "Fast, disk based, rotating network backup system"
-msgstr ""
-
-#: gnu/packages/backup.scm:917
-msgid ""
-"With dirvish you can maintain a set of complete images of your\n"
-"file systems with unattended creation and expiration.  A dirvish backup vault\n"
-"is like a time machine for your data."
-msgstr ""
-
-#: gnu/packages/backup.scm:1015
-msgid "Backup program with multiple revisions, encryption and more"
-msgstr ""
-
-#: gnu/packages/backup.scm:1016
-msgid ""
-"Restic is a program that does backups right and was designed\n"
-"with the following principles in mind:\n"
-"\n"
-"@itemize\n"
-"@item Easy: Doing backups should be a frictionless process, otherwise you\n"
-"might be tempted to skip it.  Restic should be easy to configure and use, so\n"
-"that, in the event of a data loss, you can just restore it.  Likewise,\n"
-"restoring data should not be complicated.\n"
-"\n"
-"@item Fast: Backing up your data with restic should only be limited by your\n"
-"network or hard disk bandwidth so that you can backup your files every day.\n"
-"Nobody does backups if it takes too much time.  Restoring backups should only\n"
-"transfer data that is needed for the files that are to be restored, so that\n"
-"this process is also fast.\n"
-"\n"
-"@item Verifiable: Much more important than backup is restore, so restic\n"
-"enables you to easily verify that all data can be restored.  @item Secure:\n"
-"Restic uses cryptography to guarantee confidentiality and integrity of your\n"
-"data.  The location the backup data is stored is assumed not to be a trusted\n"
-"environment (e.g.  a shared space where others like system administrators are\n"
-"able to access your backups).  Restic is built to secure your data against\n"
-"such attackers.\n"
-"\n"
-"@item Efficient: With the growth of data, additional snapshots should only\n"
-"take the storage of the actual increment.  Even more, duplicate data should be\n"
-"de-duplicated before it is actually written to the storage back end to save\n"
-"precious backup space.\n"
-"@end itemize"
-msgstr ""
-
-#: gnu/packages/backup.scm:1085
-msgid "Restic REST server"
-msgstr ""
-
-#: gnu/packages/backup.scm:1087
-msgid ""
-"The Restic REST server is a high performance HTTP server that implements\n"
-"restic's REST backend API.  It provides a secure and efficient way to backup\n"
-"data remotely, using the restic backup client and a @code{rest:} URL."
-msgstr ""
-
-#: gnu/packages/backup.scm:1111
-msgid "Versatile deduplicating backup tool"
-msgstr ""
-
-#: gnu/packages/backup.scm:1113
-msgid ""
-"ZBackup is a globally-deduplicating backup tool, based on the\n"
-"ideas found in Rsync.  Feed a large @file{.tar} into it, and it will\n"
-"store duplicate regions of it only once, then compress and optionally\n"
-"encrypt the result.  Feed another @file{.tar} file, and it will also\n"
-"re-use any data found in any previous backups.  This way only new\n"
-"changes are stored, and as long as the files are not very different,\n"
-"the amount of storage required is very low.  Any of the backup files\n"
-"stored previously can be read back in full at any time.  The program\n"
-"is format-agnostic, so you can feed virtually any files to it."
-msgstr ""
-
-#: gnu/packages/backup.scm:1150
-msgid "Ext2/3/4 file system dump/restore utilities"
-msgstr ""
-
-#: gnu/packages/backup.scm:1151
-msgid ""
-"Dump examines files in a file system, determines which ones\n"
-"need to be backed up, and copies those files to a specified disk, tape or\n"
-"other storage medium.  Subsequent incremental backups can then be layered on\n"
-"top of the full backup.  The restore command performs the inverse function of\n"
-"dump; it can restore a full backup of a file system.  Single files and\n"
-"directory subtrees may also be restored from full or partial backups in\n"
-"interactive mode."
-msgstr ""
-
-#: gnu/packages/backup.scm:1225
-msgid "Backup tool for Btrfs subvolumes"
-msgstr ""
-
-#: gnu/packages/backup.scm:1226
-msgid ""
-"Btrbk is a backup tool for Btrfs subvolumes, taking\n"
-"advantage of Btrfs specific capabilities to create atomic snapshots and\n"
-"transfer them incrementally to your backup locations.  The source and target\n"
-"locations are specified in a config file, which allows easily configuring\n"
-"simple scenarios like e.g. a @i{laptop with locally attached backup disks}, as\n"
-"well as more complex ones, e.g. a @i{server receiving backups from several\n"
-"hosts via SSH, with different retention policy}.  It has features such as:\n"
-"@itemize\n"
-"@item atomic snapshots\n"
-"@item incremental backups\n"
-"@item flexible retention policy\n"
-"@item backups to multiple destinations\n"
-"@item transfer via SSH\n"
-"@item resume backups (for removable and mobile devices)\n"
-"@item archive to offline storage\n"
-"@item encrypted backups to non-btrfs storage\n"
-"@item wildcard subvolumes (useful for Docker and LXC containers)\n"
-"@item transaction log\n"
-"@item comprehensive list and statistics output\n"
-"@item resolve and trace Btrfs parent-child and received-from relationships\n"
-"@item list file changes between backups\n"
-"@item calculate accurate disk space usage based on block regions.\n"
-"@end itemize\n"
-"Btrbk is designed to run as a cron job for triggering periodic snapshots and\n"
-"backups, as well as from the command line (e.g. for instantly creating\n"
-"additional snapshots)."
-msgstr ""
-
-#: gnu/packages/backup.scm:1288
-msgid "Differential backup and restore"
-msgstr ""
-
-#: gnu/packages/backup.scm:1289
-msgid ""
-"Burp is a network backup and restore program.  It attempts\n"
-"to reduce network traffic and the amount of space that is used by each\n"
-"backup."
-msgstr ""
-
-#: gnu/packages/backup.scm:1320
-msgid "Software archive disassembler"
-msgstr ""
-
-#: gnu/packages/backup.scm:1321
-msgid ""
-"Disarchive can disassemble software archives into data\n"
-"and metadata.  The goal is to create a small amount of metadata that\n"
-"can be used to recreate a software archive bit-for-bit from the\n"
-"original files.  For example, a software archive made using tar and\n"
-"Gzip will need to describe the order of files in the tarball and the\n"
-"compression parameters used by Gzip."
-msgstr ""
-
-#: gnu/packages/backup.scm:1378
-msgid "Simple, configuration-driven backup software"
-msgstr ""
-
-#: gnu/packages/backup.scm:1380
-msgid ""
-"borgmatic is simple, configuration-driven backup software for servers\n"
-"and workstations.  Protect your files with client-side encryption.  Backup\n"
-"your databases too.  Monitor it all with integrated third-party services.\n"
-"borgmatic is powered by borg."
-msgstr ""
-
-#: gnu/packages/backup.scm:1451
-msgid "Graphical backup client based on BorgBackup"
-msgstr ""
-
-#: gnu/packages/backup.scm:1452
-msgid ""
-"Vorta is a graphical backup client based on the Borg backup\n"
-"tool.  It supports the use of remote backup repositories.  It can perform\n"
-"scheduled backups, and has a graphical tool for browsing and extracting the Borg\n"
-"archives."
-msgstr ""
-
-#: gnu/packages/backup.scm:1474
-msgid "GTK frontend for rsync"
-msgstr ""
-
-#: gnu/packages/backup.scm:1476
-msgid ""
-"Grsync is a simple graphical interface using GTK for the @command{rsync}\n"
-"command line program.  It currently supports only a limited set of the most\n"
-"important rsync features, but can be used effectively for local directory\n"
-"synchronization."
-msgstr ""
-
-#: gnu/packages/barrier.scm:75
-msgid "Keyboard Video Mouse switch software"
-msgstr ""
-
-#: gnu/packages/barrier.scm:76
-msgid ""
-"@code{Barrier} is software that mimics the functionality of\n"
-"a KVM switch, which historically would allow you to use a single keyboard and\n"
-"mouse to control multiple computers by physically turning a dial on the box to\n"
-"switch the machine you're controlling at any given moment.  Barrier does this\n"
-"in software, allowing you to tell it which machine to control by moving your\n"
-"mouse to the edge of the screen, or by using a keypress to switch focus to a\n"
-"different system."
-msgstr ""
-
-#: gnu/packages/base.scm:111
 msgid "Example GNU package"
 msgstr "GNU-Beispielpaket"
 
-#: gnu/packages/base.scm:113
 msgid ""
 "GNU Hello prints the message \"Hello, world!\" and then exits.  It\n"
 "serves as an example of standard GNU coding practices.  As such, it supports\n"
@@ -3257,11 +548,9 @@ msgstr ""
 "Es dient als ein Beispiel für die Standardwege zur Erzeugung von GNU-Code.\n"
 "Als solches unterstützt es Befehlszeilenargumente, mehrere Sprachen usw."
 
-#: gnu/packages/base.scm:181
 msgid "Print lines matching a pattern"
 msgstr "Zeilen zurückgeben, die auf ein Muster passen"
 
-#: gnu/packages/base.scm:183
 msgid ""
 "grep is a tool for finding text inside files.  Text is found by\n"
 "matching a pattern provided by the user in one or many files.  The pattern\n"
@@ -3281,11 +570,9 @@ msgstr ""
 "im Vergleich zum Standardwerkzeug, zum Beispiel die rekursive Suche\n"
 "in Verzeichnisstrukturen."
 
-#: gnu/packages/base.scm:205
 msgid "Stream editor"
 msgstr "Datenstromeditor"
 
-#: gnu/packages/base.scm:224
 msgid ""
 "Sed is a non-interactive, text stream editor.  It receives a text\n"
 "input from a file or from standard input and it then applies a series of text\n"
@@ -3300,11 +587,9 @@ msgstr ""
 "verwendet. Die GNU-Implementierung bietet gegenüber dem Standardwerkzeug\n"
 "diverse Erweiterungen."
 
-#: gnu/packages/base.scm:291
 msgid "Managing tar archives"
 msgstr "Tar-Archive verwalten"
 
-#: gnu/packages/base.scm:293
 msgid ""
 "Tar provides the ability to create tar archives, as well as the\n"
 "ability to extract, update or list files in an existing archive.  It is\n"
@@ -3320,11 +605,9 @@ msgstr ""
 "Änderungszeitpunkte sowie Zugriffsrechte erhalten bleiben. GNU Tar bietet\n"
 "viele Erweiterungen über die Fähigkeiten des Standardwerkzeugs hinaus."
 
-#: gnu/packages/base.scm:324
 msgid "Apply differences to originals, with optional backups"
 msgstr "Unterschiede auf Originaldateien anwenden, mit optionaler Datensicherung"
 
-#: gnu/packages/base.scm:326
 msgid ""
 "Patch is a program that applies changes to files based on differences\n"
 "laid out as by the program \"diff\".  The changes may be applied to one or more\n"
@@ -3338,11 +621,9 @@ msgstr ""
 "verschiedene Diff-Formate. Es kann auch dazu genutzt werden, frühere\n"
 "Anwendungen von Diff-Dateien rückgängig zu machen."
 
-#: gnu/packages/base.scm:405
 msgid "Comparing and merging files"
 msgstr "Dateien vergleichen und zusammenführen"
 
-#: gnu/packages/base.scm:407
 msgid ""
 "GNU Diffutils is a package containing tools for finding the\n"
 "differences between files.  The \"diff\" command is used to show how two files\n"
@@ -3357,11 +638,9 @@ msgstr ""
 "Weiterhin bietet »sdiff« eine Möglichkeit, zwei Dateien interaktiv\n"
 "zusammenzuführen."
 
-#: gnu/packages/base.scm:453
 msgid "Operating on files matching given criteria"
 msgstr "Dateien verarbeiten, die zu gegebenen Kriterien passen"
 
-#: gnu/packages/base.scm:455
 msgid ""
 "Findutils supplies the basic file directory searching utilities of the\n"
 "GNU system.  It consists of two primary searching utilities: \"find\"\n"
@@ -3378,11 +657,9 @@ msgstr ""
 "die Dateinamendatenbank und »xargs« dient dazu, Befehle mit willkürlich\n"
 "langen Argumenten anzuwenden."
 
-#: gnu/packages/base.scm:580
 msgid "Core GNU utilities (file, text, shell)"
 msgstr "GNU-Kernprogramme (Datei, Text, Shell)"
 
-#: gnu/packages/base.scm:582
 msgid ""
 "GNU Coreutils package includes all of the basic command-line tools that\n"
 "are expected in a POSIX system, excluding shell.  This package is the union of\n"
@@ -3391,11 +668,9 @@ msgid ""
 "standard."
 msgstr "Das Paket GNU Coreutils enthält alle grundlegenden Befehlszeilenwerkzeuge, die Sie in einem POSIX-System erwarten, bis auf eine Shell. Das Paket stellt die Vereinigung von GNUs fileutils mit Bearbeitungsfunktionen für Dateien, sh-utils und textutils dar. Die meisten dieser Werkzeuge bieten im Vergleich zu den in POSIX festgelegten Standards erweiterte Funktionalität."
 
-#: gnu/packages/base.scm:657
 msgid "Remake files automatically"
 msgstr "Automatische Neuerzeugung von Dateien"
 
-#: gnu/packages/base.scm:659
 msgid ""
 "Make is a program that is used to control the production of\n"
 "executables or other files from their source files.  The process is\n"
@@ -3413,11 +688,9 @@ msgstr ""
 "deren Quellen geändert hat. GNU Make bietet mächtige Erweiterungen über die\n"
 "Fähigkeiten des Standardwerkzeugs hinaus. "
 
-#: gnu/packages/base.scm:740
 msgid "Binary utilities: bfd gas gprof ld"
 msgstr "Binär-Dienstprogramme: bfd gas gprof ld"
 
-#: gnu/packages/base.scm:742
 msgid ""
 "GNU Binutils is a collection of tools for working with binary files.\n"
 "Perhaps the most notable are \"ld\", a linker, and \"as\", an assembler.\n"
@@ -3433,35 +706,12 @@ msgstr ""
 "Die »bfd«-Bibliothek zum Arbeiten mit ausführbaren oder Objektformaten\n"
 "ist ebenfalls enthalten."
 
-#: gnu/packages/base.scm:831
-#, fuzzy
-#| msgid "Library for audio labelling"
-msgid "GNU BFD library for operating on object files"
-msgstr "Programmbibliothek für Audio-Labelling"
-
-#: gnu/packages/base.scm:832
-msgid ""
-"This package provides a standalone shared library version of\n"
-"BFD, which is otherwise distributed and installed as part of the Binutils\n"
-"package release."
-msgstr ""
-
-#: gnu/packages/base.scm:907
 msgid "The linker wrapper"
 msgstr "Der Linker-Wrapper"
 
-#: gnu/packages/base.scm:909
-msgid ""
-"The linker wrapper (or @code{ld-wrapper}) wraps the linker to add any\n"
-"missing @code{-rpath} flags, and to detect any misuse of libraries outside of\n"
-"the store."
-msgstr ""
-
-#: gnu/packages/base.scm:1217
 msgid "The GNU C Library"
 msgstr "Die GNU-C-Bibliothek"
 
-#: gnu/packages/base.scm:1219
 msgid ""
 "Any Unix-like operating system needs a C library: the library which\n"
 "defines the \"system calls\" and other basic facilities such as open, malloc,\n"
@@ -3477,33 +727,9 @@ msgstr ""
 "Die GNU-C-Bibliothek wird als die C-Bibliothek im GNU-System sowie den meisten\n"
 "Systemen mit dem Linux-Kernel verwendet."
 
-#: gnu/packages/base.scm:1523
-msgid "All the locales supported by the GNU C Library"
-msgstr ""
-
-#: gnu/packages/base.scm:1525
-msgid ""
-"This package provides all the locales supported by the GNU C Library,\n"
-"more than 400 in total.  To use them set the @code{LOCPATH} environment variable\n"
-"to the @code{share/locale} sub-directory of this package."
-msgstr ""
-
-#: gnu/packages/base.scm:1704
-msgid "Find full path of shell commands"
-msgstr ""
-
-#: gnu/packages/base.scm:1706
-msgid ""
-"The which program finds the location of executables in PATH, with a\n"
-"variety of options.  It is an alternative to the shell \"type\" built-in\n"
-"command."
-msgstr ""
-
-#: gnu/packages/base.scm:1868
 msgid "Database of current and historical time zones"
 msgstr "Datenbank aktueller und historischer Zeitzonen"
 
-#: gnu/packages/base.scm:1869
 msgid ""
 "The Time Zone Database (often called tz or zoneinfo)\n"
 "contains code and data that represent the history of local time for many\n"
@@ -3518,23 +744,18 @@ msgstr ""
 "Verschiebung gegenüber der Weltzeit oder der Sommerzeit-Winterzeit-Regelungen\n"
 "wiederzugeben."
 
-#: gnu/packages/bittorrent.scm:177 gnu/packages/kde-internet.scm:397
 msgid "BitTorrent client"
 msgstr "BitTorrent-Client"
 
-#: gnu/packages/commencement.scm:3683
 msgid "Complete GCC tool chain for C/C++ development"
 msgstr "Vollständige GCC-Werkzeugsammlung für die Entwicklung in C/C++"
 
-#: gnu/packages/compression.scm:1994
 msgid "Compression and file packing utility"
 msgstr "Dateien vergleichen und in Archive bündeln"
 
-#: gnu/packages/databases.scm:2035
 msgid "Manipulate plain text files as databases"
 msgstr "Bearbeitung von Datenbanken in Form einfacher Textdateien"
 
-#: gnu/packages/databases.scm:2037
 msgid ""
 "GNU Recutils is a set of tools and libraries for creating and\n"
 "manipulating text-based, human-editable databases.  Despite being text-based,\n"
@@ -3549,15 +770,12 @@ msgstr ""
 "Zeitstempel und vieles mehr. Viele verschiedene Feldtypen sowie Verschlüsselung\n"
 "werden unterstützt."
 
-#: gnu/packages/databases.scm:4073
 msgid "Python ODBC Library"
 msgstr "ODBC-Bibliothek für Python"
 
-#: gnu/packages/fonts.scm:151
 msgid "Programming font"
 msgstr "Programmierschriftart"
 
-#: gnu/packages/fonts.scm:153
 msgid ""
 "This package provides a programming font focused on\n"
 "source code legibility."
@@ -3565,51 +783,46 @@ msgstr ""
 "Dieses Paket enthält eine Programmierschriftart, die auf die\n"
 "Lesbarkeit von Quellcode ausgerichtet ist."
 
-#: gnu/packages/fonts.scm:172
 msgid "GNOME Adwaita Fonts"
 msgstr "GNOME-Adwaita-Schriftarten"
 
-#: gnu/packages/gnome.scm:5734 gnu/packages/gnome.scm:7977
 msgid "GNOME text editor"
 msgstr "GNOME-Texteditor"
 
-#: gnu/packages/perl.scm:9519
+msgid "GObject bindings for libudev"
+msgstr "GObject-Anbindungen für libudev"
+
+msgid "GLib binding for libusb1"
+msgstr "GLib-Anbindungen für libusb1"
+
 msgid ""
 "The package provides Perl bindings to OpenGL, GLU\n"
 "and FreeGLUT."
 msgstr "Dieses Paket bietet Perl-Anbindungen für OpenGL, GLU und FreeGLUT."
 
-#: gnu/packages/perl.scm:9539
 msgid "Anonymous packages"
 msgstr "Anonyme Pakete"
 
-#: gnu/packages/perl.scm:11077
 msgid "Collection of very basic statistics modules"
 msgstr "Sammlung sehr grundlegender Statistik-Module"
 
-#: gnu/packages/perl.scm:14046
 msgid "SDL bindings to Perl"
 msgstr "SDL-Anbindungen für Perl"
 
-#: gnu/packages/scheme.scm:394
 msgid "Scheme implementation using a bytecode interpreter"
 msgstr "Scheme-Implementierung mit Bytecode-Interpretierer"
 
-#: gnu/packages/tex.scm:63209
 msgid "Configuration files for LaTeX-related formats"
 msgstr "Konfigurationsdateien für LaTeX und verwandte Formate"
 
-#: gnu/packages/tex.scm:63210
 msgid ""
 "The package provides configuration files for LaTeX-related\n"
 "formats."
 msgstr "Dieses Paket bietet Konfigurationsdateien für LaTeX und verwandte Formate."
 
-#: gnu/packages/tex.scm:77495
 msgid "LaTeX editor"
 msgstr "LaTeX-Editor"
 
-#: gnu/packages/guile-xyz.scm:3631
 msgid ""
 "guile-ncurses provides Guile language bindings for the ncurses\n"
 "library."
@@ -3617,15 +830,12 @@ msgstr ""
 "guile-ncurses stellt Guile-Sprachbindungen für die ncurses-\n"
 "Bibliothek bereit."
 
-#: gnu/packages/guile-xyz.scm:3683
 msgid "Collection of useful Guile Scheme modules"
 msgstr "Sammlung nützlicher Guile-Scheme-Modulen"
 
-#: gnu/packages/guile-xyz.scm:4184
 msgid "Run jobs at scheduled times"
 msgstr "Aufgaben planmäßig ausführen"
 
-#: gnu/packages/guile-xyz.scm:4186
 msgid ""
 "GNU Mcron is a complete replacement for Vixie cron.  It is used to run\n"
 "tasks on a schedule, such as every hour or every Monday.  Mcron is written in\n"
@@ -3637,979 +847,53 @@ msgstr ""
 "Montag. Mcron ist in Guile geschrieben, so dass dessen Konfiguration in Scheme\n"
 "verwaltet werden kann. Das originale Cron-Format wird ebenfalls unterstützt."
 
-#: gnu/packages/guile.scm:149 gnu/packages/guile.scm:276
 msgid "Scheme implementation intended especially for extensions"
 msgstr "Scheme-Implementierung, die speziell für Erweiterungen gedacht ist"
 
-#: gnu/packages/guile.scm:151 gnu/packages/guile.scm:278
-msgid ""
-"Guile is the GNU Ubiquitous Intelligent Language for Extensions, the\n"
-"official extension language of the GNU system.  It is an implementation of\n"
-"the Scheme language which can be easily embedded in other applications to\n"
-"provide a convenient means of extending the functionality of the application\n"
-"without requiring the source code to be rewritten."
-msgstr ""
-
-#: gnu/packages/guile.scm:538
-msgid "Development version of GNU Guile"
-msgstr ""
-
-#: gnu/packages/guile.scm:591
-msgid "Line editing support for GNU Guile"
-msgstr ""
-
-#: gnu/packages/guile.scm:593
-msgid ""
-"This module provides line editing support via the Readline library for\n"
-"GNU@tie{}Guile.  Use the @code{(ice-9 readline)} module and call its\n"
-"@code{activate-readline} procedure to enable it."
-msgstr ""
-
-#: gnu/packages/guile.scm:670
 msgid "JSON module for Guile"
 msgstr "JSON-Modul für Guile"
 
-#: gnu/packages/guile.scm:672
-msgid ""
-"Guile-JSON supports parsing and building JSON documents according to the\n"
-"specification.  These are the main features:\n"
-"\n"
-"@itemize\n"
-"@item Strictly complies to @uref{http://json.org, specification}.\n"
-"@item Build JSON documents programmatically via macros.\n"
-"@item Unicode support for strings.\n"
-"@item Allows JSON pretty printing.\n"
-"@end itemize\n"
-msgstr ""
-
-#: gnu/packages/guile.scm:761
-msgid "Guile bindings to the GDBM library via Guile's FFI"
-msgstr ""
-
-#: gnu/packages/guile.scm:763
-msgid ""
-"Guile bindings to the GDBM key-value storage system, using\n"
-"Guile's foreign function interface."
-msgstr ""
-
-#: gnu/packages/guile.scm:790
-msgid "Access SQLite databases from Guile"
-msgstr ""
-
-#: gnu/packages/guile.scm:792
-msgid "This package provides Guile bindings to the SQLite database system."
-msgstr ""
-
-#: gnu/packages/guile.scm:829
-msgid "Structured access to bytevector contents for Guile"
-msgstr ""
-
-#: gnu/packages/guile.scm:831
-msgid ""
-"Guile bytestructures offers a system imitating the type system\n"
-"of the C programming language, to be used on bytevectors.  C's type\n"
-"system works on raw memory, and Guile works on bytevectors which are\n"
-"an abstraction over raw memory.  It's also more powerful than the C\n"
-"type system, elevating types to first-class status."
-msgstr ""
-
-#: gnu/packages/guile.scm:890
 msgid "Guile bindings for libgit2"
 msgstr "Guile-Anbindungen für libgit2"
 
-#: gnu/packages/guile.scm:892
-msgid ""
-"This package provides Guile bindings to libgit2, a library to\n"
-"manipulate repositories of the Git version control system."
-msgstr ""
-
-#: gnu/packages/guile.scm:924
 msgid "Guile bindings to zlib"
 msgstr "Guile-Anbindungen für zlib"
 
-#: gnu/packages/guile.scm:926
-msgid ""
-"This package provides Guile bindings for zlib, a lossless\n"
-"data-compression library.  The bindings are written in pure Scheme by using\n"
-"Guile's foreign function interface."
-msgstr ""
-
-#: gnu/packages/guile.scm:961
 msgid "Guile bindings to lzlib"
 msgstr "Guile-Anbindungen für lzlib"
 
-#: gnu/packages/guile.scm:963
-msgid ""
-"This package provides Guile bindings for lzlib, a C library for\n"
-"in-memory LZMA compression and decompression.  The bindings are written in\n"
-"pure Scheme by using Guile's foreign function interface."
-msgstr ""
-
-#: gnu/packages/guile.scm:987
-#, fuzzy
-#| msgid "Guile bindings to zlib"
-msgid "GNU Guile bindings to the zstd compression library"
-msgstr "Guile-Anbindungen für zlib"
-
-#: gnu/packages/guile.scm:989
-msgid ""
-"This package provides a GNU Guile interface to the zstd (``zstandard'')\n"
-"compression library."
-msgstr ""
-
-#: gnu/packages/guile.scm:1010
-#, fuzzy
-#| msgid "Guile bindings for libgit2"
-msgid "Guile bindings for liblzma (XZ)"
-msgstr "Guile-Anbindungen für libgit2"
-
-#: gnu/packages/guile.scm:1011
-msgid ""
-"Guile-LZMA is a Guile wrapper for the liblzma (XZ)\n"
-"library.  It exposes an interface similar to other Guile compression\n"
-"libraries, like Guile-zlib."
-msgstr ""
-
-#: gnu/packages/guile.scm:1032
-#, fuzzy
-#| msgid "Guile bindings for libgit2"
-msgid "Guile bindings for libbzip2"
-msgstr "Guile-Anbindungen für libgit2"
-
-#: gnu/packages/guile.scm:1033
-msgid ""
-"Guile-bzip2 is a Guile wrapper for the libbzip2\n"
-"library.  It exposes an interface similar to other Guile compression\n"
-"libraries, like Guile-zlib."
-msgstr ""
-
-#: gnu/packages/gxmessage.scm:55
-msgid "Open popup message window with buttons for return"
-msgstr ""
-
-#: gnu/packages/gxmessage.scm:56
-msgid ""
-"GNU gxmessage is a program that pops up dialog windows, which display\n"
-"a message to the user and waits for their action.  The program then exits\n"
-"with an exit code corresponding to the response."
-msgstr ""
-
-#: gnu/packages/hardware.scm:146
-msgid "Reverse-engineering tools for Nvidia's proprietary GPU drivers"
-msgstr ""
-
-#: gnu/packages/hardware.scm:148
-msgid ""
-"This package provides tools for exploring Nvidia's proprietary GPU\n"
-"drivers, including an assembler and a disassembler for several GPU instruction\n"
-"sets, and tools to deal with register databases."
-msgstr ""
-
-#: gnu/packages/hardware.scm:196
-msgid "Controls the brightness of backlight and LED devices on Linux"
-msgstr ""
-
-#: gnu/packages/hardware.scm:198
-msgid ""
-"Brillo is a command line tool to control the brightness of backlight and\n"
-"LED devices on Linux.\n"
-"\n"
-"Notable features include:\n"
-"\n"
-"@itemize\n"
-"\n"
-"@item Automatic best controller detection\n"
-"@item Smooth transitions and natural brightness adjustments\n"
-"@item Ability to save and restore brightness across boots\n"
-"@item Directly using sysfs to set brightness without relying on X\n"
-"@item Unprivileged access with no new setuid binaries\n"
-"@item Containment with AppArmor\n"
-"\n"
-"@end itemize"
-msgstr ""
-
-#: gnu/packages/hardware.scm:399
-msgid "Hardware Probe"
-msgstr ""
-
-#: gnu/packages/hardware.scm:400
-msgid ""
-"Hardware Probe is a tool to probe for hardware, check its\n"
-"operability and find drivers."
-msgstr ""
-
-#: gnu/packages/hardware.scm:489
-msgid "Hardware information tool"
-msgstr ""
-
-#: gnu/packages/hardware.scm:490
-msgid ""
-"HwInfo is used to probe for the hardware present in the system.\n"
-"It can be used to generate a system overview log which can be later used for\n"
-"support."
-msgstr ""
-
-#: gnu/packages/hardware.scm:541
-msgid "Driver for Corsair keyboards and mice"
-msgstr ""
-
-#: gnu/packages/hardware.scm:543
-msgid ""
-"ckb-next is a driver for Corsair keyboards and mice.  It aims to bring\n"
-"the features of Corsair's proprietary software to Linux-based operating\n"
-"systems.  It already supports much of the same functionality, including full\n"
-"RGB animations."
-msgstr ""
-
-#: gnu/packages/hardware.scm:577
-msgid "Control external monitor settings"
-msgstr ""
-
-#: gnu/packages/hardware.scm:579
-msgid ""
-"ddcutil can query and modify most external monitors' settings, such as\n"
-"brightness, colour levels, and input sources.  Generally speaking, any setting\n"
-"that can be changed by pressing buttons on the monitor can be modified by\n"
-"ddcutil.\n"
-"\n"
-"ddcutil communicates directly with monitors implementing the Monitor Control\n"
-"Command Set (@dfn{MCCS}).  It usually does so through the the Display Data\n"
-"Channel Command Interface (@dfn{DDC/CI}) protocol on the I2C bus, but can also\n"
-"communicate over USB as per the USB Monitor Control Class Specification.\n"
-"\n"
-"One particular use case is in colour profile management.  Monitor calibration\n"
-"is relative to the monitor colour settings currently in effect, e.g. red gain.\n"
-"ddcutil allows colour-related settings to be saved at the time a monitor is\n"
-"calibrated, and restored when the calibration is applied.\n"
-"\n"
-"This package includes udev rules that can be used by adding this package to\n"
-"the @code{rules} field of the @code{udev-configuration} record.  It gives\n"
-"read/write access to i2c devices to users in the @samp{i2c} group."
-msgstr ""
-
-#: gnu/packages/hardware.scm:621
-#, fuzzy
-msgid "Graphical user interface for ddcutil"
-msgstr "Dieses Paket bietet Steve Harris’ LADSPA-Plugin für einen Stereo-Nachhall-Effekt."
-
-#: gnu/packages/hardware.scm:622
-msgid ""
-"ddcui is a graphical user interface for ddcutil, implemented\n"
-"using Qt.  It provide a dynamic way to inspect and configure external monitors\n"
-"through the Display Data Channel Command Interface (@dfn{DDC/CI}) protocol."
-msgstr ""
-
-#: gnu/packages/hardware.scm:659
-msgid "Decode @dfn{EDID} data in human-readable format"
-msgstr ""
-
-#: gnu/packages/hardware.scm:660
-msgid ""
-"edid-decode decodes @dfn{EDID} monitor description data in\n"
-"human-readable format and checks if it conforms to the standards."
-msgstr ""
-
-#: gnu/packages/hardware.scm:715
-msgid "Graphical client for the h-node hardware database project"
-msgstr ""
-
-#: gnu/packages/hardware.scm:717
-msgid ""
-"The h-node project (https://www.h-node.org) aims to build a database of\n"
-"hardware that works with fully free operating systems.  h-client is a GTK+\n"
-"graphical client that is able to retrieves information on the hardware inside\n"
-"the computer it's running on, and on peripherals connected to it, and helps\n"
-"you submit that information to the h-node project along with whether the\n"
-"hardware works with a fully free operating system or not."
-msgstr ""
-
-#: gnu/packages/hardware.scm:743
-msgid "Sidetone and Battery status for USB headsets"
-msgstr ""
-
-#: gnu/packages/hardware.scm:745
-msgid ""
-"Headsetcontrol is a tool to control certain aspects of USB-connected\n"
-"headsets.  Currently, support is provided for adjusting sidetone, getting\n"
-"battery state, controlling LEDs, and setting the inactive time."
-msgstr ""
-
-#: gnu/packages/hardware.scm:770
-msgid "C++ library to control Philips Hue lights"
-msgstr ""
-
-#: gnu/packages/hardware.scm:771
-msgid ""
-"Hueplusplus is a library for controlling Philips Hue lights.\n"
-"Features:\n"
-"\n"
-"@itemize\n"
-"@item find bridges with SSDP or set an ip manually\n"
-"@item all common light functions (brightness, color, temperature)\n"
-"@item extended @code{alert()} functions, which alert in a specific\n"
-"color (good for notifications)\n"
-"@item supports sensors, rules, groups, scenes and schedules\n"
-"@item streaming with entertainment mode\n"
-"@item documented with doxygen\n"
-"@end itemize"
-msgstr ""
-
-#: gnu/packages/hardware.scm:812
-msgid "Read temperature from USB thermometer"
-msgstr ""
-
-#: gnu/packages/hardware.scm:813
-msgid ""
-"Read temperature from usbtemp.com USB thermometer and\n"
-"DS9097E compatible 1-wire adapter with one DS18B20 digital probe attached\n"
-"through command line interface."
-msgstr ""
-
-#: gnu/packages/hardware.scm:854
-msgid "Thermal and C-state reporting on older Intel Core CPUs"
-msgstr ""
-
-#: gnu/packages/hardware.scm:856
-msgid ""
-"The @command{i7z} utility accurately measures the current frequency\n"
-"and temperature of older Intel Core (i3, i5, and i7) processors including the\n"
-"Nehalem, Sandy Bridge, and Ivy Bridge generations.  Reliable support for newer\n"
-"CPUs is not guaranteed, as this package has not seen significant development\n"
-"since 2013.\n"
-"\n"
-"If your processor is supported, you'll get detailed reports on Turbo Boost and\n"
-"clock multipliers, core voltage, and time spent in different C-states.  This\n"
-"information can be viewed in real time and/or logged to a file."
-msgstr ""
-
-#: gnu/packages/hardware.scm:898
-msgid "Library for interacting with Dell SMBIOS tables"
-msgstr ""
-
-#: gnu/packages/hardware.scm:900
-msgid ""
-"libsmbios provides a library to interface with the SMBIOS tables.  It\n"
-"also provides extensions for proprietary methods of interfacing with Dell\n"
-"specific SMBIOS tables."
-msgstr ""
-
-#: gnu/packages/hardware.scm:938
-msgid "Drivers and tools for liquid cooling equipment"
-msgstr ""
-
-#: gnu/packages/hardware.scm:939
-msgid ""
-"Liquidctl is a package with tools, drivers and a Python\n"
-"library to work with liquid cooling equipment such as @acronym{AIO, All-In-One}\n"
-"coolers, fan controllers and other devices."
-msgstr ""
-
-#: gnu/packages/hardware.scm:1007
-msgid "Thorough real-mode memory tester"
-msgstr ""
-
-#: gnu/packages/hardware.scm:1009
-msgid ""
-"Memtest86+ is a thorough, stand-alone memory test for x86 systems.  It\n"
-"repeatedly writes different patterns to all memory locations, reads them back\n"
-"again, and verifies whether the result is the same as what was written.  This\n"
-"can help debug even intermittent and non-deterministic errors.\n"
-"\n"
-"It runs independently of any operating system, at computer boot-up, so that it\n"
-"can scan as much of your RAM as possible for hardware defects."
-msgstr ""
-
-#: gnu/packages/hardware.scm:1059
-msgid "User-space memory subsystem tester"
-msgstr ""
-
-#: gnu/packages/hardware.scm:1061
-msgid ""
-"Memtester stress-tests the memory subsystem of your operating system and\n"
-"computer.  It repeatedly writes different patterns to all memory locations,\n"
-"reads them back again, and verifies whether the result is the same as what was\n"
-"written.  This can help debug even intermittent and non-deterministic errors.\n"
-"\n"
-"Memtester runs entirely in user space.  This means that you don't need to reboot\n"
-"to test your memory, but also that it's not possible to test all of the RAM\n"
-"installed in the system.\n"
-"\n"
-"It can also be told to test memory starting at a particular physical address."
-msgstr ""
-
-#: gnu/packages/hardware.scm:1104
-msgid "Read and write Model-Specific Registers (@dfn{MSR})"
-msgstr ""
-
-#: gnu/packages/hardware.scm:1106
-msgid ""
-"The MSR Tools project provides console utilities to directly access the\n"
-"Model-Specific Registers (@dfn{MSR}s) and CPU ID of Intel-compatible processors:\n"
-"\n"
-"@itemize\n"
-"@item @command{cpuid}: show identification and feature information of any CPU\n"
-"@item @command{rdmsr}: read MSRs from any CPU or all CPUs\n"
-"@item @command{wrmsr}: write to MSRs on any CPU or all CPUs\n"
-"@end itemize\n"
-"\n"
-"These tools can be used to query and modify certain low-level CPU parameters,\n"
-"such as the Turbo Boost ratio and Thermal Design Power (@dfn{TDP}) limits.\n"
-"\n"
-"MSR addresses differ (greatly) between processors, and any such modification can\n"
-"be dangerous and may void your CPU or system board's warranty."
-msgstr ""
-
-#: gnu/packages/hardware.scm:1143
-msgid "API and drivers for immersive technology"
-msgstr ""
-
-#: gnu/packages/hardware.scm:1144
-msgid ""
-"OpenHMD aims to provide an API and drivers for immersive\n"
-"technology, such as head mounted displays with built in head tracking."
-msgstr ""
-
-#: gnu/packages/hardware.scm:1221
-msgid "RGB lighting control"
-msgstr ""
-
-#: gnu/packages/hardware.scm:1223
-msgid ""
-"OpenRGB is lighting control that doesn't depend on manufacturer software.\n"
-"ASUS, ASRock, Corsair, G.Skill, Gigabyte, HyperX, MSI, Razer, ThermalTake, and more\n"
-"supported.\n"
-"\n"
-"Features:\n"
-"\n"
-"@itemize\n"
-"@item Set colors and select effect modes for a wide variety of RGB hardware\n"
-"@item Save and load profiles\n"
-"@item Control lighting from third party software using the OpenRGB SDK\n"
-"@item Command line interface\n"
-"@item Connect multiple instances of OpenRGB to synchronize lighting across multiple PCs\n"
-"@item Can operate standalone or in a client/headless server configuration\n"
-"@item View device information\n"
-"@item No official/manufacturer software required\n"
-"@item Graphical view of device LEDs makes creating custom patterns easy\n"
-"@end itemize"
-msgstr ""
-
-#: gnu/packages/hardware.scm:1270
-msgid "Wireless network device monitor"
-msgstr ""
-
-#: gnu/packages/hardware.scm:1272
-msgid ""
-"Wavemon is a wireless device monitor with an interactive ncurses terminal\n"
-"interface.  It can display and plot signal and noise levels in real time.  It\n"
-"also reports packet statistics, device configuration, network parameters, and\n"
-"access points and other wireless clients of your wireless network hardware.\n"
-"\n"
-"Wavemon should work (with varying levels of detail and features) with any device\n"
-"supported by the Linux kernel."
-msgstr ""
-
-#: gnu/packages/hardware.scm:1311
-msgid "Read from and write to RockChicp devices over USB"
-msgstr ""
-
-#: gnu/packages/hardware.scm:1313
-msgid ""
-"Rkdeveloptool can read from and write to RockChip devices over USB, such\n"
-"as the Pinebook Pro."
-msgstr ""
-
-#: gnu/packages/hardware.scm:1397
-msgid "Helps to protect your computer against rogue USB devices (a.k.a. BadUSB)"
-msgstr ""
-
-#: gnu/packages/hardware.scm:1398
-msgid ""
-"USBGuard is a software framework for implementing USB device\n"
-"authorization policies (what kind of USB devices are authorized) as well as\n"
-"method of use policies (how a USB device may interact with the system).\n"
-"Simply put, it is a USB device whitelisting tool."
-msgstr ""
-
-#: gnu/packages/hardware.scm:1420
-msgid "Simple screen testing tool"
-msgstr ""
-
-#: gnu/packages/hardware.scm:1422
-msgid ""
-"This is a program for testing the quality of CRT/LCD\n"
-"screens.  It displays various patterns and allows you to estimate the quality\n"
-"of your CRT/LCD monitor."
-msgstr ""
-
-#: gnu/packages/hardware.scm:1446
-msgid "OSS Implementation of the TCG TPM2 Software Stack (TSS2)"
-msgstr ""
-
-#: gnu/packages/hardware.scm:1448
-msgid ""
-"This package provides the @acronym{TCG, Trusted Computing Group}\n"
-"@acronym{TSS2, TPM2 Software Stack}.  The stack contains libtss2-fapi,\n"
-"libtss2-esys, libtss2-sys, libtss2-mu, libtss2-tcti-device, libtss2-tcti-swtpm\n"
-"and libtss2-tcti-mssim."
-msgstr ""
-
-#: gnu/packages/hardware.scm:1478
-msgid "Tools for the Trusted Platform Module (TPM 2.0)"
-msgstr ""
-
-#: gnu/packages/hardware.scm:1480
-msgid ""
-"This package provides user tools for the Trusted Computing Group's (TCG)\n"
-"TPM2 Software Stack (TSS).  These programs help with common tasks such as key\n"
-"management, attestation, encryption, and signing."
-msgstr ""
-
-#: gnu/packages/hardware.scm:1546
-msgid "Small library for x86 CPU detection and feature extraction"
-msgstr ""
-
-#: gnu/packages/hardware.scm:1547
-msgid ""
-"Libcpuid is a small C library to get vendor, model, branding\n"
-"string, code name and other information from x86 CPU. This library is not to be\n"
-"confused with the @code{cpuid} command line utility from package @code{cpuid}."
-msgstr ""
-
-#: gnu/packages/hardware.scm:1571
-msgid "@acronym{LXI, LAN eXtensions for Instrumentation} library"
-msgstr ""
-
-#: gnu/packages/hardware.scm:1573
-msgid ""
-"This library offers a simple API for communicating with instruments\n"
-"compatible with the @acronym{LXI, LAN eXtensions for Instrumentation} standard\n"
-"that defines communication protocols for instrumentation and data acquisition\n"
-"systems using Ethernet.  Applications can use liblxi to discover instruments on\n"
-"your network, send SCPI commands, and receive responses."
-msgstr ""
-
-#: gnu/packages/hardware.scm:1621
-msgid "LAN eXtensions for Instrumentation tools"
-msgstr ""
-
-#: gnu/packages/hardware.scm:1623
-msgid ""
-"This package provides tools for LAN eXtensions for Instrumentation based\n"
-"on the LXI Consortium standard which defines the communication protocols for\n"
-"modern instrumentation and data acquision systems using Ethernet."
-msgstr ""
-
-#: gnu/packages/hardware.scm:1667
-msgid "Control USB relay modules"
-msgstr ""
-
-#: gnu/packages/hardware.scm:1669
-msgid ""
-"This is a Linux driver based on hidapi for a variety of inexpensive\n"
-"HID compatible USB relay modules available with different number of\n"
-"output relays."
-msgstr ""
-
-#: gnu/packages/hardware.scm:1700
-msgid "Python library to control USB relay modules"
-msgstr ""
-
-#: gnu/packages/hardware.scm:1702
-msgid ""
-"This is the Python extension to @code{usbrelay}, a Linux driver based on\n"
-"hidapi for a variety of inexpensive HID compatible USB relay modules.  This\n"
-"package also includes @code{usbrelayd}."
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:88
-msgid "Perform refactorings specified by the refact library"
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:90
-msgid ""
-"This package lets you perform refactorings specified by the refact\n"
-"library.  It is primarily used with HLint's @code{--refactor} flag."
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:128
-msgid "Command-line interface for Cabal and Hackage"
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:130
-msgid ""
-"The cabal command-line program simplifies the process of managing\n"
-"Haskell software by automating the fetching, configuration, compilation and\n"
-"installation of Haskell libraries and programs."
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:154
-msgid "Liberalised re-implementation of cpp, the C pre-processor"
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:155
-msgid ""
-"Cpphs is a re-implementation of the C pre-processor that is\n"
-"both more compatible with Haskell, and itself written in Haskell so that it\n"
-"can be distributed with compilers.  This version of the C pre-processor is\n"
-"pretty-much feature-complete and compatible with traditional (K&R)\n"
-"pre-processors.  Additional features include: a plain-text mode; an option to\n"
-"unlit literate code files; and an option to turn off macro-expansion."
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:252
-msgid "Distributed Revision Control System"
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:254
-msgid ""
-"Darcs is a revision control system.  It is:\n"
-"\n"
-"@enumerate\n"
-"@item Distributed: Every user has access to the full command set, removing boundaries\n"
-"between server and client or committer and non-committers.\n"
-"@item Interactive: Darcs is easy to learn and efficient to use because it asks you\n"
-"questions in response to simple commands, giving you choices in your work flow.\n"
-"You can choose to record one change in a file, while ignoring another.  As you update\n"
-"from upstream, you can review each patch name, even the full diff for interesting\n"
-"patches.\n"
-"@item Smart: Originally developed by physicist David Roundy, darcs is based on a\n"
-"unique algebra of patches called @url{http://darcs.net/Theory,Patchtheory}.\n"
-"@end enumerate"
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:287
-msgid "GHCi based bare bones IDE"
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:289
-msgid ""
-"Either \"GHCi as a daemon\" or \"GHC + a bit of an IDE\".  A very simple Haskell\n"
-"development tool which shows you the errors in your project and updates them whenever\n"
-"you save.  Run @code{ghcid --topmost --command=ghci}, where @code{--topmost} makes the\n"
-"window on top of all others (Windows only) and @code{--command} is the command to start\n"
-"GHCi on your project (defaults to @code{ghci} if you have a @file{.ghci} file, or else\n"
-"to @code{cabal repl})."
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:497
-msgid "Manage files with Git, without checking in their contents"
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:498
-msgid ""
-"This package allows managing files with Git, without\n"
-"checking the file contents into Git.  It can store files in many places,\n"
-"such as local hard drives and cloud storage services.  It can also be\n"
-"used to keep a folder in sync between computers."
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:546
-msgid "Suggest improvements for Haskell source code"
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:548
-msgid ""
-"HLint reads Haskell programs and suggests changes that\n"
-"hopefully make them easier to read.  HLint also makes it easy to disable\n"
-"unwanted suggestions, and to add your own custom suggestions."
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:597
-msgid "Haskell API Search"
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:599
-msgid ""
-"Hoogle is a Haskell API search engine, which allows\n"
-"you to search many standard Haskell libraries by either function name,\n"
-"or by approximate type signature."
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:618
-msgid "Script to colourise Haskell code"
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:619
-msgid ""
-"HSColour is a small Haskell script to colourise Haskell\n"
-"code.  It currently has six output formats: ANSI terminal codes (optionally\n"
-"XTerm-256colour codes), HTML 3.2 with font tags, HTML 4.01 with CSS, HTML 4.01\n"
-"with CSS and mouseover annotations, XHTML 1.0 with inline CSS styling, LaTeX,\n"
-"and mIRC chat codes."
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:687
-msgid "Advanced keyboard manager"
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:688
-msgid ""
-"KMonad is a keyboard remapping utility that supports\n"
-"advanced functionality, such as custom keymap layers and modifiers, macros,\n"
-"and conditional mappings that send a different keycode when tapped or held.\n"
-"By operating at a lower level than most similar tools, it supports X11,\n"
-"Wayland, and Linux console environments alike."
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:783
-msgid "Terminal client for the Mattermost chat system"
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:785
-msgid "This is a terminal client for the Mattermost chat system."
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:804
-msgid "Opinionated formatter for Nix"
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:806
-msgid ""
-"Nixfmt is a formatter for Nix that ensures consistent and clear\n"
-"formatting by forgetting all existing formatting during parsing."
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:840
-#, fuzzy
-#| msgid "Signal processing language"
-msgid "Simple Clipboard manager"
-msgstr "Signalverarbeitungssprache"
-
-#: gnu/packages/haskell-apps.scm:841
-msgid ""
-"@code{greenclip} is a clipboard manager written in\n"
-"Haskell."
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:880
-msgid "Puzzle game with a cat in lead role"
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:881
-msgid ""
-"Project Raincat is a game developed by Carnegie Mellon\n"
-"students through GCS during the Fall 2008 semester.  Raincat features game\n"
-"play inspired from classics Lemmings and The Incredible Machine.  The project\n"
-"proved to be an excellent learning experience for the programmers.  Everything\n"
-"is programmed in Haskell."
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:913
-msgid "Roguelike game"
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:915
-msgid ""
-"You're a bookworm that's stuck on a scroll.  You have to dodge between\n"
-"words and use spells to make your way down the page as the scroll is read.  Go\n"
-"too slow and you'll get wound up in the scroll and crushed."
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:953
-msgid "Static analysis for shell scripts"
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:954
-msgid ""
-"@code{shellcheck} provides static analysis for\n"
-"@command{bash} and @command{sh} shell scripts.\n"
-"It gives warnings and suggestions in order to:\n"
-"\n"
-"@enumerate\n"
-"@item Point out and clarify typical beginner's syntax issues that cause\n"
-"a shell to give cryptic error messages.\n"
-"@item Point out and clarify typical intermediate level semantic problems\n"
-"that cause a shell to behave strangely and counter-intuitively.\n"
-"@item Point out subtle caveats, corner cases and pitfalls that may cause an\n"
-"advanced user's otherwise working script to fail under future circumstances.\n"
-"@end enumerate"
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:1014
-#, fuzzy
-#| msgid "Word processing program"
-msgid "Test CLI programs"
-msgstr "Textverarbeitungsprogramm"
-
-#: gnu/packages/haskell-apps.scm:1016
-msgid ""
-"shelltestrunner (executable: @command{shelltest}) is a command-line tool\n"
-"for testing command-line programs, or general shell commands.  It reads simple\n"
-"test specifications defining a command to run, some input, and the expected\n"
-"output, stderr, and exit status."
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:1047
-msgid "Haskell code prettifier"
-msgstr ""
-
-#: gnu/packages/haskell-apps.scm:1049
-msgid ""
-"Stylish-haskell is a Haskell code prettifier.  The goal is\n"
-"not to format all of the code in a file, to avoid \"getting in the way\".\n"
-"However, this tool can e.g. clean up import statements and help doing various\n"
-"tasks that get tedious very quickly.  It can\n"
-"@itemize\n"
-"@item\n"
-"Align and sort @code{import} statements\n"
-"@item\n"
-"Group and wrap @code{{-# LANGUAGE #-}} pragmas, remove (some) redundant\n"
-"pragmas\n"
-"@item\n"
-"Remove trailing whitespaces\n"
-"@item\n"
-"Align branches in @code{case} and fields in records\n"
-"@item\n"
-"Convert line endings (customisable)\n"
-"@item\n"
-"Replace tabs by four spaces (turned off by default)\n"
-"@item\n"
-"Replace some ASCII sequences by their Unicode equivalent (turned off by\n"
-"default)\n"
-"@end itemize"
-msgstr ""
-
-#: gnu/packages/hunspell.scm:61
-msgid ""
-"Hunspell is a spell checker and morphological analyzer\n"
-"library and program designed for languages with rich morphology and complex\n"
-"word compounding or character encoding."
-msgstr ""
-
-#: gnu/packages/hunspell.scm:110 gnu/packages/hunspell.scm:183
-#: gnu/packages/hunspell.scm:554
 msgid ""
 "This package provides a dictionary for the Hunspell spell-checking\n"
 "library."
 msgstr "Dieses Paket bietet ein Wörterbuch für die Hunspell-Rechtschreibbibliothek."
 
-#. TRANSLATORS: In French, this is "Français classique".
-#: gnu/packages/hunspell.scm:124
-#, fuzzy
-#| msgid "Hunspell dictionary for German (de_DE)"
-msgid "Hunspell dictionary for ``classic'' French (recommended)"
-msgstr "Hunspell-Wörterbuch für Deutsch (de_DE)"
-
-#. TRANSLATORS: In French, this is "Français moderne".
-#: gnu/packages/hunspell.scm:129
-#, fuzzy
-#| msgid "Hunspell dictionary for German (de_DE)"
-msgid "Hunspell dictionary for ``modern'' French"
-msgstr "Hunspell-Wörterbuch für Deutsch (de_DE)"
-
-#: gnu/packages/hunspell.scm:133
-#, fuzzy
-#| msgid "Hunspell dictionary for United States English"
-msgid "Hunspell dictionary for the post @dfn{1990 réforme} French"
-msgstr "Hunspell-Wörterbuch für US-Amerikanisches Englisch"
-
-#: gnu/packages/hunspell.scm:137
-#, fuzzy
-#| msgid "Hunspell dictionary for Canadian English"
-msgid "Hunspell dictionary for all variants of French"
-msgstr "Hunspell-Wörterbuch für Kanadisches Englisch"
-
-#: gnu/packages/hunspell.scm:181
 msgid "Hunspell dictionary for Polish"
 msgstr "Hunspell-Wörterbuch für Polnisch"
 
-#: gnu/packages/hunspell.scm:216
 msgid "Hunspell dictionary for German (de_DE)"
 msgstr "Hunspell-Wörterbuch für Deutsch (de_DE)"
 
-#: gnu/packages/hunspell.scm:217 gnu/packages/hunspell.scm:250
-#: gnu/packages/hunspell.scm:283 gnu/packages/hunspell.scm:330
-#: gnu/packages/hunspell.scm:363 gnu/packages/hunspell.scm:396
-#: gnu/packages/hunspell.scm:443
-#, fuzzy
-#| msgid ""
-#| "This package provides a dictionary for the Hunspell spell-checking\n"
-#| "library."
-msgid ""
-"This package provides a dictionary for the Hunspell\n"
-"spell-checking library."
-msgstr "Dieses Paket bietet ein Wörterbuch für die Hunspell-Rechtschreibbibliothek."
-
-#: gnu/packages/hunspell.scm:249
-#, fuzzy
-#| msgid "Hunspell dictionary for German (de_DE)"
-msgid "Hunspell dictionary for Austrian German (de_AT)"
-msgstr "Hunspell-Wörterbuch für Deutsch (de_DE)"
-
-#: gnu/packages/hunspell.scm:282
-#, fuzzy
-#| msgid "Hunspell dictionary for German (de_DE)"
-msgid "Hunspell dictionary for Swiss German (de_CH)"
-msgstr "Hunspell-Wörterbuch für Deutsch (de_DE)"
-
-#: gnu/packages/hunspell.scm:329
-#, fuzzy
-#| msgid "Hunspell dictionary for German (de_DE)"
-msgid "Hunspell dictionary for Hungarian (hu_HU)"
-msgstr "Hunspell-Wörterbuch für Deutsch (de_DE)"
-
-#: gnu/packages/hunspell.scm:362
-msgid "Hunspell Greek/Hellenic dictionary"
-msgstr ""
-
-#: gnu/packages/hunspell.scm:395
-msgid "Hunspell Polytonic Greek/Hellenic dictionary"
-msgstr ""
-
-#: gnu/packages/hunspell.scm:451
-#, fuzzy
-#| msgid "Hunspell dictionary for Polish"
-msgid "Hunspell dictionary for Hebrew"
-msgstr "Hunspell-Wörterbuch für Polnisch"
-
-#: gnu/packages/hunspell.scm:458
-#, fuzzy
-#| msgid "Hunspell dictionary for Polish"
-msgid "Hunspell dictionary for Italian"
-msgstr "Hunspell-Wörterbuch für Polnisch"
-
-#: gnu/packages/hunspell.scm:465
-#, fuzzy
-#| msgid "Hunspell dictionary for Polish"
-msgid "Hunspell dictionary for Portuguese (Brazil)"
-msgstr "Hunspell-Wörterbuch für Polnisch"
-
-#: gnu/packages/hunspell.scm:473
-#, fuzzy
-#| msgid "Hunspell dictionary for Polish"
-msgid "Hunspell dictionary for Portuguese (Portugal)"
-msgstr "Hunspell-Wörterbuch für Polnisch"
-
-#: gnu/packages/hunspell.scm:572
 msgid "Hunspell dictionary for English"
 msgstr "Hunspell-Wörterbuch für Englisch"
 
-#: gnu/packages/hunspell.scm:576
 msgid "Hunspell dictionary for Australian English"
 msgstr "Hunspell-Wörterbuch für Australisches Englisch"
 
-#: gnu/packages/hunspell.scm:580
 msgid "Hunspell dictionary for Canadian English"
 msgstr "Hunspell-Wörterbuch für Kanadisches Englisch"
 
-#: gnu/packages/hunspell.scm:584
 msgid "Hunspell dictionary for British English, with -ise endings"
 msgstr "Hunspell-Wörterbuch für Britisches Englisch mit -ise-Endungen"
 
-#: gnu/packages/hunspell.scm:588
 msgid "Hunspell dictionary for British English, with -ize endings"
 msgstr "Hunspell-Wörterbuch für Britisches Englisch mit -ize-Endungen"
 
-#: gnu/packages/hunspell.scm:592
 msgid "Hunspell dictionary for United States English"
 msgstr "Hunspell-Wörterbuch für US-Amerikanisches Englisch"
 
-#: gnu/packages/mate.scm:963
 msgid "Python bindings for Caja components"
 msgstr "Python-Anbindungen für Caja-Komponenten"
 
-#: gnu/packages/mate.scm:965
 msgid ""
 "This package provides Python bindings to Caja, a file manager for the\n"
 "MATE desktop."
@@ -4617,11 +901,9 @@ msgstr ""
 "Dieses Paket bietet Python-Anbindungen an Caja, einem Dateimanager\n"
 "für den MATE-Desktop."
 
-#: gnu/packages/networking.scm:1779
 msgid "Collection of network utilities"
 msgstr "Sammlung von Netzwerkwerkzeugen"
 
-#: gnu/packages/speech.scm:177
 msgid ""
 "eSpeak is a software speech synthesizer for English and\n"
 "other languages.  eSpeak uses a \"formant synthesis\" method.  This allows many\n"
@@ -4630,14 +912,11 @@ msgid ""
 "based on human speech recordings."
 msgstr "eSpeak ist ein Software-Sprachsynthesizer für Englisch und andere Sprachen.  eSpeak benutzt eine „Formantensynthese“-Methode.  Dies ermöglicht es, viele Sprachen auf wenig Speicherplatz zu unterstützen.  Die Sprache ist klar und kann mit hohen Geschwindigkeiten benutzt werden, ist jedoch nicht so natürlich oder glatt wie bei größeren Synthesizern, die auf Aufnahmen menschlicher Sprache basieren."
 
-#: gnu/packages/web.scm:7144
 msgid "Collection of Varnish modules"
 msgstr "Sammlung von Varnish-Modulen"
 
-#: gnu/packages/virtualization.scm:1900
 msgid "Manage virtual machines"
 msgstr "Virtuelle Maschinen verwalten"
 
-#: gnu/packages/virtualization.scm:2628
 msgid "Python bindings for Vagrant"
 msgstr "Python-Anbindungen für Vagrant"

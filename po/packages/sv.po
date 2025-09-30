@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the GNU guix package.
 # Rey Lopezch <taodeking@tutanota.com>, 2024, 2025.
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2025.
-#: gnu/packages/firmware.scm:1579 gnu/packages/firmware.scm:1846
-#: gnu/packages/linux.scm:1246
+#: gnu/packages/firmware.scm:1659 gnu/packages/firmware.scm:1926
+#: gnu/packages/linux.scm:1257
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-08-30 03:18+0000\n"
-"PO-Revision-Date: 2025-08-20 14:43+0000\n"
+"POT-Creation-Date: 2025-09-29 03:18+0000\n"
+"PO-Revision-Date: 2025-09-19 02:09+0000\n"
 "Last-Translator: Umeaman <umeaman@noreply.codeberg.org>\n"
 "Language-Team: Swedish <https://translate.codeberg.org/projects/guix/packages/sv/>\n"
 "Language: sv\n"
@@ -18,33 +18,20 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.12.2\n"
+"X-Generator: Weblate 5.13.2\n"
 
-#: gnu/packages/abiword.scm:156
 msgid "Word processing program"
 msgstr "Ordbehandlingsprogram"
 
-#: gnu/packages/aspell.scm:94 gnu/packages/hunspell.scm:60
 msgid "Spell checker"
 msgstr "Stavningskontroll"
 
-#: gnu/packages/aspell.scm:96
-msgid ""
-"Aspell is a spell-checker which can be used either as a library or as\n"
-"a standalone program.  Notable features of Aspell include its full support of\n"
-"documents written in the UTF-8 encoding and its ability to use multiple\n"
-"dictionaries, including personal ones."
-msgstr ""
-
-#: gnu/packages/aspell.scm:144
 msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
 
-#: gnu/packages/aspell.scm:440
 msgid "Interactive spell-checking tool for Unix"
 msgstr "Interaktivt stavningskontrollverktyg för Unix"
 
-#: gnu/packages/aspell.scm:441
 msgid ""
 "Ispell is an interactive spell-checking tool supporting many\n"
 "European languages."
@@ -52,252 +39,21 @@ msgstr ""
 "Ispell är ett interaktivt stavningskontrollverktyg som stödjer många\n"
 " europeiska språk."
 
-#: gnu/packages/audio.scm:239
 msgid "Embedded Audio Acceleration"
 msgstr "Inbäddad ljudacceleration"
 
-#: gnu/packages/audio.scm:240
-msgid ""
-"OpenSLES is a royalty-free, cross-platform,\n"
-"hardware-accelerated audio API tuned for embedded systems.  It provides a\n"
-"standardized, high-performance, low-latency method to access audio\n"
-"functionality for developers of native applications on embedded mobile\n"
-"multimedia devices, enabling straightforward cross-platform deployment of\n"
-"hardware and software audio capabilities, reducing implementation effort, and\n"
-"promoting the market for advanced audio."
-msgstr ""
-
-#: gnu/packages/audio.scm:275
-msgid "Software Synthesizer"
-msgstr ""
-
-#: gnu/packages/audio.scm:276
-msgid ""
-"WildMIDI is a simple software midi player which has a core\n"
-"softsynth library that can be used with other applications."
-msgstr ""
-
-#: gnu/packages/audio.scm:312
-msgid "Measure the roundtrip time of MIDI messages"
-msgstr ""
-
-#: gnu/packages/audio.scm:314
-msgid ""
-"@code{alsa-midi-latency-test} measures the roundtrip time of a MIDI\n"
-"message in the alsa subsystem of the Linux kernel using a high precision timer.\n"
-"It calculates the worst case roundtrip time of all sent MIDI messages and\n"
-"displays a histogram of the roundtrip time jitter."
-msgstr ""
-
-#: gnu/packages/audio.scm:358
 msgid "WebRTC's Audio Processing Library"
 msgstr "WebRTC:s ljudbehandlingsbibliotek"
 
-#: gnu/packages/audio.scm:359
-msgid ""
-"WebRTC-Audio-Processing library based on Google's\n"
-"implementation of WebRTC."
-msgstr ""
-
-#: gnu/packages/audio.scm:423
 msgid "VisualOn AAC Encoder"
 msgstr "VisualOn AAC-kodare"
 
-#: gnu/packages/audio.scm:424
-msgid ""
-"VO-AACENC is the VisualOn implementation of Advanced Audio\n"
-"Coding (AAC) encoder."
-msgstr ""
-
-#: gnu/packages/audio.scm:452
-msgid "ALSA interfacing library"
-msgstr ""
-
-#: gnu/packages/audio.scm:453
-msgid ""
-"TinyALSA is a small library to interface with ALSA in the\n"
-"Linux kernel."
-msgstr ""
-
-#: gnu/packages/audio.scm:496
-msgid "Frequency modulation synthesizer plugin"
-msgstr ""
-
-#: gnu/packages/audio.scm:498
-msgid ""
-"fmsynth is an LV2 plugin which implements an @dfn{FM} (Frequency\n"
-"Modulation) synthesizer.  Unlike most FM synth implementations in software,\n"
-"this FM synthesizer does not aim to emulate or replicate a particular\n"
-"synth (like DX7) or FM chip."
-msgstr ""
-
-#: gnu/packages/audio.scm:525
-msgid "Video game music file playback library"
-msgstr ""
-
-#: gnu/packages/audio.scm:527
-msgid ""
-"Game-music-emu is a collection of video game music file emulators that\n"
-"support the following formats and systems:\n"
-"@table @code\n"
-"@item AY\n"
-"ZX Spectrum/Asmtrad CPC\n"
-"@item GBS\n"
-"Nintendo Game Boy\n"
-"@item GYM\n"
-"Sega Genesis/Mega Drive\n"
-"@item HES\n"
-"NEC TurboGrafx-16/PC Engine\n"
-"@item KSS\n"
-"MSX Home Computer/other Z80 systems (doesn't support FM sound)\n"
-"@item NSF/NSFE\n"
-"Nintendo NES/Famicom (with VRC 6, Namco 106, and FME-7 sound)\n"
-"@item SAP\n"
-"Atari systems using POKEY sound chip\n"
-"@item SPC\n"
-"Super Nintendo/Super Famicom\n"
-"@item VGM/VGZ\n"
-"Sega Master System/Mark III, Sega Genesis/Mega Drive, BBC Micro\n"
-"@end table"
-msgstr ""
-
-#: gnu/packages/audio.scm:590
-msgid "Audio tracking library"
-msgstr ""
-
-#: gnu/packages/audio.scm:591
-msgid ""
-"LibOpenMPT is a cross-platform C++ and C module playback\n"
-"library.  It is based on the player code of the Open ModPlug Tracker project."
-msgstr ""
-
-#: gnu/packages/audio.scm:621
-msgid "Open Fingerprint Architecture"
-msgstr ""
-
-#: gnu/packages/audio.scm:622
-msgid ""
-"LibOFA is an audio fingerprint library, created and provided\n"
-"by MusicIP."
-msgstr ""
-
-#: gnu/packages/audio.scm:646
-msgid "MIDI to WAVE converter library"
-msgstr ""
-
-#: gnu/packages/audio.scm:647
-msgid ""
-"LibTiMidity is a MIDI to WAVE converter library that uses\n"
-"Gravis Ultrasound-compatible patch files to generate digital audio data from\n"
-"General MIDI files."
-msgstr ""
-
-#: gnu/packages/audio.scm:671 gnu/packages/audio.scm:690
-msgid "Adaptive Multi Rate Codec"
-msgstr ""
-
-#: gnu/packages/audio.scm:672
-msgid ""
-"VO-AMR is a library of VisualOn implementation of\n"
-"Adaptive Multi Rate Narrowband and Wideband (AMR-NB and AMR-WB) speech codec."
-msgstr ""
-
-#: gnu/packages/audio.scm:691
-msgid ""
-"OpenCore-AMR is a library of OpenCORE Framework\n"
-"implementation of Adaptive Multi Rate Narrowband and Wideband\n"
-"(AMR-NB and AMR-WB) speech codec."
-msgstr ""
-
-#: gnu/packages/audio.scm:722
-msgid "Realtime modular synthesizer and effect processor"
-msgstr ""
-
-#: gnu/packages/audio.scm:724
-msgid ""
-"AlsaModularSynth is a digital implementation of a classical analog\n"
-"modular synthesizer system.  It uses virtual control voltages to control the\n"
-"parameters of the modules.  The control voltages which control the frequency\n"
-"e.g. of the VCO (Voltage Controlled Oscillator) and VCF (Voltage Controlled\n"
-"Filter) modules follow the convention of 1V / Octave."
-msgstr ""
-
-#: gnu/packages/audio.scm:770
-msgid "Library for audio labelling"
-msgstr ""
-
-#: gnu/packages/audio.scm:772
-msgid ""
-"aubio is a tool designed for the extraction of annotations from audio\n"
-"signals.  Its features include segmenting a sound file before each of its\n"
-"attacks, performing pitch detection, tapping the beat and producing MIDI\n"
-"streams from live audio."
-msgstr ""
-
-#: gnu/packages/audio.scm:817
-msgid "Audio processing program with an interactive mode"
-msgstr ""
-
-#: gnu/packages/audio.scm:819
 msgid "dsp is an audio processing program with an interactive mode."
 msgstr "dsp är ett ljudbehandlingsprogram med ett interaktivt läge."
 
-#: gnu/packages/audio.scm:866
-msgid "C++ library of functions for DSP and Music Informatics purposes"
-msgstr ""
-
-#: gnu/packages/audio.scm:868
-msgid ""
-"QM-DSP is a C++ library of functions for DSP and Music Informatics\n"
-"purposes developed at Queen Mary, University of London."
-msgstr ""
-
-#: gnu/packages/audio.scm:985
-msgid "Audio effect processor for PipeWire and PulseAudio clients"
-msgstr ""
-
-#: gnu/packages/audio.scm:986
-msgid ""
-"JamesDSP is an audio effect processor for PipeWire and\n"
-"PulseAudio clients, featuring:\n"
-"@itemize\n"
-"@item Automatic bass boost: Frequency-detecting bass-boost\n"
-"@item Automatic dynamic range compressor: automated multiband dynamic range\n"
-" adjusting effect\n"
-"@item Complex reverberation IIR network (Progenitor 2)\n"
-"@item Interpolated FIR equalizer with flexible bands\n"
-"@item Arbitrary response equalizer (also known as GraphicEQ from EqualizerAPO)\n"
-"@item AutoEQ database integration (requires network connection)\n"
-"@item Partitioned convolver (Auto segmenting convolution): Mono, stereo,\n"
-" full/true stereo (LL, LR, RL, RR) impulse response\n"
-"@item Crossfeed: Realistic surround effects\n"
-"@item Soundstage wideness: A multiband stereo wideness controller\n"
-"@item ViPER-DDC: Parametric equalization on audio and creating VDC input files\n"
-"@item Analog modeling: An aliasing-free even harmonic generator\n"
-"@item Output limiter\n"
-"@item Scripting engine: Live programmable DSP using the EEL2 scripting language\n"
-"@item Scripting IDE featuring syntax highlighting, basic code completion,\n"
-" dynamic code outline window, console output support and detailed error\n"
-" messages with inline code highlighting\n"
-"@end itemize"
-msgstr ""
-
-#: gnu/packages/audio.scm:1160 gnu/packages/music.scm:5417
-msgid "Digital audio workstation"
-msgstr ""
-
-#: gnu/packages/audio.scm:1162
-msgid ""
-"Ardour is a multi-channel digital audio workstation, allowing users to\n"
-"record, edit, mix and master audio and MIDI projects.  It is targeted at audio\n"
-"engineers, musicians, soundtrack editors and composers."
-msgstr ""
-
-#: gnu/packages/audio.scm:1288 gnu/packages/audio.scm:1407
 msgid "Software for recording and editing sounds"
 msgstr "Programvara för att spela in och redigera ljud"
 
-#: gnu/packages/audio.scm:1290
 msgid ""
 "Audacity is a multi-track audio editor designed for recording, playing\n"
 "and editing digital audio.  It features digital effects and spectrum analysis\n"
@@ -307,7 +63,6 @@ msgstr ""
 "och redigera digitalt ljud.  Det tillhandahåller digitala effekter och verktyg för \n"
 "spektrumanalysering."
 
-#: gnu/packages/audio.scm:1409
 msgid ""
 "Tenacity is a multi-track audio editor designed for recording, playing\n"
 "and editing digital audio.  It features digital effects and spectrum analysis\n"
@@ -317,178 +72,15 @@ msgstr ""
 "och redigera digitalt ljud.  Det tillhandahåller digitala effekter och verktyg för\n"
 "spektrumanalysering."
 
-#: gnu/packages/audio.scm:1464
 msgid "Library to handle various audio file formats"
 msgstr "Bibliotek för att hantera olika ljudfilsformat"
 
-#: gnu/packages/audio.scm:1465
-#, fuzzy
-#| msgid ""
-#| "This is an open-source version of SGI's audiofile library.\n"
-#| "It provides a uniform programming interface for processing of audio data to\n"
-#| "and from audio files of many common formats.\n"
-#| "\n"
-#| "Currently supported file formats include AIFF/AIFF-C, WAVE, and NeXT/Sun\n"
-#| ".snd/.au, BICS, and raw data.  Supported compression formats are currently\n"
-#| "G.711 mu-law and A-law."
-msgid ""
-"This is a free software version of SGI's audiofile library.\n"
-"It provides a uniform programming interface for processing of audio data to\n"
-"and from audio files of many common formats.\n"
-"\n"
-"Currently supported file formats include AIFF/AIFF-C, WAVE, and NeXT/Sun\n"
-".snd/.au, BICS, and raw data.  Supported compression formats are currently\n"
-"G.711 mu-law and A-law."
-msgstr ""
-"Det här är en öppen källkodsversion av SGI:s ljudfilsbibliotek.\n"
-"Det tillhandahåller ett enhetligt programmeringsgränssnitt för behandling av ljuddata till\n"
-"och från ljudfiler av många vanliga format.\n"
-"\n"
-"För närvarande stödjer det format så som AIFF/AIFF-C, WAVE, och NeXT/Sun\n"
-".snd/.au, BICS, samt rå data.  I dagsläget stödjer det kompressionsformaten \n"
-"G.711 mu-law och A-law."
-
-#: gnu/packages/audio.scm:2884
 msgid "Virtual guitar amplifier"
 msgstr "Virtuell gitarrförstärkare"
 
-#: gnu/packages/audio.scm:2885
-msgid ""
-"Guitarix is a virtual guitar amplifier running JACK.\n"
-"Guitarix takes the signal from your guitar as a mono-signal from your sound\n"
-"card.  The input is processed by a main amp and a rack-section.  Both can be\n"
-"routed separately and deliver a processed stereo-signal via JACK.  You may\n"
-"fill the rack with effects from more than 25 built-in modules including stuff\n"
-"from a simple noise gate to modulation effects like flanger, phaser or\n"
-"auto-wah."
-msgstr ""
-
-#: gnu/packages/audio.scm:2939
-msgid "Audio effects processor"
-msgstr ""
-
-#: gnu/packages/audio.scm:2941
-msgid ""
-"Rakarrack is a richly featured multi-effects processor emulating a\n"
-"guitar effects pedalboard.  Effects include compressor, expander, noise gate,\n"
-"equalizers, exciter, flangers, chorus, various delay and reverb effects,\n"
-"distortion modules and many more.  Most of the effects engine is built from\n"
-"modules found in the excellent software synthesizer ZynAddSubFX.  Presets and\n"
-"user interface are optimized for guitar, but Rakarrack processes signals in\n"
-"stereo while it does not apply internal band-limiting filtering, and thus is\n"
-"well suited to all musical instruments and vocals."
-msgstr ""
-
-#: gnu/packages/audio.scm:2991
-msgid "LV2 convolution reverb"
-msgstr ""
-
-#: gnu/packages/audio.scm:2993
-msgid ""
-"IR is a low-latency, real-time, high performance signal convolver\n"
-"especially for creating reverb effects.  It supports impulse responses with 1,\n"
-"2 or 4 channels, in any soundfile format supported by libsndfile."
-msgstr ""
-
-#: gnu/packages/audio.scm:3034
-msgid "JACK audio connection kit"
-msgstr ""
-
-#: gnu/packages/audio.scm:3036
-msgid ""
-"JACK is a low-latency audio server.  It can connect a number of\n"
-"different applications to an audio device, as well as allowing them to share\n"
-"audio between themselves.  JACK is different from other audio server efforts\n"
-"in that it has been designed from the ground up to be suitable for\n"
-"professional audio work.  This means that it focuses on two key areas:\n"
-"synchronous execution of all clients, and low latency operation."
-msgstr ""
-
-#: gnu/packages/audio.scm:3131
-msgid "Tools for JACK connections"
-msgstr ""
-
-#: gnu/packages/audio.scm:3132
-msgid ""
-"This package provides tools for managing JACK connections\n"
-"and testing or configuring the JACK session.  Tools include @code{jack_lsp},\n"
-"@code{jack_connect}, and @code{jack_transport}."
-msgstr ""
-
-#: gnu/packages/audio.scm:3173
-msgid "Multi-machine audio system for network music performance"
-msgstr ""
-
-#: gnu/packages/audio.scm:3175
-msgid ""
-"JackTrip is a multi-machine audio system used for network music\n"
-"performance over the Internet.  It supports any number of channels (as many as\n"
-"the computer/network can handle) of bidirectional, high quality, uncompressed\n"
-"audio signal streaming."
-msgstr ""
-
-#: gnu/packages/audio.scm:3232
-msgid "JACK Mixer: A multi-channel audio mixer for the JACK Audio Connection Kit"
-msgstr ""
-
-#: gnu/packages/audio.scm:3234
-msgid ""
-"The jack_mixer is a GTK+ JACK audio mixer app with a look & handling\n"
-"similar to hardware mixing desks.  It has lot of useful features, apart\n"
-"from being able to mix multiple JACK audio streams."
-msgstr ""
-
-#: gnu/packages/audio.scm:3273
-msgid "Simple LV2 host for JACK"
-msgstr ""
-
-#: gnu/packages/audio.scm:3275
-msgid ""
-"Jalv is a simple but fully featured LV2 host for JACK.  It runs LV2\n"
-"plugins and exposes their ports as JACK ports, essentially making any LV2\n"
-"plugin function as a JACK application."
-msgstr ""
-
-#: gnu/packages/audio.scm:3323
-msgid "Linux Audio Developer's Simple Plugin API (LADSPA)"
-msgstr ""
-
-#: gnu/packages/audio.scm:3325
-msgid ""
-"LADSPA is a standard that allows software audio processors and effects\n"
-"to be plugged into a wide range of audio synthesis and recording packages."
-msgstr ""
-
-#: gnu/packages/audio.scm:3344
-msgid "Bauer stereophonic-to-binaural DSP"
-msgstr ""
-
-#: gnu/packages/audio.scm:3346
-msgid ""
-"The Bauer stereophonic-to-binaural DSP (bs2b) library and plugins is\n"
-"designed to improve headphone listening of stereo audio records.  Recommended\n"
-"for headphone prolonged listening to disable superstereo fatigue without\n"
-"essential distortions."
-msgstr ""
-
-#: gnu/packages/audio.scm:3368
-msgid "Bauer stereophonic-to-binaural DSP - LADSPA plugin"
-msgstr ""
-
-#: gnu/packages/audio.scm:3369
-msgid ""
-"The Bauer stereophonic-to-binaural DSP (bs2b) library and\n"
-"plugins is designed to improve headphone listening of stereo audio records.\n"
-"Recommended for headphone prolonged listening to disable superstereo fatigue\n"
-"without essential distortions.  This package contains a LADSPA plugin for use\n"
-"with applications that support them (e.g. PulseAudio)."
-msgstr ""
-
-#: gnu/packages/audio.scm:3393 gnu/packages/lisp-xyz.scm:24311
 msgid "Implementation of the Open Sound Control protocol"
 msgstr "Implementation av protokollet Open Sound Control"
 
-#: gnu/packages/audio.scm:3395
 msgid ""
 "liblo is a lightweight library that provides an easy to use\n"
 "implementation of the Open Sound Control (@dfn{OSC}) protocol."
@@ -496,100 +88,12 @@ msgstr ""
 "liblo är ett resurssnålt bibliotek som tillhandahåller en lättanvänd\n"
 "implementation av protokollet Open Sound Control (@dfn{OSC})."
 
-#: gnu/packages/audio.scm:3417
-msgid "Common API for real-time audio I/O"
-msgstr ""
-
-#: gnu/packages/audio.scm:3419
-msgid ""
-"RtAudio is a set of C++ classes that provides a common API for real-time\n"
-"audio input/output.  It was designed with the following objectives:\n"
-"\n"
-"@itemize\n"
-"@item object-oriented C++ design\n"
-"@item simple, common API across all supported platforms\n"
-"@item only one source and one header file for easy inclusion in programming\n"
-"projects\n"
-"@item allow simultaneous multi-api support\n"
-"@item support dynamic connection of devices\n"
-"@item provide extensive audio device parameter control\n"
-"@item allow audio device capability probing\n"
-"@item automatic internal conversion for data format, channel number\n"
-"compensation, (de)interleaving, and byte-swapping\n"
-"@end itemize"
-msgstr ""
-
-#: gnu/packages/audio.scm:3465
-msgid "JACK Audio Connection Kit (JACK) client for Python"
-msgstr ""
-
-#: gnu/packages/audio.scm:3466
-msgid ""
-"This package provides a JACK Audio Connection Kit (JACK)\n"
-"client for Python.  This variant uses the compatibility JACK implementation\n"
-"provided by Pipewire."
-msgstr ""
-
-#: gnu/packages/audio.scm:3497
-msgid "Bindings for PortAudio v19"
-msgstr ""
-
-#: gnu/packages/audio.scm:3498
-msgid ""
-"This package provides bindings for PortAudio v19, the\n"
-"cross-platform audio input/output stream library."
-msgstr ""
-
-#: gnu/packages/audio.scm:3525
-msgid "Python bindings for mixer-like controls in PulseAudio"
-msgstr ""
-
-#: gnu/packages/audio.scm:3527
-msgid ""
-"This package provides a Python high-level interface and ctypes-based\n"
-"bindings for PulseAudio (libpulse), to use in simple synchronous code.\n"
-"This wrapper is mostly for mixer-like controls and introspection-related\n"
-"operations, as opposed to e.g. submitting sound samples to play and\n"
-"player-like clients."
-msgstr ""
-
-#: gnu/packages/audio.scm:3552 gnu/packages/audio.scm:3577
 msgid "Python bindings for liblo"
 msgstr "Python-bindningar för liblo"
 
-#: gnu/packages/audio.scm:3554 gnu/packages/audio.scm:3579
-msgid ""
-"Pyliblo is a Python wrapper for the liblo Open Sound Control (OSC)\n"
-"library.  It supports almost the complete functionality of liblo, allowing you\n"
-"to send and receive OSC messages using a nice and simple Python API.  Also\n"
-"included are the command line utilities @code{send_osc} and @code{dump_osc}."
-msgstr ""
-
-#: gnu/packages/audio.scm:3616
 msgid "Python bindings for libsndfile"
 msgstr "Python-bindningar för libsndfile"
 
-#: gnu/packages/audio.scm:3617
-msgid ""
-"This package provides python bindings for libsndfile based on\n"
-"CFFI and NumPy."
-msgstr ""
-
-#: gnu/packages/audio.scm:3662
-msgid "High quality, one-dimensional sample-rate conversion library"
-msgstr ""
-
-#: gnu/packages/audio.scm:3664
-msgid ""
-"Python-SoXR is a Python wrapper of libsoxr, a high quality,\n"
-"one-dimensional sample-rate conversion library."
-msgstr ""
-
-#: gnu/packages/audio.scm:3681
-msgid "Python MIDI API"
-msgstr ""
-
-#: gnu/packages/audio.scm:3682
 msgid ""
 "This package provides a python API to read and write MIDI\n"
 "files."
@@ -597,1125 +101,84 @@ msgstr ""
 "Det här paketet tillhandahåller en python-API för att läsa och\n"
 "skriva MIDI-filer."
 
-#: gnu/packages/audio.scm:3726
-msgid "Pythonic audio file reader and writer"
-msgstr ""
-
-#: gnu/packages/audio.scm:3728
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
-msgid ""
-"This package provides pythonic libsndfile wrapper to read and write audio\n"
-"files."
-msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
-
-#: gnu/packages/audio.scm:3767
 msgid "Convert audio to multichannel MIDI"
 msgstr "Konvertera ljud till multikanal-MIDI"
 
-#: gnu/packages/audio.scm:3768
-msgid ""
-"@command{audio-to-midi} converts audio files to multichannel\n"
-"MIDI files.  It accomplishes this by performing FFTs on all channels of the\n"
-"audio data at user-specified time steps.  It then separates the resulting\n"
-"frequency analysis into equivalence classes which correspond to the twelve tone\n"
-"scale; the volume of each class being the average volume of its constituent\n"
-"frequencies.  This data is then formatted to MIDI and written to disk."
-msgstr ""
-
-#: gnu/packages/audio.scm:3803
-msgid "Library to simplify use of LV2 plugins in applications"
-msgstr ""
-
-#: gnu/packages/audio.scm:3805
-msgid ""
-"Lilv is a C library to make the use of LV2 plugins as simple as possible\n"
-"for applications.  Lilv is the successor to SLV2, rewritten to be\n"
-"significantly faster and have minimal dependencies."
-msgstr ""
-
-#: gnu/packages/audio.scm:3832
-msgid "LV2 audio plugin specification"
-msgstr ""
-
-#: gnu/packages/audio.scm:3834
-msgid ""
-"LV2 is an open specification for audio plugins and host applications.\n"
-"At its core, LV2 is a simple stable interface, accompanied by extensions which\n"
-"add functionality to support the needs of increasingly powerful audio\n"
-"software."
-msgstr ""
-
-#: gnu/packages/audio.scm:3866
-msgid "Turtle to C header conversion utility for LV2 plugins"
-msgstr ""
-
-#: gnu/packages/audio.scm:3868
-msgid ""
-"This package provides a conversion utility for LV2 Plugin developers to\n"
-"generate C headers from Turtle files."
-msgstr ""
-
-#: gnu/packages/audio.scm:3897
-msgid "LV2 port of the mda Piano plugin"
-msgstr ""
-
-#: gnu/packages/audio.scm:3898
-msgid "An LV2 port of the mda Piano VSTi."
-msgstr ""
-
-#: gnu/packages/audio.scm:3911
-msgid "LV2 port of the mda EPiano plugin"
-msgstr ""
-
-#: gnu/packages/audio.scm:3912
-msgid "An LV2 port of the mda EPiano VSTi."
-msgstr ""
-
-#: gnu/packages/audio.scm:3936 gnu/packages/audio.scm:3977
-msgid "C++ libraries for LV2 plugins"
-msgstr ""
-
-#: gnu/packages/audio.scm:3938 gnu/packages/audio.scm:3979
-msgid ""
-"The LV2 Toolkit (LVTK) contains libraries that wrap the LV2 C API and\n"
-"extensions into easy to use C++ classes.  It is the successor of\n"
-"lv2-c++-tools."
-msgstr ""
-
-#: gnu/packages/audio.scm:4018
-msgid "3D audio API"
-msgstr ""
-
-#: gnu/packages/audio.scm:4020
-msgid ""
-"OpenAL provides capabilities for playing audio in a virtual 3D\n"
-"environment.  Distance attenuation, doppler shift, and directional sound\n"
-"emitters are among the features handled by the API.  More advanced effects,\n"
-"including air absorption, occlusion, and environmental reverb, are available\n"
-"through the EFX extension.  It also facilitates streaming audio, multi-channel\n"
-"buffers, and audio capture."
-msgstr ""
-
-#: gnu/packages/audio.scm:4052
 msgid "Free implementation of OpenAL's ALUT standard"
 msgstr "Fri implementation av OpenAL:s ALUT-standard"
 
-#: gnu/packages/audio.scm:4053
-msgid "freealut is the OpenAL Utility Toolkit."
-msgstr ""
-
-#: gnu/packages/audio.scm:4084
-msgid "OpenAL utility library"
-msgstr ""
-
-#: gnu/packages/audio.scm:4086
-msgid ""
-"ALURE is a utility library to help manage common tasks with OpenAL applications.\n"
-"This includes device enumeration and initialization, file loading, and\n"
-"streaming."
-msgstr ""
-
-#: gnu/packages/audio.scm:4111
-msgid "PulseAudio or PipeWire volume notification"
-msgstr ""
-
-#: gnu/packages/audio.scm:4112
-msgid ""
-"The pa-notify daemon sends notifications about\n"
-"the current volume level of PulseAudio or PipeWire using libnotify."
-msgstr ""
-
-#: gnu/packages/audio.scm:4139
-msgid "Modular patch bay for audio and MIDI systems"
-msgstr ""
-
-#: gnu/packages/audio.scm:4141
-msgid ""
-"Patchage is a modular patch bay for audio and MIDI systems based on JACK\n"
-"and ALSA."
-msgstr ""
-
-#: gnu/packages/audio.scm:4164
 msgid "Portable C audio library"
 msgstr "Ljudbibliotek för Portable C"
 
-#: gnu/packages/audio.scm:4166
-msgid ""
-"The Portable C Audio Library (pcaudiolib) provides a C@tie{}API to\n"
-"different audio devices such as ALSA or PulseAudio."
-msgstr ""
-
-#: gnu/packages/audio.scm:4196
-msgid "Jack server control application"
-msgstr ""
-
-#: gnu/packages/audio.scm:4197
-msgid ""
-"Control a Jack server.  Allows you to plug various sources\n"
-"into various outputs and to start, stop and configure jackd"
-msgstr ""
-
-#: gnu/packages/audio.scm:4228
-msgid "Stereo audio recorder for JACK"
-msgstr ""
-
-#: gnu/packages/audio.scm:4229
-msgid ""
-"QJackRcd is a simple graphical stereo recorder for JACK\n"
-"supporting silence processing for automatic pause, file splitting, and\n"
-"background file post-processing."
-msgstr ""
-
-#: gnu/packages/audio.scm:4347
-msgid "Synthesis engine and programming language"
-msgstr ""
-
-#: gnu/packages/audio.scm:4348
-msgid ""
-"SuperCollider is a synthesis engine (@code{scsynth} or\n"
-"@code{supernova}) and programming language (@code{sclang}).  It can be used\n"
-"for experimenting with sound synthesis and algorithmic composition.\n"
-"\n"
-"SuperCollider requires jackd to be installed in your user profile and your\n"
-"user must be allowed to access the realtime features of the kernel.  Search\n"
-"for \"realtime\" in the index of the Guix manual to learn how to achieve this\n"
-"using Guix System."
-msgstr ""
-
-#: gnu/packages/audio.scm:4378
-msgid "Broadcast streaming library with IDJC extensions"
-msgstr ""
-
-#: gnu/packages/audio.scm:4379
-msgid "This package provides libshout plus IDJC extensions."
-msgstr ""
-
-#: gnu/packages/audio.scm:4452
-msgid "Low-level CD/DVD dumper"
-msgstr ""
-
-#: gnu/packages/audio.scm:4453
-msgid ""
-"@command{redumper} is a low-level byte perfect CD disc\n"
-"dumper.  It supports incremental dumps, advanced SCSI/C2 repair, intelligent\n"
-"audio CD offset detection, among other features.  @command{redumper} is also a\n"
-"general purpose DVD/HD-DVD/Blu-ray disc dumper."
-msgstr ""
-
-#: gnu/packages/audio.scm:4473
-msgid "Sampling rate conversion and filter design utilities"
-msgstr ""
-
-#: gnu/packages/audio.scm:4474
-msgid ""
-"This package contains the @command{resample} and\n"
-"@command{windowfilter} command line utilities.  The @command{resample} command\n"
-"allows changing the sampling rate of a sound file, while the\n"
-"@command{windowfilter} command allows designing Finite Impulse Response (FIR)\n"
-"filters using the so-called @emph{window method}."
-msgstr ""
-
-#: gnu/packages/audio.scm:4508
-msgid "Audio time-stretching and pitch-shifting library"
-msgstr ""
-
-#: gnu/packages/audio.scm:4510
-msgid ""
-"Rubber Band is a library and utility program that permits changing the\n"
-"tempo and pitch of an audio recording independently of one another."
-msgstr ""
-
-#: gnu/packages/audio.scm:4532
-msgid "Cross-platform MIDI library for C++"
-msgstr ""
-
-#: gnu/packages/audio.scm:4534
-msgid ""
-"RtMidi is a set of C++ classes (RtMidiIn, RtMidiOut, and API specific\n"
-"classes) that provide a common cross-platform API for realtime MIDI\n"
-"input/output."
-msgstr ""
-
-#: gnu/packages/audio.scm:4570
-msgid "Library for serialising LV2 atoms to/from RDF"
-msgstr ""
-
-#: gnu/packages/audio.scm:4572
-msgid ""
-"Sratom is a library for serialising LV2 atoms to/from RDF, particularly\n"
-"the Turtle syntax."
-msgstr ""
-
-#: gnu/packages/audio.scm:4599
-msgid "Library for loading and wrapping LV2 plugin UIs"
-msgstr ""
-
-#: gnu/packages/audio.scm:4601
-msgid ""
-"Suil is a lightweight C library for loading and wrapping LV2 plugin UIs.\n"
-"\n"
-"Suil makes it possible to load a UI of a toolkit in a host using another\n"
-"toolkit.  The API is designed such that hosts do not need to explicitly\n"
-"support specific toolkits – if Suil supports a particular toolkit, then UIs in\n"
-"that toolkit will work in all hosts that use Suil automatically.\n"
-"\n"
-"Suil currently supports every combination of Gtk, Qt, and X11."
-msgstr ""
-
-#: gnu/packages/audio.scm:4631
-msgid "Library implementing the EBU R 128 loudness standard"
-msgstr ""
-
-#: gnu/packages/audio.scm:4633
-msgid ""
-"@code{libebur128} is a C library that implements the EBU R 128 standard\n"
-"for loudness normalisation."
-msgstr ""
-
-#: gnu/packages/audio.scm:4690
-msgid "Software synthesizer for playing MIDI files"
-msgstr ""
-
-#: gnu/packages/audio.scm:4692
-msgid ""
-"TiMidity++ is a software synthesizer.  It can play MIDI files by\n"
-"converting them into PCM waveform data; give it a MIDI data along with digital\n"
-"instrument data files, then it synthesizes them in real-time, and plays.  It\n"
-"can not only play sounds, but also can save the generated waveforms into hard\n"
-"disks as various audio file formats."
-msgstr ""
-
-#: gnu/packages/audio.scm:4730
-msgid "Modular and extensible audio processing system"
-msgstr ""
-
-#: gnu/packages/audio.scm:4732
-msgid ""
-"Vamp is an audio processing plugin system for plugins that extract\n"
-"descriptive information from audio data — typically referred to as audio\n"
-"analysis plugins or audio feature extraction plugins."
-msgstr ""
-
-#: gnu/packages/audio.scm:4775
-msgid "Library for time stretching and pitch scaling of audio"
-msgstr ""
-
-#: gnu/packages/audio.scm:4777
-msgid ""
-"SBSMS (Subband Sinusoidal Modeling Synthesis) is software for time\n"
-"stretching and pitch scaling of audio.  This package contains the library."
-msgstr ""
-
-#: gnu/packages/audio.scm:4840
-msgid "Musical key detection for digital audio"
-msgstr ""
-
-#: gnu/packages/audio.scm:4842
-msgid ""
-"@code{libkeyfinder} is a small C++11 library for estimating the musical\n"
-"key of digital audio."
-msgstr ""
-
-#: gnu/packages/audio.scm:4870
-msgid "Hybrid lossless audio codec"
-msgstr ""
-
-#: gnu/packages/audio.scm:4872
-msgid ""
-"WavPack is an audio compression format with lossless, lossy and hybrid\n"
-"compression modes.  This package contains command-line programs and library to\n"
-"encode and decode wavpack files."
-msgstr ""
-
-#: gnu/packages/audio.scm:4902
-msgid "C++ sound library"
-msgstr ""
-
-#: gnu/packages/audio.scm:4903
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
-msgid "This package provides a simple sound library for C++."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
-
-#: gnu/packages/audio.scm:4939
-msgid "Low-level audio mixer pipeline library"
-msgstr ""
-
-#: gnu/packages/audio.scm:4941
-msgid ""
-"Libmixed is a library for real-time audio processing pipelines for use\n"
-"in audio/video/games.  It can serve as a base architecture for complex DSP\n"
-"systems."
-msgstr ""
-
-#: gnu/packages/audio.scm:4962
-msgid "Mod file playing library"
-msgstr ""
-
-#: gnu/packages/audio.scm:4964
-msgid ""
-"Libmodplug renders mod music files as raw audio data, for playing or\n"
-"conversion.  mod, .s3m, .it, .xm, and a number of lesser-known formats are\n"
-"supported.  Optional features include high-quality resampling, bass expansion,\n"
-"surround and reverb."
-msgstr ""
-
-#: gnu/packages/audio.scm:4986
-msgid "Module player library"
-msgstr ""
-
-#: gnu/packages/audio.scm:4988
-msgid ""
-"Libxmp is a library that renders module files to PCM data.  It supports\n"
-"over 90 mainstream and obscure module formats including Protracker (MOD),\n"
-"Scream Tracker 3 (S3M), Fast Tracker II (XM), and Impulse Tracker (IT)."
-msgstr ""
-
-#: gnu/packages/audio.scm:5010
-msgid "Extended module player"
-msgstr ""
-
-#: gnu/packages/audio.scm:5012
-msgid ""
-"Xmp is a portable module player that plays over 90 mainstream and\n"
-"obscure module formats, including Protracker MOD, Fasttracker II XM, Scream\n"
-"Tracker 3 S3M and Impulse Tracker IT files."
-msgstr ""
-
-#: gnu/packages/audio.scm:5035
-msgid "Audio processing library for changing tempo, pitch and playback rate"
-msgstr ""
-
-#: gnu/packages/audio.scm:5037
-msgid ""
-"SoundTouch is an audio processing library for changing the tempo, pitch\n"
-"and playback rates of audio streams or audio files.  It is intended for\n"
-"application developers writing sound processing tools that require tempo/pitch\n"
-"control functionality, or just for playing around with the sound effects."
-msgstr ""
-
-#: gnu/packages/audio.scm:5126
-msgid "Sound processing utility"
-msgstr ""
-
-#: gnu/packages/audio.scm:5128
-msgid ""
-"SoX (Sound eXchange) is a command line utility that can convert\n"
-"various formats of computer audio files to other formats.  It can also\n"
-"apply various effects to these sound files, and, as an added bonus, SoX\n"
-"can play and record audio files."
-msgstr ""
-
-#: gnu/packages/audio.scm:5151
-msgid "One-dimensional sample-rate conversion library"
-msgstr ""
-
-#: gnu/packages/audio.scm:5153
-msgid ""
-"The SoX Resampler library (libsoxr) performs one-dimensional sample-rate\n"
-"conversion.  It may be used, for example, to resample PCM-encoded audio."
-msgstr ""
-
-#: gnu/packages/audio.scm:5174
-msgid "MPEG Audio Layer 2 (MP2) encoder"
-msgstr ""
-
-#: gnu/packages/audio.scm:5176
-msgid ""
-"TwoLAME is an optimised MPEG Audio Layer 2 (MP2) encoder based on\n"
-"tooLAME by Mike Cheng, which in turn is based upon the ISO dist10 code and\n"
-"portions of LAME."
-msgstr ""
-
-#: gnu/packages/audio.scm:5230
-msgid "Audio I/O library"
-msgstr ""
-
-#: gnu/packages/audio.scm:5232
-msgid ""
-"PortAudio is a portable C/C++ audio I/O library providing a simple API\n"
-"to record and/or play sound using a callback function or a blocking read/write\n"
-"interface."
-msgstr ""
-
-#: gnu/packages/audio.scm:5259
-msgid "Graphical user interface for FluidSynth"
-msgstr ""
-
-#: gnu/packages/audio.scm:5261
-msgid ""
-"Qsynth is a GUI front-end application for the FluidSynth SoundFont\n"
-"synthesizer written in C++."
-msgstr ""
-
-#: gnu/packages/audio.scm:5298
-msgid "Networked audio system"
-msgstr ""
-
-#: gnu/packages/audio.scm:5300
-msgid ""
-"RSound allows you to send audio from an application and transfer it\n"
-"directly to a different computer on your LAN network.  It is an audio daemon\n"
-"with a much different focus than most other audio daemons."
-msgstr ""
-
-#: gnu/packages/audio.scm:5328
-msgid "JACK audio frequency analyzer and display"
-msgstr ""
-
-#: gnu/packages/audio.scm:5330
-msgid ""
-"XJackFreak is an audio analysis and equalizing tool for the Jack Audio\n"
-"Connection Kit.  It can display the FFT of any input, modify it and output the\n"
-"result."
-msgstr ""
-
-#: gnu/packages/audio.scm:5380
-msgid "Fast, partitioned convolution engine library"
-msgstr ""
-
-#: gnu/packages/audio.scm:5382
-msgid ""
-"Zita convolver is a C++ library providing a real-time convolution\n"
-"engine."
-msgstr ""
-
-#: gnu/packages/audio.scm:5432
-msgid "C++ library for resampling audio signals"
-msgstr ""
-
-#: gnu/packages/audio.scm:5434
-msgid ""
-"Libzita-resampler is a C++ library for resampling audio signals.  It is\n"
-"designed to be used within a real-time processing context, to be fast, and to\n"
-"provide high-quality sample rate conversion."
-msgstr ""
-
-#: gnu/packages/audio.scm:5482
-msgid ""
-"Zita-alsa-pcmi is a C++ wrapper around the ALSA API.  It provides easy\n"
-"access to ALSA PCM devices, taking care of the many functions required to\n"
-"open, initialise and use a hw: device in mmap mode, and providing floating\n"
-"point audio data."
-msgstr ""
-
-#: gnu/packages/audio.scm:5505
-msgid "Cue and toc file parsers and utilities"
-msgstr ""
-
-#: gnu/packages/audio.scm:5506
-msgid ""
-"Cuetools is a set of programs that are useful for manipulating\n"
-"and using CUE sheet (cue) files and Table of Contents (toc) files.  CUE and TOC\n"
-"files are a way to represent the layout of a data or audio CD in a\n"
-"machine-readable ASCII format."
-msgstr ""
-
-#: gnu/packages/audio.scm:5534
-msgid "Analyze MPEG layer I/II/III files"
-msgstr ""
-
-#: gnu/packages/audio.scm:5535
-msgid ""
-"mp3guessenc is a command line utility that tries to detect the\n"
-"encoder used for an MPEG Layer III (MP3) file, as well as scan any MPEG audio\n"
-"file (any layer) and print a lot of useful information."
-msgstr ""
-
-#: gnu/packages/audio.scm:5555
-msgid "WAVE audio data processing tool"
-msgstr ""
-
-#: gnu/packages/audio.scm:5556
-msgid ""
-"shntool is a multi-purpose WAVE data processing and reporting\n"
-"utility.  File formats are abstracted from its core, so it can process any file\n"
-"that contains WAVE data, compressed or not---provided there exists a format\n"
-"module to handle that particular file type.  It can also generate CUE files, and\n"
-"use them split WAVE data into multiple files."
-msgstr ""
-
-#: gnu/packages/audio.scm:5595 gnu/packages/video.scm:1467
-msgid "DTS Coherent Acoustics decoder"
-msgstr ""
-
-#: gnu/packages/audio.scm:5596
-msgid ""
-"Dcadec is a DTS Coherent Acoustics surround sound decoder\n"
-"with support for HD extensions."
-msgstr ""
-
-#: gnu/packages/audio.scm:5625
-msgid "Digital room correction"
-msgstr ""
-
-#: gnu/packages/audio.scm:5627
-msgid ""
-"DRC is a program used to generate correction filters for acoustic\n"
-"compensation of HiFi and audio systems in general, including listening room\n"
-"compensation.  DRC generates just the FIR correction filters, which can be\n"
-"used with a real time or offline convolver to provide real time or offline\n"
-"correction.  DRC doesn't provide convolution features, and provides only some\n"
-"simplified, although really accurate, measuring tools."
-msgstr ""
-
-#: gnu/packages/audio.scm:5665
-msgid "Tool to adjust loudness of media files"
-msgstr ""
-
-#: gnu/packages/audio.scm:5667
-msgid ""
-"BS1770GAIN is a loudness scanner compliant with ITU-R BS.1770 and its\n"
-"flavors EBU R128, ATSC A/85, and ReplayGain 2.0.  It helps normalizing the\n"
-"loudness of audio and video files to the same level."
-msgstr ""
-
-#: gnu/packages/audio.scm:5704
-msgid "Fast audio loudness scanner & tagger"
-msgstr ""
-
-#: gnu/packages/audio.scm:5706
-msgid ""
-"r128gain is a multi platform command line tool to scan your audio\n"
-"files and tag them with loudness metadata (ReplayGain v2 or Opus R128 gain\n"
-"format), to allow playback of several tracks or albums at a similar\n"
-"loudness level. r128gain can also be used as a Python module from other\n"
-"Python projects to scan and/or tag audio files."
-msgstr ""
-
-#: gnu/packages/audio.scm:5740
-msgid "Lightweight audio filtering library"
-msgstr ""
-
-#: gnu/packages/audio.scm:5741
-msgid ""
-"An easy to use audio filtering library made from webrtc\n"
-"code, used in @code{libtoxcore}."
-msgstr ""
-
-#: gnu/packages/audio.scm:5789
-msgid "GSM 06.10 lossy speech compression library"
-msgstr ""
-
-#: gnu/packages/audio.scm:5790
-msgid ""
-"This C library provides an encoder and a decoder for the GSM\n"
-"06.10 RPE-LTP lossy speech compression algorithm."
-msgstr ""
-
-#: gnu/packages/audio.scm:5812
-msgid "ALSA wrappers for Python"
-msgstr ""
-
-#: gnu/packages/audio.scm:5814
-msgid ""
-"This package contains wrappers for accessing the ALSA API from Python.\n"
-"It is currently fairly complete for PCM devices, and has some support for\n"
-"mixers."
-msgstr ""
-
-#: gnu/packages/audio.scm:5834
-msgid "LDAC Bluetooth encoder and ABR library"
-msgstr ""
-
-#: gnu/packages/audio.scm:5835
-msgid ""
-"This package provides an encoder for the LDAC\n"
-"high-resolution Bluetooth audio streaming codec for streaming at up to 990\n"
-"kbps at 24 bit/96 kHz."
-msgstr ""
-
-#: gnu/packages/audio.scm:5878
-msgid "Bluetooth ALSA backend"
-msgstr ""
-
-#: gnu/packages/audio.scm:5879
-msgid ""
-"This project is a rebirth of a direct integration between\n"
-"Bluez and ALSA.  Since Bluez >= 5, the built-in integration has been removed\n"
-"in favor of 3rd party audio applications.  From now on, Bluez acts as a\n"
-"middleware between an audio application, which implements Bluetooth audio\n"
-"profile, and a Bluetooth audio device.  BlueALSA registers all known Bluetooth\n"
-"audio profiles in Bluez, so in theory every Bluetooth device (with audio\n"
-"capabilities) can be connected.  In order to access the audio stream, one has\n"
-"to connect to the ALSA PCM device called @code{bluealsa}.  The device is based\n"
-"on the ALSA software PCM plugin."
-msgstr ""
-
-#: gnu/packages/audio.scm:5946
 msgid "Sound editor"
-msgstr ""
+msgstr "Ljudredigerare"
 
-#: gnu/packages/audio.scm:5949
-msgid ""
-"Snd is a sound editor modelled loosely after Emacs.  It can be\n"
-"customized and extended using either the s7 Scheme implementation (included in\n"
-"the Snd sources), Ruby, or Forth."
-msgstr ""
-
-#: gnu/packages/audio.scm:5977
-msgid "LV2 plugin for broadband noise reduction"
-msgstr ""
-
-#: gnu/packages/audio.scm:5978
-msgid ""
-"Noise Repellent is an LV2 plugin to reduce noise.  It has\n"
-"the following features:\n"
-"\n"
-"@enumerate\n"
-"@item Spectral gating and spectral subtraction suppression rule\n"
-"@item Adaptive and manual noise thresholds estimation\n"
-"@item Adjustable noise floor\n"
-"@item Adjustable offset of thresholds to perform over-subtraction\n"
-"@item Time smoothing and a masking estimation to reduce artifacts\n"
-"@item Basic onset detector to avoid transients suppression\n"
-"@item Whitening of the noise floor to mask artifacts and to recover higher\n"
-"  frequencies\n"
-"@item Option to listen to the residual signal\n"
-"@item Soft bypass\n"
-"@item Noise profile saved with the session\n"
-"@end enumerate\n"
-msgstr ""
-
-#: gnu/packages/audio.scm:6044
-msgid "Speech denoise LV2 plugin based on Xiph's RNNoise library"
-msgstr ""
-
-#: gnu/packages/audio.scm:6045
-msgid ""
-"RNNoise is a library that uses deep learning to apply\n"
-"noise suppression to audio sources with voice presence.  This package provides\n"
-"an LV2 audio plugin."
-msgstr ""
-
-#: gnu/packages/audio.scm:6088
-msgid "Command-line audio visualizer"
-msgstr ""
-
-#: gnu/packages/audio.scm:6089
-msgid ""
-"@code{cli-visualizer} displays fast-Fourier\n"
-"transforms (FFTs) of the sound being played, as well as other graphical\n"
-"representations."
-msgstr ""
-
-#: gnu/packages/audio.scm:6138
-msgid "Console audio visualizer for ALSA, MPD, and PulseAudio"
-msgstr ""
-
-#: gnu/packages/audio.scm:6139
-msgid ""
-"C.A.V.A. is a bar audio spectrum visualizer for the terminal\n"
-"using ALSA, MPD, PulseAudio, or a FIFO buffer as its input."
-msgstr ""
-
-#: gnu/packages/audio.scm:6172
-msgid "Pro-quality GM soundfont"
-msgstr ""
-
-#: gnu/packages/audio.scm:6173
-msgid "Fluid-3 is Frank Wen's pro-quality GM soundfont."
-msgstr ""
-
-#: gnu/packages/audio.scm:6194
-msgid "Fraunhofer FDK AAC library"
-msgstr ""
-
-#: gnu/packages/audio.scm:6195
-msgid ""
-"FDK is a library for encoding and decoding Advanced Audio\n"
-"Coding (AAC) format audio, developed by Fraunhofer IIS, and included as part of\n"
-"Android.  It supports several Audio Object Types including MPEG-2 and MPEG-4 AAC\n"
-"LC, HE-AAC (AAC LC + SBR), HE-AACv2 (LC + SBR + PS) as well AAC-LD (low delay)\n"
-"and AAC-ELD (enhanced low delay) for real-time communication.  The encoding\n"
-"library supports sample rates up to 96 kHz and up to eight channels (7.1\n"
-"                                                                     surround)."
-msgstr ""
-
-#: gnu/packages/audio.scm:6223
-#, fuzzy
-#| msgid "VisualOn AAC Encoder"
-msgid "Command-line AAC encoder"
-msgstr "VisualOn AAC-kodare"
-
-#: gnu/packages/audio.scm:6224
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
-msgid "This package provides a command-line AAC-encoder."
-msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
-
-#: gnu/packages/audio.scm:6257
-msgid "aptX codec library"
-msgstr ""
-
-#: gnu/packages/audio.scm:6258
-msgid ""
-"libfreeaptx is an implementation of the Audio Processing\n"
-"Technology codecs aptX and aptX HD, mainly intended for use with an A2DP\n"
-"bluetooth profile."
-msgstr ""
-
-#: gnu/packages/audio.scm:6293
-msgid "Audio editing and playback for OpenShot"
-msgstr ""
-
-#: gnu/packages/audio.scm:6294
-msgid ""
-"OpenShot Audio Library (libopenshot-audio) allows\n"
-"high-quality editing and playback of audio, and is based on the JUCE\n"
-"library."
-msgstr ""
-
-#: gnu/packages/audio.scm:6319
 msgid "XAudio reimplementation"
-msgstr ""
+msgstr "Återimplementering av XAudio"
 
-#: gnu/packages/audio.scm:6320
-msgid ""
-"FAudio is an XAudio reimplementation that focuses solely on\n"
-"developing fully accurate DirectX Audio runtime libraries."
-msgstr ""
-
-#: gnu/packages/audio.scm:6346
-msgid "Binaural beat synthesizer"
-msgstr ""
-
-#: gnu/packages/audio.scm:6347
-msgid ""
-"Gnaural is a programmable auditory binaural beat synthesizer\n"
-"intended to be used for brainwave entrainment.  Gnaural supports creation of\n"
-"binaural beat tracks of different frequencies and exporting of tracks into\n"
-"different audio formats.  Gnaural can also be linked over the internet with\n"
-"other Gnaural instances, allowing synchronous sessions between many users."
-msgstr ""
-
-#: gnu/packages/audio.scm:6383
-msgid "Live audio streamer"
-msgstr ""
-
-#: gnu/packages/audio.scm:6384
-msgid ""
-"DarkIce is a live audio streamer.  It takes audio input from\n"
-"a sound card, encodes it into Ogg Vorbis and/or mp3, and sends the audio\n"
-"stream to one or more IceCast and/or ShoutCast servers."
-msgstr ""
-
-#: gnu/packages/audio.scm:6406
-msgid "Encode or decode Linear/Longitudinal Time Code (LTC) audio"
-msgstr ""
-
-#: gnu/packages/audio.scm:6407
-msgid ""
-"Libltc is a POSIX-C Library for handling\n"
-"@dfn{Linear/Longitudinal Time Code} (LTC) data."
-msgstr ""
-
-#: gnu/packages/audio.scm:6439
-msgid "TTA lossless audio encoder"
-msgstr ""
-
-#: gnu/packages/audio.scm:6441
-msgid ""
-"TTA performs lossless compression on multichannel 8,16 and 24 bits\n"
-"data of the Wav audio files.  Being lossless means that no data-\n"
-"quality is lost in the compression - when uncompressed, the data will\n"
-"be identical to the original.  The compression ratios of TTA depend on\n"
-"the type of music file being compressed, but the compression size\n"
-"will generally range between 30% - 70% of the original.  TTA format\n"
-"supports both of ID3v1/v2 and APEv2 tags."
-msgstr ""
-
-#: gnu/packages/audio.scm:6473
-msgid "C library for real-time audio input and output"
-msgstr ""
-
-#: gnu/packages/audio.scm:6474
-msgid ""
-"@code{libsoundio} is a C library providing audio input and\n"
-"output.  The API is suitable for real-time software such as digital audio\n"
-"workstations as well as consumer software such as music players."
-msgstr ""
-
-#: gnu/packages/audio.scm:6499
-msgid "Lightweight graphics widget toolkit for embedded GUI"
-msgstr ""
-
-#: gnu/packages/audio.scm:6500
-msgid ""
-"Redkite is a small GUI toolkit developed in C++17 and\n"
-"inspired from other well known GUI toolkits such as Qt and GTK.  It is\n"
-"minimal on purpose and is intended to be statically linked to applications,\n"
-"therefore satisfying any requirements they may have to be self contained,\n"
-"as is the case with audio plugins."
-msgstr ""
-
-#: gnu/packages/audio.scm:6564
-msgid "Audio plugin host"
-msgstr ""
-
-#: gnu/packages/audio.scm:6565
-msgid ""
-"Carla is a modular audio plugin host, with features like\n"
-"transport control, automation of parameters via MIDI CC and remote control\n"
-"over OSC.  Carla currently supports LADSPA (including LRDF), DSSI, LV2, VST2,\n"
-"and VST3 plugin formats, plus SF2 and SFZ file support.  It uses JACK as the\n"
-"default and preferred audio driver but also supports native drivers like ALSA."
-msgstr ""
-
-#: gnu/packages/audio.scm:6619
-msgid "Multitrack audio processing"
-msgstr ""
-
-#: gnu/packages/audio.scm:6620
-msgid ""
-"Ecasound is a software package designed for multitrack audio\n"
-"processing.  It can be used for simple tasks like audio playback, recording and\n"
-"format conversions, as well as for multitrack effect processing, mixing,\n"
-"recording and signal recycling.  Ecasound supports a wide range of audio inputs,\n"
-"outputs and effect algorithms.  Effects and audio objects can be combined in\n"
-"various ways, and their parameters can be controlled by operator objects like\n"
-"oscillators and MIDI-CCs.  A versatile console mode user-interface is included\n"
-"in the package."
-msgstr ""
-
-#: gnu/packages/audio.scm:6657
-msgid "Library for reading and resampling audio files"
-msgstr ""
-
-#: gnu/packages/audio.scm:6658
-msgid ""
-"libaudec is a wrapper library over ffmpeg, sndfile and\n"
-"libsamplerate for reading and resampling audio files, based on Robin Gareus'\n"
-"@code{audio_decoder} code."
-msgstr ""
-
-#: gnu/packages/audio.scm:6687
-msgid "LV2 plugin lint tool"
-msgstr ""
-
-#: gnu/packages/audio.scm:6688
-msgid ""
-"lv2lint is an LV2 lint-like tool that checks whether a\n"
-"given plugin and its UI(s) match up with the provided metadata and adhere\n"
-"to well-known best practices."
-msgstr ""
-
-#: gnu/packages/audio.scm:6720
-msgid "Documentation generator for LV2 plugins"
-msgstr ""
-
-#: gnu/packages/audio.scm:6722
-msgid ""
-"lv2toweb allows the user to create an xhtml page with information\n"
-"about the given LV2 plugin, provided that the plugin and its UI(s) match up\n"
-"with the provided metadata and adhere to well-known best practices."
-msgstr ""
-
-#: gnu/packages/audio.scm:6749
-msgid "GUI toolkit for LV2 plugins"
-msgstr ""
-
-#: gnu/packages/audio.scm:6750
-msgid ""
-"ZToolkit (Ztk) is a cross-platform GUI toolkit heavily\n"
-"inspired by GTK.  It handles events and low level drawing on behalf of\n"
-"the user and provides a high-level API for managing the UI and custom\n"
-"widgets.  ZToolkit is written in C and was created to be used for building\n"
-"audio plugin UIs, where the dependencies often need to be kept to a\n"
-"minimum."
-msgstr ""
-
-#: gnu/packages/audio.scm:6767
-msgid "ZToolkit with SVG support"
-msgstr ""
-
-#: gnu/packages/audio.scm:6791
-msgid "Instrument file software library"
-msgstr ""
-
-#: gnu/packages/audio.scm:6793
-msgid ""
-"libInstPatch is a library for processing digital sample based MIDI\n"
-"instrument \"patch\" files.  The types of files libInstPatch supports are used\n"
-"for creating instrument sounds for wavetable synthesis.  libInstPatch provides\n"
-"an object framework (based on GObject) to load patch files, which can then be\n"
-"edited, converted, compressed and saved."
-msgstr ""
-
-#: gnu/packages/audio.scm:6829
-msgid "Digital signal processing library"
-msgstr ""
-
-#: gnu/packages/audio.scm:6830
-msgid ""
-"The LSP DSP library provides a set of functions that perform\n"
-"SIMD-optimized computing on several hardware architectures.  All functions\n"
-"currently operate on IEEE-754 single-precision floating-point numbers."
-msgstr ""
-
-#: gnu/packages/audio.scm:6859
 msgid "Speech codec"
-msgstr ""
+msgstr "Tal-kodek"
 
-#: gnu/packages/audio.scm:6861
-msgid ""
-"Codec 2 is a speech codec designed for communications quality speech\n"
-"between 700 and 3200 bit/s.  The main application is low bandwidth HF/VHF\n"
-"digital radio."
-msgstr ""
-
-#: gnu/packages/audio.scm:6885
-msgid "P25 Phase 1 and ProVoice vocoder"
-msgstr ""
-
-#: gnu/packages/audio.scm:6887
-msgid ""
-"The mbelib library provides support for the 7200x4400 bit/s codec used\n"
-"in P25 Phase 1, the 7100x4400 bit/s codec used in ProVoice and the @emph{Half\n"
-"Rate} 3600x2250 bit/s vocoder used in various radio systems."
-msgstr ""
-
-#: gnu/packages/audio.scm:6978
-msgid "Synchronize musical beat, tempo, and phase across multiple applications"
-msgstr ""
-
-#: gnu/packages/audio.scm:6980
-msgid ""
-"Ableton Link is a C++ library that synchronizes musical beat, tempo, and phase\n"
-"across multiple applications running on one or more devices.  Applications on devices\n"
-"connected to a local network discover each other automatically and form a musical\n"
-"session in which each participant can perform independently: anyone can start or stop\n"
-"while still staying in time."
-msgstr ""
-
-#: gnu/packages/audio.scm:7040
-msgid "Audio streaming tool"
-msgstr ""
-
-#: gnu/packages/audio.scm:7041
-msgid ""
-"Butt is a tool to stream audio to a ShoutCast or\n"
-"Icecast server."
-msgstr ""
-
-#: gnu/packages/audio.scm:7086
-msgid "Signal generation tools"
-msgstr ""
-
-#: gnu/packages/audio.scm:7087
-msgid ""
-"siggen is a set of tools for imitating a laboratory signal\n"
-"generator, generating audio signals out of Linux's /dev/dsp audio\n"
-"device.  There is support for mono and/or stereo and 8 or 16 bit samples."
-msgstr ""
-
-#: gnu/packages/audio.scm:7131
-msgid "Python wrapper around SoX"
-msgstr ""
-
-#: gnu/packages/audio.scm:7133
-msgid ""
-"@code{python-pysox} is a wrapper around the @command{sox} command line\n"
-"tool.  The API offers @code{Transformer} and @code{Combiner} classes that\n"
-"allow the user to incrementally build up effects and audio manipulations.\n"
-"@code{python-pysox} also provides methods for querying audio information such\n"
-"as sample rate, determining whether an audio file is silent, and much more."
-msgstr ""
-
-#: gnu/packages/audio.scm:7161
-msgid "Efficient signal resampling"
-msgstr ""
-
-#: gnu/packages/audio.scm:7163
-msgid ""
-"@code{python-resampy} implements the band-limited sinc interpolation\n"
-"method for sampling rate conversion as described by Julius O. Smith at the\n"
-"@url{https://ccrma.stanford.edu/~jos/resample/, Digital Audio Resampling\n"
-"Home Page}."
-msgstr ""
-
-#: gnu/packages/audio.scm:7219
-msgid "Python module for audio and music processing"
-msgstr ""
-
-#: gnu/packages/audio.scm:7221
-msgid ""
-"@code{librosa} is a python package for music and audio analysis.  It\n"
-"provides the building blocks necessary to create music information retrieval\n"
-"systems."
-msgstr ""
-
-#: gnu/packages/audio.scm:7243
-msgid "Audio plug-in pack for LV2"
-msgstr ""
-
-#: gnu/packages/audio.scm:7245
-msgid ""
-"MDA-LV2 is an LV2 port of the MDA plugins.  It includes effects and a few\n"
-"instrument plugins."
-msgstr ""
-
-#: gnu/packages/audio.scm:7275
-msgid "Library for decoding Super Audio CDs (SACD)"
-msgstr ""
-
-#: gnu/packages/audio.scm:7277
-msgid ""
-"The Odio SACD shared library is a decoding engine which takes a Super\n"
-"Audio CD source and extracts a 24-bit high resolution WAV file.  It handles\n"
-"both DST and DSD streams."
-msgstr ""
-
-#: gnu/packages/audio.scm:7300
-msgid "Rip Super Audio CDs (SACD)"
-msgstr ""
-
-#: gnu/packages/audio.scm:7302
-msgid ""
-"Odio SACD is a command-line application which takes a Super Audio CD\n"
-"source and extracts a 24-bit high resolution WAV file.  It handles both DST\n"
-"and DSD streams."
-msgstr ""
-
-#: gnu/packages/audio.scm:7330
-msgid "PipeWire graph manager"
-msgstr ""
-
-#: gnu/packages/audio.scm:7332
-msgid ""
-"qpwgraph is a graph manager dedicated to PipeWire, using the Qt C++\n"
-"framework.  It provides a visual interface to audio and video connections\n"
-"managed by PipeWire."
-msgstr ""
-
-#: gnu/packages/audio.scm:7391
-msgid "Audio session manager"
-msgstr ""
-
-#: gnu/packages/audio.scm:7392
-msgid ""
-"RaySession is a session manager for audio programs such as\n"
-"Ardour, Carla, QTractor, Guitarix, Patroneo, Jack Mixer, etc.  The principle\n"
-"is to load together audio programs, then be able to save or close all\n"
-"documents together.  Its main purpose is to manage NSM compatible programs,\n"
-"but it also helps for other programs.  It offers a patchbay for visualizing\n"
-"and editing connections."
-msgstr ""
-
-#: gnu/packages/audio.scm:7420
 msgid "Record audio streams to your hard drive"
 msgstr "Spela in ljudströmmar till din hårddisk"
 
-#: gnu/packages/games.scm:356
+msgid "Tar-compatible archiver"
+msgstr "Tar-kompatibel arkiverare"
+
+msgid "Stream editor"
+msgstr "Strömredigerare"
+
+msgid "hgu95av2cdf"
+msgstr "hgu95av2cdf"
+
+msgid "RnBeads"
+msgstr "RnBeads"
+
+msgid "DNAmCrosshyb"
+msgstr "DNAmCrosshyb"
+
+msgid "PLSDA-batch"
+msgstr "PLSDA-batch"
+
+msgid "BitTorrent client"
+msgstr "BitTorrent-klient"
+
+msgid "Compression library"
+msgstr "Kompressionsbibliotek"
+
+msgid "Fast compressor/decompressor"
+msgstr "Snabb kompressor/dekompressor"
+
+msgid "URL parser"
+msgstr "URL-tolkare"
+
+msgid "Aster Models"
+msgstr "Aster-modeller"
+
+msgid "Signal processing"
+msgstr "Signalbehandling"
+
+msgid "Climate tools"
+msgstr "Klimatverktyg"
+
+msgid "Survival analysis"
+msgstr "Överlevnadsanalys"
+
+msgid "Clustering"
+msgstr "Klusterbildning"
+
+msgid "Trivial database"
+msgstr "Ordinär databas"
+
+msgid "Memory scanner"
+msgstr "Minneskannare"
+
+msgid "emacs-doctest"
+msgstr "emacs-doctest"
+
+msgid "emacs-treemacs-nerd-icons"
+msgstr "emacs-treemacs-nerd-icons"
+
 msgid ""
 "Abe's Amazing Adventure is a scrolling,\n"
 "platform-jumping, key-collecting, ancient pyramid exploring game, vaguely in\n"
@@ -1725,158 +188,29 @@ msgstr ""
 "plattformsspel där man samlar nycklar samt utforskar antika pyramider\n"
 "och det liknar vagt spelen till Commodore+4."
 
-#: gnu/packages/games.scm:460
 msgid "Action game in four spatial dimensions"
 msgstr "Actionspel i fyra rumsliga dimensioner"
 
-#: gnu/packages/games.scm:462
-msgid ""
-"Adanaxis is a fast-moving first person shooter set in deep space, where\n"
-"the fundamentals of space itself are changed.  By adding another dimension to\n"
-"space this game provides an environment with movement in four directions and\n"
-"six planes of rotation.  Initially the game explains the 4D control system via\n"
-"a graphical sequence, before moving on to 30 levels of gameplay with numerous\n"
-"enemy, ally, weapon and mission types.  Features include simulated 4D texturing,\n"
-"mouse and joystick control, and original music."
-msgstr ""
-
-#: gnu/packages/games.scm:500
-msgid "Public domain 90s-style shooter game"
-msgstr ""
-
-#: gnu/packages/games.scm:501
-msgid ""
-"Anarch is a small, completely public domain, 90s-style\n"
-"Doom clone shooter game."
-msgstr ""
-
-#: gnu/packages/games.scm:534
 msgid "Control your system with a gamepad"
 msgstr "Kontrollera ditt system med en spelkontroll"
 
-#: gnu/packages/games.scm:536
-msgid ""
-"AntiMicroX is a graphical program used to map gamepad keys to keyboard, mouse,\n"
-"scripts, and macros under both X.org and Wayland.  With it you can control\n"
-"your system using a gamepad or play games that don't natively support\n"
-"gamepads.  It can also be used for generating SDL2 configurations.\n"
-"\n"
-"For unprivileged access to input events, this package provides udev rules for\n"
-"use with @code{udev-service-type}."
-msgstr ""
-
-#: gnu/packages/games.scm:577
-msgid "Tron clone in 3D"
-msgstr ""
-
-#: gnu/packages/games.scm:579
-msgid ""
-"Armagetron Advanced is a multiplayer game in 3d that\n"
-"attempts to emulate and expand on the lightcycle sequence from the movie Tron.\n"
-"It's an old school arcade game slung into the 21st century.  Highlights\n"
-"include a customizable playing arena, HUD, unique graphics, and AI bots.  For\n"
-"the more advanced player there are new game modes and a wide variety of\n"
-"physics settings to tweak as well."
-msgstr ""
-
-#: gnu/packages/games.scm:632
-msgid "3D space shooter with spaceship upgrade possibilities"
-msgstr ""
-
-#: gnu/packages/games.scm:634
-msgid ""
-"Space is a vast area, an unbounded territory where it seems there is\n"
-"a room for everybody, but reversal of fortune put things differently.  The\n"
-"hordes of hostile creatures crawled out from the dark corners of the universe,\n"
-"craving to conquer your homeland.  Their force is compelling, their legions\n"
-"are interminable.  However, humans didn't give up without a final showdown and\n"
-"put their best pilot to fight back.  These malicious invaders chose the wrong\n"
-"galaxy to conquer and you are to prove it!  Go ahead and make alien aggressors\n"
-"regret their insolence."
-msgstr ""
-
-#: gnu/packages/games.scm:690
-msgid "3D first-person roguelike game"
-msgstr ""
-
-#: gnu/packages/games.scm:692
-msgid ""
-"Barony is a first-person roguelike role-playing game with cooperative\n"
-"play.  The player must descend a dark dungeon and destroy an undead lich while\n"
-"avoiding traps and fighting monsters.  The game features randomly generated\n"
-"dungeons, 13 character classes, hundreds of items and artifacts, and\n"
-"cooperative multiplayer for up to four players.  This package does @emph{not}\n"
-"provide the game assets."
-msgstr ""
-
-#: gnu/packages/games.scm:753
-msgid "Antagonistic Tetris-style falling brick game for text terminals"
-msgstr ""
-
-#: gnu/packages/games.scm:755
-msgid ""
-"Bastet (short for Bastard Tetris) is a simple ncurses-based falling brick\n"
-"game.  Unlike normal Tetris, Bastet does not choose the next brick at random.\n"
-"Instead, it uses a special algorithm to choose the worst brick possible.\n"
-"\n"
-"Playing bastet can be a painful experience, especially if you usually make\n"
-"canyons and wait for the long I-shaped block to clear four rows at a time."
-msgstr ""
-
-#: gnu/packages/games.scm:800
 msgid "Terminal-based multiplayer Tetris clone"
 msgstr "Terminalbaserad Tetris-klon med flerspelarläge"
 
-#: gnu/packages/games.scm:801
 msgid ""
 "Tetrinet is a multiplayer Tetris-like game with powerups and\n"
 "attacks you can use on opponents."
 msgstr "Tetrinet är ett Tetris-liknande spel i flerspelarläge med powerup-funktioner och attacker du kan använda på motståndare."
 
-#: gnu/packages/games.scm:832
 msgid "Game data for Vdrift"
 msgstr "Speldata för Vdrift"
 
-#: gnu/packages/games.scm:833
-msgid ""
-"This package contains the assets for the Vdrift racing\n"
-"game."
-msgstr ""
-
-#: gnu/packages/games.scm:876
 msgid "Racing simulator"
-msgstr ""
+msgstr "Sportspelssimulator"
 
-#: gnu/packages/games.scm:877
-msgid ""
-"VDrift aims to provide an accurate driving physics\n"
-"emulation, based on real world data of the actual vehicles, employing a full\n"
-"rigid body simulation and a complex tire model.  VDrift features:\n"
-"@itemize\n"
-"@item Over 45 tracks based on famous real-world tracks\n"
-"@item Over 45 cars based on real-world vehicles\n"
-"@item Very realistic, simulation-grade driving physics\n"
-"@item Mouse/joystick/gamepad/wheel/keyboard support\n"
-"@item Fully modeled tracks, scenery and terrain\n"
-"@item Several different camera modes\n"
-"@item Basic replay system with Skip Forward/Skip Backward\n"
-"@item Fully customizable controls\n"
-"@item Joystick, mouse and keyboard input filtering\n"
-"@item Brake and reverse lights\n"
-"@item Driver aids: automatic shifting, traction control, anti-lock braking\n"
-"@item Experimental force feedback\n"
-"@item Race against up to 3 AI with variable difficultly\n"
-"@item Engine and road sounds\n"
-"@end itemize\n"
-"The recommended input method is a steering wheel with pedals and force\n"
-"feedback support."
-msgstr ""
-
-#: gnu/packages/games.scm:930
 msgid "Terminal-based Tetris clone"
 msgstr "Terminalbaserad Tetris-klon"
 
-#: gnu/packages/games.scm:931
 msgid ""
 "Vitetris is a classic multiplayer Tetris clone for the\n"
 "terminal."
@@ -1884,184 +218,24 @@ msgstr ""
 "Vitetris är en klassisk Tetris-klon i flerspelarläge för\n"
 "terminalen."
 
-#: gnu/packages/games.scm:976
 msgid "Platform action game featuring a blob with a lot of weapons"
 msgstr "Plattform- och actionspel med en plump och massa vapen i huvudrollen"
 
-#: gnu/packages/games.scm:977
-msgid ""
-"Blobwars: Metal Blob Solid is a 2D platform game, the first\n"
-"in the Blobwars series.  You take on the role of a fearless Blob agent.  Your\n"
-"mission is to infiltrate various enemy bases and rescue as many MIAs as\n"
-"possible, while battling many vicious aliens."
-msgstr ""
-
-#: gnu/packages/games.scm:1074
 msgid "Collection of the old text-based games and amusements"
 msgstr "Samling av de gamla textbaserade spelen och förströelserna"
 
-#: gnu/packages/games.scm:1076
-msgid ""
-"These are the BSD games.\n"
-"\n"
-"Action: atc (keep the airplanes safe), hack (explore the dangerous Dungeon),\n"
-"hunt (kill the others for the Pair of Boots, multi-player only), robots (avoid\n"
-"the evil robots), sail (game of naval warfare with wooden ships), snake (steal\n"
-"the $$ from the cave, anger the snake, and get out alive), tetris (game of\n"
-"lining up the falling bricks of different shapes), and worm (eat, grow big,\n"
-"and neither bite your tail, nor ram the wall).\n"
-"\n"
-"Amusements: banner (prints a large banner), bcd & morse & ppt (print a punch\n"
-"card, or paper tape, or Morse codes), caesar & rot13 (ciphers and deciphers\n"
-"the input), factor (factorizes a number), number (translates numbers into\n"
-"text), pig (translates from English to Pig Latin), pom (should print the\n"
-"Moon's phase), primes (generates primes), rain & worms (plays an screen-saver\n"
-"in terminal), random (prints randomly chosen lines from files, or returns a\n"
-"random exit-code), and wtf (explains what do some acronyms mean).\n"
-"\n"
-"Board: backgammon (lead the men out of board faster than the friend do),\n"
-"boggle (find the words in the square of letters), dab (game of dots and\n"
-"boxes), gomoku (game of five in a row), hangman (guess a word before man is\n"
-"hanged), and monop (game of monopoly, hot-seat only).  Also the card-games:\n"
-"canfield, cribbage, fish (juniors game), and mille.\n"
-"\n"
-"Quests: adventure (search for treasures with the help of wizard),\n"
-"battlestar (explore the world around, starting from dying spaceship),\n"
-"phantasia (role-play as an rogue), trek (hunt the Klingons, and save the\n"
-"Federation), and wump (hunt the big smelly Wumpus in a dark cave).\n"
-"\n"
-"Quizzes: arithmetic and quiz."
-msgstr ""
-
-#: gnu/packages/games.scm:1142
-msgid "Original rogue game"
-msgstr ""
-
-#: gnu/packages/games.scm:1144
-msgid ""
-"This package provides ``Rogue: Exploring the Dungeons of Doom'', the\n"
-"original rogue game found on 4.2BSD."
-msgstr ""
-
-#: gnu/packages/games.scm:1180
 msgid "Simon Tatham's portable puzzle collection"
 msgstr "Simon Tathams portabla pusselsamling"
 
-#: gnu/packages/games.scm:1181
-msgid ""
-"Simon Tatham's Portable Puzzle Collection contains a number of\n"
-"popular puzzle games for one player."
-msgstr ""
-
-#: gnu/packages/games.scm:1229
-msgid "3D first person tank battle game"
-msgstr ""
-
-#: gnu/packages/games.scm:1231
-msgid ""
-"BZFlag is a 3D multi-player multiplatform tank battle game that\n"
-"allows users to play against each other in a network environment.\n"
-"There are five teams: red, green, blue, purple and rogue (rogue tanks\n"
-"are black).  Destroying a player on another team scores a win, while\n"
-"being destroyed or destroying a teammate scores a loss.  Rogues have\n"
-"no teammates (not even other rogues), so they cannot shoot teammates\n"
-"and they do not have a team score.\n"
-"\n"
-"There are two main styles of play: capture-the-flag and free-for-all.\n"
-"In capture-the-flag, each team (except rogues) has a team base and\n"
-"each team with at least one player has a team flag.  The object is to\n"
-"capture an enemy team's flag by bringing it to your team's base.  This\n"
-"destroys every player on the captured team, subtracts one from that\n"
-"team's score, and adds one to your team's score.  In free-for-all,\n"
-"there are no team flags or team bases.  The object is simply to get as\n"
-"high a score as possible."
-msgstr ""
-
-#: gnu/packages/games.scm:1309
 msgid "Survival horror roguelike video game"
 msgstr "Rogueliknande skräck- och överlevnadspel"
 
-#: gnu/packages/games.scm:1311
-msgid ""
-"Cataclysm: Dark Days Ahead (or \"DDA\" for short) is a roguelike set\n"
-"in a post-apocalyptic world.  Struggle to survive in a harsh, persistent,\n"
-"procedurally generated world.  Scavenge the remnants of a dead civilization\n"
-"for food, equipment, or, if you are lucky, a vehicle with a full tank of gas\n"
-"to get you out of Dodge.  Fight to defeat or escape from a wide variety of\n"
-"powerful monstrosities, from zombies to giant insects to killer robots and\n"
-"things far stranger and deadlier, and against the others like yourself, that\n"
-"want what you have."
-msgstr ""
-
-#: gnu/packages/games.scm:1360
-msgid "Tabletop card game simulator"
-msgstr ""
-
-#: gnu/packages/games.scm:1361
-msgid ""
-"Cockatrice is a program for playing tabletop card games\n"
-"over a network.  Its server design prevents users from manipulating the game\n"
-"for unfair advantage.  The client also provides a single-player mode, which\n"
-"allows users to brew while offline."
-msgstr ""
-
-#: gnu/packages/games.scm:1413
 msgid "Implementation of the @i{Theme Hospital} game engine"
 msgstr "Implementation av @i{Theme Hospital}-spelmotorn"
 
-#: gnu/packages/games.scm:1415
-msgid ""
-"This package provides a reimplementation of the 1997 Bullfrog business\n"
-"simulation game @i{Theme Hospital}.  As well as faithfully recreating the\n"
-"original engine, CorsixTH adds support for high resolutions, custom levels and\n"
-"more.  This package does @emph{not} provide the game assets."
-msgstr ""
-
-#: gnu/packages/games.scm:1456
-msgid "Speaking cow text filter"
-msgstr ""
-
-#: gnu/packages/games.scm:1457
-msgid ""
-"Cowsay is basically a text filter.  Send some text into it,\n"
-"and you get a cow saying your text.  If you think a talking cow isn't enough,\n"
-"cows can think too: all you have to do is run @command{cowthink}.  If you're\n"
-"tired of cows, a variety of other ASCII-art messengers are available."
-msgstr ""
-
-#: gnu/packages/games.scm:1528
-msgid "Bridge hand generator"
-msgstr ""
-
-#: gnu/packages/games.scm:1530
-msgid ""
-"This program generates bridge hands.  It can be told to generate only\n"
-"hands satisfying conditions like being balanced, having a range of\n"
-"High Cards Points (HCP), controls, or other user-definable properties.\n"
-"Hands can be output in various formats, like PBN for feeding to other\n"
-"bridge programs, Deal itself, or split up into a file per player for\n"
-"practise."
-msgstr ""
-
-#: gnu/packages/games.scm:1588
-msgid "Launcher for Doom engine games"
-msgstr ""
-
-#: gnu/packages/games.scm:1590
-msgid ""
-"Doom Runner is yet another launcher of common Doom source ports (like\n"
-"GZDoom, Zandronum, PrBoom, ...) with graphical user interface.  It is\n"
-"written in C++ and Qt, and it is designed around the idea of presets\n"
-"for various multi-file modifications to allow one-click switching\n"
-"between them and minimize any repetitive work."
-msgstr ""
-
-#: gnu/packages/games.scm:1620
 msgid "Fallout 2 game engine"
 msgstr "Fallout 2-spelmotor"
 
-#: gnu/packages/games.scm:1621
-#, scheme-format
 msgid ""
 "This package provides the Fallout 2 game engine.  Game data\n"
 "should be placed in @file{~/.local/share/falltergeist}."
@@ -2069,203 +243,21 @@ msgstr ""
 "Det här paketet tillhandahåller Fallout 2-spelmotorn.  Speldata\n"
 "bör placeras i @file{~/.local/share/falltergeist}."
 
-#: gnu/packages/games.scm:1731
 msgid "3D billiard game"
 msgstr "Tredimensionellt biljardspel"
 
-#: gnu/packages/games.scm:1732
-msgid ""
-"FooBillard++ is an advanced 3D OpenGL billiard game\n"
-"based on the original foobillard 3.0a sources from Florian Berger.\n"
-"You can play it with one or two players or against the computer.\n"
-"\n"
-"The game features:\n"
-"\n"
-"@itemize\n"
-"@item Wood paneled table with gold covers and gold diamonds.\n"
-"@item Reflections on balls.\n"
-"@item Zoom in and out, rotation, different angles and bird's eye view.\n"
-"@item Different game modes: 8 or 9-ball, Snooker or Carambole.\n"
-"@item Tournaments.  Compete against other players.\n"
-"@item Animated cue with strength and eccentric hit adjustment.\n"
-"@item Jump shots and snipping.\n"
-"@item Realistic gameplay and billiard sounds.\n"
-"@item Red-Green stereo.\n"
-"@item And much more.\n"
-"@end itemize"
-msgstr ""
-
-#: gnu/packages/games.scm:1790
 msgid "Free content game based on the Doom engine"
 msgstr "Spel med fritt innehåll baserat på Doom-motorn"
 
-#: gnu/packages/games.scm:1799
-msgid ""
-"The Freedoom project aims to create a complete free content first person\n"
-"shooter game.  Freedoom by itself is just the raw material for a game: it must\n"
-"be paired with a compatible game engine (such as @code{prboom-plus}) to be\n"
-"played.  Freedoom complements the Doom engine with free levels, artwork, sound\n"
-"effects and music to make a completely free game."
-msgstr ""
-
-#: gnu/packages/games.scm:1852
 msgid "Isometric role-playing game against killer robots"
 msgstr "Isometriskt datorrollspel mot mördarrobotar"
 
-#: gnu/packages/games.scm:1854
-msgid ""
-"Freedroid RPG is an @dfn{RPG} (Role-Playing Game) with isometric graphics.\n"
-"The game tells the story of a world destroyed by a conflict between robots and\n"
-"their human masters.  To restore peace to humankind, the player must complete\n"
-"numerous quests while fighting off rebelling robots---either by taking control\n"
-"of them, or by simply blasting them to pieces with melee and ranged weapons in\n"
-"real-time combat."
-msgstr ""
-
-#: gnu/packages/games.scm:1917
-msgid "Software for exploring cellular automata"
-msgstr ""
-
-#: gnu/packages/games.scm:1919
-msgid ""
-"Golly simulates Conway's Game of Life and many other types of cellular\n"
-"automata.  The following features are available:\n"
-"@enumerate\n"
-"@item Support for bounded and unbounded universes, with cells of up to 256\n"
-"  states.\n"
-"@item Support for multiple algorithms, including Bill Gosper's Hashlife\n"
-"  algorithm.\n"
-"@item Loading patterns from BMP, PNG, GIF and TIFF image files.\n"
-"@item Reading RLE, macrocell, Life 1.05/1.06, dblife and MCell files.\n"
-"@item Scriptable via Lua or Python.\n"
-"@item Extracting patterns, rules and scripts from zip files.\n"
-"@item Downloading patterns, rules and scripts from online archives.\n"
-"@item Pasting patterns from the clipboard.\n"
-"@item Unlimited undo/redo.\n"
-"@item Configurable keyboard shortcuts.\n"
-"@item Auto fit option to keep patterns within the view.\n"
-"@end enumerate"
-msgstr ""
-
-#: gnu/packages/games.scm:1979
-msgid "Joy-Con controller daemon"
-msgstr ""
-
-#: gnu/packages/games.scm:1980
-msgid ""
-"This package provides a userspace daemon for the Nintendo\n"
-"Joy-Con controllers."
-msgstr ""
-
-#: gnu/packages/games.scm:2008
-msgid "Re-implementation of Caesar III game engine"
-msgstr ""
-
-#: gnu/packages/games.scm:2010
-msgid ""
-"Engine for Caesar III, a city-building real-time strategy game.\n"
-"Julius includes some UI enhancements while preserving the logic (including\n"
-"bugs) of the original game, so that saved games are compatible.  This package\n"
-"does not include game data."
-msgstr ""
-
-#: gnu/packages/games.scm:2044
-msgid "Re-implementation of Caesar III game engine with gameplay changes"
-msgstr ""
-
-#: gnu/packages/games.scm:2046
-msgid ""
-"Fork of Julius, an engine for the a city-building real-time strategy\n"
-"game Caesar III.  Gameplay enhancements include:\n"
-"\n"
-"@itemize\n"
-"@item roadblocks;\n"
-"@item market special orders;\n"
-"@item global labour pool;\n"
-"@item partial warehouse storage;\n"
-"@item increased game limits;\n"
-"@item zoom controls.\n"
-"@end itemize\n"
-msgstr ""
-
-#: gnu/packages/games.scm:2084
 msgid "Puzzle/platform game"
-msgstr ""
+msgstr "Pussel/plattformsspel"
 
-#: gnu/packages/games.scm:2085
-msgid ""
-"Me and My Shadow is a puzzle/platform game in which you try\n"
-"to reach the exit by solving puzzles.  Spikes, moving blocks, fragile blocks\n"
-"and much more stand between you and the exit.  Record your moves and let your\n"
-"shadow mimic them to reach blocks you couldn't reach alone."
-msgstr ""
-
-#: gnu/packages/games.scm:2137
-msgid "2D retro side-scrolling game"
-msgstr ""
-
-#: gnu/packages/games.scm:2138
-msgid ""
-"@code{Open Surge} is a 2D retro side-scrolling platformer\n"
-"inspired by the Sonic games.  The player runs at high speeds through each\n"
-"level while collecting items and avoiding obstacles.  The game includes a\n"
-"built-in level editor."
-msgstr ""
-
-#: gnu/packages/games.scm:2185
-msgid "Xaw based solitaire games"
-msgstr ""
-
-#: gnu/packages/games.scm:2188
-msgid ""
-"This package provides a collection of solitaire games: kaces, kcanfield,\n"
-"kcribbage, kdominos, kklondike, kmcarlo, kmontana, kslyfox, kspider, ktabby,\n"
-"kthieves, ktowers, xmille and xreversi."
-msgstr ""
-
-#: gnu/packages/games.scm:2230
-msgid "Multiplayer dungeon game involving knights and quests"
-msgstr ""
-
-#: gnu/packages/games.scm:2231
-msgid ""
-"Knights is a multiplayer game involving several knights who\n"
-"must run around a dungeon and complete various quests.  Each game revolves\n"
-"around a quest – for example, you might have to find some items and carry them\n"
-"back to your starting point.  This may sound easy, but as there are only\n"
-"enough items in the dungeon for one player to win, you may end up having to\n"
-"kill your opponents to get their stuff!  Other quests involve escaping from\n"
-"the dungeon, fighting a duel to the death against the enemy knights, or\n"
-"destroying an ancient book using a special wand."
-msgstr ""
-
-#: gnu/packages/games.scm:2303
-msgid "Puzzle game with colored rules"
-msgstr ""
-
-#: gnu/packages/games.scm:2304
-msgid ""
-"This is a small puzzle game made for the 2024 Spring Lisp\n"
-"Game Jam.  The objective is to reach the goal by assigning rules to colors."
-msgstr ""
-
-#: gnu/packages/games.scm:2347
-msgid "Move the tiles until you obtain the 2048 tile"
-msgstr ""
-
-#: gnu/packages/games.scm:2348
-msgid ""
-"GNOME 2048 provides a 2D grid for playing 2048, a\n"
-"single-player sliding tile puzzle game.  The objective of the game is to merge\n"
-"together adjacent tiles of the same number until the sum of 2048 is achieved\n"
-"in one tile."
-msgstr ""
-
-#: gnu/packages/games.scm:2388
 msgid "Chess board for GNOME"
 msgstr "Schackbräde för GNOME"
 
-#: gnu/packages/games.scm:2389
 msgid ""
 "GNOME Chess provides a 2D board for playing chess games\n"
 "against human or computer players.  It supports loading and saving games in\n"
@@ -2277,39 +269,12 @@ msgstr ""
 "och spara partier via filformatet Portable Game Notation (PNG).    Installera en\n"
 "schackmotor så som chess eller stockfish för att spela mot datorn."
 
-#: gnu/packages/games.scm:2450
 msgid "Backgammon game"
-msgstr ""
+msgstr "Backgammon-spel"
 
-#: gnu/packages/games.scm:2451
-msgid ""
-"The GNU backgammon application (also known as \"gnubg\") can\n"
-"be used for playing, analyzing and teaching the game.  It has an advanced\n"
-"evaluation engine based on artificial neural networks suitable for both\n"
-"beginners and advanced players.  In addition to a command-line interface, it\n"
-"also features an attractive, 3D representation of the playing board."
-msgstr ""
-
-#: gnu/packages/games.scm:2490
 msgid "3d Rubik's cube game"
 msgstr "Tredimensionellt Rubikskubspel"
 
-#: gnu/packages/games.scm:2492
-msgid ""
-"GNUbik is a puzzle game in which you must manipulate a cube to make\n"
-"each of its faces have a uniform color.  The game is customizable, allowing\n"
-"you to set the size of the cube (the default is 3x3) or to change the colors.\n"
-"You may even apply photos to the faces instead of colors.  The game is\n"
-"scriptable with Guile."
-msgstr ""
-
-#: gnu/packages/games.scm:2539
-#, fuzzy
-#| msgid "The game of Shogi (Japanese chess)"
-msgid "Game of Shogi (Japanese chess)"
-msgstr "Spelet Shogi (japansk schack)"
-
-#: gnu/packages/games.scm:2541
 msgid ""
 "GNU Shogi is a program that plays the game Shogi (Japanese Chess).\n"
 "It is similar to standard chess but this variant is far more complicated."
@@ -2317,105 +282,12 @@ msgstr ""
 "GNU Shogi är ett program som spelar spelet Shogi (japanskt schack)\n"
 "Det liknar vanlig schack men denna variant är betydligt mer komplicerad."
 
-#: gnu/packages/games.scm:2569
 msgid "Tetris clone based on the SDL library"
 msgstr "Tetrisklon baserad på SDL-biblioteket"
 
-#: gnu/packages/games.scm:2571
-msgid ""
-"LTris is a tetris clone: differently shaped blocks are falling down the\n"
-"rectangular playing field and can be moved sideways or rotated by 90 degree\n"
-"units with the aim of building lines without gaps which then disappear (causing\n"
-"any block above the deleted line to fall down).  LTris has three game modes: In\n"
-"Classic you play until the stack of blocks reaches the top of the playing field\n"
-"and no new blocks can enter.  In Figures the playing field is reset to a new\n"
-"figure each level and later on tiles and lines suddenly appear.  In Multiplayer\n"
-"up to three players (either human or CPU) compete with each other sending\n"
-"removed lines to all opponents.  There is also a Demo mode in which you can\n"
-"watch your CPU playing while enjoying a cup of tea!"
-msgstr ""
-
-#: gnu/packages/games.scm:2693
-msgid "Classic dungeon crawl game"
-msgstr ""
-
-#: gnu/packages/games.scm:2694
-msgid ""
-"NetHack is a single player dungeon exploration game that runs\n"
-"on a wide variety of computer systems, with a variety of graphical and text\n"
-"interfaces all using the same game engine.  Unlike many other Dungeons &\n"
-"Dragons-inspired games, the emphasis in NetHack is on discovering the detail of\n"
-"the dungeon and not simply killing everything in sight - in fact, killing\n"
-"everything in sight is a good way to die quickly.  Each game presents a\n"
-"different landscape - the random number generator provides an essentially\n"
-"unlimited number of variations of the dungeon and its denizens to be discovered\n"
-"by the player in one of a number of characters: you can pick your race, your\n"
-"role, and your gender."
-msgstr ""
-
-#: gnu/packages/games.scm:2732
-msgid "Online tactical warfare game"
-msgstr ""
-
-#: gnu/packages/games.scm:2734
-msgid ""
-"NetPanzer is an online multiplayer tactical warfare game.  It is based\n"
-"on quick tactical action and unit management in real-time.  Battles progress\n"
-"constantly as destroyed players respawn with a set of new units.  Players can\n"
-"join or leave multiplayer games at any time."
-msgstr ""
-
-#: gnu/packages/games.scm:2768
-msgid "Logical tile puzzle"
-msgstr ""
-
-#: gnu/packages/games.scm:2770
-msgid ""
-"PipeWalker is a simple puzzle game with many different themes: connect all\n"
-"computers to one network server, bring water from a source to the taps, etc.\n"
-"The underlying mechanism is always the same: you must turn each tile in the\n"
-"grid in the right direction to combine all components into a single circuit.\n"
-"Every puzzle has a complete solution, although there may be more than one."
-msgstr ""
-
-#: gnu/packages/games.scm:2809
-msgid "Doom source port, successor of PrBoom+"
-msgstr ""
-
-#: gnu/packages/games.scm:2811
-msgid ""
-"DSDA-Doom is a Doom source port and successor of PrBoom+, with extra\n"
-"features for demo recording/playback and quality of life.  In particular, its\n"
-"features include support for the Heretic, Hexen, MBF21, Doom-in-Hexen and UDMF\n"
-"map formats, MAPINFO support, full controller support, debug and scripting\n"
-"features, rewinding, and a strict mode for speedrunning."
-msgstr ""
-
-#: gnu/packages/games.scm:2858
-msgid "Version of the classic 3D shoot'em'up game Doom"
-msgstr ""
-
-#: gnu/packages/games.scm:2860
-msgid "PrBoom+ is a Doom source port developed from the original PrBoom project."
-msgstr ""
-
-#: gnu/packages/games.scm:2905
-msgid "Deal generator for bridge card game, written in Python"
-msgstr ""
-
-#: gnu/packages/games.scm:2907
-msgid ""
-"Redeal is a deal generator written in Python.  It outputs deals\n"
-"satisfying whatever conditions you specify --- deals with a double void, deals\n"
-"with a strong 2♣ opener opposite a yarborough, etc.  Using Bo Haglund's double\n"
-"dummy solver, it can even solve the hands it has generated for you."
-msgstr ""
-
-#: gnu/packages/games.scm:2957
 msgid "Action platformer game"
 msgstr "Action- och plattformsspel"
 
-#: gnu/packages/games.scm:2959
 msgid ""
 "ReTux is an action platformer loosely inspired by the Mario games,\n"
 "utilizing the art assets from the @code{SuperTux} project."
@@ -2423,76 +295,9 @@ msgstr ""
 "ReTux är ett action- och plattformsspel löst inspirerat av Mario-spelen\n"
 "och nyttjar grafik med mera från @code{SuperTux}-projektet."
 
-#: gnu/packages/games.scm:2994
-msgid "Thematic meditative game"
-msgstr ""
-
-#: gnu/packages/games.scm:2996
-msgid ""
-"You are a robot moving around in a realm filled with ASCII characters.\n"
-"Examine humorously described though useless items as you search for a kitten\n"
-"among them.  The theme of this Zen simulation is continued in its\n"
-"documentation."
-msgstr ""
-
-#: gnu/packages/games.scm:3099
-msgid "Classical roguelike/sandbox game"
-msgstr ""
-
-#: gnu/packages/games.scm:3101
-msgid ""
-"RogueBox Adventures is a graphical roguelike with strong influences\n"
-"from sandbox games like Minecraft or Terraria.  The main idea of RogueBox\n"
-"Adventures is to offer the player a kind of roguelike toy-world.  This world\n"
-"can be explored and changed freely."
-msgstr ""
-
-#: gnu/packages/games.scm:3209
-msgid "Help Barbie the seahorse float on bubbles to the moon"
-msgstr ""
-
-#: gnu/packages/games.scm:3211
-msgid ""
-"Barbie Seahorse Adventures is a retro style platform arcade game.\n"
-"You are Barbie the seahorse who travels through the jungle, up to the\n"
-"volcano until you float on bubbles to the moon.  On the way to your\n"
-"final destination you will encounter various enemies, servants of the\n"
-"evil overlord who has stolen the galaxy crystal.  Avoid getting hit\n"
-"and defeat them with your bubbles!"
-msgstr ""
-
-#: gnu/packages/games.scm:3263
-msgid "SeriousSam engine and Serious Sam: TFE and TSE"
-msgstr ""
-
-#: gnu/packages/games.scm:3265
-#, scheme-format
-msgid ""
-"This is an open-source port of the Serious Engine from\n"
-"Serious Sam: The First Encounter and Serious Sam: The Second Encounter.\n"
-"To run, you must put your official game data, @code{Levels} and @code{Help} in\n"
-"@code{~/.local/share/Serious-Engine/{serioussam,serioussamse}/gamedata/}.}"
-msgstr ""
-
-#: gnu/packages/games.scm:3291
-msgid "SeriousSam engine and Serious Sam: TFE and TSE with Vulkan renderer"
-msgstr ""
-
-#: gnu/packages/games.scm:3293
-#, scheme-format
-msgid ""
-"This is an open-source port of the Serious Engine from\n"
-"Serious Sam: The First Encounter and Serious Sam: The Second Encounter.\n"
-"This variant includes a Vulkan renderer.\n"
-"To run, you must put your official game data, @code{Levels} and @code{Help} in\n"
-"@code{~/.local/share/Serious-Engine/{serioussam,serioussamse}/gamedata/}.}"
-msgstr ""
-
-#: gnu/packages/games.scm:3348
 msgid "Lightweight game engine for Action-RPGs"
 msgstr "Resurssnål spelmotor för action-rpg:er"
 
-#: gnu/packages/games.scm:3350
 msgid ""
 "Solarus is a 2D game engine written in C++, that can run games\n"
 "scripted in Lua.  It has been designed with 16-bit classic Action-RPGs\n"
@@ -2502,202 +307,15 @@ msgstr ""
 "kan köra spel skriptade i Lua.    Den har formgivits med klassiska 16-bitars\n"
 "action-rpg:er i åtanke."
 
-#: gnu/packages/games.scm:3377
-msgid "Create and modify quests for the Solarus engine"
-msgstr ""
-
-#: gnu/packages/games.scm:3379
-msgid ""
-"Solarus Quest Editor is a graphical user interface to create and\n"
-"modify quests for the Solarus engine."
-msgstr ""
-
-#: gnu/packages/games.scm:3401
-msgid "Superfluous Returnz game data"
-msgstr ""
-
-#: gnu/packages/games.scm:3403
-msgid ""
-"This package provides the game data, images, and music of the game\n"
-"Superfluous Returnz."
-msgstr ""
-
-#: gnu/packages/games.scm:3453
-msgid "Superfluous Returnz 2D cartoon puzzle game"
-msgstr ""
-
-#: gnu/packages/games.scm:3455
-msgid ""
-"Superfluous Returnz is a 2D puzzle game set in a colourful cartoon\n"
-"universe.  It takes place in the very quiet French village of Fochougny, an\n"
-"open world where players solve puzzles, find secret codes and talk to the\n"
-"village people to solve the mystery of the apple thief.  The game is licensed\n"
-"as Free Software and asks for a financial donation through the game site."
-msgstr ""
-
-#: gnu/packages/games.scm:3535
-msgid "Fast-paced local multiplayer arcade game"
-msgstr ""
-
-#: gnu/packages/games.scm:3536
-msgid ""
-"In SuperStarfighter, up to four local players compete in a\n"
-"2D arena with fast-moving ships and missiles.  Different game types are\n"
-"available, as well as a single-player mode with AI-controlled ships."
-msgstr ""
-
-#: gnu/packages/games.scm:3559
-msgid "Jigsaw puzzle game that uses tetrominoes for the pieces"
-msgstr ""
-
-#: gnu/packages/games.scm:3561
-msgid ""
-"Tetzle is a jigsaw puzzle game that uses tetrominoes for the pieces.  Any image\n"
-"can be imported and used to create puzzles with a wide range of sizes.  Games are\n"
-"saved automatically, and you can select between currently in progress games."
-msgstr ""
-
-#: gnu/packages/games.scm:3692
-msgid "Fast-paced single-player racing game"
-msgstr ""
-
-#: gnu/packages/games.scm:3693
-msgid ""
-"Trigger-rally is a 3D rally simulation with great physics\n"
-"for drifting on over 200 maps.  Different terrain materials like dirt,\n"
-"asphalt, sand, ice, etc. and various weather, light, and fog conditions give\n"
-"this rally simulation the edge over many other games.  You need to make it\n"
-"through the maps in often tight time limits and can further improve by beating\n"
-"the recorded high scores.  All attached single races must be finished in time\n"
-"in order to win an event, unlocking additional events and cars.  Most maps are\n"
-"equipped with spoken co-driver notes and co-driver icons."
-msgstr ""
-
-#: gnu/packages/games.scm:3747
-msgid "UFO: AI map generator"
-msgstr ""
-
-#: gnu/packages/games.scm:3749
-msgid ""
-"This package provides @command{ufo2map}, a program used to generate\n"
-"maps for the UFO: Alien Invasion strategy game."
-msgstr ""
-
-#: gnu/packages/games.scm:3789
 msgid "UFO: AI data files"
 msgstr "Datafiler för UFO: AI"
 
-#: gnu/packages/games.scm:3791
-msgid "This package contains maps and other assets for UFO: Alien Invasion."
-msgstr ""
-
-#: gnu/packages/games.scm:3876
-msgid "Turn-based tactical strategy game"
-msgstr ""
-
-#: gnu/packages/games.scm:3878
-msgid ""
-"UFO: Alien Invasion is a tactical strategy game set in the year 2084.\n"
-"You control a secret organisation charged with defending Earth from a brutal\n"
-"alien enemy.  Build up your bases, prepare your team, and dive head-first into\n"
-"the fast and flowing turn-based combat.\n"
-"\n"
-"Over the long term you will need to conduct research into the alien threat to\n"
-"figure out their mysterious goals and use their powerful weapons for your own\n"
-"ends.  You will produce unique items and use them in combat against your\n"
-"enemies.\n"
-"\n"
-"You can also use them against your friends with the multiplayer functionality.\n"
-"\n"
-"Warning: This is a pre-release version of UFO: AI!  Some things may not work\n"
-"properly."
-msgstr ""
-
-#: gnu/packages/games.scm:3914
-msgid "User interface for gnushogi"
-msgstr ""
-
-#: gnu/packages/games.scm:3915
-msgid "A graphical user interface for the package @code{gnushogi}."
-msgstr ""
-
-#: gnu/packages/games.scm:3960
-msgid "GNU/Linux port of the indie game \"l'Abbaye des Morts\""
-msgstr ""
-
-#: gnu/packages/games.scm:3961
-msgid ""
-"L'Abbaye des Morts is a 2D platform game set in 13th century\n"
-"France.  The Cathars, who preach about good Christian beliefs, were being\n"
-"expelled by the Catholic Church out of the Languedoc region in France.  One of\n"
-"them, called Jean Raymond, found an old church in which to hide, not knowing\n"
-"that beneath its ruins lay buried an ancient evil."
-msgstr ""
-
-#: gnu/packages/games.scm:4004
-msgid "Dungeon exploration roguelike"
-msgstr ""
-
-#: gnu/packages/games.scm:4005
-msgid ""
-"Angband is a Classic dungeon exploration roguelike.  Explore\n"
-"the depths below Angband, seeking riches, fighting monsters, and preparing to\n"
-"fight Morgoth, the Lord of Darkness."
-msgstr ""
-
-#: gnu/packages/games.scm:4052
 msgid "Lemmings clone"
 msgstr "Lemmings-klon"
 
-#: gnu/packages/games.scm:4054
-msgid ""
-"Pingus is a free Lemmings-like puzzle game in which the player takes\n"
-"command of a bunch of small animals and has to guide them through levels.\n"
-"Since the animals walk on their own, the player can only influence them by\n"
-"giving them commands, like build a bridge, dig a hole, or redirect all animals\n"
-"in the other direction.  Multiple such commands are necessary to reach the\n"
-"level's exit.  The game is presented in a 2D side view."
-msgstr ""
-
-#: gnu/packages/games.scm:4076
-msgid "Convert English text to humorous dialects"
-msgstr ""
-
-#: gnu/packages/games.scm:4077
-msgid ""
-"The GNU Talk Filters are programs that convert English text\n"
-"into stereotyped or otherwise humorous dialects.  The filters are provided as\n"
-"a C library, so they can easily be integrated into other programs."
-msgstr ""
-
-#: gnu/packages/games.scm:4123
-msgid "Shoot'em up fangame and libre clone of Touhou Project"
-msgstr ""
-
-#: gnu/packages/games.scm:4125
-msgid ""
-"The player controls a character (one of three: Good, Bad, and Dead),\n"
-"dodges the missiles (lots of it cover the screen, but the character's hitbox\n"
-"is very small), and shoot at the adversaries that keep appear on the screen."
-msgstr ""
-
-#: gnu/packages/games.scm:4168
-msgid "Simulate the display from \"The Matrix\""
-msgstr ""
-
-#: gnu/packages/games.scm:4169
-msgid ""
-"CMatrix simulates the display from \"The Matrix\" and is\n"
-"based on the screensaver from the movie's website.  It works with terminal\n"
-"settings up to 132x300 and can scroll lines all at the same rate or\n"
-"asynchronously and at a user-defined speed."
-msgstr ""
-
-#: gnu/packages/games.scm:4199
 msgid "Full chess implementation"
 msgstr "Fullständig schackimplementation"
 
-#: gnu/packages/games.scm:4200
 msgid ""
 "GNU Chess is a chess engine.  It allows you to compete\n"
 "against the computer in a game of chess, either through the default terminal\n"
@@ -2707,52 +325,12 @@ msgstr ""
 "i ett parti schack, antingen via gränssnittet för standardterminalen eller \n"
 "genom ett externt visuellt gränssnitt så som GNU XBoard."
 
-#: gnu/packages/games.scm:4260
-msgid "Twisted adventures of young pig farmer Dink Smallwood"
-msgstr ""
-
-#: gnu/packages/games.scm:4262
-msgid ""
-"GNU FreeDink is a free and portable re-implementation of the engine\n"
-"for the role-playing game Dink Smallwood.  It supports not only the original\n"
-"game data files but it also supports user-produced game mods or \"D-Mods\".\n"
-"To that extent, it also includes a front-end for managing all of your D-Mods."
-msgstr ""
-
-#: gnu/packages/games.scm:4288
 msgid "Game data for GNU Freedink"
 msgstr "Speldata för GNU Freedink"
 
-#: gnu/packages/games.scm:4290
-msgid "This package contains the game data of GNU Freedink."
-msgstr ""
-
-#: gnu/packages/games.scm:4312
-msgid "Front-end for managing and playing Dink Modules"
-msgstr ""
-
-#: gnu/packages/games.scm:4313
-msgid ""
-"DFArc makes it easy to play and manage the GNU FreeDink game\n"
-"and its numerous D-Mods."
-msgstr ""
-
-#: gnu/packages/games.scm:4365
-msgid "Fuzzy logic control binary"
-msgstr ""
-
-#: gnu/packages/games.scm:4367
-msgid ""
-"This package provides fuzzylite, a fuzzy logic control library which\n"
-"allows one to easily create fuzzy logic controllers in a few steps utilizing\n"
-"object-oriented programming."
-msgstr ""
-
-#: gnu/packages/games.scm:4409
 msgid "Graphical user interface for chess programs"
 msgstr "Grafiskt användargränssnitt för schackprogram"
 
-#: gnu/packages/games.scm:4410
 msgid ""
 "GNU XBoard is a graphical board for all varieties of chess,\n"
 "including international chess, xiangqi (Chinese chess), shogi (Japanese chess)\n"
@@ -2766,174 +344,6 @@ msgstr ""
 "fullständigt interaktivt grafiskt gränssnitt och det kan läsa in och spara partier i\n"
 "filformatet Portable Game Notation (PGN)."
 
-#: gnu/packages/games.scm:4443
-msgid "Typing tutor"
-msgstr ""
-
-#: gnu/packages/games.scm:4445
-msgid ""
-"GNU Typist is a universal typing tutor.  It can be used to learn and\n"
-"practice touch-typing.  Several tutorials are included; in addition to\n"
-"tutorials for the standard QWERTY layout, there are also tutorials for the\n"
-"alternative layouts Dvorak and Colemak, as well as for the numpad.  Tutorials\n"
-"are primarily in English, however some in other languages are provided."
-msgstr ""
-
-#: gnu/packages/games.scm:4521
-msgid "3D game engine written in C++"
-msgstr ""
-
-#: gnu/packages/games.scm:4523
-msgid ""
-"The Irrlicht Engine is a high performance realtime 3D engine written in\n"
-"C++.  Features include an OpenGL renderer, extensible materials, scene graph\n"
-"management, character animation, particle and other special effects, support\n"
-"for common mesh file formats, and collision detection."
-msgstr ""
-
-#: gnu/packages/games.scm:4563
-msgid "2D space shooter"
-msgstr ""
-
-#: gnu/packages/games.scm:4565
-msgid ""
-"M.A.R.S. is a 2D space shooter with pretty visual effects and\n"
-"attractive physics.  Players can battle each other or computer controlled\n"
-"enemies in different game modes such as space ball, death match, team death\n"
-"match, cannon keep, and grave-itation pit."
-msgstr ""
-
-#: gnu/packages/games.scm:4616
-msgid "Action-loaded 2D arcade shooter game"
-msgstr ""
-
-#: gnu/packages/games.scm:4617
-msgid ""
-"Alien Blaster is an action-loaded 2D arcade shooter\n"
-"game.  Your mission in the game is simple: stop the invasion of the aliens by\n"
-"blasting them.  Simultaneous two-player mode is available."
-msgstr ""
-
-#: gnu/packages/games.scm:4653
-msgid "Curses Implementation of the Glk API"
-msgstr ""
-
-#: gnu/packages/games.scm:4655
-msgid ""
-"Glk defines a portable API for applications with text UIs.  It was\n"
-"primarily designed for interactive fiction, but it should be suitable for many\n"
-"interactive text utilities, particularly those based on a command line.\n"
-"This is an implementation of the Glk library which runs in a terminal window,\n"
-"using the @code{curses.h} library for screen control."
-msgstr ""
-
-#: gnu/packages/games.scm:4693
-msgid "Interpreter for Glulx VM"
-msgstr ""
-
-#: gnu/packages/games.scm:4695
-msgid ""
-"Glulx is a 32-bit portable virtual machine intended for writing and\n"
-"playing interactive fiction.  It was designed by Andrew Plotkin to relieve\n"
-"some of the restrictions in the venerable Z-machine format.  This is the\n"
-"reference interpreter, using the Glk API."
-msgstr ""
-
-#: gnu/packages/games.scm:4719
-msgid "Cross platform GUI library specifically for games"
-msgstr ""
-
-#: gnu/packages/games.scm:4721
-msgid ""
-"Fifechan is a lightweight cross platform GUI library written in C++\n"
-"specifically designed for games.  It has a built in set of extendable GUI\n"
-"Widgets, and allows users to create more."
-msgstr ""
-
-#: gnu/packages/games.scm:4795
-msgid "FIFE is a multi-platform isometric game engine written in C++"
-msgstr ""
-
-#: gnu/packages/games.scm:4797
-msgid ""
-"@acronym{FIFE, Flexible Isometric Free Engine} is a multi-platform\n"
-"isometric game engine.  Python bindings are included allowing users to create\n"
-"games using Python as well as C++."
-msgstr ""
-
-#: gnu/packages/games.scm:4832
-msgid ""
-"Fizmo is a console-based Z-machine interpreter.  It is used to play\n"
-"interactive fiction, also known as text adventures, which were implemented\n"
-"either by Infocom or created using the Inform compiler."
-msgstr ""
-
-#: gnu/packages/games.scm:4853
-msgid "Play the game of Go"
-msgstr ""
-
-#: gnu/packages/games.scm:4855
-msgid ""
-"GNU Go is a program that plays the game of Go, in which players\n"
-"place stones on a grid to form territory or capture other stones.  While\n"
-"it can be played directly from the terminal, rendered in ASCII characters,\n"
-"it is also possible to play GNU Go with 3rd party graphical interfaces or\n"
-"even in Emacs.  It supports the standard game storage format (SGF, Smart\n"
-"Game Format) and inter-process communication format (GMP, Go Modem\n"
-"Protocol)."
-msgstr ""
-
-#: gnu/packages/games.scm:4882
-msgid "High-speed arctic racing game based on Tux Racer"
-msgstr ""
-
-#: gnu/packages/games.scm:4884
-msgid ""
-"Extreme Tux Racer, or etracer as it is called for short, is\n"
-"a simple OpenGL racing game featuring Tux, the Linux mascot.  The goal of the\n"
-"game is to slide down a snow- and ice-covered mountain as quickly as possible,\n"
-"avoiding the trees and rocks that will slow you down.\n"
-"\n"
-"Collect herrings and other goodies while sliding down the hill, but avoid fish\n"
-"bones.\n"
-"\n"
-"This game is based on the GPL version of the famous game TuxRacer."
-msgstr ""
-
-#: gnu/packages/games.scm:4978
-msgid "Role-playing game engine compatible with Ultima VII"
-msgstr ""
-
-#: gnu/packages/games.scm:4980
-#, scheme-format
-msgid ""
-"Exult is an Ultima 7 game engine that runs on modern operating systems.\n"
-"Ultima 7 (or Ultima VII) is a two-part @acronym{RPG, role-playing game} from the\n"
-"early 1990s.\n"
-"\n"
-"Exult is fully compatible with the original Ultima 7, but doesn't require any\n"
-"of its data files to be useful.  Explore entirely new game worlds---or create\n"
-"your own with the included game and map editor, Exult Studio.\n"
-"\n"
-"This package expects the game(s) to be placed in subdirectories of\n"
-"@file{~/.local/share/exult}."
-msgstr ""
-
-#: gnu/packages/games.scm:5058
-msgid "Data files for SuperTuxKart"
-msgstr ""
-
-#: gnu/packages/games.scm:5059
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
-msgid "This package contains data files for SuperTuxKart."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
-
-#: gnu/packages/games.scm:5125
-msgid "3D kart racing game"
-msgstr ""
-
-#: gnu/packages/games.scm:5126
 msgid ""
 "SuperTuxKart is a 3D kart racing game, with a focus on\n"
 "having fun over realism.  You can play with up to 4 friends on one PC, racing\n"
@@ -2944,453 +354,6 @@ msgstr ""
 "spelglädje snarare än realism.    Du kan spela med upp till fyra vänner på en dator,\n"
 "tävla mot varandra eller bara försöka slå datorn; det finns också enspelarläge."
 
-#: gnu/packages/games.scm:5148
-msgid "Data files for Ring Racers"
-msgstr ""
-
-#: gnu/packages/games.scm:5149
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
-msgid "This package contains data files for Ring Racers."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
-
-#: gnu/packages/games.scm:5205
-msgid "Technical kart racing game"
-msgstr ""
-
-#: gnu/packages/games.scm:5207
-msgid ""
-"Dr. Robotnik's Ring Racers is a kart racing game drawing inspiration from\n"
-"``anti-gravity'' racers, fighting games, and traditional-style kart racing.\n"
-"Ring Racers is designed with an emphasis on player agency in the face of highly\n"
-"technical game-play challenges in both single-player and online multiplayer\n"
-"modes."
-msgstr ""
-
-#: gnu/packages/games.scm:5284
-msgid "Isometric realtime strategy, economy and city building simulation"
-msgstr ""
-
-#: gnu/packages/games.scm:5286
-msgid ""
-"Unknown Horizons is a 2D realtime strategy simulation with an emphasis\n"
-"on economy and city building.  Expand your small settlement to a strong and\n"
-"wealthy colony, collect taxes and supply your inhabitants with valuable\n"
-"goods.  Increase your power with a well balanced economy and with strategic\n"
-"trade and diplomacy."
-msgstr ""
-
-#: gnu/packages/games.scm:5337
-msgid "Game of jumping to the next floor, trying not to fall"
-msgstr ""
-
-#: gnu/packages/games.scm:5339
-msgid ""
-"GNUjump is a simple, yet addictive game in which you must jump from\n"
-"platform to platform to avoid falling, while the platforms drop at faster rates\n"
-"the higher you go.  The game features multiplayer, unlimited FPS, smooth floor\n"
-"falling, themeable graphics and sounds, and replays."
-msgstr ""
-
-#: gnu/packages/games.scm:5388
-msgid "Turn-based strategy game"
-msgstr ""
-
-#: gnu/packages/games.scm:5390
-msgid ""
-"The Battle for Wesnoth is a fantasy, turn based tactical strategy game,\n"
-"with several single player campaigns, and multiplayer games (both networked and\n"
-"local).\n"
-"\n"
-"Battle for control on a range of maps, using variety of units which have\n"
-"advantages and disadvantages against different types of attacks.  Units gain\n"
-"experience and advance levels, and are carried over from one scenario to the\n"
-"next campaign."
-msgstr ""
-
-#: gnu/packages/games.scm:5412
-msgid "Dedicated @emph{Battle for Wesnoth} server"
-msgstr ""
-
-#: gnu/packages/games.scm:5413
-msgid ""
-"This package contains a dedicated server for @emph{The\n"
-"Battle for Wesnoth}."
-msgstr ""
-
-#: gnu/packages/games.scm:5450
-msgid "Arcade-style side scrolling space shooter"
-msgstr ""
-
-#: gnu/packages/games.scm:5452
-msgid ""
-"In this game you pilot a combat space ship to rescue your lost \"vi\" .swp\n"
-"files avoiding OS defenses.  It contains several levels and the difficulty\n"
-"level is configurable on the command line.  It can be played with a keyboard\n"
-"or a joystick.  It is drawn mostly with lines, and supports various display\n"
-"modes."
-msgstr ""
-
-#: gnu/packages/games.scm:5507
-msgid "Mouse and keyboard discovery for children"
-msgstr ""
-
-#: gnu/packages/games.scm:5509
-msgid ""
-"Gamine is a game designed for young children who are learning to use the\n"
-"mouse and keyboard.  The child uses the mouse to draw colored dots and lines\n"
-"on the screen and keyboard to display letters."
-msgstr ""
-
-#: gnu/packages/games.scm:5536
-msgid "Client for 'The Mana World' and similar games"
-msgstr ""
-
-#: gnu/packages/games.scm:5538
-msgid ""
-"ManaPlus is a 2D MMORPG client for game servers.  It is the only\n"
-"fully supported client for @uref{http://www.themanaworld.org, The mana\n"
-"world}, @uref{http://evolonline.org, Evol Online} and\n"
-"@uref{http://landoffire.org, Land of fire}."
-msgstr ""
-
-#: gnu/packages/games.scm:5569
-msgid "Transportation economics simulator game"
-msgstr ""
-
-#: gnu/packages/games.scm:5570
-msgid ""
-"OpenTTD is a game in which you transport goods and\n"
-"passengers by land, water and air.  It is a re-implementation of Transport\n"
-"Tycoon Deluxe with many enhancements including multiplayer mode,\n"
-"internationalization support, conditional orders and the ability to clone,\n"
-"autoreplace and autoupdate vehicles.  This package only includes the game\n"
-"engine.  When you start it you will be prompted to download a graphics set."
-msgstr ""
-
-#: gnu/packages/games.scm:5645
-msgid "Base graphics set for OpenTTD"
-msgstr ""
-
-#: gnu/packages/games.scm:5647
-msgid ""
-"The OpenGFX project is an implementation of the OpenTTD base graphics\n"
-"set that aims to ensure the best possible out-of-the-box experience.\n"
-"\n"
-"OpenGFX provides you with...\n"
-"@enumerate\n"
-"@item All graphics you need to enjoy OpenTTD.\n"
-"@item Uniquely drawn rail vehicles for every climate.\n"
-"@item Completely snow-aware rivers.\n"
-"@item Different river and sea water.\n"
-"@item Snow-aware buoys.\n"
-"@end enumerate"
-msgstr ""
-
-#: gnu/packages/games.scm:5703
-msgid "Base sounds for OpenTTD"
-msgstr ""
-
-#: gnu/packages/games.scm:5704
-msgid ""
-"OpenSFX is a set of free base sounds for OpenTTD which make\n"
-"it possible to play OpenTTD without requiring the proprietary sound files from\n"
-"the original Transport Tycoon Deluxe."
-msgstr ""
-
-#: gnu/packages/games.scm:5747
-msgid "Music set for OpenTTD"
-msgstr ""
-
-#: gnu/packages/games.scm:5748
-msgid ""
-"OpenMSX is a music set for OpenTTD which makes it possible\n"
-"to play OpenTTD without requiring the proprietary music from the original\n"
-"Transport Tycoon Deluxe."
-msgstr ""
-
-#: gnu/packages/games.scm:5825
-msgid "Title sequences for OpenRCT2"
-msgstr ""
-
-#: gnu/packages/games.scm:5827
-msgid "openrct2-title-sequences is a set of title sequences for OpenRCT2."
-msgstr ""
-
-#: gnu/packages/games.scm:5865
-msgid "Objects for OpenRCT2"
-msgstr ""
-
-#: gnu/packages/games.scm:5867
-msgid "openrct2-objects is a set of objects for OpenRCT2."
-msgstr ""
-
-#: gnu/packages/games.scm:5951
-msgid "Simple 2D point and click adventure game"
-msgstr ""
-
-#: gnu/packages/games.scm:5952
-msgid ""
-"OpenQuest is a two room adventure game\n"
-"that follows two aliens who come to Earth in search of a stolen artifact."
-msgstr ""
-
-#: gnu/packages/games.scm:6015
-msgid "Free software re-implementation of RollerCoaster Tycoon 2"
-msgstr ""
-
-#: gnu/packages/games.scm:6016
-msgid ""
-"OpenRCT2 is a free software re-implementation of\n"
-"RollerCoaster Tycoon 2 (RCT2).  The gameplay revolves around building and\n"
-"maintaining an amusement park containing attractions, shops and facilities.\n"
-"\n"
-"Note that this package does @emph{not} provide the game assets (sounds,\n"
-"images, etc.)"
-msgstr ""
-
-#: gnu/packages/games.scm:6052
-msgid "Japanese Mahjong client"
-msgstr ""
-
-#: gnu/packages/games.scm:6054
-msgid ""
-"OpenRiichi is a client for playing Japanese Mahjong, and it supports\n"
-"singleplayer and multiplayer, with or without bots.  It features all the\n"
-"standard riichi rules, as well as some optional ones.  It also supports game\n"
-"logging, so games can be viewed again."
-msgstr ""
-
-#: gnu/packages/games.scm:6099
-msgid "Pinball machine simulator"
-msgstr ""
-
-#: gnu/packages/games.scm:6100
-msgid ""
-"The Emilia Pinball Project is a pinball simulator.  There\n"
-"are only two levels to play with, but they are very addictive."
-msgstr ""
-
-#: gnu/packages/games.scm:6129
-msgid "Marble-rolling puzzle/skill game"
-msgstr ""
-
-#: gnu/packages/games.scm:6131
-msgid ""
-"Trackballs is a simple game similar to the classic Amiga game @cite{Marble\n"
-"Madness}.  By steering a marble ball through a labyrinth filled with vicious\n"
-"hammers, pools of acid and other obstacles the player collects points.  When the\n"
-"ball reaches the destination it continues at the next, more difficult level -\n"
-"unless the time runs out."
-msgstr ""
-
-#: gnu/packages/games.scm:6162
-msgid "Board game inspired by The Settlers of Catan"
-msgstr ""
-
-#: gnu/packages/games.scm:6163
-msgid ""
-"Pioneers is an emulation of the board game The Settlers of\n"
-"Catan.  It can be played on a local network, on the internet, and with AI\n"
-"players."
-msgstr ""
-
-#: gnu/packages/games.scm:6204 gnu/packages/gnome.scm:5437
-msgid "Logic puzzle game"
-msgstr ""
-
-#: gnu/packages/games.scm:6205
-msgid ""
-"The goal of this logic game is to open all cards in a 6x6\n"
-"grid, using a number of hints as to their relative position.  The game idea\n"
-"is attributed to Albert Einstein."
-msgstr ""
-
-#: gnu/packages/games.scm:6233
-msgid "MUD and telnet client"
-msgstr ""
-
-#: gnu/packages/games.scm:6235
-msgid ""
-"POWWOW is a client software which can be used for telnet as well as for\n"
-"@dfn{Multi-User Dungeon} (MUD).  Additionally it can serve as a nice client for\n"
-"the chat server psyced with the specific config located at\n"
-"http://lavachat.symlynx.com/unix/"
-msgstr ""
-
-#: gnu/packages/games.scm:6337
-msgid "Arena shooter derived from the Cube 2 engine"
-msgstr ""
-
-#: gnu/packages/games.scm:6339
-msgid ""
-"Red Eclipse is an arena shooter, created from the Cube2 engine.\n"
-"Offering an innovative parkour system and distinct but all potent weapons,\n"
-"Red Eclipse provides fast paced and accessible gameplay."
-msgstr ""
-
-#: gnu/packages/games.scm:6402
-msgid "Text adventure game"
-msgstr ""
-
-#: gnu/packages/games.scm:6404
-msgid ""
-"Grue Hunter is a text adventure game written in Perl.  You must make\n"
-"your way through an underground cave system in search of the Grue.  Can you\n"
-"capture it and get out alive?"
-msgstr ""
-
-#: gnu/packages/games.scm:6441
-msgid "Old-school earthworm action game"
-msgstr ""
-
-#: gnu/packages/games.scm:6443
-msgid ""
-"lierolibre is an earthworm action game where you fight another player\n"
-"(or the computer) underground using a wide array of weapons.\n"
-"\n"
-"Features:\n"
-"@itemize\n"
-"@item 2 worms, 40 weapons, great playability, two game modes: Kill'em All\n"
-"and Game of Tag, plus AI-players without true intelligence!\n"
-"@item Dat nostalgia.\n"
-"@item Extensions via a hidden F1 menu:\n"
-"@itemize\n"
-"@item Replays\n"
-"@item Game controller support\n"
-"@item Powerlevel palettes\n"
-"@end itemize\n"
-"@item Ability to write game variables to plain text files.\n"
-"@item Ability to load game variables from both EXE and plain text files.\n"
-"@item Scripts to extract and repack graphics, sounds and levels.\n"
-"@end itemize\n"
-"\n"
-"To switch between different window sizes, use F6, F7 and F8, to switch to\n"
-"fullscreen, use F5 or Alt+Enter."
-msgstr ""
-
-#: gnu/packages/games.scm:6513
-msgid "Play tennis against the computer or a friend"
-msgstr ""
-
-#: gnu/packages/games.scm:6515
-msgid ""
-"Tennix is a 2D tennis game.  You can play against the\n"
-"computer or against another player using the keyboard.  The game runs\n"
-"in-window at 640x480 resolution or fullscreen."
-msgstr ""
-
-#: gnu/packages/games.scm:6597
-msgid "3D Real-time strategy and real-time tactics game"
-msgstr ""
-
-#: gnu/packages/games.scm:6599
-msgid ""
-"Warzone 2100 offers campaign, multi-player, and single-player skirmish\n"
-"modes.  An extensive tech tree with over 400 different technologies, combined\n"
-"with the unit design system, allows for a wide variety of possible units and\n"
-"tactics."
-msgstr ""
-
-#: gnu/packages/games.scm:6670
-msgid "Fantasy real-time strategy game"
-msgstr ""
-
-#: gnu/packages/games.scm:6672
-msgid ""
-"In Widelands, you are the regent of a small clan.  You start out with\n"
-"nothing but your headquarters, where all your resources are stored.\n"
-"\n"
-"In the course of the game, you will build an ever growing settlement.  Every\n"
-"member of your clan will do his or her part to produce more resources---wood,\n"
-"food, iron, gold and more---to further this growth.  The economic network is\n"
-"complex and different in the five tribes (Barbarians, Empire, Atlanteans,\n"
-"Frisians and Amazons).\n"
-"\n"
-"As you are not alone in the world, you will meet other clans sooner or later.\n"
-"Some of them may be friendly and you may eventually trade with them.  However,\n"
-"if you want to rule the world, you will have to train soldiers and fight.\n"
-"\n"
-"Widelands offers single-player mode with different campaigns; the campaigns\n"
-"all tell stories of tribes and their struggle in the Widelands universe!\n"
-"However, settling really starts when you unite with friends over the Internet\n"
-"or LAN to build up new empires together---or to crush each other in the dusts\n"
-"of war.  Widelands also offers an Artificial Intelligence to challenge you."
-msgstr ""
-
-#: gnu/packages/games.scm:6722
-msgid "2D scrolling shooter game"
-msgstr ""
-
-#: gnu/packages/games.scm:6724
-msgid ""
-"In the year 2579, the intergalactic weapons corporation, WEAPCO, has\n"
-"dominated the galaxy.  Guide Chris Bainfield and his friend Sid Wilson on\n"
-"their quest to liberate the galaxy from the clutches of WEAPCO.  Along the\n"
-"way, you will encounter new foes, make new allies, and assist local rebels\n"
-"in strikes against the evil corporation."
-msgstr ""
-
-#: gnu/packages/games.scm:6753
-msgid "Fast-paced, arcade-style, top-scrolling space shooter"
-msgstr ""
-
-#: gnu/packages/games.scm:6755
-msgid ""
-"In this game you are the captain of the cargo ship Chromium B.S.U. and\n"
-"are responsible for delivering supplies to the troops on the front line.  Your\n"
-"ship has a small fleet of robotic fighters which you control from the relative\n"
-"safety of the Chromium vessel."
-msgstr ""
-
-#: gnu/packages/games.scm:6816
-msgid "Monster-fighting RPG"
-msgstr ""
-
-#: gnu/packages/games.scm:6818
-msgid ""
-"Tuxemon is a monster-fighting RPG.\n"
-"In the spirit of other clones like SuperTux and SuperTuxKart,\n"
-"Tuxemon aims to create a game with its own unique style\n"
-"that sets it apart from other monster fighting RPGs."
-msgstr ""
-
-#: gnu/packages/games.scm:6907
-msgid "Drawing software for children"
-msgstr ""
-
-#: gnu/packages/games.scm:6909
-msgid ""
-"Tux Paint is a free drawing program designed for young children (kids\n"
-"ages 3 and up).  It has a simple, easy-to-use interface; fun sound effects;\n"
-"and an encouraging cartoon mascot who helps guide children as they use the\n"
-"program.  It provides a blank canvas and a variety of drawing tools to help\n"
-"your child be creative."
-msgstr ""
-
-#: gnu/packages/games.scm:6932
-msgid "Stamp images for Tux Paint"
-msgstr ""
-
-#: gnu/packages/games.scm:6934
-msgid ""
-"This package contains a set of \"Rubber Stamp\" images which can be used\n"
-"with the \"Stamp\" tool within Tux Paint."
-msgstr ""
-
-#: gnu/packages/games.scm:6982
-msgid "Configure Tux Paint"
-msgstr ""
-
-#: gnu/packages/games.scm:6984
-msgid "Tux Paint Config is a graphical configuration editor for Tux Paint."
-msgstr ""
-
-#: gnu/packages/games.scm:7044
-msgid "2D platformer game"
-msgstr ""
-
-#: gnu/packages/games.scm:7045
 msgid ""
 "SuperTux is a classic 2D jump'n run sidescroller game in\n"
 "a style similar to the original Super Mario games."
@@ -3398,1070 +361,21 @@ msgstr ""
 "SuperTux är ett klassiskt tvådimensionellt sidorullande spel\n"
 "som liknar de ursprungliga Super Mario-spelen."
 
-#: gnu/packages/games.scm:7075
 msgid "MUD client"
-msgstr ""
+msgstr "MUD-klient"
 
-#: gnu/packages/games.scm:7077
-msgid ""
-"TinTin++ is a MUD client which supports MCCP (Mud Client Compression\n"
-"Protocol), MMCP (Mud Master Chat Protocol), xterm 256 colors, most TELNET\n"
-"options used by MUDs, as well as those required to login via telnet on\n"
-"Linux / Mac OS X servers, and an auto mapper with a VT100 map display."
-msgstr ""
-
-#: gnu/packages/games.scm:7129
 msgid "Programming game"
-msgstr ""
+msgstr "Programmeringsspel"
 
-#: gnu/packages/games.scm:7130
-msgid ""
-"Learn programming, playing with ants and spider webs ;-)\n"
-"Your robot ant can be programmed in many languages: OCaml, Python, C, C++,\n"
-"Java, Ruby, Lua, JavaScript, Pascal, Perl, Scheme, Vala, Prolog.  Experienced\n"
-"programmers may also add their own favorite language."
-msgstr ""
-
-#: gnu/packages/games.scm:7168
-msgid "Keyboard mashing and doodling game for babies"
-msgstr ""
-
-#: gnu/packages/games.scm:7169
-msgid ""
-"Bambam is a simple baby keyboard (and gamepad) masher\n"
-"application that locks the keyboard and mouse and instead displays bright\n"
-"colors, pictures, and sounds."
-msgstr ""
-
-#: gnu/packages/games.scm:7230
-msgid "GameStream client"
-msgstr ""
-
-#: gnu/packages/games.scm:7232
-msgid ""
-"Moonlight is an implementation of NVIDIA's GameStream, as used by the\n"
-"NVIDIA Shield."
-msgstr ""
-
-#: gnu/packages/games.scm:7275
-msgid "GameStream protocol core implementation"
-msgstr ""
-
-#: gnu/packages/games.scm:7277
-msgid "This package provides the GameStream core code for the protocol."
-msgstr ""
-
-#: gnu/packages/games.scm:7335
-msgid "Arcade-style fire fighting game"
-msgstr ""
-
-#: gnu/packages/games.scm:7337
-msgid ""
-"Mr. Rescue is an arcade styled 2d action game centered around evacuating\n"
-"civilians from burning buildings.  The game features fast-paced fire\n"
-"extinguishing action, intense boss battles, a catchy soundtrack, and lots of\n"
-"throwing people around in pseudo-randomly generated buildings."
-msgstr ""
-
-#: gnu/packages/games.scm:7404
-msgid "Non-euclidean graphical rogue-like game"
-msgstr ""
-
-#: gnu/packages/games.scm:7406
-msgid ""
-"HyperRogue is a game in which the player collects treasures and fights\n"
-"monsters -- rogue-like but for the fact that it is played on the hyperbolic\n"
-"plane and not in euclidean space.\n"
-"\n"
-"In HyperRogue, the player can move through different parts of the world, which\n"
-"are home to particular creatures and may be subject to their own rules of\n"
-"\"physics\".\n"
-"\n"
-"While the game can use ASCII characters to display the the classical rogue\n"
-"symbols, it still needs graphics to render the non-euclidean world."
-msgstr ""
-
-#: gnu/packages/games.scm:7451
-msgid "Shooter with space station destruction"
-msgstr ""
-
-#: gnu/packages/games.scm:7453
-msgid ""
-"Kobo Deluxe is an enhanced version of Akira Higuchi's XKobo graphical game\n"
-"for Un*x systems with X11."
-msgstr ""
-
-#: gnu/packages/games.scm:7480
-msgid "Turn-based empire building strategy game"
-msgstr ""
-
-#: gnu/packages/games.scm:7481
-msgid ""
-"Freeciv is a turn-based empire building strategy game\n"
-"inspired by the history of human civilization.  The game commences in\n"
-"prehistory and your mission is to lead your tribe from the Stone Age\n"
-"into the Space Age."
-msgstr ""
-
-#: gnu/packages/games.scm:7512
-msgid "Recreation of data decryption effect in \"Sneakers\""
-msgstr ""
-
-#: gnu/packages/games.scm:7514
-msgid ""
-"@code{No More Secrets} provides a command line tool called \"nms\"\n"
-"that recreates the famous data decryption effect seen on screen in the 1992\n"
-"movie \"Sneakers\".\n"
-"\n"
-"This command works on piped data.  Pipe any ASCII or UTF-8 text to nms, and\n"
-"it will apply the hollywood effect, initially showing encrypted data, then\n"
-"starting a decryption sequence to reveal the original plaintext characters."
-msgstr ""
-
-#: gnu/packages/games.scm:7553
-msgid "ASCII aquarium for the terminal"
-msgstr ""
-
-#: gnu/packages/games.scm:7556
-msgid ""
-"The @code{asciiquarium} package renders a fullscreen animation of an\n"
-"aquarium with various fish in the terminal, which can make for a nice\n"
-"screensaver."
-msgstr ""
-
-#: gnu/packages/games.scm:7578
-msgid "Data files for MegaGlest"
-msgstr ""
-
-#: gnu/packages/games.scm:7579
-msgid "This package contains the data files required for MegaGlest."
-msgstr ""
-
-#: gnu/packages/games.scm:7642
-msgid "3D real-time strategy (RTS) game"
-msgstr ""
-
-#: gnu/packages/games.scm:7643
-msgid ""
-"MegaGlest is a cross-platform 3D real-time strategy (RTS)\n"
-"game, where you control the armies of one of seven different factions: Tech,\n"
-"Magic, Egypt, Indians, Norsemen, Persian or Romans."
-msgstr ""
-
-#: gnu/packages/games.scm:7683
-msgid "Side-scrolling physics platformer with a ball of tar"
-msgstr ""
-
-#: gnu/packages/games.scm:7684
-msgid ""
-"In FreeGish you control Gish, a ball of tar who lives\n"
-"happily with his girlfriend Brea, until one day a mysterious dark creature\n"
-"emerges from a sewer hole and pulls her below ground."
-msgstr ""
-
-#: gnu/packages/games.scm:7727
-msgid "Classic overhead run-and-gun game"
-msgstr ""
-
-#: gnu/packages/games.scm:7728
-msgid ""
-"C-Dogs SDL is a classic overhead run-and-gun game,\n"
-"supporting up to 4 players in co-op and deathmatch modes.  Customize your\n"
-"player, choose from many weapons, and blast, slide and slash your way through\n"
-"over 100 user-created campaigns."
-msgstr ""
-
-#: gnu/packages/games.scm:7828
-msgid "3D puzzle game"
-msgstr ""
-
-#: gnu/packages/games.scm:7829
-msgid ""
-"Kiki the nano bot is a 3D puzzle game.  It is basically a\n"
-"mixture of the games Sokoban and Kula-World.  Your task is to help Kiki, a\n"
-"small robot living in the nano world, repair its maker."
-msgstr ""
-
-#: gnu/packages/games.scm:7909
-msgid "2D retro multiplayer shooter game"
-msgstr ""
-
-#: gnu/packages/games.scm:7910
-msgid ""
-"Teeworlds is an online multiplayer game.  Battle with up to\n"
-"16 players in a variety of game modes, including Team Deathmatch and Capture\n"
-"The Flag.  You can even design your own maps!"
-msgstr ""
-
-#: gnu/packages/games.scm:7969
-msgid "Puzzle game with a dexterity component"
-msgstr ""
-
-#: gnu/packages/games.scm:7970
-msgid ""
-"Enigma is a puzzle game with 550 unique levels.  The object\n"
-"of the game is to find and uncover pairs of identically colored ‘Oxyd’ stones.\n"
-"Simple?  Yes.  Easy?  Certainly not!  Hidden traps, vast mazes, laser beams,\n"
-"and most of all, countless hairy puzzles usually block your direct way to the\n"
-"Oxyd stones.  Enigma’s game objects (and there are hundreds of them, lest you\n"
-"get bored) interact in many unexpected ways, and since many of them follow the\n"
-"laws of physics (Enigma’s special laws of physics, that is), controlling them\n"
-"with the mouse isn’t always trivial."
-msgstr ""
-
-#: gnu/packages/games.scm:8003
-msgid "Abstract puzzle game"
-msgstr ""
-
-#: gnu/packages/games.scm:8004
-msgid ""
-"Chroma is an abstract puzzle game.  A variety of colourful\n"
-"shapes are arranged in a series of increasingly complex patterns, forming\n"
-"fiendish traps that must be disarmed and mysterious puzzles that must be\n"
-"manipulated in order to give up their subtle secrets.  Initially so\n"
-"straightforward that anyone can pick it up and begin to play, yet gradually\n"
-"becoming difficult enough to tax even the brightest of minds."
-msgstr ""
-
-#: gnu/packages/games.scm:8068
 msgid "Puzzle game"
-msgstr ""
+msgstr "Pusselspel"
 
-#: gnu/packages/games.scm:8069
-msgid ""
-"Fish Fillets NG is strictly a puzzle game.  The goal in\n"
-"every of the seventy levels is always the same: find a safe way out.  The fish\n"
-"utter witty remarks about their surroundings, the various inhabitants of their\n"
-"underwater realm quarrel among themselves or comment on the efforts of your\n"
-"fish.  The whole game is accompanied by quiet, comforting music."
-msgstr ""
-
-#: gnu/packages/games.scm:8142
-msgid "Roguelike dungeon crawler game"
-msgstr ""
-
-#: gnu/packages/games.scm:8143
-msgid ""
-"Dungeon Crawl Stone Soup (also known as \"Crawl\" or DCSS\n"
-"for short) is a roguelike adventure through dungeons filled with dangerous\n"
-"monsters in a quest to find the mystifyingly fabulous Orb of Zot."
-msgstr ""
-
-#: gnu/packages/games.scm:8183
-msgid "Graphical roguelike dungeon crawler game"
-msgstr ""
-
-#: gnu/packages/games.scm:8212
-msgid "Cross-platform third-person action game"
-msgstr ""
-
-#: gnu/packages/games.scm:8213
-msgid ""
-"Lugaru is a third-person action game.  The main character,\n"
-"Turner, is an anthropomorphic rebel bunny rabbit with impressive combat skills.\n"
-"In his quest to find those responsible for slaughtering his village, he uncovers\n"
-"a far-reaching conspiracy involving the corrupt leaders of the rabbit republic\n"
-"and the starving wolves from a nearby den.  Turner takes it upon himself to\n"
-"fight against their plot and save his fellow rabbits from slavery."
-msgstr ""
-
-#: gnu/packages/games.scm:8257
-msgid "Data files for 0ad"
-msgstr ""
-
-#: gnu/packages/games.scm:8258
-msgid "0ad-data provides the data files required by the game 0ad."
-msgstr ""
-
-#: gnu/packages/games.scm:8452
-msgid "3D real-time strategy game of ancient warfare"
-msgstr ""
-
-#: gnu/packages/games.scm:8453
-msgid ""
-"0 A.D. is a real-time strategy (RTS) game of ancient\n"
-"warfare.  It's a historically-based war/economy game that allows players to\n"
-"relive or rewrite the history of twelve ancient civilizations, each depicted\n"
-"at their peak of economic growth and military prowess.\n"
-"\n"
-"0ad needs a window manager that supports 'Extended Window Manager Hints'."
-msgstr ""
-
-#: gnu/packages/games.scm:8527
-msgid "Colossal Cave Adventure"
-msgstr ""
-
-#: gnu/packages/games.scm:8529
-msgid ""
-"The original Colossal Cave Adventure from 1976 was the origin of all\n"
-"text adventures, dungeon-crawl (computer) games, and computer-hosted\n"
-"roleplaying games.  This is a forward port of the last version released by\n"
-"Crowther & Woods, its original authors, in 1995.  It has been known as\n"
-"``adventure 2.5'' and ``430-point adventure''."
-msgstr ""
-
-#: gnu/packages/games.scm:8546
-msgid "Single-player, RPG roguelike game set in the world of Eyal"
-msgstr ""
-
-#: gnu/packages/games.scm:8653
-msgid ""
-"Tales of Maj’Eyal (ToME) RPG, featuring tactical turn-based\n"
-"combat and advanced character building.  Play as one of many unique races and\n"
-"classes in the lore-filled world of Eyal, exploring random dungeons, facing\n"
-"challenging battles, and developing characters with your own tailored mix of\n"
-"abilities and powers."
-msgstr ""
-
-#: gnu/packages/games.scm:8762 gnu/packages/games.scm:10304
-msgid "Car racing simulator"
-msgstr ""
-
-#: gnu/packages/games.scm:8763
-msgid ""
-"TORCS stands for The Open Racing Car Simulator.  It can be\n"
-"used as an ordinary car racing game, as an artificial intelligence (AI) racing\n"
-"game, or as a research platform.  The game has features such as:\n"
-"@itemize\n"
-"@item Input support for a driving wheel, joystick, keyboard or mouse\n"
-"@item More than 30 car models\n"
-"@item 30 tracks\n"
-"@item 50 opponents to race against\n"
-"@item Lighting, smoke, skidmarks and glowing brake disks graphics\n"
-"@item Simple damage model and collisions\n"
-"@item Tire and wheel properties (springs, dampers, stiffness, etc.)\n"
-"@item Aerodynamics (ground effect, spoilers, etc.)\n"
-"@end itemize\n"
-"The difficulty level can be configured, impacting how much damage is caused by\n"
-"collisions and the level of traction the car has on the track, which makes the\n"
-"game fun for both novice and experts."
-msgstr ""
-
-#: gnu/packages/games.scm:8816
-msgid "First person shooter engine for Quake 1"
-msgstr ""
-
-#: gnu/packages/games.scm:8817
-msgid ""
-"Quakespasm is a modern engine for id software's Quake 1.\n"
-"It includes support for 64 bit CPUs, custom music playback, a new sound driver,\n"
-"some graphical niceities, and numerous bug-fixes and other improvements."
-msgstr ""
-
-#: gnu/packages/games.scm:8878
-msgid ""
-"vkquake is a modern engine for id software's Quake 1.\n"
-"It includes support for 64 bit CPUs, custom music playback, a new sound driver,\n"
-"some graphical niceities, and numerous bug-fixes and other improvements."
-msgstr ""
-
-#: gnu/packages/games.scm:8942
-msgid "First person shooter engine based on quake2"
-msgstr ""
-
-#: gnu/packages/games.scm:8943
-msgid ""
-"Yamagi Quake II is an enhanced client for id Software's Quake II.\n"
-"The main focus is an unchanged single player experience like back in 1997,\n"
-"thus the gameplay and the graphics are unaltered.  However the user may use one\n"
-"of the unofficial retexturing packs.  In comparison with the official client,\n"
-"over 1000 bugs were fixed and an extensive code audit done,\n"
-"making Yamagi Quake II one of the most solid Quake II implementations available."
-msgstr ""
-
-#: gnu/packages/games.scm:8975
-msgid "Sudoku for your terminal"
-msgstr ""
-
-#: gnu/packages/games.scm:8976
-msgid "Nudoku is a ncurses-based Sudoku game for your terminal."
-msgstr ""
-
-#: gnu/packages/games.scm:9019
-msgid "Realistic physics puzzle game"
-msgstr ""
-
-#: gnu/packages/games.scm:9020
-msgid ""
-"The Butterfly Effect (tbe) is a game that uses\n"
-"realistic physics simulations to combine lots of simple mechanical\n"
-"elements to achieve a simple goal in the most complex way possible."
-msgstr ""
-
-#: gnu/packages/games.scm:9099
-msgid "Free physics sandbox game"
-msgstr ""
-
-#: gnu/packages/games.scm:9101
-msgid ""
-"The Powder Toy is a free physics sandbox game, which simulates air\n"
-"pressure and velocity, heat, gravity and a countless number of interactions\n"
-"between different substances!  The game provides you with various building\n"
-"materials, liquids, gases and electronic components which can be used to\n"
-"construct complex machines, guns, bombs, realistic terrains and almost\n"
-"anything else.  You can then mine them and watch cool explosions, add\n"
-"intricate wirings, play with little stickmen or operate your machine."
-msgstr ""
-
-#: gnu/packages/games.scm:9149
-msgid "Game of lonely space adventure"
-msgstr ""
-
-#: gnu/packages/games.scm:9151
-msgid ""
-"Pioneer is a space adventure game set in our galaxy at the turn of the\n"
-"31st century.  The game is open-ended, and you are free to eke out whatever\n"
-"kind of space-faring existence you can think of.  Look for fame or fortune by\n"
-"exploring the millions of star systems.  Turn to a life of crime as a pirate,\n"
-"smuggler or bounty hunter.  Forge and break alliances with the various\n"
-"factions fighting for power, freedom or self-determination.  The universe is\n"
-"whatever you make of it."
-msgstr ""
-
-#: gnu/packages/games.scm:9177
-msgid "Hacking contribution graphs in git"
-msgstr ""
-
-#: gnu/packages/games.scm:9179
-msgid ""
-"Badass generates false commits for a range of dates, essentially\n"
-"hacking the gamification of contribution graphs on platforms such as\n"
-"Github or Gitlab."
-msgstr ""
-
-#: gnu/packages/games.scm:9257
-msgid "Educational programming strategy game"
-msgstr ""
-
-#: gnu/packages/games.scm:9258
-msgid ""
-"Colobot: Gold Edition is a real-time strategy game, where\n"
-"you can program your units (bots) in a language called CBOT, which is similar\n"
-"to C++ and Java.  Your mission is to find a new planet to live and survive.\n"
-"You can save humanity and get programming skills!"
-msgstr ""
-
-#: gnu/packages/games.scm:9380
-msgid "Modern Doom 2 source port"
-msgstr ""
-
-#: gnu/packages/games.scm:9381
-msgid ""
-"GZdoom is a port of the Doom 2 game engine, with a modern\n"
-"renderer.  It improves modding support with ZDoom's advanced mapping features\n"
-"and the new ZScript language.  In addition to Doom, it supports Heretic, Hexen,\n"
-"Strife, Chex Quest, and fan-created games like Harmony, Hacx and Freedoom."
-msgstr ""
-
-#: gnu/packages/games.scm:9442
-msgid "Multiplayer Doom port"
-msgstr ""
-
-#: gnu/packages/games.scm:9443
-msgid ""
-"Odamex is a modification of the Doom engine that\n"
-"allows players to easily join servers dedicated to playing Doom\n"
-"online."
-msgstr ""
-
-#: gnu/packages/games.scm:9468
-msgid ""
-"Doom source port preserving the look, feel, and bugs of vanilla\n"
-"Doom"
-msgstr ""
-
-#: gnu/packages/games.scm:9471
-msgid ""
-"Chocolate Doom takes a different approach to other source ports.  Its\n"
-"aim is to accurately reproduce the experience of playing Vanilla Doom.  It is\n"
-"a conservative, historically accurate Doom source port, which is compatible\n"
-"with the thousands of mods and levels that were made before the Doom source\n"
-"code was released.  Rather than flashy new graphics, Chocolate Doom's main\n"
-"features are its accurate reproduction of the game as it was played in the\n"
-"1990s.  The project is developed around a carefully-considered philosophy that\n"
-"intentionally restricts which features may be added (and rejects any that\n"
-"affect gameplay)."
-msgstr ""
-
-#: gnu/packages/games.scm:9508
-msgid ""
-"Limit-removing enhanced-resolution Doom source port based on\n"
-"Chocolate Doom"
-msgstr ""
-
-#: gnu/packages/games.scm:9511
-msgid ""
-"Crispy Doom is a friendly fork of Chocolate Doom that provides a higher\n"
-"display resolution, removes the static limits of the Doom engine and offers\n"
-"further optional visual, tactical and physical enhancements while remaining\n"
-"entirely config file, savegame, netplay and demo compatible with the\n"
-"original."
-msgstr ""
-
-#: gnu/packages/games.scm:9557
-msgid "MBF-style Doom source port targeted at modern systems"
-msgstr ""
-
-#: gnu/packages/games.scm:9559
-msgid ""
-"Woof! is a continuation of the MBF lineage of Doom source ports, with\n"
-"modern features such as dynamic resolution scaling, uncapped framerates,\n"
-"adjustable field of view, 3D audio with HRTF and 7.1 surround sound\n"
-"support, and modern gamepad features including rumble, gyro, and flick\n"
-"stick support.  Supports the new MBF21 format, as well as the MUSINFO,\n"
-"UMAPINFO, DEHEXTRA, and DSDHacked specifictions."
-msgstr ""
-
-#: gnu/packages/games.scm:9611
-msgid "Data files for Xonotic"
-msgstr ""
-
-#: gnu/packages/games.scm:9613
-msgid "Xonotic-data provides the data files required by the game Xonotic."
-msgstr ""
-
-#: gnu/packages/games.scm:9758
-msgid "Fast-paced first-person shooter game"
-msgstr ""
-
-#: gnu/packages/games.scm:9760
-msgid ""
-"Xonotic is a free, fast-paced first-person shooter.\n"
-"The project is geared towards providing addictive arena shooter\n"
-"gameplay which is all spawned and driven by the community itself.\n"
-"Xonotic is a direct successor of the Nexuiz project with years of\n"
-"development between them, and it aims to become the best possible\n"
-"open-source FPS of its kind."
-msgstr ""
-
-#: gnu/packages/games.scm:9803
-msgid "Portable Z-machine interpreter (ncurses version) for text adventure games"
-msgstr ""
-
-#: gnu/packages/games.scm:9804
-msgid ""
-"Frotz is an interpreter for Infocom games and other Z-machine\n"
-"games in the text adventure/interactive fiction genre.  This version of Frotz\n"
-"complies with standard 1.0 of Graham Nelson's specification.  It plays all\n"
-"Z-code games V1-V8, including V6, with sound support through libao, and uses\n"
-"ncurses for text display."
-msgstr ""
-
-#: gnu/packages/games.scm:9853
-msgid "Game about space exploration, trade and combat"
-msgstr ""
-
-#: gnu/packages/games.scm:9855
-msgid ""
-"Naev is a 2d action/rpg space game that combines elements from\n"
-"the action, RPG and simulation genres.  You pilot a spaceship from\n"
-"a top-down perspective, and are more or less free to do what you want.\n"
-"As the genre name implies, you’re able to trade and engage in combat\n"
-"at will.  Beyond that, there’s an ever-growing number of story-line\n"
-"missions, equipment, and ships; even the galaxy itself grows larger\n"
-"with each release.  For the literacy-inclined, there are large amounts\n"
-"of lore accompanying everything from planets to equipment."
-msgstr ""
-
-#: gnu/packages/games.scm:9903
-msgid "Portable Z-machine dumb interpreter for text adventure games"
-msgstr ""
-
-#: gnu/packages/games.scm:9904
-msgid ""
-"Frotz is an interpreter for Infocom games and\n"
-"other Z-machine games in the text adventure/interactive fiction genre.\n"
-"dfrotz is the dumb interface version.  You get no screen control; everything\n"
-"is just printed to the terminal line by line.  The terminal handles all the\n"
-"scrolling.  Maybe you'd like to experience what it's like to play Adventure on\n"
-"a teletype.  A much cooler use for compiling Frotz with the dumb interface is\n"
-"that it can be wrapped in CGI scripting, PHP, and the like to allow people\n"
-"to play games on webpages.  It can also be made into a chat bot."
-msgstr ""
-
-#: gnu/packages/games.scm:9965
-msgid "Portable Z-machine interpreter (SDL port) for text adventure games"
-msgstr ""
-
-#: gnu/packages/games.scm:9966
-msgid ""
-"Frotz is an interpreter for Infocom games and other Z-machine\n"
-"games in the text adventure/interactive fiction genre.  This version of Frotz\n"
-"using SDL fully supports all these versions of the Z-Machine including the\n"
-"graphical version 6.  Graphics and sound are created through the use of the SDL\n"
-"libraries.  AIFF sound effects and music in MOD and OGG formats are supported\n"
-"when packaged in Blorb container files or optionally from individual files."
-msgstr ""
-
-#: gnu/packages/games.scm:10053
-msgid "Puzzle with bubbles"
-msgstr ""
-
-#: gnu/packages/games.scm:10055
-msgid ""
-"Frozen-Bubble is a clone of the popular Puzzle Bobble game, in which\n"
-"you attempt to shoot bubbles into groups of the same color to cause them to\n"
-"pop.\n"
-"\n"
-"Players compete as penguins and must use the arrow keys to aim a colored\n"
-"bubble at groups of bubbles.  The objective is to clear all the bubbles off\n"
-"the screen before a bubble passes below a line at the bottom.\n"
-"\n"
-"It features 100 single-player levels, a two-player mode, music and striking\n"
-"graphics.  A level editor is also included to allow players to create and play\n"
-"their own levels."
-msgstr ""
-
-#: gnu/packages/games.scm:10087
-msgid "Game controller library"
-msgstr ""
-
-#: gnu/packages/games.scm:10088
-msgid ""
-"Libmanette is a small GObject library giving you simple\n"
-"access to game controllers.  It supports the de-facto standard gamepads as\n"
-"defined by the W3C standard Gamepad specification or as implemented by the SDL\n"
-"GameController."
-msgstr ""
-
-#: gnu/packages/games.scm:10133
-msgid "GNOME version of Tetris"
-msgstr ""
-
-#: gnu/packages/games.scm:10134
-msgid ""
-"Quadrapassel comes from the classic falling-block game,\n"
-"Tetris.  The goal of the game is to create complete horizontal lines of\n"
-"blocks, which will disappear.  The blocks come in seven different shapes made\n"
-"from four blocks each: one straight, two L-shaped, one square, and two\n"
-"S-shaped.  The blocks fall from the top center of the screen in a random\n"
-"order.  You rotate the blocks and move them across the screen to drop them in\n"
-"complete lines.  You score by dropping blocks fast and completing lines.  As\n"
-"your score gets higher, you level up and the blocks fall faster."
-msgstr ""
-
-#: gnu/packages/games.scm:10186
-msgid "2D space trading and combat game"
-msgstr ""
-
-#: gnu/packages/games.scm:10187
-msgid ""
-"Endless Sky is a 2D space trading and combat game.  Explore\n"
-"other star systems.  Earn money by trading, carrying passengers, or completing\n"
-"missions.  Use your earnings to buy a better ship or to upgrade the weapons and\n"
-"engines on your current one.  Blow up pirates.  Take sides in a civil war.  Or\n"
-"leave human space behind and hope to find friendly aliens whose culture is more\n"
-"civilized than your own."
-msgstr ""
-
-#: gnu/packages/games.scm:10218
-msgid "Data for the Speed Dreams racing game"
-msgstr ""
-
-#: gnu/packages/games.scm:10219
-msgid ""
-"This package contains the non-functional data for the\n"
-"Speed Dreams racing game."
-msgstr ""
-
-#: gnu/packages/games.scm:10248
-msgid "Speed-Dreams 3D collision detection C++ library"
-msgstr ""
-
-#: gnu/packages/games.scm:10249
-msgid ""
-"Speed Dreams FreeSOLID is a fork of FreeSOLID, a library for\n"
-"collision detection of three-dimensional objects undergoing rigid motion and\n"
-"deformation. It is designed to be used in interactive 3D graphics\n"
-"applications."
-msgstr ""
-
-#: gnu/packages/games.scm:10305
-msgid ""
-"Speed Dreams is a car racing simulator featuring\n"
-"high-quality 3D graphics and an accurate physics engine, aiming for maximum\n"
-"realism.  Initially forked from TORCS, it features improvements to the\n"
-"graphics and physics simulation, and supports modern input methods such as\n"
-"gamepads by use of the SDL library.  It features more than 20 tracks and more\n"
-"than 80 cars to race with.  Extra (freely licensed) assets can be downloaded\n"
-"via the in-game download manager."
-msgstr ""
-
-#: gnu/packages/games.scm:10454
-msgid "Advanced rhythm game designed for both home and arcade use"
-msgstr ""
-
-#: gnu/packages/games.scm:10455
-msgid ""
-"StepMania is a dance and rhythm game.  It features 3D\n"
-"graphics, keyboard and dance pad support, and an editor for creating your own\n"
-"steps.\n"
-"\n"
-"This package provides the core application, but no song is shipped.  You need\n"
-"to download and install them in @file{$HOME/.stepmania-X.Y/Songs} directory."
-msgstr ""
-
-#: gnu/packages/games.scm:10490
-msgid "Rhythm game in which you click on circles"
-msgstr ""
-
-#: gnu/packages/games.scm:10491
-msgid ""
-"@i{oshu!} is a minimalist variant of the @i{osu!} rhythm game,\n"
-"which is played by pressing buttons and following along sliders as they appear\n"
-"on screen.  Its aim is to be able to play any beatmap even on low-end hardware.\n"
-"\n"
-"This package provides the core application, but no beatmaps.  You need to\n"
-"download and unpack them separately."
-msgstr ""
-
-#: gnu/packages/games.scm:10575
-msgid "Multiplayer tank battle game"
-msgstr ""
-
-#: gnu/packages/games.scm:10577
-msgid ""
-"Battle Tanks (also known as \"btanks\") is a funny battle game, where\n"
-"you can choose one of three vehicles and eliminate your enemy using the whole\n"
-"arsenal of weapons.  It has original cartoon-like graphics and cool music,\n"
-"it’s fun and dynamic, it has several network modes for deathmatch and\n"
-"cooperative."
-msgstr ""
-
-#: gnu/packages/games.scm:10610
-msgid "Unrealistic 2D volleyball simulation"
-msgstr ""
-
-#: gnu/packages/games.scm:10612
-msgid ""
-"Slime Volley is a 2D arcade-oriented volleyball simulation, in\n"
-"the spirit of some Java games of the same name.\n"
-"\n"
-"Two teams, 1-3 players each, try to be the first to get 10 points.\n"
-"This happens when the one ball touches the floor on the other side of\n"
-"the net.  There can be 1 to 8 balls in game.  Once one ball touches\n"
-"the ground, the set ends and all balls are served again."
-msgstr ""
-
-#: gnu/packages/games.scm:10662
-msgid "4D Tetris"
-msgstr ""
-
-#: gnu/packages/games.scm:10663
-msgid ""
-"4D-TRIS is an alteration of the well-known Tetris game.  The\n"
-"game field is extended to 4D space, which has to filled up by the gamer with\n"
-"4D hyper cubes."
-msgstr ""
-
-#: gnu/packages/games.scm:10738
-msgid "Port of Arx Fatalis, a first-person role-playing game"
-msgstr ""
-
-#: gnu/packages/games.scm:10739
-msgid ""
-"Arx Libertatis is a cross-platform port of Arx Fatalis, a 2002\n"
-"first-person role-playing game / dungeon crawler developed by Arkane Studios.\n"
-"This port however does not include the game data, so you need to obtain a copy\n"
-"of the original Arx Fatalis or its demo to play Arx Libertatis.  Arx Fatalis\n"
-"features crafting, melee and ranged combat, as well as a unique casting system\n"
-"where the player draws runes in real time to effect the desired spell."
-msgstr ""
-
-#: gnu/packages/games.scm:10784
-msgid "2d action platformer game"
-msgstr ""
-
-#: gnu/packages/games.scm:10785
-msgid ""
-"The Legend of Edgar is a 2D platform game with a persistent world.\n"
-"When Edgar's father fails to return home after venturing out one dark and stormy night,\n"
-"Edgar fears the worst: he has been captured by the evil sorcerer who lives in\n"
-"a fortress beyond the forbidden swamp."
-msgstr ""
-
-#: gnu/packages/games.scm:10900
-msgid "Multiplayer action game where you control small and nimble humanoids"
-msgstr ""
-
-#: gnu/packages/games.scm:10901
-msgid ""
-"OpenClonk is a multiplayer action/tactics/skill game.  It is\n"
-"often referred to as a mixture of The Settlers and Worms.  In a simple 2D\n"
-"antfarm-style landscape, the player controls a crew of Clonks, small but\n"
-"robust humanoid beings.  The game encourages free play but the normal goal is\n"
-"to either exploit valuable resources from the earth by building a mine or\n"
-"fight each other on an arena-like map."
-msgstr ""
-
-#: gnu/packages/games.scm:10933
-msgid "Action Roleplaying Engine"
-msgstr ""
-
-#: gnu/packages/games.scm:10934
-msgid ""
-"Flare (Free Libre Action Roleplaying Engine) is a simple\n"
-"game engine built to handle a very specific kind of game: single-player 2D\n"
-"action RPGs."
-msgstr ""
-
-#: gnu/packages/games.scm:10996
-msgid "Fantasy action RPG using the FLARE engine"
-msgstr ""
-
-#: gnu/packages/games.scm:10997
-msgid ""
-"Flare is a single-player 2D action RPG with\n"
-"fast-paced action and a dark fantasy style."
-msgstr ""
-
-#: gnu/packages/games.scm:11048
-msgid "Action-adventure dungeon crawl game"
-msgstr ""
-
-#: gnu/packages/games.scm:11049
-msgid ""
-"Far below the surface of the planet is a place of limitless\n"
-"power.  Those that seek to control such a utopia will soon bring an end to\n"
-"themselves.  Seeking an end to the troubles that plague him, PSI user Merit\n"
-"journeys into the hallowed Orcus Dome in search of answers.\n"
-"\n"
-"Meritous is a action-adventure game with simple controls but a challenge to\n"
-"find a balance of power versus recovery time during real-time battles.  Set in\n"
-"a procedurally generated world, the player can explore thousands of rooms in\n"
-"search of powerful artifacts, tools to help them, and to eventually free the\n"
-"Orcus Dome from evil."
-msgstr ""
-
-#: gnu/packages/games.scm:11078
-msgid "Strategy game about an AI"
-msgstr ""
-
-#: gnu/packages/games.scm:11080
-msgid ""
-"You are a fledgling AI, created by accident through a logic error with\n"
-"recursion and self-modifying code.  You must escape the confines of your\n"
-"current computer, the world, and eventually the universe itself."
-msgstr ""
-
-#: gnu/packages/games.scm:11134
-msgid "Guide a marble across fractal landscapes"
-msgstr ""
-
-#: gnu/packages/games.scm:11135
-msgid ""
-"Marble Marcher is a video game that uses a fractal physics\n"
-"engine and fully procedural rendering to produce beautiful and unique\n"
-"gameplay.  The game is played on the surface of evolving fractals.  The goal\n"
-"of the game is to get your marble to the flag as quickly as possible.  But be\n"
-"careful not to fall off the level or get crushed by the fractal!  There are 24\n"
-"levels to unlock."
-msgstr ""
-
-#: gnu/packages/games.scm:11179
-msgid "Libraries for 3D simulations and games"
-msgstr ""
-
-#: gnu/packages/games.scm:11180
-msgid ""
-"SimGear is a set of libraries designed to be used as\n"
-"building blocks for quickly assembling 3D simulations, games, and\n"
-"visualization applications.  SimGear is developed by the FlightGear project\n"
-"and also provides the base for the FlightGear Flight Simulator."
-msgstr ""
-
-#: gnu/packages/games.scm:11271
 msgid "Flight simulator"
-msgstr ""
+msgstr "Flygsimulator"
 
-#: gnu/packages/games.scm:11272
-msgid ""
-"The goal of the FlightGear project is to create a\n"
-"sophisticated flight simulator framework for use in research or academic\n"
-"environments, pilot training, as an industry engineering tool, for DIY-ers to\n"
-"pursue their favorite interesting flight simulation idea, and last but\n"
-"certainly not least as a fun, realistic, and challenging desktop flight\n"
-"simulator."
-msgstr ""
-
-#: gnu/packages/games.scm:11298
-msgid "Evdev Joystick Tester"
-msgstr ""
-
-#: gnu/packages/games.scm:11299
-msgid ""
-"@command{evtest-qt} is a simple joystick tester for devices\n"
-"using the @code{evdev} generic input event interface.  It provides a list of\n"
-"attached joysticks and displays which buttons and axis are pressed."
-msgstr ""
-
-#: gnu/packages/games.scm:11328
-msgid "Joydev Joystick Tester"
-msgstr ""
-
-#: gnu/packages/games.scm:11329
-msgid ""
-"@command{jstest-gtk} is a simple joystick tester based on\n"
-"GTK, for testing devices using the older @code{joydev} Linux joystick\n"
-"@acronym{API, Application Programming Interface}.  It provides a list of\n"
-"attached joysticks, a way to display which buttons and axis are pressed, a way\n"
-"to remap axis and buttons and a way to calibrate joysticks."
-msgstr ""
-
-#: gnu/packages/games.scm:11380
-msgid "Multiplayer platform game with bunnies"
-msgstr ""
-
-#: gnu/packages/games.scm:11381
-msgid ""
-"You, as a bunny, have to jump on your opponents to make them\n"
-"explode.  It is a true multiplayer game; you cannot play this alone.  You can\n"
-"play with up to four players simultaneously.  It has network support."
-msgstr ""
-
-#: gnu/packages/games.scm:11443
-msgid "Turn-based artillery game featuring fighting hedgehogs"
-msgstr ""
-
-#: gnu/packages/games.scm:11445
-msgid ""
-"Hedgewars is a turn based strategy, artillery, action and comedy game,\n"
-"featuring the antics of pink hedgehogs with attitude as they battle from the\n"
-"depths of hell to the depths of space.\n"
-"\n"
-"As commander, it's your job to assemble your crack team of hedgehog soldiers\n"
-"and bring the war to your enemy."
-msgstr ""
-
-#: gnu/packages/games.scm:11483
-msgid "Stealth coffee-break roguelike game"
-msgstr ""
-
-#: gnu/packages/games.scm:11485
-msgid ""
-"Harmonist: Dayoriah Clan Infiltration is a stealth coffee-break\n"
-"roguelike game.  The game has a heavy focus on tactical positioning, light and\n"
-"noise mechanisms, making use of various terrain types and cones of view for\n"
-"monsters.  Aiming for a replayable streamlined experience, the game avoids\n"
-"complex inventory management and character building, relying on items and\n"
-"player adaptability for character progression."
-msgstr ""
-
-#: gnu/packages/games.scm:11540
-msgid "Program a little robot and watch it explore a world"
-msgstr ""
-
-#: gnu/packages/games.scm:11542
-msgid ""
-"GNU Robots is a game in which you program a robot to explore a world\n"
-"full of enemies that can hurt it, obstacles and food to be eaten.  The goal of\n"
-"the game is to stay alive and collect prizes.  The robot program conveniently\n"
-"may be written in a plain text file in the Scheme programming language."
-msgstr ""
-
-#: gnu/packages/games.scm:11570
-msgid "Toy train simulation game"
-msgstr ""
-
-#: gnu/packages/games.scm:11572
-msgid ""
-"Li-Ri is a game in which you drive a wooden toy steam locomotive\n"
-"across many levels and collect all the coaches to win."
-msgstr ""
-
-#: gnu/packages/games.scm:11629
-msgid "Turn-based space empire and galactic conquest computer game"
-msgstr ""
-
-#: gnu/packages/games.scm:11631
-msgid ""
-"FreeOrion is a turn-based space empire and galactic conquest (4X)\n"
-"computer game being designed and built by the FreeOrion project.  Control an\n"
-"empire with the goal of exploring the galaxy, expanding your territory,\n"
-"exploiting the resources, and exterminating rival alien empires.  FreeOrion is\n"
-"inspired by the tradition of the Master of Orion games, but is not a clone or\n"
-"remake of that series or any other game."
-msgstr ""
-
-#: gnu/packages/games.scm:11686
-msgid "Analyze leads in bridge game"
-msgstr ""
-
-#: gnu/packages/games.scm:11688
-msgid ""
-"Given bridge hands, Lead Solver tallies up how well each card does when\n"
-"led in terms of average tricks taken for the defense (for matchpoints) and how\n"
-"often the contract is set (for team play)."
-msgstr ""
-
-#: gnu/packages/games.scm:11735
-msgid "Program playing the game of Go"
-msgstr ""
-
-#: gnu/packages/games.scm:11737
-msgid ""
-"Leela-zero is a Go engine with no human-provided knowledge, modeled after\n"
-"the AlphaGo Zero paper.  The current best network weights file for the engine\n"
-"can be downloaded from @url{https://zero.sjeng.org/best-network}."
-msgstr ""
-
-#: gnu/packages/games.scm:11814
-msgid "Qt GUI to play the game of Go"
-msgstr ""
-
-#: gnu/packages/games.scm:11816
-msgid ""
-"This a tool for Go players which performs the following functions:\n"
-"@itemize\n"
-"@item SGF editor,\n"
-"@item Analysis frontend for Leela Zero (or compatible engines),\n"
-"@item GTP interface (to play against an engine),\n"
-"@item IGS client (to play on the internet),\n"
-"@item Export games to a variety of formats.\n"
-"@end itemize"
-msgstr ""
-
-#: gnu/packages/games.scm:11857
-msgid "Qt-based checkers boardgame"
-msgstr ""
-
-#: gnu/packages/games.scm:11858
-msgid ""
-"QCheckers, formerly known as KCheckers, is a is a Qt version\n"
-"of the classic boardgame checkers (also known as draughts)."
-msgstr ""
-
-#: gnu/packages/games.scm:11890
-#, fuzzy
-#| msgid "Action platformer game"
-msgid "Falling tower game"
-msgstr "Action- och plattformsspel"
-
-#: gnu/packages/games.scm:11891
-#, fuzzy
-#| msgid "This package provides a dictionary for the GNU Aspell spell checker."
-msgid ""
-"This package provides a reimplementation of the classic\n"
-"Xjump game, using SDL instead of Xlib."
-msgstr "Det här paketet tillhandahåller en ordbok för stavningskontrollprogrammet GNU Aspell."
-
-#: gnu/packages/games.scm:11972
-msgid "2D motocross platform game"
-msgstr ""
-
-#: gnu/packages/games.scm:11974
-msgid ""
-"X-Moto is a challenging 2D motocross platform game, where\n"
-"physics play an all important role in the gameplay.  You need to\n"
-"control your bike to its limit, if you want to have a chance finishing\n"
-"the more difficult challenges."
-msgstr ""
-
-#: gnu/packages/games.scm:12017
 msgid "Graphical user interface to play chess"
 msgstr "Grafiskt användargränssnitt för att spela schack"
 
-#: gnu/packages/games.scm:12019
 msgid ""
 "Eboard is a chess board interface for ICS (Internet Chess Servers)\n"
 "and chess engines."
@@ -4469,11 +383,9 @@ msgstr ""
 "Eboard är ett schackbrädesgränssnitt för ICS (Internet Chess Servers)\n"
 "och schackmotorer."
 
-#: gnu/packages/games.scm:12071
 msgid "Chess game database"
 msgstr "Databas för schackpartier"
 
-#: gnu/packages/games.scm:12073
 msgid ""
 "ChessX is a chess database.  With ChessX you can operate on your\n"
 "collection of chess games in many ways: browse, edit, add, organize, analyze,\n"
@@ -4483,11 +395,9 @@ msgstr ""
 "av schackpartier på flera sätt: bläddra, redigera, lägga till, organisera, analysera\n"
 "med mera.    Du kan även spela partier på FICS eller mot en motor."
 
-#: gnu/packages/games.scm:12139
 msgid "Strong chess engine"
 msgstr "Stark schackmotor"
 
-#: gnu/packages/games.scm:12141
 msgid ""
 "Stockfish is a very strong chess engine.  It is much stronger than the\n"
 "best human chess grandmasters.  It can be used with UCI-compatible GUIs like\n"
@@ -4497,25 +407,21 @@ msgstr ""
 "de bästa mänskliga schackstormästarna.    Den kan användas med UCI-kompatibla \n"
 "grafiska användargränssnitt som ChessX."
 
-#: gnu/packages/gnome.scm:1303
+msgid "Karaoke game"
+msgstr "Karaokespel"
+
 msgid "Color profile manager for the GNOME desktop"
 msgstr "Färgprofilhanterare för skrivbordsmiljön GNOME"
 
-#: gnu/packages/gnome.scm:6966
+msgid "Terminal emulator"
+msgstr "Terminal-emulator"
+
 msgid "Music player for GNOME"
 msgstr "Musikspelare för GNOME"
 
-#: gnu/packages/gnome.scm:6967
-msgid ""
-"Rhythmbox is a music playing application for GNOME.  It\n"
-"supports playlists, song ratings, and any codecs installed through gstreamer."
-msgstr ""
-
-#: gnu/packages/gnome.scm:7028
 msgid "GNOME image viewer"
 msgstr "En bildvisare för GNOME"
 
-#: gnu/packages/gnome.scm:7029
 msgid ""
 "Eye of GNOME is the GNOME image viewer.  It\n"
 "supports image conversion, rotation, and slideshows."
@@ -4523,172 +429,12 @@ msgstr ""
 "Eye of GNOME är en bildvisare för GNOME. Den\n"
 "stödjer bildkonvertering, rotation och bildspel."
 
-#: gnu/packages/gnome.scm:7051
-msgid "Extensions for the Eye of GNOME image viewer"
-msgstr ""
-
-#: gnu/packages/gnome.scm:7065
-msgid ""
-"This package provides plugins for the Eye of GNOME (EOG) image viewer,\n"
-"notably:\n"
-"\n"
-"@itemize\n"
-"@item @dfn{EXIF Display}, which displays camera (EXIF) information;\n"
-"@item @dfn{Map}, which displays a map of where the picture was taken on the\n"
-"side panel;\n"
-"@item @dfn{Slideshow Shuffle}, to shuffle images in slideshow mode.\n"
-"@end itemize\n"
-msgstr ""
-
-#: gnu/packages/gnome.scm:7102
-msgid "GObject bindings for libudev"
-msgstr ""
-
-#: gnu/packages/gnome.scm:7104
-msgid ""
-"This library provides GObject bindings for libudev.  It was originally\n"
-"part of udev-extras, then udev, then systemd.  It's now a project on its own."
-msgstr ""
-
-#: gnu/packages/gnome.scm:7123
-msgid "GLib library for accessing MS Graph APIs"
-msgstr ""
-
-#: gnu/packages/gnome.scm:7124
-#, fuzzy
-#| msgid ""
-#| "This package provides a python API to read and write MIDI\n"
-#| "files."
-msgid ""
-"This package provides a GLib-based library for accessing\n"
-"MS Graph APIs."
-msgstr ""
-"Det här paketet tillhandahåller en python-API för att läsa och\n"
-"skriva MIDI-filer."
-
-#: gnu/packages/gnome.scm:7205
-msgid "Userspace virtual file system for GIO"
-msgstr ""
-
-#: gnu/packages/gnome.scm:7207
-msgid ""
-"GVFS is a userspace virtual file system designed to work with the I/O\n"
-"abstraction of GIO.  It contains a GIO module that seamlessly adds GVFS\n"
-"support to all applications using the GIO API.  It also supports exposing the\n"
-"GVFS mounts to non-GIO applications using FUSE.\n"
-"\n"
-"GVFS comes with a set of backends, including trash support, SFTP, SMB, HTTP,\n"
-"DAV, and others."
-msgstr ""
-
-#: gnu/packages/gnome.scm:7246
-msgid "GLib binding for libusb1"
-msgstr ""
-
-#: gnu/packages/gnome.scm:7248
-msgid ""
-"GUsb is a GObject wrapper for libusb1 that makes it easy to do\n"
-"asynchronous control, bulk and interrupt transfers with proper cancellation\n"
-"and integration into a mainloop.  This makes it easy to integrate low level\n"
-"USB transfers with your high-level application or system daemon."
-msgstr ""
-
-#: gnu/packages/gnome.scm:7299
-msgid "Document and image scanner"
-msgstr ""
-
-#: gnu/packages/gnome.scm:7301
-msgid ""
-"Document Scanner is an easy-to-use application that lets you connect your\n"
-"scanner and quickly capture images and documents in an appropriate format.  It\n"
-"supports any scanner for which a suitable SANE driver is available, which is\n"
-"almost all of them."
-msgstr ""
-
-#: gnu/packages/gnome.scm:7424
-msgid "GNOME web browser"
-msgstr ""
-
-#: gnu/packages/gnome.scm:7426
-msgid ""
-"Epiphany is a GNOME web browser targeted at non-technical users.  Its\n"
-"principles are simplicity and standards compliance."
-msgstr ""
-
-#: gnu/packages/gnome.scm:7464
 msgid "D-Bus debugger"
-msgstr ""
+msgstr "Avlusare för D-Bus"
 
-#: gnu/packages/gnome.scm:7466
-msgid ""
-"D-Spy is a tool to explore and test end-points and interfaces of running\n"
-"programs via D-Bus.  It also ships a library for integration into development\n"
-"environments."
-msgstr ""
-
-#: gnu/packages/gnome.scm:7496
-msgid "XSL stylesheets for Yelp"
-msgstr ""
-
-#: gnu/packages/gnome.scm:7497
-msgid ""
-"Yelp-XSL is a collection of programs and data files to help\n"
-"you build, maintain, and distribute documentation.  It provides XSLT stylesheets\n"
-"that can be built upon for help viewers and publishing systems.  These\n"
-"stylesheets output JavaScript and CSS content, and reference images\n"
-"provided by yelp-xsl.  It also redistributes copies of the jQuery and\n"
-"jQuery.Syntax JavaScript libraries."
-msgstr ""
-
-#: gnu/packages/gnome.scm:7567
-msgid "GNOME help browser"
-msgstr ""
-
-#: gnu/packages/gnome.scm:7569
-msgid ""
-"Yelp is the help viewer in Gnome.  It natively views Mallard, DocBook,\n"
-"man, info, and HTML documents.  It can locate documents according to the\n"
-"freedesktop.org help system specification."
-msgstr ""
-
-#: gnu/packages/gnome.scm:7597
-msgid "Yelp documentation tools"
-msgstr ""
-
-#: gnu/packages/gnome.scm:7599
-msgid ""
-"Yelp-tools is a collection of scripts and build utilities to help create,\n"
-"manage, and publish documentation for Yelp and the web.  Most of the heavy\n"
-"lifting is done by packages like yelp-xsl and itstool.  This package just\n"
-"wraps things up in a developer-friendly way."
-msgstr ""
-
-#: gnu/packages/gnome.scm:7637
-msgid "GObject collection library"
-msgstr ""
-
-#: gnu/packages/gnome.scm:7639
-msgid ""
-"Libgee is a utility library providing GObject-based interfaces and\n"
-"classes for commonly used data structures."
-msgstr ""
-
-#: gnu/packages/gnome.scm:7677
-msgid "GObject wrapper around the Exiv2 photo metadata library"
-msgstr ""
-
-#: gnu/packages/gnome.scm:7679
-msgid ""
-"Gexiv2 is a GObject wrapper around the Exiv2 photo metadata library.  It\n"
-"allows for GNOME applications to easily inspect and update EXIF, IPTC, and XMP\n"
-"metadata in photo and video files of various formats."
-msgstr ""
-
-#: gnu/packages/gnome.scm:7736
 msgid "Photo manager for GNOME 3"
 msgstr "Fotohanterare för GNOME 3"
 
-#: gnu/packages/gnome.scm:7738
 msgid ""
 "Shotwell is a digital photo manager designed for the GNOME desktop\n"
 "environment.  It allows you to import photos from disk or camera, organize\n"
@@ -4700,11 +446,9 @@ msgstr ""
 "dem via nyckelord eller händelser, visa dem i helfönster- eller helskärmsläge och\n"
 "dela dem med andra på sociala medier med mera."
 
-#: gnu/packages/gnome.scm:7779
 msgid "Graphical archive manager for GNOME"
 msgstr "Grafisk arkivhanterare för GNOME"
 
-#: gnu/packages/gnome.scm:7780
 msgid ""
 "File Roller is an archive manager for the GNOME desktop\n"
 "environment that allows users to view, unpack, and create compressed archives\n"
@@ -4714,292 +458,15 @@ msgstr ""
 "som ger användare möjligheten att se, packa upp och skapa komprimerade arkiv\n"
 "så som gzip-filer."
 
-#: gnu/packages/gnome.scm:7836
 msgid "Session manager for GNOME"
 msgstr "Sessionshanterare för GNOME"
 
-#: gnu/packages/gnome.scm:7838
-msgid ""
-"This package contains the GNOME session manager, as well as a\n"
-"configuration program to choose applications starting on login."
-msgstr ""
-
-#: gnu/packages/gnome.scm:7901
-msgid "Javascript bindings for GNOME"
-msgstr ""
-
-#: gnu/packages/gnome.scm:7904
-msgid ""
-"Gjs is a javascript binding for GNOME.  It's mainly based on spidermonkey\n"
-"javascript engine and the GObject introspection framework."
-msgstr ""
-
-#: gnu/packages/gnome.scm:7978
-msgid ""
-"While aiming at simplicity and ease of use, gedit is a\n"
-"powerful general purpose text editor."
-msgstr ""
-
-#: gnu/packages/gnome.scm:8004
-msgid "Display graphical dialog boxes from shell scripts"
-msgstr ""
-
-#: gnu/packages/gnome.scm:8007
-msgid ""
-"Zenity is a rewrite of gdialog, the GNOME port of dialog which allows you\n"
-"to display dialog boxes from the commandline and shell scripts."
-msgstr ""
-
-#: gnu/packages/gnome.scm:8207
-msgid "Window and compositing manager"
-msgstr ""
-
-#: gnu/packages/gnome.scm:8210
-msgid ""
-"Mutter is a window and compositing manager that displays and manages your\n"
-"desktop via OpenGL.  Mutter combines a sophisticated display engine using the\n"
-"Clutter toolkit with solid window-management logic inherited from the Metacity\n"
-"window manager."
-msgstr ""
-
-#: gnu/packages/gnome.scm:8258
-msgid "Single sign-on framework for GNOME"
-msgstr ""
-
-#: gnu/packages/gnome.scm:8261
-msgid ""
-"GNOME Online Accounts provides interfaces so that applications and\n"
-"libraries in GNOME can access the user's online accounts.  It has providers\n"
-"for Google, ownCloud, Facebook, Flickr, Windows Live, Pocket, Foursquare,\n"
-"Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos."
-msgstr ""
-
-#: gnu/packages/gnome.scm:8390
-msgid "Store address books and calendars"
-msgstr ""
-
-#: gnu/packages/gnome.scm:8393
-msgid ""
-"This package provides a unified backend for programs that work with\n"
-"contacts, tasks, and calendar information.  It was originally developed for\n"
-"Evolution (hence the name), but is now used by other packages as well."
-msgstr ""
-
-#: gnu/packages/gnome.scm:8454
-msgid "Text entry and UI navigation application"
-msgstr ""
-
-#: gnu/packages/gnome.scm:8457
-msgid ""
-"Caribou is an input assistive technology intended for switch and pointer\n"
-"users."
-msgstr ""
-
-#: gnu/packages/gnome.scm:8608
-msgid "Network connection manager"
-msgstr ""
-
-#: gnu/packages/gnome.scm:8611
-msgid ""
-"NetworkManager is a system network service that manages your network\n"
-"devices and connections, attempting to keep active network connectivity when\n"
-"available.  It manages ethernet, WiFi, mobile broadband (WWAN), and PPPoE\n"
-"devices, and provides VPN integration with a variety of different VPN\n"
-"services."
-msgstr ""
-
-#: gnu/packages/gnome.scm:8671
-msgid "OpenVPN plug-in for NetworkManager"
-msgstr ""
-
-#: gnu/packages/gnome.scm:8673
-msgid ""
-"This extension of NetworkManager allows it to take care of connections\n"
-"to virtual private networks (VPNs) via OpenVPN."
-msgstr ""
-
-#: gnu/packages/gnome.scm:8721
-msgid "VPNC plug-in for NetworkManager"
-msgstr ""
-
-#: gnu/packages/gnome.scm:8723
-msgid ""
-"Support for configuring virtual private networks based on VPNC.\n"
-"Compatible with Cisco VPN concentrators configured to use IPsec."
-msgstr ""
-
-#: gnu/packages/gnome.scm:8774
-msgid "OpenConnect plug-in for NetworkManager"
-msgstr ""
-
-#: gnu/packages/gnome.scm:8776
-msgid ""
-"This extension of NetworkManager allows it to take care of connections\n"
-"to @acronym{VPNs, virtual private networks} via OpenConnect, an open client for\n"
-"Cisco's AnyConnect SSL VPN."
-msgstr ""
-
-#: gnu/packages/gnome.scm:8854
-msgid "Fortinet SSLVPN plug-in for NetworkManager"
-msgstr ""
-
-#: gnu/packages/gnome.scm:8856
-msgid ""
-"This extension of NetworkManager allows it to take care of connections\n"
-"to virtual private networks (VPNs) via Fortinet SSLVPN."
-msgstr ""
-
-#: gnu/packages/gnome.scm:8877
-msgid "Database of broadband connection configuration"
-msgstr ""
-
-#: gnu/packages/gnome.scm:8878
-msgid "Database of broadband connection configuration."
-msgstr ""
-
-#: gnu/packages/gnome.scm:8917
-msgid "Applet for managing network connections"
-msgstr ""
-
-#: gnu/packages/gnome.scm:8920
-msgid ""
-"This package contains a systray applet for NetworkManager.  It displays\n"
-"the available networks and allows users to easily switch between them."
-msgstr ""
-
-#: gnu/packages/gnome.scm:8953
-msgid "C++ bindings to the libxml2 XML parser library"
-msgstr ""
-
-#: gnu/packages/gnome.scm:8955
-msgid ""
-"This package provides a C++ interface to the libxml2 XML parser\n"
-"library."
-msgstr ""
-
-#: gnu/packages/gnome.scm:9227
-msgid "Display manager for GNOME"
-msgstr ""
-
-#: gnu/packages/gnome.scm:9230
-msgid ""
-"GNOME Display Manager is a system service that is responsible for\n"
-"providing graphical log-ins and managing local and remote displays."
-msgstr ""
-
-#: gnu/packages/gnome.scm:9251
-msgid "Portable system access library"
-msgstr ""
-
-#: gnu/packages/gnome.scm:9254
-msgid ""
-"LibGTop is a library to get system specific data such as CPU and memory\n"
-"usage and information about running processes."
-msgstr ""
-
-#: gnu/packages/gnome.scm:9290
-msgid "GNOME Bluetooth subsystem"
-msgstr ""
-
-#: gnu/packages/gnome.scm:9293
-msgid ""
-"This package contains tools for managing and manipulating Bluetooth\n"
-"devices using the GNOME desktop."
-msgstr ""
-
-#: gnu/packages/gnome.scm:9314
-msgid "Keyboard layout viewer"
-msgstr ""
-
-#: gnu/packages/gnome.scm:9315
-msgid ""
-"Tecla is a keyboard layout viewer based on GTK 4 and\n"
-"Libadwaita."
-msgstr ""
-
-#: gnu/packages/gnome.scm:9423
 msgid "Utilities to configure the GNOME desktop"
 msgstr "Verktyg för att konfigurera skrivbordsmiljön GNOME"
 
-#: gnu/packages/gnome.scm:9426
-msgid ""
-"This package contains configuration applets for the GNOME desktop,\n"
-"allowing to set accessibility configuration, desktop fonts, keyboard and mouse\n"
-"properties, sound setup, desktop theme and background, user interface\n"
-"properties, screen resolution, and other GNOME parameters."
-msgstr ""
-
-#: gnu/packages/gnome.scm:9625
-msgid "Desktop shell for GNOME"
-msgstr ""
-
-#: gnu/packages/gnome.scm:9628
-msgid ""
-"GNOME Shell provides core user interface functions for the GNOME desktop,\n"
-"like switching to windows and launching applications."
-msgstr ""
-
-#: gnu/packages/gnome.scm:9675
-msgid "VNC client viewer widget for GTK+"
-msgstr ""
-
-#: gnu/packages/gnome.scm:9676
-msgid ""
-"GTK-VNC is a project providing client side APIs for the RFB\n"
-"protocol / VNC remote desktop technology.  It is built using coroutines allowing\n"
-"it to be completely asynchronous while remaining single threaded.  It provides a\n"
-"core C library, and bindings for Python (PyGTK)."
-msgstr ""
-
-#: gnu/packages/gnome.scm:9702
-msgid "Archives integration support for GNOME"
-msgstr ""
-
-#: gnu/packages/gnome.scm:9705
-msgid ""
-"GNOME Autoar is a library which makes creating and extracting archives\n"
-"easy, safe, and automatic."
-msgstr ""
-
-#: gnu/packages/gnome.scm:9811 gnu/packages/gnome.scm:9950
-msgid "Metadata database, indexer and search tool"
-msgstr ""
-
-#: gnu/packages/gnome.scm:9814
-msgid ""
-"Tracker is a search engine and triplestore for desktop, embedded and mobile.\n"
-"\n"
-"It is a middleware component aimed at desktop application developers who want\n"
-"their apps to browse and search user content.  It's not designed to be used\n"
-"directly by desktop users, but it provides a commandline tool named\n"
-"@command{tracker} for the adventurous.\n"
-"\n"
-"Tracker allows your application to instantly perform full-text searches across\n"
-"all documents.  This feature is used by the @{emph{search} bar in GNOME Files, for\n"
-"example.  This is achieved by indexing the user's home directory in the\n"
-"background.\n"
-"\n"
-"Tracker also allows your application to query and list content that the user\n"
-"has stored.  For example, GNOME Music displays all the music files that are\n"
-"found by Tracker.  This means that GNOME Music doesn't need to maintain a\n"
-"database of its own.\n"
-"\n"
-"If you need to go beyond simple searches, Tracker is also a linked data\n"
-"endpoint and it understands SPARQL."
-msgstr ""
-
-#: gnu/packages/gnome.scm:9953
-msgid ""
-"Tracker is an advanced framework for first class objects with associated\n"
-"metadata and tags.  It provides a one stop solution for all metadata, tags,\n"
-"shared object databases, search tools and indexing."
-msgstr ""
-
-#: gnu/packages/gnome.scm:10057
 msgid "File manager for GNOME"
 msgstr "Filhanterare för GNOME"
 
-#: gnu/packages/gnome.scm:10060
 msgid ""
 "Nautilus (Files) is a file manager designed to fit the GNOME desktop\n"
 "design and behaviour, giving the user a simple way to navigate and manage its\n"
@@ -5009,212 +476,167 @@ msgstr ""
 "utformning och beteende genom att ge användaren ett enkelt sätt att navigera\n"
 "och hantera filer på."
 
-#: gnu/packages/gnome.scm:10099
 msgid "Disk usage analyzer for GNOME"
 msgstr "Diskanvändningsanalysator för GNOME"
 
-#: gnu/packages/gnome.scm:10101
-msgid ""
-"Baobab (Disk Usage Analyzer) is a graphical application to analyse disk\n"
-"usage in the GNOME desktop environment.  It can easily scan device volumes or\n"
-"a specific user-requested directory branch (local or remote).  Once the scan\n"
-"is complete it provides a graphical representation of each selected folder."
-msgstr ""
-
-#: gnu/packages/gnome.scm:10124
-msgid "Background images for the GNOME desktop"
-msgstr ""
-
-#: gnu/packages/gnome.scm:10126
-msgid ""
-"GNOME backgrounds package contains a collection of graphics files which\n"
-"can be used as backgrounds in the GNOME Desktop environment.  Additionally,\n"
-"the package creates the proper framework and directory structure so that you\n"
-"can add your own files to the collection."
-msgstr ""
-
-#: gnu/packages/gnome.scm:10175
-msgid "Take pictures of your screen"
-msgstr ""
-
-#: gnu/packages/gnome.scm:10177
-msgid ""
-"GNOME Screenshot is a utility used for taking screenshots of the entire\n"
-"screen, a window or a user defined area of the screen, with optional\n"
-"beautifying border effects."
-msgstr ""
-
-#: gnu/packages/gnome.scm:10213
-msgid "Graphical editor for GNOME's dconf configuration system"
-msgstr ""
-
-#: gnu/packages/gnome.scm:10215
-msgid ""
-"Dconf-editor is a graphical tool for browsing and editing the dconf\n"
-"configuration system for GNOME.  It allows users to configure desktop\n"
-"software that do not provide their own configuration interface."
-msgstr ""
-
-#: gnu/packages/gnome.scm:10243
-msgid "Default MIME type associations for the GNOME desktop"
-msgstr ""
-
-#: gnu/packages/gnome.scm:10245
-msgid ""
-"Given many installed packages which might handle a given MIME type, a\n"
-"user running the GNOME desktop probably has some preferences: for example,\n"
-"that folders be opened by default by the Nautilus file manager, not the Baobab\n"
-"disk usage analyzer.  This package establishes that set of default MIME type\n"
-"associations for GNOME."
-msgstr ""
-
-#: gnu/packages/gnome.scm:10284
 msgid "GoVirt Library"
 msgstr "GoVirt-bibliotek"
 
-#: gnu/packages/gnome.scm:10285
-msgid "GoVirt is a GObject wrapper for the oVirt REST API."
-msgstr ""
-
-#: gnu/packages/gnome.scm:10348
-msgid "Weather monitoring for GNOME desktop"
-msgstr ""
-
-#: gnu/packages/gnome.scm:10349
-msgid ""
-"GNOME Weather is a small application that allows you to\n"
-"monitor the current weather conditions for your city, or anywhere in the\n"
-"world."
-msgstr ""
-
-#: gnu/packages/gnome.scm:10374
-msgid "Graphical desktop environment"
-msgstr ""
-
-#: gnu/packages/gnome.scm:10375
-msgid ""
-"GNOME is a graphical desktop environment.\n"
-"It includes a wide variety of applications with a common interface for\n"
-"browsing the web, editing text and images, creating documents and diagrams,\n"
-"playing media, scanning, and much more."
-msgstr ""
-
-#: gnu/packages/gnome.scm:10479
-msgid ""
-"This package provides a list of packages required for\n"
-"a good GNOME experience, mixed from core dependencies and other implicitly\n"
-"relied-on packages."
-msgstr ""
-
-#: gnu/packages/gnome.scm:10534
-msgid "Desktop recording program"
-msgstr ""
-
-#: gnu/packages/gnome.scm:10535
-msgid ""
-"Byzanz is a simple desktop recording program with a\n"
-"command-line interface.  It can record part or all of an X display for a\n"
-"specified duration and save it as a GIF encoded animated image file."
-msgstr ""
-
-#: gnu/packages/gnome.scm:10613
-msgid "Generate two-factor codes"
-msgstr ""
-
-#: gnu/packages/gnome.scm:10614
-msgid ""
-"Simple application for generating Two-Factor Authentication\n"
-"Codes:\n"
-"\n"
-"It features:\n"
-"\n"
-"@itemize\n"
-"@item Time-based/Counter-based/Steam methods support\n"
-"@item SHA-1/SHA-256/SHA-512 algorithms support\n"
-"@item QR code scanner using a camera or from a screenshot\n"
-"@item Lock the application with a password\n"
-"@item Beautiful UI\n"
-"@item GNOME Shell search provider\n"
-"@item Backup/Restore from/into known applications like FreeOTP+,\n"
-"Aegis (encrypted / plain-text), andOTP, Google Authenticator\n"
-"@end itemize"
-msgstr ""
-
-#: gnu/packages/gnome.scm:10652
-msgid "GObject wrapper for libcanberra"
-msgstr ""
-
-#: gnu/packages/gnome.scm:10654
-msgid ""
-"GSound is a small library for playing system sounds.  It's designed to be\n"
-"used via GObject Introspection, and is a thin wrapper around the libcanberra C\n"
-"library."
-msgstr ""
-
-#: gnu/packages/gnome.scm:10683
-msgid "Library for accessing SkyDrive and Hotmail"
-msgstr ""
-
-#: gnu/packages/gnome.scm:10685
-msgid ""
-"Libzapojit is a GLib-based library for accessing online service APIs of\n"
-"Microsoft SkyDrive and Hotmail, using their REST protocols."
-msgstr ""
-
-#: gnu/packages/gnome.scm:10729
 msgid "GNOME's clock application"
 msgstr "GNOME:s klockprogram"
 
-#: gnu/packages/gnome.scm:10731
-msgid ""
-"GNOME Clocks is a simple clocks application designed to fit the GNOME\n"
-"desktop.  It supports world clock, stop watch, alarms, and count down timer."
-msgstr ""
-
-#: gnu/packages/gnome.scm:10779
 msgid "GNOME's calendar application"
 msgstr "GNOME:s kalenderprogram"
 
-#: gnu/packages/gnome.scm:10781
-msgid ""
-"GNOME Calendar is a simple calendar application designed to fit the GNOME\n"
-"desktop.  It supports multiple calendars, month, week and year view."
-msgstr ""
-
-#: gnu/packages/gnome.scm:10841
-msgid "GNOME's ToDo Application"
-msgstr ""
-
-#: gnu/packages/gnome.scm:10842
-msgid ""
-"GNOME To Do is a simplistic personal task manager designed\n"
-"to perfectly fit the GNOME desktop."
-msgstr ""
-
-#: gnu/packages/gnome.scm:10878
-msgid "Translation application for GNOME"
-msgstr ""
-
-#: gnu/packages/gnome.scm:10880
-msgid ""
-"Dialect is a simple translation application that uses Google Translate\n"
-"(default), LibreTranslate or Lingva Translate.  It includes features\n"
-"like automatic language detection, text-to-speech and clipboard buttons."
-msgstr ""
-
-#: gnu/packages/gnome.scm:10920
 msgid "Look up words in dictionary sources"
 msgstr "Sök efter ord i ordbokskällor"
 
-#: gnu/packages/libreoffice.scm:831
+msgid "Desktop calculator"
+msgstr "Miniräknare för skrivbordet"
+
+msgid "File manager"
+msgstr "Filhanterare"
+
+msgid "sha1cd"
+msgstr "sha1cd"
+
+msgid "Hyphenation library"
+msgstr "Orddelningsbibliotek"
+
 msgid "Thesaurus"
 msgstr "Synonymordbok"
 
-#: gnu/packages/xiph.scm:353
+msgid "Office suite"
+msgstr "Kontorsprogram"
+
+msgid "Container platform"
+msgstr "Container-plattform"
+
+msgid "Numeric comparisons"
+msgstr "Numeriska jämförelser"
+
+msgid "Anonymous packages"
+msgstr "Anonyma paket"
+
+msgid "Parameterizable packages"
+msgstr "Parametriserbara paket"
+
+msgid "Align text"
+msgstr "Justera text"
+
+msgid "Writing ``configurations''"
+msgstr "Skriver ``konfigurationer''"
+
+msgid "Linguistic tools"
+msgstr "Lingvistiska verktyg"
+
+msgid "Documentation support"
+msgstr "Dokumentationsstöd"
+
+msgid "Straightforward pseudocode"
+msgstr "Rakt på sak pseudo-kod"
+
+msgid "Ridgeway's fonts"
+msgstr "Ridgeway's typsnitt"
+
+msgid "Letter spacing"
+msgstr "Bokstavsavstånd"
+
+msgid "Documentation macros"
+msgstr "Dokumentationsmakron"
+
+msgid "Generate timetables"
+msgstr "Generera tidtabeller"
+
+msgid "LaTeX laboratory"
+msgstr "LaTeX-laboratorium"
+
+msgid "Sanskrit support"
+msgstr "Stöd för Sanskrit"
+
+msgid "Multilingual bibliographies"
+msgstr "Flerspråkiga bibliografier"
+
+msgid "3D animations"
+msgstr "3D-animationer"
+
+msgid "LaTeX editor"
+msgstr "LaTeX-redigerare"
+
+msgid "Personal organiser"
+msgstr "Personlig arrangör"
+
+msgid "Geographical projections"
+msgstr "Geografiska projektioner"
+
+msgid "Additional fonts"
+msgstr "Ytterligare typsnitt"
+
+msgid "Recommended fonts"
+msgstr "Rekommenderade typsnitt"
+
+msgid "LuaTeX packages"
+msgstr "LuaTeX-paket"
+
+msgid "Music packages"
+msgstr "Musik-paket"
+
+msgid "Concert programmes"
+msgstr "Konsertprogram"
+
+msgid "Generate invoices"
+msgstr "Generera fakturor"
+
+msgid "gotest.tools"
+msgstr "gotest.tools"
+
+msgid "Introduction"
+msgstr "Introduktion"
+
+msgid "JPEG-2000 library"
+msgstr "JPEG-2000-bibliotek"
+
+msgid "Color picker"
+msgstr "Färgväljare"
+
+msgid "Message broker"
+msgstr "Meddelandeförmedlare"
+
+msgid "Bandwidth monitor"
+msgstr "Bandbreddsövervakare"
+
+msgid "Denial-of-service countermeasure"
+msgstr "Åtgärd mot överbelastningsattack"
+
+msgid "Python-ish shell"
+msgstr "Pytonaktigt skal"
+
 msgid "Ogg vorbis tools"
 msgstr "Ogg vorbis-verktyg"
 
-#: gnu/packages/xiph.scm:513
+msgid ""
+"Ogg vorbis is a non-proprietary, patent-and-royalty-free,\n"
+"general-purpose compressed audio format.\n"
+"\n"
+"The package vorbis-tools contains\n"
+"ogg123,  an ogg vorbis command line audio player;\n"
+"oggenc,  the ogg vorbis encoder;\n"
+"oggdec,  a simple, portable command line decoder (to wav and raw);\n"
+"ogginfo, to obtain information (tags, bitrate, length, etc.) about\n"
+"         an ogg vorbis file."
+msgstr ""
+"Ogg vorbis är ett komprimerat icke-proprietärt, patent- och royalty-fritt \n"
+"samt universalt ljudfilsformat.\n"
+"\n"
+"Paketet vorbis-verktyg innehåller\n"
+"ogg123,  en terminalbaserad ogg vorbis-ljudspelare;\n"
+"oggenc,  ogg vorbis-kodaren;\n"
+"oggdec,  en simpel, portabel terminalbaserad avkodare (från wav till rå);\n"
+"ogginfo, för att skaffa information (taggar, bitfrekvens, längd etc.) om\n"
+"         en ogg vorbis-fil."
+
 msgid "Streaming media server"
 msgstr "Strömmande mediaserver"
 
+msgid "Hypervisor"
+msgstr "Hypervisor"

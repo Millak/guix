@@ -2,13 +2,13 @@
 # Copyright (C) YEAR the authors of Guix (msgids) and the following authors (msgstr)
 # This file is distributed under the same license as the GNU guix package.
 # عمّار عبدالله <ammar-dmour19@proton.me>, 2025.
-#: gnu/packages/firmware.scm:1579 gnu/packages/firmware.scm:1846
-#: gnu/packages/linux.scm:1246
+#: gnu/packages/firmware.scm:1659 gnu/packages/firmware.scm:1926
+#: gnu/packages/linux.scm:1257
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-08-30 03:18+0000\n"
+"POT-Creation-Date: 2025-09-29 03:18+0000\n"
 "PO-Revision-Date: 2025-08-12 14:12+0000\n"
 "Last-Translator: mb_phd <mb_phd@noreply.codeberg.org>\n"
 "Language-Team: Arabic <https://translate.codeberg.org/projects/guix/packages/ar/>\n"
@@ -19,11 +19,9 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
 "X-Generator: Weblate 5.12.2\n"
 
-#: gnu/packages/abduco.scm:46
 msgid "Session management in a clean and simple way"
 msgstr "إدارة الحصص بطريقة منمقة وسهلة"
 
-#: gnu/packages/abduco.scm:47
 msgid ""
 "abduco provides session management i.e. it allows programs to\n"
 "be run independently from their controlling terminal.  That is, programs can\n"
@@ -33,15 +31,9 @@ msgstr ""
 "بالعمل بصفة مستقلة عن الواجهة الطرفية المتحكمة. بعبارة أخرى، يمكن للبرامج\n"
 "أن تفصل، تعمل في الخلفية، ثم توصل لاحقا."
 
-#: gnu/packages/abiword.scm:156
 msgid "Word processing program"
 msgstr "برنامج معالجة نصوص"
 
-#. TRANSLATORS: Dear translator, We would like to inform you that package
-#. descriptions may occasionally include Texinfo markup.  Texinfo markup
-#. looks like "@code{rm -rf}", "@emph{important}", etc.  When translating,
-#. please leave markup as is.
-#: gnu/packages/abiword.scm:165
 msgid ""
 "AbiWord is a word processing program.  It is rapidly\n"
 "becoming a state of the art word processor, with lots of features useful for\n"
@@ -51,7 +43,6 @@ msgstr ""
 "يتحول بسرعة إلى معالج نصوص متطور، مع الكثير من الميزات المفيدة في\n"
 "لعملك اليومي، أو لاحتياجاتك الشخصية، أو لمجرد الاستمتاع بالكتابة."
 
-#: gnu/packages/aspell.scm:96
 msgid ""
 "Aspell is a spell-checker which can be used either as a library or as\n"
 "a standalone program.  Notable features of Aspell include its full support of\n"
@@ -63,15 +54,12 @@ msgstr ""
 "للمستندات المكتوبة بترميز UTF-8 وقدرته على استخدام قواميس\n"
 "متعددة، بما في ذلك الشخصية منها."
 
-#: gnu/packages/aspell.scm:144
 msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgstr "توفر هذه الحزمة قاموساً لمدقق GNU Aspell الإملائي."
 
-#: gnu/packages/aspell.scm:440
 msgid "Interactive spell-checking tool for Unix"
 msgstr "أداة التدقيق الإملائي التفاعلية لنظام التشغيل Unix"
 
-#: gnu/packages/aspell.scm:441
 msgid ""
 "Ispell is an interactive spell-checking tool supporting many\n"
 "European languages."
@@ -79,7 +67,6 @@ msgstr ""
 "أداة تفاعلية للتدقيق الإملائي تدعم العديد من \n"
 "اللغات الأوروبية."
 
-#: gnu/packages/games.scm:2348
 msgid ""
 "GNOME 2048 provides a 2D grid for playing 2048, a\n"
 "single-player sliding tile puzzle game.  The objective of the game is to merge\n"
@@ -91,7 +78,9 @@ msgstr ""
 "مربعات متجاورة من نفس الرقم حتى يتم تحقيق مجموع 2048\n"
 "في بلاطة واحدة."
 
-#: gnu/packages/linux.scm:4005
+msgid "Chess board for GNOME"
+msgstr "لوحة الشطرنج لـ GNOME"
+
 msgid ""
 "@command{iptables} is the user-space command line program used to\n"
 "configure the Linux 2.4.x and later IPv4 packet filtering ruleset\n"
@@ -111,6 +100,5 @@ msgstr ""
 "\n"
 "يستهدف كلا الأمرين مسؤولي الأنظمة."
 
-#: gnu/packages/gnuzilla.scm:1296
 msgid "Entirely free browser derived from Mozilla Firefox"
 msgstr "متصفح مجاني بالكامل مشتق من Mozilla Firefox"

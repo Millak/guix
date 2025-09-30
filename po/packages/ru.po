@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the GNU guix package.
 # Helge Kim <helge@keemail.me>, 2021.
 # A D <drozdov@portalenergy.tech>, 2022.
-#: gnu/packages/firmware.scm:1579 gnu/packages/firmware.scm:1846
-#: gnu/packages/linux.scm:1246
+#: gnu/packages/firmware.scm:1659 gnu/packages/firmware.scm:1926
+#: gnu/packages/linux.scm:1257
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-08-30 03:18+0000\n"
+"POT-Creation-Date: 2025-09-29 03:18+0000\n"
 "PO-Revision-Date: 2025-08-06 17:09+0000\n"
 "Last-Translator: jerops <jerops@noreply.codeberg.org>\n"
 "Language-Team: Russian <https://translate.codeberg.org/projects/guix/packages/ru/>\n"
@@ -20,15 +20,9 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 5.12.2\n"
 
-#: gnu/packages/abiword.scm:156
 msgid "Word processing program"
 msgstr "Текстовый процессор"
 
-#. TRANSLATORS: Dear translator, We would like to inform you that package
-#. descriptions may occasionally include Texinfo markup.  Texinfo markup
-#. looks like "@code{rm -rf}", "@emph{important}", etc.  When translating,
-#. please leave markup as is.
-#: gnu/packages/abiword.scm:165
 msgid ""
 "AbiWord is a word processing program.  It is rapidly\n"
 "becoming a state of the art word processor, with lots of features useful for\n"
@@ -38,11 +32,9 @@ msgstr ""
 "со множеством полезных функций для ваших рабочих задач, личных нужд\n"
 "и всего остального текстуально интересного."
 
-#: gnu/packages/aspell.scm:94 gnu/packages/hunspell.scm:60
 msgid "Spell checker"
 msgstr "Программа проверки орфографии"
 
-#: gnu/packages/aspell.scm:96
 msgid ""
 "Aspell is a spell-checker which can be used either as a library or as\n"
 "a standalone program.  Notable features of Aspell include its full support of\n"
@@ -54,19 +46,15 @@ msgstr ""
 "полная поддержка документов, написанных в кодировке UTF-8 и возможность использовать\n"
 "несколько словарей, в том числе и личных."
 
-#: gnu/packages/aspell.scm:144
 msgid "This package provides a dictionary for the GNU Aspell spell checker."
 msgstr "Этот пакет предоставляет словарь для программы проверки орфографии GNU Aspell."
 
-#: gnu/packages/aspell.scm:440
 msgid "Interactive spell-checking tool for Unix"
 msgstr "Интерактивный инструмент проверки орфографии для Unix"
 
-#: gnu/packages/aspell.scm:441
 msgid ""
 "Ispell is an interactive spell-checking tool supporting many\n"
 "European languages."
 msgstr ""
 "Ispell — это интерактивный инструмент для проверки орфографии,\n"
 "поддерживающий множество европейских языков."
-
