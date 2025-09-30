@@ -439,7 +439,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
            re2-next
            udis86
            wayland
-           wayland-protocols-next
+           wayland-protocols
            xcb-util-errors
            xcb-util-wm
            xorg-server-xwayland))
