@@ -1073,45 +1073,38 @@ to establish class invariants.")
 (define-public python-inline-snapshot
   (package
     (name "python-inline-snapshot")
-    (version "0.18.2")
+    (version "0.29.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "inline_snapshot" version))
        (sha256
-        (base32 "09pqgz4phal2pjkv03wg3gvj7jr89rrb93rfw4hd2x9v8px4mqqv"))))
+        (base32 "19x5j97i96p3xr9xyjvwh0mmpcnypf8g5hf2jjm6g82ghsv3rrqp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 518 passed, 88 skipped, 1 xfailed, 903 subtests passed
       #:test-flags
-      ;; Missing "freezer" fixture
-      '(list "--ignore=tests/test_external.py"
-             "--ignore=tests/test_pytest_plugin.py"
-             "-k"
-             (string-append
-              "not test_trailing_comma"
-              ;; Cannot use inline-snapshop when xdist is available.
-              " and not test_xdist"
-              " and not test_xdist_disabled"
-              " and not test_xdist_and_disable"
-              " and not test_typing"))))
-    (propagated-inputs (list python-asttokens
-                             python-black
-                             python-click
-                             python-executing
-                             python-mkdocs
-                             python-rich
-                             python-tomli
-                             python-typing-extensions))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; To prevent adding mypy and pyright.
+              "--ignore=tests/test_typing.py")))
     (native-inputs
-     (list python-dirty-equals
+     (list python-black         ;XXX: used in tests/conftest.py to self lint
+           python-dirty-equals
            python-freezegun
            python-hatchling
-           python-pydantic
-           python-pytest
+           python-hypothesis
+           python-pydantic-2
+           python-pytest-bootstrap
+           python-pytest-freezer
            python-pytest-mock
-           python-pytest-subtests))
-    (home-page "https://pypi.org/project/inline-snapshot/")
+           python-pytest-subtests
+           python-pytest-xdist))
+    (propagated-inputs
+     (list python-asttokens
+           python-executing
+           python-rich))
+    (home-page "https://github.com/15r10nk/inline-snapshot/")
     (synopsis "Golden master/snapshot/approval testing library")
     (description
      "This package can be used for different things:
