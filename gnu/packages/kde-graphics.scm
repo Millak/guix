@@ -393,3 +393,29 @@ features include brush stabilizers, brush engines and wrap-around mode.")
     (description "This package contains the fork of Disney Animation's SeExpr
 expression library, that is used in Krita.")
     (license license:gpl3+)))
+
+(define-public libkexiv2
+  (package
+    (name "libkexiv2")
+    (version "24.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/" name "-" version ".tar.xz"))
+       (sha256
+        (base32 "073px490jvp5f2979ipzbjlw6qg55cfzisj1g3a1f9wwqshm3q5q"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")))
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list exiv2 qtbase))
+    (home-page "https://invent.kde.org/graphics/libkexiv2")
+    (synopsis "Manipulate the metadata of images")
+    (description "Libkexiv2 wraps the Exiv2 library, allowing to manipulate
+picture metadata as EXIF/IPTC and XMP.")
+    (license license:gpl2+)))

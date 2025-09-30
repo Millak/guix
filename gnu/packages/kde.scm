@@ -789,32 +789,6 @@ several command-line utilities for manipulating DocBook XML files, PO files and
 PO template files.")
     (license license:gpl2+)))
 
-(define-public libkexiv2
-  (package
-    (name "libkexiv2")
-    (version "25.04.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
-                           "/src/" name "-" version ".tar.xz"))
-       (sha256
-        (base32 "1a5mwywza7wxprygl06k89msmykyb6m7si4mdbqsr3yvx68xgf6p"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list
-      #:tests? #f
-      #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")))
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list exiv2 qtbase))
-    (home-page "https://invent.kde.org/graphics/libkexiv2")
-    (synopsis "Manipulate the metadata of images")
-    (description "Libkexiv2 wraps the Exiv2 library, allowing to manipulate
-picture metadata as EXIF/IPTC and XMP.")
-    (license license:gpl2+)))
-
 (define-public kuserfeedback
   ;; FIXME: Try to reduce data collection and ensure transmission i disabled by default.
   ;; FIXME: Check https://www.reddit.com/r/kde/comments/f7ojg9 for insights
