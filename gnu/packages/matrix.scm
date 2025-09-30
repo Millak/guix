@@ -46,7 +46,6 @@
   #:use-module (gnu packages xml)
   #:use-module (guix build-system go)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -182,16 +181,19 @@ an LDAP server.")
   (package
     (name "synapse")
     (version "1.29.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "matrix-synapse" version))
-              (sha256
-               (base32
-                "0if2yhpz8psg0661401mvxznldbfhk2j9rhbs25jdaqm9jsv6907"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/matrix-org/synapse")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m05fn5s0xfsnbvvv6089xkf7r8xmzvk9rp15hk9y3zk4fsqi5fw"))))
+    (build-system pyproject-build-system)
     ;; TODO Run tests with ‘PYTHONPATH=. trial3 tests’.
     (propagated-inputs
-     (list python-simplejson ; not attested but required
+     (list python-simplejson ;not attested but required
            ;; requirements (synapse/python_dependencies.py)
            python-jsonschema
            python-frozendict
@@ -222,7 +224,7 @@ an LDAP server.")
            python-bleach
            python-typing-extensions
            ;; conditional requirements (synapse/python_dependencies.py)
-           ;;("python-hiredis" ,python-hiredis)
+           ;; ("python-hiredis" ,python-hiredis)
            python-matrix-synapse-ldap3
            python-psycopg2
            python-jinja2
@@ -233,15 +235,15 @@ an LDAP server.")
            ;; sentry-sdk, jaeger-client, and opentracing could be included, but
            ;; all are monitoring aids and not essential.
            python-pyjwt))
-    (native-inputs
-     (list python-mock python-parameterized))
+    (native-inputs (list python-mock python-parameterized python-setuptools))
     (home-page "https://github.com/matrix-org/synapse")
     (synopsis "Matrix reference homeserver")
-    (description "Synapse is a reference \"homeserver\" implementation of
-Matrix from the core development team at matrix.org, written in
-Python/Twisted.  It is intended to showcase the concept of Matrix and let
-folks see the spec in the context of a codebase and let you run your own
-homeserver and generally help bootstrap the ecosystem.")
+    (description
+     "Synapse is a reference \"homeserver\" implementation of Matrix from the
+core development team at matrix.org, written in Python/Twisted.  It is
+intended to showcase the concept of Matrix and let folks see the spec in the
+context of a codebase and let you run your own homeserver and generally help
+bootstrap the ecosystem.")
     (license license:asl2.0)))
 
 (define-public python-matrix-nio
