@@ -21954,19 +21954,21 @@ that are otherwise difficult to control.")
 (define-public python-vobject
   (package
     (name "python-vobject")
-    (version "0.9.6.1")
+    (version "0.9.9")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "vobject" version))
               (sha256
                (base32
-                "0081g4gngw28j7vw8101jk600wz4gzfrhf5myrqvn2mrfkn2llcn"))))
-    (build-system python-build-system)
+                "13mk8wrg7js0zv3w8246jnxb3i5yp4ascl1csp0q9787wbbyai5c"))))
+    (build-system pyproject-build-system)
     (arguments
      '(;; The test suite relies on some non-portable Windows interfaces.
        #:tests? #f))
     (propagated-inputs
-     (list python-dateutil python-pyicu))
+     (list python-dateutil python-pytz python-six))
+    (native-inputs
+     (list python-setuptools))
     (synopsis "Parse and generate vCard and vCalendar files")
     (description "Vobject is intended to be a full featured Python package for
 parsing and generating vCard and vCalendar files.  Currently, iCalendar files
