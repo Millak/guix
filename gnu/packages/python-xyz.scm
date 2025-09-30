@@ -1050,7 +1050,7 @@ supports:
     (description
      "This package provides a tool for generating @code{OIDC, OpenID Connect}
 identities.")
-    (license #f)))
+    (license license:asl2.0)))
 
 (define-public python-jsonpath-ng
   (package
