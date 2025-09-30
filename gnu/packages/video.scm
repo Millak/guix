@@ -1902,7 +1902,7 @@ audio/video codec library.")
 
 (define-public ffmpeg-5
   (package
-    (inherit ffmpeg)
+    (inherit ffmpeg-6)
     (version "5.1.6")
     (source (origin
               (method url-fetch)
@@ -1912,7 +1912,7 @@ audio/video codec library.")
                (base32
                 "1g8116rp4fgq82br8lclb2dmw3fvyh2zkzhnngm7z97pg1i0dypl"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments ffmpeg)
+     (substitute-keyword-arguments (package-arguments ffmpeg-6)
        ((#:modules modules %default-gnu-modules)
         `((srfi srfi-1) ,@modules))
        ((#:phases phases)
@@ -1926,7 +1926,7 @@ audio/video codec library.")
             phases))
        ((#:configure-flags flags ''())
         #~(fold delete #$flags '("--enable-libplacebo")))))
-    (inputs (modify-inputs (package-inputs ffmpeg)
+    (inputs (modify-inputs (package-inputs ffmpeg-6)
               (delete "libplacebo")))))
 
 (define-public ffmpeg-4
