@@ -288,6 +288,9 @@
                  "ext/gd/tests/bug48801.phpt"
                  ;; Different expected output from imagecolorallocate().
                  "ext/gd/tests/bug53504.phpt"
+                 ;; This test sometimes exit with Termsig=11 (see:
+                 ;; <https://github.com/php/php-src/issues/19996>).
+                 "ext/gd/tests/bug65148.phpt"
                  ;; Wrong image size after scaling an image.
                  "ext/gd/tests/bug73272.phpt"
                  ;; PCRE with/without JIT gives different result
@@ -295,6 +298,10 @@
                  "ext/pcre/tests/gh11956.phpt"
                  ;; reported bug only seems to affect windows
                  "ext/standard/tests/directory/bug74589_utf8.phpt"
+                 ;; This test is flaky, appears racy when the test suite runs
+                 ;; in parallel (see:
+                 ;; <https://github.com/php/php-src/issues/19998>).
+                 "ext/standard/tests/file/bug46347.phpt"
                  ;; this test seems to be unreliable/flaky
                  "sapi/cli/tests/php_cli_server_pdeathsig.phpt"
                  ;; This test fails on most architectures.
