@@ -790,31 +790,6 @@ several command-line utilities for manipulating DocBook XML files, PO files and
 PO template files.")
     (license license:gpl2+)))
 
-(define-public kdegraphics-mobipocket
-  (package
-    (name "kdegraphics-mobipocket")
-    (version "25.04.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
-                           "/src/" name "-" version ".tar.xz"))
-       (sha256
-        (base32 "1lzk8lh51dvmlk9im4cjsl7xwyy814a0yragk4f7r1lhs5w6rxhj"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list #:tests? #f
-           #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")))
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list kio qtbase qt5compat))
-    (home-page "https://apps.kde.org/en/kdegraphics_mobipocket")
-    (synopsis "KDE thumbnailer for Mobipocket files")
-    (description "This package provides a KDE plugin that shows thumbnails of
-Mobipocket e-books in Dolphin and other KDE apps.")
-    (license license:gpl2+)))
-
 (define-public kdegraphics-thumbnailers
   (package
     (name "kdegraphics-thumbnailers")

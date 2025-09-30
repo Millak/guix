@@ -17,6 +17,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages kde-graphics)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system qt)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -121,6 +122,31 @@
     (description
      "Gwenview is an image viewer for KDE.  It also provides image editing and
 annotating features.")
+    (license license:gpl2+)))
+
+(define-public kdegraphics-mobipocket
+  (package
+    (name "kdegraphics-mobipocket")
+    (version "24.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/" name "-" version ".tar.xz"))
+       (sha256
+        (base32 "0rpam31s5cvky4w3bb2qp1pjv0gm9f63a2jv6bcim7qnz050bvvn"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f
+           #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")))
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list kio qtbase qt5compat))
+    (home-page "https://apps.kde.org/en/kdegraphics_mobipocket")
+    (synopsis "KDE thumbnailer for Mobipocket files")
+    (description "This package provides a KDE plugin that shows thumbnails of
+Mobipocket e-books in Dolphin and other KDE apps.")
     (license license:gpl2+)))
 
 (define-public kdiagram

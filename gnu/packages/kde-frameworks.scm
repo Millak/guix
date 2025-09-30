@@ -73,6 +73,7 @@
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages kde)
+  #:use-module (gnu packages kde-graphics)
   #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages linux)
