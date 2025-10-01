@@ -29193,6 +29193,7 @@ working with iterables.")
 Python.")
     (license license:expat)))
 
+;; XXX: Not maintained since 2020.
 (define-public python-pybktree
   (package
     (name "python-pybktree")
@@ -29204,7 +29205,9 @@ Python.")
        (sha256
         (base32 "0asd2lw9c5l5wi4z24k7gkhlprpdkcvs8d94szk56x9xvmy07h7f"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list #:tests? #f))        ;no tests provided
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/Jetsetter/pybktree")
     (synopsis "Pythonic BK-tree data structure")
     (description
