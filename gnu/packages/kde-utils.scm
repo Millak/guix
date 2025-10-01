@@ -1002,7 +1002,8 @@ whom pressing buttons hurts.")
            kwidgetsaddons
            kxmlgui
            breeze-icons ;; default icon set
-           qtspeech))
+           qtspeech
+           qtwayland))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
