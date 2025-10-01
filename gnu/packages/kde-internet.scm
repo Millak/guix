@@ -158,14 +158,14 @@ This package is part of the KDE networking module.")
 (define-public kio-zeroconf
   (package
     (name "kio-zeroconf")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kio-zeroconf-" version ".tar.xz"))
        (sha256
-        (base32 "1ngn1iz4nybix7wshjsddvlm69mdvj8pis63yiyk5p3aiv0h2axl"))))
+        (base32 "0w27hxmaccw74sycrxpchgh6qgkbqyclc6h7ijsrvvh4l2xhlmc0"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
