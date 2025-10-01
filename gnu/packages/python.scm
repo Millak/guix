@@ -62,6 +62,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1600,11 +1601,11 @@ the interpreter."))))
 
 (define-public pythoncapi-compat
   ;; No release nor tags: use the latest commit.
-  (let ((commit "b541b98df1e3e5aabb5def27422a75c876f5a88a")
-        (revision "0"))
+  (let ((commit "ab72af8b1a9adfccb3578eea8e9b6d5c6449f409")
+        (revision "1"))
     (package
       (name "pythoncapi-compat")
-      (version "0")
+      (version (git-version "0.0.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -1613,7 +1614,7 @@ the interpreter."))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "09935gybfj2wqbf6jmn61m21qnx3za8xjv375n3daq8l3cs6dmmx"))))
+                  "0dfzfs399ik10125kvs5s8rid93lm50wray8s7b8bv90a61zjxiv"))))
       (build-system copy-build-system)
       (arguments (list #:install-plan
                        #~'(("pythoncapi_compat.h" "include/"))))
