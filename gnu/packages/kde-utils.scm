@@ -1112,7 +1112,8 @@ Its features include:
              kcrash
              ki18n
              kwidgetsaddons
-             kxmlgui))
+             kxmlgui
+             qtwayland))
       (arguments (list #:qtbase qtbase))
       (home-page "https://apps.kde.org/kronometer/")
       (synopsis "Simple stopwatch application")
