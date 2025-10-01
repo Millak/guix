@@ -24278,7 +24278,7 @@ for the analysis and visualization of raw nanopore signal.")
           (base32 "0i4j5bq5q32q216ja7yvg0mpww5j0b9p8ky5bya4d31wqmygal8z"))))
       (build-system pyproject-build-system)
       (propagated-inputs (list python-setuptools))
-      (native-inputs (list python-setuptools python-wheel))
+      (native-inputs (list python-pytest python-setuptools))
       (home-page "https://github.com/dridk/PyVCF3")
       (synopsis "Variant Call Format parser for Python")
       (description "This package provides a @acronym{VCF,Variant Call Format}
