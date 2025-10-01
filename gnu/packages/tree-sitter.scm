@@ -943,8 +943,9 @@ to generate the package name.  When TESTS? is true, tests are enabled."
                                '())
                            (list python-setuptools
                                  python-wheel)))
-    (description (string-append (package-description pkg)
-                                (P_ "\n\nThis variant provides Python bindings.")))))
+    (description
+     (string-append (package-description pkg)
+                    (P_ "\n\nThis variant provides Python bindings.")))))
 
 (define-public python-tree-sitter-html
   (python-tree-sitter-grammar
