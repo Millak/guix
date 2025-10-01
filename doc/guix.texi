@@ -10116,6 +10116,34 @@ directory, the parameter @code{#:javascript-files} can be used to
 specify a list of file names to feed to the minifier.
 @end defvar
 
+@defvar mix-build-system
+This is a variable exported by @code{guix build-system mix}.  It implements
+the standard build procedure used by Elixr programs with
+@url{https://hexdocs.pm/mix/Mix.html,Mix}, which consists
+of running @command{mix compile}, thereby creating bytecode.
+
+The API is similar to the @var{gnu-build-system}, with some specifics for
+Elixir:
+@itemize
+@item
+@code{#:tests?} is a boolean, @code{#true} by default, determining whether tests
+for the current build have to be run or not.
+@item
+@code{#:test-flags} is a list of arguments append to the @command{mix test}
+invocation.  It defaults to @code{'()}.
+@item
+@code{#:mix-exs}, changes the full path to the @code{mix.exs}
+file.  It defaults to @code{"mix.exs"}.  Please refer to
+@url{https://hexdocs.pm/mix/Mix.html#module-environment-variables,upstream}
+documentation for more details.
+@item
+@code{#:mix-path}, appends extra code paths.  It
+defaults to @code{#f}.  Please refer to
+@url{https://hexdocs.pm/mix/Mix.html#module-environment-variables,upstream}
+documentation for more details.
+@end itemize
+@end defvar
+
 @defvar mozilla-build-system
 This variable is exported by @code{(guix build-system mozilla)}.  It
 sets the @code{--target} and @code{--host} configuration flags to what

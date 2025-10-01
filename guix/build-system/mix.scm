@@ -66,9 +66,9 @@ See: https://github.com/hexpm/specifications/blob/main/endpoints.md"
 
 ;; A number of environment variables specific to the Mix build system are
 ;; reflected here.  They are documented at
-;; https://hexdocs.pm/mix/1.15.7/Mix.html#module-environment-variables.  Other
+;; https://hexdocs.pm/mix/Mix.html#module-environment-variables.  Other
 ;; parameters located in mix.exs are defined at
-;; https://hexdocs.pm/mix/1.15.7/Mix.Project.html#module-configuration
+;; https://hexdocs.pm/mix/Mix.Project.html#module-configuration
 (define* (mix-build name
                     inputs
                     #:key
@@ -90,9 +90,9 @@ See: https://github.com/hexpm/specifications/blob/main/endpoints.md"
   "Build SOURCE using Elixir, and with INPUTS."
 
   ;; Check the documentation of :build_per_environment here:
-  ;; https://hexdocs.pm/mix/1.15.7/Mix.Project.html#module-configuration And
+  ;; https://hexdocs.pm/mix/Mix.Project.html#module-configuration And
   ;; "Environments" here:
-  ;; https://hexdocs.pm/mix/1.15.7/Mix.html#module-environments
+  ;; https://hexdocs.pm/mix/Mix.html#module-environments
   (define mix-environments
     (if build-per-environment
         `("prod" ,@(if tests? '("test") '()))
