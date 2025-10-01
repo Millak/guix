@@ -121,6 +121,7 @@
            kxmlgui
            libkdegames
                                         ;python-wrapper
+           qtwayland
            qtmultimedia
            qtdeclarative
            qtsvg))
