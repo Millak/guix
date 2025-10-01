@@ -420,6 +420,7 @@ This package is part of the KDE games module.")
            python-qtpy
            python-zope-interface
            qtsvg
+           qtwayland
            vorbis-tools))
     (home-page "https://apps.kde.org/kajongg/")
     (synopsis "Classical Mah Jongg game for 4 players")
