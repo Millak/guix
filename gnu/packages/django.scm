@@ -1748,7 +1748,9 @@ forms using your favorite CSS framework, without writing template code.")
        (method url-fetch)
        (uri (pypi-uri "django_compressor" version))
        (sha256
-        (base32 "08m8cs1mnpwd2zlck8cbl4cdp21dgv4vj7j17krbgn745s5a9n61"))))
+        (base32 "08m8cs1mnpwd2zlck8cbl4cdp21dgv4vj7j17krbgn745s5a9n61"))
+       (patches
+        (search-patches "django-compressor-build-with-beautifulsoup-4.14+.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list
