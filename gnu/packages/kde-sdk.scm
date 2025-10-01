@@ -26,9 +26,16 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages apr)
+  #:use-module (gnu packages boost)
+  #:use-module (gnu packages code)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
-  #:use-module (gnu packages qt))
+  #:use-module (gnu packages llvm)
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages qt)
+  #:use-module (gnu packages version-control))
 
 (define-public kapptemplate
   (package
@@ -93,3 +100,90 @@ structure.  It features:
     (description "KDevelop-PG-Qt is the parser generator used in KDevplatform
 for some KDevelop language plugins (Ruby, PHP, CSS...).")
     (license license:lgpl2.0+)))
+
+(define-public kdevelop
+  (package
+    (name "kdevelop")
+    (version "24.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kdevelop-" version ".tar.xz"))
+       (sha256
+        (base32 "17g170cacdqgvxb8csd4ifv4jc0dcam7xki690hm8jw55rfpa2z9"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules pkg-config shared-mime-info qttools))
+    (inputs (list boost
+                  clang
+                  grantlee
+                  karchive
+                  kcmutils
+                  kcrash
+                  kdeclarative
+                  kguiaddons
+                  ki18n
+                  kiconthemes
+                  kio ;; not checked as requirement
+                  kitemmodels
+                  kitemviews
+                  kjobwidgets
+                  knotifications
+                  knotifyconfig
+                  kparts
+                  kservice
+                  ksyntaxhighlighting
+                  ktexteditor
+                  ktexttemplate
+                  ktextwidgets
+                  kwindowsystem
+                  kxmlgui
+                  libkomparediff2
+                  breeze-icons
+                  qt5compat
+                  qtdeclarative
+                  qtwebengine
+                  threadweaver
+                  ;; recommendes
+                  astyle
+                  kdevelop-pg-qt
+
+                  ;; optional
+                  apr ; required for subversion support
+                  apr-util ; required for subversion support
+                  attica
+                  kconfigwidgets
+                  knewstuff
+                  krunner
+                  ;; TODO: OktetaGui, OktetaKastenControllers
+                  libplasma
+                  ;; TODO: purpose
+                  sonnet
+                  subversion))
+    ;; run-time packages - TODO
+    ;; ClazyStandalone
+    ;; Cppcheck
+    ;; heaptrack
+    ;; heaptrack_gui
+    ;; meson
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f ;; there are some issues with the test suite
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'add-include-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "plugins/clang/Locate_CLANG_BUILTIN_DIR.cmake"
+                     (("\"\\$[{]CLANG_INCLUDE_DIRS[}]\"" line)
+                      (string-append
+                       line " \""
+                       (assoc-ref inputs "clang") "/lib\""))))))))
+    (home-page "https://kdevelop.org")
+    (synopsis "IDE for C, C++, Python, Javascript and PHP")
+    (description "The KDevelop IDE provides semantic syntax highlighting, as
+well as code navigation and completion for C, C++ (using Clang/LLVM), QML,
+JavaScript, Python and PHP.  It also integrates with a debugger, different
+build systems (CMake, QMake, custom Makefiles) and version control
+software (Git, Subversion, Mercurial, CVS and Bazaar).")
+    (license license:lgpl2.1+)))
