@@ -454,14 +454,14 @@ multi-floor indoor maps.")
 (define-public ksanecore
   (package
     (name "ksanecore")
-    (version "24.12.3")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                              "/src/ksanecore-" version ".tar.xz"))
        (sha256
-        (base32 "06g43b1l72aghkhcn59ss8kjc4sammn5ii5x5sql34kmvgiwamwk"))))
+        (base32 "1ilp0rgb4pj9q9wx6mh8gmgn9vmly18a28lnglyf1blpwxpbvjzg"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
