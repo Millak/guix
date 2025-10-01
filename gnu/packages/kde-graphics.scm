@@ -401,14 +401,14 @@ expression library, that is used in Krita.")
 (define-public libksane
   (package
     (name "libksane")
-    (version "24.12.3")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                              "/src/libksane-" version ".tar.xz"))
        (sha256
-        (base32 "1b0cbf4cq0ajl5xlpy75wj4p1zsri2igh23pswj8ysnrrk0pxg5w"))))
+        (base32 "0ynczlnxdmf0agdv0h7xzvvr8zz3i5f84pcl91f9fbjspgij8h5d"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
