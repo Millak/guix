@@ -833,7 +833,8 @@ This package is part of the KDE games module.")
            kwidgetsaddons
            kxmlgui
            libkdegames
-           qtdeclarative))
+           qtdeclarative
+           qtwayland))
     (home-page "https://apps.kde.org/kdiamond/")
     (synopsis "Three-in-a-row game")
     (description "KDiamond is a three-in-a-row game like Bejeweled.  It
