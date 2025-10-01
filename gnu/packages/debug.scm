@@ -533,7 +533,7 @@ server and embedded PowerPC, and S390 guests.")
   (package
     (inherit american-fuzzy-lop)
     (name "aflplusplus")
-    (version "4.33c")
+    (version "4.34c")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -542,7 +542,7 @@ server and embedded PowerPC, and S390 guests.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1h4ya82s1wd11c04r0g0wsq56asl1np3nmsf6yk4vyic9nm0hsq0"))))
+                "14pllv986zwzbqarbsif02k618yns4fvqd3br6irzfcwivpysqfa"))))
     (arguments
      (substitute-keyword-arguments (package-arguments american-fuzzy-lop)
        ((#:make-flags _ ''())
