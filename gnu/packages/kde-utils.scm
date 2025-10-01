@@ -164,7 +164,8 @@ well as CD-ROM images.")
                     qtcharts
                     qtdeclarative
                     qtmultimedia
-                    qtserialport))
+                    qtserialport
+                    qtwayland))
       (home-page "https://atelier.kde.org")
       (synopsis "Desktop interface to control 3D printers powered by AtCore")
       (description "Atelier provides interface to control and manage your printer.
