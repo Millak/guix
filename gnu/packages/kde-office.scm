@@ -228,6 +228,7 @@ Advanced plugins:
            qtmultimedia
            qtscxml
            qtspeech
+           qtwayland
            single-application
            tesseract-ocr))
     (native-inputs
