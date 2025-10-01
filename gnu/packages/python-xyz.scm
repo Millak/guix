@@ -13543,6 +13543,35 @@ in an image.  It then applies the colors system-wide and on-the-fly in all of
 your favourite programs.")
     (license license:expat)))
 
+(define-public python-pywal16
+  (package
+    (name "python-pywal16")
+    (version "3.8.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pywal16" version))
+       (sha256
+        (base32 "0836ya6zw0dglh0yldd9apsfvh5f9cxvmy8nc7aw2w8s491yancf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+        (add-before 'check 'set-HOME
+          (lambda _ (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list imagemagick
+           python-pytest
+           python-setuptools))
+    (home-page "https://github.com/eylles/pywal16")
+    (synopsis "16 colors fork of pywal")
+    (description
+     "Pywal16 is a tool that generates a color palette from the dominant
+colors in an image.  It then applies the colors system-wide and on-the-fly in
+all of your favorite programs.")
+    (license license:expat)))
+
 (define-public python-click-didyoumean
   (package
     (name "python-click-didyoumean")
