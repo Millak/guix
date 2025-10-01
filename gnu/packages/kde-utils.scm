@@ -630,7 +630,8 @@ characters.")
                   kiconthemes
                   kwindowsystem
                   kio
-                  kdbusaddons))
+                  kdbusaddons
+                  qtwayland))
     (home-page "https://invent.kde.org/utilities/kdialog")
     (synopsis "Show dialog boxes from shell scripts")
     (description "This package provides tool to show nice dialog boxes from
