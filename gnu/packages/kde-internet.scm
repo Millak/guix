@@ -283,6 +283,7 @@ Qt-based XMPP library QXmpp.")
      (list extra-cmake-modules kdoctools pkg-config))
     (inputs
      (list boost
+           breeze-icons ; default icon set
            gmp
            ;; TODO: enable when we qgpgme support qt6.
            ;; gpgme
@@ -311,8 +312,8 @@ Qt-based XMPP library QXmpp.")
            libgcrypt
            libktorrent
            libmms
-           breeze-icons ; default icon set
-           qca-qt6))
+           qca-qt6
+           qtwayland))
     (arguments
      (list #:qtbase qtbase))
     (home-page "https://www.kde.org/")
