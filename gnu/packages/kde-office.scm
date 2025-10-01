@@ -268,6 +268,7 @@ translation engines.")
            kxmlgui
            qt5compat
            qtsvg
+           qtwayland
            qtwebchannel
            qtwebengine
            sonnet))
