@@ -21816,16 +21816,32 @@ throughput chromatin profiles.  Typical use cases include:
   (package
     (name "umi-tools")
     (version "1.1.6")
+    ;; TODO: Delete generated Cython C files.
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/CGATOxford/UMI-tools")
-             (commit (string-append "v" version))))
+              (url "https://github.com/CGATOxford/UMI-tools")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1liykfj4msvcgk8an5qq802jcxwlijqxrvijipqj1pwpxqzl9qnh"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/test_style.py"
+              "--ignore=step1_unit_test.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-bash-path
+            (lambda _
+              (substitute* "tests/test_umi_tools.py"
+                (("/bin/bash")
+                 (which "sh")))))
+          (add-before 'check 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (inputs
      (list python-pandas
            python-future
@@ -21836,7 +21852,10 @@ throughput chromatin profiles.  Typical use cases include:
            python-scipy
            python-pysam))
     (native-inputs
-     (list python-setuptools python-wheel))
+     (list python-cython
+           python-pyaml
+           python-pytest
+           python-setuptools))
     (home-page "https://github.com/CGATOxford/UMI-tools")
     (synopsis "Tools for analyzing unique modular identifiers")
     (description "This package provides tools for dealing with @dfn{Unique
