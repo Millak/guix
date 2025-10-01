@@ -738,7 +738,8 @@ This package is part of the KDE games module.")
            kwidgetsaddons
            kxmlgui
            libkdegames
-           qtdeclarative))
+           qtdeclarative
+           qtwayland))
     (home-page "https://apps.kde.org/klines/")
     (synopsis "Place 5 equal pieces together, but wait, there are 3 new ones")
     (description "KLines is a simple but highly addictive one player game.
