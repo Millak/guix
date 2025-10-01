@@ -1393,12 +1393,13 @@ GUI for sigrok.")
                 (("\\[FindOsvvmSettingsDirectory\\]")
                  " \"\" "))))
           (add-after 'fix-scripts 'check
-            (lambda _
-              (setenv "OSVVM_DIR" (getcwd))
-              (setenv "OSVVM_MUST_BUILD" (getcwd))
-              (invoke "tclsh"
-                      (string-append #$(this-package-native-input "nvc")
-                                     "/test/test-osvvm.tcl")))))))
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "OSVVM_DIR" (getcwd))
+                (setenv "OSVVM_MUST_BUILD" (getcwd))
+                (invoke "tclsh"
+                        (string-append #$(this-package-native-input "nvc")
+                                       "/test/test-osvvm.tcl"))))))))
     (native-inputs
      (list nvc tcl tcllib which))
     (native-search-paths
@@ -1434,6 +1435,8 @@ verification.")
         (base32 "1kn18ibvm7bzdyw2d914284wriravyh5qwfarj06pb052x1yblyx"))))
     (arguments
      (substitute-keyword-arguments (package-arguments osvvm)
+       ((#:tests? _ #t)
+        #f)
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (delete 'fix-scripts)))))))
