@@ -632,7 +632,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtdeclarative
-           qtsvg))
+           qtsvg
+           qtwayland))
     (home-page "https://apps.kde.org/kblocks/")
     (synopsis "Single player falling blocks puzzle game")
     (description "KBlocks is the classic Tetris-like falling blocks game.
