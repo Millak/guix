@@ -50,6 +50,7 @@
   #:use-module (gnu packages messaging)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -165,7 +166,7 @@ This package is part of the KDE networking module.")
 (define-public kio-extras
   (package
     (name "kio-extras")
-    (version "24.12.1")
+    (version "25.08.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
@@ -173,18 +174,29 @@ This package is part of the KDE networking module.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1insjmx4pyagjm67cz5kc39pny2fycls73d0dkw402l89dncnax9"))))
+                "1n3cidj9rd77gjagdncp3f1s8351cf56h3mfwsv8z5vw5cppbi5a"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Fix including libproxy.
+               '(substitute* "kcms/proxy/wpad-detector/main.cpp"
+                  (("libproxy\\/proxy\\.h") "proxy.h")))))
     (build-system cmake-build-system)
     (arguments
-     (list #:phases
+     (list #:test-exclude
+           (string-append "("
+                          (string-join '("filenamesearchtest"
+                                         "thumbnailtest"
+                                         "testkioarchive")
+                                       "|")
+                          ")")
+           #:phases
            #~(modify-phases %standard-phases
                (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
+                 (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
                    (when tests?
                    (setenv "HOME" (getcwd))
                    (setenv "TMPDIR" (getcwd))
-                   (invoke "ctest" "-E"
-                           "(thumbnailtest|testkioarchive)"))))
+                   (invoke "ctest" "-E" test-exclude))))
                (add-after 'install 'fix-kiod-path
                  (lambda _
                    (let* ((kio #$(this-package-input "kio"))
@@ -214,6 +226,7 @@ This package is part of the KDE networking module.")
                   kdsoap
                   kdsoap-ws-discovery-client
                   kguiaddons
+                  knotifications
                   ktextwidgets
                   ki18n
                   kio
@@ -222,6 +235,7 @@ This package is part of the KDE networking module.")
                   libkexiv2
                   libmtp
                   libplist
+                  libproxy
                   libssh
                   libtirpc
                   openexr
