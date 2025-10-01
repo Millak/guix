@@ -225,7 +225,8 @@ well as CD-ROM images.")
                     kxmlgui
                     libgit2-1.8
                     phonon
-                    qt5compat))
+                    qt5compat
+                    qtwayland))
       (home-page "https://invent.kde.org/utilities/basket")
       (synopsis "Notes and to-dos organizer")
       (description "This package provides simple note taking and to-do app.")
