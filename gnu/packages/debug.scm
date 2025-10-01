@@ -6,7 +6,7 @@
 ;;; Copyright © 2019 Pkill -9 <pkill9@runbox.com>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
-;;; Copyright © 2020 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
@@ -15,6 +15,7 @@
 ;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
+;;; Copyright © 2025 Robin Templeton <robin@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,6 +41,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system linux-module)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
   #:use-module (guix gexp)
@@ -846,6 +848,27 @@ GDB with very efficient reverse-execution, which in combination with standard
 GDB/x86 features like hardware data watchpoints, makes debugging much more
 fun.")
       (license license:expat))))
+
+(define-public rr-zen-pmu-workaround
+  (package
+    (name "rr-zen-pmu-workaround")
+    (version (package-version rr))
+    (source (package-source rr))
+    (build-system linux-module-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'cd
+            (lambda _
+              (chdir "third-party/zen-pmu-workaround"))))))
+    (home-page "https://github.com/rr-debugger/rr/wiki/Zen")
+    (synopsis "AMD Zen workaround kernel module for rr")
+    (description "This is a Linux kernel module that implements
+ workarounds needed for using the @command{rr} debugger with AMD Zen
+@acronym{CPU, Central Processing Unit}.")
+    (license license:gpl2)))            ;GPLv2 only, like the kernel
 
 (define-public libbacktrace
   ;; There are no releases nor tags.
