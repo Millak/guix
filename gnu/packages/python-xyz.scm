@@ -40397,16 +40397,19 @@ way.")
   (package
     (name "python-zbarlight")
     (version "3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "zbarlight" version))
-              (sha256
-               (base32
-                "1v5c9bim8af6g8kgxp2dhm96n5vkr8sqi56w0bdh1xy49v03lw3g"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Polyconseil/zbarlight")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1radfpfhfhkx3xnz01bqr5l9pl2zv70zis6l2kw1gwqbfw65r6w6"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-pillow python-setuptools))
+    (propagated-inputs (list python-pillow))
     (inputs (list zbar))
-    (native-inputs (list python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/Polyconseil/zbarlight")
     (synopsis "Simple Python wrapper for the zbar barcode library")
     (description "Zbarlight is a simple wrapper for the zbar library.  It can
