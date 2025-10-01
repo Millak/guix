@@ -190,7 +190,19 @@
                          initial-gap middle-gap final-gap)
                (call-with-temporary-directory
                 (lambda (store)
-                  (let ((source (string-append store "/source")))
+                  (let* ((source (string-append store "/source"))
+                         (store-st (stat store))
+                         (store-bksz (stat:blksize store-st))
+                         ;; the test checks that space is actually saved
+                         ;; by the holes, but this isn't the case if
+                         ;; the size of each allocated block is large enough to swamp the savings.
+                         ;;
+                         ;; So, on large-block systems (e.g. Asahi tmpfs) we need
+                         ;; to scale the gaps so this is true again.
+                         (scale (max 1 (/ store-bksz 4096)))
+                         (initial-gap (* initial-gap scale))
+                         (middle-gap  (* middle-gap  scale))
+                         (final-gap   (* final-gap   scale)))
                     (call-with-output-file source
                       (lambda (port)
                         (seek port initial-gap SEEK_CUR)
