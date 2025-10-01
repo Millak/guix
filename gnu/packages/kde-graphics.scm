@@ -397,14 +397,14 @@ expression library, that is used in Krita.")
 (define-public libkexiv2
   (package
     (name "libkexiv2")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "073px490jvp5f2979ipzbjlw6qg55cfzisj1g3a1f9wwqshm3q5q"))))
+        (base32 "12kbfjbkac8hgkhpwg92hr5yq3lkp5pr7v4rqcsczzdx8b8kj2wm"))))
     (build-system cmake-build-system)
     (arguments
      (list
