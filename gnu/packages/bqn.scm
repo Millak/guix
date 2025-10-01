@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Christopher Rodriguez <yewscion@gmail.com>
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2025 Lee Thompson <lee.p.thomp@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -246,40 +247,63 @@ by APL.")
     (inherit cbqn-bootstrap)
     (name "cbqn")
     (outputs '("out" "lib"))
+    (source
+     (cbqn-combined-source name %cbqn-version
+                           #:cbqn-sources cbqn-sources
+                           #:replxx-sources replxx-sources
+                           #:singeli-sources singeli-sources))
     (arguments
-     (substitute-keyword-arguments (strip-keyword-arguments
-                                    (list #:tests?)
-                                    (package-arguments cbqn-bootstrap))
+     (substitute-keyword-arguments
+         (strip-keyword-arguments (list #:tests?)
+                                  (package-arguments cbqn-bootstrap))
        ((#:make-flags flags #~(list))
-        #~(cons* "shared-o3" "o3" #$flags))
+        #~(cons* "shared-o3" "o3" "for-build" #$flags))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
+            ;; Build bytecode using bootstrap CBQN
+            (add-before 'build 'generate-bytecode
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let* ((self-hosted-source (dirname (search-input-file
+                                                     inputs
+                                                     "bqn.bqn"))))
+                  (mkdir-p "build/bytecodeLocal/gen")
+                  (invoke "bqn" "build/bootstrap.bqn" self-hosted-source))))
             (replace 'check
               (lambda* (#:key inputs tests? #:allow-other-keys)
                 (when tests?
                   (system (string-append "./BQN -M 1000 \""
-                                         #+bqn-sources
-                                         "/test/this.bqn\""))
+                                         #+bqn-sources "/test/this.bqn\""))
                   (map (lambda (x)
-                         (system (string-append "./BQN ./test/" x
-                                                ".bqn")))
-                       '("cmp" "equal" "copy" "random"))
+                         (system (string-append "./BQN ./test/" x ".bqn")))
+                       '("cmp"
+                         "equal"
+                         "copy"
+                         "bitcpy"
+                         "bit"
+                         "mut"
+                         "hash"
+                         "squeezeValid"
+                         "squeezeExact"
+                         "various"
+                         "random"
+                         "joinReuse"))
                   (system "make -C test/ffi"))))
             (replace 'install
               (lambda* (#:key outputs #:allow-other-keys)
-                (let* ((bin (string-append (assoc-ref outputs "out")
-                                           "/bin"))
-                       (lib (string-append (assoc-ref outputs "lib")
-                                           "/lib"))
+                (let* ((bin (string-append (assoc-ref outputs "out") "/bin"))
+                       (lib (string-append (assoc-ref outputs "lib") "/lib"))
                        (include (string-append (assoc-ref outputs "lib")
-                                           "/include")))
+                                               "/include")))
                   (mkdir-p bin)
                   (rename-file "BQN" "bqn")
                   (install-file "bqn" bin)
                   (install-file "libcbqn.so" lib)
                   (install-file "include/bqnffi.h" include))))))))
-    (native-inputs (list dbqn
-                         bqn-sources
-                         libffi))
-    (properties
-     `((tunable? . #t)))))
+    (native-inputs (list cbqn-bootstrap libffi))
+    (inputs (modify-inputs (package-inputs cbqn-bootstrap)
+              (prepend bqn-sources)))
+    (license (append (package-license cbqn-bootstrap)
+                     (list license:isc   ;Singeli module
+                           license:bsd-3 ;REPLXX module
+                           license:unicode)))
+    (properties `((tunable? . #t)))))
