@@ -1297,7 +1297,8 @@ This package is part of the KDE games module.")
            libkdegames
            qtbase
            qtdeclarative
-           qtsvg))
+           qtsvg
+           qtwayland))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
