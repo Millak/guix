@@ -42,13 +42,13 @@
 (define-public elixir-nimble-parsec
   (package
     (name "elixir-nimble-parsec")
-    (version "1.4.0")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri name version))
        (sha256
-        (base32 "0a6gs7950gpkdax18x167g8v6dy4sbbx47cchglq7cqgh5i5hmlw"))))
+        (base32 "0wy917z0wklczd9ps54dcr9s00yd3jcxmqdv0fs5586x8a4kj8ab"))))
     (build-system mix-build-system)
     (arguments (list #:tests? #f)) ; no tests
     (synopsis "Text-based parser combinators")
