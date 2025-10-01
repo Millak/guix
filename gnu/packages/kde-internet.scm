@@ -630,6 +630,7 @@ Features are:
      (list extra-cmake-modules pkg-config kdoctools))
     (inputs
      (list breeze-icons ; default icon set
+           gnutls
            kbookmarks
            freerdp-3
            fuse
@@ -655,7 +656,7 @@ Features are:
            lzo
            libjpeg-turbo
            libgcrypt
-           gnutls))
+           qtwayland))
     (arguments
      (list #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")
            #:tests? #f
