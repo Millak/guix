@@ -1196,7 +1196,8 @@ This package is part of the KDE games module.")
            kiconthemes
            kxmlgui
            libkdegames
-           qtdeclarative))
+           qtdeclarative
+           qtwayland))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
