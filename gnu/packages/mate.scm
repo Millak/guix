@@ -594,6 +594,35 @@ Interactive Weather Information Network (IWIN).
 @end enumerate\n")
     (license (list license:gpl2+ license:lgpl2.0+ license:gpl3+))))
 
+(define-public mate-indicator-applet
+  (package
+    (name "mate-indicator-applet")
+    (version "1.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://mate/"
+                           (version-major+minor version)
+                           "/"
+                           "mate-indicator-applet-"
+                           version
+                           ".tar.xz"))
+       (sha256
+        (base32 "1ka9mplw28p2sb75lj9559sszqvi44f0ppypgj6maghajw1xgcyf"))))
+    (build-system glib-or-gtk-build-system)
+    (native-inputs (list pkg-config gettext-minimal))
+    (inputs (list gtk+ libindicator mate-common mate-panel hicolor-icon-theme))
+    (home-page "https://mate-desktop.org/")
+    (synopsis
+     "Applet for displaying application indicators on the MATE panel")
+    (description "This applet displays information from various applications
+consistently in the MATE panel.")
+    (license 
+     ;; Dual-licensed under GPL-3+ and LGPL-2.1+
+     (list
+      license:gpl3+
+      license:lgpl2.1+))))
+
 (define-public mate-sensors-applet
   (package
     (name "mate-sensors-applet")
