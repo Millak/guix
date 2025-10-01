@@ -123,6 +123,7 @@
            qca-qt6
            qtkeychain-qt6
            qtsvg
+           qtwayland
            qtwebengine
            shared-mime-info
            sonnet
