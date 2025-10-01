@@ -3937,7 +3937,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
      (list alsa-lib
            `(,alsa-plugins "pulseaudio")
            bash-minimal
-           ffmpeg
+           ffmpeg-6
            fftw
            frei0r-plugins
            gdk-pixbuf
