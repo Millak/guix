@@ -1837,35 +1837,6 @@ PostScript, PDF, RAW, Mobipocket, and Blender files.")
 picture metadata as EXIF/IPTC and XMP.")
     (license license:gpl2+)))
 
-(define-public kio-zeroconf
-  (package
-    (name "kio-zeroconf")
-    (version "24.12.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
-                           "/src/kio-zeroconf-" version ".tar.xz"))
-       (sha256
-        (base32 "1ngn1iz4nybix7wshjsddvlm69mdvj8pis63yiyk5p3aiv0h2axl"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list kdbusaddons kdnssd ki18n kio))
-    (arguments (list #:qtbase qtbase
-                     #:tests? #f
-                     #:configure-flags
-                     #~(list "-DQT_MAJOR_VERSION=6")))
-    (home-page "https://apps.kde.org/kio_zeroconf/")
-    (synopsis "DNS-SD Service Discovery Monitor")
-    (description "Adds an entry to Dolphin's Network page to show local
-services such as printers which advertise themselves with DNSSD (called Avahi
-or Bonjour by other projects).")
-    (license ;; GPL for programs, LGPL for libraries, FDL for documentation
-     (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+))))
-
-
 (define-public kuserfeedback
   ;; FIXME: Try to reduce data collection and ensure transmission i disabled by default.
   ;; FIXME: Check https://www.reddit.com/r/kde/comments/f7ojg9 for insights
