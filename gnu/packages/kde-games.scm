@@ -351,7 +351,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            libkmahjongg
-           qtdeclarative))
+           qtdeclarative
+           qtwayland))
     (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/kshisen/")
     (synopsis "Shisen-Sho solitaire game")
