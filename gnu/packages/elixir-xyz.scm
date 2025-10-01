@@ -211,13 +211,13 @@ that writes and updates tests for you.")
 (define-public elixir-beam-file
   (package
     (name "elixir-beam-file")
-    (version "0.6.2")
+    (version "0.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "beam_file" version))
        (sha256
-        (base32 "0mlwrh5sxvz36qqqwbyhqz9xyx93c3bv04vjmpf4wrxdba79xa89"))))
+        (base32 "1qcfgcpkswk3fmq6s2d36myhzhnxy5vwf7z11mqs6mqz11xx54jf"))))
     (build-system mix-build-system)
     (native-inputs
      (list elixir-excoveralls elixir-recode))
