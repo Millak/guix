@@ -1291,7 +1291,7 @@ nameservers other than libc.")
 (define-public smartdns
   (package
     (name "smartdns")
-    (version "46.1")
+    (version "47")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1303,7 +1303,7 @@ nameservers other than libc.")
                           ((".*SYSTEMDSYSTEMUNITDIR.*") "")))
               (sha256
                (base32
-                "0jjzvm4i5978gb2xhkx7fhqwzgjnvwyk9a2d88zzv93mal7q9xi2"))))
+                "10a4nnrnf10n4rq166yixm0va1j0sdj9vca3kpwkzgn9blwvbqph"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "test"
@@ -1338,6 +1338,8 @@ nameservers other than libc.")
                (add-after 'check 'leave-test-dir
                  (lambda _
                    (chdir "../../source"))))))
+    ;; NOTE: DoQ and DoH3 support require OpenSSL 3.4+, which is currently not
+    ;; available in Guix.
     (inputs (list openssl))
     (native-inputs (list googletest `(,isc-bind "utils") which))
     (home-page "https://github.com/pymumu/smartdns")
