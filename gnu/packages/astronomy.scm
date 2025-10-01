@@ -2286,6 +2286,47 @@ Users should not need to install this directly; instead, install an
 implementation package such as asdf-astropy.")
      (license license:bsd-3))))
 
+(define-public python-asdf-fits-schemas
+  (hidden-package
+   ;; This package was never released and has been archived. The schemas in
+   ;; this package were never removed from and will continue to be maintained
+   ;; in <https://github.com/asdf-format/asdf-standard>.
+   (let ((commit "6321c0ae4e44c9a59ccf81a446f9d9e22fd42b55")
+         (revision "2"))
+     (package
+       (name "python-asdf-fits-schemas")
+       (version (git-version "0.0.1" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/asdf-format/asdf-fits-schemas")
+                (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "0p0m1sgnv9yqk0l0w15skvfshl47x0gc7lg6p2x83158hjyix5q6"))))
+       (build-system pyproject-build-system)
+       (arguments
+        (list
+         #:tests? #f ; cycle with python-asdf
+         #:phases
+         #~(modify-phases %standard-phases
+             (add-before 'build 'set-version
+               (lambda _
+                 (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "0.0.1"))))))
+       (native-inputs
+        (list python-setuptools
+              python-setuptools-scm
+              python-wheel))
+       (propagated-inputs
+        (list python-asdf-standard
+              python-importlib-resources))
+       (home-page "https://github.com/asdf-format/asdf-fits-schemas")
+       (synopsis "ASDF schemas to support the FITS format")
+       (description
+        "This package provides ASDF schemas for validating FITS tags.")
+       (license license:bsd-3)))))
+
 (define-public python-asdf-standard
   (package
     (name "python-asdf-standard")
@@ -6323,6 +6364,34 @@ position-frequency slice.")
       (list python-setuptools
             python-wheel)))))
 
+(define-public python-pyavm
+  (package
+    (name "python-pyavm")
+    (version "0.9.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyAVM" version))
+       (sha256
+        (base32 "0vgjqvddq4a5lnmg8msm7fwqs3r6fc748xzvnhyvc387h0z8pdxk"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pillow
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy))
+    (home-page "https://astrofrog.github.io/pyavm/")
+    (synopsis "Simple pure-python AVM meta-data handling")
+    (description
+     "PyAVM is a module to represent, read, and write metadata following the
+@acronym{AVM, Astronomy Visualization Metadata} standard provided by
+@url{https://www.virtualastronomy.org/avm_metadata.php, vamp} project.")
+    (license license:expat)))
+
 (define-public python-pycpl
   (package
     (name "python-pycpl")
@@ -6886,6 +6955,58 @@ experiments.  It is a large refactor of
 memory usage, improving performance and run in parallel with MPI.")
     (license license:bsd-3)))
 
+(define-public python-pysynphot
+  ;; XXX: 2.0.0 was released in 2021 there are a lot of changes since that
+  ;; time and it failed to build with python-astropy 6.0.0, use the latest
+  ;; upstream commit for now.
+  (let ((commit "54e9e2a624910c4d177ca70f8e9fb8110c8fae5b")
+        (revision "0"))
+    (package
+      (name "python-pysynphot")
+      (version (git-version "2.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/spacetelescope/pysynphot")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "09sivpfqilk86zp8k5wmrs4g48m4kypn34jcy95y5h4ygbn5zbzy"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'set-version
+              (lambda _
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "2.0.0")))
+            (add-before 'check 'set-env-data-path
+              (lambda _
+                (setenv "PYSYN_CDBS" (string-append #$output "/crds")))))))
+      (native-inputs
+       (list python-pytest
+             python-pytest-remotedata
+             python-setuptools
+             python-setuptools-scm
+             python-wheel))
+      (propagated-inputs
+       (list python-astropy
+             python-beautifulsoup4
+             python-numpy
+             python-pytest-astropy-header
+             python-six))
+      (home-page "https://github.com/spacetelescope/pysynphot")
+      (synopsis "Python Synthetic Photometry Utilities")
+      (description
+       "Astrolib PySynphot (hereafter referred to only as pysynphot) is an
+object-oriented replacement for STSDAS SYNPHOT synthetic photometry package in
+IRAF.  @code{pysynphot} simulates photometric data and spectra as they are
+observed with the Hubble Space Telescope (HST).  Passbands for standard
+photometric systems are available, and users can incorporate their own filters,
+spectra, and data.")
+      (license license:bsd-3))))
+
 (define-public python-pyvo
   (package
     (name "python-pyvo")
@@ -7226,6 +7347,134 @@ solar physics.")
      "This package implements functionality of @acronym{Point Spread Function,
 PSF} describing how the optical system spreads light from sources.")
     (license license:expat)))
+
+(define-public python-reproject
+  (package
+    (name "python-reproject")
+    (version "0.14.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "reproject" version))
+       (sha256
+        (base32 "0yg5dga054xdwsx75q204h04gmrw0mgayc74l4rpymcbkckymj2k"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--arraydiff"
+              "--arraydiff-default-format=fits"
+              "--numprocesses" (number->string (parallel-job-count))
+              "--pyargs" "reproject")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; setup.py was removed in a659a260bdd7635cddc8f33c4ea04a3b6d8c1f84
+          ;; for some unknown reason, which caused the package to fail to
+          ;; build. It is being recreated based on that commit.
+          ;; TODO: Check how to implement it in python-build-system.
+          (add-after 'unpack 'create-setup.py
+            (lambda _
+              (call-with-output-file "setup.py"
+                (lambda (port)
+                  (format port "from setuptools import setup
+from extension_helpers import get_extensions
+setup(ext_modules=get_extensions())")))))
+          (add-before 'install 'writable-compiler
+            (lambda _
+              (make-file-writable "reproject/_compiler.c")))
+          (add-before 'check 'writable-compiler
+            (lambda _
+              (make-file-writable "reproject/_compiler.c")))
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs
+     (list python-asdf
+           python-astropy
+           python-astropy-healpix
+           python-cloudpickle
+           python-dask
+           python-fsspec
+           python-gwcs
+           python-numpy
+           python-pyvo
+           python-scipy
+           python-shapely
+           python-zarr))
+    (native-inputs
+     (list python-cython-3
+           python-extension-helpers
+           python-asdf
+           python-gwcs
+           python-pytest-astropy
+           python-pytest-xdist
+           python-pyvo
+           ;; python-sunpy ; circular dependencies, test optional
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://reproject.readthedocs.io")
+    (synopsis "Astronomical image reprojection in Python")
+    (description
+     "This package provides a functionality to reproject astronomical images using
+various techniques via a uniform interface, where reprojection is the
+re-gridding of images from one world coordinate system to another e.g.
+changing the pixel resolution, orientation, coordinate system.")
+    (license license:bsd-3)))
+
+(define-public python-roman-datamodels
+  (package
+    (name "python-roman-datamodels")
+    (version "0.27.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "roman_datamodels" version))
+       (sha256
+        (base32 "1631jpv7mcrcka6bfxp04ih43wlm9pmqsqxckqyv6y9jgsipjxy3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 4185 passed, 1 skipped, 1 xfailed
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-env
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pandas
+           python-pytest
+           python-pytest-doctestplus
+           python-pytest-env
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-asdf
+           python-asdf-astropy
+           python-asdf-standard
+           python-astropy
+           python-gwcs
+           python-lz4
+           python-numpy
+           python-pyarrow
+           python-rad))
+    (home-page "https://github.com/spacetelescope/roman_datamodels")
+    (synopsis "Roman Datamodels Support")
+    (description
+     "This package provides a Python package of Roman Datamodels for the
+calibration pipelines started with the @acronym{JWST, James Webb Space
+Telescope} calibration pipelines.  The goal for the JWST pipelines was motivated
+primarily by the need to support FITS data files, specifically with isolating
+the details of where metadata and data were located in the FITS file from the
+representation of the same items within the Python code.  That is not a concern
+for Roman since FITS format data files will not be used by the Roman calibration
+pipelines.")
+    (license license:bsd-3)))
 
 (define-public python-romancal
   (package
@@ -7917,109 +8166,6 @@ instruments.")
     (license (list license:bsd-3     ; licenses/LICENSE.rst, same as python-astropy
                    license:expat)))) ; licenses/KOSMOS_LICENSE
 
-(define-public python-pyavm
-  (package
-    (name "python-pyavm")
-    (version "0.9.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "PyAVM" version))
-       (sha256
-        (base32 "0vgjqvddq4a5lnmg8msm7fwqs3r6fc748xzvnhyvc387h0z8pdxk"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pillow
-           python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-astropy
-           python-numpy))
-    (home-page "https://astrofrog.github.io/pyavm/")
-    (synopsis "Simple pure-python AVM meta-data handling")
-    (description
-     "PyAVM is a module to represent, read, and write metadata following the
-@acronym{AVM, Astronomy Visualization Metadata} standard provided by
-@url{https://www.virtualastronomy.org/avm_metadata.php, vamp} project.")
-    (license license:expat)))
-
-(define-public python-reproject
-  (package
-    (name "python-reproject")
-    (version "0.14.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "reproject" version))
-       (sha256
-        (base32 "0yg5dga054xdwsx75q204h04gmrw0mgayc74l4rpymcbkckymj2k"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--arraydiff"
-              "--arraydiff-default-format=fits"
-              "--numprocesses" (number->string (parallel-job-count))
-              "--pyargs" "reproject")
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; setup.py was removed in a659a260bdd7635cddc8f33c4ea04a3b6d8c1f84
-          ;; for some unknown reason, which caused the package to fail to
-          ;; build. It is being recreated based on that commit.
-          ;; TODO: Check how to implement it in python-build-system.
-          (add-after 'unpack 'create-setup.py
-            (lambda _
-              (call-with-output-file "setup.py"
-                (lambda (port)
-                  (format port "from setuptools import setup
-from extension_helpers import get_extensions
-setup(ext_modules=get_extensions())")))))
-          (add-before 'install 'writable-compiler
-            (lambda _
-              (make-file-writable "reproject/_compiler.c")))
-          (add-before 'check 'writable-compiler
-            (lambda _
-              (make-file-writable "reproject/_compiler.c")))
-          (add-before 'check 'prepare-test-environment
-            (lambda _
-              (setenv "HOME" "/tmp")
-              ;; Cython extensions have to be built before running the tests.
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (propagated-inputs
-     (list python-asdf
-           python-astropy
-           python-astropy-healpix
-           python-cloudpickle
-           python-dask
-           python-fsspec
-           python-gwcs
-           python-numpy
-           python-pyvo
-           python-scipy
-           python-shapely
-           python-zarr))
-    (native-inputs
-     (list python-cython-3
-           python-extension-helpers
-           python-asdf
-           python-gwcs
-           python-pytest-astropy
-           python-pytest-xdist
-           python-pyvo
-           ;; python-sunpy ; circular dependencies, test optional
-           python-setuptools-scm
-           python-wheel))
-    (home-page "https://reproject.readthedocs.io")
-    (synopsis "Astronomical image reprojection in Python")
-    (description
-     "This package provides a functionality to reproject astronomical images using
-various techniques via a uniform interface, where reprojection is the
-re-gridding of images from one world coordinate system to another e.g.
-changing the pixel resolution, orientation, coordinate system.")
-    (license license:bsd-3)))
-
 (define-public python-spectral-cube
   (package
     (name "python-spectral-cube")
@@ -8536,152 +8682,6 @@ implementing calibration pipeline software.")
 flagship infrared space telescope.  STPSF can simulate images for any of the four
 science instruments plus the fine guidance sensor, including both direct
 imaging, coronagraphic, and spectroscopic modes.")
-    (license license:bsd-3)))
-
-(define-public python-pysynphot
-  ;; XXX: 2.0.0 was released in 2021 there are a lot of changes since that
-  ;; time and it failed to build with python-astropy 6.0.0, use the latest
-  ;; upstream commit for now.
-  (let ((commit "54e9e2a624910c4d177ca70f8e9fb8110c8fae5b")
-        (revision "0"))
-    (package
-      (name "python-pysynphot")
-      (version (git-version "2.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/spacetelescope/pysynphot")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "09sivpfqilk86zp8k5wmrs4g48m4kypn34jcy95y5h4ygbn5zbzy"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'build 'set-version
-              (lambda _
-                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "2.0.0")))
-            (add-before 'check 'set-env-data-path
-              (lambda _
-                (setenv "PYSYN_CDBS" (string-append #$output "/crds")))))))
-      (native-inputs
-       (list python-pytest
-             python-pytest-remotedata
-             python-setuptools
-             python-setuptools-scm
-             python-wheel))
-      (propagated-inputs
-       (list python-astropy
-             python-beautifulsoup4
-             python-numpy
-             python-pytest-astropy-header
-             python-six))
-      (home-page "https://github.com/spacetelescope/pysynphot")
-      (synopsis "Python Synthetic Photometry Utilities")
-      (description
-       "Astrolib PySynphot (hereafter referred to only as pysynphot) is an
-object-oriented replacement for STSDAS SYNPHOT synthetic photometry package in
-IRAF.  @code{pysynphot} simulates photometric data and spectra as they are
-observed with the Hubble Space Telescope (HST).  Passbands for standard
-photometric systems are available, and users can incorporate their own filters,
-spectra, and data.")
-      (license license:bsd-3))))
-
-(define-public python-asdf-fits-schemas
-  (hidden-package
-   ;; This package was never released and has been archived. The schemas in
-   ;; this package were never removed from and will continue to be maintained
-   ;; in <https://github.com/asdf-format/asdf-standard>.
-   (let ((commit "6321c0ae4e44c9a59ccf81a446f9d9e22fd42b55")
-         (revision "2"))
-     (package
-       (name "python-asdf-fits-schemas")
-       (version (git-version "0.0.1" revision commit))
-       (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                (url "https://github.com/asdf-format/asdf-fits-schemas")
-                (commit commit)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32 "0p0m1sgnv9yqk0l0w15skvfshl47x0gc7lg6p2x83158hjyix5q6"))))
-       (build-system pyproject-build-system)
-       (arguments
-        (list
-         #:tests? #f ; cycle with python-asdf
-         #:phases
-         #~(modify-phases %standard-phases
-             (add-before 'build 'set-version
-               (lambda _
-                 (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "0.0.1"))))))
-       (native-inputs
-        (list python-setuptools
-              python-setuptools-scm
-              python-wheel))
-       (propagated-inputs
-        (list python-asdf-standard
-              python-importlib-resources))
-       (home-page "https://github.com/asdf-format/asdf-fits-schemas")
-       (synopsis "ASDF schemas to support the FITS format")
-       (description
-        "This package provides ASDF schemas for validating FITS tags.")
-       (license license:bsd-3)))))
-
-(define-public python-roman-datamodels
-  (package
-    (name "python-roman-datamodels")
-    (version "0.27.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "roman_datamodels" version))
-       (sha256
-        (base32 "1631jpv7mcrcka6bfxp04ih43wlm9pmqsqxckqyv6y9jgsipjxy3"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 4185 passed, 1 skipped, 1 xfailed
-      #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count)))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-env
-            (lambda _
-              (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list python-pandas
-           python-pytest
-           python-pytest-doctestplus
-           python-pytest-env
-           python-pytest-xdist
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-asdf
-           python-asdf-astropy
-           python-asdf-standard
-           python-astropy
-           python-gwcs
-           python-lz4
-           python-numpy
-           python-pyarrow
-           python-rad))
-    (home-page "https://github.com/spacetelescope/roman_datamodels")
-    (synopsis "Roman Datamodels Support")
-    (description
-     "This package provides a Python package of Roman Datamodels for the
-calibration pipelines started with the @acronym{JWST, James Webb Space
-Telescope} calibration pipelines.  The goal for the JWST pipelines was motivated
-primarily by the need to support FITS data files, specifically with isolating
-the details of where metadata and data were located in the FITS file from the
-representation of the same items within the Python code.  That is not a concern
-for Roman since FITS format data files will not be used by the Roman calibration
-pipelines.")
     (license license:bsd-3)))
 
 (define-public python-stsci-image
