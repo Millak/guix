@@ -492,7 +492,8 @@ Kate's features include:
                   kwidgetsaddons
                   kitemviews
                   kcompletion
-                  kxmlgui))
+                  kxmlgui
+                  qtwayland))
     (arguments (list #:qtbase qtbase))
     (home-page "https://invent.kde.org/utilities/kdebugsettings")
     (synopsis "Choose which QLoggingCategory are displayed")
