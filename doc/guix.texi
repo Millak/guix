@@ -24321,6 +24321,58 @@ Whether to enable password-based authentication.
 @end table
 @end deftp
 
+@cindex EndleSSH
+@defvar endlessh-service-type
+This is the type for the
+@uref{https://github.com/skeeto/endlessh,EndleSSH} program that runs an
+SSH tar pit. By very slowly sending an SSH banner, this program keeps
+unwanted visitors locked away from the actual SSH daemon.
+
+For example, to specify a service running Endlessh on port @code{2222}, add
+this call to the operating system's @code{services} field:
+
+@lisp
+(service endlessh-service-type
+         (endlessh-configuration
+          (port-number 2222)))
+@end lisp
+@end defvar
+
+@deftp {Data Type} endlessh-configuration
+This data type represents the configuration of an EndleSSH service.
+
+@table @asis
+@item @code{endlessh} (default: @var{endlessh})
+The EndleSSH package to use.
+
+@item @code{port-number} (default: @code{22})
+The TCP port where the daemon waits for incoming connections.
+
+@item @code{log-level} (default: @code{1})
+The log level. @code{0} is quiet, @code{2} is very noisy.
+
+@item @code{syslog-output?} (default: @code{#t})
+Whether to enable syslog output.
+
+@item @code{pid-file} (default: @code{"/var/run/endlessh.pid"})
+File name of the daemon's PID file.
+
+@item @code{message-delay} (default: @code{10000})
+The endless banner is sent one line at a time. This is the delay in
+milliseconds between individual lines.
+
+@item @code{max-banner-length} (default: @code{32})
+The length of each line is randomized. This controls the maximum length
+of each line. Shorter lines may keep clients on for longer if they give
+up after a certain number of bytes.
+
+@item @code{max-clients} (default: @code{4096})
+Maximum number of connections to accept at a time. Connections beyond
+this are not immediately rejected, but will wait in the queue.
+
+@end table
+@end deftp
+
 @cindex AutoSSH
 @defvar autossh-service-type
 This is the type for the @uref{https://www.harding.motd.ca/autossh,

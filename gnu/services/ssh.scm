@@ -70,6 +70,17 @@
             dropbear-service-type
             dropbear-service  ; deprecated
 
+            endlessh-configuration
+            endlessh-configuration?
+            endlessh-configuration-endlessh
+            endlessh-configuration-port-number
+            endlessh-configuration-log-level
+            endlessh-configuration-syslog-output?
+            endlessh-configuration-message-delay
+            endlessh-configuration-max-banner-length
+            endlessh-configuration-max-clients
+            endlessh-service-type
+
             autossh-configuration
             autossh-configuration?
             autossh-service-type
@@ -522,6 +533,68 @@ of user-name/file-like tuples."
 daemon} with the given @var{config}, a @code{<dropbear-configuration>}
 object."
   (service dropbear-service-type config))
+
+
+;;;
+;;; Endlessh.
+;;;
+
+(define-record-type* <endlessh-configuration>
+  endlessh-configuration make-endlessh-configuration
+  endlessh-configuration?
+  (endlessh               endlessh-configuration-endlessh
+                          (default endlessh))
+  (port-number            endlessh-configuration-port-number
+                          (default 22))
+  (log-level              endlessh-configuration-log-level
+                          (default 1))
+  (syslog-output?         endlessh-configuration-syslog-output?
+                          (default #t))
+  (message-delay          endlessh-configuration-message-delay
+                          (default 10000))
+  (max-banner-length      endlessh-configuration-max-banner-length
+                          (default 32))
+  (max-clients            endlessh-configuration-max-clients
+                          (default 4096)))
+
+(define (endlessh-shepherd-service config)
+  "Return a <shepherd-service> for endlessh with CONFIG."
+  (define endlessh
+    (endlessh-configuration-endlessh config))
+
+  (define endlessh-config
+    (format #f "Port ~a~%Delay ~a~%MaxLineLength ~a~%MaxClients ~a~%LogLevel ~a"
+            (endlessh-configuration-port-number config)
+            (endlessh-configuration-message-delay config)
+            (endlessh-configuration-max-banner-length config)
+            (endlessh-configuration-max-clients config)
+            (endlessh-configuration-log-level config)))
+
+  (define endlessh-command
+    #~(list (string-append #$endlessh "/bin/endlessh")
+            "-f" #$(plain-file "endlessh_config" endlessh-config)
+            #$@(if (endlessh-configuration-syslog-output? config) '("-s") '())))
+
+  (define requires
+    (if (endlessh-configuration-syslog-output? config)
+        '(user-processes networking syslogd)
+        '(user-processes networking)))
+
+  (list (shepherd-service
+          (documentation "EndleSSH server.")
+          (requirement requires)
+          (provision '(endlessh))
+          (start #~(make-forkexec-constructor #$endlessh-command))
+          (stop #~(make-kill-destructor)))))
+
+(define endlessh-service-type
+  (service-type (name 'endlessh)
+                (description
+                 "Run the EndleSSH secure shell (SSH) tarpit.")
+                (extensions
+                 (list (service-extension shepherd-root-service-type
+                                          endlessh-shepherd-service)))
+                (default-value (endlessh-configuration))))
 
 
 ;;;
