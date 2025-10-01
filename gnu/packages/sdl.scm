@@ -191,7 +191,7 @@ hardware.")
            libxkbcommon
            libxrandr
            mesa                         ;required by wayland
-           pipewire
+           pipewire-minimal
            pulseaudio
            wayland))
     (inputs
