@@ -672,7 +672,8 @@ as well as QR codes.")
            kwidgetsaddons
            kwindowsystem
            libxkbcommon
-           qtsvg))
+           qtsvg
+           qtwayland))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
