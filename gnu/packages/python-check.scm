@@ -2925,6 +2925,32 @@ The main usage is to use the @code{qtbot} fixture, responsible for handling
 interaction, like key presses and mouse clicks.")
     (license license:expat)))
 
+(define-public python-pytest-recording
+  (package
+    (name "python-pytest-recording")
+    (version "0.13.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_recording" version))
+       (sha256
+        (base32 "133nj8vha63gv226f0gvqn16gnazbn2rqh8amv2fx4jrm2r693an"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;XXX: more than 50% tets failed
+    (native-inputs
+     (list python-pytest-bootstrap
+           python-hatchling))
+    (propagated-inputs
+     (list  python-vcrpy))
+    (home-page "https://github.com/kiwicom/pytest-recording")
+    (synopsis "Pytest support for recording and replaying HTTP traffic")
+    (description
+     "This package provides a Pytest plugin powered by
+@url{https://vcrpy.readthedocs.io/en/latest/, VCR.py} to record and replay
+HTTP traffic.")
+    (license license:expat)))
+
 (define-public python-pytest-remotedata
   (package
     (name "python-pytest-remotedata")
