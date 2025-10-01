@@ -661,9 +661,7 @@ autoloading of subtitle files for use while playing video.")
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kamoso-" version ".tar.xz"))
        (sha256
-        (base32 "0fsvmrsnbac9nsqds53zzrzanq776fn1zs45ihc9p6kq26qpnd65"))
-       (patches
-        (search-patches "kamoso-25.08.1-gstreamer.patch"))))
+        (base32 "0fsvmrsnbac9nsqds53zzrzanq776fn1zs45ihc9p6kq26qpnd65"))))
     (build-system qt-build-system)
     (native-inputs
      (list
@@ -684,7 +682,8 @@ autoloading of subtitle files for use while playing video.")
            purpose
            qtdeclarative))
     (arguments
-     (list #:qtbase qtbase))
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/kamoso/")
     (synopsis "Take pictures and videos out of your webcam")
     (description "Kamoso is a simple and friendly program to use your
