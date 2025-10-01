@@ -1247,7 +1247,8 @@ timers for each task can be started, stopped, changed, or looped.")
              kwidgetsaddons
              kxmlgui
              kconfig
-             imagemagick))
+             imagemagick
+           qtwayland))
       (arguments (list #:qtbase qtbase
                        #:tests? #f))
       (home-page "https://apps.kde.org/kxstitch/")
