@@ -2971,6 +2971,7 @@ changeset itself; there won't be any extra commits.  Either GnuPG or OpenSSL
 can be used for signing.")
       (license license:gpl2))))                   ;per commitsigs.py
 
+;; XXX: Not maintained since 2019.
 (define-public heatwave
   (package
     (name "heatwave")
@@ -2982,6 +2983,10 @@ can be used for signing.")
        (sha256
         (base32 "1zzwmb9hvbyswzjgap02rrq8p44hb6xlzk1wd8w01mh2vva0xlx7"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests in PyPI
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-click
            python-gitpython
