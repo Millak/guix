@@ -549,7 +549,8 @@ This package is part of the KDE games module.")
            libkdegames
            qtscxml
            qtdeclarative
-           qtsvg))
+           qtsvg
+           qtwayland))
     (home-page "https://apps.kde.org/konquest/")
     (synopsis "Simple turn-based strategy game")
     (description "Konquest is the KDE version of Gnu-Lactic Konquest.  Players
