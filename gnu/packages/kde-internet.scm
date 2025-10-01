@@ -921,6 +921,7 @@ protocol, supporting end-to-end encryption.  Its features include:
            qtwebsockets
            qtnetworkauth
            qtmultimedia
+           qtwayland
            qtsvg
            sonnet))
     (home-page "https://apps.kde.org/ruqola/")
