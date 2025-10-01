@@ -6625,7 +6625,7 @@ package does not rely on the @code{YouTube} Data API v3.")
 (define-public wf-recorder
   (package
     (name "wf-recorder")
-    (version "0.3.0")
+    (version "0.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6634,12 +6634,12 @@ package does not rely on the @code{YouTube} Data API v3.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18csvix8fdqir52q729rgcy355xy2ngvmr05l1abflpbvsklbn52"))))
+                "0a805kfbgpg7898gbb218n7krbvn9r96xydhibvrphy08wxd1xzg"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config))
     (inputs
-     (list ffmpeg pulseaudio wayland wayland-protocols libx264))
+     (list ffmpeg-6 pipewire pulseaudio wayland wayland-protocols libx264 mesa))
     (home-page "https://github.com/ammen99/wf-recorder")
     (synopsis "Screen recorder for wlroots-based compositors")
     (description
