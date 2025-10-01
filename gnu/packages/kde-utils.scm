@@ -695,7 +695,8 @@ conversions between European currencies.")
                   prison
                   qqc2-desktop-style
                   qtsvg
-                  qtdeclarative))
+                  qtdeclarative
+                  qtwayland))
     (arguments
      (list #:qtbase qtbase
            #:phases
