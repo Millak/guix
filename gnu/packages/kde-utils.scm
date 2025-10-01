@@ -384,7 +384,8 @@ your computer.")
            kxmlgui
            ki18n
            kio
-           libgphoto2))
+           libgphoto2
+           qtwayland))
     (home-page "https://apps.kde.org/kamera/")
     (synopsis "KDE integration to digital cameras")
     (description
