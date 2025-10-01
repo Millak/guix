@@ -125,13 +125,13 @@ performance is comparable to jiffy, which is implemented in C as a NIF.")
 (define-public elixir-file-system
   (package
     (name "elixir-file-system")
-    (version "1.0.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri name version))
        (sha256
-        (base32 "0vakv2hmqcj0ijxlbh8bvdwislxrvpcfxvracq7a3idfcqnhjlk7"))
+        (base32 "0pbsz3w7hsvlyzwa0qp203hhga9ss39sk9whn3psw9p5vybzy5bs"))
        (snippet #~(begin
                     (use-modules (guix build utils) (ice-9 ftw))
                     (mkdir "source")
