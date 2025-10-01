@@ -757,6 +757,7 @@ variety of formats.")
      (list extra-cmake-modules pkg-config kdoctools))
     (inputs
      (list bash-minimal
+           breeze-icons ; default icon set
            cdrdao
            cdrtools
            dvd+rw-tools
@@ -791,7 +792,7 @@ variety of formats.")
            libsamplerate
            libsndfile
            libvorbis
-           breeze-icons ; default icon set
+           qtwayland
            shared-mime-info
            solid
            sox
