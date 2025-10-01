@@ -5,6 +5,7 @@
 ;;; Copyright © 2018, 2019, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
@@ -44,13 +45,38 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages video)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk))
+
+(define-public python-zbarlight
+  (package
+    (name "python-zbarlight")
+    (version "3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Polyconseil/zbarlight")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1radfpfhfhkx3xnz01bqr5l9pl2zv70zis6l2kw1gwqbfw65r6w6"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pillow))
+    (inputs (list zbar))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/Polyconseil/zbarlight")
+    (synopsis "Simple Python wrapper for the zbar barcode library")
+    (description "Zbarlight is a simple wrapper for the zbar library.  It can
+read all zbar supported codes.")
+    (license license:bsd-3)))
 
 (define-public zint
   (package

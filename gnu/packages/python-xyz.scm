@@ -40393,29 +40393,6 @@ markdown-compliant strings.")
 way.")
     (license license:lgpl2.1)))
 
-(define-public python-zbarlight
-  (package
-    (name "python-zbarlight")
-    (version "3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Polyconseil/zbarlight")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1radfpfhfhkx3xnz01bqr5l9pl2zv70zis6l2kw1gwqbfw65r6w6"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-pillow))
-    (inputs (list zbar))
-    (native-inputs (list python-pytest python-setuptools))
-    (home-page "https://github.com/Polyconseil/zbarlight")
-    (synopsis "Simple Python wrapper for the zbar barcode library")
-    (description "Zbarlight is a simple wrapper for the zbar library.  It can
-read all zbar supported codes.")
-    (license license:bsd-3)))
-
 (define-public python-zeroc-ice
   (package
     (name "python-zeroc-ice")
