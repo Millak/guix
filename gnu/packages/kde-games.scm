@@ -1508,7 +1508,8 @@ This package is part of the KDE games module.")
            kwidgetsaddons
            kxmlgui
            libkdegames
-           qtdeclarative))
+           qtdeclarative
+           qtwayland))
     (home-page "https://apps.kde.org/killbots/")
     (synopsis "Port of the classic BSD console game robots")
     (description "Killbots is a simple game of evading killer robots.
