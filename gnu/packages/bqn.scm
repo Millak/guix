@@ -121,6 +121,19 @@ the same author.")
         (sha256
          (base32 "1cap927i0s8ly4mckppw33ahlc5xnp3l2shk1m79wndf362x3r7c")))))
 
+(define %cbqn-version "0.9.0")
+
+(define cbqn-sources
+  (let ((version %cbqn-version))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+            (url "https://github.com/dzaima/CBQN")
+            (commit (string-append "v" version))))
+      (file-name (git-file-name "cbqn" version))
+      (sha256
+       (base32 "0433hp9lgv6w6mhdz0k1kx2rmxia76yy9i0z7ps4qdk7snf2yr2q")))))
+
 (define cbqn-bootstrap
   (let* ((revision "2")
          (commit "66584ce1491d300746963b8ed17170348b2a03e6"))
