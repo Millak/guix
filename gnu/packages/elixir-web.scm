@@ -460,13 +460,13 @@ framework.")
 (define-public elixir-phoenix-live-favicon
   (package
     (name "elixir-phoenix-live-favicon")
-    (version "0.2.0")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "phoenix_live_favicon" version))
        (sha256
-        (base32 "17m7gpx6qw0cr0d2acwajjhz2qzfi2zywzyk2i139y9higb22q8k"))))
+        (base32 "1wakzjn4z0skmmymywng2n5jqcfbfccawzcd03a5gcyy3m215h7w"))))
     (build-system mix-build-system)
     (arguments
      ;; Tests depend on makeup_diff from hex.pm but it is not packaged yet.
