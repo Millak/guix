@@ -1391,7 +1391,8 @@ remind you to take a break now and then.")
            ki18n
            kio
            ktextwidgets
-           kxmlgui))
+           kxmlgui
+           qtwayland))
     (home-page "https://apps.kde.org/sweeper/")
     (synopsis "Temporary file and history cleaner")
     (description "
