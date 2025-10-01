@@ -1435,7 +1435,8 @@ libraries designed for computer vision research and implementation.")
                     libjpeg-turbo
                     libpng
                     libtiff
-                    mesa-opencl
+                    opencl-headers
+                    opencl-icd-loader
                     perl
                     python
                     tbb
