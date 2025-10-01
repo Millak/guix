@@ -598,7 +598,8 @@ drive, USB stick, etc
            ki18n
            kiconthemes
            kwidgetsaddons
-           kxmlgui))
+           kxmlgui
+           qtwayland))
     (home-page "https://apps.kde.org/kcharselect/")
     (synopsis "Select and copy special characters from installed fonts")
     (description
