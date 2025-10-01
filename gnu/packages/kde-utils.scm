@@ -258,7 +258,8 @@ well as CD-ROM images.")
                     kdbusaddons
                     ksyntaxhighlighting
                     qtdeclarative
-                    qtsvg))
+                    qtsvg
+                    qtwayland))
       (arguments (list #:qtbase qtbase
                        #:tests? #f))
       (home-page "https://invent.kde.org/utilities/fielding")
