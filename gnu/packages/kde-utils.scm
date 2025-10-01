@@ -1164,6 +1164,7 @@ to save the times and resume them later.")
            kwindowsystem
            kxmlgui
            qt5compat
+           qtwayland
            solid
            zlib))
     (home-page "https://krusader.org/")
