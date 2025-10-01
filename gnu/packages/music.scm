@@ -3250,44 +3250,31 @@ MIDI files, based on libsmf.")
 (define-public frescobaldi
   (package
     (name "frescobaldi")
-    (version "3.3.0")
+    (version "4.0.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/frescobaldi/frescobaldi/releases/download/v"
-             version "/frescobaldi-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/frescobaldi/frescobaldi")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1n60gfnf6x0l1bac088g9adzx0lskbl9knd4y1ynr3y0zcs0kfcz"))))
-    (build-system python-build-system)
+        (base32 "03ygnq7x37hnw68nkw0175m0b4ngkhgigf85pjw0sx0dbkwh4i17"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f ;no tests included
-      #:phases #~(modify-phases %standard-phases
-                   (add-before 'build 'generate-translations
-                     (lambda _
-                       (invoke "make" "-C" "i18n")))
-                   (add-before 'build 'generate-metadata
-                     (lambda _
-                       (invoke "make" "-C" "linux")))
-                   (add-after 'install 'wrap-executable
-                     (lambda _
-                       ;; Ensure that icons are found at runtime.
-                       (wrap-program (string-append #$output
-                                                    "/bin/frescobaldi")
-                         `("QT_PLUGIN_PATH" prefix
-                           ,(list (getenv "QT_PLUGIN_PATH")))))))))
+      #:tests? #f)) ;no tests included
+    (native-inputs
+     (list python-hatchling))
     (inputs (list bash-minimal
                   lilypond
                   poppler
                   portmidi-2
                   python-ly
-                  python-poppler-qt5
-                  python-pyportmidi
-                  python-pyqt
-                  python-sip
-                  qpageview
-                  qtsvg-5))
+                  python-pyqt-6
+                  python-pyqt6-sip
+                  python-pyqtwebengine-6
+                  qpageview))
     (home-page "https://www.frescobaldi.org/")
     (synopsis "LilyPond sheet music text editor")
     (description
