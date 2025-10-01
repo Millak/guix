@@ -714,6 +714,7 @@ This package is part of the KDE networking module.")
            breeze-icons ; default icon set
            phonon
            qt5compat
+           qtwayland
            qtwebengine
            solid
            syndication
