@@ -37,31 +37,25 @@
 (define-public gwenview
   (package
     (name "gwenview")
-    (version "24.12.3")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/gwenview-" version ".tar.xz"))
        (sha256
-        (base32 "0rh4249wqhm35ahpyhpnxdnaw8s0hklx2mdsmfj6m20f26w90ifb"))))
+        (base32 "0z6ngbb1pkgdy7z6nla788wh7wcz3ny64041yv7k0falzpwfx4jd"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "ctest" "-E"
-                             (string-append
-                              "("
-                              (string-join '("placetreemodeltest"
-                                             "historymodeltest"
-                                             "contextmanagertest"
-                                             "urlutilstest")
-                                           "|")
-                              ")"))))))))
+           #:test-exclude
+           (string-append "("
+                          (string-join '("placetreemodeltest"
+                                         "historymodeltest"
+                                         "contextmanagertest"
+                                         "urlutilstest")
+                                       "|")
+                          ")")))
     (native-inputs
      (list extra-cmake-modules
            kdoctools
@@ -90,6 +84,7 @@
            phonon
            purpose
            qtimageformats
+           qtmultimedia
            qtsvg
            qtwayland
            wayland
