@@ -34,6 +34,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages check)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
@@ -44,6 +45,7 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages nss)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
@@ -222,34 +224,47 @@ seamlessly with your desktop environment.")
 (define-public python-mastodon-py
   (package
     (name "python-mastodon-py")
-    (version "1.5.1")
+    (version "2.1.4")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "Mastodon.py" version))
-        (sha256
-         (base32
-          "1vikvkzcij2gd730cssigxi38vlmzqmwdy58r3y2cwsxifnxpz9a"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-blurhash
-           python-dateutil
-           python-decorator
-           python-magic
-           python-pytz
-           python-requests
-           python-six))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mastodon_py" version))
+       (sha256
+        (base32 "1988sanhh4162jilffa7r1n9ylls5v868ndfmnsp0z5k9p5fj0k6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-check-environment
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "TZ" "UTC")
+              (setenv "TZDIR"
+                      (search-input-directory inputs
+                                              "share/zoneinfo")))))))
     (native-inputs
-     (list python-blurhash
-           python-cryptography
-           python-http-ece
+     (list nss-certs-for-test
            python-pytest
            python-pytest-cov
            python-pytest-mock
-           python-pytest-runner
-           python-pytest-vcr
+           python-pytest-recording
+           python-pytest-retry
+           python-pytz
            python-requests-mock
-           python-vcrpy))
+           python-setuptools
+           python-vcrpy
+           tzdata-for-tests))
+    (propagated-inputs
+     (list python-blurhash
+           python-decorator
+           python-dateutil
+           python-magic
+           python-requests
+           ;; [optional]
+           python-blurhash
+           python-cryptography
+           python-grapheme      ;project was not updated for 6y
+           python-http-ece))
     (home-page "https://github.com/halcy/Mastodon.py")
     (synopsis "Python wrapper for the Mastodon API")
     (description
