@@ -10986,6 +10986,26 @@ and Flatpak we expect PipeWire to provide a core building block for the future
 of Linux application development.")
     (license license:lgpl2.0+)))
 
+(define-public pipewire-minimal
+  ;; Used as libpipewire to reduce closure size and avoid dependency cycles.
+  (hidden-package
+   (package
+     (inherit pipewire)
+     (name "pipewire-minimal")
+     (arguments
+      (list
+       #:configure-flags
+       #~(list "-Dsession-managers=[]"
+               "-Ddbus=disabled"
+               "-Dflatpak=disabled"
+               ;; XXX: Otherwise test_loop will fail with:
+               ;;   libgcc_s.so.1 must be installed for pthread_cancel to work
+               (string-append "-Dc_link_args=-Wl,-rpath=" #$output "/lib"
+                              " -lgcc_s")
+               "-Db_asneeded=false")))
+     (native-inputs '())
+     (inputs '()))))
+
 (define-public wireplumber
   (package
     (name "wireplumber")
