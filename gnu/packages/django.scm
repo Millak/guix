@@ -696,7 +696,7 @@ them do this.")
 (define-public python-django-allauth
   (package
     (name "python-django-allauth")
-    (version "65.3.1")
+    (version "65.7.0")
     (source
      (origin
        (method git-fetch)
@@ -705,7 +705,7 @@ them do this.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vm8q5jp854lrykqirmklmlppzz6dih2bzjgv4c7mdwhsfp9s1i2"))))
+        (base32 "1k5b3x7pdysb21vbqx7pxi9cm72yj057mm1clg19ymiqj4kq8yfl"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -733,7 +733,12 @@ them do this.")
     (inputs (list xmlsec-openssl))
     (native-inputs
      (list tzdata-for-tests
+           python-django-ninja
+           python-django-rest-framework
+           python-oauthlib
+           python-psycopg2
            python-pytest
+           python-pytest-asyncio
            python-pytest-django
            python-setuptools))
     (home-page "https://github.com/pennersr/django-allauth")
