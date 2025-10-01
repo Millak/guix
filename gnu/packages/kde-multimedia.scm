@@ -401,6 +401,7 @@ This package is part of the KDE multimedia module.")
            qqc2-desktop-style
            sonnet
            qt5compat
+           qtwayland
            yt-dlp))
     (home-page "https://haruna.kde.org/")
     (synopsis "Video player built with Qt/QML and libmpv")
