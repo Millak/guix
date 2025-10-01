@@ -466,7 +466,8 @@ This package is part of the KDE games module.")
            kwidgetsaddons
            kxmlgui
            libkdegames
-           qtdeclarative))
+           qtdeclarative
+           qtwayland))
     (home-page "https://apps.kde.org/kbreakout/")
     (synopsis "Breakout like game")
     (description "KBreakout is similar to the classics breakout and xboing,
