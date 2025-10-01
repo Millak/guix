@@ -4672,7 +4672,9 @@ editors, IDEs, etc.")
                  ((#:configure-flags flags #~'())
                   #~(cons "-Dgtk4=false" (delete "-Dgtk3=false" #$flags)))))
     (propagated-inputs (modify-inputs (package-propagated-inputs vte)
-                         (replace "gtk" gtk+)))))
+                         (replace "gtk" gtk+)))
+    (properties
+     `((upstream-name . "vte")))))
 
 (define-public vte-with-sixel
   (package/inherit vte
