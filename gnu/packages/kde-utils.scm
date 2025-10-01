@@ -1207,7 +1207,8 @@ great on your desktop.")
            knotifications
            kconfigwidgets
            kstatusnotifieritem
-           qt5compat))
+           qt5compat
+           qtwayland))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
