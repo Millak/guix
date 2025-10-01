@@ -998,6 +998,7 @@ Its main features are:
            breeze-icons ; default icon set
            libplasma
            pulseaudio
+           qtwayland
            solid))
     (home-page "https://apps.kde.org/kmix/")
     (synopsis "Volume control and mixer")
