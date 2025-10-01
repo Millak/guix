@@ -61,13 +61,13 @@ for higher-level combinators through composition.")
 (define-public elixir-makeup
   (package
     (name "elixir-makeup")
-    (version "1.1.2")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri name version))
        (sha256
-        (base32 "1b3civqrznn3dxqa3iybwbpgj8dj6f7q1zlgr8gd5jzvh5mmdqfc"))))
+        (base32 "1khpilfafsxz494yiyx6arqf9hm4jw8i644davm0zbhbgf388r6k"))))
     (build-system mix-build-system)
     (propagated-inputs (list elixir-nimble-parsec))
     (arguments
