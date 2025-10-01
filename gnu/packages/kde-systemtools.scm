@@ -119,6 +119,7 @@ This package contains GUI widgets for baloo.")
            libxkbcommon
            plasma-activities
            qtmultimedia
+           qtwayland
            solid))
     (arguments
      (list #:qtbase qtbase
