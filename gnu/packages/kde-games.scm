@@ -1637,7 +1637,8 @@ This package is part of the KDE games module.")
            ktextwidgets
            kxmlgui
            libkdegames
-           qtdeclarative))
+           qtdeclarative
+           qtwayland))
     (home-page "https://apps.kde.org/knavalbattle/")
     (synopsis "Battleship board game with built-in game server")
     (description "KBattleship is a Battle Ship game for KDE.
