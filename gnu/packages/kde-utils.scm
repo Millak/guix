@@ -525,7 +525,8 @@ Kate's features include:
                   kstatusnotifieritem
                   libarchive
                   shared-mime-info
-                  qt5compat))
+                  qt5compat
+                  qtwayland))
     (arguments (list #:qtbase qtbase
                      #:tests? #f))
     (home-page "https://apps.kde.org/kbackup/")
