@@ -679,7 +679,8 @@ This package is part of the KDE games module.")
            libkdegames
            glu
            qtdeclarative
-           qtsvg))
+           qtsvg
+           qtwayland))
     (home-page "https://apps.kde.org/ksudoku/")
     (synopsis "Sudoku puzzle game and solver")
     (description "KSudoku is a Sudoku game and solver, supporting a range of
