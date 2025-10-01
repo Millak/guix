@@ -428,31 +428,38 @@ picture metadata as EXIF/IPTC and XMP.")
 (define-public okular
   (package
     (name "okular")
-    (version "24.12.3")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1836wiiq6frvz4ddsi1iir4dkmd9p0lc4mwd5pn5swbb03f9824d"))))
+        (base32 "027dcckqrm2k4ayqrl2dwyg718mi07sq5ghz6yf8gn6gqfhl5gk7"))))
     (build-system qt-build-system)
     (arguments
      (list
       #:qtbase qtbase
+      #:test-exclude
+      (string-append "("
+                     (string-join '("annotationtoolbartest"
+                                    "mainshelltest"
+                                    "parttest"
+                                    "chmgeneratortest")
+                                  "|")
+                     ")")
       #:phases
       #~(modify-phases %standard-phases
           (delete 'check)
           ;; use installed data to check.
           (add-after 'install 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
               (when tests?
                 (invoke "ctest"
                         "--output-on-failure"
                         "--rerun-failed"
                         "-E"
-                        "(annotationtoolbartest|mainshelltest|parttest|\
-chmgeneratortest)"))))
+                        test-exclude))))
           (add-before 'check 'check-setup
             (lambda* (#:key outputs #:allow-other-keys)
               (let ((share (string-append (assoc-ref outputs "out") "/share")))
