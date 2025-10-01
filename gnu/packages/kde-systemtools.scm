@@ -498,7 +498,8 @@ This package is part of the KDE networking module.")
            kitemviews
            ktextwidgets
            kwidgetsaddons
-           kxmlgui))
+           kxmlgui
+           qtwayland))
     (home-page "https://apps.kde.org/ksystemlog/")
     (synopsis "System log viewer")
     (description "This program is developed for being used by beginner users,
