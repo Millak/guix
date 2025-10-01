@@ -1059,7 +1059,8 @@ sentences to be re-spoken.")
              kxmlgui
              podofo
              taglib
-             qt5compat))
+             qt5compat
+             qtwayland))
       (home-page "https://userbase.kde.org/KRename")
       (synopsis "Utility to handle specialized file renames")
       (description "KRename is a batch file renamer by KDE.  It allows you to
