@@ -963,7 +963,8 @@ artists to web-designers to people with low vision.")
            libxtst
            libxt
            phonon
-           qtmultimedia))
+           qtmultimedia
+           qtwayland))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
