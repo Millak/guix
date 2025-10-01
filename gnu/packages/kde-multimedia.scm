@@ -696,6 +696,7 @@ projects.")
            libvorbis
            qtdeclarative
            qtmultimedia
+           qtwayland
            readline
            taglib
            zlib))
