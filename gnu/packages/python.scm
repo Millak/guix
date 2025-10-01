@@ -52,7 +52,7 @@
 ;;; Copyright © 2018 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2018, 2019, 2020, 2021 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2018, 2019, 2020, 2021, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2018 Luther Thompson <lutheroto@gmail.com>
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019, 2024 Tanguy Le Carrour <tanguy@bioneland.org>
@@ -96,10 +96,12 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xml)
   #:use-module (guix gexp)
+  #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix search-paths)
   #:use-module (guix utils)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (srfi srfi-1)
@@ -1595,6 +1597,32 @@ and the unversioned commands available.")))
        "Python toolchain including Python itself, setuptools and pip.
 Use this package if you need a minimal Python toolchain instead of just
 the interpreter."))))
+
+(define-public pythoncapi-compat
+  ;; No release nor tags: use the latest commit.
+  (let ((commit "b541b98df1e3e5aabb5def27422a75c876f5a88a")
+        (revision "0"))
+    (package
+      (name "pythoncapi-compat")
+      (version "0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/python/pythoncapi-compat")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "09935gybfj2wqbf6jmn61m21qnx3za8xjv375n3daq8l3cs6dmmx"))))
+      (build-system copy-build-system)
+      (arguments (list #:install-plan
+                       #~'(("pythoncapi_compat.h" "include/"))))
+      (home-page "https://github.com/python/pythoncapi-compat")
+      (synopsis "Python C API compatibility")
+      (description "The pythoncapi-compat project can be used to write a C or
+C++ extension supporting a wide range of Python versions with a single code
+base, via the @file{pythoncapi_compat.h} header file.")
+      (license license:bsd-0))))
 
 (define-public micropython
   (package
