@@ -542,6 +542,7 @@ This package is part of the KDE multimedia module.")
            qtbase
            qtmultimedia
            qtsvg
+           qtwayland
            taglib))
     (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/juk/")
