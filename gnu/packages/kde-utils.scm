@@ -290,7 +290,8 @@ well as CD-ROM images.")
                   ki18n
                   kdeclarative
                   qqc2-desktop-style
-                  qtsvg))
+                  qtsvg
+                  qtwayland))
     (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/filelight/")
     (synopsis "Visualize the disk usage")
