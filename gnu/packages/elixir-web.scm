@@ -481,13 +481,13 @@ Phoenix Live View applications.")
 (define-public elixir-phoenix-live-head
   (package
     (name "elixir-phoenix-live-head")
-    (version "0.3.0")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "phoenix_live_head" version))
        (sha256
-        (base32 "060bbni63v4jqyiqrykcl2sdra3brhvr15d1q7wg1c48cki01ah3"))))
+        (base32 "12z1rjizkj4337cc0p1mvjq7n0jgd0v9gd8p8bw10vsi5ykbdlai"))))
     (build-system mix-build-system)
     (native-inputs
      (list elixir-excoveralls))
