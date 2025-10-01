@@ -5127,7 +5127,8 @@ form, numpad.
     (arguments
      (list
       #:configure-flags
-      #~(list "-Dpackager=guix"
+      #~(list "--wrap-mode=nodownload"  ;for rzgdb, rzheap, etc.
+              "-Dpackager=guix"
               (string-append "-Dpackager_version=" #$version)
               "-Duse_sys_capstone=enabled"
               "-Duse_sys_magic=enabled"
