@@ -453,6 +453,7 @@ projects.")
       #:configure-flags
       #~(list
          "-DBUILD_WITH_QT6=ON"
+         "-DWITH_FFMPEG=ON"
          (string-append "-DDOCBOOK_XSL_DIR="
                         #$(this-package-native-input "docbook-xsl")))
       #:qtbase qtbase
@@ -467,13 +468,13 @@ projects.")
     (native-inputs
      (list docbook-xsl
            extra-cmake-modules
-           ffmpeg-4
            kdoctools
            libxslt
            python-minimal-wrapper
            qttools))
     (inputs
      (list chromaprint
+           ffmpeg-6
            flac
            id3lib
            kconfig
