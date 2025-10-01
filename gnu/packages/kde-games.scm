@@ -212,7 +212,8 @@ This package is part of the KDE games module.")
            kxmlgui
            ktextwidgets
            libkdegames
-           qtdeclarative))
+           qtdeclarative
+           qtwayland))
     (home-page "https://apps.kde.org/kolf/")
     (synopsis "Miniature golf game")
     (description "Kolf is a miniature golf game for one to ten players.  The
