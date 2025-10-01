@@ -320,7 +320,8 @@ your computer.")
                   kdbusaddons
                   knotifications
                   qtdeclarative
-                  qtsvg))
+                  qtsvg
+                  qtwayland))
     (arguments (list #:qtbase qtbase))
     (home-page "https://invent.kde.org/utilities/francis")
     (synopsis "Track your time")
