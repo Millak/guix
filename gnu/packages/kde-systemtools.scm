@@ -243,6 +243,7 @@ unmount drives and view them in a file manager.")
            breeze-icons ;; default icon set
            qtbase
            xapian
+           qtwayland
            qtwebengine))
     (home-page "https://apps.kde.org/khelpcenter/")
     (synopsis "KDE documentation viewer")
