@@ -17,9 +17,11 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages kde-sdk)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system qt)
   #:use-module (guix download)
   #:use-module (guix gexp)
+  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (gnu packages)
@@ -68,3 +70,27 @@ structure.  It features:
 @item Integration into KDevelop
 @end itemize")
     (license license:gpl2+)))
+
+(define-public kdevelop-pg-qt
+  (package
+    (name "kdevelop-pg-qt")
+    (version "2.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/KDE/kdevelop-pg-qt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wbfgd1d995cmqbfz2bvdsz02jhcvgd5jam7wm4m5npqwzgl5f7v"))))
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list qtbase))
+    (build-system cmake-build-system)
+    (home-page "https://kde.org")
+    (synopsis "Parser generator library for KDevplatform")
+    (description "KDevelop-PG-Qt is the parser generator used in KDevplatform
+for some KDevelop language plugins (Ruby, PHP, CSS...).")
+    (license license:lgpl2.0+)))

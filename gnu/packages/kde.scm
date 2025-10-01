@@ -83,6 +83,7 @@
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-pim)
   #:use-module (gnu packages kde-plasma)
+  #:use-module (gnu packages kde-sdk)
   ;; Including this module breaks the build.
   ;#:use-module ((gnu packages kde-systemtools) #:select (dolphin))
   #:use-module (gnu packages llvm)
@@ -480,30 +481,6 @@ JavaScript, Python and PHP.  It also integrates with a debugger, different
 build systems (CMake, QMake, custom Makefiles) and version control
 software (Git, Subversion, Mercurial, CVS and Bazaar).")
     (license license:lgpl2.1+)))
-
-(define-public kdevelop-pg-qt
-  (package
-    (name "kdevelop-pg-qt")
-    (version "2.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/KDE/kdevelop-pg-qt")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0wbfgd1d995cmqbfz2bvdsz02jhcvgd5jam7wm4m5npqwzgl5f7v"))))
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list qtbase))
-    (build-system cmake-build-system)
-    (home-page "https://kde.org")
-    (synopsis "Parser generator library for KDevplatform")
-    (description "KDevelop-PG-Qt is the parser generator used in KDevplatform
-for some KDevelop language plugins (Ruby, PHP, CSS...).")
-    (license license:lgpl2.0+)))
 
 (define-public kdiagram
   (package
