@@ -548,7 +548,7 @@ variety of formats.")
            cdrdao
            cdrtools
            dvd+rw-tools
-           ffmpeg
+           ffmpeg-6
            flac
            karchive
            kauth
