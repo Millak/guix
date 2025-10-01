@@ -1351,7 +1351,8 @@ redone.")
              kstatusnotifieritem
              ktextwidgets
              kwindowsystem
-             kxmlgui))
+             kxmlgui
+             qtwayland))
       (arguments (list #:qtbase qtbase))
       (home-page "https://apps.kde.org/rsibreak/")
       (synopsis "Assists in the Recovery and Prevention of Repetitive Strain
