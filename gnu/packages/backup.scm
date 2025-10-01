@@ -27,6 +27,7 @@
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
 ;;; Copyright © 2025 Kjartan Oli Agustsson <kjartanoli@outlook.com>
+;;; Copyright © 2025 mstenek <mstenek@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -123,7 +124,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32 "14x5brpq1l400i9l2hnyqmbn19cc1hnbmj5fn8cs8zzwzbgrfxng"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
      (list gettext-minimal ; for msgfmt
            gobject-introspection
@@ -148,8 +149,7 @@
            gnupg ; gpg executable needed
            util-linux))     ; for setsid
     (arguments
-     (list #:test-target "test"
-           #:phases
+     (list #:phases
            #~(modify-phases %standard-phases
                (add-before 'build 'use-store-file-names
                  (lambda* (#:key inputs #:allow-other-keys)
