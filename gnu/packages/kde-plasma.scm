@@ -1057,7 +1057,7 @@ the schedule and venue information.")
     (inputs (list libxkbcommon
                   libva
                   pipewire
-                  ffmpeg
+                  ffmpeg-6
                   kcoreaddons
                   ki18n
                   kwayland
