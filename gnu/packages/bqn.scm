@@ -204,6 +204,43 @@ by APL.")
                    license:gpl3+
                    license:mpl2.0))))
 
+(define* (cbqn-combined-source name version #:key cbqn-sources replxx-sources singeli-sources)
+  (origin
+    (method (@@ (guix packages) computed-origin-method))
+    (file-name (string-append name "-" version ".tar.gz"))
+    (sha256 #f)
+    (uri
+     (delay
+       (with-imported-modules '((guix build utils))
+         #~(begin
+             (use-modules (guix build utils))
+             (let* ((dir (string-append "cbqn" #$version))
+                    (replxx-local-dir "build/replxxLocal")
+                    (singeli-local-dir "build/singeliLocal"))
+
+               (set-path-environment-variable
+                "PATH" '("bin")
+                (list #+(canonical-package bash)
+                      #+(canonical-package coreutils)
+                      #+(canonical-package gzip)
+                      #+(canonical-package tar)))
+               (copy-recursively #+cbqn-sources dir)
+
+               (with-directory-excursion dir
+                 ;; Copy in local replxx and Singeli code
+                 (mkdir replxx-local-dir)
+                 (mkdir singeli-local-dir)
+                 (copy-recursively #+replxx-sources replxx-local-dir)
+                 (copy-recursively #+singeli-sources singeli-local-dir))
+
+               (invoke "tar" "cvfa" #$output
+                       "--mtime=@0"
+                       "--owner=root:0"
+                       "--group=root:0"
+                       "--sort=name"
+                       "--hard-dereference"
+                       dir))))))))
+
 (define-public cbqn
   (package
     (inherit cbqn-bootstrap)
