@@ -1050,6 +1050,7 @@ This package is part of the KDE multimedia module.")
            breeze-icons ; default icon set
            pulseaudio
            qtmultimedia
+           qtwayland
            zlib))
     (arguments
      (list
