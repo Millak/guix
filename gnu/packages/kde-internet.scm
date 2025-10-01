@@ -580,6 +580,7 @@ or Bonjour by other projects).")
            phonon
            qca-qt6
            qtmultimedia
+           qtwayland
            qt5compat
            solid
            sonnet))
