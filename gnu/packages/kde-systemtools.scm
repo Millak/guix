@@ -542,7 +542,8 @@ This package is part of the KDE administration module.")
            ktextwidgets
            kwallet
            kwindowsystem
-           kxmlgui))
+           kxmlgui
+           qtwayland))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
