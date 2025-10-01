@@ -171,7 +171,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtdeclarative
-           qtsvg))
+           qtsvg
+           qtwayland))
     (home-page "https://apps.kde.org/picmi/")
     (synopsis "Number logic game")
     (description "Picmi is a number logic game in which cells in a grid have
