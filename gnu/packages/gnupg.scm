@@ -47,6 +47,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages emacs)
@@ -616,17 +617,26 @@ distributed separately.")
 (define-public python-pygpgme
   (package
     (name "python-pygpgme")
-    (version "0.4")
+    (version "0.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pygpgme" version))
        (sha256
         (base32
-         "1px1c5nqsls3fxg0zkyd9sgc5rxpdagvsadnp8fd5bmgrrjka5ws"))))
+         "0k25y3c07bkmz6q87lcbsbf34gva99rmdf5gffd8c1r1sccjif1n"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; gpgme.GpgmeError: (<ErrSource.DIRMNGR: 10>, <ErrCode.ENOENT: 32849>,
+      ;; 'No such file or directory')
+      #~(list "--deselect=tests/test_import.py::ImportTestCase::test_import_keys")))
     (native-inputs
-     (list gnupg python-setuptools python-wheel))
+     (list gnupg        ;to run gpg-connect-agent
+           pkg-config
+           python-pytest
+           python-setuptools))
     (inputs
      (list gpgme))
     (home-page "https://github.com/jhenstridge/pygpgme")
