@@ -824,54 +824,6 @@ submoduletest|cachetest|switchtest)")))))))
      "Kommit is a git client for KDE.")
     (license license:gpl3+)))
 
-(define-public kompare
-  (package
-    (name "kompare")
-    (version "24.12.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/stable/release-service/" version
-                                  "/src/kompare-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1ajr7qaf4dcccl5pc09ywfa4mgrfpa3qq1w7x4lfmv82gvp7ld64"))))
-    (build-system qt-build-system)
-    (arguments
-     (list #:qtbase qtbase
-           #:tests? #f))
-    (native-inputs
-     (list extra-cmake-modules kdoctools))
-    (inputs
-     (list libkomparediff2
-           kcodecs
-           kconfig
-           kcoreaddons
-           ki18n
-           kiconthemes
-           kjobwidgets
-           kparts
-           ktexteditor
-           kwidgetsaddons))
-    (home-page "https://apps.kde.org/kompare/")
-    (synopsis "Graphical file differences tool")
-    (description
-     "Kompare is a program to view the differences between files.  Features
-include:
-@itemize
-@item comparison of files or directories via a graphical interface,
-@item bezier-based connection widget letting you see both source and destination,
-@item graphical viewing of patch files in normal, context, unified and diff
- formats,
-@item interactive application of differences,
-@item network transparency,
-@item ability to view plain-text diff output in embedded viewer,
-@item navigation of multiple-file diffs with dockable navigation tree,
-@item graphical interface for commonly used diff command line options,
-@item switch source and destination
-@item and diff statistics.
-@end itemize")
-    (license license:gpl3+)))
-
 (define-public kopeninghours
   (package
     (name "kopeninghours")
