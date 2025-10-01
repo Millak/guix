@@ -431,7 +431,8 @@ to camera devices supported by @code{libgphoto2} using
            kxmlgui
            libplasma
            libxkbcommon
-           plasma-activities))
+           plasma-activities
+           qtwayland))
     (arguments
      (list #:qtbase qtbase
            #:phases
