@@ -786,7 +786,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtbase
-           qtdeclarative))
+           qtdeclarative
+           qtwayland))
     (home-page "https://apps.kde.org/kgoldrunner/")
     (synopsis "Action and puzzle solving game")
     (description "KGoldrunner is an action game where the hero runs through a
