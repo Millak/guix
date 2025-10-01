@@ -1154,6 +1154,7 @@ This package is part of the KDE games module.")
            libkdegames
            qtdeclarative
            qtsvg
+           qtwayland
            shared-mime-info))
     (arguments
      (list #:qtbase qtbase
