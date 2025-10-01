@@ -148,6 +148,20 @@ the same author.")
       (sha256
        (base32 "0440xjvdkrbpxqjrd6nsrnaxki0mgyinsb0b1dcshjj3h3jr1yy4")))))
 
+(define %singeli-commit "53f42ce4331176d281fa577408ec5a652bdd9127")
+
+(define singeli-sources
+  (let ((commit %singeli-commit))
+    (origin
+      (method git-fetch)
+      (uri
+       (git-reference
+         (url "https://github.com/mlochbaum/Singeli")
+         (commit commit)))
+      (file-name (git-file-name "singeli" commit))
+      (sha256
+       (base32 "1dzg4gk74lhy6pwvxzhk4zj1qinc83l7i6x6zpvdajdlz5vqvc1m")))))
+
 (define cbqn-bootstrap
   (let* ((revision "2")
          (commit "66584ce1491d300746963b8ed17170348b2a03e6"))
