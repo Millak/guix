@@ -26,6 +26,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages pkg-config)
@@ -34,17 +35,18 @@
 (define-public dezyne
   (package
     (name "dezyne")
-    (version "2.18.4")
+    (version "2.19.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://dezyne.org/download/dezyne/"
                            name "-" version ".tar.gz"))
        (sha256
-        (base32 "0392p1601czz6yvlxd2b8phhmy35b62i4m1jgpfldzl6d18f7adr"))))
+        (base32 "1jkk8zg1f28gfs9sgw1libac1kbk5hdwx5ny284qrd5g2j0anhxa"))))
     (inputs (list bash-minimal
                   boost
                   guile-3.0
+                  guile-gcrypt
                   guile-json-4
                   guile-readline
                   (libc-utf8-locales-for-target)
