@@ -47,7 +47,6 @@
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
-  #:use-module (gnu packages kde)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
@@ -398,6 +397,36 @@ features include brush stabilizers, brush engines and wrap-around mode.")
     (description "This package contains the fork of Disney Animation's SeExpr
 expression library, that is used in Krita.")
     (license license:gpl3+)))
+
+(define-public libksane
+  (package
+    (name "libksane")
+    (version "24.12.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                             "/src/libksane-" version ".tar.xz"))
+       (sha256
+        (base32 "1b0cbf4cq0ajl5xlpy75wj4p1zsri2igh23pswj8ysnrrk0pxg5w"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list ki18n
+           ksanecore
+           ktextwidgets
+           kwallet
+           kwidgetsaddons))
+    (home-page "https://invent.kde.org/graphics/libksane")
+    (synopsis "Library providing QWidget with logic to interface scanners")
+    (description
+     "Libksane is a Qt-based interface for SANE library to control flat
+scanners.")
+    (license license:lgpl3+)))
 
 (define-public libkexiv2
   (package
