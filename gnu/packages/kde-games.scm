@@ -1090,7 +1090,8 @@ This package is part of the KDE games module.")
            qtdeclarative
            qtmultimedia
            qtsvg
-           zlib))
+           zlib
+           qtwayland))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
