@@ -325,13 +325,13 @@ an up-to-date CA certificate store file for Elixir applications.")
 (define-public elixir-excoveralls
   (package
     (name "elixir-excoveralls")
-    (version "0.18.1")
+    (version "0.18.5")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri name version))
        (sha256
-        (base32 "138bls6hfk87mid2zfwsidk7j06yfich2iihyach7ckb2kdpjpyn"))))
+        (base32 "0qhmw3mcbb2zfsp2b1cwaxl8xmyvinz2marahmj6vy03ashyhgsj"))))
     (build-system mix-build-system)
     (propagated-inputs (list elixir-castore elixir-jason))
     (arguments (list #:tests? #f)) ; no tests
