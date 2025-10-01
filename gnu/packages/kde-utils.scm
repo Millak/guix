@@ -738,7 +738,8 @@ with support for QR scanning.")
                   ki18n
                   kio
                   kwidgetsaddons
-                  qt5compat))
+                  qt5compat
+                  qtwayland))
     (home-page "https://apps.kde.org/kfind/")
     (synopsis "File search utility")
     (description
