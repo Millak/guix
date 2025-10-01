@@ -201,330 +201,294 @@
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.guix.gnu.org/guix.git")
-                      (commit commit)))
+                       (url "https://git.guix.gnu.org/guix.git")
+                       (commit commit)))
                 (sha256
                  (base32
                   "14rch8ycl3zy0da4xkrnbyjsxlwnfcm30dfrvjqcgz5s2v71jiaq"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
-       `(;; For reproducibility, see <https://issues.guix.gnu.org/74204>.
-         #:parallel-build? #false
-         #:configure-flags (list
+       (list
+        ;; For reproducibility, see <https://issues.guix.gnu.org/74204>.
+        #:parallel-build? #f
+        #:configure-flags
+        #~(list
+           ;; Provide channel metadata for 'guix describe'.  Don't pass
+           ;; '--with-channel-url' and '--with-channel-introduction' and
+           ;; instead use the defaults.
+           #$(string-append "--with-channel-commit=" commit)
 
-                            ;; Provide channel metadata for 'guix describe'.
-                            ;; Don't pass '--with-channel-url' and
-                            ;; '--with-channel-introduction' and instead use
-                            ;; the defaults.
-                            ,(string-append "--with-channel-commit=" commit)
+           "--localstatedir=/var"
+           "--sysconfdir=/etc"
+           (string-append "--with-bash-completion-dir="
+                          #$output "/etc/bash_completion.d")
+           (string-append "--with-apparmor-profile-dir="
+                          #$output "/etc/apparmor.d")
 
-                            "--localstatedir=/var"
-                            "--sysconfdir=/etc"
-                            (string-append "--with-bash-completion-dir="
-                                           (assoc-ref %outputs "out")
-                                           "/etc/bash_completion.d")
-                            (string-append "--with-apparmor-profile-dir="
-                                           (assoc-ref %outputs "out")
-                                           "/etc/apparmor.d")
+           ;; Set 'DOT_USER_PROGRAM' to the empty string so we don't keep a
+           ;; reference to Graphviz, whose closure is pretty big (too big for
+           ;; the Guix system installation image.)
+           "ac_cv_path_DOT_USER_PROGRAM=dot"
 
-                            ;; Set 'DOT_USER_PROGRAM' to the empty string so
-                            ;; we don't keep a reference to Graphviz, whose
-                            ;; closure is pretty big (too big for the Guix
-                            ;; system installation image.)
-                            "ac_cv_path_DOT_USER_PROGRAM=dot"
+           ;; When cross-compiling, 'git' is not in $PATH (because it's not a
+           ;; native input).  Thus, always explicitly pass its file name.
+           (string-append "ac_cv_path_GIT="
+                          (search-input-file %build-inputs "/bin/git"))
 
-                            ;; When cross-compiling, 'git' is not in $PATH
-                            ;; (because it's not a native input).  Thus,
-                            ;; always explicitly pass its file name.
-                            (string-append "ac_cv_path_GIT="
-                                           (search-input-file %build-inputs
-                                                              "/bin/git"))
+           ;; To avoid problems with the length of shebangs, choose a
+           ;; fixed-width and short directory name for tests.
+           "ac_cv_guix_test_root=/tmp/guix-tests")
+        #:parallel-tests? #f          ;work around <http://bugs.gnu.org/21097>
 
-                            ;; To avoid problems with the length of shebangs,
-                            ;; choose a fixed-width and short directory name
-                            ;; for tests.
-                            "ac_cv_guix_test_root=/tmp/guix-tests")
-         #:parallel-tests? #f         ;work around <http://bugs.gnu.org/21097>
-
-         #:modules ((guix build gnu-build-system)
+        #:modules `((guix build gnu-build-system)
                     (guix build utils)
-                    (srfi srfi-26)
+                    (srfi srfi-1)
+                    (ice-9 match)
                     (ice-9 popen)
                     (ice-9 rdelim))
 
-         #:phases (modify-phases %standard-phases
-                    (replace 'bootstrap
-                      (lambda _
-                        ;; Make sure 'msgmerge' can modify the PO files.
-                        (for-each (lambda (po)
-                                    (chmod po #o666))
-                                  (find-files "." "\\.po$"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'bootstrap
+              (lambda _
+                ;; Make sure 'msgmerge' can modify the PO files.
+                (for-each (lambda (po)
+                            (chmod po #o666))
+                          (find-files "." "\\.po$"))
 
-                        (patch-shebang "build-aux/git-version-gen")
+                (patch-shebang "build-aux/git-version-gen")
 
-                        (call-with-output-file ".tarball-version"
-                          (lambda (port)
-                            (display ,version port)))
+                (call-with-output-file ".tarball-version"
+                  (lambda (port)
+                    (display #$version port)))
 
-                        ;; Install SysV init files to $(prefix)/etc rather
-                        ;; than to /etc.
-                        (substitute* "nix/local.mk"
-                          (("^sysvinitservicedir = .*$")
-                           (string-append "sysvinitservicedir = \
+                ;; Install SysV init files to $(prefix)/etc rather than /etc.
+                (substitute* "nix/local.mk"
+                  (("^sysvinitservicedir = .*$")
+                   (string-append "sysvinitservicedir = \
 $(prefix)/etc/init.d\n")))
 
-                        ;; Install OpenRC init files to $(prefix)/etc rather
-                        ;; than to /etc.
-                        (substitute* "nix/local.mk"
-                          (("^openrcservicedir = .*$")
-                           (string-append "openrcservicedir = \
+                ;; Install OpenRC init files to $(prefix)/etc rather than /etc.
+                (substitute* "nix/local.mk"
+                  (("^openrcservicedir = .*$")
+                   (string-append "openrcservicedir = \
 $(prefix)/etc/openrc\n")))
 
-                        (invoke "sh" "bootstrap")))
-                    ,@(if (target-riscv64?)
-                        `((add-after 'unpack 'use-correct-guile-version-for-tests
-                            (lambda _
-                              (substitute* "tests/gexp.scm"
-                                (("2\\.0") "3.0")))))
-                        '())
-                    ,@(if (system-hurd?)
-                          `((add-after 'unpack 'disable-tests/hurd
-                              (lambda _
-                                (substitute* "Makefile.am"
-                                  (("tests/derivations.scm") "")
-                                  (("tests/grafts.scm") "")
-                                  (("tests/graph.scm") "")
-                                  (("tests/lint.scm") "")
-                                  (("tests/nar.scm") "")
-                                  (("tests/offload.scm") "")
-                                  (("tests/pack.scm") "")
-                                  (("tests/packages.scm") "")
-                                  (("tests/processes.scm") "")
-                                  (("tests/publish.scm") "")
-                                  (("tests/pypi.scm") "")
-                                  (("tests/size.scm") "")
-                                  (("tests/store.scm") "")
-                                  (("tests/substitute.scm") "")
-                                  (("tests/syscalls.scm") "")
-                                  (("tests/union.scm") "")
-                                  (("tests/guix-build.sh") "")
-                                  (("tests/guix-build-branch.sh") "")
-                                  (("tests/guix-hash.sh") "")
-                                  (("tests/guix-locate.sh") "")
-                                  (("tests/guix-pack.sh") "")
-                                  (("tests/guix-pack-relocatable.sh") "")
-                                  (("tests/guix-package-aliases.sh") "")
-                                  (("tests/guix-package-net.sh") "")
-                                  (("tests/guix-home.sh") "")
-                                  (("tests/guix-archive.sh") "")
-                                  (("tests/guix-environment.sh") "")
-                                  (("tests/guix-package.sh") "")
-                                  (("tests/guix-refresh.sh") "")
-                                  (("tests/guix-shell.sh") "")
-                                  (("tests/guix-shell-export-manifest.sh") "")
-                                  (("tests/guix-system.sh") "")
-                                  (("tests/guix-graph.sh") "")
-                                  (("tests/guix-gc.sh") "")
-                                  (("tests/guix-daemon.sh") "")))))
-                        '())
-                    (add-before 'build 'use-host-compressors
-                      (lambda* (#:key inputs target #:allow-other-keys)
-                        (when target
-                          ;; Use host compressors.
-                          (let ((bzip2 (assoc-ref inputs "bzip2"))
-                                (gzip (assoc-ref inputs "gzip"))
-                                (xz (assoc-ref inputs "xz")))
-                            (substitute* "guix/config.scm"
-                              (("\"[^\"]*/bin/bzip2")
-                               (string-append "\"" bzip2 "/bin/bzip2"))
-                              (("\"[^\"]*/bin/gzip") gzip
-                               (string-append "\"" gzip "/bin/gzip"))
-                              (("\"[^\"]*/bin//xz")
-                               (string-append "\"" xz "/bin/xz")))))))
-                    (add-before 'build 'set-font-path
-                      (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                        ;; Tell 'dot' where to look for fonts.
-                        (setenv "XDG_DATA_DIRS"
-                                (dirname
-                                 (search-input-directory (or native-inputs inputs)
-                                                         "share/fonts")))))
-                    (add-before 'check 'copy-bootstrap-guile
-                      (lambda* (#:key system target inputs #:allow-other-keys)
-                        ;; Copy the bootstrap guile tarball in the store
-                        ;; used by the test suite.
-                        (define (intern file recursive?)
-                          ;; Note: don't use 'guix download' here because we
-                          ;; need to set the 'recursive?' argument.
-                          (define base
-                            (strip-store-file-name file))
+                (invoke "sh" "bootstrap")))
+            #$@(if (target-riscv64?)
+                   `((add-after 'unpack 'use-correct-guile-version-for-tests
+                       (lambda _
+                         (substitute* "tests/gexp.scm"
+                           (("2\\.0") "3.0")))))
+                   '())
+            #$@(if (system-hurd?)
+                   `((add-after 'unpack 'disable-tests/hurd
+                       (lambda _
+                         (substitute* "Makefile.am"
+                           (("tests/derivations.scm") "")
+                           (("tests/grafts.scm") "")
+                           (("tests/graph.scm") "")
+                           (("tests/lint.scm") "")
+                           (("tests/nar.scm") "")
+                           (("tests/offload.scm") "")
+                           (("tests/pack.scm") "")
+                           (("tests/packages.scm") "")
+                           (("tests/processes.scm") "")
+                           (("tests/publish.scm") "")
+                           (("tests/import/pypi.scm") "")
+                           (("tests/size.scm") "")
+                           (("tests/store.scm") "")
+                           (("tests/substitute.scm") "")
+                           (("tests/syscalls.scm") "")
+                           (("tests/union.scm") "")
+                           (("tests/guix-build.sh") "")
+                           (("tests/guix-build-branch.sh") "")
+                           (("tests/guix-hash.sh") "")
+                           (("tests/guix-locate.sh") "")
+                           (("tests/guix-pack.sh") "")
+                           (("tests/guix-pack-relocatable.sh") "")
+                           (("tests/guix-package-aliases.sh") "")
+                           (("tests/guix-package-net.sh") "")
+                           (("tests/guix-home.sh") "")
+                           (("tests/guix-archive.sh") "")
+                           (("tests/guix-environment.sh") "")
+                           (("tests/guix-package.sh") "")
+                           (("tests/guix-refresh.sh") "")
+                           (("tests/guix-shell.sh") "")
+                           (("tests/guix-shell-export-manifest.sh") "")
+                           (("tests/guix-system.sh") "")
+                           (("tests/guix-graph.sh") "")
+                           (("tests/guix-gc.sh") "")
+                           (("tests/guix-daemon.sh") "")))))
+                   '())
+            #$@(if (%current-target-system)
+                   #~((add-before 'build 'use-host-compressors
+                        (lambda* (#:key inputs #:allow-other-keys)
+                          (substitute* "guix/config.scm"
+                            (("[^\"]*/(bin/(bzip2|gzip|xz))" _ bin)
+                             (search-input-file inputs bin))))))
+                   #~())
+            (add-before 'build 'set-font-path
+              (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                ;; Tell 'dot' where to look for fonts.
+                (setenv "XDG_DATA_DIRS"
+                        (dirname
+                         (search-input-directory (or native-inputs inputs)
+                                                 "share/fonts")))))
+            (add-before 'check 'copy-bootstrap-guile
+              (lambda* (#:key system target inputs #:allow-other-keys)
+                ;; Copy the bootstrap guile tarball in the store
+                ;; used by the test suite.
+                (define (intern file recursive?)
+                  ;; Note: don't use 'guix download' here because we
+                  ;; need to set the 'recursive?' argument.
+                  (define base
+                    (strip-store-file-name file))
 
-                          (define code
-                            `(begin
-                               (use-modules (guix))
-                               (with-store store
-                                 (let* ((item (add-to-store store ,base
-                                                            ,recursive?
-                                                            "sha256" ,file))
-                                        (root (string-append "/tmp/gc-root-"
-                                                             (basename item))))
-                                   ;; Register a root so that the GC tests
-                                   ;; don't delete those.
-                                   (symlink item root)
-                                   (add-indirect-root store root)))))
+                  (define code
+                    `(begin
+                       (use-modules (guix))
+                       (with-store store
+                         (let* ((item (add-to-store store ,base
+                                                    ,recursive?
+                                                    "sha256" ,file))
+                                (root (string-append "/tmp/gc-root-"
+                                                     (basename item))))
+                           ;; Register a root so that the GC tests
+                           ;; don't delete those.
+                           (symlink item root)
+                           (add-indirect-root store root)))))
 
-                          (invoke "./test-env" "guile" "-c"
-                                  (object->string code)))
+                  (invoke "./test-env" "guile" "-c"
+                          (object->string code)))
 
-                        (unless target
-                          (intern (assoc-ref inputs "boot-guile") #f)
+                (unless target
+                  (intern (assoc-ref inputs "boot-guile") #f)
 
-                          ;; On x86_64 some tests need the i686 Guile.
-                          (when (and (not target)
-                                     (string=? system "x86_64-linux"))
-                            (intern (assoc-ref inputs "boot-guile/i686") #f))
+                  ;; On x86_64 some tests need the i686 Guile.
+                  (when (and (not target)
+                             (string=? system "x86_64-linux"))
+                    (intern (assoc-ref inputs "boot-guile/i686") #f))
 
-                          ;; Copy the bootstrap executables.
-                          (for-each (lambda (input)
-                                      (intern (assoc-ref inputs input) #t))
-                                    '("bootstrap/bash" "bootstrap/mkdir"
-                                      "bootstrap/tar" "bootstrap/xz")))))
-                    (add-after 'unpack 'disable-failing-tests
-                      ;; XXX FIXME: These tests fail within the build container.
-                      (lambda _
-                        (substitute* "tests/syscalls.scm"
-                          (("^\\(test-(assert|equal) \"(clone|setns|pivot-root)\"" all)
-                           (string-append "(test-skip 1)\n" all)))
-                        (substitute* "tests/containers.scm"
-                          (("^\\(test-(assert|equal)" all)
-                           (string-append "(test-skip 1)\n" all)))
-                        (when (file-exists? "tests/guix-environment-container.sh")
-                          (substitute* "tests/guix-environment-container.sh"
-                            (("guix environment --version")
-                             "exit 77\n")))))
-                    ,@(if (target-arm32?)
-                          `((add-after
-                                'disable-failing-tests
-                                'disable-failing-tests-on-arm32
-                              ;; XXX FIXME: These tests fail on armhf architecture,
-                              ;; see <https://codeberg.org/guix/guix/issues/5078>.
-                              (lambda _
-                                (substitute* "tests/syscalls.scm"
-                                  (("^\\(test-equal \"safe-clone and unshare succeeds\"" all)
-                                   (string-append "(test-skip 1)\n" all))
-                                  (("^\\(test-equal \"clone and unshare triggers EINVAL\"" all)
-                                   (string-append "(test-skip 1)\n" all))))))
-                          '())
-                    (add-before 'check 'set-SHELL
-                      (lambda _
-                        ;; 'guix environment' tests rely on 'SHELL' having a
-                        ;; correct value, so set it.
-                        (setenv "SHELL" (which "sh"))))
-                    (add-after 'install 'wrap-program
-                      (lambda* (#:key inputs native-inputs outputs target
-                                #:allow-other-keys)
-                        ;; Make sure the 'guix' command finds GnuTLS,
-                        ;; Guile-JSON, and Guile-Git automatically.
-                        (let* ((out    (assoc-ref outputs "out"))
-                               (guile  (assoc-ref (or native-inputs inputs)
-                                                  "guile"))
-                               (avahi  (assoc-ref inputs "guile-avahi"))
-                               (gcrypt (assoc-ref inputs "guile-gcrypt"))
-                               (guile-lib   (assoc-ref inputs "guile-lib"))
-                               (json   (assoc-ref inputs "guile-json"))
-                               (sqlite (assoc-ref inputs "guile-sqlite3"))
-                               (zlib   (assoc-ref inputs "guile-zlib"))
-                               (lzlib  (assoc-ref inputs "guile-lzlib"))
-                               (zstd   (assoc-ref inputs "guile-zstd"))
-                               (git    (assoc-ref inputs "guile-git"))
-                               (bs     (assoc-ref inputs
-                                                  "guile-bytestructures"))
-                               (ssh    (assoc-ref inputs "guile-ssh"))
-                               (gnutls (assoc-ref inputs "guile-gnutls"))
-                               (disarchive (assoc-ref inputs "disarchive"))
-                               (bzip2 (assoc-ref inputs "guile-bzip2"))
-                               (lzma (assoc-ref inputs "guile-lzma"))
-                               (locales (assoc-ref inputs "glibc-utf8-locales"))
-                               (deps   (list gcrypt json sqlite gnutls git
-                                             bs ssh zlib lzlib zstd guile-lib
-                                             disarchive bzip2 lzma))
-                               (deps*  (if avahi (cons avahi deps) deps))
-                               (effective
-                                (read-line
-                                 (open-pipe* OPEN_READ
-                                             (string-append guile "/bin/guile")
-                                             "-c" "(display (effective-version))")))
-                               (path   (map (cut string-append <>
-                                                 "/share/guile/site/"
-                                                 effective)
-                                            (delete #f deps*)))
-                               (gopath (map (cut string-append <>
-                                                 "/lib/guile/" effective
-                                                 "/site-ccache")
-                                            (delete #f deps*)))
-                               (locpath (string-append locales "/lib/locale")))
+                  ;; Copy the bootstrap executables.
+                  (for-each (lambda (input)
+                              (intern (assoc-ref inputs input) #t))
+                            '("bootstrap/bash" "bootstrap/mkdir"
+                              "bootstrap/tar" "bootstrap/xz")))))
+            (add-after 'unpack 'disable-failing-tests
+              ;; XXX FIXME: These tests fail within the build container.
+              (lambda _
+                (substitute* "tests/syscalls.scm"
+                  (("^\\(test-(assert|equal) \"(clone|setns|pivot-root)\"" all)
+                   (string-append "(test-skip 1)\n" all)))
+                (substitute* "tests/containers.scm"
+                  (("^\\(test-(assert|equal)" all)
+                   (string-append "(test-skip 1)\n" all)))
+                (when (file-exists? "tests/guix-environment-container.sh")
+                  (substitute* "tests/guix-environment-container.sh"
+                    (("guix environment --version")
+                     "exit 77\n")))))
+            #$@(if (target-arm32?)
+                   #~((add-after
+                          'disable-failing-tests
+                          'disable-failing-tests-on-arm32
+                        ;; XXX FIXME: These tests fail on armhf architecture,
+                        ;; see <https://codeberg.org/guix/guix/issues/5078>.
+                        (lambda _
+                          (substitute* "tests/syscalls.scm"
+                            (("^\\(test-equal \"safe-clone and unshare succeeds\"" all)
+                             (string-append "(test-skip 1)\n" all))
+                            (("^\\(test-equal \"clone and unshare triggers EINVAL\"" all)
+                             (string-append "(test-skip 1)\n" all))))))
+                   #~())
+            (add-before 'check 'set-SHELL
+              (lambda _
+                ;; 'guix environment' tests rely on 'SHELL' having a
+                ;; correct value, so set it.
+                (setenv "SHELL" (which "sh"))))
+            (add-after 'install 'wrap-program
+              (lambda* (#:key inputs native-inputs target #:allow-other-keys)
+                (define (search-input-directories dir)
+                  (filter directory-exists?
+                          (map (match-lambda
+                                 ((name . directory)
+                                  (string-append directory "/" dir)))
+                               inputs)))
+                ;; Make sure the 'guix' command finds GnuTLS,
+                ;; Guile-JSON, and Guile-Git automatically.
+                (let* ((effective
+                        (read-line
+                         (open-pipe*
+                          OPEN_READ
+                          (search-input-file (or native-inputs inputs)
+                                             "bin/guile")
+                          "-c" "(display (effective-version))")))
+                       (path (search-input-directories
+                              (string-append "share/guile/site/" effective)))
+                       (gopath (search-input-directories
+                                (string-append "lib/guile/" effective
+                                               "/site-ccache")))
+                       (locpath (search-input-directory inputs "lib/locale")))
 
-                          ;; Modify 'guix' directly instead of using
-                          ;; 'wrap-program'.  This avoids the indirection
-                          ;; through Bash, which in turn avoids getting Bash's
-                          ;; own locale warnings.
-                          (substitute* (string-append out "/bin/guix")
-                            (("!#")
-                             (string-append
-                              "!#\n\n"
-                              (object->string
-                               `(set! %load-path (append ',path %load-path)))
-                              "\n"
-                              (object->string
-                               `(set! %load-compiled-path
-                                  (append ',gopath %load-compiled-path)))
-                              "\n"
-                              (object->string
-                               `(let ((path (getenv "GUIX_LOCPATH")))
-                                  (setenv "GUIX_LOCPATH"
-                                          (if path
-                                              (string-append path ":" ,locpath)
-                                              ,locpath))))
-                              "\n\n"))))))
+                  ;; Modify 'guix' directly instead of using
+                  ;; 'wrap-program'.  This avoids the indirection
+                  ;; through Bash, which in turn avoids getting Bash's
+                  ;; own locale warnings.
+                  (substitute* (string-append #$output "/bin/guix")
+                    (("!#")
+                     (string-append
+                      "!#\n\n"
+                      (object->string
+                       `(set! %load-path (append ',path %load-path)))
+                      "\n"
+                      (object->string
+                       `(set! %load-compiled-path
+                              (append ',gopath %load-compiled-path)))
+                      "\n"
+                      (object->string
+                       `(let ((path (getenv "GUIX_LOCPATH")))
+                          (setenv "GUIX_LOCPATH"
+                                  (if path
+                                      (string-append path ":" ,locpath)
+                                      ,locpath))))
+                      "\n\n"))))))
 
-                    ;; The 'guix' executable has 'OUT/libexec/guix/guile' as
-                    ;; its shebang; that should remain unchanged, thus remove
-                    ;; the 'patch-shebangs' phase, which would otherwise
-                    ;; change it to 'GUILE/bin/guile'.
-                    (delete 'patch-shebangs))))
-      (native-inputs `(("locales" ,(libc-utf8-locales-for-target
-                                    (%current-system)))
-                       ("pkg-config" ,pkg-config)
-
-                       ;; Guile libraries are needed here for
-                       ;; cross-compilation.
-                       ("guile" ,guile-3.0-latest) ;for faster builds
-                       ("guile-gnutls" ,guile-gnutls)
-                       ,@(if (target-hurd?)
-                             '()
-                             `(("guile-avahi" ,guile-avahi)))
-                       ("guile-gcrypt" ,guile-gcrypt)
-                       ("guile-json" ,guile-json-4)
-                       ("guile-lib" ,guile-lib)
-                       ("guile-sqlite3" ,guile-sqlite3)
-                       ("guile-zlib" ,guile-zlib)
-                       ("guile-lzlib" ,guile-lzlib)
-                       ("guile-zstd" ,guile-zstd)
-                       ("guile-ssh" ,guile-ssh)
-                       ("guile-git" ,guile-git)
-                       ("guile-semver" ,guile-semver)
-
-                       ;; XXX: Keep the development inputs here even though
-                       ;; they're unnecessary, just so that 'guix environment
-                       ;; guix' always contains them.
-                       ("autoconf" ,autoconf)
-                       ("automake" ,automake)
-                       ("gettext" ,gettext-minimal)
-                       ("texinfo" ,texinfo)
-                       ("graphviz" ,graphviz-minimal)
-                       ("font-ghostscript" ,font-ghostscript) ;fonts for 'dot'
-                       ("help2man" ,help2man)
-                       ("po4a" ,po4a-minimal)))
+            ;; The 'guix' executable has 'OUT/libexec/guix/guile' as
+            ;; its shebang; that should remain unchanged, thus remove
+            ;; the 'patch-shebangs' phase, which would otherwise
+            ;; change it to 'GUILE/bin/guile'.
+            (delete 'patch-shebangs))))
+      (native-inputs
+       (append (if (target-hurd?)
+                   '()
+                   (list guile-avahi))
+               (list (libc-utf8-locales-for-target (%current-system))
+                     pkg-config
+                     ;; Guile libraries are needed here for cross-compilation.
+                     guile-3.0-latest           ;for faster builds
+                     guile-gnutls
+                     guile-gcrypt
+                     guile-json-4
+                     guile-lib
+                     guile-sqlite3
+                     guile-zlib
+                     guile-lzlib
+                     guile-zstd
+                     guile-ssh
+                     guile-git
+                     guile-semver
+                     ;; XXX: Keep the development inputs here even though
+                     ;; they're unnecessary, just so that 'guix environment
+                     ;; guix' always contains them.
+                     autoconf
+                     automake
+                     gettext-minimal
+                     texinfo
+                     graphviz-minimal
+                     font-ghostscript   ;fonts for 'dot'
+                     help2man
+                     po4a-minimal)))
       (inputs
        `(("bash-minimal" ,bash-minimal)
          ("bzip2" ,bzip2)
@@ -566,25 +530,25 @@ $(prefix)/etc/openrc\n")))
 
          ("glibc-utf8-locales" ,(libc-utf8-locales-for-target))))
       (propagated-inputs
-       `(("guile-gnutls" ,guile-gnutls)
-         ;; Avahi requires "glib" which doesn't cross-compile yet.
-         ,@(if (target-hurd?)
-               '()
-               `(("guile-avahi" ,guile-avahi)))
-         ("guile-gcrypt" ,guile-gcrypt)
-         ("guile-json" ,guile-json-4)
-         ("guile-lib" ,guile-lib)
-         ("guile-semver" ,guile-semver)
-         ("guile-sqlite3" ,guile-sqlite3)
-         ("guile-ssh" ,guile-ssh)
-         ("guile-git" ,guile-git)
-         ("guile-zlib" ,guile-zlib)
-         ("guile-lzlib" ,guile-lzlib)
-         ("guile-zstd" ,guile-zstd)))
+       (append (if (target-hurd?)
+                   '()
+                   ;; Avahi requires "glib" which doesn't cross-compile yet.
+                   (list guile-avahi))
+               (list guile-gnutls
+                     guile-gcrypt
+                     guile-json-4
+                     guile-lib
+                     guile-semver
+                     guile-sqlite3
+                     guile-ssh
+                     guile-git
+                     guile-zlib
+                     guile-lzlib
+                     guile-zstd)))
       (native-search-paths
        (list (search-path-specification
-              (variable "GUIX_EXTENSIONS_PATH")
-              (files '("share/guix/extensions")))
+               (variable "GUIX_EXTENSIONS_PATH")
+               (files '("share/guix/extensions")))
              ;; (guix git) and (guix build download) honor this variable whose
              ;; name comes from OpenSSL.
              $SSL_CERT_DIR))
@@ -637,13 +601,13 @@ the Nix package manager.")
      (substitute-keyword-arguments (package-arguments guix)
        ((#:configure-flags flags '())
         ;; Pretend we have those libraries; we don't actually need them.
-        `(append ,flags
+        #~(append #$flags
                  '("guix_cv_have_recent_guile_sqlite3=yes"
                    "guix_cv_have_recent_guile_ssh=yes")))
        ((#:tests? #f #f)
         #f)
        ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
+        #~(modify-phases #$phases
            (delete 'set-font-path)
            (replace 'build
              (lambda _
