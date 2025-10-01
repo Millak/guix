@@ -199,7 +199,8 @@ Dolphin with the version control systems: Bzr, Git, Mercurial, Subversion.")
            kwidgetsaddons
            kstatusnotifieritem
            kxmlgui
-           qt5compat))
+           qt5compat
+           qtwayland))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
