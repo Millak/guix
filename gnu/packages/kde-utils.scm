@@ -864,7 +864,8 @@ the schedule and venue information.")
                   qtdeclarative
                   futuresql
                   qcoro-qt6
-                  qtsvg))
+                  qtsvg
+                  qtwayland))
     (home-page "https://apps.kde.org/kontrast/")
     (synopsis "Color contrast checker")
     (description
