@@ -163,47 +163,46 @@ the same author.")
        (base32 "1dzg4gk74lhy6pwvxzhk4zj1qinc83l7i6x6zpvdajdlz5vqvc1m")))))
 
 (define cbqn-bootstrap
-  (let* ((revision "2")
-         (commit "66584ce1491d300746963b8ed17170348b2a03e6"))
-    (package
-      (name "cbqn-bootstrap")
-      (version (git-version "0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/dzaima/CBQN")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "13gg96aa56b8k08bjvv8i0f5nxrah2sij7g6pg7i21fdv08rd9iv"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:tests? #f                     ; skipping tests for bootstrap
-        #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
-        #:phases
-        #~(modify-phases %standard-phases
-            (delete 'configure)
-            (add-before 'build 'generate-bytecode
-              (lambda* (#:key inputs #:allow-other-keys)
-                (system (string-append #+dbqn
-                                       "/bin/dbqn ./genRuntime "
-                                       #+bqn-sources))))
-            (replace 'install
-              (lambda* (#:key outputs #:allow-other-keys)
-                (mkdir-p (string-append #$output "/bin"))
-                (chmod "BQN" #o755)
-                (rename-file "BQN" "bqn")
-                (install-file "bqn" (string-append #$output "/bin")))))))
-      (native-inputs (list dbqn bqn-sources))
-      (inputs (list icedtea-8 libffi))
-      (synopsis "BQN implementation in C")
-      (description "This package provides the reference implementation of
+  (package
+    (name "cbqn-bootstrap")
+    (version %cbqn-version)
+    (source cbqn-sources)
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;skipping tests for bootstrap
+      ;; `make for-bootstrap' implicitly disables REPLXX and Singeli.
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              ;; Without specifying a version, the Makefile tries to
+              ;; use the current commit hash.
+              (string-append "version=" #$version)
+              "nogit=1"
+              "for-bootstrap")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (mkdir-p (string-append #$output "/bin"))
+              (chmod "BQN" #o755)
+              (rename-file "BQN" "bqn")
+              (install-file "bqn"
+                            (string-append #$output "/bin")))))))
+    (inputs (list libffi))
+    (synopsis "BQN implementation in C")
+    (description
+     "This package provides the reference implementation of
 @uref{https://mlochbaum.github.io/BQN/, BQN}, a programming language inspired
 by APL.")
-      (home-page "https://mlochbaum.github.io/BQN/")
-      (license license:gpl3))))
+    (home-page "https://mlochbaum.github.io/BQN/")
+    ;; Upstream explains licensing situation
+    (license (list license:asl2.0       ;src/utils/ryu*
+                   license:boost1.0
+                   license:expat        ;src/builtins/sortTemplate.h
+                   license:lgpl3+       ;Everything else except the above
+                   license:gpl3+
+                   license:mpl2.0))))
 
 (define-public cbqn
   (package
