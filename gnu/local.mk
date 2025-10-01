@@ -411,6 +411,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/kde-office.scm			\
   %D%/packages/kde-pim.scm			\
   %D%/packages/kde-plasma.scm			\
+  %D%/packages/kde-sdk.scm			\
   %D%/packages/kde-systemtools.scm		\
   %D%/packages/kde-utils.scm			\
   %D%/packages/kerberos.scm			\

@@ -394,47 +394,6 @@ of 2D and 3D functions and to calculate easy (and not so easy) calculations,
 such as addition, trigonometric functions or derivatives.")
     (license license:gpl2+)))
 
-(define-public kapptemplate
-  (package
-    (name "kapptemplate")
-    (version "24.12.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
-                           "/src/kapptemplate-" version ".tar.xz"))
-       (sha256
-        (base32 "1wiv509y80m6gf891yw55d9429a35axngi922k119zvxfk5641as"))))
-    (build-system qt-build-system)
-    (arguments
-     (list #:qtbase qtbase))
-    (native-inputs
-     (list extra-cmake-modules kdoctools))
-    (inputs
-     (list karchive
-           kcompletion
-           kconfigwidgets
-           kcoreaddons
-           kirigami-addons
-           ki18n
-           kio))
-    (home-page "https://apps.kde.org/kapptemplate/")
-    (synopsis "Factory for easy creation of KDE/Qt components and programs")
-    (description "KAppTemplate is an application to start development quickly
-using existing templates providing basic repeatedly written code and a proper
-structure.  It features:
-
-@itemize
-@item Templates for C++, Ruby, Python and PHP
-@item Categories
-@item Templates for different build-systems and frameworks
-@item Templates especially for KDE-development (plugins for Plasma, QtQuick
- KTextEditor, KRunner, Akonadi)
-@item New templates using space holders and a simple CMake-command
-@item Integration into KDevelop
-@end itemize")
-    (license license:gpl2+)))
-
 (define-public kdevelop
   (package
     (name "kdevelop")
