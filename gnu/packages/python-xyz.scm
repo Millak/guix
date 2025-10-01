@@ -16730,8 +16730,8 @@ command pipeline functionality.")
          "1h7g922a8lsqd69j8blgcgg0lcd8kz51b2p4glfqmgx4vi1nkick"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f)) ; no tests
-    (native-inputs (list python-setuptools python-wheel))
+     (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/sandes/zipfly")
     (synopsis "Zip archive generator")
     (description "ZipFly is a zip archive generator.  It was created to
