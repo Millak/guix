@@ -1723,7 +1723,8 @@ This package is part of the KDE games module.")
            kwidgetsaddons
            kxmlgui
            libkdegames
-           qtdeclarative))
+           qtdeclarative
+           qtwayland))
     (home-page "https://apps.kde.org/ksquares/")
     (synopsis "Dots and Boxes game")
     (description "KSquares is an implementation of the popular paper based
