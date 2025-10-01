@@ -661,7 +661,8 @@ shell scripts.")
                     ki18n
                     kio
                     kwidgetsaddons
-                    kxmlgui))
+                    kxmlgui
+                    qtwayland))
       (arguments (list #:qtbase qtbase
                        #:tests? #f))
       (home-page "https://invent.kde.org/utilities/keurocalc")
