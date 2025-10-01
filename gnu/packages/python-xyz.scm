@@ -949,6 +949,36 @@ part of @url{https://github.com/hgrecco/pint, Pint}, the Python units
 package. ")
     (license license:bsd-3)))
 
+(define-public python-grapheme
+  ;; 0.6.0 has not git tag, PyPI has no tests. use the latest commit on master
+  ;; branch.
+  (let ((commit "66f07ca02fc64a9ea2f9b4ad66593b226d473adb")
+        (revision "0"))
+    (package
+      (name "python-grapheme")
+      (version (git-version "0.6.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/alvinlindstam/grapheme")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0fqw6iymg7s8q1pfwijx0awcj1j55jppx7hfa5ci7y0c7x4jc8v9"))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list python-pytest
+             python-setuptools))
+      (home-page "https://github.com/alvinlindstam/grapheme")
+      (synopsis "Unicode grapheme helpers")
+      (description
+       "This package provides a functionality for working with user perceived
+characters.  More specifically, string manipulation and calculation functions
+for working with grapheme cluster groups (graphemes) as defined by the
+@url{http://unicode.org/reports/tr29/, Unicode Standard Annex #29}.")
+      (license license:expat))))
+
 (define-public python-halo
   (package
     (name "python-halo")
