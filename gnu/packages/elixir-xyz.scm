@@ -925,13 +925,13 @@ any case.")
 (define-public elixir-recode
   (package
     (name "elixir-recode")
-    (version "0.7.3")
+    (version "0.7.5")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "recode" version))
        (sha256
-        (base32 "1n3gqgcl1qx5h1z9yqx28nbavgydvivm3cr3qifnbdwry07zb365"))))
+        (base32 "1rnvphgp3qaw02vh615hf5kfnm215bw4nc4wh8p8i01yn5p3khxd"))))
     (build-system mix-build-system)
     (native-inputs
      (list elixir-excoveralls elixir-mox))
