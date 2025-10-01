@@ -3869,16 +3869,21 @@ which sends emails to HyperKitty, the official Mailman3 web archiver.")
     (license license:gpl3+)))
 
 (define-public python-hyperkitty
+  ;; 1.3.12 was released in 2024 where master provides comparability with
+  ;; Django 5, use the latest commit instead of the tag for now.
+  (let ((commit "9a008473fadb95370cd54b0782df9fb956e323c0")
+        (revision "0"))
   (package
     (name "python-hyperkitty")
-    (version "1.3.12")
+    (version (git-version "1.3.12" revision commit))
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "hyperkitty" version))
-        (sha256
-         (base32
-          "078nrxkwdrv4d7ysdzp1c2dl5nm4fvxnpn6mq6lrxg65gs9q5dfy"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/mailman/hyperkitty")
+              (commit commit)))
+       (sha256
+        (base32 "011mv6xn2cry0yr30qc1219k2xcjjilnb8mflvzlf77y83m4d1vb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3922,7 +3927,7 @@ which sends emails to HyperKitty, the official Mailman3 web archiver.")
      "The hyperkitty Django app provides a web user interface to access GNU
 Mailman3 archives, and manage it.  This interface uses django, and requires
 some configuration.")
-    (license license:gpl3)))    ; Some files are gpl2+
+    (license license:gpl3))))   ; Some files are gpl2+
 
 (define-public postorius
   (package
