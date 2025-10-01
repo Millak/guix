@@ -923,7 +923,8 @@ the computer and 3D Printers.")
            kio
            kxmlgui
            breeze-icons ;; default icon set
-           libqaccessibilityclient))
+           libqaccessibilityclient
+           qtwayland))
     (home-page "https://apps.kde.org/kmag/")
     (synopsis "Screen magnifier tool")
     (description "You can use KMagnifier to magnify a part of the screen just
