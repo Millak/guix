@@ -97,8 +97,7 @@ WAR=$'[ \033[33;1mWARN\033[0m ] '
 INF="[ INFO ] "
 
 DEBUG=0
-GNU_URL="https://ftp.gnu.org/gnu/guix/"
-#GNU_URL="https://alpha.gnu.org/gnu/guix/"
+GNU_URL="https://ftpmirror.gnu.org/gnu/guix/"
 
 # The following associative array holds set of GPG keys used to sign the
 # releases, keyed by their corresponding Savannah user ID.
