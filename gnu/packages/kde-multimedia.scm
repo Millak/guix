@@ -449,6 +449,7 @@ This package is part of the KDE multimedia module.")
            qtdeclarative
            qtmultimedia
            ;; TODO: upnpqt https://gitlab.com/homeautomationqt/upnp-player-qt
+           qtwayland
            vlc))
     (arguments
      (list #:qtbase qtbase
