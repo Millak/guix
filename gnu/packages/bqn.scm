@@ -111,7 +111,7 @@ the same author.")
   ;; Aside from dbqn above, the main bqn repository is used by other
   ;; implementations as a "known good" set of sources. CBQN uses dbqn to
   ;; generate an intermediate bytecode for its own compilation.
-    (let ((commit "71ce36141aaacfa714edca2e408ca522a3bc5554"))
+    (let ((commit "5880fa153bb3e3172afc59a711af7e471aeedcd3"))
       (origin
         (method git-fetch)
         (uri (git-reference
@@ -119,7 +119,7 @@ the same author.")
               (commit commit)))
         (file-name (git-file-name "bqn-sources" commit))
         (sha256
-         (base32 "060a3r5m7hynzxj4iz1av2kj5jf8w3j8yswzzx9wkx31rdrsiv2c")))))
+         (base32 "1cap927i0s8ly4mckppw33ahlc5xnp3l2shk1m79wndf362x3r7c")))))
 
 (define cbqn-bootstrap
   (let* ((revision "2")
