@@ -959,7 +959,8 @@ This package is part of the KDE games module.")
            kwidgetsaddons
            kxmlgui
            libkdegames
-           qtdeclarative))
+           qtdeclarative
+           qtwayland))
     (home-page "https://apps.kde.org/knetwalk/")
     (synopsis "Turn the board pieces to get all computers connected")
     (description "KNetWalk is a small game where you have to build up a
