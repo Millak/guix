@@ -16752,9 +16752,10 @@ for writing large zip archives without memory inflation.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "14vhgg8mcjqi8cpzrw8qzbij2fr2a63l2a8fhil21k2r8vzv92cv"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-nose))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/arjan-s/python-zipstream")
     (synopsis "Zipfile generator that takes input files as well as streams")
     (description "@code{zipstream.py} is a zip archive generator based on
