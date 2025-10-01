@@ -3014,6 +3014,27 @@ times.")
 eliminate flaky failures.")
     (license license:mpl2.0)))
 
+(define-public python-pytest-retry
+  (package
+    (name "python-pytest-retry")
+    (version "1.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_retry" version))
+       (sha256
+        (base32 "03zqgl2y16pcf0w0sn7z9n1gaqmkspl9xfhigks9v50yy0wj7mgq"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest-bootstrap
+           python-setuptools))
+    (home-page "https://github.com/str0zzapreti/pytest-retry")
+    (synopsis "Pytest plugin to retry flaky tests in CI environments")
+    (description
+     "This package provides a plugin for Pytest which adds the ability to retry
+flaky tests, thereby improving the consistency of the test suite results.")
+    (license license:expat)))
+
 ;; This is only used by python-sanic
 (define-public python-pytest-sanic
   (package
