@@ -391,6 +391,7 @@ document meta data file.")
            kxmlgui
            breeze-icons ;; default icon set
            qt5compat
+           qtwayland
            qtmultimedia
            icu4c))
     (arguments
