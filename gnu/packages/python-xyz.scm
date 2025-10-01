@@ -16737,7 +16737,7 @@ command pipeline functionality.")
     (description "ZipFly is a zip archive generator.  It was created to
 generate very large zip archives for immediate sending out to clients, or
 for writing large zip archives without memory inflation.")
-    (license license:bsd-2)))
+    (license license:expat)))
 
 (define-public python-zipstream-new
   (package
