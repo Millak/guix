@@ -442,13 +442,13 @@ Ecto, implementing all relevant protocols.")
 (define-public elixir-phoenix-html
   (package
     (name "elixir-phoenix-html")
-    (version "4.2.1")
+    (version "4.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "phoenix_html" version))
        (sha256
-        (base32 "0lz04g7h49x9rg4k3l6zz29va84fxy62m3xfb7cmswg21880iwfg"))))
+        (base32 "1bcp0kri8fh6ygs6js3ppja9sxmy3fc6m94iyxsz1c5sg052kaiy"))))
     (build-system mix-build-system)
     (synopsis "Phoenix view functions for working with HTML templates")
     (description "This package provides @code{elixir-phoenix-html}, a library
