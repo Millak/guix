@@ -1680,7 +1680,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtdeclarative
-           qtsvg))
+           qtsvg
+           qtwayland))
     (home-page "https://apps.kde.org/kreversi/")
     (synopsis "Old reversi board game, also known as othello")
     (description "KReversi is a simple one player strategy game played
