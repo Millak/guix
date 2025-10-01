@@ -464,6 +464,21 @@ already exists.  Lookup team IDs among CURRENT-TEAMS."
                       "gnu/packages/fluidplug.scm"
                       "gnu/packages/xiph.scm")))
 
+(define-team beam
+  (team 'beam
+        #:name "Erlang/Elixir/BEAM team"
+        #:description "The virtual machine at the core of the Erlang Open
+Telecom Platform (OTP), Erlang and Elxir languages and packages, development
+of Rebar and Mix build systems and Hex.pm importer."
+        #:scope (list (make-regexp* "^gnu/packages/elixir(-.+|)\\.scm$")
+                      "guix/build/mix-build-system.scm"
+                      "guix/build-system/mix.scm"
+                      (make-regexp* "^gnu/packages/erlang(-.+|)\\.scm$")
+                      "guix/build/rebar-build-system.scm"
+                      "guix/build-system/rebar.scm"
+                      "guix/import/hexpm.scm"
+                      "guix/scripts/import/hexpm.scm")))
+
 (define-team bootstrap
   (team 'bootstrap
         #:name "Bootstrap"
@@ -1328,7 +1343,7 @@ the \"texlive\" importer."
 (define-member (person "Giacomo Leidi"
                        "goodoldpaul@autistici.org"
                        "fishinthecalculator")
-  audio)
+  audio beam)
 
 (define-member (person "Saku Laesvuori"
                        "saku@laesvuori.fi"

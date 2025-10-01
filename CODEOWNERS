@@ -12,6 +12,15 @@ gnu/packages/audio\.scm                            @guix/audio
 gnu/packages/fluidplug\.scm                        @guix/audio
 gnu/packages/xiph\.scm                             @guix/audio
 
+gnu/packages/elixir(-.+|)\.scm$                    @guix/beam
+guix/build/mix-build-system\.scm                   @guix/beam
+guix/build-system/mix\.scm                         @guix/beam
+gnu/packages/erlang(-.+|)\.scm$                    @guix/beam
+guix/build/rebar-build-system\.scm                 @guix/beam
+guix/build-system/rebar\.scm                       @guix/beam
+guix/import/hexpm\.scm                             @guix/beam
+guix/scripts/import/hexpm\.scm                     @guix/beam
+
 gnu/packages/commencement\.scm                     @guix/bootstrap
 gnu/packages/mes\.scm                              @guix/bootstrap
 
