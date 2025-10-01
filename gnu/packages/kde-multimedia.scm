@@ -634,6 +634,7 @@ This package is part of the KDE multimedia module.")
            qtmultimedia
            qtnetworkauth
            qtsvg
+           qtwayland
            shared-mime-info))
     (home-page "https://kdenlive.org")
     (synopsis "Non-linear video editor")
