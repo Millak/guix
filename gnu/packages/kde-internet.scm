@@ -22,6 +22,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages kde-internet)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system qt)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -32,23 +33,29 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages gperf)
+  #:use-module (gnu packages graphics)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-pim)
   #:use-module (gnu packages libidn)
+  #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages messaging)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages multiprecision)
+  #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rdesktop)
+  #:use-module (gnu packages samba)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages telephony)
@@ -154,6 +161,86 @@ HTTP(S) as well as pausing downloads.
 This package is part of the KDE networking module.")
     (license ;; GPL for programs, LGPL for libraries, FDL for documentation
      (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+))))
+
+(define-public kio-extras
+  (package
+    (name "kio-extras")
+    (version "24.12.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/" name "-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "1insjmx4pyagjm67cz5kc39pny2fycls73d0dkw402l89dncnax9"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                   (setenv "HOME" (getcwd))
+                   (setenv "TMPDIR" (getcwd))
+                   (invoke "ctest" "-E"
+                           "(thumbnailtest|testkioarchive)"))))
+               (add-after 'install 'fix-kiod-path
+                 (lambda _
+                   (let* ((kio #$(this-package-input "kio"))
+                          (kf-version
+                           #$(version-major
+                              (package-version (this-package-input "kio")))))
+                     (substitute* (string-append #$output
+                                                 "/share/dbus-1/services/"
+                                                 "org.kde.kmtpd5.service")
+                       (("Exec=.*$")
+                        (string-append "Exec=" kio "/libexec/kf" kf-version
+                                       "/kiod" kf-version "\n")))))))))
+    (native-inputs (list extra-cmake-modules dbus kdoctools pkg-config qttools))
+    ;; TODO: libappimage
+    (inputs (list gperf
+                  imath
+                  plasma-activities
+                  plasma-activities-stats
+                  karchive
+                  kbookmarks
+                  kcmutils
+                  kconfig
+                  kconfigwidgets
+                  kcoreaddons
+                  kdnssd
+                  kdbusaddons
+                  kdsoap
+                  kdsoap-ws-discovery-client
+                  kguiaddons
+                  ktextwidgets
+                  ki18n
+                  kio
+                  ksyntaxhighlighting
+                  libimobiledevice
+                  libkexiv2
+                  libmtp
+                  libplist
+                  libssh
+                  libtirpc
+                  openexr
+                  phonon
+                  qtbase
+                  qt5compat
+                  qcoro-qt6
+                  qtsvg
+                  samba
+                  shared-mime-info
+                  solid
+                  taglib
+                  zlib))
+    (home-page "https://community.kde.org/Frameworks")
+    (synopsis "Additional components to increase the functionality of KIO")
+    (description
+     "This package provides additional components to increase
+the functionality of the KDE resource and network access abstractions.")
+    (license license:lgpl2.0+)))
 
 (define-public kio-zeroconf
   (package

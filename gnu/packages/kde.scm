@@ -58,8 +58,8 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages code)
-  #:use-module (gnu packages cpp)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages djvu)
   #:use-module (gnu packages documentation)
@@ -76,9 +76,7 @@
   #:use-module (gnu packages gimp)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
-  #:use-module (gnu packages gperf)
   #:use-module (gnu packages gps)
-  #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
@@ -87,13 +85,10 @@
   #:use-module (gnu packages kde-plasma)
   ;; Including this module breaks the build.
   ;#:use-module ((gnu packages kde-systemtools) #:select (dolphin))
-  #:use-module (gnu packages libusb)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages ncurses)
-  #:use-module (gnu packages mp3)
-  #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
@@ -103,10 +98,8 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
-  #:use-module (gnu packages samba)
   #:use-module (gnu packages scanner)
   #:use-module (gnu packages sdl)
-  #:use-module (gnu packages ssh)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages unicode)
@@ -608,86 +601,6 @@ illustrate project schedules.")
     (description "This package provides a ws-Discovery client library based on
 KDSoap.")
     (license license:gpl3+)))
-
-(define-public kio-extras
-  (package
-    (name "kio-extras")
-    (version "24.12.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/stable/release-service/"
-                                  version "/src/" name "-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "1insjmx4pyagjm67cz5kc39pny2fycls73d0dkw402l89dncnax9"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                   (setenv "HOME" (getcwd))
-                   (setenv "TMPDIR" (getcwd))
-                   (invoke "ctest" "-E"
-                           "(thumbnailtest|testkioarchive)"))))
-               (add-after 'install 'fix-kiod-path
-                 (lambda _
-                   (let* ((kio #$(this-package-input "kio"))
-                          (kf-version
-                           #$(version-major
-                              (package-version (this-package-input "kio")))))
-                     (substitute* (string-append #$output
-                                                 "/share/dbus-1/services/"
-                                                 "org.kde.kmtpd5.service")
-                       (("Exec=.*$")
-                        (string-append "Exec=" kio "/libexec/kf" kf-version
-                                       "/kiod" kf-version "\n")))))))))
-    (native-inputs (list extra-cmake-modules dbus kdoctools pkg-config qttools))
-    ;; TODO: libappimage
-    (inputs (list gperf
-                  imath
-                  plasma-activities
-                  plasma-activities-stats
-                  karchive
-                  kbookmarks
-                  kcmutils
-                  kconfig
-                  kconfigwidgets
-                  kcoreaddons
-                  kdnssd
-                  kdbusaddons
-                  kdsoap
-                  kdsoap-ws-discovery-client
-                  kguiaddons
-                  ktextwidgets
-                  ki18n
-                  kio
-                  ksyntaxhighlighting
-                  libimobiledevice
-                  libkexiv2
-                  libmtp
-                  libplist
-                  libssh
-                  libtirpc
-                  openexr
-                  phonon
-                  qtbase
-                  qt5compat
-                  qcoro-qt6
-                  qtsvg
-                  samba
-                  shared-mime-info
-                  solid
-                  taglib
-                  zlib))
-    (home-page "https://community.kde.org/Frameworks")
-    (synopsis "Additional components to increase the functionality of KIO")
-    (description
-     "This package provides additional components to increase
-the functionality of the KDE resource and network access abstractions.")
-    (license license:lgpl2.0+)))
 
 (define-public kirigami-addons
   (package
