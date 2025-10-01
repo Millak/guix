@@ -583,7 +583,8 @@ This package is part of the KDE administration module.")
            kwidgetsaddons
            kwindowsystem
            kxmlgui
-           polkit-qt6))
+           polkit-qt6
+           qtwayland))
     (home-page "https://apps.kde.org/partitionmanager/")
     (synopsis "Disk device, partition and file system manager")
     (description "KDE Partition Manager is a utility to help you manage the
