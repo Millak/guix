@@ -16716,56 +16716,6 @@ addition to a bunch of aliases.")
 command pipeline functionality.")
     (license license:bsd-3)))
 
-(define-public python-zipfly
-  (package
-    (name "python-zipfly")
-    (version "6.0.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "zipfly" version))
-       (sha256
-        (base32
-         "1h7g922a8lsqd69j8blgcgg0lcd8kz51b2p4glfqmgx4vi1nkick"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-backend #~'unittest))
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/sandes/zipfly")
-    (synopsis "Zip archive generator")
-    (description "ZipFly is a zip archive generator.  It was created to
-generate very large zip archives for immediate sending out to clients, or
-for writing large zip archives without memory inflation.")
-    (license license:expat)))
-
-(define-public python-zipstream-new
-  (package
-    (name "python-zipstream-new")
-    (version "1.1.8")
-    (source
-     (origin
-       (method git-fetch)               ; no tests in PyPI release
-       (uri (git-reference
-             (url "https://github.com/arjan-s/python-zipstream")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "14vhgg8mcjqi8cpzrw8qzbij2fr2a63l2a8fhil21k2r8vzv92cv"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-backend #~'unittest))
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/arjan-s/python-zipstream")
-    (synopsis "Zipfile generator that takes input files as well as streams")
-    (description "@code{zipstream.py} is a zip archive generator based on
-@code{zipfile.py}.  It was created to generate a zip file generator for
-streaming.  This is beneficial for when you want to provide a downloadable
-archive of a large collection of regular files, which would be infeasible
-to generate the archive prior to downloading or of a very large file that
-you do not want to store entirely on disk or on memory.")
-    ;; No copyright headers in the source.  The LICENSE file indicates GPL3.
-    (license license:gpl3)))
-
 (define-public python-sentry-sdk
   (package
     (name "python-sentry-sdk")
@@ -28585,40 +28535,6 @@ like a regular Python @code{dict}.  It’s designed to be used as a priority
 queue.")
     (license license:bsd-3)))
 
-(define-public python-zict
-  (package
-    (name "python-zict")
-    (version "3.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "zict" version))
-       (sha256
-        (base32
-         "19gvr41xi5fazkzkg33kwrk70sv50hygng0cg70ayym9nriy48g3"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; This uses "importorskip", but it won't skip.
-      '(list "--ignore=tests/test_lmdb.py")))
-    (propagated-inputs
-     (list python-heapdict))
-    (native-inputs
-     (list python-pytest
-           python-pytest-asyncio
-           python-pytest-repeat
-           python-pytest-timeout
-           python-setuptools
-           python-wheel))
-    (home-page "https://zict.readthedocs.io/en/latest/")
-    (synopsis "Composable mutable mapping tools")
-    (description "This package provides abstract @code{MutableMapping} classes
-that consume and build on other @code{MutableMappings}.  Several of these can
-be composed with one another to form intuitive interfaces over complex storage
-systems policies.")
-    (license license:bsd-3)))
-
 (define-public python-send2trash
   (package
     (name "python-send2trash")
@@ -30504,62 +30420,6 @@ codecs for use in data storage and communication applications.")
     (description "This package draws tree structures using characters.")
     (license license:expat)))
 
-(define-public python-zarr
-  (package
-    (name "python-zarr")
-    (version "2.18.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "zarr" version))
-       (sha256
-        (base32
-         "1xbjjpjskykbdskck5p1f0grh6wq36437ll0n5kazi6s2ipzdf5j"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
-              ;; This tests are flaky.  The pass several times on my laptop
-              ;; but occasionally fail.  They fail pretty reliably on the
-              ;; build farm.
-              "-k" (string-append "not test_lazy_loader and not open_array"
-                                  ;; File not found.
-                                  " and not test_filesystem_path"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'set-version
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("^version_file.*") "")
-                (("dynamic = \\[\"version\"\\]")
-                 (string-append "version = \"" #$version "\"")))))
-          (add-after 'unpack 'disable-service-tests
-            (lambda _
-              (setenv "ZARR_TEST_ABS" "0")
-              (setenv "ZARR_TEST_MONGO" "0")
-              (setenv "ZARR_TEST_REDIS" "0"))))))
-    (propagated-inputs
-     (list python-asciitree
-           python-fasteners
-           python-ipywidgets
-           python-notebook
-           python-numcodecs
-           python-numpy
-           python-numpydoc
-           python-pydata-sphinx-theme))
-    (native-inputs
-     (list python-pytest
-           python-pytest-xdist
-           python-setuptools
-           python-wheel))
-    (home-page "https://github.com/zarr-developers/zarr-python")
-    (synopsis "Chunked, compressed, N-dimensional arrays for Python")
-    (description
-     "This package provides an implementation of chunked, compressed,
-N-dimensional arrays for Python.")
-    (license license:expat)))
-
 (define-public python-dill
   (package
     (name "python-dill")
@@ -31639,45 +31499,6 @@ should have run while it was offline.")
      "This package provides a network interface and IP address enumeration
 library in Python.")
     (license license:expat)))
-
-(define-public python-zeroconf
-  (package
-    (name "python-zeroconf")
-    (version "0.38.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/jstasiak/python-zeroconf")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1p1a0ywlg5sq0ilcphmz9h4kayscz0q1lyfk57j7mwxyx4gl9cpi"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list
-         "-k" (string-append
-               ;; XXX: Despite asyncio, this test fails.
-               "not test_run_coro_with_timeout and not "
-               ;; XXX: Networking isn't available.
-               (string-join
-                (list "test_integration_with_listener_ipv6"
-                      "test_launch_and_close_v4_v6"
-                      "test_launch_and_close_context_manager"
-                      "test_launch_and_close"
-                      "test_close_multiple_times")
-                " and not ")))))
-    (native-inputs
-     (list python-pytest python-pytest-asyncio python-setuptools))
-    (propagated-inputs
-     (list python-ifaddr))
-    (home-page "https://github.com/jstasiak/python-zeroconf")
-    (synopsis "Pure Python mDNS service discovery")
-    (description "Pure Python multicast DNS (mDNS) service discovery library
-(Bonjour/Avahi compatible).")
-    (license license:lgpl2.1+)))
 
 (define-public python-bsddb3
   (package
@@ -40342,58 +40163,6 @@ markdown-compliant strings.")
 way.")
     (license license:lgpl2.1)))
 
-(define-public python-zeroc-ice
-  (package
-    (name "python-zeroc-ice")
-    (version "3.7.10.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "zeroc-ice" version))
-              (sha256
-               (base32
-                "0r46q4hd7xbpvnidbra1prkg4xhmajxjjmclfqgp3pv0lgyslqxh"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; XXX: No tests in PyPI, tere are tests in Git, but there is no 3.7.10.1
-     ;; tag.
-     ;;
-     ;; See:
-     ;; - URL: <https://raw.githubusercontent.com/zeroc-ice>
-     ;; - File: <ice/refs/heads/main/python/allTests.py>
-     (list #:tests? #f))
-    (inputs (list openssl))
-    (native-inputs (list python-setuptools))
-    (home-page "https://zeroc.com")
-    (synopsis "RPC framework")
-    (description
-     "Ice is a comprehensive RPC framework.  Ice helps you network your
-software by taking care of all interactions with low-level network programming
-interfaces.")
-    (license license:gpl2)))
-
-;; Package variant to build python-omero-py@5.20.0
-(define-public python-zeroc-ice-3.6
-  (package
-    (inherit python-zeroc-ice)
-    (version "3.6.5")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "zeroc-ice" version))
-              (sha256
-               (base32
-                "0mikjfvq26kh8asnn9v55z41pap4c5ypymqnwwi4xkavc3mzyda2"))
-              (patches
-               (search-patches
-                "python-zeroc-ice-3.6.5-python-3.11-support.patch"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments python-zeroc-ice)
-       ((#:phases phases #~%standard-phases)
-        #~(modify-phases #$phases
-            (add-before 'build 'relax-gcc-14-strictness
-              (lambda _
-                (setenv "CFLAGS"
-                        "-g -O2  -Wno-error=implicit-function-declaration")))))))))
-
 (define-public python-islenska
   (package
     (name "python-islenska")
@@ -40590,6 +40359,237 @@ are easily incorporated into the library with a minimum amount of work.")
 C++ extension supporting a wide range of Python versions with a single code
 base, via the @file{pythoncapi_compat.h} header file.")
       (license license:bsd-0))))
+
+(define-public python-zarr
+  (package
+    (name "python-zarr")
+    (version "2.18.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "zarr" version))
+       (sha256
+        (base32
+         "1xbjjpjskykbdskck5p1f0grh6wq36437ll0n5kazi6s2ipzdf5j"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              ;; This tests are flaky.  The pass several times on my laptop
+              ;; but occasionally fail.  They fail pretty reliably on the
+              ;; build farm.
+              "-k" (string-append "not test_lazy_loader and not open_array"
+                                  ;; File not found.
+                                  " and not test_filesystem_path"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("^version_file.*") "")
+                (("dynamic = \\[\"version\"\\]")
+                 (string-append "version = \"" #$version "\"")))))
+          (add-after 'unpack 'disable-service-tests
+            (lambda _
+              (setenv "ZARR_TEST_ABS" "0")
+              (setenv "ZARR_TEST_MONGO" "0")
+              (setenv "ZARR_TEST_REDIS" "0"))))))
+    (propagated-inputs
+     (list python-asciitree
+           python-fasteners
+           python-ipywidgets
+           python-notebook
+           python-numcodecs
+           python-numpy
+           python-numpydoc
+           python-pydata-sphinx-theme))
+    (native-inputs
+     (list python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/zarr-developers/zarr-python")
+    (synopsis "Chunked, compressed, N-dimensional arrays for Python")
+    (description
+     "This package provides an implementation of chunked, compressed,
+N-dimensional arrays for Python.")
+    (license license:expat)))
+
+(define-public python-zeroc-ice
+  (package
+    (name "python-zeroc-ice")
+    (version "3.7.10.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "zeroc-ice" version))
+              (sha256
+               (base32
+                "0r46q4hd7xbpvnidbra1prkg4xhmajxjjmclfqgp3pv0lgyslqxh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: No tests in PyPI, tere are tests in Git, but there is no 3.7.10.1
+     ;; tag.
+     ;;
+     ;; See:
+     ;; - URL: <https://raw.githubusercontent.com/zeroc-ice>
+     ;; - File: <ice/refs/heads/main/python/allTests.py>
+     (list #:tests? #f))
+    (inputs (list openssl))
+    (native-inputs (list python-setuptools))
+    (home-page "https://zeroc.com")
+    (synopsis "RPC framework")
+    (description
+     "Ice is a comprehensive RPC framework.  Ice helps you network your
+software by taking care of all interactions with low-level network programming
+interfaces.")
+    (license license:gpl2)))
+
+;; Package variant to build python-omero-py@5.20.0
+(define-public python-zeroc-ice-3.6
+  (package
+    (inherit python-zeroc-ice)
+    (version "3.6.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "zeroc-ice" version))
+              (sha256
+               (base32
+                "0mikjfvq26kh8asnn9v55z41pap4c5ypymqnwwi4xkavc3mzyda2"))
+              (patches
+               (search-patches
+                "python-zeroc-ice-3.6.5-python-3.11-support.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-zeroc-ice)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'build 'relax-gcc-14-strictness
+              (lambda _
+                (setenv "CFLAGS"
+                        "-g -O2  -Wno-error=implicit-function-declaration")))))))))
+
+(define-public python-zeroconf
+  (package
+    (name "python-zeroconf")
+    (version "0.38.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jstasiak/python-zeroconf")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p1a0ywlg5sq0ilcphmz9h4kayscz0q1lyfk57j7mwxyx4gl9cpi"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         "-k" (string-append
+               ;; XXX: Despite asyncio, this test fails.
+               "not test_run_coro_with_timeout and not "
+               ;; XXX: Networking isn't available.
+               (string-join
+                (list "test_integration_with_listener_ipv6"
+                      "test_launch_and_close_v4_v6"
+                      "test_launch_and_close_context_manager"
+                      "test_launch_and_close"
+                      "test_close_multiple_times")
+                " and not ")))))
+    (native-inputs
+     (list python-pytest python-pytest-asyncio python-setuptools))
+    (propagated-inputs
+     (list python-ifaddr))
+    (home-page "https://github.com/jstasiak/python-zeroconf")
+    (synopsis "Pure Python mDNS service discovery")
+    (description "Pure Python multicast DNS (mDNS) service discovery library
+(Bonjour/Avahi compatible).")
+    (license license:lgpl2.1+)))
+
+(define-public python-zict
+  (package
+    (name "python-zict")
+    (version "3.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "zict" version))
+       (sha256
+        (base32
+         "19gvr41xi5fazkzkg33kwrk70sv50hygng0cg70ayym9nriy48g3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; This uses "importorskip", but it won't skip.
+      '(list "--ignore=tests/test_lmdb.py")))
+    (propagated-inputs
+     (list python-heapdict))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-repeat
+           python-pytest-timeout
+           python-setuptools
+           python-wheel))
+    (home-page "https://zict.readthedocs.io/en/latest/")
+    (synopsis "Composable mutable mapping tools")
+    (description "This package provides abstract @code{MutableMapping} classes
+that consume and build on other @code{MutableMappings}.  Several of these can
+be composed with one another to form intuitive interfaces over complex storage
+systems policies.")
+    (license license:bsd-3)))
+
+(define-public python-zipfly
+  (package
+    (name "python-zipfly")
+    (version "6.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "zipfly" version))
+       (sha256
+        (base32
+         "1h7g922a8lsqd69j8blgcgg0lcd8kz51b2p4glfqmgx4vi1nkick"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/sandes/zipfly")
+    (synopsis "Zip archive generator")
+    (description "ZipFly is a zip archive generator.  It was created to
+generate very large zip archives for immediate sending out to clients, or
+for writing large zip archives without memory inflation.")
+    (license license:expat)))
+
+(define-public python-zipstream-new
+  (package
+    (name "python-zipstream-new")
+    (version "1.1.8")
+    (source
+     (origin
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/arjan-s/python-zipstream")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14vhgg8mcjqi8cpzrw8qzbij2fr2a63l2a8fhil21k2r8vzv92cv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/arjan-s/python-zipstream")
+    (synopsis "Zipfile generator that takes input files as well as streams")
+    (description "@code{zipstream.py} is a zip archive generator based on
+@code{zipfile.py}.  It was created to generate a zip file generator for
+streaming.  This is beneficial for when you want to provide a downloadable
+archive of a large collection of regular files, which would be infeasible
+to generate the archive prior to downloading or of a very large file that
+you do not want to store entirely on disk or on memory.")
+    ;; No copyright headers in the source.  The LICENSE file indicates GPL3.
+    (license license:gpl3)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
