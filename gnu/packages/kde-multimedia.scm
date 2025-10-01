@@ -936,6 +936,7 @@ camera.  Use it to take pictures and make videos to share.")
                   qtkeychain-qt6
                   qtmultimedia
                   qtsvg
+                  qtwayland
                   sonnet
                   syndication
                   taglib
