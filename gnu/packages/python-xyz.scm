@@ -28899,55 +28899,6 @@ a notation for identifying weeks; yyyyWww (where the W is a literal).
 Week instances stringify to this form.")
     (license license:bsd-3)))
 
-(define-public python-pyzbar
-  (package
-    (name "python-pyzbar")
-    (version "0.1.9")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/NaturalHistoryMuseum/pyzbar")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1df1dvr8i2wyr2vw5pq8rlz2wm4xqda0wbgja19bvql1m9im11ph"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-backend #~'unittest
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-failing-test
-            (lambda _
-              ;; This tests if find_library was called once, but we remove
-              ;; the call in the stage below to make the library find libzbar.
-              (delete-file "pyzbar/tests/test_zbar_library.py")))
-          (add-before 'build 'set-library-file-name
-            (lambda _
-              (let ((libzbar #$(this-package-input "zbar")))
-                (substitute* "pyzbar/zbar_library.py"
-                  (("find_library\\('zbar'\\)")
-                   (string-append "'" libzbar "/lib/libzbar.so.0'")))))))))
-    (native-inputs
-     (list pkg-config python-numpy python-pillow python-setuptools))
-    (inputs
-     (list zbar))
-    (home-page "https://github.com/NaturalHistoryMuseum/pyzbar/")
-    (synopsis "Read one-dimensional barcodes and QR codes")
-    (description
-     "Read one-dimensional barcodes and QR codes using the zbar library.
-
-Features:
-
-@itemize
-@item Pure python
-@item Works with PIL / Pillow images, OpenCV / numpy ndarrays, and raw bytes
-@item Decodes locations of barcodes
-@item No dependencies, other than the zbar library itself
-@end itemize")
-    (license license:expat)))
-
 (define-public python-tokenize-rt
   (package
     (name "python-tokenize-rt")

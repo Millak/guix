@@ -81,6 +81,7 @@
   #:use-module (guix svn-download)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages aidc)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
