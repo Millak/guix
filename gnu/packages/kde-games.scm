@@ -307,7 +307,8 @@ other Mah Jongg like games.")
            libkdegames
            libkmahjongg
            qtdeclarative
-           qtsvg))
+           qtsvg
+           qtwayland))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
