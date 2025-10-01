@@ -566,7 +566,8 @@ drive, USB stick, etc
                   knotifications
                   kxmlgui
                   mpc
-                  mpfr))
+                  mpfr
+                  qtwayland))
     (home-page "https://apps.kde.org/kcalc/")
     (synopsis "Scientific calculator")
     (description
