@@ -28908,28 +28908,27 @@ Week instances stringify to this form.")
        ;; There's no source tarball on PyPI.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/NaturalHistoryMuseum/pyzbar")
-             (commit (string-append "v" version))))
+              (url "https://github.com/NaturalHistoryMuseum/pyzbar")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1fqlfg5p2v9lzzzi0si2sz54lblprk6jjjhjw54b64lp58c1yhsl"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-failing-test
-           (lambda _
-             ;; This tests if find_library was called once, but we remove
-             ;; the call in the stage below to make the library find libzbar.
-             (delete-file "pyzbar/tests/test_zbar_library.py")
-             #t))
-         (add-before 'build 'set-library-file-name
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libzbar (assoc-ref inputs "zbar")))
-               (substitute* "pyzbar/zbar_library.py"
-                 (("find_library\\('zbar'\\)")
-                  (string-append "'" libzbar "/lib/libzbar.so.0'")))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-failing-test
+            (lambda _
+              ;; This tests if find_library was called once, but we remove
+              ;; the call in the stage below to make the library find libzbar.
+              (delete-file "pyzbar/tests/test_zbar_library.py")))
+          (add-before 'build 'set-library-file-name
+            (lambda _
+              (let ((libzbar #$(this-package-input "zbar")))
+                (substitute* "pyzbar/zbar_library.py"
+                  (("find_library\\('zbar'\\)")
+                   (string-append "'" libzbar "/lib/libzbar.so.0'")))))))))
     (native-inputs
      (list pkg-config python-numpy python-pillow))
     (inputs
