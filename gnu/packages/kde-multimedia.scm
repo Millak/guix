@@ -886,7 +886,8 @@ autoloading of subtitle files for use while playing video.")
            kparts
            breeze-icons ; default icon set
            purpose
-           qtdeclarative))
+           qtdeclarative
+           qtwayland))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
