@@ -592,7 +592,8 @@ This package is part of the KDE games module.")
            kxmlgui
            libkdegames
            qtdeclarative
-           qtsvg))
+           qtsvg
+           qtwayland))
     (home-page "https://apps.kde.org/kbounce/")
     (synopsis "Jezzball arcade game")
     (description "KBounce is a single player arcade game with the elements of
