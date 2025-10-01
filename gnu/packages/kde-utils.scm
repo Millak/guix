@@ -127,6 +127,7 @@
            lzop
            p7zip
            unzip
+           qtwayland
            zip
            zstd))
     (home-page "https://apps.kde.org/ark/")
