@@ -2009,6 +2009,20 @@ and decompress to 32-bit and big-endian pixel buffers (RGBX, XBGR, etc.).")
                    license:ijg          ;the libjpeg library and associated tools
                    license:zlib))))     ;the libjpeg-turbo SIMD extensions
 
+(define-public libjpeg-turbo-3
+  (package
+    (inherit libjpeg-turbo)
+    (name "libjpeg-turbo")
+    (version "3.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/" name "/" name
+                                  "/releases/download/" version "/" name
+                                  "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1kyhczwa17qp8ik3v876yjqsf4zrjj0z3464j04fak269cii404g"))))))
+
 (define-public niftilib
   (package
     (name "niftilib")
