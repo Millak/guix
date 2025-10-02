@@ -1370,6 +1370,28 @@ in Python 3.13 by PEP-594.")
        #:tests? #f))
      (native-inputs (list python-hatchling)))))
 
+(define-public python-opentelemetry-sdk
+  (package
+    (name "python-opentelemetry-sdk")
+    (version "1.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "opentelemetry_sdk" version))
+       (sha256
+        (base32 "19fx8vf35kcss43i17zqngqhmglb36dnddasbdvfsgcm22f0i3nc"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-opentelemetry-api
+                             python-opentelemetry-semantic-conventions
+                             python-typing-extensions))
+    (native-inputs (list python-hatchling
+                         python-opentelemetry-test-utils-bootstrap
+                         python-pytest))
+    (home-page "https://opentelemetry.io/docs/languages/python/")
+    (synopsis "OpenTelemetry Python SDK")
+    (description "@code{OpenTelemetry} Python SDK.")
+    (license license:asl2.0)))
+
 (define-public python-pathy
   (package
     (name "python-pathy")
