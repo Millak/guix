@@ -13,7 +13,7 @@
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2015, 2016, 2017, 2019 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2019, 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2016, 2019, 2022, 2025 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2016–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2015, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2015, 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
@@ -7431,6 +7431,63 @@ jspacker or CSS tidy.  It also supports URL rewriting in CSS files.")
     (synopsis "Python port of the YUI CSS Compressor")
     (description "Python port of the YUI CSS Compressor.")
     (license (list license:expat license:bsd-3))))
+
+(define-public python-elastic-transport
+  (package
+    (name "python-elastic-transport")
+    (version "9.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "elastic_transport" version))
+       (sha256
+        (base32 "0g879z8rqrfbwkxsm6xcycjha1swl7gdgs6m0y0j1zmh4m5f940m"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Deselect failing tests (mostly due to network not reachable)
+      #~(list "-k"
+              (string-append
+               "not .badssl.com"
+               " and not test_assert_fingerprint_in_cert_chain_failure"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; Drop test coverage requirements.
+              (substitute* "setup.cfg"
+                (("--cov(-[^ ]*)?=[^ ]*") "\n")))))))
+    (propagated-inputs (list python-certifi python-urllib3))
+    (native-inputs (list nss-certs-for-test
+                         python-aiohttp
+                         ;; python-furo
+                         python-httpx
+                         python-opentelemetry-api
+                         python-opentelemetry-sdk
+                         python-orjson
+                         python-pytest
+                         python-pytest-asyncio
+                         ;; python-pytest-cov
+                         python-pytest-httpbin
+                         python-pytest-httpserver
+                         python-pytest-mock
+                         python-requests
+                         python-respx ;test
+                         python-setuptools
+                         ;; python-sphinx
+                         ;; python-sphinx-autodoc-typehints
+                         python-trustme
+                         python-wheel))
+    (home-page "https://github.com/elastic/elastic-transport-python")
+    (synopsis "Common library for Python Elastic client libraries")
+    (description
+     "This library was lifted from @code{elasticsearch-py} and then transformed to
+be used across all Elastic services rather than only Elasticsearch.  It
+provides transport classes and utilities shared among Python Elastic client
+libraries.")
+    ;; Apache-2.0 in setup.py and LICENSE file.
+    (license license:asl2.0)))
 
 (define-public python-elasticsearch
   (package
