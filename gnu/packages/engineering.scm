@@ -2160,7 +2160,7 @@ and a fallback for environments without libc for Zydis.")
 (define-public zydis
   (package
     (name "zydis")
-    (version "4.1.0")
+    (version "4.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2168,7 +2168,7 @@ and a fallback for environments without libc for Zydis.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "15iw6wcg2van8pw54xs15zk5cniqm8d8vbd1w1br9azv8jxsqjva"))))
+               (base32 "1f6caps6i5hinx4j3fcsxyqmqr2mszc9ah83jpq0bidp956jk7p8"))))
     (build-system cmake-build-system)
     (arguments (list #:configure-flags
                      #~(list "-DZYAN_SYSTEM_ZYCORE=ON"
