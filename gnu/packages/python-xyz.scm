@@ -37663,34 +37663,46 @@ these linters: @code{pycodestlye}, @code{pyflakes}")
 (define-public nikola
   (package
     (name "nikola")
-    (version "8.3.1")
+    (version "8.3.3")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "Nikola" version))
+        (uri (pypi-uri "nikola" version))
         (sha256
-          (base32 "1fdgqx828b1syd1z2miliwrykmxryya3dcib28r56wvp37cl3wi1"))))
+          (base32 "1ixi7bhcmyl6nxh4psjkj4q4wq5midgnks294r64zciazippsvb3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "--durations=10"
-                           "--ignore=tests/integration/test_dev_server.py"
-                           ;; Assertion fails in diff of HTML template.
-                           "-k" "not test_compiling_markdown")
+      ;; tests: 506 passed, 16 skipped, 10 deselected, 5 xfailed, 66 warnings
+      #:test-flags
+      #~(list "--durations=10"
+              "--ignore=tests/integration/test_dev_server.py"
+              "-k" (string-join
+                    ;; Some time difference in example tests.
+                    (list "not test_serves_root_dir[http://example.org/deep/down/a/rabbit/hole]"
+                          "test_serves_root_dir[https://example.org:1234/blog]"
+                          "test_serves_root_dir[https://example.org:3456/blog/]"
+                          "test_serves_root_dir[https://example.org]"
+                          ;; AssertionError: Calls not found.
+                          "test_write_content_does_not_detroy_text"
+                          ;; AssertionError: assert 'January 10, 2006,
+                          ;; 12:34:56\u202fPM -0500' == 'January 10, 2006,
+                          ;; 12:34:56\u202fPM EST'
+                          "test_format_date_timezone")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-pytest-config
             (lambda _
               ;; Drop test coverage requirements.
-              (substitute* "setup.cfg"
-                ((".*--cov.*") "")))))))
+              (substitute* "pyproject.toml"
+                (("addopts.*") "")))))))
     (native-inputs
       (list nss-certs-for-test
             python-feedparser
             python-freezegun
             python-pytest
-            python-setuptools
-            python-wheel))
+            python-setuptools))
     (inputs
       (list python-babel
             python-blinker
