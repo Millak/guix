@@ -191,14 +191,14 @@ software (Git, Subversion, Mercurial, CVS and Bazaar).")
 (define-public massif-visualizer
   (package
     (name "massif-visualizer")
-    (version "24.12.3")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/massif-visualizer-" version ".tar.xz"))
        (sha256
-        (base32 "09da7qlrq21rb2971wx43790ki6hk7xn255j82kfmx2kp9ilwvxm"))))
+        (base32 "143xamgifbrqpk59l4p43kzxv792w9c4vdnaalpmzg21x5mgvs59"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config shared-mime-info))
