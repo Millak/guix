@@ -7800,7 +7800,8 @@ for URL parsing and changing.")
                 "1gg6h2w4bajsis35p7l5r6bx54h5j2nq16r90wq8fbb0d3gz3f6q"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-arrow python-pytz python-requests))
-    (native-inputs (list python-requests-mock
+    (native-inputs (list python-pytest
+                         python-requests-mock
                          python-setuptools
                          python-urllib3-1.26
                          python-wheel))
