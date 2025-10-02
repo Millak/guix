@@ -219,26 +219,19 @@ It is typically used to display man pages on a web site.")
 (define-public ronn-ng
   (package
     (name "ronn-ng")
-    (version "0.9.1")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "ronn-ng" version))
        (sha256
         (base32
-         "1slxfg57cabmh98fw507z4ka6lwq1pvbrqwppflxw6700pi8ykfh"))))
+         "1h2y2v3wkl5c710wfanqwxlxi74l1ssva8yrzsg8iypvq22h3ssf"))))
     (build-system ruby-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-test
-            (lambda _
-              ;; TODO This should be removed once the upstream fix is released
-              ;; https://github.com/apjanke/ronn-ng/commit/e194bf62b1d0c0828cc83405e60dc5ece829e62f
-              (substitute* "test/test_ronn_document.rb"
-                (("YAML\\.load\\(@doc\\.to_yaml\\)")
-                 "YAML.load(@doc.to_yaml, permitted_classes: [Time])"))))
           (add-after 'extract-gemspec 'fix-gemspec-mustache
             (lambda _
               (substitute* "ronn-ng.gemspec"
