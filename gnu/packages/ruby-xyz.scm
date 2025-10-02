@@ -2832,49 +2832,50 @@ extensions.")
        (method url-fetch)
        (uri (rubygems-uri "libxml-ruby" version))
        (sha256
-        (base32
-         "1rkahmh2p3mapmcy5x4b3jf80a9jcvx85yky34k2n3lar03gphvq"))))
+        (base32 "1rkahmh2p3mapmcy5x4b3jf80a9jcvx85yky34k2n3lar03gphvq"))))
     (build-system ruby-build-system)
     (native-inputs (list ruby-minitest ruby-rake-compiler))
-    (inputs
-     (list zlib libxml2))
     (arguments
-     '(#:gem-flags
-       (list "--no-document"            ; TODO: Re-enable when documentation
-                                        ; generation works
-             "--"
-             (string-append "--with-xml2-include="
-                            (assoc-ref %build-inputs "libxml2")
-                            "/include/libxml2" ))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-failing-tests
-           (lambda _
-             (for-each
-              (lambda (method)
-                (substitute* "test/test_canonicalize.rb"
-                  (((string-append "def " method) def)
-                   (string-append def "; skip \"CR/LF mismatch\";"))))
-              '("test_canonicalize_with_w3c_c14n_3_1"
-                "test_canonicalize_with_w3c_c14n_3_2"
-                "test_canonicalize_with_w3c_c14n_3_3"
-                "test_canonicalize_with_w3c_c14n_3_4"))
-             (substitute* "test/test_schema.rb"
-               (("def test_schema_load_from_uri" def)
-                (string-append def "; skip \"missing XLink schema\";")))))
-         (delete 'check)
-         (add-after 'install 'set-gem-path
-           (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "GEM_PATH"
-                     (string-append
-                      (getenv "GEM_PATH") ":"
-                      (assoc-ref outputs "out") "/lib/ruby/vendor_ruby"))))
-         (add-after 'set-gem-path 'check
-           (assoc-ref %standard-phases 'check)))))
-    (synopsis "Ruby bindings for GNOME Libxml2")
-    (description "The Libxml-Ruby project provides Ruby language bindings for
-the GNOME Libxml2 XML toolkit.")
+     (list
+      #:gem-flags
+      ;; TODO: Re-enable when documentation generation works
+      #~(list "--no-document"
+              "--"
+              (string-append "--with-xml2-include="
+                             #$(this-package-input "libxml2")
+                             "/include/libxml2" ))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-failing-tests
+            (lambda _
+              (for-each
+               (lambda (method)
+                 (substitute* "test/test_canonicalize.rb"
+                   (((string-append "def " method) def)
+                    (string-append def "; skip \"CR/LF mismatch\";"))))
+               '("test_canonicalize_with_w3c_c14n_3_1"
+                 "test_canonicalize_with_w3c_c14n_3_2"
+                 "test_canonicalize_with_w3c_c14n_3_3"
+                 "test_canonicalize_with_w3c_c14n_3_4"))
+              (substitute* "test/test_schema.rb"
+                (("def test_schema_load_from_uri" def)
+                 (string-append def "; skip \"missing XLink schema\";")))))
+          (add-after 'install 'set-gem-path
+            (lambda _
+              (setenv "GEM_PATH" (string-append
+                                  (getenv "GEM_PATH") ":"
+                                  #$output "/lib/ruby/vendor_ruby"))))
+          (delete 'check)
+          (add-after 'set-gem-path 'check
+            (assoc-ref %standard-phases 'check)))))
+    (inputs
+     (list libxml2
+           zlib))
     (home-page "https://xml4r.github.com/libxml-ruby")
+    (synopsis "Ruby bindings for GNOME Libxml2")
+    (description
+     "The Libxml-Ruby project provides Ruby language bindings for the GNOME
+Libxml2 XML toolkit.")
     (license license:expat)))
 
 (define-public ruby-lino
