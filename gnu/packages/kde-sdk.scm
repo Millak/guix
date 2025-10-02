@@ -30,14 +30,14 @@
 (define-public kapptemplate
   (package
     (name "kapptemplate")
-    (version "24.12.1")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kapptemplate-" version ".tar.xz"))
        (sha256
-        (base32 "1wiv509y80m6gf891yw55d9429a35axngi922k119zvxfk5641as"))))
+        (base32 "0hkv74r0v9c8qjr561cipz43x1agx6mg6pddx8av71pz5wslh98z"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase))
@@ -48,6 +48,7 @@
            kcompletion
            kconfigwidgets
            kcoreaddons
+           kiconthemes
            kirigami-addons
            ki18n
            kio))
