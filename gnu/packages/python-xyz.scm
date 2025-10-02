@@ -16319,7 +16319,7 @@ function signatures.")
 (define-public python-yte
   (package
     (name "python-yte")
-    (version "1.7.0")
+    (version "1.8.1")    ;TODO higher versions depend on uv_build
     (source
      (origin
        (method git-fetch)
@@ -16327,19 +16327,15 @@ function signatures.")
              (url "https://github.com/koesterlab/yte")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "01hxl47bfb0jp2rh6qb6wrm6m8p5rfk21gksqb8qxxv9a037dnsv"))))
+        (base32 "05qrmjf9x6wvy8976kqiy3axk3im8jbc8hpc1yrbidm099vik0ni"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags #~(list "tests.py")
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp")))
-         (replace 'check
-           (lambda* (#:key tests? test-flags #:allow-other-keys)
-             (when tests?
-               (apply invoke "pytest"
-                      (append test-flags (list "tests.py")))))))))
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs (list python-dpath python-plac python-pyyaml))
     (native-inputs (list python-numpy python-poetry-core python-pytest))
     (home-page "https://github.com/koesterlab/yte")
