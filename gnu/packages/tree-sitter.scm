@@ -6,7 +6,7 @@
 ;;; Copyright © 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023, 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2023, 2024 Raven Hallsby <karl@hallsby.com>
+;;; Copyright © 2023-2025 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
@@ -659,6 +659,19 @@ which will be used as a snippet in origin."
    "python" "Python"
    "0a108sfqcsxrp54lapk7k3kq6fmz8745z5q99wpn3i1cqpi9slzg"
    "0.23.6"))
+
+(define-public tree-sitter-qml
+  (let ((version "0.2.0") ; Tagged, but we use a more recent commit
+        (commit "0889da4632bba3ec6f39ef4102625654890c15c1")
+        (revision "0"))
+    (tree-sitter-grammar
+     "qml" "Qml"
+     "1qdfwbqjnw7vcvq2dcx19c159b12kv2hvwrvbp7m9i5vl6szc22g"
+     (git-version version revision commit)
+     #:repository-url "https://github.com/yuja/tree-sitter-qmljs"
+     #:commit commit
+     #:inputs (delay (list tree-sitter-javascript tree-sitter-typescript))
+     #:license license:expat)))
 
 (define-public tree-sitter-query
   (package
