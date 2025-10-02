@@ -92,7 +92,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages jemalloc)
-  #:use-module (gnu packages kde)
+  #:use-module (gnu packages kde-internet)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
