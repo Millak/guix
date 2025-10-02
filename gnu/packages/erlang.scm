@@ -635,13 +635,13 @@ testing of stateful systems.")
 (define-public erlang-provider-asn1
   (package
     (name "erlang-provider-asn1")
-    (version "0.3.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "provider_asn1" version))
        (sha256
-        (base32 "01gvpwdlkpmvzi280rn66f5ijlvap6k368yzpb0mmlv2hrcsbrrj"))))
+        (base32 "079rxf4sl88xk67336fd2s48936p8h99cjgjdkpjj9kj48ipm90y"))))
     (build-system rebar-build-system)
     (inputs (list erlang-providers))
     (synopsis "Compile ASN.1 with Rebar3")
