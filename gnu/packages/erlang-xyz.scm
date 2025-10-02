@@ -76,13 +76,13 @@ module to convert and send cover data to Coveralls.")
 (define-public erlang-cowboy
   (package
     (name "erlang-cowboy")
-    (version "2.13.0")
+    (version "2.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "cowboy" version))
        (sha256
-        (base32 "052nvhnskkgikgzqcz84bhh9bsmz3nqwg4hr9ijms0lm16kx6977"))))
+        (base32 "0vrm9ss30p3jhv2hb580212jn21h0aycskzd3w5sk2s7zmd0scg5"))))
     (build-system rebar-build-system)
     (propagated-inputs (list erlang-cowlib erlang-ranch))
     (synopsis "Small, fast, modern HTTP server")
