@@ -527,6 +527,104 @@ Joysticks, OpenGL graphics, loading images and videos, playing sounds and
 music." )
     (license license:bsd-3)))
 
+(define-public python-pyglet-1
+  (package
+    (inherit python-pyglet)
+    (name "python-pyglet")
+    (version "1.5.30")  ;the latest 1.* version from 2024-12-24
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pyglet/pyglet")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q1690pqkks3na6vc8ps44h0gymlmq752xlk7fm0yvz05yqdqn51"))))
+    (arguments
+     (list
+      ;; tests: 317 passed, 24 skipped, 1 deselected, 2 warnings
+      #:test-flags
+      #~(list "--ignore=tests/base"
+              "--ignore=tests/interactive"
+              "--ignore=tests/integration/media"
+              "--ignore=tests/integration/font"
+              "--ignore=tests/integration/platform/test_linux_fontconfig.py"
+              ;; AssertionError: False is not true : Did not receive next
+              ;; expected event
+              "--ignore=tests/integration/window/test_event_sequence.py"
+              ;; pyglet.media.drivers.openal.interface.OpenALException: OpenAL
+              ;; Exception [40964: b'Invalid Value']: Failed to open device.
+              "--deselect=tests/unit/media/test_listener.py::test_openal_listener")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-lib-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* (list "pyglet/font/fontconfig.py"
+                                 "pyglet/font/freetype_lib.py"
+                                 "pyglet/gl/lib_glx.py"
+                                 "pyglet/libs/egl/egl.py"
+                                 "pyglet/libs/egl/lib.py"
+                                 "pyglet/libs/x11/xf86vmode.py"
+                                 "pyglet/libs/x11/xinerama.py"
+                                 "pyglet/libs/x11/xlib.py"
+                                 "pyglet/libs/x11/xsync.py"
+                                 "pyglet/media/drivers/openal/lib_openal.py"
+                                 "pyglet/media/drivers/pulse/lib_pulseaudio.py")
+                (("'EGL'")
+                 (format #f "'~a/~a'" #$(this-package-input "mesa")
+                         "lib/libEGL.so"))
+                (("'fontconfig'")
+                 (format #f "'~a/~a'" #$(this-package-input "fontconfig-minimal")
+                         "lib/libfontconfig.so"))
+                (("'freetype'")
+                 (format #f "'~a/~a'" #$(this-package-input "freetype")
+                         "lib/libfreetype.so"))
+                (("'GL'")
+                 (format #f "'~a/~a'" #$(this-package-input "mesa")
+                         "lib/libGL.so"))
+                (("'GLU'")
+                 (format #f "'~a/~a'" #$(this-package-input "glu")
+                         "lib/libGLU.so"))
+                (("'X11'")
+                 (format #f "'~a/~a'" #$(this-package-input "libx11")
+                         "lib/libX11.so"))
+                (("'Xext'")
+                 (format #f "'~a/~a'" #$(this-package-input "libxext")
+                         "lib/libXext.so"))
+                (("'Xinerama'")
+                 (format #f "'~a/~a'" #$(this-package-input "libxinerama")
+                         "lib/libXinerama.so"))
+                (("'Xxf86vm'")
+                 (format #f "'~a/~a'" #$(this-package-input "libxxf86vm")
+                         "lib/libXxf86vm.so"))
+                (("'c'")
+                 (format #f "'~a/~a'" #$(this-package-input "glibc")
+                         "lib/libc.so"))
+                (("'gdk-x11-2.0'")
+                 (format #f "'~a/~a'" #$(this-package-input "gtk+")
+                         "lib/gdk-pixbuf-2.0.so"))
+                (("'gdk_pixbuf-2.0'")
+                 (format #f "'~a/~a'" #$(this-package-input "gdk-pixbuf")
+                         "lib/libgdk_pixbuf-2.0.so"))
+                (("'openal'")
+                 (format #f "'~a/~a'" #$(this-package-input "openal")
+                         "lib/libopenal.so"))
+                (("'pulse'")
+                 (format #f "'~a/~a'" #$(this-package-input "pulseaudio")
+                         "lib/libpulse.so")))))
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              ;; The test suite requires a running X server.
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1")
+              (setenv "HOME" "/tmp")
+              (setenv "PYGLET_HEADLESS" "True"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           xorg-server-for-tests))))
+
 (define-public python-pyopengl
   (package
     (name "python-pyopengl")
