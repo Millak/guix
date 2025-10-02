@@ -9,7 +9,7 @@
 ;;; Copyright © 2018-2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019-2024 Maxim Cournoyer <maxim@guixotic.coop>
-;;; Copyright © 2019, 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2019, 2021, 2025 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2022 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
@@ -3745,6 +3745,48 @@ libraries.")
      "@code{re-assert} provides a helper class to make assertions of regexes
 simpler.")
     (license license:expat)))
+
+(define-public python-respx
+  (package
+    (name "python-respx")
+    (version "0.22.0")
+    (source
+     (origin
+       ;; There are no tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lundberg/respx/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pl6vlyva837bnz3cy9mwmvvh8fq943rkrbq3mzj34bjf8swnw2g"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; Drop test coverage requirements.
+              (substitute* "setup.cfg"
+                (("--cov(-[^ ]*)?=[^ ]*")
+                 "\n")
+                (("--cov-fail-under [^ ]*")
+                 "\n")))))))
+    (propagated-inputs (list python-httpx))
+    (native-inputs (list nss-certs-for-test
+                         python-starlette
+                         python-flask
+                         python-pytest
+                         python-pytest-asyncio
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://lundberg.github.io/respx/")
+    (synopsis "Mocking for Python libraries HTTPX and HTTPCore")
+    (description
+     "This package provides a utility for mocking out the Python libraries HTTPX and
+HTTPCore.")
+    (license license:bsd-3)))
 
 (define-public python-robber
   (package
