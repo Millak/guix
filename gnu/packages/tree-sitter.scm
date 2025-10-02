@@ -464,6 +464,30 @@ which will be used as a snippet in origin."
    "1.1.0"
    #:repository-url "https://github.com/camdencheek/tree-sitter-go-mod"))
 
+(define-public tree-sitter-gpr
+  (let ((version "0.1.0") ; In package.json, but untagged
+        (commit "cea857d3c18d1385d1f5b66cd09ea1e44173945c")
+        (revision "0"))
+    (tree-sitter-grammar
+     "gpr" "GNAT Project"
+     "0mf6ghqdyn0qbani9hg67yr6a68cbbbvhn734ndygxm30vqdz9xn"
+     (git-version version revision commit)
+     #:repository-url "https://github.com/brownts/tree-sitter-gpr"
+     #:commit commit
+     ;; binding.gyp & bindings is not part of this grammar.
+     #:get-cleanup-snippet
+     (lambda (grammar-directories)
+       #~(begin
+           (use-modules (guix build utils))
+           (for-each
+            (lambda (lang)
+              (with-directory-excursion lang
+                (delete-file "src/grammar.json")
+                (delete-file "src/node-types.json")
+                (delete-file "src/parser.c")
+                (delete-file-recursively "src/tree_sitter")))
+            '#$grammar-directories))))))
+
 (define-public tree-sitter-haskell
   (tree-sitter-grammar
    "haskell" "Haskell"
