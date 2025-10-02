@@ -653,13 +653,13 @@ within Rebar3.")
 (define-public erlang-relx
   (package
     (name "erlang-relx")
-    (version "4.9.0")
+    (version "4.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "relx" version))
        (sha256
-        (base32 "1iamihsd3gi82sc7169rx5730drvgm0n4k7clg75pap79b6pgjqj"))))
+        (base32 "16blzc9djzwhaqv4vphl4xgf4siykvg46x9jdsflq3gk65qhymrf"))))
     (build-system rebar-build-system)
     (propagated-inputs
      (list erlang-bbmustache))
