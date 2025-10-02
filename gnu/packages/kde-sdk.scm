@@ -222,14 +222,14 @@ software (Git, Subversion, Mercurial, CVS and Bazaar).")
 (define-public kompare
   (package
     (name "kompare")
-    (version "24.12.1")
+    (version "25.08.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/kompare-" version ".tar.xz"))
               (sha256
                (base32
-                "1ajr7qaf4dcccl5pc09ywfa4mgrfpa3qq1w7x4lfmv82gvp7ld64"))))
+                "05z04f71apmjym8xymy62h266p12drdsix69rv77kxvx6gw1gysm"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
