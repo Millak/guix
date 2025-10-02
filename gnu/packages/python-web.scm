@@ -1401,6 +1401,24 @@ in Python 3.13 by PEP-594.")
                          python-opentelemetry-semantic-conventions-bootstrap))
      (native-inputs (list python-hatchling)))))
 
+(define-public python-opentelemetry-semantic-conventions
+  (package
+    (name "python-opentelemetry-semantic-conventions")
+    (version "0.58b0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "opentelemetry_semantic_conventions" version))
+       (sha256
+        (base32 "098czakcawikaspl46vy6vickw80mm2bnrspflrw8ya24r8nzm3b"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-opentelemetry-api python-typing-extensions))
+    (native-inputs (list python-hatchling))
+    (home-page "https://opentelemetry.io/docs/languages/python/")
+    (synopsis "OpenTelemetry Semantic Conventions")
+    (description "@code{OpenTelemetry} Semantic Conventions.")
+    (license license:asl2.0)))
+
 (define-public python-pathy
   (package
     (name "python-pathy")
