@@ -40357,6 +40357,39 @@ based on Adobe XMP Toolkit, ensuring that future updates to the XMP standard
 are easily incorporated into the library with a minimum amount of work.")
     (license license:bsd-3)))
 
+(define-public python-yamlloader
+  (package
+    (name "python-yamlloader")
+    (version "1.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "yamlloader" version))
+       (sha256
+        (base32 "06y4xaajsjjynrv2m6ar3hwiif2mk3z3lgwxn2l1qsv238rc22n1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest
+           #:test-flags #~(list "discover" "-v")))
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-hypothesis))
+    (propagated-inputs
+     (list python-pyyaml))
+    (home-page "https://github.com/Phynix/yamlloader")
+    (synopsis "Ordered YAML loader and dumper for PyYAML")
+    (description
+     "This package provides loaders and dumpers for PyYAML.  Currently, an
+OrderedDict loader/dumper is implemented, allowing to keep items order when
+loading resp. dumping a file from/to an OrderedDict (Python 3.8+: Also regular
+dicts are supported and are the default items to be loaded to.  As of Python
+3.7 preservation of insertion order is a language feature of regular dicts.)
+It was originally mirrored from
+@url{https://github.com/fmenabe/python-yamlordereddictloader,
+yamlordereddict}.")
+    (license license:expat)))
+
 (define-public python-zarr
   (package
     (name "python-zarr")
