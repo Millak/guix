@@ -11754,7 +11754,7 @@ part of the Prawn PDF generator.")
 (define-public ruby-puma
   (package
     (name "ruby-puma")
-    (version "6.6.1")
+    (version "7.0.3")
     (source
      (origin
        (method git-fetch)               ;for tests
@@ -11764,7 +11764,7 @@ part of the Prawn PDF generator.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0wppz08pfwz1ypidjiz199i5jl2qvb9ppg0sdvf0kc7azpx5mphl"))))
+         "07mnlf40yvr515f12vd091s46ljfhlcmpxykggim2162yjdwd402"))))
     (build-system ruby-build-system)
     (arguments
      (list
@@ -11850,7 +11850,15 @@ part of the Prawn PDF generator.")
 test_web_concurrency_with_concurrent_ruby_unavailable")
                 (skip-tests "test/helpers/integration.rb"
                             "test_puma_started_log_writing"
-                            "test_require_dependencies"))))
+                            "test_require_dependencies")
+                ;; Errno::EMFILE: Too many open files - socket(2) for
+                ;; "127.0.0.1" port 40785
+                ;; Timeout waiting for server to log /PID: (\d+)\) booted in
+                ;; [.0-9]+s, phase: 1/
+                (skip-tests "test/test_integration_cluster.rb"
+                            "test_fork_worker_after_refork"
+                            "test_fork_worker_before_refork"
+                            "test_refork_phased_restart_with_fork_worker_and_high_worker_count"))))
           (add-before 'check 'relax-test-case-timeout
             (lambda _
               ;; The default value is 45 s and easily causes timeouts.
