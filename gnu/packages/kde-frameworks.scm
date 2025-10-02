@@ -270,35 +270,6 @@ continuous display of high-volume data.")
 image editing capabilities.")
     (license license:lgpl2.1+)))
 
-(define-public phonon-backend-vlc
-  (package
-    (name "phonon-backend-vlc")
-    (version "0.12.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/phonon/"
-                    name "/" version "/"
-                    name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "19f9wzff4nr36ryq18i6qvsq5kqxfkpqsmsvrarr8jqy8pf7k11k"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list #:tests? #f
-           #:configure-flags
-           #~(list "-DPHONON_BUILD_QT5=OFF"
-                   "-DPHONON_BUILD_QT6=ON")))
-    (native-inputs
-     (list extra-cmake-modules qttools))
-    (inputs
-     (list phonon qtbase vlc))
-    (home-page "https://community.kde.org/Phonon")
-    (synopsis "Phonon backend which uses VLC")
-    (description "Phonon makes use of backend libraries to provide sound.
-Phonon-VLC is a backend based on the VLC multimedia library.")
-    (license license:lgpl2.1)))
-
 
 ;; Tier 1
 ;;
