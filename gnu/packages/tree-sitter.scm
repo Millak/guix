@@ -1562,7 +1562,7 @@ files.")))
 (define-public python-tree-sitter
   (package
     (name "python-tree-sitter")
-    (version "0.21.3")
+    (version "0.25.2")
     (source
      (origin
        (method git-fetch)
@@ -1571,7 +1571,7 @@ files.")))
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cdxl0zyldml3x5wi2nmlmhwfahwxalcr5lxyb6j6762irmm4b2c"))))
+        (base32 "15j6gxc6ps6zdrmqfmmz22p7p5gz37cyihzzwbjggy7mc4vwm5fj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1589,44 +1589,19 @@ files.")))
                     tabs "libraries=[\"tree-sitter\"],\n"
                     all))
                   (("include_dirs=\\[" all)
-                   (string-append all "\"" tree-sitter "/include\""))))))
-          (add-before 'check 'set-test-lib-paths
-            (lambda* (#:key native-inputs inputs #:allow-other-keys)
-              (substitute* "tests/test_tree_sitter.py"
-                (("Language\\.build_library")
-                 "_ =")
-                (((string-append "LIB_PATH, \"("
-                                 (string-join
-                                  '("embedded_template"
-                                    "html"
-                                    "javascript"
-                                    "json"
-                                    "python"
-                                    "rust")
-                                  "|")
-                                 ")\"")
-                  all name)
-                 (string-append
-                  (format #f "~s, ~s"
-                          (search-input-file
-                           (or native-inputs inputs)
-                           (string-append
-                            "lib/tree-sitter/libtree-sitter-" name ".so"))
-                          name))))))
+                   (string-append all "\"" tree-sitter "/include\","))))))
           ;; XXX: See https://codeberg.org/guix/guix/issues/2108
           (add-before 'check 'remove-uninstalled-package
             (lambda _
               (delete-file-recursively "tree_sitter"))))))
     (inputs (list tree-sitter))
     (native-inputs
-     (list tree-sitter-embedded-template
-           tree-sitter-html
-           tree-sitter-javascript
-           tree-sitter-json
-           tree-sitter-python
-           tree-sitter-rust
-           python-setuptools
-           python-wheel))
+     (list python-setuptools
+           (python-tree-sitter-grammar tree-sitter-html #:tests? #f)
+           (python-tree-sitter-grammar tree-sitter-javascript #:tests? #f)
+           (python-tree-sitter-grammar tree-sitter-json #:tests? #f)
+           (python-tree-sitter-grammar tree-sitter-python #:tests? #f)
+           (python-tree-sitter-grammar tree-sitter-rust #:tests? #f)))
     (home-page "https://github.com/tree-sitter/py-tree-sitter")
     (synopsis "Python bindings to the Tree-sitter parsing library")
     (description "This package provides Python bindings to the
