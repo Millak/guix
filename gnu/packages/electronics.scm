@@ -1157,6 +1157,34 @@ such as:
 editor, part of the RiNgDove EDA suite.")
     (license license:gpl2+)))
 
+(define prjbeyond-db
+  ;; Projects doesn’t include any tag or release.
+  (let ((commit "f49f66be674d9857c657930353b867ba94bcbdd7")
+        (revision "0"))
+    (package
+      (name "prjbeyond-db")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/yosyshq-GmbH/prjbeyond-db/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1q5dfg0s21q8aw63fz28h0av958g0vcgi179yacgvs9f0cm6dx87"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan
+        #~'(("NG-ULTRA" "share/prjbeyond-db/")
+            ("devices.json" "share/prjbeyond-db/"))))
+      (home-page "https://github.com/yosyshq-GmbH/prjbeyond-db/")
+      (synopsis "Chip database for FPGA NG-Ultra architecture")
+      (description "This package includes data needed to create @code{nextpnr}
+chip database for NG-Ultra architecture from NanoXplore.")
+      (license license:expat))))
+
 (define-public prjtrellis
   ;; The last release is 2 years old; use the latest commit for now.
   (let ((commit "92345b77edf775fe5668700dd9931e19db2d36b0")
