@@ -1375,6 +1375,11 @@ the \"texlive\" importer."
                        "atai")
   ai)
 
+(define-member (person "Pierre-Henry Fröhring"
+                       "contact@phfrohring.com"
+                       "phfrohring")
+  beam)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
