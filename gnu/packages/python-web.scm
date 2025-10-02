@@ -1448,6 +1448,18 @@ in Python 3.13 by PEP-594.")
     (description "Test utilities for @code{OpenTelemetry} unit tests.")
     (license license:asl2.0)))
 
+(define-public python-opentelemetry-test-utils-bootstrap
+  (hidden-package
+   (package/inherit python-opentelemetry-test-utils
+     (name "python-opentelemetry-test-utils-bootstrap")
+     (arguments
+      (list
+       #:tests? #f))
+     (propagated-inputs (list python-asgiref
+                              python-opentelemetry-api-bootstrap
+                              python-opentelemetry-sdk-bootstrap))
+     (native-inputs (list python-hatchling)))))
+
 (define-public python-pathy
   (package
     (name "python-pathy")
