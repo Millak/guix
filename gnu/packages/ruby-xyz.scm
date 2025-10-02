@@ -2871,7 +2871,7 @@ extensions.")
     (inputs
      (list libxml2
            zlib))
-    (home-page "https://xml4r.github.com/libxml-ruby")
+    (home-page "https://xml4r.github.io/libxml-ruby/")
     (synopsis "Ruby bindings for GNOME Libxml2")
     (description
      "The Libxml-Ruby project provides Ruby language bindings for the GNOME
