@@ -2895,7 +2895,7 @@ Jellyfin.  It has support for various media files without transcoding.")
 (define-public gallery-dl
   (package
     (name "gallery-dl")
-    (version "1.30.2")
+    (version "1.30.8")
     (source
      (origin
        (method git-fetch)
@@ -2904,13 +2904,14 @@ Jellyfin.  It has support for various media files without transcoding.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15sgvk81s61v4yzzv1s5ksr4z77qhmv7ynyn34zrx5x41g72hgpz"))))
+        (base32 "1hl1nyaah4l03kg4q382jqdznmlywzwnb4dj71qd40mh6895zswd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; XXX: A lot of those require network.
       #:test-flags #~(list "--ignore=test/test_results.py")))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel nss-certs-for-test))
     (inputs (list python-requests ffmpeg))
     (home-page "https://github.com/mikf/gallery-dl")
     (synopsis "Command-line program to download images from several sites")
