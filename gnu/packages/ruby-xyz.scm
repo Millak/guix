@@ -7748,22 +7748,30 @@ It helps you keep your functionality clean and isolated where possible.")
 (define-public ruby-sanitize
   (package
     (name "ruby-sanitize")
-    (version "6.0.0")
-    (home-page "https://github.com/rgrove/sanitize")
+    (version "7.0.0")
     (source (origin
               (method git-fetch)
               ;; The gem does not include the Rakefile, so we download the
               ;; source from Github.
               (uri (git-reference
-                    (url home-page)
+                    (url "https://github.com/rgrove/sanitize")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0p1a28vx95vscy9xzzyyddzgb9496x42a5i2ka39cpxbl5f3gkl0"))))
+                "14598z31g319q7vmn23jriwkm26705ciwy73a8dlsxqhp1wrcv69"))))
     (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "Rakefile"
+                (("require \"standard/rake\"") "")))))))
     (propagated-inputs (list ruby-crass ruby-nokogiri))
     (native-inputs (list ruby-minitest))
+    (home-page "https://github.com/rgrove/sanitize")
     (synopsis "Whitelist-based HTML and CSS sanitizer")
     (description
      "Sanitize is a whitelist-based HTML and CSS sanitizer.  Given a list of
