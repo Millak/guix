@@ -1419,6 +1419,16 @@ in Python 3.13 by PEP-594.")
     (description "@code{OpenTelemetry} Semantic Conventions.")
     (license license:asl2.0)))
 
+(define-public python-opentelemetry-semantic-conventions-bootstrap
+  (hidden-package
+   (package/inherit python-opentelemetry-semantic-conventions
+     (name "python-opentelemetry-semantic-conventions-bootstrap")
+     (arguments
+      (list
+       #:tests? #f))
+     (propagated-inputs (list python-opentelemetry-api-bootstrap
+                              python-typing-extensions)))))
+
 (define-public python-pathy
   (package
     (name "python-pathy")
