@@ -37764,7 +37764,11 @@ PyRSS2Gen builds the feed up by using a XML generator.")
         (uri (pypi-uri "Yapsy" version))
         (sha256
           (base32 "12rznbnswfw0w7qfbvmmffr9r317gl1rqg36nijwzsklkjgks4fq"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest))
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://yapsy.sourceforge.net")
     (synopsis "Simple plugin system for Python applications")
     (description "Yapsy, or Yet Another Plugin SYstem, is a small library
