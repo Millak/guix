@@ -571,6 +571,17 @@ ftrace.")
                (base32
                 "161smpv4ajqfncmgylvs89bbix1id60nf0g7clmga2lxxax3646h"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CXXFLAGS=-g -O2 -Wno-error=calloc-transposed-args"
+              "CFLAGS=-g -O2 -Wno-error=calloc-transposed-args")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-source
+                     (lambda _
+                         (substitute* "language-server/jsonrpc.h"
+                           (("#include <unistd.h>")
+                            "#include <unistd.h>\n#include<stdint.h>")))))))
     (native-inputs (list cpio python))
     (inputs (list elfutils))
 
