@@ -457,13 +457,13 @@ of reusable Erlang components.")
 (define-public erlang-eunit-formatters
   (package
     (name "erlang-eunit-formatters")
-    (version "0.5.0")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "eunit_formatters" version))
        (sha256
-        (base32 "1jb3hzb216r29x2h4pcjwfmx1k81431rgh5v0mp4x5146hhvmj6n"))))
+        (base32 "1y12crqdii2wn9n3kp6fd454bd4py16i2aqvph5zmmpy11bmyhi8"))))
     (build-system rebar-build-system)
     (home-page "https://github.com/seancribbs/eunit_formatters")
     (synopsis "Better output for eunit suites")
