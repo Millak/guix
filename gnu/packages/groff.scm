@@ -250,7 +250,11 @@ It is typically used to display man pages on a web site.")
                                           "ruby-mustache"
                                           "ruby-nokogiri"))))))))))
     (inputs
-     (list bash-minimal ruby-kramdown ruby-mustache ruby-nokogiri))
+     (list bash-minimal
+           ruby-kramdown
+           ruby-kramdown-parser-gfm
+           ruby-mustache
+           ruby-nokogiri))
     (synopsis
      "Build manuals in HTML and Unix man page format from Markdown")
     (description
