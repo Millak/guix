@@ -264,6 +264,17 @@ which will be used as a snippet in origin."
 
 ;;; Language grammars (sort alphabetically)
 
+(define-public tree-sitter-ada
+  (let ((version "0.1.0") ; In package.json, but untagged.
+        (commit "b23672d313b4c994ab96fd54f1b7ff15eac68a55")
+        (revision "0"))
+    (tree-sitter-grammar
+     "ada" "Ada"
+     "0ly6zd2hbng5gbs14yq6riqw2mbzvh0shc7lp2smzbv9ran6chjy"
+     (git-version version revision commit)
+     #:repository-url "https://github.com/briot/tree-sitter-ada"
+     #:commit commit)))
+
 (define-public tree-sitter-awk
   (tree-sitter-grammar
    "awk" "AWK"
