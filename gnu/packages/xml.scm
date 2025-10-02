@@ -38,6 +38,7 @@
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1392,7 +1393,7 @@ C++ programming language.")
              (symlink "xml" (string-append bin "/xmlstarlet"))
              #t))))))
    (inputs
-    (list libxslt libxml2))
+    (list libxslt libxml2-2.11))
    (home-page "https://xmlstar.sourceforge.net/")
    (synopsis "Command line XML toolkit")
    (description "XMLStarlet is a set of command line utilities which can be
