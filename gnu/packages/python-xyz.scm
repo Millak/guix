@@ -40266,22 +40266,35 @@ write text fast, and for various text generation, statistics, and modeling tasks
 (define-public python-whenever
   (package
     (name "python-whenever")
-    (version "0.6.16")
+    (version "0.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "whenever" version))
        (sha256
-        (base32 "1diqibiv07i0q4sqqd1qw4bbzmp84zlrfv8lmlc395b5czwpf5pj"))))
+        (base32 "1awcy5s25z2f7yk4n4x3ibjhypxz7ilgz4hi3fiww58pdcgzcnpw"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  ;; Use the pure python version
-                  (add-before 'build 'setenv
-                    (lambda _
-                      (setenv "WHENEVER_NO_BUILD_RUST_EXT" "1"))))))
-    (propagated-inputs (list python-tzdata))
-    (native-inputs (list python-setuptools python-setuptools-rust python-wheel))
+     (list
+      ;; tests: 2170 passed, 3 skipped, 2 warnings
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Use the pure python version
+          (add-before 'build 'setenv
+            (lambda _
+              (setenv "WHENEVER_NO_BUILD_RUST_EXT" "1")))
+          (add-before 'check 'set-check-environment
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "TZ" "UTC")
+              (setenv "TZDIR"
+                      (search-input-directory inputs
+                                              "share/zoneinfo")))))))
+    (propagated-inputs
+     (list python-time-machine python-tzdata python-tzlocal))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           tzdata-for-tests))
     (home-page "https://whenever.readthedocs.io/")
     (synopsis "Modern datetime library for Python")
     (description "Modern datetime library for Python.  Supports:
