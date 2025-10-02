@@ -213,8 +213,8 @@ in Python.")
   ;; Since ronn-ng uses a newer ruby-nokogiri, the test suite would fail on a
   ;; free call with the error: "free(): invalid pointer".  Use the latest
   ;; commit, which is immune to that problem.
-  (let ((revision "0")
-        (commit "da9727de1b9e4e636be21bf07c73eb41f5d8439b"))
+  (let ((revision "1")
+        (commit "e97b179227b4fc7e2e2bc5a373933624c0467daa"))
     (package
       (name "castget")
       (version (git-version "2.0.0" revision commit))
@@ -225,7 +225,7 @@ in Python.")
                (url "https://github.com/mlj/castget")
                (commit commit)))
          (sha256
-          (base32 "0d5ji21af5mfj1xa90v4hp104c1ipy076175kp7nzz1c4sxdadff"))
+          (base32 "1dsbmfkchza9bwcsks2iyq5n2sj55pdmh79jpg3hisxpjgqcvpyy"))
          (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (native-inputs
