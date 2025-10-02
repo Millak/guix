@@ -1361,6 +1361,15 @@ in Python 3.13 by PEP-594.")
     (description "@code{OpenTelemetry} Python API.")
     (license license:asl2.0)))
 
+(define-public python-opentelemetry-api-bootstrap
+  (hidden-package
+   (package/inherit python-opentelemetry-api
+     (name "python-opentelemetry-api-bootstrap")
+     (arguments
+      (list
+       #:tests? #f))
+     (native-inputs (list python-hatchling)))))
+
 (define-public python-pathy
   (package
     (name "python-pathy")
