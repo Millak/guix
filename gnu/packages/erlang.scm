@@ -563,13 +563,13 @@ compile-time constant.")
 (define-public erlang-proper
   (package
     (name "erlang-proper")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
       (origin
         (method url-fetch)
         (uri (hexpm-uri "proper" version))
         (sha256
-          (base32 "1fwcas4a9kz3w3z1jqdk9lw8822srfjk9lcpvbxkxlsv3115ha0q"))))
+          (base32 "16lnz79r7whz2ysk9zwlrl7hjlpzxbhxixql8lqili754l3czxzv"))))
     (build-system rebar-build-system)
     (arguments
      `(#:phases
