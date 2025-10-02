@@ -7492,7 +7492,7 @@ libraries.")
 (define-public python-elasticsearch
   (package
     (name "python-elasticsearch")
-    (version "7.17.12")
+    (version "9.1.1")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -7501,35 +7501,30 @@ libraries.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v3azgxh1nd0jyqhnb1w28ky3nfx8sjq5vlx2gp33v6vxmvqy1qr"))))
+        (base32 "015x73y84nyigcyg00lh32p2pfrqf834fr7clfnzymgzrrxa73jf"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; Requiring network config.
-      #~(list "--ignore=test_elasticsearch/test_connection.py"
-              ;; All tests failed.
-              "--ignore=test_elasticsearch/test_async")))
     (native-inputs
-     (list python-aiohttp
+     (list nss-certs-for-test
+           python-aiohttp
            python-dateutil
            python-mock
+           python-orjson
            python-pytest
            python-pytest-asyncio
            python-pytest-cov
+           python-pytz
            python-pyyaml
            python-requests
-           python-setuptools
-           python-wheel))
+           python-hatchling))
     (propagated-inputs
      (list python-certifi
-           python-urllib3-1.26))
+           python-elastic-transport))
     (home-page "https://github.com/elastic/elasticsearch-py")
     (synopsis "Low-level client for Elasticsearch")
     (description "Official low-level client for Elasticsearch.  Its goal is to
 provide common ground for all Elasticsearch-related code in Python; because of
 this it tries to be opinion-free and very extendable.")
-    ;; Apache-2.0 in setup.py and LICENSE file for 11 years.
+    ;; Apache-2.0 in setup.py and LICENSE file.
     (license license:asl2.0)))
 
 (define-public python-engineio
