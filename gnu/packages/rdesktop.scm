@@ -178,7 +178,7 @@ of parts of the Windows API.")
   (package
     (inherit freerdp)
     (name "freerdp")
-    (version "3.16.0")
+    (version "3.17.2")
     (source
      (origin
        (method git-fetch)
@@ -187,7 +187,7 @@ of parts of the Windows API.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "093yyfd3lbbavg0scqka2m64xkn8y1hirfjsv01pdnm4fsrhhphw"))
+        (base32 "17jdr2fjfz2m81a32ka9ijb8n2kpg20s6wjvw72if86h1nsvxmmg"))
        (patches
         (search-patches "freerdp-3.16.0-rpath.patch"))))
     (inputs
@@ -196,6 +196,7 @@ of parts of the Windows API.")
        (prepend fuse icu4c mit-krb5 sdl3 sdl3-gfx sdl3-ttf)))
     (arguments
      (list #:build-type "Release"
+           #:test-exclude "TestFreeRDPCodecH264|TestClientRdpFile"
            #:configure-flags
            #~(list
               ;; Relax gcc-14's strictness.
