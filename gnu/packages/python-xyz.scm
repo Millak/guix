@@ -28669,21 +28669,19 @@ style guide, even if the original code didn't violate the style guide.")
        (method url-fetch)
        (uri (pypi-uri "yq" version))
        (sha256
-        (base32
-         "1wklgs3d9si475nffw9agq5kgk8bdicbsmlj4sx4kiw64ji4ma1h"))))
+        (base32 "1wklgs3d9si475nffw9agq5kgk8bdicbsmlj4sx4kiw64ji4ma1h"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "yq/__init__.py"
-               (("Popen\\(\\[\"jq")
-                (string-append
-                 "Popen([\""
-                 (assoc-ref inputs "jq")
-                 "/bin/jq")))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "yq/__init__.py"
+                (("Popen\\(\\[\"jq")
+                 (string-append
+                  "Popen([\""
+                  #$(this-package-input "jq") "/bin/jq"))))))))
     (inputs
      (list python-argcomplete python-pyyaml python-xmltodict python-toml jq))
     (native-inputs
@@ -28692,8 +28690,8 @@ style guide, even if the original code didn't violate the style guide.")
     (synopsis "Command-line YAML/XML processor")
     (description
      "This package provides @command{yq} and @command{xq} for processing YAML
-and XML respectively.  The processing is done through @command{jq}, @command{jq}
-filters can be used to process the data as it passes through.")
+and XML respectively.  The processing is done through @command{jq},
+@command{jq} filters can be used to process the data as it passes through.")
     (license license:asl2.0)))
 
 (define-public python-gyp
