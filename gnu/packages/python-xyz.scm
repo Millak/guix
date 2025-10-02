@@ -28663,16 +28663,18 @@ style guide, even if the original code didn't violate the style guide.")
 (define-public python-yq
   (package
     (name "python-yq")
-    (version "3.1.0")
+    (version "3.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "yq" version))
        (sha256
-        (base32 "1wklgs3d9si475nffw9agq5kgk8bdicbsmlj4sx4kiw64ji4ma1h"))))
-    (build-system python-build-system)
+        (base32 "0fvf4n7wpbc0gdxhw8c008rcv092vw96f84j5xdp1krhdwd6ln5s"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "test/test.py" "-v")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch
@@ -28682,10 +28684,16 @@ style guide, even if the original code didn't violate the style guide.")
                  (string-append
                   "Popen([\""
                   #$(this-package-input "jq") "/bin/jq"))))))))
-    (inputs
-     (list python-argcomplete python-pyyaml python-xmltodict python-toml jq))
     (native-inputs
-     (list python-coverage python-flake8 python-setuptools-scm python-wheel))
+     (list python-hatchling
+           python-hatch-vcs))
+    (inputs
+     (list jq))
+    (propagated-inputs
+     (list python-argcomplete
+           python-pyyaml
+           python-tomlkit
+           python-xmltodict))
     (home-page "https://github.com/kislyuk/yq")
     (synopsis "Command-line YAML/XML processor")
     (description
