@@ -733,7 +733,7 @@ compiler for the D programming language.")
 (define-public dub
   (package
     (name "dub")
-    (version "1.33.0")
+    (version "1.40.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -742,32 +742,74 @@ compiler for the D programming language.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09p3rvsv11f8lgqgxgz2zj0szsw5lzrsc7y7471hswksc7nmmj70"))))
-    (build-system gnu-build-system)
+                "1ism6wziki5lzsnwq2p144pwgjk1rqj0j85xnciaiswz8a2dqais"))))
+    (build-system gnu-build-system)     ; not really, uses a custom build script
     (arguments
      (list
-      #:tests? #f                       ; tests try to install packages
+      #:modules
+      `(,@%default-gnu-modules
+        (srfi srfi-26))
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'configure)           ; no configure script
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              ;; These fail for various reasons. Some try to fetch a package
+              ;; from code.dlang.org. Some try to clone a git repo. Some try to
+              ;; run /bin/sh.
+              (for-each delete-file-recursively
+                        '("test/dpath-variable"
+                          "test/dub-as-a-library-cwd"
+                          "test/git-dependency"
+                          "test/issue502-root-import"
+                          "test/issue1408-inherit-linker-files"
+                          "test/issue1551-var-escaping"
+                          "test/issue1775"
+                          "test/issue2192-environment-variables"
+                          "test/issue2452"
+                          "test/issue2698-cimportpaths-broken-with-dmd-ldc"
+                          "test/pr2642-cache-db"
+                          "test/pr2644-describe-artifact-path"
+                          "test/pr2647-build-deep"))))
+          (replace 'configure
+            (lambda _
+              (setenv "CC" #$(cc-for-target))))
           (replace 'build
             (lambda _
-              (setenv "CC" #$(cc-for-target))
-              (setenv "LD" #$(ld-for-target))
-              (invoke "./build.d")))
+              (invoke "ldmd2" "-run" "build.d")))
+          (add-after 'build 'prepare-post-build
+            (lambda _
+              (setenv "DC" "ldc2")
+              (setenv "DUB" "bin/dub")
+              ;; Don't store cache in $HOME, we have no home.
+              (setenv "DUB_HOME" "/tmp/dub-test-home")))
+          (add-after 'prepare-post-build 'generate-man
+            (lambda _
+              (setenv "DIFFABLE" "1")   ; replaces currentTime with a static one
+              (invoke "bin/dub"  "--single" "./scripts/man/gen_man.d")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "sh" "./test/run-unittest.sh"))))
           (replace 'install
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
-                     (bin (string-append out "/bin")))
-                (install-file "bin/dub" bin)))))))
+                     (bin (string-append out "/bin"))
+                     (man1 (string-append out "/share/man/man1"))
+                     (bash-comp (string-append out "/etc/bash_completion.d"))
+                     (fish-comp (string-append
+                                 out "/share/fish/vendor_completions.d"))
+                     (zsh-comp (string-append out "/share/zsh/site-functions")))
+                (install-file "bin/dub" bin)
+                (with-directory-excursion "scripts/man"
+                  (for-each (cut install-file <> man1)
+                            (find-files "." "\\.1$")))
+                (install-file "scripts/bash-completion/dub.bash" bash-comp)
+                (install-file "scripts/fish-completion/dub.fish" fish-comp)
+                (install-file "scripts/zsh-completion/_dub" zsh-comp)))))))
     (inputs
      (list curl))
     (native-inputs
-     (list d-tools
-           ldc
-           (module-ref (resolve-interface
-                        '(gnu packages commencement))
-                       'ld-gold-wrapper)))
+     (list ldc))
     (home-page "https://dub.pm/")
     (synopsis "Package and build manager for D projects")
     (description
