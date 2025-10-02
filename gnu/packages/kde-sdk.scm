@@ -21,10 +21,11 @@
   #:use-module (guix build-system qt)
   #:use-module (guix download)
   #:use-module (guix gexp)
-  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bison)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages qt))
@@ -74,20 +75,18 @@ structure.  It features:
 (define-public kdevelop-pg-qt
   (package
     (name "kdevelop-pg-qt")
-    (version "2.3.0")
+    (version "2.4.0")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/KDE/kdevelop-pg-qt")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kdevelop-pg-qt-" version ".tar.xz"))
        (sha256
-        (base32 "0wbfgd1d995cmqbfz2bvdsz02jhcvgd5jam7wm4m5npqwzgl5f7v"))))
+        (base32 "11mv4z8gi5bcsi3d3mhbjw392mg2wnzf667svhnsmmzmh8fbdgmc"))))
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list qtbase))
+     (list bison flex qtbase))
     (build-system cmake-build-system)
     (home-page "https://kde.org")
     (synopsis "Parser generator library for KDevplatform")
