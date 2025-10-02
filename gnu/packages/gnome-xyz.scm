@@ -27,6 +27,7 @@
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>
+;;; Copyright © 2025 Trevor Arjeski <tmarjeski@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1390,6 +1391,36 @@ directly inside GNOME Shell.  It can manage stations and play streams.")
 temperature, voltage, fan speed, memory usage and CPU load from the top menu
 bar of the GNOME Shell.")
     (license license:gpl2+)))
+
+(define-public gnome-shell-extension-weather-oclock
+  (package
+    (name "gnome-shell-extension-weather-oclock")
+    (version "46.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/CleoMenezesJr/weather-oclock")
+                     (commit version)))
+              (sha256
+               (base32
+                "0misr6cs17636yak82fx6gx48qqsj8glccsxxkh96adrihbhni48"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no tests
+      #:make-flags #~(list (string-append "INSTALLBASE="
+                                          #$output
+                                          "/share/gnome-shell/extensions"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'bootstrap)
+          (delete 'configure))))
+    (synopsis "GNOME Shell extension to show the weather next the clock")
+    (description "Weather O'Clock is an extension that adds the current weather
+ next to the clock on the top bar of the GNOME Shell.")
+    (home-page "https://github.com/CleoMenezesJr/weather-oclock")
+    (license license:gpl3+)))
 
 (define-public arc-theme
   (package
