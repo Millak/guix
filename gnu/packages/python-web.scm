@@ -1429,6 +1429,25 @@ in Python 3.13 by PEP-594.")
      (propagated-inputs (list python-opentelemetry-api-bootstrap
                               python-typing-extensions)))))
 
+(define-public python-opentelemetry-test-utils
+  (package
+    (name "python-opentelemetry-test-utils")
+    (version "0.58b0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "opentelemetry_test_utils" version))
+       (sha256
+        (base32 "0xjp04zjn7m79xsda9wp79rqyzy2c10347s967vp7xvmndwwa0ds"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-asgiref python-opentelemetry-api
+                             python-opentelemetry-sdk))
+    (native-inputs (list python-hatchling))
+    (home-page "https://opentelemetry.io/docs/languages/python/")
+    (synopsis "Test utilities for OpenTelemetry unit tests")
+    (description "Test utilities for @code{OpenTelemetry} unit tests.")
+    (license license:asl2.0)))
+
 (define-public python-pathy
   (package
     (name "python-pathy")
