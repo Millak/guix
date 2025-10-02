@@ -28589,16 +28589,20 @@ user's @file{~/Trash} directory.")
 (define-public python-yamllint
   (package
     (name "python-yamllint")
-    (version "1.31.0")
+    (version "1.37.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "yamllint" version))
        (sha256
-        (base32 "0rbs7xq7y7bp3k75z7jamrdrrfyp95hifsz0hwm1cgkk5z8z30rd"))))
-    (build-system python-build-system)
+        (base32 "0p9401y9f1pgxi9lggmw6wv135kfnd361n3hjh2civ4vap2w1xw1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
-     (list python-pathspec python-pyyaml python-setuptools))
+     (list python-pathspec python-pyyaml))
     (home-page "https://github.com/adrienverge/yamllint")
     (synopsis "Linter for YAML files")
     (description
