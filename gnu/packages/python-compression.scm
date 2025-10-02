@@ -447,13 +447,13 @@ Jump conversion filter by CFFI for Python.")
 (define-public python-brotlicffi
   (package
     (name "python-brotlicffi")
-    (version "1.0.9.2")
+    (version "1.1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "brotlicffi" version))
        (sha256
-        (base32 "15kxgdiqcg0cm6h5xq3vkbhw7674673hcx3n2yicd3wx29l8l90c"))
+        (base32 "04rw11qllb43si8g6gnliy41gavkna9hnc8mg7w46lchi6k2fy5p"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
