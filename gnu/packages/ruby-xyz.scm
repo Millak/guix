@@ -6184,7 +6184,7 @@ that provides the ability to deal with POSIX tar archive files.")
 (define-public ruby-nokogiri
   (package
     (name "ruby-nokogiri")
-    (version "1.16.8")
+    (version "1.18.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6193,8 +6193,7 @@ that provides the ability to deal with POSIX tar archive files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09fkjvs4n9n0k0b2qyiq5pxrzidb5a7xaklpckslbcm9fb2gvsq9"))
-              (patches (search-patches "ruby-nokogiri.patch"))))
+                "1lrng9xbhyw4mkm50wyzab7dyxdwav4q4zyzx9bgilcnaqwc6rbq"))))
     (build-system ruby-build-system)
     (arguments
      (list #:gem-flags #~(list "--" "--use-system-libraries"

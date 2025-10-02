@@ -2257,7 +2257,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/ruby-flores-fix-deprecations.patch	\
   %D%/packages/patches/ruby-latex-decode-fix-test.patch		\
   %D%/packages/patches/ruby-mustache-1.1.1-fix-race-condition-tests.patch \
-  %D%/packages/patches/ruby-nokogiri.patch			\
   %D%/packages/patches/ruby-pg-fix-connect-timeout.patch	\
   %D%/packages/patches/ruby-x25519-automatic-fallback-non-x86_64.patch \
   %D%/packages/patches/rust-1.64-fix-riscv64-bootstrap.patch	\
