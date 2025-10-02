@@ -56,6 +56,7 @@
   #:use-module (gnu packages kde-education)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-pim)
+  #:use-module (gnu packages kde-multimedia)
   #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages markup)

@@ -70,6 +70,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-graphics)
+  #:use-module (gnu packages kde-multimedia)
   #:use-module (gnu packages kde-pim)
   #:use-module (gnu packages kde-plasma)
   ;; Including this module breaks the build.

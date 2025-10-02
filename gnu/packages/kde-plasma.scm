@@ -67,6 +67,7 @@
   #:use-module (gnu packages kde-graphics)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-internet)
+  #:use-module (gnu packages kde-multimedia)
   #:use-module (gnu packages kde-pim)
   ;; Including this module breaks the build
   ;#:use-module ((gnu packages kde-systemtools) #:select (konsole))

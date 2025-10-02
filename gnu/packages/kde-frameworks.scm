@@ -73,6 +73,7 @@
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-graphics)
+  #:use-module (gnu packages kde-multimedia)
   #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages linux)
@@ -267,31 +268,6 @@ continuous display of high-volume data.")
     (synopsis "QtQuick components for image editing")
     (description "KQuickImageEditor is a set of QtQuick components providing
 image editing capabilities.")
-    (license license:lgpl2.1+)))
-
-(define-public phonon
-  (package
-    (name "phonon")
-    (version "4.12.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/phonon"
-                    "/" version "/"
-                    name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "16pk8g5rx00x45gnxrqg160b1l02fds1b7iz6shllbfczghgz1rj"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list appstream extra-cmake-modules pkg-config qttools))
-    (inputs (list qtbase qt5compat glib qtbase-5 pulseaudio))
-    (arguments
-     (list #:configure-flags
-           #~(list "-DCMAKE_CXX_FLAGS=-fPIC")))
-    (home-page "https://community.kde.org/Phonon")
-    (synopsis "KDE's multimedia library")
-    (description "KDE's multimedia library.")
     (license license:lgpl2.1+)))
 
 (define-public phonon-backend-gstreamer

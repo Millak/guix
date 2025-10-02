@@ -47,6 +47,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages kde-multimedia)
   #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages kde-graphics)
   #:use-module (gnu packages markup)

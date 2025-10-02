@@ -38,6 +38,7 @@
   #:use-module ((gnu packages freedesktop) #:select (shared-mime-info))
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages kde-multimedia)
   #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pulseaudio)
