@@ -490,13 +490,13 @@ arguments using the GNU getopt syntax.")
 (define-public erlang-hex-core
   (package
     (name "erlang-hex-core")
-    (version "0.10.0")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "hex_core" version))
        (sha256
-        (base32 "0mwz3n5jaabyc77q7w0pqsr5hl4r44bzr90gq30gz9zk5pmrl8hw"))))
+        (base32 "1c70rlq1v7wjyw38nh97xabmzy5isbqj5d9d5ab92m22g9kr6y3h"))))
     (build-system rebar-build-system)
     (arguments
      `(#:phases
