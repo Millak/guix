@@ -2867,30 +2867,6 @@ into dataclasses.")
 quadrilateral grids.  It is written in C++11 and wrapped using pybind11.")
     (license license:bsd-3)))
 
-(define-public python-yaspin
-  (package
-    (name "python-yaspin")
-    (version "3.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (pypi-uri "yaspin" version))
-       (sha256
-        (base32 "1ryc5099sjsa49fhcm6dp5l4rp9v9yxrh17ml78y89idfbbfhvs1"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-poetry-core
-           python-pytest
-           python-pytest-mock))
-    (propagated-inputs
-     (list python-termcolor))
-    (home-page "https://github.com/pavdmyt/yaspin")
-    (synopsis "Yet Another Terminal Spinner")
-    (description "Yaspin provides a terminal spinner to indicate the progress
-during long operations.")
-    (license license:expat)))
-
 (define-public python-lunr
   (package
     (name "python-lunr")
@@ -16320,34 +16296,6 @@ multiprecision arithmetic.")
 function signatures.")
     (license license:bsd-3)))
 
-(define-public python-yte
-  (package
-    (name "python-yte")
-    (version "1.8.1")    ;TODO higher versions depend on uv_build
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/koesterlab/yte")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32 "05qrmjf9x6wvy8976kqiy3axk3im8jbc8hpc1yrbidm099vik0ni"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags #~(list "tests.py")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp"))))))
-    (propagated-inputs (list python-dpath python-plac python-pyyaml))
-    (native-inputs (list python-numpy python-poetry-core python-pytest))
-    (home-page "https://github.com/koesterlab/yte")
-    (synopsis "YAML template engine with Python expressions")
-    (description
-     "This package provides a YAML template engine with Python expressions.")
-    (license license:expat)))
-
 (define-public python-syllables
   (package
     (name "python-syllables")
@@ -28586,130 +28534,6 @@ user's @file{~/Trash} directory.")
      "@code{pyfavicon} is an async favicon fetcher.")
     (license license:expat)))
 
-(define-public python-yamllint
-  (package
-    (name "python-yamllint")
-    (version "1.37.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "yamllint" version))
-       (sha256
-        (base32 "0p9401y9f1pgxi9lggmw6wv135kfnd361n3hjh2civ4vap2w1xw1"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-backend #~'unittest))
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-pathspec python-pyyaml))
-    (home-page "https://github.com/adrienverge/yamllint")
-    (synopsis "Linter for YAML files")
-    (description
-     "Yamllint is a linter for YAML files.  yamllint does not only check for
-syntax validity, but for weirdnesses like key repetition and cosmetic problems
-such as lines length, trailing spaces, indentation, etc.")
-    (license license:gpl3+)))
-
-;; XXX: Deprecated, the <https://github.com/Phynix/yamlloader> project provide
-;; an improved version of this library with unit tests, performance
-;; improvements (by providing access to the C implementation of PyYAML) and is
-;; more actively developed.
-(define-public python-yamlordereddictloader
-  (package
-    (name "python-yamlordereddictloader")
-    (version "0.4.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/fmenabe/python-yamlordereddictloader")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1rwvasdmfq7lbd2bm7vmx759fv535cp5ndyhf845fqd86mr7a94c"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))        ;no tests
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-pyyaml))
-    (home-page "https://github.com/fmenabe/python-yamlordereddictloader")
-    (synopsis "Loader and a dumper for PyYAML")
-    (description
-     "yamlordereddictloader is a Python package that provides a loader and a
-dumper for PyYAML allowing to keep items order when loading a file (by putting
-them in OrderedDict objects) and to manage OrderedDict objects when dumping to
-a file.")
-    (license license:expat)))
-
-(define-public python-yapf
-  (package
-    (name "python-yapf")
-    (version "0.43.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "yapf" version))
-       (sha256
-        (base32
-         "13i1sn0jfm7snfdzbyrawxl457bdmgsxkmg0n8h99zzdpwjamlq0"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-platformdirs python-tomli))
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
-    (home-page "https://github.com/google/yapf")
-    (synopsis "Formatter for Python code")
-    (description "YAPF is a formatter for Python code.  It's based off of
-@dfn{clang-format}, developed by Daniel Jasper.  In essence, the algorithm
-takes the code and reformats it to the best formatting that conforms to the
-style guide, even if the original code didn't violate the style guide.")
-    (license license:asl2.0)))
-
-(define-public python-yq
-  (package
-    (name "python-yq")
-    (version "3.4.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "yq" version))
-       (sha256
-        (base32 "0fvf4n7wpbc0gdxhw8c008rcv092vw96f84j5xdp1krhdwd6ln5s"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-backend #~'custom
-      #:test-flags #~(list "test/test.py" "-v")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch
-            (lambda _
-              (substitute* "yq/__init__.py"
-                (("Popen\\(\\[\"jq")
-                 (string-append
-                  "Popen([\""
-                  #$(this-package-input "jq") "/bin/jq"))))))))
-    (native-inputs
-     (list python-hatchling
-           python-hatch-vcs))
-    (inputs
-     (list jq))
-    (propagated-inputs
-     (list python-argcomplete
-           python-pyyaml
-           python-tomlkit
-           python-xmltodict))
-    (home-page "https://github.com/kislyuk/yq")
-    (synopsis "Command-line YAML/XML processor")
-    (description
-     "This package provides @command{yq} and @command{xq} for processing YAML
-and XML respectively.  The processing is done through @command{jq},
-@command{jq} filters can be used to process the data as it passes through.")
-    (license license:asl2.0)))
-
 (define-public python-gyp
   (let ((commit "9d09418933ea2f75cc416e5ce38d15f62acd5c9a")
         (revision "1"))
@@ -37758,32 +37582,6 @@ manipulating, converting and writing EXIF data to JPEG, WebP and TIFF files.")
 PyRSS2Gen builds the feed up by using a XML generator.")
     (license license:bsd-3)))
 
-(define-public python-yapsy
-  (package
-    (name "python-yapsy")
-    (version "1.12.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "Yapsy" version))
-        (sha256
-          (base32 "12rznbnswfw0w7qfbvmmffr9r317gl1rqg36nijwzsklkjgks4fq"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-backend #~'unittest))
-    (native-inputs
-     (list python-setuptools))
-    (home-page "https://yapsy.sourceforge.net")
-    (synopsis "Simple plugin system for Python applications")
-    (description "Yapsy, or Yet Another Plugin SYstem, is a small library
-implementing the core mechanisms needed to build a plugin system into a wider
-application.
-
-The main purpose is to depend only on Python's standard libraries and to
-implement only the basic functionalities needed to detect, load and keep track
-of several plugins.")
-    (license license:bsd-3)))
-
 (define-public python-doit
   (package
     (name "python-doit")
@@ -40155,28 +39953,6 @@ functions
 markdown-compliant strings.")
     (license license:expat)))
 
-(define-public python-yattag
-  (package
-    (name "python-yattag")
-    (version "1.16.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "yattag" version))
-       (sha256
-        (base32 "1x2is0lkpywvqaayc21n1cvfbq0havzx46i83033wpgawxag5a5s"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
-    (home-page "https://www.yattag.org/")
-    (synopsis "HTML or XML generator for Python")
-    (description
-     "Yattag is a Python library for generating HTML or XML in a pythonic
-way.")
-    (license license:lgpl2.1)))
-
 (define-public python-islenska
   (package
     (name "python-islenska")
@@ -40361,6 +40137,31 @@ based on Adobe XMP Toolkit, ensuring that future updates to the XMP standard
 are easily incorporated into the library with a minimum amount of work.")
     (license license:bsd-3)))
 
+(define-public python-yamllint
+  (package
+    (name "python-yamllint")
+    (version "1.37.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "yamllint" version))
+       (sha256
+        (base32 "0p9401y9f1pgxi9lggmw6wv135kfnd361n3hjh2civ4vap2w1xw1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-pathspec python-pyyaml))
+    (home-page "https://github.com/adrienverge/yamllint")
+    (synopsis "Linter for YAML files")
+    (description
+     "Yamllint is a linter for YAML files.  yamllint does not only check for
+syntax validity, but for weirdnesses like key repetition and cosmetic problems
+such as lines length, trailing spaces, indentation, etc.")
+    (license license:gpl3+)))
+
 (define-public python-yamlloader
   (package
     (name "python-yamlloader")
@@ -40392,6 +40193,205 @@ dicts are supported and are the default items to be loaded to.  As of Python
 It was originally mirrored from
 @url{https://github.com/fmenabe/python-yamlordereddictloader,
 yamlordereddict}.")
+    (license license:expat)))
+
+;; XXX: Deprecated, the <https://github.com/Phynix/yamlloader> project provide
+;; an improved version of this library with unit tests, performance
+;; improvements (by providing access to the C implementation of PyYAML) and is
+;; more actively developed.
+(define-public python-yamlordereddictloader
+  (package
+    (name "python-yamlordereddictloader")
+    (version "0.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fmenabe/python-yamlordereddictloader")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rwvasdmfq7lbd2bm7vmx759fv535cp5ndyhf845fqd86mr7a94c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-pyyaml))
+    (home-page "https://github.com/fmenabe/python-yamlordereddictloader")
+    (synopsis "Loader and a dumper for PyYAML")
+    (description
+     "yamlordereddictloader is a Python package that provides a loader and a
+dumper for PyYAML allowing to keep items order when loading a file (by putting
+them in OrderedDict objects) and to manage OrderedDict objects when dumping to
+a file.")
+    (license license:expat)))
+
+(define-public python-yapf
+  (package
+    (name "python-yapf")
+    (version "0.43.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "yapf" version))
+       (sha256
+        (base32
+         "13i1sn0jfm7snfdzbyrawxl457bdmgsxkmg0n8h99zzdpwjamlq0"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-platformdirs python-tomli))
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/google/yapf")
+    (synopsis "Formatter for Python code")
+    (description "YAPF is a formatter for Python code.  It's based off of
+@dfn{clang-format}, developed by Daniel Jasper.  In essence, the algorithm
+takes the code and reformats it to the best formatting that conforms to the
+style guide, even if the original code didn't violate the style guide.")
+    (license license:asl2.0)))
+
+(define-public python-yapsy
+  (package
+    (name "python-yapsy")
+    (version "1.12.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "Yapsy" version))
+        (sha256
+          (base32 "12rznbnswfw0w7qfbvmmffr9r317gl1rqg36nijwzsklkjgks4fq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest))
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://yapsy.sourceforge.net")
+    (synopsis "Simple plugin system for Python applications")
+    (description "Yapsy, or Yet Another Plugin SYstem, is a small library
+implementing the core mechanisms needed to build a plugin system into a wider
+application.
+
+The main purpose is to depend only on Python's standard libraries and to
+implement only the basic functionalities needed to detect, load and keep track
+of several plugins.")
+    (license license:bsd-3)))
+
+(define-public python-yaspin
+  (package
+    (name "python-yaspin")
+    (version "3.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri
+        (pypi-uri "yaspin" version))
+       (sha256
+        (base32 "1ryc5099sjsa49fhcm6dp5l4rp9v9yxrh17ml78y89idfbbfhvs1"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-pytest-mock))
+    (propagated-inputs
+     (list python-termcolor))
+    (home-page "https://github.com/pavdmyt/yaspin")
+    (synopsis "Yet Another Terminal Spinner")
+    (description "Yaspin provides a terminal spinner to indicate the progress
+during long operations.")
+    (license license:expat)))
+
+(define-public python-yattag
+  (package
+    (name "python-yattag")
+    (version "1.16.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "yattag" version))
+       (sha256
+        (base32 "1x2is0lkpywvqaayc21n1cvfbq0havzx46i83033wpgawxag5a5s"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://www.yattag.org/")
+    (synopsis "HTML or XML generator for Python")
+    (description
+     "Yattag is a Python library for generating HTML or XML in a pythonic
+way.")
+    (license license:lgpl2.1)))
+
+(define-public python-yq
+  (package
+    (name "python-yq")
+    (version "3.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "yq" version))
+       (sha256
+        (base32 "0fvf4n7wpbc0gdxhw8c008rcv092vw96f84j5xdp1krhdwd6ln5s"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "test/test.py" "-v")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              (substitute* "yq/__init__.py"
+                (("Popen\\(\\[\"jq")
+                 (string-append
+                  "Popen([\""
+                  #$(this-package-input "jq") "/bin/jq"))))))))
+    (native-inputs
+     (list python-hatchling
+           python-hatch-vcs))
+    (inputs
+     (list jq))
+    (propagated-inputs
+     (list python-argcomplete
+           python-pyyaml
+           python-tomlkit
+           python-xmltodict))
+    (home-page "https://github.com/kislyuk/yq")
+    (synopsis "Command-line YAML/XML processor")
+    (description
+     "This package provides @command{yq} and @command{xq} for processing YAML
+and XML respectively.  The processing is done through @command{jq},
+@command{jq} filters can be used to process the data as it passes through.")
+    (license license:asl2.0)))
+
+(define-public python-yte
+  (package
+    (name "python-yte")
+    (version "1.8.1")    ;TODO higher versions depend on uv_build
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/koesterlab/yte")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "05qrmjf9x6wvy8976kqiy3axk3im8jbc8hpc1yrbidm099vik0ni"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "tests.py")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'set-HOME
+           (lambda _ (setenv "HOME" "/tmp"))))))
+    (propagated-inputs (list python-dpath python-plac python-pyyaml))
+    (native-inputs (list python-numpy python-poetry-core python-pytest))
+    (home-page "https://github.com/koesterlab/yte")
+    (synopsis "YAML template engine with Python expressions")
+    (description
+     "This package provides a YAML template engine with Python expressions.")
     (license license:expat)))
 
 (define-public python-zarr
