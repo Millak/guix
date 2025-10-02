@@ -1008,13 +1008,13 @@ on performance and robustness.")
 (define-public erlang-unicode-util-compat
   (package
     (name "erlang-unicode-util-compat")
-    (version "0.7.0")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (hexpm-uri "unicode_util_compat" version))
        (sha256
-        (base32 "08952lw8cjdw8w171lv8wqbrxc4rcmb3jhkrdb7n06gngpbfdvi5"))))
+        (base32 "0hinn81kwkr3fvxb4vvp6qqnf19f23hd2jkl34v27bp39j2igadk"))))
     (build-system rebar-build-system)
     (synopsis "Compatibility library for Erlang < 20")
     (description "This package provides @code{unicode_util} compatibility
