@@ -2870,17 +2870,21 @@ quadrilateral grids.  It is written in C++11 and wrapped using pybind11.")
 (define-public python-yaspin
   (package
     (name "python-yaspin")
-    (version "1.5.0")
+    (version "3.2.0")
     (source
      (origin
        (method url-fetch)
        (uri
         (pypi-uri "yaspin" version))
        (sha256
-        (base32 "1iirah0kydrdp505qnjj6gi54avcr7z0hbkfx9vmh8myr30rpz6q"))))
-    (build-system python-build-system)
+        (base32 "1ryc5099sjsa49fhcm6dp5l4rp9v9yxrh17ml78y89idfbbfhvs1"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-poetry-core
+           python-pytest
+           python-pytest-mock))
+    (propagated-inputs
+     (list python-termcolor))
     (home-page "https://github.com/pavdmyt/yaspin")
     (synopsis "Yet Another Terminal Spinner")
     (description "Yaspin provides a terminal spinner to indicate the progress
