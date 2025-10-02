@@ -4613,17 +4613,24 @@ stack-machine, written in ANSI C.  Graphical output is implemented using SDL2.")
       (build-system gnu-build-system)
       (arguments
        (list
-        #:tests? #f ;no tests
+        #:test-target "test"
         #:make-flags
-        #~(list (string-append "PREFIX="
-                               (assoc-ref %outputs "out")))
+        #~(list (string-append "PREFIX=" #$output))
         #:phases
         #~(modify-phases %standard-phases
             (delete 'configure)
-            (replace 'build
+            (delete 'check)
+            (delete 'build)
+            (add-before 'install 'fix-cc
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* "makefile"
-                  (("cc") #$(cc-for-target))))))))
+                  (("cc") #$(cc-for-target)))))
+            (add-after 'fix-cc 'pre-check
+              (lambda* (#:key inputs #:allow-other-keys)
+                (invoke "make" "bin/uxncli")
+                (invoke "make" "tests")))
+            (add-after 'install 'check
+              (assoc-ref %standard-phases 'check)))))
       (inputs (list libx11))
       (home-page "https://100r.co/site/uxn.html")
       (synopsis "Emulator for the Uxn stack-machine using X11")
