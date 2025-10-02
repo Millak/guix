@@ -1341,6 +1341,26 @@ feaatures are:
 in Python 3.13 by PEP-594.")
     (license license:psfl)))
 
+(define-public python-opentelemetry-api
+  (package
+    (name "python-opentelemetry-api")
+    (version "1.37.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "opentelemetry_api" version))
+       (sha256
+        (base32 "19yr3hfwdc9sv8df4vydxcsxnpld3xi57siq4w8xanrm42qka1sl"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-importlib-metadata
+                             python-typing-extensions))
+    (native-inputs (list python-hatchling
+                         python-opentelemetry-test-utils-bootstrap))
+    (home-page "https://opentelemetry.io/docs/languages/python/")
+    (synopsis "OpenTelemetry Python API")
+    (description "@code{OpenTelemetry} Python API.")
+    (license license:asl2.0)))
+
 (define-public python-pathy
   (package
     (name "python-pathy")
