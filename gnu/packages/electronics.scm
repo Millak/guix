@@ -904,9 +904,7 @@ which allows one to install the M8 firmware on any Teensy.")
     (build-system qt-build-system)
     (arguments
      (list
-      #:cmake cmake                     ;CMake 3.25 or higher is required.
       #:configure-flags
-      ;; TODO: enable more architectures?
       #~(list "-DARCH=generic;ice40;ecp5;himbaechel"
               "-DBUILD_GUI=ON"
               "-DUSE_OPENMP=ON"
@@ -914,30 +912,17 @@ which allows one to install the M8 firmware on any Teensy.")
               "-DHIMBAECHEL_UARCH=ng-ultra;gowin"
               "-DHIMBAECHEL_NGULTRA_DEVICES=ng-ultra"
               "-DHIMBAECHEL_SPLIT=ON"
-              "-DHIMBAECHEL_PRJBEYOND_DB=/tmp/prjbeyond-db"
+              (string-append "-DHIMBAECHEL_PRJBEYOND_DB="
+                             #$(this-package-native-input "prjbeyond-db")
+                             "/share/prjbeyond-db")
+              (string-append "-DEXPORT_BBA_FILES=" #$output "/bba-files")
               (string-append "-DCURRENT_GIT_VERSION=nextpnr-" #$version)
               (string-append "-DICESTORM_INSTALL_PREFIX="
-                             #$(this-package-input "icestorm"))
+                             #$(this-package-native-input "icestorm"))
               (string-append "-DTRELLIS_INSTALL_PREFIX="
-                             #$(this-package-input "prjtrellis"))
-              "-DUSE_IPO=OFF")
+                             #$(this-package-native-input "prjtrellis")))
       #:phases
       #~(modify-phases %standard-phases
-          ;; Required by himbaechel architecture, ng-ultra support.
-          (add-after 'unpack 'get-prjbeyond-db
-            (lambda _
-              (copy-recursively
-               #$(origin
-                   (method git-fetch)
-                   (uri (git-reference
-                          (url "https://github.com/yosyshq-GmbH/prjbeyond-db/")
-                          ;; We take latest commit, as indicated in nextpnr’s
-                          ;; README.md file
-                          (commit "06d3b424dd0e52d678087c891c022544238fb9e3")))
-                   (sha256
-                    (base32
-                     "17dd3cgms2fy6xvz7magdmvv92km4cqh2kz9dyjrvz5y8caqav4y")))
-               "/tmp/prjbeyond-db")))
           (add-after 'unpack 'unbundle-sanitizers-cmake
             (lambda _
               (substitute* "CMakeLists.txt"
@@ -949,15 +934,16 @@ which allows one to install the M8 firmware on any Teensy.")
                   #$(this-package-native-input "sanitizers-cmake")
                   "/share/sanitizers-cmake/cmake"))))))))
     (native-inputs
-     (list googletest
+     (list icestorm
+           googletest
+           prjbeyond-db
+           prjtrellis
            sanitizers-cmake))
     (inputs
      (list apycula
            boost
            corrosion
            eigen
-           icestorm
-           prjtrellis
            pybind11
            python
            qtbase-5
