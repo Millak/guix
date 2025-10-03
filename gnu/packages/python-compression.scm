@@ -649,30 +649,28 @@ Python strings.")
 (define-public python-lz4
   (package
     (name "python-lz4")
-    (version "4.3.2")
+    (version "4.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "lz4" version))
        (sha256
         (base32
-         "1nmc36j5xnk7mvwwpm0nb1sddjk5iv77h877fdkkxcngm621shz1"))
+         "1nmb757fx3k30zsjiaz7nj6cgp4zxl44w28s4l8k0ff4grid03q7"))
        (modules '((guix build utils)))
        (snippet '(begin
                    ;; Remove bundled copy of lz4.
                    (delete-file-recursively "lz4libs")))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     ;; Taken from tox.ini (excludes experimental tests).
-                     (invoke "pytest" "-vv" "tests/block" "tests/frame")))))))
+     ;; Taken from tox.ini (excludes experimental tests).
+     (list #:test-flags #~(list "tests/block" "tests/frame")))
     (native-inputs
-     (list pkg-config python-pytest python-pkgconfig python-setuptools-scm
-           ;; For tests.
+     (list pkg-config
+           python-pytest
+           python-pkgconfig
+           python-setuptools
+           python-setuptools-scm
            python-psutil))
     (inputs
      (list lz4))
