@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2018, 2023 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2017, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2018, 2023 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2017, 2018, 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018-2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
@@ -936,6 +936,37 @@ wrapper.  It provides a backport of the @code{Path} object.")
     (synopsis "Python wrapper for @code{libdeflate}")
     (description "This package contains a very thin Python wrapper for
 @code{libdeflate}.")
+    (license license:expat)))
+
+(define-public python-xopen
+  (package
+    (name "python-xopen")
+    ;; TODO: Newer versions require zlib-ng:
+    ;; <https://github.com/zlib-ng/zlib-ng>,
+    ;; <https://github.com/pycompression/python-zlib-ng>.
+    (version "1.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "xopen" version))
+       (sha256
+        (base32 "0h08wpd5zwnlzwnbbbhahbcs69kzsfbaaigqw0viq6ri8n4zrh00"))))
+    (build-system pyproject-build-system)
+    ;; tests: 343 passed, 5 skipped
+    (native-inputs
+     (list python-pytest
+           python-pytest-timeout
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list pigz python-isal))
+    (home-page "https://github.com/marcelm/xopen/")
+    (synopsis "Open compressed files transparently")
+    (description "This module provides an @code{xopen} function that works
+like Python's built-in @code{open} function, but can also deal with compressed
+files.  Supported compression formats are gzip, bzip2 and, xz, and are
+automatically recognized by their file extensions.  The focus is on being as
+efficient as possible on all supported Python versions.")
     (license license:expat)))
 
 (define-public python-zipstream-ng

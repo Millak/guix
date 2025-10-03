@@ -25848,37 +25848,6 @@ module is a re-implementation aiming for speed, so it can be used at
 runtime (rather than during a preprocessing step).")
     (license license:asl2.0)))
 
-(define-public python-xopen
-  (package
-    (name "python-xopen")
-    ;; TODO: Newer versions require zlib-ng:
-    ;; <https://github.com/zlib-ng/zlib-ng>,
-    ;; <https://github.com/pycompression/python-zlib-ng>.
-    (version "1.8.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "xopen" version))
-       (sha256
-        (base32 "0h08wpd5zwnlzwnbbbhahbcs69kzsfbaaigqw0viq6ri8n4zrh00"))))
-    (build-system pyproject-build-system)
-    ;; tests: 343 passed, 5 skipped
-    (native-inputs
-     (list python-pytest
-           python-pytest-timeout
-           python-setuptools
-           python-setuptools-scm))
-    (propagated-inputs
-     (list pigz python-isal))
-    (home-page "https://github.com/marcelm/xopen/")
-    (synopsis "Open compressed files transparently")
-    (description "This module provides an @code{xopen} function that works
-like Python's built-in @code{open} function, but can also deal with compressed
-files.  Supported compression formats are gzip, bzip2 and, xz, and are
-automatically recognized by their file extensions.  The focus is on being as
-efficient as possible on all supported Python versions.")
-    (license license:expat)))
-
 (define-public python-cheetah
   (package
     (name "python-cheetah")
