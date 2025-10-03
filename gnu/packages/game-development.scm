@@ -2382,7 +2382,7 @@ scripted in a Python-like language.")
 (define-public godot
   (package
     (name "godot")
-    (version "4.4.1")
+    (version "4.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2391,7 +2391,10 @@ scripted in a Python-like language.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fdq69jisrvihmdir2pg6wf4mfqgqg3c0szc58mgci2lqlm4l684"))
+                "0s9ymgy9cwnk4v35qpn9fm993pn64h1i5k9khpd7mqs6023hl8i4"))
+              ;; TODO: Remove this patch on next update as it was merged post
+              ;; 4.5 release.
+              (patches (search-patches "godot-libjpeg-turbo-unbundle.patch"))
               (modules '((guix build utils)
                          (ice-9 ftw)
                          (srfi srfi-1)))
@@ -2403,6 +2406,7 @@ scripted in a Python-like language.")
                   (with-directory-excursion "thirdparty"
                     (let* ((preserved-files
                             '("README.md"
+                              "accesskit"
                               "amd-fsr"
                               "amd-fsr2"
                               "assimp"
@@ -2424,6 +2428,9 @@ scripted in a Python-like language.")
                               ;; which is no longer in the glslang output
                               ;; after the most recent update.
                               "glslang"
+                              ;; This is part of the simdjson package though
+                              ;; modified by Godot.
+                              "grisu2"
                               "jolt_physics"
                               "jpeg-compressor"
                               "libktx"
@@ -2442,6 +2449,7 @@ scripted in a Python-like language.")
                               "pvrtccompressor"
                               "recastnavigation"
                               "rvo2"
+                              "smaa"
                               "spirv-reflect"
                               "squish"
                               "stb_rect_pack"
@@ -2449,7 +2457,7 @@ scripted in a Python-like language.")
                               "tinyexr"
                               "ufbx"
                               "vhacd"
-                              "volk"
+                              ;; Godot uses a specific (patched) version.
                               "vulkan"
                               "xatlas")))
                       (for-each delete-file-recursively
@@ -2460,9 +2468,6 @@ scripted in a Python-like language.")
     (arguments
      (list
       #:scons-flags #~`("platform=linuxbsd" "target=editor" "production=yes"
-                        ;; XXX: There may be advantages to enabling volk,
-                        ;; requiring unbundling and patching to use our input.
-                        "use_volk=no"
                         ;; Avoid using many of the bundled libs.
                         ;; Note: These options can be found in the SConstruct file.
                         "builtin_brotli=no"
@@ -2475,6 +2480,7 @@ scripted in a Python-like language.")
                         "builtin_graphite=no"
                         "builtin_harfbuzz=no"
                         "builtin_icu4c=no"
+                        "builtin_libjpeg_turbo=no"
                         "builtin_libogg=no"
                         "builtin_libpng=no"
                         "builtin_libtheora=no"
@@ -2483,6 +2489,7 @@ scripted in a Python-like language.")
                         "builtin_mbedtls=no"
                         "builtin_pcre2=no"
                         "builtin_pcre2_with_jit=no"
+                        "builtin_sdl=no"
                         "builtin_wslay=no"
                         "builtin_zlib=no"
                         "builtin_zstd=no")
@@ -2504,7 +2511,6 @@ scripted in a Python-like language.")
                              "drivers/pulseaudio/pulse-so_wrap.c"
                              "platform/linuxbsd/dbus-so_wrap.c"
                              "platform/linuxbsd/fontconfig-so_wrap.c"
-                             "platform/linuxbsd/libudev-so_wrap.c"
                              "platform/linuxbsd/speechd-so_wrap.c"
                              "platform/linuxbsd/wayland/dynwrappers/libdecor-so_wrap.c"
                              "platform/linuxbsd/wayland/dynwrappers/wayland-client-core-so_wrap.c"
@@ -2518,14 +2524,11 @@ scripted in a Python-like language.")
                              "platform/linuxbsd/x11/dynwrappers/xlib-so_wrap.c"
                              "platform/linuxbsd/x11/dynwrappers/xrandr-so_wrap.c"
                              "platform/linuxbsd/x11/dynwrappers/xrender-so_wrap.c"
-                             "platform/linuxbsd/xkbcommon-so_wrap.c"
-                             "thirdparty/volk/volk.c"
-                             "thirdparty/volk/volk.c"))
+                             "platform/linuxbsd/xkbcommon-so_wrap.c"))
                     (libs '("libasound.so.2"
                             "libpulse.so.0"
                             "libdbus-1.so.3"
                             "libfontconfig.so.1"
-                            "libudev.so.1"
                             "libspeechd.so.2"
                             "libdecor-0.so.0"
                             "libwayland-client.so.0"
@@ -2539,9 +2542,7 @@ scripted in a Python-like language.")
                             "libX11.so.6"
                             "libXrandr.so.2"
                             "libXrender.so.1"
-                            "libxkbcommon.so.0"
-                            "libvulkan.so.1"
-                            "libvulkan.so")))
+                            "libxkbcommon.so.0")))
                 (for-each (lambda (file lib)
                             (substitute* file
                               (((string-append "dlopen\\(\"" lib "\""))
@@ -2581,7 +2582,14 @@ scripted in a Python-like language.")
                   #$(this-package-input "wayland-protocols") "/share/wayland-protocols"))
                 (("#thirdparty/wayland")
                  (string-append
-                    #$(this-package-input "wayland") "/share/wayland")))))
+                  #$(this-package-input "wayland") "/share/wayland")))))
+          (add-after 'unbundle-wayland 'unbundle-volk
+            (lambda _
+              (let ((volk-dir "thirdparty/volk"))
+                (mkdir-p volk-dir)
+                (copy-recursively (string-append #$(this-package-input "vulkan-volk")
+                                                 "/include")
+                                  volk-dir))))
           (replace 'install
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((zenity (search-input-file inputs "bin/zenity")))
@@ -2631,6 +2639,7 @@ scripted in a Python-like language.")
            harfbuzz
            icu4c
            libdecor
+           libjpeg-turbo-3
            libtheora
            libvorbis
            libvpx
@@ -2647,8 +2656,9 @@ scripted in a Python-like language.")
            opusfile
            pcre2
            pulseaudio
+           sdl3
            speech-dispatcher
-           vulkan-loader
+           vulkan-volk
            wayland
            wayland-protocols
            wslay
