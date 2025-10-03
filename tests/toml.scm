@@ -449,11 +449,13 @@ color = \"gray\""))
 ;; Not implemented.
 (test-expect-fail 1)
 (test-equal "parse-toml: Array of tables"
- '(("fruits" ((("name" . "apple")
-               ("physical" (("color" . "red") ("shape" . "round")))
-               ("varieties" ((("name" . "red delicious")) (("name" . "granny smith")))))
-              (("name" . "banana")
-               ("varieties" (((("name" . "plantain")))))))))
+ '(("fruits" . ((("name" . "apple")
+                 ("physical" . (("color" . "red")
+                                ("shape" . "round")))
+                 ("varieties" . ((("name" . "red delicious"))
+                                 (("name" . "granny smith")))))
+                (("name" . "banana")
+                 ("varieties" . ((("name" . "plantain"))))))))
  (parse-toml "[[fruits]]
 name = \"apple\"
 
