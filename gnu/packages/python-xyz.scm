@@ -31605,13 +31605,13 @@ translating between quadkey and tile coordinates.")
 (define-public python-xyzservices
   (package
     (name "python-xyzservices")
-    (version "2022.4.0")
+    (version "2025.4.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "xyzservices" version))
         (sha256
-          (base32 "1paxv4i0dws85md7csv7pf80jl3xh792mx8rxnsrk61ks3ivbsyg"))))
+          (base32 "1n096zg9bd4n6w6axcm16m9sxdkc6qy1mipva0scbyj86rqn9rvg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -31621,7 +31621,7 @@ translating between quadkey and tile coordinates.")
            python-mercantile
            python-requests
            python-setuptools
-           python-wheel))
+           python-setuptools-scm))
     (home-page "https://github.com/geopandas/xyzservices")
     (synopsis "Source of XYZ tiles providers")
     (description "@code{xyzservices} is a lightweight library providing a
