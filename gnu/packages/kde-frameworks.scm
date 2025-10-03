@@ -3159,46 +3159,10 @@ maintaining an index of the contents of your files.")
     ;; dual licensed
     (license (list license:gpl2+ license:lgpl2.1+))))
 
-(define-public plasma-activities
-  (package
-    (name "plasma-activities")
-    (version "6.4.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/stable/plasma/"
-                                  version "/plasma-activities-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "1w4fp6h6kmjzk94mvk73wzkkn3bhq4vyd6jv976zmph2crscm38w"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list boost
-           kconfig
-           kcoreaddons
-           kwindowsystem
-           qtdeclarative
-           solid))
-    (arguments
-     (list
-      #:tests? #f
-      #:qtbase qtbase))
-    (home-page "https://invent.kde.org/plasma/plasma-activities")
-    (synopsis "Core components for the KDE Activity System")
-    (description "KActivities provides the infrastructure needed to manage a
-user's activities, allowing them to switch between tasks, and for applications
-to update their state to match the user's current activity.  This includes a
-daemon, a library for interacting with that daemon, and plugins for integration
-with other frameworks.")
-    ;; triple licensed
-    (license (list license:gpl2+ license:lgpl2.0+ license:lgpl2.1+))))
-
 (define-public plasma-activities-stats
   (package
     (name "plasma-activities-stats")
-    (version "6.4.3")
+    (version "6.3.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -3206,7 +3170,7 @@ with other frameworks.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0srv5g3xfnwzl6qllz9d5zhcpai3182nkl9wb2wnjncvvbih444r"))))
+                "1qhh01srvbdlry3i269j3bmwyjkaqa3fdgqipq2k3n7a8kbzrj8m"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f))
     (native-inputs

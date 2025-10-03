@@ -1912,6 +1912,42 @@ for xdg-desktop-portal that is using Qt/KF5.")
      "KDE Plasma is an advanced graphical desktop system.")
     (license license:gpl2+)))
 
+(define-public plasma-activities
+  (package
+    (name "plasma-activities")
+    (version "6.3.6")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/plasma-activities-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0a1rj0i6kbg0a003zr55sjgas0f3wnvjq6rv7879rc4g0q529nrk"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list boost
+           kconfig
+           kcoreaddons
+           kwindowsystem
+           qtdeclarative
+           solid))
+    (arguments
+     (list
+       #:tests? #f
+       #:qtbase qtbase))
+    (home-page "https://invent.kde.org/plasma/plasma-activities")
+    (synopsis "Core components for the KDE Activity System")
+    (description "KActivities provides the infrastructure needed to manage a
+user's activities, allowing them to switch between tasks, and for applications
+to update their state to match the user's current activity.  This includes a
+daemon, a library for interacting with that daemon, and plugins for integration
+with other frameworks.")
+    ;; triple licensed
+    (license (list license:gpl2+ license:lgpl2.0+ license:lgpl2.1+))))
+
 (define-public plasma5support
   (package
     (name "plasma5support")
