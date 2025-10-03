@@ -21569,39 +21569,6 @@ input.  (Note that this is mostly a legacy library; you may wish to look at
 python-xdo for newer bindings.)")
     (license license:bsd-3)))
 
-(define-public python-xdoctest
-  (package
-    (name "python-xdoctest")
-    (version "1.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "xdoctest" version))
-       (sha256
-        (base32 "1m69yvc3bl9jj5av89p9jl08w9lsn0k3lqclpdbiq0g67fdbjb7r"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda _
-              ;; A writable HOME is needed by the 'import_module_from_path'
-              ;; test.
-              (setenv "HOME" "/tmp"))))))
-    (native-inputs (list cmake-minimal
-                         ninja
-                         pybind11
-                         python-pytest-bootstrap
-                         python-scikit-build
-                         python-setuptools))
-    (home-page "https://github.com/Erotemic/xdoctest")
-    (synopsis "Rewrite of the Python builtin doctest module")
-    (description "This package provides a rewrite of the builtin doctest
-module which leverages the Python @acronym{AST, Abstract Syntax Tree} instead
-of @acronym{REGEXPs, regular expressions}.")
-    (license license:asl2.0)))
-
 (define-public python-mako
   (package
     (name "python-mako")

@@ -59,12 +59,14 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages check)
   #:use-module (gnu packages django)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python-build)
@@ -4282,6 +4284,41 @@ dynamic nature, static code analyzers like Vulture are likely to miss some
 dead code.  Also, code that is only called implicitly may be reported as
 unused.")
     (license license:expat)))
+
+(define-public python-xdoctest
+  (package
+    (name "python-xdoctest")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "xdoctest" version))
+       (sha256
+        (base32 "1m69yvc3bl9jj5av89p9jl08w9lsn0k3lqclpdbiq0g67fdbjb7r"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; A writable HOME is needed by the 'import_module_from_path'
+              ;; test.
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list cmake-minimal
+           ninja
+           pybind11
+           python-pytest-bootstrap
+           python-scikit-build
+           python-setuptools))
+    (home-page "https://github.com/Erotemic/xdoctest")
+    (synopsis "Rewrite of the Python builtin doctest module")
+    (description
+     "This package provides a rewrite of the builtin doctest module which
+ leverages the Python @acronym{AST, Abstract Syntax Tree} instead of
+@acronym{REGEXPs, regular expressions}.")
+    (license license:asl2.0)))
 
 (define-public python-xunitparser
   (package
