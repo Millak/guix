@@ -1610,6 +1610,33 @@ stdlib.")
 Python packages.")
     (license license:mpl2.0)))
 
+(define-public python-show-in-file-manager
+  (package
+    (name "python-show-in-file-manager")
+    (version "1.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "show-in-file-manager" version))
+       (sha256
+        (base32 "111d363i7m0lr295301q39j6h0l6nfybyn2cvn7xi3yll60a24zd"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-argparse-manpage
+           python-setuptools))
+    (propagated-inputs
+     (list python-packaging
+           ;; python-pywin32
+           python-pyxdg))
+    (home-page "https://github.com/damonlynch/showinfilemanager")
+    (synopsis "Open the system file manager and select files in it")
+    (description
+     "Show in File Manager is a Python package to open the system file manager
+and optionally select files in it.  The point is not to open the files, but to
+select them in the file manager, thereby highlighting the files and allowing
+the user to quickly do something with them.")
+    (license license:expat)))
+
 (define-public python-shxparser
   (package
     (name "python-shxparser")
