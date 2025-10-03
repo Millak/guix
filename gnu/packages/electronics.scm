@@ -864,96 +864,102 @@ which allows one to install the M8 firmware on any Teensy.")
                    license:zlib))))
 
 (define-public nextpnr
-  (package
-    (name "nextpnr")
-    (version "0.9")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/YosysHQ/nextpnr/")
-              (commit (string-append "nextpnr-" version))
-              ;; XXX: Fetch some bundled libraries such as QtPropertyBrowser,
-              ;; json11 and python-console, which have custom modifications or
-              ;; no longer have their original upstream.
-              (recursive? #t)))
-       (file-name (git-file-name name version))
-       (modules '((guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-26)))
-       (snippet
-        '(begin
-           ;; XXX: 'delete-all-but' is copied from the turbovnc package.
-           (define (delete-all-but directory . preserve)
-             (with-directory-excursion directory
-               (let* ((pred (negate (cut member <>
-                                         (cons* "." ".." preserve))))
-                      (items (scandir "." pred)))
-                 (for-each (cut delete-file-recursively <>) items))))
-           (delete-all-but "3rdparty"
-                           ;; The following sources have all been patched, so
-                           ;; cannot easily be unbundled.
-                           "QtPropertyBrowser"
-                           "json11"
-                           "python-console"
-                           "oourafft")))
-       (patches (search-patches "nextpnr-gtest.patch"
-                                "nextpnr-imgui.patch"))
-       (sha256
-        (base32 "1wrlk0f4y29znd1zgl531lw4s0rfm5w8kx4hlwwdaj7b9vv3v65f"))))
-    (build-system qt-build-system)
-    (arguments
-     (list
-      #:configure-flags
-      #~(list "-DARCH=generic;ice40;ecp5;himbaechel"
-              "-DBUILD_GUI=ON"
-              "-DUSE_OPENMP=ON"
-              "-DBUILD_TESTS=ON"
-              "-DHIMBAECHEL_UARCH=ng-ultra;gowin"
-              "-DHIMBAECHEL_NGULTRA_DEVICES=ng-ultra"
-              "-DHIMBAECHEL_SPLIT=ON"
-              (string-append "-DHIMBAECHEL_PRJBEYOND_DB="
-                             #$(this-package-native-input "prjbeyond-db")
-                             "/share/prjbeyond-db")
-              (string-append "-DEXPORT_BBA_FILES=" #$output "/bba-files")
-              (string-append "-DCURRENT_GIT_VERSION=nextpnr-" #$version)
-              (string-append "-DICESTORM_INSTALL_PREFIX="
-                             #$(this-package-native-input "icestorm"))
-              (string-append "-DTRELLIS_INSTALL_PREFIX="
-                             #$(this-package-native-input "prjtrellis")))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'unbundle-sanitizers-cmake
-            (lambda _
-              (substitute* "CMakeLists.txt"
-                ;; Use the system sanitizers-cmake module.  This is made
-                ;; necessary 'sanitizers-cmake' installing a FindPackage
-                ;; module but no CMake config file.
-                (("\\$\\{CMAKE_SOURCE_DIR}/3rdparty/sanitizers-cmake/cmake")
-                 (string-append
-                  #$(this-package-native-input "sanitizers-cmake")
-                  "/share/sanitizers-cmake/cmake"))))))))
-    (native-inputs
-     (list icestorm
-           googletest
-           prjbeyond-db
-           prjtrellis
-           sanitizers-cmake))
-    (inputs
-     (list apycula
-           boost
-           corrosion
-           eigen
-           pybind11
-           python
-           qtbase-5
-           qtwayland-5
-           qtimgui
-           yosys))
-    (synopsis "Place-and-Route tool for FPGAs")
-    (description "Nextpnr is a portable FPGA place and route tool.")
-    (home-page "https://github.com/YosysHQ/nextpnr/")
-    (license license:isc)))
+  (let ((commit "ad76625d4d828cb093b55aa9f5aae59b7ba9724f")
+        (revision "0"))
+    (package
+      (name "nextpnr")
+      (version (git-version "0.9" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/YosysHQ/nextpnr/")
+                (commit commit)
+                ;; XXX: Fetch some bundled libraries such as QtPropertyBrowser,
+                ;; json11 and python-console, which have custom modifications or
+                ;; no longer have their original upstream.
+                (recursive? #t)))
+         (file-name (git-file-name name version))
+         (modules '((guix build utils)
+                    (ice-9 ftw)
+                    (srfi srfi-26)))
+         (snippet
+          '(begin
+             ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+             (define (delete-all-but directory . preserve)
+               (with-directory-excursion directory
+                 (let* ((pred (negate (cut member <>
+                                           (cons* "." ".." preserve))))
+                        (items (scandir "." pred)))
+                   (for-each (cut delete-file-recursively <>) items))))
+             (delete-all-but "3rdparty"
+                             ;; The following sources have all been patched, so
+                             ;; cannot easily be unbundled.
+                             "QtPropertyBrowser"
+                             "json11"
+                             "python-console"
+                             "oourafft")))
+         (patches (search-patches "nextpnr-gtest.patch"
+                                  "nextpnr-imgui.patch"))
+         (sha256
+          (base32 "1zjxvkycg5xx605d4ark8gd10w4xni1wd10chmhv983dvyv875br"))))
+      (build-system qt-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list "-DARCH=generic;ice40;ecp5;himbaechel"
+                "-DBUILD_GUI=ON"
+                "-DUSE_OPENMP=ON"
+                "-DBUILD_TESTS=ON"
+                "-DHIMBAECHEL_UARCH=ng-ultra;gowin;gatemate"
+                "-DHIMBAECHEL_NGULTRA_DEVICES=ng-ultra"
+                "-DHIMBAECHEL_SPLIT=ON"
+                (string-append "-DHIMBAECHEL_PRJBEYOND_DB="
+                               (search-input-directory
+                                %build-inputs "share/prjbeyond-db"))
+                (string-append "-DHIMBAECHEL_PEPPERCORN_PATH="
+                               (search-input-directory
+                                %build-inputs "share/prjpeppercorn"))
+                (string-append "-DEXPORT_BBA_FILES=" #$output "/bba-files")
+                (string-append "-DCURRENT_GIT_VERSION=nextpnr-" #$version)
+                (string-append "-DICESTORM_INSTALL_PREFIX="
+                               #$(this-package-native-input "icestorm"))
+                (string-append "-DTRELLIS_INSTALL_PREFIX="
+                               #$(this-package-native-input "prjtrellis")))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'unbundle-sanitizers-cmake
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  ;; Use the system sanitizers-cmake module.  This is made
+                  ;; necessary 'sanitizers-cmake' installing a FindPackage
+                  ;; module but no CMake config file.
+                  (("\\$\\{CMAKE_SOURCE_DIR}/3rdparty/sanitizers-cmake/cmake")
+                   (string-append
+                    #$(this-package-native-input "sanitizers-cmake")
+                    "/share/sanitizers-cmake/cmake"))))))))
+      (native-inputs
+       (list icestorm
+             googletest
+             prjbeyond-db
+             prjpeppercorn
+             prjtrellis
+             sanitizers-cmake
+             yosys))
+      (inputs
+       (list apycula
+             boost
+             corrosion
+             eigen
+             pybind11
+             python
+             qtbase-5
+             qtwayland-5
+             qtimgui))
+      (synopsis "Place-and-Route tool for FPGAs")
+      (description "Nextpnr is a portable FPGA place and route tool.")
+      (home-page "https://github.com/YosysHQ/nextpnr/")
+      (license license:isc))))
 
 (define-public nextpnr-ice40
   (deprecated-package "nextpnr-ice40" nextpnr))
