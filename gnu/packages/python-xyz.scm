@@ -4977,22 +4977,25 @@ interface utility to parse @url{https://hjson.github.io/, HJSON}) documents.")
     (version "0.5.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "hnswlib" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nmslib/hnswlib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0wf1cwmxmdzfqmfhrkqdxb5spf21ylgl2bidswhzjrqhwf35c9qf"))))
-    (build-system python-build-system)
+        (base32 "1ixhpsqlikjf7id1zlgqakq2ihpvq5h3npxj7mqjbx09ncsjam1m"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-native-optimization
-           (lambda _
-             (substitute* "setup.py"
-               ((", '-march=native'") "")))))))
-    (propagated-inputs
-     (list python-numpy))
-    (native-inputs
-     (list pybind11))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-native-optimization
+            (lambda _
+              (substitute* "setup.py"
+                ((", '-march=native'")
+                 "")))))))
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list pybind11 python-pytest python-setuptools))
     (home-page "https://github.com/nmslib/hnswlib")
     (synopsis "Fast approximate nearest neighbor search")
     (description "Hnswlib is a header-only C++ implementation of fast
