@@ -2146,21 +2146,15 @@ responsible, low-boilerplate logging of method calls.")
     (version "1.7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "logzero" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/metachris/logzero")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "10nh186vk6hpnpfycym44gja4fja0jyzw7q8dwimfd1rmv9xswvz"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest python-pytest-runner))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest")))))))
+        (base32 "1i9c0kynyjws5c24ga0sbidyfww3w5fy98gs67xsyfz4nr7w84b3"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/metachris/logzero")
     (synopsis "Robust and effective logging for Python")
     (description
