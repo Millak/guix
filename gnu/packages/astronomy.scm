@@ -3764,7 +3764,7 @@ lens models possibly obtained from different modeling codes.")
     (native-inputs
      (list python-pytest
            python-scipy
-           python-setuptools-next
+           python-setuptools
            python-setuptools-scm))
     (propagated-inputs
      (list python-numpy))
@@ -4329,8 +4329,8 @@ tools for astronomers.")
      (list python-cython
            python-numpy
            python-pytest
-           python-setuptools-next
-           python-setuptools-scm-next))
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
      (list python-corsikaio
            python-matplotlib
@@ -4439,7 +4439,7 @@ all the input image headers.")
                        #$(this-package-input "cfitsio") "/lib")))))))
     (native-inputs
      (list python-pytest
-           python-setuptools-next))
+           python-setuptools))
     (inputs
      (list curl
            cfitsio
@@ -5966,8 +5966,8 @@ photometry, segmentations, Petrosian profiling, and Sérsic fitting.")
            python-extension-helpers
            python-pytest-astropy
            python-pytest-xdist
-           python-setuptools-next
-           python-setuptools-scm-next))
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-bottleneck
@@ -6439,7 +6439,7 @@ Pipeline Library, CPL} toolkit, including the CPL plugin interface.")
     (native-inputs
      (list python-pytest-astropy
            python-pytest-mock
-           python-setuptools-next
+           python-setuptools
            python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
@@ -7131,7 +7131,7 @@ end products of specific X-ray observatories.")
                     " and not "))))
     (native-inputs
      (list python-pytest
-           python-setuptools-next))
+           python-setuptools))
     (propagated-inputs
      (list python-astropy
            python-matplotlib

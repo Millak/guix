@@ -1472,7 +1472,7 @@ program.")
     (native-inputs
      (list python-pytest-cov
            python-pytest-mock
-           python-setuptools-next))
+           python-setuptools))
     (inputs
      (list password-store python-pyxdg))
     (home-page "https://github.com/languitar/pass-git-helper")

@@ -1853,8 +1853,8 @@ are too large to conveniently hard-code them in the tests.")
            #~(modify-phases %standard-phases
                (delete 'sanity-check))))
     (native-inputs
-     (list python-setuptools-next
-           python-setuptools-scm-next))
+     (list python-setuptools
+           python-setuptools-scm))
     (home-page "https://github.com/asdf-format/pytest-asdf-plugin")
     (synopsis "Pytest plugin for testing ASDF schemas")
     (description
