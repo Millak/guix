@@ -1764,6 +1764,56 @@ on top of Baloo.")
     (description "This package provides Ocean Sound Theme for Plasma.")
     (license license:lgpl3+)))
 
+(define-public xdg-desktop-portal-kde
+  (package
+    (name "xdg-desktop-portal-kde")
+    (version "6.3.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/" version "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0888kybi3xqp45chlvh5w43rs4jw0z9kmn1pslfp5b1dkmkjzijr"))))
+    (build-system qt-build-system)
+    (arguments (list
+                #:tests? #f ;; colorschemetest test fail, because require dbus.
+                #:qtbase qtbase))
+    (native-inputs (list extra-cmake-modules pkg-config
+                         ;; require by test.
+                         python-minimal
+                         python-pygobject))
+    (inputs (list cups
+                  kcoreaddons
+                  kconfig
+                  kcrash
+                  ki18n
+                  kdeclarative
+                  kio
+                  kirigami
+                  knotifications
+                  libplasma
+                  plasma-wayland-protocols
+                  kstatusnotifieritem
+                  kwayland
+                  kwidgetsaddons
+                  kwindowsystem
+                  kiconthemes
+                  qtdeclarative
+                  qtwayland
+                  wayland
+                  kglobalaccel
+                  kguiaddons
+                  libxkbcommon
+                  wayland-protocols))
+    (propagated-inputs
+     (list xdg-desktop-portal))
+    (synopsis "Backend implementation for xdg-desktop-portal using Qt/KF5")
+    (description "This package provides a backend implementation
+for xdg-desktop-portal that is using Qt/KF5.")
+    (home-page "https://invent.kde.org/plasma/xdg-desktop-portal-kde")
+    (license license:lgpl2.0+)))
+
 (define-public plasma
   (package
     (name "plasma")

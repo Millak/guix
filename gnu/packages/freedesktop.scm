@@ -111,8 +111,6 @@
   #:use-module (gnu packages hunspell)
   #:use-module (gnu packages ibus)
   #:use-module (gnu packages image)
-  #:use-module (gnu packages kde-frameworks)
-  #:use-module (gnu packages kde)
   #:use-module (gnu packages language)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libunwind)
@@ -3321,56 +3319,6 @@ interfaces.")
     (description
      "This package provides an @code{xdg-desktop-portal} backend for Hyprland.")
     (license license:bsd-3)))
-
-(define-public xdg-desktop-portal-kde
-  (package
-    (name "xdg-desktop-portal-kde")
-    (version "6.4.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/stable/plasma/" version "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "09zwq52wyr2wj5zvgqrzi02xcy610hrvqx1sb4ykps5b0ph73v1z"))))
-    (build-system qt-build-system)
-    (arguments (list
-                #:tests? #f ;; colorschemetest test fail, because require dbus.
-                #:qtbase qtbase))
-    (native-inputs (list extra-cmake-modules pkg-config
-                         ;; require by test.
-                         python-minimal
-                         python-pygobject))
-    (inputs (list cups
-                  kcoreaddons
-                  kconfig
-                  kcrash
-                  ki18n
-                  kdeclarative
-                  kio
-                  kirigami
-                  knotifications
-                  libplasma
-                  plasma-wayland-protocols
-                  kstatusnotifieritem
-                  kwayland
-                  kwidgetsaddons
-                  kwindowsystem
-                  kiconthemes
-                  qtdeclarative
-                  qtwayland
-                  wayland
-                  kglobalaccel
-                  kguiaddons
-                  libxkbcommon
-                  wayland-protocols))
-    (propagated-inputs
-     (list xdg-desktop-portal))
-    (synopsis "Backend implementation for xdg-desktop-portal using Qt/KF5")
-    (description "This package provides a backend implementation
-for xdg-desktop-portal that is using Qt/KF5.")
-    (home-page "https://invent.kde.org/plasma/xdg-desktop-portal-kde")
-    (license license:lgpl2.0+)))
 
 (define-public xdg-desktop-portal-wlr
   (package
