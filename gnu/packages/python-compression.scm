@@ -689,8 +689,13 @@ the LZ4 frame format.")
        (sha256
         (base32 "18ly9pppy2yspxzw7k1b23wk77k7m44rz2g0271bqgqrk3jn3yhs"))))
     (build-system pyproject-build-system)
+    (arguments
+     ;; No tests in PyPI, this project is a fork of
+     ;; <https://github.com/eduardtomasek/lz-string-python> and doesn't provide
+     ;; tags.
+     (list #:tests? #f))
     (native-inputs
-     (list python-setuptools python-wheel))
+     (list python-setuptools))
     (propagated-inputs
      (list python-future))
     (home-page "https://github.com/gkovacs/lz-string-python")
