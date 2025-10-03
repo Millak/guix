@@ -785,14 +785,14 @@ with support for QR scanning.")
 (define-public kongress
   (package
     (name "kongress")
-    (version "24.12.1")
+    (version "25.08.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/kongress-" version ".tar.xz"))
               (sha256
                (base32
-                "06xhlr39wglnis9nbxgvkp5sz74g5hms0cahlvm8pmphvd5aygnv"))))
+                "0q7p8aviwjwhcnsxd0qwr1rz2grdkvknfd7b3w7cscw6yvsx9az5"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules python-minimal))
     ;; NOTE: Reporting bugs is linked to web browser, better not link it and let
