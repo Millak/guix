@@ -32,6 +32,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)

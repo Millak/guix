@@ -45,6 +45,7 @@
   #:use-module (gnu packages ibus)
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages language)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)

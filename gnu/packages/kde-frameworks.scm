@@ -5024,69 +5024,6 @@ descriptions for integrating actions from plugins.")
                      (setenv "QT_QPA_PLATFORM" "offscreen") ;; These tests fail
                      (invoke "ctest" "-E" "(ktoolbar_unittest|kxmlgui_unittest)")))))))))
 
-(define-public libplasma
-  (package
-    (name "libplasma")
-    (version "6.4.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/stable/plasma/"
-                                  version "/" name "-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "1j0cpf9bikrk02i7pdwf3fia2h741rh9a4g3wmi4849asg7cw27m"))))
-    (build-system qt-build-system)
-    (propagated-inputs
-     (list kpackage kwindowsystem))
-    (native-inputs
-     (list extra-cmake-modules kdoctools pkg-config
-           gettext-minimal
-           ;; for wayland-scanner
-           wayland))
-    (inputs (list
-             karchive
-             kconfigwidgets
-             kglobalaccel
-             kguiaddons
-             kiconthemes
-             kirigami
-             kio
-             ki18n
-             kcmutils
-             ksvg
-             kglobalaccel
-             knotifications
-             plasma-wayland-protocols
-             plasma-activities
-             qtdeclarative
-             qtsvg
-             qtwayland
-             wayland
-             libxkbcommon))
-    (arguments
-     (list #:qtbase qtbase
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (setenv "HOME" (getcwd))
-                     (invoke "ctest" "-E"
-                             (string-append "(plasma-dialogstatetest"
-                                            "|plasma-iconitemtest"
-                                            "|plasma-dialogqmltest"
-                                            "|plasma-themetest"
-                                            "|iconitemhidpitest"
-                                            "|bug485688test"
-                                            "|dialognativetest)"))))))))
-    (home-page "https://invent.kde.org/plasma/libplasma")
-    (synopsis "Libraries, components and tools of Plasma workspaces")
-    (description "The plasma framework provides QML components, libplasma and
-script engines.")
-    ;; dual licensed
-    (license (list license:gpl2+ license:lgpl2.1+))))
-
 (define-public plasma-framework
   (package
     (name "plasma-framework")
