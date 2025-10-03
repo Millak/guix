@@ -739,44 +739,49 @@ directly from the command line.")
 (define-public bitshuffle
   (package
     (name "bitshuffle")
-    (version "0.3.5")
+    (version "0.5.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "bitshuffle" version))
               (sha256
                (base32
-                "1823x61kyax4dc2hjmc1xraskxi1193y8lvxd03vqv029jrj8cjy"))
+                "139xz3m2m8sal8riicvmb9i0sq4085s2hc6c148bwhmzpnvky3nw"))
               (modules '((guix build utils)))
               (snippet
                '(begin
+                  ;; TODO Remove bundled libraries: lz4, lzf, and zstd.
                   ;; Remove generated Cython files.
                   (delete-file "bitshuffle/h5.c")
-                  (delete-file "bitshuffle/ext.c")
-                  #t))))
-    (build-system python-build-system)
+                  (delete-file "bitshuffle/ext.c")))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f             ; fail: https://github.com/h5py/h5py/issues/769
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-neon-detection
-           ;; Neon is only for aarch64 ATM
-           ;; see: https://github.com/kiyo-masui/bitshuffle/pull/73
-           (lambda _
-             (substitute* "src/bitshuffle_core.c"
-               (("#define USEARMNEON")
-                "#ifdef __aarch64__\n#define USEARMNEON\n#endif"))
-             #t))
-         (add-after 'unpack 'dont-build-native
-           (lambda _
-             (substitute* "setup.py"
-               (("'-march=native', ") ""))
-             #t)))))
-    (inputs
-     `(("numpy" ,python-numpy)
-       ("h5py" ,python-h5py)
-       ("hdf5" ,hdf5)))
+     (list
+      #:test-flags
+      ;; FileNotFoundError: [Errno 2] Unable to synchronously open file
+      ;; (unable to open file: name =
+      ;; '/tmp/<...>/tests/data/regression_0.1.3.h5', errno = 2, error message
+      ;; = 'No such file or directory', flags = 0, o_flags = 0)
+      #~(list "--deselect=tests/test_regression.py::TestAll::test_regression")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pre-build
+            ;; TODO: Check how to build on other architectures.
+            ;; Taken form .github/workflows/wheels.yml.
+            (lambda _
+              #$@(if (target-x86-64?)
+                     '((setenv "BITSHUFFLE_ARCH" "haswell")
+                       (setenv "CIBW_SKIP" "pp* *musllinux* cp311-macosx*")
+                       (setenv "CIBW_ARCHS" "x86_64"))
+                     '())
+              (setenv "HDF5_DIR" #$(this-package-input "hdf5")))))))
     (native-inputs
-     `(("cython" ,python-cython)))
+     (list python-cython
+           python-pytest
+           python-setuptools))
+    (inputs
+     (list python-numpy
+           python-h5py
+           hdf5))
     (home-page "https://github.com/kiyo-masui/bitshuffle")
     (synopsis "Filter for improving compression of typed binary data")
     (description "Bitshuffle is an algorithm that rearranges typed, binary data
@@ -789,15 +794,15 @@ algorithm within the Numpy framework.")
     (name "bitshuffle-for-snappy")
     (build-system gnu-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments bitshuffle)
-       ((#:tests? _ #f) #f)
-       ((#:phases phases)
-        `(modify-phases %standard-phases
-           (replace 'configure
-             (lambda* (#:key outputs #:allow-other-keys)
-               (with-output-to-file "Makefile"
-                 (lambda _
-                   (format #t "\
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (with-output-to-file "Makefile"
+                (lambda _
+                  (format #t "\
 libbitshuffle.so: src/bitshuffle.o src/bitshuffle_core.o src/iochain.o lz4/lz4.o
 \tgcc -O3 -ffast-math -std=c99 -o $@ -shared -fPIC $^
 
@@ -816,8 +821,7 @@ install: libbitshuffle.so
 \tinstall -m644 src/bitshuffle_core.h $(INCLUDEDIR)
 \tinstall -m644 src/iochain.h $(INCLUDEDIR)
 \tinstall -m644 lz4/lz4.h $(INCLUDEDIR)
-" (assoc-ref outputs "out"))))
-               #t))))))
+" #$output))))))))
     (inputs '())
     (native-inputs '())))
 
