@@ -2971,31 +2971,28 @@ that best match text queries.")
     (version "1.3.0")
     (source
      (origin
-       ;; The tests suite appears to be incomplete in the PyPI archive.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/mkdocs/mkdocs")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1n5rdllrxvhnxmdrddf55p3s86dakx0rq2gg6bj6pr6jg2pn932b"))))
-    (build-system python-build-system)
+        (base32 "1n5rdllrxvhnxmdrddf55p3s86dakx0rq2gg6bj6pr6jg2pn932b"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; Requirements refer to a specific version of dependencies,
-         ;; which are too old. So we patch to refer to any later version.
-         (add-after 'unpack 'patch-requirements
-           (lambda _
-             (substitute* "setup.py"
-               (("==") ">="))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "unittest"
-                       "discover" "-p" "*tests.py" "mkdocs"
-                       "--top-level-directory" ".")))))))
+     (list
+      #:test-backend #~'unittest
+      #:test-flags
+      #~(list "discover" "-p" "*tests.py" "mkdocs" "--top-level-directory" ".")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Requirements refer to a specific version of dependencies,
+          ;; which are too old. So we patch to refer to any later version.
+          (add-after 'unpack 'patch-requirements
+            (lambda _
+              (substitute* "setup.py"
+                (("==") ">=")))))))
+    (native-inputs (list python-setuptools))
     (propagated-inputs
      (list python-babel
            python-click
@@ -3012,8 +3009,9 @@ that best match text queries.")
            python-watchdog))
     (home-page "https://www.mkdocs.org")
     (synopsis "Project documentation with Markdown")
-    (description "MkDocs is a static site generator geared towards building
-project documentation.  Documentation source files are written in Markdown, and
+    (description
+     "MkDocs is a static site generator geared towards building project
+documentation.  Documentation source files are written in Markdown, and
 configured with a single YAML configuration file.")
     (license license:bsd-3)))
 
