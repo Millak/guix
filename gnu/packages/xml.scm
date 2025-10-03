@@ -377,14 +377,15 @@ formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
                #~'())))
     (home-page "http://xmlsoft.org/XSLT/index.html")
     (synopsis "C library for applying XSLT stylesheets to XML documents")
+    (native-inputs (list pkg-config))
     (inputs
      (list libgcrypt
-           libxml2
+           libxml2                      ;TODO: Remove after propagated
            python-minimal-wrapper
            zlib
            xz))
-    (native-inputs
-     (list pkg-config))
+    ;; TODO: Uncomment in an upcoming world rebuild
+    ;;(propagated-inputs (list libxml2))  ;libxml2-0.pc 'Requires' it
     (native-search-paths %libxslt-search-paths)
     (description
      "Libxslt is an XSLT C library developed for the GNOME project.  It is
