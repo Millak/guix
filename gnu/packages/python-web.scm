@@ -12170,3 +12170,30 @@ hardware on Grid'5000 or via OpenStack, to Vagrant, Chameleon, and more.")
      "This package provides a library and a command-line tool that lets
 you download the entire Wayback Machine archive for a given URL.")
     (license license:expat)))
+
+(define-public python-xyzservices
+  (package
+    (name "python-xyzservices")
+    (version "2025.4.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "xyzservices" version))
+        (sha256
+          (base32 "1n096zg9bd4n6w6axcm16m9sxdkc6qy1mipva0scbyj86rqn9rvg"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "-m" "not request")))
+    (native-inputs
+     (list python-pytest
+           python-mercantile
+           python-requests
+           python-setuptools
+           python-setuptools-scm))
+    (home-page "https://github.com/geopandas/xyzservices")
+    (synopsis "Source of XYZ tiles providers")
+    (description "@code{xyzservices} is a lightweight library providing a
+repository of available XYZ services offering raster basemap tiles.  The
+repository is provided via Python API and as a compressed JSON file.")
+    (license license:bsd-3)))
