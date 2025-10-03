@@ -2544,13 +2544,15 @@ to create a well-documented piece of software.")
   (package
     (name "python-dotmap")
     (version "1.3.30")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "dotmap" version))
-              (sha256
-               (base32
-                "0s5kb2v7jd0narz6m6jcicak3h5pw290wz21cdsv8pq77y9sf8aq"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "dotmap" version))
+       (sha256
+        (base32 "0s5kb2v7jd0narz6m6jcicak3h5pw290wz21cdsv8pq77y9sf8aq"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/drgrib/dotmap")
     (synopsis "Ordered, dynamically-expandable dot-access dictionary")
     (description
