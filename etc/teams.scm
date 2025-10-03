@@ -1380,6 +1380,11 @@ the \"texlive\" importer."
                        "phfrohring")
   beam)
 
+(define-member (person "Igorj Gorjaĉev"
+                       "igor@goryachev.org"
+                       "delitrem")
+  beam)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
