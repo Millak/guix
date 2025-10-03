@@ -1314,7 +1314,7 @@ of Ordered Set.")
 (define-public python-pastel
   (package
     (name "python-pastel")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -1323,7 +1323,7 @@ of Ordered Set.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "016zqc41hjjm6szfjnzkmjl0y5q8y07i9792z2n71j9sirhas3b6"))))
+        (base32 "1lwip9qaqfacgwnl5ykr0846y1nky228k7h7vzrgyqj1viapprsv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
