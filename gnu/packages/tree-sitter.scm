@@ -1647,6 +1647,4 @@ to generate the package name.  When TESTS? is true, tests are enabled."
 
 (define-public python-tree-sitter-rust
   (python-tree-sitter-grammar
-   tree-sitter-rust
-   ;; TODO: Enable tests once python-tree-sitter >= 0.22 is packaged
-   #:tests? #f))
+   tree-sitter-rust))
