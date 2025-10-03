@@ -4699,8 +4699,8 @@ for working with bidirectional mappings in Python.")
        (uri (pypi-uri "bip39" version))
        (sha256
         (base32 "18m7d3gi7vj2zi0bl1z7m0nhcj6i8j9vj4vil276siagnpkv64ry"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/de-centralized-systems/python-bip39/")
     (synopsis "Self-contained and simple BIP39 implementation in Python")
     (description
