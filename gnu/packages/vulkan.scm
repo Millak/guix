@@ -485,11 +485,19 @@ and the ICD.")
       (inputs
        (list glslang libxrandr vulkan-loader wayland wayland-protocols))
       (native-inputs
-       (list googletest pkg-config python vulkan-volk vulkan-headers))
+       (list googletest pkg-config python vulkan-headers))
       (arguments
        (list
         #:configure-flags #~(list "-DBUILD_TESTS=ON")
         #:phases #~(modify-phases %standard-phases
+                     (add-after 'unpack 'patch-libvulkan-file-name
+                       (lambda* (#:key inputs #:allow-other-keys)
+                         (substitute* '("vulkaninfo/vulkaninfo_functions.h"
+                                        "cube/cube_functions.h")
+                           (("dlopen\\(\"libvulkan.so.1")
+                            (string-append "dlopen(\""
+                                           (search-input-file
+                                            inputs "/lib/libvulkan.so.1"))))))
                      (replace 'check
                        (lambda* (#:key tests? #:allow-other-keys)
                          (when tests?
