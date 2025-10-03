@@ -3969,19 +3969,37 @@ automatically generate the interface code.")
   (package
     (name "python-colour")
     (version "0.1.5")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "colour" version))
-              (sha256
-               (base32
-                "1visbisfini5j14bdzgs95yssw6sm4pfzyq1n3lfvbyjxw7i485g"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-d2to1))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vaab/colour")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01k2n3zp6j0bws78vdy7i9d6m4lz3bm8z7d7lv1czks1d4aamnr2"))
+       (patches (search-patches "python-colour-remove-d2to1.patch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ; No tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (substitute* "autogen.sh"
+                (("if ! \"\\$git\".*")
+                 "if false ; then\n")
+                (("depends git grep")
+                 "depends grep")
+                (("version=\\$\\(\"\\$git\" describe --tags\\)")
+                 (format #f "version=~s" #$version))))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/vaab/colour")
     (synopsis "Convert and manipulate various color representations")
-    (description "Pythonic way to manipulate color representations (HSL, RVB,
-web, X11, ...).")
+    (description
+     "This package provides a pythonic way to manipulate color representations
+(HSL, RVB,web, X11, ...).")
     (license license:expat)))
 
 (define-public python-d2to1

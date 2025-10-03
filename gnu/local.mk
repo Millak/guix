@@ -2161,6 +2161,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-angr-check-exec-deps.patch	\
   %D%/packages/patches/python-3-reproducible-build.patch	\
   %D%/packages/patches/python-cross-compile.patch		\
+  %D%/packages/patches/python-colour-remove-d2to1.patch		\
   %D%/packages/patches/python-configobj-setuptools.patch	\
   %D%/packages/patches/python-debugpy-unbundle-pydevd.patch	\
   %D%/packages/patches/python-docopt-pytest6-compat.patch	\
