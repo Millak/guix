@@ -697,7 +697,7 @@ XML parser and the high performance DOM implementation.")
 (define-public perl-xml-libxslt
   (package
     (name "perl-xml-libxslt")
-    (version "1.96")
+    (version "2.003000")
     (source
      (origin
        (method url-fetch)
@@ -705,14 +705,25 @@ XML parser and the high performance DOM implementation.")
                            "XML-LibXSLT-" version ".tar.gz"))
        (sha256
         (base32
-         "0wyl8klgr65j8y8fzgwz9jlvfjwvxazna8j3dg9gksd2v973fpia"))
-       ;; Remove patch with update to version 2.003000.
-       (patches (search-patches "perl-xml-libxslt-fix-configure.patch"))))
+         "11s5spf0x5h6qzajfsza28m62z50cilcpvl4iffyafzmfbp5makw"))))
     (build-system perl-build-system)
-    (inputs
-     (list libxslt))
-    (propagated-inputs
-     (list perl-xml-libxml))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'extend-INCLUDE_PATH
+            ;; This hack is because the build system does not appear to use
+            ;; the pkg-config Cflags, and expects the libxml2 headers to be
+            ;; directly available from the FHS location (or C_INCLUDE_PATH),
+            ;; but they are nested under a libxml2 subdirectory.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "C_INCLUDE_PATH"
+                      (string-append
+                       (getenv "C_INCLUDE_PATH")
+                       ":" (search-input-directory inputs
+                                                   "include/libxml2"))))))))
+    (inputs (list libxml2-2.11 libxslt))
+    (propagated-inputs (list perl-xml-libxml))
     (home-page "https://metacpan.org/release/XML-LibXSLT")
     (synopsis "Perl bindings to GNOME libxslt library")
     (description "This Perl module is an interface to the GNOME project's
