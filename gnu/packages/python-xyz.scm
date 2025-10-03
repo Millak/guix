@@ -4323,13 +4323,16 @@ attacks or network discovery.")
     (version "3.0.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "icmplib" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ValentinBELYN/icmplib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1phnlgbb5di79ijm55pyd5jj1ggss4b6nn6mw701h501vcn8z1jp"))))
-    (arguments
-     '(#:tests? #f)) ;test data not present
-    (build-system python-build-system)
+        (base32 "04h877ryg22vsgvq35dqwpf0b1v8hvfl2gc857zxqzig4ld5qw1y"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests.
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/ValentinBELYN/icmplib")
     (synopsis
      "Python implementation of the Internet Control Message Protocol (ICMP)")
