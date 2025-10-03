@@ -736,9 +736,9 @@ can be used to compress and decompress files and streams.  It can also be used
 directly from the command line.")
     (license license:bsd-3)))
 
-(define-public bitshuffle
+(define-public python-bitshuffle
   (package
-    (name "bitshuffle")
+    (name "python-bitshuffle")
     (version "0.5.2")
     (source (origin
               (method url-fetch)
@@ -789,8 +789,11 @@ for improving compression, as well as a python/C package that implements this
 algorithm within the Numpy framework.")
     (license license:expat)))
 
+(define-public bitshuffle
+  (deprecated-package "bitshuffle" python-bitshuffle))
+
 (define-public bitshuffle-for-snappy
-  (package/inherit bitshuffle
+  (package/inherit python-bitshuffle
     (name "bitshuffle-for-snappy")
     (build-system gnu-build-system)
     (arguments
