@@ -32853,20 +32853,21 @@ your process.")
 (define-public python-xattr
   (package
     (name "python-xattr")
-    (version "0.9.9")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "xattr" version))
        (sha256
-        (base32
-         "0ipkfblyvp5hylahjkw9zss1ii9xnwjypr3b3ncv989szcg7xjq9"))))
-    (build-system python-build-system)
+        (base32 "19z0wp1plr5g8a3jknipii3qmqp3znwd63zqrhx19gpixwhqwk56"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-cffi))
     (home-page "https://github.com/xattr/xattr")
-    (synopsis
-     "Python wrapper for extended file system attributes")
+    (synopsis "Python wrapper for extended file system attributes")
     (description "This package provides a Python wrapper for using extended
 file system attributes.  Extended attributes extend the basic attributes of files
 and directories in the file system.  They are stored as name:data pairs
