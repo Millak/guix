@@ -707,21 +707,9 @@ XML parser and the high performance DOM implementation.")
         (base32
          "11s5spf0x5h6qzajfsza28m62z50cilcpvl4iffyafzmfbp5makw"))))
     (build-system perl-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'extend-INCLUDE_PATH
-            ;; This hack is because the build system does not appear to use
-            ;; the pkg-config Cflags, and expects the libxml2 headers to be
-            ;; directly available from the FHS location (or C_INCLUDE_PATH),
-            ;; but they are nested under a libxml2 subdirectory.
-            (lambda* (#:key inputs #:allow-other-keys)
-              (setenv "C_INCLUDE_PATH"
-                      (string-append
-                       (getenv "C_INCLUDE_PATH")
-                       ":" (search-input-directory inputs
-                                                   "include/libxml2"))))))))
+    (native-inputs (list pkg-config))
+    ;; FIXME: libxml2-2.11 is used instead of latest, due to test failures
+    ;; (see: <https://github.com/shlomif/perl-XML-LibXSLT/issues/8>).
     (inputs (list libxml2-2.11 libxslt))
     (propagated-inputs (list perl-xml-libxml))
     (home-page "https://metacpan.org/release/XML-LibXSLT")
