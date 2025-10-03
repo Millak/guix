@@ -4235,33 +4235,24 @@ to CommonMark.")
        (method url-fetch)
        (uri (pypi-uri "pymediainfo" version))
        (sha256
-        (base32
-         "0mhpxs7vlqx8w75z93dy7nnvx89kwfdjkla03l19an15rlyqyspd"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-setuptools-scm python-pytest))
-    (inputs
-     (list libmediainfo))
+        (base32 "0mhpxs7vlqx8w75z93dy7nnvx89kwfdjkla03l19an15rlyqyspd"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-libmediainfo
-           (lambda _
-             (substitute* "pymediainfo/__init__.py"
-               (("libmediainfo.so.0")
-                (search-input-file %build-inputs
-                                   "/lib/libmediainfo.so.0")))))
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               ;; Skip the only failing test "test_parse_url" because it tries
-               ;; to access the internet.
-               (invoke "pytest" "-vv" "-k" "not test_parse_url")))))))
-    (home-page
-     "https://github.com/sbraz/pymediainfo")
-    (synopsis
-     "Python wrapper for the mediainfo library")
+     (list
+      ;; The only failing test requires internet access.
+      #:test-flags
+      #~(list "-k" "not test_parse_url")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-libmediainfo
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "pymediainfo/__init__.py"
+                (("libmediainfo.so.0")
+                 (search-input-file inputs "/lib/libmediainfo.so.0"))))))))
+    (native-inputs (list python-pytest python-setuptools))
+    (inputs (list libmediainfo))
+    (home-page "https://github.com/sbraz/pymediainfo")
+    (synopsis "Python wrapper for the mediainfo library")
     (description
      "This package provides a Python wrapper for the mediainfo library to
 access the technical and tag data for video and audio files.")
