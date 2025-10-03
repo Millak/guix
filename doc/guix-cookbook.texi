@@ -22,10 +22,13 @@ Copyright @copyright{} 2020 André Batista@*
 Copyright @copyright{} 2020 Christine Lemmer-Webber@*
 Copyright @copyright{} 2021 Joshua Branson@*
 Copyright @copyright{} 2022, 2023 Maxim Cournoyer@*
-Copyright @copyright{} 2023-2024 Ludovic Courtès@*
+Copyright @copyright{} 2023-2025 Ludovic Courtès@*
 Copyright @copyright{} 2023 Thomas Ieong@*
 Copyright @copyright{} 2024 Florian Pelz@*
 Copyright @copyright{} 2025 45mg@*
+Copyright @copyright{} 2023 Marek Felšöci@*
+Copyright @copyright{} 2023 Konrad Hinsen@*
+Copyright @copyright{} 2023 Philippe Swartvagher@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -90,6 +93,7 @@ Manual}).
 * Advanced package management::  Power to the users!
 * Software Development::        Environments, continuous integration, etc.
 * Environment management::      Control environment
+* Reproducible Research::       A foundation for reproducible research.
 * Installing Guix on a Cluster::  High-performance computing.
 * Guix System Management::      System Management specifics.
 
@@ -209,6 +213,13 @@ Software Development
 Environment management
 
 * Guix environment via direnv::  Setup Guix environment with direnv
+
+Using Guix for Reproducible Research
+
+* Setting Up the Environment::  Step 1: using `guix shell'.
+* Recording the Environment::   Step 2: using `guix describe'.
+* Ensuring Long-Term Source Code Archiving::  Step 3: Software Heritage.
+* Referencing the Software Environment::  Step 4: SWHIDs.
 
 Installing Guix on a Cluster
 
@@ -5655,6 +5666,246 @@ will have predefined environment variables and procedures.
 
 Run @command{direnv allow} to setup the environment for the first time.
 
+
+@c *********************************************************************
+@node Reproducible Research
+@chapter Using Guix for Reproducible Research
+
+@cindex reproducible research
+Because it supports reproducible deployment, Guix is a solid foundation
+for @dfn{reproducible research workflows}.  This section is targeted at
+scientists; it shows how to add Guix to one's reproducible research
+toolbox@footnote{This chapter is adapted from a
+@uref{https://hpc.guix.info/blog/2023/06/a-guide-to-reproducible-research-papers/,
+blog post published on the Guix-HPC web site in 2023.}.}.
+
+With Guix as the basis of your computational workflow, you can get
+what's in essence @emph{executable provenance meta-data}: it's like the
+list of package name/version pairs some provide as an appendix to their
+publication, except more precise and immediately deployable.
+
+This section is a guide in just four steps on how to make your
+computational experiments reproducible using Guix, and how to provide
+that information in your research paper.
+
+@menu
+* Setting Up the Environment::  Step 1: using `guix shell'.
+* Recording the Environment::   Step 2: using `guix describe'.
+* Ensuring Long-Term Source Code Archiving::  Step 3: Software Heritage.
+* Referencing the Software Environment::  Step 4: SWHIDs.
+@end menu
+
+@node Setting Up the Environment
+@section Step 1: Setting Up the Environment
+
+The first step is to identify precisely what packages you need in
+your software environment to run your computational experiment.
+
+Assuming you have a Python script that uses NumPy, you can start by
+creating an environment that contains these two packages and
+to run your code in that environment (@pxref{Invoking guix shell,,,
+guix, GNU Guix Reference Manual}):
+
+@example
+guix shell -C python python-numpy -- python3 ./myscript.py
+@end example
+
+The @code{-C} flag here (or @code{--container}) instructs @command{guix
+shell} to create that environment in an isolated container with nothing
+but the two packages you asked for.  That way, if
+@command{./myscript.py} needs more than these two packages, it'll fail
+to run and you'll immediately notice.  On some systems
+@code{--container} is not supported; in that case, you can resort to
+@code{--pure} instead.
+
+Perhaps you'll find that you also need Pandas and add it to the
+environment:
+
+@example
+guix shell -C python python-numpy python-pandas -- \
+  python3 ./myscript.py
+@end example
+
+If you fail to guess the name of the package (this one was easy!), try
+@code{guix search}.
+
+Environments for Python, R, and similar high-level languages are
+relatively easy to set up. For C/C++ code, you may find need many more
+packages:
+
+@example
+guix shell -C gcc-toolchain cmake coreutils grep sed make -- @dots{}
+@end example
+
+Or perhaps you'll find that you could just as well provide a
+for your package---@pxref{Defining Packages,,, guix, GNU Guix Reference
+Manual}, to learn more on how to do that.
+
+Eventually, you'll have a list of packages that satisfies your needs.
+
+@quotation What if a package is missing?
+Guix and the main scientific channels provide about
+@uref{https://hpc.guix.info/browse, tens of thousands of packages}.
+Yet, there's always the possibility that the one package you need is
+missing.
+
+In that case, you will need to provide a definition for it
+(@pxref{Defining Packages,,, guix, GNU Guix Reference Manual}) in a
+dedicated channel of yours (@pxref{Creating a Channel,,, guix, GNU Guix
+Reference Manual}).  For software in Python, R, and other high-level
+languages, most of the work can usually be automated by using
+@command{guix import} (@pxref{Invoking guix import,,, guix, GNU Guix
+Reference Manual}).
+
+Join
+@uref{https://guix.gnu.org/contact/,the friendly Guix community} to get
+help!
+@end quotation
+
+@node Recording the Environment
+@section Step 2: Recording the Environment
+
+Now that you have that @code{guix shell} command line with a list of
+packages, the best course of action is to save it in a @emph{manifest}
+file---essentially a software bill of materials---that Guix can then
+ingest (@pxref{Writing Manifests,,, guix, GNU Guix Reference Manual}).
+The easiest way to get started is by ``translating'' your command line
+into a manifest:
+
+@example
+guix shell python python-numpy python-pandas \
+  --export-manifest > manifest.scm
+@end example
+
+Put that manifest under version control! From there anyone can redeploy
+the software environment described by the manifest and run code in that
+environment:
+
+@example
+guix shell -C -m manifest.scm -- python3 ./myscript.py
+@end example
+
+Here's what @file{manifest.scm} reads:
+
+@lisp
+;; What follows is a "manifest" equivalent to the command line you gave.
+;; You can store it in a file that you may then pass to any 'guix' command
+;; that accepts a '--manifest' (or '-m') option.
+
+(specifications->manifest
+  (list "python" "python-numpy" "python-pandas"))
+@end lisp
+
+It's a code snippet that lists packages.  Notice that there are no
+version numbers! Indeed, these version numbers are specified in package
+definitions, located in Guix channels.  To allow others to reproduce the
+exact same environment as the one you're running, you need to @emph{pin
+Guix itself} , by capturing the current Guix channel commits with
+@command{guix describe} (@pxref{Replicating Guix,,, guix, GNU Guix
+Reference Manual}):
+
+@example
+guix describe -f channels > channels.scm
+@end example
+
+@cindex lock files, for reproducibility
+This @code{channels.scm} file is similar in spirit to ``lock files''
+that some deployment tools employ to pin package revisions. You should
+also keep it under version control in your code, and possibly update it
+once in a while when you feel like running your code against newer
+versions of its dependencies. With this file, anyone, @emph{at any time
+and on any machine}, can now reproduce the exact same environment by
+running:
+
+@example
+guix time-machine -C channels.scm -- \
+  shell -C -m manifest.scm -- \
+  python3 ./myscript.py
+@end example
+
+In this example we rely solely on the @code{guix} channel, which
+provides the Python packages we need. Perhaps some of the packages you
+need live @uref{https://hpc.guix.info/channels,in other
+channels}---maybe @code{guix-cran} if you use R, maybe
+@code{guix-science}.  That's fine: @code{guix describe} also captures
+that.
+
+Of course do include a @file{README} file giving the exact command to
+run the code. Not everyone uses Guix so it can be helpful to also
+provide minimal non-Guix setup instructions: which package versions are
+used, how software is built, etc. As we have seen, such instructions
+would likely be inaccurate and inconvenient to follow at best. Yet, it
+can be a useful starting point to someone trying to recreate a
+@emph{similar} environment using different tools. It should probably be
+presented as such, with the understanding that the only way to get the
+@emph{same} environment is to use Guix.
+
+@node Ensuring Long-Term Source Code Archiving
+@section Step 3: Ensuring Long-Term Source Code Archiving
+
+We insisted on version control before: for the @file{manifest.scm} and
+@file{channels.scm} files, but of course also for your own code. Our
+recommendation is to have these two @file{.scm} files in the same
+repository as the code they're about.
+
+Since the goal is enabling reproducibility, source code availability is
+a prime concern.  Source code hosting services come and go and we don't
+want our code to vanish in a whim and render our published research work
+unverifiable. @uref{https://www.softwareheritage.org/,Software Heritage}
+(SWH for short) is @emph{the} solution for this: SWH archives public
+source code and provides unique intrinsic identifiers to refer to
+it---@uref{https://swhid.org, @dfn{SWHIDs}}.
+Guix itself is
+@uref{https://doi.org/10.1145/3641525.3663622,connected
+to SWH} to (1)@ ensure that the source code of its packages is archived,
+and (2)@ to fall back to downloading from the SWH archive should code
+vanish from its original site.
+
+Once your own code is available in a public version-control repository,
+such as a Git repository on your lab's hosting service, you can ask SWH
+to archive it by going to its
+@uref{https://archive.softwareheritage.org/save/,Save Code Now}
+interface.  SWH will process the request asynchronously and eventually
+you'll find your code has made it into
+@uref{https://archive.softwareheritage.org/,the archive}.
+
+@node Referencing the Software Environment
+@section Step 4: Referencing the Software Environment
+
+This brings us to the last step: referring to our code @emph{and}
+software environment in our beloved paper.  We already have all our code
+and Guix files in the same repository, which is archived on SWH.  Thanks
+to SWH, we now have a SWHID, which uniquely identifies the relevant
+revision of our code.
+
+Following
+@uref{https://www.softwareheritage.org/howto-archive-and-reference-your-code/,SWH's
+own guide}, we'll pick an @code{swh:dir} kind of identifier, which
+refers to the directory of the relevant revision/commit of our
+repository, and we'll keep @emph{contextual info} for clarity---that
+includes the original URL. Putting it all together, we'll conclude our
+paper with a sentence along these lines:
+
+@quotation Example
+The source code used to produce this study, as well as instructions to
+run it in the right software environment using GNU@ Guix, is archived on
+Software Heritage as
+@uref{https://archive.softwareheritage.org/swh:1:dir:cc8919d7705fbaa31efa677ce00bef7eb374fb80;origin=https://gitlab.inria.fr/lcourtes-phd/edcc-2006-redone;visit=swh:1:snp:71a4d08ef4a2e8455b67ef0c6b82349e82870b46;anchor=swh:1:rev:36fde7e5ba289c4c3e30d9afccebbe0cfe83853a,@code{swh:1:dir:cc8919d7705fbaa31efa677ce00bef7eb374fb80;origin=https://gitlab.inria.fr/lcourtes-phd/edcc-2006-redone;visit=swh:1:snp:71a4d08ef4a2e8455b67ef0c6b82349e82870b46;anchor=swh:1:rev:36fde7e5ba289c4c3e30d9afccebbe0cfe83853a}}.
+@end quotation
+
+With this information, the reader can:
+
+@itemize
+@item
+get the source code;
+@item
+reproduce its software environment with @code{guix time-machine} and run
+the code;
+@item
+inspect and possibly modify both the code and its environment.
+@end itemize
+
+Mission accomplished!
 
 @c *********************************************************************
 @node Installing Guix on a Cluster
