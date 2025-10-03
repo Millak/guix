@@ -1635,9 +1635,7 @@ to generate the package name.  When TESTS? is true, tests are enabled."
 
 (define-public python-tree-sitter-javascript
   (python-tree-sitter-grammar
-   tree-sitter-javascript
-   ;; TODO: Enable tests once python-tree-sitter >= 0.22 is packaged
-   #:tests? #f))
+   tree-sitter-javascript))
 
 (define-public python-tree-sitter-json
   (python-tree-sitter-grammar
