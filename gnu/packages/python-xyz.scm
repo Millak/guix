@@ -25851,20 +25851,25 @@ runtime (rather than during a preprocessing step).")
 (define-public python-xopen
   (package
     (name "python-xopen")
-    (version "1.7.0")
+    ;; TODO: Newer versions require zlib-ng:
+    ;; <https://github.com/zlib-ng/zlib-ng>,
+    ;; <https://github.com/pycompression/python-zlib-ng>.
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "xopen" version))
        (sha256
-        (base32
-         "17qda88irg77qdm2kkxq4zgdhwfgykcpdgd4cx3xfpp9k219q7wh"))))
+        (base32 "0h08wpd5zwnlzwnbbbhahbcs69kzsfbaaigqw0viq6ri8n4zrh00"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list pigz python-isal python-typing-extensions))
+    ;; tests: 343 passed, 5 skipped
     (native-inputs
-     (list python-pytest python-pytest-timeout python-setuptools-scm
-           python-setuptools python-wheel))
+     (list python-pytest
+           python-pytest-timeout
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list pigz python-isal))
     (home-page "https://github.com/marcelm/xopen/")
     (synopsis "Open compressed files transparently")
     (description "This module provides an @code{xopen} function that works
