@@ -6613,28 +6613,26 @@ wlroots-based compositors.  More specifically, those that support
 (define-public guvcview
   (package
     (name "guvcview")
-    (version "2.0.8")
+    (version "2.2.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/guvcview/source/guvcview-"
                                   "src-" version ".tar.bz2"))
               (sha256
                (base32
-                "108c4g0ns9i1wnxyalmpjqbhlflmrj855vxgggr6qrl6h924w7x2"))))
-    (build-system gnu-build-system)
-    (arguments
-     ;; There are no tests and "make check" would fail on an intltool error.
-     '(#:tests? #f))
+                "1bz5mpvs590dwfvjwgigs6948l31mldm2sz1qd9yhq99fv7cgbfj"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))  ;There are no tests
     (native-inputs
      (list pkg-config intltool))
     (inputs
-     (list bdb
-           gtk+
+     (list gtk+
            eudev
-           libjpeg-turbo
            libusb
            v4l-utils                    ;libv4l2
-           ffmpeg                       ;libavcodec, libavutil
+           ;; Gentoo patch for ffmpeg-8 reported upstream:
+           ;; https://sourceforge.net/p/guvcview/tickets/79/
+           ffmpeg-6                     ;libavcodec, libavutil
            sdl2
            gsl
            portaudio
@@ -6646,8 +6644,6 @@ wlroots-based compositors.  More specifically, those that support
 webcam accessible with Video4Linux (V4L2) and to capture videos and images.
 It provides control over precise settings of the webcam such as exposure,
 brightness, contrast, and frame rate.")
-
-    ;; 'COPYING' is GPLv3 but source headers say GPLv2+.
     (license license:gpl2+)))
 
 (define-public get-iplayer
