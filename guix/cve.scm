@@ -56,7 +56,7 @@
 
 ;;; Commentary:
 ;;;
-;;; This modules provides the tools to fetch, parse, and digest part of the
+;;; This module provides the tools to fetch, parse, and digest part of the
 ;;; Common Vulnerabilities and Exposures (CVE) feeds provided by the US NIST
 ;;; at <https://nvd.nist.gov/vuln/data-feeds>.
 ;;;
@@ -113,26 +113,23 @@ Return three #f values if CPE does not look like an application CPE string."
   "Convert ALIST, a \"cpeMatch\" alist, into an sexp representing the package
 and versions matched.  Return #f if ALIST doesn't correspond to an application
 package."
-  (let ((cpe    (assoc-ref alist "criteria"))
-        (starti (assoc-ref alist "versionStartIncluding"))
-        (starte (assoc-ref alist "versionStartExcluding"))
-        (endi   (assoc-ref alist "versionEndIncluding"))
-        (ende   (assoc-ref alist "versionEndExcluding")))
-    ;; Normally "criteria" is here in each "cpeMatch" item, but CVE-2020-0534
-    ;; has a configuration that lacks it.
-    (and cpe
-         (let ((vendor package version (cpe->package-identifier cpe)))
-           (and package
-                `(,vendor
-                  ,package
-                  ,(cond ((and (or starti starte) (or endi ende))
-                          `(and ,(if starti `(>= ,starti) `(> ,starte))
-                                ,(if endi `(<= ,endi) `(< ,ende))))
-                         (starti `(>= ,starti))
-                         (starte `(> ,starte))
-                         (endi   `(<= ,endi))
-                         (ende   `(< ,ende))
-                         (else   version))))))))
+  (let* ((cpe    (assoc-ref alist "criteria"))
+         (vendor package version (cpe->package-identifier cpe))
+         (starti (assoc-ref alist "versionStartIncluding"))
+         (starte (assoc-ref alist "versionStartExcluding"))
+         (endi   (assoc-ref alist "versionEndIncluding"))
+         (ende   (assoc-ref alist "versionEndExcluding")))
+    (and package
+         `(,vendor
+           ,package
+           ,(cond ((and (or starti starte) (or endi ende))
+                   `(and ,(if starti `(>= ,starti) `(> ,starte))
+                         ,(if endi `(<= ,endi) `(< ,ende))))
+                  (starti `(>= ,starti))
+                  (starte `(> ,starte))
+                  (endi   `(<= ,endi))
+                  (ende   `(< ,ende))
+                  (else   version))))))
 
 (define (configuration-data->cve-configurations vector)
   "Given ALIST, a JSON dictionary for the baroque \"configurations\"
