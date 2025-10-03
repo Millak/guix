@@ -357,23 +357,25 @@ filter for executable binaries.
 pybcj provides Python bindings to a BCJ implementation in C.")
     (license license:lgpl2.1+)))
 
+;; XXX: Project is archived and not maintained since 2021.
 (define-public python-bcj-cffi
   (package
     (name "python-bcj-cffi")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bcj-cffi" version))
        (sha256
-        (base32
-         "1jcczrb8zgg6w7v76w1wpz3nw75fghk3xwxkn09ll7kck7sdf68d"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-cffi python-toml python-setuptools-scm))
+        (base32 "1k6h9x8j65hssbgmvhl71sdjj9aq8d81drdibrdflaz7a895sjib"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools python-coverage python-pytest
-           python-pytest-cov))
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-cffi))
     (home-page "https://github.com/miurahr/bcj-cffi")
     (synopsis "Branch / Call /Jump CFFI library in Python")
     (description "This package provides an implementation of the Branch / Call /
