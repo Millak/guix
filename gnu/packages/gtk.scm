@@ -1008,6 +1008,7 @@ application suites.")
 (define-public gtk+
   (package
     (inherit gtk+-2)
+    (replacement gtk+/fixed)
     (name "gtk+")
     (version "3.24.49")
     (source (origin
@@ -1138,6 +1139,23 @@ application suites.")
      (list (search-path-specification
             (variable "GUIX_GTK3_PATH")
             (files '("lib/gtk-3.0")))))))
+
+(define-public gtk+/fixed
+  (let* ((base gtk+)
+         (source (package-source base)))
+    (package
+      (inherit base)
+      (version "3.24.51")
+      (source
+       (origin
+         (inherit source)
+         (uri (git-reference
+                (inherit (origin-uri source))
+                (commit version)))
+         (file-name (git-file-name (package-name base) version))
+         (sha256
+          (base32
+           "07vw0rani9d65px36fzzj7sprv5r48shyjdgzipkihzqaldd98yh")))))))
 
 (define-public gtk
   (package
