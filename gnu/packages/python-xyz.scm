@@ -4208,15 +4208,17 @@ state changes.")
     (version "0.4.6.0b1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pymd4c" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dominickpastore/pymd4c")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "07s3arn85ri92im6x3ipljdmrxmpik7irs06i6lm17j1x6j9841d"))))
-    (build-system python-build-system)
-    (inputs
-     (list md4c))
-    (native-inputs
-     (list python-flake8 python-pkgconfig pkg-config))
+        (base32 "0skmdn2bxfc546djxapdgb0bjvlr3c7a3kkv7j3bpx9zw09m0rcs"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests.
+    (inputs (list md4c))
+    (native-inputs (list pkg-config python-pkgconfig python-setuptools))
     (home-page "https://github.com/dominickpastore/pymd4c")
     (synopsis "Python bindings for MD4C")
     (description
