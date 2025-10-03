@@ -76,7 +76,7 @@
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
-;;; Copyright © 2023 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2023, 2025 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2024 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2024 Justin Veilleux <terramorpha@cock.li>
@@ -6321,7 +6321,7 @@ throughout GNOME for API documentation).")
                    #t)
                  (format #t "test suite not run~%"))
              #t)))))
-    (home-page "https://www.clutter-project.org")
+    (home-page "https://blogs.gnome.org/clutter/")
     (synopsis "Object oriented GL/GLES Abstraction/Utility Layer")
     (description
      "Cogl is a small library for using 3D graphics hardware to draw pretty
@@ -6405,7 +6405,7 @@ presentations, kiosk style applications and so on.")
     (propagated-inputs
      ;; clutter-gtk.pc refers to all these.
      (list clutter gtk+))
-    (home-page "https://www.clutter-project.org")
+    (home-page "https://blogs.gnome.org/clutter/")
     (synopsis "OpenGL-based interactive canvas library GTK+ widget")
     (description
      "Clutter is an OpenGL-based interactive canvas library, designed for
@@ -6431,7 +6431,7 @@ presentations, kiosk style applications and so on.")
            pkg-config gobject-introspection))
     (inputs
      (list clutter gstreamer gst-plugins-base))
-    (home-page "https://www.clutter-project.org")
+    (home-page "https://blogs.gnome.org/clutter/")
     (synopsis "Integration library for using GStreamer with Clutter")
     (description
      "Clutter-Gst is an integration library for using GStreamer with Clutter.
