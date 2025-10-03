@@ -226,14 +226,14 @@ Breeze is the default theme for the KDE Plasma desktop.")
 (define-public calindori
   (package
     (name "calindori")
-    (version "24.12.1")
+    (version "25.08.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/calindori-" version ".tar.xz"))
               (sha256
                (base32
-                "1sz9bsbxwvhccbbk9h4ydravh10ba0g98m9wy5kcjaq16agwbakb"))))
+                "1pmpvaihkxpjkw198w3z3ly3zd4rim5266pgmr2s02a1xvq1xhxf"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules python-minimal))
     (inputs (list kconfig
