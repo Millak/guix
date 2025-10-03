@@ -782,6 +782,47 @@ with support for QR scanning.")
       (license ;GPL for programs, LGPL for libraries
        (list license:gpl2+ license:lgpl2.0)))))
 
+(define-public kongress
+  (package
+    (name "kongress")
+    (version "24.12.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/" version
+                                  "/src/kongress-" version ".tar.xz"))
+              (sha256
+               (base32
+                "06xhlr39wglnis9nbxgvkp5sz74g5hms0cahlvm8pmphvd5aygnv"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules python-minimal))
+    ;; NOTE: Reporting bugs is linked to web browser, better not link it and let
+    ;; it reslove through xdg-open in the run time
+    (inputs (list kirigami
+                  kirigami-addons
+                  kcrash
+                  kdbusaddons
+                  ki18n
+                  kcalendarcore
+                  kconfigwidgets
+                  kwindowsystem
+                  kcoreaddons
+                  kcontacts
+                  kitemmodels
+                  knotifications
+                  kosmindoormap
+                  kxmlgui
+                  kiconthemes
+                  qtdeclarative
+                  qtsvg))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
+    (home-page "https://apps.kde.org/kongress/")
+    (synopsis "Companion application for conferences")
+    (description "This application provides list of upcoming conferences with
+the schedule and venue information.")
+    (license license:gpl3+)))
+
 (define-public kontrast
   (package
     (name "kontrast")
