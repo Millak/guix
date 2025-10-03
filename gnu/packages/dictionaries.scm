@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,12 +37,13 @@
   #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
-  #:use-module (guix build-system copy)
-  #:use-module (guix build-system cmake)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
@@ -49,8 +51,10 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages education)
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fribidi)
@@ -59,6 +63,7 @@
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gsasl)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages hunspell)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
@@ -66,16 +71,22 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages search)
   #:use-module (gnu packages speech)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
+  #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wordnet)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages xiph)
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages xorg))
 
 (define-public cmudict
   (package
@@ -825,3 +836,68 @@ Guix package is installed.")
      "This package provides a versioned python wrapper package for The CMU
 Pronouncing Dictionary data files.")
     (license license:gpl3+)))
+
+(define-public goldendict-ng
+  (let ((commit "2cfc27361d061103a164705e7f85dbdf6cd6056f")
+        (revision "0"))
+    (package
+      (name "goldendict-ng")
+      (version (git-version "25.10.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/xiaoyifang/goldendict-ng")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0r3aykiwg1jxam72mn1yrgmndnbf0r6nz5l1brqyqbr4wq3ir0p2"))
+         (modules '((guix build utils)))
+         (snippet #~(for-each delete-file-recursively
+                              (list "thirdparty/eb"
+                                    "thirdparty/fmt"
+                                    "thirdparty/tomlplusplus")))))
+      (build-system qt-build-system)
+      (arguments
+       (list #:qtbase qtbase
+             #:configure-flags
+             #~(list
+                ;; use system fmt and toml++ instead of the bundled ones
+                "-DUSE_SYSTEM_FMT=ON"
+                "-DUSE_SYSTEM_TOML=ON")
+             ;; no tests
+             #:tests? #f))
+      (native-inputs (list pkg-config qttools))
+      (inputs (list `(,zstd "lib")
+                    bzip2
+                    ffmpeg
+                    fmt
+                    hunspell
+                    icu4c
+                    libeb
+                    libvorbis
+                    libx11
+                    libxtst
+                    libzim
+                    lzo
+                    opencc
+                    qt5compat
+                    qtmultimedia
+                    qtsvg
+                    qtwebchannel
+                    qtwebengine
+                    tomlplusplus
+                    xapian
+                    xz
+                    zlib))
+      (synopsis "Advanced dictionary lookup program")
+      (description "GoldenDict-ng is an advanced dictionary lookup program
+that supports many dictionary formats, such as MDX, DSL, StarDict, Zim, etc.,
+as well as special types of \"dictionaries\", such as external program,
+website, audio files.  Among ather features are full text search,
+Anki integration, transliteration for some languages, word stemming and
+spelling correction via Hunspell's morphology analysis, unicode case,
+diacritics, punctuation and whitespace folding.  It is forked from the
+original GoldenDict which was developed at http://goldendict.org/.")
+      (home-page "https://xiaoyifang.github.io/goldendict-ng/")
+      (license license:gpl3+))))
