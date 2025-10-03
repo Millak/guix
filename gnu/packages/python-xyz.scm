@@ -1028,6 +1028,27 @@ for working with grapheme cluster groups (graphemes) as defined by the
 It also supports IPython/Jupyter.")
     (license license:expat)))
 
+(define-public python-hatch-argparse-manpage
+  (package
+    (name "python-hatch-argparse-manpage")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hatch_argparse_manpage" version))
+       (sha256
+        (base32 "1zbbww9akz1lca3br67zik80ql774xpfg22njxdxjiw4kpz5alb6"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hatchling))
+    (propagated-inputs (list python-argparse-manpage python-rich))
+    (home-page "https://github.com/damonlynch/hatch-argparse-manpage")
+    (synopsis "Hatch build hook plugin to generate manual pages")
+    (description
+     "This package provides a build hook plugin for Hatch to automatically
+ bs generate a manual page from an ArgumentParser object, using argparse-manpage
+by Pavel Raiskup.")
+    (license license:gpl3+)))
+
 ;; TODO: Move to ci or task-runners, see:
 ;; <https://codeberg.org/guix/guix/issues/3096>.
 (define-public python-huey
