@@ -384,6 +384,10 @@ discovers available Ethernet interfaces, that can be configured, automatically."
     (list '("-q" "-q"))
     "List of additional command-line options."
     empty-serializer)
+  (package
+    (file-like dhcpcd)
+    "The dhcpcd package to use."
+    empty-serializer)
 
   ;; The following defaults replicate the default dhcpcd configuration file.
   ;;
@@ -473,7 +477,8 @@ will depend on."
 
 (define (dhcpcd-shepherd-service config)
   (match-record config <dhcpcd-configuration>
-                (command-arguments interfaces shepherd-provision shepherd-requirement)
+                (command-arguments interfaces package
+                 shepherd-provision shepherd-requirement)
     (let ((config-file (dhcpcd-config-file config)))
       (list (shepherd-service
              (documentation "dhcpcd daemon.")
@@ -482,8 +487,9 @@ will depend on."
              (actions (list (shepherd-configuration-action config-file)))
              (start
               #~(make-forkexec-constructor
-                 (list (string-append #$dhcpcd "/sbin/dhcpcd")
-                       #$@command-arguments "-B" "-f" #$config-file #$@interfaces)))
+                 (list (string-append #$package "/sbin/dhcpcd")
+                       #$@command-arguments "-B" "-f" #$config-file
+                       #$@interfaces)))
              (stop #~(make-kill-destructor)))))))
 
 (define dhcpcd-service-type

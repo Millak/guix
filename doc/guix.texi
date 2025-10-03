@@ -23316,6 +23316,9 @@ configured, automatically.
 @item @code{command-arguments} (default: @code{("-q" "-q")}) (type: list)
 List of additional command-line options.
 
+@item @code{package} (default: @code{dhcpcd}) (type: file-like)
+The dhcpcd package to use.
+
 @item @code{host-name} (default: @code{""}) (type: maybe-string)
 Host name to send via DHCP, defaults to the current system host name.
 
