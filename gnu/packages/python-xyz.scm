@@ -4140,21 +4140,28 @@ interacting with the low-level LibRaw C APIs.")
   (package
     (name "python-easygui")
     (version "0.98.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "easygui" version))
-              (sha256
-               (base32
-                "1zmvmwgxyzvm83818skhn8b4wrci4kmnixaax8q3ia5cn7xrmj6v"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list `(,python "tk")))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/robertlugg/easygui")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vwd0dvldl993sp7b24h5yn269vykq7mmp9khdssqryfchfbajx6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: There seem to be no tests upstream, although the package itself
+     ;; seems to provide a lot of demo elements.
+     (list #:tests? #f))
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list `(,python "tk")))
     (home-page "https://github.com/robertlugg/easygui")
     (synopsis "GUI programming module for Python")
-    (description "EasyGUI is a module for very simple, very easy GUI
-programming in Python.  EasyGUI is different from other GUI generators in that
-EasyGUI is NOT event-driven.  Instead, all GUI interactions are invoked by
-simple function calls.")
+    (description
+     "EasyGUI is a module for easy GUI programming in Python.  EasyGUI is
+different from other GUI generators in that EasyGUI is NOT event-driven.
+Instead, all GUI interactions are invoked by simple function calls.")
     (license license:bsd-3)))
 
 (define-public python-echo
