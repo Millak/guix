@@ -1317,22 +1317,31 @@ of Ordered Set.")
     (version "0.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pastel" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sdispater/pastel")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0dnaw44ss10i10z4ksy0xljknvjap7rb7g0b8p6yzm5x4g2my5a6"))))
-    (build-system python-build-system)
+        (base32 "016zqc41hjjm6szfjnzkmjl0y5q8y07i9792z2n71j9sirhas3b6"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _ (invoke "pytest" "pastel" "tests/"))))))
-    (native-inputs
-     (list python-pytest))
+     (list
+      #:test-flags
+      #~(list "pastel" "tests/")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-poetry-core
+            (lambda _
+              ;; Patch to use the core poetry API.
+              (substitute* "pyproject.toml"
+                (("poetry.masonry.api") "poetry.core.masonry.api")))))))
+    (native-inputs (list python-poetry-core python-pytest))
     (home-page "https://github.com/sdispater/pastel")
     (synopsis "Library to colorize strings in your terminal")
-    (description "Pastel is a simple library to help you colorize strings in
-your terminal.")
+    (description
+     "Pastel is a simple library to help you colorize strings in your
+terminal.")
     (license license:expat)))
 
 (define-public python-pathlib-abc
