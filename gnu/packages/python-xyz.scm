@@ -3795,20 +3795,21 @@ with Python's logging module that outputs records using terminal colors.")
   (package
     (name "python-pyprind")
     (version "2.11.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "PyPrind" version))
-              (sha256
-               (base32
-                "1gscnlvj37m421ch3akm3kddxqkrgbg5zrpwy2ky1j59w6vclzg3"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-psutil))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyPrind" version))
+       (sha256
+        (base32 "1gscnlvj37m421ch3akm3kddxqkrgbg5zrpwy2ky1j59w6vclzg3"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-psutil))
     (home-page "https://github.com/rasbt/pyprind")
     (synopsis "Python Progress Bar and Percent Indicator Utility")
-    (description "The PyPrind (Python Progress Indicator) module provides a
-progress bar and a percentage indicator object that let you track the progress
-of a loop structure or other iterative computation.")
+    (description
+     "The PyPrind (Python Progress Indicator) module provides a progress bar
+and a percentage indicator object that let you track the progress of a loop
+structure or other iterative computation.")
     (license license:bsd-3)))
 
 (define-public python-gh-md-to-html
