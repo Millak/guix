@@ -147,40 +147,43 @@ provides a 'CMakeLists.txt' file as its build system."
     (with-imported-modules imported-modules
       #~(begin
           (use-modules #$@(sexp->gexp modules))
-          (qt-build #:source #+source
-                    #:system #$system
-                    #:outputs #$(outputs->gexp outputs)
-                    #:inputs #$(input-tuples->gexp inputs)
-                    #:search-paths '#$(sexp->gexp
-                                       (map search-path-specification->sexp
-                                            search-paths))
-                    #:phases #$(if (pair? phases)
-                                   (sexp->gexp phases)
-                                   phases)
-                    #:qtbase #+qtbase
-                    #:qt-wrap-excluded-outputs #$qt-wrap-excluded-outputs
-                    #:qt-wrap-excluded-inputs #$qt-wrap-excluded-inputs
-                    #:configure-flags #$configure-flags
-                    #:make-flags #$make-flags
-                    #:out-of-source? #$out-of-source?
-                    #:generator #$generator
-                    #:build-type #$build-type
-                    #:tests? #$tests?
-                    #:test-exclude #$test-exclude
-                    #:test-repeat-until-pass? #$test-repeat-until-pass?
-                    #:test-repeat-until-pass-count #$test-repeat-until-pass-count
-                    #:parallel-build? #$parallel-build?
-                    #:parallel-tests? #$parallel-tests?
-                    #:validate-runpath? #$validate-runpath?
-                    #:patch-shebangs? #$patch-shebangs?
-                    #:strip-binaries? #$strip-binaries?
-                    #:strip-flags #$strip-flags
-                    #:strip-directories #$strip-directories))))
+
+          #$(with-build-variables inputs outputs
+              #~(qt-build
+                 #:source #+source
+                 #:system #$system
+                 #:outputs #$(outputs->gexp outputs)
+                 #:inputs #$(input-tuples->gexp inputs)
+                 #:search-paths '#$(sexp->gexp
+                                    (map search-path-specification->sexp
+                                         search-paths))
+                 #:phases #$(if (pair? phases)
+                                (sexp->gexp phases)
+                                phases)
+                 #:qtbase #+qtbase
+                 #:qt-wrap-excluded-outputs #$qt-wrap-excluded-outputs
+                 #:qt-wrap-excluded-inputs #$qt-wrap-excluded-inputs
+                 #:configure-flags #$configure-flags
+                 #:make-flags #$make-flags
+                 #:out-of-source? #$out-of-source?
+                 #:generator #$generator
+                 #:build-type #$build-type
+                 #:tests? #$tests?
+                 #:test-exclude #$test-exclude
+                 #:test-repeat-until-pass? #$test-repeat-until-pass?
+                 #:test-repeat-until-pass-count #$test-repeat-until-pass-count
+                 #:parallel-build? #$parallel-build?
+                 #:parallel-tests? #$parallel-tests?
+                 #:validate-runpath? #$validate-runpath?
+                 #:patch-shebangs? #$patch-shebangs?
+                 #:strip-binaries? #$strip-binaries?
+                 #:strip-flags #$strip-flags
+                 #:strip-directories #$strip-directories)))))
 
   (mlet %store-monad ((guile (package->derivation (or guile (default-guile))
                                                   system #:graft? #f)))
     (gexp->derivation name builder
-                      #:graft? #f                 ;consistent with 'gnu-build'
+                      #:graft? #f       ;consistent with 'gnu-build'
                       #:system system
                       #:guile-for-build guile
                       #:allowed-references allowed-references
