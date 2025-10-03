@@ -937,10 +937,38 @@ which allows one to install the M8 firmware on any Teensy.")
                   (("\\$\\{CMAKE_SOURCE_DIR}/3rdparty/sanitizers-cmake/cmake")
                    (string-append
                     #$(this-package-native-input "sanitizers-cmake")
-                    "/share/sanitizers-cmake/cmake"))))))))
+                    "/share/sanitizers-cmake/cmake")))))
+            (add-after 'install 'run-tests
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (setenv "PATH"
+                          (string-append #$output "/bin:" (getenv "PATH")))
+                  ;; ice40
+                  (invoke "./nextpnr-ice40-test")
+                  (chdir "../source")
+                  (setenv "NEXTPNR" "nextpnr-ice40")
+                  (with-directory-excursion "ice40/smoketest/attosoc"
+                    (invoke "./smoketest.sh"))
+                  (with-directory-excursion "tests/ice40/regressions"
+                    (invoke "make" (string-append
+                                    "NPNR=" #$output "/bin/nextpnr-ice40")))
+                  ;; generic
+                  (setenv "NPNR" "nextpnr-generic")
+                  (invoke "nextpnr-generic" "--uarch" "example" "--test")
+                  (with-directory-excursion "tests/generic/flow/bel-pin"
+                    (invoke "./run.sh"))
+                  ;; ecp5
+                  (invoke "nextpnr-ecp5"
+                          "--um5g-25k" "--package" "CABGA381" "--test")
+                  (with-directory-excursion "tests/ecp5/regressions"
+                    (invoke "make"
+                            (string-append
+                             "NPNR=" #$output "/bin/nextpnr-ecp5")))))))))
       (native-inputs
        (list icestorm
+             iverilog
              googletest
+             gzip
              prjbeyond-db
              prjpeppercorn
              prjtrellis
