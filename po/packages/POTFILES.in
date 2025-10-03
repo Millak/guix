@@ -499,7 +499,6 @@ gnu/packages/re2c.scm
 gnu/packages/rsync.scm
 gnu/packages/ruby-check.scm
 gnu/packages/ruby.scm
-gnu/packages/rush.scm
 gnu/packages/rust.scm
 gnu/packages/samba.scm
 gnu/packages/scribus.scm

@@ -604,7 +604,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/ruby.scm				\
   %D%/packages/ruby-check.scm				\
   %D%/packages/ruby-xyz.scm				\
-  %D%/packages/rush.scm				\
   %D%/packages/rust.scm				\
   %D%/packages/rust-apps.scm			\
   %D%/packages/rust-crates.scm			\

@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Cyril Roelandt <tipecaml@gmail.com>
+;;; Copyright © 2013, 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014 Kevin Lemonnier <lemonnierk@ulrar.net>
 ;;; Copyright © 2015 Jeff Mickey <j@codemac.net>
@@ -425,6 +426,27 @@ derived from Byron Rakitzis's public domain implementation of rc, and was
 written by Paul Haahr and Byron Rakitzis.")
     (home-page "https://wryun.github.io/es-shell/")
     (license license:public-domain)))
+
+(define-public rush
+  (package
+    (name "rush")
+    (version "2.4")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append "mirror://gnu/rush/rush-"
+                                 version ".tar.gz"))
+             (sha256
+              (base32
+               "1nqjjbamdn4lcysc2hji3i73jjl1ghivb24h12zh79xnka438vr6"))))
+    (build-system gnu-build-system)
+    (home-page "https://www.gnu.org/software/rush/")
+    (synopsis "Restricted user (login) shell")
+    (description
+     "GNU Rush is a restricted user shell, for systems on which users are to
+be provided with only limited functionality or resources.  Administrators set
+user rights via a configuration file which can be used to limit, for example,
+the commands that can be executed, CPU time, or virtual memory usage.")
+    (license license:gpl3+)))
 
 (define-public tcsh
   (package
