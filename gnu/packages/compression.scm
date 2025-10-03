@@ -2339,17 +2339,16 @@ non-Windows systems without running the actual installer using wine.")
 (define-public isa-l
   (package
    (name "isa-l")
-   (version "2.30.0")
+   (version "2.31.1")
    (source
     (origin
      (method git-fetch)
      (uri (git-reference
            (url "https://github.com/intel/isa-l")
-           ;; Corresponds to tag v2.30.0
-           (commit "2df39cf5f1b9ccaa2973f6ef273857e4dc46f0cf")))
+           (commit (string-append "v" version))))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "06ymkrf3hkkd94i59ahm79545rk709y8rd0v2l86w38z6is942q0"))))
+      (base32 "17k679glx05v23n8kxbg9vmbf89i2252g5xj6w3dkz19asmh1zd6"))))
    (build-system gnu-build-system)
    (native-inputs (list autoconf automake libtool nasm))
    (home-page "https://github.com/intel/isa-l")
