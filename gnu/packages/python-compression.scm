@@ -713,25 +713,21 @@ the LZ4 frame format.")
     ;; packages. To avoid a name collision in Guix, we use the variable name
     ;; `python-python-snappy' for the package called `python-snappy' on PyPI.
     (name "python-python-snappy")
-    (version "0.6.1")
+    (version "0.7.3")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "python-snappy" version))
+       (uri (pypi-uri "python_snappy" version))
        (sha256
-        (base32 "0amv12w0ybn6n1lk36x70a3l8bdjv4mn7iflb59wqsi00smhg8dn"))))
-    (build-system python-build-system)
+        (base32 "1qyfhsaagpzgrw5n2zklx670zi0f3lm1djqyg2n3hbgvmldnq8a0"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest" "-vv" "-k"
-                                ;; CFFI is only supported for PyPy builds.
-                                (string-append "not test_snappy_cffi_enum "
-                                               "and not test_snappy_all_cffi"))))))))
-    (inputs (list snappy))
-    (native-inputs (list python-pytest))
+     (list #:test-backend #~'unittest))
+    (native-inputs
+     (list python-cramjam
+           python-setuptools))
+    (inputs
+     (list snappy))
     (home-page "https://github.com/andrix/python-snappy")
     (synopsis "Python bindings for the Snappy compression library")
     (description
