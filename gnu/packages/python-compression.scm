@@ -459,13 +459,13 @@ compression algorithm.")
 (define-public python-isal
   (package
     (name "python-isal")
-    (version "1.1.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "isal" version))
        (sha256
-        (base32 "01914gwfrb95dagz9sqnsmvc0hssg2pb6aj204fdamss4piz8r0k"))
+        (base32 "1d7j30922v547vnif171yhk1jml9cv14izda0w506qhslglk6hhj"))
        ;; Remove bundled isa-l source code
        (modules '((guix build utils)))
        (snippet
@@ -473,14 +473,17 @@ compression algorithm.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-backend #~'unittest
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'use-dynamic-linking
             (lambda _
               (setenv "PYTHON_ISAL_LINK_DYNAMIC" "1"))))))
     (inputs (list isa-l))
-    (native-inputs (list python-cython python-setuptools python-wheel))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
     (home-page "https://github.com/pycompression/python-isal")
     (synopsis "Python bindings for the ISA-L compression library")
     (description
