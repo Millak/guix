@@ -1156,8 +1156,8 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-python
   (tree-sitter-grammar
    "python" "Python"
-   "0a108sfqcsxrp54lapk7k3kq6fmz8745z5q99wpn3i1cqpi9slzg"
-   "0.23.6"))
+   "05kk1wlm5fgpgwqxw3m68sipkinw0gf2jq19cgq9cgp3agdwg58p"
+   "0.25.0"))
 
 (define-public tree-sitter-python-manifest
   (tree-sitter-grammar
