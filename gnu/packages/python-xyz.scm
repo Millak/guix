@@ -1049,6 +1049,26 @@ It also supports IPython/Jupyter.")
 by Pavel Raiskup.")
     (license license:gpl3+)))
 
+(define-public python-hatch-gettext
+  (package
+    (name "python-hatch-gettext")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hatch_gettext" version))
+       (sha256
+        (base32 "05sh574p1c4wdf9gky965km3f5n904hxkyils07f1b0jyswlm3nh"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hatchling))
+    (propagated-inputs (list python-rich))
+    (home-page "https://github.com/damonlynch/hatch-gettext")
+    (synopsis "Hatch build hook plugin for GNU gettext")
+    (description
+     "This package provides a build hook plugin for Hatch that compiles
+ bsmulti-lingual messages with GNU gettext's tools msgfmt.")
+    (license license:gpl3+)))
+
 ;; TODO: Move to ci or task-runners, see:
 ;; <https://codeberg.org/guix/guix/issues/3096>.
 (define-public python-huey
