@@ -21572,13 +21572,13 @@ python-xdo for newer bindings.)")
 (define-public python-xdoctest
   (package
     (name "python-xdoctest")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "xdoctest" version))
        (sha256
-        (base32 "0qsqxp9bpjzg8kb4k8n3sppzbzdr6l6n0vkm7z9qir4ii5nwmkyq"))))
+        (base32 "1m69yvc3bl9jj5av89p9jl08w9lsn0k3lqclpdbiq0g67fdbjb7r"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -21592,11 +21592,9 @@ python-xdo for newer bindings.)")
     (native-inputs (list cmake-minimal
                          ninja
                          pybind11
-                         python-pytest
-                         python-pytest-cov
+                         python-pytest-bootstrap
                          python-scikit-build
-                         python-setuptools
-                         python-wheel))
+                         python-setuptools))
     (home-page "https://github.com/Erotemic/xdoctest")
     (synopsis "Rewrite of the Python builtin doctest module")
     (description "This package provides a rewrite of the builtin doctest
