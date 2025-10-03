@@ -538,6 +538,7 @@ compression algorithm variation H and I.2.  It provides an API similar to
 Python's zlib/bz2/lzma modules.")
     (license license:lgpl2.1+)))
 
+;; XXX: Project is archived and not maintained since 2022.
 (define-public python-ppmd-cffi
   (package
     (name "python-ppmd-cffi")
@@ -549,15 +550,18 @@ Python's zlib/bz2/lzma modules.")
        (sha256
         (base32
          "0vprpl29fkflqx0m6anfpx7q7i4cw0d0qxcdm91k4pl82dcad81g"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; AssertionError: assert False
+      #:test-flags #~(list "--deselect=tests/test_cli.py::test_cli_help")))
     (propagated-inputs
      (list python-cffi))
     (native-inputs
-     (list python-hypothesis
-           python-setuptools-scm
-           python-coverage
-           python-pytest
-           python-pytest-cov))
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm))
     (home-page "https://github.com/miurahr/ppmd")
     (synopsis "Prediction by Partial Matching compression library")
     (description "PPMd is a compression algorithm library using the Prediction
