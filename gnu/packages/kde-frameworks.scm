@@ -3159,32 +3159,6 @@ maintaining an index of the contents of your files.")
     ;; dual licensed
     (license (list license:gpl2+ license:lgpl2.1+))))
 
-(define-public plasma-activities-stats
-  (package
-    (name "plasma-activities-stats")
-    (version "6.3.6")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/stable/plasma/"
-                                  version "/plasma-activities-stats-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "1qhh01srvbdlry3i269j3bmwyjkaqa3fdgqipq2k3n7a8kbzrj8m"))))
-    (build-system cmake-build-system)
-    (arguments (list #:tests? #f))
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list boost plasma-activities kconfig qtbase qtdeclarative))
-    (home-page "https://invent.kde.org/plasma/plasma-activities-stats")
-    (synopsis "Access usage statistics collected by the activity manager")
-    (description "The KActivitiesStats library provides a querying mechanism for
-the data that the activity manager collects---which documents have been opened
-by which applications, and what documents have been linked to which activity.")
-    ;; triple licensed
-    (license (list license:lgpl2.0+ license:lgpl2.1+ license:lgpl3+))))
-
 (define-public kbookmarks
   (package
     (name "kbookmarks")
