@@ -1948,44 +1948,6 @@ audio/video codec library.")
         #~(cons "--enable-avresample"
                 (fold delete #$flags '("--enable-libshaderc"))))))))
 
-(define-public ffmpeg-for-stepmania
-  (hidden-package
-   (package
-     (inherit ffmpeg-4)
-     (version "2.1.3")
-     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/stepmania/ffmpeg")
-              (commit "eda6effcabcf9c238e4635eb058d72371336e09b")))
-        (sha256
-         (base32 "1by8rmbva8mfrivdbbkr2gx4kga89zqygkd4cfjl76nr8mdcdamb"))
-        (file-name (git-file-name "ffmpeg" version))
-        (patches (search-patches "ffmpeg-4-binutils-2.41.patch"))))
-     (arguments
-      (substitute-keyword-arguments (package-arguments ffmpeg-4)
-        ((#:configure-flags flags)
-         #~(list "--disable-programs"
-                 "--disable-doc"
-                 "--disable-debug"
-                 "--disable-avdevice"
-                 "--disable-swresample"
-                 "--disable-postproc"
-                 "--disable-avfilter"
-                 "--disable-shared"
-                 "--enable-static"))
-        ((#:phases phases)
-         #~(modify-phases #$phases
-             (add-after 'configure 'relax-gcc-14-strictness
-               (lambda _
-                 (substitute* "config.mak"
-                   (("CFLAGS *=" all)
-                    (string-append all
-                                   " -Wno-error=incompatible-pointer-types"
-                                   " -Wno-error=int-conversion ")))))))))
-     (inputs '()))))
-
 ;;; Custom ffmpeg package used by Jami, which incorporates custom patches.
 (define-public ffmpeg-jami
   (let ((ffmpeg ffmpeg-6))
