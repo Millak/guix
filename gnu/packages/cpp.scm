@@ -104,6 +104,7 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libevent)
@@ -913,7 +914,7 @@ library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
 (define-public hyprgraphics
   (package
     (name "hyprgraphics")
-    (version "0.1.5")
+    (version "0.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -924,14 +925,18 @@ library for SIMD (Single Instruction, Multiple Data) with runtime dispatch.")
               (snippet #~(substitute* "CMakeLists.txt" (("libjxl_cms") "")))
               (sha256
                (base32
-                "0q7bpywn8ljsj3dymvv19cm7n0r51vg5hj1jsapdl5bwpwf7bf41"))))
+                "1xr2pbawwnnwjwzkgsy9s4wq1j85x4qhj3m4s2pwb9wp6g69da2g"))))
     (build-system cmake-build-system)
     (native-inputs (list gcc-15 pkg-config))
     (inputs (list cairo
                   hyprutils
                   libjpeg-turbo
                   libjxl
+                  ;; Note: The current librsvg-2.40 for non-Rust architectures
+                  ;; is too old.
+                  (librsvg-for-system)
                   libwebp
+                  pango
                   pixman
                   spng))
     (home-page "https://wiki.hypr.land/Hypr-Ecosystem/hyprgraphics/")
