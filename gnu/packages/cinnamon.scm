@@ -27,6 +27,7 @@
   #:use-module (guix gexp)
   #:use-module (guix build utils)
   #:use-module (guix utils)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
@@ -636,6 +637,32 @@ as well as a configuration program to choose applications starting on login.")
 parameters of a Cinnamon session and the applications that run under it.  It
 handles settings such keyboard layout, shortcuts, and accessibility, clipboard
 settings, themes, mouse settings, and startup of other daemons.")
+    (license license:gpl2+)))
+
+(define-public cinnamon-translations
+  (package
+    (name "cinnamon-translations")
+    (version "6.6.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/linuxmint/cinnamon-translations")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0kmiqlhk4243pqcsg7d45dvs439dap040gwfpm9xn56hibsicz0c"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan #~`(("usr/share/locale" "share/locale"))
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'install 'build
+                     (lambda _ (invoke "make"))))))
+    (native-inputs (list gettext-minimal gnu-make))
+    (home-page "https://github.com/linuxmint/cinnamon-translations")
+    (synopsis "Translations for cinnamon")
+    (description "This package provides translation files for cinnamon and
+related packages.")
     (license license:gpl2+)))
 
 (define-public muffin
