@@ -498,6 +498,30 @@ menu editor.")
     (home-page "https://github.com/linuxmint/cinnamon-menus")
     (license license:lgpl2.0+)))
 
+(define-public cinnamon-screensaver
+  (package
+    (name "cinnamon-screensaver")
+    (version "6.6.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/linuxmint/cinnamon-screensaver")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1n8fg4p036v3wgx21pxxcjwn620nfjg2fplznc5jfknwi9qggb9l"))))
+    (build-system meson-build-system)
+    (inputs (list gtk+
+                  linux-pam
+                  xdotool))
+    (native-inputs
+     (list gettext-minimal `(,glib "bin") gobject-introspection pkg-config))
+    (home-page "https://github.com/linuxmint/cinnamon-screensaver")
+    (synopsis "Cinnamon Screensaver")
+    (description "This package provides the Cinnamon screen locker and
+screensaver program.")
+    (license license:gpl2+)))
+
 (define-public cinnamon-settings-daemon
   (package
     (name "cinnamon-settings-daemon")
