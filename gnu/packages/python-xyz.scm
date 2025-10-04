@@ -12714,6 +12714,63 @@ objects.")
      "This is a Python library for color math and conversions.")
     (license license:bsd-3)))
 
+(define-public python-pam
+  (package
+    (name "python-pam")
+    (version "2.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/FirefighterBlu3/python-pam")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05fvf9rg4h7sigzvipm1ghq34zk6i8na7wkyk905nvk4gdhln7ri"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k"
+              (string-append "     not __normal_"
+                             " and not __env_requires_"
+                             " and not __getenv"
+                             " and not __putenv"
+                             " and not __unset"
+                             " and not  _setenv"
+                             " and not  _env_set"
+                             " and not __pam_end"
+                             " and not  _session_unauthenticated"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'bake-pam
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/pam/__internals.py"
+                (("find_library\\(\"(pam|pam_misc)\"\\)" all lib)
+                 (string-append
+                  "\""
+                  (search-input-file inputs
+                                     (string-append "lib/lib" lib ".so"))
+                  "\"")))))
+          (add-before 'check 'fix-test-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"test_\\*.py\"")
+                 (format
+                  #f "[~{~s~^,~}]"
+                  (map basename (find-files "tests" "test_.*\\.py$"))))
+                (("norecursedirs = (\".*\")" all dirs)
+                 (string-append "norecursedirs = [" dirs "]"))))))))
+    (inputs (list linux-pam))
+    (propagated-inputs (list python-six))
+    (native-inputs (list python-pytest
+                         python-setuptools))
+    (home-page "https://github.com/FirefighterBlu3/python-pam")
+    (synopsis "Python PAM module")
+    (description "This package provides a Python module to interface with
+@acronym{PAM, pluggable authentication modules}.")
+    (license license:expat)))
+
 (define-public python-pyspnego
   (package
     (name "python-pyspnego")
