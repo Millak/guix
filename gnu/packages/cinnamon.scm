@@ -522,6 +522,36 @@ menu editor.")
 screensaver program.")
     (license license:gpl2+)))
 
+(define-public cinnamon-session
+  (package
+    (name "cinnamon-session")
+    (version "6.6.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/linuxmint/cinnamon-session")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0kb10aq1m1pyignqhl56svs68a2za1fq0wc38pklpxnh2nsgw7mg"))))
+    (build-system meson-build-system)
+    (inputs (list cinnamon-desktop
+                  glib
+                  gtk+
+                  libcanberra
+                  libgnomekbd
+                  libsm
+                  libxapp
+                  libxkbfile
+                  xtrans))
+    (native-inputs
+     (list gettext-minimal `(,glib "bin") gobject-introspection pkg-config))
+    (home-page "https://github.com/linuxmint/cinnamon-session")
+    (synopsis "Cinnamon session manager")
+    (description "his package contains the Cinnamon session manager,
+as well as a configuration program to choose applications starting on login.")
+    (license license:gpl2+)))
+
 (define-public cinnamon-settings-daemon
   (package
     (name "cinnamon-settings-daemon")
