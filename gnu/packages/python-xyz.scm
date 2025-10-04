@@ -21525,50 +21525,6 @@ Python utility you write that deals with user cache, configuration, or data
 files.")
     (license license:isc)))
 
-(define-public python-xdo
-  (package
-    (name "python-xdo")
-    (version "0.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://http.debian.net/debian/pool/main/p/python-xdo/"
-                    "python-xdo_" version ".orig.tar.gz"))
-              (sha256
-               (base32
-                "109fm7crafkjwbnx6k01vy8xiyisgadi6fln4w0yc9s8b4ifb3qc"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f  ; no tests provided
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-libxdo-path
-            ;; Hardcode the path of dynamically loaded libxdo library.
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((libxdo (string-append
-                             (assoc-ref inputs "xdotool")
-                             "/lib/libxdo.so"))
-                    (libc (string-append
-                           (assoc-ref inputs "libc")
-                           "/lib/libc.so.6")))
-                (substitute* "xdo/_xdo.py"
-                  (("find_library\\(\"xdo\"\\)")
-                   (simple-format #f "\"~a\"" libxdo))
-                  (("ctypes\\.util\\.find_library\\('libc'\\)")
-                   (simple-format #f "\"~a\"" libc)))))))))
-    (native-inputs
-     (list python-setuptools))
-    (inputs
-     (list xdotool
-           libx11))
-    (home-page "https://tracker.debian.org/pkg/python-xdo")
-    (synopsis "Python library for simulating X11 keyboard/mouse input")
-    (description "Provides bindings to libxdo for manipulating X11 via simulated
-input.  (Note that this is mostly a legacy library; you may wish to look at
-python-xdo for newer bindings.)")
-    (license license:bsd-3)))
-
 (define-public python-mako
   (package
     (name "python-mako")
