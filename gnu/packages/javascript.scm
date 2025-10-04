@@ -549,6 +549,74 @@ and DAGs in JSON, and to then recover them.  This is a capability that is not
 provided by ES5.  @code{JSONPath} is used to represent the links.")
       (license license:public-domain))))
 
+(define (make-js-lunr-lang lang-name abbrev)
+  (package
+    (name (string-append "js-lunr-" abbrev))
+    (version "1.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/MihaiValentin/lunr-languages")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03q1awcg5plxdzxg89cd4x8lvnjfba541kbx59q2c6ly7dh4pyv6"))))
+    (build-system minify-build-system)
+    (arguments
+     (list
+      #:javascript-files
+      #~(list #$(string-append "lunr." abbrev ".js"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'install-license-files))))
+    (home-page "https://github.com/MihaiValentin/lunr-languages")
+    (synopsis (string-append lang-name "stemmers and stopwords"))
+    (description
+     (format #f "This package provides ~a stemmers and stopwords for the Lunr \
+Javascript library."
+             lang-name))
+    (license license:expat)))
+
+(define-public js-lunr-ar (make-js-lunr-lang "Arabic" "ar"))
+(define-public js-lunr-da (make-js-lunr-lang "Danish" "da"))
+(define-public js-lunr-de (make-js-lunr-lang "German" "de"))
+(define-public js-lunr-el (make-js-lunr-lang "Greek" "el"))
+(define-public js-lunr-es (make-js-lunr-lang "Spanish" "es"))
+(define-public js-lunr-fi (make-js-lunr-lang "Finnish" "fi"))
+(define-public js-lunr-fr (make-js-lunr-lang "French" "fr"))
+(define-public js-lunr-he (make-js-lunr-lang "Hebrew" "he"))
+(define-public js-lunr-hi (make-js-lunr-lang "Hindi" "hi"))
+(define-public js-lunr-hu (make-js-lunr-lang "Hungarian" "hu"))
+(define-public js-lunr-hy (make-js-lunr-lang "Armenian" "hy"))
+(define-public js-lunr-it (make-js-lunr-lang "Italian" "it"))
+(define-public js-lunr-ja (make-js-lunr-lang "Japanese" "ja"))
+(define-public js-lunr-kn (make-js-lunr-lang "Kannada" "kn"))
+(define-public js-lunr-ko (make-js-lunr-lang "Korean" "ko"))
+(define-public js-lunr-nl (make-js-lunr-lang "Dutch" "nl"))
+(define-public js-lunr-no (make-js-lunr-lang "Norwegian" "no"))
+(define-public js-lunr-pt (make-js-lunr-lang "Portuguese" "pt"))
+(define-public js-lunr-ro (make-js-lunr-lang "Romanian" "ro"))
+(define-public js-lunr-ru (make-js-lunr-lang "Russian" "ru"))
+(define-public js-lunr-sa (make-js-lunr-lang "Sanskrit" "sa"))
+(define-public js-lunr-sv (make-js-lunr-lang "Swedish" "sv"))
+(define-public js-lunr-ta (make-js-lunr-lang "Tamil" "ta"))
+(define-public js-lunr-te (make-js-lunr-lang "Telugu" "te"))
+(define-public js-lunr-th (make-js-lunr-lang "Thai" "th"))
+(define-public js-lunr-tr (make-js-lunr-lang "Turkish" "tr"))
+(define-public js-lunr-vi (make-js-lunr-lang "Vietnamese" "vi"))
+(define-public js-lunr-zh (make-js-lunr-lang "Chinese" "zh"))
+
+(define-public js-lunr-multi (make-js-lunr-lang "Multilanguages" "multi"))
+(define-public js-lunr-stemmer-support
+  (let ((pkg (make-js-lunr-lang "" "stemmer.support")))
+    (package/inherit pkg
+      (name "js-lunr-stemmer-support")
+      (synopsis "Stemmer support for Lunr")
+      (description
+       "This package provides stemmer support for the Lunr Javascript
+library."))))
+
 (define-public js-strftime
   (package
     (name "js-strftime")
