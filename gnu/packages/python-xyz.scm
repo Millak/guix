@@ -40567,12 +40567,13 @@ of several plugins.")
        (sha256
         (base32 "1ryc5099sjsa49fhcm6dp5l4rp9v9yxrh17ml78y89idfbbfhvs1"))))
     (build-system pyproject-build-system)
+    ;; tests: 3007 passed, 1758 skipped
     (native-inputs
      (list python-poetry-core
            python-pytest
            python-pytest-mock))
     (propagated-inputs
-     (list python-termcolor))
+     (list python-termcolor-next))
     (home-page "https://github.com/pavdmyt/yaspin")
     (synopsis "Yet Another Terminal Spinner")
     (description "Yaspin provides a terminal spinner to indicate the progress
