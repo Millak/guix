@@ -4298,7 +4298,7 @@ background file post-processing.")
 (define-public supercollider
   (package
     (name "supercollider")
-    (version "3.13.1")
+    (version "3.14.0")
     (source
      (origin
        (method git-fetch)
@@ -4310,7 +4310,7 @@ background file post-processing.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ii3nczg46f2hzgj2fkd418wgkbal54yhh90sza9vr66l1kxlp2s"))
+         "1qp163c6mg1d8c59ar3v1yixryr1paa9bs8pkz6yd3c86qz24n0h"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
        (snippet
@@ -4332,7 +4332,7 @@ background file post-processing.")
 AbletonLinkConfig\\.cmake\\)")
                "find_package(AbletonLink NAMES AbletonLink ableton-link \
 link REQUIRED)"))))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (outputs
      '("out"                            ;core language
        "ide"))                          ;qt ide
@@ -4346,7 +4346,7 @@ link REQUIRED)"))))))
               "-DFORTIFY=ON"
               "-DLIBSCSYNTH=ON"
               "-DSC_EL=OFF")      ;scel is packaged individually as emacs-scel
-      #:modules '((guix build cmake-build-system)
+      #:modules '((guix build qt-build-system)
                   ((guix build gnu-build-system) #:prefix gnu:)
                   (guix build utils))
       #:phases
@@ -4367,15 +4367,6 @@ link REQUIRED)"))))))
                      "SC_Filesystem::instance\\(\\)\\.getDirectory"
                      "\\(DirName::Resource\\) / CLASS_LIB_DIR_NAME"))
                    (string-append "Path(\"" scclass-dir "\")"))))))
-          (add-after 'patch-scclass-dir 'fix-struct-SOUNDFILE-tag
-            (lambda _
-              (substitute* "include/plugin_interface/SC_SndBuf.h"
-                (("SNDFILE_tag")
-                 "sf_private_tag"))))
-          (add-before 'build 'prepare-x
-            (lambda _
-              (system "Xvfb &")
-              (setenv "DISPLAY" ":0")))
           (replace 'install (assoc-ref gnu:%standard-phases 'install))
           (add-before 'install 'install-ide
             (lambda _
@@ -4385,8 +4376,8 @@ link REQUIRED)"))))))
                               (string-append ide "/bin"))
                 (delete-file scide)))))))
     (native-inputs
-     (list ableton-link pkg-config qttools-5 xorg-server-for-tests))
-    (inputs (list jack-1
+     (list ableton-link pkg-config qttools))
+    (inputs (list jack-2
                   libsndfile
                   fftw
                   libxt
@@ -4400,13 +4391,12 @@ link REQUIRED)"))))))
                   yaml-cpp
                   python-wrapper        ;there were warnings in the build process
                   ruby                  ;there were warnings in the build process
-                  qtbase-5
-                  qtdeclarative-5
-                  qtsvg-5
-                  qtwebchannel-5
-                  qtwebsockets-5))
+                  qtdeclarative
+                  qtsvg
+                  qtwebchannel
+                  qtwebsockets))
     (propagated-inputs                  ;to get native-search-path
-     (list qtwebengine-5))
+     (list qtwebengine))
     (home-page "https://github.com/supercollider/supercollider")
     (synopsis "Synthesis engine and programming language")
     (description "SuperCollider is a synthesis engine (@code{scsynth} or
