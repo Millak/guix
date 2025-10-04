@@ -65,6 +65,12 @@
                               "/include/json-c")))
        #:phases
        #~(modify-phases %standard-phases
+           (add-after 'unpack 'fix-build
+             (lambda _
+               ;; Fix build with libxml2 >= 2.14.
+               (substitute* "libcob/common.c"
+                 (("#include <libxml/xmlwriter.h>" all)
+                  (string-append all "\n#include <libxml/parser.h>")))))
            (add-after 'unpack 'place-cobol85-test-suite
              (lambda* (#:key inputs #:allow-other-keys)
                (let ((newcob (assoc-ref inputs "newcob")))
