@@ -21528,7 +21528,7 @@ files.")
 (define-public python-xdo
   (package
     (name "python-xdo")
-    (version "0.3")
+    (version "0.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -21536,32 +21536,32 @@ files.")
                     "python-xdo_" version ".orig.tar.gz"))
               (sha256
                (base32
-                "1vqh1n5yy5dhnq312kwrl90fnck4v26is3lq3lxdvcn60vv19da0"))))
-    (build-system python-build-system)
+                "109fm7crafkjwbnx6k01vy8xiyisgadi6fln4w0yc9s8b4ifb3qc"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'patch-libxdo-path
-           ;; Hardcode the path of dynamically loaded libxdo library.
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libxdo (string-append
-                            (assoc-ref inputs "xdotool")
-                            "/lib/libxdo.so"))
-                   (libc (string-append
-                          (assoc-ref inputs "libc")
-                          "/lib/libc.so.6")))
-               (substitute* "xdo/_xdo.py"
-                 (("find_library\\(\"xdo\"\\)")
-                  (simple-format #f "\"~a\"" libxdo))
-                 (("ctypes\\.util\\.find_library\\('libc'\\)")
-                  (simple-format #f "\"~a\"" libc)))
-               #t))))
-       #:tests? #f))  ; no tests provided
-    (propagated-inputs
-     (list python-six))
+     (list
+      #:tests? #f  ; no tests provided
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-libxdo-path
+            ;; Hardcode the path of dynamically loaded libxdo library.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((libxdo (string-append
+                             (assoc-ref inputs "xdotool")
+                             "/lib/libxdo.so"))
+                    (libc (string-append
+                           (assoc-ref inputs "libc")
+                           "/lib/libc.so.6")))
+                (substitute* "xdo/_xdo.py"
+                  (("find_library\\(\"xdo\"\\)")
+                   (simple-format #f "\"~a\"" libxdo))
+                  (("ctypes\\.util\\.find_library\\('libc'\\)")
+                   (simple-format #f "\"~a\"" libc)))))))))
+    (native-inputs
+     (list python-setuptools))
     (inputs
-     `(("xdotool" ,xdotool)
-       ("libX11" ,libx11)))
+     (list xdotool
+           libx11))
     (home-page "https://tracker.debian.org/pkg/python-xdo")
     (synopsis "Python library for simulating X11 keyboard/mouse input")
     (description "Provides bindings to libxdo for manipulating X11 via simulated
