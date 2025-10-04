@@ -822,7 +822,8 @@ coverages using a SpatiaLite DBMS.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "102hc18fvwr1kw8aap53zqi8r0l52b8wa00lvlbf1zys979jvgj3"))))
+         "102hc18fvwr1kw8aap53zqi8r0l52b8wa00lvlbf1zys979jvgj3"))
+       (patches (search-patches "libspatialite-libxml2-2.14.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
