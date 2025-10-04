@@ -52,6 +52,7 @@
             search-bootstrap-binary
 
             mock
+            %tests-build-timeout
             %test-substitute-urls
             test-assertm
             test-equalm
@@ -72,6 +73,13 @@
 ;;;
 ;;; Code:
 
+(define %tests-build-timeout
+  ;; Timeout limit for guix unit tests (default: 5 minutes)
+  (let ((default (* 5 60)))
+    (match (getenv "GUIX_TESTS_BUILD_TIMEOUT")
+      (#f default)
+      (str (or (string->number str) default)))))
+
 (define %test-substitute-urls
   ;; URLs where to look for substitutes during tests.
   (make-parameter
@@ -86,11 +94,11 @@
              #f))
     (let ((store (open-connection uri)))
       ;; Make sure we build everything by ourselves.  When we build something,
-      ;; it should take at most 3 minutes.
+      ;; it should take at most a few minutes.
       (set-build-options store
                          #:use-substitutes? #f
                          #:substitute-urls (%test-substitute-urls)
-                         #:timeout (* 3 60))
+                         #:timeout %tests-build-timeout)
 
       ;; Use the bootstrap Guile when running tests, so we don't end up
       ;; building everything in the temporary test store.
@@ -151,7 +159,7 @@ no external store to talk to."
         (lambda ()
           (when store
             ;; Make sure we don't end up rebuilding the world for those tests.
-            (set-build-options store #:timeout (* 3 60)))
+            (set-build-options store #:timeout %tests-build-timeout))
           (proc store))
         (lambda ()
           (when store-variable

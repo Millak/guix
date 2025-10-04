@@ -32,7 +32,7 @@ storedir="`guile -c '(use-modules (guix config))(display %storedir)'`"
 localstatedir="`guile -c '(use-modules (guix config))(display %localstatedir)'`"
 NIX_STORE_DIR="$storedir"
 GUIX_DAEMON_SOCKET="$localstatedir/guix/daemon-socket/socket"
-GUIX_BUILD_OPTIONS="--timeout=180"
+GUIX_BUILD_OPTIONS="--timeout=`guile -c '(use-modules (guix tests))(display %tests-build-timeout)'`"
 export NIX_STORE_DIR GUIX_DAEMON_SOCKET GUIX_BUILD_OPTIONS
 
 if ! guile -c '(use-modules (guix)) (exit (false-if-exception (open-connection)))'
