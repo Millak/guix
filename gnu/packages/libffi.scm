@@ -6,7 +6,7 @@
 ;;; Copyright © 2016, 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017, 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2021 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2019, 2021, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020 John Doe <dftxbs3e@free.fr>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -35,6 +35,7 @@
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -44,7 +45,9 @@
   #:use-module (gnu packages sphinx)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
-  #:use-module ((guix build-system python) #:select (pypi-uri))
+  #:use-module ((guix build-system python) #:select (pypi-uri
+                                                     package-with-python2
+                                                     python-build-system))
   #:use-module (guix build-system ruby))
 
 (define-public libffi
@@ -165,6 +168,24 @@ conversions for values passed between the two languages.")
     (synopsis "Foreign function interface for Python")
     (description "Foreign Function Interface for Python calling C code.")
     (license expat)))
+
+;;; This Python 2 dependency is needed by the Pypy build system, which is
+;;; unlikely to change in the future.
+(define-public python2-cffi
+  (let ((base (package/inherit python-cffi
+                ;; FIXME: package-with-python2 needs to be updated to accept
+                ;; pyproject-build-system package.
+                (build-system python-build-system)
+                (arguments
+                 (cons* #:tests? #f
+                        (strip-keyword-arguments
+                         '(#:test-flags)
+                         (package-arguments python-cffi))))
+                (native-inputs '())
+                (inputs (modify-inputs (package-inputs python-cffi)
+                          (append libxcrypt)))
+                (propagated-inputs (list python2-pycparser)))))
+    (package-with-python2 base)))
 
 (define-public python-cffi-documentation
   (package
