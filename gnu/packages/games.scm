@@ -9438,23 +9438,26 @@ online.")
 (define-public chocolate-doom
   (package
     (name "chocolate-doom")
-    (version "3.0.1")
+    (version "3.1.1")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://www.chocolate-doom.org/downloads/"
-                                  version
-                                  "/chocolate-doom-"
-                                  version
-                                  ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/chocolate-doom/chocolate-doom")
+                    (commit (string-append "chocolate-doom-" version))))
+              (file-name (git-file-name name version))
               (sha256
-               (base32
-                "1iy8rx7kjvi1zjiw4zh77szzmd1sgpqajvbhprh1sj93fhbxcdfl"))))
+               (base32 "0xpribvacbma7l6138wizhcl2b0kyn05jwdkspw176zl7v3k1bn1"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list "CFLAGS=-fcommon")))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'bootstrap
+            ;; The bundled autogen.sh script unconditionally runs ./configure.
+            (lambda _ (invoke "autoreconf" "-vif"))))))
     (inputs (list sdl2-net sdl2-mixer sdl2))
     (native-inputs
-     (list pkg-config))
+     (list automake autoconf pkg-config))
     (synopsis "Doom source port preserving the look, feel, and bugs of vanilla
 Doom")
     (description
@@ -9483,17 +9486,6 @@ affect gameplay).")
               (file-name (git-file-name name version))
               (sha256
                (base32 "0lpib7dg1ygnjw1yjamfiybhkly4lp42r4lawskbjslfyjafm4ic"))))
-    (native-inputs
-     (append
-      (package-native-inputs chocolate-doom)
-      `(("automake" ,automake)
-        ("autoreconf" ,autoconf))))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'bootstrap
-           ;; The bundled autogen.sh script unconditionally runs ./configure.
-           (lambda _ (invoke "autoreconf" "-vif"))))))
     (synopsis "Limit-removing enhanced-resolution Doom source port based on
 Chocolate Doom")
     (description
