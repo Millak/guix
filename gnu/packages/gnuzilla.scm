@@ -801,7 +801,8 @@ preferences/advanced-scripts.dtd"
            libxcomposite
            libxt
            libffi
-           ffmpeg
+           ;; See <https://bugzilla.mozilla.org/show_bug.cgi?id=1962139>
+           ffmpeg-6
            libvpx
            icu4c-77
            pixman
