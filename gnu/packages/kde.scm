@@ -58,7 +58,6 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages compression)
-  #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages djvu)
   #:use-module (gnu packages documentation)
@@ -806,46 +805,6 @@ opening hours expressions.")
      "This package provides facilities for rendering OpenStreetMap
 multi-floor indoor maps.")
     (license license:lgpl2.0+)))
-
-(define-public kpublictransport
-  (package
-    (name "kpublictransport")
-    (version "24.12.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/stable/release-service/"
-                                  version "/src/kpublictransport-" version
-                                  ".tar.xz"))
-              (sha256
-               (base32
-                "1hi189yx81gabpk7czmqx2xy1slnjhhq8m5gv07avfhsw0kab8ba"))))
-    (build-system qt-build-system)
-    (arguments
-     (list #:qtbase qtbase
-           #:phases #~(modify-phases %standard-phases
-                        (add-before 'check 'check-setup
-                          (lambda* (#:key inputs #:allow-other-keys)
-                            (setenv "QT_QPA_PLATFORM" "offscreen")
-                            (setenv "HOME" ".")
-                            (setenv "TZ" "Europe/Prague")
-                            (setenv "TZDIR"
-                                    (search-input-directory inputs
-                                                            "share/zoneinfo")))))))
-    (native-inputs (list extra-cmake-modules pkg-config tzdata-for-tests))
-    ;; TODO: clipper and osmctools are not detected
-    (inputs (list clipper
-                  osmctools
-                  protobuf
-                  qtdeclarative
-                  zlib
-                  networkmanager-qt
-                  ki18n))
-    (home-page "https://api.kde.org/kdepim/kpublictransport/html/index.html")
-    (synopsis "Library for accessing realtime public transport data")
-    (description
-     "This package provides a library for accessing realtime public
-transport data and for performing public transport journey queries.")
-    (license (list license:lgpl2.0+))))
 
 (define-public ksanecore
   (package

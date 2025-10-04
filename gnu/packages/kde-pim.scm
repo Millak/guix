@@ -34,10 +34,12 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages geo)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
@@ -48,6 +50,7 @@
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages search)
@@ -2156,6 +2159,46 @@ pass files.")
     (description "This package provides common libraries for KDE PIM.")
     (license ;; GPL for programs, LGPL for libraries
      (list license:gpl2+ license:lgpl2.0+))))
+
+(define-public kpublictransport
+  (package
+    (name "kpublictransport")
+    (version "24.12.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/kpublictransport-" version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "1hi189yx81gabpk7czmqx2xy1slnjhhq8m5gv07avfhsw0kab8ba"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'check-setup
+                          (lambda* (#:key inputs #:allow-other-keys)
+                            (setenv "QT_QPA_PLATFORM" "offscreen")
+                            (setenv "HOME" ".")
+                            (setenv "TZ" "Europe/Prague")
+                            (setenv "TZDIR"
+                                    (search-input-directory inputs
+                                                            "share/zoneinfo")))))))
+    (native-inputs (list extra-cmake-modules pkg-config tzdata-for-tests))
+    ;; TODO: clipper and osmctools are not detected
+    (inputs (list clipper
+                  osmctools
+                  protobuf
+                  qtdeclarative
+                  zlib
+                  networkmanager-qt
+                  ki18n))
+    (home-page "https://api.kde.org/kdepim/kpublictransport/html/index.html")
+    (synopsis "Library for accessing realtime public transport data")
+    (description
+     "This package provides a library for accessing realtime public
+transport data and for performing public transport journey queries.")
+    (license (list license:lgpl2.0+))))
 
 (define-public libgravatar
   (package
