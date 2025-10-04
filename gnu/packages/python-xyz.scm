@@ -34394,32 +34394,52 @@ EDU SDK.  This library has the following features:
     (license license:expat)))
 
 (define-public python-djvulibre
+  ;; The original git repository of python-djvulibre is hosted at
+  ;; <https://jwilk.net/software/python-djvulibre>. However, that repository
+  ;; has been archived by its owner in 2022. The most active fork is
+  ;; <https://github.com/FriedrichFroebel/python-djvulibre>, and that is the
+  ;; version packaged here (its "python3" branch, the default).
+  ;;
+  ;; However, the python-djvulibre PyPI project still refers to the old
+  ;; repository. The new repository is published as djvulibre-python on PyPI;
+  ;; that is, with the name in reversed order.The original package name is
+  ;; used in Guix because it best adheres to the Guix naming scheme.
   (package
     (name "python-djvulibre")
-    (version "0.8.6")
+    (version "0.9.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python-djvulibre" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/FriedrichFroebel/python-djvulibre")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "089smpq29ll0z37lnq26r2f72d31i33xm9fw9pc6hlcsm6nbjbiv"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list ghostscript pkg-config python-nose))
-    (inputs
-     (list djvulibre python-cython))
+        (base32 "0cwda210dgkqyjkwha2if80wfmv6w8baigp8kdcwhmbisfgd3l4y"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tests
-           (lambda _
-             ;; Unit tests try to load the 'dllpath.py' and fail, because it
-             ;; doesn't make sense on GNU/Linux.
-             (delete-file "djvu/dllpath.py")
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; The tests get confused by the djvu directory.
+                (delete-file-recursively "djvu")
+                ;; Tests can't find tools.py otherwise.
+                (with-directory-excursion "tests"
+                  (invoke "python" "-m" "pytest"))))))))
+    (native-inputs
+     (list ghostscript
+           pkg-config
+           python-cython
+           python-pytest
+           python-setuptools))
+    (inputs
+     (list djvulibre))
     (synopsis "Python bindings for DjVuLibre")
     (description "This is a set of Python bindings for the DjVuLibre library.")
-    (home-page "https://jwilk.net/software/python-djvulibre")
+    (home-page "https://github.com/FriedrichFroebel/python-djvulibre")
     (license license:gpl2)))
 
 (define-public python-version
