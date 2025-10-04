@@ -13148,6 +13148,21 @@ provided there is a DBus service present:
   (simple-service 'ratbagd dbus-root-service-type (list libratbag))")
     (license license:gpl2)))
 
+(define libgxdp-origin
+  ;; No releases nor tags.  Use the latest commit that passes the project CI.
+  (let ((commit "e6c11f2812cad0a43e847ec97bfc1c67bf50be52")
+        (revision "0"))
+    (origin
+      (method git-fetch)
+      (uri (git-reference
+             (url "https://gitlab.gnome.org/GNOME/libgxdp")
+             (commit commit)))
+      (file-name (git-file-name "libgxdp"
+                                (git-version "0.0.0" revision commit)))
+      (sha256
+       (base32
+        "1djfmwvcywbkpl9v8cs0b1hhylfd3fbrdk451vd16hwls46nf0v2")))))
+
 (define-public xdg-desktop-portal-gnome
   (package
     (name "xdg-desktop-portal-gnome")
