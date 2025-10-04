@@ -243,6 +243,7 @@
   #:use-module (gnu packages inkscape)
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages java)
+  #:use-module (gnu packages javascript)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages less)
@@ -3498,18 +3499,70 @@ commits.")
        (uri
         (pypi-uri "mkdocs-material" version))
        (sha256
-        (base32 "0ci9xiasq9nfn09v11m7p49vzazdbgslw7rpzjd6y3hsmn9vljz3"))))
-    (build-system python-build-system)
+        (base32 "0ci9xiasq9nfn09v11m7p49vzazdbgslw7rpzjd6y3hsmn9vljz3"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; TODO There are still bundled assets and minified JS.
+        #~(delete-file-recursively "material/assets/javascripts/lunr/min"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; Requirement mkdocs-material-extensions
-         ;; in-turn requires mkdocs-material. This causes
-         ;; circular dependency, so we remove this requirement.
-         (add-after 'unpack 'patch-requirements
-           (lambda _
-             (substitute* "requirements.txt"
-               (("mkdocs-material-extensions.*$") "")))))))
+     (list
+      #:tests? #f                       ; No tests.
+      #:phases
+      #~(let ((symlink-js
+               (lambda (inputs)
+                 (for-each
+                  (lambda (lang)
+                    (let* ((filename (string-append "lunr." lang ".min.js"))
+                           (file (string-append "share/javascript/" filename)))
+                      (symlink (search-input-file inputs file) filename)))
+                  (list "ar" "da" "de" "es" "fi" "fr" "hu" "it" "ja" "multi"
+                        "nl" "no" "pt" "ro" "ru" "stemmer.support" "sv" "tr"
+                        "vi")))))
+          (modify-phases %standard-phases
+          ;; Requirement mkdocs-material-extensions
+          ;; in-turn requires mkdocs-material. This causes
+          ;; circular dependency, so we remove this requirement.
+          (add-after 'unpack 'patch-requirements
+            (lambda _
+              (substitute* "requirements.txt"
+                (("mkdocs-material-extensions.*$")
+                 ""))))
+          (add-after 'ensure-no-mtimes-pre-1980 'inject-javascript-assets
+            (lambda* (#:key inputs #:allow-other-keys)
+              (mkdir-p "material/assets/javascripts/min/")
+              (with-directory-excursion "material/assets/javascripts/min/"
+                (symlink-js inputs))))
+          (add-after 'wrap 'replace-javascript-assets
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((site (site-packages inputs outputs))
+                     (js-assets (string-append site "/material/"
+                                               "assets/javascripts")))
+                (with-directory-excursion js-assets
+                  (delete-file-recursively "min")
+                  (mkdir-p "min")
+                  (with-directory-excursion "min"
+                    (symlink-js inputs))))))))))
+    (native-inputs (list python-setuptools))
+    (inputs (list js-lunr-ar
+                  js-lunr-da
+                  js-lunr-de
+                  js-lunr-es
+                  js-lunr-fi
+                  js-lunr-fr
+                  js-lunr-hu
+                  js-lunr-it
+                  js-lunr-ja
+                  js-lunr-nl
+                  js-lunr-no
+                  js-lunr-pt
+                  js-lunr-ro
+                  js-lunr-ru
+                  js-lunr-sv
+                  js-lunr-tr
+                  js-lunr-vi
+                  js-lunr-multi
+                  js-lunr-stemmer-support))
     (propagated-inputs
      (list python-markdown python-mkdocs python-pygments
            python-pymdown-extensions))
