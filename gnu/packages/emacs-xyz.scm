@@ -70,7 +70,7 @@
 ;;; Copyright © 2020 Jérémy Korwin-Zmijowski <jeremy@korwin-zmijowski.fr>
 ;;; Copyright © 2020 Alberto Eleuterio Flores Guerrero <barbanegra+guix@posteo.mx>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2020, 2022, 2023 pinoaffe <pinoaffe@gmail.com>
+;;; Copyright © 2020, 2022, 2023, 2025 pinoaffe <pinoaffe@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Ryan Desfosses <rdes@protonmail.com>
 ;;; Copyright © 2020 Marcin Karpezo <sirmacik@wioo.waw.pl>
@@ -31176,6 +31176,49 @@ With @code{desktop-environment}, you can control the brightness and volume as
 well as take screenshots and lock your screen.  The package depends on the
 availability of shell commands to do the hard work for us.  These commands can
 be changed by customizing the appropriate variables.")
+      (license license:gpl3+))))
+
+(define-public emacs-filechooser
+  ;; no tags
+  (let ((commit "e55c5ea294bbb2c67ab5c51d9489922a83c22456")
+        (revision "0"))
+    (package
+      (name "emacs-filechooser")
+      (version (git-version "0.2.4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://codeberg.org/rahguzar/filechooser")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0gkqyh0zwqsgqixg7y94axmk00n349iq3cwv9z9vf4zjbmj9sfc4"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ; no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'install-more-stuff
+              (lambda _
+                (substitute* "emacs.portal"
+                  ;; enable by default in exwm
+                  (("UseIn=") "UseIn=exwm;"))
+                (install-file
+                 "emacs.portal"
+                 (string-append #$output "/share/xdg-desktop-portal/portals"))
+                (install-file
+                 "org.gnu.Emacs.FileChooser.service"
+                 (string-append #$output "/share/dbus-1/services")))))))
+      (propagated-inputs
+       (list emacs-compat))
+      (home-page "https://codeberg.org/rahguzar/filechooser")
+      (synopsis "Backend implementation for xdg-desktop-portal using Emacs")
+      (description "This package provides a backend implementation
+for xdg-desktop-portal that uses Emacs.  It allows you to use Emacs' file and
+path selection facilities in graphical programs that use the
+xdg-desktop-portal dbus interface.")
       (license license:gpl3+))))
 
 (define-public emacs-org-caldav
