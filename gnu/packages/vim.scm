@@ -17,6 +17,7 @@
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023, 2024 Nguyễn Gia Phong <cnx@loang.net>
 ;;; Copyright © 2025, 2026 Herman Rimm <herman@rimm.ee>
+;;; Copyright © 2025, Luca Kredel <luca.kredel@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -626,6 +627,35 @@ and powerline symbols, etc.")
        "@code{vim-airline-themes} is a collection of themes for @code{vim-airline}.")
       (home-page "https://github.com/vim-airline/vim-airline-themes")
       (license license:expat))))
+
+(define-public vim-selenized
+  (package
+    (name "vim-selenized")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jan-warchol/selenized")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mlm1pmlgk6iydqbyx7iykd9hr3dj5rjbrlm22wai3f6s5s8nbw1"))))
+    (build-system vim-build-system)
+    (arguments
+     (list
+      #:plugin-name "selenized"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "editors/vim/"))))))
+    (synopsis "Selenized colors for vim")
+    (description
+     "Solarized redesigned: fine-tuned color palette for programmers
+with focus on readability.")
+    (home-page "https://github.com/jan-warchol/selenized")
+    (license license:expat)))
 
 (define-public vim-syntastic
   (package
