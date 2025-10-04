@@ -20448,7 +20448,7 @@ pure Python module that works on virtually all Python versions.")
 (define-public python-essentials
   (package
     (name "python-essentials")
-    (version "1.1.6")
+    (version "1.1.8")
     (source
      (origin
        (method git-fetch)
@@ -20457,7 +20457,7 @@ pure Python module that works on virtually all Python versions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bh8yi79gn9fg26mp58nm9xhnxcfab7rhc076av4qg00mg5p9rn0"))))
+        (base32 "1k8ybgxh0xvwxjc22pkmyvdhm0jgmj77rlg656r81iiibc0l7zj8"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-hatchling
