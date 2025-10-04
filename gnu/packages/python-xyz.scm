@@ -30175,7 +30175,7 @@ instead of pickle.")
 (define-public python-toolrack
   (package
     (name "python-toolrack")
-    (version "4.0.1")
+    (version "4.0.3")
     (source
      (origin
        (method git-fetch)
@@ -30185,7 +30185,7 @@ instead of pickle.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "03ard57xc2x0lpnzgrgfb9fqlq1y031ygp8jn2v2fg87i586gjsy"))))
+         "1aglfj7j25fiwx9jh1rl34mlhfpdhn8yrkn30vhkz9yw7zrx42h0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -30199,8 +30199,7 @@ instead of pickle.")
     (native-inputs (list python-pytest
                          python-pytest-asyncio
                          python-pytest-mock
-                         python-setuptools
-                         python-wheel))
+                         python-setuptools))
     (home-page "https://github.com/albertodonato/toolrack")
     (synopsis "Collection of Python utility functions and classes")
     (description "This package provides a collection of miscellaneous utility
