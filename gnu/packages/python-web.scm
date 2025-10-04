@@ -919,7 +919,7 @@ formats (PDF/XML/CSV).")
 (define-public python-guardpost
   (package
     (name "python-guardpost")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method git-fetch)
@@ -928,7 +928,7 @@ formats (PDF/XML/CSV).")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cwxxxhazpaphhcysgpivk51vp76zdf7hrryc1vr6vlp2zzgwsxd"))))
+        (base32 "1q09w953d4cjjvp8pp3kkkhw0y9kq2jgj6fihdz9np55pwxkfd15"))))
     (build-system pyproject-build-system)
     (arguments
      (list
