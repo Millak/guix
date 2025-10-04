@@ -9474,7 +9474,7 @@ affect gameplay).")
   (package
     (inherit chocolate-doom)
     (name "crispy-doom")
-    (version "5.8.0")
+    (version "7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9482,15 +9482,14 @@ affect gameplay).")
                     (commit (string-append "crispy-doom-" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1b6gn0dysv631jynh769whww9xcss1gms78sz3nrn855q1dsvcb4"))))
+               (base32 "0lpib7dg1ygnjw1yjamfiybhkly4lp42r4lawskbjslfyjafm4ic"))))
     (native-inputs
      (append
       (package-native-inputs chocolate-doom)
       `(("automake" ,automake)
         ("autoreconf" ,autoconf))))
     (arguments
-     `(#:configure-flags '("CFLAGS=-fcommon")
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (replace 'bootstrap
            ;; The bundled autogen.sh script unconditionally runs ./configure.
