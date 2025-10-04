@@ -544,7 +544,7 @@ diagrams.")
 (define-public gtksourceview
   (package
     (name "gtksourceview")
-    (version "5.12.1")
+    (version "5.16.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gtksourceview/"
@@ -552,7 +552,7 @@ diagrams.")
                                   "gtksourceview-" version ".tar.xz"))
               (sha256
                (base32
-                "07rcnhwqyiqs9icld3965g41wd3n9a808y7agjpasnjwk2njmj44"))))
+                "0rimiiz6ljzv1x6jbrl9h649y82878nn9f6kbl2qngig20hd8ddb"))))
     (build-system meson-build-system)
     (arguments
      '(#:phases
