@@ -968,3 +968,34 @@ window manager for the Cinnamon desktop environment.")
      "Nemo is the file manager for the Cinnamon desktop environment.")
     (properties '((lint-hidden-cpe-vendors . ("nvidia"))))
     (license license:expat)))
+
+(define-public cinnamon-meta-shell
+  (package
+    (name "cinnamon-meta-shell")
+    (version (package-version cinnamon))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments
+     (list #:builder
+           #~(begin (format (current-warning-port)
+                            "Building ~a is useless.  \
+Refer to its propagated inputs instead.\n"
+                            #$(package-name this-package))
+                    (mkdir #$output))))
+    (propagated-inputs (list cinnamon
+                             cinnamon-control-center
+                             cinnamon-desktop
+                             cinnamon-menus
+                             cinnamon-screensaver
+                             cinnamon-session
+                             cinnamon-settings-daemon
+                             cinnamon-translations
+                             cjs
+                             muffin
+                             nemo))
+    (home-page "https://projects.linuxmint.com/cinnamon/")
+    (synopsis "Graphical desktop environment")
+    (description
+     "Cinnamon is a desktop environment reminiscent of ye olde GNOME 2,
+with its underlying technology forked from modern GNOME.")
+    (license license:gpl2+)))
