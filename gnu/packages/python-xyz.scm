@@ -13627,7 +13627,25 @@ a front-end for C compilers or analysis tools.")
     (license license:bsd-3)))
 
 (define-public python2-pycparser
-  (package-with-python2 python-pycparser))
+  (let ((base (package
+                (inherit python-pycparser)
+                (version "2.18")
+                (source
+                 (origin
+                   (method url-fetch)
+                   (uri (pypi-uri "pycparser" version))
+                   (sha256
+                    (base32
+                     "09mjyw82ibqzl449g7swy8bfxnfpmas0815d2rkdjlcqw81wma4r"))))
+                ;; FIXME: package-with-python2 needs to be updated to accept
+                ;; pyproject-build-system packages.
+                (build-system python-build-system)
+                (arguments
+                 (cons* #:tests? #f
+                        (strip-keyword-arguments
+                         '(#:test-backend)
+                         (package-arguments python-pycparser)))))))
+    (package-with-python2 base)))
 
 (define-public python-pywavelets
   (package
