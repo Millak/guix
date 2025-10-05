@@ -28460,15 +28460,18 @@ Week instances stringify to this form.")
 (define-public python-tokenize-rt
   (package
     (name "python-tokenize-rt")
-    (version "2.0.1")
+    (version "6.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "tokenize-rt" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/asottile/tokenize-rt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1yjvbz7rvrz31zjyax1cgy3xhf4wb3j18jwnj4bnl77ca4gliyiw"))))
-    (build-system python-build-system)
+        (base32 "1maa9sifma0a6v7kl7mmyqzj0jdclzlp4wjr0vkdx95raihxx4fv"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/asottile/tokenize-rt")
     (synopsis "Wrapper around the stdlib tokenize which roundtrips")
     (description
