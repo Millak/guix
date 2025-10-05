@@ -28104,13 +28104,11 @@ Angus Johnson's polygon clipping Clipper library (ver. 6.4.2).")
        (method url-fetch)
        (uri (pypi-uri "tempdir" version))
        (sha256
-        (base32
-         "13msyyxqbicr111a294x7fsqbkl6a31fyrqflx3q7k547gnq15k8"))))
-    (build-system python-build-system)
+        (base32 "13msyyxqbicr111a294x7fsqbkl6a31fyrqflx3q7k547gnq15k8"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ; No tests.
+    (native-inputs (list python-setuptools))
     (home-page "https://pypi.org/project/tempdir/")
-    (arguments
-     ;; the package has no tests
-     '(#:tests? #f))
     (synopsis "Python library for managing temporary directories")
     (description
      "This library manages temporary directories that are automatically
