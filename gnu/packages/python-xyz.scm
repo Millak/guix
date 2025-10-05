@@ -35256,19 +35256,20 @@ from web pages to make them easier to read.")
 (define-public python-listparser
   (package
     (name "python-listparser")
-    (version "0.18")
+    (version "0.20")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "listparser" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kurtmckee/listparser")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0hdqs1mmayw1r8yla43hgb4d9y3zqs5483vgf8j9ygczkd2wrq2b"))))
-    (build-system python-build-system)
-    (home-page
-     "https://github.com/kurtmckee/listparser")
-    (synopsis
-     "Parse subscription lists in Python")
+        (base32 "0a69cm0inwqwipvnmf5plbf9rqgy1arl62gxnwc7pg7062p563vs"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-poetry-core))
+    (home-page "https://github.com/kurtmckee/listparser")
+    (synopsis "Parse subscription lists in Python")
     (description
      "This package provides a Python library that can parse OPML, FOAF, and
 iGoogle subscription lists.")
