@@ -21329,15 +21329,15 @@ templates into Python modules.")
 (define-public python-whatthepatch
   (package
     (name "python-whatthepatch")
-    (version "1.0.5")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "whatthepatch" version))
        (sha256
-        (base32 "024grf30vkpcfr3bq822zv3slhx12ifm51rmfv1inn0j50blqdvz"))))
+        (base32 "1pvygmgj9xqs8d9lsjxvg1mymni8pjsd44yl0a74002jxbmv9vwy"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/cscorley/whatthepatch")
     (synopsis "Patch parsing and application library")
     (description
