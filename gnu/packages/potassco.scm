@@ -3,6 +3,7 @@
 ;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2023 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024-2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -671,7 +672,8 @@ into Python programs easier.")
                 "0bdz755c6isp29layvzsw9c4kr12x7b5d8ip37ay3cl4dlq4bid3"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases
+     (list #:tests? #f ;there are no tests
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'install 'install-script
                  (lambda* (#:key outputs #:allow-other-keys)
@@ -687,7 +689,7 @@ into Python programs easier.")
                      ;; XXX: Does this cross-compile?
                      (patch-shebang script)))))))
     (propagated-inputs (list python-clingo))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (home-page "https://potassco.org/")
     (synopsis "Solve probabilistic logic programs")
     (description "This package provides a system to solve probabilistic
