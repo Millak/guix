@@ -28344,27 +28344,48 @@ user's @file{~/Trash} directory.")
     (license license:expat)))
 
 (define-public python-gyp
-  (let ((commit "9d09418933ea2f75cc416e5ce38d15f62acd5c9a")
-        (revision "1"))
+  ;; Google does not release versions.
+  (let ((commit "1615ec326858f8c2bd8f30b3a86ea71830409ce4")
+        (revision "2"))
     (package
       (name "python-gyp")
-      ;; Google does not release versions,
-      ;; based on second most recent commit date.
       (version (git-version "0.0.0" revision commit))
       (source
        (origin
-         ;; Google does not release tarballs,
-         ;; git checkout is needed.
          (method git-fetch)
          (uri (git-reference
                (url "https://chromium.googlesource.com/external/gyp")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32
-           "0ay99rc5msqjpjl7fy1l69f8mvn08wnh2pgr08ijdih9z88xaa5x"))))
-      (build-system python-build-system)
-      (propagated-inputs (list python-six))
+          (base32 "02rnmw7k2r33x5nbb5xb8kk170hk0s1wmwfqpsx4cij1wbi4bqhk"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags
+        #~(list "--ignore-glob=test/win/**/*.py")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'remove-six-requirements
+              (lambda _
+                (substitute* "pylib/gyp/generator/ninja.py"
+                  (("six\\.ensure_binary\\(outputs\\[0\\]\\)")
+                   "outputs[0].encode('utf-8')")
+                  (("import six")
+                   ""))
+                (substitute* '("pylib/gyp/common.py"
+                               "pylib/gyp/msvs_emulation.py"
+                               "test/lib/TestGyp.py")
+                  (("from six\\.moves import collections_abc")
+                   "import collections")
+                  (("collections_abc")
+                   "collections.abc"))))
+            (add-before 'check 'configure-tests
+              (lambda _
+                (setenv "PYTHONPATH"
+                        (string-append (getcwd) "/test/lib:"
+                                       (getenv "GUIX_PYTHONPATH"))))))))
+      (native-inputs (list python-pytest python-setuptools))
       (home-page "https://gyp.gsrc.io/")
       (synopsis "GYP is a Meta-Build system")
       (description
