@@ -1324,8 +1324,8 @@ processes, in parallel, in the console, with an interactive TUI.")
      (list
       #:test-flags
       #~(list "--ignore" "tests/test_cli.py"))) ;Requires delegator.py.
-    (inputs (list python-docopt))
     (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-docopt))
     (home-page "https://github.com/savoirfairelinux/num2words")
     (synopsis "Convert numbers to words in multiple languages")
     (description
