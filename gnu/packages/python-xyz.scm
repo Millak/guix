@@ -21890,26 +21890,35 @@ useful for solving the Assignment Problem.")
     (license license:bsd-3)))
 
 (define-public python-whoosh
-  (package
-    (name "python-whoosh")
-    (version "2.7.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "Whoosh" version))
-       (sha256
-        (base32
-         "10qsqdjpbc85fykc1vgcs8xwbgn4l2l52c8d83xf1q59pwyn79bw"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f)) ; Test invocation is no longer supported by Python.
-    (native-inputs
-     (list python-pytest))
-    (home-page "https://bitbucket.org/mchaput/whoosh")
-    (synopsis "Full text indexing, search, and spell checking library")
-    (description
-     "Whoosh is a fast, pure-Python full text indexing, search, and spell
+  ;; XXX: 2.7.4 was placed in 2016 and no longer copatible with how setuptools
+  ;; parses setup.py, use the latest commit, see:
+  ;; <https://codeberg.org/guix/guix/issues/3318>,
+  ;; <https://github.com/whoosh-community/whoosh/issues/561>.
+  (let ((commit "d9a3fa2a4905e7326c9623c89e6395713c189161")
+        (revision "0"))
+    (package
+      (name "python-whoosh")
+      (version (git-version "2.7.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/mchaput/whoosh")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1i16229nkggl9qi57kxapbc4f2p2wpr67fswvr97w13839d6dxpp"))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list python-pytest python-setuptools))
+      (propagated-inputs
+       (list python-cached-property))
+      (home-page "https://github.com/mchaput/whoosh")
+      (synopsis "Full text indexing, search, and spell checking library")
+      (description
+       "Whoosh is a fast, pure-Python full text indexing, search, and spell
 checking library.")
-    (license license:bsd-2)))
+      (license license:bsd-2))))
 
 (define-public python-codespell
   (package
