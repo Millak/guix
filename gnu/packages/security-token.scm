@@ -759,20 +759,22 @@ verifying the cryptographic operations.")
   (package
     (name "pam-u2f")
     (version "1.3.2")
-    (source (origin
-              (method git-fetch)
-              (uri
-               (git-reference
-                (url "https://github.com/Yubico/pam-u2f")
-                (commit (string-append "pam_u2f-" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32 "0528r0q3j1d6cb3dzh9vgagr8v2b2y5yylykr1cqjmg9hvp35a4i"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+          (url "https://github.com/Yubico/pam-u2f")
+          (commit (string-append "pam_u2f-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0528r0q3j1d6cb3dzh9vgagr8v2b2y5yylykr1cqjmg9hvp35a4i"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-pam-dir="
-                            (assoc-ref %outputs "out") "/lib/security"))))
+     (list
+      #:configure-flags
+      #~(list
+         (string-append "--with-pam-dir=" #$output"/lib/security"))))
     (inputs
      (list libfido2 linux-pam openssl))
     (native-inputs
