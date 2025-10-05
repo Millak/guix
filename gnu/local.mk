@@ -478,7 +478,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/messaging.scm			\
   %D%/packages/minetest.scm			\
   %D%/packages/mingw.scm			\
-  %D%/packages/microcom.scm			\
   %D%/packages/mold.scm				\
   %D%/packages/motti.scm			\
   %D%/packages/monitoring.scm			\

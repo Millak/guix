@@ -5,6 +5,7 @@
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2016-2019, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018 Theodoros Foradis <theodoros@foradis.org>
+;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
@@ -1576,6 +1577,29 @@ use on a given system.")
      "GNU LibreDWG is a C library to handle DWG files.  It aims to be a free
 replacement for the OpenDWG libraries.")
     (license license:gpl3+)))
+
+(define-public microcom
+  (package
+    (name "microcom")
+    (version "2019.01.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.pengutronix.de/git/tools/microcom.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0rf4qdkbhknrrqn4rpb737l0km8yn5f498zapks4akf6yjh5aq8y"))))
+    (build-system gnu-build-system)
+    (inputs (list readline))
+    (native-inputs (list automake autoconf))
+    (home-page  "https://git.pengutronix.de/?p=tools/microcom.git")
+    (synopsis "Minimalistic serial line terminal program")
+ (description "Microcom is a minimalistic terminal program for accessing
+devices via a serial connection.  It features connection via RS232 serial
+interfaces (including setting of transfer rates) as well as in @code{telnetmode}
+as specified in rfc2217 and a (Linux specific) CAN mode.")
+    (license license:gpl2+)))
 
 (define-public minicom
   (package

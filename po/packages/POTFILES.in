@@ -260,7 +260,6 @@ gnu/packages/markup.scm
 gnu/packages/maven.scm
 gnu/packages/mc.scm
 gnu/packages/mcrypt.scm
-gnu/packages/microcom.scm
 gnu/packages/minetest.scm
 gnu/packages/monitoring.scm
 gnu/packages/moreutils.scm
