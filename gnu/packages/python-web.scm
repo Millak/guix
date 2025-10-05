@@ -4333,23 +4333,24 @@ set out in RFC 7540 Section 5.3 (Stream Priority).")
 (define-public python-wikidata
   (package
     (name "python-wikidata")
-    (version "0.6.1")
+    (version "0.8.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "Wikidata" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dahlia/wikidata")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "08nlnydddfp1jj0cdmshvld1irzngbp3dij928wqsg9ziklm6mw9"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-babel))
+        (base32 "06zg74h249phszn1znfcjdz6c3lz350fiabdzn7iqb2xg4xh69a5"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/dahlia/wikidata")
     (synopsis "Wikidata client library")
     (description
-     "This package provides a Python interface to
-@url{https://www.wikidata.org/, Wikidata}.")
-    (properties '((upstream-name . "Wikidata")))
+     "This package provides a Python interface to @url{https://www.wikidata.org/,
+Wikidata}.")
     (license license:gpl3+)))
 
 (define-public python-wsproto
