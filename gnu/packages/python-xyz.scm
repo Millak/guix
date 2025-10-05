@@ -28234,16 +28234,27 @@ objects on other machines, also known as remote procedure calls (RPC).")
     (version "8.13.37")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "phonenumbers" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/daviddrysdale/python-phonenumbers")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1whw3p0p90x1iyw5cqf2pval90zy20c26ry3ywb0bsls2pnmycdx"))))
-    (build-system python-build-system)
-    (home-page
-     "https://github.com/daviddrysdale/python-phonenumbers")
-    (synopsis
-     "Python library for dealing with international phone numbers")
+        (base32 "1bgab6s7l2bqg671sns138c9qr9f8ndvjr4ig8l3ik9q054l9k9n"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "-m" "testwrapper")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "python"))))))
+    (propagated-inputs (list python-protobuf))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/daviddrysdale/python-phonenumbers")
+    (synopsis "Python library for dealing with international phone numbers")
     (description
      "This package provides a Python port of Google's libphonenumber library.")
     (license license:asl2.0)))
