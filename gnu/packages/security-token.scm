@@ -1206,7 +1206,7 @@ contactless (RFID) and contact USB chipcard readers.")
 (define-public qdigidoc
   (package
     (name "qdigidoc")
-    (version "4.8.0")
+    (version "4.8.2")
     (source
      (origin
        (method git-fetch)
@@ -1220,7 +1220,7 @@ contactless (RFID) and contact USB chipcard readers.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05ncaw8m6d5lsswji950yx4p96y3ri0254vwrrdn4vkkflkc8any"))
+        (base32 "171p2cwr8l1clvmy5719kpqsv061i7rsr33nc99gap2pzbb4f48z"))
        (patches (search-patches "qdigidoc-bundle-config-files.patch"
                                 "qdigidoc-bundle-tsl-files.patch"))))
     (build-system qt-build-system)
@@ -1250,7 +1250,7 @@ contactless (RFID) and contact USB chipcard readers.")
                   pcsc-lite
                   qtsvg
                   zlib))
-    (home-page "https://github.com/open-eid/DigiDoc4-Client")
+    (home-page "https://www.id.ee/en/")
     (synopsis "Estonian ID card application")
     (description
      "This application provides support for using private and governmental
