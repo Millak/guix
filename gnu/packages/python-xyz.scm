@@ -28445,9 +28445,10 @@ Examples are:
        (method url-fetch)
        (uri (pypi-uri "isoweek" version))
        (sha256
-        (base32
-         "1s7zsf0pab0l9gn6456qadnz5i5h90hafcjwnhx5mq23qjxggwvk"))))
-    (build-system python-build-system)
+        (base32 "1s7zsf0pab0l9gn6456qadnz5i5h90hafcjwnhx5mq23qjxggwvk"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/gisle/isoweek")
     (synopsis "Objects representing a week")
     (description "The @code{isoweek} module provide the class Week that
