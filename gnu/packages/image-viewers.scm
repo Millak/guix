@@ -33,6 +33,7 @@
 ;;; Copyright © 2025 Mathieu Laparie <mlaparie@disr.it>
 ;;; Copyright © 2025 Joaquín Aguirrezabalaga <kinote@kinote.org>
 ;;; Copyright © 2025 pinoaffe <pinoaffe@gmail.com>
+;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1180,6 +1181,7 @@ synchronization of multiple instances.")
                                           "-DENABLE_AKONADICONTACTSUPPORT=ON"
                                           "-DBUILD_WITH_QT6=ON"
                                           "-DENABLE_APPSTYLES=ON")
+                #:qtbase qtbase
                 #:phases
                 #~(modify-phases %standard-phases
                     (add-after 'unpack 'copy-test-data
