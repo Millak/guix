@@ -498,7 +498,7 @@ is the de-facto standard to access cryptographic devices")
 (define-public yubico-piv-tool
   (package
     (name "yubico-piv-tool")
-    (version "2.3.1")
+    (version "2.7.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -507,10 +507,10 @@ is the de-facto standard to access cryptographic devices")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gxrn2yzs907h22233s2337j5zb8mvygvk0z2macl4rf8w6qf4vk"))))
+                "19hcqbhmqh62dqw7kd2aki5jlw8myvhbjdfmm6c10vrf1jbx4lnm"))))
     (build-system cmake-build-system)
     (inputs
-     (list gengetopt perl pcsc-lite openssl))
+     (list gengetopt perl pcsc-lite openssl zlib))
     (native-inputs
      (list check
            doxygen
