@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014-2016, 2022-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -81,13 +82,18 @@
   ;; Current build verbosity level.
   1)
 
+(define %build-options
+  ;; Additional build options.
+  '())
+
 (define* (evaluate/print-with-store mvalue #:key build?)
   "Run monadic value MVALUE in the store monad and print its value."
   (with-store store
-    (set-build-options store
-                       #:print-build-trace #t
-                       #:print-extended-build-trace? #t
-                       #:multiplexed-build-output? #t)
+    (apply set-build-options store
+           #:print-build-trace #t
+           #:print-extended-build-trace? #t
+           #:multiplexed-build-output? #t
+           %build-options)
     (with-status-verbosity %build-verbosity
       (let* ((guile  (or (%guile-for-build)
                          (default-guile-derivation store)))
@@ -129,6 +135,17 @@ Lower OBJECT into a derivation or store file and return it."
 Lower OBJECT and build it, returning its output file name(s)."
   (evaluate/print-with-store (lower-object (repl-eval repl form))
                              #:build? #t))
+
+(define-meta-command ((build-options guix) repl (opts))
+  "build-options OPTIONS
+Set build options to OPTIONS.  Print previous value (to allow easy restore).
+
+Must be a list of keywords with values accepted by procedure
+(@ (guix store) set-build-options).  An example would be:
+
+    ,build-options '(#:offload? #f)"
+  (repl-print repl %build-options)
+  (set! %build-options (repl-eval repl opts)))
 
 (define-meta-command ((enter-store-monad guix) repl)
   "enter-store-monad
@@ -172,10 +189,11 @@ missing from those arguments."
        (define phases
          (parameterize ((%graft? #f))
            (with-store store
-             (set-build-options store
-                                #:print-build-trace #t
-                                #:print-extended-build-trace? #t
-                                #:multiplexed-build-output? #t)
+             (apply set-build-options store
+                    #:print-build-trace #t
+                    #:print-extended-build-trace? #t
+                    #:multiplexed-build-output? #t
+                    %build-options)
              (run-with-store store
                (mlet %store-monad ((exp (bag->derivation bag*)))
                  (if (gexp? exp)

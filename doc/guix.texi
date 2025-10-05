@@ -13204,6 +13204,16 @@ Lower @var{object} and build it if it's not already built, returning its
 output file name(s).
 @end deffn
 
+@deffn {REPL command} build-options @var{options}
+Set build options for rest of the REPL commands to @var{options}.  Must
+be a list of keywords with values accepted by procedure
+@code{(@@ (guix store) set-build-options)}.  An example would be:
+
+@example
+,build-options '(#:offload? #f)
+@end example
+@end deffn
+
 @deffn {REPL command} lower @var{object}
 Lower @var{object} into a derivation or store file name and return it.
 @end deffn
