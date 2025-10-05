@@ -1743,6 +1743,13 @@ bugfixes and enhancements, and a new governance model.")
                       (search-input-file (or native-inputs inputs)
                                          "/bin/cython"))
               (setenv "RENPY_DEPS_INSTALL" (string-join (map cdr inputs) ":"))))
+          (add-before 'build 'relax-gcc-14-strictness
+            (lambda _
+              (setenv "CFLAGS" (string-join
+                                (list "-g" "-O2"
+                                      "-Wno-error=incompatible-pointer-types"
+                                      "-Wno-error=implicit-function-declaration")
+                                " "))))
           (replace 'build
             (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
               ;; The "module" subdirectory contains a python (really cython)
@@ -1769,9 +1776,9 @@ bugfixes and enhancements, and a new governance model.")
                                   (string-append out site "/renpy"))
                 (delete-file-recursively (string-append out site
                                                         "/renpy/common"))))))))
-    (native-inputs (list python-cython))
+    (native-inputs (list python-cython-0))
     (inputs
-     (list ffmpeg
+     (list ffmpeg-6
            freetype
            fribidi
            glew
