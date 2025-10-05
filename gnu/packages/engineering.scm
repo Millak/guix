@@ -45,6 +45,7 @@
 ;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
 ;;; Copyright © 2025 Matthew Elwin <elwin@northwestern.edu>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3042,7 +3043,7 @@ ontinuous-time and discret-time expressions.")
          (sha256
           (base32 "1cga32b65wbap59nmw37f75ys3gj9bk09nqzq7949x9kqlal13mx"))
          (file-name (git-file-name name version))))
-      (build-system cmake-build-system)
+      (build-system qt-build-system)
       (arguments
        (list
         ;; OpenSCAD doesn't cope well with out-of-source builds.
@@ -3207,7 +3208,7 @@ models in the STL and OFF file formats.")
          ((#:configure-flags flags)
           #~(begin
               (use-modules (srfi srfi-1))
-              (append 
+              (append
                (remove (lambda (flag)
                          (or (string-prefix? "-DOPENSCAD_VERSION=" flag)
                              (string-prefix? "-DOPENSCAD_COMMIT=" flag)))
