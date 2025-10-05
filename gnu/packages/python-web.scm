@@ -5924,6 +5924,8 @@ protocol, both client and server for Python asyncio module.
       (arguments
        (list #:test-flags #~(list "mohawk/tests.py")))
       (native-inputs (list python-pytest python-setuptools))
+      (propagated-inputs (list python-six)) ;TODO: remove python-mohawk when
+                                            ;python-six is removed?
       (home-page "https://github.com/kumar303/mohawk")
       (synopsis "Library for Hawk HTTP authorization")
       (description
