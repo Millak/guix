@@ -3187,7 +3187,9 @@ templates, understands numpydoc and Google-style docstrings.")
               (sha256
                (base32
                 "1fwdx92cdaiviradksfyygg05g1fpc3x2lf65bv5rnispcam6vhb"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))  ; Requires a running JVM?
+    (native-inputs (list python-setuptools))
     (home-page "https://www.py4j.org/")
     (synopsis "Dynamically access arbitrary Java objects from Python")
     (description
