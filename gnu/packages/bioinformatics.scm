@@ -23869,7 +23869,7 @@ coordinates between different assemblies.")
 (define-public python-cgatcore
   (package
     (name "python-cgatcore")
-    (version "0.6.15")
+    (version "0.6.16")
     ;; The version of pypi does not include test data.
     (source (origin
               (method git-fetch)
@@ -23879,12 +23879,15 @@ coordinates between different assemblies.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "103hpdnkqr3a34blbicshk56j36g652s0g1zi9isppc5dngn0s18"))))
+                "0kvfb6fpfncdfb8wjmn7n2vmqk3wd7sdrfw1rhlihfdxbfzb5fa8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      '(list "-k"
+      ;; Failed: 'yield' keyword is allowed in fixtures, but not in tests
+      ;; (test_import)
+      '(list "--ignore=tests/test_import.py"
+             "-k"
              (string-append
               ;; This test actually does what it should, but the check fails with
               ;; TypeError: cannot unpack non-iterable Namespace object
@@ -23913,12 +23916,11 @@ coordinates between different assemblies.")
                (("import sys" m)
                 (string-append "import apsw\n" m))))))))
     (native-inputs
-     (list python-pytest
+     (list inetutils
            lsof
-           inetutils
            openssl
-           python-setuptools
-           python-wheel))
+           python-pytest
+           python-setuptools))
     (inputs (list time))
     (propagated-inputs
      (list python-apsw
