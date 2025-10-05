@@ -31,6 +31,7 @@
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2026 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2025-2026 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025-2026 Jonas Meeuws <jonas.meeuws@gmail.com>
 ;;; Copyright © 2026 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -15589,55 +15590,59 @@ using high-throughput sc-RNAseq data.")
       (license license:gpl2))))
 
 (define-public sambamba
-  (package
-    (name "sambamba")
-    (version "0.8.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/biod/sambamba")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1zdkd1md5wk4la71p82pbclqqcm55abk23fk087da6186i1bsihl"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f                      ; there is no test target
-       #:parallel-build? #f             ; not supported
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'prepare-build-tools
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "Makefile"
-               (("\\$\\(shell which ldmd2\\)") (which "ldmd2")))
-             (setenv "CC" "gcc")
-             (setenv "D_LD" (which "ld.gold"))))
-         (add-after 'unpack 'unbundle-prerequisites
-           (lambda _
-             (substitute* "Makefile"
-               (("= lz4/lib/liblz4.a") "= -L-llz4")
-               (("ldc_version_info lz4-static") "ldc_version_info"))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-               (mkdir-p bin)
-               (copy-file (string-append "bin/sambamba-" ,version)
-                          (string-append bin "/sambamba"))))))))
-    (native-inputs
-     (list python))
-    (inputs
-     (list ldc lz4 zlib))
-    (home-page "https://github.com/biod/sambamba")
-    (synopsis "Tools for working with SAM/BAM data")
-    (description "Sambamba is a high performance modern robust and
+  ;; The update that fixes deprecations doesn't have a tag yet.
+  (let ((base-version "1.0.1")
+        (commit "dba65af68708859203338caa04ac62265fcebeab")
+        (revision "0"))
+    (package
+      (name "sambamba")
+      (version (git-version base-version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/biod/sambamba")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1wmka4ickrsfvkhc1mrrkxqy65g6wylsv0scmjq7m8l8qnllxbak"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f                    ; there is no test target
+         #:parallel-build? #f           ; not supported
+         #:phases
+         (modify-phases %standard-phases
+           (delete 'configure)
+           (add-after 'unpack 'prepare-build-tools
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "Makefile"
+                 (("\\$\\(shell which ldmd2\\)") (which "ldmd2")))
+               (setenv "CC" "gcc")
+               (setenv "D_LD" (which "ld.gold"))))
+           (add-after 'unpack 'unbundle-prerequisites
+             (lambda _
+               (substitute* "Makefile"
+                 (("= lz4/lib/liblz4.a") "= -L-llz4")
+                 (("ldc_version_info lz4-static") "ldc_version_info"))))
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
+                 (mkdir-p bin)
+                 (copy-file (string-append "bin/sambamba-" ,base-version)
+                            (string-append bin "/sambamba"))))))))
+      (native-inputs
+       (list python))
+      (inputs
+       (list ldc lz4 zlib))
+      (home-page "https://github.com/biod/sambamba")
+      (synopsis "Tools for working with SAM/BAM data")
+      (description "Sambamba is a high performance modern robust and
 fast tool (and library), written in the D programming language, for
 working with SAM and BAM files.  Current parallelised functionality is
 an important subset of samtools functionality, including view, index,
 sort, markdup, and depth.")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public r-rphyloxml
   (let ((commit "a30e39249239b2de01d6964ae2a2205a6c48b475")
