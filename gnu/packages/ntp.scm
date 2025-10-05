@@ -250,7 +250,7 @@ computers over a network.")
                          m4
                          pkg-config
                          pps-tools
-                         python-waf
+                         waf
                          ruby-asciidoctor/minimal))
     (inputs (cons* gpsd openssl
                    ;; Build with POSIX capabilities and syscall filtering

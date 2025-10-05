@@ -3922,10 +3922,10 @@ software.")
       `(modify-phases %standard-phases
          (add-before 'configure 'setup-waf
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((waf (assoc-ref inputs "python-waf")))
+             (let ((waf (assoc-ref inputs "waf")))
                (copy-file (string-append waf "/bin/waf") "waf")))))))
     (inputs (list boost))
-    (native-inputs (list python-waf))
+    (native-inputs (list waf))
     (home-page "https://github.com/lvtk/ttl2c")
     (synopsis "Turtle to C header conversion utility for LV2 plugins")
     (description
@@ -4033,10 +4033,10 @@ lv2-c++-tools.")
         `(modify-phases %standard-phases
            (add-before 'configure 'setup-waf
              (lambda* (#:key inputs #:allow-other-keys)
-               (let ((waf (assoc-ref inputs "python-waf")))
+               (let ((waf (assoc-ref inputs "waf")))
                  (copy-file (string-append waf "/bin/waf") "waf")))))))
       (inputs (list boost gtkmm-2 lv2))
-      (native-inputs (list pkg-config python-waf))
+      (native-inputs (list pkg-config waf))
       (home-page "https://github.com/lvtk/lvtk")
       (synopsis "C++ libraries for LV2 plugins")
       (description

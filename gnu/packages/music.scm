@@ -1855,12 +1855,12 @@ music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
          (modify-phases %standard-phases
            (add-before 'configure 'setup-waf
              (lambda* (#:key inputs #:allow-other-keys)
-               (let ((waf (assoc-ref inputs "python-waf")))
+               (let ((waf (assoc-ref inputs "waf")))
                  (copy-file (string-append waf "/bin/waf") "waf")))))))
       (inputs
        (list jack-1 libsigc++-2 liblo ntk))
       (native-inputs
-       (list python-waf pkg-config))
+       (list waf pkg-config))
       (home-page "https://non.tuxfamily.org/wiki/Non%20Sequencer")
       (synopsis "Pattern-based MIDI sequencer")
       (description
@@ -1907,7 +1907,7 @@ session can be interrupted and easily resumed at a later time.")
     (inputs
      (list jack-1 liblo ntk))
     (native-inputs
-     (list python-waf pkg-config))
+     (list waf pkg-config))
     (home-page "https://non.tuxfamily.org/nsm/")
     (synopsis "Audio session management")
     (description
@@ -1928,7 +1928,7 @@ communicate with the session management daemon.")
     (inputs
      (list jack-1 liblo ladspa lrdf ntk lv2 lilv))
     (native-inputs
-     (list python-waf pkg-config))
+     (list waf pkg-config))
     (home-page "https://non.tuxfamily.org/wiki/Non%20Mixer")
     (synopsis "Modular digital audio mixer")
     (description
@@ -1950,7 +1950,7 @@ studio.")
     (inputs
      (list jack-1 liblo libsndfile ntk))
     (native-inputs
-     (list python-waf pkg-config))
+     (list waf pkg-config))
     (home-page "https://non.tuxfamily.org/wiki/Non%20Timeline")
     (synopsis "Modular digital audio timeline arranger")
     (description

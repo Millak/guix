@@ -1239,9 +1239,9 @@ the POSIX make utility and allows writing a build script in Guile
 Scheme.")
       (license license:expat))))
 
-(define-public python-waf
+(define-public waf
   (package
-    (name "python-waf")
+    (name "waf")
     (version "2.0.19") ;TODO: newer version brakes API
     (source
      (origin
@@ -1270,8 +1270,33 @@ Scheme.")
           ;; waf breaks when it is wrapped.
           (delete 'wrap))))
     (home-page "https://waf.io/")
-    (synopsis "Python-based build system")
+    (synopsis "Multi-level general purpose build system")
     (description
-     "Waf is a Python-based framework for configuring, compiling and
-installing applications.")
+     "Waf is a build system framework for configuring, compiling and
+installing applications.
+
+Features:
+@itemize
+@item Automatic build order: the build order is computed from input and output
+files, among others
+@item Automatic dependencies: tasks to execute are detected by hashing files
+and commands
+@item Performance: tasks are executed in parallel automatically, the startup
+time is meant to be fast (separation between configuration and build)
+@item Flexibility: new commands and tasks can be added very easily through
+subclassing, bottlenecks for specific builds can be eliminated through dynamic
+method replacement
+@item Extensibility: though many programming languages and compilers are
+already supported by default, many others are available as extensions
+@item IDE support: Eclipse, Visual Studio and Xcode project generators
+(waflib/extras/)
+@item Documentation: the application is based on a robust model documented in
+The Waf Book and in the API docs
+@item Python compatibility: cPython 2.7 to 3.x, Jython 2.7 and PyPy
+@end itemize")
     (license license:bsd-3)))
+
+;; waf is the final program no need to prefix it with "python-", the same way
+;; as meson or ninja which are written in Python as well.
+(define-public python-waf
+  (deprecated-package "python-waf" waf))

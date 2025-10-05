@@ -358,7 +358,7 @@ except ImportError:
     (inputs
      (list gtk+ wxwidgets))
     (native-inputs
-     (list pkg-config python-setuptools python-waf))
+     (list pkg-config python-setuptools waf))
     (propagated-inputs
      (list python-numpy python-pillow python-six))
     (home-page "https://wxpython.org/")
