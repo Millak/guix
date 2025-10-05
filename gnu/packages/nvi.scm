@@ -45,6 +45,7 @@
           (base32 "0nbbs1inyrqds0ywn3ln5slv54v5zraq7lszkg8nsavv4kivhh9l"))
         (patches (search-patches "nvi-assume-preserve-path.patch"
                                  "nvi-dbpagesize-binpower.patch"
+                                 "nvi-add-function-prototypes.patch"
                                  "nvi-db4.patch"))
         (modules '((guix build utils)))
         (snippet
@@ -81,7 +82,6 @@
          ;; nvi's configure chokes on passing CFLAGS and ignores
          ;; CFLAGS set in the environment.
          (string-append "CFLAGS=-g -O2"
-                        " -Wno-error=implicit-function-declaration"
                         " -Wno-error=incompatible-pointer-types"))
       #:phases
       #~(modify-phases %standard-phases
