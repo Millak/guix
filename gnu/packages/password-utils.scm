@@ -43,6 +43,7 @@
 ;;; Copyright © 2024, 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025 Isidor Zeuner <guix@quidecco.pl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1583,6 +1584,49 @@ password hash types most commonly found on various Unix systems, supported out
 of the box are Windows LM hashes, plus lots of other hashes and ciphers.  This
 is the community-enhanced, \"jumbo\" version of John the Ripper.")
       (license license:gpl2+))))
+
+(define-public maskprocessor
+  (package
+    (name "maskprocessor")
+    (version "0.73")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashcat/maskprocessor")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vv12iwnkzvjsp9bnix0z1m3hbyhasf5nxngp65b4gdlkk7lqnrd"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;upstream does not provide tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'bootstrap)
+          (delete 'configure)
+          (replace 'build
+            (lambda* _args
+              (invoke "gcc"
+                      "-W"
+                      "-Wall"
+                      "-Werror"
+                      "-std=c99"
+                      "-O2"
+                      "-DLINUX"
+                      "-o"
+                      "maskprocessor"
+                      "src/mp.c")))
+          (replace 'install
+            (lambda* _args
+              (install-file "maskprocessor"
+                            (string-append #$output "/bin")))))))
+    (home-page "https://github.com/hashcat/maskprocessor")
+    (synopsis "High-Performance word generator")
+    (description "Maskprocessor is a high-performance word generator with a
+per-position configureable charset.")
+    (license (list license:expat))))
 
 (define-public fpm2
   (package
