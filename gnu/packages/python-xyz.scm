@@ -35135,16 +35135,14 @@ CMake.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #f ; No tests.
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-dlopen-paths
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "Screenkey/xlib.py"
-                (("libX11.so.6")
-                 (search-input-file inputs "lib/libX11.so.6")))
-              (substitute* "Screenkey/xlib.py"
-                (("libXtst.so.6")
-                 (search-input-file inputs "lib/libXtst.so.6")))))
+                (("(libXtst.so.6|libX11.so.6)" lib)
+                 (search-input-file inputs (string-append "/lib/" lib))))))
           (add-after 'install 'wrap-screenkey
             (lambda _
               (wrap-program (string-append #$output "/bin/screenkey")
@@ -35160,10 +35158,8 @@ CMake.")
                   python-dbus-python
                   python-pycairo
                   python-pygobject
-                  python-setuptools
-                  python-setuptools-git
-                  python-tokenize-rt
-                  python-wheel))
+                  slop))
+    (native-inputs (list python-setuptools))
     (home-page "https://www.thregr.org/~wavexx/software/screenkey/")
     (synopsis "Screencast tool to display pressed keys")
     (description
