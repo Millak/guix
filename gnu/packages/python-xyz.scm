@@ -27923,21 +27923,25 @@ offset, or using offset reference
     (version "0.3.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "jsonrpclib-pelix" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tcalmant/jsonrpclib")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0f83z5zi7w32vprhk1dyc94ir1bh4hdd57bjdbwkq9ykng8qilhl"))))
-    (build-system python-build-system)
+        (base32 "1mhnqmgcplsxc4zygxy4hm99si7p2rpyl4bpmilzqc51k2r3khzl"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))                    ; no tests in PyPI tarball
-    (home-page "https://github.com/tcalmant/jsonrpclib/")
+     (list
+      #:test-backend #~'unittest
+      #:test-flags #~(list "-k" "not test_multicall_success")))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/tcalmant/jsonrpclib")
     (synopsis "JSON-RPC 2.0 client library for Python")
     (description
-     "This library implements the JSON-RPC v2.0
-specification (backwards-compatible) as a client library for Python.  This
-version is a fork of jsonrpclib by Josh Marshall, usable with Pelix remote
-services.")
+     "This library implements the JSON-RPC v2.0 specification
+(backwards-compatible) as a client library for Python.  This version is a fork
+of jsonrpclib by Josh Marshall, usable with Pelix remote services.")
     (license license:asl2.0)))
 
 (define-public python-setuptools-git
