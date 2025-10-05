@@ -28270,7 +28270,9 @@ objects on other machines, also known as remote procedure calls (RPC).")
        (sha256
         (base32
          "1dnd7v9adqd21bf4ih2wzn9a7b41m0nccb0vbxny9n037rxzb5c4"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "http://stutzbachenterprises.com/")
     (synopsis "Heap with decrease-key and increase-key operations")
     (description
