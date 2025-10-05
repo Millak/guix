@@ -277,7 +277,7 @@ from a client application and provide access to the desired reader.")
 (define-public pcsc-tools
   (package
     (name "pcsc-tools")
-    (version "1.6.2")
+    (version "1.7.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -286,37 +286,27 @@ from a client application and provide access to the desired reader.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16kvw8y5289fp6y3z8l5w61gfrk872kd500a27sgr5k5dpr9vfbk"))))
+                "04v6srhfcx80r4xwsccbmanbsl6i7ri1q21kpii46kqwf24w9m54"))))
     (build-system gnu-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-data-paths
-                 (lambda _
-                   (substitute* "ATR_analysis"
-                     (((string-append
-                        "\"/usr/local/pcsc/smartcard_list.txt\", "
-                        "\"/usr/share/pcsc/smartcard_list.txt\", "
-                        "\"/usr/local/share/pcsc/smartcard_list.txt\""))
-                      (string-append "\"" #$output
-                                     "/share/pcsc/smartcard_list.txt\"")))
-                   (substitute* "ATR_analysis.1p"
-                     (("^(\\.IR \\./) ,\n$" _ cwd)
-                      (string-append cwd "\n"))
-                     (("^\\.I /usr/local/pcsc/\n$")
-                      "")
-                     (("/usr/share/pcsc/\n$")
-                      (string-append #$output "/share/pcsc/\n")))))
-               (add-after 'patch-shebangs 'wrap-programs
-                 (lambda _
-                   (for-each
-                    (lambda (prog)
-                      (wrap-program (string-append #$output "/bin/" prog)
-                        `("PERL5LIB" = (,(getenv "PERL5LIB")))))
-                    '("ATR_analysis" "gscriptor" "scriptor"))
-                   (wrap-program (string-append #$output "/bin/gscriptor")
-                     `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
-    (native-inputs (list autoconf automake libtool gettext-minimal pkg-config))
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'patch-shebangs 'wrap-programs
+                     (lambda _
+                       (for-each
+                        (lambda (prog)
+                          (wrap-program (string-append #$output "/bin/" prog)
+                            `("PERL5LIB" = (,(getenv "PERL5LIB")))))
+                        '("ATR_analysis" "gscriptor" "scriptor"))
+                       (wrap-program (string-append #$output "/bin/gscriptor")
+                         `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
+    (native-inputs
+     (list autoconf
+           autoconf-archive
+           automake
+           libtool
+           pkg-config
+           python-minimal-wrapper))
     (inputs (list bash-minimal          ;for wrap-program
                   perl
                   perl-gtk3
