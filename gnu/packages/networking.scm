@@ -1967,7 +1967,7 @@ of the same name.")
            libssh
            libxml2
            lz4
-           lua-5.2
+           lua-5.4
            mit-krb5
            `(,nghttp2 "lib")
            minizip
