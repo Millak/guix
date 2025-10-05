@@ -2768,7 +2768,7 @@ specifying the usage of each program for each cell in the data.")
 (define-public python-cyvcf2
   (package
     (name "python-cyvcf2")
-    (version "0.31.1")
+    (version "0.31.2")
     (source
      (origin
        (method git-fetch)
@@ -2777,7 +2777,7 @@ specifying the usage of each program for each cell in the data.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02x7ic2q4x3sfwx9n2sxg0a79iifjal0a68fqp9ljsfvdx4b7nq5"))
+        (base32 "19jv2502644qjv278yjllqqakwhghmfbaa4h08rayak5mp130i70"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete bundled library
@@ -2809,8 +2809,7 @@ specifying the usage of each program for each cell in the data.")
     (native-inputs
      (list python-cython
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-click
            python-coloredlogs
