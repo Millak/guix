@@ -421,7 +421,7 @@ KDSoap.")
 (define-public kirigami-addons
   (package
     (name "kirigami-addons")
-    (version "1.9.0")
+    (version "1.10.0")
     (source
      (origin
        (method git-fetch)
@@ -430,18 +430,21 @@ KDSoap.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "099giz2a4pb68pyynwpzq8i49qxqs6mv9qjvi30sqcmkyvmqrpxh"))))
+        (base32 "1f93y893kvqysdrvcr1f6f5rmg38k0hbmf53r672xrxis5yar0vl"))))
     (build-system qt-build-system)
     (arguments
      (list
       #:qtbase qtbase
       #:tests? #f)) ;failing tests
     (native-inputs (list extra-cmake-modules))
-    (inputs (list kconfig
+    (inputs (list kcolorscheme
+                  kconfig
                   kcoreaddons
+                  kcrash
                   kglobalaccel
                   kguiaddons
                   ki18n
+                  kiconthemes
                   kirigami
                   qtdeclarative))
     (home-page "https://invent.kde.org/libraries/kirigami-addons")
