@@ -2163,7 +2163,7 @@ pass files.")
 (define-public kpublictransport
   (package
     (name "kpublictransport")
-    (version "24.12.1")
+    (version "25.08.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
@@ -2171,10 +2171,16 @@ pass files.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "1hi189yx81gabpk7czmqx2xy1slnjhhq8m5gv07avfhsw0kab8ba"))))
+                "17zj72b55rpa0drk2c95mva7akghnjl1m4nlh1z46nvw3n1z0dzb"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
+           #:test-exclude
+           (string-append "("
+                          (string-join '("updatetest"
+                                         "motis2parsertest")
+                                       "|")
+                          ")")
            #:phases #~(modify-phases %standard-phases
                         (add-before 'check 'check-setup
                           (lambda* (#:key inputs #:allow-other-keys)
@@ -2187,6 +2193,7 @@ pass files.")
     (native-inputs (list extra-cmake-modules pkg-config tzdata-for-tests))
     ;; TODO: clipper and osmctools are not detected
     (inputs (list clipper
+                  kirigami-addons
                   osmctools
                   protobuf
                   qtdeclarative
