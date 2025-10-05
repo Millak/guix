@@ -805,26 +805,29 @@ high-level API is bound.")
 (define-public python-glyphslib
   (package
     (name "python-glyphslib")
-    (version "6.0.7")
+    (version "6.6.1")  ;6.6.1 is the last version that works with ufo2ft 2.x
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "glyphsLib" version))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/googlefonts/glyphsLib")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mkkwd09g76hvif603ij5aqicxh47zvhgyyd0pjcjmpdy6dr70yw"))))
+                "193h5ixq9p9m2kwz8srfw61rzgqg6gishlndqm759cymwax0cibi"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~'(;; These fail because the test data has not yet been
-                       ;; updated for newer FontTools:
-                       ;;   https://github.com/googlefonts/glyphsLib/issues/787
-                       ;; Re-enable for versions > 6.0.7.
-                       "--ignore=tests/builder/designspace_gen_test.py"
-                       "--ignore=tests/builder/interpolation_test.py")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pretend-version
+            ;; The version string is usually derived via setuptools-scm, but
+            ;; without the git metadata available this fails.
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-setuptools-scm
            python-setuptools
-           python-wheel
            ;; For tests.
            python-pytest
            python-xmldiff))
