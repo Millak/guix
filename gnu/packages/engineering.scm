@@ -1581,24 +1581,26 @@ replacement for the OpenDWG libraries.")
 (define-public microcom
   (package
     (name "microcom")
-    (version "2019.01.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://git.pengutronix.de/git/tools/microcom.git")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32 "0rf4qdkbhknrrqn4rpb737l0km8yn5f498zapks4akf6yjh5aq8y"))))
+    (version "2023.09.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.pengutronix.de/git/tools/microcom.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18qr9rwn3b82h042jrz1syfiiqyf3cbpdr8vv0s5p5f51f2l3vj7"))))
     (build-system gnu-build-system)
     (inputs (list readline))
     (native-inputs (list automake autoconf))
-    (home-page  "https://git.pengutronix.de/?p=tools/microcom.git")
+    (home-page  "https://git.pengutronix.de/cgit/tools/microcom")
     (synopsis "Minimalistic serial line terminal program")
- (description "Microcom is a minimalistic terminal program for accessing
-devices via a serial connection.  It features connection via RS232 serial
-interfaces (including setting of transfer rates) as well as in @code{telnetmode}
-as specified in rfc2217 and a (Linux specific) CAN mode.")
+    (description
+     "Microcom is a minimalistic terminal program for accessing devices
+via a serial connection.  It features connection via RS232 serial interfaces
+(including setting of transfer rates) as well as in @code{telnetmode} as
+specified in rfc2217 and a (Linux specific) CAN mode.")
     (license license:gpl2+)))
 
 (define-public minicom
