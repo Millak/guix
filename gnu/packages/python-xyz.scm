@@ -858,13 +858,17 @@ system.")
     (version "1.6.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "flake8-class-newline" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/AlexanderVanEck/flake8-class-newline")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1w8z88asz90jm1msz06vi7dj0da8sfw5ajyvabfv7f4fr0iljk2i"))))
+        (base32 "15fw0iw2c3a3n2aarfgq7147406489xd8nk0kkj9k2x98fkwwnyh"))))
     (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
     (propagated-inputs (list python-flake8))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/AlexanderVanEck/flake8-class-newline")
     (synopsis "Flake8 lint for newline after class definitions")
     (description "This package provides a flake8 extension to lint for newline
