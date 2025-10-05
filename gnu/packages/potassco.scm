@@ -607,10 +607,13 @@ bindings for Clingo.")
                  (("\"clingo\"")
                   (string-append "\""
                                  (search-input-file inputs "bin/clingo")
-                                 "\""))))))))
+                                 "\"")))))
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (invoke "python" "build/lib/asprin/asprin.py" "--test")))))))
      (native-inputs
-      (list python-setuptools
-            python-wheel))
+      (list python-setuptools))
      (inputs
       (list clingo))
      (propagated-inputs
