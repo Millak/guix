@@ -5953,7 +5953,7 @@ services for numerous locations.")
 (define-public gnome-settings-daemon
   (package
     (name "gnome-settings-daemon")
-    (version "47.2")
+    (version "48.1")
     (source
      (origin
        (method url-fetch)
@@ -5962,10 +5962,8 @@ services for numerous locations.")
                            name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0nka7zfl4hzzk4066kk5cc8pmk7v3izhi4wihsh5b3w85s35idqy"))
-       (patches (search-patches "gnome-settings-daemon-gc.patch"
-                                ;; See https://gitlab.gnome.org/GNOME/gnome-settings-daemon/-/issues/792
-                                "gnome-settings-daemon-screensaver-error.patch"))))
+         "0bh6xsx8fgzfgjjf9hvv10ar4f55b0riwymf01kcpjsd47ma4q1q"))
+       (patches (search-patches "gnome-settings-daemon-gc.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
