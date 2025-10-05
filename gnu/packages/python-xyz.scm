@@ -35203,22 +35203,23 @@ template engine.")
     (version "0.3.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "readability" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/andreasvc/readability/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1b8gq3g2zwvx0aivvdg56cc0bn7xw6f2v6psmxdx9aiipkw0s0zr"))))
-    (build-system python-build-system)
-    (home-page
-     "https://github.com/andreasvc/readability/")
-    (synopsis
-     "Measure the readability of a given text using surface
-characteristics")
+        (base32 "0m2v4ysy2a7k6j9d85i4n9z6k48rmgmbj1v7r6l2cb5qpa3pwrj5"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ; No tests.
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/andreasvc/readability/")
+    (synopsis "Measure text readability using surface characteristics")
     (description
      "This package provides a Python library that is an implementation of
-traditional readability measures based on simple surface
-characteristics. These measures are basically linear regressions based on the
-number of words, syllables, and sentences.")
+traditional readability measures based on simple surface characteristics.
+These measures are basically linear regressions based on the number of words,
+syllables, and sentences.")
     (license license:asl2.0)))
 
 (define-public python-readability-lxml
