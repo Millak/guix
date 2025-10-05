@@ -7027,7 +7027,14 @@ doublets in single-cell RNA-seq data.")
         (base32
          "0agkz2w86k91rc9m5vx5hsqi5nm6fcmzkng6j99hjapz0r9233ql"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list
+      #:test-flags
+      ;; Assert fails to compare large files.
+      #~(list "--deselect=tests/test_battery.py::test_formatting_battery")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-importlib-resources
            python-ruamel.yaml))
