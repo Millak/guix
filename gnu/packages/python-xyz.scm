@@ -40598,10 +40598,13 @@ It is not intended as an end-user tool.")
     (version "3.0b1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "xmldiff" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Shoobx/xmldiff")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0g8dd507l8i5431rjlb6j1sf3hvzmcblijx8s4wchym9n4vbvhm9"))))
+        (base32 "0p4ry9dl719gmgkxksdv4ghyyzib1irg6g27bbkla2wmprrj1ai9"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-lxml))
