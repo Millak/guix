@@ -28315,15 +28315,26 @@ user's @file{~/Trash} directory.")
     (version "0.1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyfavicon" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bilelmoussaoui/pyfavicon")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "15wfpa99hvcfsv8j0m8iprmydi2p4qkhm86qfx485244y0ia5mgx"))))
-    (build-system python-build-system)
+        (base32 "04mx8vbi6j9l8daqa18sv0kkcyqv4wbc9z4ma77w68baq6ss0jzf"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; There are no tests in the PyPI tarball and the tests from the
-     ;; repository require online data.
-     '(#:tests? #f))
+     (list
+      #:test-backend #~'unittest
+      #:test-flags
+      #~(list "-k" (string-join (list
+                                 ;; Socket name resolution fails.
+                                 "not test_url_icon_link_type"
+                                 "test_icon_sizes"
+                                 ;; Tuples differ.
+                                 "test_largest_icon")
+                                " and not "))))
+    (native-inputs (list python-setuptools))
     (propagated-inputs
      (list python-aiohttp python-beautifulsoup4 python-pillow))
     (home-page "https://github.com/bilelmoussaoui/pyfavicon")
