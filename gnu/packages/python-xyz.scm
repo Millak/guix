@@ -1957,67 +1957,6 @@ The @file{.whl} file extension is matched case-insensitively.
 @end itemize")
     (license license:expat)))
 
-(define-public python-xmldiff
-  (package
-    (name "python-xmldiff")
-    (version "2.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "xmldiff" version))
-       (sha256
-        (base32 "18k8kiml9wpl4wf9lmi0j6ys21lbdv8fa8r9qrzdsrh3h0ghp4f0"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools))
-    (propagated-inputs (list python-lxml))
-    (home-page "https://github.com/Shoobx/xmldiff")
-    (synopsis "Creates diffs of XML files")
-    (description "This Python tool figures out the differences between two
-similar XML files, in the same way the @command{diff} utility does it.")
-    (license license:expat)))
-
-(define-public python-xmlsec
-  (package
-    (name "python-xmlsec")
-    (version "1.3.16")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "xmlsec" version))
-       (sha256
-        (base32 "178zg6jl3v7j4cdxxzqzr16m3wqfisai98xa0sh4q7bd9ia70v1b"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; See https://github.com/xmlsec/python-xmlsec/issues/210
-      #:test-flags '(list "-n" "1"
-                          ;; This causes other tests to segfault.
-                          "-k" "not test_reinitialize_module")
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; FIXME: This is very unfortunate.  I can't seem to find a way to
-          ;; hardcode the location of this library, so users will also need to
-          ;; set LD_LIBRARY_PATH.
-          (add-before 'check 'pre-check
-            (lambda* (#:key inputs #:allow-other-keys)
-              (setenv "LD_LIBRARY_PATH"
-                      (dirname (search-input-file inputs "lib/libxmlsec1-openssl.so.1.3.7"))))))))
-    (inputs (list openssl libltdl libxslt libxml2))
-    (propagated-inputs (list python-lxml xmlsec-openssl))
-    (native-inputs (list pkg-config
-                         python-lxml
-                         python-pkgconfig
-                         python-pytest
-                         python-pytest-xdist
-                         python-setuptools
-                         python-setuptools-scm
-                         python-wheel))
-    (home-page "https://github.com/xmlsec/python-xmlsec")
-    (synopsis "Python bindings for the XML Security Library")
-    (description "This package provides Python bindings for the XML Security
-Library.")
-    (license license:expat)))
-
 (define-public python-jaconv
   (package
     (name "python-jaconv")
@@ -13690,31 +13629,6 @@ a front-end for C compilers or analysis tools.")
 (define-public python2-pycparser
   (package-with-python2 python-pycparser))
 
-(define-public python-xlsxwriter
-  (package
-    (name "python-xlsxwriter")
-    (version "3.2.0")
-    (source
-     (origin
-       ;; There are no tests in the PyPI tarball.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/jmcnamara/XlsxWriter")
-             (commit (string-append "RELEASE_" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1g16xb4nsjd807qcm8756ixlxxvdjmbr2v7r6wxkajw1h4m8id0w"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
-    (home-page "https://github.com/jmcnamara/XlsxWriter")
-    (synopsis "Python module for creating Excel XLSX files")
-    (description
-     "XlsxWriter is a Python module that can be used to write text, numbers,
-formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
-    (license license:bsd-2)))
-
 (define-public python-pywavelets
   (package
     (name "python-pywavelets")
@@ -16507,45 +16421,6 @@ be relatively fast, and can use multiple cores to sort the columns and
 tie-resolvement is accelerated by numba.")
     (license license:expat)))
 
-(define-public python-xlib
-  (package
-    (name "python-xlib")
-    (version "0.33")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/python-xlib/python-xlib")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "03d28lx6sz0724ps6lnn4m6s0cfspgwqdf2l773lqf88add8wkmv"))))
-    (build-system pyproject-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'start-xserver
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((xorg-server (assoc-ref inputs "xorg-server")))
-               ;; There must be a running X server and make check doesn't
-               ;; start one.  Therefore we must do it.
-               (system (format #f "~a/bin/Xvfb :1 &" xorg-server))
-               (setenv "DISPLAY" ":1")))))))
-    (native-inputs
-     (list python-mock
-           python-pytest
-           python-setuptools
-           xorg-server))
-    (propagated-inputs
-     (list python-six))
-    (home-page "https://github.com/python-xlib/python-xlib")
-    (synopsis "Python X11 client library")
-    (description
-     "The Python X Library is intended to be a fully functional
-X client library for Python programs.  It is useful to implement
-low-level X clients.  It is written entirely in Python.")
-    (license license:gpl2+)))
-
 (define-public python-singledispatch
   (package
     (name "python-singledispatch")
@@ -18080,53 +17955,6 @@ dependency resolution logic.")
      "This module is a pure Python port of jgm's @code{commonmark.js}, a
 Markdown parser and renderer for the CommonMark specification, using only
 native modules.")
-    (license license:bsd-3)))
-
-(define-public python-xlrd
-  (package
-    (name "python-xlrd")
-    (version "2.0.2")
-    (source
-     (origin
-       (method git-fetch)       ;no tests in PyPI archive
-       (uri (git-reference
-              (url "https://github.com/python-excel/xlrd")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1zgb03a4l2an2hy17w0nlyfisl53jzf8csdj90f5xkibbnjsg3y3"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (home-page "https://www.python-excel.org/")
-    (synopsis "Library for extracting data from Excel files")
-    (description "This package provides a library to extract data from
-spreadsheets using Microsoft Excel proprietary file formats @samp{.xls} and
-@samp{.xlsx} (versions 2.0 onwards).  It has support for Excel dates and is
-Unicode-aware.  It is not intended as an end-user tool.")
-    (license license:bsd-3)))
-
-;;; Note: this package is unmaintained since 2018 (archived on GitHub).
-(define-public python-xlwt
-  (package
-    (name "python-xlwt")
-    (version "1.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "xlwt" version))
-       (sha256
-        (base32 "123c2pdamshkq75wwvck8fq0cjq1843xd3x9qaiz2a4vg9qi56f5"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
-    (home-page "https://www.python-excel.org/")
-    (synopsis "Library for creating spreadsheet Excel files")
-    (description
-     "@code{xlwt} is a library for writing data and formatting information to
-older Excel files (i.e. .xls).  The package itself is pure Python with no
-dependencies on modules or packages outside the standard Python distribution.
-It is not intended as an end-user tool.")
     (license license:bsd-3)))
 
 (define-public python-immutables
@@ -21525,29 +21353,6 @@ Amazon Web Services (AWS) API.")
     (description "This module lets you draw large letter from ordinary characters
 in pure Python.")
     (license license:expat)))
-
-(define-public python-xdg
-  (package
-    (name "python-xdg")
-    (version "6.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "xdg" version))
-              (sha256
-               (base32
-                "14hwk9j5zjc8rvirw95mrb07zdnpjaxjx2mj3rnq8pnlyaa809r4"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f)) ; No tests in PyPi tarball.
-    (native-inputs
-     (list python-poetry-core))
-    (home-page "https://github.com/srstevenson/xdg-base-dirs")
-    (synopsis "Variables defined by the XDG Base Directory Specification")
-    (description "xdg-base-dirs is a Python module that provides functions to
-return paths to the directories defined by the XDG Base Directory
-Specification, to save you from duplicating the same snippet of logic in every
-Python utility you write that deals with user cache, configuration, or data
-files.")
-    (license license:isc)))
 
 (define-public python-mako
   (package
@@ -32742,30 +32547,6 @@ prevent debuggers and other applications from inspecting the memory within
 your process.")
     (license license:expat)))
 
-(define-public python-xattr
-  (package
-    (name "python-xattr")
-    (version "1.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "xattr" version))
-       (sha256
-        (base32 "19z0wp1plr5g8a3jknipii3qmqp3znwd63zqrhx19gpixwhqwk56"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-cffi))
-    (home-page "https://github.com/xattr/xattr")
-    (synopsis "Python wrapper for extended file system attributes")
-    (description "This package provides a Python wrapper for using extended
-file system attributes.  Extended attributes extend the basic attributes of files
-and directories in the file system.  They are stored as name:data pairs
-associated with file system objects (files, directories, symlinks, etc).")
-    (license license:expat)))
-
 (define-public python-json-e
   (package
     (name "python-json-e")
@@ -40085,6 +39866,225 @@ write text fast, and for various text generation, statistics, and modeling tasks
 @item Nanosecond precision
 @item Date arithmetic
 @end itemize")
+    (license license:expat)))
+
+(define-public python-xattr
+  (package
+    (name "python-xattr")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "xattr" version))
+       (sha256
+        (base32 "19z0wp1plr5g8a3jknipii3qmqp3znwd63zqrhx19gpixwhqwk56"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-cffi))
+    (home-page "https://github.com/xattr/xattr")
+    (synopsis "Python wrapper for extended file system attributes")
+    (description "This package provides a Python wrapper for using extended
+file system attributes.  Extended attributes extend the basic attributes of files
+and directories in the file system.  They are stored as name:data pairs
+associated with file system objects (files, directories, symlinks, etc).")
+    (license license:expat)))
+
+(define-public python-xdg
+  (package
+    (name "python-xdg")
+    (version "6.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "xdg" version))
+              (sha256
+               (base32
+                "14hwk9j5zjc8rvirw95mrb07zdnpjaxjx2mj3rnq8pnlyaa809r4"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ; No tests in PyPi tarball.
+    (native-inputs
+     (list python-poetry-core))
+    (home-page "https://github.com/srstevenson/xdg-base-dirs")
+    (synopsis "Variables defined by the XDG Base Directory Specification")
+    (description "xdg-base-dirs is a Python module that provides functions to
+return paths to the directories defined by the XDG Base Directory
+Specification, to save you from duplicating the same snippet of logic in every
+Python utility you write that deals with user cache, configuration, or data
+files.")
+    (license license:isc)))
+
+(define-public python-xlib
+  (package
+    (name "python-xlib")
+    (version "0.33")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/python-xlib/python-xlib")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03d28lx6sz0724ps6lnn4m6s0cfspgwqdf2l773lqf88add8wkmv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'start-xserver
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((xorg-server (assoc-ref inputs "xorg-server")))
+               ;; There must be a running X server and make check doesn't
+               ;; start one.  Therefore we must do it.
+               (system (format #f "~a/bin/Xvfb :1 &" xorg-server))
+               (setenv "DISPLAY" ":1")))))))
+    (native-inputs
+     (list python-mock
+           python-pytest
+           python-setuptools
+           xorg-server))
+    (propagated-inputs
+     (list python-six))
+    (home-page "https://github.com/python-xlib/python-xlib")
+    (synopsis "Python X11 client library")
+    (description
+     "The Python X Library is intended to be a fully functional
+X client library for Python programs.  It is useful to implement
+low-level X clients.  It is written entirely in Python.")
+    (license license:gpl2+)))
+
+(define-public python-xlrd
+  (package
+    (name "python-xlrd")
+    (version "2.0.2")
+    (source
+     (origin
+       (method git-fetch)       ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/python-excel/xlrd")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zgb03a4l2an2hy17w0nlyfisl53jzf8csdj90f5xkibbnjsg3y3"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://www.python-excel.org/")
+    (synopsis "Library for extracting data from Excel files")
+    (description "This package provides a library to extract data from
+spreadsheets using Microsoft Excel proprietary file formats @samp{.xls} and
+@samp{.xlsx} (versions 2.0 onwards).  It has support for Excel dates and is
+Unicode-aware.  It is not intended as an end-user tool.")
+    (license license:bsd-3)))
+
+(define-public python-xlsxwriter
+  (package
+    (name "python-xlsxwriter")
+    (version "3.2.0")
+    (source
+     (origin
+       ;; There are no tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jmcnamara/XlsxWriter")
+             (commit (string-append "RELEASE_" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g16xb4nsjd807qcm8756ixlxxvdjmbr2v7r6wxkajw1h4m8id0w"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (home-page "https://github.com/jmcnamara/XlsxWriter")
+    (synopsis "Python module for creating Excel XLSX files")
+    (description
+     "XlsxWriter is a Python module that can be used to write text, numbers,
+formulas and hyperlinks to multiple worksheets in an Excel 2007+ XLSX file.")
+    (license license:bsd-2)))
+
+;;; Note: this package is unmaintained since 2018 (archived on GitHub).
+(define-public python-xlwt
+  (package
+    (name "python-xlwt")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "xlwt" version))
+       (sha256
+        (base32 "123c2pdamshkq75wwvck8fq0cjq1843xd3x9qaiz2a4vg9qi56f5"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://www.python-excel.org/")
+    (synopsis "Library for creating spreadsheet Excel files")
+    (description
+     "@code{xlwt} is a library for writing data and formatting information to
+older Excel files (i.e. .xls).  The package itself is pure Python with no
+dependencies on modules or packages outside the standard Python distribution.
+It is not intended as an end-user tool.")
+    (license license:bsd-3)))
+
+(define-public python-xmldiff
+  (package
+    (name "python-xmldiff")
+    (version "2.7.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "xmldiff" version))
+       (sha256
+        (base32 "18k8kiml9wpl4wf9lmi0j6ys21lbdv8fa8r9qrzdsrh3h0ghp4f0"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-lxml))
+    (home-page "https://github.com/Shoobx/xmldiff")
+    (synopsis "Creates diffs of XML files")
+    (description "This Python tool figures out the differences between two
+similar XML files, in the same way the @command{diff} utility does it.")
+    (license license:expat)))
+
+(define-public python-xmlsec
+  (package
+    (name "python-xmlsec")
+    (version "1.3.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "xmlsec" version))
+       (sha256
+        (base32 "178zg6jl3v7j4cdxxzqzr16m3wqfisai98xa0sh4q7bd9ia70v1b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; See https://github.com/xmlsec/python-xmlsec/issues/210
+      #:test-flags '(list "-n" "1"
+                          ;; This causes other tests to segfault.
+                          "-k" "not test_reinitialize_module")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; FIXME: This is very unfortunate.  I can't seem to find a way to
+          ;; hardcode the location of this library, so users will also need to
+          ;; set LD_LIBRARY_PATH.
+          (add-before 'check 'pre-check
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "LD_LIBRARY_PATH"
+                      (dirname (search-input-file inputs "lib/libxmlsec1-openssl.so.1.3.7"))))))))
+    (inputs (list openssl libltdl libxslt libxml2))
+    (propagated-inputs (list python-lxml xmlsec-openssl))
+    (native-inputs (list pkg-config
+                         python-lxml
+                         python-pkgconfig
+                         python-pytest
+                         python-pytest-xdist
+                         python-setuptools
+                         python-setuptools-scm
+                         python-wheel))
+    (home-page "https://github.com/xmlsec/python-xmlsec")
+    (synopsis "Python bindings for the XML Security Library")
+    (description "This package provides Python bindings for the XML Security
+Library.")
     (license license:expat)))
 
 (define-public python-xmp-toolkit
