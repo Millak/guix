@@ -27,7 +27,7 @@
 
 (define-module (gnu packages syncthing)
   #:use-module (guix build-system go)
-  #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -44,6 +44,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages python-crypto)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages time))
 
 (define-public syncthing
@@ -153,10 +154,12 @@ Protocol.")
                 (sha256
                  (base32
                   "1b77rdmx74zyz3lfhzzvdf3rrm7lfc7246varnr5xi366z3410ha"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
+       (list
+        #:tests? #f  ;has no tests
+        #:phases
+        #~(modify-phases %standard-phases
            (add-after 'unpack 'hardcode-dependencies
              (lambda* (#:key inputs #:allow-other-keys)
                (let ((psmisc (assoc-ref inputs "psmisc"))
@@ -174,7 +177,14 @@ Protocol.")
              (lambda _
                (substitute* "syncthing_gtk/tools.py"
                  (("return executable")
-                   "return \"syncthing-gtk\""))))
+                  "return \"syncthing-gtk\""))
+               ;; Prevent complaints from 'pip3 check':
+               ;;   DEPRECATION: syncthing-gtk unknown has a non-standard
+               ;;   version number. pip 24.1 will enforce this behaviour change.
+               (substitute* "setup.py"
+                 (("return version")
+                  (string-append
+                   "return \"" (car (string-split #$version #\-)) "\"")))))
            (add-after 'unpack 'remove-windows.py
              (lambda _
                ;; A Windows-specific module that fails to load with
@@ -188,6 +198,7 @@ Protocol.")
                      (,(getenv "GUIX_GDK_PIXBUF_MODULE_FILES")))
                    `("GI_TYPELIB_PATH" ":" suffix
                      (,(getenv "GI_TYPELIB_PATH"))))))))))
+      (native-inputs (list python-setuptools))
       (inputs
        (list bash-minimal
              gtk+
@@ -199,7 +210,7 @@ Protocol.")
              python-pygobject
              psmisc
              syncthing))
-      (home-page "https://github.com/syncthing/syncthing-gtk")
+      (home-page "https://github.com/kozec/syncthing-gtk")
       (synopsis "GTK3 based GUI and notification area icon for Syncthing")
       (description "@code{syncthing-gtk} is a GTK3 Python based GUI and
 notification area icon for Syncthing.  Supported Syncthing features:
