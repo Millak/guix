@@ -3240,7 +3240,7 @@ models in the STL and OFF file formats.")
                                     "/share/sanitizers-cmake/cmake")))))))))
       (inputs (modify-inputs (package-inputs openscad)
                 (append curl libfive)))
-      (synopsis "Script-based 3D modeling app whith Python support")
+      (synopsis "Script-based 3D modeling app with Python support")
       (description
        "PythonSCAD is a programmatic 3D modeling application.  It allows you
 to turn simple code into 3D models suitable for 3D printing.  It is a fork of
