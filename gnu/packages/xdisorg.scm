@@ -2834,6 +2834,41 @@ both binary and text data.")
 the X11 clipboard")
     (license license:bsd-3)))
 
+(define-public python-wmctrl
+  (package
+    (name "python-wmctrl")
+    (version "0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "wmctrl" version))
+       (sha256
+        (base32 "0qp9adzsabcbjgm864m4dc8x5knvfb1mskih4byxdqp9dxms6fbq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ;XXX: all tests fail, require some set up
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda _
+              (substitute* "wmctrl.py"
+                (("'wmctrl")
+                 (string-append "'" #$(this-package-input "wmctrl")
+                                "/bin/wmctrl"))))))))
+    (native-inputs
+     (list python-setuptools))
+    (inputs
+     (list wmctrl))
+    (propagated-inputs
+     (list python-attrs))
+    (home-page "https://github.com/antocuni/wmctrl")
+    (synopsis "Tool to programmatically control Xorg windows")
+    (description
+     "This package provides a library for programmatically controlling Xorg
+windows using Python.  The library relies on the @command{wmctrl} to do so.")
+    (license license:expat)))
+
 (define-public python-xdo
   (package
     (name "python-xdo")
