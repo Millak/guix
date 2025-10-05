@@ -16480,40 +16480,37 @@ Python 2 and Python 3.")
   (package
     (name "python-waf")
     (version "2.0.19")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://waf.io/"
-                                  "waf-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "19dvqbsvxz7ch03dh1v0znklrwxlz6yzddc3k9smzrrgny4jch6q"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://waf.io/" "waf-" version ".tar.bz2"))
+       (sha256
+        (base32 "19dvqbsvxz7ch03dh1v0znklrwxlz6yzddc3k9smzrrgny4jch6q"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda _
-             ;; XXX: Find a way to add all extra tools.
-             (let ((tools '("gccdeps"
-                            "clang_compilation_database")))
-               (invoke "python" "waf-light" "configure" "build"
-                       (string-append "--tools="
-                                      (string-join tools ","))))))
-         (replace 'check
-           (lambda _
-             (invoke "python" "waf" "--version")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (install-file "waf" (string-append out "/bin")))
-             #t))
-         ;; waf breaks when it is wrapped.
-         (delete 'wrap))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              ;; XXX: Find a way to add all extra tools.
+              (let ((tools '("gccdeps" "clang_compilation_database")))
+                (invoke "python" "waf-light" "configure" "build"
+                        (string-append "--tools="
+                                       (string-join tools ","))))))
+          (replace 'check
+            (lambda _
+              (invoke "python" "waf" "--version")))
+          (replace 'install
+            (lambda _
+              (install-file "waf" (string-append #$output "/bin"))))
+          ;; waf breaks when it is wrapped.
+          (delete 'wrap))))
     (home-page "https://waf.io/")
     (synopsis "Python-based build system")
     (description
-     "Waf is a Python-based framework for configuring, compiling and installing
-applications.")
+     "Waf is a Python-based framework for configuring, compiling and
+installing applications.")
     (license license:bsd-3)))
 
 (define-public python-pyzmq
