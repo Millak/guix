@@ -35335,17 +35335,26 @@ Django template systems, the filters can be used in any environment.")
 (define-public python-ld
   (package
     (name "python-ld")
-    (version "0.5.0")
+    (version "1.9.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ld" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nir0s/ld")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1k4ydp5rgkv4985v459kcl06i1igjm1ywvh2vkbi9ck1zyyri1z5"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-six))
+        (base32 "16yacjfw701n8dhyi26hps3i7fchbvnq9gcrx7v0fn2lbfzzvq00"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: These tests expect ubuntu distro.
+      #:test-flags
+      #~(list "-k" (string-join (list "not test_ubuntu14normal_lsb_release"
+                                      "test_ubuntu14nomodules_lsb_release"
+                                      "test_trailingblanks_lsb_release")
+                                " and not "))))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/nir0s/ld")
     (synopsis "OS platform information API")
     (description
