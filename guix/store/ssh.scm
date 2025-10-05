@@ -33,7 +33,7 @@
   "Connect to the SSH daemon at URI, a URI object with the 'ssh' scheme."
   (remote-daemon-channel
    (open-ssh-session (uri-host uri)
-                     #:port (or (uri-port uri) 22)
+                     #:port (uri-port uri)
                      #:user (uri-userinfo uri))))
 
 ;;; ssh.scm ends here

@@ -143,10 +143,6 @@ Throw an error on failure."
                                ;; TCP_NODELAY.
                                #:nodelay #t
                                #:stricthostkeycheck strict-host-key-check?)))
-
-    ;; Honor ~/.ssh/config.
-    (session-parse-config! session)
-
     (match (connect! session)
       ('ok
        (if host-key
@@ -187,7 +183,9 @@ to SSH server at '~a'")
       (x
        ;; Connection failed or timeout expired.
        (raise (formatted-message (G_ "SSH connection to '~a' port ~a failed: ~a~%")
-                                 host (or port 22) (get-error session)))))))
+                                 host
+                                 (session-get session 'port)
+                                 (get-error session)))))))
 
 (define* (remote-inferior session #:optional become-command)
   "Return a remote inferior for the given SESSION.  If BECOME-COMMAND is

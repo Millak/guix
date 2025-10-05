@@ -234,7 +234,7 @@ number of seconds after which the connection times out."
                                #:knownhosts "/dev/null"
 
                                ;; Likewise for ~/.ssh/config.
-                               #:config "/dev/null"
+                               #:config #f
 
                                ;; We need lightweight compression when
                                ;; exchanging full archives.

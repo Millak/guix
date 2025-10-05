@@ -75,8 +75,7 @@ package names, build the underlying packages before sending them."
                 (options->derivations+files local opts)))
     (warn-if-empty items)
     (and (build-derivations local drv)
-         (let* ((session (open-ssh-session host #:user user
-                                           #:port (or port 22)))
+         (let* ((session (open-ssh-session host #:user user #:port port))
                 (remote  (connect-to-remote-daemon session))
                 (sent    (send-files local items remote
                                      #:recursive? #t)))
@@ -89,7 +88,7 @@ package names, build the underlying packages before sending them."
   (let*-values (((user host port)
                  (ssh-spec->user+host+port source))
                 ((session)
-                 (open-ssh-session host #:user user #:port (or port 22)))
+                 (open-ssh-session host #:user user #:port port))
                 ((remote)
                  (connect-to-remote-daemon session)))
     ;; TODO: Here we could to compute and build the derivations on REMOTE
