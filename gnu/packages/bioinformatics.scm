@@ -5830,7 +5830,7 @@ off-target reads for a capture method that targets CpG-rich region.")
 (define-public python-bx-python
   (package
     (name "python-bx-python")
-    (version "0.13.0")
+    (version "0.14.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5839,7 +5839,7 @@ off-target reads for a capture method that targets CpG-rich region.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13318a3lydyg8fxawdb7anrny9a1j1sc1q4nd6pjg8ki5zr9r713"))))
+                "1031ddndi5anxk76h1irdwa6nwr5sy20p816zn5jz50010zc562r"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -5853,12 +5853,12 @@ off-target reads for a capture method that targets CpG-rich region.")
          (add-after 'unpack 'disable-cython-doctests
            (lambda _ (substitute* "pytest.ini" (("--doctest-cython") "")))))))
     (propagated-inputs
-     (list python-numpy))
+     (list python-numpy
+           python-pyparsing))
     (inputs
      (list zlib))
     (native-inputs
-     (list python-cython python-lzo python-pytest python-setuptools
-           python-wheel))
+     (list python-cython python-lzo python-pytest python-setuptools))
     (home-page "https://github.com/bxlab/bx-python")
     (synopsis "Tools for manipulating biological data")
     (description
