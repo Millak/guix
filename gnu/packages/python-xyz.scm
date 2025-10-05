@@ -32181,27 +32181,6 @@ file to ensure it completely and accurately describes your project.")
 files.  These files are used to translate strings in android apps.")
     (license license:expat)))
 
-;; XXX: See: <https://codeberg.org/guix/guix/issues/3321>.
-(define-public python-wget
-  (package
-    (name "python-wget")
-    (version "3.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "wget" version ".zip"))
-       (sha256
-        (base32
-         "0qb0y7ipby42m4m7h0ipazpdyc3bn9xi46lvifcwwl5albn31rim"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f)) ;no tests
-    (native-inputs (list python-setuptools unzip))
-    (home-page "https://bitbucket.org/techtonik/python-wget/")
-    (synopsis "Pure Python download utility")
-    (description "The python-wget library provides an API to download files
-with features similar to the @command{wget} utility.")
-    (license license:unlicense)))
-
 (define-public offlate
   (package
     (name "offlate")
