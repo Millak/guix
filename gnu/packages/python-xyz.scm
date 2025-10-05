@@ -21344,6 +21344,7 @@ templates into Python modules.")
      "This package provides a patch parsing and application library.")
     (license license:expat)))
 
+;; XXX: See: <https://github.com/cookiecutter/whichcraft/issues/26>.
 (define-public python-whichcraft
   (package
     (name "python-whichcraft")
@@ -21355,9 +21356,9 @@ templates into Python modules.")
        (sha256
         (base32
          "11yfkzyplizdgndy34vyd5qlmr1n5mxis3a3svxmx8fnccdvknxc"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (home-page "https://github.com/pydanny/whichcraft")
     (synopsis "Cross-platform cross-python shutil.which functionality")
     (description
