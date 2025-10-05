@@ -957,6 +957,19 @@ from lines)
          "pkgconfigdir=lib/pkgconfig")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'patch-tests
+           (lambda _
+             (for-each
+              (lambda (file)
+                (substitute* file (("debug\\(1\\)") "debug")))
+              '("demos/gstreamer/mediaplayer/gst_mediaplayer.d"
+                "demos/gstreamer/mediaplayer/gst_mediaplayer.d"
+                "demos/gtkD/TestWindow/TestImage.d"
+                "demos/gtkD/TestWindow/TestStock.d"
+                "demos/gtkD/TestWindow/TestText.d"
+                "demos/gtkD/TestWindow/TestThemes.d"
+                "demos/gtkD/TestWindow/TestScales.d"
+                "demos/gtkD/TestWindow/TestIdle.d"))))
          (delete 'configure)
          (add-before 'build 'patch-makefile
            (lambda* (#:key outputs #:allow-other-keys)
