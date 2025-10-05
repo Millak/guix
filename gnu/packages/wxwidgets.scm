@@ -42,6 +42,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages compression)

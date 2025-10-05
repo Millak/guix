@@ -1,17 +1,21 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2015 宋文武 <iyzsong@envs.net>
+;;; Copyright © 2016, 2018, 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Corentin Bocquillon <corentin@nybble.fr>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
+;;; Copyright © 2018 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2018 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2018, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2019, 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2019 Jonathan Brielmaier <jonathan.brielmaier@web.de>
+;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Yuval Kogman <nothingmuch@woobling.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
-;;; Copyright © 2020, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021, 2023, 2024, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022, 2023 Juliana Sims <juli@incana.org>
@@ -1234,3 +1238,40 @@ maintaining, updating, and regenerating programs.  It is inspired by
 the POSIX make utility and allows writing a build script in Guile
 Scheme.")
       (license license:expat))))
+
+(define-public python-waf
+  (package
+    (name "python-waf")
+    (version "2.0.19") ;TODO: newer version brakes API
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://waf.io/" "waf-" version ".tar.bz2"))
+       (sha256
+        (base32 "19dvqbsvxz7ch03dh1v0znklrwxlz6yzddc3k9smzrrgny4jch6q"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      ;; TODO: Project provides integration tests, see
+      ;; <.pipelines/Jenkinsfile> how to run them.
+      #:test-flags #~(list "waf" "--version")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda _
+              ;; XXX: Find a way to add all extra tools.
+              (let ((tools '("gccdeps" "clang_compilation_database")))
+                (invoke "python" "waf-light" "configure" "build"
+                        (string-append "--tools=" (string-join tools ","))))))
+          (replace 'install
+            (lambda _
+              (install-file "waf" (string-append #$output "/bin"))))
+          ;; waf breaks when it is wrapped.
+          (delete 'wrap))))
+    (home-page "https://waf.io/")
+    (synopsis "Python-based build system")
+    (description
+     "Waf is a Python-based framework for configuring, compiling and
+installing applications.")
+    (license license:bsd-3)))

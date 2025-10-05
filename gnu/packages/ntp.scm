@@ -34,6 +34,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages gps)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages libevent)
