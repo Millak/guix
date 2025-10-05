@@ -25,6 +25,7 @@
 ;;; Copyright © 2017 Mark Meyer <mark@ofosos.org>
 ;;; Copyright © 2018 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2018, 2019, 2021, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
@@ -3742,6 +3743,31 @@ desired
 @item all portions of the URI must be utf-8 encoded NFC from Unicode strings
 @end itemize")
     (license license:expat)))
+
+(define-public python-waitress
+  (package
+    (name "python-waitress")
+    (version "3.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "waitress" version))
+       (sha256
+        (base32
+         "07y3xyx2006f2ni5d55byh3y7w4kcg9xww7vmfjasi0cmzralak8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; https://github.com/Pylons/waitress/issues/443
+     (list #:test-flags #~(list "-k" "not test_service_port")))
+    (native-inputs
+     (list python-coverage python-pytest python-pytest-cov
+           python-setuptools python-wheel))
+    (home-page "https://github.com/Pylons/waitress")
+    (synopsis "Waitress WSGI server")
+    (description
+     "Waitress is meant to be a production-quality pure-Python WSGI server
+with very acceptable performance.")
+    (license license:zpl2.1)))
 
 (define-public python-webencodings
   (package

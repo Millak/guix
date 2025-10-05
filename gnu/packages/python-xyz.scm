@@ -21326,31 +21326,6 @@ in pure Python.")
 templates into Python modules.")
     (license license:expat)))
 
-(define-public python-waitress
-  (package
-    (name "python-waitress")
-    (version "3.0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "waitress" version))
-       (sha256
-        (base32
-         "07y3xyx2006f2ni5d55byh3y7w4kcg9xww7vmfjasi0cmzralak8"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; https://github.com/Pylons/waitress/issues/443
-     (list #:test-flags #~(list "-k" "not test_service_port")))
-    (native-inputs
-     (list python-coverage python-pytest python-pytest-cov
-           python-setuptools python-wheel))
-    (home-page "https://github.com/Pylons/waitress")
-    (synopsis "Waitress WSGI server")
-    (description
-     "Waitress is meant to be a production-quality pure-Python WSGI server
-with very acceptable performance.")
-    (license license:zpl2.1)))
-
 (define-public python-whatthepatch
   (package
     (name "python-whatthepatch")
