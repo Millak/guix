@@ -529,6 +529,83 @@ server and embedded PowerPC, and S390 guests.")
     ;; Several tests fail on MIPS.
     (supported-systems (delete "mips64el-linux" %supported-systems))))))
 
+(define-public qemu-for-aflplusplus
+  (let ((base qemu-minimal)
+        (commit "790d2124fd054621d3c0d3ec31bea114b60601f9")
+        (revision "0"))
+    (hidden-package
+     (package
+       (inherit base)
+       (name "qemu")
+       (version (git-version "5.2.50" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference (url "https://github.com/AFLplusplus/qemuafl")
+                              (commit commit)
+                              (recursive? #t)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "1l2kl8768l4mbkiaj63zn6gsdn3qpl3rg7s6h62rmd7599ar3xn3"))))
+       (arguments
+        (substitute-keyword-arguments (package-arguments base)
+          ((#:configure-flags _ #~'())
+           #~(list (string-append
+                    "--target-list="
+                    ;; AFL++ only supports using a single afl-qemu-trace,
+                    ;; so we only build qemu for the native target.
+                    (match #$(let-system system system)
+                      ("aarch64-linux"  "aarch64-linux-user")
+                      ("armhf-linux"    "arm-linux-user")
+                      ("i686-linux"     "i386-linux-user")
+                      ("mips64el-linux" "mips64el-linux-user")
+                      ("powerpc-linux"  "ppc-linux-user")
+                      ("riscv64-linux"  "riscv64-linux-user")
+                      ("x86_64-linux"   "x86_64-linux-user")))))
+          ((#:phases phases)
+           #~(modify-phases #$phases
+               (delete 'replace-firmwares)
+               (delete 'patch-embedded-shebangs)
+               (delete 'fix-optionrom-makefile)
+               (delete 'disable-unusable-tests)
+               (replace 'configure
+                 (lambda* (#:key configure-flags #:allow-other-keys)
+                   ;; The `configure' script doesn't understand some of the
+                   ;; GNU options.  Thus, add a new phase that's compatible.
+                   (setenv "SHELL" (which "bash"))
+                   ;; The binaries need to be linked against -lrt.
+                   (setenv "LDFLAGS" "-lrt")
+                   (apply invoke
+                          "./configure"
+                          (string-append "--cc=" #$(cc-for-target))
+                          ;; Some architectures insist on using HOST_CC
+                          (string-append "--host-cc=" #$(cc-for-target))
+                          "--disable-debug-info" ; save build space
+                          (string-append "--prefix=" #$output)
+                          (string-append "--sysconfdir=/etc")
+                          configure-flags)))
+               (add-after 'install 'install-qasan-header
+                 (lambda _
+                   (install-file "qemuafl/qasan.h"
+                                 (string-append #$output "/include"))))
+               (delete 'delete-firmwares)
+               #$@(if (target-riscv64?)
+                      '((replace 'disable-some-tests
+                          (lambda _
+                            ;; qemu.qmp.QMPConnectError:
+                            ;; Unexpected empty reply from server
+                            (delete-file "tests/qemu-iotests/040")
+                            (delete-file "tests/qemu-iotests/041")
+                            (delete-file "tests/qemu-iotests/256")
+                            ;; No 'PCI' bus found for device 'virtio-scsi-pci'
+                            (delete-file "tests/qemu-iotests/127")
+                            (delete-file "tests/qemu-iotests/267"))))
+                      '())))))
+       (inputs (modify-inputs (package-inputs base)
+                 (delete "dtc")))
+       (home-page "https://github.com/AFLplusplus/qemuafl")
+       (synopsis "QEMU for AFL++")))))
+
 (define-public aflplusplus
   (package
     (inherit american-fuzzy-lop)
