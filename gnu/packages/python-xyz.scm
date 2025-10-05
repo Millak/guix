@@ -1926,37 +1926,6 @@ attribution.  It uses similarity detection algorithms to compare code files
 and highlight matching sections.")
     (license license:agpl3+)))
 
-(define-public python-wheel-filename
-  (package
-    (name "python-wheel-filename")
-    (version "1.4.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "wheel_filename" version))
-       (sha256
-        (base32 "1zcqq8mydjjrk8x5xlm53bavs51jm40nz42a7500pd6bbm31r2c7"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-hatchling python-pytest python-pytest-cov))
-    (home-page "https://github.com/wheelodex/wheel-filename")
-    (synopsis "Parse wheel filenames")
-    (description
-     "This software allows you to verify
-@url{https://packaging.python.org/en/latest/specifications/binary-distribution-format/, wheel}
-filenames and parse them into their component fields.
-
-This package adheres strictly to the standard, with the following
-exceptions:
-
-@itemize @bullet
-@item
-Version components may be any sequence of the relevant set of
-characters; they are not verified for PEP 440 compliance.
-@item
-The @file{.whl} file extension is matched case-insensitively.
-@end itemize")
-    (license license:expat)))
-
 (define-public python-jaconv
   (package
     (name "python-jaconv")
@@ -5293,41 +5262,6 @@ conventions and aliases in the same expression.")
     (description
      "This package provides a Python library to perform rate limiting with
 commonly used storage backends.")
-    (license license:expat)))
-
-(define-public python-wand
-  (package
-    (name "python-wand")
-    (version "0.6.13")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "Wand" version))
-       (sha256
-        (base32 "1jpwm956vm35hmgjndr2jwrcql0bwvpsl88q5nr0x8ppxa2380gm"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; These two tests fail even though the signatures are identical.
-      '(list "-k" "not fourier_transform")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'hardcode-lib-path
-            (lambda _
-              (substitute* "wand/api.py"
-                (("os\\.environ\\.get\\('MAGICK_HOME'\\)")
-                 (string-append "\"" #$(this-package-input "imagemagick") "\""))
-                (("os\\.environ\\.get\\('WAND_MAGICK_LIBRARY_SUFFIX'\\)")
-                 "\".Q16\"")))))))
-    (native-inputs
-     (list python-setuptools python-pytest python-wheel))
-    (inputs
-     (list imagemagick))
-    (home-page "https://docs.wand-py.org/")
-    (synopsis "MagickWand API binding for Python")
-    (description
-     "Wand is a ctypes-based binding for ImageMagick's MagickWand library.")
     (license license:expat)))
 
 (define-public python-lockfile
@@ -12262,30 +12196,6 @@ snippets with input parameters (e.g., the size of an array) and plotting
 the results.")
     (license license:gpl3+)))
 
-(define-public python-wurlitzer
-  (package
-    (name "python-wurlitzer")
-    (version "3.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "wurlitzer" version))
-       (sha256
-        (base32 "1ncvsc6b0bscvj5dn4iyyw42sf7ssgdqkzxr0bc8f97hp5519fdz"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags #~(list "test.py")))
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (home-page "https://github.com/minrk/wurlitzer")
-    (synopsis "Capture C-level output in context managers")
-    (description
-     "This library helps to redirect @code{sys.stdout} to a stream or a file
-while executing some piece of code, including C code running within a Python
-process.")
-    (license license:expat)))
-
 (define-public python-socksipy-branch
   (package
     (name "python-socksipy-branch")
@@ -17835,27 +17745,6 @@ reading and writing MessagePack data.")
 list format (also known as ASCII plist), written in Cython.")
     (license license:expat)))
 
-(define-public python-wrapt
-  (package
-    (name "python-wrapt")
-    (version "1.17.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "wrapt" version))
-       (sha256
-        (base32
-         "00886b7ry1vdbvpc2wi880y563xf6y4mxwwfm1q12wvw66i7l60n"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
-    (home-page "https://github.com/GrahamDumpleton/wrapt")
-    (synopsis "Module for decorators, wrappers and monkey patching")
-    (description
-     "The aim of the wrapt module is to provide a transparent object proxy for
-  Python, which can be used as the basis for the construction of function
-  wrappers and decorator functions.")
-    (license license:bsd-2)))
-
 (define-public python-resolvelib
   (package
     (name "python-resolvelib")
@@ -19641,28 +19530,6 @@ convert an @code{.ipynb} notebook file into various static formats including:
 @end enumerate\n")
     (license license:bsd-3)))
 
-(define-public python-widgetsnbextension
-  (package
-    (name "python-widgetsnbextension")
-    (version "4.0.14")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "widgetsnbextension" version))
-       (sha256
-        (base32 "1bxm6ys3kmxfhi8dns9q6xrjkxijfa606qpq5lhr7f7dwc29nqm3"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))        ;no tests in PyPI or git
-    (native-inputs
-     (list python-jupyter-packaging
-           python-setuptools))
-    (home-page "https://ipython.org")
-    (synopsis "IPython HTML widgets for Jupyter")
-    (description "This package provides interactive HTML widgets for Jupyter
-notebooks.")
-    (license license:bsd-3)))
-
 (define-public python-ipywidgets
   (package
     (name "python-ipywidgets")
@@ -19879,6 +19746,267 @@ library provides codecs are supported.")
      "This library allows the user to define a command-line interface from a
 program's help message rather than specifying it programmatically with
 command-line parsers like @code{getopt} and @code{argparse}.")
+    (license license:expat)))
+
+(define-public python-wand
+  (package
+    (name "python-wand")
+    (version "0.6.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Wand" version))
+       (sha256
+        (base32 "1jpwm956vm35hmgjndr2jwrcql0bwvpsl88q5nr0x8ppxa2380gm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These two tests fail even though the signatures are identical.
+      '(list "-k" "not fourier_transform")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'hardcode-lib-path
+            (lambda _
+              (substitute* "wand/api.py"
+                (("os\\.environ\\.get\\('MAGICK_HOME'\\)")
+                 (string-append "\"" #$(this-package-input "imagemagick") "\""))
+                (("os\\.environ\\.get\\('WAND_MAGICK_LIBRARY_SUFFIX'\\)")
+                 "\".Q16\"")))))))
+    (native-inputs
+     (list python-setuptools python-pytest python-wheel))
+    (inputs
+     (list imagemagick))
+    (home-page "https://docs.wand-py.org/")
+    (synopsis "MagickWand API binding for Python")
+    (description
+     "Wand is a ctypes-based binding for ImageMagick's MagickWand library.")
+    (license license:expat)))
+
+(define-public python-wasabi
+  (package
+    (name "python-wasabi")
+    (version "1.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "wasabi" version))
+       (sha256
+        (base32 "0y085r7hym3x34a9jgxl5cd8gsh617rdmd187q6dn29q027h1csb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Test requires nbconvert which is huge.
+      #~(list "--deselect=wasabi/tests/test_jupyter.py::test_jupyter")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-colorama))
+    (home-page "https://github.com/ines/wasabi")
+    (synopsis "Console printing and formatting toolkit")
+    (description
+     "This package provides a lightweight console printing and formatting
+toolkit for Python.")
+    (license license:expat)))
+
+(define-public python-watchdog
+  (package
+    (name "python-watchdog")
+    (version "6.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "watchdog" version))
+       (sha256
+        (base32 "10n2v2iflhdriwfp34yvhfcckqb6vs7378fdvqj8xbm3zn17rpwx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list "not test_kill_auto_restart"
+                          "test_auto_restart_on_file_change_debounce"
+                          ;; Fails with too many open files.
+                          "test_select_fd")
+                    " and not "))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-pytest-timeout
+           python-setuptools))
+    (propagated-inputs
+     (list python-pyyaml))
+    (home-page "https://github.com/gorakhargosh/watchdog")
+    (synopsis "File system events monitoring")
+    (description "This package provides a way to monitor file system events
+such as a file modification and trigger an action.  This is similar to inotify,
+but portable.")
+    (license license:asl2.0)))
+
+(define-public python-watchfiles
+  (package
+    (name "python-watchfiles")
+    (version "1.0.5")
+    (source
+     (origin
+       ;; There are no tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/samuelcolvin/watchfiles")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b5rdj795xcbwg76bd8hs3skhgifd7a8zw2vj76nac2dhjlqg93b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Missing file in source.
+      #:test-flags ''("-k" "not test_docs_examples")
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums))))
+          (add-after 'build 'install-rust-library
+            (lambda _
+              (copy-file "target/release/lib_rust_notify.so"
+                         "watchfiles/_rust_notify.so"))))))
+    (native-inputs
+     (append
+      (list maturin
+            python-anyio
+            python-coverage
+            python-dirty-equals
+            python-pytest
+            python-pytest-cov
+            python-pytest-mock
+            python-pytest-timeout
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
+    (inputs (cargo-inputs 'python-watchfiles))
+    (home-page "https://github.com/samuelcolvin/watchfiles")
+    (synopsis "Simple, modern file watching and code reload in Python")
+    (description
+     "Simple, modern file watching and code reload in Python inspired by
+@code{watchdog}.  Among the differences are a unified approach for each
+operating systems and an elegant approach to concurrency using threading.")
+    (license license:expat)))
+
+(define-deprecated/alias python-watchgod python-watchfiles)
+(export python-watchgod)
+
+(define-public python-wcwidth
+  (package
+    (name "python-wcwidth")
+    (version "0.2.13")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "wcwidth" version))
+              (sha256
+               (base32
+                "1dbj74q1iz349sdkxrkc90f7xd4y7a9bdvgxg3cqdcly7430rskj"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest
+                         python-pytest-cov
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/jquast/wcwidth")
+    (synopsis "Measure number of terminal column cells of wide-character codes")
+    (description "Wcwidth measures the number of terminal column cells of
+wide-character codes.  It is useful for those implementing a terminal emulator,
+or programs that carefully produce output to be interpreted by one.  It is a
+Python implementation of the @code{wcwidth} and @code{wcswidth} C functions
+specified in POSIX.1-2001 and POSIX.1-2008.")
+    (license license:expat)))
+
+(define-public python-whatever
+  (package
+    (name "python-whatever")
+    (version "0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Suor/whatever")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x5b4r3fppp208v52hn8inf2988w4llbkw9kvfc3w81dhmrf5fvq"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/Suor/whatever")
+    (synopsis "Make anonymous functions by partial application of operators")
+    (description "@code{whatever} provides an easy way to make anonymous
+functions by partial application of operators.")
+    (license license:bsd-3)))
+
+(define-public python-whatthepatch
+  (package
+    (name "python-whatthepatch")
+    (version "1.0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "whatthepatch" version))
+       (sha256
+        (base32 "1pvygmgj9xqs8d9lsjxvg1mymni8pjsd44yl0a74002jxbmv9vwy"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/cscorley/whatthepatch")
+    (synopsis "Patch parsing and application library")
+    (description
+     "This package provides a patch parsing and application library.")
+    (license license:expat)))
+
+(define-public python-wheel-filename
+  (package
+    (name "python-wheel-filename")
+    (version "1.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "wheel_filename" version))
+       (sha256
+        (base32 "1zcqq8mydjjrk8x5xlm53bavs51jm40nz42a7500pd6bbm31r2c7"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hatchling python-pytest python-pytest-cov))
+    (home-page "https://github.com/wheelodex/wheel-filename")
+    (synopsis "Parse wheel filenames")
+    (description
+     "This software allows you to verify
+@url{https://packaging.python.org/en/latest/specifications/binary-distribution-format/, wheel}
+filenames and parse them into their component fields.
+
+This package adheres strictly to the standard, with the following
+exceptions:
+
+@itemize @bullet
+@item
+Version components may be any sequence of the relevant set of
+characters; they are not verified for PEP 440 compliance.
+@item
+The @file{.whl} file extension is matched case-insensitively.
+@end itemize")
     (license license:expat)))
 
 (define-public python-pythonanywhere
@@ -21326,46 +21454,6 @@ in pure Python.")
 templates into Python modules.")
     (license license:expat)))
 
-(define-public python-whatthepatch
-  (package
-    (name "python-whatthepatch")
-    (version "1.0.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "whatthepatch" version))
-       (sha256
-        (base32 "1pvygmgj9xqs8d9lsjxvg1mymni8pjsd44yl0a74002jxbmv9vwy"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools))
-    (home-page "https://github.com/cscorley/whatthepatch")
-    (synopsis "Patch parsing and application library")
-    (description
-     "This package provides a patch parsing and application library.")
-    (license license:expat)))
-
-;; XXX: See: <https://github.com/cookiecutter/whichcraft/issues/26>.
-(define-public python-whichcraft
-  (package
-    (name "python-whichcraft")
-    (version "0.6.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "whichcraft" version))
-       (sha256
-        (base32
-         "11yfkzyplizdgndy34vyd5qlmr1n5mxis3a3svxmx8fnccdvknxc"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest python-setuptools))
-    (home-page "https://github.com/pydanny/whichcraft")
-    (synopsis "Cross-platform cross-python shutil.which functionality")
-    (description
-     "This package provides a shim of the shutil.which function that's
-designed to work across multiple versions of Python.")
-    (license license:bsd-3)))
-
 (define-public python-cookiecutter
   (package
     (name "python-cookiecutter")
@@ -21888,37 +21976,6 @@ import platform
 algorithm (also called the Hungarian algorithm or the Kuhn-Munkres algorithm),
 useful for solving the Assignment Problem.")
     (license license:bsd-3)))
-
-(define-public python-whoosh
-  ;; XXX: 2.7.4 was placed in 2016 and no longer copatible with how setuptools
-  ;; parses setup.py, use the latest commit, see:
-  ;; <https://codeberg.org/guix/guix/issues/3318>,
-  ;; <https://github.com/whoosh-community/whoosh/issues/561>.
-  (let ((commit "d9a3fa2a4905e7326c9623c89e6395713c189161")
-        (revision "0"))
-    (package
-      (name "python-whoosh")
-      (version (git-version "2.7.4" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/mchaput/whoosh")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1i16229nkggl9qi57kxapbc4f2p2wpr67fswvr97w13839d6dxpp"))))
-      (build-system pyproject-build-system)
-      (native-inputs
-       (list python-pytest python-setuptools))
-      (propagated-inputs
-       (list python-cached-property))
-      (home-page "https://github.com/mchaput/whoosh")
-      (synopsis "Full text indexing, search, and spell checking library")
-      (description
-       "Whoosh is a fast, pure-Python full text indexing, search, and spell
-checking library.")
-      (license license:bsd-2))))
 
 (define-public python-codespell
   (package
@@ -23048,30 +23105,6 @@ programming errors.")
 It includes Python implementations of Kafka producers and consumers, which
 are optionally backed by a C extension built on librdkafka.")
     (license license:asl2.0)))
-
-(define-public python-wcwidth
-  (package
-    (name "python-wcwidth")
-    (version "0.2.13")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "wcwidth" version))
-              (sha256
-               (base32
-                "1dbj74q1iz349sdkxrkc90f7xd4y7a9bdvgxg3cqdcly7430rskj"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest
-                         python-pytest-cov
-                         python-setuptools
-                         python-wheel))
-    (home-page "https://github.com/jquast/wcwidth")
-    (synopsis "Measure number of terminal column cells of wide-character codes")
-    (description "Wcwidth measures the number of terminal column cells of
-wide-character codes.  It is useful for those implementing a terminal emulator,
-or programs that carefully produce output to be interpreted by one.  It is a
-Python implementation of the @code{wcwidth} and @code{wcswidth} C functions
-specified in POSIX.1-2001 and POSIX.1-2008.")
-    (license license:expat)))
 
 (define-public python-columnize
   (package
@@ -28309,28 +28342,6 @@ It can be used to generate XCode projects, Visual Studio projects, Ninja build
 files, and Makefiles.")
       (license license:bsd-3))))
 
-(define-public python-whatever
-  (package
-    (name "python-whatever")
-    (version "0.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/Suor/whatever")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1x5b4r3fppp208v52hn8inf2988w4llbkw9kvfc3w81dhmrf5fvq"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
-    (home-page "https://github.com/Suor/whatever")
-    (synopsis "Make anonymous functions by partial application of operators")
-    (description "@code{whatever} provides an easy way to make anonymous
-functions by partial application of operators.")
-    (license license:bsd-3)))
-
 (define-public python-funcy
   (package
     (name "python-funcy")
@@ -32169,109 +32180,6 @@ file to ensure it completely and accurately describes your project.")
     (description "Android Strings Lib provides support for android's strings.xml
 files.  These files are used to translate strings in android apps.")
     (license license:expat)))
-
-(define-public python-watchdog
-  (package
-    (name "python-watchdog")
-    (version "6.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "watchdog" version))
-       (sha256
-        (base32 "10n2v2iflhdriwfp34yvhfcckqb6vs7378fdvqj8xbm3zn17rpwx"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k" (string-join
-                    (list "not test_kill_auto_restart"
-                          "test_auto_restart_on_file_change_debounce"
-                          ;; Fails with too many open files.
-                          "test_select_fd")
-                    " and not "))))
-    (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-pytest-timeout
-           python-setuptools))
-    (propagated-inputs
-     (list python-pyyaml))
-    (home-page "https://github.com/gorakhargosh/watchdog")
-    (synopsis "File system events monitoring")
-    (description "This package provides a way to monitor file system events
-such as a file modification and trigger an action.  This is similar to inotify,
-but portable.")
-    (license license:asl2.0)))
-
-(define-public python-watchfiles
-  (package
-    (name "python-watchfiles")
-    (version "1.0.5")
-    (source
-     (origin
-       ;; There are no tests in the PyPI tarball.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/samuelcolvin/watchfiles")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1b5rdj795xcbwg76bd8hs3skhgifd7a8zw2vj76nac2dhjlqg93b"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; Missing file in source.
-      #:test-flags ''("-k" "not test_docs_examples")
-      #:imported-modules `(,@%cargo-build-system-modules
-                           ,@%pyproject-build-system-modules)
-      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
-                  (guix build pyproject-build-system)
-                  (guix build utils))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'prepare-cargo-build-system
-            (lambda args
-              (for-each
-               (lambda (phase)
-                 (format #t "Running cargo phase: ~a~%" phase)
-                 (apply (assoc-ref cargo:%standard-phases phase)
-                        #:cargo-target #$(cargo-triplet)
-                        args))
-               '(unpack-rust-crates
-                 configure
-                 check-for-pregenerated-files
-                 patch-cargo-checksums))))
-          (add-after 'build 'install-rust-library
-            (lambda _
-              (copy-file "target/release/lib_rust_notify.so"
-                         "watchfiles/_rust_notify.so"))))))
-    (native-inputs
-     (append
-      (list maturin
-            python-anyio
-            python-coverage
-            python-dirty-equals
-            python-pytest
-            python-pytest-cov
-            python-pytest-mock
-            python-pytest-timeout
-            rust
-            `(,rust "cargo"))
-      (or (and=> (%current-target-system)
-                 (compose list make-rust-sysroot))
-          '())))
-    (inputs (cargo-inputs 'python-watchfiles))
-    (home-page "https://github.com/samuelcolvin/watchfiles")
-    (synopsis "Simple, modern file watching and code reload in Python")
-    (description
-     "Simple, modern file watching and code reload in Python inspired by
-@code{watchdog}.  Among the differences are a unified approach for each
-operating systems and an elegant approach to concurrency using threading.")
-    (license license:expat)))
-
-(define-deprecated/alias python-watchgod python-watchfiles)
-(export python-watchgod)
 
 ;; XXX: See: <https://codeberg.org/guix/guix/issues/3321>.
 (define-public python-wget
@@ -38761,34 +38669,6 @@ simple string.  If you instead saved the function, you'd have to use Pickle
 for serialization, which has many drawbacks.")
     (license license:expat)))
 
-(define-public python-wasabi
-  (package
-    (name "python-wasabi")
-    (version "1.1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "wasabi" version))
-       (sha256
-        (base32 "0y085r7hym3x34a9jgxl5cd8gsh617rdmd187q6dn29q027h1csb"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; Test requires nbconvert which is huge.
-      #~(list "--deselect=wasabi/tests/test_jupyter.py::test_jupyter")))
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-colorama))
-    (home-page "https://github.com/ines/wasabi")
-    (synopsis "Console printing and formatting toolkit")
-    (description
-     "This package provides a lightweight console printing and formatting
-toolkit for Python.")
-    (license license:expat)))
-
 (define-public python-srt
   (package
     (name "python-srt")
@@ -39789,6 +39669,126 @@ write text fast, and for various text generation, statistics, and modeling tasks
 @item Nanosecond precision
 @item Date arithmetic
 @end itemize")
+    (license license:expat)))
+
+;; XXX: See: <https://github.com/cookiecutter/whichcraft/issues/26>.
+(define-public python-whichcraft
+  (package
+    (name "python-whichcraft")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "whichcraft" version))
+       (sha256
+        (base32
+         "11yfkzyplizdgndy34vyd5qlmr1n5mxis3a3svxmx8fnccdvknxc"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools))
+    (home-page "https://github.com/pydanny/whichcraft")
+    (synopsis "Cross-platform cross-python shutil.which functionality")
+    (description
+     "This package provides a shim of the shutil.which function that's
+designed to work across multiple versions of Python.")
+    (license license:bsd-3)))
+
+(define-public python-whoosh
+  ;; XXX: 2.7.4 was placed in 2016 and no longer copatible with how setuptools
+  ;; parses setup.py, use the latest commit, see:
+  ;; <https://codeberg.org/guix/guix/issues/3318>,
+  ;; <https://github.com/whoosh-community/whoosh/issues/561>.
+  (let ((commit "d9a3fa2a4905e7326c9623c89e6395713c189161")
+        (revision "0"))
+    (package
+      (name "python-whoosh")
+      (version (git-version "2.7.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/mchaput/whoosh")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1i16229nkggl9qi57kxapbc4f2p2wpr67fswvr97w13839d6dxpp"))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list python-pytest python-setuptools))
+      (propagated-inputs
+       (list python-cached-property))
+      (home-page "https://github.com/mchaput/whoosh")
+      (synopsis "Full text indexing, search, and spell checking library")
+      (description
+       "Whoosh is a fast, pure-Python full text indexing, search, and spell
+checking library.")
+      (license license:bsd-2))))
+
+(define-public python-widgetsnbextension
+  (package
+    (name "python-widgetsnbextension")
+    (version "4.0.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "widgetsnbextension" version))
+       (sha256
+        (base32 "1bxm6ys3kmxfhi8dns9q6xrjkxijfa606qpq5lhr7f7dwc29nqm3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests in PyPI or git
+    (native-inputs
+     (list python-jupyter-packaging
+           python-setuptools))
+    (home-page "https://ipython.org")
+    (synopsis "IPython HTML widgets for Jupyter")
+    (description "This package provides interactive HTML widgets for Jupyter
+notebooks.")
+    (license license:bsd-3)))
+
+(define-public python-wrapt
+  (package
+    (name "python-wrapt")
+    (version "1.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "wrapt" version))
+       (sha256
+        (base32
+         "00886b7ry1vdbvpc2wi880y563xf6y4mxwwfm1q12wvw66i7l60n"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/GrahamDumpleton/wrapt")
+    (synopsis "Module for decorators, wrappers and monkey patching")
+    (description
+     "The aim of the wrapt module is to provide a transparent object proxy for
+  Python, which can be used as the basis for the construction of function
+  wrappers and decorator functions.")
+    (license license:bsd-2)))
+
+(define-public python-wurlitzer
+  (package
+    (name "python-wurlitzer")
+    (version "3.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "wurlitzer" version))
+       (sha256
+        (base32 "1ncvsc6b0bscvj5dn4iyyw42sf7ssgdqkzxr0bc8f97hp5519fdz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list "test.py")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/minrk/wurlitzer")
+    (synopsis "Capture C-level output in context managers")
+    (description
+     "This library helps to redirect @code{sys.stdout} to a stream or a file
+while executing some piece of code, including C code running within a Python
+process.")
     (license license:expat)))
 
 (define-public python-xattr
