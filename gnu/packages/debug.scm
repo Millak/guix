@@ -639,10 +639,24 @@ server and embedded PowerPC, and S390 guests.")
                            (search-input-file inputs "bin/gcc")))
                   (("alt_cxx = \"g\\+\\+\";")
                    (format #f "alt_cxx = \"~a\";"
-                           (search-input-file inputs "bin/g++"))))))))))
+                           (search-input-file inputs "bin/g++"))))))
+            (add-after 'build 'build-qasan
+              (lambda* (#:key parallel-build? make-flags #:allow-other-keys)
+                (apply invoke "make" "-C" "qemu_mode/libqasan"
+                       "-j" (number->string (if parallel-build?
+                                                (parallel-job-count)
+                                                "1"))
+                       make-flags)))
+            ;; afl-qemu-trace is a symbolic link to QEMU's binary.
+            ;; Substituting its source code with AFL++'s output path
+            ;; would result in a dependency cycle.
+            (add-after 'install-qemu 'wrap-qemu
+              (lambda _
+                (wrap-program (string-append #$output "/bin/afl-qemu-trace")
+                  `("AFL_PATH" = (,(string-append #$output "/lib/afl"))))))))))
     ;; According to the Dockerfile, GCC 12 is producing compile errors for some
     ;; targets, so explicitly use GCC 11 here.
-    (inputs (list gcc-11 gmp python qemu))
+    (inputs (list gcc-11 gmp python qemu-for-aflplusplus))
     (native-inputs (list gcc-11))
     (home-page "https://aflplus.plus/")
     (description
