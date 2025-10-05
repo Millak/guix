@@ -134,7 +134,11 @@ C++11 standard.
 @section Building from Git
 
 If you want to hack Guix itself, it is recommended to use the latest
-version from the Git repository:
+version from the Git repository@footnote{
+Guix uses @code{master} as the default branch name. A proposal in 2025 to
+change the default branch name to @code{main} did not reach consensus.
+See @uref{https://codeberg.org/guix/guix-consensus-documents/src/branch/main/003-rename-default-branch.md,
+Guix Consensus Document 003}.}:
 
 @example
 git clone https://git.guix.gnu.org/guix.git
