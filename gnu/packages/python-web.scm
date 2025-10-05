@@ -28,6 +28,7 @@
 ;;; Copyright © 2018 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2018 swedebugia <swedebugia@riseup.net>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
@@ -4328,6 +4329,28 @@ set out in RFC 7540 Section 5.3 (Stream Priority).")
      "This package provides language definitions used by
 @url{https://weblate.org/, Weblate}i.")
     (license license:expat)))
+
+(define-public python-wikidata
+  (package
+    (name "python-wikidata")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Wikidata" version))
+       (sha256
+        (base32
+         "08nlnydddfp1jj0cdmshvld1irzngbp3dij928wqsg9ziklm6mw9"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-babel))
+    (home-page "https://github.com/dahlia/wikidata")
+    (synopsis "Wikidata client library")
+    (description
+     "This package provides a Python interface to
+@url{https://www.wikidata.org/, Wikidata}.")
+    (properties '((upstream-name . "Wikidata")))
+    (license license:gpl3+)))
 
 (define-public python-wsproto
   (package
