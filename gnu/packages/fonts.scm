@@ -1281,7 +1281,7 @@ heavier printing.")
 (define-public font-amiri
   (package
     (name "font-amiri")
-    (version "1.000")
+    (version "1.003")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1290,7 +1290,7 @@ heavier printing.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0c4yg1b03aihdqvz6w5ak8wapni3l8p18mw6bkqhblmm75jb5kif"))))
+                "0hi3d6s42wk2hgk2x8niga84h1kpk9p4vxkyich1mzmw5b7kq8hw"))))
     (build-system gnu-build-system)
     (arguments
      (list
