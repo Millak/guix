@@ -38764,15 +38764,24 @@ for serialization, which has many drawbacks.")
 (define-public python-wasabi
   (package
     (name "python-wasabi")
-    (version "0.9.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "wasabi" version))
-              (sha256
-               (base32
-                "1kwqfalq7qxs9f7xb2m055g01qpbznyzxl7sjnzjdvvhkczg39md"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest))
+    (version "1.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "wasabi" version))
+       (sha256
+        (base32 "0y085r7hym3x34a9jgxl5cd8gsh617rdmd187q6dn29q027h1csb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Test requires nbconvert which is huge.
+      #~(list "--deselect=wasabi/tests/test_jupyter.py::test_jupyter")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-colorama))
     (home-page "https://github.com/ines/wasabi")
     (synopsis "Console printing and formatting toolkit")
     (description
