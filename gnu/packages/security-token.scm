@@ -619,7 +619,7 @@ PCSC API Python wrapper module.")
 (define-public yubikey-oath-dmenu
   (package
     (name "yubikey-oath-dmenu")
-    (version "0.13.0")
+    (version "0.14.0")
     (source
      (origin
        (method git-fetch)
@@ -629,7 +629,7 @@ PCSC API Python wrapper module.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1h6dr4l0gzgdg8zn2c39kx9cx1bgvwqxkz3z95qz9r70xfsghgwk"))))
+         "0kiv5j67h66bm1d12ny6aw5sqnan33vbs2q4w4ms6f6a709c0xyl"))))
     (build-system python-build-system)
     (arguments
      (list
