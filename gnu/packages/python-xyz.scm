@@ -27674,32 +27674,35 @@ version of @code{SocksiPy} with bug fixes and extra features.")
     (version "0.25.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pydub" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jiaaro/pydub")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "03ykn2kp6qglsrzqi5h79z5cp3kl9mknasv0d6jv5jj9k77362lq"))))
-    (build-system python-build-system)
+        (base32 "0xskllq66wqndjfmvp58k26cv3w480sqsil6ifwp4gghir7hqc8m"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-ffmpeg-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((ffmpeg (assoc-ref inputs "ffmpeg")))
-               (substitute* '("pydub/utils.py")
-                 (("return \"ffmpeg\"")
-                  (string-append "return \"" ffmpeg "/bin/ffmpeg\""))
-                 (("return \"ffplay\"")
-                  (string-append "return \"" ffmpeg "/bin/ffplay\""))
-                 (("return \"ffprobe\"")
-                  (string-append "return \"" ffmpeg "/bin/ffprobe\""))
-                 (("warn\\(\"Couldn't find ff") "# warn\\(\"Couldn't find ff"))
-               #t))))))
+     (list
+      #:test-backend ''unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-ffmpeg-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((bin (dirname (search-input-file inputs "bin/ffmpeg"))))
+                (substitute* "pydub/utils.py"
+                  (("return \"ffmpeg\"")
+                   (string-append "return \"" bin "/ffmpeg\""))
+                  (("return \"ffplay\"")
+                   (string-append "return \"" bin "/ffplay\""))
+                  (("return \"ffprobe\"")
+                   (string-append "return \"" bin "/ffprobe\""))
+                  (("warn\\(\"Couldn't find ff")
+                   "# warn\\(\"Couldn't find ff"))))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://pydub.com")
-    (inputs
-     (list ffmpeg))
-    (propagated-inputs
-     (list python-scipy))
+    (inputs (list ffmpeg))
+    (propagated-inputs (list python-scipy))
     (synopsis "Manipulate audio with a high level interface in Python")
     (description
      "@code{pydub} makes it easy to manipulate audio in Python.  It relies on
