@@ -764,10 +764,15 @@ maintained fork of https://github.com/cleech/open-isns.")
       #~(list "-Dno_systemd=true"
               (string-append "-Discsi_sbindir="
                              #$output "/sbin")
-              (string-append "-Ddbroot="
-                             #$output "/var/lib/iscsi")
               (string-append "--sbindir="
-                             #$output "/sbin"))))
+                             #$output "/sbin"))
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-after 'unpack 'dont-install-to-/var
+           (lambda _
+             (substitute* "meson.build"
+               (("install_data\\(iscsi_etc_iface_file_src, install_dir: db_root \\/ 'ifaces'\\)")
+                "")))))))
     (native-inputs
      (list meson
            ninja
