@@ -627,6 +627,21 @@ functionality such as HTML output.")
        (sha256
         (base32 "13xmr249c6qygm14gilb0icrsgb35ghsrr14a1zvppmxy9jf5a7g"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda _
+              ;; Prevent setuptools.errors.InvalidConfigError:
+              ;; License classifiers have been superseded by license expressions
+              ;; (see https://peps.python.org/pep-0639/). Please remove:
+              ;; License :: OSI Approved :: Apache Software License
+              ;; Reported upstream:
+              ;; https://github.com/eriwen/lcov-to-cobertura-xml/pull/65
+              (substitute* "setup.cfg"
+                (("\tLicense :: OSI Approved :: Apache Software License\n")
+                 "")))))))
     (native-inputs
      (list python-pytest
            python-setuptools
