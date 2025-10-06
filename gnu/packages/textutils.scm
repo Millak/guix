@@ -1957,7 +1957,10 @@ which it is heavily inspired.")
     (arguments
      (list
       #:install-source? #f
-      #:import-path "github.com/mikefarah/yq/v4"
+      ;; Go provides the binary as the name of the last directory in the
+      ;; import-path unless the file names is something else than main.go.
+      ;; The real import-path is "github.com/mikefarah/yq/v4".
+      #:import-path "github.com/mikefarah/yq"
       #:phases
       #~(modify-phases %standard-phases
           ;; Tests need this.
