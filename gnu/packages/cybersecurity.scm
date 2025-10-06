@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 c4droid <c4droid@foxmail.com>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,12 +23,15 @@
 
 (define-module (gnu packages cybersecurity)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (gnu packages databases)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages engineering)
   #:use-module (gnu packages pkg-config)
@@ -37,6 +41,7 @@
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages time)
   #:use-module (gnu packages bioinformatics)      ;python-intervaltree
   #:use-module (gnu packages emulators))
@@ -102,6 +107,56 @@ non-uniform Rowhammer access patterns based on the concepts of frequency,
 phase, and amplitude.  It is able to bypass recent @acronym{TRR, Target Row
 Refresh}in-DRAM mitigations effectively and as such can trigger bit flips.")
     (license license:expat)))
+
+(define-public gallia
+  (package
+    (name "gallia")
+    (version "1.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Fraunhofer-AISEC/gallia")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11pyq2jn0py6n4xi5yxbsazybbdn9m8fgllqmfrsiqg9k96i6cwb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; NOTE: Test steps are sourced from GitHub Actions attached to the
+      ;; project. This is a minimal test suite, more precise tests require
+      ;; setting up local service with Bats (Bash Automated Testing System)
+      ;; <https://bats-core.readthedocs.io/en/stable/>. bs
+      #:test-flags #~(list "tests/pytest")))
+    (native-inputs
+     (list python-poetry-core
+           python-pygit2
+           python-pytest
+           python-pytest-asyncio))
+    (inputs
+     (list python-aiofiles
+           python-aiosqlite
+           python-argcomplete
+           python-can
+           python-construct
+           python-exitcode
+           python-httpx
+           python-more-itertools
+           python-msgspec
+           python-platformdirs
+           python-psutil
+           python-pydantic-2
+           python-pygit2
+           python-tabulate
+           python-zstandard))
+    (home-page "https://github.com/Fraunhofer-AISEC/gallia")
+    (synopsis "Extendable Pentesting Framework")
+    (description
+     "Gallia is an extendable pentesting framework with the focus on the
+automotive domain.  The scope of the toolchain is conducting penetration tests
+from a single ECU up to whole cars.")
+    (license license:apsl2)))
 
 (define-public ropgadget
   (package
