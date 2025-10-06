@@ -16,15 +16,15 @@ diff --git a/misc.c b/misc.c
 index dd0bd032a..6b866464c 100644
 --- a/misc.c
 +++ b/misc.c
-@@ -2254,6 +2254,7 @@ int
+@@ -2271,6 +2271,7 @@
  safe_path(const char *name, struct stat *stp, const char *pw_dir,
      uid_t uid, char *err, size_t errlen)
  {
 +        static const char guix_store[] = @STORE_DIRECTORY@;
- 	char buf[PATH_MAX], homedir[PATH_MAX];
+ 	char buf[PATH_MAX], buf2[PATH_MAX], homedir[PATH_MAX];
  	char *cp;
  	int comparehome = 0;
-@@ -2271,6 +2272,11 @@ safe_path(const char *name, struct stat *stp, const char *pw_dir,
+@@ -2288,6 +2289,11 @@
  		snprintf(err, errlen, "%s is not a regular file", buf);
  		return -1;
  	}
@@ -40,7 +40,7 @@ diff --git a/readconf.c b/readconf.c
 index 7cbe7d2c2..40a5f1ace 100644
 --- a/readconf.c
 +++ b/readconf.c
-@@ -2566,6 +2566,7 @@ read_config_file_depth(const char *filename, struct passwd *pw,
+@@ -2602,6 +2602,7 @@
  {
  	FILE *f;
  	char *line = NULL;
@@ -48,7 +48,7 @@ index 7cbe7d2c2..40a5f1ace 100644
  	size_t linesize = 0;
  	int linenum;
  	int bad_options = 0;
-@@ -2581,9 +2582,9 @@ read_config_file_depth(const char *filename, struct passwd *pw,
+@@ -2617,9 +2618,9 @@
  
  		if (fstat(fileno(f), &sb) == -1)
  			fatal("fstat %s: %s", filename, strerror(errno));

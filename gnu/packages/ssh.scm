@@ -225,7 +225,7 @@ a server that supports the SSH-2 protocol.")
 (define-public openssh
   (package
    (name "openssh")
-   (version "10.0p1")
+   (version "10.2p1")
    (source
     (origin
       (method url-fetch)
@@ -233,7 +233,7 @@ a server that supports the SSH-2 protocol.")
                           "openssh-" version ".tar.gz"))
       (patches (search-patches "openssh-trust-guix-store-directory.patch"))
       (sha256
-       (base32 "0p6qp47gkkjrxlqaignsvn81lh80wnlxasr5n5845pqfk9q2w6h2"))))
+       (base32 "1clqyxh6mrbwjg964df0hjwmd361mxnx3nx17wk5jyck3422ri6c"))))
    (build-system gnu-build-system)
    (arguments
     (list
