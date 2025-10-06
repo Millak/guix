@@ -3108,8 +3108,10 @@ varies in similar way among cells which are nearby in the given metric.")
              (base32
               "111q4pzkav26aa3hkgh948wqlyrq7dq6sjml9z63n3blw8s6b0c4"))))
    (build-system pyproject-build-system)
+   (arguments
+    (list #:tests? #f)) ;they depend on Nose test runner
    (native-inputs
-    (list python-setuptools-scm python-setuptools python-wheel))
+    (list python-setuptools-scm python-setuptools))
    (propagated-inputs
     (list python-humanize python-requests python-six))
    (home-page "https://pypi.org/project/htsget/")
