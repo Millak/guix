@@ -32,6 +32,7 @@
 ;; Copyright © 2025 Jelle Licht <jlicht@fsfe.org>
 ;; Copyright © 2025 Rivulet Cedar <rivulet_cedar@yeah.net>
 ;; Copyright © 2025 jgart <jgart@dismail.de>
+;; Copyright © 2025 Steve George <steve@futurile.net>
 
 ;;
 ;; Copying and distribution of this file, with or without modification, are
@@ -40,6 +41,44 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "8daae75de3670594dfcb63b6ae6f1603ca6f7971")
+        (title
+         (en "Fundraising to sustain and strengthen Guix")
+         (de "Spendensammlung zur Sicherung und Stärkung von Guix"))
+        (body
+         (en "We've launched a fundraising campaign for Guix to fund the
+project's expenses.  The goal is for Guix to be sustainable, meaning that
+donations pay for shared resources like infrastructure and to promote the
+project.  To find out more see the blog post
+@url{https://guix.gnu.org/blog/2025/fundraising-campaign-to-sustain-gnu-guix/}.
+
+You can give a @emph{recurring} or @emph{one-time} donation through either the
+FSF or Guix Foundation.  Recurring donations are ideal because they align with
+the project's ongoing costs, but we value and appreciate any support.  Every
+donation gets us a step closer to being sustainable.
+
+To take part please go to the Donate page:
+@url{https://guix.gnu.org/donate/}.
+
+Thanks to everyone who takes part!")
+         (de "Wir haben eine Spendenaktion für Guix eröffnet, um die Ausgaben
+des Projekts zu finanzieren.  Das Ziel ist, dass Guix nachhaltig wirtschaftet,
+also gemeinschaftlich genutzte Ressourcen wie Infrastruktur und das Voranbringen
+des Projekts durch Spenden finanziert werden.  Genaueres lesen Sie im
+Blog-Eintrag
+@url{https://guix.gnu.org/blog/2025/fundraising-campaign-to-sustain-gnu-guix/}.
+
+Sie können eine @emph{regelmäßige} oder @emph{einmalige} Spende an entweder die
+FSF oder die Guix Foundation geben.  Regelmäßige Spenden bevorzugen wir, weil
+sie mit den laufenden Kosten des Projekts abgestimmt werden, aber jede
+Unterstützung wird wertgeschätzt.  Mit jeder Spende kommen wir näher an die
+dauerhafte Finanzierbarkeit.
+
+Um mitzumachen, besuchen Sie unsere Spendenseite:
+@url{https://guix.gnu.org/donate/}.
+
+Wir danken allen Teilnehmern!")))
 
  (entry (commit "61081db5d11dca328c8b2c8d1d5d4ef9ba662059")
         (title
