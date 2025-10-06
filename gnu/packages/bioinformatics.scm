@@ -3218,18 +3218,24 @@ framework enables the use of any LR method with any resources.")
 (define-public python-logomaker
   (package
     (name "python-logomaker")
-    (version "0.8")
+    (version "0.8.7")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "logomaker" version))
               (sha256
                (base32
-                "0v9z3ml1s7imk28hqyhrqjqg3sq0j29lx975d36n2ybdgld51iyq"))))
+                "00ikzh7cv3yi1aj5v3hrpia6w7xrw559rqhwy3qxcja4wbk3qy33"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; All tests are marked as skipped in logomaker/tests, this is taken
+      ;; form GitHub Actions file .github/workflows/daily-tests.yml.
+      #:test-backend #~'custom
+      #:test-flags #~(list "-c" "import logomaker")))
     (propagated-inputs
      (list python-matplotlib python-numpy python-pandas))
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "https://logomaker.readthedocs.io")
+    (native-inputs (list python-hatchling))
+    (home-page "https://github.com/jbkinney/logomaker")
     (synopsis "Package for making Sequence Logos")
     (description "Logomaker is a Python package for generating
 publication-quality sequence logos.  Logomaker can generate both standard and
