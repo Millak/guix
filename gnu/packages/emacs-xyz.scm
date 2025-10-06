@@ -17673,32 +17673,58 @@ functions to assist in reviewing changes on files.")
     (license license:gpl3+)))
 
 (define-public emacs-popwin
-  (package
-    (name "emacs-popwin")
-    (version "1.0.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/emacsorphanage/popwin")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1x1iimzbwb5izbia6aj6xv49jybzln2qxm5ybcrcq7xync5swiv1"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:tests? #f ; requires an attached terminal
-      ))
-    (native-inputs
-     (list emacs-ert-runner))
-    (home-page "https://github.com/emacsorphanage/popwin")
-    (synopsis "Popup window manager for Emacs")
-    (description
-     "This package provides utilities for treating certain windows as @dfn{pop
-up windows}, which close automatically when quitting a command or selecting
-another window.")
-    (license license:gpl3+)))
+  ;; Last release is from 2020.
+  (let ((commit "213e462c4aa23c9aa78105b78a8fb27c8bbc3c9c")
+        (revision "0"))
+    (package
+      (name "emacs-popwin")
+      (version (git-version "1.0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/emacsorphanage/popwin")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "13gn96h0f4z9g1dg65hiq24srjq75jnndd0khzx8j2xv7d5fmmyk"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command
+        #~(list "emacs" "-Q" "-batch"
+                "-l" "test/popwin-test.el"
+                "-f" "ert-run-tests-batch-and-exit")
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; Ran 42 tests, 33 results as expected, 0 unexpected, 9 skipped.
+            (add-before 'check 'skip-tests
+              (lambda _
+                (emacs-batch-edit-file "test/popwin-test.el"
+                  '(progn
+                    (let ((tests (list "find-file-interactively"
+                                       "display-buffer-interactively"
+                                       "find-file-tail-interactively"
+                                       "popup-at-bottom-with-three-columes"
+                                       "popup-at-top-with-three-columes.*"
+                                       "popup-buffer-interactively"
+                                       "popup-buffer-tail-interactively"
+                                       "popwin-side-window"
+                                       "popup-from-minibuffer")))
+                      (dolist (test tests)
+                              (save-excursion
+                               (re-search-forward (format "%s ()" test))
+                               (insert "\n(skip-unless nil)")))
+                      (basic-save-buffer)))))))))
+      (native-inputs
+       (list emacs-ert-runner))
+      (home-page "https://github.com/emacsorphanage/popwin")
+      (synopsis "Popup window manager for Emacs")
+      (description
+       "This package provides utilities for treating certain windows as
+@dfn{pop up windows}, which close automatically when quitting a command or
+selecting another window.")
+      (license license:gpl3+))))
 
 (define-public emacs-pyvenv
   (package
