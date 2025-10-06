@@ -1833,6 +1833,33 @@ testing capabilities.")
 Perl's @url{https://metacpan.org/pod/Test::Deep, Test::Deep perl}.")
     (license license:bsd-2)))
 
+(define-public go-github-com-mndrix-tap-go
+  (package
+    (name "go-github-com-mndrix-tap-go")
+    (version "0.0.0-20171203230836-629fa407e90b")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mndrix/tap-go")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0svfhlmspbkys795502ki8ahhcwa0ys3mn89yn333y9y0p3j6dkg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-vet=off") ;; Go@1.24 forces vet, but tests are not ready yet.
+      #:import-path "github.com/mndrix/tap-go"))
+    (home-page "https://github.com/mndrix/tap-go")
+    (synopsis "Test Anything Protocol for Golang")
+    (description
+     "The @acronym{Test Anything Protocol, TAP} is a text-based interface
+between tests and a test harness.  This package helps Go to generate TAP
+output.")
+    (license license:unlicense)))
+
 (define-public go-github-com-nbio-st
   (package
     (name "go-github-com-nbio-st")
