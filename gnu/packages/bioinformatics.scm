@@ -8170,7 +8170,7 @@ and random access tool.")
            (lambda _
              (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (propagated-inputs
-     (list python-anndata
+     (list python-anndata-0.11
            python-bamnostic
            python-h5py
            python-intervaltree
