@@ -190,7 +190,7 @@ painting, image manipulating and icon editing.")
 (define-public krita
   (package
     (name "krita")
-    (version "5.2.9")
+    (version "5.2.13")
     (source
      (origin
        (method url-fetch)
@@ -198,30 +198,13 @@ painting, image manipulating and icon editing.")
              "mirror://kde/stable/krita/" version "/krita-" version
              ".tar.gz"))
        (sha256
-        (base32 "19nb98rh8j9jdd8hz8m56hrpljqv74p7j1k5plqnkwpbdmaszj88"))
-       (patches (search-patches "krita-bump-sip-abi-version-to-12.8.patch"
-                                "krita-xsimd-13-compat.patch"))))
+        (base32 "0camc7wk3285sxaam6idaxifx4b6hxv3vhgihh3g2awyr4q9946b"))
+       (patches (search-patches "krita-bump-sip-abi-version-to-12.8.patch"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f
        #:configure-flags (list "-DCMAKE_CXX_FLAGS=-fPIC")
        #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-raqm
-                    (lambda _
-                      ;; Uncomment the substitute block underneath this once the
-                      ;; libraqm variable is patched upstream. This will force it to
-                      ;; use the Guix provided library.
-                      ;; (substitute* "CMakeLists.txt"
-                      ;; (("add_subdirectory\\(3rdparty_vendor\\)")
-                      ;; "find_package(Raqm 0.10.1 REQUIRED)"))
-                      ;; (delete-file-recursively "3rdparty_vendor"))
-                      ;;
-                      ;; Patch the supplied vendor Raqm library (v0.10.1) to use fPIC
-                      (substitute* "3rdparty_vendor/raqm/CMakeLists.txt"
-                        (("set\\(CMAKE_AUTOMOC OFF\\)")
-                         "set(CMAKE_AUTOMOC OFF)
-set(CMAKE_CXX_FLAGS \"${CMAKE_CXX_FLAGS} -fPIC\" )
-set(CMAKE_C_FLAGS \"${CMAKE_C_FLAGS} -fPIC\" ) "))))
                   (add-after 'install 'wrap-bin
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let* ((out (assoc-ref outputs "out"))
@@ -299,6 +282,7 @@ set(CMAKE_C_FLAGS \"${CMAKE_C_FLAGS} -fPIC\" ) "))))
            qtdeclarative-5
            qtmultimedia-5
            qtsvg-5
+           qtwayland-5
            qtx11extras
            quazip-5
            sdl2
