@@ -3716,14 +3716,14 @@ and binaries removed, and adds modular support for using system libraries.")
 (define-public qtwebengine
   (package
     (name "qtwebengine")
-    (version "6.9.2")
+    (version "6.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (qt-url name version))
        (sha256
         (base32
-         "1aq35nkgbvhlsmglnjizbkavr7kb0ymf5n3kkllrpqy2mf90gjwr"))
+         "0rl9v936sq6spvb3sfkpmc51wwmljrn4ssy3ii0pdn0xsl8kn2ym"))
        (modules '((ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-1)
@@ -4027,8 +4027,7 @@ linux/libcurl_wrapper.h"
                     "enable_widevine=false"
                     ;; Link pulseaudio directly instead of using dlopen.
                     "link_pulseaudio=true")
-                  "\n"))))))
-       (patches (search-patches "qtwebengine-fix-dependencies.patch"))))
+                  "\n"))))))))
     (build-system cmake-build-system)
     (arguments
      (list
