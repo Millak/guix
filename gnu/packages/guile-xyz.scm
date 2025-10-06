@@ -2300,6 +2300,73 @@ format.")
         #~(cons "guile_effective_version=2.2"
                 #$make-flags))))))
 
+(define-public guile-extensible-match
+  (package
+    (name "guile-extensible-match")
+    (version "0.75.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+          (url "https://codeberg.org/dpk/extensible-match")
+          ;; This commit is 1 commit ahead of tag v0.75.1,
+          ;; includes a patch remove SRFI-151 dependency, which
+          ;; is not packaged in Guix.
+          (commit "d2d32e0e09d37c78dbdd4fedd1af1c6dd3663bb6")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1b2a7cl2fax6ysb5dj7ssy89w4w8xbn3iwc9ffb0p7948sxw7xgx"))))
+    (build-system guile-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'adjust-files-for-guile
+            (lambda _args
+              ;; This is not needed for us.
+              (delete-file-recursively "impl-lib")
+
+              ;; Delete test files.
+              (delete-file "extensible-match-test.sls")
+              (delete-file "extensible-match/internal-tests.sls")
+
+              ;; Rename all file with *.sls to *.scm, if there's Guile's
+              ;; specific implementation (*.guile.sls), make it override the
+              ;; generic one.
+              (rename-file "extensible-match/pattern-syntax.guile.sls"
+                           "extensible-match/pattern-syntax.sls")
+              (for-each
+               (lambda (sls)
+                 (rename-file sls (string-append
+                                   (string-drop-right sls 3)
+                                   "scm")))
+               (find-files "." ".*\\.sls$"))
+
+              ;; Missing SRFI-244, but it's too trivial to be a single package.
+              (substitute* "extensible-match/match.scm"
+                (("\\(srfi :244 define-values\\)")
+                 "(only (guile) define-values)"))))
+
+          (add-after 'adjust-files-for-guile 'fix-srfi-naming
+            (lambda _arg
+              (substitute* (find-files "srfi" ".*\\.scm$")
+                (("\\(srfi :262") "(srfi srfi-262"))
+
+              (rename-file "srfi/:262.scm" "srfi/srfi-262.scm")
+              (rename-file "srfi/:262" "srfi/srfi-262"))))))
+    (native-inputs (list guile-3.0))
+    (propagated-inputs (list guile-srfi-133))
+    (home-page "https://codeberg.org/dpk/extensible-match")
+    (synopsis
+     "Extensible patter-matching library")
+    (description
+     "Guile-extensible-match is an implementation of SRFI-262.  It provides
+user extensible pattern matching syntax. This implementation use a range
+of optimizations to generate efficient matching code.")
+    (license license:expat)))
+
 (define-public guile-newra
   ;; There has been no release let.
   (let ((commit "266e72ef433cab44f60f8595e2435247b225d457")
