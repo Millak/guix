@@ -1498,6 +1498,33 @@ of VT100 terminal.")
 edit distance algorithm for Python in Cython for high performance.")
     (license license:bsd-3)))
 
+(define-public python-rich-argparse
+  (package
+    (name "python-rich-argparse")
+    (version "1.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hamdanal/rich-argparse")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0wydhy1167yv7lm07iy3aysyhxyixc24ma1wdna36c06d24wbdc0"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-hatchling))
+    (propagated-inputs
+     (list python-rich))
+    (home-page "https://github.com/hamdanal/rich-argparse")
+    (synopsis "Format argparse and optparse help using rich")
+    (description
+     "This package improves the look and readability of argparse's help while
+requiring minimal changes to the code.")
+    (license license:expat)))
+
 (define-public python-safety-schemas
   (package
     (name "python-safety-schemas")
