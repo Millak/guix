@@ -335,6 +335,21 @@ reduces the code overhead typically encountered when using a mostly
 object-oriented library such as @code{scikit-learn}.")
     (license license:bsd-3)))
 
+(define-public python-anndata-0.11
+  (package
+    (inherit python-anndata)
+    (name "python-anndata")
+    (version "0.11.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/theislab/anndata")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05i805k5kvmwp5k0qw9vxvpgjwys284nq529mfn7vwlryz9d247m"))))))
+
 ;; XXX: See: <https://codeberg.org/guix/guix/issues/3093>.
 (define-public python-aplus
   ;; PyPI release lacks the latest version, Git has no tags.
