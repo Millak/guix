@@ -404,6 +404,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/jupyter.scm			\
   %D%/packages/kawa.scm				\
   %D%/packages/kde.scm				\
+  %D%/packages/kde-education.scm		\
   %D%/packages/kde-frameworks.scm		\
   %D%/packages/kde-games.scm			\
   %D%/packages/kde-graphics.scm			\

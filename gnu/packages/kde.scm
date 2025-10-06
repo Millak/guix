@@ -72,6 +72,7 @@
   #:use-module (gnu packages gps)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages kde-education)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-graphics)
   #:use-module (gnu packages kde-pim)
@@ -142,30 +143,6 @@ This package contains GUI widgets for baloo.")
     (synopsis "Non-blocking Qt database framework")
     (description "This package provides a non-blocking Qt database framework.")
     (license license:lgpl2.1+)))
-
-(define-public analitza
-  (package
-    (name "analitza")
-    (version "24.12.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://invent.kde.org/education/analitza")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "029n48pshcnyidnzv2ikyhamxg6j0ndbjavwrxdc29hrm00dmw8m"))))
-    (native-inputs (list extra-cmake-modules qttools))
-    (inputs (list eigen qtbase qtdeclarative qtsvg))
-    (build-system qt-build-system)
-    (home-page "https://invent.kde.org/education/analitza")
-    (synopsis "Library to add mathematical features to a program")
-    (description "Analitza is a library to work with mathematical objects.
-It adds mathematical features to your program, such as symbolic computations
-and some numerical methods; for instance the library can parse mathematical
-expressions and let you evaluate and draw them.")
-    (license license:gpl2+)))
 
 (define-public kalgebra
   (package
