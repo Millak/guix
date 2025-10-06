@@ -826,7 +826,7 @@ needed.")
 (define-public d-tools
   (package
     (name "d-tools")
-    (version "2.105.3")
+    (version "2.111.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -835,51 +835,97 @@ needed.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hvz786k0pi8697x1vk9x5bx52jiy7pvi13wmfkx15ddvv0x5j33"))))
+                "04kckyh4r2s1kncxbknykrcrjqi3ypygnz0sj909hbrdpfg0ghf4"))))
+    (outputs '("out" "internal"))
     (build-system gnu-build-system)
     (arguments
      (list
+      #:modules
+      `(,@%default-gnu-modules
+        (srfi srfi-26))
       #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-tests
-            (lambda _
-              ;; Skip broken make ONESHELL shell test.
-              (substitute* "rdmd_test.d"
-                (("makeVersion = .*$") "makeVersion = \"skip\";"))))
-          (delete 'configure)
-          (replace 'build
-            (lambda _
-              (mkdir-p "bin")
-              (setenv "CC" #$(cc-for-target))
-              (setenv "LD" #$(ld-for-target))
-              (invoke "ldc2" "rdmd.d" "--of" "bin/rdmd")
-              (apply invoke "ldc2" "--of=bin/dustmite"
-                     (find-files "DustMite" ".*\\.d"))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "bin/rdmd" "rdmd_test.d" "bin/rdmd"
-                        "-m" (if #$(target-64bit?) "64" "32")
-                        "--rdmd-default-compiler" "ldmd2"))))
-          (replace 'install
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (bin (string-append out "/bin"))
-                     (man (string-append out "/man")))
-                (for-each delete-file (find-files "bin" "\\.o$"))
-                (copy-recursively "bin" bin)
-                (copy-recursively "man" man)))))))
+      #~(let ((sub-packages-out
+               '("ddemangle"
+                 ;;"dman"               ; skip as it depends “../dlang.org“
+                 "dustmite"
+                 "rdmd"))
+              (sub-packages-internal
+               '("catdoc"
+                 "changed"
+                 "checkwhitespace"
+                 "contributors"
+                 "detab"
+                 "dget"
+                 ;;"tests_extractor"    ; skip as it depends on libdparse
+                 "tolf")))
+          (modify-phases %standard-phases
+            (add-after 'unpack 'patch-tests
+              (lambda _
+                ;; Skip broken make ONESHELL shell test.
+                (substitute* "rdmd_test.d"
+                  (("makeVersion = .*$") "makeVersion = \"skip\";"))))
+            (replace 'configure
+              (lambda _
+                (setenv "CC" #$(cc-for-target))
+                (setenv "DC" (which "ldc2"))
+                (setenv "DUB_HOME" "/tmp/.dub")))
+            (replace 'build
+              (lambda _
+                (for-each
+                 (lambda (sub-package)
+                   (invoke "dub" "build" "--build=release"
+                           (string-append ":" sub-package)))
+                 (append sub-packages-out sub-packages-internal))))
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (invoke "./dtools_rdmd" "rdmd_test.d" "dtools_rdmd"
+                          "--rdmd-default-compiler" "ldmd2"))))
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let* ((out (assoc-ref outputs "out"))
+                       (out-bin (string-append out "/bin"))
+                       (out-man (string-append out "/man"))
+                       (internal (assoc-ref outputs "internal"))
+                       (internal-bin (string-append internal "/bin"))
+                       (install-sub-package
+                        (lambda (pkg dir)
+                          (mkdir-p dir)
+                          (copy-file (string-append "dtools_" pkg)
+                                     (string-append dir "/" pkg))))
+                       (install-sub-packages
+                        (lambda (pkgs dir)
+                          (for-each (cut install-sub-package <> dir)
+                                    pkgs))))
+                  (install-sub-packages sub-packages-out out-bin)
+                  (install-sub-packages sub-packages-internal internal-bin)
+                  (copy-recursively "man" out-man))))))))
     (native-inputs
      (list ldc
-           (module-ref (resolve-interface
-                        '(gnu packages commencement))
-                       'ld-gold-wrapper)))
+           dub))
     (home-page "https://github.com/dlang/tools")
     (synopsis "Useful D-related tools")
     (description
-     "@code{d-tools} provides two useful tools for the D language: @code{rdmd},
-which runs D source files as scripts, and @code{dustmite}, which reduces D code
-to a minimal test case.")
+     "@code{d-tools} provides some useful tools for working with the D
+programming language. In the output @code{out} are:
+@itemize
+@item @code{ddemangle} (demangles D symbols)
+@item @code{dustmite} (reduces D-like source code to mimimally reproduce some
+test case)
+@item @code{rdmd} (runs D source files as scripts)
+@end itemize
+In the @code{internal} output are:
+@itemize
+@item @code{catdoc} (concatenates Ddoc files)
+@item @code{changed} (change log generator)
+@item @code{checkwhitespace} (checks for correct whitespace usage in source
+files)
+@item @code{contributors} (query contributors between two D releases)
+@item @code{detab} (replace tabs with spaces, and remove trailing whitespace
+from lines)
+@item @code{dget} (D source code downloader)
+@item @code{tolf} (line endings converter)
+@end itemize")
     (license license:boost1.0)))
 
 
