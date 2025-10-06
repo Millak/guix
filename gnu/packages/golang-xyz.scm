@@ -19639,6 +19639,37 @@ Porter2 stemmer}.  It is written completely using finite state machines to do
 suffix comparison, rather than the string-based or tree-based approaches.")
     (license license:asl2.0)))
 
+(define-public go-github-com-syndtr-gocapability
+  (package
+    (name "go-github-com-syndtr-gocapability")
+    (version "0.0.0-20200815063812-42c35b437635")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/syndtr/gocapability")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00zi0k190ydlm9drnafvj9p4cf6axm858wr71pbmq1p3r94iqws4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/syndtr/gocapability"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'go-generate
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path
+                                                       "/capability/enumgen")
+                (invoke "go" "generate" "-v" "-n")))))))
+    (home-page "https://github.com/syndtr/gocapability")
+    (synopsis "Utilities for manipulating POSIX capabilities in Golang")
+    (description
+     "This package provides utilities for manipulating POSIX capabilities.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-syndtr-goleveldb
   (package
     (name "go-github-com-syndtr-goleveldb")
