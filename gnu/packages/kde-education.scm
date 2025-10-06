@@ -29,7 +29,10 @@
   #:use-module (gnu packages astronomy)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages geo)
+  #:use-module (gnu packages gps)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages libreoffice)
@@ -37,6 +40,8 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pdf)
+  #:use-module (gnu packages perl)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
@@ -211,3 +216,66 @@ scientific data.  It provides an easy way to create, manage and edit plots and
 to perform data analysis.")
     (license (list license:gpl2+     ;labplot
                    license:gpl3+)))) ;liborigin
+
+(define-public marble-qt
+  (package
+    (name "marble-qt")
+    (version "25.08.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://invent.kde.org/education/marble.git/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04x6i7k1c09xn74rcx3vr4m8wpqb6bb24pwiyw6n65z1vf3qm3y5"))))
+    (build-system qt-build-system)
+    (arguments
+     ;; FIXME: libmarblewidget-qt5.so.28 not found.  Also enable the
+     ;; corresponding configure flag to build tests.
+     (list
+      #:tests? #f
+      #:qtbase qtbase
+      #:configure-flags #~(list "-DBUILD_MARBLE_TOOLS=YES" ;file conversion tools
+                                "-DBUILD_TOUCH=YES")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'alter-osmctools-lookup
+                     (lambda _
+                       (substitute* "tools/vectorosm-tilecreator/autotests/CMakeLists.txt"
+                         (("\\$<TARGET_FILE:osmconvert>")
+                          (which "osmconvert"))))))))
+    (native-inputs (list abseil-cpp extra-cmake-modules kdoctools osmctools
+                         qttools))
+    ;; One optional dependency missing: libwlocate.
+    (inputs (list gpsd
+                  kcoreaddons
+                  kcrash
+                  ki18n
+                  kio
+                  knewstuff
+                  kparts
+                  krunner
+                  kwallet
+                  perl
+                  phonon
+                  protobuf
+                  qt5compat
+                  qtdeclarative
+                  qtlocation
+                  qtpositioning
+                  qtserialport
+                  qtsvg
+                  qtwebchannel
+                  qtwebengine
+                  shapelib
+                  shared-mime-info
+                  zlib))
+    (home-page "https://marble.kde.org/")
+    (synopsis "Virtual globe and world atlas")
+    (description
+     "Marble is similar to a desktop globe.  At closer scale it
+becomes a world atlas, while OpenStreetMap takes the user to street level.  It
+supports searching for places of interest, viewing Wikipedia articles,
+creating routes by drag and drop and more.")
+    (license license:lgpl2.1+)))

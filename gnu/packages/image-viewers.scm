@@ -102,6 +102,7 @@
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages kde)
+  #:use-module (gnu packages kde-education)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-graphics)
   #:use-module (gnu packages kde-pim)
