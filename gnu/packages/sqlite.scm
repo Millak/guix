@@ -14,6 +14,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2022 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2024 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +39,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix deprecation)
   #:use-module (ice-9 match)
@@ -116,10 +118,40 @@ is in the public domain.")
 (define-public sqlite-next
   (package
     (inherit sqlite)
-    (version "3.46.0")
+    (version "3.50.4")
     (source (origin
               (method url-fetch)
-              (uri (sqlite-uri version 2024))
+              (uri (sqlite-uri version 2025))
               (sha256
                (base32
-                "0zbs853s8ly693qdg0l7vs4shwn3plmvdczr2s478wsj6dxnm3kg"))))))
+                "062vd9yrg250qd32sy3mfa39qvxj87dkwsznqbd5vvlj3dx5inx3"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments sqlite)
+       ((#:tests? _ #f)
+        #f)
+       ((#:configure-flags flags #~(list))
+        #~(map (lambda (flag)
+                 (if (string-prefix? "CFLAGS=" flag)
+                     (string-append flag
+                                    ;; needed by fossil
+                                    " -DSQLITE_ENABLE_FTS4"
+                                    " -DSQLITE_ENABLE_FTS5")
+                     flag))
+               ;; sqlite's configure script does not like
+               ;;    --enable-fast-install
+               (cons "--disable-option-checking"
+                     #$flags)))
+       ((#:phases phases #~(list))
+        #~(modify-phases #$phases
+            (replace 'move-static-library
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let* ((out (assoc-ref outputs "out"))
+                       (static (assoc-ref outputs "static"))
+                       (source (string-append out "/lib/libsqlite3.a")))
+                  (mkdir-p (string-append static "/lib"))
+                  (link source (string-append static "/lib/libsqlite3.a"))
+                  (delete-file source)
+                  (when (file-exists? (string-append out "/lib/libsqlite3.la"))
+                    (substitute* (string-append out "/lib/libsqlite3.la")
+                      (("^old_library=.*")
+                       "old_library=''\n"))))))))))))
