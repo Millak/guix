@@ -23543,6 +23543,9 @@ alignments, trees and genomic annotations.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; Failed: 'yield' keyword is allowed in fixtures, but not in tests
+      ;; (test_region)
+      #:test-flags #~(list "--ignore=gffutils/test/test_1.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-HOME
