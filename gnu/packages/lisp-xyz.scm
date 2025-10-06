@@ -4988,11 +4988,11 @@ higher-level lispier interface.")
   (sbcl-package->ecl-package sbcl-cl-charms))
 
 (define-public sbcl-cl-collider
-  (let ((commit "a46908896982868955b29bfb3a5337a0af489b0b")
-        (revision "0"))
+  (let ((commit "7e0ebb0756dda0a34401abafcd5ee22e043ce4c4")
+        (revision "1"))
     (package
      (name "sbcl-cl-collider")
-     (version (git-version "2018.7.15" revision commit))
+     (version (git-version "2025-08-18" revision commit))
      (source
        (origin
          (method git-fetch)
@@ -5001,7 +5001,7 @@ higher-level lispier interface.")
                (commit commit)))
          (file-name (git-file-name "cl-collider" version))
          (sha256
-          (base32 "10wvjbwvbgr0b57hpfxycg90yjmb29pirygr1sxrdaqxll328sz1"))))
+          (base32 "19i8fn7l5gm9k0ypb9kpn919hv86swdq2426vg4vb2r13h49b6vm"))))
      (build-system asdf-build-system/sbcl)
      (arguments
        (list #:phases
@@ -5012,9 +5012,6 @@ higher-level lispier interface.")
                        (("/usr/local/lib/SuperCollider/plugins")
                         (search-input-directory
                          inputs "/lib/SuperCollider/plugins"))
-                       (("/usr/local/share/SuperCollider/Extensions")
-                        (search-input-directory
-                         inputs "/share/SuperCollider/Extensions"))
                        (("which scsynth")
                         (string-append
                          "which "
