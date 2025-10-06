@@ -627,9 +627,47 @@ server and embedded PowerPC, and S390 guests.")
                 (string-append "DOC_PATH=" #$output "/share/doc/"
                                #$(package-name this-package) "-"
                                #$(package-version this-package))
-                (string-append "CC=" #$(cc-for-target))))
+                (string-append "CC=" #$(cc-for-target))
+                (string-append "CXX=" #$(cxx-for-target))
+                (string-append "LLVM_CONFIG="
+                               (search-input-file %build-inputs "/bin/llvm-config"))
+                ;; Need to use LLD with the llvm_mode, because LTO in
+                ;; combination with binutils gold is currently broken.
+                ;;
+                ;; See: https://codeberg.org/guix/guix/issues/3307
+                (string-append "AFL_REAL_LD="
+                               (search-input-file %build-inputs "/bin/ld.lld"))
+                (string-append "CLANG_BIN="
+                               (search-input-file %build-inputs "/bin/clang"))
+                (string-append "CLANGPP_BIN="
+                               (search-input-file %build-inputs "/bin/clang++"))
+                "LLVM_LTO=1"
+                "AFL_CLANG_FLTO=-flto=full"))
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
+            ;; Ensure that the build fails early if LLVM support fails to
+            ;; compile, makes the build log much easier to understand.
+            (add-after 'unpack 'fatal-llvm-failure
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "GNUmakefile"
+                  (("-\\$\\(MAKE\\) ..* -f GNUmakefile.llvm$" all)
+                   (substring all 1))))) ; remove the leading '-'
+            ;; GNUmakefile.llvm tries to find clang/clang++ relative to the
+            ;; --bindir reported by llvm-config, but since llvm and clang
+            ;; have different store paths on Guix, this doesn't work here.
+            (add-after 'unpack 'patch-clang-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "GNUmakefile.llvm"
+                  (("^CC *= .*$")
+                   (string-append
+                     "override CC = "
+                     (search-input-file inputs "/bin/clang")
+                     "\n"))
+                  (("^CXX *= .*$")
+                   (string-append
+                     "override CXX = "
+                     (search-input-file inputs "/bin/clang++")
+                     "\n")))))
             ;; For GCC plugins.
             (add-after 'unpack 'patch-gcc-path
               (lambda* (#:key inputs #:allow-other-keys)
@@ -656,8 +694,8 @@ server and embedded PowerPC, and S390 guests.")
                   `("AFL_PATH" = (,(string-append #$output "/lib/afl"))))))))))
     ;; According to the Dockerfile, GCC 12 is producing compile errors for some
     ;; targets, so explicitly use GCC 11 here.
-    (inputs (list gcc-11 gmp python qemu-for-aflplusplus))
-    (native-inputs (list gcc-11))
+    (inputs (list llvm-20 clang-20 lld-20 gcc gmp python qemu-for-aflplusplus))
+    (native-inputs (list gcc))
     (home-page "https://aflplus.plus/")
     (description
      "AFLplusplus is a security-oriented fuzzer that employs a novel type of
