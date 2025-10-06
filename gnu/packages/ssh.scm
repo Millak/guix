@@ -199,7 +199,7 @@ applications.")
 (define-public libssh2
   (package
    (name "libssh2")
-   (version "1.10.0")
+   (version "1.11.1")
    (source (origin
             (method url-fetch)
             (uri (string-append
@@ -207,14 +207,15 @@ applications.")
                    version ".tar.gz"))
             (sha256
              (base32
-              "0l8xwhhscvss7q007vpbkbv7jh9s43579rx2sf8lnfgd7l7yjr1d"))))
+              "1xsqysmrq40gdfjndd1yrcvwic16kn4jrzir6pn8xfadwg5pdv6r"))))
    (build-system gnu-build-system)
-   ;; The installed libssh2.pc file does not include paths to libgcrypt and
+   ;; The installed libssh2.pc file does not include paths to openssl and
    ;; zlib libraries, so we need to propagate the inputs.
-   (propagated-inputs (list libgcrypt zlib))
+   (propagated-inputs (list openssl zlib))
    (arguments
-    (list #:configure-flags #~'("--with-libgcrypt"
-                                "--disable-static")))
+    (list #:configure-flags #~'("--with-crypto=openssl"
+                                "--disable-static"
+                                "--disable-docker-tests")))
    (synopsis "Client-side C library implementing the SSH2 protocol")
    (description
     "libssh2 is a library intended to allow software developers access to
