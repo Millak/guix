@@ -119,6 +119,11 @@
               (substitute* "lib-python/2.7/distutils/sysconfig_pypy.py"
                 (("\"cc ")
                  (string-append "\"" #$(cc-for-target) " ")))))
+          (add-after 'unpack 'use-libffi.so
+            (lambda _
+              (substitute* "rpython/rlib/clibffi.py"
+                (("\"libffi\\.a\"")
+                 "\"libffi.so\""))))
           (add-after 'unpack 'set-source-file-times-to-1980
             ;; copied from python package, required by zip testcase
             (lambda _
@@ -177,7 +182,7 @@
      (list bzip2
            expat
            gdbm
-           libffi-pic
+           libffi
            ncurses
            openssl
            sqlite
