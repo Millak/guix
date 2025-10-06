@@ -21876,11 +21876,11 @@ require functions from CodeAndRoll and MarkdownReports libraries.")
       (license license:gpl3))))
 
 (define-public r-seuratextend
-  (let ((commit "5382e921f7b365c7b75b20d07cb455e4390fe36f")
+  (let ((commit "5dacd7c1e1da3bc0e78ab81d60056f6d7da3d386")
         (revision "1"))
     (package
       (name "r-seuratextend")
-      (version (git-version "1.0.7" revision commit))
+      (version (git-version "1.2.5" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -21889,7 +21889,7 @@ require functions from CodeAndRoll and MarkdownReports libraries.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1rlx20jyfdrymxn8b9dsf9n9jk9rwjjx1wy2f00layvd57g9ch2q"))))
+          (base32 "1fnh1idf871jfkpzmr2py15h5v5d9ykh9p0kvlpx7riiidi8wsl2"))))
       (properties `((upstream-name . "SeuratExtend")))
       (build-system r-build-system)
       (propagated-inputs (list r-biocmanager
