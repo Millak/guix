@@ -1617,11 +1617,12 @@ some tool-specific options are set.")
     (license license:bsd-2)))
 
 (define-public python-hdlmake
-  (let ((commit "c56cb8efa2000d06cec698f0149bc4ca4ef4e5bc")
-        (revision "3"))
+  ;; Version bump to 4.0dev2, no tag.
+  (let ((commit "1d81071bf19b8f9c930e31731c5c847837591cb8")
+        (revision "0"))
     (package
       (name "python-hdlmake")
-      (version (git-version "3.3" revision commit))
+      (version (git-version "4.0dev2" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -1630,7 +1631,7 @@ some tool-specific options are set.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1w4b0g015rzfypr8sjyr8xqij6s2p5qxhxraswrhjvg1w86b6s36"))))
+          (base32 "1l2j86z5smfxw9b842xcbijgl7nvkx3grw5hm54wvv3hkgyp30fn"))))
       (build-system pyproject-build-system)
       (arguments (list #:phases #~(modify-phases %standard-phases
                                     (add-before 'check 'chdir
@@ -1638,7 +1639,7 @@ some tool-specific options are set.")
                                         (chdir "testsuite"))))
                        #:test-flags #~(list "test_all.py")))
       (native-inputs (list python-pytest python-setuptools))
-      (propagated-inputs (list python-networkx python-six))
+      (propagated-inputs (list python-networkx))
       (home-page "https://ohwr.gitlab.io/project/hdl-make/")
       (synopsis "Generate multi-purpose makefiles for HDL projects")
       (description
