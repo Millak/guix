@@ -23,7 +23,7 @@
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Jean-Pierre De Jesus DIAZ <me@jeandudey.tech>
 ;;; Copyright © 2022, 2025 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2024 Allan Adair <allan@adair.no>
+;;; Copyright © 2024, 2025 Allan Adair <allan@adair.no>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1309,16 +1309,18 @@ L2TP allows you to tunnel PPP over UDP.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f ; No tests.
+      #:tests? #f ;No tests.
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-FHS-file-names
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "vpn_slice/linux.py"
-                (("/sbin/iptables")
-                 (search-input-file inputs "/sbin/iptables"))
-                (("/sbin/ip")
-                 (search-input-file inputs "/sbin/ip"))))))))
+                (("'/sbin/iptables'")
+                 (string-append
+                  "'" (search-input-file inputs "/sbin/iptables") "'"))
+                (("'/sbin/ip'")
+                 (string-append
+                  "'" (search-input-file inputs "/sbin/ip") "'"))))))))
     (native-inputs (list python-setuptools python-wheel))
     (inputs (list python-dnspython python-setproctitle iproute iptables))
     (home-page "https://github.com/dlenski/vpn-slice")
