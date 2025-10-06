@@ -46289,6 +46289,15 @@ This is the name service switch configuration with support for host name
 lookup over multicast DNS (mDNS) for host names ending in @code{.local}.
 @end defvar
 
+Furthermore, mDNS lookups could be restricted to IPv4 or IPv6 protocols
+using the procedure @code{mdns-host-lookup-nss}.
+
+@deffn {Procedure} mdns-host-lookup-nss @
+       [#:ipv6? #t] [#:ipv4? #t]
+Return a @code{name-service-switch} object with mDNS lookup restricted
+to specified protocols.
+@end deffn
+
 The reference for name service switch configuration is given below.  It
 is a direct mapping of the configuration file format of the C library , so
 please refer to the C library manual for more information (@pxref{NSS

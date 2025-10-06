@@ -27,6 +27,7 @@
             name-service
 
             lookup-specification
+            mdns-host-lookup-nss
 
             %default-nss
             %mdns-host-lookup-nss
@@ -152,26 +153,34 @@
   ;; Default NSS configuration.
   (name-service-switch))
 
-(define %mdns-host-lookup-nss
-  (name-service-switch
-    (hosts (list %files                           ;first, check /etc/hosts
+(define* (mdns-host-lookup-nss #:key (ipv6? #t) (ipv4? #t))
+  (let ((flavour (cond
+                  ((and ipv6? ipv4?) "mdns")
+                  (ipv6? "mdns6")
+                  (ipv4? "mdns4")
+                  (#t (error "No protocols enabled for mDNS lookups.")))))
+    (name-service-switch
+      (hosts (list %files               ;first, check /etc/hosts
 
-                 ;; If the above did not succeed, try with 'mdns_minimal'.
-                 (name-service
-                   (name "mdns_minimal")
+                   ;; If the above did not succeed, try with 'mdns_minimal'.
+                   (name-service
+                     (name (string-append flavour "_minimal"))
 
-                   ;; 'mdns_minimal' is authoritative for '.local'.  When it
-                   ;; returns "not found", no need to try the next methods.
-                   (reaction (lookup-specification
-                              (not-found => return))))
+                     ;; 'mdns_minimal' is authoritative for '.local'.  When it
+                     ;; returns "not found", no need to try the next methods.
+                     (reaction (lookup-specification
+                                (not-found => return))))
 
-                 ;; Then fall back to DNS.
-                 (name-service
-                   (name "dns"))
+                   ;; Then fall back to DNS.
+                   (name-service
+                     (name "dns"))
 
-                 ;; Finally, try with the "full" 'mdns'.
-                 (name-service
-                   (name "mdns"))))))
+                   ;; Finally, try with the "full" 'mdns'.
+                   (name-service
+                     (name flavour)))))))
+
+
+(define %mdns-host-lookup-nss (mdns-host-lookup-nss))
 
 
 ;;;
