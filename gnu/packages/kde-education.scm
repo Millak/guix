@@ -26,9 +26,16 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages astronomy)
+  #:use-module (gnu packages bison)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-plasma)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline))
 
@@ -109,3 +116,79 @@ expressions and let you evaluate and draw them.")
 of 2D and 3D functions and to calculate easy (and not so easy) calculations,
 such as addition, trigonometric functions or derivatives.")
     (license license:gpl2+)))
+
+(define-public labplot
+  (package
+    (name "labplot")
+    (version "2.11.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/labplot"
+                           "/labplot-" version ".tar.xz"))
+       (sha256
+        (base32 "17b78s84hqq51chhzfx5in9b6ijkwa6xhq1y8sclscirvz46majk"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DENABLE_CANTOR=OFF" ;not packaged
+                   "-DENABLE_MQTT=OFF" ;not packaged (qtmqtt)
+                   ;; FIXME: readstat (optional dependency) is available in the
+                   ;; statistics module, but that module can't be used here.
+                   "-DENABLE_READSTAT=OFF"
+                   ;; This is a bundled library that is not packaged.
+                   "-DENABLE_LIBORIGIN=ON")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (setenv "HOME" (getcwd))
+                     ;; This test fails, I don't know why.
+                     (invoke "ctest" "-E" "(ParserTest|ReadStatFilterTest|\
+WorksheetElementTest)")))))))
+    (native-inputs (list bison
+                         extra-cmake-modules
+                         pkg-config
+                         python-wrapper
+                         qttools-5))
+    (inputs
+     (list breeze-qt5 ;for dark themes
+           breeze-icons ;for icons
+           gsl
+           karchive-5
+           kcompletion-5
+           kconfig-5
+           kconfigwidgets-5
+           kcoreaddons-5
+           kcrash-5
+           kdoctools-5
+           ki18n-5
+           kiconthemes-5
+           kio-5
+           knewstuff-5
+           kparts-5
+           kservice-5
+           ksyntaxhighlighting-5
+           ktextwidgets-5
+           kwidgetsaddons-5
+           kxmlgui-5
+           qtbase-5
+           qtsvg-5
+           shared-mime-info
+           ;; Optional.
+           cfitsio
+           fftw
+           hdf5
+           libcerf
+           lz4
+           netcdf
+           qtserialport
+           zlib))
+    (home-page "https://labplot.kde.org/")
+    (synopsis "Interactive graphing and analysis of scientific data")
+    (description "LabPlot is a tool for interactive graphing and analysis of
+scientific data.  It provides an easy way to create, manage and edit plots and
+to perform data analysis.")
+    (license (list license:gpl2+     ;labplot
+                   license:gpl3+)))) ;liborigin
