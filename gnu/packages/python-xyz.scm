@@ -804,6 +804,30 @@ implemented in pure Python, and most of them are also implemented in C.")
 packaging tasks.")
     (license license:expat)))
 
+(define-public python-exitcode
+  (package
+    (name "python-exitcode")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "exitcode" version))
+       (sha256
+        (base32 "01yybyi4pkvvf4382p28gh4lkxrcyl5vcx2xk95nbsb8011f37mw"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests in PyPI or Git
+    (native-inputs
+     (list python-poetry-core
+           python-setuptools))
+    (home-page "https://github.com/rumpelsepp/exitcode")
+    (synopsis "Preferred system exit codes as defined by sysexits.h")
+    (description
+     "This package implements a preferred system exit codes as defined by
+@url{https://man.openbsd.org/sysexits, sysexits.h}. This library is inspired by
+Rust's @url{https://docs.rs/exitcode, exitcode}.")
+    (license license:expat)))
+
 (define-public python-fastnumbers
   (package
     (name "python-fastnumbers")
