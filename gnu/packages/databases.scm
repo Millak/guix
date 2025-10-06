@@ -3664,13 +3664,22 @@ on another machine, accessed via TCP/IP.")
     (version "3.18.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "peewee" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/coleifer/peewee")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "184n97vc9xy0whl8w54431fc4h5ij7mjwggnfbmg5bv1xdil59bp"))))
+        (base32 "1qd57cd33mf48q0xfmnld58xn5jpbgqrj1bnqlkjmk87y3g9i0q4"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))                    ; fails to import test data
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "runtests.py")))))))
     (inputs
      (list sqlite))
     (native-inputs
