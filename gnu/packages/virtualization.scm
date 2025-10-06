@@ -3462,8 +3462,12 @@ use with virtualization provisioning tools")
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-dependencies
+               (add-after 'unpack 'fix-marshmallow-and-dependencies
                  (lambda _
+                   ;; From marshmallow: versionchanged:: 3.13.0
+                   ;; Replace ``missing`` [..] with ``load_default``.
+                   (substitute* "transient/configuration.py"
+                     (("missing") "load_default"))
                    (substitute* "setup.py"
                      (("(~|=)=") ">=")
                      (("lark-parser>=[0-9.]*") "lark")))))))
