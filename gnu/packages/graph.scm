@@ -419,11 +419,11 @@ graphs in Python.")
     (propagated-inputs (list python-igraph))
     (inputs (list igraph))
     (native-inputs
-     (list python-ddt
+     (list pkg-config
+           python-ddt
+           python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel
-           pkg-config))
+           python-setuptools-scm))
     (home-page "https://github.com/vtraag/louvain-igraph")
     (synopsis "Implementation of the Louvain algorithm")
     (description "This package implements the Louvain algorithm for community
