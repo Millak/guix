@@ -1,0 +1,28 @@
+Add the full name for libvulkan.so.1 so that we can patch it in the 'build phase.
+Not sent upstream.
+
+diff --git a/src/gui/vulkan/qbasicvulkanplatforminstance.cpp b/src/gui/vulkan/qbasicvulkanplatforminstance.cpp
+index 47d9a7e9..80c929e5 100644
+--- a/src/gui/vulkan/qbasicvulkanplatforminstance.cpp
++++ b/src/gui/vulkan/qbasicvulkanplatforminstance.cpp
+@@ -45,7 +45,7 @@ QBasicPlatformVulkanInstance::~QBasicPlatformVulkanInstance()
+ 
+ void QBasicPlatformVulkanInstance::loadVulkanLibrary(const QString &defaultLibraryName, int defaultLibraryVersion)
+ {
+-    QVarLengthArray<std::pair<QString, int>, 3> loadList;
++    QVarLengthArray<std::pair<QString, int>, 4> loadList;
+ 
+     // First in the list of libraries to try is the manual override, relevant on
+     // embedded systems without a Vulkan loader and possibly with custom vendor
+@@ -63,6 +63,11 @@ void QBasicPlatformVulkanInstance::loadVulkanLibrary(const QString &defaultLibra
+     if (defaultLibraryVersion >= 0)
+         loadList.append({ defaultLibraryName, -1 });
+ 
++#ifdef __linux__
++    // As a fallback we append to the list the full default name of libvulkan.
++    loadList.append({ QString::fromUtf8("libvulkan.so.1"), -1 });
++#endif
++
+     bool ok = false;
+     for (const auto &lib : loadList) {
+         m_vulkanLib.reset(new QLibrary);

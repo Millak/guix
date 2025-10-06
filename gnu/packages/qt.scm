@@ -786,7 +786,8 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                 "qtbase-absolute-runpath.patch"
                 "qtbase-qmake-use-libname.patch"
                 "qtbase-qmlimportscanner-qml-import-path.patch"
-                "qtbase-qmake-fix-includedir.patch"))))
+                "qtbase-qmake-fix-includedir.patch"
+                "qtbase-patch-libvulkan.patch"))))
     (build-system cmake-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments qtbase-5)
@@ -896,6 +897,11 @@ tst_qt_cmake_create.cpp"
                 (substitute* "src/corelib/CMakeLists.txt"
                   (("/bin/ls")
                    (search-input-file inputs "bin/ls")))
+
+                ;; Patch the added reference for libvulkan.so
+                (substitute* "src/gui/vulkan/qbasicvulkanplatforminstance.cpp"
+                  (("libvulkan\\.so\\.1")
+                   (search-input-file inputs "lib/libvulkan.so.1")))
 
                 ;; Use shared-mime-info as the default MIME type database.
                 (substitute* "src/corelib/mimetypes/qmimedatabase.cpp"
@@ -1213,6 +1219,7 @@ tst_qt_cmake_create.cpp"
                 libxcb
                 libxext
                 shared-mime-info
+                vulkan-loader
                 xcb-util-cursor
                 `(,zstd "lib"))))
     (native-search-paths
