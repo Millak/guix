@@ -4193,7 +4193,8 @@ bridge interface, as the default is to deny all.  Add the following to
 your list of services to do so:
 
 @example lisp
-(extra-special-file "/etc/qemu/host.conf" "allow br0\n")
+(extra-special-file "/etc/qemu/host.conf"
+                    (plain-file "host.conf" "allow br0\n"))
 @end example
 
 @subsection Invoking QEMU with the right command line options
