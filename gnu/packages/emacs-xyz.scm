@@ -40154,12 +40154,11 @@ fish-completion.  It can be used in both Eshell and M-x shell.")
     (license license:gpl3+)))
 
 (define-public emacs-helm-themes
-  (let ((version "0.05")
-        (commit "92ee3ad4edf1d068feb0822a05638db99b50a7c0")
-        (revision "1"))
+  (let ((commit "1fc4a5d6114bc6c8c444c5ca73f22abe141a690d")
+        (revision "2"))
     (package
       (name "emacs-helm-themes")
-      (version (git-version version revision commit))
+      (version (git-version "0.05" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -40169,7 +40168,7 @@ fish-completion.  It can be used in both Eshell and M-x shell.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1p62gg8nnb6kmb9mk66230p0ap0zwwzhzdxr3j34z5ls574vr6s7"))))
+           "1j74a9ynhfcikl4r0v5lym2ansvgwm643qbmj5hknblpn8g6016c"))))
       (build-system emacs-build-system)
       (arguments
        (list #:tests? #f)) ; No tests despite Makefile.
