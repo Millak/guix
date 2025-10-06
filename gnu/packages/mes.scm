@@ -108,24 +108,6 @@ parsers to allow execution with Guile as extension languages.")
 
     (inputs (list guile-3.0))))
 
-(define-public nyacc-2.01
-  (package
-    (inherit nyacc-1.00.2)
-    (version "2.01.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://savannah/nyacc/nyacc-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0dp1439j7db3zhpyqiah3vf3s193y4ip8mh7mc5lz0abgml3x3vg"))
-              (modules '((guix build utils)))
-              (snippet
-               '(substitute* "configure"
-                  (("GUILE_GLOBAL_SITE=\\$prefix.*")
-                   "GUILE_GLOBAL_SITE=\
-$prefix/share/guile/site/$GUILE_EFFECTIVE_VERSION\n")))))))
-
 (define-public nyacc
   (package
     (inherit nyacc-1.00.2)
