@@ -72,7 +72,6 @@
   #:use-module (gnu packages gps)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages image)
-  #:use-module (gnu packages kde-education)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-graphics)
   #:use-module (gnu packages kde-pim)
@@ -80,7 +79,6 @@
   ;; Including this module breaks the build.
   ;#:use-module ((gnu packages kde-systemtools) #:select (dolphin))
   #:use-module (gnu packages maths)
-  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -88,7 +86,6 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
-  #:use-module (gnu packages readline)
   #:use-module (gnu packages scanner)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
@@ -143,59 +140,6 @@ This package contains GUI widgets for baloo.")
     (synopsis "Non-blocking Qt database framework")
     (description "This package provides a non-blocking Qt database framework.")
     (license license:lgpl2.1+)))
-
-(define-public kalgebra
-  (package
-    (name "kalgebra")
-    (version "24.12.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://invent.kde.org/education/kalgebra")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0g4rrq3csp0w6xhc5cbbilz7xhhq9zdngc8bc9d16p02xz61qd4i"))))
-    (build-system qt-build-system)
-    (arguments
-     (list
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'wrap-qt-process-path
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((bin (string-append #$output "/bin/kalgebra"))
-                    (qt-process-path
-                     (search-input-file
-                      inputs "/lib/qt6/libexec/QtWebEngineProcess")))
-                (wrap-program bin
-                  `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
-    (native-inputs
-     (list extra-cmake-modules qttools))
-    (inputs
-     (list analitza
-           kconfigwidgets
-           kcoreaddons
-           kdoctools
-           ki18n
-           kio
-           kwidgetsaddons
-           kxmlgui
-           libplasma
-           ncurses
-           qtbase
-           qtdeclarative
-           qtsvg
-           qtwebengine
-           qtwebchannel
-           readline))
-    (home-page "https://invent.kde.org/education/kalgebra")
-    (synopsis "Calculator and plotting tool")
-    (description "KAlgebra is a calculator that lets you plot different types
-of 2D and 3D functions and to calculate easy (and not so easy) calculations,
-such as addition, trigonometric functions or derivatives.")
-    (license license:gpl2+)))
 
 (define-public kdsoap-ws-discovery-client
   (package
