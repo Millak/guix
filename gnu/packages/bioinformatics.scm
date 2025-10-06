@@ -7116,7 +7116,7 @@ documents.")
 (define-public cwltool
   (package
     (name "cwltool")
-    (version "3.1.20240112164112")
+    (version "3.1.20250925164626")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7125,21 +7125,25 @@ documents.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fpc5kqgpbn48g5vlvy64p297x2wm3gfz8casgpk15ap593wwh33"))))
+                "13mv7qcl64gng8bq0y9garp0vvn9851n98vzi75ppl16pjkkziks"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       ;; These tests try to connect to the internet.
-      '(list "--ignore=tests/test_content_type.py"
-             "--ignore=tests/test_udocker.py"
-             "--ignore=tests/test_http_input.py"
-             "-k"
-             (string-append
-              "not test_env_filtering"
-              " and not test_load_graph_fragment_from_packed"
-              ;; Tries to use cwl-runners.
-              " and not test_v1_0_arg_empty_prefix_separate_false"))
+      #~(list "--ignore=tests/test_content_type.py"
+              "--ignore=tests/test_udocker.py"
+              "--ignore=tests/test_http_input.py"
+              "-k"
+              (string-append
+               ;; Causes
+               ;;   INTERNALERROR> RuntimeError: Unexpectedly no active
+               ;;   workers available
+               "not test_env_filtering"
+               ;; Tries to write to /tmp/guix-build-cwltool-3.fastq
+               " and not test_iwdr_writable_secondaryfiles"
+               ;; Tries to use cwl-runners.
+               " and not test_v1_0_arg_empty_prefix_separate_false"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'loosen-version-restrictions
@@ -7149,13 +7153,9 @@ documents.")
           (add-after 'unpack 'set-version
             (lambda _
               ;; Set exact version.
-              (substitute* "setup.py"
-                (("use_scm_version=True")
-                 (string-append "version=\"" #$version "\"")))))
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           (add-after 'unpack 'patch-tests
             (lambda _
-              (substitute* "tox.ini"
-                (("-n auto") ""))
               (substitute* '("tests/subgraph/env-tool2.cwl"
                              "tests/subgraph/env-tool2_req.cwl"
                              "tests/subgraph/env-wf2_subwf-packed.cwl"
@@ -7172,23 +7172,19 @@ documents.")
            python-psutil
            python-rdflib-6
            python-requests
+           python-rich-argparse
            python-ruamel.yaml
            python-schema-salad
-           python-setuptools ; For pkg_resources.
-           python-shellescape
+           python-setuptools
            python-spython
-           python-typing-extensions
            ;; Not listed as needed but still necessary:
            node-lts))
     (native-inputs
      (list python-arcp
-           python-humanfriendly
            python-mock
            python-pytest
-           python-pytest-cov
            python-pytest-mock
-           python-pytest-runner
-           python-wheel))
+           python-pytest-xdist))
     (home-page
      "https://github.com/common-workflow-language/common-workflow-language")
     (synopsis "Common Workflow Language reference implementation")
