@@ -42698,6 +42698,8 @@ comments or emails.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "1sv5p2f0i4zhfrh8pv39p5aaa9wnbzxkb58p9qslw7qli1wax2l0"))))
+      (arguments
+       (list #:tests? #false))            ;no tests
       (build-system emacs-build-system)
       (home-page "https://github.com/matsl/sv-kalender-namnsdagar")
       (synopsis "Swedish name day calendar")
