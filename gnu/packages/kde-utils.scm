@@ -831,7 +831,8 @@ with support for QR scanning.")
                   kxmlgui
                   kiconthemes
                   qtdeclarative
-                  qtsvg))
+                  qtsvg
+                  qtwayland))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
