@@ -276,8 +276,9 @@ illustrate project schedules.")
            ki18n
            kiconthemes
            kparts
+           qt5compat
            qtsvg
-           qt5compat))
+           qtwayland))
     (native-inputs
      (list pkg-config extra-cmake-modules kdoctools))
     (arguments (list #:tests? #f))
