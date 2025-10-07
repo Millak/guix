@@ -37646,13 +37646,13 @@ Python, with static types.")
 (define-public python-psycopg2-binary
   (package
     (name "python-psycopg2-binary")
-    (version "2.9.3")
+    (version "2.9.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "psycopg2-binary" version))
        (sha256
-        (base32 "0kpaxg3lg5wg5ww5kxmzi2z2d7arsx13ci915d8a2pf17lqza7bn"))))
+        (base32 "1qkdl21agnifabk508py6m0q4ggixx13k63xlp6qma8ak7kg0gab"))))
     (build-system pyproject-build-system)
     (arguments
      ;; Tests are disable because they need a live instance of PostgreSQL.
