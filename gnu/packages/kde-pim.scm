@@ -69,6 +69,42 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml))
 
+(define-public kopeninghours
+  (package
+    (name "kopeninghours")
+    (version "25.08.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "02xdklp1d2d5dxmsykchw37fs1vi1f6b1mk33cywlq63qbsgpniw"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DBUILD_WITH_QT6=ON")
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda* (#:key tests? #:allow-other-keys)
+                       (when tests?
+                         (setenv "QT_QPA_PLATFORM" "offscreen")
+                         (invoke "ctest" "-E"
+                                 "(evaluatetest|iterationtest)")))))))
+    (native-inputs (list bison extra-cmake-modules flex))
+    (inputs (list boost
+                  kholidays
+                  ki18n
+                  osmctools
+                  qtbase
+                  qtdeclarative))
+    (home-page "https://invent.kde.org/libraries/kopeninghours")
+    (synopsis "Get opening hours from OpenStreetMap")
+    (description
+     "This package provides a library for parsing and evaluating OpenStreetMap
+opening hours expressions.")
+    (license license:lgpl2.0+)))
+
 (define-public kosmindoormap
   (package
     (name "kosmindoormap")
