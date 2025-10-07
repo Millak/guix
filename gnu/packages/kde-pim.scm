@@ -1580,7 +1580,8 @@ protocol for querying and modifying directory services running over TCP/IP.")
            libkleo
            mimetreeparser
            breeze-icons ;; default icon set
-           qgpgme-qt6))
+           qgpgme-qt6
+           qtwayland))
     (arguments
      (list #:qtbase qtbase
            #:phases
