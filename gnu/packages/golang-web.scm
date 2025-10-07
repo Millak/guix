@@ -6673,6 +6673,34 @@ Block Storage for container, cloud and virtualisation.")
 Proxy functionality.")
     (license license:expat)))
 
+(define-public go-github-com-magisterquis-connectproxy
+  (package
+    (name "go-github-com-magisterquis-connectproxy")
+    (version "0.0.0-20200725203833-3582e84f0c9b")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/magisterquis/connectproxy")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19l94ahyg33z186fiymbjdc8pb0rzknz46xs3rb7wzqq84mni4p5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/magisterquis/connectproxy"))
+    (native-inputs
+     (list go-github-com-gorilla-websocket))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/magisterquis/connectproxy")
+    (synopsis "Golang @code{proxy.Dialer} which uses HTTP(s) CONNECT requests")
+    (description
+     "This package implements a @code{proxy.Dialer} which uses HTTP(s) CONNECT
+requests.")
+    (license license:zlib)))
+
 (define-public go-github-com-mailru-easyjson
   (package
     (name "go-github-com-mailru-easyjson")
