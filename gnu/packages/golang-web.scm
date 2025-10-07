@@ -10120,6 +10120,39 @@ information or even the peer of a VETH interface.")
      "Package jsonschema provides json-schema compilation and validation.")
     (license license:asl2.0)))
 
+(define-public go-github-com-schollz-peerdiscovery
+  (package
+    (name "go-github-com-schollz-peerdiscovery")
+    (version "1.7.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/schollz/peerdiscovery")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ygdcz1zxahy7h0n1xqgfd97sklaidvqiw2axjh5mzjjrrf30dm5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f       ;they require network setup
+      #:import-path "github.com/schollz/peerdiscovery"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/schollz/peerdiscovery")
+    (synopsis "Local peer discovery using UDP multicast")
+    (description
+     "This package implements a functionality for cross-platform thread-safe
+local peer discovery using UDP multicast.")
+    (license license:expat)))
+
 (define-public go-github-com-sebest-xff
   (package
     (name "go-github-com-sebest-xff")
