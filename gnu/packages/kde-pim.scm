@@ -2204,6 +2204,7 @@ application \"Parts\" to be embedded as a Kontact component (or plugin).")
            akonadi-notes
            akonadi-search
            boost
+           breeze-icons ; default icon set, required for tests
            grantleetheme
            kcalendarcore
            kcalendarsupport
@@ -2242,8 +2243,8 @@ application \"Parts\" to be embedded as a Kontact component (or plugin).")
            kwindowsystem
            kxmlgui
            libkdepim
-           breeze-icons ; default icon set, required for tests
-           phonon))
+           phonon
+           qtwayland))
     (arguments
      (list #:qtbase qtbase
            #:test-exclude "akonadi-sqlite-koeventpopupmenutest"
