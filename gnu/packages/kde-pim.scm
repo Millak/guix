@@ -1761,7 +1761,8 @@ manager from KDE.")
            kwallet
            libkdepim
            libkleo
-           qtkeychain-qt6))
+           qtkeychain-qt6
+           qtwayland))
     (arguments (list #:qtbase qtbase
                      ;; TODO: pass test.
                      #:tests? #f))
