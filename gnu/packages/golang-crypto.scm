@@ -1438,6 +1438,32 @@ cryptographic hash as specified in
 @url{http://www.larc.usp.br/~pbarreto/WhirlpoolPage.html}.")
     (license license:bsd-3)))
 
+(define-public go-github-com-kalafut-imohash
+  (package
+    (name "go-github-com-kalafut-imohash")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kalafut/imohash")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dzzqjzjg8d6lkic231kcl8bgd3cz1fykw48n5czw845a6fbz1cs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kalafut/imohash"))
+    (propagated-inputs (list go-github-com-twmb-murmur3))
+    (home-page "https://github.com/kalafut/imohash")
+    (synopsis "Fast hashing for large files")
+    (description
+     "Package imohash implements a fast, constant-time hash for files.  It is
+ based atop murmurhash3 and uses file size and sample data to construct the
+hash.")
+    (license license:expat)))
+
 (define-public go-github-com-libp2p-go-libp2p-crypto
   (let ((commit "7240b40a3ddc47c4d17c15baabcbe45e5219171b")
         (revision "0"))
@@ -3085,6 +3111,21 @@ tools."))))
 
 (define-public age-keygen
   (deprecated-package "age-keygen" age))
+
+(define-public go-imohash
+  (package/inherit go-github-com-kalafut-imohash
+    (name "go-imohash")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-kalafut-imohash)
+       ((#:tests? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "github.com/kalafut/imohash/cmd/imosum")
+       ((#:unpack-path _ "") "github.com/kalafut/imohash")))
+    (native-inputs
+     (package-propagated-inputs go-github-com-kalafut-imohash))
+    (propagated-inputs '())))
 
 (define-public go-jwker
   (package/inherit go-github-com-jphastings-jwker
