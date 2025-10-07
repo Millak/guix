@@ -194,6 +194,7 @@ framework.  It builds XMPP clients complying with the XMPP Compliance Suites
                   qtpositioning
                   qtsvg
                   qttools
+                  qtwayland
                   qxmpp
                   sonnet))
     (home-page "https://www.kaidan.im/")
