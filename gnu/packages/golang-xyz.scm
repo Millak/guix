@@ -18651,6 +18651,41 @@ specified in DCE 1.1).")
 configuration file.")
     (license license:isc)))
 
+(define-public go-github-com-schollz-cli-v2
+  ;; It's ad-hoc fork of <https://github.com/urfave/cli> to build
+  ;; <https://github.com/schollz/croc>.
+  (hidden-package
+   (package
+     (name "go-github-com-schollz-cli-v2")
+     (version "2.2.1")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/schollz/cli")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0wlqfhsrfib4b5b5xlkmgwglpzajjabrf4wisp7q8nvnw9ky86jh"))))
+     (build-system go-build-system)
+     (arguments
+      (list
+       #:import-path "github.com/schollz/cli/v2"
+       #:test-flags
+       ;; panic: flag "--foo" begins with - [recovered]
+       ;; panic: flag "--foo" begins with -
+       #~(list "-skip" "TestApp_RunAsSubCommandIncorrectUsage|TestToMan")))
+     (propagated-inputs
+      (list go-github-com-burntsushi-toml
+            go-github-com-cpuguy83-go-md2man-v2
+            go-gopkg-in-yaml-v2))
+     (home-page "https://github.com/schollz/cli")
+     (synopsis "Package for building command line apps in Golang")
+     (description
+      "Package @code{cli} provides a minimal framework for creating and
+organizing command line Go applications.")
+     (license license:expat))))
+
 (define-public go-github-com-schollz-progressbar-v3
   (package
     (name "go-github-com-schollz-progressbar-v3")
