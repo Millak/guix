@@ -1850,6 +1850,26 @@ Callback Hell.
 @end itemize")
     (license license:asl2.0)))
 
+(define-public python-aiohttp-oauthlib
+  (package
+    (name "python-aiohttp-oauthlib")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "aiohttp-oauthlib" version))
+       (sha256
+        (base32 "1dwk0gby27xm7384qyz2p7zw9dqhjx7m8fhfk172w36xknjx2g49"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; none included
+    (propagated-inputs (list python-aiohttp python-oauthlib))
+    (native-inputs (list python-setuptools python-setuptools-scm))
+    (home-page "https://git.sr.ht/~whynothugo/aiohttp-oauthlib")
+    (synopsis "OAuthlib authentication support for aiohttp")
+    (description "Aiohttp-oauthlib uses the Python aiohttp and OAuthlib libraries to
+provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients.")
+    (license license:isc)))
+
 (define-public python-aiohttp-client-cache
   (package
     (name "python-aiohttp-client-cache")
