@@ -122,7 +122,9 @@ Run EXP through the store monad."
 
 (define-meta-command ((verbosity guix) repl (level))
   "verbosity LEVEL
-Change build verbosity to LEVEL."
+Change build verbosity to LEVEL.
+
+0 means silent, 1 means quiet, 2 means verbose, >3 means very verbose."
   (set! %build-verbosity (repl-eval repl level)))
 
 (define-meta-command ((lower guix) repl (form))
