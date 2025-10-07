@@ -29,6 +29,7 @@
   #:use-module (gnu packages apr)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages code)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-graphics)
@@ -39,6 +40,31 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages version-control))
+
+(define-public poxml
+  (package
+    (name "poxml")
+    (version "24.12.3")
+    (source (origin
+              (method url-fetch)
+              (uri
+               (string-append "mirror://kde/stable/release-service/" version
+                              "/src/poxml-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0nmclngg0mrd1j2app6fggpvp93sw5p4q1nddwq8is0dabm57yx1"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list gettext-minimal qtbase))
+    (home-page "https://apps.kde.org/development/")
+    (synopsis "Tools for translating DocBook XML files with Gettext")
+    (description "This is a collection of tools that facilitate translating
+DocBook XML files using Gettext message files (PO files).  Also included are
+several command-line utilities for manipulating DocBook XML files, PO files and
+PO template files.")
+    (license license:gpl2+)))
 
 (define-public libkomparediff2
   (package

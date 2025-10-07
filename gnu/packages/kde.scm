@@ -59,7 +59,6 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
-  #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -238,28 +237,3 @@ for scanner hardware.")
 Using a plugin system it is possible to create notifications with many
 different notification systems.")
     (license license:lgpl3)))
-
-(define-public poxml
-  (package
-    (name "poxml")
-    (version "24.12.3")
-    (source (origin
-              (method url-fetch)
-              (uri
-               (string-append "mirror://kde/stable/release-service/" version
-                              "/src/poxml-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0nmclngg0mrd1j2app6fggpvp93sw5p4q1nddwq8is0dabm57yx1"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list extra-cmake-modules kdoctools))
-    (inputs
-     (list gettext-minimal qtbase))
-    (home-page "https://apps.kde.org/development/")
-    (synopsis "Tools for translating DocBook XML files with Gettext")
-    (description "This is a collection of tools that facilitate translating
-DocBook XML files using Gettext message files (PO files).  Also included are
-several command-line utilities for manipulating DocBook XML files, PO files and
-PO template files.")
-    (license license:gpl2+)))
