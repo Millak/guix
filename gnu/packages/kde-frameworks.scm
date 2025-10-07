@@ -311,6 +311,52 @@ surveys")
     (description "This package provides a non-blocking Qt database framework.")
     (license license:lgpl2.1+)))
 
+(define-public libqaccessibilityclient
+  (package
+    (name "libqaccessibilityclient")
+    (version "0.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/" name
+                                  "/libqaccessibilityclient-" version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "0csxbwy4479196l32j4xnk672kiyggcaf3fi3q2cbj9dc94c8l2c"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f ;TODO: Failing tests
+           #:configure-flags
+           #~(list (string-append
+                    "-DQT_MAJOR_VERSION="
+                    #$(version-major
+                       (package-version (this-package-input "qtbase")))))
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              ;; make Qt render "offscreen", required for tests
+                              (setenv "QT_QPA_PLATFORM" "offscreen")
+                              ;; For missing '/etc/machine-id'
+                              (setenv "DBUS_FATAL_WARNINGS" "0")
+                              (setenv "HOME"
+                                      (getcwd))
+                              (invoke "dbus-launch" "ctest")))))))
+    (native-inputs (list dbus extra-cmake-modules))
+    (inputs (list qtbase))
+    (home-page "https://invent.kde.org/libraries/libqaccessibilityclient")
+    (synopsis "Helper library to make writing accessibility tools easier")
+    (description "This package provides library that is used when writing
+accessibility clients such as screen readers.")
+    (license license:lgpl2.1+)))
+
+(define-public libqaccessibilityclient-qt5
+  (package
+    (inherit libqaccessibilityclient)
+    (name "libqaccessibilityclient-qt5")
+    (inputs (modify-inputs (package-inputs libqaccessibilityclient)
+              (replace "qtbase" qtbase-5)))))
+
 
 ;; Tier 1
 ;;
