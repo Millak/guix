@@ -2133,7 +2133,8 @@ information in non-ASCII character sets.")
            kwindowsystem
            kxmlgui
            kxmlgui
-           libkdepim))
+           libkdepim
+           qtwayland))
     (arguments (list #:qtbase qtbase))
     (home-page "https://apps.kde.org/knotes/")
     (synopsis "Note-taking utility")
