@@ -151,6 +151,69 @@ framework.  It builds XMPP clients complying with the XMPP Compliance Suites
      "Falkon is is a Qt-based web browser for  KDE.")
     (license license:gpl3+)))
 
+(define-public kaidan
+  (package
+    (name "kaidan")
+    (version "0.12.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/unstable/kaidan/" version
+                                  "/kaidan-" version ".tar.xz"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   (delete-file-recursively "3rdparty")))
+              (sha256
+               (base32 "0q8py100nmvyhm8pfnvpxmghbg445x2vgpw3c519bcrr4w7y6yl0"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+       #:qtbase qtbase
+       #:configure-flags #~(list "-DBUILD_TESTS=true")
+       #:test-exclude "PublicGroupChatTest"
+       #:phases
+         #~(modify-phases %standard-phases
+           (add-before 'check 'set-home
+             (lambda _
+               ;; Tests need write permission in $HOME.
+               (setenv "HOME" "/tmp"))))))
+    (native-inputs (list extra-cmake-modules
+                         pkg-config))
+    (inputs (list icu4c
+                  kcrash
+                  kdsingleapplication
+                  kio
+                  kirigami
+                  kirigami-addons
+                  knotifications
+                  kquickimageeditor
+                  prison
+                  qqc2-desktop-style
+                  qtlocation
+                  qtmultimedia
+                  qtpositioning
+                  qtsvg
+                  qttools
+                  qxmpp
+                  sonnet))
+    (home-page "https://www.kaidan.im/")
+    (synopsis "Qt-based XMPP/Jabber Client")
+    (description "Kaidan is a chat client.  It uses the open communication
+protocol XMPP (Jabber).  The user interface makes use of Kirigami and QtQuick,
+while the back-end of Kaidan is entirely written in C++ using Qt and the
+Qt-based XMPP library QXmpp.")
+    (license (list
+              ;; Graphics
+              license:cc-by-sa4.0
+              ;; Files:
+              ;; src/{StatusBar.cpp|StatusBar.h|singleapp/*|hsluv-c/*}
+              ;; utils/generate-license.py
+              license:expat
+              ;; QrCodeVideoFrame
+              license:asl2.0
+              ;; Others
+              license:gpl3+))))
+
 (define-public kget
   (package
     (name "kget")
