@@ -266,6 +266,7 @@ to perform data analysis.")
                   qtpositioning
                   qtserialport
                   qtsvg
+                  qtwayland
                   qtwebchannel
                   qtwebengine
                   shapelib
