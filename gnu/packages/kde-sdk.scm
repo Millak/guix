@@ -365,7 +365,8 @@ submoduletest|cachetest|switchtest)")))))))
            kjobwidgets
            kparts
            ktexteditor
-           kwidgetsaddons))
+           kwidgetsaddons
+           qtwayland))
     (home-page "https://apps.kde.org/kompare/")
     (synopsis "Graphical file differences tool")
     (description
