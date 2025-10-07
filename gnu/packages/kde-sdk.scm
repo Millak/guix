@@ -155,7 +155,7 @@ structure.  It features:
     (native-inputs
      (list extra-cmake-modules perl python qttools kdoctools))
     (inputs
-     (list qtbase karchive ki18n kio kxmlgui kdbusaddons))
+     (list qtbase karchive ki18n kio kxmlgui kdbusaddons qtwayland))
     (arguments (list #:tests? #f))
     ;; Note: The 'hotshot2calltree' and 'pprof2calltree' scripts depend on
     ;; Python and PHP, respectively.  These are optional and we ignore them
