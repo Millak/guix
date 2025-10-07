@@ -34,14 +34,18 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages game-development)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libunwind)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
@@ -204,7 +208,13 @@ it.")
            '())
        (list xxd)))
     (inputs
-     (list libffi openssl readline))
+     (list curl
+           gsl
+           libffi
+           openssl
+           raylib
+           readline
+           sqlite))
     (arguments
      (list
       #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
@@ -220,6 +230,22 @@ it.")
               (substitute* "Makefile"
                 (("\\$\\(shell git describe --abbrev=4 --dirty --always --tags\\)")
                  (string-append "v" #$version)))))
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "library/curl.pl"
+                (("libcurl\\.so")
+                 (search-input-file inputs "lib/libcurl.so")))
+              (substitute* "library/gsl.pl"
+                (("libgsl\\.so")
+                 (search-input-file inputs "lib/libgsl.so"))
+                (("libgslcblas\\.so")
+                 (search-input-file inputs "lib/libgslcblas.so")))
+              (substitute* "library/raylib.pl"
+                (("libraylib\\.so")
+                 (search-input-file inputs "lib/libraylib.so")))
+              (substitute* "library/sqlite3.pl"
+                (("libsqlite3\\.so")
+                 (search-input-file inputs "lib/libsqlite3.so")))))
           (replace 'install
             ;; Upstream does not provide an install target.
             (lambda _
