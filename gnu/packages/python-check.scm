@@ -38,6 +38,7 @@
 ;;; Copyright © 2025 Matthew Elwin <elwin@northwestern.edu>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
+;;; Copyright © 2025 Zheng Junjie <z572@z572.online> 
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -771,6 +772,30 @@ test itself.")
      "This package implements a functionality to check for python builtins
 being used as variables or parameters.")
     (license license:gpl2)))
+
+(define-public python-flake8-class-newline
+  (package
+    (name "python-flake8-class-newline")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/AlexanderVanEck/flake8-class-newline")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15fw0iw2c3a3n2aarfgq7147406489xd8nk0kkj9k2x98fkwwnyh"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (propagated-inputs (list python-flake8))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/AlexanderVanEck/flake8-class-newline")
+    (synopsis "Flake8 lint for newline after class definitions")
+    (description
+     "This package provides a flake8 extension to lint for newline after class
+definitions.")
+    (license license:expat)))
 
 (define-public python-flake8-comprehensions
   (package

@@ -852,29 +852,6 @@ equivalents.")
 system.")
     (license license:expat)))
 
-(define-public python-flake8-class-newline
-  (package
-    (name "python-flake8-class-newline")
-    (version "1.6.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/AlexanderVanEck/flake8-class-newline")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "15fw0iw2c3a3n2aarfgq7147406489xd8nk0kkj9k2x98fkwwnyh"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:test-backend #~'unittest))
-    (propagated-inputs (list python-flake8))
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/AlexanderVanEck/flake8-class-newline")
-    (synopsis "Flake8 lint for newline after class definitions")
-    (description "This package provides a flake8 extension to lint for newline
-after class definitions.")
-    (license license:expat)))
-
 (define-public python-flake8-docstrings
   (package
     (name "python-flake8-docstrings")
