@@ -985,7 +985,8 @@ computer's hardware.")
                   kitemviews
                   sonnet
                   kglobalaccel
-                  kwindowsystem))
+                  kwindowsystem
+                  qtwayland))
     (synopsis "Menu Editor for Plasma Workspaces")
     (description "This package provides menu editor for Plasma Workspaces.")
     (home-page "https://invent.kde.org/plasma/kmenuedit")
