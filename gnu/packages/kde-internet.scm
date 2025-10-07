@@ -978,6 +978,7 @@ desktop.  It supports:
            libplasma
            qtdeclarative
            qtkeychain-qt6
+           qtwayland
            samba
            solid))
     (home-page "https://apps.kde.org/smb4k/")
