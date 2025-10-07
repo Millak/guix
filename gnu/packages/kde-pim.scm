@@ -824,7 +824,8 @@ information.")
            libkleo
            breeze-icons ; default icon set, required for tests
            prison
-           qgpgme-qt6))
+           qgpgme-qt6
+           qtwayland))
     (arguments
      (list #:qtbase qtbase
            #:tests? #f))
