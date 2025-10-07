@@ -50,18 +50,20 @@
 (define-public kqtquickcharts
   (package
     (name "kqtquickcharts")
-    (version "24.12.3")
+    (version "25.08.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kqtquickcharts-" version ".tar.xz"))
               (sha256
                (base32
-                "1hgcl062i94abq0cwz9fijyjhv2qs3fsjikiy2jb3sh73m6jydqn"))))
+                "0ighyal22cizsm34vvz8wly63pgx0kr58wwksi3qsx3z8bbwxn9i"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
-    (inputs (list qtdeclarative-5))
-    (arguments (list #:tests? #f))
+    (inputs (list qtdeclarative))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://invent.kde.org/libraries/kqtquickcharts")
     (synopsis "QtQuick plugin to render beautiful and interactive charts")
     (description
