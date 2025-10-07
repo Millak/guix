@@ -1114,7 +1114,7 @@ tools can generate partial instances.
 (define-public python-ufonormalizer
   (package
     (name "python-ufonormalizer")
-    (version "0.6.2")
+    (version "0.6.3")
     (source
      (origin
        (method git-fetch)
@@ -1123,7 +1123,7 @@ tools can generate partial instances.
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dc2ibk4bgdwhrv9pwmvvgsny4gyf80ncrhakvixd14pz08inafx"))))
+        (base32 "17r72m5gy5fbng3f4vh3z63xjy84q5rdzj5cyvrvwgj33yl6b18k"))))
     (build-system pyproject-build-system)
     (arguments
      (list
