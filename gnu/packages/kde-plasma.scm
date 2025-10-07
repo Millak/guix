@@ -3357,6 +3357,7 @@ Test.KDED.XsetWacomAdaptor)")))))))
                   libxi
                   libxkbcommon
                   libplasma
+                  qtwayland
                   xf86-input-wacom))
     (home-page "https://invent.kde.org/plasma/wacomtablet")
     (synopsis "KDE GUI for the Wacom Linux Drivers")
