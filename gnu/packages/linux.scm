@@ -153,6 +153,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libedit)
+  #:use-module (gnu packages kde-graphics)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages libusb)

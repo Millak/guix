@@ -45,6 +45,7 @@
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gimp)
   #:use-module (gnu packages graphics)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
@@ -253,6 +254,37 @@ diagrams in Qt-based applications.
 supports stock charts, box charts, and whisker charts.  @code{KGantt} provides
 a module for implementing ODF Gantt charts, which are bar charts that
 illustrate project schedules.")
+    (license license:gpl2+)))
+
+(define-public kgraphviewer
+  (package
+    (name "kgraphviewer")
+    (version "2.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kde/stable/kgraphviewer/"
+                    version "/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0s9b3q7wvrbz52d500mcaflkrfjwhbzh5bsf5gxzgxjdzdiywaw7"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list qtbase
+           boost
+           graphviz
+           ki18n
+           kiconthemes
+           kparts
+           qtsvg
+           qt5compat))
+    (native-inputs
+     (list pkg-config extra-cmake-modules kdoctools))
+    (arguments (list #:tests? #f))
+    (home-page "https://apps.kde.org/kgraphviewer/")
+    (synopsis "Graphviz dot graph viewer for KDE")
+    (description "KGraphViewer is a Graphviz DOT graph file viewer, aimed to
+replace the other outdated Graphviz tools.")
     (license license:gpl2+)))
 
 (define-public kolourpaint
