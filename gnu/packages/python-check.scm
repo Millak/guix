@@ -853,6 +853,30 @@ list/set/dict comprehensions.")
 providing hints about what deprecated methods should be replaced with.")
     (license license:gpl2)))
 
+(define-public python-flake8-docstrings
+  (package
+    (name "python-flake8-docstrings")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pycqa/flake8-docstrings")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a9cx11rz9asb4xkz7dg65kx8mpa74xqh5qp3lsiy74y4idwp9qi"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ;there are no tests
+    (propagated-inputs (list python-flake8 python-pydocstyle))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/pycqa/flake8-docstrings")
+    (synopsis "Extension for flake8 which uses pydocstyle to check docstrings")
+    (description
+     "This package provides a extension for flake8 which uses pydocstyle to
+check docstrings.")
+    (license license:expat)))
+
 (define-public python-flexmock
   (package
     (name "python-flexmock")
