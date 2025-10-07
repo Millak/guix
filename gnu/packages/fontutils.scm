@@ -196,9 +196,31 @@ them as it goes.")
               (for-each delete-file
                         (find-files
                          "." "Feat(Parser|Lexer).*\\.(h|cpp|interp|tokens)$")))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list
+         "--dist" "loadfile" "-n"
+         (number->string (parallel-job-count))
+         "-k" (string-join
+               ;; This test fails because of a different date
+               ;; in the copyright header of an expected file
+               ;; since an update to ffmpeg.
+               '("not test_alt_missing_glyph"
+                 ;; AssertionError: assert False
+                 "test_build_font_and_check_messages"
+                 "test_duplicate_warning_messages_bug751"
+                 "test_cli_numerics"
+                 ;; The test_decimals_ufo and
+                 ;; test_type1_supported_hint started failing in
+                 ;; 4.0.2, due to small variations compared to the
+                 ;; expected output, likely caused by our newer
+                 ;; python-fonttools (see:
+                 ;; <https://github.com/adobe-type-tools/afdko/issues/1805>).
+                 "test_decimals_ufo"
+                 "test_type1_supported_hint")
+               " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'use-c++17
@@ -253,22 +275,6 @@ them as it goes.")
           ;; The test suite expects the commands to be Python rather than
           ;; shell scripts, so move the wrap phase after the tests.
           (delete 'wrap)
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "HOME" "/tmp")
-                (invoke "pytest" "-vv" "--dist" "loadfile" "-n"
-                        (number->string (parallel-job-count))
-                        "-k" (string-join
-                              ;; This test fails because of a different date
-                              ;; in the copyright header of an expected file
-                              ;; since an update to ffmpeg.
-                              (list "not test_alt_missing_glyph"
-                                    ;; AssertionError: assert False
-                                    "test_build_font_and_check_messages"
-                                    "test_duplicate_warning_messages_bug751"
-                                    "test_cli_numerics")
-                              " and not ")))))
           (add-after 'check 'wrap
             (assoc-ref %standard-phases 'wrap))
           (add-before 'wrap 'wrap-PATH
