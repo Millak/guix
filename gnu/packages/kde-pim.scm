@@ -1328,7 +1328,8 @@ package.")
            ktextwidgets
            kwidgetsaddons
            kwindowsystem
-           kxmlgui))
+           kxmlgui
+           qtwayland))
     (home-page "https://apps.kde.org/kgpg/")
     (synopsis "Graphical front end for GNU Privacy Guard")
     (description "Kgpg manages cryptographic keys for the GNU Privacy Guard,
