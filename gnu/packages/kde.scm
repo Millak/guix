@@ -84,29 +84,6 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
-(define-public futuresql
-  (package
-    (name "futuresql")
-    (version "0.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/futuresql/futuresql-"
-                           version ".tar.xz"))
-       (sha256
-        (base32 "0hxxpv672jw3d14gk6dilphfcwkmbyffv0r9pakkr2v1m7axhkp4"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs (list qcoro-qt6))
-    (arguments
-     (list #:qtbase qtbase
-           #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")))
-    (home-page "https://api.kde.org/futuresql/html/index.html")
-    (synopsis "Non-blocking Qt database framework")
-    (description "This package provides a non-blocking Qt database framework.")
-    (license license:lgpl2.1+)))
-
 (define-public libqaccessibilityclient
   (package
     (name "libqaccessibilityclient")
