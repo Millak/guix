@@ -22,6 +22,7 @@
 
 (define-module (gnu packages kde-pim)
   #:use-module (guix build-system cargo)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system qt)
   #:use-module (guix gexp)
   #:use-module (guix download)
@@ -33,6 +34,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages aidc)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -40,6 +42,7 @@
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages glib)
@@ -65,6 +68,34 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml))
+
+(define-public kosmindoormap
+  (package
+    (name "kosmindoormap")
+    (version "25.08.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/" name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0ilia0ydm78s7nvrh8ph5865x52zc1pd9k1qgad767sr91z5r15h"))))
+    (build-system cmake-build-system)
+    (native-inputs (list bison extra-cmake-modules flex python-minimal))
+    (inputs (list ki18n
+                  kirigami-addons
+                  kopeninghours
+                  kpublictransport
+                  qtbase
+                  qtdeclarative
+                  libxkbcommon
+                  zlib))
+    (home-page "https://invent.kde.org/libraries/kosmindoormap")
+    (synopsis "Indoor map renderer")
+    (description
+     "This package provides facilities for rendering OpenStreetMap
+multi-floor indoor maps.")
+    (license license:lgpl2.0+)))
 
 (define-public grantleetheme
   (package

@@ -51,6 +51,7 @@
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-multimedia)
+  #:use-module (gnu packages kde-pim)
   #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
