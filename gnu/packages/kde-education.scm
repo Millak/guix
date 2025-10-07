@@ -32,7 +32,7 @@
 (define-public analitza
   (package
     (name "analitza")
-    (version "24.12.3")
+    (version "25.08.1")
     (source
      (origin
        (method git-fetch)
@@ -41,7 +41,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "029n48pshcnyidnzv2ikyhamxg6j0ndbjavwrxdc29hrm00dmw8m"))))
+        (base32 "0q9jfkvs1xyxl7fmw0jzh7fh7rd278825i5w61cikqpwnjmp5jzf"))))
     (native-inputs (list extra-cmake-modules qttools))
     (inputs (list eigen qtbase qtdeclarative qtsvg))
     (build-system qt-build-system)
