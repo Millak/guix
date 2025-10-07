@@ -2283,6 +2283,38 @@ wide-block encryption mode developed by Halevi and Rogaway.")
       (description "Go-Bloom implements bloom filter using double hashing.")
       (license license:asl2.0))))
 
+(define-public go-github-com-schollz-pake-v3
+  (package
+    (name "go-github-com-schollz-pake-v3")
+    (version "3.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/schollz/pake")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y6g5l0c4d8yqpg7pkvlfdj4fycipwcb5fd4lw6qhdsw3y5h89cp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/schollz/pake/v3"))
+    (propagated-inputs
+     (list go-filippo-io-edwards25519
+           go-github-com-tscholl2-siec))
+    (home-page "https://github.com/schollz/pake")
+    (synopsis "Strong secret between parties over an insecure channel")
+    (description
+     "This package implements a functionality for two parties to generate a
+ mutual secret key by using a weak key that is known to both
+beforehand (e.g. via some other channel of communication).  This is a simple
+API for an implementation of @acronym{Password-Authenticated Key Exchange,
+PAKE}.  This protocol is derived from
+@url{https://crypto.stanford.edu/~dabo/cryptobook/BonehShoup_0_4.pdf, Dan
+Boneh and Victor Shoup's cryptography book} (pg 789, PAKE2 protocol).")
+    (license license:expat)))
+
 (define-public go-github-com-sean--seed
   (package
     (name "go-github-com-sean--seed")
