@@ -2469,6 +2469,30 @@ Main functions:
 @end itemize")
     (license license:asl2.0)))
 
+(define-public go-github-com-tscholl2-siec
+  (package
+    (name "go-github-com-tscholl2-siec")
+    (version "0.0.0-20240310163802-c2c6f6198406")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tscholl2/siec")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cwigl3z375b63k85l6mrym4xjh74qfhmb62sc1f8rqldxr2gnvp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tscholl2/siec"))
+    (home-page "https://github.com/tscholl2/siec")
+    (synopsis "Isolated Elliptic Curve Implementation in Golang")
+    (description
+     "This package exports a super-isolated elliptic curve.  Over the base
+field 𝔽ₚ, the curve E does not admit any isogenies to other curves.")
+    (license license:expat)))
+
 (define-public go-github-com-twmb-murmur3
   (package
     (name "go-github-com-twmb-murmur3")
