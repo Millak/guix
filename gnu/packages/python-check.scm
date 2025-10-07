@@ -877,6 +877,31 @@ providing hints about what deprecated methods should be replaced with.")
 check docstrings.")
     (license license:expat)))
 
+(define-public python-flake8-import-order
+  (package
+    (name "python-flake8-import-order")
+    (version "0.19.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "flake8_import_order" version))
+       (sha256
+        (base32 "1cmhpiaj9bgh64mg4y93hcbsifvqa2lriz3la0iy8cbn95akqfqk"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools
+           python-pytest
+           python-pylama))
+    (propagated-inputs
+     (list python-pycodestyle))
+    (home-page "https://github.com/PyCQA/flake8-import-order")
+    (synopsis
+     "Flake8 and pylama plugin that checks the ordering of import statements")
+    (description
+     "This package provieds a flake8 and pylama plugin that checks the ordering
+of import statements.")
+    (license license:lgpl3)))
+
 (define-public python-flexmock
   (package
     (name "python-flexmock")
