@@ -161,13 +161,13 @@ efficient syncing
 (define-public vdirsyncer
   (package
     (name "vdirsyncer")
-    (version "0.19.3")
+    (version "0.20.0")
     (source (origin
              (method url-fetch)
              (uri (pypi-uri name version))
              (sha256
               (base32
-               "13xjzqphj0v611b9kqgp0c5rn46xysf8ykv58hsyqpcqxcgqadz4"))))
+               "0bdi83ycnkx0ddyc10ixan992dgyaq83lwsms57w358aa0rsbcgy"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -179,27 +179,21 @@ efficient syncing
               (substitute* "docs/conf.py"
                 (("^release.*")
                  (string-append "release = '" #$version "'\n")))))
-         (add-after 'unpack 'relax-requirements
-           ;; See: <https://github.com/pimutils/vdirsyncer/issues/1111>.
-           (lambda _
-             (substitute* "setup.py"
-               (("aiostream>=0.4.3,<0.5.0")
-                "aiostream"))))
           (add-before 'check 'pre-check
             (lambda _
               (setenv "DETERMINISTIC_TESTS" "true"))))))
     (native-inputs
      (list python-aioresponses
            python-pytest
+           python-pytest-asyncio
            python-pytest-cov
-           python-pytest-asyncio-0.26
            python-pytest-httpserver
            python-setuptools
            python-setuptools-scm
-           python-trustme
-           radicale))
+           python-trustme))
     (inputs
      (list python-aiohttp
+           python-aiohttp-oauthlib
            python-aiostream
            python-atomicwrites
            python-click
