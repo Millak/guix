@@ -862,9 +862,10 @@ functionality")
               (sha256
                (base32
                 "0ycaljixrn43hj5ladid5gn15zdfnzz7dxi9yas78akpf2a4jpsd"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-path
@@ -924,6 +925,7 @@ functionality")
     ;; * vulkaninfo
     ;; Wayland KCM
     (inputs (list bash-minimal
+                  clinfo
                   dmidecode
                   eudev
                   fwupd
@@ -945,13 +947,12 @@ functionality")
                   pciutils
                   libplasma
                   qttools
-                  qtbase
+                  qtwayland
                   solid
                   util-linux
                   vulkan-tools
                   wayland-utils
-                  xdpyinfo
-                  clinfo))
+                  xdpyinfo))
     (propagated-inputs (list system-settings))
     (home-page "https://invent.kde.org/plasma/kinfocenter")
     (synopsis "View information about computer's hardware")
