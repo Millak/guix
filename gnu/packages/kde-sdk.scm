@@ -121,7 +121,8 @@ used in KDE development tools Kompare and KDevelop.")
            kiconthemes
            kirigami-addons
            ki18n
-           kio))
+           kio
+           qtwayland))
     (home-page "https://apps.kde.org/kapptemplate/")
     (synopsis "Factory for easy creation of KDE/Qt components and programs")
     (description "KAppTemplate is an application to start development quickly
