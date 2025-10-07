@@ -56,7 +56,6 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages image)
   #:use-module (gnu packages javascript)
-  #:use-module (gnu packages kde-education)
   #:use-module (gnu packages kde-frameworks) ; extra-cmake-modules
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mp3)
@@ -682,54 +681,6 @@ hours.")
      "Klavaro is a simple tutor to teach correct typing, almost independently of
 language and very flexible regarding to new or unknown keyboard layouts.")
     (license license:gpl3+)))
-
-(define-public ktouch
-  (package
-    (name "ktouch")
-    (version "24.12.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/"
-                           version "/src/ktouch-" version ".tar.xz"))
-       (sha256
-        (base32 "1sqzm8xf3xaia0b761mgpb2q4gc8yxwhvkzwdvw0spj25irdv7n5"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules kdoctools-5 pkg-config))
-    (inputs
-     (list kcmutils-5
-           kcompletion-5
-           kconfig-5
-           kconfigwidgets-5
-           kcoreaddons-5
-           kdeclarative-5
-           ki18n-5
-           kiconthemes-5
-           kitemviews-5
-           ktextwidgets-5
-           kwidgetsaddons-5
-           kwindowsystem-5
-           kxmlgui-5
-           kqtquickcharts
-           libxcb
-           libxkbfile
-           qtbase-5
-           qtdeclarative-5
-           qtgraphicaleffects
-           qtquickcontrols2-5
-           qtx11extras
-           qtxmlpatterns-5))
-    (arguments (list #:tests? #f))
-    (home-page "https://edu.kde.org/ktouch/")
-    (synopsis "Touch typing tutor")
-    (description
-     "KTouch is an aid for learning how to type with speed and accuracy.  It
-provides a sample text to type and indicates which fingers should be used for
-each key.  A collection of lessons are included for a wide range of different
-languages and keyboard layouts, and typing statistics are used to dynamically
-adjust the level of difficulty.")
-    (license license:gpl2)))
 
 (define-public kanatest
   ;; Latest release tarball is 0.4.8, which is really old and does not build

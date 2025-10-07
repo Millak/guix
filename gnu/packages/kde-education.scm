@@ -33,6 +33,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages gps)
+  #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages libreoffice)
@@ -45,7 +46,8 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
-  #:use-module (gnu packages readline))
+  #:use-module (gnu packages readline)
+  #:use-module (gnu packages xorg))
 
 (define-public kqtquickcharts
   (package
@@ -148,6 +150,54 @@ expressions and let you evaluate and draw them.")
 of 2D and 3D functions and to calculate easy (and not so easy) calculations,
 such as addition, trigonometric functions or derivatives.")
     (license license:gpl2+)))
+
+(define-public ktouch
+  (package
+    (name "ktouch")
+    (version "24.12.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/"
+                           version "/src/ktouch-" version ".tar.xz"))
+       (sha256
+        (base32 "1sqzm8xf3xaia0b761mgpb2q4gc8yxwhvkzwdvw0spj25irdv7n5"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules kdoctools-5 pkg-config))
+    (inputs
+     (list kcmutils-5
+           kcompletion-5
+           kconfig-5
+           kconfigwidgets-5
+           kcoreaddons-5
+           kdeclarative-5
+           ki18n-5
+           kiconthemes-5
+           kitemviews-5
+           ktextwidgets-5
+           kwidgetsaddons-5
+           kwindowsystem-5
+           kxmlgui-5
+           kqtquickcharts
+           libxcb
+           libxkbfile
+           qtbase-5
+           qtdeclarative-5
+           qtgraphicaleffects
+           qtquickcontrols2-5
+           qtx11extras
+           qtxmlpatterns-5))
+    (arguments (list #:tests? #f))
+    (home-page "https://edu.kde.org/ktouch/")
+    (synopsis "Touch typing tutor")
+    (description
+     "KTouch is an aid for learning how to type with speed and accuracy.  It
+provides a sample text to type and indicates which fingers should be used for
+each key.  A collection of lessons are included for a wide range of different
+languages and keyboard layouts, and typing statistics are used to dynamically
+adjust the level of difficulty.")
+    (license license:gpl2)))
 
 (define-public labplot
   (package
