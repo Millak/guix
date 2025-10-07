@@ -2792,6 +2792,7 @@ is a Sieve parser and interpreter library for KDE.")
                   qtlocation
                   qtpositioning
                   qtsvg
+                  qtwayland
                   qtwebengine))
     (home-page "https://apps.kde.org/kalendar/")
     (synopsis "Calendar application")
