@@ -154,41 +154,39 @@ such as addition, trigonometric functions or derivatives.")
 (define-public ktouch
   (package
     (name "ktouch")
-    (version "24.12.3")
+    (version "25.08.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/ktouch-" version ".tar.xz"))
        (sha256
-        (base32 "1sqzm8xf3xaia0b761mgpb2q4gc8yxwhvkzwdvw0spj25irdv7n5"))))
+        (base32 "029fvd2rcky7i7wc2ajy1vjygjwzwm1pdprg1b9684sk8nff4gj5"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools-5 pkg-config))
+     (list extra-cmake-modules kdoctools pkg-config))
     (inputs
-     (list kcmutils-5
-           kcompletion-5
-           kconfig-5
-           kconfigwidgets-5
-           kcoreaddons-5
-           kdeclarative-5
-           ki18n-5
-           kiconthemes-5
-           kitemviews-5
-           ktextwidgets-5
-           kwidgetsaddons-5
-           kwindowsystem-5
-           kxmlgui-5
+     (list kcmutils
+           kcompletion
+           kconfig
+           kconfigwidgets
+           kcoreaddons
+           kdeclarative
+           ki18n
+           kiconthemes
+           kitemviews
+           ktextwidgets
+           kwidgetsaddons
+           kwindowsystem
+           kxmlgui
            kqtquickcharts
            libxcb
            libxkbfile
-           qtbase-5
-           qtdeclarative-5
-           qtgraphicaleffects
-           qtquickcontrols2-5
-           qtx11extras
-           qtxmlpatterns-5))
-    (arguments (list #:tests? #f))
+           qtdeclarative
+           qtwayland))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://edu.kde.org/ktouch/")
     (synopsis "Touch typing tutor")
     (description
