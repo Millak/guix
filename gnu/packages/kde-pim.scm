@@ -625,6 +625,7 @@ PIM data into Akonadi for use in KDE PIM applications.")
            libkleo
            qgpgme-qt6
            qtdeclarative
+           qtwayland
            qtwebchannel
            qtwebengine
            syndication))
