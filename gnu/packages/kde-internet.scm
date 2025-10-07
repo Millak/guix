@@ -930,3 +930,84 @@ desktop.  It supports:
 @item DND image to websites or local folder.
 @end itemize")
     (license (list license:lgpl2.1+ license:gpl2+))))
+
+(define-public smb4k
+  (package
+    (name "smb4k")
+    (version "4.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference (url "https://invent.kde.org/network/smb4k")
+                           (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sbw7fdcgfjadggnmsl3m85kgim80lkn2vakwv4mrkrci0izk1xj"))))
+    (build-system qt-build-system)
+    (arguments (list
+                #:qtbase qtbase
+                #:tests? #f
+                #:configure-flags #~(list "-DSMB4K_WITH_WS_DISCOVERY=ON")))
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list breeze-icons ;; default icon set
+           kauth
+           kcompletion
+           kconfig
+           kconfigwidgets
+           kcoreaddons
+           kcrash
+           kdbusaddons
+           kdnssd
+           kdsoap
+           kdsoap-ws-discovery-client
+           ki18n
+           kiconthemes
+           kio
+           kirigami
+           kjobwidgets
+           knotifications
+           knotifyconfig
+           kstatusnotifieritem
+           ktextwidgets
+           kwallet
+           kwidgetsaddons
+           kwindowsystem
+           kxmlgui
+           libplasma
+           qtdeclarative
+           qtkeychain-qt6
+           samba
+           solid))
+    (home-page "https://apps.kde.org/smb4k/")
+    (synopsis "Samba (SMB) share advanced browser")
+    (description "Smb4K is an network neighborhood browser for the KDE
+Software Compilation and a frontend to the programs of the Samba software
+suite.
+
+Features:
+@itemize
+@item Scanning for (active) workgroups, hosts, and shares
+@item Support of the CIFS (Linux) and SMBFS (FreeBSD) file system
+@item Mounting and unmounting of shares (using the KAuth framework)
+@item Access to the files of a mounted share using a file manager or terminal
+@item Auto-detection of external mounts and unmounts
+@item Remounting of previously used shares on program start
+@item Miscellaneous infos about remote network items and mounted shares
+@item Network search
+@item WINS server support
+@item Preview of the contents of a share
+@item Several methods to look up the initial list of workgroups and domains
+@item Default login
+@item Special handling of homes shares
+@item Ability to bookmark favorite shares and organize them in groups
+@item System tray widget
+@item Support of advanced Samba options
+@item Support of printer shares
+@item KWallet support
+@item Synchronization of a remote share with a local copy and vice versa
+@item Ability to define custom options for individual servers and shares
+@item Laptop support through the Solid hardware device framework
+@end itemize")
+    (license license:gpl2+)))
