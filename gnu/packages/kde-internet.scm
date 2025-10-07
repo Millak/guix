@@ -143,6 +143,32 @@ framework.  It builds XMPP clients complying with the XMPP Compliance Suites
 2021 for IM and Advanced Mobile.")
     (license license:lgpl2.1+)))
 
+(define-public snorenotify
+  (package
+    (name "snorenotify")
+    (version "0.7.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "mirror://kde/stable/snorenotify/"
+                            version "/src/snorenotify-" version ".tar.xz"))
+        (sha256
+         (base32
+          "0jz6ivk90h7iwgyxar7xzzj8yvzn6s1my6cqs9bdnwqswfk1nhbd"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f)) ; both tests fail, require display
+    (inputs
+     (list qtbase-5))
+    (native-inputs
+     (list extra-cmake-modules qttools-5))
+    (home-page "https://techbase.kde.org/Projects/Snorenotify")
+    (synopsis "Qt notification framework")
+    (description "Snorenotify is a multi platform Qt notification framework.
+Using a plugin system it is possible to create notifications with many
+different notification systems.")
+    (license license:lgpl3)))
+
 (define-public falkon
   (package
     (name "falkon")
