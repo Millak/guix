@@ -693,6 +693,7 @@ browser for easy news reading.")
                   qtpositioning
                   qtlocation
                   qtmultimedia
+                  qtwayland
                   qqc2-desktop-style
                   shared-mime-info
                   solid
