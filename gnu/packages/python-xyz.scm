@@ -37917,22 +37917,28 @@ writing STL files.  It supports both the text and binary forms of STL.")
 (define-public python-aiopg
   (package
     (name "python-aiopg")
-    (version "1.3.3")
+    (version "1.4.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "aiopg" version))
               (sha256
                (base32
-                "1mwmypsfzh8adjbyvf7kqv9h3k1kf5ykhi1g3ahw4wqdxaj6nz2l"))))
-    (build-system python-build-system)
-    (native-inputs (list python-sqlalchemy))
-    (propagated-inputs (list python-async-timeout python-psycopg2-binary))
+                "0wcxcfazjsknr7hv46374rzh7502k8g1hvbi2r0rakbbz2z56qhi"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;they need Docker
+    (native-inputs
+     (list python-setuptools
+           python-sqlalchemy))
+    (propagated-inputs
+     (list python-async-timeout-4
+           python-psycopg2-binary))
     (home-page "https://aiopg.readthedocs.io")
     (synopsis "Postgres integration with asyncio")
     (description
-     "aiopg is a library for accessing a PostgreSQL
-database from the asyncio (PEP-3156/tulip) framework.  It wraps
-asynchronous features of the Psycopg database driver.")
+     "aiopg is a library for accessing a PostgreSQL database from the
+asyncio (PEP-3156/tulip) framework.  It wraps asynchronous
+features of the Psycopg database driver.")
     (license license:bsd-3)))
 
 (define-public python-verspec
