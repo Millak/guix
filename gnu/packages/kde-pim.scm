@@ -1671,6 +1671,7 @@ and retrieving certificates from LDAP servers.")
            qgpgme-qt6
            qtdeclarative
            qtkeychain-qt6
+           qtwayland
            qtwebchannel
            qtwebengine
            sonnet))
