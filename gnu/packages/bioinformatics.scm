@@ -10174,7 +10174,7 @@ experiments.")
            (lambda _ (setenv "HOME" "/tmp"))))))
     ;; Propagate these for use of macs as a library.
     (propagated-inputs
-     (list python-cython python-numpy))
+     (list python-cython-0 python-numpy))
     (native-inputs
      (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/macs3-project/MACS")
