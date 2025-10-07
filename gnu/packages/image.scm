@@ -40,6 +40,8 @@
 ;;; Copyright © 2023, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 chris <chris@bumblehead.com>
 ;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
+;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
+;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2024,48 +2026,88 @@ and decompress to 32-bit and big-endian pixel buffers (RGBX, XBGR, etc.).")
                 "1kyhczwa17qp8ik3v876yjqsf4zrjj0z3464j04fak269cii404g"))))))
 
 (define-public niftilib
-  (package
-    (name "niftilib")
-    (version "2.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (list (string-append "mirror://sourceforge/niftilib/"
-                                        "nifticlib/nifticlib_"
-                                        (string-join (string-split version #\.) "_")
-                                        "/nifticlib-" version ".tar.gz")))
-              (sha256
-               (base32 "123z9bwzgin5y8gi5ni8j217k7n683whjsvg0lrpii9flgk8isd3"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:tests? #f                      ; there is no test target
-       #:parallel-build? #f             ; not supported
-       #:make-flags
-       (list "SHELL=bash"
-             (string-append "ZLIB_INC="
-                            (assoc-ref %build-inputs "zlib") "/include")
-             ;; Append "-fPIC" to CFLAGS.
-             (string-append "CFLAGS="
-                            "-Wall -ansi -pedantic -fPIC"))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each
-                (lambda (dir)
-                  (copy-recursively dir (string-append out "/" dir)))
-                '("bin" "lib" "include")))
-             #t))
-         (delete 'configure))))
-    (inputs
-     (list zlib))
-    (synopsis "Library for reading and writing files in the nifti-1 format")
-    (description "Niftilib is a set of i/o libraries for reading and writing
-files in the nifti-1 data format - a binary file format for storing
-medical image data, e.g. magnetic resonance image (MRI) and functional MRI
-(fMRI) brain images.")
-    (home-page "https://niftilib.sourceforge.net")
-    (license license:public-domain)))
+  ;; Warning: The version of the test data may not match the package version.
+  (let* ((nifti-test-data-version "3.0.2")
+         (nifti-test-data-file (git-file-name "nifti-test-data"
+                                              nifti-test-data-version)))
+    (package
+      (name "niftilib")
+      (version "3.0.1")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/NIFTI-Imaging/nifti_clib")
+                       (commit (string-append "v" version))))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0hamm6nvbjdjjd5md4jahzvn5559frigxaiybnjkh59ckxwb1hy4"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(append
+           (list "-DBUILD_SHARED_LIBS=ON"
+                 "-DDOWNLOAD_TEST_DATA=OFF"
+                 ;; Test data directory must be writeable.
+                 (string-append "-Dfetch_testing_data_SOURCE_DIR="
+                                (canonicalize-path ".") "/source/test-data")
+                 "-DUSE_CIFTI_CODE=ON")
+           ;; Unable to generate manual pages via help2man when cross-compiling.
+           (if #$(%current-target-system)
+               '()
+               (list "-DNIFTI_INSTALL_NO_DOCS=FALSE")))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-version
+              (lambda _
+                (substitute* "CMakeLists.txt"
+                  (("0.0.0.0") #$version))))
+            (add-after 'unpack 'prepare-test-data
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (copy-recursively #$(this-package-native-input
+                                       nifti-test-data-file)
+                                    "test-data"))))
+            (add-after 'unpack 'patch-tests
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (substitute* (string-append "nifti2/nifti_regress_test/"
+                                              "cmake_testscripts/"
+                                              "install_linking_test.sh")
+                    (("real_easy") "source/real_easy")))))
+            (delete 'check)
+            (add-after 'install 'check
+              (lambda args
+                ;; The 'install_linking' test invokes this package's binaries.
+                (setenv "PATH" (string-append (getenv "PATH") ":"
+                                              #$output "/bin"))
+                (apply (assoc-ref %standard-phases 'check) args))))))
+      (inputs (list expat zlib))
+      (native-inputs
+       (append
+        (list
+         (origin
+           (method git-fetch)
+           (uri (git-reference
+                  (url "https://github.com/NIFTI-Imaging/nifti-test-data")
+                  (commit (string-append "v" nifti-test-data-version))))
+           (file-name nifti-test-data-file)
+           (sha256
+            (base32 "0jdm8amix7pvfb1zmrb89f7izji2s8fpbfncgamczsngc11yfgcp"))))
+        (if (%current-target-system)
+            '()
+            (list help2man))))
+      (synopsis
+       "C libraries for reading and writing files in @acronym{NIfTI, Neuroimaging
+Informatics Technology Initiative} formats")
+      (description
+       "@code{Nifti_clib} is a set of I/O libraries for reading and writing files
+in the nifti-1, nifti-2, and (to some degree) cifti file formats.  These are
+binary file formats for storing medical image data, e.g. @acronym{MRI, magnetic
+resonance imaging} and @acronym{fMRI, functional MRI} brain images.")
+      (home-page "https://github.com/NIFTI-Imaging/nifti_clib")
+      (license license:public-domain))))
 
 (define-public mini
   (package
