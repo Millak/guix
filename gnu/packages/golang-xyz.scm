@@ -8225,9 +8225,9 @@ while callers can implement logging with whatever backend is appropriate.")
 standard log package.")
     (license license:asl2.0)))
 
-(define-public go-github-com-go-md2man
+(define-public go-github-com-cpuguy83-go-md2man-v2
   (package
-    (name "go-github-com-go-md2man")
+    (name "go-github-com-cpuguy83-go-md2man-v2")
     (version "2.0.5")
     (source
      (origin
@@ -8242,7 +8242,7 @@ standard log package.")
     (arguments
      (list
       #:skip-build? #t
-      #:import-path "github.com/cpuguy83/go-md2man"))
+      #:import-path "github.com/cpuguy83/go-md2man/v2"))
     (propagated-inputs
      (list go-github-com-russross-blackfriday-v2))
     (home-page "https://github.com/cpuguy83/go-md2man")
@@ -8251,6 +8251,9 @@ standard log package.")
      "Go-md2man is a Go program that converts markdown to roff for the purpose
 of building man pages.")
     (license license:expat)))
+
+(define-public go-github-com-go-md2man
+  (deprecated-package "go-github-com-go-md2man" go-github-com-cpuguy83-go-md2man-v2))
 
 (define-public go-github-com-go-openapi-inflect
   (package
@@ -19398,7 +19401,7 @@ implementation.")
     (native-inputs
      (list go-gopkg-in-yaml-v3))
     (propagated-inputs
-     (list go-github-com-go-md2man
+     (list go-github-com-cpuguy83-go-md2man-v2
            go-github-com-spf13-pflag))
     (home-page "https://github.com/spf13/cobra")
     (synopsis "Go library for creating CLI applications")
@@ -20554,7 +20557,7 @@ dependencies of @url{https://u-root.org/, u-root} project.")
      (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-burntsushi-toml
-           go-github-com-go-md2man
+           go-github-com-cpuguy83-go-md2man-v2
            go-gopkg-in-yaml-v2))
     (home-page "https://github.com/urfave/cli")
     (synopsis "Simple, fast, and fun package for building command line apps in Go")
@@ -20589,7 +20592,7 @@ distributable command line applications in an expressive way.")
      (list #:import-path "github.com/urfave/cli/v2"))
     (propagated-inputs
      (list go-github-com-burntsushi-toml
-           go-github-com-go-md2man
+           go-github-com-cpuguy83-go-md2man-v2
            go-github-com-xrash-smetrics
            go-gopkg-in-yaml-v3))))
 
@@ -24863,20 +24866,22 @@ Jsonnet C++implementation.")
       "\nThis package provides a command line interface (CLI) tool."))))
 
 (define-public go-md2man
-  (package/inherit go-github-com-go-md2man
+  (package/inherit go-github-com-cpuguy83-go-md2man-v2
     (name "go-md2man")
     (arguments
      (substitute-keyword-arguments
-         (package-arguments go-github-com-go-md2man)
+         (package-arguments go-github-com-cpuguy83-go-md2man-v2)
        ((#:tests? _ #t) #f)
        ((#:install-source? _ #t) #f)
-       ((#:skip-build? _ #t) #f)))
+       ((#:skip-build? _ #t) #f)
+       ((#:import-path _ "github.com/cpuguy83/go-md2man/v2")
+        "github.com/cpuguy83/go-md2man")))
     (native-inputs
-     (package-propagated-inputs go-github-com-go-md2man))
+     (package-propagated-inputs go-github-com-cpuguy83-go-md2man-v2))
     (propagated-inputs '())
     (inputs '())
     (description
-     (string-append (package-description go-github-com-go-md2man)
+     (string-append (package-description go-github-com-cpuguy83-go-md2man-v2)
                     "\nThis package provides a command line interface (CLI)
 tool."))))
 
