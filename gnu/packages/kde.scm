@@ -77,7 +77,6 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
-  #:use-module (gnu packages scanner)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
   #:use-module (gnu packages xdisorg)
@@ -161,33 +160,6 @@ cards.")
     (arguments (list #:configure-flags #~(list "-DBUILD_WITH_QT6=ON")))
     (inputs
      (list openssl qtbase qt5compat))))
-
-(define-public ksanecore
-  (package
-    (name "ksanecore")
-    (version "25.08.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
-                             "/src/ksanecore-" version ".tar.xz"))
-       (sha256
-        (base32 "1ilp0rgb4pj9q9wx6mh8gmgn9vmly18a28lnglyf1blpwxpbvjzg"))))
-    (build-system qt-build-system)
-    (arguments
-     (list #:qtbase qtbase
-           #:tests? #f))
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list ki18n
-           sane))
-    (home-page "https://invent.kde.org/libraries/ksanecore")
-    (synopsis "Library providing logic to interface scanners")
-    (description
-     "KSaneCore is a library that provides a Qt interface for the SANE library
-for scanner hardware.")
-    (license license:lgpl3+)))
 
 (define-public snorenotify
   (package
