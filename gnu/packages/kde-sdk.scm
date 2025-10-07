@@ -330,7 +330,8 @@ submoduletest|cachetest|switchtest)")))))))
       ktextwidgets
       ktexteditor
       ksyntaxhighlighting
-      libgit2-1.8))
+      libgit2-1.8
+      qtwayland))
     (home-page "https://apps.kde.org/kommit/")
     (synopsis "Git client for KDE")
     (description
