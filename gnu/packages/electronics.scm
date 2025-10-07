@@ -1533,8 +1533,8 @@ and Verilog RTL using Python.")
 (define-public python-cocotb-bus
   ;; XXX: The latest tagged release (2.6.1) was placed on <2023-07-01>, switch
   ;; to tag when the fresh release is available.
-  (let ((commit "c3541f15c43c914d8cf3e57ecf92c5d256c97e6c")
-        (revision "1"))
+  (let ((commit "f5578a4d451ef6bc1efdd4919de5facdb381b781")
+        (revision "2"))
     (package
       (name "python-cocotb-bus")
       ;; Version from src/cocotb_bus/_version.py
@@ -1547,12 +1547,11 @@ and Verilog RTL using Python.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1xx0w9g8psn4f8qlv7jzdwwr2ivvlaxi3flgp1v0qybzzhz6l1k3"))))
+          (base32 "13zdqalzhzrfv1lcn6l71zhi4hns89y093hvz9swkcr2kzwfn08r"))))
       (build-system pyproject-build-system)
       ;; TODO: Build documentation from <docs>.
       (arguments
        (list
-        #:tests? #f                     ;not compatible with cocotb 2.0
         #:phases
         #~(modify-phases %standard-phases
             (replace 'check
