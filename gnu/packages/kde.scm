@@ -51,14 +51,12 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
-  #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gnupg)
-  #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -301,46 +299,3 @@ DocBook XML files using Gettext message files (PO files).  Also included are
 several command-line utilities for manipulating DocBook XML files, PO files and
 PO template files.")
     (license license:gpl2+)))
-
-(define-public kuserfeedback
-  ;; FIXME: Try to reduce data collection and ensure transmission i disabled by default.
-  ;; FIXME: Check https://www.reddit.com/r/kde/comments/f7ojg9 for insights
-  (package
-    (name "kuserfeedback")
-    (version "1.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/kuserfeedback/"
-                           "/kuserfeedback-" version ".tar.xz"))
-       (sha256
-        (base32 "04zx5wfzqyargbvkbd66iabi4mfsn34qh5mbhpm90inx4aw0h8r5"))))
-    (build-system qt-build-system)
-    (native-inputs
-     (list extra-cmake-modules
-           qttools
-           ;; For optional component "Survey target expression parser"
-           bison
-           flex
-           ;; For syntax checking and unit tests of PHP server code
-           ;;("php" ,php)
-           ;;("phpunit" ,phpunit)
-           ))
-    (inputs
-     (list qtdeclarative qtsvg))
-    (arguments
-     (list
-      #:qtbase qtbase
-      #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")
-      #:tests? #f))  ;; 4/17 fail
-    (home-page "https://api.kde.org/frameworks/kuserfeedback/html/")
-    (synopsis "Collect application feedback via telemetry and targeted
-surveys")
-    (description "This framework consists of the following components:
-@itemize
-@item Libraries for use in applications.
-@item QML bindings for the above.
-@item A server application.
-@item A management and analytics application.
-@end itemize")
-    (license license:expat)))

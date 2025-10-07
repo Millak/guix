@@ -245,6 +245,49 @@ continuous display of high-volume data.")
     (inputs (list qtbase-5 qtdeclarative-5 qtquickcontrols2-5
                   xorg-server-for-tests))))
 
+(define-public kuserfeedback
+  ;; FIXME: Try to reduce data collection and ensure transmission i disabled by default.
+  ;; FIXME: Check https://www.reddit.com/r/kde/comments/f7ojg9 for insights
+  (package
+    (name "kuserfeedback")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/kuserfeedback/"
+                           "/kuserfeedback-" version ".tar.xz"))
+       (sha256
+        (base32 "04zx5wfzqyargbvkbd66iabi4mfsn34qh5mbhpm90inx4aw0h8r5"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules
+           qttools
+           ;; For optional component "Survey target expression parser"
+           bison
+           flex
+           ;; For syntax checking and unit tests of PHP server code
+           ;;("php" ,php)
+           ;;("phpunit" ,phpunit)
+           ))
+    (inputs
+     (list qtdeclarative qtsvg))
+    (arguments
+     (list
+      #:qtbase qtbase
+      #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")
+      #:tests? #f))  ;; 4/17 fail
+    (home-page "https://api.kde.org/frameworks/kuserfeedback/html/")
+    (synopsis "Collect application feedback via telemetry and targeted
+surveys")
+    (description "This framework consists of the following components:
+@itemize
+@item Libraries for use in applications.
+@item QML bindings for the above.
+@item A server application.
+@item A management and analytics application.
+@end itemize")
+    (license license:expat)))
+
 
 ;; Tier 1
 ;;
