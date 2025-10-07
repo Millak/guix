@@ -3674,12 +3674,8 @@ on another machine, accessed via TCP/IP.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python" "runtests.py")))))))
+      #:test-backend #~'custom
+      #:test-flags #~(list "runtests.py")))
     (inputs
      (list sqlite))
     (native-inputs
