@@ -843,29 +843,32 @@ this package in a more convenient interface, and should be preferred where
 they exist.")
     (license license:asl2.0)))
 
+;; XXX: This project was archived by the owner on Apr 15, 2025. It is now
+;; read-only.
 (define-public python-prisma
   (package
     (name "python-prisma")
-    (version "0.12.0")
+    (version "0.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "prisma" version))
        (sha256
-        (base32 "1y9m3bailnvid59dl4vx31vysaqbcg6gsppskyymaxg3m96808pc"))))
+        (base32 "01x1ki99k2ps2jis73vzzrqw8zsf810205f17zdja9ijm0m41mjw"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests in PyPI
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
-     (list python-cached-property
-           python-click
+     (list python-click
            python-dotenv
            python-httpx
            python-jinja2
            python-nodeenv
            python-pydantic-2
-           python-strenum
            python-tomlkit
            python-typing-extensions))
-    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/RobertCraigie/prisma-client-py")
     (synopsis "Fully type-safe database client")
     (description
