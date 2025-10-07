@@ -32,8 +32,11 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-plasma)
+  #:use-module (gnu packages libreoffice)
+  #:use-module (gnu packages markup)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages pdf)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
@@ -120,17 +123,18 @@ such as addition, trigonometric functions or derivatives.")
 (define-public labplot
   (package
     (name "labplot")
-    (version "2.11.1")
+    (version "2.12.1")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://kde/stable/labplot"
+       (uri (string-append "mirror://kde//stable/labplot"
                            "/labplot-" version ".tar.xz"))
        (sha256
-        (base32 "17b78s84hqq51chhzfx5in9b6ijkwa6xhq1y8sclscirvz46majk"))))
+        (base32 "0shhdinrynsi1lhny8ag0hw83r6iaqsk34a7gipmn3plvnzmb0g2"))))
     (build-system qt-build-system)
     (arguments
-     (list #:configure-flags
+     (list #:qtbase qtbase
+           #:configure-flags
            #~(list "-DENABLE_CANTOR=OFF" ;not packaged
                    "-DENABLE_MQTT=OFF" ;not packaged (qtmqtt)
                    ;; FIXME: readstat (optional dependency) is available in the
@@ -138,43 +142,54 @@ such as addition, trigonometric functions or derivatives.")
                    "-DENABLE_READSTAT=OFF"
                    ;; This is a bundled library that is not packaged.
                    "-DENABLE_LIBORIGIN=ON")
+           #:test-exclude
+           (string-append "("
+                          (string-join '("ParserTest"
+                                         "ReadStatFilterTest"
+                                         "WorksheetElementTest")
+                                       "|")
+                          ")")
            #:phases
            #~(modify-phases %standard-phases
                (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
+                 (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
                    (when tests?
                      (setenv "HOME" (getcwd))
                      ;; This test fails, I don't know why.
-                     (invoke "ctest" "-E" "(ParserTest|ReadStatFilterTest|\
-WorksheetElementTest)")))))))
+                     (invoke "ctest" "-E" test-exclude)))))))
     (native-inputs (list bison
                          extra-cmake-modules
+                         kdoctools
                          pkg-config
                          python-wrapper
-                         qttools-5))
+                         qttools))
     (inputs
-     (list breeze-qt5 ;for dark themes
+     (list breeze ;for dark themes
            breeze-icons ;for icons
+           discount
+           eigen
            gsl
-           karchive-5
-           kcompletion-5
-           kconfig-5
-           kconfigwidgets-5
-           kcoreaddons-5
-           kcrash-5
-           kdoctools-5
-           ki18n-5
-           kiconthemes-5
-           kio-5
-           knewstuff-5
-           kparts-5
-           kservice-5
-           ksyntaxhighlighting-5
-           ktextwidgets-5
-           kwidgetsaddons-5
-           kxmlgui-5
-           qtbase-5
-           qtsvg-5
+           karchive
+           kcompletion
+           kconfig
+           kconfigwidgets
+           kcoreaddons
+           kcrash
+           ki18n
+           kiconthemes
+           kio
+           knewstuff
+           kparts
+           kservice
+           ksyntaxhighlighting
+           ktextwidgets
+           kwidgetsaddons
+           kxmlgui
+           matio
+           orcus
+           purpose
+           poppler-qt6
+           qtsvg
            shared-mime-info
            ;; Optional.
            cfitsio
@@ -183,8 +198,12 @@ WorksheetElementTest)")))))))
            libcerf
            lz4
            netcdf
+           qt-advanced-docking-system
            qtserialport
-           zlib))
+           qtwayland
+           qxlsx
+           zlib
+           zstd))
     (home-page "https://labplot.kde.org/")
     (synopsis "Interactive graphing and analysis of scientific data")
     (description "LabPlot is a tool for interactive graphing and analysis of
