@@ -5680,6 +5680,35 @@ information about the music/image/video that is Now Playing on the system.")
 formatting information, rather than the current locale name.")
     (license license:expat)))
 
+(define-public go-github-com-denisbrodbeck-machineid
+  (package
+    (name "go-github-com-denisbrodbeck-machineid")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/denisbrodbeck/machineid")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "075rqb2f9hla9jwc6823jkkb3xcv6azz3phndbssssn2dps07cib"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/denisbrodbeck/machineid"
+      #:test-flags
+      #~(list "-vet=off" ;Go@1.24 forces vet, but tests are not ready yet.
+              ;; id_test.go:8: machineid: open /etc/machine-id: no such file
+              ;; or directory
+              "-skip" "TestID|TestProtectedID")))
+    (home-page "https://github.com/denisbrodbeck/machineid")
+    (synopsis "Read the unique machine ID of most host OS's")
+    (description
+     "This package implements functionality for reading the unique machine
+ID (@code{/etc/machine-id}) of most OSs (without admin privileges).")
+    (license license:expat)))
+
 (define-public go-github-com-dennwc-btrfs
   (package
     (name "go-github-com-dennwc-btrfs")
