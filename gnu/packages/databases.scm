@@ -883,7 +883,7 @@ client.")
        (uri (pypi-uri "pylibmc" version))
        (sha256
         (base32 "1q06696lxpqn155sydg3z6dksimks6n35q72zdjsvarpal8ldypf"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -892,7 +892,7 @@ client.")
            (lambda _
              (invoke "memcached" "-d"))))))
     (native-inputs
-     (list memcached python-pytest))
+     (list memcached python-pytest python-setuptools))
     (inputs
      (list libmemcached zlib cyrus-sasl))
     (home-page "https://sendapatch.se/projects/pylibmc/")
