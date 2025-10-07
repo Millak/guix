@@ -37,7 +37,6 @@
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages image)
-  #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages linux)

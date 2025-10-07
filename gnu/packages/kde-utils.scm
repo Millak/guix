@@ -48,7 +48,6 @@
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-multimedia)
   #:use-module (gnu packages kde-pim)

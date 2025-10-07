@@ -118,7 +118,7 @@
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages java)
-  #:use-module (gnu packages kde)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)

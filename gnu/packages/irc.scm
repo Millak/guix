@@ -92,7 +92,6 @@
   #:use-module (gnu packages messaging)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages openldap)
-  #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-internet)
   #:use-module (gnu packages password-utils)

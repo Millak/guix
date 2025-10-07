@@ -42,7 +42,6 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
-  #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-graphics)
   #:use-module (gnu packages kde-multimedia)

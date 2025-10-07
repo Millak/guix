@@ -225,7 +225,6 @@ gnu/packages/kde-internet.scm
 gnu/packages/kde-multimedia.scm
 gnu/packages/kde-pim.scm
 gnu/packages/kde-plasma.scm
-gnu/packages/kde.scm
 gnu/packages/kerberos.scm
 gnu/packages/kodi.scm
 gnu/packages/language.scm

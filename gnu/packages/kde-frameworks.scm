@@ -71,7 +71,6 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages kerberos)
-  #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-graphics)
   #:use-module (gnu packages kde-multimedia)
   #:use-module (gnu packages kde-plasma)
@@ -356,6 +355,38 @@ accessibility clients such as screen readers.")
     (name "libqaccessibilityclient-qt5")
     (inputs (modify-inputs (package-inputs libqaccessibilityclient)
               (replace "qtbase" qtbase-5)))))
+
+(define-public qca
+  (package
+    (name "qca")
+    (version "2.3.9")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "mirror://kde/stable/qca/" version
+                            "/qca-" version ".tar.xz"))
+        (sha256
+         (base32 "0kkf8wyc7slii86danfl4cx59yhcyc363ydiwapnnyyxihlxamf5"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list openssl qtbase-5))
+    (home-page "https://userbase.kde.org/QCA")
+    (synopsis "Libraries for the Qt Cryptographic Architecture")
+    (description "The Qt Cryptographic Architecture (QCA) provides a
+straightforward and cross-platform API for a range of cryptographic features,
+including SSL/TLS, X.509 certificates, SASL, OpenPGP, S/MIME CMS, and smart
+cards.")
+    (license license:lgpl2.1+)))
+
+(define-public qca-qt6
+  (package
+    (inherit qca)
+    (name "qca-qt6")
+    (arguments (list #:configure-flags #~(list "-DBUILD_WITH_QT6=ON")))
+    (inputs
+     (list openssl qtbase qt5compat))))
 
 
 ;; Tier 1

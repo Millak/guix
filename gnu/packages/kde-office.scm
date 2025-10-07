@@ -35,7 +35,6 @@
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages hunspell)
-  #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-graphics)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-graphics)

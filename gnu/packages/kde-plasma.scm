@@ -63,7 +63,6 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages iso-codes)
-  #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-graphics)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-internet)

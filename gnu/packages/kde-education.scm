@@ -34,7 +34,6 @@
   #:use-module (gnu packages geo)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gps)
-  #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-multimedia)
   #:use-module (gnu packages kde-plasma)

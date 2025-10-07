@@ -36,7 +36,6 @@
   #:use-module (gnu packages games)
   #:use-module (gnu packages gl)
   #:use-module ((gnu packages freedesktop) #:select (shared-mime-info))
-  #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-multimedia)
   #:use-module (gnu packages kde-plasma)

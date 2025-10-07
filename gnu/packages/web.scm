@@ -174,7 +174,7 @@
   #:use-module (gnu packages java)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages imagemagick)
-  #:use-module (gnu packages kde)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libevent)
