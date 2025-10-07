@@ -7,6 +7,7 @@
 ;;; Copyright © 2019 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,6 +51,11 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-web)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde-frameworks)
@@ -595,6 +601,65 @@ over the Internet in an HTTP and CDN friendly way;
 @item An efficient backup system.
 @end itemize\n")
       (license license:lgpl2.1+))))
+
+(define-public croc
+  (package
+    (name "croc")
+    (version "10.2.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/schollz/croc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jf8rfviy2vy9656ghss00fpvsx0iy079x906png39a52ryqjdzb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/schollz/croc"
+      #:test-flags
+      #~(list "-skip" "TestPublicIP|TestLocalIP|TestTCP")))
+    (native-inputs
+     (list go-github-com-cespare-xxhash-v2
+           go-github-com-chzyer-readline
+           go-github-com-denisbrodbeck-machineid
+           go-github-com-kalafut-imohash
+           go-github-com-magisterquis-connectproxy
+           go-github-com-minio-highwayhash
+           go-github-com-sabhiram-go-gitignore
+           go-github-com-schollz-cli-v2
+           go-github-com-schollz-logger
+           go-github-com-schollz-pake-v3
+           go-github-com-schollz-peerdiscovery
+           go-github-com-schollz-progressbar-v3
+           go-github-com-skip2-go-qrcode
+           go-github-com-stretchr-testify
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-time))
+    (home-page "https://github.com/schollz/croc")
+    (synopsis "Send things from one computer to another easily and securely")
+    (description
+     "This package provides @code{croc} - a tool that allows any two
+computers to simply and securely transfer files and folders.
+
+Feature:
+@itemize
+@item allows any two computers to transfer data (using a relay)
+@item provides end-to-end encryption (using PAKE)
+@item enables easy cross-platform transfers (Windows, Linux, Mac)
+@item allows multiple file transfers
+@item allows resuming transfers that are interrupted
+@item no need for local server or port-forwarding
+@item IPv6-first with IPv4 fallback
+@item can use a proxy, like Tor
+@end itemize")
+    (license license:expat)))
 
 (define-public rclone
   (package
