@@ -1012,7 +1012,8 @@ computer's hardware.")
                   kdbusaddons
                   kde-cli-tools
                   kvantum
-                  plasma-workspace))
+                  plasma-workspace
+                  qtwayland))
     (arguments
      (list
       #:modules '((ice-9 ftw)
