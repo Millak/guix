@@ -3004,14 +3004,14 @@ older terminal emulators.")
 (define-public watchexec
   (package
     (name "watchexec")
-    (version "2.3.0")
+    (version "2.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "watchexec-cli" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qqbcipx90q4hl1l39ijwqqndbd23kmkqha3wxpqn1b8dylfxgy2"))))
+        (base32 "04qm50br5swck9sqvl9qhaa7cfh6z2y12ipj9729biczmzaw1avx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:install-source? #f
