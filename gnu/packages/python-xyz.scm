@@ -13524,15 +13524,17 @@ localized only in frequency instead of in time and frequency.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "039m7dch479hlwddynacdrr0klz6a5bdly5swqbs94hfimficiyf"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-before 'check 'fix-home-directory
            (lambda _
              ;; Tests fail with "Permission denied: '/homeless-shelter'".
-             (setenv "HOME" "/tmp")
-             #t)))))
+             (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (inputs
      (list imagemagick))
     (home-page "https://github.com/dylanaraps/pywal")
