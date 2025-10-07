@@ -1583,7 +1583,7 @@ you must extend 'udev-service-type' with this package.  E.g.:
 (define-public bladerf
   (package
     (name "bladerf")
-    (version "2023.02")
+    (version "2025.10")
     (source
      (origin
        (method git-fetch)
@@ -1593,10 +1593,10 @@ you must extend 'udev-service-type' with this package.  E.g.:
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "038v9qdmrwx9mxsrq4l36bap0bsypyg4i8hs7l7srv4b0c2s7ynp"))))
+        (base32 "1vi4m03jdpb0lqnl49f5sihwpphsz7amhi72wdn6c22416f8x7w2"))))
     (build-system cmake-build-system)
-    (native-inputs (list doxygen help2man pkg-config))
-    (inputs (list libedit libusb))
+    (native-inputs (list doxygen graphviz-minimal help2man pkg-config))
+    (inputs (list curl libedit libusb ncurses))
     (arguments
      (list #:configure-flags #~(list "-DTAGGED_RELEASE=ON"
                                      (string-append "-DUDEV_RULES_PATH="
@@ -1604,14 +1604,7 @@ you must extend 'udev-service-type' with this package.  E.g.:
                                                     "/lib/udev/rules.d")
                                      "-DBLADERF_GROUP=dialout"
                                      "-DBUILD_DOCUMENTATION=ON")
-           #:tests? #f ; No test suite
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'gcc-14
-                 (lambda _
-                   (substitute* "host/utilities/bladeRF-fsk/c/src/fir_filter.c"
-                     (("calloc\\(sizeof\\(struct complex_sample\\), chunk_size\\)")
-                      "calloc(1 * sizeof(struct complex_sample), chunk_size)")))))))
+           #:tests? #f)) ; Tests require device
     (home-page "https://www.nuand.com/")
     (synopsis "User-space library and utilities for BladeRF SDR")
     (description
