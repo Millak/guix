@@ -460,8 +460,8 @@ Medicine} server instead of SQLite.")
       #:configure-flags
       #~(list "--disable-static"
               (string-append "--with-nifti-prefix="
-                             #$(this-package-input "niftilib")))))
-    (inputs (list glib gtk+ libpng niftilib))
+                             #$(this-package-input "nifticlib")))))
+    (inputs (list glib gtk+ libpng nifticlib))
     (native-inputs (list pkg-config))
     (home-page "https://xmedcon.sourceforge.io")
     (synopsis "Medical image conversion utility")

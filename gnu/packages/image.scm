@@ -2025,13 +2025,13 @@ and decompress to 32-bit and big-endian pixel buffers (RGBX, XBGR, etc.).")
                (base32
                 "1kyhczwa17qp8ik3v876yjqsf4zrjj0z3464j04fak269cii404g"))))))
 
-(define-public niftilib
+(define-public nifticlib
   ;; Warning: The version of the test data may not match the package version.
   (let* ((nifti-test-data-version "3.0.2")
          (nifti-test-data-file (git-file-name "nifti-test-data"
                                               nifti-test-data-version)))
     (package
-      (name "niftilib")
+      (name "nifticlib")
       (version "3.0.1")
       (source (origin
                 (method git-fetch)
@@ -2108,6 +2108,9 @@ binary file formats for storing medical image data, e.g. @acronym{MRI, magnetic
 resonance imaging} and @acronym{fMRI, functional MRI} brain images.")
       (home-page "https://github.com/NIFTI-Imaging/nifti_clib")
       (license license:public-domain))))
+
+(define-public niftilib
+  (deprecated-package "niftilib" nifticlib))
 
 (define-public mini
   (package
