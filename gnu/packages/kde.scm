@@ -108,42 +108,6 @@
     (description "This package provides a non-blocking Qt database framework.")
     (license license:lgpl2.1+)))
 
-(define-public kirigami-addons
-  (package
-    (name "kirigami-addons")
-    (version "1.10.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://invent.kde.org/libraries/kirigami-addons")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1f93y893kvqysdrvcr1f6f5rmg38k0hbmf53r672xrxis5yar0vl"))))
-    (build-system qt-build-system)
-    (arguments
-     (list
-      #:qtbase qtbase
-      #:tests? #f)) ;failing tests
-    (native-inputs (list extra-cmake-modules))
-    (inputs (list kcolorscheme
-                  kconfig
-                  kcoreaddons
-                  kcrash
-                  kglobalaccel
-                  kguiaddons
-                  ki18n
-                  kiconthemes
-                  kirigami
-                  qtdeclarative))
-    (home-page "https://invent.kde.org/libraries/kirigami-addons")
-    (synopsis "Add-ons for the Kirigami framework")
-    (description
-     "This package provides Kirigami components usable by both touch
-and desktop experiences.")
-    (license license:lgpl2.0+)))
-
 (define-public libqaccessibilityclient
   (package
     (name "libqaccessibilityclient")

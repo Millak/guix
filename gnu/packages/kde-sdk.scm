@@ -30,7 +30,6 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages code)
   #:use-module (gnu packages freedesktop)
-  #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-graphics)
   #:use-module (gnu packages kde-plasma)
