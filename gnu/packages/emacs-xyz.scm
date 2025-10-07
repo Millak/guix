@@ -42849,16 +42849,18 @@ rather excellent completion provided by both Bash and Zsh.")
                (base32
                 "022i7ydwckxqk16s4a83mrdr0c4rmap906qypdkjfh1rjw75qwm5"))))
     (build-system emacs-build-system)
-    (arguments (list #:test-command #~(list "make" "test")
-                     #:phases
-                     #~(modify-phases %standard-phases
-                         (add-after 'unpack 'fix-tests
-                           (lambda _
-                             (substitute* "shell-command+-tests.el"
-                               (("\"shell-command\\+-tests\\.el\"" all)
-                                (string-append "\"shell-command+-autoloads.el\""
-                                               " "
-                                               all))))))))
+    (arguments
+     (list #:test-command #~(list "make" "test")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-tests
+                 (lambda _
+                   (substitute* "shell-command+-tests.el"
+                     (("\"shell-command\\+-tests\\.el\"" all)
+                      (string-join (list "\"shell-command+-autoloads.el\""
+                                         "\"shell-command+-pkg.el\""
+                                         all)
+                                   " "))))))))
     (home-page "https://elpa.gnu.org/packages/shell-command+.html")
     (synopsis "Extended Emacs @code{shell-command}")
     (description
