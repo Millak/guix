@@ -766,8 +766,7 @@ and the maven-build-system."
         #:name "KDE team"
         #:description
         "The plasma desktop environment, and KDE Applications."
-        #:scope (list (make-regexp* "^gnu/packages/(kde)(-.+|)\\.scm$")
-                      "gnu/packages/education.scm")))
+        #:scope (list (make-regexp* "^gnu/packages/(kde)(-.+|)\\.scm$"))))
 
 (define-team kernel
   (team 'kernel

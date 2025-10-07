@@ -224,7 +224,6 @@ guix/build/julia-build-system\.scm                 @guix/julia
 guix/build-system/julia\.scm                       @guix/julia
 
 gnu/packages/(kde)(-.+|)\.scm$                     @guix/kde
-gnu/packages/education\.scm                        @guix/kde
 
 gnu/build/linux-modules\.scm                       @guix/kernel
 gnu/packages/aux-files/linux-libre.*$              @guix/kernel
