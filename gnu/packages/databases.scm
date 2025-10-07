@@ -981,27 +981,21 @@ auto-completion and syntax highlighting.")
 (define-public python-sqlitedict
   (package
     (name "python-sqlitedict")
-    (version "2.0.0")
+    (version "2.1.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "sqlitedict" version))
               (sha256
                (base32
-                "05sxy016k3p5sjjhdg0ad9z15i6vm3rq4cr9m8nrc7jfdx0p18r3"))))
-    (build-system python-build-system)
+                "134y1ya74ah3g1pd3g9iqjlrcjr2y5b2iny2skqrcab0dnwwzn83"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv"
-                        "-k"
-                        ;; No idea why these fail.
-                        (string-append "not test_py24_error"
-                                       " and not test_tablenames"))))))))
-    (native-inputs (list python-pytest))
+      #:test-flags
+     ;; assert os.system('env PYTHONPATH=. %s tests/autocommit.py' %
+     ;; sys.executable) == 0
+      #~(list "--deselect=tests/test_autocommit.py::test")))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/piskvorky/sqlitedict")
     (synopsis "Persistent dict backed up by sqlite3 and pickle")
     (description
