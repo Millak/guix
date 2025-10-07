@@ -1172,7 +1172,7 @@ KDE Plasma Workspaces.")
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
-     (list kcoreaddons ki18n kwallet kwidgetsaddons))
+     (list kcoreaddons ki18n kwallet kwidgetsaddons qtwayland))
     (home-page "https://invent.kde.org/plasma/ksshaskpass")
     (synopsis "Front-end for ssh-add using kwallet")
     (description "Ksshaskpass is a front-end for @code{ssh-add} which stores the
