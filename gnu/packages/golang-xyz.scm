@@ -18715,6 +18715,42 @@ configuration file.")
 organizing command line Go applications.")
      (license license:expat))))
 
+(define-public go-github-com-schollz-logger
+  (package
+    (name "go-github-com-schollz-logger")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/schollz/logger")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1680348j54vwfx7sczygchrd9dabnycj3mpxg3fmpf9a356vd2af"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/schollz/logger"
+      ;; Go@1.24 forces vet, but tests are not ready yet.
+      #:test-flags #~(list "-vet=off")))
+    (home-page "https://github.com/schollz/logger")
+    (synopsis "Simplistic, opinionated logging for Golang")
+    (description
+     "This package provides a opinionated logging for Golang.
+Features:
+@itemize
+@item zero dependencies
+@item Global logger (with optional local logger)
+@item leveled
+@item useful defaults / i.e. zero-config
+@item simple API
+@item colors on Linux
+@item set leveling via environmental variables
+@code{LOGGER=trace|debug|info|warn|error}
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-schollz-progressbar-v3
   (package
     (name "go-github-com-schollz-progressbar-v3")
