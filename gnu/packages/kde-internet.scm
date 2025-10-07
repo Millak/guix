@@ -75,6 +75,32 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg))
 
+(define-public kdsoap-ws-discovery-client
+  (package
+    (name "kdsoap-ws-discovery-client")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/kdsoap-ws-discovery-client/"
+                           "/kdsoap-ws-discovery-client-" version ".tar.xz"))
+       (sha256
+        (base32 "0yj2ngw4li5r6zhmkh2lb8fdf8ixz6pp5hxsb4342pz72g04glic"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs (list kdsoap))
+    (arguments (list
+                ;; test require network.
+                #:tests? #f
+                #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")
+                #:qtbase qtbase))
+    (home-page "https://caspermeijn.gitlab.io/kdsoap-ws-discovery-client/")
+    (synopsis "WS-Discovery client library based on KDSoap")
+    (description "This package provides a ws-Discovery client library based on
+KDSoap.")
+    (license license:gpl3+)))
+
 (define-public qxmpp
   (package
     (name "qxmpp")
