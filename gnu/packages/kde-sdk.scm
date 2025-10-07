@@ -239,6 +239,7 @@ for some KDevelop language plugins (Ruby, PHP, CSS...).")
                   breeze-icons
                   qt5compat
                   qtdeclarative
+                  qtwayland
                   qtwebengine
                   threadweaver
                   ;; recommendes
