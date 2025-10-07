@@ -56,7 +56,6 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages image)
   #:use-module (gnu packages javascript)
-  #:use-module (gnu packages kde-frameworks) ; extra-cmake-modules
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages ncurses)
@@ -216,66 +215,6 @@ of categories with some of the activities available in that category.
 @end enumerate
 ")
     (license license:gpl3+)))
-
-(define-public gcompris-qt
-  (package
-    (name "gcompris-qt")
-    (version "25.0.12")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "mirror://kde/stable/gcompris/qt/src/gcompris-qt-"
-             version ".tar.xz"))
-       (sha256
-        (base32 "1my67r7x6j7snidnj47v3ndhf3i5sxn0zqj4d8apaw6mbqms96vj"))))
-    (build-system qt-build-system)
-    (arguments
-     (list #:qtbase qtbase
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'check 'start-xorg-server
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   ;; The test suite requires a running X server.
-                   (system "Xvfb :1 &")
-                   (setenv "DISPLAY" ":1")
-                   ;; The test suite wants to write to /homeless-shelter
-                   (setenv "HOME" (getcwd)))))
-           #:configure-flags #~(list "-DQML_BOX2D_MODULE=disabled")))
-    (native-inputs
-     (list extra-cmake-modules
-           gettext-minimal
-           kdoctools
-           perl
-           pkg-config
-           qttools
-           xorg-server-for-tests))
-    (inputs
-     (list openssl
-           python-wrapper
-           qtcharts
-           qtdeclarative
-           qtmultimedia
-           qtsensors
-           qtsvg))
-    (home-page "https://gcompris.net/index-en.html")
-    (synopsis "Educational games for small children")
-    (description
-     "Gcompris offers a large collection of educational games for small
-children, designed to be a unified interface to integrate more educational
-games.  Language-oriented games contain vocabulary, sounds, and voices for
-many different languages.
-Currently available boards include:
-@enumerate
-@item learning how to use a mouse and keyboard
-@item learning simple arithmetic
-@item learning how to read an analog clock
-@item recognize letters after hearing their names
-@item reading practice
-@item small games (memory games, jigsaw puzzles, ...)
-@end enumerate")
-    (license (list license:silofl1.1    ; bundled fonts
-                   license:agpl3+))))
 
 (define-public gotypist
   (let ((revision "0")
