@@ -47,6 +47,28 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline))
 
+(define-public kqtquickcharts
+  (package
+    (name "kqtquickcharts")
+    (version "24.12.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/release-service/"
+                                  version "/src/kqtquickcharts-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1hgcl062i94abq0cwz9fijyjhv2qs3fsjikiy2jb3sh73m6jydqn"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules))
+    (inputs (list qtdeclarative-5))
+    (arguments (list #:tests? #f))
+    (home-page "https://invent.kde.org/libraries/kqtquickcharts")
+    (synopsis "QtQuick plugin to render beautiful and interactive charts")
+    (description
+     "This package provides a QtQuick plugin to render beautiful and interactive
+charts.")
+    (license (list license:lgpl2.0+ license:gpl2+))))
+
 (define-public analitza
   (package
     (name "analitza")

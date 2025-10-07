@@ -56,7 +56,7 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages image)
   #:use-module (gnu packages javascript)
-  #:use-module (gnu packages kde)
+  #:use-module (gnu packages kde-education)
   #:use-module (gnu packages kde-frameworks) ; extra-cmake-modules
   #:use-module (gnu packages linux)
   #:use-module (gnu packages mp3)
@@ -682,28 +682,6 @@ hours.")
      "Klavaro is a simple tutor to teach correct typing, almost independently of
 language and very flexible regarding to new or unknown keyboard layouts.")
     (license license:gpl3+)))
-
-(define-public kqtquickcharts
-  (package
-    (name "kqtquickcharts")
-    (version "24.12.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/stable/release-service/"
-                                  version "/src/kqtquickcharts-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1hgcl062i94abq0cwz9fijyjhv2qs3fsjikiy2jb3sh73m6jydqn"))))
-    (build-system qt-build-system)
-    (native-inputs (list extra-cmake-modules))
-    (inputs (list qtdeclarative-5))
-    (arguments (list #:tests? #f))
-    (home-page "https://invent.kde.org/libraries/kqtquickcharts")
-    (synopsis "QtQuick plugin to render beautiful and interactive charts")
-    (description
-     "This package provides a QtQuick plugin to render beautiful and interactive
-charts.")
-    (license (list license:lgpl2.0+ license:gpl2+))))
 
 (define-public ktouch
   (package
