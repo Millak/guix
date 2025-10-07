@@ -4436,6 +4436,32 @@ cgroup uses the OCI runtime-spec found
            go-golang-org-x-sys
            go-google-golang-org-protobuf))))
 
+(define-public go-github-com-containerd-console
+  (package
+    (name "go-github-com-containerd-console")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/containerd/console")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p10k6lwfxgij5a9i47dark8apffc6wn254dwj43ks8jr134854v"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containerd/console"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/containerd/console")
+    (synopsis "Console package for Go")
+    (description
+     "This is Golang package for dealing with consoles.  It has few
+dependencies and a simple API.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-containerd-containerd
   (package
     (name "go-github-com-containerd-containerd")
@@ -4559,32 +4585,6 @@ attachments, etc.")
     (license license:asl2.0)
     ;; Don't expose since it's a partial package.
     (properties '((hidden? . #t)))))
-
-(define-public go-github-com-containerd-console
-  (package
-    (name "go-github-com-containerd-console")
-    (version "1.0.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/containerd/console")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1p10k6lwfxgij5a9i47dark8apffc6wn254dwj43ks8jr134854v"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/containerd/console"))
-    (propagated-inputs
-     (list go-golang-org-x-sys))
-    (home-page "https://github.com/containerd/console")
-    (synopsis "Console package for Go")
-    (description
-     "This is Golang package for dealing with consoles.  It has few
-dependencies and a simple API.")
-    (license license:asl2.0)))
 
 (define-public go-github-com-containerd-continuity
   (package
@@ -5069,6 +5069,33 @@ https://github.com/cowsql/cowsql/blob/main/doc/protocol.md}.")
     (description
      "Go library to load docker CLI configs, auths, etc.  with minimal deps.
   So far the only deps are on the stdlib.")
+    (license license:expat)))
+
+(define-public go-github-com-cpuguy83-go-md2man-v2
+  (package
+    (name "go-github-com-cpuguy83-go-md2man-v2")
+    (version "2.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cpuguy83/go-md2man")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gqlkv1pv8cpvcj8g77d1hzy5bnp5a3k3xs02iahlr3a65m4azsi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/cpuguy83/go-md2man/v2"))
+    (propagated-inputs
+     (list go-github-com-russross-blackfriday-v2))
+    (home-page "https://github.com/cpuguy83/go-md2man")
+    (synopsis "Convert markdown into roff")
+    (description
+     "Go-md2man is a Go program that converts markdown to roff for the purpose
+of building man pages.")
     (license license:expat)))
 
 (define-public go-github-com-crackcomm-go-gitignore
@@ -6151,32 +6178,6 @@ Desktop Management Interface (DMI) data and structures.")
 Mark} detection.")
     (license license:asl2.0)))
 
-(define-public go-github-com-distribution-reference
-  (package
-    (name "go-github-com-distribution-reference")
-    (version "0.6.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/distribution/reference")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1zj2lmmznlrxdrrfmdsx7fgrmi64bj1jqz6r0ar35qmkx8pjvgl2"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/distribution/reference"))
-    (propagated-inputs (list go-github-com-opencontainers-go-digest))
-    (home-page "https://github.com/distribution/reference")
-    (synopsis "Handle references to container images held in registries")
-    (description
-     "Package reference provides a general type to represent any way of referencing
-images within the registry.  Its main purpose is to abstract tags and digests
-(content-addressable hash).")
-    (license license:asl2.0)))
-
 (define-public go-github-com-disintegration-imaging
   (package
     (name "go-github-com-disintegration-imaging")
@@ -6202,6 +6203,32 @@ images within the registry.  Its main purpose is to abstract tags and digests
      "This package provides basic image processing functions
 (resize, rotate, crop, brightness/contrast adjustments, etc.).")
     (license license:expat)))
+
+(define-public go-github-com-distribution-reference
+  (package
+    (name "go-github-com-distribution-reference")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/distribution/reference")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zj2lmmznlrxdrrfmdsx7fgrmi64bj1jqz6r0ar35qmkx8pjvgl2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/distribution/reference"))
+    (propagated-inputs (list go-github-com-opencontainers-go-digest))
+    (home-page "https://github.com/distribution/reference")
+    (synopsis "Handle references to container images held in registries")
+    (description
+     "Package reference provides a general type to represent any way of referencing
+images within the registry.  Its main purpose is to abstract tags and digests
+(content-addressable hash).")
+    (license license:asl2.0)))
 
 (define-public go-github-com-djherbis-atime
   (package
@@ -8224,33 +8251,6 @@ while callers can implement logging with whatever backend is appropriate.")
      "Package stdr implements github.com/go-logr/logr.Logger in terms of Go's
 standard log package.")
     (license license:asl2.0)))
-
-(define-public go-github-com-cpuguy83-go-md2man-v2
-  (package
-    (name "go-github-com-cpuguy83-go-md2man-v2")
-    (version "2.0.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/cpuguy83/go-md2man")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0gqlkv1pv8cpvcj8g77d1hzy5bnp5a3k3xs02iahlr3a65m4azsi"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:skip-build? #t
-      #:import-path "github.com/cpuguy83/go-md2man/v2"))
-    (propagated-inputs
-     (list go-github-com-russross-blackfriday-v2))
-    (home-page "https://github.com/cpuguy83/go-md2man")
-    (synopsis "Convert markdown into roff")
-    (description
-     "Go-md2man is a Go program that converts markdown to roff for the purpose
-of building man pages.")
-    (license license:expat)))
 
 (define-public go-github-com-go-md2man
   (deprecated-package "go-github-com-go-md2man" go-github-com-cpuguy83-go-md2man-v2))
@@ -14625,6 +14625,30 @@ parsing.")
 to help free up more global locks to handle other tasks.")
     (license license:asl2.0)))
 
+(define-public go-github-com-moby-patternmatcher
+  (package
+    (name "go-github-com-moby-patternmatcher")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moby/patternmatcher")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s77wpsc6szr9qdpnpg9q65ibgjgj4b2d12hwf6wrwb39grcnbcz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/patternmatcher"))
+    (home-page "https://github.com/moby/patternmatcher")
+    (synopsis "File name pattern matching")
+    (description
+     "This Go library provides facilities for pattern matching on file
+names.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-moby-spdystream
   (package
     (name "go-github-com-moby-spdystream")
@@ -14786,30 +14810,6 @@ https://github.com/syndtr/gocapability.")
      "Package mountinfo provides a set of functions to retrieve information
 about OS mounts as seen by the current process is available from
 @code{/proc/self/mountinfo}.")
-    (license license:asl2.0)))
-
-(define-public go-github-com-moby-patternmatcher
-  (package
-    (name "go-github-com-moby-patternmatcher")
-    (version "0.6.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/moby/patternmatcher")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1s77wpsc6szr9qdpnpg9q65ibgjgj4b2d12hwf6wrwb39grcnbcz"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/moby/patternmatcher"))
-    (home-page "https://github.com/moby/patternmatcher")
-    (synopsis "File name pattern matching")
-    (description
-     "This Go library provides facilities for pattern matching on file
-names.")
     (license license:asl2.0)))
 
 (define-public go-github-com-moby-sys-reexec
@@ -20137,6 +20137,35 @@ readability, or to compact JSON for smaller payloads.")
 document.")
     (license license:expat)))
 
+(define-public go-github-com-timshannon-bolthold
+  (package
+    (name "go-github-com-timshannon-bolthold")
+    (version "0.0.0-20240314194003-30aac6950928")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/timshannon/bolthold")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "107r4nwhvpdp0n9b5fls1lw8z8qsiajiykkpjs7947nrbc07ij1j"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/timshannon/bolthold"
+      ;; Test suite fails.
+      #:tests? #f))
+    (propagated-inputs (list go-go-etcd-io-bbolt))
+    (home-page "https://github.com/timshannon/bolthold")
+    (synopsis "Indexing and querying on top of a Bold database")
+    (description
+     "Package bolthold is an indexing and querying layer on top of a Bolt
+database. The goal is to allow easy, persistent storage and retrieval of Go
+types.  BoltDB is an embedded key-value store, and bolthold servers a similar
+use case however with a higher level interface for common uses of BoltDB.")
+    (license license:expat)))
+
 (define-public go-github-com-tinylib-msgp
   (package
     (name "go-github-com-tinylib-msgp")
@@ -20170,34 +20199,6 @@ serialize and de-serialize Go data structures to and from data interchange
 format - @url{https://en.wikipedia.org/wiki/MessagePack,MessagePack}.")
     (license license:expat)))
 
-(define-public go-github-com-timshannon-bolthold
-  (package
-    (name "go-github-com-timshannon-bolthold")
-    (version "0.0.0-20240314194003-30aac6950928")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/timshannon/bolthold")
-             (commit (go-version->git-ref version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "107r4nwhvpdp0n9b5fls1lw8z8qsiajiykkpjs7947nrbc07ij1j"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:import-path "github.com/timshannon/bolthold"
-      ;; Test suite fails.
-      #:tests? #f))
-    (propagated-inputs (list go-go-etcd-io-bbolt))
-    (home-page "https://github.com/timshannon/bolthold")
-    (synopsis "Indexing and querying on top of a Bold database")
-    (description
-     "Package bolthold is an indexing and querying layer on top of a Bolt
-database. The goal is to allow easy, persistent storage and retrieval of Go
-types.  BoltDB is an embedded key-value store, and bolthold servers a similar
-use case however with a higher level interface for common uses of BoltDB.")
-    (license license:expat)))
 
 (define-public go-github-com-tj-go-buffer
   (package
