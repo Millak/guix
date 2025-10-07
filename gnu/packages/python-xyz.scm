@@ -39990,13 +39990,13 @@ It is not intended as an end-user tool.")
 (define-public python-xmldiff
   (package
     (name "python-xmldiff")
-    (version "2.7.0")
+    (version "3.0b1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "xmldiff" version))
        (sha256
-        (base32 "18k8kiml9wpl4wf9lmi0j6ys21lbdv8fa8r9qrzdsrh3h0ghp4f0"))))
+        (base32 "0g8dd507l8i5431rjlb6j1sf3hvzmcblijx8s4wchym9n4vbvhm9"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-lxml))
