@@ -4201,20 +4201,24 @@ and web services platform functionality.")
 (define-public python-ccm
   (package
     (name "python-ccm")
-    (version "2.1.6")
+    (version "3.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ccm" version))
        (sha256
         (base32
-         "177dfxsmk3k4cih6fh6v8d91bh4nqx7ns6pc07w7m7i3cvdx3c8n"))))
-    (build-system python-build-system)
+         "0v1jahchm9czcdhynfy76mca52k6jbvngm60jqdwxlhnf6iw0z7h"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; TODO: tests require a complex setup, see <.github/workflows/main.yml>.
+     (list #:tests? #f)) 
+    (native-inputs
+     (list python-pbr))
     (propagated-inputs
      (list python-pyyaml
-           ;; Not listed in setup.py, but used in ccmlib/node.py for full
-           ;; functionality
-           python-psutil python-six))
+           python-psutil
+           python-six)) ;XXX: hard dependency
     (home-page "https://github.com/pcmanus/ccm")
     (synopsis "Cassandra Cluster Manager for Apache Cassandra clusters on
 localhost")
