@@ -5174,7 +5174,7 @@ need.")
 (define-public ktextaddons
   (package
     (name "ktextaddons")
-    (version "1.6.0")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
@@ -5182,21 +5182,32 @@ need.")
              "mirror://kde/stable/" name "/" name "-" version ".tar.xz"))
        (sha256
         (base32
-         "1p7c461mnvsq7jz77x412k1kwmr9phr306dd9skbv5rgll2nb16r"))))
+         "0zmfk3lyfaqgn3g1nclqcm7fyqgr0hyib9w6685w95g0k3i2bkwh"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
+           #:test-exclude
+           (string-append "("
+                          (string-join '("grammalecteresultwidgettest"
+                                         "grammalecteconfigwidgettest"
+                                         "grammalecteresultjobtest"
+                                         "languagetoolconfigwidgettest"
+                                         "translator-translatorwidgettest"
+                                         "translator-translatorengineloader\
+test")
+                                       "|")
+                          ")")
            #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")
            #:phases
            #~(modify-phases %standard-phases
                (replace 'check
-                 (lambda _
-                   (setenv "HOME" (getcwd))
-                   ;; XXX: 6 tests failed due to:
-                   ;;   missing icons
-                   ;;   translators plugins not available during tests
-                   (invoke "ctest" "-E"
-                           "(grammalecteresultwidgettest|grammalecteconfigwidgettest||grammalecteresultjobtest|languagetoolconfigwidgettest|translator-translatorwidgettest|translator-translatorengineloadertest)"))))))
+                 (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
+                   (when tests?
+                     (setenv "HOME" (getcwd))
+                     ;; XXX: 6 tests failed due to:
+                     ;;   missing icons
+                     ;;   translators plugins not available during tests
+                     (invoke "ctest" "-E" test-exclude)))))))
     (native-inputs
      (list extra-cmake-modules
            qttools))
