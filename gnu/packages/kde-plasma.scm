@@ -310,7 +310,8 @@ Breeze is the default theme for the KDE Plasma desktop.")
                   knotifications
                   kpeople
                   qtdeclarative
-                  qtsvg))
+                  qtsvg
+                  qtwayland))
     (arguments (list #:qtbase qtbase
                      #:tests? #f))
     (home-page "https://invent.kde.org/plasma-mobile/calindori")
