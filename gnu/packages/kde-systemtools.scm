@@ -57,6 +57,31 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages xdisorg))
 
+(define-public baloo-widgets
+  (package
+    (name "baloo-widgets")
+    (version "25.08.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/baloo-widgets-" version ".tar.xz"))
+       (sha256
+        (base32 "1wamfsl9nq7si4sys0y49yrf5gwvr16m0qgpd3xww8dddma7ckc6"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules))
+    (inputs
+     (list baloo kconfig ki18n kio))
+    (arguments
+     (list #:configure-flags #~(list "-DBUILD_WITH_QT6=ON")
+           #:qtbase qtbase))
+    (home-page "https://community.kde.org/Baloo")
+    (synopsis "Wigets for use with Baloo")
+    (description "Baloo is a framework for searching and managing metadata.
+This package contains GUI widgets for baloo.")
+    (license license:lgpl2.0+)))
+
 (define-public dolphin
   (package
     (name "dolphin")
