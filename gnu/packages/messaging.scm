@@ -113,6 +113,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages kde-internet)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages less)
   #:use-module (gnu packages libcanberra)
@@ -398,48 +399,6 @@ conferencing.")
      (list
       license:gpl2+
       license:bsd-2))))
-
-(define-public qxmpp
-  (package
-    (name "qxmpp")
-    ;; kaidan requires a precise version
-    (version "1.10.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://invent.kde.org/libraries/qxmpp")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0qinrbr63b1baqv1a7cph8bma6kj1ib8s8ywq6d9497lc1yl2kgi"))))
-    (build-system qt-build-system)
-    (arguments
-     `(#:qtbase ,qtbase
-       #:configure-flags (list "-DBUILD_EXAMPLES=false"
-                               "-DWITH_GSTREAMER=true"
-                               "-DBUILD_OMEMO=ON") ;needed by kaidan
-       #:test-exclude
-        (string-join ;; These tests use the network.
-         (list "tst_qxmppiceconnection"
-               "tst_qxmppcallmanager"
-               "tst_qxmpptransfermanager")
-         "|")))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list
-       gstreamer
-       libomemo-c
-       qca-qt6
-       qt5compat))
-    (home-page "https://invent.kde.org/libraries/qxmpp")
-    (synopsis "XMPP client and server library")
-    (description
-     "QXmpp is a XMPP client and server library written in C++ and uses the Qt
-framework.  It builds XMPP clients complying with the XMPP Compliance Suites
-2021 for IM and Advanced Mobile.")
-    (license license:lgpl2.1+)))
 
 (define-public meanwhile
   (package
