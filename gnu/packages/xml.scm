@@ -283,21 +283,8 @@ project (but it is usable outside of the Gnome platform).")
                 (base32
                  "17w0a622466k2hi5nln276la6rzfr9xaip3lqj71hmyvxyhmf0bq")))))))
 
-(define-public libxml2-xpath0
-  (package/inherit libxml2
-    (name "libxml2-xpath0")
-    (source (origin
-              (inherit (package-source libxml2))
-              (patches (append (search-patches
-                                "libxml2-xpath0-Add-option-xpath0.patch")
-                               (origin-patches (package-source libxml2))))))
-    (description
-     "Libxml2-xpath0 is like libxml2 but with a patch applied that
-provides an @code{--xpath0} option to @command{xmllint} that enables it
-to output XPath results with a null delimiter.")))
-
-(define-deprecated-package python-libxml2
-  libxml2)
+(define-public python-libxml2
+  (deprecated-package "python-libxml2" libxml2))
 
 (define-public libxlsxwriter
   (package
