@@ -29075,6 +29075,18 @@ generators and Python 3.7's context managers into Python 3.5.")
 compatible with @code{asyncio}.")
     (license license:asl2.0)))
 
+(define-public python-async-timeout-4
+  (package
+    (inherit python-async-timeout)
+    (name "python-async-timeout")
+    (version "4.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "async-timeout" version))
+       (sha256
+        (base32 "0bsj4z28ggxh1b6h6dvhx2mk6yqgb88bg8lyslpd10jdx1mxjh26"))))))
+
 (define-public python-glob2
   (package
     (name "python-glob2")
