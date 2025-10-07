@@ -245,31 +245,6 @@ continuous display of high-volume data.")
     (inputs (list qtbase-5 qtdeclarative-5 qtquickcontrols2-5
                   xorg-server-for-tests))))
 
-(define-public kquickimageeditor
-  (package
-    (name "kquickimageeditor")
-    (version "0.5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/" name "/"
-                           name "-" version ".tar.xz"))
-       (sha256
-        (base32 "0acv6cis7gjpnzpnlxfrf6rzhwyqdm234p6r7vx7gl7ad3rp30ph"))))
-    (build-system qt-build-system)
-    (arguments
-     (list #:qtbase qtbase
-           #:tests? #f))
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list qtdeclarative))
-    (home-page "https://invent.kde.org/libraries/kquickimageeditor/")
-    (synopsis "QtQuick components for image editing")
-    (description "KQuickImageEditor is a set of QtQuick components providing
-image editing capabilities.")
-    (license license:lgpl2.1+)))
-
 
 ;; Tier 1
 ;;
