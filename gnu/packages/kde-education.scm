@@ -59,7 +59,7 @@ expressions and let you evaluate and draw them.")
 (define-public kalgebra
   (package
     (name "kalgebra")
-    (version "24.12.3")
+    (version "25.08.1")
     (source
      (origin
        (method git-fetch)
@@ -68,7 +68,7 @@ expressions and let you evaluate and draw them.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g4rrq3csp0w6xhc5cbbilz7xhhq9zdngc8bc9d16p02xz61qd4i"))))
+        (base32 "00cryk135104pdid6sai763yxh6ghlzgg9rfi5qxlb0nidia0mgl"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -99,6 +99,7 @@ expressions and let you evaluate and draw them.")
            qtbase
            qtdeclarative
            qtsvg
+           qtwayland
            qtwebengine
            qtwebchannel
            readline))
