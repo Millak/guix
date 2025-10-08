@@ -2311,8 +2311,8 @@ for Common Lisp.")
           (base32 "0a1zczxp4wkqs4cmwc4rnsgwwc2h4zqmg58cjykfzz4jh31fa43a"))))
       (build-system asdf-build-system/sbcl)
       (home-page "https://codeberg.org/aerique/black-tie")
-      (synopsis "Noise library")
-      (description "Noise library.")
+      (synopsis "Noise library for Common Lisp")
+      (description "This package provides a noise library for Common Lisp.")
       (license license:bsd-3))))
 
 (define-public ecl-black-tie
