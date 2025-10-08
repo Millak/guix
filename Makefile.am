@@ -587,8 +587,6 @@ SCM_TESTS =					\
   tests/inferior.scm				\
   tests/ipfs.scm				\
   tests/lint.scm				\
-  tests/machine/hetzner.scm                     \
-  tests/machine/hetzner/http.scm                 \
   tests/modules.scm				\
   tests/monads.scm				\
   tests/nar.scm				\
@@ -639,6 +637,14 @@ if HAVE_GUILE_LIB
 SCM_TESTS += tests/import/go.scm
 else
 EXTRA_DIST += tests/import/go.scm
+endif
+
+if HAVE_GUILE_SSH
+SCM_TESTS += tests/machine/hetzner.scm           \
+             tests/machine/hetzner/http.scm
+else
+EXTRA_DIST += tests/machine/hetzner.scm           \
+              tests/machine/hetzner/http.scm
 endif
 
 if BUILD_DAEMON_OFFLOAD
