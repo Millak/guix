@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2025 Owen T. Heisler <writer@owenh.net>
+;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -590,7 +591,12 @@ mkdir -p /mnt/tmp/gnu/store
 mkdir -p /gnu/store
 mount --bind /mnt/tmp/gnu/store /gnu/store
 
-apt-get install guix --assume-yes
+wget -O /tmp/guix-install.sh https://guix.gnu.org/guix-install.sh
+chmod +x /tmp/guix-install.sh
+set +o pipefail # avoid hangup on 'yes' killing this script
+yes '' | /tmp/guix-install.sh
+set -o pipefail
+
 cat > /tmp/guix/deploy/hetzner-os.scm << EOF
 (use-modules (gnu) (guix utils))
 (use-package-modules ssh)
