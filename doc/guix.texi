@@ -49888,6 +49888,7 @@ services)}.
 * Mail: Mail Home Services.     Services for managing mail.
 * Messaging: Messaging Home Services.  Services for managing messaging.
 * Media: Media Home Services.   Services for managing media.
+* Niri: Niri window manager.    Setting up the Niri.
 * Sway: Sway window manager.    Setting up the Sway configuration.
 * Networking: Networking Home Services.  Networking services.
 * Miscellaneous: Miscellaneous Home Services.  More services.
@@ -52419,6 +52420,35 @@ object @code{%unset-value} (from @code{(gnu services configuration)}).
 @code{zimg-threads}.
 
 @end deffn
+
+@node Niri window manager
+@subsection Niri window manager
+
+@cindex niri, Home Service
+@cindex niri, configuration
+@cindex Wayland compositor
+@cindex scrollable tiling window manager
+The @code{(gnu home services niri)} module provides the
+@code{home-niri-service-type} service, which installs and configures
+@uref{https://github.com/YaLTeR/niri, Niri}, a scrollable tiling Wayland
+compositor. Niri combines traditional tiling window management with
+smooth scrolling between workspaces.
+
+This service starts Niri as a user-level desktop session with proper
+environment variables configured for Wayland compatibility, including
+@code{XDG_CURRENT_DESKTOP}, @code{XDG_SESSION_DESKTOP}, and
+@code{DESKTOP_SESSION}.
+
+Here is a minimal example service declaration for your
+@code{home-environment} configuration:
+
+@example
+(service home-niri-service-type)
+@end example
+
+For more advanced configurations, you can customize the service with a
+@code{niri-configuration} record to specify additional environment
+variables.
 
 @node Sway window manager
 @subsection Sway window manager
