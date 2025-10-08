@@ -2449,7 +2449,7 @@ also walk each side of a merge and test those changes individually.")
 wrappers, to be used for optional gitolite extensions."
   (package
     (name "gitolite")
-    (version "3.6.13")
+    (version "3.6.14")
     (source
      (origin
        (method git-fetch)
@@ -2458,7 +2458,7 @@ wrappers, to be used for optional gitolite extensions."
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lp4hi8pfg7k0fk0l8wzs8hxp1aspzv78nkafdbbq8m9lzwnwl7x"))))
+        (base32 "0qfl9qjs9nvgvl244rvidap8s202bq2gsmnxaylqrkj77az6l2h7"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ; no tests
