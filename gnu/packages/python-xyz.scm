@@ -8959,8 +8959,8 @@ leaf preserving the overall structure.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "0gbx9wmqsxdx85v5sg79lv2zxmy16j5dwi8bip07i1nyvzc5gvn0"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/dadadel/pyment/")
     (synopsis "Convert Python docstrings automatically")
     (description "Pyment is a command line tool and library that can be
