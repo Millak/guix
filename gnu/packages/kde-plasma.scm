@@ -2822,14 +2822,14 @@ sensors, process information and other system resources.")
 (define-public plasma-workspace
   (package
     (name "plasma-workspace")
-    (version "6.4.3")
+    (version "6.4.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1f7dil2bhrdvhl9gqrpqvz62ldlq5ljdnyiac6q05j0ym62z4m3j"))))
+                "1yqh55ijxbznvaa164idjp5g4lcdp0cl01x7bca3kxbl6nzrx68r"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules kdoctools pkg-config qtsvg
                          qttools
