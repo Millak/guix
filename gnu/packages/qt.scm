@@ -5332,7 +5332,7 @@ a binding language:
 (define-public qt-advanced-docking-system
   (package
     (name "qt-advanced-docking-system")
-    (version "4.4.0")
+    (version "4.4.1")
     (source
      (origin
        (method git-fetch)
@@ -5342,7 +5342,7 @@ a binding language:
           (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qbvlnfpdlz22y1vrdd1gs2mfh03k95ccahb7pl6i07pgn4dgcvh"))))
+        (base32 "07qhvhz4cmkrpxpfmybva57ddshkwf993jiryxg3lkj24p1rlh7d"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
