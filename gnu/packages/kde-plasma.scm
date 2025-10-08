@@ -1837,14 +1837,14 @@ on top of Baloo.")
 (define-public xdg-desktop-portal-kde
   (package
     (name "xdg-desktop-portal-kde")
-    (version "6.4.3")
+    (version "6.4.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "09zwq52wyr2wj5zvgqrzi02xcy610hrvqx1sb4ykps5b0ph73v1z"))))
+                "1qnfxncqfy57892979df0q6dn0zlnvbkbh39hc42dwxvh824zq4z"))))
     (build-system qt-build-system)
     (arguments (list
                 #:tests? #f ;; colorschemetest test fail, because require dbus.
