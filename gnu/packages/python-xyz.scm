@@ -9290,18 +9290,25 @@ working with Valve's VDF text format.")
 (define-public python-bump2version
   (package
     (name "python-bump2version")
-    (version "1.0.1")
+    (properties '((commit . "1044c085ba7d32d73c9cd7ca4561a7ec624c6b19")
+                  (revision . "1")))
+    (version (git-version "1.0.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "bump2version" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/c4urself/bump2version")
+             (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1rinm4gv1fyh7xjv3v6r1p3zh5kl4ry2qifz5f7frx31mnzv4b3n"))))
-    (build-system python-build-system)
+        (base32 "1m5c5rdz9723irwdl46mg7si5syddlzna0ldkz2ps6dphkmqsv7j"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; XXX: Tests fail with "bumpversion: error: the following arguments are
-     ;; required: --new-version".
-     `(#:tests? #false))
+     ;; XXX: Single flaky failing test.
+     (list #:test-flags #~(list "-k" "not test_usage_string")))
+    (native-inputs (list python-pytest python-setuptools python-testfixtures))
     (home-page "https://github.com/c4urself/bump2version")
     (synopsis "Version-bump your software with a single command!")
     (description
