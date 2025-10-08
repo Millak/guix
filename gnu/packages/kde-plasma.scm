@@ -2046,14 +2046,14 @@ by which applications, and what documents have been linked to which activity.")
 (define-public plasma5support
   (package
     (name "plasma5support")
-    (version "6.4.3")
+    (version "6.4.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1xlcrpsl7w14pcxm8kl05as5nf49fi3z6bz0rf7qmn8qbn9si28y"))))
+                "0hpr9l7mm4lgnvn0qydsly6vmnmmrgiv256m6nyzfflf5z4gpzdc"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase
 
