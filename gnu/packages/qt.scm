@@ -5494,22 +5494,22 @@ color-related widgets.")
 (define-public qcustomplot
   (package
     (name "qcustomplot")
-    (version "2.1.0")
+    (version "2.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.qcustomplot.com/release/"
-                           version "fixed" "/QCustomPlot.tar.gz"))
+                           version "/QCustomPlot.tar.gz"))
        (sha256
-        (base32 "1324kqyj1v1f8k8d7b15gc3apwz9qxx52p86hvchg33hjdlqhskx"))))
+        (base32 "0aiixk36v1534429yndn2phn7q7m2rvkh81hn7awin4b1vkidz4s"))))
     (native-inputs
      `(("qcustomplot-sharedlib"
         ,(origin
            (method url-fetch)
            (uri (string-append "https://www.qcustomplot.com/release/"
-                               version "fixed" "/QCustomPlot-sharedlib.tar.gz"))
+                               version "/QCustomPlot-sharedlib.tar.gz"))
            (sha256
-            (base32 "0vp8lpxvd1nlp4liqrlvslpqrgfn0wpiwizzdsjbj22zzb8vxikc"))))))
+            (base32 "1h5l29q82grz94z5ch95vq6hs5clcymbcb3yngqfsh47gsffmmim"))))))
     (inputs
      (list qtbase-5))
     (build-system gnu-build-system)
