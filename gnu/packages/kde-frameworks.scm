@@ -453,7 +453,7 @@ http://freedesktop.org/wiki/Specifications/open-collaboration-services/")
 (define-public bluez-qt
   (package
     (name "bluez-qt")
-    (version "6.16.0")
+    (version "6.18.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -462,7 +462,7 @@ http://freedesktop.org/wiki/Specifications/open-collaboration-services/")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1555gmc3nza5afa1gl1rjq4457l7hcqg8f2z7pvyrfx86w7w7xkp"))))
+                "1cyf0lih5x0prysa85psxn2axh32i61jnb8yyblkzam7fn888h4k"))))
     (build-system cmake-build-system)
     (native-inputs
      (list dbus extra-cmake-modules))
