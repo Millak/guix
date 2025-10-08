@@ -323,7 +323,7 @@ Breeze is the default theme for the KDE Plasma desktop.")
 (define-public discover
   (package
     (name "discover")
-    (version "6.4.3")
+    (version "6.4.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -335,7 +335,7 @@ Breeze is the default theme for the KDE Plasma desktop.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "046ybp2bmfvwx7xchpww41cssys64h7xfabg5jhh3j58m8w85pf2"))))
+                "0xl55ybkp67yvx7c3i4fi49il1v1vqgb1lvwvb8lrbnjgbix824j"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
