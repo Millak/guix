@@ -3756,33 +3756,32 @@ the managed genomes, STAR indexing and mapping and more.")
     (version "0.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pybiomart" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jrderuiter/pybiomart")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1znq4msa0ibjxk1yirbrfd09w9zfn0jrgna6qrq0d0i1p46w5sp9"))))
+        (base32 "1x5rd33sa0gwj4nizn02lsc675bbzsspz74f38mp0fbxdp7qnxv8"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Attempts to access the web.
+      #~(list "--ignore=tests/test_dataset.py")))
     (propagated-inputs
      (list python-future
            python-pandas
            python-requests
            python-requests-cache))
     (native-inputs
-     (list python-bumpversion
-           python-pytest
-           python-pytest-cov
+     (list python-pytest
            python-pytest-helpers-namespace
            python-pytest-mock
-           python-coveralls
            python-setuptools
            python-sphinx
            python-sphinx-autobuild
-           python-sphinx-rtd-theme
-           python-wheel))
-    (arguments
-     (list
-      #:test-flags
-      ;; Attempts to access the web.
-      #~(list "--ignore=tests/test_dataset.py")))
+           python-sphinx-rtd-theme))
     (home-page "https://github.com/jrderuiter/pybiomart")
     (synopsis "A simple pythonic interface to biomart")
     (description
