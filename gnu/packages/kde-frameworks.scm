@@ -2292,7 +2292,7 @@ with other frameworks.")
 (define-public kauth
   (package
     (name "kauth")
-    (version "6.16.0")
+    (version "6.18.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2301,7 +2301,20 @@ with other frameworks.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0qs90gbgm7jra33lxbs622djis1lk9bf6rh221zyp32yv97yiwq4"))))
+                "1s83hk87cpbx3yg562lyn38wa7hrdb5skk7ayzy3syif91lywvwc"))
+              (modules '((guix build utils)))
+              ;; Make packages using kauth put their policy files and helpers
+              ;; into their own prefix.
+              (snippet
+               `(substitute* ,(string-append "KF"
+                                             (version-major version)
+                                             "AuthConfig.cmake.in")
+                  (("@KAUTH_POLICY_FILES_INSTALL_DIR@")
+                   "${KDE_INSTALL_DATADIR}/polkit-1/actions")
+                  (("@KAUTH_HELPER_INSTALL_DIR@")
+                   "${KDE_INSTALL_LIBEXECDIR}/kauth")
+                  (("@KAUTH_HELPER_INSTALL_ABSOLUTE_DIR@")
+                   "${KDE_INSTALL_FULL_LIBEXECDIR}/kauth")))))
     (build-system cmake-build-system)
     (native-inputs
      (list dbus extra-cmake-modules qttools))
@@ -2312,22 +2325,10 @@ with other frameworks.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-cmake-install-directories
-            (lambda _
-              ;; Make packages using kauth put their policy files and helpers
-              ;; into their own prefix.
-              (substitute* #$(string-append "KF" (version-major
-                                                  (package-version this-package))
-                                            "AuthConfig.cmake.in")
-                (("@KAUTH_POLICY_FILES_INSTALL_DIR@")
-                 "${KDE_INSTALL_DATADIR}/polkit-1/actions")
-                (("@KAUTH_HELPER_INSTALL_DIR@")
-                 "${KDE_INSTALL_LIBEXECDIR}/kauth")
-                (("@KAUTH_HELPER_INSTALL_ABSOLUTE_DIR@")
-                 "${KDE_INSTALL_FULL_LIBEXECDIR}/kauth"))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
+                (setenv "QT_QPA_PLATFORM" "offscreen")
                 (setenv "DBUS_FATAL_WARNINGS" "0")
                 (invoke "dbus-launch" "ctest")))))))
     (home-page "https://community.kde.org/Frameworks")
