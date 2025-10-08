@@ -39,6 +39,7 @@
   #:use-module (guix build-system copy)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
@@ -331,8 +332,8 @@ integration tests...\n")
 
 ;; Reference D compiler
 
-;; Bootstrap version of phobos that is built with GDC, using GDC's standard
-;; library.
+;; DMD built with GDC as the bootstrap D compiler (via the gdmd wrapper).
+;; Shared libraries are not built, tests are disabled.
 (define-public dmd-bootstrap
   (package
     ;; This package is purposefully named just "dmd" and not "dmd-bootstrap",
@@ -358,12 +359,10 @@ integration tests...\n")
       ;; Disable tests, as gdmd cannot cope with some arguments used such as
       ;; '-conf'.
       #:tests? #f
+      #:out-of-source? #t
       #:test-target "test"
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
-              ;; XXX: Proceed despite conflicts from symbols provided by both
-              ;; the source built and GDC.
-              "DFLAGS=-L--allow-multiple-definition"
               "ENABLE_RELEASE=1"
               (string-append "HOST_CXX=" #$(cxx-for-target))
               "HOST_DMD=gdmd"
@@ -374,70 +373,112 @@ integration tests...\n")
               (string-append "SYSCONFDIR=" #$output "/etc")
               "VERBOSE=1"
               "-f" "posix.mak")
+      #:modules
+      `(,@%default-gnu-modules
+        (srfi srfi-1)
+        (srfi srfi-26))
       #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'copy-phobos-source-and-chdir
-            ;; Start with building phobos, which in turns will automatically
-            ;; build druntime and dmd.  A minimal dmd command is still
-            ;; required to do so, which is why we need dmd-bootstrap-0.
-            (lambda _
-              (symlink "." "dmd")  ;to please the build system expected layout
-              (copy-recursively
-               #$(this-package-native-input (git-file-name "phobos" version))
-               "phobos")
-              (chdir "phobos")))
-          (add-after 'copy-phobos-source-and-chdir 'adjust-phobos-install-dirs
-            (lambda _
-              (substitute* "posix.mak"
-                ;; Install to lib directory, not to e.g. 'linux/lib64'.
-                (("\\$\\(INSTALL_DIR)/\\$\\(OS)/\\$\\(lib_dir)")
-                 (string-append #$output "/lib"))
-                ;; Do not install license file, already done by the gnu build
-                ;; system.
-                ((".*\\$\\(INSTALL_DIR)/phobos-LICENSE.txt.*") ""))))
-          (delete 'configure)
-          (add-after 'install 'install-druntime
-            (lambda args
-              (chdir "../druntime")
-              (apply (assoc-ref %standard-phases 'install) args)
-              (chdir "..")))
-          (add-after 'install-druntime 'install-includes
-            (lambda _
-              ;; Normalize the include files prefix to include/dmd.
-              (let ((include-dir (string-append #$output "/include/dmd")))
-                (mkdir-p include-dir)
-                (rename-file (string-append #$output "/src/phobos")
-                             (string-append include-dir))
-                (copy-recursively "druntime/import" include-dir))
-              (delete-file-recursively (string-append #$output "/src"))))
-          (add-after 'install-druntime 'install-dmd
-            (assoc-ref %standard-phases 'install))
-          (add-after 'install-license-files 'refine-install-layout
-            (lambda _
-              (let* ((docdir (string-append #$output "/share/doc/"
-                                            (strip-store-file-name #$output)))
-                     ;; The dmd binary gets installed to
-                     ;; e.g. /linux/bin64/dmd.
-                     (dmd (car (find-files #$output "^dmd$")))
-                     (dmd.conf (car (find-files #$output "^dmd.conf$")))
-                     (os-dir (dirname (dirname dmd))))
-                ;; Move samples from root to the doc directory.
-                (rename-file (string-append #$output "/samples")
-                             (string-append docdir "/samples"))
-                ;; Remove duplicate license file.
-                (delete-file (string-append #$output
-                                            "/dmd-boostlicense.txt"))
-                ;; Move dmd binary and dmd.conf.
-                (install-file dmd (string-append #$output "/bin"))
-                (install-file dmd.conf (string-append #$output "/etc"))
-                (delete-file-recursively os-dir))))
-          (add-after 'refine-install-layout 'patch-dmd.conf
-            (lambda* (#:key outputs #:allow-other-keys)
-              (substitute* (search-input-file outputs "etc/dmd.conf")
-                (("lib(32|64)")
-                 "lib")
-                (("\\.\\./src/(phobos|druntime/import)")
-                 "include/dmd")))))))
+      #~(let* ((phase-in-sub-dir (lambda (phase sub-dir)
+                                   (lambda args
+                                     (with-directory-excursion sub-dir
+                                       (apply
+                                        (assoc-ref %standard-phases phase)
+                                        args)))))
+               (target-bin-sh (string-append
+                               #$(this-package-input "bash-minimal")
+                               "/bin/sh")))
+          (modify-phases %standard-phases
+            (replace 'unpack
+              (lambda* (#:key source #:allow-other-keys)
+                (let ((dmd-source source)
+                      (phobos-source #$(this-package-native-input
+                                        (git-file-name "phobos" version))))
+                  (mkdir "source")
+                  (chdir "source")
+                  (copy-recursively dmd-source    "dmd"    #:keep-mtime? #t)
+                  (copy-recursively phobos-source "phobos" #:keep-mtime? #t)
+                  (for-each (lambda (f)
+                              (false-if-exception (make-file-writable f)))
+                            (find-files ".")))))
+            (add-after 'unpack 'patch-git-ls-tree
+              ;; The druntime posix.mak tries to use git ls-tree to get all
+              ;; source files in dmd/druntime/. We replace the command with a
+              ;; listing of those files.
+              (lambda _
+                (with-directory-excursion "dmd/druntime"
+                  (substitute* "posix.mak"
+                    (("^MANIFEST *:*=.*$")
+                     (string-append "MANIFEST := "
+                                    (string-join (map (cut string-drop <> 2)
+                                                      (find-files "./")))
+                                    "\n"))))))
+            (add-after 'unpack 'patch-paths-in-phobos
+              (lambda _
+                (with-directory-excursion "phobos"
+                  ;; (substitute* "std/datetime/timezone.d"
+                  ;;   (("\"/usr/share/zoneinfo/\"")
+                  ;;    (format #f "~s" target-zoneinfo)))
+                  ;; (substitute* "std/net/curl.d"
+                  ;;   (("\"libcurl\\.so\"")
+                  ;;    (format #f "~s" target-lib-curl)))
+                  (substitute* "std/process.d"
+                    (("return \"/bin/sh\";")
+                     (format #f "return ~s;" target-bin-sh))
+                    (("#!/bin/sh")
+                     (string-append "#!" target-bin-sh))))))
+            (delete 'bootstrap)
+            (delete 'configure)
+            (replace 'build
+              (phase-in-sub-dir 'build "dmd"))
+            (add-after 'build 'build-phobos
+              (phase-in-sub-dir 'build "phobos"))
+            (replace 'check
+              (phase-in-sub-dir 'check "dmd"))
+            (add-after 'check 'check-phobos
+              (phase-in-sub-dir 'check "phobos"))
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let* ((platform (cond (#$(target-linux?) "linux")))
+                       (bits (if #$(target-64bit?) 64 32))
+                       (build-sub-dir (format #f "generated/~a/release/~a"
+                                              platform bits))
+                       (out (assoc-ref outputs "out"))
+                       (lib (assoc-ref outputs "lib"))
+                       (out-bin (string-append out "/bin"))
+                       (out-etc (string-append out "/etc"))
+                       (out-include (string-append out "/include/d/dmd"))
+                       (out-lib (string-append out "/lib"))
+                       (lib-lib (string-append lib "/lib"))
+                       (out-man (string-append out "/share/man")))
+                  (with-directory-excursion "dmd"
+                    (with-directory-excursion build-sub-dir
+                      (install-file "dmd" out-bin)
+                      (install-file "libdruntime.a" out-lib)
+                      (for-each (cut install-file <> lib-lib)
+                                (find-files "." "^libdruntime\\.so[.0-9]*$")))
+                    (copy-recursively "druntime/import" out-include)
+                    (copy-recursively "compiler/docs/man" out-man))
+                  (with-directory-excursion "phobos"
+                    (with-directory-excursion build-sub-dir
+                      (install-file "libphobos2.a" out-lib)
+                      (for-each (cut install-file <> lib-lib)
+                                (find-files "." "^libphobos2\\.so[.0-9]*$")))
+                    (copy-recursively "etc" (string-append out-include "/etc"))
+                    (copy-recursively "std" (string-append out-include "/std")))
+                  (mkdir-p out-etc)
+                  (with-output-to-file (string-append out-etc "/dmd.conf")
+                    (lambda _
+                      (format #t "[Environment]\n")
+                      (format #t "DFLAGS=")
+                      (format #t " -I~a" out-include)
+                      (format #t " -L-L~a" out-lib)
+                      (format #t " -L-L~a" lib-lib)
+                      (format #t " -L--export-dynamic")
+                      (format #t " -fPIC")
+                      (format #t "\n"))))))
+            (replace 'install-license-files
+              ;; Phobos license is identical.
+              (phase-in-sub-dir 'install-license-files "dmd"))))))
     (native-inputs (list gdmd which
                          (origin
                            (method git-fetch)
@@ -448,6 +489,9 @@ integration tests...\n")
                            (sha256
                             (base32
                              "1yw7nb5d78cx9m7sfibv7rfc7wj3w0dw9mfk3d269qpfpnwzs4n9")))))
+    (inputs
+     (list bash-minimal))
+    (outputs '("out" "lib" "debug"))
     (home-page "https://github.com/dlang/dmd")
     (synopsis "Reference D Programming Language compiler")
     (description "@acronym{DMD, Digital Mars D compiler} is the reference
@@ -461,8 +505,8 @@ compiler for the D programming language.")
 
     (license license:boost1.0)))
 
-;; Second bootstrap of DMD, built using dmd-bootstrap, with its shared
-;; libraries preserved.
+;; DMD built with dmd-bootstrap as the bootstrap D compiler.
+;; Shared libraries are built now, tests are still disabled.
 (define-public dmd
   (package
     (inherit dmd-bootstrap)
@@ -476,36 +520,28 @@ compiler for the D programming language.")
           (package-arguments dmd-bootstrap))
        ((#:disallowed-references  _ ''())
         (list dmd-bootstrap))
-       ((#:modules _ ''())
-        '((guix build gnu-build-system)
-          (guix build utils)
-          (srfi srfi-1)))               ;for fold
        ((#:make-flags flags ''())
-        #~(fold delete #$flags '("DFLAGS=-L--allow-multiple-definition"
-                                 "HOST_DMD=gdmd"
+        #~(fold delete #$flags '("HOST_DMD=gdmd"
                                  "SHARED=0")))
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
-            (add-after 'patch-dmd.conf 'rewrite-references-to-bootstrap
-              ;; DMD keeps references to include files used to build a
-              ;; binary.  Rewrite those of dmd-bootstrap to itself, to reduce
-              ;; its closure size.
-              (lambda* (#:key native-inputs inputs outputs
-                        #:allow-other-keys)
-                (let ((dmd (search-input-file outputs "bin/dmd"))
-                      (dmd-bootstrap (dirname
-                                      (dirname
-                                       (search-input-file
-                                        (or native-inputs inputs)
-                                        "bin/dmd")))))
-                  ;; XXX: Use sed, as replace-store-references wouldn't
-                  ;; replace the references, while substitute* throws an
-                  ;; error.
+            (add-after 'install 'rewrite-references-to-bootstrap
+              ;; D compilers can keep references to the include files used to
+              ;; build a binary in exception messages. For dmd, rewrite the
+              ;; references to dmd-bootstrap to itself, to reduce its closure
+              ;; size.
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let* ((in-dmd-bootstrap #$(this-package-native-input "dmd"))
+                       (out (assoc-ref outputs "out"))
+                       (out-bin-dmd (string-append out "/bin/dmd")))
+                  ;; XXX: Use sed, as replace-store-references wouldn't replace
+                  ;; the references, while substitute* throws an error.
                   (invoke "sed" "-i"
-                          (format #f "s,~a,~a,g" dmd-bootstrap #$output)
-                          dmd))))))))
+                          (format #f "s,~a,~a,g" in-dmd-bootstrap out)
+                          out-bin-dmd))))))))
     (native-inputs (modify-inputs (package-native-inputs dmd-bootstrap)
-                     (replace "gdmd" dmd-bootstrap)))
+                     (delete "gdmd")
+                     (append dmd-bootstrap)))
     (properties
      (alist-delete 'hidden? (package-properties dmd-bootstrap)))))
 
