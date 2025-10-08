@@ -5150,16 +5150,127 @@ and aims to provide a similar API and functionality in Python.")
     (name "python-pyvista")
     (version "0.44.2")
     (source
-     ;; The PyPI tarball does not contain the tests.
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pyvista/pyvista")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pyvista/pyvista")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0lnh4cvf6wld7hm293015d80ny0vnsk96ckfvc2crzd1b79ch1v5"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 5891 passed, 623 skipped, 355 deselected, 3 xfailed, 167 warnings
+      #:test-flags
+      ;; TODO: Find out what's going on with skipped tests.
+      #~(list "--ignore=tests/plotting/test_charts.py"
+              "--ignore=tests/examples/test_download_files.py"
+              "--ignore=tests/examples/test_downloads.py"
+              "--ignore=tests/plotting/test_texture.py"
+              "-k" (string-join
+                    (list "not test_actor_texture"
+                          "test_add_multiple"
+                          "test_add_timer_event"
+                          "test_avsucd_reader"
+                          "test_binarymarchingcubesreader"
+                          "test_bmpreader"
+                          "test_box_axes"
+                          "test_byureader"
+                          "test_cast_to_numpy_raises"
+                          "test_compute_boundary_mesh_quality"
+                          "test_connectivity_"
+                          "test_dataset_loader_cubemap"
+                          "test_dataset_loader_dicom"
+                          "test_dataset_loader_from_nested_files_and_directory"
+                          "test_dataset_loader_from_nested_multiblock"
+                          "test_dataset_loader_one_file"
+                          "test_dataset_loader_two_files_both_loadable"
+                          "test_dataset_loader_two_files_one_loadable"
+                          "test_dcmreader"
+                          "test_demreader"
+                          "test_ensight_multi_block_io"
+                          "test_ensightreader_arrays"
+                          "test_ensightreader_time_sets"
+                          "test_ensightreader_timepoints"
+                          "test_facetreader"
+                          "test_fluentcffreader"
+                          "test_gambitreader"
+                          "test_gaussian_cubes_reader"
+                          "test_gesignareader"
+                          "test_gif_reader"
+                          "test_hdf_reader"
+                          "test_hdr_reader"
+                          "test_init_cmap"
+                          "test_interpolate"
+                          "test_jpegreader"
+                          "test_legend_"
+                          "test_load_dataset_no_reader"
+                          "test_load_theme"
+                          "test_meta_image_reader"
+                          "test_multiblockplot3dreader"
+                          "test_nifti_reader"
+                          "test_nrrd_reader"
+                          "test_objreader"
+                          "test_only_screenshots_flag"
+                          "test_openfoam_case_type"
+                          "test_openfoam_cell_to_point_default"
+                          "test_openfoam_patch_arrays"
+                          "test_openfoam_skip_zero_time"
+                          "test_openfoamreader_active_time"
+                          "test_openfoamreader_arrays_time"
+                          "test_openfoamreader_read_data_time_point"
+                          "test_openfoamreader_read_data_time_value"
+                          "test_particle_reader"
+                          "test_partition"
+                          "test_pdbreader"
+                          "test_plot3dmetareader"
+                          "test_plot_return_img_with_cpos"
+                          "test_plot_return_img_without_cpos"
+                          "test_png_reader"
+                          "test_pnm_reader"
+                          "test_prostar_reader"
+                          "test_protein_ribbon"
+                          "test_pvdreader"
+                          "test_pvdreader_no_part_group"
+                          "test_pvdreader_no_time_group"
+                          "test_read_cgns"
+                          "test_repr"
+                          "test_save_before_close_callback"
+                          "test_slc_reader"
+                          "test_stlreader"
+                          "test_tecplotreader"
+                          "test_tiff_reader"
+                          "test_timer"
+                          "test_translate_direction_collinear"
+                          "test_user_logo"
+                          "test_xdmf_reader")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; vtk check fails in sanity-check, comment out
+          (add-after 'unpack 'patch-pyproject
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("'vtk<9\\.4\\.0'," all) (string-append "#" all)))))
+          (add-after 'unpack 'fix-failing-tests
+            (lambda _
+              (substitute* "tests/plotting/test_plotting.py"
+                (("\"\"\"Determine if using mesa.\"\"\"" all)
+                 (string-append all "\n    return False")))
+              (substitute* "tests/test_meshio.py"
+                (("cow = .*$" all) (string-append "#" all "\n"))
+                ((", cow") ""))))
+          ;; test phase writes files to $HOME
+          (add-before 'check 'redirect-HOME
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-ipython
+           python-pytest
+           python-scipy
+           python-tqdm
+           python-trimesh))
     (propagated-inputs
      (list python-imageio
            python-matplotlib
@@ -5169,127 +5280,6 @@ and aims to provide a similar API and functionality in Python.")
            python-pooch
            python-scooby
            vtk))
-    ;; packages needed for testing
-    (native-inputs (list python-pytest
-                         python-scipy
-                         python-ipython
-                         python-trimesh
-                         python-tqdm))
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         ;; vtk check fails in sanity-check, comment out
-         (add-after 'unpack 'patch-pyproject
-           (lambda _
-             (substitute* "pyproject.toml"
-               (("'vtk<9\\.4\\.0'," all) (string-append "#" all)))))
-         (add-after 'unpack 'fix-failing-tests
-           (lambda _
-             (rename-file "tests/plotting/test_charts.py" "tests/plotting/_test_charts.py")
-             (rename-file "tests/examples/test_download_files.py" "tests/examples/_test_download_files.py")
-             (rename-file "tests/examples/test_downloads.py" "tests/examples/_test_downloads.py")
-             (rename-file "tests/plotting/test_texture.py" "tests/plotting/_test_texture.py")
-             (substitute* "tests/plotting/test_plotting.py"
-               (("\"\"\"Determine if using mesa.\"\"\"" all)
-                (string-append all "\n    return False")))
-             (substitute* "tests/test_meshio.py"
-               (("cow = .*$" all) (string-append "#" all "\n"))
-               ((", cow") ""))
-             (substitute* "tests/core/test_dataset.py"
-               (("test_partition") "_test_partition"))
-             (substitute* "tests/core/test_composite.py"
-               (("test_ensight_multi_block_io") "_test_ensight_multi_block_io"))
-             (substitute* "tests/core/test_dataset_filters.py"
-               (("test_connectivity_.*$" all) (string-append "_" all))
-               (("test_compute_boundary_mesh_quality") "_test_compute_boundary_mesh_quality"))
-             (substitute* "tests/core/test_polydata_filters.py"
-               (("test_protein_ribbon") "_test_protein_ribbon"))
-             (substitute* "tests/core/test_validation.py"
-               (("test_cast_to_numpy_raises") "_test_cast_to_numpy_raises"))
-             (substitute* "tests/plotting/test_actor.py"
-               (("test_actor_texture") "_test_actor_texture"))
-             (substitute* "tests/plotting/test_lookup_table.py"
-               (("test_init_cmap") "_test_init_cmap")
-               (("test_repr") "_test_repr"))
-             (substitute* "tests/plotting/test_plotter.py"
-               (("test_add_multiple") "_test_add_multiple")
-               (("test_plot_return_img_without_cpos") "_test_plot_return_img_without_cpos")
-               (("test_plot_return_img_with_cpos") "_test_plot_return_img_with_cpos")
-               (("test_only_screenshots_flag") "_test_only_screenshots_flag"))
-             (substitute* "tests/plotting/test_plotting_utilities.py"
-               (("test_gif_reader") "_test_gif_reader"))
-             (substitute* "tests/plotting/test_render_window_interactor.py"
-               (("test_timer") "_test_timer")
-               (("test_add_timer_event") "_test_add_timer_event")
-               (("test_interpolate") "_test_interpolate"))
-             (substitute* "tests/plotting/test_renderer.py"
-               (("test_legend_.*$" all) (string-append "_" all)))
-             (substitute* "tests/plotting/test_theme.py"
-               (("test_box_axes") "_test_box_axes")
-               (("test_load_theme") "_test_load_theme")
-               (("test_save_before_close_callback") "_test_save_before_close_callback")
-               (("test_user_logo") "_test_user_logo"))
-             (substitute* "tests/core/test_geometric_sources.py"
-               (("test_translate_direction_collinear") "_test_translate_direction_collinear"))
-             (substitute* "tests/examples/test_dataset_loader.py"
-               (("test_dataset_loader_one_file") "_test_dataset_loader_one_file")
-               (("test_dataset_loader_two_files_one_loadable") "_test_dataset_loader_two_files_one_loadable")
-               (("test_dataset_loader_two_files_both_loadable") "_test_dataset_loader_two_files_both_loadable")
-               (("test_dataset_loader_cubemap") "_test_dataset_loader_cubemap")
-               (("test_dataset_loader_dicom") "_test_dataset_loader_dicom")
-               (("test_dataset_loader_from_nested_files_and_directory") "_test_dataset_loader_from_nested_files_and_directory")
-               (("test_dataset_loader_from_nested_multiblock") "_test_dataset_loader_from_nested_multiblock")
-               (("test_load_dataset_no_reader") "_test_load_dataset_no_reader"))
-             (substitute* "tests/core/test_reader.py"
-               (("test_ensightreader_arrays") "_test_ensightreader_arrays")
-               (("test_ensightreader_timepoints") "_test_ensightreader_timepoints")
-               (("test_ensightreader_time_sets") "_test_ensightreader_time_sets")
-               (("test_dcmreader") "_test_dcmreader")
-               (("test_objreader") "_test_objreader")
-               (("test_stlreader") "_test_stlreader")
-               (("test_tecplotreader") "_test_tecplotreader")
-               (("test_byureader") "_test_byureader")
-               (("test_facetreader") "_test_facetreader")
-               (("test_plot3dmetareader") "_test_plot3dmetareader")
-               (("test_multiblockplot3dreader") "_test_multiblockplot3dreader")
-               (("test_binarymarchingcubesreader") "_test_binarymarchingcubesreader")
-               (("test_pvdreader") "_test_pvdreader")
-               (("test_pvdreader_no_time_group") "_test_pvdreader_no_time_group")
-               (("test_pvdreader_no_part_group") "_test_pvdreader_no_part_group")
-               (("test_openfoamreader_arrays_time") "_test_openfoamreader_arrays_time")
-               (("test_openfoamreader_active_time") "_test_openfoamreader_active_time")
-               (("test_openfoamreader_read_data_time_value") "_test_openfoamreader_read_data_time_value")
-               (("test_openfoamreader_read_data_time_point") "_test_openfoamreader_read_data_time_point")
-               (("test_openfoam_skip_zero_time") "_test_openfoam_skip_zero_time")
-               (("test_openfoam_cell_to_point_default") "_test_openfoam_cell_to_point_default")
-               (("test_openfoam_patch_arrays") "_test_openfoam_patch_arrays")
-               (("test_openfoam_case_type") "_test_openfoam_case_type")
-               (("test_read_cgns") "_test_read_cgns")
-               (("test_bmpreader") "_test_bmpreader")
-               (("test_demreader") "_test_demreader")
-               (("test_jpegreader") "_test_jpegreader")
-               (("test_meta_image_reader") "_test_meta_image_reader")
-               (("test_nifti_reader") "_test_nifti_reader")
-               (("test_nrrd_reader") "_test_nrrd_reader")
-               (("test_png_reader") "_test_png_reader")
-               (("test_pnm_reader") "_test_pnm_reader")
-               (("test_slc_reader") "_test_slc_reader")
-               (("test_tiff_reader") "_test_tiff_reader")
-               (("test_hdr_reader") "_test_hdr_reader")
-               (("test_avsucd_reader") "_test_avsucd_reader")
-               (("test_hdf_reader") "_test_hdf_reader")
-               (("test_xdmf_reader") "_test_xdmf_reader")
-               (("test_fluentcffreader") "_test_fluentcffreader")
-               (("test_gambitreader") "_test_gambitreader")
-               (("test_gaussian_cubes_reader") "_test_gaussian_cubes_reader")
-               (("test_gesignareader") "_test_gesignareader")
-               (("test_pdbreader") "_test_pdbreader")
-               (("test_particle_reader") "_test_particle_reader")
-               (("test_prostar_reader") "_test_prostar_reader"))))
-         ;; test phase writes files to $HOME
-         (add-before 'check 'redirect-HOME
-           (lambda _
-             (setenv "HOME" "/tmp"))))))
     (home-page "https://docs.pyvista.org/")
     (synopsis "3D plotting and mesh analysis through VTK")
     (description
