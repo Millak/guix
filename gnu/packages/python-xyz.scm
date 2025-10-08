@@ -9120,33 +9120,24 @@ decorator for retrying on exceptions.")
 (define-public python-restructuredtext-lint
   (package
     (name "python-restructuredtext-lint")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "restructuredtext-lint" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/twolfson/restructuredtext-lint")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "026rdy5h82ng4vqxk8fnprii9d6qxf7hkygiv0a8afjvdlsxmcwp"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "nosetests" "-v"))
-             #t)))))
-    (propagated-inputs
-     (list python-docutils))
-    (native-inputs
-     (list python-nose))
+        (base32 "19ncbmnq2rnkqxhc9wf0q9whji34iyfv1pz6z61vnv4qhhdrn33v"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'nose))
+    (propagated-inputs (list python-docutils))
+    (native-inputs (list python-nose python-setuptools))
     (home-page "https://github.com/twolfson/restructuredtext-lint")
     (synopsis "Linter")
-    (description "This package provides a linter for the reStructuredText
-format.")
+    (description
+     "This package provides a linter for the reStructuredText format.")
     (license license:unlicense)))
 
 (define-public python-click-repl
