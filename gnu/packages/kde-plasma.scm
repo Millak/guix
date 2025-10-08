@@ -3079,14 +3079,14 @@ hardware management, and a high degree of customizability.")
 (define-public print-manager
   (package
     (name "print-manager")
-    (version "6.4.3")
+    (version "6.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/plasma/" version
                            "/print-manager-" version ".tar.xz"))
        (sha256
-        (base32 "0d1dld9kbn2h9alyrwkycy4s4krzp40vjk4aq9spx4vdd3ipzzgx"))))
+        (base32 "1jj2l89nxdmyhlr9arkcjsqxbm8qp7h2rg8lqnswh2nij81gsf72"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
