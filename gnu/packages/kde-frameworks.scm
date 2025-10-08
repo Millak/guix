@@ -3339,7 +3339,7 @@ KCModules can be created with the KConfigWidgets framework.")
 (define-public kconfigwidgets
   (package
     (name "kconfigwidgets")
-    (version "6.16.0")
+    (version "6.18.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3348,7 +3348,7 @@ KCModules can be created with the KConfigWidgets framework.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1ifmwbp59vlli6l8a5rgf0y5slc03s9hs7mxhqjv2jg0v9pjbh31"))))
+                "04q8ch6qjy1p65k3gb7i51mr4w9y9kw3b976fwzp66ca4zk7nnma"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list kcodecs kconfig kcolorscheme kwidgetsaddons))
