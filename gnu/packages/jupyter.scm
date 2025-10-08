@@ -1351,10 +1351,13 @@ datasets across widgets.")
     (version "2.6.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "papermill" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nteract/papermill")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "097ai2n7f72a7hya9qnds3f28cg70p8xdj2c3cwqymzx28cskqlz"))))
+        (base32 "1i5zikvl9inficryqfz0v885v24pcs78cj5nzyjw0x232kxbj41p"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1375,27 +1378,18 @@ datasets across widgets.")
                              python-tenacity
                              python-tqdm))
     (native-inputs (list python-attrs
-                         python-black
                          python-boto3
                          python-botocore
-                         python-bumpversion
-                         python-check-manifest
-                         python-codecov
-                         python-coverage
                          python-ipython
                          python-ipywidgets
                          python-moto
                          python-notebook
                          python-pytest
-                         python-pytest-cov
                          python-pytest-env
                          python-pytest-mock
                          python-recommonmark
                          python-requests
-                         python-setuptools
-                         python-tox
-                         python-twine
-                         python-wheel))
+                         python-setuptools))
     (home-page "https://github.com/nteract/papermill")
     (synopsis "Parameterize and run Jupyter and nteract Notebooks")
     (description "Papermill is a tool for parameterizing, executing, and
