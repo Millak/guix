@@ -107,7 +107,7 @@
 (define-public libplasma
   (package
     (name "libplasma")
-    (version "6.4.3")
+    (version "6.4.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -115,7 +115,7 @@
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1j0cpf9bikrk02i7pdwf3fia2h741rh9a4g3wmi4849asg7cw27m"))))
+                "0921kh0a8xwxjza1zkxyhbb9c83hly14x1jmdc7hhmpcrxa6qnwl"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list kpackage kwindowsystem))
