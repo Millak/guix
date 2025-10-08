@@ -57,6 +57,7 @@
 ;;; Copyright © 2025 Kjartan Oli Agustsson <kjartanoli@outlook.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Antoine Côté <antoine.cote@posteo.net>
+;;; Copyright © 2025 Isidor Zeuner <guix@quidecco.pl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5622,6 +5623,42 @@ machine-readable ASCII format.")
 encoder used for an MPEG Layer III (MP3) file, as well as scan any MPEG audio
 file (any layer) and print a lot of useful information.")
     (license license:lgpl2.1+)))
+
+(define-public mp3cat
+  (package
+    (name "mp3cat")
+    (version "0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tomclegg/mp3cat")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n6hjg2wgd06m561zc3ib5w2m3pwpf74njv2b2w4sqqh5md2ymfr"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;upstream defines no tests
+      #:make-flags
+      #~(list (string-append "PREFIX="
+                             #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'patch-makefile
+            (lambda _args
+              (substitute* "Makefile"
+                (("cc")
+                 #$(cc-for-target))))))))
+    (home-page "http://tomclegg.net/mp3cat")
+    (synopsis "MP3 stream copier and concatenator")
+    (description
+     "Copies a stream, skipping everything except MP3 frames with valid
+headers.  This can be used to copy and concatenate streams, even if
+they contain extra garbage.")
+    (license license:gpl2+)))
 
 (define-public shntool
   (package
