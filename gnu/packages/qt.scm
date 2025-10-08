@@ -5511,7 +5511,7 @@ color-related widgets.")
            (sha256
             (base32 "1h5l29q82grz94z5ch95vq6hs5clcymbcb3yngqfsh47gsffmmim"))))))
     (inputs
-     (list qtbase-5))
+     (list qtbase))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -5540,6 +5540,13 @@ color-related widgets.")
     (description
      "QCustomPlot is a Qt C++ widget providing 2D plots, graphs and charts.")
     (license license:gpl3+)))
+
+(define-public qcustomplot-qt5
+  (package/inherit qcustomplot
+    (name "qcustomplot-qt5")
+    (inputs
+     (modify-inputs (package-inputs qcustomplot)
+       (replace "qtbase" qtbase-5)))))
 
 ;; TODO: Split shiboken2 binding generator into a dedicated output.
 ;; This executable requires libxml2, libxslt, clang-toolchain at runtime.

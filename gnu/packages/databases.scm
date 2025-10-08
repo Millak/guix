@@ -5935,7 +5935,7 @@ a Gtk.Grid Widget.")
                    "-DFORCE_INTERNAL_QHEXEDIT=OFF"
                    "-DENABLE_TESTING=ON")))
     (inputs
-     (list qcustomplot
+     (list qcustomplot-qt5
            qhexedit
            qscintilla
            qtbase-5

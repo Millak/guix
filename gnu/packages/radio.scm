@@ -3185,7 +3185,7 @@ software-defined radio receivers.")
            opus
            portaudio
            pulseaudio
-           qcustomplot
+           qcustomplot-qt5
            qtgamepad-5
            qtbase-5
            qtmultimedia-5
