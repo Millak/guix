@@ -328,7 +328,7 @@ with the @uref{https://keepassxc.org, KeePassXC} password manager.")
 (define noscript
   (package
     (name "noscript")
-    (version "13.0.9")
+    (version "13.2.1")
     (source (origin
               (method url-fetch/zipbomb)
               (uri (string-append
@@ -336,7 +336,7 @@ with the @uref{https://keepassxc.org, KeePassXC} password manager.")
                     ".xpi"))
               (sha256
                (base32
-                "1xbisx3xqak9aj7nb2lh94an6yfldsl6a2g2qc87vxi1zwdbcnjj"))))
+                "16p63kg7zwnfss9sb3j2kn9m7dx9prh09h4vbz3b0pg5s7rrf0hr"))))
     (build-system copy-build-system)
     (properties '((addon-id . "{73a6fe31-595d-460b-a920-fcc0f8843232}")))
     (arguments
