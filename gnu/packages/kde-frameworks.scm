@@ -4843,7 +4843,7 @@ It supports rich text as well as plain text.")
 (define-public ktexttemplate
   (package
     (name "ktexttemplate")
-    (version "6.16.0")
+    (version "6.18.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4852,7 +4852,7 @@ It supports rich text as well as plain text.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "1dgr81p3lahllw624y2930k5g3gkg3z3sgaif9hxqc80i4dcz00q"))))
+                "01kyyd07qap0mjbp4h1mjzffypi7x3yj8zgvzvkc1vd86mf51dnb"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
