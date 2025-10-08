@@ -1316,14 +1316,14 @@ the running system.")
 (define-public libkscreen
   (package
     (name "libkscreen")
-    (version "6.4.3")
+    (version "6.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/plasma/" version "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0sxhh7mx4h9s7vgapphfhlwfnxzjx7yydv80w13whlh62420cpx2"))))
+        (base32 "1d72ng2jpm8r4106my8lgkjk8852a167hi4glwahyibbclknxlk8"))))
     (build-system qt-build-system)
     (arguments
      (list
