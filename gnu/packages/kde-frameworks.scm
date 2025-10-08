@@ -2454,7 +2454,7 @@ localized country name to ISO 3166-1 alpha 2 code mapping and vice verca.
 (define-public kcrash
   (package
     (name "kcrash")
-    (version "6.16.0")
+    (version "6.18.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2463,7 +2463,7 @@ localized country name to ISO 3166-1 alpha 2 code mapping and vice verca.
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1hqxd71xk6kqaaii7wnnnxsaf0rybi4m00ikai8kjyjrp84s3qq6"))))
+                "1q14ndj0ypbjhsn65wm2pb2liqj9hxbli65mrxgmf7qm3f196qm6"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kcoreaddons kwindowsystem))
