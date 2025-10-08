@@ -236,7 +236,7 @@ formal verification.")
   (package
     (inherit abc)
     (name "abc-yosyshq")
-    (version "0.57")
+    (version "0.58")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2195,7 +2195,7 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
 (define-public symbiyosys
   (package
     (name "symbiyosys")
-    (version "0.57")
+    (version "0.58")
     (source
      (origin
        (method git-fetch)
@@ -2204,7 +2204,7 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w95svb9vgvfqbbvqaq6jkia5jldbai9l7r8nrx93wcfrm82r36x"))))
+        (base32 "0fja71y1wkqdwc3cwwk9ifaf33hhnxr8khlj9fhadbcc66rg1s56"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -2417,7 +2417,7 @@ support for ESD sources.")
 (define-public yosys
   (package
     (name "yosys")
-    (version "0.57")
+    (version "0.58")
     (source
      (origin
        (method git-fetch)
@@ -2425,7 +2425,7 @@ support for ESD sources.")
               (url "https://github.com/YosysHQ/yosys")
               (commit (string-append "v" version))))
        (sha256
-        (base32 "0bix5zlv9zp9fxqpn9l9bdw65xrgih5w0csq1xkkhm2c7p3vqjbb"))
+        (base32 "13095d587dvnj6n1fhw5whda7qhafmmng0qz6qa52cdxriz63kka"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
