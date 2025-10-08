@@ -2321,6 +2321,9 @@ for Common Lisp.")
 (define-public cl-black-tie
   (sbcl-package->cl-source-package sbcl-black-tie))
 
+(define-public clasp-black-tie
+  (sbcl-package->clasp-package sbcl-black-tie))
+
 (define-public sbcl-blackbird
   (let ((commit "d361f81c1411dec07f6c2dcb11c78f7aea9aaca8")
         (revision "1"))
