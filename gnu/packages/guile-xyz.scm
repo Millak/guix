@@ -58,6 +58,7 @@
 ;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>
 ;;; Copyright © 2025 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2025 Andy Tai <atai@atai.org>
+;;; Copyright © 2025 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -102,6 +103,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gperf)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -7493,6 +7495,30 @@ HTTP handler to implement a HTTP GraphQL endpoint.")
     (synopsis "Guile bindings for libnotify")
     (description "Provides bindings for GNOME's libnotify C library to Guile")
     (home-page "https://github.com/ekaitz-zarraga/guile-libnotify")
+    (license license:gpl3+)))
+
+(define-public guile-rope
+  (package
+    (name "guile-rope")
+    (version "0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://codeberg.org/annoyingusername/"
+                           "guile-rope/releases/download/v0.1/"
+                           "guile-rope-" version ".tar.gz"))
+       (sha256
+        (base32 "1mnic4pglm2wxlgkhw77c3ig6ysxfl7cgk0lm9mz1c90apvh0zcf"))))
+    (build-system gnu-build-system)
+    (native-inputs (list graphviz pkg-config))
+    (inputs (list guile-3.0))
+    (synopsis "The rope data structure for GNU Guile")
+    (description
+     "This library implements immutable ropes for GNU Guile. A rope is a data
+structure that represents text strings.  It is useful for text editing, because
+text can be inserted at an arbitrary point without requiring the moving of a lot
+of data.")
+    (home-page "https://annoyingusername.codeberg.page/guile-rope")
     (license license:gpl3+)))
 
 (define-public lokke
