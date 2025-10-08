@@ -995,7 +995,7 @@ computer's hardware.")
 (define-public koi
   (package
     (name "koi")
-    (version "0.5.1")
+    (version "0.6")
     (source
      (origin
        (method git-fetch)
@@ -1004,7 +1004,7 @@ computer's hardware.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1z3j3lcfqkwck4i4srpcanjyb2cmizd702f6s5lhfhrmmsbccwkx"))))
+        (base32 "1xhrdkfsyn2qpiscp4smd2gr4vfplaid1m6lqh4lhasscvwx45k1"))))
     (build-system qt-build-system)
     (inputs (list kconfig
                   kcoreaddons
