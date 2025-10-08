@@ -3834,6 +3834,30 @@ way as basic integer types.")
 common controls and win32-style extensions.")
     (license license:zlib))))
 
+(define-public swell-colortheme
+  (package
+    (inherit swell)
+    (name "swell-colortheme")
+    (arguments
+     (substitute-keyword-arguments (package-arguments swell)
+       ((#:make-flags flags)
+        #~(append #$flags '("libSwell.colortheme")))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'install
+              (lambda _
+                (install-file "libSwell.colortheme"
+                                   (string-append #$output
+                                                  "/share/SWELL"))))))))
+    (native-inputs
+     (list pkg-config
+           gtk+)) ;only for compilation
+    (inputs '())
+    (synopsis "SWELL colortheme sample")
+    (description
+     "This package provides the default @code{libSwell.colortheme} file for
+programs that use @code{swell}.")))
+
 (define-public juce
   (package
     (name "juce")
