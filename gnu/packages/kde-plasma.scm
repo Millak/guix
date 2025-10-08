@@ -1481,7 +1481,7 @@ you login.")
 (define-public kwayland-integration
   (package
     (name "kwayland-integration")
-    (version "6.4.3")
+    (version "6.4.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1489,7 +1489,7 @@ you login.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1l72ns4mj7a6dvhzi3hrhv54pa8zj5izm53q856rsbnkw8s23bwv"))))
+                "00ymvq1l7lmqw7isdds18ahp7b9hhc2q4mwy1hvvsfvnacqdcazx"))))
     (build-system qt-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
