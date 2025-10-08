@@ -1226,14 +1226,14 @@ the running system.")
 (define-public layer-shell-qt
   (package
     (name "layer-shell-qt")
-    (version "6.4.3")
+    (version "6.4.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/layer-shell-qt-" version ".tar.xz"))
               (sha256
                (base32
-                "0z6vvpwm26s43x8n3hzsh7v6n052sv2akyn3qd3rb7idrp04xrik"))))
+                "15bf97hk4fjcij1014fl3yww6agffl03z7q2i6pkiw0l47ialszg"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
