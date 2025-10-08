@@ -558,7 +558,7 @@ desktop.")
 (define-public krdp
   (package
     (name "krdp")
-    (version "6.4.3")
+    (version "6.4.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -566,7 +566,7 @@ desktop.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "11xphz2q201zwgfq9njh5vwqhc9acf0nwryw40slpw906qwm0jdh"))))
+                "0i8ak6zijxihl3wabbi5896y0ai7r7284mb5f4njvdmnbl12q71q"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase
                      #:tests? #f
