@@ -9353,7 +9353,7 @@ software version simply.")
     (propagated-inputs
      (list python-wrapt))
     (native-inputs
-     (list python-bumpversion python-pytest python-setuptools python-wheel))
+     (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/tantale/deprecated")
     (synopsis "Python decorator to deprecate classes, functions or methods")
     (description "The @code{deprecated} decorator provides a convenient way to deprecate
