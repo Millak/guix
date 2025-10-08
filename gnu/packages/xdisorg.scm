@@ -74,6 +74,7 @@
 ;;; Copyright © 2025 iamawacko <iamawacko@protonmail.com>
 ;;; Copyright © 2025 dan <i@dan.games>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2025 Untrusem <mysticmoksh@riseup.net>
 ;;; Copyright © 2026 VnPower <vnpower@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -145,6 +146,7 @@
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages kde-utils)
   #:use-module (gnu packages libbsd)
@@ -3306,6 +3308,36 @@ Wayland.")
     (description "This package provides a wrapper script around
 @code{x11-clipboard} to use it as a clipboard on X11 also.  It also contains
 helper scripts for @code{xclip} and @code{xsel} to assist with the transition.")
+    (license license:gpl3+)))
+
+(define-public wl-kbptr
+  (package
+    (name "wl-kbptr")
+    (version "0.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/moverest/wl-kbptr")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fqgv4fbr7asf9chjk4wwbmqjgr6i8diac08vag122h934ph4hb7"))))
+    (build-system meson-build-system)
+    (arguments (list #:configure-flags #~'("-Dopencv=enabled")))
+    (native-inputs (list pkg-config))
+    (inputs (list gtk
+                  libxkbcommon
+                  opencv
+                  pixman
+                  wayland
+                  wayland-protocols))
+    (home-page "https://github.com/moverest/wl-kbptr")
+    (synopsis "Control the mouse pointer with the keyboard on Wayland")
+    (description
+     "This package provides a utility called @code{wl-kbptr} short for
+Wayland Keyboard Pointer, to help move the mouse pointer with the
+keyboard on Wayland.")
     (license license:gpl3+)))
 
 (define-public autocutsel
