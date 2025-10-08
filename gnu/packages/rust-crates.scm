@@ -17538,6 +17538,10 @@
   (crate-source "typenum" "1.18.0"
                 "0gwgz8n91pv40gabrr1lzji0b0hsmg0817njpy397bq7rvizzk0x"))
 
+(define rust-typenum-1.19.0
+  (crate-source "typenum" "1.19.0"
+                "1fw2mpbn2vmqan56j1b3fbpcdg80mz26fm53fs16bq5xcq84hban"))
+
 (define rust-typetag-0.2.20
   (crate-source "typetag" "0.2.20"
                 "0vyyqg2ard4jz8jxdcim0j4j2r1nh4h71y8c4ca8rzkvvm02pwkk"))
@@ -36000,6 +36004,49 @@
                                     rust-zerovec-derive-0.10.3
                                     rust-zip-2.5.0
                                     rust-zopfli-0.8.1))
+                     (oniongen-rs =>
+                                  (list rust-aho-corasick-1.1.3
+                                   rust-anstyle-1.0.13
+                                   rust-block-buffer-0.10.4
+                                   rust-cfg-if-1.0.3
+                                   rust-clap-4.5.48
+                                   rust-clap-builder-4.5.48
+                                   rust-clap-lex-0.7.5
+                                   rust-cpufeatures-0.2.17
+                                   rust-crypto-common-0.1.6
+                                   rust-curve25519-dalek-4.1.3
+                                   rust-curve25519-dalek-derive-0.1.1
+                                   rust-digest-0.10.7
+                                   rust-ed25519-2.2.3
+                                   rust-ed25519-dalek-2.2.0
+                                   rust-fiat-crypto-0.2.9
+                                   rust-generic-array-0.14.7
+                                   rust-getrandom-0.2.16
+                                   rust-keccak-0.1.5
+                                   rust-libc-0.2.176
+                                   rust-memchr-2.7.6
+                                   rust-once-cell-1.21.3
+                                   rust-owo-colors-3.5.0
+                                   rust-paste-1.0.15
+                                   rust-proc-macro2-1.0.101
+                                   rust-quote-1.0.41
+                                   rust-rand-0.8.5
+                                   rust-rand-core-0.6.4
+                                   rust-regex-1.11.3
+                                   rust-regex-automata-0.4.11
+                                   rust-regex-syntax-0.8.6
+                                   rust-rustc-version-0.4.1
+                                   rust-semver-1.0.27
+                                   rust-sha2-0.10.9
+                                   rust-sha3-0.10.8
+                                   rust-signature-2.2.0
+                                   rust-strsim-0.11.1
+                                   rust-subtle-2.6.1
+                                   rust-syn-2.0.106
+                                   rust-typenum-1.19.0
+                                   rust-unicode-ident-1.0.19
+                                   rust-version-check-0.9.5
+                                   rust-wasi-0.11.1+wasi-snapshot-preview1))
                      (ouch =>
                            (list rust-adler2-2.0.0
                                  rust-aes-0.8.4

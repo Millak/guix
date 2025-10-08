@@ -16,6 +16,7 @@
 ;;; Copyright © 2025 Danial Behzadi <dani.behzi@ubuntu.com>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 iamawacko <iamawacko@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,6 +40,7 @@
   #:use-module (guix utils)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix build-system pyproject)
@@ -262,6 +264,30 @@ flexible configuration and can be customized to suit individual needs and
 tastes.  It has application for both stand-alone systems and multi-user
 networks.")
     (license license:gpl2+)))
+
+(define-public oniongen-rs
+  (package
+    (name "oniongen-rs")
+    (version "0.6.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "oniongen-rs" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "17jr1k2ga0wpama87hr9xdnhz8nj12cmhzvpvm42yrgfckkampbz"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f))
+    (inputs (cargo-inputs 'oniongen-rs))
+    (home-page "https://gitlab.com/iamawacko-oss/oniongen-rs")
+    (synopsis "V3 .onion vanity URL generator")
+    (description
+     "This package provides a v3 .onion vanity URL generator written in Rust.
+Regex can be used to filter URLs.  The thread count and output directory can be
+specified.  If the address generated matches your prefix, the hostname, public
+key, and private key are written to a new directory.")
+    (license license:expat)))
 
 (define-public onionshare-cli
   (package
