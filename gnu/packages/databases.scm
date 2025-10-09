@@ -3197,7 +3197,7 @@ database.")
   (package
     (inherit valkey-7)
     (name "valkey")
-    (version "8.1.1")
+    (version "8.1.4")
     (source
      (origin
        (inherit (package-source valkey-7))
@@ -3207,7 +3207,7 @@ database.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n5ckpa1h87h1llnm4khyf6060gqd4pj43d93vlrvn3hxpdyji8b"))))
+        (base32 "1p7jr5048syd9ln0bsh2n5ba6fd7x9wfa1x67b7wychv7a46dfx1"))))
     (arguments
      (substitute-keyword-arguments (package-arguments valkey-7)
        ((#:phases phases '%standard-phases)
