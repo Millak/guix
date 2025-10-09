@@ -1522,7 +1522,7 @@ non-interactive.")
 (define-public git-crypt
   (package
     (name "git-crypt")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
@@ -1531,7 +1531,7 @@ non-interactive.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ymk2z0jfyhycia8hg6wbj2g06m163yzqzanfk172cxb13fa8c26"))))
+        (base32 "0kr3z095vg08mbq9j9sl4lchnq1q9rz4a1nik1pqxh6hdn5kfcpj"))))
     (build-system gnu-build-system)
     (inputs
      (list git openssl))
