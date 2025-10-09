@@ -7655,6 +7655,8 @@ and configurable such as option groups, constraints, subcommand aliases,
 subcommands sections and a themeable HelpFormatter.")
     (license license:bsd-3)))
 
+;; XXX: No fresh releases or updates since 2016, consider to remove, leaf
+;; package.
 (define-public python-vcversioner
   (package
     (name "python-vcversioner")
@@ -7666,12 +7668,16 @@ subcommands sections and a themeable HelpFormatter.")
        (sha256
         (base32
          "16z10sm78jd7ca3jbkgc3q5i8a8q7y1h21q1li21yy3rlhbhrrns"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests in PyPI archvie
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/habnabit/vcversioner")
     (synopsis "Python library for version number discovery")
     (description "Vcversioner is a Python library that inspects tagging
 information in a variety of version control systems in order to discover
 version numbers.")
-    (home-page "https://github.com/habnabit/vcversioner")
     (license license:isc)))
 
 (define-public python-jsondiff
