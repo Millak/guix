@@ -27274,11 +27274,7 @@ input.")
      ;; Maybe we need to spawn a valkey server?
      (list #:tests? #f))
     (native-inputs
-     (list python-cachetools
-           python-pytest
-           python-pytest-asyncio
-           python-pytest-timeout
-           python-setuptools))
+     (list python-setuptools))
     (home-page "https://github.com/valkey-io/valkey-py")
     (synopsis "Python client for Valkey")
     (description
