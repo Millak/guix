@@ -132,6 +132,9 @@ that handle none of the event types.")
       ;; The TestGoDef/Modules test fails, because of the lack of Go modules
       ;; support.
       #:test-flags #~(list "-skip" "TestGoDef/GOPATH|TestGoDef/Modules")))
+    (native-inputs
+     ;; XXX: Remove in the next refresh cycle.
+     (list go-golang-org-x-tools-go-packages-packagestest))
     (inputs
      (list go-golang-org-x-tools
            go-ninefans-net-go))
