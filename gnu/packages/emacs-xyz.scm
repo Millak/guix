@@ -10033,9 +10033,9 @@ with Emacs.")
         (base32 "0x11sjiy3j43am0clwxsbx7b38pfsl74qgypkc3czs7dh1c5xyrx"))))
     (build-system emacs-build-system)
     (arguments
-     ;; the testing framework, test-hdl, requires network
-     `(#:tests? #f
-       #:test-command '("make")))
+     (list
+      #:tests? #f         ;the testing framework, test-hdl, requires network
+      #:test-command #~(list "make")))
     (propagated-inputs (list tree-sitter-vhdl))
     (home-page "https://github.com/gmlarumbe/vhdl-ts-mode/")
     (synopsis "VHDL Tree-sitter mode")
