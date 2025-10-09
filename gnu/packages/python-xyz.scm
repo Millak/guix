@@ -5915,6 +5915,7 @@ for additional processing.")
      "Fastprogress is a progress bar for Jupyter Notebook and console.")
     (license license:asl2.0)))
 
+;; XXX: No updates since 2017.
 (define-public python-verboselogs
   (package
     (name "python-verboselogs")
@@ -5924,20 +5925,19 @@ for additional processing.")
        (method url-fetch)
        (uri (pypi-uri "verboselogs" version))
        (sha256
-        (base32
-         "09z4d1jiasn7k1hs5af2ckmnrd0i1d1m04bhfjhv7z6svzfdwgg3"))))
-    (build-system python-build-system)
+        (base32 "09z4d1jiasn7k1hs5af2ckmnrd0i1d1m04bhfjhv7z6svzfdwgg3"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             ;; Do not run pylint plugin test, as astroid is an old
-             ;; unsupported version.
-             (invoke "pytest" "-v" "-k" "not test_pylint_plugin"
-                     "verboselogs/tests.py"))))))
+     (list
+      #:test-flags
+      ;; Do not run pylint plugin test, as astroid is an old unsupported
+      ;; version.
+      #~(list "-k" "not test_pylint_plugin"
+              "verboselogs/tests.py")))
     (native-inputs
-     (list python-mock python-pytest))
+     (list python-mock
+           python-pytest
+           python-setuptools))
     (home-page "https://verboselogs.readthedocs.io")
     (synopsis "Verbose logging level for Python's logging module")
     (description
