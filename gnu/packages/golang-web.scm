@@ -13379,7 +13379,7 @@ docs}.")
 (define-public go-k8s-io-kube-openapi
   (package
     (name "go-k8s-io-kube-openapi")
-    (version "0.0.0-20250905212525-66792eed8611")
+    (version "0.0.0-20250910181357-589584f1c912")
     ;; XXX: Unbundle third_party in pkg.
     (source
      (origin
@@ -13389,32 +13389,27 @@ docs}.")
               (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1979alrrlym968jxdcxc1lpm3b13bnkyayg042gk6xn0kb97mqma"))
-       ;; XXX: test/integration contains submodule with it's own go.mod.
+        (base32 "1appaqgllddcl6kxkz3azix0xhlzy093vvxi6y3im1mkf5zblwl7"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
-            ;; Keeping just testdata.
-            (for-each delete-file-recursively
-                      (list "test/integration/builder"
-                            "test/integration/builder3"
-                            "test/integration/openapiconv"
-                            "test/integration/pkg/generated"
-                            "test/integration/testutil"
-                            "test/integration/import.go"
-                            "test/integration/integration_suite_test.go"))))))
+            (delete-file-recursively "test")))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path "k8s.io/kube-openapi"
-      ;; Tests are not copatible with Go 1.24+.
-      #:test-flags #~(list "-vet=off")))
+      #:test-flags
+      ;; Go@1.24 forces vet, but tests are not ready yet.
+      #~(list "-vet=off" 
+              ;; It tries to regenerate the test data.
+              "-skip" "TestGenerators")))
     (native-inputs
      (list go-github-com-onsi-ginkgo-v2
            go-github-com-onsi-gomega
            go-github-com-stretchr-testify
-           ;; go-golang-org-x-tools-go-packages-packagestest
+           go-golang-org-x-tools-go-packages-packagestest
+           go-k8s-io-kube-openapi-test-integration
            go-sigs-k8s-io-yaml))
     (propagated-inputs
      (list go-github-com-emicklei-go-restful-v3
