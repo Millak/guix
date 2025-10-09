@@ -238,6 +238,7 @@ package contains the library, but no drivers.")
        ((#:phases phases)
         `(modify-phases ,phases
            (delete 'disable-backends)
+           (delete 'remove-dll.conf)
            (add-after 'disable-failing-tests 'disable-failing-backend-tests
              (lambda _
                ;; Disable test that fails on i686:
