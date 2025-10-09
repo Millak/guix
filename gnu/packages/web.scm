@@ -5438,6 +5438,7 @@ http://opensearch.a9.com} compatible search engines.")
 their web site.")
     (home-page "https://metacpan.org/release/WWW-RobotRules")))
 
+;; XXX: No fresh release since 2019.
 (define-public python-lambda-4dn
   (package
     (name "python-lambda-4dn")
@@ -5452,6 +5453,7 @@ their web site.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #f ;no tests in PyPI archive
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-pip-install
@@ -5478,15 +5480,13 @@ their web site.")
                                 "os.utime(os.path.join(root, file), (315619200, 315619200))\n"
                                 line))))))))
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (inputs (list python))
     (propagated-inputs
      (list python-boto3
            python-botocore
            python-docutils
-           python-pip
-           python-six
+           python-pip ;it's imported in aws_lambda/aws_lambda.py
            python-virtualenv))
     (home-page "https://github.com/4dn-dcic/python-lambda")
     (synopsis
