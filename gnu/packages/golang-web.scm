@@ -4930,6 +4930,84 @@ the Go standard library, but returns a client that does not share any state
 with other clients.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-go-metrics
+  ;; v0.5.0 of the library renamed the Go module from
+  ;; "github.com/armon/go-metrics" to "github.com/hashicorp/go-metrics". While
+  ;; this did not introduce any breaking changes to the API, the change did
+  ;; subtly break backwards compatibility.
+  ;;
+  ;; Eventually all usage of "armon/go-metrics" should be replaced with usage
+  ;; of "hashicorp/go-metrics"
+  (package
+    (name "go-github-com-hashicorp-go-metrics")
+    (version "0.5.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hashicorp/go-metrics")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rw8251w6lkpbm6qhbdi37jbjknmlw1ampqicfyk32mfq3grn0ar"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Module name has been changed upstream.
+            (substitute* (find-files "." "\\.go$")
+              (("armon/go-metrics") "hashicorp/go-metrics"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-metrics"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Networking and runnint Prometheus are required.
+                       (list "TestAddSample"
+                             "TestMetricSink"
+                             "TestSetGauge"
+                             "TestSetPrecisionGauge"
+                             "TestStatsd_Conn"
+                             "TestStatsite_Conn"
+                             "TestTaggableMetrics")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-golang-protobuf
+           go-github-com-pascaldekloe-goe
+           go-github-com-prometheus-client-model
+           go-github-com-prometheus-common))
+    (propagated-inputs
+     (list go-github-com-circonus-labs-circonus-gometrics
+           go-github-com-datadog-datadog-go
+           go-github-com-hashicorp-go-immutable-radix
+           go-github-com-prometheus-client-golang))
+    (home-page "https://github.com/hashicorp/go-metrics")
+    (synopsis "Export performance and runtime metrics to external systems")
+    (description
+     "This package implements a functionality which can be used in instrument
+code, expose application metrics, and profile runtime performance in a
+flexible manner.  It makes use of a @code{MetricSink} interface to support
+delivery to any type of backend.
+
+Currently the following sinks are provided:
+@itemize
+@item StatsiteSink : Sinks to a @url{https://github.com/statsite/statsite/,
+statsite} instance (TCP)
+@item StatsdSink: Sinks to a @url{https://github.com/statsd/statsd/, StatsD} /
+statsite instance (UDP)
+@item PrometheusSink: Sinks to a @url{http://prometheus.io/, Prometheus}
+metrics endpoint (exposed via HTTP for scrapes)
+@item InmemSink : Provides in-memory aggregation, can be used to export stats
+@item FanoutSink : Sinks to multiple sinks. Enables writing to multiple
+statsite instances for example
+@item BlackholeSink : Sinks to nowhere
+@end itemize")
+    (license license:expat)))
+
+;; To make importer happy.
+(define-public go-github-com-armon-go-metrics
+  go-github-com-hashicorp-go-metrics)
+
 (define-public go-github-com-hashicorp-go-retryablehttp
   (package
     (name "go-github-com-hashicorp-go-retryablehttp")
