@@ -1,5 +1,23 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2025 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2017 Mark Meyer <mark@ofosos.org>
+;;; Copyright © 2019-2021 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2019 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020-2025 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2021 Alexandros Theodotou <alex@zrythm.org>
+;;; Copyright © 2021 la snesne <lasnesne@lagunposprasihopre.org>
+;;; Copyright © 2021, 2023 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2023 Mehmet Tekman <mtekman89@gmail.com>
+;;; Copyright © 2023, 2025 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
+;;; Copyright © 2025 pinoaffe <pinoaffe@gmail.com>
+;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
