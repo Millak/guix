@@ -2996,18 +2996,19 @@ used to skip the test
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/dominikh/go-tools")
-             (commit (string-append "v" version))))
+              (url "https://github.com/dominikh/go-tools")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0y4xbb91mv1rj7aps5g7hz1mhf5pbdc8yp5bxz6dq5ajlmfqwi3s"))))
+        (base32 "0y4xbb91mv1rj7aps5g7hz1mhf5pbdc8yp5bxz6dq5ajlmfqwi3s"))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path "honnef.co/go/tools"
       #:unpack-path "honnef.co/go/tools"))
+    (native-inputs
+     (list go-golang-org-x-tools-go-expect)) ;XXX: Remove with a new release
     (propagated-inputs
      (list go-github-com-burntsushi-toml
            go-golang-org-x-exp
