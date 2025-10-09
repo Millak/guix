@@ -13446,6 +13446,50 @@ but implement that subset with little to no assumption about the structure of
 the code or routes.")
     (license license:asl2.0)))
 
+(define-public go-k8s-io-kube-openapi-test-integration
+  (package
+    (name "go-k8s-io-kube-openapi-test-integration")
+    (version "0.0.0-20250910181357-589584f1c912")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kubernetes/kube-openapi")
+              (commit (go-version->git-ref version
+                                           #:subdir "test/integration"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1appaqgllddcl6kxkz3azix0xhlzy093vvxi6y3im1mkf5zblwl7"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "test")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "k8s.io/kube-openapi/test/integration"
+      #:unpack-path "k8s.io/kube-openapi"))
+    (propagated-inputs
+     (list go-github-com-emicklei-go-restful-v3
+           go-github-com-getkin-kin-openapi
+           go-k8s-io-utils))
+    (home-page "https://k8s.io/kube-openapi")
+    (synopsis "Kube OpenAPI Integration Tests")
+    (description
+     "This package providies itegration tests module for
+@code{k8s.io/kube-openapi}.")
+    (license license:asl2.0)))
+
 (define-public go-maunium-net-go-mautrix
   (package
     (name "go-maunium-net-go-mautrix")
