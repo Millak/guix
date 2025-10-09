@@ -3262,18 +3262,51 @@ MIDI files, based on libsmf.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f)) ;no tests included
+      #:tests? #f ;no tests included
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'generate-xdg-files
+            ;; Steps are taken from .github/workflows/release.yml.
+            (lambda _
+              (invoke "python" "i18n/mo-gen.py")
+              (invoke "msgfmt" "--desktop"
+                      "-d" "i18n/frescobaldi"
+                      "--template" "linux/org.frescobaldi.Frescobaldi.desktop.in"
+                      "-o" "linux/org.frescobaldi.Frescobaldi.desktop")
+              (invoke "msgfmt" "--xml"
+                      "-d" "i18n/frescobaldi"
+                      "--template" "linux/org.frescobaldi.Frescobaldi.metainfo.xml.in"
+                      "-o" "linux/org.frescobaldi.Frescobaldi.metainfo.xml")))
+          (add-after 'wrap 'wrap-executable
+            (lambda _
+              ;; Ensure that icons are found at runtime.
+              (wrap-program (string-append #$output "/bin/frescobaldi")
+                `("QT_PLUGIN_PATH" prefix
+                  ,(list (string-append
+                          (string-join
+                           (list #$(this-package-input "qtbase")
+                                 #$(this-package-input "qtsvg")
+                                 #$(this-package-input "qtwayland"))
+                           "/lib/qt6/plugins:")
+                          "/lib/qt6/plugins")))))))))
     (native-inputs
-     (list python-hatchling))
-    (inputs (list bash-minimal
-                  lilypond
-                  poppler
-                  portmidi-2
-                  python-ly
-                  python-pyqt-6
-                  python-pyqt6-sip
-                  python-pyqtwebengine-6
-                  qpageview))
+     (list appstream            ;for appstreamctl
+           desktop-file-utils   ;for desktop-file-validate
+           gettext-minimal      ;for msgfmt
+           python-hatchling))
+    (inputs
+     (list bash-minimal
+           lilypond
+           poppler
+           portmidi-2
+           python-ly
+           python-pyqt-6
+           python-pyqt6-sip
+           python-pyqtwebengine-6
+           qpageview
+           qtbase
+           qtsvg
+           qtwayland))
     (home-page "https://www.frescobaldi.org/")
     (synopsis "LilyPond sheet music text editor")
     (description
