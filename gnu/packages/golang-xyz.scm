@@ -9788,6 +9788,39 @@ single @code{Tree} implementation, optimized for sparse nodes.")
        (replace "go-github-com-hashicorp-golang-lru"
          go-github-com-hashicorp-golang-lru-v2)))))
 
+(define-public go-github-com-hashicorp-go-msgpack-v2
+  (package
+    (name "go-github-com-hashicorp-go-msgpack-v2")
+    (version "2.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hashicorp/go-msgpack")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y87vqmzysbsvdi6di7dq8az4fswm8lsbxxcq54dnhrg40g4y3nd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/hashicorp/go-msgpack/v2"))
+    (propagated-inputs
+     (list go-golang-org-x-tools))
+    (home-page "https://github.com/hashicorp/go-msgpack")
+    (synopsis "MessagePack implementation in Golang")
+    (description
+     "This package provides a High Performance, Feature-Rich Idiomatic
+codec/encoding library for msgpack, JSON.
+
+Supported Serialization formats are:
+@itemize
+@item msgpack: https://github.com/msgpack/msgpack
+@item json: http://json.org http://tools.ietf.org/html/rfc7159
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-hashicorp-go-multierror
   (package
     (name "go-github-com-hashicorp-go-multierror")
