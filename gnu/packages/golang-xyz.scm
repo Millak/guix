@@ -23921,7 +23921,7 @@ without direct type dependencies. Its first consumers are
 (define-public go-k8s-io-gengo-v2
   (package
     (name "go-k8s-io-gengo-v2")
-    (version "2.0.0-20240911193312-2b36238f13e9")
+    (version "2.0.0-20250604051438-85fd79dbfd9f")
     (source
      (origin
        (method git-fetch)
@@ -23930,7 +23930,7 @@ without direct type dependencies. Its first consumers are
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ffwigrg92ivyb5r6g0alb4z8iydp9lkdviz3vm62gr89yw28yc7"))))
+        (base32 "198nq5ndb5cawsrp90rab0m3vyhrnv7q3bxpqz7l926d15vqbvsd"))))
     (build-system go-build-system)
     (arguments
      (list
