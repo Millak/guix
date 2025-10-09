@@ -9523,31 +9523,31 @@ trace directly to the terminal to ease debugging.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1fn72hw7xacjjpl4dd6wynh2x63i9rk8iqhj3v640db21qpcnbkw"))
+        (base32 "1fn72hw7xacjjpl4dd6wynh2x63i9rk8iqhj3v640db21qpcnbkw"))
        (patches (search-patches
                  "python-robotframework-sshlibrary-rf5-compat.patch"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'build-and-install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((doc (string-append
-                         (assoc-ref outputs "doc")
-                         "/share/doc/robotframework-sshlibrary")))
-               (invoke "chmod" "-R" "+w" "docs")
-               (invoke "invoke" "kw-docs" "project-docs")
-               (mkdir-p doc)
-               (for-each delete-file (find-files "docs" "\\.rst"))
-               (copy-recursively "docs" doc))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; Some tests require an SSH server; we remove them.
-               (delete-file "utest/test_client_api.py")
-               (delete-file "utest/test_scp.py")
-               (invoke "python" "utest/run.py")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'build-and-install-doc
+            (lambda _
+              (let ((doc (string-append #$output:doc
+                          "/share/doc/robotframework-sshlibrary")))
+                (invoke "chmod" "-R" "+w" "docs")
+                (invoke "invoke" "kw-docs" "project-docs")
+                (mkdir-p doc)
+                (for-each delete-file
+                          (find-files "docs" "\\.rst"))
+                (copy-recursively "docs" doc))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Some tests require an SSH server; we remove them.
+                (delete-file "utest/test_client_api.py")
+                (delete-file "utest/test_scp.py")
+                (invoke "python" "utest/run.py")))))))
     (propagated-inputs
      (list python-robotframework python-paramiko python-scp))
     (native-inputs
@@ -9557,12 +9557,14 @@ trace directly to the terminal to ease debugging.")
            python-docutils
            python-invoke
            python-pygments
-           python-rellu))
+           python-rellu
+           python-setuptools))
     (outputs '("out" "doc"))
     (home-page "https://github.com/robotframework/SSHLibrary")
     (synopsis "Robot Framework library for SSH and SFTP")
-    (description "SSHLibrary is a Robot Framework library providing support
-for SSH and SFTP.  It has the following main usages:
+    (description
+     "SSHLibrary is a Robot Framework library providing support for SSH and
+SFTP.  It has the following main usages:
 @itemize @bullet
 @item Executing commands on the remote machine, either blocking or non-blocking.
 @item Writing and reading in an interactive shell.
