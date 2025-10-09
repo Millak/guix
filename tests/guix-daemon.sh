@@ -261,6 +261,6 @@ guix build "$drv"
 log=`guix build "$drv" --log-file`
 test -f "$log"
 case "$log" in
-    *.gz) test "`gunzip -c < "$log"`" = "$stamp" ;;
+    *.gz) test "`gunzip -c < "$log" | grep -v 'guile: warning.*locale'`" = "$stamp" ;;
     *)    false ;;
 esac
