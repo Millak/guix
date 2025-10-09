@@ -6298,16 +6298,18 @@ supports url redirection and retries, and also gzip and deflate decoding.")
 (define-public python-awscrt
   (package
     (name "python-awscrt")
-    (version "0.23.0")
+    (version "0.26.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "awscrt" version))
        (sha256
-        (base32 "0a669xxfmgw3g6xpcnm64pbmlrbxw5wf3jcrivixscl2glapdxgx"))))
+        (base32 "0plkc0i0gc6z8fqnyy8kbg43sv3jnv8shcavcz0wb134riykmmm8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-backend #~'unittest
+      #:test-flags #~(list "discover" "--verbose")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-broken-tests
@@ -6350,19 +6352,12 @@ opt.override_default_trust_store_from_path(None, os.getenv('SSL_CERT_FILE')) if 
                                   bundle "')\n"))))))
           (add-after 'unpack 'use-system-libraries
             (lambda _
-              (setenv "AWS_CRT_BUILD_USE_SYSTEM_LIBCRYPTO" "1")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python3" "-m" "unittest"
-                        "discover" "--verbose")))))))
+              (setenv "AWS_CRT_BUILD_USE_SYSTEM_LIBCRYPTO" "1"))))))
     (inputs (list openssl))
     (native-inputs (list cmake-minimal
-                         python-setuptools
-                         python-wheel
-                         ;; For tests only
                          nss-certs-for-test
                          python-boto3
+                         python-setuptools
                          python-websockets))
     (home-page "https://github.com/awslabs/aws-crt-python")
     (synopsis "Common runtime for AWS Python projects")
