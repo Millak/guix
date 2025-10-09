@@ -79,11 +79,12 @@
     (,(library-directory object-output)
      :**/ :*.*.*)))
 
-(define (copy-files-to-output out name)
+(define (copy-files-to-output out name asd-systems)
   "Copy all files from the current directory to OUT.  Create an extra link to
-any system-defining files in the source to a convenient location.  This is
-done before any compiling so that the compiled source locations will be
-valid."
+any system-defining files (with names found in ASD-SYSTEMS) in the source to a
+convenient location; if ASD-SYSTEMS is empty then all system-defining files
+will be linked.  This is done before any compiling so that the compiled source
+locations will be valid."
   (let ((source (getcwd))
         (target (source-directory out name))
         (system-path (string-append out %system-install-prefix)))
@@ -101,15 +102,19 @@ valid."
     (mkdir-p system-path)
     (for-each
      (lambda (file)
-       (symlink file
-                (string-append system-path "/" (basename file))))
+       (when (or (not asd-systems)
+                 (member (basename file) asd-systems))
+         (symlink file
+                  (string-append system-path "/" (basename file)))))
      (find-files target "\\.asd$"))
     #t))
 
-(define* (install #:key inputs outputs #:allow-other-keys)
+(define* (install #:key inputs outputs asd-systems #:allow-other-keys)
   "Copy and symlink all the source files.
 The source files are taken from the corresponding compile package (e.g. SBCL)
-if it's present in the native-inputs."
+if it's present in the native-inputs.  ASD-SYSTEMS is the list of ASDF systems
+names for this package.  If it is empty then all systems found will be
+installed."
   (define output (assoc-ref outputs "out"))
   (define package-name
     (package-name->name+version
@@ -154,14 +159,14 @@ if it's present in the native-inputs."
         "."))
 
   (with-directory-excursion source-directory
-    (copy-files-to-output output package-name)))
+    (copy-files-to-output output package-name asd-systems)))
 
 (define* (copy-source #:key outputs asd-systems #:allow-other-keys)
   "Copy the source to the library output."
   (let* ((out (library-output outputs))
          (install-path (string-append out %source-install-prefix))
          (system-name (main-system-name out)))
-    (copy-files-to-output out system-name)
+    (copy-files-to-output out system-name asd-systems)
     ;; Hide the files from asdf
     (with-directory-excursion install-path
       (rename-file "source" (%lisp-type))
