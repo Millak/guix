@@ -2603,13 +2603,16 @@ from multiple records.")
 (define-public python-scitools-iris
   (package
     (name "python-scitools-iris")
-    (version "3.11.1")
+    (version "3.12.3")                  ;3.13.x fails some tests
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "scitools_iris" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/SciTools/iris")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "19qwmi7amr8q2dd17scch4zvdly3vqc23v5zwpq8qw45vmldxfrq"))))
+        (base32 "09al2nkn1ndjib84fck61njz3y76k7zn7496gwaq582h30akxd1n"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2682,18 +2685,25 @@ from multiple records.")
                           "test_label_dim_end"
                           "test_label_dim_start"
                           "test_lenient_handling"
+                          "test_load_laea_grid"
                           "test_load_pp_timevarying_orography"
+                          "test_load_pp_timevarying_orthography"
                           "test_mdtol"
                           "test_netcdf_v3"
                           "test_no_delayed_writes"
                           "test_no_transpose"
+                          "test_no_u"
+                          "test_no_v"
                           "test_non_existent_coord"
+                          "test_none"
                           "test_perfect_corr"
                           "test_perfect_corr_all_dims"
+                          "test_points"
                           "test_python_versions"
                           "test_realfile_loadsave_equivalence"
                           "test_realise_data"
                           "test_realise_data_multisource"
+                          "test_realistic"
                           "test_scheduler_types"
                           "test_single_coord"
                           "test_stream"
@@ -2710,13 +2720,20 @@ from multiple records.")
           (add-after 'unpack 'relax-requirements
             (lambda _
               (substitute* "requirements/pypi-core.txt"
-                ;; dask[array]>=2022.9.0,!=2024.8.0, <2024.9
-                ((", <2024.9") ""))))
-          ;; GeoVista is not packaged yet, "--ignore" option did not work to
-          ;; skip test files.
+                ;; dask[array]>=2025.1.0  # github.com/SciTools/iris/issues/6264
+                ;; TODO: Update python-dask to >=2025.1.0 to fix referenced bug.
+                ((">=2025.1.0") ""))))
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           (add-after 'unpack 'delete-failing-test-files
             (lambda _
               (with-directory-excursion "lib/iris/tests"
+                ;; Tries to load the test data on import. Uncomment for 3.13.x.
+                ;; (delete-file
+                ;;  "tests/integration/netcdf/derived_bounds/test_bounds_files.py")
+                ;; GeoVista is not packaged yet, "--ignore" option did not work
+                ;; to skip test files.
                 (for-each delete-file-recursively
                           (list "integration/experimental/geovista"
                                 "unit/experimental/geovista")))))
@@ -2724,6 +2741,7 @@ from multiple records.")
             (lambda _
               (let ((netcdf #$(this-package-native-input "netcdf")))
                 (substitute* (list "lib/iris/tests/__init__.py"
+                                   ;; "tests/_shared_utils.py" ;for 3.13.x.
                                    "lib/iris/tests/stock/netcdf.py")
                   (("env_bin_path\\(\"ncgen\"\\)")
                    (format #f "'~a/bin/ncgen'" netcdf))
@@ -2739,16 +2757,16 @@ from multiple records.")
            python-filelock
            python-imagehash
            python-pytest
-           python-pytest-xdist
+           python-pytest-mock
+           python-pytest-xdist          ;for 'pytest -n'
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-cartopy
            python-cf-units
            python-cftime
            python-dask
-           ;; python-geovista ; optinoal, not packaged yet
+           ;; python-geovista ; optional, not packaged yet
            python-matplotlib
            python-netcdf4
            python-numpy
