@@ -1843,28 +1843,6 @@ not require any changes to the original source code, such as marking strings
 for translation.")
     (license license:expat)))
 
-(define-public python-vendetect
-  (package
-    (name "python-vendetect")
-    (version "0.0.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "vendetect" version))
-       (sha256
-        (base32 "0hi13sbgr8y66mih2xyzczjfff4lwymkn9cw5215ms2nn6qq9rhi"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-copydetect python-rich))
-    (native-inputs (list python-hatchling python-pytest))
-    (home-page "https://github.com/trailofbits/vendetect")
-    (synopsis "Detect vendored and copy-pasted code")
-    (description
-     "Vendetect helps identify copied or vendored code between repositories,
-making it easier to detect when code has been copied with or without
-attribution.  It uses similarity detection algorithms to compare code files
-and highlight matching sections.")
-    (license license:agpl3+)))
-
 (define-public python-jaconv
   (package
     (name "python-jaconv")
@@ -5915,36 +5893,6 @@ for additional processing.")
      "Fastprogress is a progress bar for Jupyter Notebook and console.")
     (license license:asl2.0)))
 
-;; XXX: No updates since 2017.
-(define-public python-verboselogs
-  (package
-    (name "python-verboselogs")
-    (version "1.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "verboselogs" version))
-       (sha256
-        (base32 "09z4d1jiasn7k1hs5af2ckmnrd0i1d1m04bhfjhv7z6svzfdwgg3"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; Do not run pylint plugin test, as astroid is an old unsupported
-      ;; version.
-      #~(list "-k" "not test_pylint_plugin"
-              "verboselogs/tests.py")))
-    (native-inputs
-     (list python-mock
-           python-pytest
-           python-setuptools))
-    (home-page "https://verboselogs.readthedocs.io")
-    (synopsis "Verbose logging level for Python's logging module")
-    (description
-     "The @code{verboselogs} package extends Python's @code{logging} module to
-add the log levels NOTICE, SPAM, SUCCESS and VERBOSE.")
-    (license license:expat)))
-
 (define-public python-coloredlogs
   (package
     (name "python-coloredlogs")
@@ -7655,31 +7603,6 @@ and configurable such as option groups, constraints, subcommand aliases,
 subcommands sections and a themeable HelpFormatter.")
     (license license:bsd-3)))
 
-;; XXX: No fresh releases or updates since 2016, consider to remove, leaf
-;; package.
-(define-public python-vcversioner
-  (package
-    (name "python-vcversioner")
-    (version "2.16.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "vcversioner" version))
-       (sha256
-        (base32
-         "16z10sm78jd7ca3jbkgc3q5i8a8q7y1h21q1li21yy3rlhbhrrns"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))        ;no tests in PyPI archvie
-    (native-inputs
-     (list python-setuptools))
-    (home-page "https://github.com/habnabit/vcversioner")
-    (synopsis "Python library for version number discovery")
-    (description "Vcversioner is a Python library that inspects tagging
-information in a variety of version control systems in order to discover
-version numbers.")
-    (license license:isc)))
-
 (define-public python-jsondiff
   (package
     (name "python-jsondiff")
@@ -8200,86 +8123,6 @@ API, and sensible error messages.  PyYAML supports standard YAML tags and
 provides Python-specific tags that represent an arbitrary Python object.")
     (license license:expat)))
 
-(define-public python-vine
-  (package
-    (name "python-vine")
-    (version "5.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "vine" version))
-       (sha256
-        (base32 "1q31krwxdvwawdn1kfqmpplix31d4jhs0qng26908hawsf0yjqlb"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; AttributeError: 'test_barrier' object has no attribute 'ps'.
-      #~(list "-k" (string-join
-                    (list "not test_evaluate"
-                          "test_reverse"
-                          "test_cancel"
-                          "test_throw")
-                    " and not "))))
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
-    (home-page "https://github.com/celery/vine")
-    (synopsis "Promises for Python")
-    (description
-     "@code{vine} provides a special implementation of promises in that it can
-be used both for \"promise of a value\" and lazy evaluation.  The biggest
-upside for this is that everything in a promise can also be a promise,
-e.g. filters, callbacks and errbacks can all be promises.")
-    (license license:bsd-3)))
-
-(define-public python-virtualenv
-  (package
-    (name "python-virtualenv")
-    (version "20.29.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "virtualenv" version))
-       (sha256
-        (base32
-         "0dfwnn8i1y33kgxhi4xyhsj4yr5vsin7zf9c343bcbyk700rgf5q"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k" (string-join
-                    (list
-                     ;; These tests require Internet access.
-                     "not test_seed_link_via_app_data"
-                     ;; AssertionError: assert 'python' in ['python3',
-                     ;; 'python3.11'].
-                     ;;
-                     ;; PythonInfo() returns: 'system_executable':
-                     ;; '/gnu/store/...-python-wrapper-3.11.11/bin/python'
-                     "test_fallback_existent_system_executable")
-                    " and not "))))
-    (native-inputs
-     (list python-flaky
-           python-hatch-vcs
-           python-hatchling
-           python-packaging
-           python-pytest
-           python-pytest-env
-           python-pytest-freezer
-           python-pytest-mock
-           python-pytest-timeout
-           python-setuptools
-           python-time-machine))
-    (propagated-inputs
-     (list python-distlib
-           python-filelock
-           python-platformdirs))
-    (home-page "https://virtualenv.pypa.io/")
-    (synopsis "Virtual Python environment builder")
-    (description
-     "Virtualenv is a tool to create isolated Python environments.")
-    (license license:expat)))
-
 (define-public python-crossenv
   (package
     (name "python-crossenv")
@@ -8300,47 +8143,6 @@ e.g. filters, callbacks and errbacks can all be promises.")
 modules.  It creates a special virtual environment such that @command{pip} or
 @file{setup.py} will cross compile packages for you, usually with no further
 work on your part.")
-    (license license:expat)))
-
-;; XXX: No new release since 2021, no updates on default branch since 2023, no
-;; users in Guix; consider to remove if it keeps failing to build.
-(define-public python-virtualenv-clone
-  (package
-    (name "python-virtualenv-clone")
-    (version "0.5.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/edwardgeorge/virtualenv-clone")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0p0d1y3axvjfnxlgwjx2374gikc8bmc82g0m7yashihbikh7pcxa"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k" (string-join
-                    ;; UnicodeDecodeError: 'utf-8' codec can't decode byte
-                    ;; 0xba in position 10: invalid start byte
-                    (list "not test_clone_contents"
-                          ;;  AssertionError: All versions were skipped.
-                          "test_clone_syspath"
-                          "test_clone_version"
-                          "test_virtualenv_syspath"
-                          "test_virtualenv_versions")
-                    " and not "))))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-tomli
-           python-virtualenv
-           python-wheel))
-    (home-page "https://github.com/edwardgeorge/virtualenv-clone")
-    (synopsis "Clone a non-relocatable virtualenv cleanly")
-    (description
-     "Clone non-relocatable virtualenvs without breaking site-packages.")
     (license license:expat)))
 
 (define-public python-uc-micro-py
@@ -9236,28 +9038,6 @@ with Python.")
      (native-inputs
       (list python-hatchling))
      (arguments `(#:tests? #f))))
-
-(define-public python-vdf
-  (package
-    (name "python-vdf")
-    (version "3.4")
-    (source
-     (origin
-       (method git-fetch)               ; no tests in PyPI release
-       (uri (git-reference
-             (url "https://github.com/ValvePython/vdf")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1xc0sd21xgf08pf6dwa4l23y9jb6yqaw61rr03ns0d2r6sby137a"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest python-setuptools))
-    (home-page "https://github.com/ValvePython/vdf")
-    (synopsis "Work with Valve's VDF text format")
-    (description "This package provides @code{python-vdf}, a library for
-working with Valve's VDF text format.")
-    (license license:expat)))
 
 (define-public python-pygtrie
   (package
@@ -19724,267 +19504,6 @@ program's help message rather than specifying it programmatically with
 command-line parsers like @code{getopt} and @code{argparse}.")
     (license license:expat)))
 
-(define-public python-wand
-  (package
-    (name "python-wand")
-    (version "0.6.13")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "Wand" version))
-       (sha256
-        (base32 "1jpwm956vm35hmgjndr2jwrcql0bwvpsl88q5nr0x8ppxa2380gm"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; These two tests fail even though the signatures are identical.
-      '(list "-k" "not fourier_transform")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'hardcode-lib-path
-            (lambda _
-              (substitute* "wand/api.py"
-                (("os\\.environ\\.get\\('MAGICK_HOME'\\)")
-                 (string-append "\"" #$(this-package-input "imagemagick") "\""))
-                (("os\\.environ\\.get\\('WAND_MAGICK_LIBRARY_SUFFIX'\\)")
-                 "\".Q16\"")))))))
-    (native-inputs
-     (list python-setuptools python-pytest python-wheel))
-    (inputs
-     (list imagemagick))
-    (home-page "https://docs.wand-py.org/")
-    (synopsis "MagickWand API binding for Python")
-    (description
-     "Wand is a ctypes-based binding for ImageMagick's MagickWand library.")
-    (license license:expat)))
-
-(define-public python-wasabi
-  (package
-    (name "python-wasabi")
-    (version "1.1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "wasabi" version))
-       (sha256
-        (base32 "0y085r7hym3x34a9jgxl5cd8gsh617rdmd187q6dn29q027h1csb"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; Test requires nbconvert which is huge.
-      #~(list "--deselect=wasabi/tests/test_jupyter.py::test_jupyter")))
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-colorama))
-    (home-page "https://github.com/ines/wasabi")
-    (synopsis "Console printing and formatting toolkit")
-    (description
-     "This package provides a lightweight console printing and formatting
-toolkit for Python.")
-    (license license:expat)))
-
-(define-public python-watchdog
-  (package
-    (name "python-watchdog")
-    (version "6.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "watchdog" version))
-       (sha256
-        (base32 "10n2v2iflhdriwfp34yvhfcckqb6vs7378fdvqj8xbm3zn17rpwx"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k" (string-join
-                    (list "not test_kill_auto_restart"
-                          "test_auto_restart_on_file_change_debounce"
-                          ;; Fails with too many open files.
-                          "test_select_fd")
-                    " and not "))))
-    (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-pytest-timeout
-           python-setuptools))
-    (propagated-inputs
-     (list python-pyyaml))
-    (home-page "https://github.com/gorakhargosh/watchdog")
-    (synopsis "File system events monitoring")
-    (description "This package provides a way to monitor file system events
-such as a file modification and trigger an action.  This is similar to inotify,
-but portable.")
-    (license license:asl2.0)))
-
-(define-public python-watchfiles
-  (package
-    (name "python-watchfiles")
-    (version "1.0.5")
-    (source
-     (origin
-       ;; There are no tests in the PyPI tarball.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/samuelcolvin/watchfiles")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1b5rdj795xcbwg76bd8hs3skhgifd7a8zw2vj76nac2dhjlqg93b"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; Missing file in source.
-      #:test-flags ''("-k" "not test_docs_examples")
-      #:imported-modules `(,@%cargo-build-system-modules
-                           ,@%pyproject-build-system-modules)
-      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
-                  (guix build pyproject-build-system)
-                  (guix build utils))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'prepare-cargo-build-system
-            (lambda args
-              (for-each
-               (lambda (phase)
-                 (format #t "Running cargo phase: ~a~%" phase)
-                 (apply (assoc-ref cargo:%standard-phases phase)
-                        #:cargo-target #$(cargo-triplet)
-                        args))
-               '(unpack-rust-crates
-                 configure
-                 check-for-pregenerated-files
-                 patch-cargo-checksums))))
-          (add-after 'build 'install-rust-library
-            (lambda _
-              (copy-file "target/release/lib_rust_notify.so"
-                         "watchfiles/_rust_notify.so"))))))
-    (native-inputs
-     (append
-      (list maturin
-            python-anyio
-            python-coverage
-            python-dirty-equals
-            python-pytest
-            python-pytest-cov
-            python-pytest-mock
-            python-pytest-timeout
-            rust
-            `(,rust "cargo"))
-      (or (and=> (%current-target-system)
-                 (compose list make-rust-sysroot))
-          '())))
-    (inputs (cargo-inputs 'python-watchfiles))
-    (home-page "https://github.com/samuelcolvin/watchfiles")
-    (synopsis "Simple, modern file watching and code reload in Python")
-    (description
-     "Simple, modern file watching and code reload in Python inspired by
-@code{watchdog}.  Among the differences are a unified approach for each
-operating systems and an elegant approach to concurrency using threading.")
-    (license license:expat)))
-
-(define-deprecated/alias python-watchgod python-watchfiles)
-(export python-watchgod)
-
-(define-public python-wcwidth
-  (package
-    (name "python-wcwidth")
-    (version "0.2.13")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "wcwidth" version))
-              (sha256
-               (base32
-                "1dbj74q1iz349sdkxrkc90f7xd4y7a9bdvgxg3cqdcly7430rskj"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest
-                         python-pytest-cov
-                         python-setuptools
-                         python-wheel))
-    (home-page "https://github.com/jquast/wcwidth")
-    (synopsis "Measure number of terminal column cells of wide-character codes")
-    (description "Wcwidth measures the number of terminal column cells of
-wide-character codes.  It is useful for those implementing a terminal emulator,
-or programs that carefully produce output to be interpreted by one.  It is a
-Python implementation of the @code{wcwidth} and @code{wcswidth} C functions
-specified in POSIX.1-2001 and POSIX.1-2008.")
-    (license license:expat)))
-
-(define-public python-whatever
-  (package
-    (name "python-whatever")
-    (version "0.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/Suor/whatever")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1x5b4r3fppp208v52hn8inf2988w4llbkw9kvfc3w81dhmrf5fvq"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
-    (home-page "https://github.com/Suor/whatever")
-    (synopsis "Make anonymous functions by partial application of operators")
-    (description "@code{whatever} provides an easy way to make anonymous
-functions by partial application of operators.")
-    (license license:bsd-3)))
-
-(define-public python-whatthepatch
-  (package
-    (name "python-whatthepatch")
-    (version "1.0.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "whatthepatch" version))
-       (sha256
-        (base32 "1pvygmgj9xqs8d9lsjxvg1mymni8pjsd44yl0a74002jxbmv9vwy"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools))
-    (home-page "https://github.com/cscorley/whatthepatch")
-    (synopsis "Patch parsing and application library")
-    (description
-     "This package provides a patch parsing and application library.")
-    (license license:expat)))
-
-(define-public python-wheel-filename
-  (package
-    (name "python-wheel-filename")
-    (version "1.4.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "wheel_filename" version))
-       (sha256
-        (base32 "1zcqq8mydjjrk8x5xlm53bavs51jm40nz42a7500pd6bbm31r2c7"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-hatchling python-pytest python-pytest-cov))
-    (home-page "https://github.com/wheelodex/wheel-filename")
-    (synopsis "Parse wheel filenames")
-    (description
-     "This software allows you to verify
-@url{https://packaging.python.org/en/latest/specifications/binary-distribution-format/, wheel}
-filenames and parse them into their component fields.
-
-This package adheres strictly to the standard, with the following
-exceptions:
-
-@itemize @bullet
-@item
-Version components may be any sequence of the relevant set of
-characters; they are not verified for PEP 440 compliance.
-@item
-The @file{.whl} file extension is matched case-insensitively.
-@end itemize")
-    (license license:expat)))
-
 (define-public python-pythonanywhere
   (package
     (name "python-pythonanywhere")
@@ -21860,68 +21379,6 @@ programmatically interfacing with your system's $EDITOR.")
 that, when set on the root @code{Logger}, will tunnel log records to the
 main process so that they are handled correctly.")
     (license license:lgpl3+)))
-
-(define-public python-vncdotool
-  (package
-    (name "python-vncdotool")
-    (version "1.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "http://github.com/sibson/vncdotool")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1adsc263qsa3hcyk8mhv0wwq44h8zhcksx92chd5rr1wz37zmc22"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-pillow python-pycryptodomex python-twisted))
-    (native-inputs (list python-pexpect python-pytest python-pyvirtualdisplay
-                         python-setuptools python-wheel))
-    (home-page "http://github.com/sibson/vncdotool")
-    (synopsis "Command line VNC client")
-    (description
-     "This package provides a Python command line VNC client.  It can be
-useful to automating interactions with virtual machines or hardware devices
-that are otherwise difficult to control.")
-    (license license:expat)))
-
-(define-public python-vncdotool-bootstrap
-  (hidden-package
-   (package/inherit python-vncdotool
-     (arguments (list #:tests? #f))
-     (native-inputs (list python-pexpect python-pytest python-setuptools
-                          python-wheel)))))
-
-(define-public python-vobject
-  (package
-    (name "python-vobject")
-    (version "0.9.9")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "vobject" version))
-              (sha256
-               (base32
-                "13mk8wrg7js0zv3w8246jnxb3i5yp4ascl1csp0q9787wbbyai5c"))))
-    (build-system pyproject-build-system)
-    (arguments
-     '(;; The test suite relies on some non-portable Windows interfaces. Tests
-       ;; are rewokred on master's HEAD.
-       #:tests? #f))
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-dateutil
-           python-pytz
-           python-six)) ;it's dropped on master's HEAD
-    (home-page "https://py-vobject.github.io/")
-    (synopsis "Parse and generate vCard and vCalendar files")
-    (description "Vobject is intended to be a full featured Python package for
-parsing and generating vCard and vCalendar files.  Currently, iCalendar files
-are supported and well tested.  vCard 3.0 files are supported, and all data
-should be imported, but only a few components are understood in a sophisticated
-way.")
-    (license license:asl2.0)))
 
 (define-public python-munkres
   (package
@@ -27201,85 +26658,6 @@ in pure Python.")
      function that returns a shell-escaped version of a Python string.  This is a
      backport of the @code{shlex.quote()} function from Python 3.8 that makes it
      accessible to users of Python 3 versions < 3.3 and all Python 2.x versions.")
-    (license license:expat)))
-
-(define-public python-validators
-  (package
-    (name "python-validators")
-    (version "0.34.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "validators" version))
-       (sha256
-        (base32 "07vq3s77f5yndn7jfx39jbsaq5m8wqc3p52v4i6sgyasnh3y8zv4"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; python-eth-hash is not packed yet.
-      #:test-flags #~(list "--ignore=tests/crypto_addresses/test_eth_address.py")))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-decorator
-           ;; python-eth-hash ; optional, not packed yet.
-           python-six))
-    (home-page "https://github.com/kvesteri/validators")
-    (synopsis "Data validation library")
-    (description
-     "This package contains validators for different things such as email
-addresses, IP addresses, URLs, hashes and more.  It has been designed to be
-easy to use and not require defining a schema or form just to validate some
-input.")
-    (license license:expat)))
-
-(define-public python-validate-email
-  (package
-    (name "python-validate-email")
-    (version "1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "validate_email" version))
-       (sha256
-        (base32 "1bxffaf5yz2cph8ki55vdvdypbwkvn2xr1firlcy62vqbzf1jivq"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f)) ;no tests in PyPI or Git
-    (native-inputs
-     (list python-setuptools))
-    (home-page "https://github.com/syrusakbary/validate_email")
-    (synopsis "Verifies if an email address is valid and really exists")
-    (description "@code{validate_email} can be used to verify if an email
-     address is valid and really exists.")
-    (license license:lgpl3+)))
-
-(define-public python-valkey
-  (package
-    (name "python-valkey")
-    (version "6.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/valkey-io/valkey-py")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "05zmnb8lmygv75zx0hb40s2rgr53sy4g0sizcb9mq8fd09z5i0n2"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; XXX: A lot of tests fail with ConnectionError
-     ;; Maybe we need to spawn a valkey server?
-     (list #:tests? #f))
-    (native-inputs
-     (list python-setuptools))
-    (home-page "https://github.com/valkey-io/valkey-py")
-    (synopsis "Python client for Valkey")
-    (description
-     "This package provides a python client for the @code{Valkey} key-value
-store, forked from redis-py.")
     (license license:expat)))
 
 ;; XXX: Project has no updates since 2019, consider to remove when nothing
@@ -33197,27 +32575,6 @@ dependencies.  It implements the @uref{http://opensoundcontrol.org/spec-1_0,
 Open Sound Control 1.0} specification.")
     (license license:unlicense)))
 
-(define-public python-voluptuous
-  (package
-    (name "python-voluptuous")
-    (version "0.15.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "voluptuous" version))
-       (sha256
-        (base32 "1akr0adq9can0ibravqzl4aaf20rgv47g9gk596hn8ykqhrapz3g"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (home-page "https://github.com/alecthomas/voluptuous")
-    (synopsis "Python data validation library")
-    (description
-     "Voluptuous is a Python data validation library.  It is primarily
-intended for validating data coming into Python as JSON, YAML, etc.")
-    (license license:bsd-3)))
-
 (define-public python-cmd2
   (package
     (name "python-cmd2")
@@ -34434,77 +33791,6 @@ EDU SDK.  This library has the following features:
     (description "This is a set of Python bindings for the DjVuLibre library.")
     (home-page "https://github.com/FriedrichFroebel/python-djvulibre")
     (license license:gpl2)))
-
-;; XXX: No updates since 2018, consider to remove when fails to build, it's a
-;; leaf package.
-(define-public python-version
-  ;; No version tags available in the git repo; just using bare commit instead.
-  (let ((commit "5232eea250ab72cc5cb72b0b75efb35d2192b906")
-        (revision "1"))
-    (package
-      (name "python-version")
-      (version (git-version "0.0.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://gitlab.com/halfak/python_version")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0w210559ypdynlj9yn40m9awzkaknwrf682i99hswl7h66sdgh0h"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list #:tests? #f)) ;no tests
-      (native-inputs
-       (list python-setuptools))
-      (home-page "https://gitlab.com/halfak/python_version")
-      (synopsis "Python version checking utility")
-      (description
-       "This package provides a simple utility for checking the python version.")
-      (license license:expat))))
-
-(define-public python-versioneer
-  (package
-    (name "python-versioneer")
-    (version "0.29")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "versioneer" version))
-       (sha256
-        (base32
-         "0cap4cjckxp9mlkprqayfs77k3pn5iwpr2riacdxc4bjhnwq7cjs"))
-       (patches (search-patches "python-versioneer-guix-support.patch"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; Minimize test requirements.
-      #:test-flags
-      #~(list "--deselect=test/git/test_git.py::Repo::test_pyproject"
-              "--ignore=test/git/test_invocations.py"
-              "--ignore=test/test_render.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda _
-              (invoke "python" "setup.py" "make_versioneer"
-                      "make_long_version_py_git"))))))
-    (native-inputs
-     (list git-minimal/pinned
-           python-pytest
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-tomli))
-    (home-page "https://github.com/python-versioneer/python-versioneer")
-    (synopsis "Version-string management for VCS-controlled trees")
-    (description
-     "@code{versioneer} is a tool for managing a recorded version number in
-distutils-based python projects.  The goal is to remove the tedious and
-error-prone \"update the embedded version string\" step from your release
-process.")
-    (license license:unlicense)))
 
 (define-public python-gamera
   (package
@@ -37905,35 +37191,6 @@ asyncio (PEP-3156/tulip) framework.  It wraps asynchronous
 features of the Psycopg database driver.")
     (license license:bsd-3)))
 
-(define-public python-verspec
-  (package
-    (name "python-verspec")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "verspec" version))
-       (sha256
-        (base32 "07n06wv85fm4vl1ird2mja0823js3x322wgs9gdnq1djjyk4ql64"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda _
-              (invoke "touch" "test/__init__.py"))))))
-    (native-inputs
-     (list python-pretend
-           python-pytest
-           python-setuptools))
-    (home-page "https://github.com/jimporter/verspec")
-    (synopsis "Flexible version handling for Python")
-    (description
-     "This Python library handles software versions and specifiers.  It is
-adapted from the @code{packaging} package.")
-    (license (list license:bsd-2 license:asl2.0))))
-
 (define-public python-shtab
   (package
     (name "python-shtab")
@@ -39675,6 +38932,751 @@ frequencies) of over a million different unigrams (single words or tokens), or o
 bigrams (pairs of two words or tokens), or of trigrams.  Icegrams is useful for
 instance in spelling correction, predictive typing, to help disabled people
 write text fast, and for various text generation, statistics, and modeling tasks.")
+    (license license:expat)))
+
+(define-public python-validate-email
+  (package
+    (name "python-validate-email")
+    (version "1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "validate_email" version))
+       (sha256
+        (base32 "1bxffaf5yz2cph8ki55vdvdypbwkvn2xr1firlcy62vqbzf1jivq"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ;no tests in PyPI or Git
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/syrusakbary/validate_email")
+    (synopsis "Verifies if an email address is valid and really exists")
+    (description
+     "@code{validate_email} can be used to verify if an email address is
+valid and really exists.")
+    (license license:lgpl3+)))
+
+(define-public python-validators
+  (package
+    (name "python-validators")
+    (version "0.34.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "validators" version))
+       (sha256
+        (base32 "07vq3s77f5yndn7jfx39jbsaq5m8wqc3p52v4i6sgyasnh3y8zv4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; python-eth-hash is not packed yet.
+      #:test-flags #~(list "--ignore=tests/crypto_addresses/test_eth_address.py")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-decorator
+           ;; python-eth-hash ; optional, not packed yet.
+           python-six))
+    (home-page "https://github.com/kvesteri/validators")
+    (synopsis "Data validation library")
+    (description
+     "This package contains validators for different things such as email
+addresses, IP addresses, URLs, hashes and more.  It has been designed to be
+easy to use and not require defining a schema or form just to validate some
+input.")
+    (license license:expat)))
+
+(define-public python-valkey
+  (package
+    (name "python-valkey")
+    (version "6.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/valkey-io/valkey-py")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05zmnb8lmygv75zx0hb40s2rgr53sy4g0sizcb9mq8fd09z5i0n2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: A lot of tests fail with ConnectionError
+     ;; Maybe we need to spawn a valkey server?
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/valkey-io/valkey-py")
+    (synopsis "Python client for Valkey")
+    (description
+     "This package provides a python client for the @code{Valkey} key-value
+store, forked from redis-py.")
+    (license license:expat)))
+
+;; XXX: No fresh releases or updates since 2016, consider to remove, leaf
+;; package.
+(define-public python-vcversioner
+  (package
+    (name "python-vcversioner")
+    (version "2.16.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "vcversioner" version))
+       (sha256
+        (base32
+         "16z10sm78jd7ca3jbkgc3q5i8a8q7y1h21q1li21yy3rlhbhrrns"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests in PyPI archvie
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/habnabit/vcversioner")
+    (synopsis "Python library for version number discovery")
+    (description
+     "Vcversioner is a Python library that inspects tagging information in a
+variety of version control systems in order to discover version numbers.")
+    (license license:isc)))
+
+(define-public python-vdf
+  (package
+    (name "python-vdf")
+    (version "3.4")
+    (source
+     (origin
+       (method git-fetch)               ; no tests in PyPI release
+       (uri (git-reference
+             (url "https://github.com/ValvePython/vdf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xc0sd21xgf08pf6dwa4l23y9jb6yqaw61rr03ns0d2r6sby137a"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools))
+    (home-page "https://github.com/ValvePython/vdf")
+    (synopsis "Work with Valve's VDF text format")
+    (description
+     "This package provides @code{python-vdf}, a library for working with
+ Valve's VDF text format.")
+    (license license:expat)))
+
+(define-public python-vendetect
+  (package
+    (name "python-vendetect")
+    (version "0.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "vendetect" version))
+       (sha256
+        (base32 "0hi13sbgr8y66mih2xyzczjfff4lwymkn9cw5215ms2nn6qq9rhi"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-copydetect python-rich))
+    (native-inputs (list python-hatchling python-pytest))
+    (home-page "https://github.com/trailofbits/vendetect")
+    (synopsis "Detect vendored and copy-pasted code")
+    (description
+     "Vendetect helps identify copied or vendored code between repositories,
+making it easier to detect when code has been copied with or without
+attribution.  It uses similarity detection algorithms to compare code files
+and highlight matching sections.")
+    (license license:agpl3+)))
+
+;; XXX: No updates since 2017.
+(define-public python-verboselogs
+  (package
+    (name "python-verboselogs")
+    (version "1.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "verboselogs" version))
+       (sha256
+        (base32 "09z4d1jiasn7k1hs5af2ckmnrd0i1d1m04bhfjhv7z6svzfdwgg3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Do not run pylint plugin test, as astroid is an old unsupported
+      ;; version.
+      #~(list "-k" "not test_pylint_plugin"
+              "verboselogs/tests.py")))
+    (native-inputs
+     (list python-mock
+           python-pytest
+           python-setuptools))
+    (home-page "https://verboselogs.readthedocs.io")
+    (synopsis "Verbose logging level for Python's logging module")
+    (description
+     "The @code{verboselogs} package extends Python's @code{logging} module to
+add the log levels NOTICE, SPAM, SUCCESS and VERBOSE.")
+    (license license:expat)))
+
+;; XXX: No updates since 2018, consider to remove when fails to build, it's a
+;; leaf package.
+(define-public python-version
+  ;; No version tags available in the git repo; just using bare commit instead.
+  (let ((commit "5232eea250ab72cc5cb72b0b75efb35d2192b906")
+        (revision "1"))
+    (package
+      (name "python-version")
+      (version (git-version "0.0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://gitlab.com/halfak/python_version")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0w210559ypdynlj9yn40m9awzkaknwrf682i99hswl7h66sdgh0h"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list #:tests? #f)) ;no tests
+      (native-inputs
+       (list python-setuptools))
+      (home-page "https://gitlab.com/halfak/python_version")
+      (synopsis "Python version checking utility")
+      (description
+       "This package provides a simple utility for checking the python version.")
+      (license license:expat))))
+
+(define-public python-versioneer
+  (package
+    (name "python-versioneer")
+    (version "0.29")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "versioneer" version))
+       (sha256
+        (base32
+         "0cap4cjckxp9mlkprqayfs77k3pn5iwpr2riacdxc4bjhnwq7cjs"))
+       (patches (search-patches "python-versioneer-guix-support.patch"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Minimize test requirements.
+      #:test-flags
+      #~(list "--deselect=test/git/test_git.py::Repo::test_pyproject"
+              "--ignore=test/git/test_invocations.py"
+              "--ignore=test/test_render.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (invoke "python" "setup.py" "make_versioneer"
+                      "make_long_version_py_git"))))))
+    (native-inputs
+     (list git-minimal/pinned
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-tomli))
+    (home-page "https://github.com/python-versioneer/python-versioneer")
+    (synopsis "Version-string management for VCS-controlled trees")
+    (description
+     "@code{versioneer} is a tool for managing a recorded version number in
+distutils-based python projects.  The goal is to remove the tedious and
+error-prone \"update the embedded version string\" step from your release
+process.")
+    (license license:unlicense)))
+
+(define-public python-verspec
+  (package
+    (name "python-verspec")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "verspec" version))
+       (sha256
+        (base32 "07n06wv85fm4vl1ird2mja0823js3x322wgs9gdnq1djjyk4ql64"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (invoke "touch" "test/__init__.py"))))))
+    (native-inputs
+     (list python-pretend
+           python-pytest
+           python-setuptools))
+    (home-page "https://github.com/jimporter/verspec")
+    (synopsis "Flexible version handling for Python")
+    (description
+     "This Python library handles software versions and specifiers.  It is
+adapted from the @code{packaging} package.")
+    (license (list license:bsd-2 license:asl2.0))))
+
+(define-public python-vine
+  (package
+    (name "python-vine")
+    (version "5.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "vine" version))
+       (sha256
+        (base32 "1q31krwxdvwawdn1kfqmpplix31d4jhs0qng26908hawsf0yjqlb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; AttributeError: 'test_barrier' object has no attribute 'ps'.
+      #~(list "-k" (string-join
+                    (list "not test_evaluate"
+                          "test_reverse"
+                          "test_cancel"
+                          "test_throw")
+                    " and not "))))
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/celery/vine")
+    (synopsis "Promises for Python")
+    (description
+     "@code{vine} provides a special implementation of promises in that it can
+be used both for \"promise of a value\" and lazy evaluation.  The biggest
+upside for this is that everything in a promise can also be a promise,
+e.g. filters, callbacks and errbacks can all be promises.")
+    (license license:bsd-3)))
+
+(define-public python-virtualenv
+  (package
+    (name "python-virtualenv")
+    (version "20.29.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "virtualenv" version))
+       (sha256
+        (base32
+         "0dfwnn8i1y33kgxhi4xyhsj4yr5vsin7zf9c343bcbyk700rgf5q"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list
+                     ;; These tests require Internet access.
+                     "not test_seed_link_via_app_data"
+                     ;; AssertionError: assert 'python' in ['python3',
+                     ;; 'python3.11'].
+                     ;;
+                     ;; PythonInfo() returns: 'system_executable':
+                     ;; '/gnu/store/...-python-wrapper-3.11.11/bin/python'
+                     "test_fallback_existent_system_executable")
+                    " and not "))))
+    (native-inputs
+     (list python-flaky
+           python-hatch-vcs
+           python-hatchling
+           python-packaging
+           python-pytest
+           python-pytest-env
+           python-pytest-freezer
+           python-pytest-mock
+           python-pytest-timeout
+           python-setuptools
+           python-time-machine))
+    (propagated-inputs
+     (list python-distlib
+           python-filelock
+           python-platformdirs))
+    (home-page "https://virtualenv.pypa.io/")
+    (synopsis "Virtual Python environment builder")
+    (description
+     "Virtualenv is a tool to create isolated Python environments.")
+    (license license:expat)))
+
+;; XXX: No new release since 2021, no updates on default branch since 2023, no
+;; users in Guix; consider to remove if it keeps failing to build.
+(define-public python-virtualenv-clone
+  (package
+    (name "python-virtualenv-clone")
+    (version "0.5.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/edwardgeorge/virtualenv-clone")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p0d1y3axvjfnxlgwjx2374gikc8bmc82g0m7yashihbikh7pcxa"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; UnicodeDecodeError: 'utf-8' codec can't decode byte
+                    ;; 0xba in position 10: invalid start byte
+                    (list "not test_clone_contents"
+                          ;;  AssertionError: All versions were skipped.
+                          "test_clone_syspath"
+                          "test_clone_version"
+                          "test_virtualenv_syspath"
+                          "test_virtualenv_versions")
+                    " and not "))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-tomli
+           python-virtualenv
+           python-wheel))
+    (home-page "https://github.com/edwardgeorge/virtualenv-clone")
+    (synopsis "Clone a non-relocatable virtualenv cleanly")
+    (description
+     "Clone non-relocatable virtualenvs without breaking site-packages.")
+    (license license:expat)))
+
+(define-public python-vncdotool
+  (package
+    (name "python-vncdotool")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "http://github.com/sibson/vncdotool")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1adsc263qsa3hcyk8mhv0wwq44h8zhcksx92chd5rr1wz37zmc22"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pillow python-pycryptodomex python-twisted))
+    (native-inputs (list python-pexpect python-pytest python-pyvirtualdisplay
+                         python-setuptools python-wheel))
+    (home-page "http://github.com/sibson/vncdotool")
+    (synopsis "Command line VNC client")
+    (description
+     "This package provides a Python command line VNC client.  It can be
+useful to automating interactions with virtual machines or hardware devices
+that are otherwise difficult to control.")
+    (license license:expat)))
+
+(define-public python-vncdotool-bootstrap
+  (hidden-package
+   (package/inherit python-vncdotool
+     (arguments (list #:tests? #f))
+     (native-inputs (list python-pexpect python-pytest python-setuptools
+                          python-wheel)))))
+
+(define-public python-vobject
+  (package
+    (name "python-vobject")
+    (version "0.9.9")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "vobject" version))
+              (sha256
+               (base32
+                "13mk8wrg7js0zv3w8246jnxb3i5yp4ascl1csp0q9787wbbyai5c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     '(;; The test suite relies on some non-portable Windows interfaces. Tests
+       ;; are rewokred on master's HEAD.
+       #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-dateutil
+           python-pytz
+           python-six)) ;it's dropped on master's HEAD
+    (home-page "https://py-vobject.github.io/")
+    (synopsis "Parse and generate vCard and vCalendar files")
+    (description
+     "Vobject is intended to be a full featured Python package for parsing
+and generating vCard and vCalendar files.  Currently, iCalendar files are
+supported and well tested.  vCard 3.0 files are supported, and all data should
+be imported, but only a few components are understood in a sophisticated way.")
+    (license license:asl2.0)))
+
+(define-public python-voluptuous
+  (package
+    (name "python-voluptuous")
+    (version "0.15.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "voluptuous" version))
+       (sha256
+        (base32 "1akr0adq9can0ibravqzl4aaf20rgv47g9gk596hn8ykqhrapz3g"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/alecthomas/voluptuous")
+    (synopsis "Python data validation library")
+    (description
+     "Voluptuous is a Python data validation library.  It is primarily
+intended for validating data coming into Python as JSON, YAML, etc.")
+    (license license:bsd-3)))
+
+(define-public python-wand
+  (package
+    (name "python-wand")
+    (version "0.6.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Wand" version))
+       (sha256
+        (base32 "1jpwm956vm35hmgjndr2jwrcql0bwvpsl88q5nr0x8ppxa2380gm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These two tests fail even though the signatures are identical.
+      '(list "-k" "not fourier_transform")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'hardcode-lib-path
+            (lambda _
+              (substitute* "wand/api.py"
+                (("os\\.environ\\.get\\('MAGICK_HOME'\\)")
+                 (string-append "\"" #$(this-package-input "imagemagick") "\""))
+                (("os\\.environ\\.get\\('WAND_MAGICK_LIBRARY_SUFFIX'\\)")
+                 "\".Q16\"")))))))
+    (native-inputs
+     (list python-setuptools python-pytest python-wheel))
+    (inputs
+     (list imagemagick))
+    (home-page "https://docs.wand-py.org/")
+    (synopsis "MagickWand API binding for Python")
+    (description
+     "Wand is a ctypes-based binding for ImageMagick's MagickWand library.")
+    (license license:expat)))
+
+(define-public python-wasabi
+  (package
+    (name "python-wasabi")
+    (version "1.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "wasabi" version))
+       (sha256
+        (base32 "0y085r7hym3x34a9jgxl5cd8gsh617rdmd187q6dn29q027h1csb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Test requires nbconvert which is huge.
+      #~(list "--deselect=wasabi/tests/test_jupyter.py::test_jupyter")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-colorama))
+    (home-page "https://github.com/ines/wasabi")
+    (synopsis "Console printing and formatting toolkit")
+    (description
+     "This package provides a lightweight console printing and formatting
+toolkit for Python.")
+    (license license:expat)))
+
+(define-public python-watchdog
+  (package
+    (name "python-watchdog")
+    (version "6.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "watchdog" version))
+       (sha256
+        (base32 "10n2v2iflhdriwfp34yvhfcckqb6vs7378fdvqj8xbm3zn17rpwx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    (list "not test_kill_auto_restart"
+                          "test_auto_restart_on_file_change_debounce"
+                          ;; Fails with too many open files.
+                          "test_select_fd")
+                    " and not "))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-pytest-timeout
+           python-setuptools))
+    (propagated-inputs
+     (list python-pyyaml))
+    (home-page "https://github.com/gorakhargosh/watchdog")
+    (synopsis "File system events monitoring")
+    (description "This package provides a way to monitor file system events
+such as a file modification and trigger an action.  This is similar to inotify,
+but portable.")
+    (license license:asl2.0)))
+
+(define-public python-watchfiles
+  (package
+    (name "python-watchfiles")
+    (version "1.0.5")
+    (source
+     (origin
+       ;; There are no tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/samuelcolvin/watchfiles")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b5rdj795xcbwg76bd8hs3skhgifd7a8zw2vj76nac2dhjlqg93b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Missing file in source.
+      #:test-flags ''("-k" "not test_docs_examples")
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums))))
+          (add-after 'build 'install-rust-library
+            (lambda _
+              (copy-file "target/release/lib_rust_notify.so"
+                         "watchfiles/_rust_notify.so"))))))
+    (native-inputs
+     (append
+      (list maturin
+            python-anyio
+            python-coverage
+            python-dirty-equals
+            python-pytest
+            python-pytest-cov
+            python-pytest-mock
+            python-pytest-timeout
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
+    (inputs (cargo-inputs 'python-watchfiles))
+    (home-page "https://github.com/samuelcolvin/watchfiles")
+    (synopsis "Simple, modern file watching and code reload in Python")
+    (description
+     "Simple, modern file watching and code reload in Python inspired by
+@code{watchdog}.  Among the differences are a unified approach for each
+operating systems and an elegant approach to concurrency using threading.")
+    (license license:expat)))
+
+(define-deprecated/alias python-watchgod python-watchfiles)
+(export python-watchgod)
+
+(define-public python-wcwidth
+  (package
+    (name "python-wcwidth")
+    (version "0.2.13")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "wcwidth" version))
+              (sha256
+               (base32
+                "1dbj74q1iz349sdkxrkc90f7xd4y7a9bdvgxg3cqdcly7430rskj"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest
+                         python-pytest-cov
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/jquast/wcwidth")
+    (synopsis "Measure number of terminal column cells of wide-character codes")
+    (description "Wcwidth measures the number of terminal column cells of
+wide-character codes.  It is useful for those implementing a terminal emulator,
+or programs that carefully produce output to be interpreted by one.  It is a
+Python implementation of the @code{wcwidth} and @code{wcswidth} C functions
+specified in POSIX.1-2001 and POSIX.1-2008.")
+    (license license:expat)))
+
+(define-public python-whatever
+  (package
+    (name "python-whatever")
+    (version "0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Suor/whatever")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x5b4r3fppp208v52hn8inf2988w4llbkw9kvfc3w81dhmrf5fvq"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/Suor/whatever")
+    (synopsis "Make anonymous functions by partial application of operators")
+    (description "@code{whatever} provides an easy way to make anonymous
+functions by partial application of operators.")
+    (license license:bsd-3)))
+
+(define-public python-whatthepatch
+  (package
+    (name "python-whatthepatch")
+    (version "1.0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "whatthepatch" version))
+       (sha256
+        (base32 "1pvygmgj9xqs8d9lsjxvg1mymni8pjsd44yl0a74002jxbmv9vwy"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/cscorley/whatthepatch")
+    (synopsis "Patch parsing and application library")
+    (description
+     "This package provides a patch parsing and application library.")
+    (license license:expat)))
+
+(define-public python-wheel-filename
+  (package
+    (name "python-wheel-filename")
+    (version "1.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "wheel_filename" version))
+       (sha256
+        (base32 "1zcqq8mydjjrk8x5xlm53bavs51jm40nz42a7500pd6bbm31r2c7"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hatchling python-pytest python-pytest-cov))
+    (home-page "https://github.com/wheelodex/wheel-filename")
+    (synopsis "Parse wheel filenames")
+    (description
+     "This software allows you to verify
+@url{https://packaging.python.org/en/latest/specifications/binary-distribution-format/, wheel}
+filenames and parse them into their component fields.
+
+This package adheres strictly to the standard, with the following
+exceptions:
+
+@itemize @bullet
+@item
+Version components may be any sequence of the relevant set of
+characters; they are not verified for PEP 440 compliance.
+@item
+The @file{.whl} file extension is matched case-insensitively.
+@end itemize")
     (license license:expat)))
 
 (define-public python-whenever
