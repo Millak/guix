@@ -847,6 +847,35 @@ spreadsheets and outputs it in comma-separated-value format, and
 in a portable way.")
     (license license:boost1.0)))
 
+(define-public utfcpp-2
+  (package
+    (inherit utfcpp)
+    (name (package-name utfcpp))
+    (version "2.3.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/nemtrif/utfcpp")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1gr98d826z6wa58r1s5i7rz7q2x3r31v7zj0pjjlrc7gfxwklr4s"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:out-of-source? #f
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'install              ; no install target
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (include (string-append out "/include"))
+                    (doc (string-append out "/share/doc/" ,name)))
+               (copy-recursively "source" include)
+               (install-file "README.md" doc)))))))
+    (native-inputs '())))
+
+
 (define-public dbacl
   (package
     (name "dbacl")
