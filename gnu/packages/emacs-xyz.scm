@@ -9979,16 +9979,17 @@ snippets for yasnippet.")
         (base32 "0agiamq7g8zm3blznykbr1kgr09rb133rd4mh9nfc0vfk8i5mabv"))))
     (build-system emacs-build-system)
     (arguments
-     ;; the testing framework test-hdl requires network
-     `(#:tests? #f
-       #:test-command '("make")))
-    (propagated-inputs (list emacs-ag
-                             emacs-async
-                             emacs-flycheck
-                             emacs-hydra
-                             emacs-lsp-mode
-                             emacs-ripgrep
-                             emacs-vhdl-ts-mode))
+     (list
+      #:tests? #f         ;the testing framework, test-hdl, requires network
+      #:test-command #~(list "make")))
+    (propagated-inputs
+     (list emacs-ag
+           emacs-async
+           emacs-flycheck
+           emacs-hydra
+           emacs-lsp-mode
+           emacs-ripgrep
+           emacs-vhdl-ts-mode))
     (home-page "https://github.com/gmlarumbe/vhdl-ext/")
     (synopsis "Extensions to Emacs @code{vhdl-mode}")
     (description "This package provides additional features and utilities for
