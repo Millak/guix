@@ -9482,22 +9482,27 @@ tunnels in the background, using Python.")
     (version "0.4.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "robotframework-stacktrace" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/MarketSquare/robotframework-stacktrace")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "19gnwr7da1zz9clhwsmvqfjf02d195i61lzpq4253dcsgrpb6v79"))))
-    (build-system python-build-system)
+        (base32 "1nkzcgc1xwbx8d5qq47aj23qa7dn1ml033bjwrgqh55x3miphlcq"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; The test suite fails (see:
+     ;; XXX: The test suite fails (see:
      ;; https://github.com/MarketSquare/robotframework-stacktrace/issues/4).
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (with-directory-excursion "tests"
-                 (invoke "python" "-m" "robot" "."))))))))
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (substitute* "setup.py"
+                (("VERSION =.*")
+                 (string-append "VERSION = '" #$version "'"))))))))
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-robotframework))
     (home-page "https://github.com/MarketSquare/robotframework-stacktrace")
     (synopsis "Robot Framework listener to print a stack trace on error")
