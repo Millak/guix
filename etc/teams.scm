@@ -1074,7 +1074,7 @@ the \"texlive\" importer."
 (define-member (person "Tobias Geerinckx-Rice"
                        "me@tobias.gr"
                        "nckx")
-  core mentors)
+  mentors)
 
 (define-member (person "Steve George"
                        "steve@futurile.net"
@@ -1114,7 +1114,7 @@ the \"texlive\" importer."
 (define-member (person "Mathieu Othacehe"
                        "othacehe@gnu.org"
                        "mothacehe")
-  core installer mentors)
+  installer mentors)
 
 (define-member (person "Florian Pelz"
                        "pelzflorian@pelzflorian.de"
@@ -1148,7 +1148,7 @@ the \"texlive\" importer."
 
 (define-member (person "Josselin Poiret"
                        "dev@jpoiret.xyz")
-  core installer)
+  installer)
 
 (define-member (person "("
                        "paren@disroot.org")
