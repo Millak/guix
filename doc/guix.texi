@@ -42781,6 +42781,10 @@ The location of the repositories.  Note that only public repositories will
 be shown by Gitile.  To make a repository public, add an empty
 @file{git-daemon-export-ok} file at the root of that repository.
 
+@item @code{git-owner-validation?} (default: @code{#t})
+Whether to check for the service user's ownership of repositories.
+By default, Git will refuse to process a repository owned by another user.
+
 @item @code{base-git-url}
 The base git url that will be used to show clone commands.
 
