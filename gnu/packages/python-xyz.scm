@@ -9585,25 +9585,23 @@ SFTP.  It has the following main usages:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0v89v8va65l6inh0fb34qgxawx6p29pnrmw4n5941yzdi3804rc4"))))
-    (build-system python-build-system)
+        (base32 "0v89v8va65l6inh0fb34qgxawx6p29pnrmw4n5941yzdi3804rc4"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "utest/run.py")))))))
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "utest/run.py")))
     (native-inputs
      (list python-pytest python-pytest-cov python-pytest-mockito
-           python-robotframework))
+           python-robotframework python-setuptools))
     (home-page "https://github.com/robotframework/PythonLibCore")
     (synopsis "Robot Framework Python library tools")
-    (description "PythonLibCore provides tools for creating larger test
-libraries for Robot Framework using Python.  The Robot Framework hybrid and
-dynamic library APIs give more flexibility for library than the static library
-API, but they also set requirements for libraries which need to be implemented
-in the library side.  PythonLibCore eases the problem by providing a simpler
+    (description
+     "PythonLibCore provides tools for creating larger test libraries for
+Robot Framework using Python.  The Robot Framework hybrid and dynamic library
+APIs give more flexibility for library than the static library API, but they
+also set requirements for libraries which need to be implemented in the
+library side.  PythonLibCore eases the problem by providing a simpler
 interface and by handling all the requirements towards the Robot Framework
 library APIs.")
     (license license:asl2.0)))
