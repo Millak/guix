@@ -3140,16 +3140,20 @@ JWE, JWK, JWA, and JWT.")
 (define-public python-jwcrypto
   (package
     (name "python-jwcrypto")
-    (version "1.5.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "jwcrypto" version))
-              (sha256
-               (base32
-                "138bh6x1yy0qpk63bxa7mxnd97gfdm1fkpwm8wrdz3g3z0fca79c"))))
+    (version "1.5.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jwcrypto" version))
+       (sha256
+        (base32 "0fdhn5jrsdxqr1yr6rmh585q4j08z1aajn392vk1l20c59v8f6kp"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-cryptography python-deprecated))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-cryptography
+           python-deprecated))
     (home-page "https://github.com/latchset/jwcrypto")
     (synopsis "Implementation of JOSE Web standards")
     (description
