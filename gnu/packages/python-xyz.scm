@@ -9199,20 +9199,23 @@ using version 3 of the GitHub application programming interface (API).")
     (version "0.7")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "rellu" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/robotframework/rellu")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1w0arpj1sm7vh29nrbnca4pnp8sx42l07r17inwqcjjf9bhng66x"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-invoke python-pygithub))
+        (base32 "1vbzkn4yfmc3dypgkw47fyd6n26ib7na1azrgjrvwc0vdf0qjyrw"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-invoke python-pygithub))
     (home-page "https://github.com/robotframework/rellu")
     (synopsis "Utilities to create PyPI releases")
-    (description "This collection of utilities contains tooling and templates
-to assist in creating releases on GitHub and publishing them on PyPI.  It is
-designed to be used by Robot Framework and tools and libraries in its
-ecosystem, but can naturally be used also by other projects.")
+    (description
+     "This collection of utilities contains tooling and templates to assist in
+creating releases on GitHub and publishing them on PyPI.  It is designed to be
+used by Robot Framework and tools and libraries in its ecosystem, but can
+naturally be used also by other projects.")
     (license license:asl2.0)))
 
 (define-public python-robotframework
