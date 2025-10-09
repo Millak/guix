@@ -34433,6 +34433,8 @@ EDU SDK.  This library has the following features:
     (home-page "https://github.com/FriedrichFroebel/python-djvulibre")
     (license license:gpl2)))
 
+;; XXX: No updates since 2018, consider to remove when fails to build, it's a
+;; leaf package.
 (define-public python-version
   ;; No version tags available in the git repo; just using bare commit instead.
   (let ((commit "5232eea250ab72cc5cb72b0b75efb35d2192b906")
@@ -34440,16 +34442,20 @@ EDU SDK.  This library has the following features:
     (package
       (name "python-version")
       (version (git-version "0.0.2" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://gitlab.com/halfak/python_version")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0w210559ypdynlj9yn40m9awzkaknwrf682i99hswl7h66sdgh0h"))))
-      (build-system python-build-system)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://gitlab.com/halfak/python_version")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0w210559ypdynlj9yn40m9awzkaknwrf682i99hswl7h66sdgh0h"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list #:tests? #f)) ;no tests
+      (native-inputs
+       (list python-setuptools))
       (home-page "https://gitlab.com/halfak/python_version")
       (synopsis "Python version checking utility")
       (description
