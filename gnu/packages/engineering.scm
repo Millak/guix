@@ -3174,9 +3174,9 @@ models in the STL and OFF file formats.")
       (license license:gpl2+))))
 
 (define-public pythonscad
-  (let ((commit "228aa7b34821523d0dc413d9421bae204edabefe")
+  (let ((commit "92071afdffa6e2f6d99fe7e695c40044ec8aa16a")
         (version "0.0.0")
-        (revision "4"))
+        (revision "5"))
     (package
       (inherit openscad)
       (name "pythonscad")
@@ -3192,7 +3192,7 @@ models in the STL and OFF file formats.")
                ;; deleted in the patch-source build phase.
                (recursive? #t)))
          (sha256
-          (base32 "133anxk4ksi0f8nx15sm564izq2fqni3w72pg54gwrx27zli9cbh"))
+          (base32 "1ivjbcf52xzavyrld5xjii7yrqf27c244ndzvysrdaz53s06nk90"))
          (modules '((guix build utils)))
          (snippet #~(begin
                       ;; Delete all unbundled libraries to replace them with
