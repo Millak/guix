@@ -3694,6 +3694,8 @@ non-consing when possible.")
 (define-public ecl-charje.loop
   (sbcl-package->ecl-package sbcl-charje.loop))
 
+(define-public clasp-charje.loop
+  (sbcl-package->clasp-package sbcl-charje.loop))
 
 (define-public sbcl-chemboy
   (package
