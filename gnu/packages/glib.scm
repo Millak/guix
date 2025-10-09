@@ -253,7 +253,7 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
 (define glib-minimal
   (package
     (name "glib")
-    (version "2.83.3")
+    (version "2.86.0")
     (source
      (origin
        (method url-fetch)
@@ -262,7 +262,7 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
                        name "/" (string-take version 4) "/"
                        name "-" version ".tar.xz"))
        (sha256
-        (base32 "139jpar5f5qjxkf3knvqq1kgdxgsrxqqmybw4yaaagrfpcc57inh"))
+        (base32 "0v8db3mgmlg413abicqbfh1jw3k5zqyiczqyzpbb1krpsxr9jwxm"))
        (patches
         (search-patches "glib-appinfo-watch.patch"
                         "glib-skip-failing-test.patch"))
@@ -305,9 +305,6 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
                  (string-append first " = " second "0")))))
           (add-after 'unpack 'disable-failing-tests
             (lambda _
-              (substitute* "gio/tests/meson.build"
-                ((".*'testfilemonitor'.*") ;marked as flaky
-                 ""))
               (with-directory-excursion "glib/tests"
                 (substitute* '("unix.c" "utils.c")
                   (("[ \t]*g_test_add_func.*;") "")))
@@ -485,11 +482,10 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
               ;; We don't patch "bindir" to point to "$bin/bin", because that
               ;; would create a reference cycle between the "out" and "bin"
               ;; outputs.
-              (substitute*
-                  (list (search-input-file outputs "lib/pkgconfig/gio-2.0.pc")
-                        (search-input-file outputs "lib/pkgconfig/glib-2.0.pc")
-                        (search-input-file outputs
-                                           "lib/pkgconfig/girepository-2.0.pc"))
+              (substitute* (map (lambda (f) (search-input-file outputs f))
+                                (list "lib/pkgconfig/gio-2.0.pc"
+                                      "lib/pkgconfig/glib-2.0.pc"
+                                      "lib/pkgconfig/girepository-2.0.pc"))
                 (("^bindir=.*")
                  "")
                 (("=\\$\\{bindir\\}/")
