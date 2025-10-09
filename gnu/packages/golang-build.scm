@@ -384,6 +384,34 @@ replace a file or symbolic link.")
 1.1: Authentication and Security Services.")
     (license license:bsd-3)))
 
+(define-public go-github-com-matttproud-golang-protobuf-extensions
+  (package
+    (name "go-github-com-matttproud-golang-protobuf-extensions")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/matttproud/golang_protobuf_extensions")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xqsf9vpcrd4hp95rl6kgmjvkv1df4aicfw4l5vfcxcwxknfx2xs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/matttproud/golang_protobuf_extensions"))
+    (propagated-inputs
+     (list go-github-com-golang-protobuf))
+    (home-page "https://github.com/matttproud/golang_protobuf_extensions")
+    (synopsis "Support for streaming Protocol Buffer messages for Golang")
+    (description
+     "This package provides various Protocol Buffer extensions for the Go
+language (golang), namely support for record length-delimited message
+streaming.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-mmcloughlin-avo
   (package
     (name "go-github-com-mmcloughlin-avo")
