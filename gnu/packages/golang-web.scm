@@ -10310,26 +10310,18 @@ API v4.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/shurcooL/httpfs")
-             (commit (go-version->git-ref version))))
+              (url "https://github.com/shurcooL/httpfs")
+              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1m0jjnfzr8372cjx0zjm2zm695kwaz8l1yk7gzgn05biadsklprm"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/shurcooL/httpfs"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Replace when go-build-system supports nested path.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+      #:skip-build? #t
+      #:import-path "github.com/shurcooL/httpfs"))
     (native-inputs
-     (list go-golang-org-x-tools))
+     (list go-golang-org-x-tools-godoc))
     (propagated-inputs
      (list go-github-com-shurcool-httpgzip))
     (home-page "https://github.com/shurcooL/httpfs")
