@@ -5083,6 +5083,50 @@ API.")
 types and related helper functions.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-memberlist
+  (package
+    (name "go-github-com-hashicorp-memberlist")
+    (version "0.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hashicorp/memberlist")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09vb2zny0scsr65rp8ibj51diqiv818cwnfbn2xxyzssi5jcpgjv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/memberlist"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-google-btree
+           go-github-com-hashicorp-go-metrics
+           go-github-com-hashicorp-go-msgpack-v2
+           go-github-com-hashicorp-go-multierror
+           go-github-com-hashicorp-go-sockaddr
+           go-github-com-miekg-dns
+           go-github-com-sean--seed))
+    (home-page "https://github.com/hashicorp/memberlist")
+    (synopsis "Gossip based cluster membership and failure detection")
+    (description
+     "memberlist is a Go library that manages cluster membership and member
+failure detection using a gossip based protocol.
+
+The use cases for such a library are far-reaching: all distributed systems
+require membership, and memberlist is a re-usable solution to managing cluster
+membership and node failure detection.
+
+memberlist is eventually consistent but converges quickly on average.  The
+speed at which it converges can be heavily tuned via various knobs on the
+protocol.  Node failures are detected and network partitions are partially
+tolerated by attempting to communicate to potentially dead nodes through
+multiple routes.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hashicorp-yamux
   (package
     (name "go-github-com-hashicorp-yamux")
