@@ -2004,6 +2004,7 @@ audio/video codec library.")
                      "ffmpeg-jami-change-RTCP-ratio.patch"
                      "ffmpeg-jami-rtp_ext_abs_send_time.patch"
                      "ffmpeg-jami-libopusdec-enable-FEC.patch"
+                     "ffmpeg-jami-libopusenc-enable-FEC.patch"
                      "ffmpeg-jami-libopusenc-reload-packet-loss-at-encode.patch"
                      "ffmpeg-jami-screen-sharing-x11-fix.patch"
                      "ffmpeg-jami-pipewiregrab-source-filter.patch"))))))
