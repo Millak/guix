@@ -78,6 +78,12 @@
                                             "/share/libftdi/examples")
                              (string-append #$output:python
                                             "/share/libftdi/examples")))))
+          (add-after 'install-python-binding 'install-udev-rules
+            (lambda _
+              (install-file
+               (string-append
+                "../libftdi1-" #$version "/packages/99-libftdi.rules")
+               (string-append #$output "/lib/udev/rules.d/"))))
           (add-after 'install-python-binding 'install-documentation
             (lambda _
               (let ((share (string-append #$output:doc "/share")))
@@ -98,6 +104,15 @@
     (synopsis "FTDI USB driver with bitbang mode")
     (description
      "libFTDI is a library to talk to FTDI chips: FT232BM, FT245BM, FT2232C,
-FT2232D, FT245R and FT232H including the popular bitbangmode.")
+FT2232D, FT245R and FT232H including the popular bitbangmode.
+To use @code{libftdi} without root privileges it is necessary to install the
+necessary udev rules.  This can be done by extending @code{udev-service-type}
+in the @code{operating-system} configuration file with this package, as in:
+@lisp
+(udev-rules-service 'libftdi libftdi #:groups '(\"plugdev\")
+@end lisp
+Additionally, the @samp{plugdev} group should be registered in the
+@code{supplementary-groups} field of your @code{user-account}
+declaration. Refer to @samp{info \"(guix) Base Services\"} for examples.")
     (license (list license:gpl2         ; ftdi_eeprom, C++ bindings
                    license:lgpl2.1))))  ; main library
