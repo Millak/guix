@@ -1654,7 +1654,7 @@ Clojure, as well as several expansions on the idea.")
 (define-public asdf-cli
   (package
     (name "asdf-cli")
-    (version "0.1.1")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -1663,16 +1663,23 @@ Clojure, as well as several expansions on the idea.")
              (commit (string-append "v" version))))
        (file-name (git-file-name "asdf-cli" version))
        (sha256
-        (base32 "1dsvmqazn25h3b55ycd96am5f18ymk9rga8xy72d6ykm4ki8w7pn"))))
+        (base32 "1x925sl7q7m8c0larysqswlvmzm26fi39cwd45snl1z71rdgkmaw"))))
     (build-system asdf-build-system/sbcl)
     (arguments
      (list
       #:tests? #f ; There are no tests.
+      #:asd-systems ''("charje.asdf-cli")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'build
-            (lambda* _
+            (lambda _
               (setenv "HOME" (getcwd))
+              ;; TEMPLATES is a buildtime option for asdf-cli to show where
+              ;; the templates are installed.
+              (setenv "TEMPLATES"
+                      (string-append
+                       #$output
+                       "/share/common-lisp/sbcl/asdf-cli/src/templates/"))
               (invoke "./build")))
           (add-after 'build 'install
             (lambda _
@@ -1680,8 +1687,12 @@ Clojure, as well as several expansions on the idea.")
                 (install-file "asdf" bin)))))))
     (inputs
      (list sbcl-alexandria
-           sbcl-command-line-args
-           sbcl-cl-annot))
+           sbcl-charje.loop
+           sbcl-cl-annot
+           sbcl-cl-fad
+           sbcl-cl-semver
+           sbcl-cl-str
+           sbcl-command-line-args))
     (propagated-inputs
      (list sbcl
            cl-quickproject))
