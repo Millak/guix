@@ -179,6 +179,10 @@
     "third_party/farmhash" ;Expat
     "third_party/fast_float" ;ASL2.0, Boost1.0, Expat
     "third_party/fdlibm" ;non-copyleft
+    "third_party/federated_compute/src/fcp/base" ;ASL2.0
+    "third_party/federated_compute/src/fcp/confidentialcompute" ;ASL2.0
+    "third_party/federated_compute/src/fcp/protos/confidentialcompute" ;ASL2.0
+    "third_party/federated_compute/src/fcp/protos/federatedcompute" ;ASL2.0
     "third_party/ffmpeg" ; LGPL2.1+, GPL2.0+, Expat and BSD
     "third_party/fft2d" ;non-copyleft
     "third_party/flatbuffers" ;ASL2.0
@@ -241,6 +245,8 @@
     "third_party/nasm" ;BSD-2
     "third_party/nearby" ;ASL2.0
     "third_party/node" ;Expat
+    "third_party/oak/chromium/proto" ;ASL2.0
+    "third_party/oak/chromium/proto/attestation" ;ASL2.0
     "third_party/omnibox_proto" ;BSD-3
     "third_party/one_euro_filter" ;BSD-3
     "third_party/openscreen" ;BSD-3
@@ -366,7 +372,7 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "140.0.7339.207")
+(define %chromium-version "141.0.7390.65")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision (string-append "debian/" %ungoogled-revision))
 
@@ -378,7 +384,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "1kmfsb57cqks84i523ryw2l089gl0iq9hgv3sy8r8441b5nv3yn0"))))
+      "1hk4rww2gccly1qv0xnswd77haj02rlza82403dxdjm8fkdfndy6"))))
 
 (define %debian-origin
   (origin
@@ -391,7 +397,7 @@
                                 ((_ version) version))))
     (sha256
      (base32
-      "1hwzxlxs3c0x87rbq3b8p1m2pcjy3b10vyhbia5p3aiqdqgbm97j"))))
+      "06s3kvwb3490xb28n6r3q5n1c0ylsvchiw6s4h1rrp8jqzwjbmc6"))))
 
 (define (origin-file origin file)
   (computed-file
@@ -407,6 +413,8 @@
        '("bookworm/clang19.patch"
 	 "bookworm/foreach.patch"
 	 "disable/node-version-ck.patch"
+         "fixes/gentoo-stylesheet.patch"
+         "fixes/libcpp-headers.patch"
 	 "fixes/rust-clanglib.patch"
 	 "system/openjpeg.patch"
 	 ;; adler2 is not part of our rust toolchain, check on next version.
@@ -525,7 +533,7 @@
                                   %chromium-version "-lite.tar.xz"))
               (sha256
                (base32
-                "0cbfvdlz8wkzyljf9ri9viivf02dikhd286ahzrcv9752y9hj563"))
+                "09iwglswnr6d45zz3zsjw7jpm1xlwwkxlz9h5nlhqxyd933a04fq"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -546,6 +554,7 @@
               ;; a developer build.
               "is_official_build=true"
               "clang_use_chrome_plugins=false"
+              "use_clang_modules=false"
               "use_custom_libcxx=false" ; support for this is deprecated and to be removed.
               "optimize_webui=false"
               "safe_browsing_use_unrar=false"
@@ -874,10 +883,6 @@
                   (mkdir-p bin)
                   (symlink "../lib/chromium" exe)
                   (install-file "chromedriver" bin)
-
-                  (for-each (lambda (so)
-                              (install-file so (string-append lib "/swiftshader")))
-                            (find-files "swiftshader" "\\.so$"))
 
                   (wrap-program exe
                     ;; Avoid file manager crash.  See <https://bugs.gnu.org/26593>.
