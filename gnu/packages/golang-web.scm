@@ -11022,23 +11022,31 @@ extract data from those paths.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ugorji/go")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ugorji/go")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mny5gm5gr82hz4y6k5ljaa0khjw647ys278wq750fgrbzp6fs8h"))))
+        (base32 "1mny5gm5gr82hz4y6k5ljaa0khjw647ys278wq750fgrbzp6fs8h"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/ugorji/go/codec/codecgen
+            (delete-file-recursively "codec/codecgen")))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/ugorji/go/codec"
-      #:unpack-path "github.com/ugorji/go"
+      #:skip-build? #t
+      #:import-path "github.com/ugorji/go"
+      #:test-flags
+      #~(list "-vet=off")   ;Go@1.24 forces vet, but tests are not ready yet.
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'remove-benchmarks
                      (lambda* (#:key import-path #:allow-other-keys)
                        (delete-file-recursively (string-append "src/"
                                                                import-path
-                                                               "/bench")))))))
+                                                               "/codec/bench")))))))
     (propagated-inputs (list go-golang-org-x-tools))
     (home-page "https://github.com/ugorji/go")
     (synopsis "Codec and encoding library for various serialization formats")
