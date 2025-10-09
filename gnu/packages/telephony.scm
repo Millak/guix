@@ -737,7 +737,7 @@ your calls and messages.")
 (define-public pjproject
   (package
     (name "pjproject")
-    (version "2.13")
+    (version "2.15.1")
     (source
      (origin
        (method git-fetch)
@@ -747,7 +747,7 @@ your calls and messages.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ld0adp9y2ydnz2ldwdzig3hpk4ayx1va6aqc3nja8zfdnd36fyb"))
+         "0ddn92imbxa17b4v1nm8g226zypk9yfkm3rn6d7bvjw6llhcwv7m"))
        (modules '((guix build utils)))
        (snippet
         '(begin
