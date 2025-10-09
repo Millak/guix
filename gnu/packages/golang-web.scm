@@ -13465,6 +13465,36 @@ generate Go code.")
        ((#:tests? _ #t) #f)
        ((#:import-path _) "gopkg.in/jcmturner/rpc.v2")))))
 
+(define-public go-gopkg-in-telebot-v3
+  (package
+    (name "go-gopkg-in-telebot-v3")
+    (version "3.3.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-telebot/telebot")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l6gl31jd1i5im037ra5qd0sd2acwk09idh89b7d97j34y2a8bv6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gopkg.in/telebot.v3"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-goccy-go-yaml
+	   go-github-com-spf13-viper))
+    (home-page "https://github.com/go-telebot/telebot")
+    (synopsis "Telegram bot framework in Golang")
+    (description
+     "Telebot is a bot framework for @url{https://core.telegram.org/bots/api,
+Telegram Bot API}.  This package provides the best of its kind API for command
+routing, inline query requests and keyboards, as well as callbacks.")
+    (license license:expat)))
+
 (define-public go-k8s-io-cri-api
   (package
     (name "go-k8s-io-cri-api")
