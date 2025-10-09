@@ -1363,7 +1363,6 @@ of one or more RISC-V harts.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:install-source? #f
       #:tests? #f ;TODO: tests requrie some set up.
       #:import-path "github.com/lxc/incus/v6"
