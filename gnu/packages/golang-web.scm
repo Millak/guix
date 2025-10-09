@@ -10357,7 +10357,7 @@ interface.")
      (list
       #:import-path "github.com/shurcooL/httpgzip"))
     (native-inputs
-     (list go-golang-org-x-tools))
+     (list go-golang-org-x-tools-godoc))
     (propagated-inputs
      (list go-golang-org-x-net))
     (home-page "https://github.com/shurcooL/httpgzip")
