@@ -796,8 +796,8 @@ by Chris Riesbeck.")
   (sbcl-package->cl-source-package sbcl-nst))
 
 (define-public sbcl-parachute
-  (let ((commit "86fc13df9d08ec3681a36541d1ded03653d0fd34")
-        (revision "2"))
+  (let ((commit "dd925cb74e08fb74c1e566f0984d120a33c4034e")
+        (revision "3"))
     (package
       (name "sbcl-parachute")
       (version (git-version "1.5.0" revision commit))
@@ -806,11 +806,11 @@ by Chris Riesbeck.")
          (method git-fetch)
          (uri
           (git-reference
-           (url "https://github.com/Shinmera/parachute")
+           (url "https://codeberg.org/shinmera/parachute")
            (commit commit)))
          (file-name (git-file-name "cl-parachute" version))
          (sha256
-          (base32 "0zsqva66pd0vmxz9wbwccnjmkw8b9gyzkx36w2mdpfxspab3r4vr"))))
+          (base32 "0d1y9999c1pk25dj2f2g6x1zcd3dh3xk17pqd2mxd7v7649qg8x5"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-documentation-utils
@@ -821,7 +821,7 @@ by Chris Riesbeck.")
        "Parachute is a simple-to-use and extensible testing framework.
 In Parachute, things are organised as a bunch of named tests within a package.
 Each test can contain a bunch of test forms that make up its body.")
-      (home-page "https://shinmera.github.io/parachute/")
+      (home-page "https://shinmera.com/docs/parachute/")
       (license license:zlib))))
 
 (define-public cl-parachute
