@@ -3922,7 +3922,7 @@ properly.")
 (define-public abbaye
   (package
     (name "abbaye")
-    (version "2.0.2")
+    (version "2.0.5")
     (source
      (origin
        (method git-fetch)
@@ -3931,7 +3931,7 @@ properly.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16zxmz7z6jfawh68q8k9s1iwbl2f9jr3qaiqlkwpz8vmpqw2s47x"))))
+        (base32 "0jwj6cn4q0ijxdg8ywzd55sxqid5kp5z2bsxh8fpdlm5r7anvqls"))))
     (build-system gnu-build-system)
     (arguments
      (list
