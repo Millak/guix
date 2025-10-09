@@ -1087,48 +1087,25 @@ useful for C++.")
 (define-public python-pygobject
   (package
     (name "python-pygobject")
-    (version "3.50.0")
+    (version "3.54.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://gnome/sources/pygobject/"
                            (version-major+minor version)
-                           "/pygobject-" version ".tar.xz"))
+                           "/pygobject-" version ".tar.gz"))
        (sha256
         (base32
-         "04i28xrb9fxkmn9j2mmsl0lbmk9blgjcl8hnxrbx90d8nmsnx0wd"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; We disable these tests in a snippet so that they are inherited
-        ;; by the Python 2 variant which is built differently.
-        #~(with-directory-excursion "tests"
-            ;; FIXME: These tests require Gdk and/or Gtk 4.
-            (for-each delete-file
-                      '("test_atoms.py" "test_overrides_gtk.py"
-                        "test_overrides_gdk.py"))))))
+         "1rxsj85xl73a14vz7s30sy8lx9sswd2j2hgj3i4mcz8g989hknm8"))))
     (build-system meson-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; The default 90 seconds can be too low on slower machines.
-                (invoke "meson" "test" "--timeout-multiplier" "5")))))))
-    (native-inputs
-     (list `(,glib "bin")
-           pkg-config
-           python-pytest
-           python-wrapper)) ; For patching shebangs
-    (inputs
-     (list python python-pycairo gobject-introspection))
-    (propagated-inputs
-     ;; pygobject-3.0.pc refers to all these.
-     (list glib libffi))
+    ;; The tests require mutter, which would introduce a circular dependency.
+    (arguments (list #:tests? #f))
+    (native-inputs (list `(,glib "bin") pkg-config))
+    (inputs (list python python-pycairo gobject-introspection))
+    (propagated-inputs (list glib libffi)) ;required in pygobject-3.0.pc
     ;; For finding typelib files, since gobject-introscpetion isn't propagated.
     (native-search-paths (package-native-search-paths gobject-introspection))
-    (home-page "https://live.gnome.org/PyGObject")
+    (home-page "https://pygobject.gnome.org/")
     (synopsis "Python bindings for GObject")
     (description
      "Python bindings for GLib, GObject, and GIO.")
