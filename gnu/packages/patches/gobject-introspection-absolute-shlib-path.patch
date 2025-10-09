@@ -51,10 +51,10 @@ index 1d39ab84..e12ed24e 100644
  def _get_option_parser():
      parser = optparse.OptionParser('%prog [options] sources',
                                     version='%prog ' + giscanner.__version__)
-@@ -220,6 +253,10 @@ match the namespace prefix.""")
-     parser.add_option("", "--compiler",
-                       action="store", dest="compiler", default=None,
-                       help="the C compiler to use internally")
+@@ -225,6 +258,10 @@ match the namespace prefix.""")
+                       help=("name of the documentation format used in the project, "
+                             "should be one of gi-docgen, gtk-doc-docbook, "
+                             "gtk-doc-markdown or hotdoc"))
 +    parser.add_option("", "--fallback-library-path",
 +                      action="store", dest="fallback_libpath",
 +                      default=_get_default_fallback_libpath(),
