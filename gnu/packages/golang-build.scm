@@ -1362,6 +1362,47 @@ Go source code (including go.mod and go.work files) as test expectations.")
 tools on.")
     (license license:bsd-3)))
 
+(define-public go-golang-org-x-tools-godoc
+  (package
+    (name "go-golang-org-x-tools-godoc")
+    (version "0.1.0-deprecated")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/tools")
+             (commit (go-version->git-ref version
+                                          #:subdir "godoc"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1blk22apy424j9v58lfy4pxnrgh93yqchqhxsnf78dmx4vx5yi9r"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "godoc")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "golang.org/x/tools/godoc"
+      #:unpack-path "golang.org/x/tools"))
+    (propagated-inputs
+     (list go-golang-org-x-tools
+           go-github-com-yuin-goldmark))
+    (home-page "https://golang.org/x/tools")
+    (synopsis "Code for running a godoc server.")
+    (description
+     "This package provides most of the code for running a @code{godoc}
+ server.")
+    (license license:bsd-3)))
+
 (define-public go-golang-org-x-vuln
   (package
     (name "go-golang-org-x-vuln")
