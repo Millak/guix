@@ -1620,14 +1620,11 @@ dist_patch_DATA =						\
   %D%/packages/patches/isl-0.11.1-aarch64-support.patch		\
   %D%/packages/patches/ispell-for-linphone-cmake.patch		\
   %D%/packages/patches/jamesdsp-fix-bulid-on-pipewire-1.4.0.patch\
-  %D%/packages/patches/jami-disable-webengine.patch		\
-  %D%/packages/patches/jami-enable-testing.patch		\
+  %D%/packages/patches/jami-find-package-avutil.patch		\
   %D%/packages/patches/jami-libjami-headers-search.patch	\
   %D%/packages/patches/jami-qwindowkit.patch			\
   %D%/packages/patches/jami-skip-tests-requiring-internet.patch	\
-  %D%/packages/patches/jami-tests-qtwebengine-ifdef-to-if.patch	\
   %D%/packages/patches/jami-unbundle-dependencies.patch		\
-  %D%/packages/patches/jami-unittests-fix-build.patch		\
   %D%/packages/patches/jamvm-1.5.1-aarch64-support.patch	\
   %D%/packages/patches/jamvm-1.5.1-armv7-support.patch	\
   %D%/packages/patches/jamvm-2.0.0-aarch64-support.patch	\
@@ -1749,8 +1746,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/libgnome-encoding.patch			\
   %D%/packages/patches/libgnomeui-utf8.patch			\
   %D%/packages/patches/libgrss-CVE-2016-2001.patch		\
-  %D%/packages/patches/libjami-ac-config-files.patch		\
-  %D%/packages/patches/libjami-sdbus-cpp-v2.patch		\
   %D%/packages/patches/libjxr-fix-function-signature.patch	\
   %D%/packages/patches/libjxr-fix-typos.patch			\
   %D%/packages/patches/libofa-ftbfs-1.diff		\

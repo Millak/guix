@@ -79,8 +79,8 @@
 ;;; When updating Jami, make sure that the patches used for ffmpeg-jami are up
 ;;; to date with those listed in
 ;;; <https://review.jami.net/plugins/gitiles/jami-daemon/+/refs/heads/master/contrib/src/ffmpeg/rules.mak>.
-(define %jami-nightly-version "20250613.0")
-(define %jami-daemon-commit "41384122a8b61548aae90c9893d065aca216ce85")
+(define %jami-nightly-version "20251003.0")
+(define %jami-daemon-commit "afe2446133eb3c9279e42b0d1dcfdd9a3c76a35f")
 
 (define-public libjami
   (package
@@ -94,10 +94,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "136hiippjfbyp4h3pf68kh3cyw6r2idjgq7vj1h9sdipc87a1a2r"))
-              (patches (search-patches
-                        "libjami-ac-config-files.patch"
-                        "libjami-sdbus-cpp-v2.patch"))))
+                "05vjykg3nzf91bwzrhh95c6mndiz5n6gz204y2nrfrszx161irh9"))))
     (outputs '("out" "bin" "debug"))    ;"bin' contains jamid
     (build-system gnu-build-system)
     (arguments
@@ -234,16 +231,13 @@ QSortFilterProxyModel conveniently exposed for QML.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kb564njmxzyn6lpry58dj14hcwfjhz9kqyi419glbdp98kipd4m"))
+                "1ivgs7ckc5wcjlg1p2v7nsw4skcr2hfgv7yk9kx1hd4pbiknr6hk"))
               (patches (search-patches
-                        "jami-disable-webengine.patch"
-                        "jami-enable-testing.patch"
+                        "jami-unbundle-dependencies.patch"
                         "jami-libjami-headers-search.patch"
                         "jami-qwindowkit.patch"
                         "jami-skip-tests-requiring-internet.patch"
-                        "jami-tests-qtwebengine-ifdef-to-if.patch"
-                        "jami-unbundle-dependencies.patch"
-                        "jami-unittests-fix-build.patch"))))
+                        "jami-find-package-avutil.patch"))))
     (build-system qt-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -252,6 +246,8 @@ QSortFilterProxyModel conveniently exposed for QML.")
       #:configure-flags
       #~(list "-DWITH_DAEMON_SUBMODULE=OFF"
               (string-append "-DBUILD_VERSION=" #$version)
+              ;; We ship 'libjami' as a separate package.
+              "-DJAMICORE_AS_SUBDIR=OFF"
               ;; Disable the webengine since it grows the closure size by
               ;; about 450 MiB and requires more resources.
               "-DWITH_WEBENGINE=OFF"
@@ -338,8 +334,8 @@ P2P-DHT.")
 
 (define-public jami-docs
   ;; There aren't any tags, so use the latest commit.
-  (let ((revision "3")
-        (commit "4764cc83ccac2a64d7d9051ad915bbf762c6a624"))
+  (let ((revision "4")
+        (commit "d7930e51a50a8a5f1cec0fe186dbc3e5b9143294"))
     (package
       (name "jami-docs")
       (version (git-version "0.0.0" revision commit))
@@ -351,7 +347,7 @@ P2P-DHT.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1aj63ba6v0vnvn3si97xf1zk5b4y2hpk7g6mx75jbb2q9qybzn0i"))))
+                  "12g17yl78vhkjn97x62dlxjijhkhbrzvxk4g1jm5s1cxrrqg2bg2"))))
       (build-system copy-build-system)
       (arguments
        (list

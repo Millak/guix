@@ -3,89 +3,19 @@ It was applied, then reverted (by mistake?) in 4d2c55348bc014.
 It's been resubmitted here:
 https://lists.gnu.org/archive/html/jami/2024-01/msg00005.html
 
+The remaining hunk was reverted by 22be4be8.
+Submitted:
+https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/2112
+
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 8d71b84b..36729698 100644
+index 29bfde9a..3b4c7a92 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -136,7 +136,7 @@ set(CMAKE_MODULE_PATH
-   ${CMAKE_MODULE_PATH} "${EXTRAS_DIR}/build/cmake/modules")
- find_package(LibJami REQUIRED)
- if(LIBJAMI_FOUND)
--  include_directories(${LIBJAMI_INCLUDE_DIRS})
-+  include_directories(${LIBJAMI_INCLUDE_DIR})
- endif()
- 
- include(FindPython3)
-diff --git a/extras/build/cmake/modules/FindLibJami.cmake b/extras/build/cmake/modules/FindLibJami.cmake
-index 5cce45fc..11746cd8 100644
---- a/extras/build/cmake/modules/FindLibJami.cmake
-+++ b/extras/build/cmake/modules/FindLibJami.cmake
-@@ -20,30 +20,19 @@
- 
- # Once done, this find module will set:
- #
--#   LIBJAMI_INCLUDE_DIRS - libjami include directories
-+#   LIBJAMI_INCLUDE_DIR - libjami include directory
- #   LIBJAMI_FOUND - whether it was able to find the include directories
- #   LIBJAMI_LIB - path to libjami or libring library
- 
- set(LIBJAMI_FOUND true)
- 
- if(WITH_DAEMON_SUBMODULE)
--  set(LIBJAMI_INCLUDE_DIRS ${DAEMON_DIR}/src/jami)
-+  set(LIBJAMI_INCLUDE_DIR ${DAEMON_DIR}/src/jami)
- else()
--  if(EXISTS ${LIBJAMI_INCLUDE_DIR}/jami.h)
--    set(LIBJAMI_INCLUDE_DIRS ${LIBJAMI_INCLUDE_DIR})
--  elseif(EXISTS ${LIBJAMI_BUILD_DIR}/jami/jami.h)
--    set(LIBJAMI_INCLUDE_DIRS ${LIBJAMI_BUILD_DIR}/jami)
--  elseif(EXISTS ${RING_INCLUDE_DIR}/jami.h)
--    set(LIBJAMI_INCLUDE_DIRS ${RING_INCLUDE_DIR})
--  elseif(EXISTS ${RING_BUILD_DIR}/jami/jami.h)
--    set(LIBJAMI_INCLUDE_DIRS ${RING_BUILD_DIR}/jami)
--  elseif(EXISTS ${CMAKE_INSTALL_PREFIX}/include/jami/jami.h)
--    set(LIBJAMI_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include/jami)
--  elseif(EXISTS ${CMAKE_INSTALL_PREFIX}/daemon/include/jami/jami.h)
--    set(LIBJAMI_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/daemon/include/jami)
--  else()
-+  find_path(LIBJAMI_INCLUDE_DIR jami.h PATH_SUFFIXES jami)
-+  if(NOT LIBJAMI_INCLUDE_DIR)
-     message(STATUS "Jami daemon headers not found!
--Set -DLIBJAMI_BUILD_DIR or -DCMAKE_INSTALL_PREFIX")
-+To build using the daemon git submodule, set -DWITH_DAEMON_SUBMODULE")
-     set(LIBJAMI_FOUND false)
+@@ -237,6 +237,6 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/extras/build/cmake/modules)
+ if (NOT JAMICORE_AS_SUBDIR)
+   find_package(LibJami REQUIRED)
+   if(LIBJAMI_FOUND)
+-    include_directories(${LIBJAMI_INCLUDE_DIRS})
++    include_directories(${LIBJAMI_INCLUDE_DIR})
    endif()
  endif()
-@@ -115,5 +104,5 @@ endif()
- # Restore the original value of CMAKE_FIND_LIBRARY_SUFFIXES.
- set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES_orig})
- 
--message(STATUS "Jami daemon headers are in " ${LIBJAMI_INCLUDE_DIRS})
-+message(STATUS "Jami daemon headers are in " ${LIBJAMI_INCLUDE_DIR})
- message(STATUS "Jami daemon library is at " ${LIBJAMI_LIB})
-diff --git a/src/libclient/CMakeLists.txt b/src/libclient/CMakeLists.txt
-index 144efaf5..cb87fc2a 100644
---- a/src/libclient/CMakeLists.txt
-+++ b/src/libclient/CMakeLists.txt
-@@ -62,7 +62,7 @@ set(CMAKE_MODULE_PATH
-   ${CMAKE_MODULE_PATH} "${EXTRAS_DIR}/build/cmake/modules")
- find_package(LibJami REQUIRED)
- if(LIBJAMI_FOUND)
--  include_directories(${LIBJAMI_INCLUDE_DIRS})
-+  include_directories(${LIBJAMI_INCLUDE_DIR})
- endif()
- 
- string(SUBSTRING ${CMAKE_GENERATOR} 0 14 CMAKE_GENERATOR_SHORT)
-diff --git a/src/libclient/qtwrapper/CMakeLists.txt b/src/libclient/qtwrapper/CMakeLists.txt
-index 46887051..a20658ad 100644
---- a/src/libclient/qtwrapper/CMakeLists.txt
-+++ b/src/libclient/qtwrapper/CMakeLists.txt
-@@ -46,7 +46,7 @@ else()
- endif()
- 
- include_directories(${CMAKE_CURRENT_SOURCE_DIR})
--include_directories(${LIBJAMI_INCLUDE_DIRS})
-+include_directories(${LIBJAMI_INCLUDE_DIR})
- include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../)
- include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../dbus)
- 

@@ -3,10 +3,10 @@ Upstream-status: https://lists.gnu.org/archive/html/jami/2024-03/msg00008.html
 This makes it possible to use the system-provided qwindowkit library.
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 6d2dccfb..8dedff50 100644
+index 29bfde9a..3b4c7a92 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -100,13 +100,13 @@ endif()
+@@ -101,13 +101,13 @@ endif()
  
  # qwindowkit (frameless window)
  add_fetch_content(
@@ -21,12 +21,12 @@ index 6d2dccfb..8dedff50 100644
 +
  list(APPEND CLIENT_LIBS QWindowKit::Quick)
  
- set(CMAKE_AUTOMOC ON)
+ # If ENABLE_CRASHREPORTS is enabled, we will use crashpad_cmake for now.
 diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
-index b2730b71..4960899e 100644
+index c5228ccf..816f97a7 100644
 --- a/tests/CMakeLists.txt
 +++ b/tests/CMakeLists.txt
-@@ -48,7 +48,7 @@ target_include_directories(test_common_obj PRIVATE
+@@ -61,7 +61,7 @@ target_include_directories(test_common_obj PRIVATE
      ${CMAKE_CURRENT_SOURCE_DIR}
      ${CMAKE_SOURCE_DIR}/src)
  target_link_directories(test_common_obj PRIVATE ${CLIENT_LINK_DIRS})
