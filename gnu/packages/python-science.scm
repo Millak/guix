@@ -1514,7 +1514,7 @@ trickery (i.e. combining characters) to plot overlaying histograms.")
 (define-public python-imagehash
   (package
     (name "python-imagehash")
-    (version "4.3.1")
+    (version "4.3.2")
     (source
      (origin
        (method git-fetch) ;no tests in PyPI
@@ -1526,8 +1526,21 @@ trickery (i.e. combining characters) to plot overlaying histograms.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1lw9lxzrzy9s5v3xc35vmh97hlyavnla087fp19k77va6v8vbjjf"))))
+        (base32 "1rz1fpwhcx0cbln189bcs61wlwgngcjcn77jvm0yji5s7lshhipy"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Upstream plans to remove Python 2 compatibility:
+          ;; https://github.com/JohannesBuchner/imagehash/pull/223
+          (add-after 'unpack 'remove-six
+            (lambda _
+              (substitute* (find-files "." ".py$")
+                          (("import six") "")
+                          (("six\\.assertRaisesRegex\\(self, ")
+                           "self.assertRaisesRegex(")
+                          (("six\\.exec_") "")))))))
     (native-inputs
      (list python-pytest
            python-setuptools
