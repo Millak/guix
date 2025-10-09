@@ -37901,23 +37901,24 @@ features of the Psycopg database driver.")
   (package
     (name "python-verspec")
     (version "0.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "verspec" version))
-              (sha256
-               (base32
-                "07n06wv85fm4vl1ird2mja0823js3x322wgs9gdnq1djjyk4ql64"))))
-    (build-system python-build-system)
-    (native-inputs (list python-coverage python-flake8 python-mypy
-                         python-pretend python-pytest))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "verspec" version))
+       (sha256
+        (base32 "07n06wv85fm4vl1ird2mja0823js3x322wgs9gdnq1djjyk4ql64"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-                      (when tests?
-                        (add-installed-pythonpath inputs outputs)
-                        (invoke "touch" "test/__init__.py")
-                        (invoke "pytest")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (invoke "touch" "test/__init__.py"))))))
+    (native-inputs
+     (list python-pretend
+           python-pytest
+           python-setuptools))
     (home-page "https://github.com/jimporter/verspec")
     (synopsis "Flexible version handling for Python")
     (description
