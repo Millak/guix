@@ -7709,7 +7709,10 @@ configuration program to choose applications starting on login.")
                '(begin
                   (substitute* "installed-tests/scripts/testCommandLine.sh"
                     (("Valentín") "")
-                    (("☭") ""))))))
+                    (("☭") ""))
+                  (substitute* "modules/script/package.js"
+                    (("type_default_interface_ref")
+                     "type_default_interface_get"))))))
     (build-system meson-build-system)
     (arguments
      '(#:configure-flags '("-Dinstalled_tests=false")
@@ -7724,11 +7727,12 @@ configuration program to choose applications starting on login.")
              ;; For the missing /etc/machine-id.
              (setenv "DBUS_FATAL_WARNINGS" "0")
              (setenv "HOME" (getcwd))))
-         (add-after 'unpack 'skip-failing-check
+         (add-after 'unpack 'skip-failing-tests
            (lambda _
-             ;; See <https://gitlab.gnome.org/GNOME/gjs/-/issues/681>.
-             (substitute* "installed-tests/js/testGtk3.js"
-               (("expect\\(frameChild\\.visible\\)\\.toBe\\(true\\);") ""))))
+               ;; Expects to test against 2.84, but we're using 2.86.
+             (substitute* "installed-tests/js/testIntrospection.js"
+               (("const skip = imports.gi.versions.GioUnix !== '2\\.0';")
+                "const skip = true;"))))
          (add-after 'install 'wrap-gi
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (wrap-program (string-append (assoc-ref outputs "out")
