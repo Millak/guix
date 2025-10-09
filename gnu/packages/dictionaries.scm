@@ -58,6 +58,7 @@
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gsasl)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages ncurses)
@@ -69,6 +70,7 @@
   #:use-module (gnu packages speech)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages texinfo)
+  #:use-module (gnu packages textutils)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wordnet)
   #:use-module (gnu packages xml))
@@ -450,18 +452,21 @@ Yandex.Translate and Apertium.  It gives you easy access to one of these
 translation engines from your terminal.")
     (license license:public-domain)))
 
+
 (define-public lttoolbox
   (package
     (name "lttoolbox")
-    (version "3.5.4")
+    (version "3.7.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/apertium/lttoolbox/releases/download/v"
-             version "/lttoolbox-" version ".tar.xz"))
+       (method git-fetch)
+       (file-name (git-file-name "lttoolbox" version))
+       (uri
+        (git-reference
+          (url "https://github.com/apertium/lttoolbox")
+          (commit (string-append "v" version))))
        (sha256
-        (base32 "0kn9xg9sc64amd6ah5gi4qij0bhfbmc2jjvxbjjrsdd8iq054cgm"))))
+        (base32 "03dm7sdrggqkqsgdnqldv7fh5kbw4g6ssggfy4bgdh6n38997pag"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -474,7 +479,7 @@ translation engines from your terminal.")
            (lambda _
              (invoke "autoreconf" "-vfi"))))))
     (inputs
-     (list libxml2))
+     (list libxml2 icu4c utfcpp-2))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (home-page "https://wiki.apertium.org/wiki/Lttoolbox")
