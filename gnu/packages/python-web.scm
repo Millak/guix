@@ -6446,8 +6446,11 @@ Services (AWS) API.")
 (define-public awscli-2
   (package
     (inherit awscli)
+    ;; Note: updating awscli-2 typically requires updating python-awscrt.
     (name "awscli")
-    (version "2.20.0")
+    ;; Upstream practices a very rapid (1h-1d) release cycles try to select
+    ;; any fresh one compatible with current state of dependencies in Guix.
+    (version "2.28.0")
     (source
      (origin
        (method git-fetch)
@@ -6457,24 +6460,30 @@ Services (AWS) API.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0hyr9gmcfk7nzkgs0v6wgkh8k15dyhknqzfymbc9a9sa2dblc40q"))))
+         "1a1jzvdm434x46yh7ir11lw0nzc64ns4qvxhp5wfra3rh5ykf36j"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; When updating and checking locally be very patient as build phase may
+      ;; hang for 6-8 minutes but eventually passes through.
+      ;;
+      ;; tests: 4189 passed, 1 skipped, 2 warnings
       #:test-flags
-      '(list ;; This version of prompt-toolkit has issues with awscli-2, see
-             ;; <https://github.com/aws/aws-cli/issues/9453#issuecomment-2822186530>.
-             "--ignore=functional/autoprompt/test_prompttoolkit.py"
-             ;; The resource leak tests use ps to check for memory consumption.
-             "--ignore=functional/botocore/leak/test_resource_leaks.py"
-             ;; These tests complain about unavailable TLS certs.
-             "--ignore=functional/ec2instanceconnect/test_opentunnel.py"
-             ;; These seem to require Internet access.
-             "--ignore=unit/botocore/test_awsrequest.py"
+      '(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+             ;; Full test suite contains more than 70k tests; ignore network
+             ;; dependent, slow and compute intense tests, keep just unit
+             ;; tests.
+             "--ignore=tests/backends"
+             "--ignore=tests/dependencies"
+             "--ignore=tests/functional"
+             "--ignore=tests/integration"
+             "--ignore=tests/unit/botocore"
              ;; Flaky, something to do with PATH disappearing from os.environ?
              ;; Passes when run on its own, so maybe something else is
              ;; modifying this during the test run.
-             "--ignore=unit/customizations/emr/test_emr_utils.py")
+             "--ignore=tests/unit/customizations/emr/test_emr_utils.py"
+             ;; TypeError: 'Mock' object is not subscriptable
+             "-k" "not test_no_groff_or_mandoc_exists")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'ignore-deprecations
@@ -6489,44 +6498,26 @@ Services (AWS) API.")
                  (string-append "cmdline = ['"
                                 (search-input-file inputs "bin/groff")
                                 "'")))))
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (let ((skip-args
-                       (string-append
-                        "-k" "\""
-                        ;; No idea why this fails.
-                        "not test_no_groff_or_mandoc_exists"
-                        ;; Needs $HOME
-                        " and not test_attach_history_handler"
-                        ;; Complains about TLS certs.
-                        " and not test_command_returns_shutdown_exception"
-                        "\"")))
-                  (substitute* "scripts/ci/run-tests"
-                    (("--numprocesses=auto" m)
-                     (string-join (cons* m skip-args test-flags) " "))))
-                (invoke "python" "scripts/ci/run-tests")))))))
+          (add-before 'check 'pre-check
+            (lambda _ (setenv "HOME" "/tmp"))))))
     (inputs
      (list groff
+           ;; less
            nss-certs-for-test
-           python-awscrt-for-awscli
+           python-awscrt
            python-colorama
-           python-botocore
-           python-cryptography
            python-dateutil
+           python-distro
            python-docutils
            python-jmespath
-           python-jsonschema
            python-prompt-toolkit
-           python-ruamel.yaml-0.16
+           python-ruamel.yaml
            python-ruamel.yaml.clib
            python-urllib3))
     (native-inputs
-     (list python-distro
-           python-flit
+     (list python-flit-core
            python-pytest
-           python-pytest-xdist
-           python-wheel))))
+           python-pytest-xdist))))
 
 ;; This is not an official release of awscli version 2, so it should not be
 ;; named awscli.
