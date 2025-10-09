@@ -68,6 +68,7 @@
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2025 Arthur Rodrigues <arthurhdrodrigues@proton.me>
 ;;; Copyright © 2025 Tomás Ortín Fernández <quanrong@mailbox.org>
+;;; Copyright © 2025 Allan Adair <allan@adair.no>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2279,29 +2280,31 @@ interfaces.")
     (license license:bsd-3)))
 
 (define-public go-github-com-awesome-gocui-keybinding
-  (package
-    (name "go-github-com-awesome-gocui-keybinding")
-    (version "1.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/awesome-gocui/keybinding")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0d1nvxs2pd6nc10gm3md2rsd0v33025b8dik1l1iy8klzhiqfd1q"))))
-    (build-system go-build-system)
-    (arguments
-     (list
-      #:tests? #f ;broken tests
-      #:import-path "github.com/awesome-gocui/keybinding"))
-    (propagated-inputs (list go-github-com-awesome-gocui-gocui))
-    (home-page "https://github.com/awesome-gocui/keybinding")
-    (synopsis "Wrapper for parsing gocui keybindings in Golang")
-    (description
-     "This package provides a golang wrapper for parsing gocui keybindings.")
-    (license license:expat)))
+  (let ((commit "86029037a63f3b47096fcfef02f63e5e5d6d5abd")
+        (revision "1"))
+    (package
+      (name "go-github-com-awesome-gocui-keybinding")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/awesome-gocui/keybinding")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1wa7scakwbqfzxc81wxmw1z0c9w3z92vdrxa8mha6w9ykifjdkyz"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:tests? #f ;broken tests
+        #:import-path "github.com/awesome-gocui/keybinding"))
+      (propagated-inputs (list go-github-com-awesome-gocui-gocui))
+      (home-page "https://github.com/awesome-gocui/keybinding")
+      (synopsis "Wrapper for parsing gocui keybindings in Golang")
+      (description
+       "This package provides a golang wrapper for parsing gocui keybindings.")
+      (license license:expat))))
 
 (define-public go-github-com-axiomhq-hyperloglog
   (package
