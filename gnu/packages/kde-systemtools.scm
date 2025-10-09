@@ -1,9 +1,12 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2016 David Craven <david@craven.ch>
+;;; Copyright © 2017-2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2020 Marius Bakke<mbakke@fastmail.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023-2025 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023-2025 Sughosha <sughosha@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
