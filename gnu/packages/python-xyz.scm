@@ -21899,19 +21899,22 @@ that are otherwise difficult to control.")
                 "13mk8wrg7js0zv3w8246jnxb3i5yp4ascl1csp0q9787wbbyai5c"))))
     (build-system pyproject-build-system)
     (arguments
-     '(;; The test suite relies on some non-portable Windows interfaces.
+     '(;; The test suite relies on some non-portable Windows interfaces. Tests
+       ;; are rewokred on master's HEAD.
        #:tests? #f))
-    (propagated-inputs
-     (list python-dateutil python-pytz python-six))
     (native-inputs
      (list python-setuptools))
+    (propagated-inputs
+     (list python-dateutil
+           python-pytz
+           python-six)) ;it's dropped on master's HEAD
+    (home-page "https://py-vobject.github.io/")
     (synopsis "Parse and generate vCard and vCalendar files")
     (description "Vobject is intended to be a full featured Python package for
 parsing and generating vCard and vCalendar files.  Currently, iCalendar files
 are supported and well tested.  vCard 3.0 files are supported, and all data
 should be imported, but only a few components are understood in a sophisticated
 way.")
-    (home-page "https://eventable.github.io/vobject/")
     (license license:asl2.0)))
 
 (define-public python-munkres
