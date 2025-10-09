@@ -903,6 +903,7 @@ which allows one to install the M8 firmware on any Teensy.")
                                   "nextpnr-imgui.patch"))
          (sha256
           (base32 "1zjxvkycg5xx605d4ark8gd10w4xni1wd10chmhv983dvyv875br"))))
+      (outputs '("out" "bba"))
       (build-system qt-build-system)
       (arguments
        (list
@@ -920,7 +921,8 @@ which allows one to install the M8 firmware on any Teensy.")
                 (string-append "-DHIMBAECHEL_PEPPERCORN_PATH="
                                (search-input-directory
                                 %build-inputs "share/prjpeppercorn"))
-                (string-append "-DEXPORT_BBA_FILES=" #$output "/bba-files")
+                (string-append
+                 "-DEXPORT_BBA_FILES=" #$output:bba "/share/nextpnr/bba-files")
                 (string-append "-DCURRENT_GIT_VERSION=nextpnr-" #$version)
                 (string-append "-DICESTORM_INSTALL_PREFIX="
                                #$(this-package-native-input "icestorm"))
