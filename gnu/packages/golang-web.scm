@@ -10377,7 +10377,7 @@ use gzip compression when serving HTTP requests.")
      (list
       #:import-path "github.com/shurcooL/vfsgen"))
     (native-inputs
-     (list go-golang-org-x-tools))
+     (list go-golang-org-x-tools-godoc))
     (propagated-inputs
      (list go-github-com-shurcool-httpfs))
     (home-page "https://github.com/shurcooL/vfsgen")
