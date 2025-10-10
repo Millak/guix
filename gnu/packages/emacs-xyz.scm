@@ -22754,10 +22754,10 @@ function to be used by other frontend programs.")
 
 (define-public emacs-pyim-basedict
   ;; XXX: The commit below points to the latest (un-tagged) release.
-  (let ((commit "d61af27686f7a39e6c138b7261a686e7ea7a0ef7"))
+  (let ((commit "55d9b324831b0fc79ff62f1c6f21aad72341a114"))
     (package
       (name "emacs-pyim-basedict")
-      (version "0.5.4")
+      (version "0.5.5")
       (source
        (origin
          (method git-fetch)
@@ -22766,7 +22766,7 @@ function to be used by other frontend programs.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0fzyh8qmicq2vy9j1ca708ir67dpxp1cwjaw0sw469p24cvj12yy"))))
+          (base32 "15hd6zffc2s9rdxdjrybggf355risw60l4skqm8hc0xx0kmss9x2"))))
       (build-system emacs-build-system)
       (arguments
        (list
