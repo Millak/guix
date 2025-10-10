@@ -1514,8 +1514,8 @@ values.")
 
 (define-public go-google-golang-org-genproto-googleapis-rpc
   ;; No release or verion tags, use the latest commit.
-  (let ((commit "e70fdf4c4cb4151b7aa3579ce8a3fb662bafe335")
-        (revision "0"))
+  (let ((commit "49b9836ed3ff1e1dd329d17e442987447e931c7d")
+        (revision "1"))
     (package
       (name "go-google-golang-org-genproto-googleapis-rpc")
       (version (git-version "0.0.0" revision commit))
@@ -1523,11 +1523,11 @@ values.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/googleapis/go-genproto")
-               (commit commit)))
+                (url "https://github.com/googleapis/go-genproto")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0jf332yxgf1c6nj76b1p52907g786gynzd78g899m3vrfa45wswz"))))
+          (base32 "0pr2qvmrg9f3nrbvmw8ir37mki92nkb9km8zlpxslzmxbjmiwjxb"))))
       (build-system go-build-system)
       (arguments
        (list
