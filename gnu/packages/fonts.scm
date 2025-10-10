@@ -323,6 +323,31 @@ mediums.")
       (home-page "https://github.com/IBM/plex")
       (license license:silofl1.1))))
 
+(define-public font-inter
+  (package
+    (name "font-inter")
+    (version "4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rsms/inter")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g54vl3jkpan0s1mzrb1s8zjqzy9787ffjg9sfy6yjy4k3qg8xhx"))))
+    (build-system font-build-system)
+    (home-page "https://rsms.me/inter")
+    (synopsis "Variable font family optimized for screen readability")
+    (description
+     "Inter is a typeface carefully crafted & designed for computer screens.
+Inter features a tall x-height to aid in readability of mixed-case and
+lower-case text.  Inter is a variable font with several OpenType features,
+like contextual alternates that adjusts punctuation depending on the shape of
+surrounding glyphs, slashed zero for when you need to disambiguate \"0\" from
+\"o\", tabular numbers, etc.")
+    (license license:silofl1.1)))
+
 (define-public font-lilex
   (package
     (name "font-lilex")
