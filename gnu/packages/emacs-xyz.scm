@@ -18860,7 +18860,7 @@ implementation.")
 (define-public emacs-cider
   (package
     (name "emacs-cider")
-    (version "1.17.1")
+    (version "1.19.0")
     (source
      (origin
        (method git-fetch)
@@ -18869,7 +18869,7 @@ implementation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02lilk85a7h9wxxvxr6k69p12wslbl9xp3jkcbdn11078fwhif6j"))))
+        (base32 "0limw27arkc8bn0zzj0jzhdsax78qm1lz5jfgy8zgf971llhf5qc"))))
     (build-system emacs-build-system)
     (arguments
      (list
