@@ -1362,14 +1362,14 @@ This package is part of the KDE games module.")
 (define-public kapman
   (package
     (name "kapman")
-    (version "25.08.1")
+    (version "25.08.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kapman-" version ".tar.xz"))
        (sha256
-        (base32 "0pvmhh8mkm1yf2hq20c32hiq3d3fzk8jbxigk5gzzhwykml16gc2"))))
+        (base32 "156jndcirraqhhapf5jbqxbg2pj21shx3av2myf09m26rsclhgxv"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
