@@ -21460,7 +21460,7 @@ been adapted to also work with mu4e.")
 (define-public emacs-tempel
   (package
     (name "emacs-tempel")
-    (version "1.5")
+    (version "1.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -21469,7 +21469,7 @@ been adapted to also work with mu4e.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "104wifdqglk6hxs6z3gr6rmxf3hdqsl3y9bvcp3wwm10yqkpnmkx"))))
+                "1a5pk000cy4zgh73hdpw08cwf1qr7cgw4hpj5n0dkprwbw5hhm8s"))))
     (build-system emacs-build-system)
     (arguments
      (list
