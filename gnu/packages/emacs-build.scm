@@ -62,7 +62,7 @@ as bold, underscore or italic.")
 (define-public emacs-buttercup
   (package
     (name "emacs-buttercup")
-    (version "1.37")
+    (version "1.38")
     (source
      (origin
        (method git-fetch)
@@ -72,7 +72,7 @@ as bold, underscore or italic.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0gkw1lmy8ynralrs4xwqsd06ww09xk5yqjdgw4r5c0zhp5dxn4ky"))))
+         "09n8skr5wi8bs7x81d5bi6z89dd8s1zi9a5f4r2qadaz69slncxq"))))
     (build-system emacs-build-system)
     (arguments
      (list
