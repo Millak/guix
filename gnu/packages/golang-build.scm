@@ -478,16 +478,17 @@ primitives in Go.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/twitchyliquid64/golang-asm")
-             (commit (string-append "v" version))))
+              (url "https://github.com/twitchyliquid64/golang-asm")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1akw41i0snxqw9lqzmnn4gx6hd5js5dr1vmfkm49wxans4k14vw4"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/twitchyliquid64/golang-asm"))
+      #:import-path "github.com/twitchyliquid64/golang-asm"
+      #:test-flags
+      #~(list "-vet=off")))   ;Go@1.24 forces vet, but tests are not ready yet.
     (home-page "https://github.com/twitchyliquid64/golang-asm")
     (synopsis "Assembler from the Go compiler, in library form")
     (description
