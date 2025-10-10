@@ -1546,23 +1546,21 @@ values.")
 (define-public go-google-golang-org-protobuf
   (package
     (name "go-google-golang-org-protobuf")
-    (version "1.36.6")
+    (version "1.36.10")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://go.googlesource.com/protobuf")
-             (commit (string-append "v" version))))
+              (url "https://go.googlesource.com/protobuf")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lp1a6bcwdiil4my0aq85ranxf2k757m8q0ss9658jyrh5g7av79"))))
+        (base32 "1509n0gvzqq8mr2377lzg70hfzwrijv069z094rnghif9b0hh07g"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "google.golang.org/protobuf"
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'build)))) ; no go files in project's root
+      #:skip-build? #t
+      #:import-path "google.golang.org/protobuf"))
     (propagated-inputs (list go-github-com-google-go-cmp))
     (home-page "https://google.golang.org/protobuf")
     (synopsis "Go library for Protocol Buffers")
