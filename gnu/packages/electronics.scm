@@ -972,7 +972,7 @@ which allows one to install the M8 firmware on any Teensy.")
              googletest
              gzip
              prjbeyond-db
-             prjpeppercorn
+             `(,prjpeppercorn "db")
              prjtrellis
              sanitizers-cmake
              yosys))
@@ -1235,6 +1235,9 @@ chip database for NG-Ultra architecture from NanoXplore.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1lfvd3r1pnyc1mxsiiqqvmp8r5pw1bshgjrsrsnd20grvlv6wwcn"))))
+
+    (outputs (list "out"
+                   "db"))               ;FPGA database files
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1250,7 +1253,7 @@ chip database for NG-Ultra architecture from NanoXplore.")
           (add-before 'chdir 'install-db-files
             (lambda _
               (let ((datadir
-                     (string-append #$output "/share/prjpeppercorn")))
+                     (string-append #$output:db "/share/prjpeppercorn")))
                 (mkdir-p datadir)
                 (copy-recursively "delay" (string-append datadir "/delay"))
                 (copy-recursively "gatemate"
