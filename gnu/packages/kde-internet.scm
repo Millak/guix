@@ -771,14 +771,14 @@ management, IP blocking lists.")
 (define-public kunifiedpush
   (package
     (name "kunifiedpush")
-    (version "25.08.1")
+    (version "25.08.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1mx3kb2yxnvv6rzmhxkl4xqaxzmdkc6vj5a1rd27b5a36s3h3giz"))))
+        (base32 "0cl8awh0qr5h7384f6l3w2122rpl3kynb6mp0aawlx3l60d6lp1a"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
