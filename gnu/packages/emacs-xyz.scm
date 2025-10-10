@@ -812,11 +812,10 @@ for multiple backends.")
     (license license:gpl3+)))
 
 (define-public emacs-dall-e-shell
-  (let ((commit "efec43ab3338e59f12165110e6c6c957345f6257")
-        (revision "0"))
+  (let ((commit "428125f9fa8578703a9ca85d173b2cc9a3eb16b9"))
     (package
       (name "emacs-dall-e-shell")
-      (version (git-version "0.43.2" revision commit))
+      (version "0.43.3")
       (source
        (origin
          (method git-fetch)
@@ -826,7 +825,7 @@ for multiple backends.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1fab097pgqc9by9dhjmsgn3grp905h7pivnz46w9s52pa1pvbrmv"))))
+           "0mhaa7b2ghyjkca3377a9129zfjxyg0m1inqlvqmsj812bvn90q8"))))
       (build-system emacs-build-system)
       (arguments (list #:tests? #f))      ;no tests
       (propagated-inputs (list emacs-shell-maker))
