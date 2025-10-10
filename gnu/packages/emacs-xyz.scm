@@ -37428,7 +37428,7 @@ all of your projects, then override or add variables on a per-project basis.")
 (define-public emacs-casual
   (package
     (name "emacs-casual")
-    (version "2.7.0")
+    (version "2.9.1")
     (source
      (origin
        (method git-fetch)
@@ -37437,7 +37437,7 @@ all of your projects, then override or add variables on a per-project basis.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jf12j92h88a624lg9vg82xf3djij3xkac9ycj5vavkypb6jnih2"))))
+        (base32 "18j89l5ivrv1aki4kyc9ww2gm5h5wzx79c2f84k7v9hxvh46d9n8"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -37445,11 +37445,16 @@ all of your projects, then override or add variables on a per-project basis.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'build-info-manual
             (lambda _
-              (invoke "emacs"
-                      "--batch"
-                      "--eval=(require 'ox-texinfo)"
-                      "--eval=(find-file \"../docs/casual.org\")"
-                      "--eval=(org-texinfo-export-to-info)")
+              ;; FIXME: Re-generating documentation is not possible at the
+              ;; moment (release 2.9.1) because the "casual" Texinfo class is
+              ;; missing from the repository, and this prevents Org from
+              ;; exporting properly the "casual.org" file to Texinfo.
+              ;;
+              ;; (invoke "emacs"
+              ;;         "--batch"
+              ;;         "--eval=(require 'ox-texinfo)"
+              ;;         "--eval=(find-file \"../docs/casual.org\")"
+              ;;         "--eval=(org-texinfo-export-to-info)")
               (rename-file "../docs/casual.info" "casual.info")))
           ;; FIXME: Remove when included in pr upstream. See: #261.
           (add-after 'unpack 'patch-casual-lib-dir
