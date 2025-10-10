@@ -14659,7 +14659,7 @@ may also search org headings in a set of specified files.")
 (define-public emacs-consult-notmuch
   (package
     (name "emacs-consult-notmuch")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method git-fetch)
@@ -14668,7 +14668,7 @@ may also search org headings in a set of specified files.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kgi3y1lkp1jd784ncyysr5yimyq6bjpvgx9wxfca14ylb8my37a"))))
+        (base32 "1yx33bzj251igsagdphlxa84wb07ynlz4rf1nplpk19m5lfkj54c"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-consult emacs-notmuch))
