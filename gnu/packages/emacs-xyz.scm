@@ -9081,7 +9081,7 @@ ERC, an Emacs client for IRC (Internet Relay Chat).  It relies on the
 (define-public emacs-paren-face
   (package
     (name "emacs-paren-face")
-    (version "1.1.3")
+    (version "1.2.1")
     (source
      (origin
        (method git-fetch)
@@ -9090,7 +9090,7 @@ ERC, an Emacs client for IRC (Internet Relay Chat).  It relies on the
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j619m08lz6bg2kr4jm2rbyn2r8a9f1z124ashzjkiwky0mvs1v9"))))
+        (base32 "04b4znak3qzy482byyv4z6i8nnvbg6d7y2jwmicgjpn53qspzsr7"))))
     (build-system emacs-build-system)
     (arguments
      (list #:test-command #~(list "make" "check-declare")))
