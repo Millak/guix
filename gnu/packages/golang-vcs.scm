@@ -268,7 +268,6 @@ supported yet.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/nektos/act"
       #:embed-files #~(list ".*\\.json")
       #:test-flags
