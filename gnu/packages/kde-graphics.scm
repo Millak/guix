@@ -274,14 +274,14 @@ settings and rules that process and organize imported items on-the-fly.")
 (define-public gwenview
   (package
     (name "gwenview")
-    (version "25.08.1")
+    (version "25.08.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/gwenview-" version ".tar.xz"))
        (sha256
-        (base32 "0z6ngbb1pkgdy7z6nla788wh7wcz3ny64041yv7k0falzpwfx4jd"))))
+        (base32 "0nhymyw5p2zd3grc3d0xf11xkww8x20p7n78c0spbw111rx9d2f1"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
