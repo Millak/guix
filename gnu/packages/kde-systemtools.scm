@@ -414,14 +414,14 @@ This package is part of the KDE base applications module.")
 (define-public krfb
   (package
     (name "krfb")
-    (version "25.08.1")
+    (version "25.08.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/krfb-" version ".tar.xz"))
        (sha256
-        (base32 "0mqm2s8sbs1c1441pwlm47jg5hanpb4wm4si4w7flixznjddcvs2"))))
+        (base32 "1ni85fp464ayrm4pyapslmx5c3xr9agsnqwx3765fb9yjd18l6w8"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase
                      #:tests? #f
