@@ -18030,14 +18030,14 @@ strings between formats.")
 (define-public emacs-indent-bars
   (package
     (name "emacs-indent-bars")
-    (version "0.9.1")
+    (version "0.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/indent-bars-"
                            version ".tar"))
        (sha256
-        (base32 "1jb0jhfin728ld703y392gy99is7jywqak3z2xrrvpmn9q17q8vs"))))
+        (base32 "030haxxla7m6p2zks9g50dj8rr8grm67n2ig7zd3k20h1yrfm6q0"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ;No tests.
     (propagated-inputs (list emacs-compat))
