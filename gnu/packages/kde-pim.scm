@@ -73,14 +73,14 @@
 (define-public kopeninghours
   (package
     (name "kopeninghours")
-    (version "25.08.1")
+    (version "25.08.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "02xdklp1d2d5dxmsykchw37fs1vi1f6b1mk33cywlq63qbsgpniw"))))
+                "0hviijcymps73ggzpz4v93qkxlnq1ymy5cdnqnli9dvjgg3kkb8g"))))
     (build-system cmake-build-system)
     (arguments
      (list
