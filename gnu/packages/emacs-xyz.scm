@@ -607,7 +607,7 @@ executable implementation is required such as @code{cbqn} or @code{dbqn}.")
 (define-public emacs-cfrs
   (package
     (name "emacs-cfrs")
-    (version "1.6.0")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
@@ -616,7 +616,7 @@ executable implementation is required such as @code{cbqn} or @code{dbqn}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vf5zm82sx3m1yvq73km8ajapv6rnz41b1jrsif7kh0ijh9vk3qi"))))
+        (base32 "1bnfchv62zk9rapmiff6jcip9w6pp1x48l8qp26z9yb8clnvlz24"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash emacs-posframe emacs-s))
