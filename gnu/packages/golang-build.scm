@@ -976,7 +976,7 @@ cancellation for groups of goroutines working on subtasks of a common task
 (define-public go-golang-org-x-sys
   (package
     (name "go-golang-org-x-sys")
-    (version "0.33.0")
+    (version "0.37.0")
     (source
      (origin
        (method git-fetch)
@@ -985,7 +985,7 @@ cancellation for groups of goroutines working on subtasks of a common task
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19m090xd3abysvk1y07fhhd025k3s456i71ww0pq0b2pzsva5ra2"))))
+        (base32 "0cjq8n66i9cccigi204mkhqmrb9mdirxjxl0nk7c8s6w70fifbby"))))
     (build-system go-build-system)
     (arguments
      (list
