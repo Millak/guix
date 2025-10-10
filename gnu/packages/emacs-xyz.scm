@@ -6541,7 +6541,7 @@ calculated based on how well you remembered the contents of the card.")
 (define-public emacs-font-lock-studio
   (package
     (name "emacs-font-lock-studio")
-    (version "0.0.9")
+    (version "0.0.10")
     (source
      (origin
        (method git-fetch)
@@ -6550,7 +6550,7 @@ calculated based on how well you remembered the contents of the card.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ssa62qm3zv0l9adz0bpi4iaixbi788ihh1qy5n41h6jzcjig4k4"))))
+        (base32 "0gjr02kww4a0a4x30pj6lls2wdj25vi14ay4pl4fgc2h98yli3c8"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/Lindydancer/font-lock-studio")
     (synopsis "Interactive debugger for Font Lock keywords")
