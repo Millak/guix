@@ -1668,7 +1668,7 @@ is based off of Slim mode.")
 (define-public emacs-show-font
   (package
     (name "emacs-show-font")
-    (version "0.3.0")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
@@ -1677,7 +1677,7 @@ is based off of Slim mode.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nn7yqc0zsl0kxk17k0hd9dxd65lslj24fd83fych1jla4hd93jc"))))
+        (base32 "03l92jacamd6vda51r9cw60bdyrv4ag8bk6qi6jpps6ljss5g6pl"))))
     (build-system emacs-build-system)
     (arguments
      (list
