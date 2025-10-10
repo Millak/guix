@@ -7253,7 +7253,7 @@ and stored in memory.")
 (define-public emacs-saveplace-pdf-view
   (package
     (name "emacs-saveplace-pdf-view")
-    (version "1.0.8")
+    (version "1.0.9")
     (source
      (origin
        (method git-fetch)
@@ -7262,7 +7262,7 @@ and stored in memory.")
              (commit (string-append "saveplace-pdf-view-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15799sqw8h2iasnlkcwnjdjmj9ssa9a9pvpyr6fqj0dw4g7056m5"))))
+        (base32 "03kqxi1f5idq7140f7h7ck5f56p1yvz5vb19dq5bz65iwgdrx6xy"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/nicolaisingh/saveplace-pdf-view")
     (synopsis "Save place in pdf-view buffers for Emacs")
