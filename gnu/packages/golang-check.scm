@@ -2753,28 +2753,43 @@ the end of a test.")
 (define-public go-go-uber-org-mock
   (package
     (name "go-go-uber-org-mock")
-    (version "0.4.0")
+    (version "0.6.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/uber-go/mock")
-             (commit (string-append "v" version))))
+              (url "https://github.com/uber-go/mock")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mz1cy02m70mdh7hyaqks8bkh9iyv4jgj6h4psww52nr3b9pnyyy"))))
+        (base32 "0svwxxdaix45hy3j4p9r27pqqfk8ghdp20ylp7f0ja97wzx0p1c1"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/uber-go/mock/bazel
+            ;; - github.com/uber-go/mock/mockgen/internal/tests/generics
+            ;; - github.com/uber-go/mock/mockgen/internal/tests/typed
+            ;; - github.com/uber-go/mock/tools
+            (for-each delete-file-recursively
+                      (list"bazel"
+                           "mockgen/internal/tests/generics"
+                           "mockgen/internal/tests/typed"
+                           "tools"))))))
     (build-system go-build-system)
     (arguments
      (list
-      ;; XXX: The project contains subdirectory which complicate it's testing
-      ;; and it does not produce any binary.
-      #:tests? #f
+      #:skip-build? #t
       #:import-path "go.uber.org/mock"
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'build))))
+      #:test-flags
+      ;; Assertions fail in two tests.
+      #~(list "-skip" "Test_packageModeParser_parsePackage|TestAliases")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-golang-org-x-mod go-golang-org-x-tools))
+     (list go-golang-org-x-mod
+           go-golang-org-x-tools))
     (home-page "https://pkg.go.dev/go.uber.org/mock")
     (synopsis "Mocking framework for the Golang")
     (description
