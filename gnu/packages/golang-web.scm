@@ -9819,54 +9819,49 @@ implementation in the Go standard library}.")
 (define-public go-github-com-quic-go-quic-go
   (package
     (name "go-github-com-quic-go-quic-go")
-    (version "0.52.0")
+    (version "0.54.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/quic-go/quic-go")
-             (commit (string-append "v" version))))
+              (url "https://github.com/quic-go/quic-go")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0frcjzrarvk3ck6dhqp88a1cbazw7jb26gxq1wp3lhgmxv4v4m2m"))))
+        (base32 "025klj0pvnz5c1gbz4i3wb8fxbnyf4q5vz08l7xa7204qzl5njlk"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - test
+            (delete-file-recursively "integrationtests/gomodvendor")))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/quic-go/quic-go"
       #:phases
       #~(modify-phases %standard-phases
-          ;; Test steps are taken from GitHub Actions -
-          ;; <https://github.com/quic-go/quic-go/blob/v0.42.0/
-          ;; .github/workflows/unit.yml>.
-          (replace 'check
+          (add-after 'unpack 'remove-examples
             (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (setenv "TIMESCALE_FACTOR" "10")
-                  (invoke "ginkgo" "-r" "-v" "--no-color"
-                          (string-append
-                           "--procs=" (number->string
-                                       ;; All tests passed on 16 threads
-                                       ;; mathine, but fail on
-                                       ;; ci.guix.gnu.org.
-                                       (if (> (parallel-job-count) 17)
-                                           16
-                                           (parallel-job-count))))
-                          "--skip-package=integrationtests"))))))))
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "example"))))
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (setenv "TIMESCALE_FACTOR" "10"))))))
     (native-inputs
-     (list go-ginkgo
-           go-github-com-onsi-ginkgo-v2
-           go-github-com-stretchr-testify
+     (list go-github-com-stretchr-testify
            go-go-uber-org-mock))
     (propagated-inputs
      (list go-github-com-francoispqt-gojay
+           go-github-com-prometheus-client-golang
            go-github-com-quic-go-qpack
            go-golang-org-x-crypto
            go-golang-org-x-exp
            go-golang-org-x-net
            go-golang-org-x-sync
-           go-golang-org-x-sys))
+           go-golang-org-x-sys
+           go-golang-org-x-tools))
     (home-page "https://github.com/quic-go/quic-go")
     (synopsis "QUIC in Go")
     (description
