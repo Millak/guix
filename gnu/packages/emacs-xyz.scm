@@ -44569,14 +44569,14 @@ buffer.")
 (define-public emacs-setup
   (package
     (name "emacs-setup")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://elpa.gnu.org/packages/setup-"
                             version ".tar"))
         (sha256
-          (base32 "0id7j8xvbkbpfiv7m55dl64y27dpiczljagldf4p9q6qwlhf42f7"))))
+          (base32 "184g3kd9caxyhwq41w94spkjs1j45vblg4sqfb5h5pqb5h9p95n5"))))
     (build-system emacs-build-system)
     (home-page "https://git.sr.ht/~pkal/setup")
     (synopsis "Helpful configuration macro")
