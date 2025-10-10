@@ -12081,18 +12081,18 @@ comparing characters, removing cursors, and more.")
 (define-public emacs-substitute
   (package
     (name "emacs-substitute")
-    (version "0.2.0")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://git.sr.ht/~protesilaos/substitute")
+                    (url "https://github.com/protesilaos/substitute")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qb2nqwy870jh66iv46bx63mp0hg7ds79259m9l783h2cr74mqjx"))))
+                "10dfrigpg3nkfa08zfb99cf7b5cjdqilfh2j5z00zh9b2k3jyymh"))))
     (build-system emacs-build-system)
-    (home-page "https://git.sr.ht/~protesilaos/substitute")
+    (home-page "https://github.com/protesilaos/substitute")
     (synopsis "Efficiently replace targets in the buffer or context")
     (description
      "Substitute is a set of commands that perform text replacement (i)
