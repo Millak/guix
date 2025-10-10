@@ -1217,16 +1217,16 @@ processing.")
 (define-public go-golang-org-x-time
   (package
     (name "go-golang-org-x-time")
-    (version "0.11.0")
+    (version "0.14.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://go.googlesource.com/time")
-             (commit (string-append "v" version))))
+              (url "https://go.googlesource.com/time")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bqgxv7b3n69h4mi4hwr51pfr1hr6s1h6k7nb3dl32dryy7xwr12"))))
+        (base32 "0xinpch5wm57hrf3d8iasxyszibqclsr911l7527al4y92myjn3x"))))
     (build-system go-build-system)
     (arguments
      (list
