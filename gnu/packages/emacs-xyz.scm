@@ -1041,7 +1041,7 @@ a generic Scheme interaction mode for the GNU Emacs editor.")
 (define-public emacs-syncthing
   (package
     (name "emacs-syncthing")
-    (version "3.0.1")
+    (version "3.0.2")
     (source
      (origin
        (method git-fetch)
@@ -1050,7 +1050,7 @@ a generic Scheme interaction mode for the GNU Emacs editor.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q755rcmlmpz9zb1i3ic3a3svyqwavncnfzmx0bsg6229qg06d0l"))))
+        (base32 "1zbdv6gaklxi86f3ni5bhl8pnsx1jyi9zmb7rxkgjw46wdyi3c2d"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/KeyWeeUsr/emacs-syncthing")
     (synopsis "Emacs client for Syncthing")
