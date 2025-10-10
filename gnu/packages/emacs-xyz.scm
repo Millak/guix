@@ -33097,7 +33097,7 @@ files) are provided.")
 (define-public emacs-hackernews
   (package
     (name "emacs-hackernews")
-    (version "0.7.0")
+    (version "0.7.1")
     (source
      (origin
        (method git-fetch)
@@ -33107,7 +33107,7 @@ files) are provided.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "100aa0vs1gjwpkfdc7avwv5v3sicj2npqfr1y3dsib3pimp21l6w"))))
+         "1kb34jm81jyp2lv0558c6q109pjb38vxrncq4qaq0b8zir8qcr3y"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/clarete/hackernews.el")
