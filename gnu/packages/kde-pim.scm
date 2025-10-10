@@ -2359,7 +2359,7 @@ pass files.")
 (define-public kpublictransport
   (package
     (name "kpublictransport")
-    (version "25.08.1")
+    (version "25.08.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
@@ -2367,7 +2367,7 @@ pass files.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "17zj72b55rpa0drk2c95mva7akghnjl1m4nlh1z46nvw3n1z0dzb"))))
+                "1lrfih64qjsal0qm85l18wyyw1j7kx5qvh41vzbchcfnbzjckpmj"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
