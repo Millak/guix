@@ -9888,6 +9888,11 @@ researchers and developers alike to get started on SAT.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-source
             (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "scripts/generate-build-header.sh"
+                ;; by default BUILD includes the build date which
+                ;; makes the build not reproducible.
+                (("^BUILD=.*$")
+                 "BUILD=guix\n"))
               (substitute* "src/file.c"
                 (("(bzip2|gzip|lzma|xz) -c" all cmd)
                  (string-append (search-input-file inputs
