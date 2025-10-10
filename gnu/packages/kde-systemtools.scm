@@ -475,14 +475,14 @@ This package is part of the KDE networking module.")
 (define-public ksystemlog
   (package
     (name "ksystemlog")
-    (version "25.08.1")
+    (version "25.08.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ksystemlog-" version ".tar.xz"))
        (sha256
-        (base32 "0cc3dslyw8zps4y6f0b56miaj52ndmbw4hn8ajcfm890kjgb3lq4"))))
+        (base32 "0g7g0d0hgf2diwjg9mnrs0igsyz26xm6k2485gpqyymh0dg8kvm2"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs
