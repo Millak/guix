@@ -427,7 +427,7 @@ communicate with each other.  Here's a few things KDE Connect can do:
 (define-public kio-extras
   (package
     (name "kio-extras")
-    (version "25.08.1")
+    (version "25.08.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
@@ -435,7 +435,7 @@ communicate with each other.  Here's a few things KDE Connect can do:
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1n3cidj9rd77gjagdncp3f1s8351cf56h3mfwsv8z5vw5cppbi5a"))
+                "0prpc44409nawx8kfvv50g64l17ssacz24d3gqw2a9sp1wp9z3w6"))
               (modules '((guix build utils)))
               (snippet
                ;; Fix including libproxy.
