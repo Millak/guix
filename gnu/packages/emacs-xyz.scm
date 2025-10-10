@@ -9963,7 +9963,7 @@ snippets for yasnippet.")
 (define-public emacs-vhdl-ext
   (package
     (name "emacs-vhdl-ext")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -9972,7 +9972,7 @@ snippets for yasnippet.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0prxdchcs0k7mclm6mdf4lwpsnww5vn094ici5fbp0rh0h4mzyc3"))))
+        (base32 "0agiamq7g8zm3blznykbr1kgr09rb133rd4mh9nfc0vfk8i5mabv"))))
     (build-system emacs-build-system)
     (arguments
      ;; the testing framework test-hdl requires network
