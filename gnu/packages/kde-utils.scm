@@ -303,14 +303,14 @@ your computer.")
 (define-public francis
   (package
     (name "francis")
-    (version "25.08.1")
+    (version "25.08.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/francis-" version ".tar.xz"))
               (sha256
                (base32
-                "1cxknyl8zzcc2dyvqsjj4f7i386mw31501296d5wl2hb5zfjv4nr"))))
+                "04rbixbhc1maj9a9mz4wzizfbqfll7lbc31khci5h0h2mbvaq6iw"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kirigami
