@@ -12086,14 +12086,15 @@ Go.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       ;; TODO: Project provides a Go library and also CLI builds for service,
       ;; client and proxy.
       #:skip-build? #t
       #:import-path
       "gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/v2"
-      ;; panic: empty transcript [recovered]
-      #:test-flags #~(list "-skip" "TestQueuePacketConnWriteToKCP")))
+      #:test-flags
+      #~(list "-vet=off"    ;Go@1.24 forces vet, but tests are not ready yet
+              ;; panic: empty transcript [recovered]
+              "-skip" "TestQueuePacketConnWriteToKCP")))
     (native-inputs
      (list go-github-com-stretchr-testify))
     (propagated-inputs
