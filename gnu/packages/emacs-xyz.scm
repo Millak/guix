@@ -9741,16 +9741,16 @@ their original location with another.")
 (define-public emacs-orgmdb
   (package
     (name "emacs-orgmdb")
-    (version "0.5")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/isamert/orgmdb.el")
-             (commit "66c13abdb84e0f0a31bae6cfda27478771d58d8e")))
+             (commit (string-append "v" version))))
        (sha256
         (base32
-         "1hvxha0ih9jhvwj07l6jnpf2vzhgvb6ii73g49c8saxld61l0frf"))
+         "09c3mslhnrqx6xy1js7zckrfc3pk5yvh020bj55845w8knlamjg0"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
