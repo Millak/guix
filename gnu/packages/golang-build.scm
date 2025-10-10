@@ -762,7 +762,7 @@ directory) packages.")
     ;; Note: Beware, the updater gets this wrong.  Take the latest version
     ;; string from
     ;; <https://pkg.go.dev/golang.org/x/exp/typeparams?tab=versions>.
-    (version "0.0.0-20250531010427-b6e5de432a8b")
+    (version "0.0.0-20251009144603-d2f985daa21b")
     (source
      (origin
        (method git-fetch)
@@ -771,7 +771,7 @@ directory) packages.")
              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vszjiblb7i79dp9x1zvfpjidnmkzsaq6ij2jfh63hv9ph7yz3hf"))))
+        (base32 "0kn9bcbrkdvg4f8kvc0cdahyyy72w2jf9v9c95k67k0b46fwh3i6"))))
     (build-system go-build-system)
     (arguments
      (list
