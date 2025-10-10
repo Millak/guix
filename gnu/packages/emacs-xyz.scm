@@ -2279,7 +2279,7 @@ before interacting with non-free LLMs.")
 (define-public emacs-magit
   (package
     (name "emacs-magit")
-    (version "4.3.8")
+    (version "4.4.2")
     (source
      (origin
        (method git-fetch)
@@ -2288,7 +2288,7 @@ before interacting with non-free LLMs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y5151flgsxb1cv123kkj4v74xs5s6sh7ycq00gqc7bm0n09lcdb"))))
+        (base32 "0lsxldyjv2h69657pgrblhkxq8fvc0xdwlwpfmd09pb8zawygh2g"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -2313,7 +2313,7 @@ before interacting with non-free LLMs.")
                 ("magit-perl-executable"
                  (search-input-file inputs "/bin/perl"))))))))
     (native-inputs
-     (list texinfo))
+     (list emacs-cond-let texinfo))
     (inputs
      (list git perl))
     (propagated-inputs
