@@ -2479,14 +2479,14 @@ text in the text edit to all kinds of markup, like HTML or BBCODE.")
 (define-public ksmtp
   (package
     (name "ksmtp")
-    (version "25.08.1")
+    (version "25.08.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ksmtp-" version ".tar.xz"))
        (sha256
-        (base32 "1sv8rqbyvw8phaza9xv2h96qz8gg55mvaya47y9zfhxgi6xsfcj5"))))
+        (base32 "1w6rlr5giyx3ik6lcck6jar4fk2wqd37g6cb4vhz8k1i538q4pw8"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
