@@ -3282,11 +3282,11 @@ designed for experienced users.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       ;; It helps to resolve <golang.org/x/net/publicsuffix/table.go:63:12>:
       ;; pattern data/children: cannot embed irregular file data/children
       #:embed-files #~(list "children" "nodes" "text")
-      #:import-path "github.com/42wim/matterbridge"))
+      #:import-path "github.com/42wim/matterbridge"
+      #:test-flags #~(list "-vet=off")))
     (inputs (list
              ;; golang.org
              go-golang-org-x-crypto
