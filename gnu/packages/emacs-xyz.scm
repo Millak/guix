@@ -36064,17 +36064,17 @@ real search.")
 (define-public emacs-notmuch-addr
   (package
     (name "emacs-notmuch-addr")
-    (version "1.1.0")
+    (version "1.1.1")
     (home-page "https://github.com/tarsius/notmuch-addr")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url home-page)
-             (commit "7dde87a44b6576eb736cb6a3b69df6b9946c5ecc")))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xr78yw679swbl1bcwhk5k6qj1l9zr9nyl34ry2bpdryi370zkkp"))))
+        (base32 "0z3445wnh0zjfwixzq0cqf0a0mzgpdgq6c5b6h6b4vfh9qwd5ra2"))))
     (build-system emacs-build-system)
     (arguments
      (list #:test-command
@@ -36082,9 +36082,9 @@ real search.")
     (propagated-inputs (list emacs-compat emacs-notmuch))
     (synopsis "Improved address completion for Notmuch")
     (description
-     "A simple alternative to @code{notmuch-address}.  It gives up on
-persistent caching, external scripts, and backward compatibility.  It uses the
-improved completion API offered by Emacs 27.1 and later.")
+     "This package provides a simple alternative to @code{notmuch-address}.  In
+particular, it gives up on persistent caching, external scripts, and backward
+compatibility.")
     (license license:gpl3+)))
 
 (define-public emacs-notmuch-indicator
