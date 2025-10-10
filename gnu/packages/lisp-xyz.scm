@@ -840,6 +840,45 @@ functions allow Lisp programs to explore the web.")
 (define-public cl-acl-compat
   (sbcl-package->cl-source-package sbcl-acl-compat))
 
+(define-public sbcl-common-macros
+  (let ((commit "f261a4a07c52e5c560d90154393bd49421ece740")
+        (revision "0"))
+    (package
+      (name "sbcl-common-macros")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/robert-strandh/Common-macros")
+                (commit commit)))
+         (file-name (git-file-name "cl-common-macros" version))
+         (sha256
+          (base32
+           "0rn0rnccjgxsrf828bw740vs8psjjxb5x4hmk8rnqiz5p3y0lvph"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("common-macro-definitions")))
+      (inputs
+       (list sbcl-ecclesia))
+      (home-page "https://github.com/robert-strandh/Common-macros")
+      (synopsis "Portable Common Lisp macro definitions")
+      (description
+       "This library defines most Common Lisp standard macros that can be
+defined in a portable way and that can generate portable code.  Some of these
+macros may not be good enough as the final version for a typical
+implementation, but they will work.")
+      (license license:bsd-2))))
+
+(define-public cl-common-macros
+  (sbcl-package->cl-source-package sbcl-common-macros))
+
+(define-public ecl-common-macros
+  (sbcl-package->ecl-package sbcl-common-macros))
+
+(define-public clasp-common-macros
+  (sbcl-package->clasp-package sbcl-common-macros))
+
 (define-public sbcl-adopt
   (package
     (name "sbcl-adopt")
