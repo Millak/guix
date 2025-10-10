@@ -1570,14 +1570,14 @@ This package is part of the KDE games module.")
 (define-public kollision
   (package
     (name "kollision")
-    (version "25.08.1")
+    (version "25.08.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kollision-" version ".tar.xz"))
        (sha256
-        (base32 "0b9c1n434cwz7n59jivasqycxy78vrf3yqs6g5llah3dvb7jypl2"))))
+        (base32 "0jpg7x7giihrcyjmmfa4h5ppzdskklny5ws2hm6lwl027582rx2q"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
