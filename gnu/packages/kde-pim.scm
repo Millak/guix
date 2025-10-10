@@ -1544,14 +1544,14 @@ protocol for querying and modifying directory services running over TCP/IP.")
 (define-public kleopatra
   (package
     (name "kleopatra")
-    (version "25.08.1")
+    (version "25.08.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kleopatra-" version ".tar.xz"))
        (sha256
-        (base32 "1y5xnjaa1hmbiz6inx59a9xd0hbmlm6ws6yaah231zr9rm9i2217"))))
+        (base32 "1k2gxgz7vlnxd9m1r8hdyqpl5hqqkf0x3pp6pafgykwbfhk5i0qn"))))
     (build-system qt-build-system)
     (native-inputs
      (list dbus extra-cmake-modules gnupg ;; TODO: Remove after gpgme uses fixed path
