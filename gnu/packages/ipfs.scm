@@ -2444,7 +2444,7 @@ types.")
 (define-public kubo
   (package
     (name "kubo")
-    (version "0.35.0")
+    (version "0.36.0")
     (source
      (origin
        (method git-fetch)
@@ -2453,7 +2453,7 @@ types.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18xkgxy07dz3zxvvrpaiv5m46slcl6hh07qbmmnfihcnx34431qa"))))
+        (base32 "080ixpahm2hsc7vsipcjlymxagvz9s3n1dc7nn7zfl2z4fwwhdhm"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -2477,6 +2477,7 @@ types.")
                             "commands" "completion" "bash")))))))))
     (inputs (list go-bazil-org-fuse
                   go-contrib-go-opencensus-io-exporter-prometheus
+                  go-github-com-anmitsu-go-shlex
                   go-github-com-blang-semver-v4
                   go-github-com-caddyserver-certmagic
                   go-github-com-cenkalti-backoff-v4
@@ -2508,7 +2509,6 @@ types.")
                   go-github-com-ipfs-go-ipld-format
                   go-github-com-ipfs-go-ipld-git
                   go-github-com-ipfs-go-ipld-legacy
-                  go-github-com-ipfs-go-log
                   go-github-com-ipfs-go-log-v2
                   go-github-com-ipfs-go-metrics-interface
                   go-github-com-ipfs-go-metrics-prometheus
@@ -2516,7 +2516,6 @@ types.")
                   go-github-com-ipfs-go-unixfsnode
                   go-github-com-ipfs-shipyard-nopfs
                   go-github-com-ipfs-shipyard-nopfs-ipfs
-                  go-github-com-ipld-go-car
                   go-github-com-ipld-go-car-v2
                   go-github-com-ipld-go-codec-dagpb
                   go-github-com-ipld-go-ipld-prime
