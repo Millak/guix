@@ -5861,7 +5861,7 @@ a set of simplified face specifications and a user-supplied color palette.")
 (define-public emacs-howm
   (package
     (name "emacs-howm")
-    (version "1.5.3")
+    (version "1.5.5")
     (source
      (origin
        (method git-fetch)
@@ -5871,7 +5871,7 @@ a set of simplified face specifications and a user-supplied color palette.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1q1srqb852537l4x3acch9k8d5mgmzm35k5jy1kbhjmvmr2kmi09"))))
+         "1dmjcbwcghyppqrg383pkric5mjhrz95f7wlm8lxq8k6zkynm1hp"))))
     (build-system gnu-build-system)
     (native-inputs
      (list emacs-minimal))
