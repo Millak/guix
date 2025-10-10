@@ -1779,14 +1779,14 @@ KMail.")
 (define-public kmailcommon
   (package
     (name "kmailcommon")
-    (version "25.08.1")
+    (version "25.08.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/mailcommon-" version ".tar.xz"))
        (sha256
-        (base32 "01bkywhw42ys607b1877k6pbdi4yhr2kycjgaiijvr0647vsyyq2"))))
+        (base32 "1isdngacj7sv1kvxr3lywp8h45a0xpj0ri0vq8i3ngmswd8b4s7a"))))
     (properties `((upstream-name . "mailcommon")))
     (build-system qt-build-system)
     (native-inputs
