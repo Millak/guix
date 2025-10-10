@@ -21053,41 +21053,42 @@ are common in Chromium-derived projects.")
     (license license:bsd-3)))
 
 (define-public emacs-gnosis
-  (package
-    (name "emacs-gnosis")
-    (version "0.5.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://git.thanosapollo.org/gnosis")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "11zw5lw32c6zzgl2h1rmklhmqw35xv07ymdddwa1wc2xf9a7mb3p"))))
-    (build-system emacs-build-system)
-    (arguments (list #:test-command #~(list "make" "test")
-                     #:emacs emacs      ; tests require built-in SQLite support
-                     #:phases
-                     #~(modify-phases %standard-phases
-                         (add-before 'check 'set-home
-                           (lambda _
-                             (setenv "HOME" (getenv "TMPDIR"))
-                             (mkdir-p (string-append (getenv "HOME")
-                                                     "/.emacs.d"))))
-                         (add-before 'install 'make-info
-                           (lambda _ (invoke "make" "doc"))))))
-    (native-inputs (list texinfo))
-    (propagated-inputs
-     (list emacs-compat emacs-emacsql emacs-org-gnosis emacs-transient))
-    (home-page "https://thanosapollo.org/projects/gnosis")
-    (synopsis "Spaced repetition system for GNU Emacs")
-    (description
-     "Gnosis is a spaced repetition system for note-taking and self-testing
+  (let ((commit "0c1a5dc92e4495976fc2d952dbea59873a4db797"))
+    (package
+      (name "emacs-gnosis")
+      (version "0.5.5")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://git.thanosapollo.org/gnosis")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "05cdaa3n61c361lxp3hz2v1zwa6dlrihakz1xb3mf06fy2vbxib1"))))
+      (build-system emacs-build-system)
+      (arguments (list #:test-command #~(list "make" "test")
+                       #:emacs emacs   ; tests require built-in SQLite support
+                       #:phases
+                       #~(modify-phases %standard-phases
+                           (add-before 'check 'set-home
+                             (lambda _
+                               (setenv "HOME" (getenv "TMPDIR"))
+                               (mkdir-p (string-append (getenv "HOME")
+                                                       "/.emacs.d"))))
+                           (add-before 'install 'make-info
+                             (lambda _ (invoke "make" "doc"))))))
+      (native-inputs (list texinfo))
+      (propagated-inputs
+       (list emacs-compat emacs-emacsql emacs-org-gnosis emacs-transient))
+      (home-page "https://thanosapollo.org/projects/gnosis")
+      (synopsis "Spaced repetition system for GNU Emacs")
+      (description
+       "Gnosis is a spaced repetition system for note-taking and self-testing
 where notes are formatted as Question/Answer/Explanation.  Notes are reviewed
 at spaced intervals based on the success or failure in recalling the answer to
 each question.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-drag-stuff
   (package
