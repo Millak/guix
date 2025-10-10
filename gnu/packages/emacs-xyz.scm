@@ -35797,6 +35797,7 @@ utilities.")
     (propagated-inputs
      (modify-inputs (package-propagated-inputs emacs-treemacs)
        (append emacs-all-the-icons
+               emacs-cond-let
                emacs-evil
                emacs-magit
                emacs-projectile
