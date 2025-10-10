@@ -44629,7 +44629,7 @@ audio volume via amixer.")
 (define-public emacs-fennel-mode
   (package
     (name "emacs-fennel-mode")
-    (version "0.9.1")
+    (version "0.9.2")
     (source
      (origin
        (method git-fetch)
@@ -44638,8 +44638,14 @@ audio volume via amixer.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dh50nkfxfiqyf19lfqnbfdpd8xf23q38axfli60d0vcix9nhxpv"))))
+        (base32 "0jkvcq13q4a0r15cn19gyqxg6k2jsm0argykpchac29xhzm4p5v1"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command #~(list "emacs" "-Q" "--batch"
+                             "-L" "."
+                             "-L" "test/."
+                             "-f" "ert-run-tests-batch-and-exit")))
     (home-page "https://git.sr.ht/~technomancy/fennel-mode")
     (synopsis "Emacs major-mode for editing Fennel code")
     (description
