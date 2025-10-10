@@ -9785,7 +9785,7 @@ characters incorrectly escaped by net/url.")
 (define-public go-github-com-quic-go-qpack
   (package
     (name "go-github-com-quic-go-qpack")
-    (version "0.4.0")
+    (version "0.5.1")
     (source
      (origin
        (method git-fetch)
@@ -9794,25 +9794,26 @@ characters incorrectly escaped by net/url.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00mjz445hhx4yar5l8p21bpp4d06jyg2ajw0ax7bh64d37l4kx39"))))
+        (base32 "0aj0vv89l94y3clhsjcm1ham6mysmls4yhv7602cwlyag61hfrh3"))))
     (build-system go-build-system)
     (arguments
      (list
-      ;; Tests require ginkgo v2.
-      #:tests? #f
-      #:import-path "github.com/quic-go/qpack"))
+      #:import-path "github.com/quic-go/qpack"
+      ;; XXX: integrationtests/interop contains git submodule of
+      ;; <https://github.com/qpackers/qifs>.
+      #:test-subdirs #~(list ".")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
     (propagated-inputs
-     (list go-github-com-onsi-ginkgo
-           go-github-com-onsi-gomega
-           go-golang-org-x-net))
+     (list go-golang-org-x-net))
     (home-page "https://github.com/quic-go/qpack")
     (synopsis "Minimal QPACK (RFC 9204) implementation for Go")
     (description
-     "A minimal QPACK (RFC 9204) implementation in Go.  It is minimal in the sense
-that it doesn't use the dynamic table at all, but just the static table and (Huffman
-encoded) string literals.  Wherever possible, it reuses code from the
-@url{https://github.com/golang/net/tree/master/http2/hpack, HPACK implementation in
-the Go standard library}.")
+     "A minimal QPACK (RFC 9204) implementation in Go.  It is minimal in the
+sense that it doesn't use the dynamic table at all, but just the static table
+and (Huffman encoded) string literals.  Wherever possible, it reuses code from
+the @url{https://github.com/golang/net/tree/master/http2/hpack, HPACK
+implementation in the Go standard library}.")
     (license license:expat)))
 
 (define-public go-github-com-quic-go-quic-go
