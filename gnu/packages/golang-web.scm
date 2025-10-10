@@ -9869,6 +9869,27 @@ implementation in the Go standard library}.")
 protocol.")
     (license license:expat)))
 
+(define-public go-github-com-quic-go-quic-go-0.52
+  (hidden-package
+   (package
+     (inherit go-github-com-quic-go-quic-go)
+     (name "go-github-com-quic-go-quic-go")
+     (version "0.52.0")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/quic-go/quic-go")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0frcjzrarvk3ck6dhqp88a1cbazw7jb26gxq1wp3lhgmxv4v4m2m"))))
+     (arguments
+      (list
+       #:skip-build? #t
+       #:tests? #f
+       #:import-path "github.com/quic-go/quic-go")))))
+
 (define-public go-github-com-quic-go-webtransport-go
     (package
       (name "go-github-com-quic-go-webtransport-go")
