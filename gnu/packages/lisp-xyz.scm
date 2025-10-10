@@ -18483,7 +18483,7 @@ deletion.")
                                commit
                                "/LICENSE")))
       (inputs
-       (list hdf5-1.10 sbcl-cffi))
+       (list hdf5 sbcl-cffi))
       (native-inputs
        (list sbcl-fiveam))
       (arguments
@@ -18511,7 +18511,9 @@ deletion.")
                                         "src/h5t-grovel.lisp"
                                         "src/h5z-grovel.lisp")
                        (("_H5private_H")
-                        "H5private_H"))))
+                        "H5private_H")
+                       (("\\(\\(:H5I-REFERENCE   \"H5I_REFERENCE\"\\)\\)")
+                        ""))))
                  (add-after 'unpack 'fix-dependencies
                    (lambda* (#:key inputs #:allow-other-keys)
                      (substitute* "hdf5-cffi.asd"
