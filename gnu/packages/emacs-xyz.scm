@@ -43923,7 +43923,7 @@ and preferred services can easily be configured.")
 (define-public emacs-ivy-avy
   (package
     (name "emacs-ivy-avy")
-    (version "0.15.0")
+    (version "0.15.1")
     (source
      (origin
        (method url-fetch)
@@ -43931,7 +43931,7 @@ and preferred services can easily be configured.")
              "https://elpa.gnu.org/packages/"
              "ivy-avy-" version ".tar"))
        (sha256
-        (base32 "0xqykxvsm7q81744qj4w7ma83v6s9a4wx4flywqch4dn7liaiqwj"))))
+        (base32 "0csysx22sf3bbfh000c2m48rzfn274km0zxbfbcx2871haskwva1"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-ivy emacs-avy))
