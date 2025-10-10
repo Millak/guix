@@ -583,14 +583,14 @@ PIM data into Akonadi for use in KDE PIM applications.")
 (define-public akregator
   (package
     (name "akregator")
-    (version "25.08.1")
+    (version "25.08.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/akregator-" version ".tar.xz"))
        (sha256
-        (base32 "1vbwpy1mr3wjznrzc0vs9j21ivafvdyhy22baicl76gpi1q9afmv"))))
+        (base32 "1vpwmhlxbml0j6hmbys6hqpnj585awajsxp06zzbp70mqmqnz9nh"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase))
