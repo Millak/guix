@@ -10569,7 +10569,7 @@ game field is extended to 4D space, which has to filled up by the gamer with
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-install-helper-paths
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((p7zip (assoc-ref inputs "p7zip"))
+             (let ((7zip (assoc-ref inputs "7zip"))
                    (innoextract (assoc-ref inputs "innoextract"))
                    (wget (assoc-ref inputs "wget"))
                    (zenity (assoc-ref inputs "zenity")))
@@ -10581,11 +10581,11 @@ game field is extended to 4D space, which has to filled up by the gamer with
                  (("else innoextract")
                   (string-append "else " innoextract "/bin/innoextract"))
                  (("for _extract_zip_sz in 7za 7z")
-                  (string-append "for _extract_zip_sz in " p7zip "/bin/7za"))
+                  (string-append "for _extract_zip_sz in " 7zip "/bin/7z"))
                  (("else if have 7z")
-                  (string-append "else if have " p7zip "/bin/7za"))
+                  (string-append "else if have " 7zip "/bin/7z"))
                  (("7z x -tiso")
-                  (string-append p7zip "/bin/7z x -tiso"))
+                  (string-append 7zip "/bin/7z x -tiso"))
                  (("if have wget")
                   (string-append "if have " wget "/bin/wget"))
                  (("wget -O")
@@ -10614,7 +10614,7 @@ game field is extended to 4D space, which has to filled up by the gamer with
            glm
            freetype
            ;; The following are only needed by the arx-install-data script.
-           p7zip ; Install-helper uses it to extract ISO and .cab archives.
+           7zip ; Install-helper uses it to extract ISO and .cab archives.
            zenity ; GUI for install-helper.
            wget ; Used by the install-helper to download the patch.
            ;; The install-helper needs it to extract the patch.
