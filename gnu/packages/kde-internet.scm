@@ -177,7 +177,7 @@ different notification systems.")
 (define-public falkon
   (package
     (name "falkon")
-    (version "25.08.1")
+    (version "25.08.2")
     (source
      (origin
        (method url-fetch)
@@ -185,7 +185,7 @@ different notification systems.")
                            "/src/falkon-" version ".tar.xz"))
        (sha256
         (base32
-         "1049wwm46cd2dd96f9gwlnpz3sdrk8fs12fsp6qk0apmgzq3lf7x"))))
+         "0lqirjirjxin4b2bkf9raalygvjp35qs1r51ydmgf97gjk6nhzzv"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config qttools))
