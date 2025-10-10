@@ -1425,14 +1425,14 @@ test and recovery certificates.")
 (define-public kimap
   (package
     (name "kimap")
-    (version "25.08.1")
+    (version "25.08.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kimap-" version ".tar.xz"))
        (sha256
-        (base32 "0x9jfm8sszdvqhjv6qf60ivbvydfs23v5b9lcw24mwbahwqvn8vs"))))
+        (base32 "0rz862k1drlnhixagh99mrbza2jx86hjrakjfrjz6dvh85vsxm7z"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
