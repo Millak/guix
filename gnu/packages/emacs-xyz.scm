@@ -24476,7 +24476,7 @@ a streaming and non-streaming way.")
 (define-public emacs-plz-event-source
   (package
     (name "emacs-plz-event-source")
-    (version "0.1.2")
+    (version "0.1.3")
     (source
      (origin
        (method git-fetch)
@@ -24485,7 +24485,7 @@ a streaming and non-streaming way.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dwfrypk2gang4xc0apblg1pih55jp6lbr929ar7myv1v28wqjby"))))
+        (base32 "1bh61gcnznvcs0dmqpai5pnxkapdcgb51d5zjqvzvpr2i84cwgv9"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-plz-media-type))
     (arguments (list #:tests? #f))
