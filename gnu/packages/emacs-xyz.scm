@@ -15198,7 +15198,7 @@ perspective only its buffers are available by default.")
 (define-public emacs-persp-mode
   (package
     (name "emacs-persp-mode")
-    (version "3.0.8")
+    (version "3.0.9")
     (source
      (origin
        (method git-fetch)
@@ -15208,7 +15208,7 @@ perspective only its buffers are available by default.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0y29vyvqdfxcpmzkyv2c6msbshx2f680izk2r0djrqj08ii8zmpr"))))
+         "0fi07h5q0srjasjxn7rzzd8zahl15agspm6q9hs2rzd0m8x3zp52"))))
     (build-system emacs-build-system)
     (arguments
      (list #:test-command
