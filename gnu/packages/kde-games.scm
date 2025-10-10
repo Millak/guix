@@ -186,14 +186,14 @@ This package is part of the KDE games module.")
 (define-public kolf
   (package
     (name "kolf")
-    (version "25.08.1")
+    (version "25.08.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kolf-" version ".tar.xz"))
        (sha256
-        (base32 "0jp3gzw3mgwjricwi7qk6zhnnqbndzhh6ww0x8a1rps8j24x6cx4"))))
+        (base32 "1ay7r2jafn09gb7gymx3py2i0gr9kpql20hini16a4asys0frwni"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
