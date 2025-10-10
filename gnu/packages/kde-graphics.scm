@@ -390,14 +390,14 @@ Mobipocket e-books in Dolphin and other KDE apps.")
 (define-public kdegraphics-thumbnailers
   (package
     (name "kdegraphics-thumbnailers")
-    (version "25.08.1")
+    (version "25.08.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "17b4ns2l03dl6lsnwanjva542qlldlc6ncf6nji0m8whq56qw10c"))))
+        (base32 "1pqsy019kc363wpnikvwdr208gqa78ry5six2xbrrbbp59fzrq82"))))
     (build-system cmake-build-system)
     (arguments
      (list
