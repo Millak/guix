@@ -13132,7 +13132,7 @@ just provides syntax highlighting.")
 (define-public emacs-god-mode
   (package
     (name "emacs-god-mode")
-    (version "2.18.0")
+    (version "2.19.0")
     (source
      (origin
        (method git-fetch)
@@ -13142,7 +13142,7 @@ just provides syntax highlighting.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1njln47w25ix9w0xjv02110ngr8d8ma3w7db0x4xcxhihbl65zly"))))
+         "1b39lq1l7xa2i4l5ciry3pjaxgzs0xawadb5kbcfhqhd4xlgb04g"))))
     (build-system emacs-build-system)
     (arguments
      (list #:test-command
