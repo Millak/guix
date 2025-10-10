@@ -65,14 +65,14 @@
 (define-public kqtquickcharts
   (package
     (name "kqtquickcharts")
-    (version "25.08.1")
+    (version "25.08.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kqtquickcharts-" version ".tar.xz"))
               (sha256
                (base32
-                "0ighyal22cizsm34vvz8wly63pgx0kr58wwksi3qsx3z8bbwxn9i"))))
+                "04mncq97na71rhmwg012x7qlkq2a5zh4lxbydlsppf1arc3k76c6"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list qtdeclarative))
