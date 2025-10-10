@@ -473,7 +473,7 @@ Kate's features include:
 (define-public kdebugsettings
   (package
     (name "kdebugsettings")
-    (version "25.08.1")
+    (version "25.08.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
@@ -481,7 +481,7 @@ Kate's features include:
                                   ".tar.xz"))
               (sha256
                (base32
-                "1c9bhg19x1sj1lsfgh3kwmyi48gb5l6m8kjdn60ibzrrg05symfp"))))
+                "1vgk3q77ddadkgmrmwf7qsf0l87vy0insc8w725crns5vi0pxfq6"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kcoreaddons
