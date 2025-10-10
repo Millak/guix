@@ -36393,43 +36393,44 @@ buffers.")
       (license license:gpl3+))))
 
 (define-public emacs-js2-refactor
-  (let ((commit "d4c40b5fc86d3edd7c6a7d83ac86483ee1cb7a28")
-        (revision "2"))
-    (package
-      (name "emacs-js2-refactor")
-      (version (git-version "0.9.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/magnars/js2-refactor.el")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "08b25y3raz0p98zxk9xdd8nj9shqd6mzrqhbq1gg4cwsmi7h7ly1"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'enable-lexical-binding
-              (lambda _
-                (emacs-batch-edit-file
-                    "test/js2r-local-name-node-at-point-test.el"
-                  '(progn
-                    (add-file-local-variable-prop-line 'lexical-binding t)
-                    (basic-save-buffer))))))))
-      (propagated-inputs
-       (list emacs-dash emacs-s emacs-js2-mode emacs-yasnippet
-             emacs-multiple-cursors))
-      (native-inputs
-       (list emacs-buttercup emacs-espuds))
-      (home-page "https://github.com/magnars/js2-refactor.el")
-      (synopsis "JavaScript refactoring in Emacs")
-      (description "This package provides various refactoring functions for
+  (package
+    (name "emacs-js2-refactor")
+    (version "0.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/magnars/js2-refactor.el")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1axkiyxlkmgwa59jqkwwqldcp52xf9vnkid8r1v9b3qa6pgcszm1"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'enable-lexical-binding
+            (lambda _
+              (emacs-batch-edit-file
+                  "test/js2r-local-name-node-at-point-test.el"
+                '(progn
+                  (add-file-local-variable-prop-line 'lexical-binding t)
+                  (basic-save-buffer))))))))
+    (propagated-inputs
+     (list emacs-dash
+           emacs-js2-mode
+           emacs-multiple-cursors
+           emacs-s
+           emacs-yasnippet))
+    (native-inputs
+     (list emacs-buttercup emacs-espuds))
+    (home-page "https://github.com/magnars/js2-refactor.el")
+    (synopsis "JavaScript refactoring in Emacs")
+    (description "This package provides various refactoring functions for
 JavaScript.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-deprecated/public emacs-js2-refactor-el emacs-js2-refactor
   (deprecated-package "emacs-js2-refactor-el" emacs-js2-refactor))
