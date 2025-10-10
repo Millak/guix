@@ -42369,7 +42369,7 @@ using org mode; faster than org-roam.")
 (define-public emacs-org-mem
   (package
     (name "emacs-org-mem")
-    (version "0.20.0")
+    (version "0.23.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -42378,7 +42378,7 @@ using org mode; faster than org-roam.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yxmsh96zx41vr98qrxr93cnx92pwzbqdpa4hn52zdjb45vhk3gn"))))
+                "1yrax4qmaqczmpmqd4k19fbqh3lsnf36nc0k0dwya9gr9ibmls3f"))))
     (build-system emacs-build-system)
     (arguments
      (list
