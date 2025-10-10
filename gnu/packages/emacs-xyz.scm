@@ -37541,7 +37541,7 @@ user interfaces for various built-in modes.")
 (define-public emacs-el-patch
   (package
     (name "emacs-el-patch")
-    (version "3.1")
+    (version "3.1.1")
     (source
      (origin
        (method git-fetch)
@@ -37550,7 +37550,7 @@ user interfaces for various built-in modes.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x2x3ci5i428wgagbwjh9qp2zlflkzlrkbpi6qa4fv7dq3vgkrv2"))))
+        (base32 "0s8bh7cjdr0gg5jqbrf44abrxzfh7vkjyz02w2dc9hpdjkm75zg5"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/raxod502/el-patch")
