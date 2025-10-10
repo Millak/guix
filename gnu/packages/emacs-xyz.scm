@@ -22335,7 +22335,7 @@ to the home page or read the comments in the source file,
 (define-public emacs-htmlize
   (package
     (name "emacs-htmlize")
-    (version "1.58")
+    (version "1.59")
     (source
      (origin
        (method git-fetch)
@@ -22344,8 +22344,9 @@ to the home page or read the comments in the source file,
              (commit (string-append "release/" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xkp4sscrz6mpk96vhc59xp94ynfdyalq8npr1g8f6s32xavsga4"))))
+        (base32 "1kdria0h5pmrgdrrxrhf2wlxsmk4drq0byj7mnx4h73sd2ynhhr7"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #false))  ;no tests
     (home-page "https://github.com/hniksic/emacs-htmlize")
     (synopsis "Convert buffer text and decorations to HTML")
     (description "@code{emacs-htmlize} converts the buffer text and
