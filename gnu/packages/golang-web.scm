@@ -12230,6 +12230,8 @@ lists)
 @end itemize")
     (license license:mpl2.0)))
 
+;; XXX: This project was archived by the owner on Jul 31, 2023. It is now
+;; read-only. Consider to remove when nothing depends on it.
 (define-public go-go-opencensus-io
   (package
     (name "go-go-opencensus-io")
@@ -12238,16 +12240,32 @@ lists)
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/census-instrumentation/opencensus-go")
-             (commit (string-append "v" version))))
+              (url "https://github.com/census-instrumentation/opencensus-go")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1923j8v214fyk9qlw0lfva6ah8p7s8cfkrysiada5pp4jim4k4xi"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "go.opencensus.io"
+      #:test-subdirs
+      #~(list "exporter/stackdriver/propagation"
+              "internal"
+              "metric"
+              "metric/metricexport"
+              "metric/metricproducer"
+              "metric/test"
+              "plugin/ochttp/propagation/b3"
+              "plugin/ochttp/propagation/tracecontext"
+              "plugin/runmetrics"
+              "resource"
+              "stats"
+              "stats/view"
+              "tag"
+              "trace"
+              "trace/propagation"
+              "trace/tracestate")
       #:test-flags
       #~(list "-skip"
               (string-join
