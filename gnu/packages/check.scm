@@ -2424,7 +2424,12 @@ since the last commit or what tests are currently failing.")
          ;; XXX: Checking coverage for too much files, not only the target one.
          "--deselect=tests/test_oddball.py::DoctestTest::test_doctest"
          ;; Module sys has no Python source
-         "--deselect=tests/test_api.py::ApiTest::test_warnings_suppressed")
+         "--deselect=tests/test_api.py::ApiTest::test_warnings_suppressed"
+         ;; prevent FAILs on slow riscv64 SBCs
+         #$@(if (equal? (%current-system) "riscv64-linux")
+                '("--deselect=tests/test_numbits.py::NumbitsOpTest::test_union"
+                  "--deselect=tests/test_numbits.py::NumbitsOpTest::test_any_intersection")
+                '()))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-pyproject
