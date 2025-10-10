@@ -42565,28 +42565,29 @@ across all Org export back-ends.")
       (license license:gpl3+))))
 
 (define-public emacs-org-gnosis
-  (package
-    (name "emacs-org-gnosis")
-    (version "0.0.9")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://git.thanosapollo.org/org-gnosis")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "15r305lbci797nlh6m3xy1q0cwfz85x7k76adp71z8706n2w9j71"))))
-    (build-system emacs-build-system)
-    (arguments (list #:tests? #f))      ; no tests
-    (propagated-inputs (list emacs-compat emacs-emacsql))
-    (home-page "https://thanosapollo.org/projects/org-gnosis/")
-    (synopsis "Roam-like note taking system.")
-    (description
-     "Org Gnosis is a knowledge management tool that leverages Org mode for
+  (let ((commit "7db80112f08547ae4526f4ca645dbe6e224d27c6")) ;version bump
+    (package
+      (name "emacs-org-gnosis")
+      (version "0.1.1")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://git.thanosapollo.org/org-gnosis")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0y4qna0m5pdf2m53sac792rzsyp8lm7lfcl92981zwx3sqfy25gv"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ; no tests
+      (propagated-inputs (list emacs-compat emacs-emacsql))
+      (home-page "https://thanosapollo.org/projects/org-gnosis/")
+      (synopsis "Roam-like note taking system.")
+      (description
+       "Org Gnosis is a knowledge management tool that leverages Org mode for
 storing notes and journal entries, integrating them with an SQLite database
 for efficient retrieval and relationship mapping.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-uml-mode
   ;; Package has no release.  Version is extracted from "Version:" keyword in
