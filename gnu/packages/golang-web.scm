@@ -11854,7 +11854,7 @@ connection management for @url{https://github.com/xtaci/kcp-go,kcp-go}.")
            go-github-com-hjson-hjson-go-v4
            go-github-com-kardianos-minwinsvc
            go-github-com-olekukonko-tablewriter-0.0.5
-           go-github-com-quic-go-quic-go
+           go-github-com-quic-go-quic-go-0.52
            go-github-com-vishvananda-netlink
            go-github-com-wlynxg-anet
            go-golang-org-x-crypto
