@@ -42767,7 +42767,7 @@ PDDL files with syntax highlighting, templates, auto-completion, and more.")
 (define-public emacs-plantuml-mode
   (package
     (name "emacs-plantuml-mode")
-    (version "1.4.1")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -42776,7 +42776,7 @@ PDDL files with syntax highlighting, templates, auto-completion, and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yp41d2dmf3sx7qnl5x0zdjcr9y71b2wwc9m0q31v22xqn938ipc"))))
+        (base32 "1h68bfczpvbzi29ggl3dciiz5187px14xi2sz5pywwl84sg5x2b5"))))
     (arguments
      (list
       #:tests? #f  ; Unclear why tests fail.
@@ -42805,7 +42805,7 @@ PDDL files with syntax highlighting, templates, auto-completion, and more.")
                           (basic-save-buffer)))))))))
     (inputs (list plantuml))
     (native-inputs (list emacs-ert-runner icedtea))
-    (propagated-inputs (list emacs-dash))
+    (propagated-inputs (list emacs-dash emacs-deflate))
     (build-system emacs-build-system)
     (home-page "https://github.com/skuro/plantuml-mode")
     (synopsis "Major mode for editing PlantUML sources")
