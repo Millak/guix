@@ -164,7 +164,7 @@ alternative fork of https://git.autistici.org/ale/lb.")
            go-github-com-spf13-viper))
     (propagated-inputs
      (list go-github-com-labstack-echo-v4
-           go-github-com-quic-go-quic-go
+           go-github-com-quic-go-quic-go-0.52
            go-github-com-sirupsen-logrus
            go-github-com-xtaci-kcp-go-v5
            go-gitlab-com-yawning-obfs4-git
