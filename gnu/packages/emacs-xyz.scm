@@ -13569,7 +13569,7 @@ emails in a Outlook HTML friendly style.")
 (define-public emacs-org-superstar
   (package
     (name "emacs-org-superstar")
-    (version "1.5.0")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
@@ -13578,7 +13578,7 @@ emails in a Outlook HTML friendly style.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12inin2p6pm6vbv3yc06fx343dsp0vp07fjb35w088akhikmqh2a"))))
+        (base32 "1hz4m3axcnsvwmal0fsr2b3s6wa9gzxd5rkk4r74lmsz36x5yl0h"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-org))
