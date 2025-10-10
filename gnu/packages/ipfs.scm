@@ -1887,7 +1887,7 @@ specified in @url{https://datatracker.ietf.org/doc/html/rfc8484, RFC 8484}.")
 (define-public go-github-com-libp2p-go-libp2p
   (package
     (name "go-github-com-libp2p-go-libp2p")
-    (version "0.41.1")
+    (version "0.43.0")
     (source
      (origin
        (method git-fetch)
@@ -1896,7 +1896,7 @@ specified in @url{https://datatracker.ietf.org/doc/html/rfc8484, RFC 8484}.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sxx27hgryg93a03n08vasycaj76iwclzdskajjy8bivk5z9ls9p"))
+        (base32 "02708nf651cx1ls9k4k0275w8ld4349kzp1yyv35m45phbvzd2zf"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -1937,8 +1937,6 @@ specified in @url{https://datatracker.ietf.org/doc/html/rfc8484, RFC 8484}.")
            go-github-com-huin-goupnp
            go-github-com-ipfs-go-cid
            go-github-com-ipfs-go-datastore
-           go-github-com-ipfs-go-ds-badger
-           go-github-com-ipfs-go-ds-leveldb
            go-github-com-ipfs-go-log-v2
            go-github-com-jackpal-go-nat-pmp
            go-github-com-jbenet-go-temp-err-catcher
@@ -1975,12 +1973,12 @@ specified in @url{https://datatracker.ietf.org/doc/html/rfc8484, RFC 8484}.")
            go-github-com-prometheus-client-model
            go-github-com-quic-go-quic-go
            go-github-com-quic-go-webtransport-go
-           go-github-com-raulk-go-watchdog
            go-go-uber-org-fx
            go-go-uber-org-zap
            go-golang-org-x-crypto
            go-golang-org-x-sync
            go-golang-org-x-sys
+           go-golang-org-x-time
            go-golang-org-x-tools
            go-google-golang-org-protobuf))
     (home-page "https://github.com/libp2p/go-libp2p")
