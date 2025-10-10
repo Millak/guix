@@ -42582,7 +42582,7 @@ across all Org export back-ends.")
       (arguments (list #:tests? #f))    ; no tests
       (propagated-inputs (list emacs-compat emacs-emacsql))
       (home-page "https://thanosapollo.org/projects/org-gnosis/")
-      (synopsis "Roam-like note taking system.")
+      (synopsis "Roam-like note taking system")
       (description
        "Org Gnosis is a knowledge management tool that leverages Org mode for
 storing notes and journal entries, integrating them with an SQLite database
