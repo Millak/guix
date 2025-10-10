@@ -44009,7 +44009,7 @@ files, providing syntax highlighting and indentation rules.")
 (define-public emacs-ivy-hydra
   (package
     (name "emacs-ivy-hydra")
-    (version "0.15.0")
+    (version "0.15.1")
     (source
      (origin
        (method url-fetch)
@@ -44017,7 +44017,7 @@ files, providing syntax highlighting and indentation rules.")
              "https://elpa.gnu.org/packages/"
              "ivy-hydra-" version ".tar"))
        (sha256
-        (base32 "1crznifig71l6h4zjsr39d2w02blw7vla1vafv0yhhj6ryd4030g"))))
+        (base32 "16z3ic50zbx9iaw0w6fv04cxpl6qz81424jdian1br1942pz3kdy"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-ivy emacs-hydra))
