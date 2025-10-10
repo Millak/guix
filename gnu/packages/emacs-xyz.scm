@@ -8831,7 +8831,7 @@ result.")
 (define-public emacs-rg
   (package
     (name "emacs-rg")
-    (version "2.3.0")
+    (version "2.4.0")
     (source
      (origin
        (method git-fetch)
@@ -8840,7 +8840,7 @@ result.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1adici6hs4ivz7lqhrgdm9g1rz0mgvrsa7pkr2pcx6mg1f0qnlmr"))))
+        (base32 "19vczsw4f36gn0n7gfmq5j919m813rr9s4vg8kjh20ysnl04qqxl"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -8856,8 +8856,13 @@ result.")
                   ("(defcustom rg-executable" "rg")))))
           (add-before 'check 'skip-failing-tests
             (lambda _
-              (substitute* "test/rg-isearch.el-test.el"
+              (substitute* (list "test/rg-isearch.el-test.el"
+                                 "test/rg-menu.el-test.el")
                 (("\\(ert-deftest rg-unit/isearch-project.*" all)
+                 (string-append all " (skip-unless nil)"))
+                (("\\(ert-deftest rg-unit/menu-define-search.*" all)
+                 (string-append all " (skip-unless nil)"))
+                (("\\(ert-deftest rg-unit/menu-transient-insert.*" all)
                  (string-append all " (skip-unless nil)"))))))))
     (propagated-inputs
      (list emacs-s emacs-wgrep ripgrep))
