@@ -33030,7 +33030,7 @@ buffers – other modes on the TODO list).
 (define-public emacs-magit-todos
   (package
     (name "emacs-magit-todos")
-    (version "1.8")
+    (version "1.8.1")
     (source
      (origin
        (method git-fetch)
@@ -33040,7 +33040,7 @@ buffers – other modes on the TODO list).
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0rjr5q73609bs8gx2h5lp7c7bk5nkplfqfd56ifwdrdzdfzn5khy"))
+         "0wv64ihg90yfkzg1aayslq630704wlci39zdxcp3s2fn0fqr26zg"))
        (modules '((guix build utils)))
        (snippet #~(begin
                     (delete-file-recursively "screenshots")
@@ -33052,6 +33052,7 @@ buffers – other modes on the TODO list).
      (list #:tests? #f)) ; No tests in source.
     (propagated-inputs
      (list emacs-async
+           emacs-cond-let
            emacs-dash
            emacs-f
            emacs-hl-todo
