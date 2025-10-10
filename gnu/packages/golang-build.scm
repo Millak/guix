@@ -592,28 +592,47 @@ toolchain.  The parts needed in the main Go repository are copied in.")
 (define-public go-golang-org-x-crypto
   (package
     (name "go-golang-org-x-crypto")
-    (version "0.38.0")
+    (version "0.43.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://go.googlesource.com/crypto")
-             (commit (string-append "v" version))))
+              (url "https://go.googlesource.com/crypto")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wx7wf3ifb10cx2yckm925a9ydy5bw3iv664cma27abkfssj07ba"))
+        (base32 "1d49g86ndfzj40nrichhhsknn6lgl1gh8862dmgsx0l0885kik9i"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
             ;; Submodules with their own go.mod files and packaged separately:
             ;;
-            ;; - olang.org/x/crypto/x509roots/fallback
-            (for-each delete-file-recursively (list "x509roots/fallback"))))))
+            ;; - golang.org/x/crypto/argon2/_asm
+            ;; - golang.org/x/crypto/blake2b/_asm/AVX2
+            ;; - golang.org/x/crypto/blake2b/_asm/standard
+            ;; - golang.org/x/crypto/blake2s/_asm
+            ;; - golang.org/x/crypto/chacha20poly1305/_asm
+            ;; - golang.org/x/crypto/internal/poly1305/_asm
+            ;; - golang.org/x/crypto/salsa20/salsa/_asm
+            ;; - golang.org/x/crypto/sha3/_asm
+            ;; - golang.org/x/crypto/x509roots/fallback
+            (for-each delete-file-recursively
+                      (list "argon2/_asm"
+                            "blake2b/_asm/AVX2"
+                            "blake2b/_asm/standard"
+                            "blake2s/_asm"
+                            "chacha20poly1305/_asm"
+                            "internal/poly1305/_asm"
+                            "salsa20/salsa/_asm"
+                            "sha3/_asm"
+                            "x509roots/fallback"))))))
     (build-system go-build-system)
     (arguments
      (list
       #:skip-build? #t
       #:import-path "golang.org/x/crypto"
+      ;; panic: testing: test using t.Setenv or t.Chdir can not use t.Parallel
+      #:test-flags #~(list "-skip" "TestWithPebble")
       #:phases
       #~(modify-phases %standard-phases
           ;; Network access required: go mod download -json
@@ -640,7 +659,8 @@ toolchain.  The parts needed in the main Go repository are copied in.")
      (list go-golang-org-x-net-bootstrap
            go-golang-org-x-text-bootstrap))
     (propagated-inputs
-     (list go-golang-org-x-sys go-golang-org-x-term))
+     (list go-golang-org-x-sys
+           go-golang-org-x-term))
     (home-page "https://go.googlesource.com/crypto/")
     (synopsis "Supplementary cryptographic libraries in Go")
     (description
