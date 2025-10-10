@@ -28462,31 +28462,32 @@ mode.")
     (license license:gpl3+)))
 
 (define-public emacs-m-buffer
-  (package
-    (name "emacs-m-buffer")
-    (version "0.15")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/phillord/m-buffer-el")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1sx76i59razwccvn6x7rx5a124bfyjw9fcbxf4gj7nsg33qiq809"))))
-    (arguments
-     (list
-      #:test-command #~(list "emacs" "--batch" "-L" "."
-                             "-l" "test/m-buffer-test.el"
-                             "-l" "test/m-buffer-at-test.el"
-                             "-f" "ert-run-tests-batch-and-exit")))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/phillord/m-buffer-el")
-    (synopsis "List oriented buffer operations for Emacs")
-    (description "@code{m-buffer} provides a set of list-orientated functions
+  (let ((commit "5e7714835b2289f61dad24c0b5cf98d28fc313b0")) ;version bump
+    (package
+      (name "emacs-m-buffer")
+      (version "0.16.1")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/phillord/m-buffer-el")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "16h8nj01h0ahcw4zk9nb8mm8972nl8qw75vj0gvpjlg1zk5kvl45"))))
+      (arguments
+       (list
+        #:test-command #~(list "emacs" "--batch" "-L" "."
+                               "-l" "test/m-buffer-test.el"
+                               "-l" "test/m-buffer-at-test.el"
+                               "-f" "ert-run-tests-batch-and-exit")))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/phillord/m-buffer-el")
+      (synopsis "List oriented buffer operations for Emacs")
+      (description "@code{m-buffer} provides a set of list-orientated functions
 for operating over the contents of Emacs buffers.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-deprecated/public emacs-m-buffer-el emacs-m-buffer
   (deprecated-package "emacs-m-buffer-el" emacs-m-buffer))
