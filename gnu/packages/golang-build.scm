@@ -932,16 +932,16 @@ loading algorithms.")
 (define-public go-golang-org-x-sync
   (package
     (name "go-golang-org-x-sync")
-    (version "0.14.0")
+    (version "0.17.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://go.googlesource.com/sync")
-             (commit (string-append "v" version))))
+              (url "https://go.googlesource.com/sync")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gpa1v6wnp1bszk5iyiakq1j37icgxswj3iysdrdyp0yadw0pm30"))))
+        (base32 "0bga9sfiwqxs7g913p7b355hg30agw58h5f5k7rzgpsai37nbkik"))))
     (build-system go-build-system)
     (arguments
      (list
