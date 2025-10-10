@@ -643,14 +643,14 @@ as well as QR codes.")
 (define-public yakuake
   (package
     (name "yakuake")
-    (version "25.08.1")
+    (version "25.08.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/yakuake-" version ".tar.xz"))
               (sha256
                (base32
-                "0bjmdgzy2n5y7k82b42spyhg971zs066g32k8i9whgm3bflgyzda"))))
+                "07251izhip7q1kwd87839009v3s7b2q1xgxsxgfgcs50v6kgxgkh"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
