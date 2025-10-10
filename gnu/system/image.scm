@@ -404,7 +404,8 @@ used in the image."
         (cond
          ((member 'esp flags) "0xEF")
          ((or (string=? file-system "btrfs")
-              (string-prefix? "ext" file-system)) "0x83")
+              (string-prefix? "ext" file-system)
+              (string=? file-system "f2fs")) "0x83")
          ((or (string=? file-system "vfat")
               (string=? file-system "fat16")) "0x0E")
          ((string=? file-system "fat32") "0x0C")
@@ -424,7 +425,8 @@ used in the image."
         (cond
          ((member 'esp flags) "U")
          ((or (string=? file-system "btrfs")
-              (string-prefix? "ext" file-system)) "L")
+              (string-prefix? "ext" file-system)
+              (string=? file-system "f2fs")) "L")
          ((or (string=? file-system "vfat")
               (string=? file-system "fat16")
               (string=? file-system "fat32")) "F")
@@ -460,6 +462,8 @@ used in the image."
                                    (list btrfs-progs fakeroot))
                                   ((string-prefix? "ext" type)
                                    (list e2fsprogs fakeroot))
+                                  ((string=? type "f2fs")
+                                   (list f2fs-tools fakeroot))
                                   ((or (string=? type "vfat")
                                        (string-prefix? "fat" type))
                                    (list dosfstools fakeroot mtools))

@@ -6,7 +6,7 @@
 ;;; Copyright © 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2022 Pavel Shlyak <p.shlyak@pantherx.org>
-;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2022, 2025 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -66,12 +66,14 @@
   (number->string
    (inexact->exact (ceiling (/ size 1024)))))
 
-(define (estimate-partition-size root)
+(define* (estimate-partition-size root #:optional (margin .25))
   "Given the ROOT directory, evaluate and return its size.  As this doesn't
-take the partition metadata size into account, take a 25% margin.  As this in
+take the partition metadata size into account, take a MARGIN.  As this in
 turn doesn't take any constant overhead into account, force a 1-MiB minimum."
   (max (ash 1 20)
-       (* 1.25 (file-size root))))
+       ;; without inexact->exact, 'guess can result in an error like that:
+       ;; "Wrong type (expecting exact integer): 7179941140.0".
+       (inexact->exact (round (* (+ 1. margin) (file-size root))))))
 
 (define* (make-btrfs-image partition target root)
   "Handle the creation of BTRFS partition images. See
@@ -118,6 +120,35 @@ turn doesn't take any constant overhead into account, force a 1-MiB minimum."
                            (estimate-partition-size root)
                            size)))))))
 
+(define* (make-f2fs-image partition target root
+                          #:key
+                          (owner-uid 0)
+                          (owner-gid 0))
+  "Handle the creation of F2FS partition images.  See 'make-partition-image'."
+  (let ((size (partition-size partition))
+        (label (partition-label partition))
+        (uuid (partition-uuid partition))
+        (fs-options (partition-file-system-options partition)))
+    ;; The mkfs.f2fs utility can't create files, so we need to create one
+    ;; before running it.
+    (call-with-output-file target (const #t))
+    (truncate-file
+     target
+     (if (eq? size 'guess)
+         ;; The F2FS filesystem has more overhead than other filesystems like
+         ;; BTRFS and ext4.
+         (estimate-partition-size root .50)
+         size))
+    (apply invoke "fakeroot" "mkfs.f2fs"
+           "-l" label
+           "-R" (format #f "~a:~a" owner-uid owner-gid)
+           `(,@(if uuid
+                   `("-U" ,(uuid->string uuid))
+                   '())
+             ,@fs-options
+             ,target))
+    (invoke "fakeroot" "sload.f2fs" "-P" "-f" root target)))
+
 (define* (make-vfat-image partition target root fs-bits)
   "Handle the creation of VFAT partition images.  See 'make-partition-image'."
   (let ((size (partition-size partition))
@@ -162,6 +193,8 @@ ROOT directory to populate the image."
       (make-btrfs-image partition target root))
      ((string-prefix? "ext" type)
       (make-ext-image partition target root))
+     ((string=? "f2fs" type)
+      (make-f2fs-image partition target root))
      ((or (string=? type "vfat") (string=? type "fat16"))
       (make-vfat-image partition target root 16))
      ((string=? type "fat32")
