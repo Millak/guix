@@ -2319,7 +2319,7 @@ before interacting with non-free LLMs.")
     (propagated-inputs
      ;; Note: the 'git-commit' and 'magit-section' dependencies are part of
      ;; magit itself.
-     (list emacs-compat emacs-transient emacs-with-editor emacs-llama))
+     (list emacs-compat emacs-llama emacs-transient emacs-with-editor))
     (home-page "https://magit.vc/")
     (synopsis "Emacs interface for the Git version control system")
     (description
