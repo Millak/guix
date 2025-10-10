@@ -35126,7 +35126,7 @@ recursively.  The results are cached for speed.")
 (define-public emacs-orgit
   (package
     (name "emacs-orgit")
-    (version "2.0.1")
+    (version "2.0.5")
     (home-page "https://github.com/magit/orgit")
     (source (origin
               (method git-fetch)
@@ -35136,12 +35136,12 @@ recursively.  The results are cached for speed.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yi73l7hm6x5pyalfmcv0mnklhc574xij35q8zkh6ahrnfbyv8ks"))))
+                "1nz9fy4348iha1zbw0v8hzsxv171v5758jilhsn2ksn9nvpkbbyb"))))
     (build-system emacs-build-system)
     (arguments
      (list #:tests? #f)) ; A makefile but no tests.
     (propagated-inputs
-     (list emacs-dash emacs-magit))
+     (list emacs-cond-let emacs-dash emacs-magit))
     (synopsis "Support for Org links to Magit buffers")
     (description "This package defines several Org link types, which can be
 used to link to certain Magit buffers.  Use the command
