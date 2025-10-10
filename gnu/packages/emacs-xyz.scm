@@ -38347,14 +38347,14 @@ programming in Emacs Lisp easy and fun.")
 (define-public emacs-excorporate
   (package
     (name "emacs-excorporate")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "excorporate-" version ".tar"))
        (sha256
-        (base32 "11w53idm7m20jhmwnj9wiqiv6fzydjrgy2s3mp36barlj3xq0l0z"))))
+        (base32 "09szsql8qyca6hn7fib832fzi9fmcsf9wiacgqdw32lfjqv5fjwk"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-fsm
