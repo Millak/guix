@@ -23285,7 +23285,7 @@ gnugo-image-display-mode}.")
 (define-public emacs-gnuplot
   (package
     (name "emacs-gnuplot")
-    (version "0.8.1")
+    (version "0.11")
     (source
      (origin
        (method git-fetch)
@@ -23294,7 +23294,7 @@ gnugo-image-display-mode}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s0k18ibi4b2vn6l7rwdk79g6ck6xafxzzbja8a8y0r8ljfssfgb"))))
+        (base32 "17kh2mpbm5rir4bfrl2hmf8hic6v09z13y6svbf22fm0nkfvic1p"))))
     (build-system emacs-build-system)
     (arguments
      (list #:test-command #~(list "make" "test"
