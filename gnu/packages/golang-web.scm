@@ -9870,22 +9870,18 @@ protocol.")
     (license license:expat)))
 
 (define-public go-github-com-quic-go-webtransport-go
-  ;; XXX: The latest commits contains comparability with Go@1.24 and QUICK
-  ;; 0.48+, revert back to version tag when released.
-  (let ((commit "0a9e2ee55f751e48eb03c4675d873edff3b69c05")
-        (revision "0"))
     (package
       (name "go-github-com-quic-go-webtransport-go")
-      (version (git-version "0.8.0" revision commit))
+      (version "0.9.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/quic-go/webtransport-go")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "048qf7glv3zgz43qvi1smwsh1khhzyfrid6hp5dnp799p3s3vk13"))))
+          (base32 "061mr55dq80kf3422vfranqlfb0416vix3wl7rb78ndmrcgvmr86"))))
       (build-system go-build-system)
       (arguments
        (list
@@ -9906,7 +9902,7 @@ protocol, based on @@url{https://github.com/quic-go/quic-go,quic-go}.  It
 currently implements
 @@url{https://www.ietf.org/archive/id/draft-ietf-webtrans-http3-02.html,draft-02}
 of the specification.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public go-github-com-rcrowley-go-metrics
   (package
