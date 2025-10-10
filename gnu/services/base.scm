@@ -1939,10 +1939,9 @@ read-only via %IMMUTABLE-STORE (this wrapper must run as root)."
                       (define (ensure-writable-store store)
                         ;; Create a new mount namespace and remount STORE with
                         ;; write permissions if it's read-only.
-                        (unshare CLONE_NEWNS)
                         (let ((fs (statfs store)))
-                          (unless (zero? (logand (file-system-mount-flags fs)
-                                                 ST_RDONLY))
+                          (when (logand (file-system-mount-flags fs) ST_RDONLY)
+                            (unshare CLONE_NEWNS)
                             (mount store store "none"
                                    (logior MS_BIND MS_REMOUNT)))))
 
