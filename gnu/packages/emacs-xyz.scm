@@ -10016,7 +10016,7 @@ with Emacs.")
 (define-public emacs-vhdl-ts-mode
   (package
     (name "emacs-vhdl-ts-mode")
-    (version "0.3.0")
+    (version "0.3.2")
     (source
      (origin
        (method git-fetch)
@@ -10025,7 +10025,7 @@ with Emacs.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pv68hv7l7z54xf7pyr5n5bplidkxkr0bgw35hjp1gg9pq7m4wfd"))))
+        (base32 "0x11sjiy3j43am0clwxsbx7b38pfsl74qgypkc3czs7dh1c5xyrx"))))
     (build-system emacs-build-system)
     (arguments
      ;; the testing framework, test-hdl, requires network
