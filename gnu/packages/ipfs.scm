@@ -124,7 +124,7 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
 (define-public go-github-com-ipfs-boxo
   (package
     (name "go-github-com-ipfs-boxo")
-    (version "0.30.0")
+    (version "0.33.0")
     (source
      (origin
        (method git-fetch)
@@ -133,7 +133,7 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1siicb0bs4shc220xk2i5d4p5myrh3yg64hm3yl796gjbcqgs66d"))
+        (base32 "03lr70406w95xqiin07ph0d2x8hcfdj1k1r3f1yq8lv3g5j9wapp"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -189,7 +189,6 @@ JSONMarshal/JSONUnmarshal to store/reload the Bloom filter.")
            go-github-com-ipfs-go-peertaskqueue
            go-github-com-ipfs-go-test
            go-github-com-ipfs-go-unixfsnode
-           go-github-com-ipld-go-car
            go-github-com-ipld-go-car-v2
            go-github-com-ipld-go-codec-dagpb
            go-github-com-ipld-go-ipld-prime
@@ -2134,6 +2133,7 @@ kab-dht}.  This DHT is modeled after Kademlia with S/Kademlia modifications.")
        #:import-path "github.com/libp2p/go-libp2p-kad-dht"))
      (propagated-inputs
       (list go-github-com-libp2p-go-libp2p-kbucket
+            go-github-com-hashicorp-golang-lru
             go-github-com-whyrusleeping-go-keyspace
             go-gonum-org-v1-gonum)))))
 
