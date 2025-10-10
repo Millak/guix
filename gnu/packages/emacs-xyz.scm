@@ -26115,7 +26115,7 @@ Lisp.")
 (define-public emacs-esxml
   (package
     (name "emacs-esxml")
-    (version "0.3.7")
+    (version "0.3.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -26124,7 +26124,7 @@ Lisp.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1xzxmgsg0j72sf1vjh9gjswz3c29js0kqhm7r3jrqrh3a5agdnml"))))
+                "1yqwx53yzn2izhdzchm3cp8qcln2j0n015xlyg3c020q08sai1ha"))))
     (build-system emacs-build-system)
     (arguments
      `(#:emacs ,emacs                   ;need libxml
