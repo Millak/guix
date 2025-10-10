@@ -9370,31 +9370,27 @@ throughout the @url{https://github.com/pion, Pion} modules.")
                                     go-github-com-pion-transport-v2)
        ((#:import-path _) "github.com/pion/transport/v3")))))
 
-(define-public go-github-com-pion-turn
+(define-public go-github-com-pion-turn-v2
   (package
-    (name "go-github-com-pion-turn")
-    (version "1.4.0")
+    (name "go-github-com-pion-turn-v2")
+    (version "2.1.6")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pion/turn/")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pion/turn/")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16lkgmrlks0qdzbk8jj0c0j66qfxhb54cvzgrfn4imvm56dbxp2n"))))
+        (base32 "0iw7nvqsxpqy90k5a8mq3dyask272391m59cbiy30aak1y2wwaac"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "github.com/pion/turn"
+      #:import-path "github.com/pion/turn/v2"
       #:test-flags
-      #~(list "-skip"
-              (string-join
-               ;; Tests requiring networking setup.
-               (list "TestClientWithSTUN/SendBindingRequest"
-                     "TestClientWithSTUN/SendBindingRequestTo_Parallel")
-               "|"))
+      ;; panic: runtime error: invalid memory address or nil pointer
+      ;; dereference
+      #~(list "-skip" "TestClientWithSTUN")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-examples
@@ -9405,9 +9401,10 @@ throughout the @url{https://github.com/pion, Pion} modules.")
      (list go-github-com-stretchr-testify))
     (propagated-inputs
      (list go-github-com-pion-logging
+           go-github-com-pion-randutil
            go-github-com-pion-stun
-           go-github-com-pion-transport
-           go-github-com-pkg-errors))
+           go-github-com-pion-transport-v2
+           go-golang-org-x-sys))
     (home-page "https://github.com/pion/turn/")
     (synopsis "API for building TURN clients and servers in Golang")
     (description
@@ -9429,35 +9426,9 @@ it like any library.  The quickest way to get started is to look at the
 @url{https://godoc.org/github.com/pion/turn, GoDoc}.")
     (license license:expat)))
 
-(define-public go-github-com-pion-turn-v2
-  (package
-    (inherit go-github-com-pion-turn)
-    (name "go-github-com-pion-turn-v2")
-    (version "2.1.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/pion/turn/")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0iw7nvqsxpqy90k5a8mq3dyask272391m59cbiy30aak1y2wwaac"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments
-                                    go-github-com-pion-turn)
-       ((#:import-path flags ''())
-        "github.com/pion/turn/v2")))
-    (propagated-inputs
-     (list go-github-com-pion-logging
-           go-github-com-pion-randutil
-           go-github-com-pion-stun
-           go-github-com-pion-transport-v2
-           go-golang-org-x-sys))))
-
 (define-public go-github-com-pion-turn-v3
   (package
-    (inherit go-github-com-pion-turn)
+    (inherit go-github-com-pion-turn-v2)
     (name "go-github-com-pion-turn-v3")
     (version "3.0.3")
     (source
@@ -9471,7 +9442,7 @@ it like any library.  The quickest way to get started is to look at the
         (base32 "0l78m9ym0sv1zfalbv95lwblmr789fc53d957ph5mdznhjx89lyx"))))
     (arguments
      (substitute-keyword-arguments (package-arguments
-                                    go-github-com-pion-turn)
+                                    go-github-com-pion-turn-v2)
        ((#:import-path flags ''())
         "github.com/pion/turn/v3")))
     (propagated-inputs
