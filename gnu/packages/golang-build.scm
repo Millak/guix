@@ -1041,16 +1041,16 @@ low-level interaction with the operating system.")
     (name "go-golang-org-x-telemetry")
     ;; Beware: the updater gets this wrong.  Use the latest commit and its
     ;; matching date.
-    (version "0.0.0-20250529002037-25d2f7894191")
+    (version "0.0.0-20251009181524-91c411e14f39")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://go.googlesource.com/telemetry")
-             (commit (go-version->git-ref version))))
+              (url "https://go.googlesource.com/telemetry")
+              (commit (go-version->git-ref version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ymqig10vyrmzkali1wqhxrrb3fjvl7z9wmzf5g0dydb9a8ng42l"))
+        (base32 "0v5427r8il5bj9h86d7dy1k1g9jag9c7vmbq0kmrzhfn6l0c310c"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -1066,20 +1066,26 @@ low-level interaction with the operating system.")
       #~(list "-skip" (string-join
                        ;; Tests fail with error: failed to download config
                        ;; module.
-                       (list "TestConcurrentStart"
+                       (list "TestConcurrentStart" ;got 0 report dates, want 3
+                             "TestStart"           ;no upload occurred on 2786
                              "TestDownload"
+                             ;; got err clone: checking out
+                             ;; https://go.googlesource.com/tools: fork/exec
+                             ;; /bin/sh: no such file or directory
+                             "TestReadPCLineTable"
+                             "TestUpdateIssues"
+                             ;; querying go info: listing toolchain versions:
+                             ;; listing versions: exit status 1 (stderr: go:
+                             ;; list -m cannot be used with GO111MODULE=off
+                             "TestLoadedChartsAreValid"
                              "TestRun_Basic"
-                             "TestRun_Concurrent"
-                             "TestRun_DebugLog"
+                             "TestRun_Retries"
+                             "TestRun_MultipleUploads"
                              "TestRun_EmptyUpload"
                              "TestRun_MissingDate"
-                             "TestRun_ModeHandling/on"
-                             "TestRun_MultipleUploads"
-                             "TestRun_Retries"
-                             "TestStart" ;no upload occurred on 2786
-                             ;; TestLoadedChartsAreValid fails with "go: list
-                             ;; -cannot be used with GO111MODULE=off"
-                             "TestLoadedChartsAreValid")
+                             "TestRun_ModeHandling"
+                             "TestRun_DebugLog"
+                             "TestRun_Concurrent")
                        "|"))
       #:import-path "golang.org/x/telemetry"))
     (propagated-inputs
