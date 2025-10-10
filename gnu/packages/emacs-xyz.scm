@@ -34957,7 +34957,7 @@ convenient to edit foreign files.")
 (define-public emacs-outline-indent
   (package
     (name "emacs-outline-indent")
-    (version "1.1.1")
+    (version "1.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -34966,7 +34966,7 @@ convenient to edit foreign files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rndanc9gy62g3r0m4n56ad7nlb6smmm9fnfsv6mis69dxxbbk37"))))
+                "0ppwsipg4birwk9m0i4x2d9rq023iws6nqs1i1lf2iialyhnr313"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ; no tests
     (synopsis "Outline and code folding for indentation-based texts in Emacs")
