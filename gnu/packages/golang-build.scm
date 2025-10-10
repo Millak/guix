@@ -798,23 +798,23 @@ compile does not support generics.")
 (define-public go-golang-org-x-image
   (package
     (name "go-golang-org-x-image")
-    (version "0.27.0")
+    (version "0.32.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://go.googlesource.com/image")
-             (commit (string-append "v" version))))
+              (url "https://go.googlesource.com/image")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kc75lbfb0m9xp0idcqlpcis6xahblw2q7cj6vg9lmblxzqy5nvh"))))
+        (base32 "174mwxshc6idwihajb05h68ynf63ppfqw5zi6cm5ja08dsfbk43b"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:skip-build? #t
       #:import-path "golang.org/x/image"
       #:phases
       #~(modify-phases %standard-phases
-          (delete 'build) ; no go files in project's root
           (add-after 'unpack 'remove-examples
             (lambda* (#:key import-path #:allow-other-keys)
               (delete-file-recursively
