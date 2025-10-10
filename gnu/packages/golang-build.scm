@@ -841,20 +841,16 @@ compile does not support generics.")
 (define-public go-golang-org-x-mod
   (package
     (name "go-golang-org-x-mod")
-    ;; XXX: To update to 0.22.0+ go-1.23 is required, wich provides
-    ;; "go/version" module, see
-    ;; <https://cs.opensource.google/go/go/+/refs/tags/
-    ;; go1.23.0:src/go/version/version.go>.
-    (version "0.24.0")
+    (version "0.29.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://go.googlesource.com/mod")
-             (commit (string-append "v" version))))
+              (url "https://go.googlesource.com/mod")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17sjk98d3qwh9s6gqjmfy07z0gyj5hyv5a9kyg4si3yjfzbnwhx7"))))
+        (base32 "1cc79540hc7yjwmqi6574808i3i3p0n8q49fp7vccb86qgms1rcc"))))
     (build-system go-build-system)
     (arguments
      (list
