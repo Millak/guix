@@ -44463,7 +44463,7 @@ Validator service and displays the results in a buffer in Compilation mode.")
 (define-public emacs-volatile-highlights
   (package
     (name "emacs-volatile-highlights")
-    (version "1.16")
+    (version "1.20")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -44472,7 +44472,7 @@ Validator service and displays the results in a buffer in Compilation mode.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rlqwj6whxbvzgkf78d8arjva49aphj4bd2wkpv8djykcmi8nf6m"))))
+                "1cljb6vs0c0gffby41cw85jxdvbqnykdz0b3fr08y9nwbhnsiq6w"))))
     (build-system emacs-build-system)
     (home-page "http://github.com/k-talo/volatile-highlights.el")
     (synopsis "Emacs minor mode for visual feedback on some operations")
