@@ -2049,14 +2049,14 @@ kwebengineviewer.")
 (define-public kmime
   (package
     (name "kmime")
-    (version "25.08.1")
+    (version "25.08.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmime-" version ".tar.xz"))
        (sha256
-        (base32 "0nazwiss4gqbw34j3cjh0bksv3a68ab9j3bk0z9839zbqlf33v9w"))))
+        (base32 "1bqfanm0646jdni3i762b0x5mkbiwagss292i42fj4mandavmlpp"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules qttools tzdata-for-tests))
