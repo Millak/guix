@@ -22,6 +22,7 @@
 ;;; Copyright © 2024 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2025 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Julian Flake <julian@flake.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1857,8 +1858,13 @@ blacklisted.certs.pem"
    openjdk23 "24.0.1"
    "0h6sbzbjyqg85iml41pswdh2z3d7h2hhb0sd5yll37r1mj5lsxmx"))
 
+(define-public openjdk25
+  (make-openjdk
+   openjdk24 "25"
+   "15yzj370qgkh7jfcm2jzr8g7ah9x0p8m85ang7q4y6lnzk23ni76"))
+
 ;;; Convenience alias to point to the latest version of OpenJDK.
-(define-public openjdk openjdk24)
+(define-public openjdk openjdk25)
 
 
 ;; This version of JBR is here in order to be able to build custom
