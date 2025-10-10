@@ -36111,23 +36111,23 @@ given search terms.")
 (define-public emacs-notmuch-maildir
   (package
     (name "emacs-notmuch-maildir")
-    (version "0.2.3")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://git.sr.ht/~tarsius/notmuch-maildir")
+             (url "https://github.com/tarsius/notmuch-maildir")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00b0jzb6k629bwnrci36wmi2s48cddqva3v8b0bwz2ik43ba8d0n"))))
+        (base32 "1b31qqbdnj2zf9bcs1za5am5gs3xpzsxln269kd2c53pzffbnvyg"))))
     (build-system emacs-build-system)
     (arguments
      (list #:test-command
            #~(list "make" "check-declare")))
     (propagated-inputs
      (list emacs-compat emacs-notmuch))
-    (home-page "https://git.sr.ht/~tarsius/notmuch-maildir")
+    (home-page "https://github.com/tarsius/notmuch-maildir")
     (synopsis "Visualize maildirs as a tree")
     (description
      "This package can visualize maildirs hierarchically in Notmuch's ``hello
