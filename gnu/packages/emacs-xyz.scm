@@ -2197,7 +2197,7 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
 (define-public emacs-llama
   (package
     (name "emacs-llama")
-    (version "1.0.0")
+    (version "1.0.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2206,11 +2206,11 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yp1k70pgi45k8gb7xn229g1dzmwnijabvzxgrwacp02n7v1piyh"))))
+                "13f5crs3sc0k5v64mhbg1415q9hm92f43ba53avacxjjzk7gzad4"))))
     (build-system emacs-build-system)
     (arguments
      (list #:test-command #~(list "emacs" "-Q" "--batch"
-                                  "-l" "llama-test.el"
+                                  "-l" "llama-tests.el"
                                   "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/tarsius/llama")
