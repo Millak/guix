@@ -22272,6 +22272,35 @@ source file, @file{jl-encrypt.el}.")
 (define-public emacs-default-encrypt
   (deprecated-package "emacs-default-encrypt" emacs-defaultencrypt))
 
+(define-public emacs-deflate
+  (package
+    (name "emacs-deflate")
+    (version "0.0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/skuro/deflate")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "15zrjv3wqnqzscjy7vny6j13dy12vzri1i9zzmj2jii3x7wdkv4b"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:test-command #~(list "ert-runner" "test/")))
+    (native-inputs (list emacs-ert-runner))
+    (propagated-inputs (list emacs-dash))
+    (home-page "https://github.com/skuro/deflate")
+    (synopsis "Elisp implementation of the DEFLATE algorithm")
+    (description
+     "This Emacs library implements the DEFLATE algorithm specified in RFC 1951.
+
+While the scope of this project is to write a full implementation of the
+algorithm, there is currently no interest of developing the best compression
+ratios on the planet, but rather being able to support DEFLATE (and a little
+bit of zlib) in Emacs in a portable fashion.")
+    (license license:gpl3+)))
+
 ;; Package has no release.  Version is extracted from "Version:" keyword in
 ;; main file.
 (define-public emacs-exotica-theme
