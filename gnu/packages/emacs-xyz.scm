@@ -41552,7 +41552,7 @@ files and subdirectories when appropriate.")
 (define-public emacs-meson-mode
   (package
     (name "emacs-meson-mode")
-    (version "0.3")
+    (version "0.4")
     (source
      (origin
        (method git-fetch)
@@ -41561,7 +41561,7 @@ files and subdirectories when appropriate.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hlqvq3j4f6g16nj3bm2wbkncn8hv8c8iqd0sch3w80wwqnr622y"))))
+        (base32 "135glcrnbr7wmrygrngsxpma8bxajpxlanbkvk08v92p7ar6a21j"))))
     (build-system emacs-build-system)
     (arguments (list #:test-command #~(list "ert-runner" "test")))
     (native-inputs (list emacs-ert-runner))
