@@ -13883,7 +13883,6 @@ protocol.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:build-flags #~(list (string-append "-ldflags="
                                            "-X main.lyrebirdVersion="
                                            #$version " -s -w"))
