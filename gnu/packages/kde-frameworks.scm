@@ -2204,41 +2204,6 @@ uses a job-based interface to queue tasks and execute them in an efficient way."
     (inputs
      (list qtbase-5))))
 
-(define-public libkdcraw
-  (package
-    (name "libkdcraw")
-    (version "24.12.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
-                           "/src/" name "-" version ".tar.xz"))
-       (sha256
-        (base32 "0m2wi3bhfd5yn57dpix9mbsrzkxm7p1s42zs1x899wmznk8blnib"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list pkg-config extra-cmake-modules))
-    (inputs
-     (list libraw qtbase))
-    (arguments (list #:tests? #f
-                     #:configure-flags
-                     #~(list #$(string-append
-                                "-DQT_MAJOR_VERSION="
-                                (version-major
-                                 (package-version
-                                  (this-package-input "qtbase")))))))
-    (home-page "https://invent.kde.org/graphics/libkdcraw")
-    (synopsis "C++ interface used to decode RAW picture files")
-    (description "Libkdcraw is a C++ interface around LibRaw library used to
-decode RAW picture files.")
-    (license (list license:gpl2+ license:bsd-3))))
-
-(define-public libkdcraw-qt5
-  (package
-    (inherit libkdcraw)
-    (name "libkdcraw-qt5")
-    (inputs (modify-inputs (package-inputs libkdcraw)
-              (replace "qtbase" qtbase-5)))))
 
 ;; Tier 2
 ;;

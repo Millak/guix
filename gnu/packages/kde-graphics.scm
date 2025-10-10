@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Mehmet Tekman <mtekman89@gmail.com>
 ;;; Copyright © 2023, 2025 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2024 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
 ;;; Copyright © 2025 pinoaffe <pinoaffe@gmail.com>
@@ -41,6 +42,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
@@ -660,6 +662,42 @@ features include brush stabilizers, brush engines and wrap-around mode.")
     (description "This package contains the fork of Disney Animation's SeExpr
 expression library, that is used in Krita.")
     (license license:gpl3+)))
+
+(define-public libkdcraw
+  (package
+    (name "libkdcraw")
+    (version "24.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/" name "-" version ".tar.xz"))
+       (sha256
+        (base32 "0m2wi3bhfd5yn57dpix9mbsrzkxm7p1s42zs1x899wmznk8blnib"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     (list pkg-config extra-cmake-modules))
+    (inputs
+     (list libraw qtbase))
+    (arguments (list #:tests? #f
+                     #:configure-flags
+                     #~(list #$(string-append
+                                "-DQT_MAJOR_VERSION="
+                                (version-major
+                                 (package-version
+                                  (this-package-input "qtbase")))))))
+    (home-page "https://invent.kde.org/graphics/libkdcraw")
+    (synopsis "C++ interface used to decode RAW picture files")
+    (description "Libkdcraw is a C++ interface around LibRaw library used to
+decode RAW picture files.")
+    (license (list license:gpl2+ license:bsd-3))))
+
+(define-public libkdcraw-qt5
+  (package
+    (inherit libkdcraw)
+    (name "libkdcraw-qt5")
+    (inputs (modify-inputs (package-inputs libkdcraw)
+              (replace "qtbase" qtbase-5)))))
 
 (define-public libksane
   (package
