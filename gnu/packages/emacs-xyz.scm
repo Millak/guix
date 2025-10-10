@@ -2070,7 +2070,7 @@ configuration files, such as @file{.gitattributes}, @file{.gitignore}, and
 (define-public emacs-with-editor
   (package
     (name "emacs-with-editor")
-    (version "3.4.3")
+    (version "3.4.6")
     (source
      (origin
        (method git-fetch)
@@ -2079,7 +2079,7 @@ configuration files, such as @file{.gitattributes}, @file{.gitignore}, and
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h21qs60qihv4p72x5wbmc0xly4g74wc25qj8m9slfbc4am9mwys"))))
+        (base32 "1d0y32y934ld60vdyx9hwbvpifmhdmm08066x0ivxqcyw0qyggxg"))))
     (build-system emacs-build-system)
     (arguments
      (list
