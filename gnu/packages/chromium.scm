@@ -411,33 +411,33 @@
 (define %debian-patches
   (map debian-patch
        '("bookworm/clang19.patch"
-	 "bookworm/foreach.patch"
-	 "disable/node-version-ck.patch"
+         "bookworm/foreach.patch"
+         "disable/node-version-ck.patch"
          "fixes/gentoo-stylesheet.patch"
          "fixes/libcpp-headers.patch"
-	 "fixes/rust-clanglib.patch"
-	 "system/openjpeg.patch"
-	 ;; adler2 is not part of our rust toolchain, check on next version.
-	 "trixie/adler1.patch"
+         "fixes/rust-clanglib.patch"
+         "system/openjpeg.patch"
+         ;; adler2 is not part of our rust toolchain, check on next version.
+         "trixie/adler1.patch"
          ;; Remove after rust is past
          ;; <https://github.com/rust-lang/rust/pull/141061>.
          "trixie/rust-no-alloc-shim.patch")))
 
 (define %guix-patches
   (list (local-file
-	 (assume-valid-file-name
+         (assume-valid-file-name
           (search-patch
            "ungoogled-chromium-extension-search-path.patch")))
-	(local-file
-	 (assume-valid-file-name
-          (search-patch
-	   "ungoogled-chromium-unbundle-icu-target.patch")))
         (local-file
-	 (assume-valid-file-name
+         (assume-valid-file-name
+          (search-patch
+           "ungoogled-chromium-unbundle-icu-target.patch")))
+        (local-file
+         (assume-valid-file-name
           (search-patch
            "ungoogled-chromium-RUNPATH.patch")))
         (local-file
-	 (assume-valid-file-name
+         (assume-valid-file-name
           (search-patch
            "ungoogled-chromium-system-nspr.patch")))))
 
@@ -612,7 +612,7 @@
                              "\"")
 
               (string-append "clang_version="
-			     #$(version-major (package-version clang-19)))
+                             #$(version-major (package-version clang-19)))
 
               (string-append "rust_sysroot_absolute=\""
                              (dirname (dirname (search-input-file %build-inputs
@@ -624,11 +624,11 @@
                              "\"")
 
               (string-append "rustc_version=\"rustc "
-			     #$(package-version rust)
-			     ;; These are 'don't care', but chromium's build parses
-			     ;; the whole string as if returned from 'rustc --version'
-			     ;; invokation and fails if it's just the version number.
-			     " (f6e511eec 2024-10-15) (built from a source tarball)\"")
+                             #$(package-version rust)
+                             ;; These are 'don't care', but chromium's build parses
+                             ;; the whole string as if returned from 'rustc --version'
+                             ;; invokation and fails if it's just the version number.
+                             " (f6e511eec 2024-10-15) (built from a source tarball)\"")
 
               ;; Prefer system libraries.
               "use_system_freetype=true"
@@ -664,13 +664,13 @@
               (let* ((libopenjp2 (search-input-file inputs "lib/libopenjp2.so"))
                      (openjpeg (dirname (dirname libopenjp2)))
                      (compiler-rt-path (dirname
-					(dirname
-					 (search-input-file (or native-inputs inputs)
-							    "/bin/hwasan_symbolize")))))
-		;; This works on top of debian's 'rust-clanglib.patch'.
-		(substitute* "build/config/clang/BUILD.gn"
-		  (("\\$clang_base_path/lib/clang/\\$clang_version")
-		   compiler-rt-path))
+                                        (dirname
+                                         (search-input-file (or native-inputs inputs)
+                                                            "/bin/hwasan_symbolize")))))
+                ;; This works on top of debian's 'rust-clanglib.patch'.
+                (substitute* "build/config/clang/BUILD.gn"
+                  (("\\$clang_base_path/lib/clang/\\$clang_version")
+                   compiler-rt-path))
 
                 (substitute* "third_party/pdfium/BUILD.gn"
                   ;; This include path is added by Debians openjpeg patch.
@@ -719,7 +719,7 @@
                    "include \"curl"))
 
                 ;; Unknown flags as of clang-19, can be removed when building with
-		;; newer clang.
+                ;; newer clang.
                 (substitute* "build/config/compiler/BUILD.gn"
                   (("-gsimple-template-names") ""))
 
@@ -777,7 +777,7 @@
                         (string-append " -stdlib=libc++"
                                        " -Wl,--stats"))
                 (setenv "CLANG_MVERS" #$(version-major
-					 (package-version clang-19)))
+                                         (package-version clang-19)))
                 (setenv "RUSTC_BOOTSTRAP" "1")
 
                 ;; TODO: pre-compile instead. Avoids a race condition.
