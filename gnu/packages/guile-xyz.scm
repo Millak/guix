@@ -2361,13 +2361,12 @@ format.")
     (native-inputs (list guile-3.0))
     (propagated-inputs (list guile-srfi-133))
     (home-page "https://codeberg.org/dpk/extensible-match")
-    (synopsis
-     "Extensible patter-matching library")
+    (synopsis "Extensible pattern-matching library")
     (description
      "Guile-extensible-match is an implementation of SRFI-262.  It provides
 user extensible pattern matching syntax. This implementation use a range
 of optimizations to generate efficient matching code.")
-    (license license:expat)))
+    (license license:cc0)))
 
 (define-public guile-newra
   ;; There has been no release let.
