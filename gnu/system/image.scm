@@ -81,6 +81,7 @@
             mbr-disk-image
             mbr-hybrid-disk-image
             efi-disk-image
+            efi32-disk-image
             iso9660-image
             docker-image
             tarball-image
