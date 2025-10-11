@@ -161,14 +161,28 @@ from a single ECU up to whole cars.")
 (define-public ropgadget
   (package
     (name "ropgadget")
-    (version "6.6")
+    (version "7.6")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "ROPGadget" version))
+       (uri (pypi-uri "ropgadget" version))
        (sha256
-        (base32 "08ms7x4af07970ij9899l75sghnxsa7xyx73gkn6gv0l05p1hqfw"))))
-    (build-system python-build-system)
+        (base32 "1hvl25j3fbiwihqa2p8a5i27h97pgspxp2ndwwn3l1r78r7cb0w8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; TODO PyPI lack test data, Git provides a collection of binaries for
+      ;; the tests.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "test-suite-binaries"
+                  (invoke  "./test.sh"))))))))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-capstone))
     (home-page "https://shell-storm.org/project/ROPgadget/")
