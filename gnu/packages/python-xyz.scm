@@ -34708,18 +34708,39 @@ were local.")
 (define-public python-nampa
   (package
     (name "python-nampa")
-    (version "0.1.1")
+    ;; PyPI version is 0.1.1 from 2017.  Tag 1.0 on git is from 2020 and still
+    ;; has 0.1.1 as version.  Latest commit is from 2024.
+    (properties '((commit . "cb6a63aae64324f57bdc296064bc6aa2b99ff99a")
+                  (revision . "0")))
+    (version (git-version "1.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "nampa" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/thebabush/nampa")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0k6cq2gflpkm40qhgqbbcjmq5lq589c15bmk567qyh3d08062hvd"))))
+        (base32 "0a3fx0wpch4il1fwv1nan6nsd7bv84b0bs2xxxjacisw3spizlg0"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f)) ;no tests in PyPI archvie, no 0.1.1 tag in Git
+     (list
+      #:test-flags
+      #~(list "-k test_random_values")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              ;; Unclear why this top-level __init__.py is here. It seems to
+              ;; setup a plugin for binaryninja, which Guix does not package.
+              (delete-file "__init__.py")
+              ;; Yields tests, which is not allowed anymore.
+              (substitute* "tests/test_crc.py"
+                (("yield") "#yield")))))))
     (propagated-inputs (list python-future))
-    (native-inputs (list python-setuptools))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/thebabush/nampa")
     (synopsis "Python implementation of IDA Pro's FLIRT technology")
     (description
