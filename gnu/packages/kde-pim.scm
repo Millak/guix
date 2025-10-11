@@ -1978,41 +1978,6 @@ and exchanging calendar data, vCalendar and iCalendar.")
     (license ;; GPL for programs, LGPL for libraries, FDL for documentation
      (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+))))
 
-(define-public kpeoplevcard
-  (let ((commit "d4acaa3038f6b030d0d6390e628c39e9f8d87903")
-        (revision "0"))
-    ;; use unreleased commit for KF6 supports.
-    (package
-      (name "kpeoplevcard")
-      (version (git-version "0.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://invent.kde.org/pim/kpeoplevcard")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1wgpwxjb5zvhgzyq9zd8mp6r5cawjzlhk980drl05nr27a0q32vz"))))
-      (build-system qt-build-system)
-      (arguments
-       (list #:qtbase qtbase
-             #:configure-flags #~(list "-DQT_MAJOR_VERSION=6")
-             #:phases #~(modify-phases %standard-phases
-                          (replace 'check-setup
-                            (lambda _
-                              (setenv "HOME" "/tmp"))))))
-      (native-inputs
-       (list extra-cmake-modules))
-      (inputs
-       (list kcontacts kpeople))
-      (home-page "https://invent.kde.org/pim/kpeoplevcard")
-      (synopsis "Expose vCard contacts to KPeople")
-      (description
-       "This plugins adds support for vCard (also known as @acronym{VCF,
-Virtual Contact File}) files to the KPeople contact management library.")
-      (license license:lgpl2.1+))))
-
 (define-public kpkpass
   (package
     (name "kpkpass")
