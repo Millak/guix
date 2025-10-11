@@ -30,6 +30,7 @@
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2025 Liam Hupfer <liam@hpfr.net>
+;;; Copyright © 2025 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -266,7 +267,14 @@ until LLVM/Clang 14."
                           version))
            (sha256 (base32 hash))
            (patches (map search-patch patches)))
-         (llvm-monorepo (package-version llvm))))
+         (if patches
+             (let ((llvm-source (llvm-monorepo (package-version llvm))))
+               (origin
+                 (inherit llvm-source)
+                 (patches
+                  (append (origin-patches llvm-source)
+                          (map search-patch patches)))))
+             (llvm-monorepo (package-version llvm)))))
     ;; Using cmake allows us to treat llvm as an external library.  There
     ;; doesn't seem to be any way to do this with clang's autotools-based
     ;; build system.
@@ -1080,6 +1088,7 @@ Library.")
 (define-public clang-17
   (clang-from-llvm
    llvm-17 clang-runtime-17
+   #:patches '("clang-17.0-fix-build-with-gcc-14-on-arm.patch")
    #:tools-extra
    (origin
      (method url-fetch)
