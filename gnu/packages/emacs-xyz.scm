@@ -2031,6 +2031,14 @@ posts, and participate in discussions on Discourse, directly from Emacs.")
        (sha256
         (base32 "17ffcfm4qxjvnmy95yczk18mngiy13pbq7avzrhrh44p3d53b5ss"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'install 'build-info-manual
+                     (lambda _
+                       (invoke "make" "info"))))))
+    (native-inputs (list texinfo))
     (propagated-inputs (list emacs-transient))
     (home-page "https://github.com/aurtzy/disproject")
     (synopsis "Transient interface for managing and interacting with projects")
