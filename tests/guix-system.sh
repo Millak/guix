@@ -374,6 +374,7 @@ do
 done
 
 # Verify that the images can be built.
+guix system -n container gnu/system/examples/bare-bones.tmpl
 guix system -n vm gnu/system/examples/bare-bones.tmpl
 guix system -n image gnu/system/images/pinebook-pro.scm
 guix system -n image -t qcow2 gnu/system/examples/bare-bones.tmpl
