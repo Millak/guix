@@ -9862,10 +9862,10 @@ Built on top of @code{asyncio}, Python's standard asynchronous I/O framework,
 it provides an elegant coroutine-based API.")
     (license license:bsd-3)))
 
-(define-public python-selenium
+(define-public selenium-manager
   (package
-    (name "python-selenium")
-    (version "4.28.1")
+    (name "selenium-manager")
+    (version "4.34.2")
     (source
      (origin
        (method git-fetch)
@@ -9874,7 +9874,36 @@ it provides an elegant coroutine-based API.")
               (commit (string-append "selenium-" version "-python"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q52qdd33wadxa8ir34kl5nxlrgjbqqk2yx2m1v5xxjf0agazjfl"))))
+        (base32 "14fg8r4rm9d7169rlm29l5yn08wgllmqk1zc6six3dlrzzf5mxil"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      ;; XXX: Almost all tests require either browsers or network access.
+      #:tests? #f
+      #:install-source? #f              ; Most likely intended as a leaf.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "rust"))))))
+    (native-inputs (list pkg-config))
+    (inputs (cons* (list zstd "lib") xz
+                   (cargo-inputs 'selenium-manager)))
+    (home-page "https://www.selenium.dev")
+    (synopsis "CLI tool to manager the browser test infrastructure")
+    (description
+     "Selenium simplifies web browser automation.  It specifically provides
+infrastructure for the W3C WebDriver specification — a platform and
+language-neutral coding interface compatible with all major web browsers.
+
+Selenium Manager is a CLI tool that automatically manages the browser/driver
+infrastructure required by Selenium.")
+    (license license:asl2.0)))
+
+(define-public python-selenium
+  (package/inherit selenium-manager
+    (name "python-selenium")
+    (build-system pyproject-build-system)
     (arguments
      (list
       ;; XXX: Disable failing tests.
@@ -9890,28 +9919,41 @@ it provides an elegant coroutine-based API.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir
             (lambda _
-              (chdir "py"))))))
-    (build-system pyproject-build-system)
+              (chdir "py")))
+          (add-after 'chdir 'inject-selenium-manager-binary
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "selenium/webdriver/common/selenium_manager.py"
+                (("compiled_path = Path.*")
+                 (format #f "return Path(~s)~%"
+                         (search-input-file inputs "bin/selenium-manager"))))
+              (substitute* "pyproject.toml"
+                (("\\[\\[tool\\.setuptools-rust\\.bins\\]\\]")
+                 "")
+                (("target = \"selenium\\.webdriver\\.common.*\"")
+                 ""))))
+          (add-after 'chdir 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"(typing_extensions|trio)~=.*\"," _ target)
+                 (format #f "~s," target))))))))
     (propagated-inputs (list python-certifi
                              python-trio
                              python-trio-websocket
                              python-typing-extensions
                              python-urllib3
                              python-websocket-client))
+    (inputs (list selenium-manager))
     (native-inputs (list python-filetype
                          python-pytest
                          python-pytest-mock
                          python-pytest-trio
                          python-setuptools
-                         python-setuptools-rust
-                         python-wheel))
-    (home-page "https://www.selenium.dev")
+                         python-setuptools-rust))
     (synopsis "Python bindings for Selenium")
-    (description "Selenium enables web browser automation.
-Selenium specifically provides infrastructure for the W3C WebDriver specification
-— a platform and language-neutral coding interface compatible with all
-major web browsers.")
-    (license license:asl2.0)))
+    (description
+     "Selenium enables web browser automation.  It specifically provides
+infrastructure for the W3C WebDriver specification — a platform and
+language-neutral coding interface compatible with all major web browsers.")))
 
 (define-public python-rapidjson
   (package
