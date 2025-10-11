@@ -927,12 +927,16 @@ Info manual.")))
     (inherit u-boot)
     (name "u-boot-tools")
     (native-inputs
-     (modify-inputs (package-native-inputs u-boot)
-       (prepend python-coverage
-                python-filelock
-                python-pycryptodomex
-                python-pytest
-                python-pytest-xdist)))
+     (if (string-match "^x86_64-linux" (%current-system))
+         (modify-inputs (package-native-inputs u-boot)
+                          (prepend python-filelock
+                                   python-pycryptodomex
+                                   python-coverage
+                                   python-pytest
+                                   python-pytest-xdist))
+           (modify-inputs (package-native-inputs u-boot)
+                          (prepend python-filelock
+                                   python-pycryptodomex))))
     (arguments
      `(#:make-flags '("HOSTCC=gcc")
        #:test-target "tcheck"
@@ -1033,9 +1037,7 @@ CONFIG_TOOLS_KWBIMAGE=n")
                (invoke "test/image/test-imagetools.sh"))))
          ;; Only run full test suite on x86_64 systems, as many tests
          ;; assume x86_64.
-         ,@(if (string-match "^x86_64-linux"
-                             (or (%current-target-system)
-                                 (%current-system)))
+         ,@(if (string-match "^x86_64-linux" (%current-system))
                '((add-after 'check 'check-x86
                    (lambda* (#:key make-flags test-target tests? #:allow-other-keys)
                      (when tests?
