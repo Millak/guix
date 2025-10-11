@@ -9576,7 +9576,7 @@ SFTP.  It has the following main usages:
 (define-public python-robotframework-pythonlibcore
   (package
     (name "python-robotframework-pythonlibcore")
-    (version "3.0.0")
+    (version "4.4.1")
     (source
      (origin
        (method git-fetch)               ;no tests in pypi archive
@@ -9585,15 +9585,19 @@ SFTP.  It has the following main usages:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v89v8va65l6inh0fb34qgxawx6p29pnrmw4n5941yzdi3804rc4"))))
+        (base32 "0hjayjq5wrgajs56nf85y5wqh76jbjfbsz40bam315l3kzmj45g5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-backend #~'custom
       #:test-flags #~(list "utest/run.py")))
     (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-mockito
-           python-robotframework python-setuptools))
+     (list python-approvaltests
+           python-pytest
+           python-pytest-cov
+           python-pytest-mockito
+           python-robotframework
+           python-setuptools))
     (home-page "https://github.com/robotframework/PythonLibCore")
     (synopsis "Robot Framework Python library tools")
     (description
