@@ -12119,7 +12119,16 @@ return paginated responses to your clients.")
     (arguments
      (list
       #:test-flags
-      '(list "--unit-tests" "--ignore=tests/ext")
+      #~(list "--asyncio-mode=auto"
+              "--unit-tests"
+              "--ignore=tests/ext"
+              ;; Netwok access is required.
+              "-k" (string-join
+                    (list "not test_optional_params[postgres-default]"
+                          "test_optional_params[postgres-limit-offset]"
+                          "test_optional_params[sqlite-default]"
+                          "test_optional_params[sqlite-limit-offset]")
+                    " and not "))
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'patch-tests
