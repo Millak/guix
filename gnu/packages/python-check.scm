@@ -819,6 +819,31 @@ various well-defined points in the program.  Contracts can be specified on
 functions and on classes.")
     (license license:lgpl3+)))
 
+(define-public python-empty-files
+  (package
+    (name "python-empty-files")
+    (version "0.0.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/approvals/EmptyFiles.Python")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w3pkhymkh9wl4g8x5pssbsxr78bzb6qix95mxqqfwbx0g42iz1z"))))
+    (build-system pyproject-build-system)
+    ;; XXX: Circular dependency on python-approvaltests for tests.
+    (arguments (list #:tests? #f))
+    (propagated-inputs (list python-requests))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/approvals/EmptyFiles.Python")
+    (synopsis "Serve empty files of many types")
+    (description "This project will create an empty file of a type
+requested.  If possible, that file will be the smallest valid file for that
+type.  For example, an empty jpg will be a 1x1 pixel jpg.")
+    (license license:asl2.0)))
+
 (define-public python-eradicate
   (package
     (name "python-eradicate")
