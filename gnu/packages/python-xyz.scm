@@ -9613,18 +9613,35 @@ library APIs.")
 (define-public python-robotframework-seleniumlibrary
   (package
     (name "python-robotframework-seleniumlibrary")
-    (version "5.1.3")
+    (version "6.8.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "robotframework-seleniumlibrary" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/robotframework/SeleniumLibrary")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1dihrbcid9i7daw2qy6h3xsvwaxzmyip820jw5z11n60qrl006pm"))))
-    (build-system python-build-system)
-    ;; XXX: Tests require ungoogled-chromium, but the chromium module would
-    ;; introduce a cycle if imported here.
+        (base32 "093kcmwvh72n22sj1psx4dyjj87xrzz2622ygpkavrhmd9r2a9jg"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=utest/test/keywords/test_firefox_profile_parsing.py"
+              "-k" (string-join
+                    (list "not test_create_firefox_with_options"
+                          "test_create_headless_firefox_with_options"
+                          "test_create_driver_firefox")
+                    " and not "))))
+    (native-inputs
+     (list python-approvaltests
+           python-pytest
+           python-pytest-mockito
+           python-setuptools))
     (propagated-inputs
-     (list python-robotframework python-robotframework-pythonlibcore
+     (list python-click
+           python-robotframework
+           python-robotframework-pythonlibcore
            python-selenium))
     (home-page "https://github.com/robotframework/SeleniumLibrary")
     (synopsis "Web testing library for Robot Framework")
