@@ -82,7 +82,7 @@
         (list gnuplot
               libxls
               libxlsxwriter
-              libxml2
+              libxml2-2.11
               libzip
               ncurses))
       (native-inputs
