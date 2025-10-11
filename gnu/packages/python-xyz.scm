@@ -1138,6 +1138,44 @@ identities.")
 activity monitor) library for Python.")
     (license license:gpl2)))
 
+(define-public python-intervaltree
+  (package
+    (name "python-intervaltree")
+    (version "3.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "intervaltree" version))
+       (sha256
+        (base32
+         "0bcm6c6r4ck9nfj9xwz4rm2swc5lrjvmw3lyl6rgj639jf41nawh"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         ;; pytest seems to have a check to make sure the user is testing
+         ;; their checked-out code and not an installed, potentially
+         ;; out-of-date copy. This is harmless here, since we just installed
+         ;; the package, so we disable the check to avoid skipping tests
+         ;; entirely.
+         (add-before 'check 'import-mismatch-error-workaround
+           (lambda _
+             (setenv "PY_IGNORE_IMPORTMISMATCH" "1")
+             #t)))))
+    (propagated-inputs
+     (list python-sortedcontainers))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/chaimleib/intervaltree")
+    (synopsis "Editable interval tree data structure")
+    (description
+     "This package provides a mutable, self-balancing interval tree
+implementation for Python.  Queries may be by point, by range overlap, or by
+range envelopment.  This library was designed to allow tagging text and time
+intervals, where the intervals include the lower bound but not the upper
+bound.")
+    (license license:asl2.0)))
+
 (define-public python-jsonpath-ng
   (package
     (name "python-jsonpath-ng")
