@@ -4653,14 +4653,14 @@ device contains a @code{exec} port to interface with the host system.")
        (sha256
         (base32 "1xahdr6bh3dw5swrc2r8kqa8ljhqlb7k2kxv5mrw5rhcmcnzcyig"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f)) ;no tests in PyPI archive
+    ;; Tests either require kstool, or Python 2, or are 10 years old and fail.
+    (arguments (list #:tests? #f))          ; no tests
     (native-inputs
      (list cmake-minimal
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://www.keystone-engine.org")
-    (synopsis "Lightweight multi-platform, multi-architecture assembler framework")
+    (synopsis
+     "Lightweight multi-platform, multi-architecture assembler framework")
     (description
      "Keystone is a lightweight multi-platform, multi-architecture
 assembler framework.  It supports a wide-range of different architectures
