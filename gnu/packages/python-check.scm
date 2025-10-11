@@ -80,6 +80,7 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system pyproject)
@@ -189,6 +190,50 @@ most situations.")
     (description
      "This package provides utilities for production code that work well with
 @code{python-approvaltests}.")
+    (license license:asl2.0)))
+
+(define-public python-approvaltests
+  (package/inherit python-approval-utilities
+    (name "python-approvaltests")
+    (version (package-version python-approval-utilities))
+    (arguments
+     (list
+      #:tests? #f  ; Tests are run in the python-approvaltests package.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (substitute* "setup/setup_utils.py"
+                (("version=get_version\\(\\),")
+                 (format #f "version=~s," #$version))
+                (("\\(get_parent_directory\\(\\)\\.parent / ")
+                 "Path("))
+              (rename-file "setup/setup.py"
+                           "setup.py")
+              ;; Assume the chdir.
+              (substitute* "setup.py"
+                (("\\.\\.")
+                 "."))
+              (rename-file "setup/setup_utils.py"
+                           "setup_utils.py"))))))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs
+     (list python-allpairspy
+           python-approval-utilities
+           python-beautifulsoup4
+           python-empty-files
+           python-mock
+           python-pyperclip
+           python-pytest
+           python-testfixtures
+           python-typing-extensions))
+    (home-page "https://github.com/approvals/ApprovalTests.Python")
+    (synopsis "Assertion/verification library to aid testing")
+    (description
+     "This package provides tools verify objects that require more than a
+simple assert including long strings, large arrays, and complex hash
+structures and objects, i.e. when you need a more granular look at the test
+failure.")
     (license license:asl2.0)))
 
 (define-public python-assay
