@@ -9655,23 +9655,31 @@ that utilizes the Selenium tool internally.")
     (version "0.9.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "robotframework-seleniumscreenshots" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url
+              "https://github.com/MarketSquare/robotframework-seleniumscreenshots")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "05qv323hvjmy62h33ryrjaa9k1hyvp8hq5qnj8j1x3ap2ci3q3s0"))))
-    (build-system python-build-system)
+        (base32 "1gal4ifibk2bj1qgppcs6vmjgjvz47nq4d4gqvyd70vpyf9iw342"))))
+    (build-system pyproject-build-system)
     (arguments
-    ;; XXX: The tests require a relatively complicated setup configured in
-    ;; their CI with Nix (!).
+     ;; XXX: The tests require a relatively complicated setup configured in
+     ;; their CI with Nix (!).
      `(#:tests? #f))
+    (native-inputs (list python-setuptools))
     (propagated-inputs
      (list python-robotframework python-robotframework-seleniumlibrary))
-    (home-page "https://github.com/MarketSquare/robotframework-seleniumscreenshots")
-    (synopsis "Robot Framework library for annotating and cropping screenshots")
-    (description "The SeleniumScreenshots library for Robot Framework provides
-keywords for annotating and cropping screenshots taken with SeleniumLibrary.
-It is useful for scripting automatically updated screenshots for documentation
-or for visual regression testing purposes.")
+    (home-page
+     "https://github.com/MarketSquare/robotframework-seleniumscreenshots")
+    (synopsis
+     "Robot Framework library for annotating and cropping screenshots")
+    (description
+     "The SeleniumScreenshots library for Robot Framework provides keywords
+for annotating and cropping screenshots taken with SeleniumLibrary.  It is
+useful for scripting automatically updated screenshots for documentation or
+for visual regression testing purposes.")
     (license license:bsd-3)))
 
 (define-public python-rstr
