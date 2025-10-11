@@ -32299,8 +32299,7 @@ accept and reject GitHub pull requests.")
                 "0ryf2jk54iqg7q494qdghg2pkhw8ky3s53dpj55871x6p2m1387r"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-cond-let
-           emacs-ghub
+     (list emacs-ghub
            emacs-magit
            emacs-markdown-mode))
     (synopsis "Review GitHub Pull Requests")
@@ -33101,7 +33100,6 @@ buffers – other modes on the TODO list).
      (list #:tests? #f)) ; No tests in source.
     (propagated-inputs
      (list emacs-async
-           emacs-cond-let
            emacs-dash
            emacs-f
            emacs-hl-todo
@@ -33225,7 +33223,7 @@ and comments")
                 ("tokei-program"
                  (search-input-file inputs "/bin/tokei"))))))))
     (inputs (list tokei))
-    (propagated-inputs (list emacs-cond-let emacs-magit))
+    (propagated-inputs (list emacs-magit))
     (home-page "https://github.com/nagy/tokei.el")
     (synopsis "Display codebase statistics in Emacs")
     (description
@@ -35190,7 +35188,7 @@ recursively.  The results are cached for speed.")
     (arguments
      (list #:tests? #f)) ; A makefile but no tests.
     (propagated-inputs
-     (list emacs-cond-let emacs-dash emacs-magit))
+     (list emacs-dash emacs-magit))
     (synopsis "Support for Org links to Magit buffers")
     (description "This package defines several Org link types, which can be
 used to link to certain Magit buffers.  Use the command
@@ -35846,7 +35844,6 @@ utilities.")
     (propagated-inputs
      (modify-inputs (package-propagated-inputs emacs-treemacs)
        (append emacs-all-the-icons
-               emacs-cond-let
                emacs-evil
                emacs-magit
                emacs-projectile
@@ -36275,7 +36272,6 @@ commands (a prefix and a suffix) we prefer to call it just a \"transient\".")
     (propagated-inputs
      (list emacs-closql
            emacs-compat
-           emacs-cond-let
            emacs-emacsql
            emacs-ghub
            emacs-llama
@@ -42360,8 +42356,7 @@ go directly to where they belong.")
     (native-inputs
      (list emacs-ert-runner texinfo))
     (propagated-inputs
-     (list emacs-cond-let
-           emacs-dash
+     (list emacs-dash
            emacs-emacsql
            emacs-magit))
     (home-page "https://github.com/org-roam/org-roam/")
@@ -42480,8 +42475,7 @@ structure of all your Org files – headings, links and so on..")
                (("^cd.*\"")
                 "")))))))
     (propagated-inputs
-     (list emacs-cond-let
-           emacs-llama
+     (list emacs-llama
            emacs-magit
            emacs-org-mem))
     ;; tests
