@@ -43,7 +43,6 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages time)
-  #:use-module (gnu packages bioinformatics)      ;python-intervaltree
   #:use-module (gnu packages emulators))
 
 (define-public blacksmith
