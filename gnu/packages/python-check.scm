@@ -155,6 +155,42 @@ reducing a number of combinations of variables into a lesser set that covers
 most situations.")
     (license license:expat)))
 
+(define-public python-approval-utilities
+  (package
+    (name "python-approval-utilities")
+    (version "15.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/approvals/ApprovalTests.Python")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mkvrx252xc140n4rrvgbqc1hrlw1gq7nx5hr1z4rxkaxvr8prkh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f  ; Tests are run in the python-approvaltests package.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'setup
+            (lambda _
+              (rename-file "setup/setup.approval_utilities.py"
+                           "setup.py")
+              (substitute* "setup.py"
+                (("from setup_utils import get_version")
+                 "")
+                (("version=get_version\\(\\),")
+                 (format #f "version=~s," #$version))))))))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/approvals/ApprovalTests.Python")
+    (synopsis "Utilities for @code{python-approvaltests}")
+    (description
+     "This package provides utilities for production code that work well with
+@code{python-approvaltests}.")
+    (license license:asl2.0)))
+
 (define-public python-assay
   ;; No release yet.
   (let ((commit "74617d70e77afa09f58b3169cf496679ac5d5621")
