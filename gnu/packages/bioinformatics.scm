@@ -25302,7 +25302,7 @@ module capable of computing base-level alignments for very large sequences.")
 (define-public gdcm
   (package
     (name "gdcm")
-    (version "3.0.20")
+    (version "3.2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -25312,14 +25312,12 @@ module capable of computing base-level alignments for very large sequences.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rf0p7dnakjry0fa6ax1h762bn0l5n6ibfdxn077mjvwgpqan51l"))))
+                "1d9dm1wawgjy6vgw3shqchqpjcic6hprwhn0v7dw1qkgn3y8508w"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (arguments
      (list
-      #:test-exclude (string-join (list "TestFileMetaInformation"
-                                        "TestElement2"
-                                        "TestSCUValidation"
+      #:test-exclude (string-join (list "TestSCUValidation"
                                         "TestWriter"
                                         "TestAnonymizer4"
                                         "TestPrinter1"
@@ -25329,23 +25327,27 @@ module capable of computing base-level alignments for very large sequences.")
                                         "TestStrictScanner2_1"
                                         "TestStrictScanner2"
                                         "TestStrictScanner2_2"
-                                        "TestFind")
+                                        "TestFind"
+                                        ;; Fail with 'Unsupported JPEG data precision 12'.
+                                        "TestImageReaderRandomEmpty"
+                                        "TestTransferSyntax")
                                   "|")
       #:configure-flags
-      #~(list "-DGDCM_BUILD_TESTING=true"
+      #~(list "-DGDCM_BUILD_DOCBOOK_MANPAGES=ON"
+              "-DGDCM_BUILD_TESTING=true"
               "-DGDCM_DOCUMENTATION:BOOL=ON"
-              "-DGDCM_PDF_DOCUMENTATION:BOOL=OFF"
               (string-append "-DGDCM_INSTALL_DOC_DIR="
-                             #$output:doc "/share/doc/" #$name))
+                             #$output:doc "/share/doc/" #$name)
+              "-DGDCM_PDF_DOCUMENTATION:BOOL=OFF")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-HOME
-            ;; The build spams ‘Fontconfig error: No writable cache
-            ;; directories’ in a seemingly endless loop otherwise.
+            ;; The build with documentation spams ‘Fontconfig error: No writable
+            ;; cache directories’ in a seemingly endless loop otherwise.
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (native-inputs (list docbook-xsl doxygen graphviz libxslt))
-    (home-page "https://gdcm.sourceforge.net/wiki/index.php/Main_Page")
+    (home-page "https://sourceforge.net/projects/gdcm/")
     (synopsis "Grassroots DICOM library")
     (description
      "Grassroots DICOM (GDCM) is an implementation of the DICOM standard
