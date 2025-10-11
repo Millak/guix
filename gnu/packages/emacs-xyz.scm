@@ -2313,13 +2313,17 @@ before interacting with non-free LLMs.")
                 ("magit-perl-executable"
                  (search-input-file inputs "/bin/perl"))))))))
     (native-inputs
-     (list emacs-cond-let texinfo))
+     (list texinfo))
     (inputs
      (list git perl))
     (propagated-inputs
      ;; Note: the 'git-commit' and 'magit-section' dependencies are part of
      ;; magit itself.
-     (list emacs-compat emacs-llama emacs-transient emacs-with-editor))
+     (list emacs-compat
+           emacs-cond-let
+           emacs-llama
+           emacs-transient
+           emacs-with-editor))
     (home-page "https://magit.vc/")
     (synopsis "Emacs interface for the Git version control system")
     (description
