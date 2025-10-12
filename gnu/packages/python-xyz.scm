@@ -15272,18 +15272,8 @@ features useful for text console applications.")
        (sha256
         (base32 "18ijvgf1l7jvmg45x1cysn3c9rdrg1w0405acig3hk7476cj7bck"))))))
 
-(define-public python-urwid-3
-  (package
-    (inherit python-urwid)
-    (name "python-urwid")
-    (version "3.0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "urwid" version))
-       (sha256
-        (base32
-         "0y7bh77ad94i4i1nrdggrvk7vvl1fp2l6zm5lmwmgx3z3sx71jz7"))))))
+(define-deprecated/public-alias python-urwid-3
+  python-urwid)            ;may be removed after 2025-11-12
 
 (define-public python-urwid-readline
   (package
