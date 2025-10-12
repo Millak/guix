@@ -11397,19 +11397,22 @@ properties for Python 3.9+.")
     (version "0.0.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "proto_matcher" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dayfine/proto-matcher")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1644x0hrl398ji3281n44ymfgc3cspzfagjckhqjn4nja5nlikxg"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f))                    ;no test suite
-    (propagated-inputs
-     (list python-protobuf python-pyhamcrest))
+        (base32 "1l0dqnicpk4gpfspdlng026sxnkgzy68x416aw7camwq0513mq5l"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (arguments (list #:tests? #f)) ; The test suite seems broken (missing data).
+    (propagated-inputs (list python-protobuf python-pyhamcrest))
     (home-page "https://github.com/dayfine/proto-matcher")
     (synopsis "PyHamcrest test matchers for protocol buffers")
-    (description "This package provides the following PyHamcrest test
-matchers, that enable matching a protocol buffer message:
+    (description
+     "This package provides the following PyHamcrest test matchers, that
+enable matching a protocol buffer message:
 @table @code
 @item equals_proto
 Test the argument equals the given protobuf message.
