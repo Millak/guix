@@ -15,12 +15,14 @@
 ;;; Copyright © 2020 Peng Mei Yu <pengmeiyu@riseup.net>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
+;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Rovanion Luckey <rovanion.luckey@gmail.com>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2021 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 dissent <disseminatedissent@protonmail.com>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
@@ -34,6 +36,7 @@
 ;;; Copyright © 2025 Joaquín Aguirrezabalaga <kinote@kinote.org>
 ;;; Copyright © 2025 pinoaffe <pinoaffe@gmail.com>
 ;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1410,6 +1413,44 @@ Advanced users can share tags and files anonymously through custom servers that
 any user may run.  Everything is free and privacy is the first concern.")
     (home-page "https://hydrusnetwork.github.io/hydrus/")
     (license license:wtfpl2)))
+
+(define-public ueberzug
+  (package
+    (name "ueberzug")
+    (version "18.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ueberzug" version))
+       (sha256
+        (base32
+         "1sc05s72gvglsxsw4p0z5h47ygygw5h226vnaakas4ihjq9kiffl"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:tests? #f)) ; there are no tests
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list libx11 libxext libxres))
+    (propagated-inputs
+     (list python-attrs python-docopt python-pillow))
+    (home-page "https://github.com/ueber-devel/ueberzug/")
+    (synopsis "Command line util to display images in combination with X11")
+    (description "Überzug is a command line util which draws images on
+terminals by using child windows.  The advantages of using Überzug are:
+@itemize
+@item No race conditions as a new window is created to display images.
+@item Expose events will be processed, so images will be redrawn on switch
+workspaces.
+@item Tmux support (excluding multi pane windows).
+@item Terminals without the WINDOWID environment variable are supported.
+@item Chars are used as position - and size unit.
+@item No memory leak (/ unlimited cache).
+@end itemize")
+    (license license:gpl3+)))
+
+(define-public python-ueberzug
+  (deprecated-package "python-ueberzug" ueberzug))
 
 (define-public vv
   (package

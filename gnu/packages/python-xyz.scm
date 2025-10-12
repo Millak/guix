@@ -2183,44 +2183,6 @@ Interface} to simplify common problems such as caching, timing, computing
 progress, among other things.")
     (license license:asl2.0)))
 
-(define-public ueberzug
-  (package
-    (name "ueberzug")
-    (version "18.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ueberzug" version))
-       (sha256
-        (base32
-         "1sc05s72gvglsxsw4p0z5h47ygygw5h226vnaakas4ihjq9kiffl"))))
-    (build-system meson-build-system)
-    (arguments
-     (list #:tests? #f)) ; there are no tests
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list libx11 libxext libxres))
-    (propagated-inputs
-     (list python-attrs python-docopt python-pillow))
-    (home-page "https://github.com/ueber-devel/ueberzug/")
-    (synopsis "Command line util to display images in combination with X11")
-    (description "Überzug is a command line util which draws images on
-terminals by using child windows.  The advantages of using Überzug are:
-@itemize
-@item No race conditions as a new window is created to display images.
-@item Expose events will be processed, so images will be redrawn on switch
-workspaces.
-@item Tmux support (excluding multi pane windows).
-@item Terminals without the WINDOWID environment variable are supported.
-@item Chars are used as position - and size unit.
-@item No memory leak (/ unlimited cache).
-@end itemize")
-    (license license:gpl3+)))
-
-(define-public python-ueberzug
-  (deprecated-package "python-ueberzug" ueberzug))
-
 (define-public python-databind-core
   (package
     (name "python-databind-core")
