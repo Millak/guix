@@ -14267,6 +14267,37 @@ processing, values parsing, case insensitive comparison, and more.")
 Python.")
     (license license:expat)))
 
+(define-public python-jaraco-versioning
+  (package
+    (name "python-jaraco-versioning")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jaraco/jaraco.versioning")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12svnpa5sl3r5lci9bybzy5gb8pd4clfkl65x5hsap00ada2w91r"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (propagated-inputs (list python-packaging))
+    (native-inputs
+     (list python-pytest python-setuptools python-setuptools-scm))
+    (home-page "https://github.com/jaraco/jaraco.versioning")
+    (synopsis "Version manipulation utils")
+    (description
+     "This package builds upon @code{python-packaging} to provide more
+sophisticated version manipulation.")
+    (license license:expat)))
+
 (define-public python-pypytools
   (package
     (name "python-pypytools")
