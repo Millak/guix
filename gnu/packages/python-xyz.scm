@@ -14226,6 +14226,47 @@ removal, line continuation, indentation, comment processing, identifier
 processing, values parsing, case insensitive comparison, and more.")
     (license license:expat)))
 
+(define-public python-jaraco-vcs
+  (package
+    (name "python-jaraco-vcs")
+    (version "2.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference (url "https://github.com/jaraco/jaraco.vcs")
+                           (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "1n9f0l4zp8dbbq2ha93bd9z6gb9y7gsmbd4jkl5gcm51qpsq4vpm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Ignore doctests.
+      #~(list "--ignore-glob=jaraco/vcs/*.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (propagated-inputs (list python-jaraco-classes
+                             python-jaraco-path
+                             python-jaraco-versioning
+                             python-more-itertools
+                             python-packaging
+                             python-dateutil
+                             python-tempora))
+    (native-inputs (list python-pygments
+                         python-pytest
+                         python-pytest-home
+                         python-setuptools
+                         python-setuptools-scm))
+    (home-page "https://github.com/jaraco/jaraco.vcs")
+    (synopsis "Utilities for working with VCS repositories")
+    (description
+     "This package provides facilities for working with VCS repositories in
+Python.")
+    (license license:expat)))
+
 (define-public python-pypytools
   (package
     (name "python-pypytools")
