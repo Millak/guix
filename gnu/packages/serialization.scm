@@ -21,6 +21,7 @@
 ;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024, 2025 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2025 Hennadii Stepanov <hebasto@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -684,15 +685,17 @@ This package also provides @samp{kdlpp}, a C++20 wrapper around @samp{ckdl}.")
                 "1vs2zpk4l55hb4lq4kldbwdqcjnwm1jblhcaqxmii9dxrd7f807d"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-tmp-for-temporary-files
-           (lambda _
-             ;; Use /tmp for temporary files, as the default /var/tmp directory
-             ;; doesn't exist.
-             (substitute* "src/kj/filesystem-disk-test.c++"
-               (("VAR\\_TMP \"/var/tmp\"")
-                "VAR_TMP \"/tmp\"")))))))
+     (list
+      #:configure-flags
+      #~(list "-DCMAKE_POSITION_INDEPENDENT_CODE=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'use-tmp-for-temporary-files
+            (lambda _
+              ;; Use TMPDIR for temporary files, as the default /var/tmp directory
+              ;; doesn't exist.
+              (setenv "TEST_TMPDIR"
+                      (getenv "TMPDIR")))))))
     (home-page "https://capnproto.org")
     (synopsis "Capability-based RPC and serialization system")
     (description
