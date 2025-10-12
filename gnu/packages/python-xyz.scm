@@ -29210,20 +29210,31 @@ environments.")
   (package
     (name "python-pynixutil")
     (version "0.5.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/nix-community/pynixutil")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              ;; Derivation test uses nix.
-              (modules '((guix build utils)))
-              (snippet '(delete-file "tests/test_drv.py"))
-              (sha256
-               (base32
-                "1lnspcai7mqpv73bbd8kgyw63fxwgkwvfkl09b2bl5y2g2v7np6m"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nix-community/pynixutil")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lnspcai7mqpv73bbd8kgyw63fxwgkwvfkl09b2bl5y2g2v7np6m"))))
     (build-system pyproject-build-system)
-    (native-inputs (list poetry python-pytest))
+    (arguments
+     (list
+      #:test-flags
+      ;; Tests require nix in the PATH.
+      #~(list "--ignore=tests/test_drv.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-poetry-core
+            (lambda _
+              ;; Patch to use the core poetry API.
+              (substitute* "pyproject.toml"
+                (("poetry.masonry.api") "poetry.core.masonry.api")))))))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
     (home-page "https://github.com/nix-community/pynixutil")
     (synopsis "Utility functions for working with data from Nix in Python")
     (description
