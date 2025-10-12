@@ -15362,11 +15362,12 @@ toolkit.  Use it to build trees of widgets.")
        (sha256
         (base32
          "0csh307zfz666kkk5idrw3crj1x8q8vsqgwqil0r1n1hs4p7ica7"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:tests? #f))                    ;no test suite in release
     (native-inputs
-     (list python-pyyaml))
+     (list python-pyyaml
+           python-setuptools))
     (home-page "https://github.com/ua-parser/uap-python")
     (synopsis "User agent parser")
     (description
