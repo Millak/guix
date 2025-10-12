@@ -11884,22 +11884,23 @@ original project seems to have been abandoned circa 2007.")
 (define-public python-socksipychain
   (package
     (name "python-socksipychain")
-    (version "2.1.2")
+    (properties '((commit . "570c75c55661db175bd733996ed1ab68fc4e3b33")
+                  (revision . "0")))
+    (version (git-version "2.1.3"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pagekite/PySocksipyChain")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pagekite/PySocksipyChain")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "02pp994qmiivkdx4y6az5q80l6rzy8g6d2ipvp7kns7lsxvmc2y7"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f))                  ; Tests try to access the network.
-    (propagated-inputs
-     (list python-six))
+        (base32 "1fi82id1qgh63wm8k1gcxpkaa8ic0mwliq7x3iy9lxihaqmr0zww"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; Tests try to access the network.
+    (native-inputs (list python-setuptools))
     (home-page "http://pagekite.net/wiki/Floss/PySocksipyChain/")
     (synopsis "Python SOCKS module with chained proxies support")
     (description
