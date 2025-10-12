@@ -36377,28 +36377,35 @@ development, testing, production]};
     (license license:expat)))
 
 (define-public python-pudb
+  ;; TODO: Rename to pudb as it's a final program.
   (package
     (name "python-pudb")
-    (version "2023.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pudb" version))
-              (sha256
-               (base32
-                "00rgx80inpvsbcydp29mrhw44xizyqdqxvv6lqcak1xs79h3rpqm"))))
-    (build-system python-build-system)
+    (version "2025.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pudb" version))
+       (sha256
+        (base32 "0wjbvj94cww49pg7prnh5yi81v4m5f0sl816c51jcy8wag3lbhmp"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'fix-read-only-home
-                    (lambda _
-                      (setenv "HOME" "/tmp")))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-pytest python-pytest-mock python-numpy))
-    (propagated-inputs (list python-jedi python-pygments python-urwid
-                             python-urwid-readline))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-pytest-mock
+           python-numpy))
+    (propagated-inputs
+     (list python-jedi
+           python-packaging
+           python-pygments
+           python-urwid
+           python-urwid-readline))
     (home-page "https://documen.tician.de/pudb/")
     (synopsis "Console-based Python debugger")
     (description
