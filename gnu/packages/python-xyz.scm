@@ -11187,16 +11187,20 @@ parser for Node.js.")
   (package
     (name "python-norns")
     (version "0.1.6")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "norns" version))
-              (sha256
-               (base32
-                "1r1lcq59v6l75wkbp7mypanr69a6fv6m58v6dw3v6b4vwz5nqg0z"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/simonvh/norns")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x488xd2dp1clnzpb3gikx416g0fh1bjs25bwi0jmsvqmd80hmb0"))
+       (patches
+        (search-patches "python-norns-nose.patch"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-appdirs python-nose python-pyyaml
-                             python-setuptools))
-    (native-inputs (list python-wheel))
+    (propagated-inputs (list python-appdirs python-pynose python-pyyaml))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/simonvh/norns")
     (synopsis "Simple YAML-based config module")
     (description "This package provides a simple YAML-based config module.")
