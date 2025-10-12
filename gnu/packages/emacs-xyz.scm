@@ -14076,6 +14076,33 @@ It also prettifies Org plain list bullets by:
 Features degrade gracefully when viewed from terminal.")
     (license license:gpl3+)))
 
+(define-public emacs-org-supertag
+  ;; No tags or releases.
+  (let ((commit "2b17051c3d7e2e35db5b5fa66df0b6e67fa8d011")
+        (revision "0"))
+    (package
+      (name "emacs-org-supertag")
+      (version (git-version "5.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/yibie/org-supertag/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "159aqyah89nw0ar2y68rs5s4ja5hhy4j5yx3slhagzdklcpimpq8"))))
+      (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ;no tests
+      (propagated-inputs
+       (list emacs-ht emacs-gptel))
+      (home-page "https://github.com/yibie/org-supertag/")
+      (synopsis "Note taking application on top of Org mode")
+      (description
+       "This package implements a knowledge manage engine as an extension to
+Org mode, upgrading its tagging system.")
+      (license license:gpl3+))))
+
 (define-public emacs-org-pandoc-import
   (let ((commit "db308f1a05be26ce5b287633637ce554599b1377")
         (revision "0"))
