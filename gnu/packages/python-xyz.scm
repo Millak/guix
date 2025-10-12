@@ -28775,9 +28775,12 @@ implemented using @code{ctypes}.")
        (uri (pypi-uri "update-checker" version))
        (sha256
         (base32 "04yb5a9mi45ax50m2m0ih6gdvkk1j7gfmy83dd58i1f59axlabba"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-requests))
-    (native-inputs (list python-black python-flake8 python-pytest))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-requests))
     (home-page "https://github.com/bboe/update_checker")
     (synopsis "Python module that will check for package updates")
     (description "This package provides a Python module that will check for
