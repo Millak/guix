@@ -11212,25 +11212,24 @@ parser for Node.js.")
     (version "1.18.1")
     (source
      (origin
-       (method git-fetch)               ;no tests in PyPI archive
+       (method git-fetch)
        (uri (git-reference
              (url "https://github.com/conan-io/python-patch-ng")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1kr3h0bkcr02zyfsmwmxfv5b4b9vf3bhsvrlwp6cwrfy3q3qnyq8"))))
-    (build-system python-build-system)
+        (base32 "1kr3h0bkcr02zyfsmwmxfv5b4b9vf3bhsvrlwp6cwrfy3q3qnyq8"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "tests/run_tests.py" "-v")))))))
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "tests/run_tests.py" "-v")))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/conan-io/python-patch-ng")
     (synopsis "Python library to parse and apply unified diffs")
-    (description "Patch NG (New Generation) is a command and Python library to
-parse and apply unified diffs.  It has features such as:
+    (description
+     "Patch NG (New Generation) is a command and Python library to parse and
+apply unified diffs.  It has features such as:
 @itemize
 @item automatic correction of common patch formatting corruption
 @item patch format detection (SVN, Hg, Git)
