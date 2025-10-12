@@ -211,7 +211,6 @@ sub_commands_mans =				\
   $(srcdir)/%D%/guix-build.1			\
   $(srcdir)/%D%/guix-challenge.1		\
   $(srcdir)/%D%/guix-container.1		\
-  $(srcdir)/%D%/guix-copy.1			\
   $(srcdir)/%D%/guix-deploy.1			\
   $(srcdir)/%D%/guix-describe.1			\
   $(srcdir)/%D%/guix-download.1			\
@@ -238,6 +237,10 @@ sub_commands_mans =				\
   $(srcdir)/%D%/guix-system.1			\
   $(srcdir)/%D%/guix-time-machine.1		\
   $(srcdir)/%D%/guix-weather.1
+
+if HAVE_GUILE_SSH
+sub_commands_mans += $(srcdir)/%D%/guix-copy.1
+endif HAVE_GUILE_SSH
 
 # Assume that cross-compiled commands cannot be executed.
 if !CROSS_COMPILING
