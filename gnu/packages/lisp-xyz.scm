@@ -1550,21 +1550,21 @@ Common Lisp arrays and performing numerical calculations with them.")
   (sbcl-package->ecl-package sbcl-array-operations))
 
 (define-public sbcl-array-utils
-  (let ((commit "29da8fccf6093fe8f8c7b2daef7de1a428ef1834")
-        (revision "0"))
+  (let ((commit "16e108a516a1e6662adaa59f05841b8d251c250f")
+        (revision "1"))
     (package
       (name "sbcl-array-utils")
-      (version (git-version "1.2.0" revision commit))
+      (version (git-version "1.3.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri
           (git-reference
-           (url "https://github.com/Shinmera/array-utils")
+           (url "https://codeberg.org/shinmera/array-utils")
            (commit commit)))
          (file-name (git-file-name "cl-array-utils" version))
          (sha256
-          (base32 "1d66s2inb9hpw27hdb20x27dychmpn1mn35v0mlsib848qdz87az"))))
+          (base32 "0xacdjirb4bkszilmyyg7fzinka71f14z30nz2jwi7a88b8lxk1g"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-parachute))
@@ -1574,7 +1574,7 @@ Common Lisp arrays and performing numerical calculations with them.")
       (description
        "A miniature toolkit that contains some useful shifting/popping/pushing
 functions for arrays and vectors.  Originally from Plump.")
-      (home-page "https://shinmera.github.io/array-utils/")
+      (home-page "https://codeberg.org/shinmera/array-utils")
       (license license:zlib))))
 
 (define-public cl-array-utils
