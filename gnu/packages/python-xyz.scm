@@ -15247,6 +15247,22 @@ adherence to RFC 6570, but adds a few extensions.")
 features useful for text console applications.")
     (license license:lgpl2.1+)))
 
+(define-public python-urwid-for-zulip-term
+  ;; zulip-term@0.7.0 requires exact 2.1.2 version otherewise some tests fail
+  ;; to pass, remove when no longer required.
+  (hidden-package
+   (package
+     (inherit python-urwid)
+     (version "2.1.2")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "urwid" version))
+        (sha256
+         (base32 "1bky2bra6673xx8jy0826znw6cmxs89wcwwzda8d025j3jffx2sq"))))
+     (arguments
+      (list #:tests? #f)))))
+
 (define-public python-urwid-3
   (package
     (inherit python-urwid)

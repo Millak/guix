@@ -3269,7 +3269,6 @@ designed for experienced users.")
     (version "0.7.0")
     (source
      (origin
-       ;; Pypi package doesn't ship tests.
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/zulip/zulip-terminal")
@@ -3280,18 +3279,30 @@ designed for experienced users.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 2357 passed, 3 skipped, 1 deselected, 19 xfailed, 2162
+      ;; tests: 2411 passed, 3 skipped, 7 deselected, 19 xfailed, 77 warnings
       #:test-flags
-      ;; All CLI tests fail
-      #~(list "--ignore=tests/cli/test_run.py"
-              ;; IndexError: list index out of range
-              "-k" "not test_keypress_CYCLE_COMPOSE_FOCUS[tab-edit_box-message_to_stream_name_box]")
+      #~(list "-k" (string-join
+                    ;; 3 tests fail with pytest passing option in decorator
+                    (list "not test_main_multiple_autohide_options[options0]"
+                          "test_main_multiple_autohide_options[options1]"
+                          "test_main_multiple_notify_options[options0]"
+                          "test_main_multiple_notify_options[options1]"
+                          ;; Some differences in TUI which cause assertion to
+                          ;; fail.
+                          "test_soup2markup[link_api]"
+                          "test_soup2markup[link_userupload]"
+                          "test_soup2markup[preview-twitter]")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
+          (add-after 'unpack 'fix-pytest-config
             (lambda _
-              (substitute* "setup.py"
-                (("urwid~=2.1.2") "urwid")))))))
+              (substitute* "setup.cfg"
+                ((".*-cov.*") "")
+                ((".rxXs") ""))
+              (substitute* "tests/cli/test_run.py"
+                (("lines = lines.split\\(\"pytest: \", 1\\)\\[1\\]")
+                 "lines = lines.split('__main__.py: ', 1)[1]")))))))
     (inputs
      (list python-beautifulsoup4
            python-lxml
@@ -3301,12 +3312,11 @@ designed for experienced users.")
            python-pytz
            python-typing-extensions
            python-tzlocal
-           python-urwid
+           python-urwid-for-zulip-term
            python-urwid-readline
            python-zulip))
     (native-inputs
      (list python-pytest
-           python-pytest-cov
            python-pytest-mock
            python-setuptools))
     (home-page "https://github.com/zulip/zulip-terminal")
