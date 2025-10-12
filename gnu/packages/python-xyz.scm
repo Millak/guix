@@ -9613,23 +9613,25 @@ outside the standard library.")
 (define-public python-scp
   (package
     (name "python-scp")
-    (version "0.13.3")
+    (version "0.15.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "scp" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jbardin/scp.py")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1m2v09m407p097cy3xy5rxicqfzrqjwf8v5rd4qhfqkk7lllimwb"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:tests? #f))                     ;tests require an SSH server
-    (propagated-inputs
-     (list python-paramiko))
+        (base32 "03mdkiwfxvi1xfsw9qjdjf0jgljs991jn29lia9fka68x1ngwnw9"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;tests require an SSH server
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-paramiko))
     (home-page "https://github.com/jbardin/scp.py")
     (synopsis "SCP protocol module for Python and Paramiko")
-    (description "The scp module extends the Paramiko library to send and
-receive files via the SCP1 protocol, as implemented by the OpenSSH
-@command{scp} program.")
+    (description
+     "The scp module extends the Paramiko library to send and receive files
+via the SCP1 protocol, as implemented by the OpenSSH @command{scp} program.")
     (license license:gpl2+)))
 
 (define-public python-rst.linker
