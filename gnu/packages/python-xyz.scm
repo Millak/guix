@@ -2194,11 +2194,11 @@ progress, among other things.")
        (sha256
         (base32
          "1sc05s72gvglsxsw4p0z5h47ygygw5h226vnaakas4ihjq9kiffl"))))
-    (build-system pyproject-build-system)
+    (build-system meson-build-system)
     (arguments
      (list #:tests? #f)) ; there are no tests
     (native-inputs
-     (list meson-python pkg-config))
+     (list pkg-config))
     (inputs
      (list libx11 libxext libxres))
     (propagated-inputs
