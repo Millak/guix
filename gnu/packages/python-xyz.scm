@@ -15208,14 +15208,14 @@ adherence to RFC 6570, but adds a few extensions.")
 (define-public python-urwid
   (package
     (name "python-urwid")
-    (version "2.6.16")
+    (version "3.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "urwid" version))
        (sha256
         (base32
-         "18ijvgf1l7jvmg45x1cysn3c9rdrg1w0405acig3hk7476cj7bck"))))
+         "16zdji1fdr5jbry9h01dxwnadrygs1xj415jqnhmmnlcavfh821h"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -15228,17 +15228,14 @@ adherence to RFC 6570, but adds a few extensions.")
      (list python-pytest
            python-pytest-cov
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-typing-extensions
-           python-wcwidth
-
-           ;; Optional, but tests need them.
+     (list python-wcwidth
+           ;; [optional]
            python-pygobject
-           python-tornado
-           python-trio
            python-pyzmq
+           python-tornado
+           python-pyserial
            python-twisted))
     (home-page "https://urwid.org")
     (synopsis "Console user interface library for Python")
@@ -15262,6 +15259,18 @@ features useful for text console applications.")
          (base32 "1bky2bra6673xx8jy0826znw6cmxs89wcwwzda8d025j3jffx2sq"))))
      (arguments
       (list #:tests? #f)))))
+
+(define-public python-urwid-2
+  (package
+    (inherit python-urwid)
+    (name "python-urwid")
+    (version "2.6.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "urwid" version))
+       (sha256
+        (base32 "18ijvgf1l7jvmg45x1cysn3c9rdrg1w0405acig3hk7476cj7bck"))))))
 
 (define-public python-urwid-3
   (package
