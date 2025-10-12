@@ -793,27 +793,28 @@ the recorded data over time.")
 (define-public fatrace
   (package
     (name "fatrace")
-    (version "0.18.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/martinpitt/fatrace")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0hm4zsxkbsl37677b2hq4v6pnq6mjspvcf285l9d844i2f3syij2"))))
+    (version "0.19.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/martinpitt/fatrace")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0lmr6bv6d2f1gnrsy34gaiamw6615m3y7gw21fkiv47hn0xydhlx"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         ;; tests need root to run as root,
-         ;; and there is no make target for them:
-         (delete 'check))
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" %output))))
+     (list
+      #:tests? #f                       ; Tests need superuser, and there are
+                                        ; no makefile directive to run them
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output))))
     (synopsis "File access events monitor")
     (description "This package provides a utility to report system wide file
 access events from all running processes.  Its main purpose is to find
