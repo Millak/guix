@@ -20745,7 +20745,10 @@ expression.")
        (uri (pypi-uri "unicodedata2" version))
        (sha256
         (base32 "1z3llixb4cd6cc6nmyps5vv2sss14n3x6dzcc65xg75mj9jqsj05"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/fonttools/unicodedata2")
     (synopsis "Python unicodedata backport")
     (description "This package corresponds to the latest @code{unicodedata}
