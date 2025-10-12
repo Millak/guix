@@ -1858,6 +1858,24 @@ wrapper above tools such as Pyflakes, pydocstyle, pycodestyle and McCabe,
 among others.")
     (license license:lgpl3+)))
 
+(define-public python-pynose
+  (package
+    (name "python-pynose")
+    (version "1.5.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pynose" version))
+       (sha256
+        (base32 "0jbzmxnxmgf60158gpvfsp8j2cid6psfwj3j94vxv61z8wk4xnl1"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/mdmintz/pynose")
+    (synopsis "pynose fixes nose to extend unittest and make testing easier")
+    (description
+     "pynose fixes nose to extend unittest and make testing easier.")
+    (license license:lgpl2.0)))
+
 (define-public python-pytest-aiohttp
   (package
     (name "python-pytest-aiohttp")
