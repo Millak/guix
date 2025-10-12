@@ -5772,7 +5772,7 @@ faster results and to avoid unnecessary server load.")
 (define-public upower
   (package
     (name "upower")
-    (version "1.90.2")
+    (version "1.90.10")
     (source
      (origin
        (method git-fetch)
@@ -5781,7 +5781,7 @@ faster results and to avoid unnecessary server load.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13xp423ycv8imf2cmgf6lii9f01p7x2v19cny7acrmczkc0cqv7d"))
+        (base32 "0vscs2n1qdbylnz37janvk0241g3ww3xcsk9402zn9sivnvl1jfk"))
        (modules '((guix build utils)))
        (snippet
         ;; Upstream commit <https://cgit.freedesktop.org/upower/commit/
@@ -5794,7 +5794,8 @@ faster results and to avoid unnecessary server load.")
              "get_option('sysconfdir') / 'dbus-1/system.d'")
             ;; Avoid writing to /var during the build, this is
             ;; not possible in Guix!
-            (("^install_subdir\\('does-not-exist'.*$") "")))))
+            (("^install_subdir\\('does-not-exist'.*$") "")
+            (("install_emptydir\\(historydir\\)") "")))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -5832,7 +5833,9 @@ faster results and to avoid unnecessary server load.")
                 ;; 'Type'), UP_DEVICE_KIND_BLUETOOTH_GENERIC)
                 ;; AssertionError: 8 != 28
                 (("test_bluetooth_le_device")
-                 "__off_test_bluetooth_le_device"))
+                 "__off_test_bluetooth_le_device")
+                (("test_battery_.*_polkit_not.*" all)
+                 (string-append "disabled_" all)))
               #$@(if (target-x86-32?)
                      ;; Address test failure caused by excess precision
                      ;; on i686:
@@ -5859,7 +5862,7 @@ faster results and to avoid unnecessary server load.")
            pkg-config
            python
            ;; For tests.
-           python-dbus-1.2
+           python-dbus
            python-dbusmock-for-tests
            python-packaging
            python-pygobject
