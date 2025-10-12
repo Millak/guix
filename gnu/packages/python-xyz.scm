@@ -11025,27 +11025,34 @@ humans, and implementation simplicity.")
     (version "0.9.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "fancycompleter" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pdbpp/fancycompleter")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0wkj4h01pxa8prv59zl09a0i3w26k835bfpjgvyvsai4mswgxq09"))))
-    (build-system python-build-system)
+        (base32 "04gbnpm2m86wgigaqf03mphacawg203gdgpljx5xzax3vhm8qnxw"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'fix-setup.py
-                    (lambda _
-                      (substitute* "setup.py"
-                        ((".*setupmeta.*")
-                         "")
-                        (("versioning=.*")
-                         (string-append "version='" ,version "',"))
-                        ((".*pyrepl.*") ;broken on Python 3
-                         "")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-setup.py
+            (lambda _
+              (substitute* "setup.py"
+                ((".*setupmeta.*")
+                 "")
+                (("versioning=.*")
+                 (string-append "version='" #$version "',"))
+                ((".*pyrepl.*")         ; broken on Python 3
+                 "")))))))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/pdbpp/fancycompleter")
     (synopsis "TAB completion library for Python")
-    (description "@code{fancycompleter} is a module that adds TAB completion
-to the interactive prompt.  It is an extension of the @code{rlcompleter}
-module from the standard Python library.")
+    (description
+     "@code{fancycompleter} is a module that adds TAB completion to the
+interactive prompt.  It is an extension of the @code{rlcompleter} module from
+the standard Python library.")
     (license license:bsd-3)))
 
 (define-public python-ipdb
