@@ -27954,13 +27954,13 @@ with PEP 484 argument (and return) type annotations.")
 (define-public bpython
   (package
     (name "bpython")
-    (version "0.24")
+    (version "0.25")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bpython" version))
        (sha256
-        (base32 "1g9xzl49skghd9q2a8b71gg1n97lfnj9in2kzcmzsj4cgbynywwq"))))
+        (base32 "0ny6cqhpil7z36djc4ixakri65kb1rdn3d4ckmpc5p7nks8gqin2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -27978,24 +27978,23 @@ with PEP 484 argument (and return) type annotations.")
               (for-each
                (lambda (old new)
                  (symlink old (string-append #$output "/bin/" new)))
-               '("bpython" "bpython-curses" "bpython-urwid" "bpdb")
-               '("bpython3" "bpython3-curses" "bpython3-urwid" "bpdb3")))))))
+               '("bpython" "bpython-urwid" "bpdb")
+               '("bpython3" "bpython3-urwid" "bpdb3")))))))
     (native-inputs
      (list python-mock
            python-pytest
-           python-setuptools
-           python-sphinx
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-curtsies
            python-cwcwidth
            python-greenlet
-           python-jedi
            python-pygments
            python-pyxdg
            python-requests
-           python-typing-extensions
-           python-urwid
+           ;; [optional]
+           python-pyperclip
+           python-jedi
+           python-urwid-2
            python-watchdog))
     (home-page "https://bpython-interpreter.org/")
     (synopsis "Fancy interface to the Python interpreter")
