@@ -491,13 +491,18 @@ from protobuf specification files.")
   (package
     (inherit nanopb)
     (name "python-nanopb")
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f                       ;no Python-specific tests
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'build
+          (add-after 'unpack 'use-poetry-core
+            (lambda _
+              ;; Patch to use the core poetry API.
+              (substitute* "extra/poetry/pyproject.toml"
+                (("poetry.masonry.api") "poetry.core.masonry.api"))))
+          (add-before 'build 'pre-build
             (lambda _
               (copy-file "extra/poetry/pyproject.toml" "pyproject.toml")
               (delete-file "build.py")
@@ -506,14 +511,8 @@ from protobuf specification files.")
               (copy-recursively "generator" "nanopb/generator")
               (invoke "touch" "nanopb/__init__.py"
                       "nanopb/generator/__init__.py")
-              (invoke "make" "-C" "nanopb/generator/proto")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
-    (native-inputs (list poetry protobuf python-pypa-build))
+              (invoke "make" "-C" "nanopb/generator/proto"))))))
+    (native-inputs (list python-poetry-core protobuf python-setuptools))
     (propagated-inputs (list python-protobuf))
     (synopsis "Small code-size Protocol Buffers implementation in Python")))
 
