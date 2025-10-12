@@ -28795,10 +28795,14 @@ package updates.")
         (sha256
          (base32
           "0v0qkdwfc61s2yiq7d7amin93x5biypfmi9pfhf8yj1rdpx5yvsx"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-fusepyng))
-    (home-page "https://github.com/rianhunter/userspacefs")
+    (home-page "https://thelig.ht/code/userspacefs/readme.html")
     (synopsis "User-space file systems for Python")
     (description
      "@code{userspacefs} is a library that allows you to easily write
