@@ -9634,29 +9634,41 @@ outside the standard library.")
 via the SCP1 protocol, as implemented by the OpenSSH @command{scp} program.")
     (license license:gpl2+)))
 
-(define-public python-rst.linker
+(define-public python-rst-linker
   (package
-    (name "python-rst.linker")
-    (version "1.11")
+    (name "python-rst-linker")
+    (version "2.6.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "rst.linker" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jaraco/rst.linker")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0pqsfqqx8h0pq21k8l3k62kznrgaj2ala93c64s4d9rpbr4mgkd2"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-dateutil python-six))
+        (base32 "1pcnhib881p0vgm0s8jj6inzzs98raz70sc2z6m6wlgrj9ivv5jj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (propagated-inputs (list python-jaraco-context))
     (native-inputs
-     (list python-setuptools-scm))
-    ;; Test would require path.py, which would introduce a cyclic dependence.
-    (arguments `(#:tests? #f))
-    ;; Note: As of version 1.7 the documentation is not worth building.
+     (list python-path
+           python-jaraco-vcs
+           python-pytest
+           python-pytest-subprocess
+           python-setuptools-scm
+           python-setuptools))
     (home-page "https://github.com/jaraco/rst.linker")
     (synopsis "Sphinx plugin to add links and timestamps")
-    (description "rst.linker automatically replaces text by a
-reStructuredText external reference or timestamps.  It's primary purpose is to
-augment the changelog, but it can be used for other documents, too.")
+    (description
+     "rst.linker automatically replaces text by a reStructuredText external
+reference or timestamps.  It's primary purpose is to augment the changelog,
+but it can be used for other documents, too.")
     (license license:expat)))
 
 (define-public python-sshpubkeys
