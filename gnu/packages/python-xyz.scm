@@ -11167,18 +11167,20 @@ systems in Python.")
     (version "0.8.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "node-semver" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/podhmo/python-node-semver")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "000ypfns5x72b41w5f9pk6k3jnr35scliqfbvmilyvv0178005i8"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest))
+        (base32 "0az6v4y8awl3dhgrfyikgz2vc8p1k15qwsq6yb8azp54m1fbh5hs"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/podhmo/python-node-semver")
     (synopsis "Python port of node-semver")
-    (description "This module provides a Python version of node-semver, a
-semantic version parser for Node.js.")
+    (description
+     "This module provides a Python version of node-semver, a semantic version
+parser for Node.js.")
     (license license:expat)))
 
 (define-public python-norns
