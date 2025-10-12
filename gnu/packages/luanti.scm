@@ -460,7 +460,7 @@ heavyweight or complicated to maintain.")
 (define-public luanti-voxelibre
   (package
     (name "luanti-voxelibre")
-    (version "0.90.0")
+    (version "0.90.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -469,15 +469,15 @@ heavyweight or complicated to maintain.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1i60v7rc13n4vd5429bckbg1nrs48p0qvwigjq276lfnbahdb06y"))))
+                "1ml5z6hfd62kcwimz8sfgvy4f4izhfigmkcb56xcn66kv6b9k91a"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
        '(("." "share/luanti/games/voxelibre"))))
-    (synopsis "A voxel-based sandbox game for Luanti")
+    (synopsis "Voxel-based sandbox game for Luanti")
     (description
-     "VoxeLibre is a survival sandbox game for Luanti. Survive, gather,
- hunt, mine for ores, build, explore, and do much more. Inspired by
+     "VoxeLibre is a survival sandbox game for Luanti.  Survive, gather,
+ hunt, mine for ores, build, explore, and do much more.  Inspired by
 Minecraft, pushing beyond.")
     (home-page "https://content.luanti.org/packages/Wuzzy/mineclone2/")
     (license license:gpl3+)))
