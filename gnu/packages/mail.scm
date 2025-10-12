@@ -4465,8 +4465,8 @@ related tools to process winmail.dat files.")
 
 (define-public l2md
   ;; No official release.
-  (let ((commit "9db252bc1716ebaf0abd3a47a59ea78e4e6253d6")
-        (revision "2"))
+  (let ((commit "21c954d2cda1c00ba2fc22a2215078945b9b4704")
+        (revision "3"))
     (package
       (name "l2md")
       (version (git-version "0.1.0" revision commit))
@@ -4478,7 +4478,7 @@ related tools to process winmail.dat files.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1hfbngwdavdhw5ghnadmi0djg2yrr0wrkv15jdd9wcqh9h6mxy8z"))
+          (base32 "0p89ac9g4y3l9wyp62zq2lcdsdvpnc0ah8inbydknc8v2x2a7jwb"))
          (snippet
           #~(begin
               (use-modules (guix build utils))
