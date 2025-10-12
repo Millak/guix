@@ -11867,20 +11867,18 @@ the results.")
        (method url-fetch)
        (uri (pypi-uri "SocksiPy-branch" version))
        (sha256
-        (base32
-         "01l41v4g7fy9fzvinmjxy6zcbhgqaif8dhdqm4w90fwcw9h51a8p"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ; There are no tests
+        (base32 "01l41v4g7fy9fzvinmjxy6zcbhgqaif8dhdqm4w90fwcw9h51a8p"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; There are no tests
+    (native-inputs (list python-setuptools))
     (home-page "https://code.google.com/archive/p/socksipy-branch/")
     (synopsis "Python SOCKS module")
     (description
-     "SocksiPy - A Python SOCKS client module.  It provides a
-socket-like interface that supports connections to any TCP
-service through the use of a SOCKS4, SOCKS5 or HTTP proxy.
-The original version was developed by Dan Haim, this is a
-branch created by Mario Vilas to address some open issues,
-as the original project seems to have been abandoned circa 2007.")
+     "SocksiPy - A Python SOCKS client module.  It provides a socket-like
+interface that supports connections to any TCP service through the use of a
+SOCKS4, SOCKS5 or HTTP proxy.  The original version was developed by Dan Haim,
+this is a branch created by Mario Vilas to address some open issues,as the
+original project seems to have been abandoned circa 2007.")
     (license license:bsd-3)))
 
 (define-public python-socksipychain
