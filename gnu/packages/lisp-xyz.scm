@@ -1948,8 +1948,8 @@ synchronization latency.")
 
 (define-public sbcl-atomics
   ;; No release in years.
-  (let ((commit "b7477024894e322bff9c85e6d81e5e8d1d4eae59")
-        (revision "2"))
+  (let ((commit "5b36bf251fee2f80e34cbf6802c9eb08ce3675f6")
+        (revision "3"))
     (package
       (name "sbcl-atomics")
       (version (git-version "1.0.0" revision commit))
@@ -1957,17 +1957,17 @@ synchronization latency.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/atomics")
+               (url "https://codeberg.org/shinmera/atomics")
                (commit commit)))
          (file-name (git-file-name "cl-atomics" version))
          (sha256
-          (base32 "1ah6fgvfva0axnhj4sp1qy6gjyw41fkhpnv998di0wbp6hls8j39"))))
+          (base32 "0lmrqn2yzrs1qxd0asjpwk50hdcp2hkkbcpzc4lkm3xbxnwxrwg2"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-documentation-utils))
       (native-inputs
        (list sbcl-parachute))
-      (home-page "https://shinmera.github.io/atomics/")
+      (home-page "https://shinmera.com/docs/atomics")
       (synopsis "Common Lisp portability layer for atomic operations")
       (description
        "This is a library for access to atomic operation primitives such as
