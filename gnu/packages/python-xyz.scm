@@ -8382,22 +8382,35 @@ logic-free templating system Mustache.")
 (define-public python-pystitcher
   (package
     (name "python-pystitcher")
-    (version "1.0.4")
+    (properties '((commit . "d8150be85d53335f7077491ab4d73fad772ef1c9")
+                  (revision . "0")
+                  (upstream-version . "1.0.5")))
+    (version (git-version (assoc-ref properties 'upstream-version)
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/captn3m0/pystitcher")
-             (commit (string-append "v" version))))
+             (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03yrzqhcsjdj5zprrk3bh5bbyqfy3vfhxra9974vmkir3m121394"))))
+        (base32 "02q03smvfz6x8v45s6qcgh1r2plpcam7ra24ikgqlmq005w7nhv3"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                      #$(assoc-ref properties 'upstream-version)))))))
+    (native-inputs (list python-hatchling python-hatch-vcs python-pytest))
     (inputs (list python-html5lib
                   python-importlib-metadata
                   python-markdown
-                  python-pypdf3
+                  python-pypdf
                   python-validators))
     (home-page "https://github.com/captn3m0/pystitcher")
     (synopsis "Declaratively stitch together a PDF file from multiple sources")
