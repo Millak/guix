@@ -5425,23 +5425,20 @@ other machines, such as over the network.")
 (define-public python-uniseg
   (package
     (name "python-uniseg")
-    (version "0.7.1")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "uniseg" version ".zip"))
+       (uri (pypi-uri "uniseg" version))
        (sha256
-        (base32
-         "05jsazvz6nbmh6l3v1rph5ydkqn1hzx1pyggdyvgp2qgmgrnmiz2"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:tests? #f)) ; The test suite requires network access.
+        (base32 "18sj1i7xlssrsfwlr95bd4x78mfhq0v6irfx3b7fkgr17a5jbsmm"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list unzip))
-    (home-page
-     "https://bitbucket.org/emptypage/uniseg-python")
-    (synopsis
-     "Python library to determine Unicode text segmentations")
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (home-page "https://bitbucket.org/emptypage/uniseg-python")
+    (synopsis "Python library to determine Unicode text segmentations")
     (description
      "Uniseg is a Python package used to determine Unicode text segmentations.
 Supported segmentations include:
