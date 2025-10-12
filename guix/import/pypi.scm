@@ -578,7 +578,7 @@ VERSION."
         (if (distribution-has-signature? dist)
             (list (string-append source-url ".asc"))
             #f))
-       (inputs (append (pypi-package-inputs pypi-package)
+       (inputs (append (pypi-package-inputs pypi-package version)
                        extra-inputs))
        (package (project-info-name info))
        (version version)))))
