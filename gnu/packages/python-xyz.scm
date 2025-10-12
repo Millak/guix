@@ -11137,23 +11137,28 @@ shares the same interface.")
     (version "1.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pluginbase" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mitsuhiko/pluginbase")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "11z2vvbp13828y0x3w39f29p9r9xcix7h7c4fff2w8yfiylk6v7z"))))
-    (build-system python-build-system)
+        (base32 "16c089ka8z4wb4mnx6a3dbvibibgzvawm8zgkp7ppadsgb3lc357"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "make" "test")))))))
-    (native-inputs (list python-pytest))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "test")))))))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/mitsuhiko/pluginbase")
     (synopsis "Simple but flexible plugin system for Python")
-    (description "PluginBase is a library useful in the development of
-flexible plugin systems in Python.")
+    (description
+     "PluginBase is a library useful in the development of flexible plugin
+systems in Python.")
     (license license:bsd-3)))
 
 (define-public python-node-semver
