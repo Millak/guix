@@ -4474,40 +4474,41 @@ related tools to process winmail.dat files.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/l2md.git")
-               (commit commit)))
+                (url "https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/l2md.git")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32 "1hfbngwdavdhw5ghnadmi0djg2yrr0wrkv15jdd9wcqh9h6mxy8z"))
          (snippet
-          #~(begin (use-modules (guix build utils))
-                   ;; Don't try to redefine loff_t.
-                   (substitute* "utils.c"
-                     (("typedef off_t loff_t;")
-                      (string-append "#ifdef __APPLE__\n"
-                                     "typedef off_t loff_t;\n"
-                                     "#endif\n")))))))
+          #~(begin
+              (use-modules (guix build utils))
+              ;; Don't try to redefine loff_t.
+              (substitute* "utils.c"
+                (("typedef off_t loff_t;")
+                 (string-append "#ifdef __APPLE__\n"
+                                "typedef off_t loff_t;\n"
+                                "#endif\n")))))))
       (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ; No tests
+        #:make-flags
+        #~(list (string-append "CC=" #$(cc-for-target))
+                (string-append "PREFIX=" #$output "/bin"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-before 'install 'mkdir
+              (lambda _
+                (mkdir-p (string-append #$output "/bin")))))))
       (inputs
        (list libgit2))
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (delete 'configure)          ;no configure scripts
-           (delete 'check)              ;no tests
-           (add-before 'install 'mkdir
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((l2md (string-append (assoc-ref outputs "out") "/bin")))
-                 (mkdir-p l2md)))))
-         #:make-flags
-         (list ,(string-append "CC=" (cc-for-target))
-               (string-append "PREFIX=" %output "/bin"))))
-      (home-page
-       "https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/l2md.git")
       (synopsis "Import public-inbox archives via Git")
       (description
        "The @command{l2md} command line tool imports public-inbox archives via
 Git and exports them in maildir format or to an MDA through a pipe.")
+      (home-page
+       "https://git.kernel.org/pub/scm/linux/kernel/git/dborkman/l2md.git")
       (license license:gpl2))))
 
 (define-public bubger
