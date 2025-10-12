@@ -2183,9 +2183,9 @@ Interface} to simplify common problems such as caching, timing, computing
 progress, among other things.")
     (license license:asl2.0)))
 
-(define-public python-ueberzug
+(define-public ueberzug
   (package
-    (name "python-ueberzug")
+    (name "ueberzug")
     (version "18.3.1")
     (source
      (origin
@@ -2217,6 +2217,9 @@ workspaces.
 @item No memory leak (/ unlimited cache).
 @end itemize")
     (license license:gpl3+)))
+
+(define-public python-ueberzug
+  (deprecated-package "python-ueberzug" ueberzug))
 
 (define-public python-databind-core
   (package

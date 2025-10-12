@@ -219,7 +219,7 @@ opening the image directly in a terminal window.")
                           (string-append (assoc-ref inputs input) "/bin"))
                         '("bash" "catimg" "chafa" "coreutils" "curl"
                           "dmenu" "fzf" "gawk" "grep" "jp2a" "jq"
-                          "libnotify" "mpv" "ncurses" "python-ueberzug"
+                          "libnotify" "mpv" "ncurses" "ueberzug"
                           "sed" "util-linux" "yt-dlp")))
                 `("YTFZF_SYSTEM_ADDON_DIR" ":" =
                   ,(list (string-append #$output "/share/ytfzf/addons")))))))))
@@ -239,7 +239,7 @@ opening the image directly in a terminal window.")
            mpv
            ncurses
            perl                         ;for convert-ascii-escape.pl
-           python-ueberzug
+           ueberzug
            sed
            util-linux
            yt-dlp))
