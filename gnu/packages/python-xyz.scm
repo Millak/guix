@@ -15322,8 +15322,12 @@ supports @code{readline} shortcuts.")
        (sha256
         (base32 "1vrydw9h8c5gi89dnv12a9cdyyxaffvxl1kq51f118cxjk9brwpr"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-urwid))
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list #:tests? #f)) ;no tests
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-urwid-2))
     (home-page "https://github.com/AnonymouX47/urwidgets")
     (synopsis "Collection of widgets for urwid")
     (description
