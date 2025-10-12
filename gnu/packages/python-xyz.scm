@@ -15395,15 +15395,19 @@ toolkit.  Use it to build trees of widgets.")
     (name "python-user-agents")
     (version "2.2.0")
     (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "user-agents" version))
-       (sha256
-        (base32
-         "09mddriffm9rkwr30081fy9n3cn976ms8pwc8p8hhlxnilbjavfk"))))
-    (build-system python-build-system)
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/selwin/python-user-agents")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "0pcbjqj21c2ixhl414bh2h8khi8y1igzfpkyqwan1pakix0lq45a"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))                  ;missing devices.json test file in release
+     (list #:test-backend #~'unittest))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-ua-parser))
     (home-page "https://github.com/selwin/python-user-agents")
