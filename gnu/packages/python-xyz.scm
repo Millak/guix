@@ -35051,8 +35051,10 @@ were local.")
        (sha256
         (base32 "0k6cq2gflpkm40qhgqbbcjmq5lq589c15bmk567qyh3d08062hvd"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests in PyPI archvie, no 0.1.1 tag in Git
     (propagated-inputs (list python-future))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/thebabush/nampa")
     (synopsis "Python implementation of IDA Pro's FLIRT technology")
     (description
