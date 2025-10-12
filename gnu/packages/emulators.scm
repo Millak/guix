@@ -4651,6 +4651,8 @@ device contains a @code{exec} port to interface with the host system.")
        (sha256
         (base32 "1xahdr6bh3dw5swrc2r8kqa8ljhqlb7k2kxv5mrw5rhcmcnzcyig"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests in PyPI archive
     (native-inputs
      (list cmake-minimal
            python-setuptools
