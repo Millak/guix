@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Sebastian Schott <sschott@mailbox.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2024. 2021, 2022, 2024 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022, 2023, 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -107,7 +108,7 @@
 (define-public rapid-photo-downloader
   (package
     (name "rapid-photo-downloader")
-    (version "0.9.18")
+    (version "0.9.36")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://launchpad.net/rapid/pyqt/"
@@ -115,12 +116,12 @@
                                   version ".tar.gz"))
               (sha256
                (base32
-                "15p7sssg6vmqbm5xnc4j5dr89d7gl7y5qyq44a240yl5aqkjnybw"))))
+                "1r354y20rkjp034mjbmgk7zd39yxd89yqrbdlx5im4xvw8z3dp53"))))
     (build-system python-build-system)
     (native-inputs
      (list file intltool gobject-introspection))
     (inputs
-     `(("bash" ,bash-minimal) ; for wrap-program
+     `(("bash" ,bash-minimal)           ; for wrap-program
        ("gdk-pixbuf" ,gdk-pixbuf)
        ("gexiv2" ,gexiv2)
        ("gst-libav" ,gst-libav)
@@ -131,9 +132,11 @@
        ("libnotify" ,libnotify)
        ("libmediainfo" ,libmediainfo)
        ("usdisks" ,udisks)
+       ("python-babel" ,python-babel)
        ("python-pyqt" ,python-pyqt)
        ("python-pygobject" ,python-pygobject)
        ("python-gphoto2" ,python-gphoto2)
+       ("python-pymediainfo" ,python-pymediainfo)
        ("python-pyzmq" ,python-pyzmq)
        ("python-tornado" ,python-tornado)
        ("python-psutil" ,python-psutil)
@@ -143,6 +146,7 @@
        ("python-easygui" ,python-easygui)
        ("python-colour" ,python-colour)
        ("python-pymediainfo" ,python-pymediainfo)
+       ("python-show-in-file-manager" ,python-show-in-file-manager)
        ("python-sortedcontainers" ,python-sortedcontainers)
        ("python-rawkit" ,python-rawkit)
        ("python-requests" ,python-requests)
@@ -151,37 +155,28 @@
        ("python-tenacity" ,python-tenacity)
        ("perl-image-exiftool" ,perl-image-exiftool)))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-libmediainfo
-           (lambda _
-             (substitute* "raphodo/metadatavideo.py"
-               (("pymedia_library_file = 'libmediainfo.so.0'")
-                (string-append "pymedia_library_file = '"
-                               (assoc-ref %build-inputs "libmediainfo")
-                               "/lib/libmediainfo.so.0'")))
-             #t))
-         (add-after 'install 'wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out               (assoc-ref outputs "out"))
-                   (path              (string-join
-                                       (list (string-append
-                                              (assoc-ref inputs "perl-image-exiftool")
-                                              "/bin"))
-                                       ":"))
-                   (gi-typelib-path   (getenv "GI_TYPELIB_PATH"))
-                   (python-path       (getenv "GUIX_PYTHONPATH")))
-               (for-each
-                (lambda (program)
-                  (wrap-program program
-                    `("PATH" ":" prefix (,path))
-                    `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
-                    `("GUIX_PYTHONPATH"             ":" prefix (,python-path))))
-                (map (lambda (name)
-                       (string-append out "/bin/" name))
-                     '("analyze-pv-structure"
-                       "rapid-photo-downloader"))))
-             #t)))))
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((path (string-join
+                           (list (string-append
+                                  (assoc-ref inputs "perl-image-exiftool")
+                                  "/bin"))
+                           ":"))
+                    (gi-typelib-path (getenv "GI_TYPELIB_PATH"))
+                    (python-path (getenv "GUIX_PYTHONPATH")))
+                (wrap-program (string-append #$output
+                                             "/bin/rapid-photo-downloader")
+                  `("PATH" ":" prefix (,path))
+                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
+                  `("GUIX_PYTHONPATH" ":" prefix (,python-path))))))
+          ;; The program fails to load in the build environment, with an
+          ;; assertion error on 'Path(data_home).is_dir()'.
+          (delete 'sanity-check))))
+
     (home-page "https://www.damonlynch.net/rapid/")
     (synopsis "Import photos and videos from cameras, phones and memory cards")
     (description "Import photos and videos from cameras, phones and memory
