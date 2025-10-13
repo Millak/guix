@@ -454,7 +454,7 @@ http://freedesktop.org/wiki/Specifications/open-collaboration-services/")
 (define-public bluez-qt
   (package
     (name "bluez-qt")
-    (version "6.18.0")
+    (version "6.19.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -463,7 +463,7 @@ http://freedesktop.org/wiki/Specifications/open-collaboration-services/")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1cyf0lih5x0prysa85psxn2axh32i61jnb8yyblkzam7fn888h4k"))))
+                "190bmgvf3z8lm952yg03cq2mnvqbmz8d9cvnlqizw8r40x9s0b94"))))
     (build-system cmake-build-system)
     (native-inputs
      (list dbus extra-cmake-modules))
@@ -471,16 +471,14 @@ http://freedesktop.org/wiki/Specifications/open-collaboration-services/")
      (list qtdeclarative
            qtbase))
     (arguments
-     (list #:configure-flags
-           #~(list (string-append
-                    "-DUDEV_RULES_INSTALL_DIR=" #$output "/lib/udev/rules.d"))
+     (list #:test-exclude "bluezqt-qmltests"
            #:phases
            #~(modify-phases %standard-phases
                (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
+                 (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
                    (when tests?
                      (setenv "DBUS_FATAL_WARNINGS" "0")
-                     (invoke "dbus-launch" "ctest" "-E" "bluezqt-qmltests")))))))
+                     (invoke "dbus-launch" "ctest" "-E" test-exclude)))))))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "QML wrapper for BlueZ")
     (description "bluez-qt is a Qt-style library for accessing the bluez
