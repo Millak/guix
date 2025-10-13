@@ -5626,8 +5626,8 @@ from/to strings, streams and files.")
   (sbcl-package->ecl-package sbcl-cl-csv))
 
 (define-public sbcl-cl-data-structures
-  (let ((commit "ffab56830f3ed777450a065890484ef22147cd44")
-        (revision "2"))
+  (let ((commit "d11e589a3ddc6c32fcbd8be7e9f8e3471bc4d5dd")
+        (revision "3"))
     (package
       (name "sbcl-cl-data-structures")
       (version (git-version "1.4.1" revision commit))
@@ -5639,7 +5639,7 @@ from/to strings, streams and files.")
                (commit commit)))
          (file-name (git-file-name "cl-data-structures" version))
          (sha256
-          (base32 "0h49h1x9dgr53imj0r4lgx0zvdsv3mnh7lyayzy9hlysy2ixp425"))))
+          (base32 "12pdk3634nz51z4x2gly06h2j8bykqwxwfadsyq7r4ybzs3z8d73"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-prove))
