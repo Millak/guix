@@ -1093,7 +1093,7 @@ infrastructure.")
 (define-public kguiaddons
   (package
     (name "kguiaddons")
-    (version "6.18.0")
+    (version "6.19.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1102,7 +1102,7 @@ infrastructure.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0rn4prmj3y6gdj23gwfb70samrq6b64skzqjalc7pcni08l8farf"))))
+                "1rm1m0n566nc511mmipcfbgl2nz4mdmnr01vrncci457bdn42hxc"))))
     (build-system qt-build-system)
     ;; TODO: Build packages for the Python bindings.  Ideally this will be
     ;; done for all versions of python guix supports.  Requires python,
