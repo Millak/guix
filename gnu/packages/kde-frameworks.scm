@@ -360,14 +360,14 @@ accessibility clients such as screen readers.")
 (define-public qca
   (package
     (name "qca")
-    (version "2.3.9")
+    (version "2.3.10")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://kde/stable/qca/" version
                             "/qca-" version ".tar.xz"))
         (sha256
-         (base32 "0kkf8wyc7slii86danfl4cx59yhcyc363ydiwapnnyyxihlxamf5"))))
+         (base32 "00jas7hf8l0y9yixwrscvk0c6vkj3h9bn9ljf5jr6m9xm4np4nqw"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config))
