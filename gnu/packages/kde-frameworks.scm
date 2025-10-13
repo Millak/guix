@@ -5098,7 +5098,7 @@ support.")
 (define-public kdav
   (package
     (name "kdav")
-    (version "6.18.0")
+    (version "6.19.0")
     (source
      (origin
        (method url-fetch)
@@ -5106,7 +5106,7 @@ support.")
                            (version-major+minor version) "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "09jmgiksv7f2pcd3symhncxby05s32i1wzv8pd3lc2czrbbliw63"))))
+        (base32 "14hax9kbwgvd18psxm99azgclsnnvfc9xid8q3zrjnlvgnlbjlvp"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
