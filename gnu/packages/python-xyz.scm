@@ -12707,13 +12707,17 @@ currently doing, particularly the AST node being executed.")
     (version "23.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "executor" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xolox/python-executor")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0g83yr54j0vcwhy6h7n0jsd7q0q630kwa6v9kqzlzrm9xj6c3ip1"))))
-    (build-system python-build-system)
+        (base32 "1mr0662c5l5zx0wjapcprp8p2xawfd0im3616df5sgv79fqzwfqs"))))
+    (build-system pyproject-build-system)
     (arguments
-    `(#:tests? #f)) ; TODO: tests require root/sudo
+     (list #:tests? #f)) ;TODO: tests require root/sudo
+    (native-inputs (list python-mock python-pytest python-setuptools))
     (propagated-inputs
      (list python-six
            python-property-manager
@@ -12721,11 +12725,12 @@ currently doing, particularly the AST node being executed.")
            python-virtualenv))
     (home-page "https://github.com/xolox/python-executor")
     (synopsis "Programmer friendly subprocess wrapper")
-    (description "The @code{executor} package is a simple wrapper for Python’s
-subprocess module that makes it very easy to handle subprocesses on UNIX
-systems with proper escaping of arguments and error checking currently doing,
-particularly the AST node being executed.")
-    (license license:expat))) ; MIT license
+    (description
+     "The @code{executor} package is a simple wrapper for Python’s subprocess
+module that makes it very easy to handle subprocesses on UNIX systems with
+proper escaping of arguments and error checking currently doing, particularly
+the AST node being executed.")
+    (license license:expat)))
 
 (define-public python-roifile
   (package
