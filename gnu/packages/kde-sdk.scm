@@ -154,7 +154,7 @@ Python, PHP, and Perl.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://kde/stable/release-service/" version
+       (uri (string-append "mirror://kde/stable/kdevelop-pg-qt/" version
                            "/src/kdevelop-pg-qt-" version ".tar.xz"))
        (sha256
         (base32 "11mv4z8gi5bcsi3d3mhbjw392mg2wnzf667svhnsmmzmh8fbdgmc"))))
