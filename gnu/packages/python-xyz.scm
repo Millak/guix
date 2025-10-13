@@ -12523,17 +12523,28 @@ parallelism.")
     (version "0.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pixelmatch" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/whtsky/pixelmatch-py")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "16b0cz136dcmj4dbr505igpql8dmqmr9vni5nbaa5kygjfjkdynh"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pillow))
+        (base32 "0d4579hh5rwdh9djq5j9lf448x68c1iz80wavxiq7sxpmwm1j23a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: PIL.UnidentifiedImageError despite images being present.
+     (list #:tests? #f))
+    (native-inputs
+     (list python-poetry-core
+           python-pillow
+           python-pytest
+           python-pytest-benchmark))
     (home-page "https://github.com/whtsky/pixelmatch-py")
     (synopsis "Pixel-level image comparison library")
-    (description "This package provides a pixel-level image comparison library
-for Python, originally created to compare screenshots in tests.  Its features
-include accurate anti-aliased pixels detection and perceptual color difference
+    (description
+     "This package provides a pixel-level image comparison library for Python,
+originally created to compare screenshots in tests.  Its features include
+accurate anti-aliased pixels detection and perceptual color difference
 metrics.")
     (license license:isc)))
 
