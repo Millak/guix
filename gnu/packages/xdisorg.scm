@@ -189,8 +189,13 @@
          "04n2lac0vgpv8zsn7nmb50hf3qb56pmj90dmwnivg09gyrf1x92j"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("CFLAGS=-O2 -g -fcommon")
-       #:make-flags '("LIBSEMA=-lpthread")))
+     (list
+      #:configure-flags
+      #~(list (string-join
+               (list "CFLAGS=" "-O2" "-g" "-fcommon"
+                     "-Wno-error=implicit-function-declaration")
+               " "))
+      #:make-flags #~(list "LIBSEMA=-lpthread")))
     (inputs
      (list gtk+-2
            libx11
