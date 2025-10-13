@@ -4449,7 +4449,7 @@ types or handled by application specific code.")
 (define-public kstatusnotifieritem
   (package
     (name "kstatusnotifieritem")
-    (version "6.18.0")
+    (version "6.19.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4458,7 +4458,7 @@ types or handled by application specific code.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0c6pyyha2nimljy7gld0nh25w38n2jbv9vgcir3h1xsq307a52np"))))
+                "0jb9aprs43a82wvvqpzykibfh09n49sh8yaca1fnkmcsxqzcnh2y"))))
     (build-system qt-build-system)
     (arguments
      (list
