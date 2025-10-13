@@ -1626,7 +1626,9 @@ KDE Frameworks components.")
                           "kwin-testKWinBindings"
                           "kwin-testMinimizeAllScript"
                           "kwin-testLibinputDevice"
-                          "kwin-testX11Window")
+                          "kwin-testX11Window"
+                          "kwin-testXwaylandInput"
+                          "kwin-testWindowRules")
                          "|"))))))))
     (native-inputs (list extra-cmake-modules
                          dbus
