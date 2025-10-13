@@ -10222,6 +10222,45 @@ request/response web apps to larger, grown applications.")
  for the Pyramid web framework.")
       (license license:repoze))))
 
+(define-public python-pyramid-mako
+  ;; 1.1.0 was released in 2019, there a lot of compatability changes on
+  ;; master, us the latest commit for now.
+  (let ((commit "1a6f4c00c7134530d2975f34d904b64a41b28b21")
+        (revision "0"))
+    (package
+      (name "python-pyramid-mako")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/Pylons/pyramid_mako")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0v0571z2gby4apsalkdk83gs0d5mw79d56518h3bwwxzbq32kkns"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-pytest-config
+              (lambda _
+                (substitute* "pyproject.toml"
+                  ((" --cov --cov-report=term-missing") "")))))))
+      (native-inputs
+       (list python-pytest
+             python-setuptools))
+      (propagated-inputs
+       (list python-mako
+             python-pyramid))
+      (home-page "https://github.com/Pylons/pyramid_mako")
+      (synopsis "Mako template bindings for the Pyramid web framework")
+      (description
+       "This package provides Mako template bindings for the Pyramid web
+framework.")
+      (license license:repoze))))
+
 (define-public python-random-user-agent
   (package
     (name "python-random-user-agent")
