@@ -4140,7 +4140,7 @@ specification.")
 (define-public knotifyconfig
   (package
     (name "knotifyconfig")
-    (version "6.18.0")
+    (version "6.19.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4149,7 +4149,7 @@ specification.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1a5d34x0bzfa7gy1ch059sh1lks6pyywdb8b6waf0fw3w6s7z0cs"))))
+                "07y3qnsrxc12d32f9w7is17ka31ynf2z0mpl3g6kj0b3d2x366fd"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f))
     (native-inputs
@@ -4171,6 +4171,7 @@ specification.")
            kservice
            kwidgetsaddons
            kxmlgui
+           libcanberra
            phonon
            qtbase
            qtmultimedia
