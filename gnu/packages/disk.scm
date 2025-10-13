@@ -24,7 +24,7 @@
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2014, 2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Disseminate Dissent <disseminatedissent@protonmail.com>
 ;;; Copyright © 2023 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2023 Morgan Smith <Morgan.J.Smith@outlook.com>
@@ -1341,6 +1341,7 @@ to create devices with respective mappings for the ATARAID sets discovered.")
     (build-system gnu-build-system)
     (arguments
      (list
+      #:modules (cons '(ice-9 format) %default-gnu-modules)
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-configuration-directory
@@ -1348,22 +1349,70 @@ to create devices with respective mappings for the ATARAID sets discovered.")
               (substitute* "src/lib/blockdev.c"
                 (("/etc/libblockdev/conf.d/" path)
                  (string-append #$output path)))))
-          (add-after 'unpack 'patch-plugin-paths
+          (add-after 'unpack 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
+              (define* (find-program program #:key fail-if-missing?)
+                (or (and (string=? "vfat-resize" program)
+                         (string-append #$output "/bin/vfat-resize"))
+                    (false-if-exception
+                        (search-input-file inputs
+                                           (string-append "bin/" program)))
+                    (false-if-exception
+                     (search-input-file inputs
+                                        (string-append "sbin/" program)))
+                    (if fail-if-missing?
+                        (error "could not find" program)
+                        (begin
+                          (format (current-warning-port)
+                                  "warning: program ~s left unpatched~%"
+                                  program)
+                          program))))
               (substitute* (find-files "src/plugins" "\\.c$")
                 (("(gchar \\*arg.+\\{\")([^\"]+)" all start program)
                  (string-append
-                  start (or (false-if-exception
-                             (search-input-file inputs
-                                                (string-append "bin/" program)))
-                            (false-if-exception
-                             (search-input-file inputs
-                                                (string-append "sbin/" program)))
-                            (begin
-                              (format (current-warning-port)
-                                      "warning: program ~s left unpatched~%"
-                                      program)
-                              program))))))))))
+                  start (find-program program))))
+              (substitute* "src/plugins/fs/generic.c"
+                (("_util = \"([^\"]*)\"" all program)
+                 (format #f "_util = ~s" (find-program program))))
+              ;; Tip: look for check_deps calls in the source to find where
+              ;; commands are looked up from PATH.
+              (let-syntax
+                  ((patch-helpers
+                    (lambda (x)
+                      (syntax-case x ()
+                        ((_ file (helpers ...))
+                         (with-syntax ((pattern (datum->syntax x 'pattern)))
+                           #'(let ((pattern (format #f "\"(~{~a~^|~})\""
+                                                    '(helpers ...))))
+                               (substitute* file
+                                 ((pattern dummy program)
+                                  (format
+                                   #f "~s"
+                                   (find-program
+                                    program #:fail-if-missing? #t)))))))))))
+
+                (patch-helpers "src/plugins/fs/btrfs.c"
+                               ("mkfs.btrfs" "btrfsck" "btrfs" "btrfstune"))
+                (patch-helpers "src/plugins/fs/exfat.c"
+                               ("mkfs.exfat" "fsck.exfat" "tune.exfat"))
+                (patch-helpers "src/plugins/fs/ext.c"
+                               ("mke2fs" "e2fsck" "tune2fs" "resize2fs"))
+                (patch-helpers "src/plugins/fs/f2fs.c"
+                               ("mkfs.f2fs" "fsck.f2fs" "dump.f2fs"
+                                "resize.f2fs"))
+                (patch-helpers "src/plugins/fs/nilfs.c"
+                               ("mkfs.nilfs2" "nilfs-tune" "nilfs-resize"))
+                (patch-helpers "src/plugins/fs/ntfs.c"
+                               ("mkntfs" "ntfsfix" "ntfsresize" "ntfslabel"
+                                "ntfsinfo"))
+                (patch-helpers "src/plugins/fs/udf.c"
+                               ("mkudffs" "udflabel" "udfinfo"))
+                (patch-helpers "src/plugins/fs/vfat.c"
+                               ("mkfs.vfat" "fat label" "fsck.vfat"
+                                "vfat-resize" "fatlabel"))
+                (patch-helpers "src/plugins/fs/xfs.c"
+                               ("mkfs.xfs" "xfs_db" "xfs_repair" "xfs_admin"
+                                "xfs_growfs"))))))))
     (native-inputs
      (list gobject-introspection
            pkg-config
@@ -1380,6 +1429,8 @@ to create devices with respective mappings for the ATARAID sets discovered.")
             dmraid
             e2fsprogs
             eudev
+            exfatprogs
+            f2fs-tools
             glib
             gptfdisk
             json-glib-minimal
@@ -1392,9 +1443,11 @@ to create devices with respective mappings for the ATARAID sets discovered.")
             lvm2
             mdadm
             ndctl
+            nilfs-utils
             nss
             ntfs-3g
             parted
+            udftools
             util-linux
             volume-key
             xfsprogs)))
