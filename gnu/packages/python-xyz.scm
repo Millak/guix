@@ -12639,23 +12639,26 @@ tifffile, czifile, and other scientific image input/output modules.")
     (version "3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "property-manager" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xolox/python-property-manager")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0m3w4spr8f39xnm65naw29ncal4r453kn7ndqb63rwbsmslnvrwk"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest-cov))
+        (base32 "1v7hjm7qxpgk92i477fjhpcnjgp072xgr8jrgmbrxfbsv4cvl486"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-verboselogs
            python-humanfriendly
            python-coloredlogs))
     (home-page "https://github.com/xolox/python-property-manager")
     (synopsis "Useful property variants for Python programming")
-    (description "The @code{property-manager} package defines several custom
-property variants for Python programming including required properties,
-writable properties, cached properties, etc.")
-    (license license:expat))) ; MIT license
+    (description
+     "The @code{property-manager} package defines several custom property
+variants for Python programming including required properties,writable
+properties, cached properties, etc.")
+    (license license:expat)))
 
 (define-public python-executing
   (package
