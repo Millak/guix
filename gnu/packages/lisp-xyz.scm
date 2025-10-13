@@ -1574,7 +1574,7 @@ Common Lisp arrays and performing numerical calculations with them.")
       (description
        "A miniature toolkit that contains some useful shifting/popping/pushing
 functions for arrays and vectors.  Originally from Plump.")
-      (home-page "https://codeberg.org/shinmera/array-utils")
+      (home-page "https://shinmera.com/docs/array-utils")
       (license license:zlib))))
 
 (define-public cl-array-utils
