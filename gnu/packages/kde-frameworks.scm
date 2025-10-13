@@ -4900,7 +4900,7 @@ script engines.")
 (define-public purpose
   (package
     (name "purpose")
-    (version "6.18.0")
+    (version "6.19.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4909,20 +4909,23 @@ script engines.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "09dq4cdgl8acfghl6fvjd4qc7qrhj9x5pw82ks4l10k5jpsf8a54"))))
+                "18lks3v0pvjf03y3w5m9sz86pvb6xlgwkqp5lqphsh3jk3kg77vr"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules gettext-minimal))
     (inputs
      (list
+      ;;TODO: accounts-qml-module
       ;;TODO: kaccounts
       kconfig
       kcoreaddons
+      kdeclarative
       knotifications
       ki18n
       kio
       kirigami
       kwidgetsaddons
+      kitemmodels
       kitemviews
       kcompletion
       kservice
