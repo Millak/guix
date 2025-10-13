@@ -10364,6 +10364,40 @@ and can retry them a configurable number of times under certain \"retryable\"
 error conditions before indicating a failure to the client.")
     (license license:expat)))
 
+(define-public python-pyramid-tm
+  (package
+    (name "python-pyramid-tm")
+    (version "2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyramid_tm" version))
+       (sha256
+        (base32 "173hg16hldfh5n3mn482xx64nldk308dzri31jd0qa4528cx4j41"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "setup.cfg"
+                ((" --cov") "")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-webtest))
+    (propagated-inputs
+     (list python-pyramid
+           python-transaction))
+    (home-page "https://github.com/Pylons/pyramid_tm")
+    (synopsis "Centralized transaction management for Pyramid")
+    (description
+     "@code{pyramid_tm} is a package which allows Pyramid requests to join the
+active @url{https://pypi.org/project/transaction/, transaction} as provided by
+the Python transaction package.")
+      (license license:repoze)))
+
 (define-public python-random-user-agent
   (package
     (name "python-random-user-agent")
