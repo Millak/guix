@@ -6849,7 +6849,7 @@ arrays when needed.")
 (define-public multipath-tools
   (package
     (name "multipath-tools")
-    (version "0.9.6")
+    (version "0.11.0")
     (home-page "https://github.com/opensvc/multipath-tools")
     (source (origin
               (method git-fetch)
@@ -6857,7 +6857,7 @@ arrays when needed.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1933iqh9r54pdl95yck0n4bw7jiiblymc964vlc1787qd4q012sz"))
+                "1yl2cd4xgw2l5xzx5dbdf7awhrvfbjsrspli9i6bmxc5j4jkvazr"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -6915,8 +6915,7 @@ arrays when needed.")
               ;; by forcing the usage of FORTIFY_SOURCE=2.
               (substitute* "create-config.mk"
                 (("FORTIFY_SOURCE=3")
-                 "FORTIFY_SOURCE=2"))
-              ))
+                 "FORTIFY_SOURCE=2"))))
           (add-before 'build 'set-LDFLAGS
             (lambda _
               ;; Note: this cannot be passed as a make flag because that will
