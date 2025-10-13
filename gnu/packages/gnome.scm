@@ -5446,7 +5446,15 @@ more fun.")
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t
-           #:configure-flags #~(list "-Dtests=true")))
+           #:configure-flags #~(list "-Dtests=true")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-test-path-lookup
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "tests/test-utils.c"
+                     (("/usr/bin/true")
+                      (format #f "~a" (search-input-file
+                                       inputs "bin/true")))))))))
     (native-inputs (list `(,glib "bin")
                          gettext-minimal
                          sassc
