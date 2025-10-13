@@ -12330,34 +12330,41 @@ Python list with elements of type @code{PIL.Image} (from the
 (define-public python-pikepdf
   (package
     (name "python-pikepdf")
-    (version "7.2.0")
+    (version "8.15.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pikepdf" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pikepdf/pikepdf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1vp3q85l2w7wpc8kqs26ijg3ivvvgj50z7g14p3pc0zdz8vbi0md"))))
-    (build-system python-build-system)
+        (base32 "0hpnb63xp8yaflah3i1z5azh6mg36rz0liy27km47417w2q72v0c"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #false))                ;require python-xmp-toolkit
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list pybind11
            python-attrs
-           python-coverage
            python-hypothesis
            python-setuptools-scm
            python-psutil
            python-pytest
-           python-pytest-cov
            python-pytest-timeout
            python-pytest-xdist
            python-dateutil
-           ;; python-xmp-toolkit
-           python-tomli))
+           python-xmp-toolkit
+           python-tomli
+           python-setuptools))
     (inputs
      (list qpdf))
     (propagated-inputs
-     (list python-deprecation python-lxml python-packaging python-pillow))
+     (list python-deprecated python-lxml python-packaging python-pillow))
     (home-page "https://github.com/pikepdf/pikepdf")
     (synopsis "Read and write PDFs with Python")
     (description
