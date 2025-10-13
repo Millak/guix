@@ -598,6 +598,29 @@ line drawing algorithm}.")
 understanding ECMA script.")
     (license license:expat)))
 
+(define-public python-chameleon
+  (package
+    (name "python-chameleon")
+    (version "4.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Chameleon" version))
+       (sha256
+        (base32 "06qwg3sk26m53b1sl8b798scik7klkx53vijs7d8mwzpyqlxf34i"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://chameleon.readthedocs.io")
+    (synopsis "Fast HTML/XML Template Compiler")
+    (description
+     "Chameleon is an HTML/XML template engine for Python.  It uses the page
+templates language.")
+    ;; Project is duo licensed, see: LICENSE.txt.
+    (license (list license:zpl2.1
+                   license:psfl))))
+
 (define-public python-copydetect
   (package
     (name "python-copydetect")
