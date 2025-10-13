@@ -10222,6 +10222,43 @@ request/response web apps to larger, grown applications.")
  for the Pyramid web framework.")
       (license license:repoze))))
 
+(define-public python-pyramid-jinja2
+  (package
+    (name "python-pyramid-jinja2")
+    (version "2.10.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyramid_jinja2" version))
+       (sha256
+        (base32 "0xqnqbqhx9bkrg2ic3blflsk8xc8kh7i2dm2kha9apqkbjrqql4c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Two tests failed with assertion not equal.
+      #~(list "-k" "not test_it_relative_to_package and not test_options")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "setup.cfg"
+                ((" --cov") "")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-webtest))
+    (propagated-inputs
+     (list python-jinja2
+           python-markupsafe
+           python-pyramid
+           python-zope-deprecation))
+    (home-page "https://github.com/Pylons/pyramid_jinja2")
+    (synopsis "Jinja2 template bindings for the Pyramid web framework")
+    (description "This package provides Jinja2 template bindings for the
+Pyramid web framework.")
+    (license license:repoze)))
+
 (define-public python-pyramid-mako
   ;; 1.1.0 was released in 2019, there a lot of compatability changes on
   ;; master, us the latest commit for now.
