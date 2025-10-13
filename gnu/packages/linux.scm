@@ -7456,7 +7456,7 @@ obviously it can be shared with files outside our set).")
 (define-public f2fs-tools
   (package
     (name "f2fs-tools")
-    (version "1.15.0")
+    (version "1.16.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7466,7 +7466,7 @@ obviously it can be shared with files outside our set).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ffws8pbpzp9730v0wy5xjas698lnbd2p7wpr2gl4mx45rsay9a5"))))
+                "0832ix3jnmfagx53wr6clc3q4ay7cbashfj7jirk01gyzwbvblfc"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake libtool pkg-config))
