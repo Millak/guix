@@ -175,6 +175,23 @@ turn doesn't take any constant overhead into account, force a 1-MiB minimum."
                           (string-append "::" file))))
               (scandir root))))
 
+(define* (make-swap-image partition target)
+  "Make a swap partition of a certain size."
+  (let ((size (partition-size partition))
+        (label (partition-label partition))
+        (uuid (partition-uuid partition))
+        (fs-options (partition-file-system-options partition)))
+    (apply invoke "fakeroot" "mkswap"
+           "--pagesize" "4096"
+           "--endianness" "little"
+           "-L" label
+           "--file" target
+           "--size" (number->string size)
+           `(,@(if uuid
+                   `("-U" ,(uuid->string uuid))
+                   '())
+             ,@fs-options))))
+
 (define* (make-unformatted-image partition target)
   "Make an unformatted partition of a certain size."
   (let ((size (partition-size partition)))
@@ -199,6 +216,8 @@ ROOT directory to populate the image."
       (make-vfat-image partition target root 16))
      ((string=? type "fat32")
       (make-vfat-image partition target root 32))
+     ((string=? "swap" type)
+      (make-swap-image partition target))
      ((string=? type "unformatted")
       (make-unformatted-image partition target))
      (else
