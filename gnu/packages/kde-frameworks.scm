@@ -3571,7 +3571,7 @@ with su and ssh respectively.")
 (define-public kglobalaccel
   (package
     (name "kglobalaccel")
-    (version "6.18.0")
+    (version "6.19.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3580,7 +3580,7 @@ with su and ssh respectively.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0f5lzmvnib98zl0zcs6rsllciyzv2jzrbclgjl3n4r9kx477p6nb"))))
+                "0jdf80wacazjys7fbn120h9bq5xxqbdfhfc00iy7c6c3cl17bghv"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config qttools))
