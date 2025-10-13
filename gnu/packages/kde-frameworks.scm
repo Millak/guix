@@ -4629,7 +4629,7 @@ to separate the structure of documents from the data they contain.")
 (define-public kwallet
   (package
     (name "kwallet")
-    (version "6.18.0")
+    (version "6.19.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4638,7 +4638,7 @@ to separate the structure of documents from the data they contain.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0qyij4w6wa5r10cr9wap2mhhldw1wgy04wrnyd2fx6hb50dhwqy8"))))
+                "1bf4mn72di3yixx50kmz25kpzwzx1j7fsxh4kn6hs5qc1gva7r0x"))))
     (build-system cmake-build-system)
     (arguments
      (list #:phases
