@@ -25264,6 +25264,15 @@ module capable of computing base-level alignments for very large sequences.")
               "-DGDCM_USE_SYSTEM_ZLIB=ON")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'refer-to-charls
+            (lambda _
+              ;; Resolve the absolute path to libcharls.so instead of exporting
+              ;; a bare '-lcharls' reference in GDCM targets.
+              (substitute* "CMakeLists.txt"
+                (("set\\(GDCM_CHARLS_LIBRARIES charls\\)")
+                 (string-append
+                  "find_library(CHARLS_LIBRARY NAMES charls REQUIRED)\n"
+                  "  set(GDCM_CHARLS_LIBRARIES ${CHARLS_LIBRARY})")))))
           (add-before 'build 'set-HOME
             ;; The build with documentation spams ‘Fontconfig error: No writable
             ;; cache directories’ in a seemingly endless loop otherwise.
