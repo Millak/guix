@@ -2142,47 +2142,6 @@ library’s logging module.  It was designed with both complex and simple
 applications in mind and the idea to make logging fun.")
     (license license:bsd-3)))
 
-(define-public python-ubelt
-  (package
-    (name "python-ubelt")
-    (version "1.3.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Erotemic/ubelt")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1v2kf9lbdfaf9nppdq45rfanz4bdd2v6x59iajcznwgc4jmhj2na"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; The builder user home doesn't match HOME, which causes this test to
-      ;; fail.
-      #:test-flags #~(list "-k" "not userhome")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda _
-              (setenv "HOME" "/tmp")))))) ;else the test suite hangs
-    (native-inputs
-     (list python-pytest
-           python-requests
-           python-setuptools
-           python-wheel
-           python-xdoctest))
-    (propagated-inputs
-     (list python-ordered-set))
-    (home-page "https://github.com/Erotemic/ubelt")
-    (synopsis "Python library for hashing, caching, timing and more")
-    (description
-     "Ubelt is a small library of simple functions that extend the Python
-standard library.  It includes an @acronym{API, Application Programming
-Interface} to simplify common problems such as caching, timing, computing
-progress, among other things.")
-    (license license:asl2.0)))
-
 (define-public python-databind-core
   (package
     (name "python-databind-core")
@@ -5387,36 +5346,6 @@ other machines, such as over the network.")
 @code{setup.cfg}.")
     (license license:asl2.0)))
 
-(define-public python-uniseg
-  (package
-    (name "python-uniseg")
-    (version "0.10.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "uniseg" version))
-       (sha256
-        (base32 "18sj1i7xlssrsfwlr95bd4x78mfhq0v6irfx3b7fkgr17a5jbsmm"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm))
-    (home-page "https://bitbucket.org/emptypage/uniseg-python")
-    (synopsis "Python library to determine Unicode text segmentations")
-    (description
-     "Uniseg is a Python package used to determine Unicode text segmentations.
-Supported segmentations include:
-@enumerate
-@item @dfn{Code point} (any value in the Unicode codespace)
-@item @dfn{Grapheme cluster} (user-perceived character made of a single or
-multiple Unicode code points, e.g. \"G\" + acute-accent)
-@item Word break
-@item Sentence break
-@item Line break
-@end enumerate")
-    (license license:expat)))
-
 (define-public python-humanfriendly
   (package
     (name "python-humanfriendly")
@@ -7948,29 +7877,6 @@ Capabilities include:
 @end itemize")
     (license license:expat)))
 
-(define-public python-unidecode
-  (package
-    (name "python-unidecode")
-    (version "1.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "Unidecode" version))
-       (sha256
-        (base32 "08rbx8vxsnj06cvrdxy80zrn9hk25lwcqfh2fdjng2rk1189hdff"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest python-setuptools))
-    (home-page "https://pypi.org/project/Unidecode/")
-    (synopsis "ASCII transliterations of Unicode text")
-    (description
-     "Unidecode provides ASCII transliterations of Unicode text.  Unidecode is
-useful when integrating with legacy code that doesn't support Unicode, or for
-ease of entry of non-Roman names on a US keyboard, or when constructing ASCII
-machine identifiers from human-readable Unicode strings that should still be
-somewhat intelligible.")
-    (license license:gpl2+)))
-
 (define-public python-text-unidecode
   (package
     (name "python-text-unidecode")
@@ -8166,27 +8072,6 @@ provides Python-specific tags that represent an arbitrary Python object.")
 modules.  It creates a special virtual environment such that @command{pip} or
 @file{setup.py} will cross compile packages for you, usually with no further
 work on your part.")
-    (license license:expat)))
-
-(define-public python-uc-micro-py
-  (package
-    (name "python-uc-micro-py")
-    (version "1.0.1")
-    (source (origin
-              (method git-fetch)        ;for tests
-              (uri (git-reference
-                    (url "https://github.com/tsutsu3/uc.micro-py")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "17f55gi55rg47nm88fn3f8851ph03dgykdp011lxr3j6hk18lyfv"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
-    (home-page "https://github.com/tsutsu3/uc.micro-py")
-    (synopsis "Unicode data files for linkify-it-py projects")
-    (description "This package contains a micro subset of Unicode data files
-for linkify-it-py projects.")
     (license license:expat)))
 
 (define-public python-linkify-it-py
@@ -15138,154 +15023,6 @@ computing.")
 code.")
     (license license:bsd-3)))
 
-(define-public python-uri-template
-  (package
-    (name "python-uri-template")
-    (version "1.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "uri-template" version))
-       (sha256
-        (base32 "1ixczlgnsjv2850r6w0cb2npwcwzdqri8njr1pi7v371cpmzh00f"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python3" "test.py")))))))
-    (native-inputs
-     (list python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (home-page "https://gitlab.linss.com/open-source/python/uri-template")
-    (synopsis "RFC 6570 URI Template Processor")
-    (description "This package implements URI Template expansion in strict
-adherence to RFC 6570, but adds a few extensions.")
-    (license license:expat)))
-
-(define-public python-urwid
-  (package
-    (name "python-urwid")
-    (version "3.0.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "urwid" version))
-       (sha256
-        (base32
-         "16zdji1fdr5jbry9h01dxwnadrygs1xj415jqnhmmnlcavfh821h"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "tests"
-              ;; According to Debian these tests are cursed.
-              ;; https://salsa.debian.org/python-team/packages/urwid/-/blob/debian/2.1.2-2/debian/changelog#L141
-               "--ignore=tests/test_vterm.py")))
-    (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-setuptools
-           python-setuptools-scm))
-    (propagated-inputs
-     (list python-wcwidth
-           ;; [optional]
-           python-pygobject
-           python-pyzmq
-           python-tornado
-           python-pyserial
-           python-twisted))
-    (home-page "https://urwid.org")
-    (synopsis "Console user interface library for Python")
-    (description
-     "Urwid is a curses-based UI/widget library for Python.  It includes many
-features useful for text console applications.")
-    (license license:lgpl2.1+)))
-
-(define-public python-urwid-for-zulip-term
-  ;; zulip-term@0.7.0 requires exact 2.1.2 version otherewise some tests fail
-  ;; to pass, remove when no longer required.
-  (hidden-package
-   (package
-     (inherit python-urwid)
-     (version "2.1.2")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "urwid" version))
-        (sha256
-         (base32 "1bky2bra6673xx8jy0826znw6cmxs89wcwwzda8d025j3jffx2sq"))))
-     (arguments
-      (list #:tests? #f)))))
-
-(define-public python-urwid-2
-  (package
-    (inherit python-urwid)
-    (name "python-urwid")
-    (version "2.6.16")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "urwid" version))
-       (sha256
-        (base32 "18ijvgf1l7jvmg45x1cysn3c9rdrg1w0405acig3hk7476cj7bck"))))))
-
-(define-deprecated/public-alias python-urwid-3
-  python-urwid)            ;may be removed after 2025-11-12
-
-(define-public python-urwid-readline
-  (package
-    (name "python-urwid-readline")
-    (version "0.15.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/rr-/urwid_readline")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0zhpx86gvpkziclb7bcqn73fadkzn805rjqy7lzhrza46lphq8qy"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-urwid))
-    (home-page "https://github.com/rr-/urwid_readline")
-    (synopsis "Text input widget for urwid that supports readline shortcuts")
-    (description
-     "This package provides a textbox edit widget for @code{python-urwid} that
-supports @code{readline} shortcuts.")
-    (license license:expat)))
-
-(define-public python-urwidgets
-  (package
-    (name "python-urwidgets")
-    (version "0.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "urwidgets" version))
-       (sha256
-        (base32 "1vrydw9h8c5gi89dnv12a9cdyyxaffvxl1kq51f118cxjk9brwpr"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f)) ;no tests
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-urwid-2))
-    (home-page "https://github.com/AnonymouX47/urwidgets")
-    (synopsis "Collection of widgets for urwid")
-    (description
-     "This package provides a collection of widgets for urwid.")
-    (license license:expat)))
-
 (define-public python-textdistance
   (package
     (name "python-textdistance")
@@ -15323,83 +15060,6 @@ supports @code{readline} shortcuts.")
     (description "@code{textdistance} is a pure Python library for comparing
 distance between two or more sequences by many algorithms.")
     (license license:expat)))
-
-(define-public python-urwidtrees
-  (package
-    (name "python-urwidtrees")
-    (version "1.0.4")
-    (source
-      (origin
-        (method git-fetch)
-        ;; package author intends on distributing via github rather than pypi:
-        ;; https://github.com/pazz/alot/issues/877#issuecomment-230173331
-        (uri (git-reference
-               (url "https://github.com/pazz/urwidtrees")
-               (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-          (base32
-           "17k0gx8i7wrzw6skzdjh9b8v3n6lb5zvg9jrybc3d09p8ipvc31i"))))
-    (build-system pyproject-build-system)
-    (arguments
-     '(#:tests? #f)) ; no tests
-    (propagated-inputs (list python-urwid))
-    (native-inputs (list python-mock python-setuptools python-wheel))
-    (home-page "https://github.com/pazz/urwidtrees")
-    (synopsis "Tree widgets for urwid")
-    (description "Urwidtrees is a Widget Container API for the @code{urwid}
-toolkit.  Use it to build trees of widgets.")
-    (license license:gpl3+)))
-
-(define-public python-ua-parser
-  (package
-    (name "python-ua-parser")
-    (version "0.10.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "ua-parser" version))
-       (sha256
-        (base32
-         "0csh307zfz666kkk5idrw3crj1x8q8vsqgwqil0r1n1hs4p7ica7"))))
-    (build-system pyproject-build-system)
-    (arguments
-     `(#:tests? #f))                    ;no test suite in release
-    (native-inputs
-     (list python-pyyaml
-           python-setuptools))
-    (home-page "https://github.com/ua-parser/uap-python")
-    (synopsis "User agent parser")
-    (description
-     "@code{ua-parser} is a Python port of Browserscope's user agent parser.")
-    (license license:asl2.0)))
-
-(define-public python-user-agents
-  (package
-    (name "python-user-agents")
-    (version "2.2.0")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/selwin/python-user-agents")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-          (base32 "0pcbjqj21c2ixhl414bh2h8khi8y1igzfpkyqwan1pakix0lq45a"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-backend #~'unittest))
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-ua-parser))
-    (home-page "https://github.com/selwin/python-user-agents")
-    (synopsis "User Agent strings parsing library")
-  (description
-   "A library to identify devices (phones, tablets) and their capabilities by
-parsing (browser/HTTP) user agent strings.")
-  (license license:expat)))
 
 (define-public python-pydbus
   (package
@@ -20678,49 +20338,6 @@ document.")
 manipulation library.")
     (license license:expat)))
 
-(define-public python-uncertainties
-  (package
-    (name "python-uncertainties")
-    (version "3.2.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "uncertainties" version))
-       (sha256
-        (base32
-         "0c9hl35jvld1a1vinh9mdcpfgz4ykqinlm1dj917lqbgd0z6b9bn"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest python-setuptools python-setuptools-scm python-wheel))
-    (propagated-inputs (list python-numpy))
-    (home-page "https://uncertainties.readthedocs.io/en/latest/")
-    (synopsis "Calculations with uncertainties")
-    (description
-     "The uncertainties package transparently handles calculations with
-numbers with uncertainties.  It can also yield the derivatives of any
-expression.")
-    (license license:bsd-3)))
-
-(define-public python-unicodedata2
-  (package
-    (name "python-unicodedata2")
-    (version "16.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "unicodedata2" version))
-       (sha256
-        (base32 "1z3llixb4cd6cc6nmyps5vv2sss14n3x6dzcc65xg75mj9jqsj05"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (home-page "https://github.com/fonttools/unicodedata2")
-    (synopsis "Python unicodedata backport")
-    (description "This package corresponds to the latest @code{unicodedata}
-standard Python module.")
-    (license license:asl2.0)))
-
 (define-public python-asteval
   (package
     (name "python-asteval")
@@ -23496,39 +23113,6 @@ simple, lightweight implementation.")
      "This library validates email address syntax and deliverability.")
     (license license:cc0)))
 
-(define-public python-ukpostcodeparser
-  (package
-    (name "python-ukpostcodeparser")
-    (version "1.1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "UkPostcodeParser" version))
-              (sha256
-               (base32
-                "03jkf1ygbwq3akzbcjyjk1akc1hv2sfgx90306pq1nwklbpn80lk"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list
-         ;; Tests for lowercase postcodes fail.
-         "-k" (string-join
-               (list "not test_091 "
-                     "test_097 "
-                     "test_098 "
-                     "test_125 "
-                     "test_131")
-               " and not ")
-         "ukpostcodeparser/test/parser.py")))
-    (native-inputs
-     (list python-pytest python-setuptools))
-    (home-page "https://github.com/hamstah/ukpostcodeparser")
-    (synopsis "UK Postcode parser for Python")
-    (description
-     "This library provides the @code{parse_uk_postcode} function for
-parsing UK postcodes.")
-    (license license:expat)))
-
 (define-public python-faker
   (package
     (name "python-faker")
@@ -25831,40 +25415,6 @@ applications in seconds while maintaining all the flexibility.")
 of x and y values, kneed will return the knee point of the function.  The knee
 point is the point of maximum curvature.")
     (license license:bsd-3)))
-
-(define-public python-utils
-  (package
-    (name "python-utils")
-    (version "3.9.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "python_utils" version))
-       (sha256
-        (base32 "18292j4p1bvlpbrfj2cgkdby6dpgnl5gbjwly0qb4pj1j914nmzb"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              ;; Drop test coverage requirements.
-              (substitute* "pytest.ini"
-                ((".*--cov.*") "")))))))
-    (native-inputs
-     (list python-pytest
-           python-pytest-asyncio
-           python-setuptools))
-    (propagated-inputs
-     (list python-loguru
-           python-typing-extensions))
-    (home-page "https://github.com/WoLpH/python-utils")
-    (synopsis "Convenient utilities not included with the standard Python install")
-    (description
-     "Python Utils is a collection of small Python functions and classes
-which make common patterns shorter and easier.")
-    (license license:bsd-2)))
 
 (define-public python-diff-cover
   (package
@@ -28646,53 +28196,6 @@ interface to FUSE on various operating systems.  It's just one file and is
 implemented using @code{ctypes}.")
     (license license:isc)))
 
-(define-public python-update-checker
-  (package
-    (name "python-update-checker")
-    (version "0.18.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "update-checker" version))
-       (sha256
-        (base32 "04yb5a9mi45ax50m2m0ih6gdvkk1j7gfmy83dd58i1f59axlabba"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-requests))
-    (home-page "https://github.com/bboe/update_checker")
-    (synopsis "Python module that will check for package updates")
-    (description "This package provides a Python module that will check for
-package updates.")
-    (license license:bsd-2)))
-
-(define-public python-userspacefs
-  (package
-    (name "python-userspacefs")
-    (version "2.0.5")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "userspacefs" version))
-        (sha256
-         (base32
-          "0v0qkdwfc61s2yiq7d7amin93x5biypfmi9pfhf8yj1rdpx5yvsx"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f)) ;no tests
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-fusepyng))
-    (home-page "https://thelig.ht/code/userspacefs/readme.html")
-    (synopsis "User-space file systems for Python")
-    (description
-     "@code{userspacefs} is a library that allows you to easily write
-user-space file systems in Python.")
-    (license license:gpl3+)))
-
 (define-public python-stone
   (package
     (name "python-stone")
@@ -28909,29 +28412,6 @@ and corruption checks.")
      "Requests-File is a transport adapter for use with the Requests Python
 library to allow local file system access via @code{file://} URLs.")
     (license license:asl2.0)))
-
-(define-public python-ukkonen
-  (package
-    (name "python-ukkonen")
-    (version "1.0.1")
-    (source
-     (origin
-       ;; There are no tests in the PyPI tarball.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/asottile/ukkonen")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "17gspl2dsykg000275svvyam4k7wz9ypi9xrfrmsgcgryczravlc"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
-    (propagated-inputs (list python-cffi))
-    (home-page "https://github.com/asottile/ukkonen")
-    (synopsis "Implementation of bounded Levenshtein distance (Ukkonen)")
-    (description "This package is an implementation of of bounded Levenshtein
-distance (Ukkonen).")
-    (license license:expat)))
 
 (define-public python-identify
   (package
@@ -31023,48 +30503,6 @@ to and from JSON.  Common data types are implemented and it is easy to
 register custom encoders and decoders.")
     (license license:expat)))
 
-(define-public python-ujson
-  (package
-    (name "python-ujson")
-    (version "5.10.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "ujson" version))
-        (sha256
-         (base32
-          "1habmn3bmmv2ym4ldiijcavdkdzp8h28h60hgwjkhxwcbly8zkdk"))
-        (modules '((guix build utils)))
-        (snippet
-         #~(begin (delete-file-recursively "deps")))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'link-to-system-double-conversion
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((d-c (assoc-ref inputs "double-conversion")))
-                (substitute* "setup.py"
-                  (("./deps/double-conversion/double-conversion\"")
-                   (string-append d-c "/include/double-conversion\""))
-                  (("-lstdc++" stdc)
-                   (string-append "-L" d-c "/lib\","
-                                  " \"-ldouble-conversion\","
-                                  " \"" stdc)))))))))
-    (native-inputs
-     (list double-conversion
-           python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (home-page "https://github.com/ultrajson/ultrajson")
-    (synopsis "Ultra fast JSON encoder and decoder for Python")
-    (description
-     "UltraJSON is an ultra fast JSON encoder and decoder written in pure C with
-bindings for Python 3.")
-    (license license:bsd-3)))
-
 ;; XXX: See: <https://codeberg.org/guix/guix/issues/3054>.
 (define-public python-iocapture
   ;; The latest release is more than a year older than this commit.
@@ -31792,32 +31230,6 @@ as JSON objects.  With JSON we can make our logs more readable by machines and
 we can stop writing custom parsers for syslog-type records.")
     (license license:bsd-3)))
 
-(define-public python-unique-log-filter
-  (package
-    (name "python-unique-log-filter")
-    (version "0.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/twizmwazin/unique_log_filter")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "036mh6nqskck2fa1q2inasqxb9wcz2p09qcpldnnffzcy1a6kzba"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-backend #~'custom
-           #:test-flags #~(list "test_unique_log_filter.py")))
-    (native-inputs (list python-flit-core))
-    (home-page "https://github.com/twizmwazin/unique_log_filter")
-    (synopsis "Log filter that removes duplicate log messages")
-    (description
-     "This library provides a filter for the @code{logging} module
-from the Python standard library which allows removing duplicate log
-messages.")
-    (license license:bsd-2)))
-
 (define-public python-daiquiri
   (package
     (name "python-daiquiri")
@@ -31991,32 +31403,6 @@ Foundation maintained libraries.")
 implements the complete mapping interface.  It can be used as a drop-in
 replacement for dictionaries where immutability is desired.")
     (license license:expat)))
-
-(define-public python-unpaddedbase64
-  (package
-    (name "python-unpaddedbase64")
-    (version "2.1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/matrix-org/python-unpaddedbase64")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1n6har8pxv0mqb96lanzihp1xf76aa17jw3977drb1fgz947pnmz"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-poetry-core
-                         python-pytest
-                         python-setuptools
-                         python-wheel))
-    (home-page "https://github.com/matrix-org/python-unpaddedbase64")
-    (synopsis "Encode and decode Base64 without “=” padding")
-    (description
-     "RFC 4648 specifies that Base64 should be padded to a multiple of 4 bytes
-using “=” characters.  However this conveys no benefit so many protocols
-choose to use Base64 without the “=” padding.")
-    (license license:asl2.0)))
 
 (define-public python-py-cpuinfo
   (package
@@ -33389,29 +32775,6 @@ are plain text, reStructuredText and HTML.")
 a console.  It provides a collection of ‘print’ functions that allow you to simply and
 cleanly print different types of messages.")
     (license license:gpl3+)))
-
-(define-public python-userpath
-  (package
-    (name "python-userpath")
-    (version "1.9.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "userpath" version))
-       (sha256
-        (base32 "05fqxzdi27vqm5lywxs6bm2j4d8k91fx2ihqhg65g4h6mf6jhlkc"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; See https://github.com/ofek/userpath/issues/43.
-     ;; In Guix, tests try to find the temporary build directory in PATH, but
-     ;; only the store output is present.
-     (list #:tests? #f))
-    (native-inputs (list python-hatchling python-pytest))
-    (propagated-inputs (list python-click))
-    (home-page "https://github.com/ofek/userpath")
-    (synopsis "Add locations to the user's PATH")
-    (description "This package provides a tool for modifying a user's PATH.")
-    (license license:expat)))
 
 (define-public hatch
   (package
@@ -38899,6 +38262,643 @@ bigrams (pairs of two words or tokens), or of trigrams.  Icegrams is useful for
 instance in spelling correction, predictive typing, to help disabled people
 write text fast, and for various text generation, statistics, and modeling tasks.")
     (license license:expat)))
+
+(define-public python-ua-parser
+  (package
+    (name "python-ua-parser")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ua-parser" version))
+       (sha256
+        (base32
+         "0csh307zfz666kkk5idrw3crj1x8q8vsqgwqil0r1n1hs4p7ica7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:tests? #f))                    ;no test suite in release
+    (native-inputs
+     (list python-pyyaml
+           python-setuptools))
+    (home-page "https://github.com/ua-parser/uap-python")
+    (synopsis "User agent parser")
+    (description
+     "@code{ua-parser} is a Python port of Browserscope's user agent parser.")
+    (license license:asl2.0)))
+
+(define-public python-ubelt
+  (package
+    (name "python-ubelt")
+    (version "1.3.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Erotemic/ubelt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1v2kf9lbdfaf9nppdq45rfanz4bdd2v6x59iajcznwgc4jmhj2na"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; The builder user home doesn't match HOME, which causes this test to
+      ;; fail.
+      #:test-flags #~(list "-k" "not userhome")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")))))) ;else the test suite hangs
+    (native-inputs
+     (list python-pytest
+           python-requests
+           python-setuptools
+           python-wheel
+           python-xdoctest))
+    (propagated-inputs
+     (list python-ordered-set))
+    (home-page "https://github.com/Erotemic/ubelt")
+    (synopsis "Python library for hashing, caching, timing and more")
+    (description
+     "Ubelt is a small library of simple functions that extend the Python
+standard library.  It includes an @acronym{API, Application Programming
+Interface} to simplify common problems such as caching, timing, computing
+progress, among other things.")
+    (license license:asl2.0)))
+
+(define-public python-uc-micro-py
+  (package
+    (name "python-uc-micro-py")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/tsutsu3/uc.micro-py")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "17f55gi55rg47nm88fn3f8851ph03dgykdp011lxr3j6hk18lyfv"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/tsutsu3/uc.micro-py")
+    (synopsis "Unicode data files for linkify-it-py projects")
+    (description "This package contains a micro subset of Unicode data files
+for linkify-it-py projects.")
+    (license license:expat)))
+
+(define-public python-ujson
+  (package
+    (name "python-ujson")
+    (version "5.10.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "ujson" version))
+        (sha256
+         (base32
+          "1habmn3bmmv2ym4ldiijcavdkdzp8h28h60hgwjkhxwcbly8zkdk"))
+        (modules '((guix build utils)))
+        (snippet
+         #~(begin (delete-file-recursively "deps")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'link-to-system-double-conversion
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((d-c (assoc-ref inputs "double-conversion")))
+                (substitute* "setup.py"
+                  (("./deps/double-conversion/double-conversion\"")
+                   (string-append d-c "/include/double-conversion\""))
+                  (("-lstdc++" stdc)
+                   (string-append "-L" d-c "/lib\","
+                                  " \"-ldouble-conversion\","
+                                  " \"" stdc)))))))))
+    (native-inputs
+     (list double-conversion
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://github.com/ultrajson/ultrajson")
+    (synopsis "Ultra fast JSON encoder and decoder for Python")
+    (description
+     "UltraJSON is an ultra fast JSON encoder and decoder written in pure C with
+bindings for Python 3.")
+    (license license:bsd-3)))
+
+(define-public python-ukkonen
+  (package
+    (name "python-ukkonen")
+    (version "1.0.1")
+    (source
+     (origin
+       ;; There are no tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/asottile/ukkonen")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17gspl2dsykg000275svvyam4k7wz9ypi9xrfrmsgcgryczravlc"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (propagated-inputs (list python-cffi))
+    (home-page "https://github.com/asottile/ukkonen")
+    (synopsis "Implementation of bounded Levenshtein distance (Ukkonen)")
+    (description "This package is an implementation of of bounded Levenshtein
+distance (Ukkonen).")
+    (license license:expat)))
+
+(define-public python-ukpostcodeparser
+  (package
+    (name "python-ukpostcodeparser")
+    (version "1.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "UkPostcodeParser" version))
+              (sha256
+               (base32
+                "03jkf1ygbwq3akzbcjyjk1akc1hv2sfgx90306pq1nwklbpn80lk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; Tests for lowercase postcodes fail.
+         "-k" (string-join
+               (list "not test_091 "
+                     "test_097 "
+                     "test_098 "
+                     "test_125 "
+                     "test_131")
+               " and not ")
+         "ukpostcodeparser/test/parser.py")))
+    (native-inputs
+     (list python-pytest python-setuptools))
+    (home-page "https://github.com/hamstah/ukpostcodeparser")
+    (synopsis "UK Postcode parser for Python")
+    (description
+     "This library provides the @code{parse_uk_postcode} function for
+parsing UK postcodes.")
+    (license license:expat)))
+
+(define-public python-uncertainties
+  (package
+    (name "python-uncertainties")
+    (version "3.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "uncertainties" version))
+       (sha256
+        (base32
+         "0c9hl35jvld1a1vinh9mdcpfgz4ykqinlm1dj917lqbgd0z6b9bn"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools python-setuptools-scm python-wheel))
+    (propagated-inputs (list python-numpy))
+    (home-page "https://uncertainties.readthedocs.io/en/latest/")
+    (synopsis "Calculations with uncertainties")
+    (description
+     "The uncertainties package transparently handles calculations with
+numbers with uncertainties.  It can also yield the derivatives of any
+expression.")
+    (license license:bsd-3)))
+
+(define-public python-unicodedata2
+  (package
+    (name "python-unicodedata2")
+    (version "16.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "unicodedata2" version))
+       (sha256
+        (base32 "1z3llixb4cd6cc6nmyps5vv2sss14n3x6dzcc65xg75mj9jqsj05"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/fonttools/unicodedata2")
+    (synopsis "Python unicodedata backport")
+    (description "This package corresponds to the latest @code{unicodedata}
+standard Python module.")
+    (license license:asl2.0)))
+
+(define-public python-unidecode
+  (package
+    (name "python-unidecode")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Unidecode" version))
+       (sha256
+        (base32 "08rbx8vxsnj06cvrdxy80zrn9hk25lwcqfh2fdjng2rk1189hdff"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-setuptools))
+    (home-page "https://pypi.org/project/Unidecode/")
+    (synopsis "ASCII transliterations of Unicode text")
+    (description
+     "Unidecode provides ASCII transliterations of Unicode text.  Unidecode is
+useful when integrating with legacy code that doesn't support Unicode, or for
+ease of entry of non-Roman names on a US keyboard, or when constructing ASCII
+machine identifiers from human-readable Unicode strings that should still be
+somewhat intelligible.")
+    (license license:gpl2+)))
+
+(define-public python-unique-log-filter
+  (package
+    (name "python-unique-log-filter")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/twizmwazin/unique_log_filter")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "036mh6nqskck2fa1q2inasqxb9wcz2p09qcpldnnffzcy1a6kzba"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "test_unique_log_filter.py")))
+    (native-inputs (list python-flit-core))
+    (home-page "https://github.com/twizmwazin/unique_log_filter")
+    (synopsis "Log filter that removes duplicate log messages")
+    (description
+     "This library provides a filter for the @code{logging} module
+from the Python standard library which allows removing duplicate log
+messages.")
+    (license license:bsd-2)))
+
+(define-public python-uniseg
+  (package
+    (name "python-uniseg")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "uniseg" version))
+       (sha256
+        (base32 "18sj1i7xlssrsfwlr95bd4x78mfhq0v6irfx3b7fkgr17a5jbsmm"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (home-page "https://bitbucket.org/emptypage/uniseg-python")
+    (synopsis "Python library to determine Unicode text segmentations")
+    (description
+     "Uniseg is a Python package used to determine Unicode text segmentations.
+Supported segmentations include:
+@enumerate
+@item @dfn{Code point} (any value in the Unicode codespace)
+@item @dfn{Grapheme cluster} (user-perceived character made of a single or
+multiple Unicode code points, e.g. \"G\" + acute-accent)
+@item Word break
+@item Sentence break
+@item Line break
+@end enumerate")
+    (license license:expat)))
+
+(define-public python-unpaddedbase64
+  (package
+    (name "python-unpaddedbase64")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/matrix-org/python-unpaddedbase64")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n6har8pxv0mqb96lanzihp1xf76aa17jw3977drb1fgz947pnmz"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-poetry-core
+                         python-pytest
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://github.com/matrix-org/python-unpaddedbase64")
+    (synopsis "Encode and decode Base64 without “=” padding")
+    (description
+     "RFC 4648 specifies that Base64 should be padded to a multiple of 4 bytes
+using “=” characters.  However this conveys no benefit so many protocols
+choose to use Base64 without the “=” padding.")
+    (license license:asl2.0)))
+
+(define-public python-update-checker
+  (package
+    (name "python-update-checker")
+    (version "0.18.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "update-checker" version))
+       (sha256
+        (base32 "04yb5a9mi45ax50m2m0ih6gdvkk1j7gfmy83dd58i1f59axlabba"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-requests))
+    (home-page "https://github.com/bboe/update_checker")
+    (synopsis "Python module that will check for package updates")
+    (description "This package provides a Python module that will check for
+package updates.")
+    (license license:bsd-2)))
+
+(define-public python-uri-template
+  (package
+    (name "python-uri-template")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "uri-template" version))
+       (sha256
+        (base32 "1ixczlgnsjv2850r6w0cb2npwcwzdqri8njr1pi7v371cpmzh00f"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python3" "test.py")))))))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (home-page "https://gitlab.linss.com/open-source/python/uri-template")
+    (synopsis "RFC 6570 URI Template Processor")
+    (description "This package implements URI Template expansion in strict
+adherence to RFC 6570, but adds a few extensions.")
+    (license license:expat)))
+
+(define-public python-urwid
+  (package
+    (name "python-urwid")
+    (version "3.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "urwid" version))
+       (sha256
+        (base32
+         "16zdji1fdr5jbry9h01dxwnadrygs1xj415jqnhmmnlcavfh821h"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "tests"
+              ;; According to Debian these tests are cursed.
+              ;; https://salsa.debian.org/python-team/packages/urwid/-/blob/debian/2.1.2-2/debian/changelog#L141
+               "--ignore=tests/test_vterm.py")))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-wcwidth
+           ;; [optional]
+           python-pygobject
+           python-pyzmq
+           python-tornado
+           python-pyserial
+           python-twisted))
+    (home-page "https://urwid.org")
+    (synopsis "Console user interface library for Python")
+    (description
+     "Urwid is a curses-based UI/widget library for Python.  It includes many
+features useful for text console applications.")
+    (license license:lgpl2.1+)))
+
+(define-public python-urwid-2
+  (package
+    (inherit python-urwid)
+    (name "python-urwid")
+    (version "2.6.16")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "urwid" version))
+       (sha256
+        (base32 "18ijvgf1l7jvmg45x1cysn3c9rdrg1w0405acig3hk7476cj7bck"))))))
+
+(define-deprecated/public-alias python-urwid-3
+  python-urwid)            ;may be removed after 2025-11-12
+
+(define-public python-urwid-for-zulip-term
+  ;; zulip-term@0.7.0 requires exact 2.1.2 version otherewise some tests fail
+  ;; to pass, remove when no longer required.
+  (hidden-package
+   (package
+     (inherit python-urwid)
+     (version "2.1.2")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "urwid" version))
+        (sha256
+         (base32 "1bky2bra6673xx8jy0826znw6cmxs89wcwwzda8d025j3jffx2sq"))))
+     (arguments
+      (list #:tests? #f)))))
+
+(define-public python-urwid-readline
+  (package
+    (name "python-urwid-readline")
+    (version "0.15.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rr-/urwid_readline")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zhpx86gvpkziclb7bcqn73fadkzn805rjqy7lzhrza46lphq8qy"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-urwid))
+    (home-page "https://github.com/rr-/urwid_readline")
+    (synopsis "Text input widget for urwid that supports readline shortcuts")
+    (description
+     "This package provides a textbox edit widget for @code{python-urwid} that
+supports @code{readline} shortcuts.")
+    (license license:expat)))
+
+(define-public python-urwidgets
+  (package
+    (name "python-urwidgets")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "urwidgets" version))
+       (sha256
+        (base32 "1vrydw9h8c5gi89dnv12a9cdyyxaffvxl1kq51f118cxjk9brwpr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-urwid-2))
+    (home-page "https://github.com/AnonymouX47/urwidgets")
+    (synopsis "Collection of widgets for urwid")
+    (description
+     "This package provides a collection of widgets for urwid.")
+    (license license:expat)))
+
+(define-public python-urwidtrees
+  (package
+    (name "python-urwidtrees")
+    (version "1.0.4")
+    (source
+      (origin
+        (method git-fetch)
+        ;; package author intends on distributing via github rather than pypi:
+        ;; https://github.com/pazz/alot/issues/877#issuecomment-230173331
+        (uri (git-reference
+               (url "https://github.com/pazz/urwidtrees")
+               (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32
+           "17k0gx8i7wrzw6skzdjh9b8v3n6lb5zvg9jrybc3d09p8ipvc31i"))))
+    (build-system pyproject-build-system)
+    (arguments
+     '(#:tests? #f)) ; no tests
+    (propagated-inputs (list python-urwid))
+    (native-inputs (list python-mock python-setuptools python-wheel))
+    (home-page "https://github.com/pazz/urwidtrees")
+    (synopsis "Tree widgets for urwid")
+    (description "Urwidtrees is a Widget Container API for the @code{urwid}
+toolkit.  Use it to build trees of widgets.")
+    (license license:gpl3+)))
+
+(define-public python-user-agents
+  (package
+    (name "python-user-agents")
+    (version "2.2.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/selwin/python-user-agents")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+          (base32 "0pcbjqj21c2ixhl414bh2h8khi8y1igzfpkyqwan1pakix0lq45a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-ua-parser))
+    (home-page "https://github.com/selwin/python-user-agents")
+    (synopsis "User Agent strings parsing library")
+  (description
+   "A library to identify devices (phones, tablets) and their capabilities by
+parsing (browser/HTTP) user agent strings.")
+  (license license:expat)))
+
+(define-public python-userpath
+  (package
+    (name "python-userpath")
+    (version "1.9.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "userpath" version))
+       (sha256
+        (base32 "05fqxzdi27vqm5lywxs6bm2j4d8k91fx2ihqhg65g4h6mf6jhlkc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; See https://github.com/ofek/userpath/issues/43.
+     ;; In Guix, tests try to find the temporary build directory in PATH, but
+     ;; only the store output is present.
+     (list #:tests? #f))
+    (native-inputs (list python-hatchling python-pytest))
+    (propagated-inputs (list python-click))
+    (home-page "https://github.com/ofek/userpath")
+    (synopsis "Add locations to the user's PATH")
+    (description "This package provides a tool for modifying a user's PATH.")
+    (license license:expat)))
+
+(define-public python-userspacefs
+  (package
+    (name "python-userspacefs")
+    (version "2.0.5")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "userspacefs" version))
+        (sha256
+         (base32
+          "0v0qkdwfc61s2yiq7d7amin93x5biypfmi9pfhf8yj1rdpx5yvsx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-fusepyng))
+    (home-page "https://thelig.ht/code/userspacefs/readme.html")
+    (synopsis "User-space file systems for Python")
+    (description
+     "@code{userspacefs} is a library that allows you to easily write
+user-space file systems in Python.")
+    (license license:gpl3+)))
+
+(define-public python-utils
+  (package
+    (name "python-utils")
+    (version "3.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python_utils" version))
+       (sha256
+        (base32 "18292j4p1bvlpbrfj2cgkdby6dpgnl5gbjwly0qb4pj1j914nmzb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; Drop test coverage requirements.
+              (substitute* "pytest.ini"
+                ((".*--cov.*") "")))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools))
+    (propagated-inputs
+     (list python-loguru
+           python-typing-extensions))
+    (home-page "https://github.com/WoLpH/python-utils")
+    (synopsis "Convenient utilities not included with the standard Python install")
+    (description
+     "Python Utils is a collection of small Python functions and classes
+which make common patterns shorter and easier.")
+    (license license:bsd-2)))
 
 (define-public python-validate-email
   (package
