@@ -3800,7 +3800,7 @@ consumption.")
 (define-public kio
   (package
     (name "kio")
-    (version "6.18.0")
+    (version "6.19.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3809,7 +3809,7 @@ consumption.")
                     name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1nkv72v6na8c07lyn2py3d1x8a48c3kn8fg6fk5007vy830wwym9"))))
+                "0rq5rzjahim553nn8qf8qqkfzgbgmp5dj2y54yhr3b0sr7jlrph6"))))
     (build-system cmake-build-system)
     (propagated-inputs
      (list acl
