@@ -10190,6 +10190,38 @@ changed the process is restarted.")
 request/response web apps to larger, grown applications.")
     (license license:repoze)))
 
+(define-public python-pyramid-chameleon
+  ;; PyPI lacks a fresh release, use the latest commit assosiated with
+  ;; unrleased version, see:
+  ;; <https://github.com/Pylons/pyramid_chameleon/issues/27>
+  (let ((commit "956c77ba37120c430e871c834d3cd4ed5ac8dccf")
+        (revision "0"))
+    (package
+      (name "python-pyramid-chameleon")
+      (version (git-version "0.4.dev0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/Pylons/pyramid_chameleon")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0rsb921xi7736h1xikc904bq2zzmrj1g8qgyimjw5wxdcd8927b1"))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list python-pytest
+             python-setuptools))
+      (propagated-inputs
+       (list python-chameleon
+             python-pyramid))
+      (home-page "https://github.com/Pylons/pyramid_chameleon")
+      (synopsis "Chameleon template compiler for pyramid")
+      (description
+       "These package provides bindings for the Chameleon templating system
+ for the Pyramid web framework.")
+      (license license:repoze))))
+
 (define-public python-random-user-agent
   (package
     (name "python-random-user-agent")
