@@ -95,6 +95,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
@@ -4750,6 +4751,55 @@ a HTTP context
     (description
      "This package implements a functionality of handling FIFOs in a sane
 way.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-containerd-go-runc
+  (package
+    (name "go-github-com-containerd-go-runc")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containerd/go-runc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03f6a44j24g64x0zwx6daqbssbka0wcvj3fkjz4rvqx5dz3n7xhf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containerd/go-runc"
+      #:test-flags #~(list "-skip" "TestRuncStarted")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs import-path #:allow-other-keys)
+              (substitute* (string-append "src/" import-path "/runc_test.go")
+                (("Command: \"/bin/true\",")
+                 (string-append "Command: \""
+                                (search-input-file inputs "/bin/true")
+                                "\",\n"))
+                (("Command: \"/bin/false\",")
+                 (string-append "Command: \""
+                                (search-input-file inputs "/bin/false")
+                                "\",\n")))
+              (substitute* (string-append "src/" import-path "/runc.go")
+                (("return -1, err")
+                 "fmt.Errorf(\"Achou\")\n  return -1, err")))))))
+    (inputs
+     (list coreutils))
+    (propagated-inputs
+     (list go-github-com-containerd-console
+           go-github-com-opencontainers-runtime-spec
+           go-github-com-sirupsen-logrus
+           go-golang-org-x-sys))
+    (home-page "https://github.com/containerd/go-runc")
+    (synopsis "Runc bindings for Golang")
+    (description
+     "This package implements a functionality for consuming the @code{runc}
+ binary in Go applications.  It tries to expose all the settings and features
+of the @code{runc} CLI.")
     (license license:asl2.0)))
 
 (define-public go-github-com-containerd-log
