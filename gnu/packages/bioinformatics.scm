@@ -25330,7 +25330,9 @@ module capable of computing base-level alignments for very large sequences.")
                                         "TestFind"
                                         ;; Fail with 'Unsupported JPEG data precision 12'.
                                         "TestImageReaderRandomEmpty"
-                                        "TestTransferSyntax")
+                                        "TestTransferSyntax"
+                                        ;; Relies on non-existent file.
+                                        "TestJSON1")
                                   "|")
       #:configure-flags
       #~(list "-DGDCM_BUILD_DOCBOOK_MANPAGES=ON"
@@ -25338,7 +25340,13 @@ module capable of computing base-level alignments for very large sequences.")
               "-DGDCM_DOCUMENTATION:BOOL=ON"
               (string-append "-DGDCM_INSTALL_DOC_DIR="
                              #$output:doc "/share/doc/" #$name)
-              "-DGDCM_PDF_DOCUMENTATION:BOOL=OFF")
+              "-DGDCM_PDF_DOCUMENTATION:BOOL=OFF"
+              "-DGDCM_USE_SYSTEM_CHARLS=ON"
+              "-DGDCM_USE_SYSTEM_EXPAT=ON"
+              "-DGDCM_USE_SYSTEM_JSON=ON"
+              "-DGDCM_USE_SYSTEM_OPENSSL=ON"
+              "-DGDCM_USE_SYSTEM_UUID=ON"
+              "-DGDCM_USE_SYSTEM_ZLIB=ON")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-HOME
@@ -25347,6 +25355,12 @@ module capable of computing base-level alignments for very large sequences.")
             (lambda _
               (setenv "HOME" "/tmp"))))))
     (native-inputs (list docbook-xsl doxygen graphviz libxslt))
+    (inputs (list charls
+                  expat
+                  json-c
+                  openssl
+                  (list util-linux "lib")
+                  zlib))
     (home-page "https://sourceforge.net/projects/gdcm/")
     (synopsis "Grassroots DICOM library")
     (description
