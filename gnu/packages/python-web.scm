@@ -10222,6 +10222,46 @@ request/response web apps to larger, grown applications.")
  for the Pyramid web framework.")
       (license license:repoze))))
 
+(define-public python-pyramid-debugtoolbar
+  (package
+    (name "python-pyramid-debugtoolbar")
+    (version "4.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyramid_debugtoolbar" version))
+       (sha256
+        (base32 "0gdlc7vcga4vzma53h5csnhh4gwfmv3w8v9y5fhwqpy8979qis3i"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Large diff assertion not equal faileurs.
+      #~(list #$@(map (lambda (test)
+                        (string-append "--deselect=tests"
+                                       "/test_panels/test_sqla.py::" test))
+                      (list "TestSimpleSelect::test_panel"
+                            "TestTransactionCommit::test_panel"
+                            "TestTransactionRollback::test_panel")))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-webtest))
+    (propagated-inputs
+     (list python-pyramid
+           python-pyramid-chameleon
+           python-pyramid-jinja2
+           python-pyramid-mako
+           ;; python-selenium ; see: guix/guix#3478
+           python-sqlalchemy
+           python-waitress))
+    (home-page "https://github.com/Pylons/pyramid_debugtoolbar")
+    (synopsis "Pyramid debug toolbar")
+    (description
+     "This package provides an interactive HTML debugger for Pyramid application
+development.")
+    (license license:bsd-3)))
+
 (define-public python-pyramid-jinja2
   (package
     (name "python-pyramid-jinja2")
