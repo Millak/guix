@@ -118,42 +118,41 @@
                (base32
                 "1r354y20rkjp034mjbmgk7zd39yxd89yqrbdlx5im4xvw8z3dp53"))))
     (build-system python-build-system)
-    (native-inputs
-     (list file intltool gobject-introspection))
+    (native-inputs (list file gobject-introspection intltool))
     (inputs
-     `(("bash" ,bash-minimal)           ; for wrap-program
-       ("gdk-pixbuf" ,gdk-pixbuf)
-       ("gexiv2" ,gexiv2)
-       ("gst-libav" ,gst-libav)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("gst-plugins-good" ,gst-plugins-good)
-       ("gstreamer" ,gstreamer)
-       ("libgudev" ,libgudev)
-       ("libnotify" ,libnotify)
-       ("libmediainfo" ,libmediainfo)
-       ("usdisks" ,udisks)
-       ("python-babel" ,python-babel)
-       ("python-pyqt" ,python-pyqt)
-       ("python-pygobject" ,python-pygobject)
-       ("python-gphoto2" ,python-gphoto2)
-       ("python-pymediainfo" ,python-pymediainfo)
-       ("python-pyzmq" ,python-pyzmq)
-       ("python-tornado" ,python-tornado)
-       ("python-psutil" ,python-psutil)
-       ("python-pyxdg" ,python-pyxdg)
-       ("python-arrow" ,python-arrow)
-       ("python-dateutil" ,python-dateutil)
-       ("python-easygui" ,python-easygui)
-       ("python-colour" ,python-colour)
-       ("python-pymediainfo" ,python-pymediainfo)
-       ("python-show-in-file-manager" ,python-show-in-file-manager)
-       ("python-sortedcontainers" ,python-sortedcontainers)
-       ("python-rawkit" ,python-rawkit)
-       ("python-requests" ,python-requests)
-       ("python-colorlog" ,python-colorlog)
-       ("python-pyprind" ,python-pyprind)
-       ("python-tenacity" ,python-tenacity)
-       ("perl-image-exiftool" ,perl-image-exiftool)))
+     (list bash-minimal                 ;for wrap-program
+           gdk-pixbuf
+           gexiv2
+           gst-libav
+           gst-plugins-base
+           gst-plugins-good
+           gstreamer
+           libgudev
+           libmediainfo
+           libnotify
+           perl-image-exiftool
+           python-arrow
+           python-babel
+           python-colorlog
+           python-colour
+           python-dateutil
+           python-easygui
+           python-gphoto2
+           python-psutil
+           python-pygobject
+           python-pymediainfo
+           python-pymediainfo
+           python-pyprind
+           python-pyqt
+           python-pyxdg
+           python-pyzmq
+           python-rawkit
+           python-requests
+           python-show-in-file-manager
+           python-sortedcontainers
+           python-tenacity
+           python-tornado
+           udisks))
     (arguments
      (list
       #:tests? #f                       ;no test suite
