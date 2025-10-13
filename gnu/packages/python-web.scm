@@ -10338,6 +10338,32 @@ Pyramid web framework.")
 framework.")
       (license license:repoze))))
 
+(define-public python-pyramid-retry
+  (package
+    (name "python-pyramid-retry")
+    (version "2.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyramid_retry" version))
+       (sha256
+        (base32 "1jf07v6zhli0abgm2qajzfwg68bl9zy4xygjwl4svawbwrm2ga5s"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-webtest))
+    (propagated-inputs
+     (list python-pyramid
+           python-zope-interface))
+    (home-page "https://github.com/Pylons/pyramid_retry")
+    (synopsis "Pyramid execution policy supporting retrying failed requests")
+    (description
+     "@code{pyramid_retry} is an execution policy for Pyramid that wraps requests
+and can retry them a configurable number of times under certain \"retryable\"
+error conditions before indicating a failure to the client.")
+    (license license:expat)))
+
 (define-public python-random-user-agent
   (package
     (name "python-random-user-agent")
