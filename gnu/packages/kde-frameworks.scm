@@ -4947,7 +4947,7 @@ need.")
 (define-public ktextaddons
   (package
     (name "ktextaddons")
-    (version "1.7.1")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
@@ -4955,7 +4955,7 @@ need.")
              "mirror://kde/stable/" name "/" name "-" version ".tar.xz"))
        (sha256
         (base32
-         "0zmfk3lyfaqgn3g1nclqcm7fyqgr0hyib9w6685w95g0k3i2bkwh"))))
+         "16cc671qcbg4g4lmx8yfhygmyg0ha00l3sk4w4cgh6q37mfn170m"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
