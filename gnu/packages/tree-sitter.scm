@@ -1030,6 +1030,13 @@ which will be used as a snippet in origin."
    #:repository-url "https://github.com/rolandwalker/tree-sitter-pgn"
    #:license license:bsd-2))
 
+(define-public tree-sitter-php
+  (tree-sitter-grammar
+   "php" "PHP"
+   "05qhz14vvqgwpxgdfr1skwgrv041zwc3wxjyx6y679965nn0lrji"
+   "0.23.12"
+   #:grammar-directories '("php" "php_only")))
+
 (define-public tree-sitter-plantuml
   ;; No tags
   (let ((commit "c7361a1d481dc1ff6700b14ea1d5efc549b72713")
@@ -1049,13 +1056,6 @@ which will be used as a snippet in origin."
               "u\\{[0-9a-fA-F]+\\}"))
            (delete-file "binding.gyp")
            (delete-file-recursively "bindings"))))))
-
-(define-public tree-sitter-php
-  (tree-sitter-grammar
-   "php" "PHP"
-   "05qhz14vvqgwpxgdfr1skwgrv041zwc3wxjyx6y679965nn0lrji"
-   "0.23.12"
-   #:grammar-directories '("php" "php_only")))
 
 (define-public tree-sitter-prisma
   (tree-sitter-grammar
