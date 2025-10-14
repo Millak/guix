@@ -756,6 +756,14 @@ which will be used as a snippet in origin."
    "11j4ifhl5hsmb2sa651cp5xds9cjgjynl86yivvk6bnr2ba0xw9s"
    "0.23.5"))
 
+(define-public tree-sitter-java-properties
+  (tree-sitter-grammar
+   "java-properties" "Java properties"
+   "0y2w3szzmn4y6m0fh0zi4xqfwr9lm849abrpsi3i3dlz9rnhcs71"
+   "0.3.0"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-properties"))
+
 (define-public tree-sitter-javascript
   (tree-sitter-grammar
    "javascript" "JavaScript(JSX)"
