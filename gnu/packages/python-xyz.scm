@@ -12727,18 +12727,17 @@ the AST node being executed.")
 (define-public python-roifile
   (package
     (name "python-roifile")
-    (version "2020.11.28")
+    (version "2025.5.10")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "roifile" version))
         (sha256
-          (base32
-            "04argnc7qccybkrj9ww18bf81ghsghhh93hnqy3p111rcdlyn66p"))))
-    (build-system python-build-system)
-    (arguments `(#:tests? #f)) ; there are none
-    (propagated-inputs
-      (list python-numpy))
+          (base32 "1kiwylcmxckzrqj3xn5ljcjfyx6y2s8bnqjd5psmkb4mjrwiypcf"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ; There are none.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-numpy))
     (home-page "https://www.lfd.uci.edu/~gohlke/")
     (synopsis "Read and write ImageJ ROI format")
     (description "Roifile is a Python library to read, write, create, and plot
