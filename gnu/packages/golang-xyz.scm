@@ -9558,6 +9558,30 @@ provides a buffered io.Writer that is flushed at a timed interval.")
 according @@url{https://rfc-editor.org/rfc/rfc8785.html, RFC 8785}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-grafana-regexp
+  (package
+    (name "go-github-com-grafana-regexp")
+    (version "0.0.0-20240518133315-a468a5bfb3bc")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/grafana/regexp")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vhncrr5n8f150rg0q01i7yc58b0jpcci2h7zgiwv9wr5k0yaqs2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/grafana/regexp"))
+    (home-page "https://github.com/grafana/regexp")
+    (synopsis "Alternative implementation of Go's std @code{regexp} package")
+    (description
+     "This package provides an alternative implementation of @code{regexp},
+ with some code optimisations to make it run faster.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-guptarohit-asciigraph
   (package
     (name "go-github-com-guptarohit-asciigraph")
