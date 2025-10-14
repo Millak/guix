@@ -1057,6 +1057,18 @@ which will be used as a snippet in origin."
            (delete-file "binding.gyp")
            (delete-file-recursively "bindings"))))))
 
+(define-public tree-sitter-po
+  (let ((version "0.0.1")
+        (commit "bd860a0f57f697162bf28e576674be9c1500db5e")
+        (revision "0"))
+    (tree-sitter-grammar
+     "po" "GNU gettext translation file (PO/POT)"
+     "1d28lyg0sx9xs09y68618cxnhi5sacfschcrv4xmy06k21bp8azx"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-po")))
+
 (define-public tree-sitter-prisma
   (tree-sitter-grammar
    "prisma" "Prisma"
