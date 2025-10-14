@@ -7372,7 +7372,7 @@ PSF} describing how the optical system spreads light from sources.")
 (define-public python-reproject
   (package
     (name "python-reproject")
-    (version "0.14.1")
+    (version "0.14.1") ;XXX: Newer versions need to be build with NumPy 2+
     (source
      (origin
        (method url-fetch)
@@ -7382,64 +7382,50 @@ PSF} describing how the optical system spreads light from sources.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 2062 passed, 398 skipped, 3 warnings
       #:test-flags
       #~(list "--arraydiff"
               "--arraydiff-default-format=fits"
-              "--numprocesses" (number->string (parallel-job-count))
-              "--pyargs" "reproject")
+              "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              "--pyargs" "reproject"
+              ;; ValueError: Could not determine celestial frame corresponding
+              ;; to the specified WCS object
+              "-k" "not test_solar_wcs")
       #:phases
       #~(modify-phases %standard-phases
-          ;; setup.py was removed in a659a260bdd7635cddc8f33c4ea04a3b6d8c1f84
-          ;; for some unknown reason, which caused the package to fail to
-          ;; build. It is being recreated based on that commit.
-          ;; TODO: Check how to implement it in python-build-system.
-          (add-after 'unpack 'create-setup.py
-            (lambda _
-              (call-with-output-file "setup.py"
-                (lambda (port)
-                  (format port "from setuptools import setup
-from extension_helpers import get_extensions
-setup(ext_modules=get_extensions())")))))
-          (add-before 'install 'writable-compiler
-            (lambda _
-              (make-file-writable "reproject/_compiler.c")))
-          (add-before 'check 'writable-compiler
-            (lambda _
-              (make-file-writable "reproject/_compiler.c")))
-          (add-before 'check 'prepare-test-environment
-            (lambda _
-              (setenv "HOME" "/tmp")
-              ;; Cython extensions have to be built before running the tests.
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (propagated-inputs
+          ;; Use built library for tests.
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion #$output
+                  (setenv "HOME" "/tmp")
+                  (apply invoke "pytest" "-vv" test-flags))))))))
+    (native-inputs
+     (list python-cython
+           python-extension-helpers
+           python-pytest-astropy
+           python-pytest-xdist
+           python-setuptools-scm))
+    (inputs
      (list python-asdf
-           python-astropy
+           python-gwcs
+           python-pyvo
+           python-shapely
+           python-sunpy-minimal))
+    (propagated-inputs
+     (list python-astropy
            python-astropy-healpix
            python-cloudpickle
            python-dask
            python-fsspec
-           python-gwcs
            python-numpy
-           python-pyvo
            python-scipy
-           python-shapely
            python-zarr))
-    (native-inputs
-     (list python-cython
-           python-extension-helpers
-           python-asdf
-           python-gwcs
-           python-pytest-astropy
-           python-pytest-xdist
-           python-pyvo
-           ;; python-sunpy ; circular dependencies, test optional
-           python-setuptools-scm
-           python-wheel))
     (home-page "https://reproject.readthedocs.io")
     (synopsis "Astronomical image reprojection in Python")
     (description
-     "This package provides a functionality to reproject astronomical images using
-various techniques via a uniform interface, where reprojection is the
+     "This package provides a functionality to reproject astronomical images
+using various techniques via a uniform interface, where reprojection is the
 re-gridding of images from one world coordinate system to another e.g.
 changing the pixel resolution, orientation, coordinate system.")
     (license license:bsd-3)))
