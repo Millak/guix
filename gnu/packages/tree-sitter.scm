@@ -1121,6 +1121,14 @@ which will be used as a snippet in origin."
    #:repository-url
    "https://github.com/tree-sitter-grammars/tree-sitter-puppet"))
 
+(define-public tree-sitter-purescript
+  (tree-sitter-grammar
+   "purescript" "PureScript"
+   "11c57k50kppc560a6qr3wpxppl9p4w7a7yn9g51ybzd28vc55qxl"
+   "0.3.0"
+   #:repository-url
+   "https://github.com/postsolar/tree-sitter-purescript"))
+
 (define-public tree-sitter-python
   (tree-sitter-grammar
    "python" "Python"
