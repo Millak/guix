@@ -598,6 +598,36 @@ required dependencies.  The HTTP response contains the aggregated health
 result and details about the health status of each component.")
     (license license:expat)))
 
+(define-public go-github-com-aliyun-aliyun-oss-go-sdk
+  (package
+    (name "go-github-com-aliyun-aliyun-oss-go-sdk")
+    (version "3.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aliyun/aliyun-oss-go-sdk")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s9c3if0is8m52hvb1czh4rb7ck4vk654wbzyq44iq1rqfr6y1ly"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests require more packages.
+      #:tests? #f
+      #:import-path "github.com/aliyun/aliyun-oss-go-sdk"))
+    ;; (native-inputs (list
+    ;;   go-github-com-go-check-check
+    ;;   go-github-com-aliyun-alibaba-cloud-sdk-go))
+    (propagated-inputs (list go-golang-org-x-time))
+    (home-page "https://github.com/aliyun/aliyun-oss-go-sdk")
+    (synopsis "Alibaba cloud OSS SDK for Go")
+    (description
+     "This package provides a Go SDK based on the official
+APIs of Alibaba Cloud @acronym{OSS, Object Storage Service}.")
+    (license license:expat)))
+
 (define-public go-github-com-anacrolix-envpprof
   (package
     (name "go-github-com-anacrolix-envpprof")
