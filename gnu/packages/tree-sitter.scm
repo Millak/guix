@@ -1353,6 +1353,18 @@ files.")))
    "0.7.0"
    #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-toml"))
 
+(define-public tree-sitter-twig
+  (let ((version "0.7.0")
+        (commit "40d17f0eb990215e12531abe29ee7691d7ca99a5")
+        (revision "0"))
+    (tree-sitter-grammar
+     "twig" "Twig"
+     "06a6rfgh9mmzqvs7bp8y92axa4fni4c72s82bdin7j3a0x5mxwi6"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url "https://github.com/kaermorchen/tree-sitter-twig"
+     #:license license:mpl2.0)))
+
 (define-public tree-sitter-typescript
   (tree-sitter-grammar
    "typescript" "TypeScript and TSX"
