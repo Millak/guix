@@ -828,6 +828,18 @@ which will be used as a snippet in origin."
          (delete-file "binding.gyp")
          (delete-file-recursively "bindings")))))
 
+(define-public tree-sitter-linkerscript
+  (let ((version "1.0.0")
+        (commit "f99011a3554213b654985a4b0a65b3b032ec4621")
+        (revision "0"))
+    (tree-sitter-grammar
+     "linkerscript" "Linker script"
+     "004irhiaj5n4sgr0fqwqxnijsbalvn3ahc2ys4s9l33rr4hhr3qf"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-linkerscript")))
+
 (define-public tree-sitter-lua
   (tree-sitter-grammar
    "lua" "Lua"
