@@ -5737,9 +5737,9 @@ packages:
 guix shell -C gcc-toolchain cmake coreutils grep sed make -- @dots{}
 @end example
 
-Or perhaps you'll find that you could just as well provide a definition
-for your package---@pxref{Defining Packages,,, guix, GNU Guix Reference
-Manual}, to learn more on how to do that.
+Or perhaps you'll find that you could just as well provide a package
+definition for your code---@pxref{Defining Packages,,, guix, GNU Guix
+Reference Manual}, to learn more on how to do that.
 
 Eventually, you'll have a list of packages that satisfies your needs.
 
