@@ -721,6 +721,14 @@ which will be used as a snippet in origin."
    "0slhrmwcw2xax4ylyaykx4libkzlaz2lis8x8jmn6b3hbdxlrpix"
    "0.23.2"))
 
+(define-public tree-sitter-hyprlang
+  (tree-sitter-grammar
+   "hyprlang" "Hyprlang"
+   "171p3hj36a1jqflg9xv138445j4m4m16na6bgpm1km3l67jhvl54"
+   "3.1.0"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-hyprlang"))
+
 (define-public tree-sitter-janet
   (tree-sitter-grammar
    "janet" "Janet"
