@@ -39,6 +39,7 @@
 ;;; Copyright © 2023 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2024 Saku Laesvuori <saku@laesvuori.fi>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Hennadii Stepanov <hebasto@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -154,7 +155,7 @@
   ;; <https://bitcoincore.org/en/lifecycle/#schedule>.
   (package
     (name "bitcoin-core")
-    (version "29.1")
+    (version "30.0")
     (source (origin
               (method url-fetch)
               (uri
@@ -162,50 +163,24 @@
                               version "/bitcoin-" version ".tar.gz"))
               (sha256
                (base32
-                "0sx0rzx1vk7n9l1nfki08yk52cwjk30dgzsl2mddic3kw9564zq6"))))
+                "0x39bqd9ql7b6s7sj8ws8gw6g4nbgf6cplnys2lrmvfza56jliwv"))))
     (build-system qt-build-system)
-    (native-inputs
-     (list bash ; provides the sh command for system_tests
-           coreutils ; provides the cat, echo and false commands for system_tests
-           pkg-config
-           python ; for the tests
-           python-pyzmq ; for the tests
-           qttools-5))
-    (inputs
-     (list bdb-4.8 ; 4.8 required for compatibility
-           boost
-           libevent
-           qrencode
-           qtbase-5
-           sqlite
-           zeromq))
     (arguments
      (list #:configure-flags
            #~(list
-              "-DCMAKE_SKIP_INSTALL_ALL_DEPENDENCY=TRUE"
               "-DBUILD_GUI=ON"
               "-DBUILD_BENCH=ON"
-              "-DWITH_BDB=ON"
-              "-DWITH_ZMQ=ON")
+              "-DWITH_ZMQ=ON"
+              ;; TODO: Enable IPC once capnproto is built with -fPIC.
+              "-DENABLE_IPC=OFF")
            #:phases
            #~(modify-phases %standard-phases
-               (add-before 'configure 'make-qt-deterministic
-                 (lambda _
-                   ;; Make Qt deterministic.
-                   (setenv "QT_RCC_SOURCE_DATE_OVERRIDE" "1")))
                (add-before 'build 'set-no-git-flag
                  (lambda _
                    ;; Make it clear we are not building from within a git repository
                    ;; (and thus no information regarding this build is available
                    ;; from git).
                    (setenv "BITCOIN_GENBUILD_NO_GIT" "1")))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (if tests?
-                       (invoke "ctest"
-                               "--parallel" (number->string (parallel-job-count))
-                               "--output-on-failure")
-                       (format #t "test suite not run~%"))))
                (add-before 'check 'set-home
                  (lambda _
                    ;; Tests write to $HOME.
@@ -215,6 +190,20 @@
                    (invoke
                     "python3" "./test/functional/test_runner.py"
                     (string-append "--jobs=" (number->string (parallel-job-count)))))))))
+    (native-inputs
+     (list bash ; provides the sh command for system_tests
+           coreutils ; provides the cat, echo and false commands for system_tests
+           pkg-config
+           python ; for the tests
+           python-pyzmq ; for the tests
+           qttools))
+    (inputs
+     (list boost
+           libevent
+           qrencode
+           qtbase
+           sqlite
+           zeromq))
     (home-page "https://bitcoincore.org/")
     (synopsis "Bitcoin peer-to-peer client")
     (description
