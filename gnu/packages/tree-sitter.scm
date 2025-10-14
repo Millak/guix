@@ -853,6 +853,18 @@ which will be used as a snippet in origin."
          (delete-file-recursively "test/highlight") ;FIXME
          #$(tree-sitter-delete-generated-files grammar-directories)))))
 
+(define-public tree-sitter-luadoc
+  (let ((version "1.1.0")
+        (commit "818acda56809f994274de64a42f97f509b3c0ad2")
+        (revision "0"))
+    (tree-sitter-grammar
+     "luadoc" "Luadoc/LuaCATS"
+     "1sb0zgd2gk0x18c45f5y9pz5fr8mil9adsspa9q7kbd2hwrf14gi"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-luadoc")))
+
 (define-public tree-sitter-markdown
   (tree-sitter-grammar
    "markdown" "Markdown (CommonMark Spec v0.30)"
