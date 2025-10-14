@@ -879,7 +879,7 @@ It is a fork of Clementine aimed at music collectors and audiophiles.")
            ao
            elogind ;for MPRIS support
            faad2
-           ffmpeg
+           ffmpeg-6 ;ip/ffmpeg.so fails to build with ffmpeg 8
            flac
            jack-1
            libcddb
