@@ -1143,6 +1143,14 @@ which will be used as a snippet in origin."
    #:repository-url
    "https://github.com/tree-sitter-grammars/tree-sitter-pymanifest"))
 
+(define-public tree-sitter-python-requirements
+  (tree-sitter-grammar
+   "python-requirements" "Python requirements.txt"
+   "1gwp1cwsyr67qclfm9f8ilakaq747qzqmj3bgy0jacjjjs0xgk32"
+   "0.5.0"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-requirements"))
+
 (define-public tree-sitter-qml
   (let ((version "0.2.0") ; Tagged, but we use a more recent commit
         (commit "0889da4632bba3ec6f39ef4102625654890c15c1")
