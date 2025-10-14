@@ -984,6 +984,14 @@ which will be used as a snippet in origin."
    "0.24.0"
    #:grammar-directories '("grammars/interface" "grammars/ocaml" "grammars/type")))
 
+(define-public tree-sitter-odin
+  (tree-sitter-grammar
+   "odin" "Odin"
+   "05ljga1gqhx8hr7ldpcbrz79ixni5qyz6ckyyh7chxnkl5fkjp5y"
+   "1.3.0"
+   #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-odin"
+   #:article "an"))
+
 (define-public tree-sitter-org
   ;; There are a lot of additions, the last tag was placed a while ago
   (let ((commit "64cfbc213f5a83da17632c95382a5a0a2f3357c1")
