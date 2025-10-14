@@ -9154,17 +9154,17 @@ SunPy.")
 (define-public python-sunpy
   (package
     (name "python-sunpy")
-    (version "7.0.1")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunpy" version))
        (sha256
-        (base32 "1q7z74jf9r65clrq7g6mqqap6455krfp4mxbjs3039jk5gs8d47m"))))
+        (base32 "1frd7cw18cxmkrflzkwda4nxxbidn64n9q45ldn6jvk6nn8bwy6q"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 2439 passed, 3 xfailed, 35 warnings
+      ;; tests: 2448 passed, 3 xfailed, 35 warnings
       #:test-flags
       #~(list "--pyargs" "sunpy"
               "--numprocesses" (number->string (min 8 (parallel-job-count)))
@@ -9198,12 +9198,11 @@ SunPy.")
                   (apply invoke "pytest" "-vv" test-flags))))))))
     (native-inputs
      (list nss-certs-for-test
-           opencv ; For tests, includes OpenCV-Python
            python-aiohttp
            python-extension-helpers
            python-hvpy
            python-jplephem
-           ;; python-mplcairo ; Not packed yet in Guix
+           python-pytest-asdf-plugin
            python-pytest-astropy
            python-pytest-mock
            python-pytest-mpl
@@ -9211,27 +9210,33 @@ SunPy.")
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
-     (list python-asdf
+     (list python-astropy
+           python-numpy
+           python-packaging
+           python-parfive
+           python-pyerfa
+           python-requests
+           python-fsspec
+           ;; [optional]
+           opencv
+           python-aiobotocore
+           python-asdf
            python-asdf-astropy
-           python-astropy
            python-beautifulsoup4
            python-cdflib
+           python-contourpy
            python-dask
-           python-dateutil
            python-drms
+           python-fsspec
            python-glymur
            python-h5netcdf
            python-h5py
-           python-hypothesis
+           python-lxml
            python-matplotlib
            python-mpl-animators
-           python-numpy
-           python-packaging
            python-pandas
-           python-parfive
-           python-pyerfa
+           python-beautifulsoup4
            python-reproject
-           python-requests
            python-scikit-image
            python-scipy
            ;; python-spiceypy ; Not packed yet in Guix, long journey.
