@@ -713,7 +713,7 @@ formats, and can perform many different manipulations.")
 (define-public uuu
   (package
     (name "uuu")
-    (version "1.5.201")
+    (version "1.5.233")
     (source
      (origin
        (method git-fetch)
@@ -723,7 +723,7 @@ formats, and can perform many different manipulations.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0jil04khy0lxllhapdm86yyq9i3xqrlvmf6g5r53qmq9jyvxwlhv"))))
+         "08pck42sywg0ibj79lhd3iv9z6bvr5g5bqvkls477x9x85nbsw67"))))
     (build-system cmake-build-system)
     (arguments
      (list
