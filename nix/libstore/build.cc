@@ -25,6 +25,7 @@
 #include <sys/utsname.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <grp.h>
 #include <errno.h>
 #include <stdio.h>
 #include <cstring>
@@ -1646,15 +1647,81 @@ static void initializeUserNamespace(pid_t child,
 				    uid_t hostUID = getuid(),
 				    gid_t hostGID = getgid(),
                                     uid_t guestUID = guestUID,
-                                    gid_t guestGID = guestGID)
+                                    gid_t guestGID = guestGID,
+				    const std::vector<std::pair<gid_t, gid_t>> extraGIDs = {},
+				    bool haveCapSetGID = false)
 {
     writeFile("/proc/" + std::to_string(child) + "/uid_map",
 	      (format("%d %d 1") % guestUID % hostUID).str());
 
-    writeFile("/proc/" + std::to_string(child) + "/setgroups", "deny");
+    if (!haveCapSetGID && !extraGIDs.empty()) {
+	try {
+	    Strings args = {
+		std::to_string(child),
+		std::to_string(guestGID), std::to_string(hostGID), "1"
+	    };
+	    for (auto &pair: extraGIDs) {
+		args.push_back(std::to_string(pair.second));
+		args.push_back(std::to_string(pair.first));
+		args.push_back("1");
+	    }
 
-    writeFile("/proc/" + std::to_string(child) + "/gid_map",
-	      (format("%d %d 1") % guestGID % hostGID).str());
+	    runProgram("newgidmap", true, args);
+	    printMsg(lvlChatty,
+		     format("mapped %1% extra GIDs into namespace of PID %2%")
+		     % extraGIDs.size() % child);
+
+	    return;
+	} catch (const ExecError &e) {
+	    ignoreException();
+	}
+    }
+
+    if (!haveCapSetGID)
+	writeFile("/proc/" + std::to_string(child) + "/setgroups", "deny");
+
+    auto content = (format("%d %d 1\n") % guestGID % hostGID).str();
+    if (haveCapSetGID) {
+	for (auto &mapping: extraGIDs) {
+	    content += (format("%d %d 1\n") % mapping.second % mapping.first).str();
+	}
+    }
+    writeFile("/proc/" + std::to_string(child) + "/gid_map", content);
+}
+
+/* Maximum number of supplementary groups per user account.  */
+static const size_t maxGroups = 64;
+
+/* Return the ID of the "kvm" group or -1 if it does not exist or is not part
+   of the current user's supplementary groups.  */
+static gid_t kvmGID()
+{
+    struct group *kvm = getgrnam("kvm");
+    if (kvm == NULL) return -1;
+
+    gid_t groups[maxGroups];
+    int count = getgroups(maxGroups, groups);
+    if (count < 0) return -1;
+
+    for (int i = 0; i < count; i++) {
+	if (groups[i] == kvm->gr_gid) return kvm->gr_gid;
+    }
+
+    return -1;
+}
+
+/* GID of the "kvm" group in guest user namespaces.  */
+static gid_t guestKVMGID = 40000;
+
+static std::vector<std::pair<gid_t, gid_t>> kvmGIDMapping()
+{
+    gid_t kvm = kvmGID();
+    if (kvm == (gid_t) -1)
+	return {};
+    else {
+	std::pair<gid_t, gid_t> mapping(kvm, guestKVMGID);
+	return { mapping };
+    }
 }
 
 #if CHROOT_ENABLED
@@ -2931,13 +2998,29 @@ void DerivationGoal::startBuilder()
                               enableRouteLocalnetAction);
         }
 
+	if ((ctx.cloneFlags & CLONE_NEWUSER) != 0) {
+	    /* Have the 'lockMounts' phase re-map supplementary GIDs such as
+	       that of the "kvm" group.  */
+	    ctx.lockMountsMapAll = true;
+	}
+
         pid = cloneChild(ctx);
 
         if(childSetupSocket >= 0) childSetupSocket.close();
 
         if ((ctx.cloneFlags & CLONE_NEWUSER) != 0) {
-            /* Initialize the UID/GID mapping of the builder.  */
-            initializeUserNamespace(pid);
+	     /* Initialize the UID/GID mapping of the child process.
+
+		Try hard to map the "kvm" GID inside the user namespace ("kvm"
+	        is usually the only supplementary group of the 'guix-daemon'
+	        privilege separation user) so that package test suites that
+	        expect to be able to chown to supplementary groups can do so
+	        (without that mapping, attempts to chown to the supplementary
+	        group fail with EINVAL).  */
+	    auto extraGIDs = kvmGIDMapping();
+	    initializeUserNamespace(pid,
+				    getuid(), getgid(),
+				    guestUID, guestGID, extraGIDs);
             writeFull(parentSetupSocket, (unsigned char*)"go\n", 3);
         }
 

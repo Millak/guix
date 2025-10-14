@@ -476,6 +476,29 @@
     (build-derivations %store (list d))
     (call-with-input-file (derivation->output-path d) read)))
 
+(unless (and (unprivileged-user-namespace-supported?)
+             (false-if-exception
+              (= (stat:gid (stat "/dev/kvm"))
+                 (group:gid (getgrnam "kvm"))))
+             (= 1 (status:exit-val (system* "newgidmap"))))
+  (test-skip 1))
+(test-assert "kvm GID is mapped"
+  ;; Ensure that the "kvm" GID is mapped into the build user namespace such
+  ;; that chown'ing a file to that GID works as expected.  See
+  ;; <https://issues.guix.gnu.org/77862>.
+  (let ((d (build-expression->derivation
+            %store "chown-to-supplementary-group"
+            `(let ((st (stat "/dev/kvm")))
+               ',(gettimeofday)
+               (pk 'supplementary-groups (getgroups))
+               (pk 'kvm-group (stat:gid st))
+               (unless (member (stat:gid st) (vector->list (getgroups)))
+                 (error "supplementary groups lack 'kvm' GID"))
+               (mkdir "test")
+               (chown "test" (getuid) (stat:gid st))
+               (mkdir %output)))))
+    (build-derivations %store (list d))))
+
 (unless (unprivileged-user-namespace-supported?)
   (test-skip 1))
 (test-equal "inputs are read-only"
