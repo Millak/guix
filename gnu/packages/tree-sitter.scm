@@ -650,6 +650,18 @@ which will be used as a snippet in origin."
                 (delete-file-recursively "src/tree_sitter")))
             '#$grammar-directories))))))
 
+(define-public tree-sitter-groovy
+  (let ((version "0.0.1")
+        (commit "86911590a8e46d71301c66468e5620d9faa5b6af")
+        (revision "0"))
+    (tree-sitter-grammar
+     "groovy" "Groovy"
+     "0vbsg5xkdja6xyp8nm7g9fs4ndaq3qz6lq8vk9c7l2znw6bb17gb"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/murtaza64/tree-sitter-groovy")))
+
 (define-public tree-sitter-haskell
   (tree-sitter-grammar
    "haskell" "Haskell"
