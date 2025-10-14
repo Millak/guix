@@ -515,6 +515,19 @@ which will be used as a snippet in origin."
          (delete-file-recursively "test/highlight")
          #$(tree-sitter-delete-generated-files grammar-directories))))))
 
+(define-public tree-sitter-firrtl
+  (let ((version "0.8.0")
+        (commit "8503d3a0fe0f9e427863cb0055699ff2d29ae5f5")
+        (revision "0"))
+    (tree-sitter-grammar
+     "firrtl" "FIRRTL"
+     "0mmnsks3b21b1dixi85jds31ykgrmzl3hkkc1r7c8k4vdrr0qq93"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-firrtl"
+     #:license license:asl2.0)))
+
 (define-public tree-sitter-go
   (tree-sitter-grammar
    "go" "Go"
