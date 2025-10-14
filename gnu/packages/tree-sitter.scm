@@ -1200,6 +1200,18 @@ which will be used as a snippet in origin."
    "0.23.0-1"
    #:repository-url "https://github.com/6cdh/tree-sitter-racket"))
 
+(define-public tree-sitter-readline
+  (let ((version "1.1.1")
+        (commit "74addc90fc539d31d413c0c7cf7581997a7fa46e")
+        (revision "0"))
+    (tree-sitter-grammar
+     "readline" "GNU Readline init"
+     "0qmnmzab9qn6chsdh2sfa9v2yrpik3ng9j14shw70ck0zc02gd3i"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-readline")))
+
 (define-public tree-sitter-ron
   (let ((commit "78938553b93075e638035f624973083451b29055")
         (revision "0"))
