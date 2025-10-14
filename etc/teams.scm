@@ -1333,6 +1333,11 @@ the \"texlive\" importer."
                        "Rutherther")
   release)
 
+(define-member (person "Morgan Arnold"
+                       "morgan.arnold@proton.me"
+                       "mra")
+  core)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
