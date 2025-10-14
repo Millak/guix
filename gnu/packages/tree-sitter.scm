@@ -1301,6 +1301,18 @@ which will be used as a snippet in origin."
      #:repository-url "https://github.com/FuelLabs/tree-sitter-sway"
      #:commit commit)))
 
+(define-public tree-sitter-tablegen
+  (let ((version "1.0.0")
+        (commit "3e9c4822ab5cdcccf4f8aa9dcd42117f736d51d9")
+        (revision "0"))
+    (tree-sitter-grammar
+     "tablegen" "LLVM TableGen"
+     "02anzjxk30323jmbvn2l7fwarq59zix84g7rdcgx8s7z7c5zyagk"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/Flakebi/tree-sitter-tablegen")))
+
 (define-public tree-sitter-tlaplus
   (tree-sitter-grammar
    "tlaplus" "TLA+"
