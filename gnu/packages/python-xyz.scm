@@ -33000,31 +33000,34 @@ cleanly print different types of messages.")
          "-k" (string-append
                "not test_project_location_basic_set_first_project"
                " and not test_project_location_complex_set_first_project"))
-      #:phases #~(modify-phases %standard-phases
-                   (add-before 'check 'pre-check
-                     (lambda _
-                       (setenv "HOME" "/tmp"))))))
-    (native-inputs (list git-minimal
-                         nss-certs-for-test
-                         python-hatch-vcs
-                         python-pytest
-                         python-pytest-mock
-                         python-pytest-xdist))
-    (propagated-inputs (list python-click
-                             python-hatchling-for-hatch
-                             python-httpx
-                             python-hyperlink
-                             python-keyring
-                             python-packaging
-                             python-pexpect
-                             python-platformdirs
-                             python-rich
-                             python-shellingham
-                             python-tomli-w
-                             python-tomlkit
-                             python-userpath
-                             python-virtualenv-for-hatch
-                             python-zstandard))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list git-minimal
+           nss-certs-for-test
+           python-hatch-vcs
+           python-pytest
+           python-pytest-mock
+           python-pytest-xdist))
+    (inputs
+     (list python-click
+           python-hatchling-for-hatch
+           python-httpx
+           python-hyperlink
+           python-keyring
+           python-packaging
+           python-pexpect
+           python-platformdirs
+           python-rich
+           python-shellingham
+           python-tomli-w
+           python-tomlkit
+           python-userpath
+           python-virtualenv-for-hatch
+           python-zstandard))
     (home-page "https://hatch.pypa.io/latest/")
     (synopsis "Python project management")
     (description "Hatch is a modern, extensible Python project manager.
