@@ -2530,30 +2530,28 @@ elevation, solar azimuth, rahukaalam, and the phases of the moon.")
 (define-public python-astroalign
   (package
     (name "python-astroalign")
-    (version "2.6.1")
+    (version "2.6.2")
     (source
      (origin
-       ;; There are no tests in the PyPI tarball.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/quatrope/astroalign")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1r65n0jx3gvr43c8svswcpvjdjwz85xcvxrrxmvxzv0w2bd6xcc9"))))
+        (base32 "0jcnv0gll0p7aqykmn9qffyzfq4gm3py5g20v6xxwf91vr85xrl3"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-astropy
+     (list python-astropy-minimal
            python-ccdproc
            python-pillow
            python-pytest
            python-setuptools))
     (propagated-inputs
-     (list python-bottleneck
-           python-numpy
+     (list python-numpy
            python-scikit-image
            python-scipy
-           python-sep-pjw))
+           python-sep))
     (home-page "https://astroalign.readthedocs.io/")
     (synopsis "Astrometric Alignment of Images")
     (description
