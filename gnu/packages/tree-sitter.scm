@@ -729,6 +729,19 @@ which will be used as a snippet in origin."
    #:repository-url
    "https://github.com/tree-sitter-grammars/tree-sitter-hyprlang"))
 
+(define-public tree-sitter-ini
+  (let ((version "1.3.0")
+        (commit "32b31863f222bf22eb43b07d4e9be8017e36fb31")
+        (revision "0"))
+    (tree-sitter-grammar
+     "ini" "INI"
+     "0sp9075fllimy6zrw2gx5mij0igl9zvcrakh23wn7m5wh0w9lq4i"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url "https://github.com/justinmk/tree-sitter-ini"
+     #:article "an"
+     #:license license:asl2.0)))
+
 (define-public tree-sitter-janet
   (tree-sitter-grammar
    "janet" "Janet"
