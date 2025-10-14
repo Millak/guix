@@ -662,6 +662,18 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/murtaza64/tree-sitter-groovy")))
 
+(define-public tree-sitter-gstlaunch
+  (let ((version "0.1.0")
+        (commit "cf696c7f5e7265a7f6bd0cd1cc8864edd917a3de")
+        (revision "0"))
+    (tree-sitter-grammar
+     "gstlaunch" "gst-launch-1.0"
+     "0kd2pmh5jq0vc9mdzf2w12hn8qrcg3jybys1q4j2dnhqcalzmppa"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-gstlaunch")))
+
 (define-public tree-sitter-haskell
   (tree-sitter-grammar
    "haskell" "Haskell"
