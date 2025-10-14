@@ -6466,7 +6466,7 @@ local LLM capabilities from Emacs.")
 (define-public emacs-org-fc
   (package
     (name "emacs-org-fc")
-    (version "0.6.2")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -6475,7 +6475,7 @@ local LLM capabilities from Emacs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pq6l1crjfybn3bd9qp23vddplv0j05l3al0715glr925s0i4cy3"))))
+        (base32 "1bch6dlw3f8zxvfazsndmilizvxvxpcfgrv89nk6id966y3czrpl"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -6499,14 +6499,7 @@ local LLM capabilities from Emacs.")
                 (substitute* "org-fc-awk.el"
                   (("\"find ") (string-append "\"" find " "))
                   (("\"gawk ") (string-append "\"" gawk " "))
-                  (("\"xargs ") (string-append "\"" xargs " "))))))
-          (add-after 'unpack 'disable-failing-tests
-            (lambda _
-              (substitute* (find-files "tests/" "\\.el$")
-                (("\\(ert-deftest org-fc-test-card-rate-(normal|double) .*" all)
-                 (string-append all "(skip-unless nil)\n"))
-                (("\\(ert-deftest org-fc-test-review-data-update .*" all)
-                 (string-append all "(skip-unless nil)\n"))))))))
+                  (("\"xargs ") (string-append "\"" xargs " ")))))))))
     (native-inputs (list emacs-el-mock))
     (inputs (list findutils gawk))
     (propagated-inputs (list emacs-hydra))
