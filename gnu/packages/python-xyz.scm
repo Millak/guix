@@ -12748,27 +12748,27 @@ regions of interest, geometric shapes, paths, text, etc for image overlays.")
 (define-public python-tifffile
   (package
     (name "python-tifffile")
-    (version "2023.12.9")
+    (version "2025.10.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tifffile" version))
        (sha256
-        (base32
-         "1f6d8qdlq0zlksfdhp1mhj9icpwhw4cz47r4i80m6r0a328xmlcx"))))
-    (build-system python-build-system)
+        (base32 "0f1ybmr2jz19gjg92p9vz3qib49m0x4ipxvrvjyfa6r1mcb7qhrf"))))
+    (build-system pyproject-build-system)
     ;; Tests require lfdfiles, which depends on tifffile
-    (arguments `(#:tests? #f))
+    (arguments (list #:tests? #f))
     (propagated-inputs
      (list python-numpy))
     (native-inputs
-     (list python-pytest))
+     (list python-setuptools))
     (home-page "https://www.lfd.uci.edu/~gohlke/")
     (synopsis "Read and write TIFF(r) files")
-    (description "This package lets you read image and metadata from many
-bio-scientific formats such as plain TIFF, BigTIFF, OME-TIFF, STK, LSM, SGI,
-NIH, ImageJ, MicroManager, MD GEL, and FluoView files.  It also lets you write
-numpy arrays to TIFF, BigTIFF, and ImageJ hyperstack compatible files.")
+    (description
+     "This package lets you read image and metadata from many bio-scientific
+formats such as plain TIFF, BigTIFF, OME-TIFF, STK, LSM, SGI,NIH, ImageJ,
+MicroManager, MD GEL, and FluoView files.  It also lets you write numpy arrays
+to TIFF, BigTIFF, and ImageJ hyperstack compatible files.")
     (license license:bsd-3)))
 
 (define-public python-tiktoken
