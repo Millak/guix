@@ -1069,6 +1069,14 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-po")))
 
+(define-public tree-sitter-powershell
+  (tree-sitter-grammar
+   "powershell" "Powershell"
+   "1wz34js891sx6j2s128sdcbxj1k2zi300fg5a4vf5acaz82jcs8q"
+   "0.25.8"
+   #:repository-url
+   "https://github.com/airbus-cert/tree-sitter-powershell"))
+
 (define-public tree-sitter-prisma
   (tree-sitter-grammar
    "prisma" "Prisma"
