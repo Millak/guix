@@ -1166,24 +1166,32 @@ Emacs).")
                  `("PATH" ":" prefix
                    (,(string-append python "/bin:"))))))))))
     (native-search-paths
+     ;; Currently, KiCad environment variables are single-valued
+     ;; (see https://gitlab.com/kicad/code/kicad/-/issues/14792).
      (list (search-path-specification
             (variable "KICAD") ;to find kicad-doc
-            (files '("")))
+            (files '(""))
+            (separator #f))
            (search-path-specification
             (variable "KICAD9_TEMPLATE_DIR")
-            (files '("share/kicad/template")))
+            (files '("share/kicad/template"))
+            (separator #f))
            (search-path-specification
             (variable "KICAD9_SYMBOL_DIR")
-            (files '("share/kicad/symbols")))
+            (files '("share/kicad/symbols"))
+            (separator #f))
            (search-path-specification
             (variable "KICAD9_FOOTPRINT_DIR")
-            (files '("share/kicad/footprints")))
+            (files '("share/kicad/footprints"))
+            (separator #f))
            (search-path-specification
             (variable "KICAD9_3DMODEL_DIR")
-            (files '("share/kicad/3dmodels")))
+            (files '("share/kicad/3dmodels"))
+            (separator #f))
            (search-path-specification
             (variable "KICAD_STOCK_DATA_HOME")
-            (files '("share/kicad")))))
+            (files '("share/kicad"))
+            (separator #f))))
     (native-inputs (list boost
                          desktop-file-utils
                          gettext-minimal
