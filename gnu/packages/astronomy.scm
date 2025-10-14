@@ -1257,7 +1257,7 @@ backward), and manual time control
      (list pkg-config autoconf automake))
     (inputs
      (list cfitsio))
-    (home-page "https://healpix.jpl.nasa.gov/")
+    (home-page "https://healpix.sourceforge.io/")
     (synopsis "Representation of spherical data")
     (description
      "@acronym{HEALPix, Hierarchical Equal Area isoLatitude Pixelation} of a
