@@ -8868,13 +8868,13 @@ Institute, STScI} utility functions.")
 (define-public python-stsynphot
   (package
     (name "python-stsynphot")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stsynphot" version))
        (sha256
-        (base32 "02xaglg1kv3mk6gqjcs1283mmy9b42fgsga8g2z8768lkgwmmg9j"))))
+        (base32 "1hkpk27wrkhfxngzq1qdpza0i95lcs9bvxsyyf1bn45nw85ljajy"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -8882,14 +8882,16 @@ Institute, STScI} utility functions.")
       ;; disable them for now.  astropy.utils.exceptions.AstropyUserWarning:
       ;; Failed to load Vega spectrum from
       ;; /grp/redcat/trds/calspec/alpha_lyr_stis_010.fits;
+      ;;
+      ;; Data is availalbe by the lnks: <https://ssb.stsci.edu/trds/calspec/>,
+      ;; <https://archive.stsci.edu/hlsp/reference-atlases>.
       #:tests? #f))
     (native-inputs
      (list python-pytest
            python-pytest-astropy
            python-pytest-astropy-header
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-beautifulsoup4
