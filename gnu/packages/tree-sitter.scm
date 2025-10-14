@@ -952,6 +952,17 @@ which will be used as a snippet in origin."
      #:repository-url "https://github.com/alaviss/tree-sitter-nim"
      #:license license:mpl2.0)))
 
+(define-public tree-sitter-ninja
+  (let ((version "0.1.0")
+        (commit "0a95cfdc0745b6ae82f60d3a339b37f19b7b9267")
+        (revision "0"))
+    (tree-sitter-grammar
+     "ninja" "Ninja"
+     "1vmfx2k6bxfwcz319vskjhyszc6hz3j32bw4lgj72l7p890ykwkv"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url "https://github.com/alemuller/tree-sitter-ninja")))
+
 (define-public tree-sitter-nix
   (tree-sitter-grammar
    "nix" "Nix"
