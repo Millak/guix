@@ -20744,6 +20744,32 @@ recommended.")
     (description "This package provides a simple byte size formatting in Go.")
     (license license:expat)))
 
+(define-public go-github-com-tonistiigi-vt100
+  (package
+    (name "go-github-com-tonistiigi-vt100")
+    (version "0.0.0-20240514184818-90bafcd6abab")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tonistiigi/vt100")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vjk3yam610kc600h3hd3glsygr3m863765m9q7c0gsaj0vd38y0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tonistiigi/vt100"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/tonistiigi/vt100")
+    (synopsis "Raw-mode vt100 screen reader in Golang")
+    (description
+     "Package vt100 implements a quick-and-dirty programmable ANSI terminal
+emulator.")
+    (license license:expat)))
+
 (define-public go-github-com-twpayne-go-shell
   (package
     (name "go-github-com-twpayne-go-shell")
