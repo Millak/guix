@@ -7365,8 +7365,7 @@ solar physics.")
      (list python-pytest
            python-pytest-mpl
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-h5py
@@ -7374,7 +7373,7 @@ solar physics.")
            python-numpy
            python-scikit-image
            python-scipy
-           python-sep-pjw))
+           python-sep))
     (home-page "https://github.com/punch-mission/regularizepsf")
     (synopsis "Point spread function modeling and regularization")
     (description
