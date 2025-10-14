@@ -877,6 +877,14 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-luap")))
 
+(define-public tree-sitter-make
+  (tree-sitter-grammar
+   "make" "Makefile"
+   "0g8k9rfmc979lza2cx5xwla1ic2p9hpvm0h2sgfs4r29kw1a2ass"
+   "1.1.1"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-make"))
+
 (define-public tree-sitter-markdown
   (tree-sitter-grammar
    "markdown" "Markdown (CommonMark Spec v0.30)"
