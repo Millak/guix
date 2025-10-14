@@ -1135,6 +1135,14 @@ which will be used as a snippet in origin."
    "0a108sfqcsxrp54lapk7k3kq6fmz8745z5q99wpn3i1cqpi9slzg"
    "0.23.6"))
 
+(define-public tree-sitter-python-manifest
+  (tree-sitter-grammar
+   "python-manifest" "PyPA manifest"
+   "16k9izgwg2f8yyz1vlzyw9qw4np5fjy3nxr3ksq499a0bz8a59cd"
+   "0.6.0"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-pymanifest"))
+
 (define-public tree-sitter-qml
   (let ((version "0.2.0") ; Tagged, but we use a more recent commit
         (commit "0889da4632bba3ec6f39ef4102625654890c15c1")
