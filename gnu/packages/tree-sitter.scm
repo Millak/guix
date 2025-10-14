@@ -1022,6 +1022,14 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-pem")))
 
+(define-public tree-sitter-pgn
+  (tree-sitter-grammar
+   "pgn" "Chess Portable Game Notation (PGN)"
+   "0mazy9y80pd20a3a76b0nfxswh7xxdsnya0y0lzl86sh4w95f52p"
+   "1.2.12"
+   #:repository-url "https://github.com/rolandwalker/tree-sitter-pgn"
+   #:license license:bsd-2))
+
 (define-public tree-sitter-plantuml
   ;; No tags
   (let ((commit "c7361a1d481dc1ff6700b14ea1d5efc549b72713")
