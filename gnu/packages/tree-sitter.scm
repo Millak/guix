@@ -275,6 +275,16 @@ which will be used as a snippet in origin."
      #:repository-url "https://github.com/briot/tree-sitter-ada"
      #:commit commit)))
 
+(define-public tree-sitter-arduino
+  (tree-sitter-grammar
+   "arduino" "Arduino"
+   "1h0h61xhs511l6ahv0isj9v59ndz8q3948dw9mi9lc7cp24jshdp"
+   "0.24.0"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-arduino"
+   #:inputs (delay (list tree-sitter-c tree-sitter-cpp))
+   #:article "an"))
+
 (define-public tree-sitter-awk
   (tree-sitter-grammar
    "awk" "AWK"
