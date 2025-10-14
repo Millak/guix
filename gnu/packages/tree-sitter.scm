@@ -589,6 +589,18 @@ which will be used as a snippet in origin."
    "https://github.com/gleam-lang/tree-sitter-gleam"
    #:license license:asl2.0))
 
+(define-public tree-sitter-gn
+  (let ((version "1.0.0")
+        (commit "bc06955bc1e3c9ff8e9b2b2a55b38b94da923c05")
+        (revision "0"))
+    (tree-sitter-grammar
+     "gn" "GN"
+     "0i6f0kar3c734ag5bli519ah3rmamsk8kihbw5ga5b0ihrxqfzja"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-gn")))
+
 (define-public tree-sitter-go
   (tree-sitter-grammar
    "go" "Go"
