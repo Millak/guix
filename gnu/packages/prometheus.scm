@@ -593,6 +593,32 @@ Protocol,ICMP} echo (ping) functionality.")
      "This package provides tooling to build Prometheus exporters")
     (license license:asl2.0)))
 
+(define-public go-github-com-prometheus-otlptranslator
+  (package
+    (name "go-github-com-prometheus-otlptranslator")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/prometheus/otlptranslator")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1naca6ima2bzf6yhb2w9favqx644c0q1y16jlb2na7s4bgr3107p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/prometheus/otlptranslator"))
+    (home-page "https://github.com/prometheus/otlptranslator")
+    (synopsis "OTLP Prometheus Translator")
+    (description
+     "This package provides a functionality to convert
+@url{https://opentelemetry.io/docs/specs/otlp/, OTLP} metric and attribute
+names to @url{https://prometheus.io/, Prometheus-compliant} formats.  This is
+an internal library for both Prometheus and Open Telemetry,")
+    (license license:asl2.0)))
+
 (define-public go-github-com-prometheus-procfs
   (package
     (name "go-github-com-prometheus-procfs")
