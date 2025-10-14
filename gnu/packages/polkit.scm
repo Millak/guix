@@ -170,27 +170,7 @@ able to request elevated privileges.")
                                                 "/test/data/etc/polkit-1"
                                                 "/rules.d/10-testing.rules"))
                 (("/bin/(bash|false|true)" _ command)
-                 (which command)))))
-          (replace 'check
-            (lambda* (#:key tests? test-options #:allow-other-keys)
-              (when tests?
-                (match (primitive-fork)
-                  (0                    ;child process
-                   (apply execlp "meson" "meson"
-                          "test" "-t" "0" "--print-errorlogs"
-                          test-options))
-                  (meson-pid
-                   ;; Reap child processes; otherwise, python-dbusmock would
-                   ;; waste time polling for the dbus processes it spawns to
-                   ;; be reaped, in vain.
-                   (let loop ()
-                     (match (waitpid WAIT_ANY)
-                       ((pid . status)
-                        (if (= pid meson-pid)
-                            (unless (zero? status)
-                              (error "`meson test' exited with status"
-                                     status))
-                            (loop)))))))))))))
+                 (which command))))))))
     (inputs
      (list duktape expat elogind linux-pam nspr))
     (propagated-inputs
