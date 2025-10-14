@@ -4743,21 +4743,17 @@ specifically pulsar timing array signals.")
 (define-public python-gwcs
   (package
     (name "python-gwcs")
-    (version "0.25.2")
+    (version "0.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gwcs" version))
        (sha256
-        (base32 "12hs7qa03blpxp2i97n3wckvih7zcmpm4k4ia0p3hird49qq7l44"))))
+        (base32 "0r9r6ns4gcszq199pwiw4pb4lydp16i4zdp136az8y6f994lrzqb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1021 passed, 10 skipped, 1 deselected, 9 warnings
-      #:test-flags
-      ;; XXX: This is worth checking out more closely:
-      ;;   Not equal to tolerance rtol=1e-07, atol=0.
-      #~(list "-k" "not test_fitswcs_imaging[fits_wcs_imaging_simple2]")
+      ;; tests: 1023 passed, 10 skipped, 10 warnings 
       #:phases
       #~(modify-phases %standard-phases
          (add-after 'unpack 'relax-requirements
@@ -4770,8 +4766,7 @@ specifically pulsar timing array signals.")
            python-pytest-astropy
            python-pyyaml
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-asdf
            python-asdf-astropy
