@@ -334,6 +334,14 @@ which will be used as a snippet in origin."
    "1vw7jd3wrb4vnigfllfmqxa8fwcpvgp1invswizz0grxv249piza"
    "0.23.5"))
 
+(define-public tree-sitter-chatito
+  (tree-sitter-grammar
+   "chatito" "Chatito"
+   "16pfm7s9zxdskmn1vg5ba6ni91zm5xncbri9pm0cd8pmld5w37wz"
+   "0.5.0"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-chatito"))
+
 (define-public tree-sitter-clojure
   (tree-sitter-grammar
    "clojure" "Clojure"
