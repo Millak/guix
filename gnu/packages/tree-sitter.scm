@@ -933,6 +933,13 @@ which will be used as a snippet in origin."
    #:repository-url "https://github.com/Decodetalkers/tree-sitter-meson"
    #:license license:expat))
 
+(define-public tree-sitter-netlinx
+  (tree-sitter-grammar
+   "netlinx" "NetLinx"
+   "09q2w9g4bb8v603b4ykxn5g8ndqjfhrgskslsmzhy095r3jysb2q"
+   "1.0.4"
+   #:repository-url "https://github.com/Norgate-AV/tree-sitter-netlinx"))
+
 (define-public tree-sitter-nix
   (tree-sitter-grammar
    "nix" "Nix"
