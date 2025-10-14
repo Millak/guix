@@ -542,6 +542,18 @@ which will be used as a snippet in origin."
      "https://github.com/stadelmanma/tree-sitter-fortran"
      #:commit commit)))
 
+(define-public tree-sitter-func
+  (let ((version "1.0.0")
+        (commit "c1d2cc41b39760127a8cd5d4f4923e27114c373b")
+        (revision "0"))
+    (tree-sitter-grammar
+     "func" "FunC"
+     "066g8jn2snmcxwm74wqyxxz2nz2vsjlwhdc455l389czddnncf2j"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-func")))
+
 (define-public tree-sitter-go
   (tree-sitter-grammar
    "go" "Go"
