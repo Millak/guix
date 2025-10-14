@@ -10732,8 +10732,8 @@ adjusted with command line option @code{-b}, by default set to store path.")
 
 (define-public uranimator
   ;; No release or version tags.
-  (let ((commit "f50558c6fbcec4a8e749c37f2368c21170d5bb48")
-        (revision "0"))
+  (let ((commit "d96f0084c029667f313ec72aade9968fa5bb506e")
+        (revision "1"))
     (package
       (name "uranimator")
       (version (git-version "0.0.0" revision commit))
@@ -10745,7 +10745,7 @@ adjusted with command line option @code{-b}, by default set to store path.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1icb4c3mfm63zqicixpbaks7a96s82d7q8c5j8kdb548rpsrcxqp"))))
+          (base32 "1yf1ghzzpnh0v1ra6dv4l135jgbs28pzadqig8cy8bwi9jq5wlrn"))))
       (build-system go-build-system)
       (arguments
        (list
