@@ -865,6 +865,18 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-luadoc")))
 
+(define-public tree-sitter-lua-patterns
+  (let ((version "1.0.1")
+        (commit "31461ae9bd0866cb5117cfe5de71189854fd0f3e")
+        (revision "0"))
+    (tree-sitter-grammar
+     "lua-patterns" "Lua patterns"
+     "1wfsfh44jn7m9kx0lfsbrf0hqavad142wl2pffab3mvpmrnawva9"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-luap")))
+
 (define-public tree-sitter-markdown
   (tree-sitter-grammar
    "markdown" "Markdown (CommonMark Spec v0.30)"
