@@ -20710,8 +20710,23 @@ project template.")
          "1brg6aawb9m5mdfmc6g7v5r6pczbx67r4l9cn5yh6bdi0qkvp501"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; This test requires network access.
-     (list #:test-flags #~(list "-k" "not test_get")))
+     (list
+      #:test-flags
+      #~(list #$@(map (lambda (test) (string-append
+                                      "--deselect=tests/test_pyquery.py::"
+                                      test))
+                      (list
+                       ;; AssertionError: 'REQUEST_METHOD: POST' not found in ''
+                       "TestWebScrapping::test_post"
+                       ;; AssertionError: 'HTTP_X_FOO: bar' not found in ''
+                       "TestWebScrapping::test_session"
+                       ;; Assertion is not equal.
+                       "TestManipulating::test_val_for_textarea"
+                       "TestHTMLParser::test_replaceWith"
+                       "TestHTMLParser::test_replaceWith_with_function"
+                       ;; Network access is required.
+                       "TestWebScrapping::test_get"
+                       "TestWebScrappingEncoding::test_get")))))
     (native-inputs
      (list python-pytest
            python-pytest-cov
