@@ -20694,6 +20694,32 @@ structures using selector strings.  It's similar to @code{jq}/@code{yq}, but
 supports JSON, YAML, TOML, XML and CSV with zero runtime dependencies.")
     (license license:expat)))
 
+(define-public go-github-com-tonistiigi-go-csvvalue
+  (package
+    (name "go-github-com-tonistiigi-go-csvvalue")
+    (version "0.0.0-20240814133006-030d3b2625d0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tonistiigi/go-csvvalue")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "128i7fmxyf08q80b1i6hgb3sbx2nsa56p2kr6vcdyijazhqnrn0p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tonistiigi/go-csvvalue"))
+    (home-page "https://github.com/tonistiigi/go-csvvalue")
+    (synopsis "Efficient parser for a single line CSV value in Golang")
+    (description
+     "Package csvvalue provides an efficient parser for a single line CSV
+value.  It is more efficient than the standard library csv package for parsing
+many small values.  For multi-line CSV parsing, the standard library is
+recommended.")
+    (license license:expat)))
+
 (define-public go-github-com-tonistiigi-units
   (package
     (name "go-github-com-tonistiigi-units")
