@@ -9842,6 +9842,38 @@ single @code{Tree} implementation, optimized for sparse nodes.")
        (replace "go-github-com-hashicorp-golang-lru"
          go-github-com-hashicorp-golang-lru-v2)))))
 
+(define-public go-github-com-hashicorp-go-memdb
+  (package
+    (name "go-github-com-hashicorp-go-memdb")
+    (version "1.3.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hashicorp/go-memdb")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1faz0sr9f82zz0vgxsh131b7swi6a3yrsgbw72y45cm2k8bxviad"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/go-memdb"))
+    (propagated-inputs
+     (list go-github-com-hashicorp-go-immutable-radix))
+    (home-page "https://github.com/hashicorp/go-memdb")
+    (synopsis "Golang in-memory database built on immutable radix trees")
+    (description
+     "This package implements a simple in-memory database built on immutable
+@url{https://en.wikipedia.org/wiki/Radix_tree, radix trees}.  The database
+provides Atomicity, Consistency and Isolation from ACID.  Being that it is
+in-memory, it does not provide durability.  The database is instantiated with
+a schema that specifies the tables and indices that exist and allows
+transactions to be executed.  The database provides the following:
+@acronym{Multi-Version Concurrency Control, MVCC}, transaction support, rich
+indexing, watches.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hashicorp-go-msgpack-v2
   (package
     (name "go-github-com-hashicorp-go-msgpack-v2")
