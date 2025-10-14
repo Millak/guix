@@ -34193,28 +34193,6 @@ lets you write CommonMark inside of Docutils & Sphinx projects.")
 retry to any Python callable.")
       (license license:mpl2.0))))
 
-(define-public python-pyhull
-  (package
-    (name "python-pyhull")
-    (version "2015.2.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyhull" version))
-       (sha256
-        (base32
-         "091sph52c4yk1jlm5w8xidxpzbia9r7s42bnb23q4m4b56ihmzyj"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-numpy))
-    (home-page "https://github.com/materialsvirtuallab/pyhull")
-    (synopsis "Python wrapper to Qhull")
-    (description
-     "This package provides a Python wrapper to @uref{http://www.qhull.org/,
-Qhull} for the computation of the convex hull, Delaunay triangulation, and
-Voronoi diagram.")
-    (license license:expat)))
-
 (define-public python-opcodes
   ;; There are no tags in this repo, but 'opcodes/__init__.py' specifies a
   ;; version number, which is what we use here.
