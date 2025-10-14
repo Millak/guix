@@ -45,7 +45,8 @@
  (entry (commit "8daae75de3670594dfcb63b6ae6f1603ca6f7971")
         (title
          (en "Fundraising to sustain and strengthen Guix")
-         (de "Spendensammlung zur Sicherung und Stärkung von Guix"))
+         (de "Spendensammlung zur Sicherung und Stärkung von Guix")
+         (pt "Campanha de arrecadação para sustentar e fortalecer o Guix"))
         (body
          (en "We've launched a fundraising campaign for Guix to fund the
 project's expenses.  The goal is for Guix to be sustainable, meaning that
@@ -78,7 +79,23 @@ dauerhafte Finanzierbarkeit.
 Um mitzumachen, besuchen Sie unsere Spendenseite:
 @url{https://guix.gnu.org/donate/}.
 
-Wir danken allen Teilnehmern!")))
+Wir danken allen Teilnehmern!")
+         (pt "Lançamos uma campanha de arrecadação para o Guix a fim de
+custear as expensas do projeto.  O objetivo é que Guix seja sustentável, o que
+significa que as doações pagam pelos recursos compartilhados como a
+infraestrutura e para a promoção do projeto.  Para mais informações acesse a
+postagem no blog:
+@url{https://guix.gnu.org/blog/2025/fundraising-campaign-to-sustain-gnu-guix/}.
+
+Você pode dar uma doação @emph{recorrente} ou @emph{unitária} mediante tanto à
+FSF quanto à Fundação Guix.  Doações recorrentes são ideais porque elas se
+alinham com os custos contínuos do Guix, todavia valorizamos e apreciamos
+qualquer suporte.  Qualquer doação nos aproxima de sermos sustentáveis.
+
+Para fazer parte, por favor vá à página de doações:
+@url{https://guix.gnu.org/donate/}.
+
+Obrigado a todos que participarem!")))
 
  (entry (commit "61081db5d11dca328c8b2c8d1d5d4ef9ba662059")
         (title
