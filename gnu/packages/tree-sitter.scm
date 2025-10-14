@@ -376,6 +376,13 @@ which will be used as a snippet in origin."
    "0.7.0"
    #:repository-url "https://github.com/uyha/tree-sitter-cmake"))
 
+(define-public tree-sitter-comment
+  (tree-sitter-grammar
+   "comment" "comment tags (like TODO, FIXME)"
+   "1x0l8phr4x07n739z0ax8faxq0l6irmpkdprrv1z088zqdr43l1v"
+   "0.3.0"
+   #:repository-url "https://github.com/stsewd/tree-sitter-comment"))
+
 (define-public tree-sitter-cpp
   (tree-sitter-grammar
    "cpp" "C++"
