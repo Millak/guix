@@ -1479,6 +1479,15 @@ files.")))
    "https://github.com/neovim/tree-sitter-vimdoc"
    #:license license:expat))
 
+(define-public tree-sitter-xcompose
+  (tree-sitter-grammar
+   "xcompose" "XCompose"
+   "03c0ycwrxafxvbhzi6pzcq8md40frh7ybwkhcsd4s1hmg6arwpyx"
+   "0.4.0"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-xcompose"
+   #:article "an"))
+
 (define-public tree-sitter-yaml
   (tree-sitter-grammar
    "yaml" "YAML"
