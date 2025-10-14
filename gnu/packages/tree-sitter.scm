@@ -568,6 +568,18 @@ which will be used as a snippet in origin."
      "https://github.com/PrestonKnopp/tree-sitter-gdscript"
      #:commit commit)))
 
+(define-public tree-sitter-gitignore
+  (let ((version "0.1.0")
+        (commit "f4685bf11ac466dd278449bcfe5fd014e94aa504")
+        (revision "0"))
+    (tree-sitter-grammar
+     "gitignore" "Git .gitignore"
+     "17rar33y4dngmx69kjiw6wgrsd6kc0c8w4xa4rx06rjmv7b1hfij"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/shunsambongi/tree-sitter-gitignore")))
+
 (define-public tree-sitter-go
   (tree-sitter-grammar
    "go" "Go"
