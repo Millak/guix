@@ -528,6 +528,20 @@ which will be used as a snippet in origin."
      "https://github.com/tree-sitter-grammars/tree-sitter-firrtl"
      #:license license:asl2.0)))
 
+(define-public tree-sitter-fortran
+  (let ((version "0.5.1")
+        ;; Can't use the tag above directly; the build at that tag is
+        ;; non‑deterministic, so pin to a later commit.
+        (commit "8334abca785db3a041292e3b3b818a82a55b238f")
+        (revision "0"))
+    (tree-sitter-grammar
+     "fortran" "Fortran"
+     "0iwjz7ks0barg6na966jbkvzi8whgys8qh6arxlaygr9b6mhq39i"
+     (git-version version revision commit)
+     #:repository-url
+     "https://github.com/stadelmanma/tree-sitter-fortran"
+     #:commit commit)))
+
 (define-public tree-sitter-go
   (tree-sitter-grammar
    "go" "Go"
