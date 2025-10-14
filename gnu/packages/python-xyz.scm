@@ -12824,26 +12824,22 @@ to TIFF, BigTIFF, and ImageJ hyperstack compatible files.")
 (define-public python-lfdfiles
   (package
     (name "python-lfdfiles")
-    (version "2021.2.22")
+    (version "2025.9.17")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "lfdfiles" version))
        (sha256
-        (base32
-         "12fxm4v805dgjrih7x6jnl1wd7y7jw1rkhjs3d4am8s6qk1cbar2"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin
-            ;; Delete pre-generated Cython files.
-            (for-each delete-file (find-files "lfdfiles" "_.*\\.c$"))
-            #t))))
-    (build-system python-build-system)
+        (base32 "0b363vv146icsn86gxc04grq2d5r7xzzabr03xsc7aq9wybgvgqp"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Delete pre-generated Cython files.
+        #~(for-each delete-file (find-files "lfdfiles" "_.*\\.c$")))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f)) ; No tests exist, despite a test dependency on pytest.
-    (propagated-inputs
-     (list python-click python-numpy python-tifffile))
-    (native-inputs (list python-cython))
+     (list #:tests? #f)) ; No tests, despite a test dependency on pytest.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-click python-numpy python-tifffile))
     (home-page "https://www.lfd.uci.edu/~gohlke/")
     (synopsis "Work with LFD data files")
     (description
