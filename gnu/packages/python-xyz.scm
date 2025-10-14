@@ -12551,84 +12551,76 @@ metrics.")
 (define-public python-imagecodecs
   (package
     (name "python-imagecodecs")
-    (version "2021.3.31")
+    (version "2025.8.2")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "imagecodecs" version))
-        (sha256
-          (base32
-            "0q7pslb6wd56vbcq2mdxwsiha32mxjr7mgqqfbq5w42q601p9pi0"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin
-            ;; Unbundle 3rd party modules.
-            (delete-file-recursively "3rdparty")
-            ;; Delete pre-generated Cython files.
-            (for-each delete-file (find-files "imagecodecs" "_.*\\.c$"))
-            #t))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "imagecodecs" version))
+       (sha256
+        (base32 "0v7yglk100fnk0m9m5bnfph2vm1jpnxzrzz2lwk06dqcr6m75wia"))
+       (modules '((guix build utils)))
+       (snippet #~(for-each delete-file
+                            ;; Delete pre-generated Cython files.
+                            (find-files "imagecodecs" "_.*\\.c$")))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ; Tests are disabled, because dependencies are missing.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'create-configuration
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; By default everything is enabled. We can selectively disable
-             ;; extensions (and thus dependencies) by deleting them from the
-             ;; EXTENSIONS dictionary.  This is upstream’s preferred way.
-             (call-with-output-file "imagecodecs_distributor_setup.py"
-               (lambda (port)
-                 (format port "\
+     (list
+      #:test-flags
+      ;; Some of those tests are flaky.
+      #~(list "-k" "not test_cms_identity_transforms")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'create-configuration
+            (lambda _
+              ;; By default everything is enabled. We can selectively disable
+              ;; extensions (and thus dependencies) by deleting them from the
+              ;; EXTENSIONS dictionary.  This is upstream’s preferred way.
+              (call-with-output-file "imagecodecs_distributor_setup.py"
+                (lambda (port)
+                  (format port "\
 def customize_build(EXTENSIONS, OPTIONS):
-    del EXTENSIONS['aec']
-    del EXTENSIONS['avif']
-    del EXTENSIONS['bitshuffle']
-    del EXTENSIONS['deflate']
-    del EXTENSIONS['jpeg2k']
-    del EXTENSIONS['jpeg12']
-    del EXTENSIONS['jpegls']
-    del EXTENSIONS['jpegxl']
-    del EXTENSIONS['jpegxr']
-    del EXTENSIONS['lerc']
-    del EXTENSIONS['ljpeg']
-    del EXTENSIONS['lzf']
-    del EXTENSIONS['zfp']
-    del EXTENSIONS['zopfli']
-    OPTIONS['cythonize']
-")))))
-         ;; XXX: The installed scripts import packages that depend on
-         ;; this package; disable import check to avoid the cycle.
-         (delete 'sanity-check))))
+~{    del EXTENSIONS[~s]~%~}~%"
+                          (list "apng" "lzo" "tiff" ; FIXME Wrong version?
+                                ;; Those rely on unpackaged inputs.
+                                "aec" "avif" "bitshuffle" "brunsli" "deflate"
+                                "jetraw" "jpeg2k" "jpegls" "jpegxl" "jpegxr"
+                                "jpegxs" "lerc" "ljpeg" "lzf" "lzham" "mozjpeg"
+                                "pcodec" "sperr" "sz3" "szip" "ultrahdr" "zfp"
+                                "zlibng" "zopfli"))))))
+          (add-after 'unpack 'fix-sanity-check
+            (lambda _
+              ;; XXX: Don't exit twice. The generated script already does that.
+              (substitute* "imagecodecs/__main__.py"
+                (("sys\\.exit\\(main\\(\\)\\)")
+                 ""))))
+          (add-before 'check 'configure-tests
+            (lambda _
+              (setenv "HOME" (getcwd)))))))
     (inputs
-      (list c-blosc
-            giflib
-            brotli
-            libjpeg-turbo
-            libpng
-            libtiff
-            libwebp
-            lz4
-            snappy
-            xz
-            zlib
-            `(,zstd "lib")))
+     (list c-blosc
+           giflib
+           brotli
+           lcms
+           libheif
+           libjpeg-turbo
+           libpng
+           libtiff
+           libwebp
+           lz4
+           lzfse
+           python-blosc2
+           snappy
+           xz
+           zlib
+           `(,zstd "lib")))
     (propagated-inputs
-      ;; For the Python library.
-      (list python-numpy))
+     (list python-numpy python-matplotlib python-tifffile))
     (native-inputs
-      ;; For building.
-      (list python-cython
-            ;; For testing. Incomplete.
-            ;("python-numcodecs" ,python-numcodecs)
-            ;("python-zarr" ,python-zarr)
-            ;("python-pytest" ,python-pytest)
-            ))
+     (list python-cython python-pytest python-setuptools))
     (home-page "https://www.lfd.uci.edu/~gohlke/")
-    (synopsis
-      "Image transformation, compression, and decompression codecs")
+    (synopsis "Image transformation, compression, and decompression codecs")
     (description
-      "Imagecodecs is a Python library that provides block-oriented, in-memory
+     "Imagecodecs is a Python library that provides block-oriented, in-memory
 buffer transformation, compression, and decompression functions for use in the
 tifffile, czifile, and other scientific image input/output modules.")
     (license license:bsd-3)))
