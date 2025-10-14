@@ -1003,6 +1003,13 @@ which will be used as a snippet in origin."
      #:repository-url "https://github.com/milisims/tree-sitter-org"
      #:commit commit)))
 
+(define-public tree-sitter-pascal
+  (tree-sitter-grammar
+   "pascal" "Pascal"
+   "0wxg6k1vvp32c5grvrw1xihb1zr0idfmc4p07rmv99f7f472djhj"
+   "0.10.0"
+   #:repository-url "https://github.com/Isopod/tree-sitter-pascal"))
+
 (define-public tree-sitter-plantuml
   ;; No tags
   (let ((commit "c7361a1d481dc1ff6700b14ea1d5efc549b72713")
