@@ -1313,6 +1313,18 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/Flakebi/tree-sitter-tablegen")))
 
+(define-public tree-sitter-tcl
+  (let ((version "1.1.0")
+        (commit "8f11ac7206a54ed11210491cee1e0657e2962c47")
+        (revision "0"))
+    (tree-sitter-grammar
+     "tcl" "TCL"
+     "0dkxh6bn0kqn1gbyd5qwkg21fm634mxvas3w4ahv6zr5d8f95c96"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-tcl")))
+
 (define-public tree-sitter-tlaplus
   (tree-sitter-grammar
    "tlaplus" "TLA+"
