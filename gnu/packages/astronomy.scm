@@ -10473,6 +10473,106 @@ controlled sockets
 any arbitrary astrometric projection defined in the WCS standard.")
     (license license:gpl3+)))
 
+(define-public tangos
+  (package
+    (name "tangos")
+    (version "1.9.1")   ;1.10.0+ requires python-pynbody 2+
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pynbody/tangos")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vmjkhmqnr6abg7mybib1gllqbimv4ylgzvwxnsw0kk6cvv4qgl9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Full integration tests require running database, see projects
+      ;; CI, unit tests are quite compute instance.
+      ;;
+      ;; tests: 279 passed, 1 deselected, 105 warnings
+      #:test-flags
+      #~(list "--ignore=mpi_tests"
+              ;; OSError: File 'test_simulations/test_tipsy/tiny.000640':
+              ;; format not understood or does not exist
+              "--deselect=tests/test_bh_reader.py::test_bhlog")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-broken-scripts
+            (lambda _
+              ;; TODO: Report upstram.
+              ;; I could not find "Simpy" module, see:
+              ;; - URL: <https://github.com/pynbody/tangos/commit>
+              ;; - commit: 7de987e27d756278c4571dc65f36d377027fa29d
+              ;; - comment: #commitcomment-167855052
+              (delete-file "tangos/scripts/preprocess_bh.py")
+              (substitute* "setup.py"
+                ;; ModuleNotFoundError: No module named
+                ;; 'tangos.scripts.bh_timelink'
+                ((".*tangos_bh_timelink =.*") "")
+                ;; It looks this script uses not a publicly available module:
+                ;; import Simpy.BlackHoles.orbit.
+                ((".*tangos_preprocess_bh =.*") "")))))))
+    (native-inputs
+     (list python-pymysql
+           python-pynbody
+           python-pyquery
+           python-pytest
+           python-setuptools
+           python-webtest
+           python-yt))
+    (inputs
+     (list python-hupper
+           python-matplotlib
+           python-more-itertools
+           python-numpy
+           python-packaging
+           python-pastedeploy
+           python-plaster
+           python-plaster-pastedeploy
+           python-pyparsing
+           python-pyramid
+           python-pyramid-debugtoolbar
+           python-pyramid-jinja2
+           python-pyramid-retry
+           python-pyramid-tm
+           python-repoze-lru
+           python-scipy
+           python-setuptools
+           python-sqlalchemy
+           python-tblib
+           python-tqdm
+           python-translationstring
+           python-venusian
+           python-waitress
+           python-webob
+           python-zope-deprecation
+           python-zope-interface
+           python-zope-sqlalchemy))
+    (home-page "https://github.com/pynbody/tangos")
+    (synopsis "Agile numerical galaxy organisation system")
+    (description
+     "TANGOS is a tool to build a database (along the lines of
+@url{http://icc.dur.ac.uk/Eagle/database.php, Eagle} or
+@url{https://www.cosmosim.org/cms/documentation/projects/multidark-bolshoi-project/,
+MultiDark}) for cosmological and zoom simulations.
+
+Features:
+@itemize
+@item designed to store and manage results from custom analysis code
+@item provides web and Python interfaces
+@item science-focussed queries across entire merger trees, without requiring
+any knowledge of SQL
+@item manages the process of populating the database with science data,
+including auto-parallelising custom analysis
+@item customization with multiple Python modules such as @code{pynbody} or
+@code{yt} to process raw simulation data
+@item suports file-based database SQLite, server-based MySQL and PostgreSQL
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public tempo
   (package
     (name "tempo")
