@@ -1983,6 +1983,45 @@ API.  See the full Circonus API Documentation at
 browser window.")
     (license license:bsd-2)))
 
+(define-public go-github-com-cncf-xds-go
+  (package
+    (name "go-github-com-cncf-xds-go")
+    (version "0.0.0-20250501225837-2ac532fd4443")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cncf/xds")
+              (commit (go-version->git-ref version #:subdir "go"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0snccl7rrx2f07131s0n8z3d1p5v2nvcg7v3dhq1a5sl46b1x78b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/cncf/xds/go"
+      #:unpack-path "github.com/cncf/xds"))
+    (propagated-inputs
+     (list go-cel-dev-expr
+           go-github-com-envoyproxy-protoc-gen-validate
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/cncf/xds")
+    (synopsis "Universal data-plane API using the xDS protocol in Golang")
+    (description
+     "This package provides a set of APIs implementing the de facto standard
+for L4/L7 data plane configuration, similar to the role played by OpenFlow at
+L2/L3/L4 in @acronym{Software-defined networking, SDN}.
+
+The xDS transport protocol provides a low latency versioned streaming gRPC
+delivery of xDS resources.  The data model covers common data plane concerns
+such as service discovery, load balancing assignments, routing discovery,
+listener configuration, secret discovery, load reporting, health check
+delegation, etc.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-cockroachdb-errors
   (package
     (name "go-github-com-cockroachdb-errors")
