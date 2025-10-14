@@ -724,30 +724,31 @@ formats, and can perform many different manipulations.")
        (sha256
         (base32
          "0jil04khy0lxllhapdm86yyq9i3xqrlvmf6g5r53qmq9jyvxwlhv"))))
+    (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:modules ((guix build utils)
+     (list
+      #:tests? #f                      ; no tests
+      #:modules '((guix build utils)
                   (ice-9 popen)
                   (srfi srfi-26)
                   (guix build cmake-build-system))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'fix-version-gen
-           (lambda _
-             (call-with-output-file ".tarball-version"
-               (lambda (port)
-                 (display ,version port)))))
-         (add-after 'install 'install-udev-rules
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (uuu (string-append out "/bin/uuu"))
-                    (pipe (open-pipe* OPEN_READ uuu "-udev"))
-                    (rules
-                     (string-append out "/lib/udev/rules.d/70-uuu.rules")))
-               (mkdir-p (string-append out "/lib/udev/rules.d"))
-               (call-with-output-file rules
-                 (cut dump-port pipe <>))))))))
-    (build-system cmake-build-system)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-version-gen
+            (lambda _
+              (call-with-output-file ".tarball-version"
+                (lambda (port)
+                  (display #$version port)))))
+          (add-after 'install 'install-udev-rules
+            (lambda _
+              (let* ((uuu (string-append #$output "/bin/uuu"))
+                     (pipe (open-pipe* OPEN_READ uuu "-udev"))
+                     (rules
+                      (string-append
+                       #$output "/lib/udev/rules.d/70-uuu.rules")))
+                (mkdir-p (string-append #$output "/lib/udev/rules.d"))
+                (call-with-output-file rules
+                  (cut dump-port pipe <>))))))))
     (native-inputs
      (list pkg-config))
     (inputs
