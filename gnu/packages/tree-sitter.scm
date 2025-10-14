@@ -792,6 +792,14 @@ which will be used as a snippet in origin."
    "0xi04a48ly438gar25bkkvvr8by4dd013cnafbjdysqjfs04q2wg"
    "0.23.1"))
 
+(define-public tree-sitter-kconfig
+  (tree-sitter-grammar
+   "kconfig" "Kconfig"
+   "1gjh5pz2hwccfcljz3qlg66b6rgv3wsv1bdml1gzrphca9xxz66a"
+   "1.3.0"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-kconfig"))
+
 (define-public tree-sitter-kdl
   (tree-sitter-grammar
    "kdl" "KDL"
