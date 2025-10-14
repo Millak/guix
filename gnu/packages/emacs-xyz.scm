@@ -44950,7 +44950,7 @@ hacker.")
 (define-public emacs-osm
   (package
     (name "emacs-osm")
-    (version "1.7")
+    (version "1.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -44959,10 +44959,11 @@ hacker.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fw0hgi2542ivc05dbq07ybr8c2mf8ja0z3f07lnslvn7vn5xp9i"))))
+                "1azydrknczkn9gvy9ynxr4dk7xy5cwrg985fx8bz2apmalfvmpzw"))))
     (build-system emacs-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
+     (list #:tests? #f                  ;no tests
+           #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'set-curl-file-name
                           (lambda* (#:key inputs #:allow-other-keys)
                             (substitute* "osm.el"
