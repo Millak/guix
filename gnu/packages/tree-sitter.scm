@@ -554,6 +554,20 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-func")))
 
+(define-public tree-sitter-gdscript
+  (let ((version "6.0.0")
+        ;; Can't use the tag above directly; the build at that tag is
+        ;; non‑deterministic, so pin to a later commit.
+        (commit "839cd921c8aa8b79c9afe2eb71a6a7bfa809e995")
+        (revision "0"))
+    (tree-sitter-grammar
+     "gdscript" "GDScript"
+     "00icy0dpdmhz2lfa35npvj26y0m37f0l73asxn7f2prmpm2jsm8c"
+     (git-version version revision commit)
+     #:repository-url
+     "https://github.com/PrestonKnopp/tree-sitter-gdscript"
+     #:commit commit)))
+
 (define-public tree-sitter-go
   (tree-sitter-grammar
    "go" "Go"
