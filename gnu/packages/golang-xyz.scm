@@ -20694,6 +20694,30 @@ structures using selector strings.  It's similar to @code{jq}/@code{yq}, but
 supports JSON, YAML, TOML, XML and CSV with zero runtime dependencies.")
     (license license:expat)))
 
+(define-public go-github-com-tonistiigi-units
+  (package
+    (name "go-github-com-tonistiigi-units")
+    (version "0.0.0-20180711220420-6950e57a87ea")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tonistiigi/units")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w8rgmlg6pim4vchg4qfpdf6niqmsp0a4f6bafgwd1gnwxi71zkf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tonistiigi/units"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/tonistiigi/units")
+    (synopsis "Simple byte size formatting")
+    (description "This package provides a simple byte size formatting in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-twpayne-go-shell
   (package
     (name "go-github-com-twpayne-go-shell")
