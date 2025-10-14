@@ -940,6 +940,18 @@ which will be used as a snippet in origin."
    "1.0.4"
    #:repository-url "https://github.com/Norgate-AV/tree-sitter-netlinx"))
 
+(define-public tree-sitter-nim
+  (let ((version "0.6.2")
+        (commit "4ad352773688deb84a95eeaa9872acda5b466439")
+        (revision "0"))
+    (tree-sitter-grammar
+     "nim" "Nim"
+     "17wgv8lv6v3wgsjhwcmrqpvdj0bj69ldmr62j588vsppn2cwqabn"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url "https://github.com/alaviss/tree-sitter-nim"
+     #:license license:mpl2.0)))
+
 (define-public tree-sitter-nix
   (tree-sitter-grammar
    "nix" "Nix"
