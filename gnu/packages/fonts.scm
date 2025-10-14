@@ -1377,6 +1377,114 @@ additional characters (mostly accented ones).  This package provides the
 OpenType variant of these fonts.")
     (license license:gfl1.0)))
 
+(define-public font-nerd-symbols
+  (package
+    (name "font-nerd-symbols")
+    (version "3.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ryanoasis/nerd-fonts")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0adash47a0pmvhhbqr9wzp3r287hzj50f28pswdxm30l0br6zgfa"))
+       (modules
+        '((srfi srfi-26)
+          (ice-9 ftw)
+          (guix build utils)))
+       (snippet
+        ;; Remove fonts we don't use to save space and build time.
+        #~(begin
+            (delete-file-recursively "patched-fonts")
+            (with-directory-excursion "src/unpatched-fonts"
+              (let ((keep? (cut member <> '("." ".." "NerdFontsSymbolsOnly"))))
+                (for-each delete-file-recursively
+                          (scandir "." (negate keep?)))))))))
+    (build-system font-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory
+            (lambda _
+              (chdir "src/unpatched-fonts/NerdFontsSymbolsOnly")))
+          (add-before 'install 'build
+            (lambda _
+              (for-each
+               (lambda (monospaced?)
+                 ;; Patch the blank font to create Symbols Nerd Font.
+                 ;; --complete: Include all icon sets.
+                 ;; --mono: Create monospaced glyphs (fixed width).
+                 ;; --ext ttf: Generate TrueType font.
+                 ;; --no-progressbars: Disable progress bars for clean build
+                 ;; output.
+                 (apply invoke "fontforge" "-script" "../../../font-patcher"
+                        `("--complete"
+                          ,@(if monospaced? '("--mono") '())
+                          "--ext" "ttf"
+                          "--no-progressbars"
+                          "--outputdir" "."
+                          "NerdFontsSymbolsNerdFontBlank.sfd")))
+               '(#f #t))))
+          (add-after 'build 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (for-each
+                 (lambda (font)
+                   ;; Use Python script with fontforge to validate the font.
+                   (invoke "python3" "-c"
+                           (format #f "\
+import fontforge
+name = ~s
+font = fontforge.open(name)
+glyph_count = len([g for g in font.glyphs() if g.unicode > 0])
+print(f'Font has {glyph_count} glyphs with Unicode mapping')
+if glyph_count < 8000:
+    raise ValueError(f'Font has too few glyphs: {glyph_count}')
+print(f'✓ Font validation passed for {name}')
+font.close()~%"
+                                   font)))
+                 '("SymbolsNerdFont-Regular.ttf"
+                   "SymbolsNerdFontMono-Regular.ttf"))))))))
+    (native-inputs (list fontforge python-minimal))
+    (home-page "https://www.nerdfonts.com/")
+    (synopsis "Iconic font collection")
+    (description
+     "This package provides the following iconic fonts suitable for use as
+fallback fonts for icon display in terminal emulators and text editors:
+
+@itemize
+@item Symbols Nerd Font
+@item Symbols Nerd Font Mono
+@end itemize
+
+These fonts include glyphs from multiple icon sets:
+
+@itemize
+@item Powerline with Extra Symbols
+@item Font Awesome and Font Awesome Extension
+@item Material Design Icons
+@item Weather Icons
+@item Devicons
+@item Octicons
+@item Font Logos (formerly Font Linux)
+@item Pomicons
+@item Codeicons
+@end itemize
+
+The monospaced variant ensures all glyphs have uniform width, which is essential
+for terminal emulators that require consistent character spacing.")
+    ;; https://github.com/ryanoasis/nerd-fonts/blob/master/license-audit.md
+    (license
+     (list license:expat
+           license:cc-by4.0
+           license:unlicense
+           license:asl2.0
+           license:silofl1.1))))
+
 (define-public font-new-computer-modern
   (package
     (name "font-new-computer-modern")
