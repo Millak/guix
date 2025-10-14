@@ -782,6 +782,25 @@ has features such as:
 @end itemize")
     (license license:expat)))
 
+(define-public python-hatchling-for-hatch
+  ;; For hatch@1.9.7, remove when no longer required.
+  (hidden-package
+   (package
+     (inherit python-hatchling)
+     (version "1.21.1")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "hatchling" version))
+        (sha256
+         (base32 "1g40g68vzfakddd9f0psp9jkfqy3v3la4zs5g127ski2792l195v"))))
+    (propagated-inputs
+     (list python-editables
+           python-packaging-bootstrap
+           python-pathspec
+           python-pluggy
+           python-trove-classifiers)))))
+
 (define-public python-hatch-docstring-description
   (package
     (name "python-hatch-docstring-description")

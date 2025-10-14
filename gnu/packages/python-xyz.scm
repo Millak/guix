@@ -32946,71 +32946,85 @@ cleanly print different types of messages.")
 (define-public hatch
   (package
     (name "hatch")
-    (version "1.7.0")
+    (version "1.9.7")   ;XXX: higher versions require python-uv
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hatch" version))
        (sha256
-        (base32 "0ipvj1pxdb6wb1sblh22h9gnh6byjnwcl7hfcnk88dmkslgp1z3s"))
-       (modules '((guix build utils)))
-       (snippet '(substitute* "pyproject.toml"
-                  ;; We have virtualenv 20.3.1.
-                  (("virtualenv>=20.16.2")
-                   "virtualenv>=20.3.1")))))
+        (base32 "0k32wv4kayb34wwda0xibbawm45bcmzalxmdvgfjlkzrg4hvi9qr"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 611 passed, 14 skipped, 35 deselected
+      ;; tests: 1778 passed, 107 skipped, 25 deselected
       #:test-flags
-      ;; TODO: A lot of tests fail due to requirement of newer hatchling which
-      ;; is updated on python-team, review after it's merged.
-      #~(list "--ignore=tests/cli/"
-              ;; Mostly fail due incompatibility or wrong diffs.
-              "--ignore=tests/backend/"
-              ;; FileNotFoundError: [Errno 2] No such file or directory
-              "--ignore=tests/index/test_core.py"
-              ;; XXX: tests below fail due to zipfile reporting incorrect zip dates.
-              "-k"
-              (string-append
-               "not "
-               (string-join
-                (list "test_default"
-                      "test_explicit_path"
-                      "test_editable_default"
-                      "test_editable_default_dependencies"
-                      "test_editable_default_force_include"
-                      "test_editable_default_force_include_option"
-                      "test_editable_exact"
-                      "test_editable_exact_extra_dependencies"
-                      "test_editable_exact_force_include"
-                      "test_editable_exact_force_include_option"
-                      "test_editable_exact_force_include_build_data_precedence"
-                      "test_editable_pth")
-                " and not ")))
+      #~(list
+         ;; Tests requiring Cargo.
+         ;; OSError: Executable `cargo` could not be found on PATH
+         #$@(map (lambda (test)
+                   (string-append "--deselect="
+                                  "tests/backend/builders/test_app.py::"
+                                  "TestBuildBootstrap::"
+                                  test))
+                 (list "test_default"
+                       "test_default_build_target"
+                       "test_scripts"
+                       "test_scripts_build_target"
+                       "test_python_version"
+                       "test_pyapp_version"
+                       "test_verbosity"
+                       "test_local_build_with_build_target"
+                       "test_local_build_no_build_target"))
+         ;; Tests failing to validate date format.
+         ;; assert (1980, 1, 2, 0, 0, 0) == (2020, 2, 2, 0, 0, 0)
+         "--deselect=tests/backend/builders/test_custom.py::test_default"
+         "--deselect=tests/backend/builders/test_custom.py::test_explicit_path"
+         #$@(map (lambda (test)
+                   (string-append "--deselect="
+                                  "tests/backend/builders/test_wheel.py::"
+                                  "TestBuildStandard::"
+                                  test))
+                 (list "test_default_auto_detection"
+                       "test_editable_default"
+                       "test_editable_default_extra_dependencies"
+                       "test_editable_default_force_include"
+                       "test_editable_default_force_include_option"
+                       "test_editable_default_symlink"
+                       "test_editable_exact"
+                       "test_editable_exact_extra_dependencies"
+                       "test_editable_exact_force_include"
+                       "test_editable_exact_force_include_option"
+                       "test_editable_exact_force_include_build_data_precedence"
+                       "test_editable_pth"))
+         ;; Two tests failed to compare project temporary location.
+         "-k" (string-append
+               "not test_project_location_basic_set_first_project"
+               " and not test_project_location_complex_set_first_project"))
       #:phases #~(modify-phases %standard-phases
                    (add-before 'check 'pre-check
                      (lambda _
                        (setenv "HOME" "/tmp"))))))
     (native-inputs (list git-minimal
+                         nss-certs-for-test
+                         python-hatch-vcs
                          python-pytest
                          python-pytest-mock
                          python-pytest-xdist))
     (propagated-inputs (list python-click
-                             python-hatchling
+                             python-hatchling-for-hatch
                              python-httpx
                              python-hyperlink
                              python-keyring
                              python-packaging
                              python-pexpect
                              python-platformdirs
-                             python-pyperclip
                              python-rich
                              python-shellingham
                              python-tomli-w
                              python-tomlkit
                              python-userpath
-                             python-virtualenv))
+                             python-virtualenv-for-hatch
+                             python-zstandard))
     (home-page "https://hatch.pypa.io/latest/")
     (synopsis "Python project management")
     (description "Hatch is a modern, extensible Python project manager.
@@ -39426,6 +39440,19 @@ e.g. filters, callbacks and errbacks can all be promises.")
     (description
      "Virtualenv is a tool to create isolated Python environments.")
     (license license:expat)))
+
+(define-public python-virtualenv-for-hatch
+  ;; For hatch@1.9.7, remove when no longer required.
+  (hidden-package
+   (package
+     (inherit python-virtualenv)
+     (version "20.25.3")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "virtualenv" version))
+        (sha256
+         (base32 "1gj57xqgrg53yfn9ypikgky01hvazxdyl556kwsc7b7avyxm9dbv")))))))
 
 ;; XXX: No new release since 2021, no updates on default branch since 2023, no
 ;; users in Guix; consider to remove if it keeps failing to build.
