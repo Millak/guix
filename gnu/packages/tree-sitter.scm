@@ -1010,6 +1010,18 @@ which will be used as a snippet in origin."
    "0.10.0"
    #:repository-url "https://github.com/Isopod/tree-sitter-pascal"))
 
+(define-public tree-sitter-pem
+  (let ((version "0.1.1")
+        (commit "e525b177a229b1154fd81bc0691f943028d9e685")
+        (revision "0"))
+    (tree-sitter-grammar
+     "pem" "PEM"
+     "02g17ki5da7iams576qxyc01r1c95y5ycd7yhap9fhyxc8a6my6r"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-pem")))
+
 (define-public tree-sitter-plantuml
   ;; No tags
   (let ((commit "c7361a1d481dc1ff6700b14ea1d5efc549b72713")
