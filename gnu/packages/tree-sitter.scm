@@ -1275,6 +1275,14 @@ which will be used as a snippet in origin."
    "0.23.0-1"
    #:repository-url "https://github.com/6cdh/tree-sitter-scheme"))
 
+(define-public tree-sitter-solidity
+  (tree-sitter-grammar
+   "solidity" "Solidity"
+   "0vbxghnihnmfdgg4a5j2g5s7fcff8axqmqa2y8yci434n35wgq3g"
+   "1.2.13"
+   #:repository-url
+   "https://github.com/JoranHonig/tree-sitter-solidity"))
+
 (define-public tree-sitter-starlark
   (tree-sitter-grammar
    "starlark" "Starlark"
