@@ -580,6 +580,15 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/shunsambongi/tree-sitter-gitignore")))
 
+(define-public tree-sitter-gleam
+  (tree-sitter-grammar
+   "gleam" "Gleam"
+   "0d7z5bk6x0qi3wy4d8174a69wxsc4287c7fcdfabkn8dixpa920q"
+   "1.1.0"
+   #:repository-url
+   "https://github.com/gleam-lang/tree-sitter-gleam"
+   #:license license:asl2.0))
+
 (define-public tree-sitter-go
   (tree-sitter-grammar
    "go" "Go"
