@@ -1102,6 +1102,17 @@ which will be used as a snippet in origin."
    #:repository-url "https://github.com/victorhqc/tree-sitter-prisma"
    #:license license:expat))
 
+(define-public tree-sitter-proto
+  (let ((version "0.1.0")
+        (commit "e9f6b43f6844bd2189b50a422d4e2094313f6aa3")
+        (revision "0"))
+    (tree-sitter-grammar
+     "proto" "Protocol Buffers"
+     "1r8g28rp852f1qj4bhnkf4fzfir1r5blq2p0nz4x9y5jfplb1vji"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url "https://github.com/treywood/tree-sitter-proto")))
+
 (define-public tree-sitter-python
   (tree-sitter-grammar
    "python" "Python"
