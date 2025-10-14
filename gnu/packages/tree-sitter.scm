@@ -402,6 +402,17 @@ which will be used as a snippet in origin."
    "0c5j9zyjcykmraix1agbc0gdk85zs2v379q0aykr10fi9w2r9z9c"
    "0.23.2"))
 
+(define-public tree-sitter-dart
+  (let ((version "1.0.0")
+        (commit "d4d8f3e337d8be23be27ffc35a0aef972343cd54")
+        (revision "0"))
+    (tree-sitter-grammar
+     "dart" "Dart"
+     "09k4nclfvclwcz6lza4p2rkm25dpdasj800dn47hvm1b5al5iyym"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url "https://github.com/UserNobody14/tree-sitter-dart")))
+
 (define-public tree-sitter-devicetree
   (tree-sitter-grammar
    "devicetree" "Devicetree"
