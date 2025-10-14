@@ -1113,6 +1113,14 @@ which will be used as a snippet in origin."
      #:commit commit
      #:repository-url "https://github.com/treywood/tree-sitter-proto")))
 
+(define-public tree-sitter-puppet
+  (tree-sitter-grammar
+   "puppet" "Puppet"
+   "19032dhb60vxij6b6xvgnigwhhbm4y89dr11vxsr1kk10zj61vkc"
+   "1.3.0"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-puppet"))
+
 (define-public tree-sitter-python
   (tree-sitter-grammar
    "python" "Python"
