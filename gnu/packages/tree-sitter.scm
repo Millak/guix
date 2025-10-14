@@ -1325,6 +1325,19 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-tcl")))
 
+(define-public tree-sitter-test
+  (package
+    ;; Similar to the tree-sitter-query.
+    (inherit (tree-sitter-grammar
+     "test" "corpus test"
+     "0n61mhi2244x3xv1zvwypcih9x65qqgrlz0sz4766h5v68mc58zg"
+     "0.3.0"
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-test"))
+    (synopsis "Tree-sitter grammar for Tree-sitter's corpus test files")
+    (description "This package provides Tree-sitter's grammar for corpus test
+files.")))
+
 (define-public tree-sitter-tlaplus
   (tree-sitter-grammar
    "tlaplus" "TLA+"
