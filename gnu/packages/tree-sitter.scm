@@ -309,6 +309,14 @@ which will be used as a snippet in origin."
      #:commit commit
      #:license license:expat)))
 
+(define-public tree-sitter-bicep
+  (tree-sitter-grammar
+   "bicep" "Bicep"
+   "0ydz1vf6n8ky0vcgcmihr6ddfdlswnz8xa59zjiwdcra0qkf3azs"
+   "1.1.0"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-bicep"))
+
 (define-public tree-sitter-blueprint
   (let ((commit "329699d55f3e3955091e13756563c3f320a561fc")
         (revision "0"))
