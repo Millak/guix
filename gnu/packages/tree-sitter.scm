@@ -1387,6 +1387,18 @@ files.")))
          (delete-file "test/corpus/negative.scm")
          #$(tree-sitter-delete-generated-files grammar-directories)))))
 
+(define-public tree-sitter-udev
+  (let ((version "0.2.1")
+        (commit "2fcb563a4d56a6b8e8c129252325fc6335e4acbf")
+        (revision "0"))
+    (tree-sitter-grammar
+     "udev" "udev rules"
+     "0azs4q43bdg0an4f5s8ac7jqxikwi1rnqhl4g0l58ghf2g51i70i"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-udev")))
+
 (define-public tree-sitter-ungrammar
   ;; No releases yet.
   (let ((commit "debd26fed283d80456ebafa33a06957b0c52e451")
