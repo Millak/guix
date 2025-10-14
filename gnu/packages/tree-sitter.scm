@@ -1156,6 +1156,18 @@ which will be used as a snippet in origin."
      #:inputs (delay (list tree-sitter-javascript tree-sitter-typescript))
      #:license license:expat)))
 
+(define-public tree-sitter-qmldir
+  (let ((version "0.2.2")
+        (commit "fbf29ddf1ebb01e0c389dde2a51e874f688a2327")
+        (revision "0"))
+    (tree-sitter-grammar
+     "qmldir" "Qmldir"
+     "07wmr7vsqqv77m69inrhdk3qmlwivwkdpppcjwc326b2r8a88y7j"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-qmldir")))
+
 (define-public tree-sitter-query
   (package
     (inherit (tree-sitter-grammar "query"
