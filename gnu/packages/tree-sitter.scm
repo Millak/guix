@@ -774,6 +774,18 @@ which will be used as a snippet in origin."
    "0p0fiqi5imxm13s1fs6bhqw6v11n79ri1af3d072zm7jqkcl5mhc"
    "0.24.8"))
 
+(define-public tree-sitter-jsonnet
+  (let ((version "0.0.1")
+        (commit "ddd075f1939aed8147b7aa67f042eda3fce22790")
+        (revision "0"))
+    (tree-sitter-grammar
+     "jsonnet" "JSONNET"
+     "1bfdjxp0h95d124bzlhlvc9b5q19cdj716aym41nyl6z5a992c9q"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/sourcegraph/tree-sitter-jsonnet")))
+
 (define-public tree-sitter-julia
   (tree-sitter-grammar
    "julia" "Julia"
