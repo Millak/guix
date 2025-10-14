@@ -13561,6 +13561,44 @@ the standard @code{context} package to store request-scoped values.")
 generate Go code.")
     (license license:asl2.0)))
 
+(define-public go-google-golang-org-grpc-security-advancedtls
+  (package
+    (name "go-google-golang-org-grpc-security-advancedtls")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/grpc/grpc-go")
+              (commit (go-version->git-ref version
+                                           #:subdir "security/advancedtls"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xkqjian41falr0h8sicx2vdajf1zxcrkqiz5p2g7mmm8gcb6l4w"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "google.golang.org/grpc/security/advancedtls"
+      #:unpack-path "google.golang.org/grpc"
+      #:test-flags
+      #~(list "-vet=off"
+              "-skip" "Test/ClientServerHandshake")))
+    (native-inputs
+     (list go-google-golang-org-genproto-googleapis-rpc
+           go-golang-org-x-net))
+    (propagated-inputs
+     (list go-github-com-google-go-cmp
+           go-golang-org-x-crypto
+           go-google-golang-org-protobuf))
+    (home-page "https://google.golang.org/grpc")
+    (synopsis "Go package for gRPC transport credentials")
+    (description
+     "Package advancedtls provides gRPC transport credentials that allow easy
+configuration of advanced TLS features.  For example, periodic credential
+reloading,support for certificate revocation lists, and customizable
+certificate verification behaviors.")
+    (license license:asl2.0)))
+
 ;; This to satisfy alternative import path, some of the projects still use it
 ;; in go.mod.
 (define-public go-gopkg-in-evanphx-json-patch-v4
