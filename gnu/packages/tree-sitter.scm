@@ -342,6 +342,14 @@ which will be used as a snippet in origin."
    #:repository-url
    "https://github.com/tree-sitter-grammars/tree-sitter-chatito"))
 
+(define-public tree-sitter-clarity
+  (tree-sitter-grammar
+   "clarity" "Clarity"
+   "14qprf98199rnlr6hrjmzvn6d3ch9z8yxgjxva6m6gk9hcyyfy84"
+   "0.0.5"
+   #:repository-url
+   "https://github.com/xlittlerag/tree-sitter-clarity"))
+
 (define-public tree-sitter-clojure
   (tree-sitter-grammar
    "clojure" "Clojure"
