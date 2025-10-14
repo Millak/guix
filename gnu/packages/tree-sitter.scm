@@ -1411,6 +1411,18 @@ files.")))
      #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-ungrammar"
      #:article "an")))
 
+(define-public tree-sitter-uxntal
+  (let ((version "1.0.0")
+        (commit "bd6cc0cf5c97bb25ee65b39132768d1a1f70ffa9")
+        (revision "0"))
+    (tree-sitter-grammar
+     "uxntal" "Uxntal"
+     "0sbwwr6d6yiq0ddhjkcafi0k61rcp6l1fa6vpmkykr3kh7znq9pn"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-uxntal")))
+
 (define-public tree-sitter-verilog
   (tree-sitter-grammar
    "verilog" "Verilog"
