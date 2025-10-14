@@ -975,23 +975,26 @@ X.509 host certificate; otherwise, warn about the problem and keep going."
                                                            validate-channels
                                                            #:verify-certificate?
                                                            verify-certificate?))
-                             (commits -> (map channel-instance-commit instances))
-                             (profile
-                              (channel-instances->derivation instances)))
-          (mbegin %store-monad
-            ;; It's up to the caller to install a build handler to report
-            ;; what's going to be built.
-            (built-derivations (list profile))
+                             (commits -> (map channel-instance-commit instances)))
+          ;; Return early if cache is hit with filled channel dependencies.
+          (if (file-exists? (cached commits))
+              (return (cached commits))
+              (mlet* %store-monad ((profile
+                                     (channel-instances->derivation instances)))
+                (mbegin %store-monad
+                  ;; It's up to the caller to install a build handler to report
+                  ;; what's going to be built.
+                  (built-derivations (list profile))
 
-            ;; Cache if and only if AUTHENTICATE? is true.
-            (if authenticate?
-                (mbegin %store-monad
-                  (symlink* (derivation->output-path profile) (cached commits))
-                  (add-indirect-root* (cached commits))
-                  (return (cached commits)))
-                (mbegin %store-monad
-                  (add-temp-root* (derivation->output-path profile))
-                  (return (derivation->output-path profile)))))))))
+                  ;; Cache if and only if AUTHENTICATE? is true.
+                  (if authenticate?
+                      (mbegin %store-monad
+                        (symlink* (derivation->output-path profile) (cached commits))
+                        (add-indirect-root* (cached commits))
+                        (return (cached commits)))
+                      (mbegin %store-monad
+                        (add-temp-root* (derivation->output-path profile))
+                        (return (derivation->output-path profile)))))))))))
 
 (define* (inferior-for-channels channels
                                 #:key
