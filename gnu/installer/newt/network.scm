@@ -165,6 +165,36 @@ Internet. The install process requires Internet access. \
 Do you want to continue anyway?"))
         ((2) (abort-to-prompt 'installer-step 'abort))))))
 
+(define (check-substitute-availability)
+  "Check that at least one of the Guix substitute servers is available."
+  (define (substitutes-available?)
+    (common-urls-alive?
+     (list
+      "https://bordeaux.guix.gnu.org/nix-cache-info"
+      "https://ci.guix.gnu.org/nix-cache-info")))
+
+  (let* ((full-value 5))
+    (run-scale-page
+     #:title (G_ "Checking substitutes")
+     #:info-text (G_ "Checking if Guix substitutes are available...")
+     #:scale-full-value full-value
+     #:scale-update-proc
+     (lambda (value)
+       (sleep 1)
+       (if (substitutes-available?)
+           full-value
+           (+ value 1))))
+    (unless (substitutes-available?)
+      (case (choice-window
+             (G_ "Substitute availability")
+             (G_ "Continue")
+             (G_ "Try again?")
+             (G_ "
+None of the Guix substitute servers are available.
+You can proceed with the install, but you will
+have to build most of the packages you install locally."))
+        ((2) (abort-to-prompt 'installer-step 'abort))))))
+
 (define (run-network-page)
   "Run a page to allow the user to configure connman so that it can access the
 Internet."
@@ -202,7 +232,11 @@ Internet."
      (installer-step
       (id 'wait-online)
       (compute (lambda _
-                 (wait-service-online))))))
+                 (wait-service-online))))
+     (installer-step
+      (id 'check-substitutes)
+      (compute (lambda _
+                 (check-substitute-availability))))))
   (run-installer-steps
    #:steps network-steps
    #:rewind-strategy 'start))
