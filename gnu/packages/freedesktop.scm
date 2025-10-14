@@ -36,7 +36,7 @@
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2024-2025 Zheng Junjie <z572@z572.online>
 ;;; Copyright © 2022 Samuel Culpepper <sculpepper@newstore.com>
-;;; Copyright © 2024 aurtzy <aurtzy@gmail.com>
+;;; Copyright © 2024-2025 Alvin Hsu <aurtzy@gmail.com>
 ;;; Copyright © 2024 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024 dan <i@dan.games>
@@ -1817,6 +1817,10 @@ Analysis and Reporting Technology) functionality.")
                 (("\"eject %s\"")
                  (format #f "\"~a %s\""
                          (search-input-file inputs "bin/eject"))))
+              (substitute* "src/udiskslinuxmanager.c"
+                (("\"mkswap\"")
+                 (format #f "~s"
+                         (search-input-file inputs "sbin/mkswap"))))
               (substitute* "src/udisksstate.c"
                 (("\"umount -l %s\"")
                  (format #f "\"~a -l %s\""
