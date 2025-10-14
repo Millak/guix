@@ -1212,6 +1212,18 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-readline")))
 
+(define-public tree-sitter-rego
+  (let ((version "1.0.0")
+        (commit "20b5a5958c837bc9f74b231022a68a594a313f6d")
+        (revision "0"))
+    (tree-sitter-grammar
+     "rego" "Rego"
+     "0cmja3gd5nbmi251qc14hh1cbfd7i0mydx74qxs30qvix6q5a2az"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/FallenAngel97/tree-sitter-rego")))
+
 (define-public tree-sitter-ron
   (let ((commit "78938553b93075e638035f624973083451b29055")
         (revision "0"))
