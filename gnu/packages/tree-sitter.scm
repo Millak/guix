@@ -445,6 +445,18 @@ which will be used as a snippet in origin."
      #:repository-url "https://github.com/rydesun/tree-sitter-dot"
      #:commit commit)))
 
+(define-public tree-sitter-doxygen
+  (let ((version "1.1.0")
+        (commit "1e28054cb5be80d5febac082706225e42eff14e6")
+        (revision "0"))
+    (tree-sitter-grammar
+     "doxygen" "Doxygen"
+     "11xflk40xp7x7f4h9knhy997k79psrw3ik9m0xkc2vzqi57l9by2"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-doxygen")))
+
 (define-public tree-sitter-elixir
   (tree-sitter-grammar
    "elixir" "Elixir"
