@@ -1243,6 +1243,13 @@ which will be used as a snippet in origin."
      #:commit commit
      #:license (list license:asl2.0 license:expat))))
 
+(define-public tree-sitter-rst
+  (tree-sitter-grammar
+   "rst" "ReStructuredText"
+   "1lrdyhgda2f66biq7dk4s0llk4fcxn23rf5zrhi17nnl8zmjg18i"
+   "0.2.0"
+   #:repository-url "https://github.com/stsewd/tree-sitter-rst"))
+
 (define-public tree-sitter-ruby
   (tree-sitter-grammar
    "ruby" "Ruby"
