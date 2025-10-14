@@ -674,6 +674,17 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-gstlaunch")))
 
+(define-public tree-sitter-hack
+  (let ((version "0.0.4")
+        (commit "bc5b3a10d6d27e8220a113a9a7fe9bec0a1574b0")
+        (revision "0"))
+    (tree-sitter-grammar
+     "hack" "Hack"
+     "08rmlbxhb79d4zb0rb5wwkm4cqgy4a2l8zh37p2kx9gr352wjl3m"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url "https://github.com/slackhq/tree-sitter-hack")))
+
 (define-public tree-sitter-haskell
   (tree-sitter-grammar
    "haskell" "Haskell"
