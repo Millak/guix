@@ -2202,6 +2202,38 @@ Wasm}.
 @end itemize")
     (license license:isc)))
 
+(define-public go-github-com-containerd-containerd-api
+  (package
+    (name "go-github-com-containerd-containerd-api")
+    (version "1.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containerd/containerd")
+              (commit (go-version->git-ref version
+                                           #:subdir "api"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06pl08p1f86z70hy9si5h7p2bgassqjsy625pvzxazxix35ggq6x"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containerd/containerd/api"
+      #:unpack-path "github.com/containerd/containerd"))
+    (propagated-inputs
+     (list go-github-com-containerd-ttrpc
+           go-github-com-containerd-typeurl-v2
+           go-github-com-opencontainers-image-spec
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/containerd/containerd")
+    (synopsis "Go package for gRPC API for containerd")
+    (description
+     "This Go package provides the gRPC API for containerd.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-containerd-ttrpc
   (package
     (name "go-github-com-containerd-ttrpc")
