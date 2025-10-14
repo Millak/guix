@@ -25,9 +25,11 @@
 ;;; Copyright © 2023 Wojtek Kosior <koszko@koszko.org>
 ;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 aurtzy <aurtzy@gmail.com>
 ;;; Copyright © 2025 Tomás Ortín Fernández <quanrong@mailbox.org>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -114,6 +116,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -1183,6 +1186,108 @@ Coordinator to submit builds and monitor the activity.
 It functions as a Guile library, with the @code{run-bffe-service} procedure in
 the @code{(bffe)} module as the entry point.")
       (license license:gpl3+))))
+
+(define-public hatch
+  (package
+    (name "hatch")
+    (version "1.9.7")   ;XXX: higher versions require python-uv
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hatch" version))
+       (sha256
+        (base32 "0k32wv4kayb34wwda0xibbawm45bcmzalxmdvgfjlkzrg4hvi9qr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 1778 passed, 107 skipped, 25 deselected
+      #:test-flags
+      #~(list
+         ;; Tests requiring Cargo.
+         ;; OSError: Executable `cargo` could not be found on PATH
+         #$@(map (lambda (test)
+                   (string-append "--deselect="
+                                  "tests/backend/builders/test_app.py::"
+                                  "TestBuildBootstrap::"
+                                  test))
+                 (list "test_default"
+                       "test_default_build_target"
+                       "test_scripts"
+                       "test_scripts_build_target"
+                       "test_python_version"
+                       "test_pyapp_version"
+                       "test_verbosity"
+                       "test_local_build_with_build_target"
+                       "test_local_build_no_build_target"))
+         ;; Tests failing to validate date format.
+         ;; assert (1980, 1, 2, 0, 0, 0) == (2020, 2, 2, 0, 0, 0)
+         "--deselect=tests/backend/builders/test_custom.py::test_default"
+         "--deselect=tests/backend/builders/test_custom.py::test_explicit_path"
+         #$@(map (lambda (test)
+                   (string-append "--deselect="
+                                  "tests/backend/builders/test_wheel.py::"
+                                  "TestBuildStandard::"
+                                  test))
+                 (list "test_default_auto_detection"
+                       "test_editable_default"
+                       "test_editable_default_extra_dependencies"
+                       "test_editable_default_force_include"
+                       "test_editable_default_force_include_option"
+                       "test_editable_default_symlink"
+                       "test_editable_exact"
+                       "test_editable_exact_extra_dependencies"
+                       "test_editable_exact_force_include"
+                       "test_editable_exact_force_include_option"
+                       "test_editable_exact_force_include_build_data_precedence"
+                       "test_editable_pth"))
+         ;; Two tests failed to compare project temporary location.
+         "-k" (string-append
+               "not test_project_location_basic_set_first_project"
+               " and not test_project_location_complex_set_first_project"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list git-minimal
+           nss-certs-for-test
+           python-hatch-vcs
+           python-pytest
+           python-pytest-mock
+           python-pytest-xdist))
+    (inputs
+     (list python-click
+           python-hatchling-for-hatch
+           python-httpx
+           python-hyperlink
+           python-keyring
+           python-packaging
+           python-pexpect
+           python-platformdirs
+           python-rich
+           python-shellingham
+           python-tomli-w
+           python-tomlkit
+           python-userpath
+           python-virtualenv-for-hatch
+           python-zstandard))
+    (home-page "https://hatch.pypa.io/latest/")
+    (synopsis "Python project management")
+    (description "Hatch is a modern, extensible Python project manager.
+
+Features
+
+@itemize
+@item Standardized build system with reproducible builds by default
+@item Robust environment management with support for custom scripts
+@item Configurable Python distribution management
+@item Easy publishing to PyPI or other indexes
+@item Version management
+@item Configurable project generation with sane defaults
+@item Responsive CLI, ~2-3x faster than equivalent tools
+@end itemize")
+    (license license:expat)))
 
 (define-public pipx
   (package
