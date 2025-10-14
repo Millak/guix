@@ -762,6 +762,12 @@ which will be used as a snippet in origin."
    "03v1gpr5lnifrk4lns690fviid8p02wn7hfdwp3ynp7lh1cid63a"
    "0.23.1"))
 
+(define-public tree-sitter-jsdoc
+  (tree-sitter-grammar
+   "jsdoc" "JSDoc"
+   "1qrgan1xpj717qmwdbgb3lqjgffyhsw0qxhjwhdhqfv2lgkw4cn6"
+   "0.25.0"))
+
 (define-public tree-sitter-json
   (tree-sitter-grammar
    "json" "JSON"
