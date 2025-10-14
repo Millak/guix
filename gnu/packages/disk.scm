@@ -1412,7 +1412,9 @@ to create devices with respective mappings for the ATARAID sets discovered.")
                                 "vfat-resize" "fatlabel"))
                 (patch-helpers "src/plugins/fs/xfs.c"
                                ("mkfs.xfs" "xfs_db" "xfs_repair" "xfs_admin"
-                                "xfs_growfs"))))))))
+                                "xfs_growfs"))
+                (patch-helpers "src/plugins/swap.c"
+                               ("mkswap" "swaplabel"))))))))
     (native-inputs
      (list gobject-introspection
            pkg-config
