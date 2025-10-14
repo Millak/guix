@@ -1488,6 +1488,16 @@ files.")))
    "https://github.com/tree-sitter-grammars/tree-sitter-xcompose"
    #:article "an"))
 
+(define-public tree-sitter-xml
+  (tree-sitter-grammar
+   "xml" "XML and DTD"
+   "0ghfjjhw1rvd98xd1c3mq3bffrl3wg5dmp22ksb0659g76qi0hpz"
+   "0.7.0"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-xml"
+   #:grammar-directories '("xml" "dtd")
+   #:article "an"))
+
 (define-public tree-sitter-yaml
   (tree-sitter-grammar
    "yaml" "YAML"
