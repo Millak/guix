@@ -1077,6 +1077,15 @@ which will be used as a snippet in origin."
    #:repository-url
    "https://github.com/airbus-cert/tree-sitter-powershell"))
 
+(define-public tree-sitter-printf
+  (tree-sitter-grammar
+   "printf" "printf"
+   "15p5fr1dhmf54aic9mszrb7859q2adcq66mnivzpfvzvh4xnpmr5"
+   "0.5.1"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-printf"
+   #:license license:isc))
+
 (define-public tree-sitter-prisma
   (tree-sitter-grammar
    "prisma" "Prisma"
