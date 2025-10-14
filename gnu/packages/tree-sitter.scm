@@ -885,6 +885,18 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-luap")))
 
+(define-public tree-sitter-magik
+  (let ((version "0.0.1")
+        (commit "1fd4c5502fd375c157bbe0916834f697c97704bb")
+        (revision "0"))
+    (tree-sitter-grammar
+     "magik" "Magik"
+     "07zdsilaa97c4hq1pj0qiyhrkbzhawnqc7sbsvr0nsz6n5jj3gwx"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/krn-robin/tree-sitter-magik")))
+
 (define-public tree-sitter-make
   (tree-sitter-grammar
    "make" "Makefile"
