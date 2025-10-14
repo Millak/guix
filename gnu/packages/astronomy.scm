@@ -10236,7 +10236,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
 (define-public stellarium
   (package
     (name "stellarium")
-    (version "25.2")
+    (version "25.3")
     (source
      (origin
        (method git-fetch)
@@ -10245,7 +10245,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fxdvybdcnlkjkyx1kqc7gg7p55qd4h1ri0mmn1xj2g5fxsbs0nr"))))
+        (base32 "05r3faqarhi4jipaphs6yh4aq6jy2aln67kg53kcqjlxbyxkmr7n"))))
     (build-system qt-build-system)
     ;; TODO: Complete documentation build and split into dedicated outputs.
     (arguments
