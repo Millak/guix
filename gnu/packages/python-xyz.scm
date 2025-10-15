@@ -13360,23 +13360,23 @@ all of your favorite programs.")
 (define-public python-pywinrm
   (package
     (name "python-pywinrm")
-    (version "0.4.1")
+    (version "0.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pywinrm" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/diyan/pywinrm/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "10gabhhg3rgacd5ahmi2r128z99fzbrbx6mz1nnq0dxmhmn5rpjf"))))
-    (build-system python-build-system)
+        (base32 "0jp7rps6zg5b6n98lfkwbhv72982sxxnqc4v4i6hjlq1ycjmmb8r"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-six python-requests_ntlm python-xmltodict
-           python-kerberos))
+     (list python-requests python-requests-ntlm python-xmltodict))
     (native-inputs
-     (list python-mock python-pytest))
+     (list python-mock python-pytest python-setuptools))
     (home-page "https://github.com/diyan/pywinrm/")
-    (synopsis
-     "Python library for Windows Remote Management (WinRM)")
+    (synopsis "Python library for Windows Remote Management (WinRM)")
     (description
      "pywinrm is a Python client for the Windows Remote Management (WinRM)
 service.  It allows you to invoke commands on target Windows machines from
