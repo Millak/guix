@@ -224,18 +224,19 @@ of the Transmission BitTorrent client, using its HTTP RPC protocol.")
 (define-public libtorrent
   (package
     (name "libtorrent")
-    (version "0.13.8")
+    (version "0.16.1")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://rtorrent.net/downloads/libtorrent-"
-                    version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rakshasa/libtorrent/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "10z9i1rc41cmmi7nx8k7k1agsx6afv09g9cl7g9zr35fyhl5l4gd"))))
+                "1rk5y27r2v3x2v1gngxfw8kj1i8n93dpkvda6idbid6yxvv9slkm"))))
     (build-system gnu-build-system)
-    (inputs (list openssl zlib))
-    (native-inputs (list pkg-config cppunit))
+    (inputs (list curl openssl zlib))
+    (native-inputs (list autoconf automake cppunit libtool pkg-config))
     (synopsis "BitTorrent library of rtorrent")
     (description
      "LibTorrent is a BitTorrent library used by and developed in parallel
