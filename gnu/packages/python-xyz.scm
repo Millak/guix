@@ -13575,11 +13575,11 @@ Python language binding specification.")
                  (substitute* '("grako/util.py"
                                 "grako/walkers.py")
                    (("collections\\.Mapping") "collections.abc.Mapping"))))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f)) ; Test file 'grako.ebnf' is missing from archive.
-    (native-inputs
-     (list unzip python-pytest python-pytest-runner))
-    (home-page "https://bitbucket.org/neogeny/grako")
+    (build-system pyproject-build-system)
+     ;; XXX: Test file 'grako.ebnf' is missing from archive.
+    (arguments (list #:tests? #f))
+    (native-inputs (list unzip python-pytest python-setuptools))
+    (home-page "https://pypi.org/project/grako")
     (synopsis "EBNF parser generator")
     (description
      "Grako takes a grammar in a variation of EBNF as input, and outputs a
