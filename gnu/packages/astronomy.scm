@@ -5880,6 +5880,17 @@ world can be described by @acronym{WCS, World Coordinate System}
 translations.")
     (license license:bsd-2)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure
+;; size. Tests are left out in the main package to slim down native-inputs.
+(define-public python-ndcube-minimal
+  (package/inherit python-ndcube
+    (name "python-ndcube-minimal")
+    (arguments
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm))))
+
 (define-public python-petrofit
   (package
     (name "python-petrofit")
