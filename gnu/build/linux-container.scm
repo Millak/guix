@@ -266,6 +266,8 @@ that host UIDs (respectively GIDs) map to in the namespace."
      (let ((flags (namespaces->bit-mask namespaces)))
        (match (clone flags)
          (0
+          ;; Inhibit thread creation until after the unshare call.
+          (gc-disable)
           (call-with-clean-exit
            (lambda ()
              (close-port parent)
@@ -320,6 +322,7 @@ that host UIDs (respectively GIDs) map to in the namespace."
                   ;; why unshare(CLONE_NEWUSER) can be used.
                   (let ((uid (getuid)) (gid (getgid)))
                     (unshare (logior CLONE_NEWUSER CLONE_NEWNS))
+                    (gc-enable)
                     (when (file-exists? "/proc/self")
                       (initialize-user-namespace (getpid)
                                                  host-uids
