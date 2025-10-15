@@ -643,6 +643,70 @@ counterexamples for you.")
 @command{behave}.")
     (license license:expat)))
 
+(define-public python-deal
+  (package
+    (name "python-deal")
+    (version "4.24.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "deal" version))
+       (sha256
+        (base32 "0a2b8s8fmacv56lhrqaif0rbgrmfp0b36m5bvhly89aj5d9qvac1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 668 passed, 194 skipped, 12 deselected
+      #:test-flags
+      ;; Network access is required
+      #~(list "--deselect=tests/test_imports.py::test_smoke_has"
+              #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/test_runtime/"
+                                                    "test_offline.py::"
+                                                    test))
+                      (list "test_raises_exception"
+                            "test_raises_specified_exception"
+                            "test_allow_network"
+                            "test_decorating_async_function"
+                            "test_decorating_generator"))
+              ;; TypeError: MaxRetryError.__init__() missing 2 required
+              ;; positional arguments: 'pool' and 'url'
+              "--deselect=tests/test_runtime/test_pure.py::test_pure_offline"
+              ;; TypeError: MaxRetryError.__init__() missing 2 required
+              ;; positional arguments: 'pool' and 'url'
+              #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/test_runtime/"
+                                                    "test_raises.py::"
+                                                    test))
+                      (list "test_raises_doesnt_override_another_contract"
+                            "test_raises_doesnt_override_another_contract_async"
+                            "test_raises_generator"))
+              ;; AttributeError: 'NoneType' object has no attribute
+              ;; 'TypeCheckError'
+              "--deselect=tests/test_testing.py::test_return_type_checks"
+              "--deselect=tests/test_testing.py::test_disable_type_checks")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((".*--cov.*") "")))))))
+    (native-inputs
+     (list python-flit-core
+           python-pytest
+           python-docstring-parser
+           python-urllib3))
+    (home-page "https://github.com/life4/deal")
+    (synopsis "Design by contract for Python")
+    (description
+     "This package provides a Python library for
+@url{https://en.wikipedia.org/wiki/Design_by_contract, design by contract}
+(DbC) and checking values, exceptions, and side-effects. In a nutshell, deal
+implements functionality to write bug-free code.  By adding a few decorators
+to the code, providing free tests, static analysis, formal verification, and
+much more.")
+    (license license:expat)))
+
 (define-public python-ddt
   (package
     (name "python-ddt")
