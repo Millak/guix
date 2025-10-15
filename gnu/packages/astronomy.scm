@@ -8226,16 +8226,17 @@ of axis order, spatial projections, and spectral units that exist in the wild.
 (define-public python-specutils
   (package
     (name "python-specutils")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "specutils" version))
        (sha256
-        (base32 "02yf0s0qcwhj7qn0l3glvdlap4pr15s4hm2ki14py2k5sfv8j0ab"))))
+        (base32 "1zcyv8aqmj86nxk2qrvci4wvdylmv5ql16vv1wjq8s6akdsxpmzb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; 571 passed, 130 skipped, 2 deselected, 3 xfailed
       #:test-flags
       #~(list "-k" (string-join
                     (list
@@ -8273,7 +8274,7 @@ of axis order, spatial projections, and spectral units that exist in the wild.
            python-asdf-astropy
            python-astropy
            python-gwcs
-           python-ndcube
+           python-ndcube-minimal
            python-numpy
            python-scipy))
     (home-page "https://specutils.readthedocs.io/")
