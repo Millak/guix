@@ -172,6 +172,7 @@
 ;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2025 Matthias Riße <matrss@0px.xyz>
 ;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
+;;; Copyright © 2025 Allan Adair <allan@adair.no>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36261,6 +36262,25 @@ Python, with static types.")
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for urllib3")
     (description "This package provides typing stubs for urllib3.")
+    (license license:asl2.0)))
+
+(define-public python-types-pyyaml
+  (package
+    (name "python-types-pyyaml")
+    (version "6.0.12.20250915")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_pyyaml" version))
+       (sha256
+        (base32 "1lyirqjacfmn6bv27b7w0z483yps6gfqfmhnyzkg00y352jm92qg"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in PyPI archive
+    (native-inputs
+     (list python-setuptools))
+    (home-page " https://github.com/python/typeshed")
+    (synopsis "Typing stubs for PyYAML")
+    (description "This package provides typing stubs for @code{PyYAML}.")
     (license license:asl2.0)))
 
 (define-public python-typeshed-client
