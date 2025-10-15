@@ -318,6 +318,7 @@ possibility to differentiate functions that contain matrix functions as
            python-boltons
            python-dask
            python-distributed
+           python-filelock
            python-hatch-vcs
            python-hatchling
            python-joblib
