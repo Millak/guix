@@ -5,6 +5,7 @@
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2023 Denys Nykula <vegan@libre.net.ua>
+;;; Copyright © 2025 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -194,7 +195,8 @@
                        (if (target-hurd?)
                            '%base-services/hurd
                            '%base-services)))
-         (native-console-font (match (getenv "LANGUAGE")
+         (native-console-font (match (false-if-exception
+                                      (string-take (getenv "LANGUAGE") 2))
                                 ((or "be" "bg" "el" "eo" "kk" "ky"
                                      "mk" "mn" "ru" "sr" "tg" "uk")
                                  "LatGrkCyr-8x16")
