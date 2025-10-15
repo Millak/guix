@@ -13644,7 +13644,7 @@ you to actually draw things with your favorite toolkit.")
 (define-public python-gridmap
   (package
     (name "python-gridmap")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (origin
        (method git-fetch)
@@ -13653,15 +13653,20 @@ you to actually draw things with your favorite toolkit.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v0sgpg6pz8h61f9aqjf5xk0ipr512bbz8dxzjjylksj135qr19l"))))
-    (build-system python-build-system)
+        (base32 "0w1sxvhv5ldbzkx70q7036yvny0zsylc4zj7nzmp3nhjdl8whlrm"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f    ;FIXME: Requires python-cherrypy.
-       #:phases (modify-phases %standard-phases
-                  ;; Importing the web server module requires cherrypy, too.
-                  (delete 'sanity-check))))
+     (list #:tests? #f ;XXX: freezes or timeout
+           #:test-backend #~'nose))
+    (native-inputs
+     (list ;; python-pynose
+           python-setuptools))
     (propagated-inputs
-     (list python-psutil python-drmaa python-pyzmq))
+     (list python-cherrypy
+           python-cloudpickle
+           python-psutil
+           python-drmaa
+           python-pyzmq))
     (home-page "https://github.com/pygridtools/gridmap")
     (synopsis "Create jobs on a cluster directly from Python")
     (description
