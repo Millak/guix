@@ -12,6 +12,7 @@
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2025 Simen Endsjø <contact@simendsjo.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -248,7 +249,7 @@ used in the process of installing and updating firmware.")
 (define-public fwupd
   (package
     (name "fwupd")
-    (version "1.8.14")
+    (version "1.9.32")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -257,7 +258,7 @@ used in the process of installing and updating firmware.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "179yc0nbbyrdya5q16ncf7lkslrhr3i90rgb9vdmv751ikilkby6"))))
+                "0nabjgskbpinj7sj44kblnd8g6psppas4g8qgajfs3p19skp07y1"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -280,7 +281,11 @@ used in the process of installing and updating firmware.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'make-source-writable
             (lambda _
-              (for-each make-file-writable
+              (for-each (lambda (file)
+                          ;; Skip symlinks as `make-file-writable' fails for those.
+                          (unless (eq? 'symlink (stat:type (lstat file)))
+                            (format #t "Make writable: ~A~%" file)
+                            (make-file-writable file)))
                         (find-files "."))
               (substitute* "src/fu-self-test.c"
                 (("/bin/sh")
@@ -332,6 +337,7 @@ used in the process of installing and updating firmware.")
                                       "/libexec/fwupd/efi")
                        (string-append #$output "/libexec/fwupd/efi")))))))
     (native-inputs (list gobject-introspection
+                         python-jinja2
                          python-pygobject
                          python-pillow
                          python-pycairo
