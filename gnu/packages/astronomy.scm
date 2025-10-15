@@ -8422,31 +8422,14 @@ over many parameters:
 (define-public python-statmorph
   (package
     (name "python-statmorph")
-    (version "0.7.0")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "statmorph" version))
        (sha256
-        (base32 "0qrxm0aigsjsqv39vxc85jv1id8b7sry76dx44143ii9hpd9dg4l"))))
+        (base32 "1c4srrmfzx8iszcc140ylljs0dzqs6d9ya2z7wic96p6y6gixb9h"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; See <https://github.com/vrodgom/statmorph/issues/13>.
-      #~(list "-k" (string-join
-                    (list "not test_no_psf"
-                          "test_psf"
-                          "test_weightmap")
-                    " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "setup.py"
-                ;; scikit-image>=0.25.0; tests passed, remove when python-team
-                ;; is merged.
-                ((">=0.25.2") ">=0.23.2")))))))
     (native-inputs
      (list python-pytest
            python-setuptools
@@ -8455,8 +8438,10 @@ over many parameters:
      (list python-astropy
            python-numpy
            python-photutils
-           python-scikit-image
-           python-scipy))
+           python-scikit-image-next
+           python-scipy
+           ;; [extras-require]
+           python-matplotlib))
     (home-page "https://github.com/vrodgom/statmorph")
     (synopsis "Non-parametric morphological diagnostics of galaxy images")
     (description
