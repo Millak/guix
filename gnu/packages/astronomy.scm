@@ -5818,39 +5818,32 @@ Carlo.")
 (define-public python-ndcube
   (package
     (name "python-ndcube")
-    (version "2.3.2")
+    (version "2.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ndcube" version))
        (sha256
-        (base32 "0bv073jfdkyh9nqgijw7ihl46000i124ar912lv67pbcq8wpjwz8"))))
+        (base32 "0nwy0h1xvs6gw13nygfqx34nqkiixj40pf913n6h7bjfvqkyg2f1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 393 passed, 7 skipped, 10 xfailed
+      ;; tests: 397 passed, 7 skipped, 10 xfailed
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
-              "-k" (string-join
-                    (list
-                     ;; Break cycle: python-ndcube -> python-specutils ->
-                     ;; python-ndcube, see
-                     ;; <https://github.com/sunpy/ndcube/issues/733>.
-                     "not test_rebin_specutils"
-                     ;; Introduced with astropy 6.1.3, see
-                     ;; <https://github.com/sunpy/ndcube/issues/758>.
-                     "test_2d[celestial_2d_ape14_wcs]"
-                     "test_2d[celestial_2d_fitswcs]"
-                     ;; XXX: Not sure why it fails: ValueError: Too many input
-                     ;; arguments - expected 1, got 2.
-                     "test_slice_drop_dimensions")
-                    " and not "))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              #$@(map (lambda (test) (string-append "--deselect="
+                                                    "ndcube/wcs/wrappers/tests/"
+                                                    "test_resampled_wcs.py::"
+                                                    test))
+                      ;; ResampledLowLevelWCS Transformation
+                      ;; This transformation has 2 pixel and 2 world dimensions
+                      ;;
+                      ;; - Array shape (Numpy order): (2.3333333333333335, 15.0)
+                      ;; + Array shape (Numpy order): (2, 15)
+                      (list "test_2d[celestial_2d_ape14_wcs]"
+                            "test_2d[celestial_2d_fitswcs]")))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'break-cycle
-            (lambda _
-              (substitute* "ndcube/tests/test_ndcube.py"
-                (("from specutils import Spectrum1D") ""))))
           (add-before 'check 'set-home-env
             (lambda _
               ;; Tests require HOME to be set.
@@ -5864,17 +5857,18 @@ Carlo.")
            python-pytest-mpl
            ;; python-pytest-memray ; not packaged yet
            python-pytest-xdist
-           python-scipy
            python-setuptools
            python-setuptools-scm
-           python-sunpy-minimal
-           python-wheel))
+           python-specutils
+           python-sunpy-minimal))
     (propagated-inputs
      (list python-astropy
            python-gwcs
+           python-numpy
+           python-scipy
+           ;; [optional]
            python-matplotlib
            python-mpl-animators
-           python-numpy
            python-reproject))
     (home-page "https://docs.sunpy.org/projects/ndcube/")
     (synopsis "Multi-dimensional contiguous and non-contiguous coordinate aware arrays")
