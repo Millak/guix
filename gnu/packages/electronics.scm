@@ -1637,36 +1637,35 @@ some tool-specific options are set.")
     (license license:bsd-2)))
 
 (define-public python-hdlmake
-  ;; Version bump to 4.0dev2, no tag.
-  (let ((commit "1d81071bf19b8f9c930e31731c5c847837591cb8")
-        (revision "0"))
-    (package
-      (name "python-hdlmake")
-      (version (git-version "4.0dev2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://gitlab.com/ohwr/project/hdl-make/")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1l2j86z5smfxw9b842xcbijgl7nvkx3grw5hm54wvv3hkgyp30fn"))))
-      (build-system pyproject-build-system)
-      (arguments (list #:phases #~(modify-phases %standard-phases
-                                    (add-before 'check 'chdir
-                                      (lambda _
-                                        (chdir "testsuite"))))
-                       #:test-flags #~(list "test_all.py")))
-      (native-inputs (list python-pytest python-setuptools))
-      (propagated-inputs (list python-networkx))
-      (home-page "https://ohwr.gitlab.io/project/hdl-make/")
-      (synopsis "Generate multi-purpose makefiles for HDL projects")
-      (description
-       "Hdlmake helps manage and share @acronym{HDL, hardware description
+  (package
+    (name "python-hdlmake")
+    (version "4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/ohwr/project/hdl-make/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mbsm1j058j3wjp0hypd7a9d1xh3xsmy9p3jl9xcpnzjmncm34xr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-before 'check 'chdir
+                     (lambda _
+                       (chdir "testsuite"))))
+      #:test-flags #~(list "test_all.py")))
+    (native-inputs (list python-pytest-cov python-setuptools))
+    (propagated-inputs (list python-networkx))
+    (home-page "https://ohwr.gitlab.io/project/hdl-make/")
+    (synopsis "Generate multi-purpose makefiles for HDL projects")
+    (description
+     "Hdlmake helps manage and share @acronym{HDL, hardware description
 language} code by automatically finding file dependencies, writing synthesis
 and simulation Makefiles.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public python-migen
   ;; XXX: The latest version tag (0.9.2) was placed in 2019, there are latest
