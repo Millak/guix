@@ -760,53 +760,6 @@ formats, and can perform many different manipulations.")
 It can be used to upload images to I.MX SoC's using at least their boot ROM.")
     (license license:bsd-3)))
 
-(define-public wally-cli
-  ;; Version with updated dependencies is not released yet, see
-  ;; <https://github.com/zsa/wally-cli/pull/7>.
-  (let ((commit "b0fafe52cc7fb9d55f2b968d4548c99917c7325c")
-        (revision "0"))
-    (package
-      (name "wally-cli")
-      (version (git-version "2.0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/zsa/wally-cli")
-               (commit commit)))
-         (sha256
-          (base32 "09phq2g51x7rlalzb87aqf48p3j4s7s5jdf5vdf48l9805hi2yha"))
-         (file-name (git-file-name name version))))
-      (build-system go-build-system)
-      (arguments
-       (list
-        #:install-source? #f
-        #:import-path "github.com/zsa/wally-cli"
-        #:phases
-        #~(modify-phases %standard-phases
-            ;; XXX: Upstream Golang module name was changed from
-            ;; <gopkg.in/cheggaaa/pb.v1> to <github.com/cheggaaa/pb>, adjust
-            ;; references to it accordingly. Remove it in the new release of
-            ;; the package.
-            (add-after 'unpack 'fix-module-name
-              (lambda* (#:key import-path #:allow-other-keys)
-                (with-directory-excursion (string-append "src/" import-path)
-                  (substitute* "main.go"
-                    (("gopkg.in/cheggaaa/pb.v1") "github.com/cheggaaa/pb"))))))))
-      (native-inputs
-       (list go-github-com-briandowns-spinner
-             go-github-com-google-gousb
-             go-github-com-logrusorgru-aurora
-             go-github-com-marcinbor85-gohex
-             go-github-com-cheggaaa-pb
-             pkg-config))
-      (home-page "https://ergodox-ez.com/pages/wally")
-      (synopsis "Flashing tool for ZSA keyboards")
-      (description
-       "This tool is for flashing custom layouts to
-@url{https://ergodox-ez.com/,ZSA keyboards}.")
-      (license license:expat))))
-
 (define-public wlink
   (package
     (name "wlink")
