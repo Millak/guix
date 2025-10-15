@@ -491,7 +491,12 @@ in the style of communicating sequential processes (@dfn{CSP}).")
            `(("go" ,gccgo-12)))
        ("go-skip-gc-test.patch" ,(search-patch "go-skip-gc-test.patch"))
        ("go-fix-script-tests.patch" ,(search-patch "go-fix-script-tests.patch"))
-       ,@(package-native-inputs go-1.4)))
+       ,@(package-native-inputs go-1.4)
+       ;; For plugin.test which requires "-fuse-ld=gold"
+       ,@(match (%current-system)
+           ((or "armhf-linux" "aarch64-linux")
+            `(("gold" ,binutils-gold)))
+           (_ `()))))
     (home-page "https://go.dev/")
     (synopsis "Compiler and libraries for Go, a statically-typed language")
     (description "Go, also commonly referred to as golang, is an imperative
