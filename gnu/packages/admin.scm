@@ -4755,7 +4755,7 @@ hard-coded.")
 (define-public thermald
   (package
     (name "thermald")
-    (version "2.5.9")
+    (version "2.5.10")
     (source
      (origin
       (method git-fetch)
@@ -4764,7 +4764,7 @@ hard-coded.")
              (commit (string-append "v" version))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "07rnf5xy2y7nmhwfcdv0vd08x5l25hflnnrgirahrngbkp0zmny9"))))
+       (base32 "1d8yj3d9crqz9ikzb0n2cdaal52gmw25kp6vy2gldwj8x6a3gngr"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -4789,7 +4789,7 @@ hard-coded.")
            pkg-config))
     (inputs
      (list dbus-glib libevdev libxml2 upower xz))
-    (home-page "https://01.org/linux-thermal-daemon/")
+    (home-page "https://github.com/intel/thermal_daemon")
     (synopsis "CPU scaling for thermal management")
     (description "The Linux Thermal Daemon helps monitor and control temperature
 on systems running the Linux kernel.")
