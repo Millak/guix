@@ -249,6 +249,7 @@
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
+  #:use-module ((guix config) #:select (%storedir))
   #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -6917,6 +6918,132 @@ side panel;
     ;; long suspicious byte stream that goes to a
     ;; ".gresource.eog_postasa_plugin" ELF section.
     (license license:gpl2+)))
+
+(define-public glycin-loaders
+  (package
+    (name "glycin-loaders")
+    (version "2.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.gnome.org/GNOME/glycin.git")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0v6szxk5h8a4b28xb0lrhqrq6b4vka2ha4qgpdp35f6c49v9pdyp"))
+       (patches (search-patches "glycin-sandbox-Adapt-bwrap-invocation.patch"))))
+    (outputs '("out" "debug"))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%meson-build-system-modules
+                           ,@%cargo-build-system-modules)
+      #:modules `(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build meson-build-system)
+                  (guix build utils))
+      #:phases
+      (with-extensions (list (cargo-guile-json))
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'unpack-test-images
+              (lambda _
+                (copy-recursively
+                 #$(this-package-native-input "glycin-test-images")
+                 "tests/test-images")
+                (delete-file "tests/test-images/images/color/color-link.svg")))
+            (add-after 'unpack 'prepare-for-build
+              (lambda _
+                ;; Avoid checking the lock checksums.
+                (delete-file "Cargo.lock")
+                ;; libglycin-gtk4-2.so does not have libglycin-2.so.0 in its
+                ;; runpath.
+                (setenv
+                 "RUSTFLAGS"
+                 (string-append "-C link-arg=-Wl,-rpath," #$output "/lib"))))
+            (add-after 'unpack 'set-bin-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "glycin/src/sandbox.rs"
+                  (("@bwrap@")
+                   (search-input-file inputs "bin/bwrap"))
+                  (("@storedir@")
+                   #$%storedir)
+                  (("/usr/bin/true")
+                   (search-input-file inputs "bin/true")))))
+            ;; Ensure that bubblewrap is working in the build environment.
+            (add-after 'set-bin-paths 'preliminary-bwrap-test
+              (lambda* (#:key inputs #:allow-other-keys)
+                (invoke
+                 (search-input-file inputs "bin/bwrap")
+                 "--unshare-all"
+                 "--die-with-parent"
+                 "--chdir" "/"
+                 "--ro-bind-try" "/usr" "/usr"
+                 "--dev" "/dev"
+                 "--ro-bind-try" "/etc/ld.so.cache" "/etc/ld.so.cache"
+                 "--ro-bind-try" "/nix/store" "/nix/store"
+                 "--ro-bind-try" #$%storedir #$%storedir
+                 "--ro-bind-try" #$%storedir #$%storedir
+                 "--tmpfs" "/tmp-home"
+                 "--tmpfs" "/tmp-run"
+                 "--clearenv"
+                 "--setenv" "HOME" "/tmp-home"
+                 "--setenv" "XDG_RUNTIME_DIR" "/tmp/run"
+                 "--setenv" "RUST_LOG" "warn"
+                 (search-input-file inputs "bin/true"))))
+            ;; The meson 'configure phase changes to a different directory and
+            ;; we need it created before unpacking the crates.
+            (add-after 'configure 'prepare-cargo-build-system
+              (lambda args
+                (for-each
+                 (lambda (phase)
+                   (format #t "Running cargo phase: ~a~%" phase)
+                   (apply (assoc-ref cargo:%standard-phases phase)
+                          #:vendor-dir "vendor"
+                          #:cargo-target #$(cargo-triplet)
+                          args))
+                 '(unpack-rust-crates
+                   configure
+                   check-for-pregenerated-files
+                   patch-cargo-checksums))))
+            (add-before 'check 'prepare-for-tests
+              (lambda _
+                ;; Fontconfig needs a writable cache
+                (setenv "HOME" "/tmp")))))))
+    (native-inputs (list gettext-minimal
+                         gobject-introspection
+                         pkg-config
+                         python-minimal
+                         rust
+                         `(,rust "cargo")
+                         vala           ;for vapigen
+                         ;; Dependencies for tests.
+                         bubblewrap
+                         gtk
+                         lcms-next
+                         (origin
+                           (method git-fetch)
+                           (uri (git-reference
+                                  (url "https://gitlab.gnome.org/sophie-h/test-images.git")
+                                  (commit "b148bcf70847d6f126a8e83e27e1c59d2e474adf")))
+                           (file-name "glycin-test-images")
+                           (sha256
+                            (base32
+                             "16s3lss4cbny5d0ixhc0vaxxcvq2n7rcnbklrxdm84p2m21192vm")))))
+    (inputs (cons* bubblewrap
+                   fontconfig
+                   glib
+                   libseccomp
+                   libheif
+                   libjxl
+                   librsvg
+                   (cargo-inputs 'glycin)))
+    (home-page "https://gitlab.gnome.org/GNOME/glycin")
+    (synopsis "Rust library for sandboxed image decoding")
+    (description "Glycin is a sandbox image decoder for image viewers and
+thumbnails to display untrusted content safely.  This package provides the
+runtime image loader executables that are used inside the sandbox.")
+    (license (list license:mpl2.0 license:lgpl2.1+))))
 
 (define-public libgudev
   (package
