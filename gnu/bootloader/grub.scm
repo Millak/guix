@@ -616,7 +616,7 @@ fi~%"))))
       ;; ROOT-INDEX.
       (let ((grub-mkimage
              (string-append bootloader "/bin/grub-mkimage"))
-            (modules '("biosdisk" "part_msdos" "fat" "ext2"))
+            (modules '("biosdisk" "part_msdos" "fat" "ext2" "lvm"))
             (grub-bios-setup
              (string-append bootloader "/sbin/grub-bios-setup"))
             (root-device (format #f "hd0,msdos~a" root-index))
