@@ -36299,16 +36299,25 @@ Python, with static types.")
 (define-public python-typeshed-client
   (package
     (name "python-typeshed-client")
-    (version "2.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "typeshed_client" version))
-              (sha256
-               (base32
-                "1vdwp1jjg27b22qxgm49v21nb8vm1iki3bfsm0fnq2rsz5alfwz2"))))
+    (version "2.8.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/JelleZijlstra/typeshed_client")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i74ygf49184ab1ipfdzf706wnzs3id15rkysqarzcngdydrcszs"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-importlib-resources))
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "tests/test.py")))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-importlib-resources
+           python-typing-extensions))
     (home-page "https://github.com/JelleZijlstra/typeshed_client")
     (synopsis "Library for accessing stubs in typeshed")
     (description
