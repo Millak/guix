@@ -1031,7 +1031,7 @@ console.")
 (define-public btop
   (package
     (name "btop")
-    (version "1.4.4")
+    (version "1.4.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1040,7 +1040,7 @@ console.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b918b86sw265kxg99d140z9qxrgv7qw461lnm843v89xj6m8zz0"))))
+                "03dchclmbjphirzqii4m0vyqfd0vw1k8mgpchmr13g3brlfzxd34"))))
     (build-system gnu-build-system)
     (native-inputs (list lowdown))
     (arguments
