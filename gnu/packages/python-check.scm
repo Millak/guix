@@ -1195,11 +1195,10 @@ programs, something like CSmith, a random generator of C programs.")
     (version "2.7.1")
     (source
      (origin
-       ;; There are no tests in the PyPI tarball.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/Parquery/icontract")
-             (commit (string-append "v" version))))
+              (url "https://github.com/Parquery/icontract")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1fix7wx899kn8vp9aa5m6q71la48gx3qqx4qd74535m61pb50r7f"))))
@@ -1207,6 +1206,10 @@ programs, something like CSmith, a random generator of C programs.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                (("asttokens>=2,<3") "asttokens"))))
           (add-before 'check 'set-icontract-slow
             (lambda _
               ;; Setting ICONTRACT_SLOW, does not enable a slow test suite.
@@ -1215,13 +1218,15 @@ programs, something like CSmith, a random generator of C programs.")
               (setenv "ICONTRACT_SLOW" "1"))))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-astor
-           python-asyncstdlib
+     (list python-asyncstdlib
+           python-astor
+           python-deal
+           python-dpcontracts
            python-mypy
            python-numpy
+           python-pytest
            python-setuptools
-           python-typeguard
-           python-wheel))
+           python-typeguard))
     (propagated-inputs
      (list python-asttokens
            python-typing-extensions))
