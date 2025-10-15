@@ -2977,6 +2977,63 @@ other HTTP libraries.")
      "Cheroot is a high-performance, pure-Python HTTP server.")
     (license license:bsd-3)))
 
+(define-public python-cherrypy
+  (package
+    (name "python-cherrypy")
+    (version "18.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cherrypy/cherrypy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mhs64z75mj3rk4rgxc3xm1yksaj253rj9czhk4632blz5yi0kbn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(map
+         (lambda (test)
+           (string-append "--deselect=cherrypy/test/" test))
+         (list
+          ;; XXX: Unraisable exceptions.
+          "test_config_server.py::ServerConfigTests::testMaxRequestSize"
+          "test_core.py::CoreRequestHandlingTest::testRanges"
+          "test_core.py::CoreRequestHandlingTest::testRedirect"
+          "test_encoding.py::EncodingTests::\
+test_multipart_decoding_bigger_maxrambytes"
+          "test_encoding.py::EncodingTests::\
+test_test_http.py::HTTPTests::test_post_filename_with_special_characters"
+          "test_http.py::HTTPTests::test_post_multipart"
+          "test_http.py::HTTPTests::test_post_filename_with_special_characters"
+          "test_mime.py::SafeMultipartHandlingTest::test_Flash_Upload"
+          "test_tutorials.py::TutorialTest::test09Files"))))
+    (propagated-inputs
+     (list python-cheroot
+           python-jaraco-collections
+           python-more-itertools
+           python-portend
+           python-zc-lockfile))
+    (native-inputs
+     (list python-objgraph
+           python-path
+           python-pytest
+           python-pytest-cov
+           python-pytest-forked
+           python-pytest-services
+           python-pytest-sugar
+           python-requests-toolbelt
+           python-setuptools))
+    (home-page "https://www.cherrypy.dev")
+    (synopsis "Object-Oriented HTTP framework")
+    (description
+     "CherryPy is a pythonic, object-oriented web framework.  It helps in
+building web applications in the same way any other object-oriented Python
+program would be built.")
+    (license license:bsd-3)))
+
 (define-public httpie
   (package
     (name "httpie")
