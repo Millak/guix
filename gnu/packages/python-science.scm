@@ -915,19 +915,19 @@ optimization and generally improved organization.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 2152 passed, 177 skipped, 6 deselected, 4037 warnings
       #:test-flags
-      ;; Flake8 attribute errors.
-      '(list "--ignore=dask_image/ndfilters/_threshold.py"
-             "--ignore=dask_image/ndfourier/_utils.py"
-             "--ignore=dask_image/ndinterp/__init__.py"
-             "--ignore=dask_image/ndmeasure/__init__.py"
-             "--ignore=dask_image/ndmeasure/_utils/_find_objects.py"
-             "--ignore=dask_image/ndmeasure/_utils/_label.py"
-             "--ignore=tests/test_dask_image/test_ndfilters/test__conv.py"
-             "--ignore=tests/test_dask_image/test_ndfourier/test_core.py"
-             "--ignore=tests/test_dask_image/test_ndinterp/test_spline_filter.py"
-             "--ignore=tests/test_dask_image/test_ndmeasure/test_core.py"
-             "--ignore=tests/test_dask_image/test_ndmeasure/test_find_objects.py")
+      #~(list "-k" (string-join
+                    ;; KeyError: 'float32
+                    (list "not test_spline_filter_output_dtype[None-float32_1]"
+                          "test_spline_filter_output_dtype[-1-float32_1]"
+                          ;; AttributeError: 'str' object has no attribute
+                          ;; 'start'
+                          "test_find_objects"
+                          "test_3d_find_objects"
+                          ;; assert False
+                          "test_find_objects_with_empty_chunks")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-version
@@ -936,17 +936,18 @@ optimization and generally improved organization.")
                 (("^version_file.*") "")
                 (("dynamic = \\[\"version\"\\]")
                  (string-append "version = \"" #$version "\""))))))))
-    (propagated-inputs (list python-dask
-                             python-numpy
-                             python-pandas
-                             python-pims
-                             python-scipy
-                             python-tifffile))
     (native-inputs
      (list python-pytest
            python-pytest-timeout
            python-setuptools
            python-setuptools-scm))
+    (propagated-inputs
+     (list python-dask
+           python-numpy
+           python-pandas
+           python-pims
+           python-scipy
+           python-tifffile-for-dask-image))
     (home-page "https://github.com/dask/dask-image")
     (synopsis "Distributed image processing")
     (description "This is a package for image processing with Dask arrays.
@@ -958,8 +959,7 @@ Features:
 @item Includes a few N-D Fourier filters.
 @item Provides some functions for working with N-D label images.
 @item Supports a few N-D morphological operators.
-@end itemize
-")
+@end itemize")
     (license license:bsd-3)))
 
 (define-public python-decaylanguage
