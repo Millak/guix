@@ -243,6 +243,9 @@
                   (list #$(endpoint "bridge")
                         #$(endpoint "remote-builds"))
 
+                  ;; Start working right away.
+                  #:lazy-start? #f
+
                   #:environment-variables
                   (list "LC_ALL=C.UTF-8"        ;for proper file name decoding
                         "GIT_SSL_CAINFO=/etc/ssl/certs/ca-certificates.crt"
