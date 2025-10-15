@@ -1176,7 +1176,7 @@ the \"texlive\" importer."
 (define-member (person "Maxim Cournoyer"
                        "maxim@guixotic.coop"
                        "apteryx")
-  documentation gnome qt telephony electronics)
+  core documentation electronics gnome qt telephony)
 
 (define-member (person "Katherine Cox-Buday"
                        "cox.katherine.e+guix@gmail.com")
