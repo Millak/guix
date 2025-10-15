@@ -134,6 +134,28 @@
   (web-extra-options cuirass-configuration-web-extra-options
                     (default '())))
 
+(define (cuirass-configuration->specification-file config)
+  "Return a specification file built from CONFIG and validate it."
+  (define cuirass
+    (cuirass-configuration-cuirass config))
+
+  (define build
+    #~(begin
+        (use-modules (ice-9 pretty-print))
+
+        (call-with-output-file #$output
+          (lambda (port)
+            (pretty-print '#$(cuirass-configuration-specifications config)
+                          port)))
+
+        ;; Validate the spec file upfront.
+        (unless (zero?
+                 (system* #$(file-append cuirass "/bin/cuirass") "register"
+                          "--check" "-S" #$output))
+          (exit 1))))
+
+  (computed-file "cuirass-specs.scm" build))
+
 (define (cuirass-shepherd-service config)
   "Return a <shepherd-service> for the Cuirass service with CONFIG."
   (define (endpoint name)
@@ -162,9 +184,7 @@
         (database         (cuirass-configuration-database config))
         (port             (cuirass-configuration-port config))
         (host             (cuirass-configuration-host config))
-        (config-file      (scheme-file
-                           "cuirass-specs.scm"
-                           (cuirass-configuration-specifications config)))
+        (config-file      (cuirass-configuration->specification-file config))
         (one-shot?        (cuirass-configuration-one-shot? config))
         (fallback?        (cuirass-configuration-fallback? config))
         (extra-options    (cuirass-configuration-extra-options config))
