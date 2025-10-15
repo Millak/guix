@@ -40467,12 +40467,8 @@ and XML respectively.  The processing is done through @command{jq},
     (propagated-inputs
      (list python-asciitree
            python-fasteners
-           python-ipywidgets
-           python-notebook
            python-numcodecs
-           python-numpy
-           python-numpydoc
-           python-pydata-sphinx-theme))
+           python-numpy))
     (native-inputs
      (list python-pytest
            python-pytest-xdist
