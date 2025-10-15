@@ -1655,9 +1655,23 @@ some tool-specific options are set.")
       #:phases #~(modify-phases %standard-phases
                    (add-before 'check 'chdir
                      (lambda _
-                       (chdir "testsuite"))))
+                       (chdir "testsuite")))
+                   (add-before 'chdir 'build-info
+                     (lambda _
+                       (invoke "make" "-C" "docs" "info")
+                       (install-file
+                        "docs/_build/texinfo/hdlmake.info"
+                        (string-append #$output "/share/info"))
+                       (copy-recursively
+                        "docs/_build/texinfo/hdlmake-figures"
+                        (string-append
+                         #$output "/share/info/hdlmake-figures")))))
       #:test-flags #~(list "test_all.py")))
-    (native-inputs (list python-pytest-cov python-setuptools))
+    (native-inputs
+     (list python-pytest-cov
+           python-setuptools
+           python-sphinx
+           texinfo))
     (propagated-inputs (list python-networkx))
     (home-page "https://ohwr.gitlab.io/project/hdl-make/")
     (synopsis "Generate multi-purpose makefiles for HDL projects")
