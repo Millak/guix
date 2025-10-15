@@ -6078,23 +6078,42 @@ HTTP via a UNIX domain socket.")
 (define-public python-requests-unixsocket
   (deprecated-package "python-requests-unixsocket" python-requests-unixsocket2))
 
-(define-public python-requests_ntlm
+(define-public python-requests-ntlm
   (package
-    (name "python-requests_ntlm")
-    (version "1.2.0")
+    (name "python-requests-ntlm")
+    (version "1.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "requests_ntlm" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/requests/requests-ntlm")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1a0np7lk8ma1plv1s4aw5q9h2z3aljprkl9qsfypqcaf0zsqbhik"))))
-    (build-system python-build-system)
+        (base32 "0snsk66zdihdlyfjz2zgpyfgdyjg814m3cc4g3my09hdnb5xvagv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; XXX: Connection refused.
+      #~(list "-k" (string-join
+                    (list "not test_ntlm_http_with_cbt"
+                          "test_ntlm_http_without_cbt"
+                          "test_ntlm_https_with_cbt"
+                          "test_ntlm_https_without_cbt")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'spawn-test-server
+            (lambda _
+              ;; Taken from .github/workflows/ci.yml.
+              (spawn "python"
+                     (list "python" "-m" "tests.test_server")))))))
     (propagated-inputs
      (list python-cryptography python-pyspnego python-requests))
+    (native-inputs (list python-flask python-pytest python-setuptools))
     (home-page "https://github.com/requests/requests-ntlm")
-    (synopsis
-     "NTLM authentication support for Requests")
+    (synopsis "NTLM authentication support for Requests")
     (description
      "This package allows for HTTP NTLM authentication using the requests
 library.")
