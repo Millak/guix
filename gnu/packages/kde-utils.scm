@@ -361,6 +361,45 @@ your computer.")
      "This package provides a tool to write ISO files to USB disks.")
     (license license:gpl3+)))
 
+(define-public kaichat
+  (package
+    (name "kaichat")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde//stable/kaichat/kaichat-" version
+                           ".tar.xz"))
+       (sha256
+        (base32 "18bwannb0p40fpqw0ygiq8m9wfl3k6561l10s7754x7a4lgpfshn"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase))
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list kcoreaddons
+           kcrash
+           kdbusaddons
+           ki18n
+           kiconthemes
+           kio
+           knotifications
+           knotifyconfig
+           kstatusnotifieritem
+           ktextaddons
+           kwidgetsaddons
+           kwindowsystem
+           kxmlgui
+           purpose
+           python
+           sonnet))
+    (home-page "https://apps.kde.org/kaichat/")
+    (synopsis "Chat interface for AI models")
+    (description "KAIChat is a chat interface which allows you to chat with AI
+models such as Ollama.")
+    (license license:gpl3+)))
+
 (define-public kamera
   (package
     (name "kamera")
