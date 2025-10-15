@@ -12965,50 +12965,52 @@ that requires its specific capabilities.")
 
 (define-public python-ffmpeg-python
   ;; The latest release (0.2.0) is old and its test suite crashs on Python 3.10.
-  (let ((commit "df129c7ba30aaa9ffffb81a48f53aa7253b0b4e6") (revision "0"))
-    (package
-      (name "python-ffmpeg-python")
-      (version (git-version "0.2.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/kkroening/ffmpeg-python.git")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1zj4ac37n4igfj21zy405mdlvbpv6jyb12wfpszf8zkhhj2qby4c"))))
-      (build-system python-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'hardcode-ffmpeg
-              (lambda* (#:key inputs #:allow-other-keys)
-                (define ffmpeg (search-input-file inputs "bin/ffmpeg"))
+  (package
+    (name "python-ffmpeg-python")
+    (properties '((commit . "df129c7ba30aaa9ffffb81a48f53aa7253b0b4e6")
+                  (revision . "0")))
+    (version (git-version "0.2.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kkroening/ffmpeg-python.git")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zj4ac37n4igfj21zy405mdlvbpv6jyb12wfpszf8zkhhj2qby4c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" "not test_pipe and not test__probe")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'hardcode-ffmpeg
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((ffmpeg (search-input-file inputs "bin/ffmpeg")))
                 (substitute* "ffmpeg/_run.py"
                   (("cmd='ffmpeg'")
                    (string-append "cmd='" ffmpeg "'")))
                 (substitute* "ffmpeg/tests/test_ffmpeg.py"
                   (("out_file.compile\\(\\) == \\['ffmpeg'")
-                   (string-append "out_file.compile() == ['" ffmpeg "'")))))
-            ;; Some tests fail with ffmpeg 5+
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  (invoke "pytest" "-vv"
-                          "-k" "not test_pipe and not test__probe")))))))
-      (inputs (list ffmpeg))
-      (propagated-inputs (list python-future))
-      (native-inputs (list python-future python-numpy python-pytest
-                           python-pytest-mock python-pytest-runner))
-      (home-page "https://github.com/kkroening/ffmpeg-python")
-      (synopsis "Python bindings for FFmpeg with complex filtering support")
-      (description
-       "ffmpeg-python allows you to write FFmpeg filtergraphs in familiar
+                   (format #f "out_file.compile() == [~s" ffmpeg)))))))))
+    (inputs (list ffmpeg))
+    (propagated-inputs (list python-future))
+    (native-inputs (list python-future
+                         python-numpy
+                         python-pytest
+                         python-pytest-mock
+                         python-setuptools))
+    (home-page "https://github.com/kkroening/ffmpeg-python")
+    (synopsis "Python bindings for FFmpeg with complex filtering support")
+    (description
+     "ffmpeg-python allows you to write FFmpeg filtergraphs in familiar
 Python terms, taking care of running ffmpeg with the correct command-line
 arguments.  It handles arbitrarily large (directed-acyclic) signal graphs.")
-      (license license:asl2.0))))
+    (license license:asl2.0)))
 
 (define-public python-imageio-ffmpeg
   (package
