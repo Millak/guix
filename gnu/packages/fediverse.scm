@@ -138,7 +138,7 @@ the federation of interconnected video hosting services.")
            python-dateutil
            python-requests
            python-tomlkit
-           python-urwid-3
+           python-urwid
            python-wcwidth
            ;; Required to display images in the TUI
            python-pillow
