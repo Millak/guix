@@ -8531,19 +8531,19 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
 (define-public python-stdatamodels
   (package
     (name "python-stdatamodels")
-    (version "4.0.1")
+    (version "4.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stdatamodels" version))
        (sha256
-        (base32 "1lyxwfq55ngnsjr25bj3v6mjibx17074z28qi3xc9wpib5dn887i"))))
+        (base32 "1gwa7gh2hyv3770sv514w51c5s7c8zwjr3scx2b240z4c9pbgmq0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; 1571 passed
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; Disable tests requiring access to CRDS servers to download
               ;; ~500MiB of data.
               "-k" "not test_crds_selectors_vs_datamodel and not test_report")
@@ -8554,7 +8554,7 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list nss-certs-for-test
-           python-crds
+           python-crds-minimal
            python-psutil
            python-pytest
            python-pytest-asdf-plugin
@@ -8562,16 +8562,15 @@ and CAS statistics), as well as fitting 2D Sérsic profiles.")
            python-pytest-xdist
            python-scipy
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-asdf-4
+           python-asdf-transform-schemas
            python-asdf-astropy
            python-astropy
            python-numpy))
     (home-page "https://github.com/spacetelescope/stdatamodels")
-    (synopsis
-     "Core support for DataModel classes used in calibration pipelines")
+    (synopsis "STScI DataModel classes used in calibration pipelines")
     (description
      "Provides @code{DataModel}, which is the base class for data models
 implemented in the @acronym{JWST, James Webb Space Telescope} and
