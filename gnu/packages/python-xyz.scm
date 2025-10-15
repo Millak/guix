@@ -13535,16 +13535,19 @@ etc.  The core of this module is a decorator factory.")
        (uri (pypi-uri "drmaa" version))
        (sha256
         (base32 "0xzqriqyvk5b8hszbavsyxd29wm3sxirm8zvvdm73rs2iq7w4hkx"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     ;; The test suite requires libdrmaa which is provided by the cluster
     ;; environment.  At runtime the environment variable DRMAA_LIBRARY_PATH
     ;; should be set to the path of the libdrmaa library.
     (arguments
-     '(#:tests? #f
-       #:phases (modify-phases %standard-phases
-                  ;; Loading the library fails because DRMAA_LIBRARY_PATH
-                  ;; is not configured.
-                  (delete 'sanity-check))))
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Loading the library fails because DRMAA_LIBRARY_PATH
+          ;; is not configured.
+          (delete 'sanity-check))))
+    (native-inputs (list python-setuptools))
     (home-page "https://pypi.org/project/drmaa/")
     (synopsis "Python bindings for the DRMAA library")
     (description
