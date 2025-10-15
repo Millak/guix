@@ -1744,8 +1744,11 @@ match from local for any action outbound
            (documentation "Run the OpenSMTPD daemon.")
            (start (let ((smtpd (file-append package "/sbin/smtpd")))
                     #~(make-forkexec-constructor
-                       (list #$smtpd "-d" "-f" #$config-file)
-                       #:log-file #$log-file)))
+                       (list #$smtpd "-f" #$config-file
+                             #$@(if log-file '("-d") '()))
+                       #$@(if log-file
+                              (list #:log-file log-file)
+                              (list #:pid-file "/var/run/smtpd.pid")))))
            (stop #~(make-kill-destructor))))))
 
 (define %opensmtpd-accounts
