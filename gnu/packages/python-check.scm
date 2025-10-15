@@ -699,6 +699,31 @@ cases.")
 text styles of documentation.")
     (license license:asl2.0)))
 
+(define-public python-dpcontracts
+  (package
+    (name "python-dpcontracts")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "dpcontracts" version))
+       (sha256
+        (base32 "0ji38afb5kb52rrjhcqklqvabxxb1lbl32vr7d94iamy2qgxzybc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/deadpixi/contracts")
+    (synopsis "Implementation of contracts for Python")
+    (description
+     "This package provides a simple implementation of contracts for Python.
+Contracts are a debugging and verification tool.  They are declarative
+statements about what states a program must be in to be considered \"correct\"
+at runtime.  They are similar to assertions, and are verified automatically at
+various well-defined points in the program.  Contracts can be specified on
+functions and on classes.")
+    (license license:lgpl3+)))
+
 (define-public python-eradicate
   (package
     (name "python-eradicate")
