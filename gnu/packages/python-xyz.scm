@@ -28985,12 +28985,10 @@ tool).")
      (list c-blosc lz4 zlib
            `(,zstd "lib")))
     (propagated-inputs
-     (list python-coverage
-           python-google-crc32c
+     (list python-google-crc32c
            python-importlib-metadata
            python-msgpack
-           python-numpy
-           python-numpydoc))
+           python-numpy))
     (native-inputs
      (list python-cython
            python-py-cpuinfo
