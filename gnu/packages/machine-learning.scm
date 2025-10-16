@@ -3635,8 +3635,8 @@ project, and it will potentially also do the same for the Lime project.")
 
 (define-public gloo
   (let ((version "0.0.0")                         ; no proper version tag
-        (commit "c7b7b022c124d9643957d9bd55f57ac59fce8fa2")
-        (revision "3"))
+        (commit "54cbae0d3a67fa890b4c3d9ee162b7860315e341")
+        (revision "4"))
     (package
       (name "gloo")
       (version (git-version version revision commit))
@@ -3644,12 +3644,12 @@ project, and it will potentially also do the same for the Lime project.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/facebookincubator/gloo")
+               (url "https://github.com/pytorch/gloo")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0xsp2m2if3g85l0c3cx9l0j3kz36j3kbmz9mai6kchdhrs13r7d5"))))
+           "1zixybyma7zpwdawy1qi2d48g9r65wcjjd4j3j2bhlvjymyw03z2"))))
       (build-system cmake-build-system)
       (native-inputs
        (list googletest))
