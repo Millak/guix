@@ -4321,16 +4321,16 @@ tools for astronomers.")
 (define-public python-eventio
   (package
     (name "python-eventio")
-    (version "1.16.1")
+    (version "2.0.0")
     (source
      (origin
-       (method git-fetch) ; no test data in the PyPI tarball
+       (method git-fetch) 
        (uri (git-reference
-             (url "https://github.com/cta-observatory/pyeventio")
-             (commit (string-append "v" version))))
+              (url "https://github.com/cta-observatory/pyeventio")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jg2zgs0z5jfkdkbgxiiclxkyxrz4zhb57x1ji0c5pd2vsrn4g92"))))
+        (base32 "10d2gmniwrljwgrs936v06gf5biz6h5zsjrc6kqk9qb1rcrb6gpw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
