@@ -2657,7 +2657,7 @@ scientific data storage.")
 (define-public n2p2
   (package
     (name "n2p2")
-    (version "2.1.4")
+    (version "2.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2666,7 +2666,7 @@ scientific data storage.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lw195ihpxwh08387i4gamk1glhalpq888q6nj8l5vswbgnrv1pq"))))
+                "01090j477gh9zk7wj416fvv1hxdnnxwhzy67bn96a04zhnayzkkj"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("MODE=shared" "-C" "src")
