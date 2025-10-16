@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2017, 2018, 2019 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
@@ -116,6 +116,7 @@
             hidden-package?
             package-superseded
             deprecated-package
+            define-deprecated-package
             package-field-location
 
             this-package-input
@@ -792,6 +793,26 @@ object."
     (inherit p)
     (name old-name)
     (properties `((superseded . ,p)))))
+
+(define-syntax define-deprecated-package
+  (syntax-rules ()
+    "Define OLD-NAME as a deprecated package alias for NAME:
+
+  (define-deprecated-package OLD-NAME NAME)
+
+When the variable name differs from the package name (the 'name' field of the
+package), use the three-argument form like so:
+
+  (define-deprecated-package OLD-NAME OLD-PACKAGE-NAME NAME)
+
+This defines OLD-NAME as a an deprecated alias for NAME, with OLD-PACKAGE-NAME
+(a string) as the name of the package being deprecated."
+    ((_ old-name name)
+     (define-deprecated-package old-name (symbol->string 'old-name)
+       name))
+    ((_ old-name old-package-name name)
+     (define-deprecated/public old-name name
+       (deprecated-package old-package-name name)))))
 
 (define* (field-value-location port field
                                #:optional (file (port-filename port)))
