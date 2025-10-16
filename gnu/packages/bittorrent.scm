@@ -248,15 +248,16 @@ speed and efficiency.")
 (define-public rtorrent
   (package
     (name "rtorrent")
-    (version "0.9.8")
+    (version "0.16.1")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://rtorrent.net/downloads/rtorrent-"
-                    version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rakshasa/rtorrent/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bs2fnf4q7mlhkhzp3i1v052v9xn8qa7g845pk9ia8hlpw207pwy"))))
+                "0azpqclksczh1j7kpkwqh68xp3p9rayf9dym1c2iif56fm960mgh"))))
     (build-system gnu-build-system)
     (inputs (list libtorrent
                   ncurses
@@ -264,7 +265,7 @@ speed and efficiency.")
                   cyrus-sasl
                   openssl
                   zlib))
-    (native-inputs (list pkg-config cppunit))
+    (native-inputs (list autoconf automake cppunit libtool pkg-config))
     (synopsis "BitTorrent client with ncurses interface")
     (description
      "rTorrent is a BitTorrent client with an ncurses interface.  It supports
