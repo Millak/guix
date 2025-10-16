@@ -112,7 +112,7 @@
            tzdata-for-tests))
     (propagated-inputs
      (list ruby-benchmark
-           ruby-concurrent
+           ruby-concurrent-ruby
            ruby-connection-pool
            ruby-i18n
            ruby-minitest
@@ -1421,7 +1421,7 @@ handling application bootup, plugins, generators, and Rake tasks.")
      '(;; No included tests
        #:tests? #f))
     (propagated-inputs
-     (list ruby-concurrent ruby-rack))
+     (list ruby-concurrent-ruby ruby-rack))
     (synopsis "Sprockets is a Rack-based asset packaging system")
     (description
      "Sprockets is a Rack-based asset packaging system that concatenates and
