@@ -3414,7 +3414,7 @@ updates to the zebra daemon.")
 (define-public bgpq3
   (package
     (name "bgpq3")
-    (version "0.1.36.1")
+    (version "0.1.38")
     (source
      (origin
        (method git-fetch)
@@ -3423,7 +3423,7 @@ updates to the zebra daemon.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0768hihx7idmn2dk8ii21m0dm052amlnfpqq53vsfaapb60n1smc"))))
+        (base32 "11zm2z2cxazzr1x6mwmjc167cclkgaah7b1k8pfpfm555bpli9mf"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f))                    ; no test suite
