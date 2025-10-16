@@ -6886,23 +6886,27 @@ natively in Siril.")
 (define-public python-pysm3
   (package
     (name "python-pysm3")
-    (version "3.4.2")
+    (version "3.4.3")
     (source
      (origin
-       (method git-fetch) ; no tests data in the PyPI tarball
+       (method git-fetch)
        (uri (git-reference
               (url "https://github.com/galsci/pysm")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0r8njxss389hqz1nxixamhclays6blyrq7qnrzs2776w9c0cv6vb"))))
+        (base32 "1qi01g71m0biqchdy1v7sk54kg1w3s75qfbf2s50ifsmprajjs5r"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 44 passed, 2 skipped, 97 deselected, 3 warnings
       #:test-flags
-      ;; Tests requiring additional FITS files.
-      ;; <https://healpy.github.io/healpy-data>
-      ;; <https://portal.nersc.gov/project/cmb/pysm-data>
+      ;; XXX: Tests requiring additional FITS files, check if they may be
+      ;; packages:
+      ;; - <http://www.astropy.org/astropy-data>
+      ;; - <https://github.com/healpy/healpy-data>
+      ;; - <https://healpy.github.io/healpy-data>
+      ;; - <https://portal.nersc.gov/project/cmb/pysm-data>
       #~(list "-k" (string-join
                     (list "not test_bandpass_unit_conversion"
                           "test_bandpass_unit_conversion_CMB2MJysr"
@@ -6924,7 +6928,10 @@ natively in Siril.")
                           "test_highfreq_dust_model"
                           "test_model"
                           "test_model_d12"
+                          "test_no_quadrupole"
                           "test_presmoothed"
+                          "test_print_quadrupole_amplitudes"
+                          "test_quadrupole_corrected_freqs"
                           "test_read_map_unit"
                           "test_read_map_unit_dimensionless"
                           "test_s6_vs_s5"
