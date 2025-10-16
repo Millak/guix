@@ -313,6 +313,10 @@ IM module for GTK+3 applications.
      (modify-inputs (package-inputs fcitx5-gtk)
        (delete "gtk+")
        (prepend fcitx5-gtk gtk)))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GUIX_GTK4_PATH")
+            (files '("lib/gtk-4.0")))))
     (outputs '("out"))
     (synopsis "GTK4 IM module for Fcitx 5")
     (description "Fcitx5-gtk4 provides IM module for GTK4 applications.")))
