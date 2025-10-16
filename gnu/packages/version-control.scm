@@ -318,14 +318,14 @@ Python 3.3 and later, rather than on Python 2.")
 (define-public git-minimal
   (package
     (name "git-minimal")
-    (version "2.51.0")
+    (version "2.51.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/software/scm/git/git-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0qhbk6wd5iy4pz6skp121kgcc5q64rkybfl7rpaqirf23hjw59v0"))))
+                "1qxlcrcykb326585nzr97hmylwzcb7spd6zfbrsn13nml91p2g93"))))
     (build-system gnu-build-system)
     (arguments
      (list
