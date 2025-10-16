@@ -4205,7 +4205,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                    (string-append "extra_link_args=[" args
                                   ", '-Wl,-rpath=" #$output "/lib']")))))
             ;; This is due to an upstream issue:
-            ;; https://git.jami.net/savoirfairelinux/opendht/-/issues/69 
+            ;; https://git.jami.net/savoirfairelinux/opendht/-/issues/69
             (add-after 'unpack 'fix-llhttp-lib-substitution
               (lambda _
                 (substitute* "configure.ac"
