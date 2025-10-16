@@ -4577,13 +4577,13 @@ astronomy-specific functionality")
 (define-public python-glue-core
   (package
     (name "python-glue-core")
-    (version "1.23.0")
+    (version "1.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "glue_core" version))
        (sha256
-        (base32 "0g79gw6ffz4bsby5kazv9a1mbrwa6b75kkal2bi2wjwz855nqsh6"))))
+        (base32 "062l4bhh1dvsazrlnjc4kr3qj9g3s8qmcs0kqb1libiimy6rdbkk"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
