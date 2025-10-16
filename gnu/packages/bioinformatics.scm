@@ -24552,48 +24552,45 @@ populations.")
     (license license:bsd-3)))
 
 (define-public scregseg
+  ;; 0.1.3 was released in 2023, there are a lot of comparability fixes on
+  ;; master branch, use the latest commit for now.
+  (let ((commit "78ebff8c3507752c3bfbc4db3f72f7e8a733e92f")
+        (revision "0"))
   (package
     (name "scregseg")
-    (version "0.1.3")
+    (version (git-version "0.1.3" revision commit))
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/BIMSBbioinfo/scregseg")
-                    (commit (string-append "v" version))))
+                    (commit commit)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07g2barywa1wi8mggbxkbxqjw1fzd0a0l9cjdbkx4s40imb1dbxb"))
+                "19iasx6zh305cn8p390ack78f4iklyk61xmnf99c2b8ibml7jmzj"))
               (snippet
                '(delete-file "src/scregseg/_utils.c"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "--pyargs" "scregseg")
       #:phases
       '(modify-phases %standard-phases
          ;; Numba needs a writable dir to cache functions.
          (add-before 'check 'set-numba-cache-dir
            (lambda _
              (setenv "NUMBA_CACHE_DIR" "/tmp")))
-         ;; Cython extensions have to be built before running the tests.
-         (add-before 'check 'build-extensions
-           (lambda _
-             (invoke "python" "setup.py" "build_ext" "--inplace")))
          ;; NumPy 1.20 deprecated the type wrappers for int and float.
          (add-after 'unpack 'compatibility
            (lambda _
              (substitute* "src/scregseg/_utils.pyx"
-               (("np.float") "float"))))
-         (add-after 'unpack 'do-not-fail-to-find-sklearn
-           (lambda _
-             ;; XXX: I have no idea why it cannot seem to find sklearn.
-             (substitute* "setup.py"
-               (("'sklearn',") "")))))))
+               (("np.float") "float")))))))
     (native-inputs
      (list python-cython
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
-     (list python-scikit-learn
+     (list python-scikit-learn-1.6
            python-scipy
            python-numpy
            python-hmmlearn
@@ -24615,7 +24612,7 @@ Dirichlet-Multinomial emission probabilities to segment the genome either
 according to distinct relative cross-cell accessibility profiles or (after
 collapsing the single-cell tracks to pseudo-bulk tracks) to capture distinct
 cross-cluster accessibility profiles.")
-    (license license:gpl3+)))
+    (license license:gpl3+))))
 
 (define-public megadepth
   (package
