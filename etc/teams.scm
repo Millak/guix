@@ -92,7 +92,7 @@ exec $pre_inst_env_maybe guix repl -- "$0" "$@"
   (email   person-email)
   (account person-codeberg-account))
 
-(define* (person name #:optional email account)
+(define (person name email account)
   (make-person name email account))
 
 (define* (team id #:key name description (members '())
@@ -1200,10 +1200,6 @@ the \"texlive\" importer."
                        "jpoiret")
   installer)
 
-(define-member (person "("
-                       "paren@disroot.org")
-  )
-
 (define-member (person "Simon Tournier"
                        "zimon.toutoune@gmail.com"
                        "zimoun")
@@ -1264,18 +1260,10 @@ the \"texlive\" importer."
                        "Hellseher")
   go julia python science sysadmin)
 
-(define-member (person "Vivien Kraus"
-                       "vivien@planete-kraus.eu")
-  gnome)
-
 (define-member (person "Mark H Weaver"
                        "mhw@netris.org"
                        "mhw")
   mozilla)
-
-(define-member (person "Adam Faiz"
-                       "adam.faiz@disroot.org")
-  games)
 
 (define-member (person "Laurent Gatto"
                        "lgatto@protonmail.ch"
@@ -1340,10 +1328,6 @@ the \"texlive\" importer."
                        "ashvithshetty0010@zohomail.in"
                        "Ashvith")
   games go javascript sysadmin xfce)
-
-(define-member (person "Trevor Richards"
-                       "trev@trevdev.ca")
-  lisp emacs)
 
 (define-member (person "Konrad Hinsen"
                        "guix@khinsen.fastmail.net"
