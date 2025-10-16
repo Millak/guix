@@ -4836,7 +4836,7 @@ also available.")
   (hidden-package
    (package
      (name "ring-racers-data")
-     (version "2.3")
+     (version "2.4")
      (source
       (origin
         (method url-fetch/zipbomb)
@@ -4845,7 +4845,7 @@ also available.")
               version "/Dr.Robotnik.s-Ring-Racers-v" version "-Assets.zip"))
         (file-name (string-append name "-" version ".zip"))
         (sha256
-         (base32 "0i6sq8c1vq7z5r5i1hana0v73xvj53696f2xwn37xicxds4d15wp"))))
+         (base32 "087i1bz46g57s0850j5wf9j2bdmr451lzg156hrg681chwdxgfpf"))))
      (build-system copy-build-system)
      (home-page "https://github.com/KartKrewDev/RingRacers/releases")
      (synopsis "Data files for Ring Racers")
@@ -4855,16 +4855,16 @@ also available.")
 (define-public ring-racers
   (package
     (name "ring-racers")
-    (version "2.3")
+    (version "2.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://git.do.srb2.org/KartKrew/RingRacers")
-             (commit (string-append "v" version))))
+              (url "https://gitlab.com/kart-krew-dev/ring-racers")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05lf799imbk0x3i2adaj0r84ck5yyrvzjvhs4k9dj7l4jg0x4sjz"))
+        (base32 "05aj09rm50xb6910zx6imarj8k728x9bpvpa7ydwgb4sj1nypil8"))
        (modules '((guix build utils)))
        (snippet '(begin
                    (with-directory-excursion "thirdparty"
@@ -4894,12 +4894,14 @@ also available.")
                 (wrap-program "bin/ringracers"
                   `("RINGRACERSWADDIR" =
                     (,(assoc-ref inputs "ring-racers-data"))))))))))
+    (native-inputs (list pkg-config))
     (inputs (list glm
                   libogg
                   libpng
                   libvorbis
                   libvpx
                   libyuv
+                  opus
                   ring-racers-data
                   sdl2
                   zlib
