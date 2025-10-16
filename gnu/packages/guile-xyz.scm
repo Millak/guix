@@ -7769,14 +7769,14 @@ application to open a given file or URL based on given configurations.")
 (define-public guile-goblins
   (package
     (name "guile-goblins")
-    (version "0.16.1")
+    (version "0.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://files.spritely.institute/releases"
                            "/guile-goblins/guile-goblins-" version ".tar.gz"))
        (sha256
-        (base32 "10ffdr98nck05pnsq5qagp7wpyky5wdk83n3qrnh9aphm9qq5frh"))))
+        (base32 "16jkmfspsnza2fdk5jr05a5pfh7x856gpg031i21s1yvy43l8mi0"))))
     (build-system gnu-build-system)
     (arguments
      (list
