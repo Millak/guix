@@ -376,45 +376,22 @@ APIs to detect, query, and compare them.")
 (define-public python-asyncclick
   (package
     (name "python-asyncclick")
-    (version "8.2.2.2")
+    (version "8.3.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asyncclick" version))
        (sha256
-        (base32 "0q26q8r1x5j9nz72xcb80vjx5maha6yswdmw2li4mwqyzdxnnkq1"))))
+        (base32 "1i8jb2mir9gflw9pram720diq6fb2yn8pjja1m1q3arzq64zl993"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 1397 passed, 29 skipped, 72 deselected, 4 xfailed
-      #:test-flags
-      #~(list "-k" (string-join
-                    ;; See: <https://github.com/python-trio/asyncclick/issues/42>.
-                    (list "not test_confirm_repeat[asyncio]"
-                          "test_confirm_repeat[trio]"
-                          "test_file_prompt_default_format[asyncio-file_kwargs0]"
-                          "test_file_prompt_default_format[asyncio-file_kwargs1]"
-                          "test_file_prompt_default_format[asyncio-file_kwargs2]"
-                          "test_file_prompt_default_format[trio-file_kwargs0]"
-                          "test_file_prompt_default_format[trio-file_kwargs1]"
-                          "test_file_prompt_default_format[trio-file_kwargs2]"
-                          "test_prompts[asyncio]"
-                          "test_prompts[trio]"
-                          ;; Requires less
-                          "test_echo_via_pager")
-                    " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-conftest
-            ;; See: <https://github.com/python-trio/asyncclick/pull/39>.
-            (lambda _
-              (substitute* "tests/conftest.py"
-                (("from click") "from asyncclick")))))))
+    ;; tests: 1418 passed, 21 skipped, 1 xfailed
     (native-inputs
-     (list python-anyio
+     (list less
            python-flit-core
            python-pytest
            python-trio))
+    (propagated-inputs
+     (list python-anyio))
     (home-page "https://github.com/python-trio/asyncclick")
     (synopsis "Python composable command line utility, trio-compatible version ")
     (description
