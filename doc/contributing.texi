@@ -3344,13 +3344,21 @@ for @b{at least one year}.  For example, @code{go-ipfs} was renamed to
 change to users, the package module provided this definition:
 
 @findex deprecated-package
+@findex define-deprecated-package
 @lisp
-(define-public go-ipfs
-  (deprecated-package "go-ipfs" kubo))
+(define-deprecated-package go-ipfs
+  kubo)
 @end lisp
 
 That way, someone running @command{guix install go-ipfs} or similar sees
-a deprecation warning mentioning the new name.
+a deprecation warning mentioning the new package name; likewise, someone
+referring to the @code{go-ipfs} @emph{variable} from their manifest or
+package definition will see a warning.
+
+Under the hood, @code{define-deprecated-package} combines
+@code{define-deprecated/public-alias} to mark the variable as deprecated
+(see below), and the @code{deprecated-package} procedure to mark the
+package name as deprecated.
 
 @cindex package removal policy
 @anchor{package-removal-policy}
@@ -3360,8 +3368,8 @@ of life'' or being unmaintained may be removed; likewise, packages that
 have been @b{failing to build for two months or more} may be removed.
 
 There is no formal deprecation mechanism for this case, unless a
-replacement exists, in which case the @code{deprecated-package}
-procedure mentioned above can be used.
+replacement exists, in which case the @code{define-deprecated-package}
+macro mentioned above can be used.
 
 If the package being removed is a ``leaf'' (no other packages depend on
 it), it may be removed after a @b{one-month review period} of the patch
