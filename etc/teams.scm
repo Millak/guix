@@ -1154,7 +1154,8 @@ the \"texlive\" importer."
   ocaml)
 
 (define-member (person "Josselin Poiret"
-                       "dev@jpoiret.xyz")
+                       "dev@jpoiret.xyz"
+                       "jpoiret")
   installer)
 
 (define-member (person "("
@@ -1187,7 +1188,8 @@ the \"texlive\" importer."
   core documentation electronics gnome qt telephony)
 
 (define-member (person "Katherine Cox-Buday"
-                       "cox.katherine.e+guix@gmail.com")
+                       "cox.katherine.e+guix@gmail.com"
+                       "katco")
   emacs go lisp)
 
 (define-member (person "Munyoki Kilyungi"
@@ -1234,7 +1236,8 @@ the \"texlive\" importer."
   games)
 
 (define-member (person "Laurent Gatto"
-                       "laurent.gatto@gmail.com")
+                       "laurent.gatto@gmail.com"
+                       "lgatto")
   r)
 
 (define-member (person "Nicolas Goaziou"
