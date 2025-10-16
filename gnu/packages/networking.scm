@@ -3770,6 +3770,17 @@ low-level I/O programming that provides developers with a consistent
 asynchronous model using a modern C++ approach.")
     (license license:boost1.0)))
 
+(define-public asio-1.28
+  (package/inherit asio
+    (version "1.28.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/asio/asio/"
+                           version " (Stable)/asio-" version ".tar.bz2"))
+       (sha256
+        (base32 "1479z0pa9781dx1crsyaa9fvlcmyhb22m355f8cil77jjh13xf7i"))))))
+
 (define-public shadowsocks
   (package
     (name "shadowsocks")
