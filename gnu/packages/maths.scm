@@ -2674,6 +2674,8 @@ scientific data storage.")
        (modify-phases %standard-phases
          (add-after 'unpack 'post-unpack
            (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "src/makefile"
+               (("shell") "bash"))
              (substitute* "src/makefile.gnu"
                (("PROJECT_EIGEN=/usr/include/eigen3")
                 (string-append "PROJECT_EIGEN="
