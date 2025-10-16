@@ -21,6 +21,7 @@
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2025 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
+;;; Copyright © 2025 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -126,6 +127,11 @@
             %standard-geoclue-applications
             geoclue-service  ; deprecated
             geoclue-service-type
+
+            iio-sensor-proxy-configuration
+            iio-sensor-proxy-configuration?
+            iio-sensor-proxy-configuration-io-sensor-proxy
+            iio-sensor-proxy-service-type
 
             bluetooth-service-type
             bluetooth-configuration
@@ -478,6 +484,50 @@ site} for more information."
             (wifi-submission-url wifi-submission-url)
             (submission-nick submission-nick)
             (applications applications))))
+
+
+;;;
+;;; IIO Sensor proxy.
+;;;
+
+(define-record-type* <iio-sensor-proxy-configuration>
+  iio-sensor-proxy-configuration make-iio-sensor-proxy-configuration
+  iio-sensor-proxy-configuration?
+  (iio-sensor-proxy iio-sensor-proxy-configuration-iio-sensor-proxy
+                    (default iio-sensor-proxy)))
+
+(define iio-sensor-proxy-shepherd-service
+  (match-record-lambda <iio-sensor-proxy-configuration>
+      (iio-sensor-proxy)
+    (list (shepherd-service
+            (documentation "IIO sensors to D-Bus proxy")
+            (requirement '(user-processes dbus-system udev))
+            (provision '(iio-sensor-proxy))
+            (start #~(make-forkexec-constructor
+                      (list #$(file-append iio-sensor-proxy
+                                           "/libexec/iio-sensor-proxy"))))
+            (stop #~(make-kill-destructor))))))
+
+(define iio-sensor-proxy-service-type
+  (let ((iio-sensor-proxy-package
+         (match-record-lambda <iio-sensor-proxy-configuration>
+             (iio-sensor-proxy)
+           (list iio-sensor-proxy))))
+    (service-type
+      (name 'iio-sensor-proxy)
+      (extensions
+       (list (service-extension polkit-service-type
+                                iio-sensor-proxy-package)
+             (service-extension dbus-root-service-type
+                                iio-sensor-proxy-package)
+             (service-extension udev-service-type
+                                iio-sensor-proxy-package)
+             (service-extension shepherd-root-service-type
+                                iio-sensor-proxy-shepherd-service)))
+      (default-value (iio-sensor-proxy-configuration))
+      (description
+       "Run the @command{iio-sensor-proxy} daemon, which provides IIO sensors data
+through a D-Bus interface."))))
 
 
 ;;;

@@ -145,6 +145,7 @@ Copyright @copyright{} 2025 jgart@*
 Copyright @copyright{} 2025 Artur Wroblewski@*
 Copyright @copyright{} 2025 Edouard Klein@*
 Copyright @copyright{} 2025 Rodion Goritskov@*
+Copyright @copyright{} 2025 dan@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -27045,6 +27046,37 @@ The value for this service is a @code{<geoclue-configuration>} object.
 
 @c TODO: Document <geoclue-configuration>, preferably by refactoring this to use
 @c       define-configuration and generating documentation from it.
+
+@defvar iio-sensor-proxy-service-type
+Type for the service that runs
+@uref{https://gitlab.freedesktop.org/hadess/iio-sensor-proxy, IIO sensor
+proxy}, a daemon that proxies low-level sensor data from Industrial I/O
+(IIO) devices into a D-Bus interface.  It enables user-space
+applications, such as desktop environments like GNOME and KDE, and
+services like GeoClue, to access data from various sensors commonly
+found in devices like ultrabooks and 2-in-1s.  This allows for:
+
+@itemize @bullet
+@item
+Automatic screen rotation based on accelerometer data.
+@item
+Ambient brightness adjustment using light sensor data.
+@item
+Compass/direction information for location services (via GeoClue).
+@end itemize
+
+The value for this service is a @code{<iio-sensor-proxy-configuration>} object.
+@end defvar
+
+@deftp {Data Type} iio-sensor-proxy-configuration
+Data type representing the configuration for @code{iio-sensor-proxy-service-type}.
+
+@table @asis
+@item @code{iio-sensor-proxy} (default: @code{iio-sensor-proxy}) (type: file-like)
+Package object of iio-sensor-proxy.
+
+@end table
+@end deftp
 
 @defvar bluetooth-service-type
 This is the type for the @uref{https://bluez.org/, Linux Bluetooth Protocol
