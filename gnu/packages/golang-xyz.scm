@@ -8354,8 +8354,8 @@ while callers can implement logging with whatever backend is appropriate.")
 standard log package.")
     (license license:asl2.0)))
 
-(define-public go-github-com-go-md2man
-  (deprecated-package "go-github-com-go-md2man" go-github-com-cpuguy83-go-md2man-v2))
+(define-deprecated-package go-github-com-go-md2man
+  go-github-com-cpuguy83-go-md2man-v2)
 
 (define-public go-github-com-go-openapi-inflect
   (package

@@ -188,8 +188,8 @@ to access its data, so it can be used as a drop-in replacement.")
 package, an implementation of the Brotli lossless compression algorithm.")
     (license license:expat)))
 
-(define-public python-google-brotli
-  (deprecated-package "python-google-brotli" python-brotli))
+(define-deprecated-package python-google-brotli
+  python-brotli)
 
 (define-public python-multivolumefile
   (package
@@ -792,8 +792,8 @@ for improving compression, as well as a python/C package that implements this
 algorithm within the Numpy framework.")
     (license license:expat)))
 
-(define-public bitshuffle
-  (deprecated-package "bitshuffle" python-bitshuffle))
+(define-deprecated-package bitshuffle
+  python-bitshuffle)
 
 (define-public bitshuffle-for-snappy
   (package/inherit python-bitshuffle

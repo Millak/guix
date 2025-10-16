@@ -89,5 +89,5 @@ ncurses installed.")
     (native-inputs (list pkg-config))
     (properties `((tunable? . #t)))))
 
-(define-public ncdu-2
-  (deprecated-package "ncdu2" ncdu))
+(define-deprecated-package ncdu-2
+  ncdu)

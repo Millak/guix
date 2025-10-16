@@ -1298,5 +1298,5 @@ The Waf Book and in the API docs
 
 ;; waf is the final program no need to prefix it with "python-", the same way
 ;; as meson or ninja which are written in Python as well.
-(define-public python-waf
-  (deprecated-package "python-waf" waf))
+(define-deprecated-package python-waf
+  waf)

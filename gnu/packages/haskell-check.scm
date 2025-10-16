@@ -920,8 +920,8 @@ configuration.  This library provides the common bits for writing custom
     (license license:bsd-3)))
 
 ;; Deprecated. Don’t use.
-(define-public ghc-cabal-doctest
-  (deprecated-package "ghc-cabal-doctest" cabal-doctest))
+(define-deprecated-package ghc-cabal-doctest
+  cabal-doctest)
 
 (define-public ghc-testing-type-modifiers
   (package

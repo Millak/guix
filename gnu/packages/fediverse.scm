@@ -218,8 +218,8 @@ native interface that allows you to integrate Mastodon's social experience
 seamlessly with your desktop environment.")
     (license license:gpl3)))
 
-(define-public tootle
-  (deprecated-package "tootle" tuba))
+(define-deprecated-package tootle
+  tuba)
 
 (define-public python-mastodon-py
   (package

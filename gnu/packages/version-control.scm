@@ -304,8 +304,8 @@ and protocols.  One of the key differences with Bazaar is that Breezy runs on
 Python 3.3 and later, rather than on Python 2.")
     (license license:gpl2+)))
 
-(define-public bazaar
-  (deprecated-package "bazaar" breezy))
+(define-deprecated-package bazaar
+  breezy)
 
 (define git-cross-configure-flags
   #~(list "ac_cv_fread_reads_directories=yes"
@@ -2713,8 +2713,8 @@ specify a list of hooks you want and pre-commit manages the installation and
 execution of any hook written in any language before every commit.")
     (license license:expat)))
 
-(define-public python-pre-commit
-  (deprecated-package "python-pre-commit" pre-commit))
+(define-deprecated-package python-pre-commit
+  pre-commit)
 
 ;; XXX: This is a temporary helper to avoid recompiling mercurial/pinned.
 ;; If you update mercurial, don't touch it but work around it.

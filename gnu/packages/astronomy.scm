@@ -645,8 +645,8 @@ accurately in real time at any rate desired.")
 @end itemize")
       (license license:gpl2+))))
 
-(define-public celestia-gtk
-  (deprecated-package "celestia-gtk" celestia))
+(define-deprecated-package celestia-gtk
+  celestia)
 
 (define-public cfitsio
   (package
@@ -1045,8 +1045,8 @@ viewer: panning and zooming windows, star catalog access, cuts, star
 pick/FWHM, thumbnails, etc.")
 (license license:bsd-3)))
 
-(define-public ginga-qt5
-  (deprecated-package "ginga-qt5" ginga))
+(define-deprecated-package ginga-qt5
+  ginga)
 
 (define-public glnemo2
   (package
@@ -9496,9 +9496,9 @@ between image and reference catalogs.  Currently only aligning images with
 @url{https://aeolus.services, Aeolus}")
     (license license:expat)))
 
-(define-public python-webbpsf
-  ;; See <https://github.com/spacetelescope/webbpsf/pull/951>
-  (deprecated-package "python-webbpsf" python-stpsf))
+;; See <https://github.com/spacetelescope/webbpsf/pull/951>
+(define-deprecated-package python-webbpsf
+  python-stpsf)
 
 (define-public python-wiimatch
   (package

@@ -316,5 +316,5 @@ as a window under Arcan.")
     (license (list license:bsd-3 license:expat))))
 
 ;; Package was merged into arcan in upstream.
-(define-public arcan-wayland
-  (deprecated-package "arcan-wayland" arcan))
+(define-deprecated-package arcan-wayland
+  arcan)

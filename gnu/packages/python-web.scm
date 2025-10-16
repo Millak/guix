@@ -4846,8 +4846,8 @@ WebSockets (over HTTP/1 and HTTP/2), ASGI/2, and ASGI/3 specifications.  It
 can utilise asyncio, uvloop, or trio worker types.")
     (license license:expat)))
 
-(define-public python-hypercorn
-  (deprecated-package "python-hypercorn" hypercorn))
+(define-deprecated-package python-hypercorn
+  hypercorn)
 
 (define-public python-querystring-parser
   (package
@@ -6165,8 +6165,8 @@ python-requests.")
 HTTP via a UNIX domain socket.")
     (license license:asl2.0)))
 
-(define-public python-requests-unixsocket
-  (deprecated-package "python-requests-unixsocket" python-requests-unixsocket2))
+(define-deprecated-package python-requests-unixsocket
+  python-requests-unixsocket2)
 
 (define-public python-requests-ntlm
   (package
@@ -10036,8 +10036,8 @@ decorators and tools to describe your API and expose its documentation properly 
 Swagger.")
     (license license:bsd-3)))
 
-(define-public python-flask-restplus
-  (deprecated-package "python-flask-restplus" python-flask-restx))
+(define-deprecated-package python-flask-restplus
+  python-flask-restx)
 
 (define-public python-flask-socketio
   (package

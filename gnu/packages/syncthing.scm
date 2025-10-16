@@ -224,8 +224,8 @@ notification area icon for Syncthing.  Supported Syncthing features:
 @end itemize\n")
       (license gpl2))))
 
-(define-public qsyncthingtray
-  (deprecated-package "qsyncthingtray" syncthing-gtk))
+(define-deprecated-package qsyncthingtray
+  syncthing-gtk)
 
 (define-public go-github-com-syncthing-notify
   (package

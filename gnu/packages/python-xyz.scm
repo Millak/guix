@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
-;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2019, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2017, 2021, 2022, 2024 Eric Bavier <bavier@posteo.net>
@@ -4656,8 +4656,8 @@ which is a fork of @url{http://hdfeos.org/software/pyhdf.php,pyhdf}.")
 ;; Version 0.9.x was called python-hdf4 in PyPI because at that time upstream
 ;; didn't have access to the pyhdf package in PyPI. For version 0.10.0 and
 ;; onward, please install pyhdf instead of python-hdf4.
-(define-public python-hdf4
-  (deprecated-package "python-hdf4" python-pyhdf))
+(define-deprecated-package python-hdf4
+  python-pyhdf)
 
 (define-public python-h5netcdf
   (package
@@ -9789,8 +9789,8 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
      "This package provides a JSON RPC 2.0 server library for Python.")
     (license license:expat)))
 
-(define-public python-jsonrpc-server
-  (deprecated-package "python-jsonrpc-server" python-lsp-jsonrpc))
+(define-deprecated-package python-jsonrpc-server
+  python-lsp-jsonrpc)
 
 (define-public python-pydantic
   (package
@@ -10129,8 +10129,8 @@ This tool is used in text editing environments to provide a complete
 and integrated feature-set for programming Python effectively.")
     (license license:expat)))
 
-(define-public python-language-server
-  (deprecated-package "python-language-server" python-lsp-server))
+(define-deprecated-package python-language-server
+  python-lsp-server)
 
 (define-public python-black
   (package
@@ -16356,8 +16356,8 @@ file (e.g. @file{PKG-INFO}).")
     (license license:expat)))
 
 ;; pep621 was renamed to pyproject-metadata.
-(define-public python-pep621
-  (deprecated-package "python-pep621" python-pyproject-metadata))
+(define-deprecated-package python-pep621
+  python-pyproject-metadata)
 
 (define-public python-meson-python
   (package
@@ -18333,8 +18333,8 @@ invoked on those path objects directly.")
                               (package-properties
                                python-path-bootstrap)))))
 
-(define-public python-pathpy
-  (deprecated-package "python-pathpy" python-path))
+(define-deprecated-package python-pathpy
+  python-path)
 
 (define-public python-pretend
   (package
@@ -24210,8 +24210,8 @@ pytest-fixtures-style dependency injection.")
      extracting firmware images")
     (license license:expat)))
 
-(define-public python-binwalk
-  (deprecated-package "python-binwalk" binwalk))
+(define-deprecated-package python-binwalk
+  binwalk)
 
 (define-public python-bson
   (package
@@ -35949,8 +35949,8 @@ all the niceties of modern GUI-based debuggers in a more lightweight and
 keyboard-friendly package.")
     (license license:expat)))
 
-(define-public pudb
-  (deprecated-package "pudb" python-pudb))
+(define-deprecated-package pudb
+  python-pudb)
 
 (define-public python-iwlib
   (package

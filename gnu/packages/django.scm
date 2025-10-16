@@ -1655,8 +1655,8 @@ Django projects, which allows association of a number of tags with any
 provides features like a Web-browsable API and authentication policies.")
     (license license:bsd-2)))
 
-(define-public python-djangorestframework
-  (deprecated-package "python-djangorestframework" python-django-rest-framework))
+(define-deprecated-package python-djangorestframework
+  python-django-rest-framework)
 
 (define-public python-django-sekizai
   (package

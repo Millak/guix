@@ -1259,8 +1259,8 @@ while also supporting native scrolling and @command{tmux} control mode
 (@code{tmux -CC}).")
     (license license:asl2.0)))
 
-(define-public wterm
-  (deprecated-package "wterm" foot))
+(define-deprecated-package wterm
+  foot)
 
 (define-public tilix
   (package

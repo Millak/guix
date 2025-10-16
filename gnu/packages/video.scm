@@ -1314,8 +1314,8 @@ playing videos from YouTube.  It parses the YouTube website directly and relies
 on the Invidious instances only as a fallback method.")
     (license license:artistic2.0)))
 
-(define-public straw-viewer
-  (deprecated-package "straw-viewer" pipe-viewer))
+(define-deprecated-package straw-viewer
+  pipe-viewer)
 
 (define-public x265
   (package
@@ -3080,8 +3080,8 @@ wallpaper using mpv.")
 to download videos from Austria's national television broadcaster.")
     (license license:bsd-3)))
 
-(define-public orf-dl
-  (deprecated-package "orf-dl" orfondl))
+(define-deprecated-package orf-dl
+  orfondl)
 
 (define-public yle-dl
   (package
@@ -4650,9 +4650,9 @@ scenes, sources and filters.")
 via a filter.")
     (license license:gpl2)))
 
-(define-public obs-websocket
-  ;; Functionality was merged into OBS.
-  (deprecated-package "obs-websocket" obs))
+;; Functionality was merged into OBS.
+(define-deprecated-package obs-websocket
+  obs)
 
 (define-public obs-wlrobs
   (package
@@ -6980,8 +6980,8 @@ Users in group ``wheel'' can skip password authentication.")
     (home-page "https://github.com/AlynxZhou/showmethekey")
     (license license:asl2.0)))
 
-(define-public show-me-the-key
-  (deprecated-package "show-me-the-key" showmethekey))
+(define-deprecated-package show-me-the-key
+  showmethekey)
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances

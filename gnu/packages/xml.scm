@@ -296,8 +296,8 @@ project (but it is usable outside of the Gnome platform).")
 provides an @code{--xpath0} option to @command{xmllint} that enables it
 to output XPath results with a null delimiter.")))
 
-(define-public python-libxml2
-  (deprecated-package "python-libxml2" libxml2))
+(define-deprecated-package python-libxml2
+  libxml2)
 
 (define-public libxlsxwriter
   (package

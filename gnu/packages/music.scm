@@ -4358,8 +4358,8 @@ using the beets FetchArt plugin.")
 ;;; XXX: The original project is abandoned for 4y, see
 ;;; <https://github.com/unrblt/beets-bandcamp/issues/15>, this package may be
 ;;; sourced from maintained fork <https://github.com/snejus/beetcamp>.
-(define-public beets-bandcamp
-  (deprecated-package "beets-bandcamp" beets-beetcamp))
+(define-deprecated-package beets-bandcamp
+  beets-beetcamp)
 
 (define-public milkytracker
   (package

@@ -686,8 +686,8 @@ from software emulation to complete hardware acceleration for modern GPUs.")
 
 ;;; ICD was part of the Gallium (Clover) OpenCL driver, which was replaced
 ;;; with Rusticl.
-(define-public mesa-opencl-icd
-  (deprecated-package "mesa-opencl-icd" mesa-opencl))
+(define-deprecated-package mesa-opencl-icd
+  mesa-opencl)
 
 (define-public mesa-headers
   (package/inherit mesa

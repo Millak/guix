@@ -2578,8 +2578,8 @@ interface as simple as the HTTP web, but with permanence built in.  You can
 also mount the world at @code{/ipfs}.")
     (license license:expat)))
 
-(define-public go-ipfs
-  (deprecated-package "go-ipfs" kubo))
+(define-deprecated-package go-ipfs
+  kubo)
 
 (define-public spritely-libp2p-daemon
   (let ((version "0.1")

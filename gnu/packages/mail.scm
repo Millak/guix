@@ -579,8 +579,8 @@ compatible with the configuration of
 Python}.")
     (license license:gpl3+)))
 
-(define-public go-gitlab.com-shackra-goimapnotify
-  (deprecated-package "go-gitlab.com-shackra-goimapnotify" goimapnotify))
+(define-deprecated-package go-gitlab.com-shackra-goimapnotify
+  goimapnotify)
 
 (define-public guile2.2-mailutils
   (package
@@ -1277,8 +1277,8 @@ can read the same mailbox from multiple computers.  It supports IMAP as REMOTE
 repository and Maildir/IMAP as LOCAL repository.")
       (license license:gpl2+))))
 
-(define-public offlineimap
-  (deprecated-package "offlineimap" offlineimap3))
+(define-deprecated-package offlineimap
+  offlineimap3)
 
 (define-public emacs-mew
   (let ((commit "35772ee0b44dd7e56b0f3899b27fa545b2bc6f03")
@@ -1845,8 +1845,8 @@ features.  This is a fork derived from getmail 5.14, aimed at Python 3
 compatibility.")
     (license license:gpl2+)))           ;see docs/COPYING
 
-(define-public getmail
-  (deprecated-package "getmail" getmail6))
+(define-deprecated-package getmail
+  getmail6)
 
 (define-public libetpan
   (package

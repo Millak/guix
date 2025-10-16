@@ -179,7 +179,8 @@ tunneling, and so on.")
     (license (license:non-copyleft "file://COPYING"
                                    "See COPYING in the distribution."))))
 
-(define-public gnurl (deprecated-package "gnurl" curl))
+(define-deprecated-package gnurl
+  curl)
 
 (define-public curl-ssh
   (package/inherit curl

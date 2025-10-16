@@ -1991,8 +1991,8 @@ well in user interface (UI) environments.")
     (license license:silofl1.1)))
 
 ;; https://github.com/adobe-fonts/source-sans/issues/192
-(define-public font-adobe-source-sans-pro
-  (deprecated-package "font-adobe-source-sans-pro"  font-adobe-source-sans))
+(define-deprecated-package font-adobe-source-sans-pro
+  font-adobe-source-sans)
 
 (define-public font-adobe-source-serif
   (package
@@ -2018,8 +2018,8 @@ family.")
     (license license:silofl1.1)))
 
 ;; https://github.com/adobe-fonts/source-serif/issues/77
-(define-public font-adobe-source-serif-pro
-  (deprecated-package "font-adobe-source-serif-pro" font-adobe-source-serif))
+(define-deprecated-package font-adobe-source-serif-pro
+  font-adobe-source-serif)
 
 (define-public font-microsoft-cascadia
   (package
@@ -2929,8 +2929,8 @@ characters mostly intact.")
   constraint of usability at small point sizes.")
     (license (list license:silofl1.1))))
 
-(define-public font-iosevka-comfy
-  (deprecated-package "font-iosevka-comfy"  font-aporetic))
+(define-deprecated-package font-iosevka-comfy
+  font-aporetic)
 
 (define-public font-junicode
   (package
@@ -3653,8 +3653,8 @@ and legible typeface suitable for web pages and applications.")
     (license license:silofl1.1)))
 
 ;; https://github.com/rastikerdar/vazirmatn/blob/master/CHANGELOG.md#3200
-(define-public font-vazir
-  (deprecated-package "font-vazir" font-vazirmatn))
+(define-deprecated-package font-vazir
+  font-vazirmatn)
 
 (define-public font-victor-mono
   (package

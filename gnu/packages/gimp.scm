@@ -504,8 +504,8 @@ that is extensible via a plugin system.")
                               shared-mime-info)))))
 
 (define-public gimp gimp-3)
-(define-public gimp-next
-  (deprecated-package "gimp-next" gimp-3))
+(define-deprecated-package gimp-next
+  gimp-3)
 
 (define-public gimp-fourier
   (package

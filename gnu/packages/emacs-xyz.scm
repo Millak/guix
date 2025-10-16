@@ -3355,8 +3355,8 @@ of tasks, including version control, task management, and regex-based
 replacement.")
       (license license:gpl3+))))
 
-(define-deprecated/public emacs-unpackaged-el emacs-unpackaged
-  (deprecated-package "emacs-unpackaged-el" emacs-unpackaged))
+(define-deprecated-package emacs-unpackaged-el
+  emacs-unpackaged)
 
 (define-public emacs-haskell-mode
   (let ((commit "e9c356739310332afe59b10ffa2e6c3e76f124e3")
@@ -5924,8 +5924,8 @@ searches.  Unlike @code{emacs-wiki.el}, it can be combined with any format.")
     (home-page "https://github.com/hexmode/mediawiki-el")
     (license license:gpl3+)))
 
-(define-deprecated/public emacs-mediawiki-el emacs-mediawiki
-  (deprecated-package "emacs-mediawiki-el" emacs-mediawiki))
+(define-deprecated-package emacs-mediawiki-el
+  emacs-mediawiki)
 
 (define-public emacs-bm
   (package
@@ -6184,8 +6184,8 @@ Language (CSL), an XML-based, open format to describe the formatting
 of bibliographic references.")
     (license license:gpl3+)))
 
-(define-deprecated/public emacs-citeproc-el emacs-citeproc
-  (deprecated-package "emacs-citeproc-el" emacs-citeproc))
+(define-deprecated-package emacs-citeproc-el
+  emacs-citeproc)
 
 (define-public emacs-corfu
   (package
@@ -8918,8 +8918,8 @@ If you are using Guix shell with @file{manifest.scm}, the
       (description "This package lets you switch Ruby versions using chruby.")
       (license license:gpl3+))))
 
-(define-deprecated/public emacs-chruby-el emacs-chruby
-  (deprecated-package "emacs-chruby-el" emacs-chruby))
+(define-deprecated-package emacs-chruby-el
+  emacs-chruby)
 
 ;; Package has no release.  Version is extracted from "Version:" keyword in
 ;; main file.
@@ -13936,8 +13936,8 @@ It is built on top of the custom theme support in Emacs 24 or later.")
 variants.")
     (license license:gpl3+)))
 
-(define-deprecated/public emacs-moe-theme-el emacs-moe-theme
-  (deprecated-package "emacs-moe-theme-el" emacs-moe-theme))
+(define-deprecated-package emacs-moe-theme-el
+  emacs-moe-theme)
 
 (define-public emacs-color-theme-sanityinc-tomorrow
   (package
@@ -16791,8 +16791,8 @@ unique file names you need this package here.")
 individual file buffers.")
     (license license:gpl3+)))
 
-(define-deprecated/public emacs-undohist-el emacs-undohist
-  (deprecated-package "emacs-undohist-el" emacs-undohist))
+(define-deprecated-package emacs-undohist-el
+  emacs-undohist)
 
 (define-public emacs-eprime
   (let ((commit "17a481af26496be91c07139a9bfc05cfe722506f"))
@@ -21463,8 +21463,8 @@ This is based on Frank Terbeck's @code{gnus-article-treat-patch.el} but has
 been adapted to also work with mu4e.")
       (license license:gpl3+))))
 
-(define-public emacs-mu4e-patch
-  (deprecated-package "emacs-mu4e-patch" emacs-message-view-patch))
+(define-deprecated-package emacs-mu4e-patch
+  emacs-message-view-patch)
 
 (define-public emacs-pretty-mode
   (package
@@ -22305,8 +22305,8 @@ DefaultEncrypt, please refer to the home page or read the comments in the
 source file, @file{jl-encrypt.el}.")
     (license license:gpl3+)))
 
-(define-public emacs-default-encrypt
-  (deprecated-package "emacs-default-encrypt" emacs-defaultencrypt))
+(define-deprecated-package emacs-default-encrypt
+  emacs-defaultencrypt)
 
 (define-public emacs-deflate
   (package
@@ -26149,8 +26149,8 @@ buffer, and, by virtue of this extension, do so using the Emacs formatting
 rules for that language.")
     (license license:bsd-2)))
 
-(define-deprecated/public emacs-scratch-el emacs-scratch
-  (deprecated-package "emacs-scratch-el" emacs-scratch))
+(define-deprecated-package emacs-scratch-el
+  emacs-scratch)
 
 (define-public emacs-kv
   (package
@@ -28554,8 +28554,8 @@ mode.")
 for operating over the contents of Emacs buffers.")
       (license license:gpl3+))))
 
-(define-deprecated/public emacs-m-buffer-el emacs-m-buffer
-  (deprecated-package "emacs-m-buffer-el" emacs-m-buffer))
+(define-deprecated-package emacs-m-buffer-el
+  emacs-m-buffer)
 
 (define-public emacs-let-alist
   (package
@@ -29741,8 +29741,8 @@ repository, @code{magit-org-todos} will create a section in your Magit status
 buffer with each of your todos.")
     (license license:gpl3+)))
 
-(define-deprecated/public emacs-magit-org-todos-el emacs-magit-org-todos
-  (deprecated-package "emacs-magit-org-todos-el" emacs-magit-org-todos))
+(define-deprecated-package emacs-magit-org-todos-el
+  emacs-magit-org-todos)
 
 (define-public emacs-vcsh
   (package
@@ -29823,8 +29823,8 @@ Magit.")
 @end itemize\n")
     (license license:gpl3+)))
 
-(define-deprecated/public emacs-lice-el emacs-lice
-  (deprecated-package "emacs-lice-el" emacs-lice))
+(define-deprecated-package emacs-lice-el
+  emacs-lice)
 
 (define-public emacs-academic-phrases
   (let ((commit "0823ed8c24b26c32f909b896a469833ec4d7b656"))
@@ -32904,8 +32904,8 @@ In addition to its predecessor, it offers the following features:
 combinations to perform Cargo tasks within Rust projects.")
       (license license:gpl3+))))
 
-(define-deprecated/public emacs-cargo-el emacs-cargo
-  (deprecated-package "emacs-cargo-el" emacs-cargo))
+(define-deprecated-package emacs-cargo-el
+  emacs-cargo)
 
 (define-public emacs-ztree
   ;; Upstream provides no tag, but the commit below matches latest release.
@@ -35010,8 +35010,8 @@ It provides integration with multiple built-in modes, as well as providing an
 interface to attach and interact with the processes.")
     (license license:gpl3+)))
 
-(define-public emacs-dtache
-  (deprecated-package "emacs-dtache" emacs-detached))
+(define-deprecated-package emacs-dtache
+  emacs-detached)
 
 (define-public emacs-dtrt-indent
   (package
@@ -36397,8 +36397,8 @@ subsequent committal of a chain of @code{undo} commands as a single edit in
 the @code{undo} history.")
       (license license:gpl3+))))
 
-(define-deprecated/public emacs-undo-propose-el emacs-undo-propose
-  (deprecated-package "emacs-undo-propose-el" emacs-undo-propose))
+(define-deprecated-package emacs-undo-propose-el
+  emacs-undo-propose)
 
 (define-public emacs-elisp-docstring-mode
   (let ((commit "f512e509dd690f65133e55563ebbfd2dede5034f")
@@ -36543,8 +36543,8 @@ buffers.")
 JavaScript.")
     (license license:gpl3+)))
 
-(define-deprecated/public emacs-js2-refactor-el emacs-js2-refactor
-  (deprecated-package "emacs-js2-refactor-el" emacs-js2-refactor))
+(define-deprecated-package emacs-js2-refactor-el
+  emacs-js2-refactor)
 
 (define-public emacs-jsdoc
   (package
@@ -36692,8 +36692,8 @@ done using Helm, Ido or Ivy.")
 Lisp functions that call themselves in tail position.")
       (license license:gpl3+))))
 
-(define-deprecated/public emacs-tco-el emacs-tco
-  (deprecated-package "emacs-tco-el" emacs-tco))
+(define-deprecated-package emacs-tco-el
+  emacs-tco)
 
 (define-public emacs-equake
   ;; Upstream provides no tagged releases, but the commit below matches an
@@ -37016,8 +37016,8 @@ screensaver activation in EXWM.")
     (description "This package provides a GUI for defining and monitoring services.")
     (license license:gpl3+)))
 
-(define-public emacs-prodigy-el
-  (deprecated-package "emacs-prodigy-el" emacs-prodigy))
+(define-deprecated-package emacs-prodigy-el
+  emacs-prodigy)
 
 (define-public emacs-web-server
   (package
@@ -37206,8 +37206,8 @@ support JSX syntax.")
 expanding regions of text without modifying the actual contents.")
       (license license:expat))))
 
-(define-deprecated/public emacs-origami-el emacs-origami
-  (deprecated-package "emacs-origami-el" emacs-origami))
+(define-deprecated-package emacs-origami-el
+  emacs-origami)
 
 (define-public emacs-peep-dired
   (let ((commit "c88a9a3050197840edfe145f11e0bb9488de32f4")
@@ -37597,16 +37597,16 @@ all of your projects, then override or add variables on a per-project basis.")
 user interfaces for various built-in modes.")
     (license license:gpl3+)))
 
-(define-public emacs-casual-calc
-  (deprecated-package "emacs-casual-calc" emacs-casual))
-(define-public emacs-casual-dired
-  (deprecated-package "emacs-casual-dired" emacs-casual))
-(define-public emacs-casual-info
-  (deprecated-package "emacs-casual-info" emacs-casual))
-(define-public emacs-casual-lib
-  (deprecated-package "emacs-casual-lib" emacs-casual))
-(define-public emacs-casual-avy
-  (deprecated-package "emacs-casual-avy" emacs-casual))
+(define-deprecated-package emacs-casual-calc
+  emacs-casual)
+(define-deprecated-package emacs-casual-dired
+  emacs-casual)
+(define-deprecated-package emacs-casual-info
+  emacs-casual)
+(define-deprecated-package emacs-casual-lib
+  emacs-casual)
+(define-deprecated-package emacs-casual-avy
+  emacs-casual)
 
 (define-public emacs-calibredb
   (package
@@ -37883,8 +37883,8 @@ needing to write the result into the buffer.")
 well as an option for visually flashing evaluated s-expressions.")
     (license license:gpl3+)))
 
-(define-deprecated/public emacs-eval-sexp-fu-el emacs-eval-sexp-fu
-  (deprecated-package "emacs-eval-sexp-fu-el" emacs-eval-sexp-fu))
+(define-deprecated-package emacs-eval-sexp-fu-el
+  emacs-eval-sexp-fu)
 
 (define-public emacs-counsel-tramp
   (package
@@ -38165,8 +38165,8 @@ functions (e.g. @code{webfeeder-title-function}).")
 end of a line and increment or decrement it.")
       (license license:gpl3+))))
 
-(define-public emacs-janpath-evil-numbers
-  (deprecated-package "emacs-janpath-evil-numbers" emacs-evil-numbers))
+(define-deprecated-package emacs-janpath-evil-numbers
+  emacs-evil-numbers)
 
 (define-public emacs-rotate-text
   (package
@@ -43570,8 +43570,8 @@ supports Japanese and has the following features:
 @end itemize\n")
     (license license:gpl2+)))
 
-(define-deprecated/public emacs-spamfilter-el emacs-spamfilter
-  (deprecated-package "emacs-spamfilter-el" emacs-spamfilter))
+(define-deprecated-package emacs-spamfilter-el
+  emacs-spamfilter)
 
 (define-public emacs-promise
   ;; XXX: Last stable release fails to build with "(wrong-number-of-arguments
@@ -44737,8 +44737,8 @@ with the ed editor.")
 audio volume via amixer.")
     (license license:gpl3+)))
 
-(define-deprecated/public emacs-alsamixer-el emacs-alsamixer
-  (deprecated-package "emacs-alsamixer-el" emacs-alsamixer))
+(define-deprecated-package emacs-alsamixer-el
+  emacs-alsamixer)
 
 (define-public emacs-fennel-mode
   (package
@@ -44935,8 +44935,8 @@ on the chosen style."))))
 hacker.")
       (license license:expat))))
 
-(define-deprecated/public emacs-straight-el emacs-straight
-  (deprecated-package "emacs-straight-el" emacs-straight))
+(define-deprecated-package emacs-straight-el
+  emacs-straight)
 
 (define-public emacs-osm
   (package

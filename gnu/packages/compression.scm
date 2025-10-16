@@ -2437,8 +2437,8 @@ with @code{deflate} but offers more dense compression.
 The specification of the Brotli Compressed Data Format is defined in RFC 7932.")
     (license license:expat)))
 
-(define-public google-brotli
-  (deprecated-package "google-brotli" brotli))
+(define-deprecated-package google-brotli
+  brotli)
 
 (define-public java-brotli
   (package

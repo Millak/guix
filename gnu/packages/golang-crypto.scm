@@ -3165,8 +3165,8 @@ Go.")
                     "\nThis package provides a command line interface (CLI)
 tools."))))
 
-(define-public age-keygen
-  (deprecated-package "age-keygen" age))
+(define-deprecated-package age-keygen
+  age)
 
 (define-public go-imohash
   (package/inherit go-github-com-kalafut-imohash

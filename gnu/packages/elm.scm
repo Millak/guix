@@ -174,8 +174,8 @@ such as @command{elm make} and @command{elm repl}.")
     (license license:bsd-3)))
 
 ;; The 'elm' package used to be called 'elm-compiler'.
-(define-public elm-compiler
-  (deprecated-package "elm-compiler" elm))
+(define-deprecated-package elm-compiler
+  elm)
 
 (define-public elm-core
   (package

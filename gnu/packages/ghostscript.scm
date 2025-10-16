@@ -408,8 +408,8 @@ Ghostscript.  It currently includes the 35 standard PostScript fonts.")
    (license license:gpl2)
    (home-page "https://sourceforge.net/projects/gs-fonts/")))
 
-(define-public gs-fonts
-  (deprecated-package "gs-fonts" font-ghostscript))
+(define-deprecated-package gs-fonts
+  font-ghostscript)
 
 (define-public libspectre
   (package

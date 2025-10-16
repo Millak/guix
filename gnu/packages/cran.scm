@@ -39633,8 +39633,8 @@ integrative non-negative matrix factorization to identify shared and
 dataset-specific factors.")
     (license license:gpl3)))
 
-(define-public r-liger
-  (deprecated-package "r-liger" r-rliger))
+(define-deprecated-package r-liger
+  r-rliger)
 
 (define-public r-harmony
   (package
@@ -50195,8 +50195,8 @@ other R users.")
     (license license:gpl3)))
 
 ;; This is for r-seurat5
-(define-public r-seurat5object
-  (deprecated-package "r-seurat5object" r-seuratobject))
+(define-deprecated-package r-seurat5object
+  r-seuratobject)
 
 (define-public r-seurat
   (package
@@ -50276,8 +50276,8 @@ discovery of differentially expressed genes and markers.")
 
 ;; Seurat5 is only available via the seurat5 branch.  It will replace r-seurat
 ;; eventually once it has been released to CRAN.
-(define-public r-seurat5
-  (deprecated-package "r-seurat5" r-seurat))
+(define-deprecated-package r-seurat5
+  r-seurat)
 
 (define-public r-seuratdisk
   (let ((commit "877d4e18ab38c686f5db54f8cd290274ccdbe295")

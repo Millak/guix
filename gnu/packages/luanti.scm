@@ -213,8 +213,8 @@ new features.")
       (license license:lgpl2.1+))))
 
 ;; This package is deprecated. "Minetest Game" is no longer the official game.
-(define-public minetest-data
-  (deprecated-package "minetest-data" minetest-game))
+(define-deprecated-package minetest-data
+  minetest-game)
 
 (define-public (luanti-topic topic-id)
   "Return an URL (as a string) pointing to the forum topic with
@@ -482,8 +482,8 @@ Minecraft, pushing beyond.")
     (home-page "https://content.luanti.org/packages/Wuzzy/mineclone2/")
     (license license:gpl3+)))
 
-(define-public luanti-mineclone
-  (deprecated-package "luanti-mineclone" luanti-voxelibre))
+(define-deprecated-package luanti-mineclone
+  luanti-voxelibre)
 
 (define-public luanti-mobs
   (package

@@ -7726,8 +7726,8 @@ documents and fragments.  It's built on top of Nokogiri and libxml2.")
     (license license:expat)))
 
 ;;; The ruby-nokogumbo package has been absorbed into ruby-nokogiri.
-(define-public ruby-nokogumbo
-  (deprecated-package "ruby-nokogumbo" ruby-nokogiri))
+(define-deprecated-package ruby-nokogumbo
+  ruby-nokogiri)
 
 (define-public ruby-samovar
   (package
@@ -12037,8 +12037,8 @@ patterns.")
 ;;; The 'gem' is called 'concurrent-ruby'; reversing its name was confusing
 ;;; and failed to be picked by the gem importer (which led to this newer
 ;;; package).
-(define-public ruby-concurrent
-  (deprecated-package "ruby-concurrent" ruby-concurrent-ruby))
+(define-deprecated-package ruby-concurrent
+  ruby-concurrent-ruby)
 
 (define-public ruby-concurrent-ruby-ext
   (package

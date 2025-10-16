@@ -1033,10 +1033,10 @@ scripts and YSH is a legacy-free shell, with structured data for Python and
 JavaScript users who avoid shell.")
     (license (list license:asl2.0))))
 
-(define-public oil
-  ;; Since release 0.16.0 the former Oil project has been renamed to Oils:
-  ;; <https://www.oilshell.org/blog/2023/03/rename.html>.
-  (deprecated-package "oil" oils))
+;; Since release 0.16.0 the former Oil project has been renamed to Oils:
+;; <https://www.oilshell.org/blog/2023/03/rename.html>.
+(define-deprecated-package oil
+  oils)
 
 (define-public gash
   (package

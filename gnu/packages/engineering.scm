@@ -3818,10 +3818,10 @@ executables, shared libraries and core dumps.  It supports many architectures
 and extensions.")
     (license license:gpl3+)))
 
-(define-public emacs-poke
-  ;; The 'emacs-poke' name may eventually refer to 'poke' from ELPA, which is
-  ;; a different beast.
-  (deprecated-package "emacs-poke" poke))
+;; The 'emacs-poke' name may eventually refer to 'poke' from ELPA, which is
+;; a different beast.
+(define-deprecated-package emacs-poke
+  poke)
 
 (define-public pcb2gcode
   ;; XXX: The latest release was on <2022-09-12>, but master branch contains a

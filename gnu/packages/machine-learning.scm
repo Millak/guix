@@ -1703,11 +1703,11 @@ an extensible computation graph model, as well as definitions of built-in
 operators and standard data types.")
     (license license:expat)))
 
-(define-public python-onnx
-  ;; This used to be called "python-onnx" because it provided nothing but
-  ;; Python bindings.  The package now provides shared libraries and C++
-  ;; headers, hence the name change.
-  (deprecated-package "python-onnx" onnx))
+;; This used to be called "python-onnx" because it provided nothing but
+;; Python bindings.  The package now provides shared libraries and C++
+;; headers, hence the name change.
+(define-deprecated-package python-onnx
+  onnx)
 
 (define-public onnx-optimizer
   (package

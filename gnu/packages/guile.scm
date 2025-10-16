@@ -902,9 +902,9 @@ manipulate repositories of the Git version control system.")
 (define-public guile2.2-git
   (package-for-guile-2.2 guile-git))
 
-(define-public guile2.0-git
-  ;; Guile-Git 0.8.0 no longer supports Guile 2.0.
-  (deprecated-package "guile2.0-git" guile2.2-git))
+;; Guile-Git 0.8.0 no longer supports Guile 2.0.
+(define-deprecated-package guile2.0-git
+  guile2.2-git)
 
 (define-public guile-zlib
   (package

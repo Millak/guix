@@ -1321,8 +1321,8 @@ and OpenPGP) and available in 29 languages.")
     (home-page "https://gajim.org/")
     (license license:gpl3)))
 
-(define-public gajim-omemo
-  (deprecated-package "gajim-omemo" gajim))
+(define-deprecated-package gajim-omemo
+  gajim)
 
 (define-public gajim-openpgp
   (package
@@ -3078,8 +3078,8 @@ social and chat platform.")
 designed for experienced users.")
     (license license:gpl2+)))
 
-(define-public psi
-  (deprecated-package "psi" psi-plus))
+(define-deprecated-package psi
+  psi-plus)
 
 (define-public python-zulip
   (package

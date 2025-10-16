@@ -923,8 +923,8 @@ which will be used as a snippet in origin."
                      '("extension_wikilink.txt" "spec.txt" "tags.txt")))
          #$(tree-sitter-delete-generated-files grammar-directories)))))
 
-(define-public tree-sitter-markdown-gfm
-  (deprecated-package "tree-sitter-markdown-gfm" tree-sitter-markdown))
+(define-deprecated-package tree-sitter-markdown-gfm
+  tree-sitter-markdown)
 
 (define-public tree-sitter-matlab
   (tree-sitter-grammar

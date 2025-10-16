@@ -328,5 +328,5 @@ Python code natively, including C extensions.")
      (modify-inputs (package-inputs pypy2)
        (append xz)))))
 
-(define-public pypy3
-  (deprecated-package "pypy3" pypy))
+(define-deprecated-package pypy3
+  pypy)

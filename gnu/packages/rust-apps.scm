@@ -1021,8 +1021,8 @@ metadata.  It also knows about symlinks, extended attributes, and Git.
 This package is the community maintained fork of @code{exa}.")
     (license license:eupl1.2)))
 
-(define-public exa
-  (deprecated-package "exa" eza))
+(define-deprecated-package exa
+  eza)
 
 (define-public fclones
   (package
@@ -4008,8 +4008,8 @@ and users are in full control of their data and workflow.")
      (substitute-keyword-arguments (package-arguments rust-xremap)
        ((#:features _) '(list "hyprland"))))))
 
-(define-public xremap-sway
-  (deprecated-package "xremap-sway" xremap-wlroots))
+(define-deprecated-package xremap-sway
+  xremap-wlroots)
 
 (define-public xremap-x11
   (package

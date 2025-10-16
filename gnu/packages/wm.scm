@@ -580,8 +580,8 @@ many programming languages.")
        (release-monitoring-url . "https://i3wm.org/downloads")))
     (license license:bsd-3)))
 
-(define-public i3-gaps
-  (deprecated-package "i3-gaps" i3-wm))
+(define-deprecated-package i3-gaps
+  i3-wm)
 
 (define-public i3ipc-glib
   (package
@@ -1822,8 +1822,8 @@ Keybinder works with GTK-based applications using the X Window System.")
     (home-page "https://github.com/kupferlauncher/keybinder")
     (license license:x11)))
 
-(define-public keybinder-3.0
-  (deprecated-package "keybinder-3.0" keybinder))
+(define-deprecated-package keybinder-3.0
+  keybinder)
 
 (define-public sandbar
   (package

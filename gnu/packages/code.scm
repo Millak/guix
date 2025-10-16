@@ -1134,5 +1134,5 @@ requirements is not met.")
     (properties '((lint-hidden-cpe-vendors . ("vmware"))))
     (license license:expat)))
 
-(define-public python-xenon
-  (deprecated-package "python-xenon" xenon))
+(define-deprecated-package python-xenon
+  xenon)

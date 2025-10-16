@@ -2295,8 +2295,8 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-pocket-reform.dtb")))))))))))
                       `(("CONFIG_OVERLAY_FS" . m))
                       (default-extra-linux-options linux-libre-version))))
 
-(define-public linux-libre-with-bpf
-  (deprecated-package "linux-libre-with-bpf" linux-libre))
+(define-deprecated-package linux-libre-with-bpf
+  linux-libre)
 
 
 ;;;
@@ -12177,8 +12177,8 @@ suggestions from various sources, including:
 This tool supports checking Kconfig options and kernel cmdline parameters.")
     (license license:gpl3)))
 
-(define-public kconfig-hardened-check
-  (deprecated-package "kconfig-hardened-check" kernel-hardening-checker))
+(define-deprecated-package kconfig-hardened-check
+  kernel-hardening-checker)
 
 (define-public firejail
   (package

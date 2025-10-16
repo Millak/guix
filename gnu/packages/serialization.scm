@@ -211,8 +211,8 @@ serialization.")))
 
 ;;; The msgpack package was split into msgpack-c and msgpack-cxx starting from
 ;;; version 4.0.0.
-(define-public msgpack
-  (deprecated-package "msgpack" msgpack-c))
+(define-deprecated-package msgpack
+  msgpack-c)
 
 (define-public msgpack-3
   (package

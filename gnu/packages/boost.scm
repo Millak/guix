@@ -226,8 +226,8 @@ across a broad spectrum of applications.")
                (base32
                 "13iviiwk1srpw9dmiwabkxv56v0pl0zggjp8zxy1419k5zzfsy34")))))))
 
-(define-public boost-with-python3
-  (deprecated-package "boost-with-python3" boost))
+(define-deprecated-package boost-with-python3
+  boost)
 
 (define-public boost-static
   (package

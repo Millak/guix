@@ -1263,8 +1263,8 @@ data transfer object.")
 intuitive syntax and trivial integration.")
     (license license:expat)))
 
-(define-public json-modern-cxx
-  (deprecated-package "json-modern-cxx" nlohmann-json))
+(define-deprecated-package json-modern-cxx
+  nlohmann-json)
 
 (define-public jthread
   (let ((commit "0fa8d394254886c555d6faccd0a3de819b7d47f8")

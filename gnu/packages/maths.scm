@@ -2185,8 +2185,8 @@ extremely large and complex data collections.")
 Interface to wrap the HDF5 library, which is implemented in C.")
     (license (package-license hdf5))))
 
-(define-public hdf-java
-  (deprecated-package "hdf-java" hdf5-java))
+(define-deprecated-package hdf-java
+  hdf5-java)
 
 (define-public hdf-eos2
   (package

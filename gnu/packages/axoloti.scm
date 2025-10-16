@@ -662,5 +662,5 @@ with some layout changes and added features.
 
 This package provides the patcher application.")))
 
-(define-public axoloti-patcher-next
-  (deprecated-package "axoloti-patcher-next" ksoloti-patcher))
+(define-deprecated-package axoloti-patcher-next
+  ksoloti-patcher)

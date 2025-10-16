@@ -304,8 +304,8 @@ sharing.")
     (license license:gpl2)))
 
 ;; Added on 2025-09-24.
-(define-public barrier
-  (deprecated-package "barrier" deskflow))
+(define-deprecated-package barrier
+  deskflow)
 
 (define-public hw-probe
   (package

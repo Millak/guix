@@ -309,8 +309,8 @@ of performance metrics for parallel programs including MPI and OpenMP
 applications.  CubeGUI is the graphical explorer of the CUBE project.")))
 
 ;; deprecated on 2025-09-22
-(define-public cube
-  (deprecated-package "cube" cubegui))
+(define-deprecated-package cube
+  cubegui)
 
 (define-public tracy-wayland
   (package

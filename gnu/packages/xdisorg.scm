@@ -2310,8 +2310,8 @@ applications you regularly use and also allows you to search for an application
 by name.")
     (license license:expat)))
 
-(define-public rofi-wayland
-  (deprecated-package "rofi-wayland" rofi))
+(define-deprecated-package rofi-wayland
+  rofi)
 
 (define-public rofi-calc
   (package

@@ -14136,12 +14136,10 @@ protocol.")
 and concepts from Philipp Winter's ScrambleSuit protocol.")
     (license (list license:bsd-2 license:bsd-3))))
 
-(define-public go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
-  ;; This is a final command, no need for a full name of the go.mod module path
-  ;; style. The same is suggested in project's README and Makefile.
-  (deprecated-package
-   "go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird"
-   lyrebird))
+;; This is a final command, no need for a full name of the go.mod module path
+;; style. The same is suggested in project's README and Makefile.
+(define-deprecated-package go-gitlab-torproject-org-tpo-anti-censorship-pluggable-transports-lyrebird
+  lyrebird)
 
 (define-public go-jose-util
   (package

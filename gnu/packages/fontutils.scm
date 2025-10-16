@@ -1184,8 +1184,8 @@ stroke fonts with C++11/Qt.")
     ;; Dual-licensed, either license applies.
     (license (list license:asl2.0 license:expat))))
 
-(define-public fontobene-qt5
-  (deprecated-package "fontobene-qt5" fontobene-qt))
+(define-deprecated-package fontobene-qt5
+  fontobene-qt)
 
 (define-public ttfautohint
   (package

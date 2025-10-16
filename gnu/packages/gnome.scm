@@ -2967,8 +2967,8 @@ GNOME and KDE desktops to the icon names proposed in the specification.")
     (description "Icons for the GNOME desktop.")
     (license license:lgpl3))) ; or Creative Commons BY-SA 3.0
 
-(define-public gnome-icon-theme
-  (deprecated-package "gnome-icon-theme" adwaita-icon-theme))
+(define-deprecated-package gnome-icon-theme
+  adwaita-icon-theme)
 
 (define-public tango-icon-theme
   (package
@@ -7406,8 +7406,8 @@ programs via D-Bus.  It also ships a library for integration into development
 environments.")
     (license license:gpl2+)))
 
-(define-public d-feet
-  (deprecated-package "d-feet" d-spy))
+(define-deprecated-package d-feet
+  d-spy)
 
 (define-public yelp-xsl
   (package
@@ -10617,8 +10617,8 @@ Aegis (encrypted / plain-text), andOTP, Google Authenticator
 @end itemize")
     (license license:gpl3+)))
 
-(define-public authenticator
-  (deprecated-package "authenticator" gnome-authenticator))
+(define-deprecated-package authenticator
+  gnome-authenticator)
 
 (define-public gsound
   (package
@@ -11909,8 +11909,8 @@ format.  It integrates perfectly with the GNOME desktop and provides an easy
 and uncluttered interface for the management of password databases.")
     (license license:gpl3+)))
 
-(define-public passwordsafe
-  (deprecated-package "passwordsafe" secrets))
+(define-deprecated-package passwordsafe
+  secrets)
 
 (define-public sound-juicer
   (package
@@ -12673,8 +12673,8 @@ versions of Adwaita, Adwaita-dark and HighContrast themes.  It also provides
 index files needed for Adwaita to be used outside of GNOME.")
     (license license:lgpl2.1+)))
 
-(define-public gnome-themes-standard
-  (deprecated-package "gnome-themes-standard" gnome-themes-extra))
+(define-deprecated-package gnome-themes-standard
+  gnome-themes-extra)
 
 (define-public gnote
   (package

@@ -1456,8 +1456,8 @@ It uses a plain-text database, a location-independent library, and features
 git integration, command-line support, and a curses-based TUI.")
     (license license:expat)))
 
-(define-public python-cobib
-  (deprecated-package "python-cobib" cobib))
+(define-deprecated-package python-cobib
+  cobib)
 
 (define-public bibutils
   (package

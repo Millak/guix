@@ -6166,8 +6166,8 @@ services using the XML based SOAP protocol and without the need for a dedicated
 web server.")
       (license (list license:gpl2 license:gpl3)))))
 
-(define-public kdsoap-qt6
-  (deprecated-package "kdsoap-qt6" kdsoap))
+(define-deprecated-package kdsoap-qt6
+  kdsoap)
 
 (define-public libaccounts-qt
   (package

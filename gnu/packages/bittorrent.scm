@@ -564,8 +564,8 @@ features.")
        (modify-inputs (package-inputs base)
          (delete "qtsvg"))))))
 
-(define-public qbittorrent-nox
-  (deprecated-package "qbittorrent-nox" qbittorrent-no-x))
+(define-deprecated-package qbittorrent-nox
+  qbittorrent-no-x)
 
 (define-public qbittorrent-enhanced
   (package
@@ -602,8 +602,8 @@ the following features:
     (arguments (package-arguments qbittorrent-no-x))
     (inputs (package-inputs qbittorrent-no-x))))
 
-(define-public qbittorrent-enhanced-nox
-  (deprecated-package "qbittorrent-enhanced-nox" qbittorrent-enhanced-no-x))
+(define-deprecated-package qbittorrent-enhanced-nox
+  qbittorrent-enhanced-no-x)
 
 (define-public deluge
   (package

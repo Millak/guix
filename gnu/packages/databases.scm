@@ -2085,8 +2085,8 @@ supports editing, navigation, and querying of recutils database files
 including field and record folding.")
     (license license:gpl3+)))
 
-(define-public emacs-recutils
-  (deprecated-package "emacs-recutils" emacs-rec-mode))
+(define-deprecated-package emacs-recutils
+  emacs-rec-mode)
 
 (define-public rocksdb
   (package
@@ -5038,8 +5038,8 @@ reasonable substitute.")
      "This package provides a Python interface to the Redis key-value store.")
     (license license:expat)))
 
-(define-public python-aioredis
-  (deprecated-package "python-aioredis" python-redis))
+(define-deprecated-package python-aioredis
+  python-redis)
 
 (define-public python-rq
   (package

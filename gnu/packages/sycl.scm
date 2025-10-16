@@ -99,5 +99,5 @@ for CPUs and GPUs from all vendors, with independent, community-driven
 compiler for C++-based heterogeneous programming models")
     (license license:bsd-2)))
 
-(define-public opensycl
-  (deprecated-package "opensycl" adaptivecpp))
+(define-deprecated-package opensycl
+  adaptivecpp)

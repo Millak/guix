@@ -1367,8 +1367,8 @@ API.")
     (home-page "https://matrix.org/docs/projects/other/olm/")
     (license license:asl2.0)))
 
-(define-public libolm
-  (deprecated-package "libolm" olm))
+(define-deprecated-package libolm
+  olm)
 
 (define-public python-olm
   (package

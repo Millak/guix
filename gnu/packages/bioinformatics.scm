@@ -2900,8 +2900,8 @@ biological activities from omics data within a unified framework.")
     (license license:bsd-3)))
 
 ;; See: <https://github.com/scverse/decoupler/blob/main/CHANGELOG.md#200>
-(define-public python-decoupler-py
-  (deprecated-package "python-decoupler-py" python-decoupler))
+(define-deprecated-package python-decoupler-py
+  python-decoupler)
 
 (define-public python-demuxem
   (package
@@ -6027,8 +6027,8 @@ subgroups.")
     (description "muon is a multimodal omics Python framework.")
     (license license:bsd-3)))
 
-(define-public python-pyega3
-  (deprecated-package "python-pyega3" python-ega-download-client))
+(define-deprecated-package python-pyega3
+  python-ega-download-client)
 
 (define-public python-pysam
   (package
@@ -17388,8 +17388,8 @@ lowly expressed transcripts.")
 mapped paired-end sequencing reads.")
     (license license:gpl3+)))
 
-(define-public fanc
-  (deprecated-package "fanc" python-fanc))
+(define-deprecated-package fanc
+  python-fanc)
 
 (define-public python-genomic-regions
   (package
@@ -18641,8 +18641,8 @@ report will provide an intuitive visual overview about the development of
 variant abundance over time and location.")
     (license license:gpl3+)))
 
-(define-public pigx-sars-cov2-ww
-  (deprecated-package "pigx-sars-cov2-ww" pigx-sars-cov-2))
+(define-deprecated-package pigx-sars-cov2-ww
+  pigx-sars-cov-2)
 
 (define-public pigx
   (package
