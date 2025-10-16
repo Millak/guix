@@ -632,9 +632,10 @@ in the style of communicating sequential processes (@dfn{CSP}).")
      ;; as well as the upstream discussion of this topic:
      ;; https://go.dev/issue/44505
      ;; We continue to use gccgo-12 since it provides go-1.18.
+     ;; We remove gold since it causes test failures on aarch64-linux.
      (if (member (%current-system) (package-supported-systems go-1.4))
          (alist-replace "go" (list go-1.17) (package-native-inputs go-1.17))
-         (package-native-inputs go-1.17)))
+         (alist-delete "gold" (package-native-inputs go-1.17))))
     (properties
      `((compiler-cpu-architectures
          ("armhf" ,@%go-1.17-arm-micro-architectures)
