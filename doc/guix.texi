@@ -5832,6 +5832,7 @@ Voilà!
 @c What follows stems from discussions at
 @c <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=22629#134> as well as
 @c earlier discussions on guix-devel@gnu.org.
+@c Updated in 2025 to refer to the Deprecation Policy.
 @quotation Warning
 Before you publish your channel, we would like to share a few words of
 caution:
@@ -5846,10 +5847,10 @@ process.
 
 @item
 Package modules and package definitions are Scheme code that uses
-various programming interfaces (APIs).  We, Guix developers, never
-change APIs gratuitously, but we do @emph{not} commit to freezing APIs
-either.  When you maintain package definitions outside Guix, we consider
-that @emph{the compatibility burden is on you}.
+various programming interfaces (APIs).  Those may occasionally change,
+in accordance with our deprecation policy (@pxref{Deprecation Policy}),
+and it is your responsibility as a channel author to adjust your code
+accordingly.
 
 @item
 Corollary: if you're using an external channel and that channel breaks, please
