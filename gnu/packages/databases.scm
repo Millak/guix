@@ -3933,6 +3933,32 @@ engraved in its design that you are working not with just tables, you work
 with relational data.")
     (license license:asl2.0)))
 
+(define-public python-tortoise-vector
+  (package
+    (name "python-tortoise-vector")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tortoise_vector" version))
+       (sha256
+        (base32 "09607748biibqs5d7q186x09jcpm0126qmvzqnd80yfmiif2ls97"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests
+    (native-inputs
+     (list python-poetry-core
+           python-poetry-dynamic-versioning))
+    (propagated-inputs
+     (list python-tortoise-orm))
+    (home-page "https://github.com/Chr0nos/tortoise_vector")
+    (synopsis "Tortoise-ORM pgvector implementation")
+    (description
+     "This package adds the support of @code{pgvector} vectors to
+Tortoise-ORM as a new type of fields, it helps to filter/order by cosine
+similarity distances for scementic search using embeddings.")
+    (license license:expat)))
+
 (define-public aerich
   (package
     (name "aerich")
