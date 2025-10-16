@@ -6814,7 +6814,7 @@ default and preferred audio driver but also supports native drivers like ALSA.")
      (list cmake-minimal pkg-config))
     (inputs
      (list bash-minimal
-           asio
+           asio-1.28
            bitsery
            clap-1.1
            dbus
