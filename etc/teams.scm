@@ -326,6 +326,12 @@ PARAMETERS."
        "members" user)
   => 204)
 
+(define-forgejo-request (remove-team-member team user)
+  "Remove USER (a string) from TEAM, a Forgejo team."
+  (DELETE "teams" (number->string (forgejo-team-id team))
+          "members" user)
+  => 204)
+
 (define-forgejo-request (repository-teams owner repository)
   "Return the list of teams assigned to REPOSITORY of OWNER."
   (GET "repos" owner repository "teams"
@@ -372,7 +378,8 @@ PARAMETERS."
               to-add)
     (for-each (lambda (user)
                 (format log-port "removing '~a' from team '~a'~%"
-                        user (forgejo-team-name forgejo-team)))
+                        user (forgejo-team-name forgejo-team))
+                (remove-team-member token forgejo-team user))
               to-remove)))
 
 (define* (synchronize-team token team
