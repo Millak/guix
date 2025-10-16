@@ -322,13 +322,15 @@
                                         (lookup-platform-by-target-or-system
                                           (or (%current-target-system)
                                               (%current-system)))) "/lib")))
-               (mkdir-p (dirname rustc))
-               (copy-file "run_rustc/output/prefix/bin/rustc_binary" rustc)
-               (wrap-program rustc
-                 `("LD_LIBRARY_PATH" = (,system-lib-prefix)))
-               (mkdir-p lib)
-               (copy-recursively "run_rustc/output/prefix/lib" lib)
-               (install-file "run_rustc/output/prefix/bin/cargo" cargo-bin)))))))
+               (with-directory-excursion "run_rustc/output/prefix"
+                 (mkdir-p (dirname rustc))
+                 (copy-file "bin/rustc_binary" rustc)
+
+                 (wrap-program rustc
+                   `("LD_LIBRARY_PATH" = (,system-lib-prefix)))
+                 (mkdir-p lib)
+                 (copy-recursively "lib" lib)
+                 (install-file "bin/cargo" cargo-bin))))))))
     (synopsis "Compiler for the Rust programming language")
     (description "Rust is a systems programming language that provides memory
 safety and thread safety guarantees.")
@@ -506,13 +508,19 @@ safety and thread safety guarantees.")
                                         (lookup-platform-by-target-or-system
                                          (or (%current-target-system)
                                              (%current-system)))) "/lib")))
-                (mkdir-p (dirname rustc))
-                (copy-file "run_rustc/output/prefix/bin/rustc_binary" rustc)
-                (wrap-program rustc
-                  `("LD_LIBRARY_PATH" = (,system-lib-prefix)))
-                (mkdir-p lib)
-                (copy-recursively "run_rustc/output/prefix/lib" lib)
-                (install-file "run_rustc/output/prefix/bin/cargo" cargo-bin)))))))
+                (with-directory-excursion "run_rustc/output/prefix"
+                  ;; The .rmeta files of the bootstrap compiler are not meant
+                  ;; to be installed.
+                  (for-each delete-file (find-files "." "\\.rmeta$"))
+
+                  (mkdir-p (dirname rustc))
+                  (copy-file "bin/rustc_binary" rustc)
+
+                  (wrap-program rustc
+                    `("LD_LIBRARY_PATH" = (,system-lib-prefix)))
+                  (mkdir-p lib)
+                  (copy-recursively "lib" lib)
+                  (install-file "bin/cargo" cargo-bin))))))))
     (synopsis "Compiler for the Rust programming language")
     (description "Rust is a systems programming language that provides memory
 safety and thread safety guarantees.")
@@ -639,18 +647,30 @@ ar = \"" binutils "/bin/ar" "\"
                     (cargo-out (assoc-ref outputs "cargo"))
                     (build (string-append "build/"
                                           ,(platform-rust-target
-                                             (lookup-platform-by-target-or-system
-                                               (or (%current-target-system)
-                                                   (%current-system)))))))
+                                            (lookup-platform-by-target-or-system
+                                             (or (%current-target-system)
+                                                 (%current-system)))))))
                ;; Manually do the installation instead of calling './x.py
                ;; install', as that is slow and needlessly rebuilds some
                ;; things.
-               (install-file (string-append build "/stage1/bin/rustc")
-                             (string-append out "/bin"))
-               (copy-recursively (string-append build "/stage1/lib")
-                                 (string-append out "/lib"))
-               (install-file (string-append build "/stage1-tools-bin/cargo")
-                             (string-append cargo-out "/bin")))))
+
+               ;; TODO: Try reverting to use "./x.py install rustc std cargo"
+               ;; for Rust 1.91 and newer, which should no longer rebuild
+               ;; things unnecessarily.
+               (with-directory-excursion build
+                 (install-file "stage1/bin/rustc" (string-append out "/bin"))
+                 (install-file "stage1-tools-bin/cargo"
+                               (string-append cargo-out "/bin"))
+                 ;; Clean up some extraneous library files.  The .rmeta files
+                 ;; of the bootstrap compiler are not meant to be installed.
+                 (for-each delete-file (find-files "stage1/lib" "\\.rmeta$"))
+                 ;; This librustc_driver binary is internal and not supposed
+                 ;; to be installed.  It started causing issues with the build
+                 ;; around Rust 1.89.
+                 (for-each delete-file
+                           (find-files "stage1/lib/rustlib"
+                                       "^librustc_driver.*\\.so$"))
+                 (copy-recursively "stage1/lib" (string-append out "/lib"))))))
          (add-after 'install 'delete-install-logs
            (lambda* (#:key outputs #:allow-other-keys)
              (for-each (lambda (f)
@@ -681,7 +701,7 @@ ar = \"" binutils "/bin/ar" "\"
        ("openssl" ,openssl)))
     ;; rustc invokes gcc, so we need to set its search paths accordingly.
     (native-search-paths
-      %gcc-search-paths)
+     %gcc-search-paths)
     ;; Limit this to systems where the final rust compiler builds successfully.
     (supported-systems '("x86_64-linux" "aarch64-linux" "riscv64-linux"))
     (synopsis "Compiler for the Rust programming language")
@@ -1079,7 +1099,8 @@ safety and thread safety guarantees.")
          (package-arguments base-rust))))))
 
 (define-public rust-1.75
-  (let ((base-rust (rust-bootstrapped-package rust-1.74 "1.75.0"
+  (let ((base-rust (rust-bootstrapped-package
+                    rust-1.74 "1.75.0"
                     "1260mf3066ki6y55pvr35lnf54am6z96a3ap3hniwd4xpi2rywsv")))
     (package
       (inherit base-rust)
@@ -1096,7 +1117,37 @@ safety and thread safety guarantees.")
                    (lambda _
                      (mkdir-p "/tmp/bin")
                      (symlink (which "gcc") "/tmp/bin/cc")
-                     (setenv "PATH" (string-append "/tmp/bin:" (getenv "PATH"))))))))
+                     (setenv "PATH" (string-append "/tmp/bin:" (getenv "PATH")))))
+                 (replace 'install
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (let* ((out (assoc-ref outputs "out"))
+                            (cargo-out (assoc-ref outputs "cargo"))
+                            (build (string-append "build/"
+                                                  ,(platform-rust-target
+                                                    (lookup-platform-by-target-or-system
+                                                     (or (%current-target-system)
+                                                         (%current-system)))))))
+                       ;; Manually do the installation instead of calling './x.py
+                       ;; install', as that is slow and needlessly rebuilds some
+                       ;; things.
+
+                       ;; TODO: Try reverting to use "./x.py install rustc std cargo"
+                       ;; for Rust 1.91 and newer, which should no longer rebuild
+                       ;; things unnecessarily.
+                       (with-directory-excursion build
+                         (install-file "stage1/bin/rustc" (string-append out "/bin"))
+                         (install-file "stage1-tools-bin/cargo"
+                                       (string-append cargo-out "/bin"))
+                         ;; Clean up some extraneous library files.  The .rmeta files
+                         ;; of the bootstrap compiler are not meant to be installed.
+                         (for-each delete-file (find-files "stage1/lib" "\\.rmeta$"))
+                         ;; This librustc_driver binary is internal and not supposed
+                         ;; to be installed.  It started causing issues with the build
+                         ;; around Rust 1.89.
+                         (for-each delete-file
+                                   (find-files "stage1/lib/rustlib"
+                                               "^librustc_driver.*\\.so$"))
+                         (copy-recursively "stage1/lib" (string-append out "/lib")))))))))
            (package-arguments base-rust)))
       (native-inputs
        (if (supported-package? rust-bootstrap-1.74)
