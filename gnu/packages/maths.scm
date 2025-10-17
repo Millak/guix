@@ -169,6 +169,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages parallel)
@@ -2361,6 +2362,45 @@ Swath).")
 installing this filter, you can read and write HDF5 files with
 Blosc-compressed datasets.")
     (license license:expat)))
+
+(define-public highfive
+  (package
+    (name "highfive")
+    (version "2.10.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/BlueBrain/HighFive")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yp9bah6prhy31p2xbj4yv7p0p1k0ifjhb0z9i36ki3zx5nsgzrn"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DHIGHFIVE_EXAMPLES=OFF"
+              ;; TODO: maybe build with hdf5-parallel-openmpi
+              ;; "-DHIGHFIVE_PARALLEL_HDF5=ON"
+              "-DHIGHFIVE_UNIT_TESTS=ON"
+              "-GNinja")))
+    (native-inputs
+     (list boost
+           catch2-3
+           ninja))
+    (inputs
+     (list hdf5))
+    (home-page "https://bluebrain.github.io/HighFive/")
+    (synopsis "Header-only C++ HDF5 interface")
+    (description
+     "HighFive is a header-only C++11 friendly interface for @code{libhdf5}.
+ It supports STL vector/string, @code{Boost::UBLAS}, @code{Boost::Multi-array}
+and Xtensor; and handles C++ from/to HDF5 with automatic type
+mapping. HighFive does not require additional libraries.")
+    ;; Boost Software License (BSL) - Version 1.0 - August 17th, 2003
+    (license (license:x11-style "https://www.boost.org/LICENSE_1_0.txt"
+                                "Some components have other similar licences."))))
 
 (define-public itex2mml
   (package
