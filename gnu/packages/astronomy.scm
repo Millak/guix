@@ -7032,13 +7032,13 @@ spectra, and data.")
 (define-public python-pyvo
   (package
     (name "python-pyvo")
-    (version "1.7")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyvo" version))
        (sha256
-        (base32 "0813ws6g6mns3g3k4xgj54pcp6hw42q47psm7q8jswqhskpxkym6"))))
+        (base32 "1zr1vwcpypr6hr9h02gprchrhcah1vffcxjvqg9xl2yxj48qzpa1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -7057,8 +7057,7 @@ spectra, and data.")
            python-pytest-doctestplus
            python-requests-mock
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-defusedxml ; extra requirements
