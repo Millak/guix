@@ -7427,17 +7427,17 @@ changing the pixel resolution, orientation, coordinate system.")
 (define-public python-roman-datamodels
   (package
     (name "python-roman-datamodels")
-    (version "0.27.0")
+    (version "0.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "roman_datamodels" version))
        (sha256
-        (base32 "1631jpv7mcrcka6bfxp04ih43wlm9pmqsqxckqyv6y9jgsipjxy3"))))
+        (base32 "0wfd3ggi23dd98qj3ks7fxr4dc01h2yrb082b51fdfasaaf29ws1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 4185 passed, 1 skipped, 1 xfailed
+      ;; tests: 4618 passed, 1 skipped, 11 xfailed
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count)))
       #:phases
@@ -7452,8 +7452,7 @@ changing the pixel resolution, orientation, coordinate system.")
            python-pytest-env
            python-pytest-xdist
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-asdf
            python-asdf-astropy
