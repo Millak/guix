@@ -3834,53 +3834,59 @@ Spectrograph}.")
 (define-public python-crds
   (package
     (name "python-crds")
-    (version "13.0.4")
+    (version "13.0.6")
+    ;; Git: <https://github.com/spacetelescope/crds>
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "crds" version))
        (sha256
-        (base32 "02901rqzvgd8ssw1rv3skinqbxp0nycwx75k7n3bn3fjyfn2g2zc"))))
+        (base32 "1i0si0z400grdwrkni8fcp58m8f8n2k18n319cwfdlasbw6r2pr5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 26 passed, 3 skipped
       #:test-flags
       ;; XXX: Tests require a complex set up and test data, try to run some
       ;; minimal portion of unit tests to persist package comparability during
-      ;; updates.
-      #~(map
-         (lambda (ignore) (format #f "--ignore=~a" ignore))
-         ;; Introduce cycle: python-crds -> python-stdatamodels -> python-crds
-         (list "test/bestrefs/test_bestrefs.py"
-               ;; Network is required to access <https://hst-crds.stsci.edu>.
-               "test/bestrefs/"
-               "test/submit/"
-               ;; XXX: Ignoring files which tests fail the most, maybe find a
-               ;; way how to enable/fix some of them.
-               "test/certify/test_certify.py"
-               "test/core/test_cmdline.py"
-               "test/core/test_heavy_client.py"
-               "test/core/test_reftypes.py"
-               "test/core/test_rmap.py"
-               "test/core/test_substitutions.py"
-               "test/misc/test_check_archive.py"
-               "test/misc/test_synphot.py"
-               "test/refactoring/test_refactor.py"
-               "test/roman/test_roman.py"
-               "test/test_bad_files.py"
-               "test/test_build6.py"
-               "test/test_diff.py"
-               "test/test_list.py"
-               "test/test_matches.py"
-               "test/test_rowdiff.py"
-               "test/test_sync.py"))))
+      ;; updates, see:
+      ;; <https://github.com/spacetelescope/crds/blob/13.0.6/TESTING>.
+      #~(list #$@(map (lambda (file) (string-append "--ignore=" file))
+                      ;; Network acces to <https://hst-crds.stsci.edu> or
+                      ;; additional test data is required.
+                      (list "test/bestrefs/test_bestrefs.py"
+                            "test/bestrefs/test_special.py"
+                            "test/bestrefs/test_table_effects.py"
+                            "test/certify/test_certify.py"
+                            "test/core/test_cmdline.py"
+                            "test/core/test_heavy_client.py"
+                            "test/core/test_reftypes.py"
+                            "test/core/test_rmap.py"
+                            "test/core/test_substitutions.py"
+                            "test/misc/test_check_archive.py"
+                            "test/misc/test_synphot.py"
+                            "test/misc/test_uniqname.py"
+                            "test/refactoring/test_checksum.py"
+                            "test/refactoring/test_newcontext.py"
+                            "test/refactoring/test_refactor.py"
+                            "test/roman/test_roman.py"
+                            "test/submit/test_submit.py"
+                            "test/test_bad_files.py"
+                            "test/test_build6.py"
+                            "test/test_diff.py"
+                            "test/test_list.py"
+                            "test/test_matches.py"
+                            "test/test_rowdiff.py"
+                            "test/test_sync.py")))))
     (native-inputs
      (list python-mock
            python-pytest
            python-pytest-astropy
            python-pytest-doctestplus
            python-setuptools
-           python-setuptools-scm))
+           python-setuptools-scm
+           python-stdatamodels-minimal
+           python-stsynphot))
     (propagated-inputs
      (list python-astropy
            python-numpy
