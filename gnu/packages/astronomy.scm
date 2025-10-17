@@ -8739,24 +8739,29 @@ Telescope Science Institute} image array manipulation functions.")
   (package
     (name "python-stsci-imagestats")
     (version "1.8.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "stsci.imagestats" version))
-              (sha256
-               (base32
-                "1nmya85bf2747c9ggya6my5b1slk6g2a7bk16rdv8r5a4ah9hda5"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stsci.imagestats" version))
+       (sha256
+        (base32 "1nmya85bf2747c9ggya6my5b1slk6g2a7bk16rdv8r5a4ah9hda5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list "--pyargs" "stsci.imagestats")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'build-extensions
+          (add-after 'unpack 'set-version
             (lambda _
-              ;; Cython extensions have to be built before running the tests.
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (propagated-inputs (list python-numpy))
-    (native-inputs (list python-pytest python-setuptools python-wheel
-                         python-setuptools-scm))
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                      #$(version-major+minor+point version)))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-numpy))
     (home-page "https://stsciimagestats.readthedocs.io/en/latest/")
     (synopsis "Compute sigma-clipped statistics on data arrays")
     (description
