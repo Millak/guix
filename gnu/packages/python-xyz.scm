@@ -35265,13 +35265,13 @@ spreadsheet), CSV, TSV, XLS, XLSX (Microsoft Excel spreadsheet), and YAML.")
 (define-public python-febelfin-coda
   (package
     (name "python-febelfin-coda")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "febelfin-coda" version))
        (sha256
-        (base32 "1isnf87gxlvfbmackv7b2c978vmnj7ij0v4svhyjl8pbb9hwjsvm"))))
+        (base32 "0qzv0irmpay2n46an0sa37c9kwy8108phij5ix6rkllrfjmqdpfw"))))
     (build-system python-build-system)
     (home-page "https://coda.b2ck.com/")
     (synopsis "Module to parse Belgian CODA files")
