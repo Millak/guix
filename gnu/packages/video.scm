@@ -4078,6 +4078,9 @@ be used for realtime video capture via Linux-specific APIs.")
                 "-DENABLE_AJA=OFF"
                 "-DENABLE_QSV11=OFF"
                 "-DENABLE_NVENC=OFF"
+                ;; <https://github.com/zaphoyd/websocketpp/issues/1157>
+                ;; Fix: <https://github.com/zaphoyd/websocketpp/pull/1164>
+                "-DENABLE_WEBSOCKET=OFF"
                 ;; Browser plugin requires cef, but it is not packaged yet.
                 ;; <https://bitbucket.org/chromiumembedded/cef/src/master/>
                 "-DBUILD_BROWSER=OFF"))
