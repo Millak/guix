@@ -14544,33 +14544,42 @@ profile, launches a cluster and returns a view.  On program exit it shuts the
 cluster down and deletes the throwaway profile.")
     (license license:expat)))
 
+;; TODO: Package python-jupysql which is the maintained fork of this one.
 (define-public python-ipython-sql
   (package
     (name "python-ipython-sql")
-    (version "0.4.1")
+    (properties '((commit . "e21bc64e172270311d9103602e1c2ec1bcdd5aa8")
+                  (revision . "0")))
+    (version (git-version "0.5.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ipython-sql" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/catherinedevlin/ipython-sql")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1r6rz8jgrqzhkf2flwjw75d96g8l7kykmx5wli3q1988w96391ip"))))
-    (build-system python-build-system)
+        (base32 "0palwgr7lnar8ykifzhf1qach206bf1xa1zkji2adk9pr9ajsiix"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f                  ;must run under IPython
+     (list #:tests? #f                  ;Fail because of prettytable.
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'permit-newer-prettytable
-                 ;; See https://github.com/catherinedevlin/ipython-sql/issues/202
-                 (lambda _
-                   (substitute* "setup.py"
-                     (("prettytable<1")
-                      "prettytable")))))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (setenv "HOME" (getcwd))
+                   (if tests?
+                       (invoke "ipython" "-c"
+                               "import pytest; pytest.main(['.'])")
+                       (format #t "test suite not run.~%")))))))
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-ipython
            python-ipython-genutils
            python-prettytable
-           python-six
-           python-sqlalchemy
+           python-sqlalchemy-2
            python-sqlparse))
     (home-page "https://github.com/catherinedevlin/ipython-sql")
     (synopsis "RDBMS access via IPython")
