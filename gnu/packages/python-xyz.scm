@@ -13976,9 +13976,13 @@ finding unresolved symbols in Python code and their corresponding imports.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1dv9svrcz31acyq9smjlnw75xv3x5wpn5h6s8j8h0vrqyl3d7l05"))))
-    (build-system python-build-system)
-    (home-page
-     "https://github.com/chrisjbillington/inotify_simple")
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "example.py")))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/chrisjbillington/inotify_simple")
     (synopsis "Simple wrapper around inotify library")
     (description
      "@code{inotify-simple} is a simple wrapper around inotify library.")
