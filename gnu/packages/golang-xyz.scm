@@ -24437,6 +24437,41 @@ recognizers) at run time.")
     (description "Package memory implements a memory allocator.")
     (license license:bsd-3)))
 
+(define-public go-modernc-org-libc
+  (package
+    (name "go-modernc-org-libc")
+    (version "1.66.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/cznic/libc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01xj0flqcy5sx75ddcgjvwilbi87gn9wy33k76p88m5f820ldf4d"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/libc"
+      ;; Tests require modernc.org/ccgo/v4/lib, which is not packaged yet
+      #:tests? #f))
+    (propagated-inputs
+     (list go-github-com-dustin-go-humanize
+           go-github-com-google-uuid
+           go-github-com-ncruces-go-strftime
+           go-github-com-remyoudompheng-bigfft
+           go-golang-org-x-exp
+           go-golang-org-x-sys
+           go-modernc-org-mathutil
+           go-modernc-org-memory))
+    (home-page "https://modernc.org/libc")
+    (synopsis "C standard library implementation in Go")
+    (description
+     "Package libc provides a C standard library implementation for use
+with ccgo-generated code.")
+    (license license:bsd-3)))
+
 (define-public go-modernc-org-opt
   (package
     (name "go-modernc-org-opt")
