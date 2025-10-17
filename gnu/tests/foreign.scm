@@ -299,12 +299,15 @@ script.")
   ;; using default mirror mentioned in README there.
   ;; XXX: These images are removed every ~90 days
   (origin
-    (uri "https://geo.mirror.pkgbuild.com/images/v20250615.366044/Arch-Linux-x86_64-basic.qcow2")
+    (uri "https://geo.mirror.pkgbuild.com/images/v20251015.435734/Arch-Linux-x86_64-basic.qcow2")
     (method url-fetch)
     (sha256
      (base32
-      "11m945cv5hgfa7zgkvd7fqgqfp3vdq3c4bdh3x0ilza36w5xcn1b"))))
+      "0mlvfsw9ak9b6cl5h0mhs90vqkqd3ha3lx4rv9xg2b510q6656li"))))
 
+;; This test starts failing when derivations in repo for GNU Hello and its dependencies
+;; differs from versions in current Guix package. The simple way to fix it is to update
+;; Guix package version.
 (define %test-archlinux-install
   (system-test
    (name "archlinux-install")
