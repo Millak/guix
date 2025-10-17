@@ -8582,6 +8582,17 @@ implemented in the @acronym{JWST, James Webb Space Telescope} and
 @acronym{Roman, Nancy Grace Roman Space Telescope} calibration software.")
     (license license:bsd-3)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure
+;; size. Tests are left out in the main package to slim down native-inputs.
+(define-public python-stdatamodels-minimal
+  (package/inherit python-stdatamodels
+    (name "python-stdatamodels-minimal")
+    (arguments
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm))))
+
 (define-public python-stpipe
   (package
     (name "python-stpipe")
