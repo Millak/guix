@@ -11755,7 +11755,7 @@ automatically and it can stream songs from online music services and charts.")
 (define-public gnome-video-effects
   (package
     (name "gnome-video-effects")
-    (version "0.5.0")
+    (version "0.6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -11763,7 +11763,7 @@ automatically and it can stream songs from online music services and charts.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1j6h98whgkcxrh30bwvnxvyqxrxchgpdgqhl0j71xz7x72dqxijd"))))
+                "1a68wf9f3z3ss6nwjam55hh60qccpx10png0n8pq6nizdfsaxbnp"))))
     (build-system meson-build-system)
     (native-inputs
      (list gettext-minimal pkg-config))
