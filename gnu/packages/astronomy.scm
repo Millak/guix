@@ -6620,6 +6620,49 @@ also transltes halo properties (mass, concentration, redshift, etc) into
 angular units for lensing computations with lenstronomy.")
     (license license:expat)))
 
+(define-public python-pyirf
+  (package
+    (name "python-pyirf")
+    (version "0.13.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyirf" version))
+       (sha256
+        (base32 "17z8czdqk6c742ww9274x9inx0q201908la0i27gv7r1496l0l0b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; It fails to load optional Gammapy, remove when it's packaged.
+      #:test-flags
+      #~(list "--ignore=pyirf/io/tests/test_gadf.py"
+              ;; fixture 'prod5_irfs' not found
+              "-k" (string-append "not test_EnergyDispersionEstimator"
+                                  " and not test_EffectiveAreaEstimator_prod5"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (delete-file "pyirf/conftest.py"))))))
+    (native-inputs
+     (list python-ogadf-schema
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy
+           ;; python-gammapy    ;not packaged yet in Guix
+           python-numpy
+           python-packaging
+           python-scipy
+           python-tqdm))
+    (home-page "https://github.com/cta-observatory/pyirf")
+    (synopsis "Python IRF builder")
+    (description
+     "This package provides a python library to calculate IACT IRFs
+and Sensitivities.")
+    (license license:expat)))
+
 (define-public python-pynbody
   (package
     (name "python-pynbody")
