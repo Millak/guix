@@ -250,10 +250,8 @@ cache) or a 'gc-root' key (to add the profile to cache)."
              stat
              (<= timestamp (stat:mtime stat)))
         (let ((now (current-time)))
-          ;; Update the atime on ROOT to reflect usage.
-          (utime root
-                 now (stat:mtime stat) 0 (stat:mtimensec stat)
-                 AT_SYMLINK_NOFOLLOW)
+          ;; Update the mtime on ROOT to reflect usage.
+          (utime root now now 0 0 AT_SYMLINK_NOFOLLOW)
           (alist-cons 'profile root
                       (remove (match-lambda
                                 (('load . _) #t)
@@ -566,11 +564,9 @@ concatenates MANIFESTS, a list of expressions."
                     (file (string-append directory "/" file)))
                   (or (scandir directory) '())))
 
-    (define* (entry-expiration file)
+    (define entry-expiration
       ;; Return the time at which FILE, a cached profile, is considered expired.
-      (match (false-if-exception (lstat file))
-        (#f 0)                       ;FILE may have been deleted in the meantime
-        (st (+ (stat:atime st) (* 60 60 24 7)))))
+      (file-expiration-time (* 60 60 24 7) stat:mtime))
 
     (define opts
       (parse-args args))
