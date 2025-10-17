@@ -4106,7 +4106,7 @@ code to be greatly simplified.")
     (native-inputs
      (list python-astropy
            python-ci-watson
-           python-crds
+           python-crds-minimal
            python-pytest
            python-pytest-remotedata
            python-setuptools
