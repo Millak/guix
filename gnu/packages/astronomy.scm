@@ -5941,6 +5941,32 @@ translations.")
      (list python-setuptools
            python-setuptools-scm))))
 
+(define-public python-ogadf-schema
+  (package
+    (name "python-ogadf-schema")
+    (version "0.2.4.post1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ogadf_schema" version))
+       (sha256
+        (base32 "02v5r5vnr40ggp2mccxnx600gkl3mvv77zslpf9dj96jcd8pk117"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests
+    (native-inputs
+     (list python-poetry-core
+           python-setuptools))
+    (propagated-inputs
+     (list python-fits-schema))
+    (home-page "https://github.com/open-gamma-ray-astro/ogadf-schema")
+    (synopsis
+     "Definition of the open gamma ray astronomy data formats using fits-schema")
+    (description
+     "This package provides schema definitions for the Data Formats For Gamma-Ray
+Astronomy.")
+    (license license:expat)))
+
 (define-public python-petrofit
   (package
     (name "python-petrofit")
