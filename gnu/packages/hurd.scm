@@ -132,8 +132,8 @@ communication.")
     (license gpl2+)))
 
 (define-public hurd-headers
-  (let ((revision "4")
-        (commit "v0.9.git20250420"))
+  (let ((revision "5")
+        (commit "v0.9.git20250801"))
     (package
       (name "hurd-headers")
       (version (string-drop commit 1))
@@ -144,7 +144,7 @@ communication.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "09z9gj1z11wswmxy7jdzrbjmlplpy0fpbc6gaj09hh34j4y6yr91"))
+                  "0k15zmrwdbmm62m0vy8pnkx18pyh2pj23gbrhrki37gkv73mijk9"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (native-inputs
@@ -343,8 +343,7 @@ Hurd-minimal package which are needed for both glibc and GCC.")
               (inherit (package-source hurd-headers))
               (patches (search-patches "hurd-refcounts-assert.patch"
                                        "hurd-rumpdisk-no-hd.patch"
-                                       "hurd-startup.patch"
-                                       "hurd-socket-activation.patch"))))
+                                       "hurd-startup.patch"))))
     (version (package-version hurd-headers))
     (arguments
      `(#:tests? #f                      ;no "check" target

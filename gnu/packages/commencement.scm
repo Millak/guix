@@ -2787,7 +2787,7 @@ memoized as a function of '%current-system'."
    (package
      (inherit hurd-headers)
      (name "hurd-headers-boot0")
-     (version "0.9.git20250420")
+     (version "0.9.git20250801")
      (source
       (origin
         (inherit (package-source hurd-headers))
@@ -2797,10 +2797,10 @@ memoized as a function of '%current-system'."
             (method url-fetch)
             (uri (string-append
                   "https://git.savannah.gnu.org/cgit/hurd/hurd.git/snapshot/"
-                  "hurd-v" version ".tar.gz"))
+                  "hurd-" version ".tar.gz"))
             (sha256
              (base32
-              "14ldrijzgqkvnii873vjlsmrjr3kvs1aksyc5b4ha8anlnnvdkg1")))))))
+              "153pb6spa8dzrkl863d9y1nja4yqa3wr9g4c3gb5jrmzqf6vpj79")))))))
      (native-inputs
       (list autoconf-boot0 automake-boot0 mig-boot0))
      (inputs '()))))
