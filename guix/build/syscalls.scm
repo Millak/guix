@@ -150,6 +150,7 @@
             CLONE_THREAD
             CLONE_VM
             clone
+            safe-clone
             unshare
             setns
             get-user-ns
@@ -1170,16 +1171,44 @@ caller lacks root privileges."
 Turning finalization off shuts down the finalization thread as a side effect."
       (->bool ((force proc) (if enabled? 1 0))))))
 
-(define-syntax-rule (without-automatic-finalization exp)
-  "Turn off automatic finalization within the dynamic extent of EXP."
+(define-syntax-rule (without-automatic-finalization body ...)
+  "Turn off automatic finalization within the dynamic extent of BODY.  This is
+useful to ensure there is no finalization thread."
   (let ((enabled? #t))
     (dynamic-wind
       (lambda ()
         (set! enabled? (%set-automatic-finalization-enabled?! #f)))
       (lambda ()
-        exp)
+        body ...)
       (lambda ()
         (%set-automatic-finalization-enabled?! enabled?)))))
+
+(define-syntax-rule (without-garbage-collection body ...)
+  "Turn off garbage collection within the dynamic extent of BODY.  This is useful
+to avoid the creation new garbage collection thread.  Note that pre-existing
+GC marker threads are only disabled, not terminated."
+  (dynamic-wind
+    (lambda ()
+      (gc-disable))
+    (lambda ()
+      body ...)
+    (lambda ()
+      (gc-enable))))
+
+(define-syntax-rule (without-threads body ...)
+  "Ensure the Guile finalizer thread is stopped and that garbage collection does
+not run.  Note that pre-existing GC marker threads are only disabled, not
+terminated.  This also leaves the signal handling thread to be disabled by
+another means, since there is no Guile API to do so."
+  ;; Note: the three kind of threads that Guile can spawn are the finalization
+  ;; thread, the signal thread, or the GC marker threads.
+  (without-automatic-finalization
+   (without-garbage-collection body ...)))
+
+(define (ensure-signal-delivery-thread)
+  "Ensure the signal delivery thread is spawned and its state set
+ to 'RUNNING'.  This is valid as of the implementation as of Guile 3.0.9."
+  (sigaction SIGUSR1))                  ;could be any signal
 
 ;; The libc interface to sys_clone is not useful for Scheme programs, so the
 ;; low-level system call is wrapped instead.  The 'syscall' function is
@@ -1222,6 +1251,24 @@ are shared between the parent and child processes."
                    (list flags (strerror err))
                    (list err))
             ret)))))
+
+(define (safe-clone flags child parent)
+  "This is a raw clone syscall wrapper that ensures no Guile thread will be
+spawned during execution of the child.  `clone' is called with FLAGS.  CHILD
+is a thunk to run in the child process.  PARENT is procedure that accepts the
+child PID as argument.  This is useful in many contexts, such as when calling
+`unshare' or async-unsafe procedures in the child when the parent process
+memory (CLONE_VM) or threads (CLONE_THREAD) are shared with it."
+  ;; TODO: Contribute `clone' to Guile, and handle these complications there,
+  ;; similarly to how it's handled for scm_fork in posix.c.
+
+  ;; XXX: This is a hack: as of Guile 3.0.9, by starting the signal delivery
+  ;; thread in the parent, its state will be known as RUNNING, and the child
+  ;; won't attempt to start it itself.
+  (ensure-signal-delivery-thread)
+  (match (clone flags)
+    (0   (without-threads (child)))
+    (pid (parent pid))))
 
 (define (thread-count)
   "Return the complete thread count of the current process.  Unlike

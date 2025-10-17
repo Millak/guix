@@ -263,100 +263,93 @@ that host UIDs (respectively GIDs) map to in the namespace."
   ;; child process blocks until the parent writes to it.
   (match (socketpair PF_UNIX (logior SOCK_CLOEXEC SOCK_STREAM) 0)
     ((child . parent)
-     (let ((flags (namespaces->bit-mask namespaces)))
-       (match (clone flags)
-         (0
-          ;; Inhibit thread creation until after the unshare call.
-          (gc-disable)
-          (call-with-clean-exit
-           (lambda ()
-             (close-port parent)
-             ;; Wait for parent to set things up.
-             (match (read child)
-               ('ready
-                (purify-environment)
-                (when (and (memq 'mnt namespaces)
-                           (not (string=? root "/")))
-                  (catch #t
-                    (lambda ()
-                      (mount-file-systems root mounts
-                                          #:mount-/proc? (memq 'pid namespaces)
-                                          #:mount-/sys?  (memq 'net
-                                                               namespaces)
-                                          #:populate-file-system
-                                          (lambda ()
-                                            (populate-file-system)
-                                            (when (and (memq 'net namespaces)
-                                                       loopback-network?)
-                                              (set-network-interface-up "lo")
+     (safe-clone
+      (namespaces->bit-mask namespaces)
+      (lambda ()
+        (call-with-clean-exit
+         (lambda ()
+           (close-port parent)
+           ;; Wait for parent to set things up.
+           (match (read child)
+             ('ready
+              (purify-environment)
+              (when (and (memq 'mnt namespaces)
+                         (not (string=? root "/")))
+                (catch #t
+                  (lambda ()
+                    (mount-file-systems root mounts
+                                        #:mount-/proc? (memq 'pid namespaces)
+                                        #:mount-/sys?  (memq 'net
+                                                             namespaces)
+                                        #:populate-file-system
+                                        (lambda ()
+                                          (populate-file-system)
+                                          (when (and (memq 'net namespaces)
+                                                     loopback-network?)
+                                            (set-network-interface-up "lo")
 
-                                              ;; When isolated from the
-                                              ;; network, provide a minimal
-                                              ;; /etc/hosts to resolve
-                                              ;; "localhost".
-                                              (mkdir-p "/etc")
-                                              (call-with-output-file "/etc/hosts"
-                                                (lambda (port)
-                                                  (display "127.0.0.1 localhost\n" port)
-                                                  (chmod port #o444)))))
-                                          #:writable-root?
-                                          (or writable-root?
-                                              (not (memq 'mnt namespaces)))))
-                    (lambda args
-                      ;; Forward the exception to the parent process.
-                      ;; FIXME: SRFI-35 conditions and non-trivial objects
-                      ;; cannot be 'read' so they shouldn't be written as is.
-                      (write args child)
-                      (primitive-exit 3))))
+                                            ;; When isolated from the
+                                            ;; network, provide a minimal
+                                            ;; /etc/hosts to resolve
+                                            ;; "localhost".
+                                            (mkdir-p "/etc")
+                                            (call-with-output-file "/etc/hosts"
+                                              (lambda (port)
+                                                (display "127.0.0.1 localhost\n" port)
+                                                (chmod port #o444)))))
+                                        #:writable-root?
+                                        (or writable-root?
+                                            (not (memq 'mnt namespaces)))))
+                  (lambda args
+                    ;; Forward the exception to the parent process.
+                    ;; FIXME: SRFI-35 conditions and non-trivial objects
+                    ;; cannot be 'read' so they shouldn't be written as is.
+                    (write args child)
+                    (primitive-exit 3))))
 
-                (when (and lock-mounts?
-                           (memq 'mnt namespaces)
-                           (memq 'user namespaces))
-                  ;; Create a new mount namespace owned by a new user
-                  ;; namespace to "lock" together previous mounts, such that
-                  ;; they cannot be unmounted or remounted separately--see
-                  ;; mount_namespaces(7).
-                  ;;
-                  ;; Note: at this point, the process is single-threaded (no
-                  ;; GC mark threads, no finalization thread, etc.) which is
-                  ;; why unshare(CLONE_NEWUSER) can be used.
-                  (let ((uid (getuid)) (gid (getgid)))
-                    (unshare (logior CLONE_NEWUSER CLONE_NEWNS))
-                    (gc-enable)
-                    (when (file-exists? "/proc/self")
-                      (initialize-user-namespace (getpid)
-                                                 host-uids
-                                                 #:host-uid uid
-                                                 #:host-gid gid
-                                                 #:guest-uid guest-uid
-                                                 #:guest-gid guest-gid))))
+              (when (and lock-mounts?
+                         (memq 'mnt namespaces)
+                         (memq 'user namespaces))
+                ;; Create a new mount namespace owned by a new user
+                ;; namespace to "lock" together previous mounts, such that
+                ;; they cannot be unmounted or remounted separately--see
+                ;; mount_namespaces(7).
+                (let ((uid (getuid)) (gid (getgid)))
+                  (unshare (logior CLONE_NEWUSER CLONE_NEWNS))
+                  (when (file-exists? "/proc/self")
+                    (initialize-user-namespace (getpid)
+                                               host-uids
+                                               #:host-uid uid
+                                               #:host-gid gid
+                                               #:guest-uid guest-uid
+                                               #:guest-gid guest-gid))))
 
-                ;; TODO: Manage capabilities.
-                (write 'ready child)
-                (close-port child)
-                (thunk))
-               (_                                 ;parent died or something
-                (primitive-exit 2))))))
-         (pid
-          (close-port child)
-          (when (memq 'user namespaces)
-            (initialize-user-namespace pid host-uids
-                                       #:guest-uid guest-uid
-                                       #:guest-gid guest-gid))
-          ;; TODO: Initialize cgroups.
-          (write 'ready parent)
-          (newline parent)
+              ;; TODO: Manage capabilities.
+              (write 'ready child)
+              (close-port child)
+              (thunk))
+             (_                         ;parent died or something
+              (primitive-exit 2))))))
+      (lambda (pid)
+        (close-port child)
+        (when (memq 'user namespaces)
+          (initialize-user-namespace pid host-uids
+                                     #:guest-uid guest-uid
+                                     #:guest-gid guest-gid))
+        ;; TODO: Initialize cgroups.
+        (write 'ready parent)
+        (newline parent)
 
-          ;; Check whether the child process' setup phase succeeded.
-          (let ((message (read parent)))
-            (close-port parent)
-            (match message
-              ('ready                             ;success
-               pid)
-              (((? symbol? key) args ...)         ;exception
-               (apply throw key args))
-              (_                                  ;unexpected termination
-               #f)))))))))
+        ;; Check whether the child process' setup phase succeeded.
+        (let ((message (read parent)))
+          (close-port parent)
+          (match message
+            ('ready                     ;success
+             pid)
+            (((? symbol? key) args ...) ;exception
+             (apply throw key args))
+            (_                          ;unexpected termination
+             #f))))))))
 
 ;; FIXME: This is copied from (guix utils), which we cannot use because it
 ;; would pull (guix config) and all.

@@ -3,6 +3,7 @@
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2020 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,7 +30,8 @@
   #:use-module (srfi srfi-71)
   #:use-module (system foreign)
   #:use-module ((ice-9 ftw) #:select (scandir))
-  #:use-module (ice-9 match))
+  #:use-module (ice-9 match)
+  #:use-module (ice-9 threads))
 
 ;; Test the (guix build syscalls) module, although there's not much that can
 ;; actually be tested without being root.
@@ -157,6 +159,38 @@
       (unshare CLONE_NEWNS))
     (lambda args
       (system-error-errno args))))
+
+(define child-thunk
+  (lambda ()
+    (gc)                                ;spawn GC threads
+    (primitive-exit
+     (catch 'system-error
+       (lambda ()
+         (unshare CLONE_THREAD)
+         0)                             ;no error
+       (lambda args
+         (system-error-errno args))))))
+
+(define parent-proc
+  (lambda (pid)
+    (match (waitpid pid)
+       ((_ . status)
+        (status:exit-val status)))))
+
+(unless perform-container-tests?
+  (test-skip 1))
+(test-equal "clone and unshare triggers EINVAL"
+  EINVAL
+  (match (clone (logior CLONE_NEWUSER SIGCHLD))
+    (0   (child-thunk))
+    (pid (parent-proc pid))))
+
+(unless perform-container-tests?
+  (test-skip 1))
+(test-equal "safe-clone and unshare succeeds"
+  0
+  (safe-clone (logior CLONE_NEWUSER SIGCHLD)
+              child-thunk parent-proc))
 
 (unless perform-container-tests?
   (test-skip 1))
