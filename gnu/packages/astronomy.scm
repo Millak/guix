@@ -3970,16 +3970,17 @@ Cesium.")
 (define-public python-dkist
   (package
     (name "python-dkist")
-    (version "1.15.0")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dkist" version))
        (sha256
-        (base32 "0j5jxf624s746syam472k2xz3m77p66z9d7c8rz19f0xv3792xql"))))
+        (base32 "1n0qr28linf72xri5l26m0dgciczk5nc60yysg19iijwfh7y0m1x"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 443 passed, 7 skipped
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; When python-pytest-benchmark is added: Benchmarks are
