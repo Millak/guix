@@ -40,13 +40,15 @@
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/AppImage/type2-runtime")
-               (commit commit)))
+                (url "https://github.com/AppImage/type2-runtime")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32 "0954crhlbapxis96g1s0vfpf78ybr64zvjalak387ksxj560g44x"))))
+      (build-system gnu-build-system)
       (arguments
        (list
+        #:tests? #f                     ; No tests
         #:make-flags
         #~(list "-Csrc/runtime" "runtime-fuse3"
                 (string-append "CC=" #$(cc-for-target))
@@ -60,34 +62,33 @@
         `((guix build gnu-build-system)
           (guix build utils)
           (ice-9 binary-ports))
-        #:phases #~(modify-phases %standard-phases
-                     (delete 'configure)
-                     (delete 'check)    ; No tests.
-                     (replace 'install
-                       (lambda _
-                         (install-file "src/runtime/runtime-fuse3"
-                                       (string-append #$output "/bin"))))
-                     ;; Must be after all elf reliant phases.  Used to identify the
-                     ;; executable as an AppImage as per the specification.
-                     (add-after 'make-dynamic-linker-cache 'set-magic-bytes
-                       (lambda _
-                         (let ((port (open (string-append #$output
-                                            "/bin/runtime-fuse3")
-                                           (logior O_WRONLY))))
-                           (seek port 8 SEEK_SET)
-                           (put-bytevector port #vu8(#x41 #x49 #x02))
-                           (close-port port)))))
-        #:disallowed-references (list squashfuse-for-appimage
-                                      fuse-for-appimage
-                                      (gexp-input zstd "static")
-                                      (gexp-input zlib "static"))))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (replace 'install
+              (lambda _
+                (install-file "src/runtime/runtime-fuse3"
+                              (string-append #$output "/bin"))))
+            ;; Must be after all elf reliant phases.  Used to identify the
+            ;; executable as an AppImage as per the specification.
+            (add-after 'make-dynamic-linker-cache 'set-magic-bytes
+              (lambda _
+                (let ((port (open (string-append #$output
+                                                 "/bin/runtime-fuse3")
+                                  (logior O_WRONLY))))
+                  (seek port 8 SEEK_SET)
+                  (put-bytevector port #vu8(#x41 #x49 #x02))
+                  (close-port port)))))
+        #:disallowed-references
+        (list squashfuse-for-appimage
+              fuse-for-appimage
+              (gexp-input zstd "static")
+              (gexp-input zlib "static"))))
       ;; Only needed at build time.
       (inputs (list squashfuse-for-appimage
                     fuse-for-appimage
                     `(,zstd "static")
                     `(,zlib "static")))
-      (build-system gnu-build-system)
-      (home-page "https://github.com/AppImage/type2-runtime")
       (synopsis "Runtime for executing AppImages")
       (description "The runtime is the executable part of every AppImage.  It mounts
 the payload via @acronym{FUSE} and executes the entrypoint, allowing users to run
@@ -96,4 +97,5 @@ ensures that the AppImage can access its bundled libraries and resources seamles
 providing a consistent environment across different Linux distributions.  In the
 absence of @acronym{FUSE}, the AppImage can still be started using the
 @option{--appimage-extract-and-run} flag.")
+      (home-page "https://github.com/AppImage/type2-runtime")
       (license license:expat))))
