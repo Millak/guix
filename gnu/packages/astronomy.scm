@@ -4546,17 +4546,17 @@ Python.")
 (define-public python-glue-astronomy
   (package
     (name "python-glue-astronomy")
-    (version "0.12.0")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "glue_astronomy" version))
        (sha256
-        (base32 "0b65kybnknrnz1nh1kjvsh9k9smia0gyigwn5rc3zrg1qys3wlk4"))))
+        (base32 "0f2849jyhyxldrxlls00gpq9qckrfvxrkn796j5zb8j92l2qjgnp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; 77 passed, 3 deselected
+      ;; tests: 77 passed, 2 skipped, 3 deselected
       #:test-flags
       #~(list "--pyargs" "glue_astronomy"
               "-k" (string-join
@@ -4568,18 +4568,20 @@ Python.")
                           "test_spectrum1d_2d_data[2]"
                           "test_spectrum1d_2d_data[3]")
                     " and not "))))
-    (propagated-inputs
-     (list python-astropy
-           python-glue-core
-           python-glue-qt
-           python-regions
-           python-specreduce
-           python-spectral-cube
-           python-specutils))
     (native-inputs
      (list python-mock
            python-pytest-astropy
+           python-setuptools
            python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy
+           python-glue-core
+           python-pyqt  ;PyQt5
+           python-regions
+           python-reproject
+           python-specreduce
+           python-spectral-cube
+           python-specutils))
     (home-page "https://github.com/glue-viz/glue-astronomy")
     (synopsis "Astronomy-specific plugins for glue")
     (description
