@@ -545,14 +545,14 @@ including input methods previous bundled inside Fcitx 4:
              "/fcitx5-configtool/fcitx5-configtool-" version ".tar.zst"))
        (sha256
         (base32 "1fb21mbc0k33cadslq0rjwi5y7fxm5jzgdk9yna3h2r62sdmdb60"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (arguments
-     (list #:tests? #f
+     (list #:qtbase qtbase
+           #:tests? #f
            #:configure-flags #~(list "-DUSE_QT6=ON")))
     (inputs
      (list fcitx5
            fcitx5-qt
-           qtbase
            qtdeclarative
            ksvg
            kcmutils
@@ -568,6 +568,7 @@ including input methods previous bundled inside Fcitx 4:
            kirigami
            libxkbcommon
            libx11
+           qtwayland
            xkeyboard-config
            libxkbfile
            gettext-minimal
