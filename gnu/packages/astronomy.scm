@@ -9215,23 +9215,22 @@ to the SolarSoft data analysis environment.")
 ;; A bare minimal package, mainly to use in tests and reduce closure
 ;; size. Tests are left out in the main package to slim down native-inputs.
 (define-public python-sunpy-minimal
-  (hidden-package
-   (package/inherit python-sunpy
-     (name "python-sunpy-minimal")
-     (arguments
-      (substitute-keyword-arguments (package-arguments python-sunpy)
-        ((#:tests? _ #t) #f)))
-     (native-inputs
-      (list python-setuptools
-            python-setuptools-scm
-            python-wheel))
-     (propagated-inputs
-      (list python-astropy-minimal
-            python-fsspec
-            python-mpl-animators
-            python-parfive
-            python-pyerfa
-            python-requests)))))
+  (package/inherit python-sunpy
+    (name "python-sunpy-minimal")
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-sunpy)
+       ((#:tests? _ #t) #f)))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm
+           python-wheel))
+    (propagated-inputs
+     (list python-astropy-minimal
+           python-fsspec
+           python-mpl-animators
+           python-parfive
+           python-pyerfa
+           python-requests))))
 
 (define-public python-sunpy-soar
   (package
