@@ -1154,7 +1154,8 @@ the \"texlive\" importer."
   )
 
 (define-member (person "Simon Tournier"
-                       "zimon.toutoune@gmail.com")
+                       "zimon.toutoune@gmail.com"
+                       "zimoun")
   julia core mentors r)
 
 (define-member (person "宋文武"
