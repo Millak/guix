@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2020 by Amar M. Singh <nly@disroot.org>
-;;; Copyright © 2015-2022, 2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2022, 2024-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021, 2022 Mathieu Othacehe <othacehe@gnu.org>
@@ -551,16 +551,21 @@ requested using POOL."
                                                 (first compressions)))))
     (cond ((string-null? item)
            (not-found request #:ttl negative-ttl))
-          ((file-exists? cached)
-           ;; Narinfo is in cache, send it.
-           (values `((content-type . (application/x-nix-narinfo))
-                     ,@(if ttl
-                           `((cache-control (max-age . ,ttl)))
-                           '()))
-                   (lambda (port)
-                     (display (call-with-input-file cached
-                                read-string)
-                              port))))
+          ((stat cached #f)
+           =>
+           (lambda (stat)
+             ;; Narinfo is in cache: update its atime to reflect usage (in
+             ;; case the file system is mounted with 'noatime') and send it.
+             (let ((now ((@ (guile) current-time))))
+               (utime cached now (stat:mtime stat) 0 0))
+             (values `((content-type . (application/x-nix-narinfo))
+                       ,@(if ttl
+                             `((cache-control (max-age . ,ttl)))
+                             '()))
+                     (lambda (port)
+                       (display (call-with-input-file cached
+                                  read-string)
+                                port)))))
           ((and (file-exists? item)        ;cheaper than the 'valid-path?' RPC
                 (valid-path? store item))
            ;; Nothing in cache: bake the narinfo and nar in the background and
