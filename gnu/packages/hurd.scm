@@ -58,7 +58,7 @@
                  version ".tar.gz"))
 
 (define-public gnumach-headers
-  (let ((commit "v1.8+git20250304"))
+  (let ((commit "v1.8+git20250731"))
     (package
       (name "gnumach-headers")
       (version (string-drop commit 1))
@@ -71,7 +71,7 @@
          (patches (search-patches "gnumach-version.patch"))
          (file-name (git-file-name "gnumach" version))
          (sha256
-          (base32 "0sq15n7x05qk3rjx5c0dbiijysyvk4gqqqfkc6gjkpsy3mx7a9q0"))))
+          (base32 "1zfn2fvlrdm9pqz5bg8l4mq99xjnrfsacdv9lqz5d4c1mbwpffvd"))))
       (build-system gnu-build-system)
       (arguments
        `(#:phases
