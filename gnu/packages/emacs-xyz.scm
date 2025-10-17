@@ -9485,8 +9485,8 @@ boxes, and more.")
 (define-public emacs-org-chef
   ;; Upstream does not tag version bumps.  Version is extracted from "Version"
   ;; keyword in main file.
-  (let ((commit "87e9a6c4844ff32f47c8d1108ec0f087a3148a8e")
-        (revision "0"))
+  (let ((commit "9f749324f7e8c51a2da8516820268c83e825c6c7")
+        (revision "1"))
     (package
       (name "emacs-org-chef")
       (version (git-version "0.1.3" revision commit))
@@ -9498,9 +9498,20 @@ boxes, and more.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0xdfaf3shl3iij7nnshb5ryccqq70rpk0zm0d3fdwdbfa8rf7fkp"))))
+          (base32 "0ii763fhfrd47ivkndml09ivn5s21vy35a182xasb42bji8mmqv8"))))
       (build-system emacs-build-system)
-      (propagated-inputs (list emacs-org))
+      (arguments
+       (list
+        #:emacs emacs-no-x                ;need libxml support
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'patch-tests-to-include-full-file-path
+              (lambda _
+                (substitute* "tests/org-chef-json-ld-test.el"
+                  (("\"json-ld")
+                   "\"tests/json-ld")))))
+        #:test-command #~(list "ert-runner" "tests")))
+      (native-inputs (list emacs-ert-runner))
       (home-page "https://github.com/Chobbes/org-chef")
       (synopsis "Cookbook and recipe management with Emacs Org mode")
       (description
