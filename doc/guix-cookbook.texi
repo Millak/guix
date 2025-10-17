@@ -5730,14 +5730,14 @@ If you fail to guess the name of the package (this one was easy!), try
 @code{guix search}.
 
 Environments for Python, R, and similar high-level languages are
-relatively easy to set up. For C/C++ code, you may find need many more
+relatively easy to set up.  For C/C++ code, you may need more
 packages:
 
 @example
 guix shell -C gcc-toolchain cmake coreutils grep sed make -- @dots{}
 @end example
 
-Or perhaps you'll find that you could just as well provide a
+Or perhaps you'll find that you could just as well provide a definition
 for your package---@pxref{Defining Packages,,, guix, GNU Guix Reference
 Manual}, to learn more on how to do that.
 
