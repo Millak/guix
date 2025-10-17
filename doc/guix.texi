@@ -24714,8 +24714,8 @@ To ensure that upgrades are actually happening, you can run
 the unattended upgrade log file (see below).
 
 @defvar unattended-upgrade-service-type
-This is the service type for unattended upgrades.  It sets up an mcron
-job (@pxref{Scheduled Job Execution}) that runs @command{guix system
+This is the service type for unattended upgrades.  It sets up a Shepherd
+Timer (@pxref{Scheduled Job Execution}) that runs @command{guix system
 reconfigure} from the latest version of the specified channels.
 
 Its value must be a @code{unattended-upgrade-configuration} record (see
