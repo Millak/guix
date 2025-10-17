@@ -5209,13 +5209,13 @@ milliarcsecond).")
 (define-public python-jwst
   (package
     (name "python-jwst")
-    (version "1.19.2")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jwst" version))
        (sha256
-        (base32 "08c6wm7nchdq3cha9267h0i49s81yq0rz5y6nsbmganx0i9sg2aq"))
+        (base32 "0p5f1rng1hm3291j6a5bjbkvwzhxb40anjavc38ngz3iiy0rmxq6"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -5240,22 +5240,11 @@ milliarcsecond).")
           (add-before 'build 'relax-requirements
             (lambda _
               (substitute* "pyproject.toml"
-                ;; asdf>=4.0,<5
-                ((">=4.0,<5") ">=4.0")
-                ;; drizzle>=2.0.1,<2.1.0
-                ((">=2.0.1,<2.1.0") ">=2.0.1")
-                ;; stcal>=1.14.1,<1.15.0
-                ((">=1.14.1,<1.15.0") "")
                 ;; scipy>=1.14.1
                 (("1.14.1") "1.12.0")
                 ;; XXX: Can't detect opencv-python version. The input opencv
                 ;; might not set the version correctly.
-                ((".*opencv-python-headless.*") "")
-                ;; Remove broken scripts, see
-                ;; <https://github.com/spacetelescope/jwst/issues/9401>.
-                (("asn_gather = .*") "")
-                (("create_data = .*") "")
-                (("csvconvert = .*") "")))))))
+                ((".*opencv-python-headless.*") "")))))))
     (native-inputs
      (list python-ci-watson
            python-pysiaf
@@ -5269,11 +5258,11 @@ milliarcsecond).")
     (propagated-inputs
      ;; opencv provides OpenCV-Python which is Listed as install requirement.
      (list opencv
-           python-asdf-4
+           python-asdf
            python-asdf-astropy
            python-astropy
            python-bayesicfitting
-           python-crds
+           python-crds-minimal
            python-drizzle
            python-gwcs
            python-importlib-metadata
