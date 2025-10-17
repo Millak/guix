@@ -5085,17 +5085,17 @@ observationally-derived galaxy merger catalogs.")
 (define-public python-irispy-lmsal
   (package
     (name "python-irispy-lmsal")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "irispy_lmsal" version))
        (sha256
-        (base32 "1al7nyw2d2175gbij7ab2q0ks3wsf4b7n6g89ic2mpg4v1ybyxw5"))))
+        (base32 "131n2wvb5pdg0qx5chfwkcvcy025840cs01pvcg5i4nlqv995h1q"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 68 passed, 1 skipped, 9 deselected, 2 warnings
+      ;; tests: 65 passed, 1 skipped, 9 deselected
       #:test-flags
       ;; See: <https://github.com/LM-SAL/irispy-lmsal/issues/83>.
       ;; Expected:
@@ -5103,7 +5103,7 @@ observationally-derived galaxy merger catalogs.")
       ;; Got:
       ;;     0.33
       #~(list "--deselect=irispy/obsid.py::irispy.obsid.ObsID"
-              ;; TODO: Report upstram.
+              ;; TODO: NumPy 2+ is required to fully resolve this.
               ;; Arrays are not almost equal to 4 decimals
               ;; Mismatched elements: 42 / 3601 (1.17%)
               ;; Max absolute difference: 0.34272391
@@ -5124,6 +5124,7 @@ observationally-derived galaxy merger catalogs.")
      (list ffmpeg
            python-pooch
            python-pytest-astropy
+           python-pytest-mpl
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
