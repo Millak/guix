@@ -657,6 +657,55 @@ variable.  The variable can contain a comma-separated list of values, for
 example @code{GOPPROF=http,block}.")
     (license license:expat)))
 
+(define-public go-github-com-anthropics-anthropic-sdk-go
+  (package
+    (name "go-github-com-anthropics-anthropic-sdk-go")
+    (version "1.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/anthropics/anthropic-sdk-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12a9f7ddp8nx0x35yvsdjzmv2qjx9p7d7qwkl4qhqnv6l5bsifxb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/anthropics/anthropic-sdk-go"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-vertex-and-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              ;; Remove vertex package and examples - they require
+              ;; google.golang.org/api which is not yet packaged.
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "vertex")
+                (delete-file-recursively "examples"))))
+          (add-before 'check 'set-test-environment
+            (lambda _
+              ;; Skip integration tests that require a mock Prism
+              ;; server (localhost:4010). Unit tests in internal/ and
+              ;; packages/ subdirectories will still run (~51 tests).
+              (setenv "SKIP_MOCK_TESTS" "true"))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-credentials
+           go-github-com-tidwall-gjson
+           go-github-com-tidwall-sjson
+           go-golang-org-x-oauth2))
+    (home-page "https://github.com/anthropics/anthropic-sdk-go")
+    (synopsis "Go client library for the Anthropic API")
+    (description
+     "This package provides a client library for convenient access
+to the Anthropic REST API.  It includes support for message creation,
+streaming, tool calling, and integration with Amazon Bedrock.")
+    (license license:expat)))
+
 (define-public go-github-com-apex-log
   (package
     (name "go-github-com-apex-log")
