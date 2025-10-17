@@ -170,7 +170,7 @@ export GUIX_BUILD_OPTIONS=--no-grafts
 guix build isc-dhcp
 parted --script /dev/vdb mklabel gpt \\
   mkpart primary ext2 1M 3M \\
-  mkpart primary ext2 3M 1.6G \\
+  mkpart primary ext2 3M 2G \\
   set 1 boot on \\
   set 1 bios_grub on
 mkfs.ext4 -L my-root /dev/vdb2
@@ -195,7 +195,7 @@ guix --version
 export GUIX_BUILD_OPTIONS=--no-grafts
 guix build isc-dhcp
 parted --script /dev/vdb mklabel gpt \\
-  mkpart ext2 1M 1.6G \\
+  mkpart primary ext2 1M 2G \\
   set 1 legacy_boot on
 mkfs.ext4 -L my-root -O '^64bit' /dev/vdb1
 mount /dev/vdb1 /mnt
@@ -466,7 +466,7 @@ export GUIX_BUILD_OPTIONS=--no-grafts
 guix build isc-dhcp
 parted --script /dev/vda mklabel gpt \\
   mkpart primary ext2 1M 3M \\
-  mkpart primary ext2 3M 1.6G \\
+  mkpart primary ext2 3M 2G \\
   set 1 boot on \\
   set 1 bios_grub on
 mkfs.ext4 -L my-root /dev/vda2
@@ -596,7 +596,7 @@ guix build isc-dhcp
 parted --script /dev/vdb mklabel gpt \\
   mkpart primary ext2 1M 3M \\
   mkpart primary ext2 3M 400M \\
-  mkpart primary ext2 400M 2.1G \\
+  mkpart primary ext2 400M 2.4G \\
   set 1 boot on \\
   set 1 bios_grub on
 mkfs.ext4 -L root-fs /dev/vdb2
@@ -678,8 +678,8 @@ guix --version
 export GUIX_BUILD_OPTIONS=--no-grafts
 parted --script /dev/vdb mklabel gpt \\
   mkpart primary ext2 1M 3M \\
-  mkpart primary ext2 3M 1.6G \\
-  mkpart primary ext2 1.6G 3.2G \\
+  mkpart primary ext2 3M 2G \\
+  mkpart primary ext2 2G 4G \\
   set 1 boot on \\
   set 1 bios_grub on
 yes | mdadm --create /dev/md0 --verbose --level=mirror --raid-devices=2 \\
@@ -705,7 +705,7 @@ by 'mdadm'.")
                                               %raid-root-os-source
                                               #:script
                                               %raid-root-installation-script
-                                              #:target-size (* 3200 MiB)))
+                                              #:target-size (* 4100 MiB)))
                          (command (qemu-command* images)))
       (run-basic-test %raid-root-os
                       `(,@command) "raid-root-os")))))
@@ -959,13 +959,13 @@ guix --version
 export GUIX_BUILD_OPTIONS=--no-grafts
 parted --script /dev/vdb mklabel gpt \\
   mkpart primary ext2 1M 3M \\
-  mkpart primary ext2 3M 1.6G \\
-  mkpart primary 1.6G 3.2G \\
+  mkpart primary ext2 3M 2G \\
+  mkpart primary ext2 2G 4G \\
   set 1 boot on \\
   set 1 bios_grub on
 pvcreate /dev/vdb3
 vgcreate vg0 /dev/vdb3
-lvcreate -L 1.6G -n home vg0
+lvcreate -L 2G -n home vg0
 vgchange -ay
 mkfs.ext4 -L root-fs /dev/vdb2
 mkfs.ext4 /dev/mapper/vg0-home
@@ -991,7 +991,7 @@ reboot\n")
                                               #:script
                                               %lvm-separate-home-installation-script
                                               #:packages (list lvm2-static)
-                                              #:target-size (* 3200 MiB)))
+                                              #:target-size (* 4100 MiB)))
                          (command (qemu-command* images)))
       (run-basic-test %lvm-separate-home-os
                       `(,@command) "lvm-separate-home-os")))))
@@ -1047,7 +1047,7 @@ export GUIX_BUILD_OPTIONS=--no-grafts
 parted --script /dev/vdb mklabel gpt \\
   mkpart primary ext2 1M 3M \\
   mkpart primary ext2 3M 2G \\
-  mkpart primary 2G 2.4G \\
+  mkpart primary ext2 2G 2.4G \\
   set 1 boot on \\
   set 1 bios_grub on
 
@@ -1238,7 +1238,7 @@ ls -l /run/current-system/gc-roots
 parted --script /dev/vdb mklabel gpt \\
   mkpart primary ext2 1M 3M \\
   mkpart primary ext2 3M 50M \\
-  mkpart primary ext2 50M 1.6G \\
+  mkpart primary ext2 50M 2G \\
   set 1 boot on \\
   set 1 bios_grub on
 echo -n \"~a\" | cryptsetup luksFormat -i 1 --uuid=\"~a\" -q /dev/vdb3 -
@@ -1278,7 +1278,7 @@ store a couple of full system images.")
                               #:script
                               %encrypted-root-not-boot-installation-script
                               #:target-size
-                              (* 1600 MiB)))
+                              (* 2100 MiB)))
          (command (qemu-command* images)))
       (run-basic-test %encrypted-root-not-boot-os command
                       "encrypted-root-not-boot-os"
@@ -1398,8 +1398,8 @@ guix --version
 export GUIX_BUILD_OPTIONS=--no-grafts
 parted --script /dev/vdb mklabel gpt \\
   mkpart primary ext2 1M 3M \\
-  mkpart primary ext2 3M 1.4G \\
-  mkpart primary ext2 1.4G 2.8G \\
+  mkpart primary ext2 3M 2G \\
+  mkpart primary ext2 2G 4G \\
   set 1 boot on \\
   set 1 bios_grub on
 mkfs.btrfs -L root-fs -d raid0 -m raid0 /dev/vdb2 /dev/vdb3
@@ -1422,7 +1422,7 @@ RAID-0 (stripe) root partition.")
         ((images (run-install %btrfs-raid-root-os
                               %btrfs-raid-root-os-source
                               #:script %btrfs-raid-root-installation-script
-                              #:target-size (* 2800 MiB)))
+                              #:target-size (* 4100 MiB)))
          (command (qemu-command* images)))
       (run-basic-test %btrfs-raid-root-os `(,@command) "btrfs-raid-root-os")))))
 
@@ -2127,7 +2127,7 @@ build (current-guix) and then store a couple of full system images.")
    #:uefi-support? #t
    #:target-os (installation-target-os-for-gui-tests
                 #:uefi-support? #t)
-   #:target-size (* 3200 MiB)))
+   #:target-size (* 4100 MiB)))
 
 (define %test-gui-installed-os-encrypted
   (guided-installation-test
