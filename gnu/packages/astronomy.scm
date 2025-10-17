@@ -4407,6 +4407,40 @@ tools for astronomers.")
 exitinction laws found in the literature.")
     (license license:expat)))
 
+(define-public python-fits-schema
+  (package
+    (name "python-fits-schema")
+    (version "0.5.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fits_schema" version))
+       (sha256
+        (base32 "1y6an115k7x31hbb67bfp513k802c1nfz2rxy418qkf832blnqfd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; TODO: It's removed on Git's master.
+          ;; ModuleNotFoundError: No module named 'eschool21_demo'
+          (add-after 'unpack 'fix-setup.cfg
+            (lambda _
+              (substitute* "setup.cfg"
+                (("fibonacci = eschool21_demo.__main__:main") "")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy))
+    (home-page "https://github.com/VODF/fits_schema")
+    (synopsis "Schemata for FITS files")
+    (description
+     "This package provides a Python definition and validation schemata for FITS
+files.")
+    (license license:expat)))
+
 (define-public python-fitsblender
   (package
     (name "python-fitsblender")
