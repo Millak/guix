@@ -16331,6 +16331,61 @@ circumstances, and leaves the keys untouched outside of those situations,
 allowing unprefixed keys to insert their respective characters as expected.")
       (license license:gpl3+))))
 
+(define-public emacs-claude-code-ide
+  ;; XXX: Upstream does not tag version bumps. Commit below matches latest
+  ;; version bump.
+  (let ((commit "c5e2de1a343bc6c0444789e0a99ad822cd56cfbe"))
+    (package
+      (name "emacs-claude-code-ide")
+      (version "0.2.5")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/manzaltu/claude-code-ide.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "17rha7rvv72r75lpa2hz65mphrjrzkfn4pz3xf9lfvivg7fc7n0d"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'set-home
+              (lambda _
+                (setenv "HOME" (getenv "TMPDIR")))))
+        #:test-command
+        #~(list "emacs" "-batch"
+                "-L" "."
+                "-l" "ert"
+                "-l" "claude-code-ide-tests.el"
+                "--eval"
+                ;; Exclude failing test (uncaught throw)
+                (string-append
+                 "(ert-run-tests-batch-and-exit "
+                 "'(not claude-code-ide-mcp-server-test-ws-send-fix))"))))
+      (propagated-inputs
+       (list emacs-flycheck
+             emacs-transient
+             emacs-vterm
+             emacs-web-server
+             emacs-websocket))
+      (home-page "https://github.com/manzaltu/claude-code-ide.el")
+      (synopsis "Claude Code IDE integration for Emacs")
+      (description
+       "This package provides native integration with Claude Code
+@acronym{CLI, command-line interface} through the @acronym{MCP, Model
+Context Protocol}.  It creates a bidirectional bridge between Claude and
+Emacs, enabling Claude to leverage Emacs features including @acronym{LSP,
+Language Server Protocol}, project management, tree-sitter, and custom
+Elisp functions.  Features include automatic project detection and
+session management, terminal integration with @code{vterm} or @code{eat},
+diagnostic integration with Flycheck and Flymake, advanced diff viewing
+with ediff, and an extensible MCP tools server for accessing Emacs
+commands such as xref and imenu.")
+      (license license:gpl3+))))
+
 (define-public emacs-clojure-mode
   (package
     (name "emacs-clojure-mode")
