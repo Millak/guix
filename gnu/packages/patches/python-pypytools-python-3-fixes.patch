@@ -1,0 +1,138 @@
+From f86a34bcd8ca64404808e5205f0fa0181bc85fbc Mon Sep 17 00:00:00 2001
+From: Duncan Bellamy <dunk@denkimushi.com>
+Date: Tue, 4 Jan 2022 19:59:58 +0000
+Subject: [PATCH] update to python 3.8+
+
+* add xfail for tests that fail in ubuntu and alpine
+---
+ pypytools/pypylog/model.py              | 14 +++++++++-----
+ pypytools/pypylog/parse.py              |  5 +++++
+ pypytools/pypylog/testing/test_parse.py | 18 +++++++++++++++---
+ pypytools/util.py                       |  6 ++++++
+ 4 files changed, 35 insertions(+), 8 deletions(-)
+
+diff --git a/pypytools/pypylog/model.py b/pypytools/pypylog/model.py
+index 9d97b21..14384b0 100644
+--- a/pypytools/pypylog/model.py
++++ b/pypytools/pypylog/model.py
+@@ -1,8 +1,12 @@
+-import itertools
+ from collections import defaultdict
+ import attr
+ import numpy as np
+ 
++try:
++    from itertools import izip as zip
++except ImportError: # will be 3.x series
++    pass
++
+ @attr.s
+ class Event(object):
+     tsid = attr.ib() # unique identifier for an event
+@@ -46,15 +50,15 @@ def add_event(self, ev):
+ 
+     def print_summary(self):
+         fmt = '%-28s %6s %8s'
+-        print fmt % ('section', 'n', 'delta')
+-        print '-'*44
++        print(fmt % ('section', 'n', 'delta'))
++        print('-'*44)
+         for name, events in sorted(self.sections.iteritems()):
+             total = 0
+             for ev in events:
+                 delta = ev.end - ev.start
+                 assert delta >= 0
+                 total += delta
+-            print fmt % (name, len(events), format(delta, '.4f'))
++            print(fmt % (name, len(events), format(delta, '.4f')))
+ 
+ class Series(object):
+ 
+@@ -79,7 +83,7 @@ def __len__(self):
+         return len(self.X)
+ 
+     def __iter__(self):
+-        for x, y in itertools.izip(self.X, self.Y):
++        for x, y in zip(self.X, self.Y):
+             yield x, y
+ 
+     def __getitem__(self, i):
+diff --git a/pypytools/pypylog/parse.py b/pypytools/pypylog/parse.py
+index c252904..43b3b20 100644
+--- a/pypytools/pypylog/parse.py
++++ b/pypytools/pypylog/parse.py
+@@ -35,6 +35,11 @@ def parse_file(f):
+         #
+         if log is None:
+             log = model.PyPyLog()
++        try:
++        # Python 2: "basestring" is built-in
++            basestring
++        except NameError:
++            basestring = str
+         if isinstance(fname, basestring):
+             with open(fname) as f:
+                 return parse_file(f)
+diff --git a/pypytools/pypylog/testing/test_parse.py b/pypytools/pypylog/testing/test_parse.py
+index 20416bc..d071971 100644
+--- a/pypytools/pypylog/testing/test_parse.py
++++ b/pypytools/pypylog/testing/test_parse.py
+@@ -1,6 +1,13 @@
+ import pytest
+ import textwrap
+-from cStringIO import StringIO
++
++from pypytools.util import PY3
++
++if PY3:
++    from io import StringIO
++else:
++    from cStringIO import StringIO
++
+ from pypytools.pypylog import parse
+ from pypytools.pypylog import model
+ from pypytools.pypylog.model import Event, GcMinor, GcCollectStep
+@@ -33,7 +40,11 @@ def test_mismatch(self):
+         [456] foo}
+         [0ab] bar}
+         """
+-        pytest.raises(parse.ParseError, "self.parse(log)")
++        with pytest.raises(
++            parse.ParseError,
++            match=r'^End section does not match start: expected bar, got foo$',
++        ):
++            self.parse(log)
+ 
+     def test_nested(self):
+         log = self.parse("""
+@@ -124,4 +135,5 @@ def test_parse_frequency():
+     assert pf('40 KHz') == 40e3
+     assert pf('40 MHz') == 40e6
+     assert pf('40 GHz') == 40e9
+-    pytest.raises(ValueError, "pf('')")
++    with pytest.raises(ValueError, match=r'^$'):
++        pf('')
+diff --git a/pypytools/util.py b/pypytools/util.py
+index a0cd85b..102452d 100644
+--- a/pypytools/util.py
++++ b/pypytools/util.py
+@@ -2,6 +2,7 @@
+ from sys import version_info
+ 
+ PY3 = version_info.major == 3
++PY3M = version_info.minor
+ 
+ def clonefunc(f):
+     """Deep clone the given function to create a new one.
+@@ -22,6 +23,11 @@ def clonefunc(f):
+             co.co_firstlineno, co.co_lnotab, co.co_freevars, co.co_cellvars]
+     if PY3:
+         args.insert(1, co.co_kwonlyargcount)
++    if PY3 and PY3M >= 8:
++        args.insert(1, co.co_posonlyargcount)
++    if PY3 and PY3M >= 11:
++        args.insert(12, co.co_qualname)
++        args.insert(15, co.co_exceptiontable)
+     co2 = types.CodeType(*args)
+     #
+     # then, we clone the function itself, using the new co2
