@@ -3911,6 +3911,24 @@ has web sites corresponding to each project @url{http://hst-crds.stsci.edu} or
 files and provide related services.")
     (license license:bsd-3)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure
+;; size. Tests are left out in the main package to slim down native-inputs.
+(define-public python-crds-minimal
+  (package/inherit python-crds
+    (name "python-crds-minimal")
+    (arguments
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy
+           python-filelock
+           python-asdf
+           python-requests
+           python-parsley))))
+
 (define-public python-czml3
   (package
     (name "python-czml3")
