@@ -1548,7 +1548,18 @@ variety of options.  It is an alternative to the shell \"type\" built-in
 command.")
     (license gpl3+))) ; some files are under GPLv2+
 
-(define-public glibc/hurd glibc)
+(define-public glibc/hurd
+  (hidden-package
+   (package/inherit glibc
+     (source
+      (origin
+        (inherit (package-source glibc))
+        (patches
+         (append (map search-patch
+                      (delete "glibc-hurd64-intr-msg-clobber.patch" %glibc-patches))
+                 (search-patches
+		  "glibc-hurd-signal-fpe-exception.patch"
+		  "glibc-hurd-xstate.patch"))))))))
 
 (define-public glibc/hurd-headers
   (package/inherit glibc/hurd

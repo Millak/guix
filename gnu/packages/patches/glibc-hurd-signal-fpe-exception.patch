@@ -1,0 +1,67 @@
+Cherry picked from glibc-2.42
+
+0d99714680 * hurd: Clear FP exceptions before calling signal handler
+
+From 0d9971468087c77e8727638123ae4aa60724e0ff Mon Sep 17 00:00:00 2001
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Date: Mon, 21 Apr 2025 19:58:04 +0200
+Subject: [PATCH] hurd: Clear FP exceptions before calling signal handler
+
+This avoids SIGFPE handlers (or code longjmp-ed to) getting disturbed by the
+exception that generated it.
+
+Note: gcc's unwinding depends on the rpc_wait_trampoline/trampoline exact
+code, so we here avoid breaking it.
+---
+ sysdeps/mach/hurd/x86/trampoline.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/sysdeps/mach/hurd/x86/trampoline.c b/sysdeps/mach/hurd/x86/trampoline.c
+index 02510b178c..6f23c567da 100644
+--- a/sysdeps/mach/hurd/x86/trampoline.c
++++ b/sysdeps/mach/hurd/x86/trampoline.c
+@@ -461,7 +461,10 @@ _hurd_setup_sighandler (struct hurd_sigstate *ss, const struct sigaction *action
+    - in gdb: gdb/i386-gnu-tdep.c gnu_sigtramp_code.  */
+ 
+ #ifdef __x86_64__
+-asm ("rpc_wait_trampoline:\n"
++asm ("trampoline:\n"
++     "fnclex\n"			/* Clear any pending exception.  */
++     "jmp _trampoline\n"
++     "rpc_wait_trampoline:\n"
+   /* This is the entry point when we have an RPC reply message to receive
+      before running the handler.  The MACH_MSG_SEND bit has already been
+      cleared in the OPTION argument in our %rsi.  The interrupted user
+@@ -480,7 +483,7 @@ asm ("rpc_wait_trampoline:\n"
+      /* Switch to the signal stack.  */
+      "movq %rbx, %rsp\n"
+ 
+-     "trampoline:\n"
++     "_trampoline:\n"
+      /* Entry point for running the handler normally.  The arguments to the
+         handler function are on the top of the stack, same as in the i386
+         version:
+@@ -506,7 +509,10 @@ asm ("rpc_wait_trampoline:\n"
+      "movq 16(%rsp), %rdi\n"
+      "ret");
+ #else
+-asm ("rpc_wait_trampoline:\n");
++asm ("trampoline:\n"
++     "fnclex\n"			/* Clear any pending exception.  */
++     "jmp _trampoline\n"
++     "rpc_wait_trampoline:\n");
+   /* This is the entry point when we have an RPC reply message to receive
+      before running the handler.  The MACH_MSG_SEND bit has already been
+      cleared in the OPTION argument on our stack.  The interrupted user
+@@ -526,7 +532,7 @@ asm (/* Retry the interrupted mach_msg system call.  */
+      /* Switch to the signal stack.  */
+      "movl %ebx, %esp\n");
+ 
+- asm ("trampoline:\n");
++asm ("_trampoline:\n");
+   /* Entry point for running the handler normally.  The arguments to the
+      handler function are already on the top of the stack:
+ 
+-- 
+2.51.0
+
