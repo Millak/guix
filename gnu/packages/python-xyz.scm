@@ -14387,9 +14387,13 @@ features, with CPython fallbacks.")
        (uri (pypi-uri "simplegeneric" version ".zip"))
        (sha256
         (base32 "0wwi1c6md4vkbcsfsf8dklf3vr4mcdj4mpxkanwgb6jb1432x5yw"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "-m" "simplegeneric")))
     (native-inputs
-     (list unzip))
+     (list unzip python-setuptools))
     (home-page "https://cheeseshop.python.org/pypi/simplegeneric")
     (synopsis "Python module for simple generic functions")
     (description
