@@ -3929,6 +3929,54 @@ files and provide related services.")
            python-requests
            python-parsley))))
 
+(define-public python-ctapipe
+  (package
+    (name "python-ctapipe")
+    (version "0.27.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "ctapipe" version))
+       (sha256
+        (base32 "0flcrq6agmvpfb3wbixrmsizsna5vinb5w9k9r3vrx3i7hx2zfld"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; TODO: The most of the tests require external data, check if it may be
+      ;; packaged of some portion of unit test may be run without it.
+      #:tests? #f))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy
+           python-docutils
+           python-joblib
+           python-numba
+           python-numpy
+           python-packaging
+           python-psutil
+           python-pyyaml
+           python-requests
+           python-scikit-learn
+           python-scipy
+           python-tables
+           python-tqdm
+           python-traitlets
+           ;; [poptional]
+           python-bokeh
+           python-eventio
+           ;; python-iminuit ;see guix/guix#2381
+           python-matplotlib
+           python-pyirf))
+    (home-page "https://github.com/cta-observatory/ctapipe/")
+    (synopsis "Low-level data processing pipeline software for CTAO")
+    (description
+     "Event reconstruction framework for Imaging Atmospheric Cherenkov
+Telescopes developed for @acronym{CTAO, Cherenkov Telescope Array
+Observatory}.")
+    (license license:bsd-3)))
+
 (define-public python-czml3
   (package
     (name "python-czml3")
