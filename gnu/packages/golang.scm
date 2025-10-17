@@ -1000,7 +1000,18 @@ in the style of communicating sequential processes (@dfn{CSP}).")
      (substitute-keyword-arguments (package-arguments go-1.22)
        ((#:phases phases)
         #~(modify-phases #$phases
-            (delete 'disable-more-tests)))))
+            (replace 'disable-more-tests
+              (lambda _
+                #$@(cond
+                     ((target-aarch64?)
+                      ;; https://go-review.googlesource.com/c/go/+/151303
+                      ;; This test is known buggy on aarch64 and is enabled and
+                      ;; disabled upstream with some regularity.
+                      #~((substitute* "src/plugin/plugin_test.go"
+                           (("package plugin_test")
+                            (string-append "// +build !linux linux,!arm64\n\n"
+                                           "package plugin_test")))))
+                     (else (list #t)))))))))
     (properties
      `((compiler-cpu-architectures
          ("aarch64" ,@%go-1.23-arm64-micro-architectures)
