@@ -1399,7 +1399,7 @@ preferences/advanced-scripts.dtd"
                         icecat-dir)))))))))
 
 (define %icedove-build-id "20250916000000") ;must be of the form YYYYMMDDhhmmss
-;;; See <https://produt-details.mozilla.org/1.0/thunderbird_versions.json>
+;;; See <https://product-details.mozilla.org/1.0/thunderbird_versions.json>
 ;;; for the source of truth regarding Thunderbird releases.
 (define %icedove-version "140.3.0")
 
