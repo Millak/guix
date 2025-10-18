@@ -1151,7 +1151,7 @@ using a stylus.")
 (define-public xournalpp
   (package
     (name "xournalpp")
-    (version "1.2.6")
+    (version "1.2.8")
     (source
      (origin
        (method git-fetch)
@@ -1160,7 +1160,7 @@ using a stylus.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wsks4wwv4d6y2drd64c0p8986l5sv09pnlvpd7hl4asszxmybjm"))))
+        (base32 "134qmx6nvxfpfbx3sb6ss0vc5jcxlhysk699aaklpid03p8ps0y9"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1201,6 +1201,7 @@ using a stylus.")
      (list adwaita-icon-theme
            alsa-lib
            gtk+
+           gtksourceview-4
            (librsvg-for-system)
            libsndfile
            libxml2
