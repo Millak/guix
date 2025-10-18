@@ -23116,25 +23116,19 @@ feels like an AST.")
 (define-public python-typeapi
   (package
     (name "python-typeapi")
-    (version "2.1.1")
+    (version "2.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "typeapi" version))
        (sha256
-        (base32 "1652fc04gn6nkw8izim0g7v586f64fla6clinp5xq9rf739w3cs9"))))
+        (base32 "0yzx10cn33gxqvs33vwdf0f959hbkir4yzjp42imf28ca9khga6s"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #false                   ;there are none
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-build-system
-           (lambda _
-             (substitute* "pyproject.toml"
-               (("^docs =.*") "docs = []\n")))))))
+      #:tests? #false)) ;there are none
     (propagated-inputs (list python-typing-extensions))
-    (native-inputs (list python-poetry-core))
+    (native-inputs (list python-hatchling))
     (home-page "https://pypi.org/project/typeapi/")
     (synopsis "Type hints")
     (description "The typeapi package provides an object-oriented interface
