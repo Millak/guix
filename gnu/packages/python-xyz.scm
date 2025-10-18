@@ -16975,14 +16975,18 @@ checksums.  It implement more than a hundred checksum routines.")
 (define-public python-crashtest
   (package
     (name "python-crashtest")
-    (version "0.3.1")
+    (version "0.4.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "crashtest" version))
-        (sha256
-          (base32 "1p9p7mn8x2j9psc4jxab98897v4i9s4fliyfw8rp8v4bx1n7pjj2"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sdispater/crashtest")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "180xrr1iw1614z7yrrnsigy0211q9985f9pbzjsj6rvrs6w7fm2d"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-poetry-core python-pytest))
     (home-page "https://github.com/sdispater/crashtest")
     (synopsis "Manage Python errors with ease")
     (description
