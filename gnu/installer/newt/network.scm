@@ -168,10 +168,12 @@ Do you want to continue anyway?"))
 (define (check-substitute-availability)
   "Check that at least one of the Guix substitute servers is available."
   (define (substitutes-available?)
-    (common-urls-alive?
-     (list
-      "https://bordeaux.guix.gnu.org/nix-cache-info"
-      "https://ci.guix.gnu.org/nix-cache-info")))
+    (or
+     (file-exists? "/tmp/installer-assume-online")
+     (common-urls-alive?
+      (list
+       "https://bordeaux.guix.gnu.org/nix-cache-info"
+       "https://ci.guix.gnu.org/nix-cache-info"))))
 
   (let* ((full-value 5))
     (run-scale-page
