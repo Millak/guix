@@ -1825,6 +1825,41 @@ BigQuery.  It aims to read a wide variety of SQL inputs and output
 syntactically and semantically correct SQL in the targeted dialects.")
     (license license:expat)))
 
+(define-public python-sqlglotrs
+  (package
+    (inherit python-sqlglot)
+    (name "python-sqlglotrs")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sqlglotrs" version))
+       (sha256
+        (base32 "1q8ii7fbgl2b2smi80bn5ifbs5xfzrkqqb4r1j5xx2k98jjsff7n"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #false
+      #:tests? #f ;no tests
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-python-module
+            (assoc-ref py:%standard-phases 'build))
+          (add-after 'build-python-module 'install-python-module
+            (assoc-ref py:%standard-phases 'install))
+          (add-after 'install-python-module 'add-install-to-pythonpath
+            (assoc-ref py:%standard-phases 'add-install-to-pythonpath)))))
+    (native-inputs
+     (list maturin
+           python-wrapper))
+    (inputs
+     (cargo-inputs 'python-sqlglotrs))))
+
 (define-public python-streamtracer
   (package
     (name "python-streamtracer")
