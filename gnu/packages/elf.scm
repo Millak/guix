@@ -15,6 +15,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2025 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -43,13 +44,17 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages dejagnu)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages gdb)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -79,6 +84,41 @@
     (description "@code{chrpath} allows listing, changing or removing the
 dynamic library load path (RPATH and RUNPATH) of compiled programs and
 libraries.")
+    (license license:gpl2+)))
+
+(define-public dwz
+  (package
+    (name "dwz")
+    (version "0.16")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://sourceware.org/ftp"
+                                  "/" name "/releases/" name "-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "03nm4yz2sd23zmw65ingphg5gk619xx9r40a5p6dhvlynkhm6n27"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "CXX=" #$(cxx-for-target))
+                           (string-append "prefix=" #$output))))
+    (native-inputs
+     (list
+      ;; XXX: binutils-gold is a complete package that not only
+      ;; provides 'gold' but also 'ld', which shadows the
+      ;; regular 'ld' (ld-wrapper), causing breakage.
+      (make-ld-wrapper "ld-wrapper" #:binutils binutils)
+      binutils-gold
+      dejagnu
+      `(,elfutils "bin")                ;for eu-strip
+      gdb/pinned
+      pkg-config))
+    (inputs (list elfutils xxhash))
+    (synopsis "DWARF optimizer")
+    (description "DWZ is a DWARF optimization and duplicate removal tool.")
+    (home-page "https://sourceware.org/dwz")
     (license license:gpl2+)))
 
 (define-public elfutils
