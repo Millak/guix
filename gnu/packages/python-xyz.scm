@@ -19440,25 +19440,24 @@ objects.")
 (define-public python-configobj
   (package
     (name "python-configobj")
-    (version "5.0.6")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "configobj" version))
-              (sha256
-               (base32
-                "00h9rcmws03xvdlfni11yb60bz3kxfvsj6dg6nrpzj71f03nbxd2"))
-              ;; Patch setup.py so it looks for python-setuptools, which is
-              ;; required to parse the keyword 'install_requires' in setup.py.
-              (patches (search-patches "python-configobj-setuptools.patch"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-six))
-    (synopsis "Config file reading, writing and validation")
-    (description "ConfigObj is a simple but powerful config file reader and
-writer: an ini file round tripper.  Its main feature is that it is very easy to
-use, with a straightforward programmer’s interface and a simple syntax for
-config files.")
+    (version "5.0.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "configobj" version))
+       (sha256
+        (base32 "0j3872id3ngxkaapz9bv8as4lg4rfmch0dxqy767p81syaxq3j03"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/DiffSK/configobj")
+    (synopsis "Config file reading, writing and validation")
+    (description
+     "ConfigObj is a simple but powerful config file reader and writer: an
+ ini file round tripper.  Its main feature is that it is very easy to use,
+with a straightforward programmer’s interface and a simple syntax for config
+files.")
     (license license:bsd-3)))
 
 (define-public python-omegaconf
