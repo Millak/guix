@@ -16848,29 +16848,39 @@ header-ids.")
 (define-public python-mdx-include
   (package
     (name "python-mdx-include")
-    (version "1.4.1")
-    (source (origin
-              ;; Use git, as there are some test files missing from the PyPI
-              ;; release, see https://github.com/neurobin/mdx_include/issues/9
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/neurobin/mdx_include")
-                    ;; Releases are not tagged on github, see
-                    ;; https://github.com/neurobin/mdx_include/issues/10
-                    (commit "683e6be7a00a1ef4d673ad0294458fa61bc97286")))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0qpzgln4ybd7pl0m9s19dv60aq9cvwrk7x3yz96kjhcywaa5w386"))))
-    (build-system python-build-system)
+    (version "1.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/neurobin/mdx_include")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01fk4y7hkl8a06qfd4a258l8rgcx7z7j4dzb80gk9md48l6p516a"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'disable-test-requiring-network
-           (lambda _
-             (substitute* "mdx_include/test/test.py"
-               (("(\\s+def )test_(cache|config|default)\\(" _ pre post)
-                (string-append pre "__off__test_" post "("))))))))
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      (let* ((django-hello-url "\
+https://gist.github.com/drgarcia1986/3cce1d134c3c3eeb01bd/raw/\
+73951574d6b62a18b4c342235006ff89d299f879/django_hello.py")
+             (django-hello
+              (origin
+                (method url-fetch)
+                (uri django-hello-url)
+                (sha256 (base32 "\
+13bqmfqwypnv3apxs9akpk3fqsk0yzys5slxfllj285npnka550r")))))
+        #~(modify-phases %standard-phases
+            (add-before 'check 'disable-test-requiring-network
+              (lambda _
+                (substitute* "mdx_include/test/test.py"
+                  (("(\\s+def )test_(config|non_existent)\\(" _ pre post)
+                   (string-append pre "__off__test_" post "("))
+                  (((string-join (string-split #$django-hello-url #\.) "\\."))
+                   #+django-hello))))))))
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-cyclic python-markdown python-rcslice))
     (home-page "https://github.com/neurobin/mdx_include")
     (synopsis "Python Markdown extension to include local or remote files")
