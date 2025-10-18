@@ -15811,13 +15811,18 @@ and statistical routines from scipy and statsmodels.")
   (package
     (name "python-session-info")
     (version "1.0.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "session_info" version))
-              (sha256
-               (base32
-                "1dxnrgaxd2nb44n423mnrx119hmnh2yxdnzaw8mg60x7rh1mxniw"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/joelostblom/session_info")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w6y764qci5w9925c75xdr8jizgf8189mzzaz4zk5lw1f182yqy4"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests.
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-stdlib-list))
     (home-page "https://gitlab.com/joelostblom/session_info")
     (synopsis "Output version information for modules currently loaded")
