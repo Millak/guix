@@ -7029,25 +7029,6 @@ developed by the Astropy project but is intended to be general and usable by
 any Python package.")
     (license license:bsd-3)))
 
-(define-public python-types-colorama
-  (package
-    (name "python-types-colorama")
-    (version "0.4.15.20250801")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "types_colorama" version))
-       (sha256
-        (base32 "1xapqdq6450ngzp18nvvkwbs68nnxksk1wyk6wid2qw9sq9msmh2"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;no tests in PyPI archive
-    (native-inputs
-     (list python-setuptools))
-    (home-page "https://github.com/python/typeshed")
-    (synopsis "Typing stubs for colorama")
-    (description "This package provides typing stubs for colorama.")
-    (license license:asl2.0)))
-
 (define-public python-milc
   (package
     (name "python-milc")
@@ -36255,26 +36236,6 @@ but not binary streams.")
 multipurpose analysis in Python.")
     (license license:bsd-3)))
 
-(define-public python-types-dataclasses
-  (package
-    (name "python-types-dataclasses")
-    (version "0.6.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "types-dataclasses" version))
-       (sha256
-        (base32 "1fgp96m4kfxrwy6rdv3p24jzh6hf68702sfdfhcmm3aniv7jynjb"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;no tests
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/python/typeshed")
-    (synopsis "Typing stubs for dataclasses")
-    (description
-     "This package provides a collection of library stubs for Python, with
-static types.")
-    (license license:asl2.0)))
-
 (define-public python-types-python-dateutil
   (package
     (name "python-types-python-dateutil")
@@ -36291,24 +36252,6 @@ static types.")
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for python-dateutil")
     (description "This package providis typing stubs for python-dateutil.")
-    (license license:asl2.0)))
-
-(define-public python-types-aiofiles
-  (package
-    (name "python-types-aiofiles")
-    (version "25.1.0.20251011")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "types_aiofiles" version))
-       (sha256
-        (base32 "1zyk53h1017s1pc094w909miwvjsq3yhxlgr2l6d8g6bc2r8laqw"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;no tests in PyPI archive
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/python/typeshed")
-    (synopsis "Typing stubs for python-aiofiles")
-    (description "This package providis typing stubs for python-aiofiles.")
     (license license:asl2.0)))
 
 (define-public python-types-tqdm
@@ -36328,25 +36271,6 @@ static types.")
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for python-tqdm")
     (description "This package providis typing stubs for python-tqdm.")
-    (license license:asl2.0)))
-
-(define-public python-types-docutils
-  (package
-    (name "python-types-docutils")
-    (version "0.22.2.20251006")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "types_docutils" version))
-       (sha256
-        (base32 "1cp3p4bsaa646fa3kpjwjwsqbn6vz77pn57913lkknkf21ch8v63"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;no tests
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/python/typeshed")
-    (synopsis "Typing stubs for docutils")
-    (description "This package provides a collection of library stubs for
-Python, with static types.")
     (license license:asl2.0)))
 
 (define-public python-types-requests
@@ -36553,27 +36477,6 @@ async I/O support.")
     (description
      "This package adds ANSI colors and decorations to your strings.")
     (license license:isc)))
-
-(define-public python-types-dateutil
-  (package
-    (name "python-types-dateutil")
-    (version "2.9.0.20240316")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "types-python-dateutil" version))
-       (sha256
-        (base32 "00h2xi8p6ygdv9nhgwdyx86ky9m9dpdqgmsdji05x4461cj2wbsx"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f)) ; no tests
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
-    (home-page "https://github.com/python/typeshed")
-    (synopsis "Typing stubs for python-dateutil")
-    (description
-     "This is a PEP 561 type stub package for the @code{python-dateutil}
-package.")
-    (license license:asl2.0)))
 
 (define-public python-types-freezegun
   (package
@@ -38634,6 +38537,103 @@ with PEP 484 argument (and return) type annotations.")
      "Typer is a library for building CLI applications.  It's based on Python
 3.6+ type hints.")
     (license license:expat)))
+
+(define-public python-types-aiofiles
+  (package
+    (name "python-types-aiofiles")
+    (version "25.1.0.20251011")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_aiofiles" version))
+       (sha256
+        (base32 "1zyk53h1017s1pc094w909miwvjsq3yhxlgr2l6d8g6bc2r8laqw"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in PyPI archive
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for python-aiofiles")
+    (description "This package providis typing stubs for python-aiofiles.")
+    (license license:asl2.0)))
+
+(define-public python-types-colorama
+  (package
+    (name "python-types-colorama")
+    (version "0.4.15.20250801")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_colorama" version))
+       (sha256
+        (base32 "1xapqdq6450ngzp18nvvkwbs68nnxksk1wyk6wid2qw9sq9msmh2"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in PyPI archive
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for colorama")
+    (description "This package provides typing stubs for colorama.")
+    (license license:asl2.0)))
+
+(define-public python-types-dataclasses
+  (package
+    (name "python-types-dataclasses")
+    (version "0.6.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types-dataclasses" version))
+       (sha256
+        (base32 "1fgp96m4kfxrwy6rdv3p24jzh6hf68702sfdfhcmm3aniv7jynjb"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for dataclasses")
+    (description
+     "This package provides a collection of library stubs for Python, with
+static types.")
+    (license license:asl2.0)))
+
+(define-public python-types-dateutil
+  (package
+    (name "python-types-dateutil")
+    (version "2.9.0.20240316")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types-python-dateutil" version))
+       (sha256
+        (base32 "00h2xi8p6ygdv9nhgwdyx86ky9m9dpdqgmsdji05x4461cj2wbsx"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ; no tests
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for python-dateutil")
+    (description
+     "This is a PEP 561 type stub package for the @code{python-dateutil}
+package.")
+    (license license:asl2.0)))
+
+(define-public python-types-docutils
+  (package
+    (name "python-types-docutils")
+    (version "0.22.2.20251006")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_docutils" version))
+       (sha256
+        (base32 "1cp3p4bsaa646fa3kpjwjwsqbn6vz77pn57913lkknkf21ch8v63"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for docutils")
+    (description "This package provides a collection of library stubs for
+Python, with static types.")
+    (license license:asl2.0)))
 
 (define-public python-ua-parser
   (package
