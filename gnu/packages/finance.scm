@@ -1632,21 +1632,44 @@ main features are:
 (define-public silkaj
   (package
     (name "silkaj")
-    (version "0.10.0")
+    (version "0.12.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "silkaj" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.duniter.org/clients/python/silkaj")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0p8jqnswrrxri8i2ikdz8mij7gks0yab3wdcb37jf2kjwmrwanpk"))))
+        (base32 "0prglgwvzi676h4lyw9266sqiqbfs2l0mv0bmjvplvdxzzcs63bv"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; They require Poetry in the PATH.
+      #~(list "--ignore=tests/integration/"
+              ;; Network access is required.
+              "--deselect=tests/unit/money/test_history.py::test_csv_output"
+              ;; AssertionError: Expected 'mock' to have been called
+              ;; once. Called 0 times
+              "--deselect=tests/unit/test_auth.py::test_authentication_wif")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-check-environment
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "TZ" "UTC")
+              (setenv "TZDIR"
+                      (search-input-directory inputs
+                                              "share/zoneinfo")))))))
     (native-inputs
-     (list python-poetry-core))
+     (list python-poetry-core
+           python-pytest
+           python-pytest-sugar
+           tzdata-for-tests))
     (propagated-inputs
-     (list python-click
-           python-duniterpy
+     (list python-duniterpy
            python-pendulum
-           python-tabulate
+           python-rich-click
            python-texttable))
     (home-page "https://git.duniter.org/clients/python/silkaj")
     (synopsis "Command line client for Duniter network")
