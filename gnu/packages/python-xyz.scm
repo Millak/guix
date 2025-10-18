@@ -19385,6 +19385,44 @@ tasks and students.  It includes single-command deployment for the Django Girls
 tutorial.")
     (license license:expat)))
 
+(define-public python-pythonanywhere-core
+  (package
+    (name "python-pythonanywhere-core")
+    (version "0.2.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pythonanywhere/pythonanywhere-core")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p9zlq3is0jvbni9ydiv6f0fw89lm44hkgbj6nari2a3gb3qw856"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-pytest-mock
+           python-responses))
+    (propagated-inputs
+     (list python-dateutil
+           python-requests
+           python-snakesay
+           python-typing-extensions))
+    (home-page "https://github.com/pythonanywhere/pythonanywhere-core")
+    (synopsis "API wrapper for PythonAnywhere services")
+    (description
+     "This package provides an API wrapper for programmatic management of
+@code{PythonAnywhere} services.")
+    (license license:expat)))
+
 (define-public python-pythondialog
   (package
     (name "python-pythondialog")
