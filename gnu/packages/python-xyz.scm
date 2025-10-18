@@ -36553,14 +36553,17 @@ Python stubs contained in the complete @code{typeshed} collection.")
 (define-public python-types-ujson
   (package
     (name "python-types-ujson")
-    (version "4.2.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "types-ujson" version))
-              (sha256
-               (base32
-                "0k9n9hsq4k2zaakdwbkcsvi7m8d3mv2y9yl6f171y58ld4qpcxcy"))))
-    (build-system python-build-system)
+    (version "5.10.0.20250822")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_ujson" version))
+       (sha256
+        (base32 "01m0gdcy6plrjxxih96ra86wd2zhn4skzw7k7hvk51gpw5c5ay8a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests provided
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for ujson")
     (description
