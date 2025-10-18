@@ -23258,30 +23258,6 @@ feels like an AST.")
            python-setuptools-scm
            python-wheel)))))
 
-(define-public python-typeapi
-  (package
-    (name "python-typeapi")
-    (version "2.2.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "typeapi" version))
-       (sha256
-        (base32 "0yzx10cn33gxqvs33vwdf0f959hbkir4yzjp42imf28ca9khga6s"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #false)) ;there are none
-    (propagated-inputs (list python-typing-extensions))
-    (native-inputs (list python-hatchling))
-    (home-page "https://pypi.org/project/typeapi/")
-    (synopsis "Type hints")
-    (description "The typeapi package provides an object-oriented interface
-for introspecting PEP484 type hints at runtime, including forward references
-that make use of the more recent PEP585 and PEP604 type hint features in
-Python versions that don't natively support them.")
-    (license license:expat)))
-
 (define-public python-typing-inspect
   (package
     (name "python-typing-inspect")
@@ -27797,67 +27773,6 @@ files (also known as changelogs) for a project.")
 @code{future_fstrings}, which performs source manipulation.  It decodes the
 source bytes using the UTF-8 encoding and then rewrites Python 3.6 style
 @code{f} strings.")
-    (license license:expat)))
-
-(define-public python-typer
-  (package
-    (name "python-typer")
-    (version "0.19.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/fastapi/typer")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "13lkzlpb35xzz1spdisrmq7md9wq3msqxwcqj85vk905iq80xjwq"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))))
-    (native-inputs
-     (list python-coverage      ;this is required in tests
-           python-pdm-backend
-           python-pytest
-           python-pytest-xdist))
-    (propagated-inputs
-     (list python-click
-           python-typing-extensions
-           ;; [optional]
-           python-rich
-           python-shellingham))
-    (home-page "https://github.com/fastapi/typer")
-    (synopsis "Typer builds CLI based on Python type hints")
-    (description
-     "Typer is a library for building CLI applications.  It's based on Python
-3.6+ type hints.")
-    (license license:expat)))
-
-(define-public python-typeguard
-  (package
-    (name "python-typeguard")
-    (version "4.4.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "typeguard" version))
-       (sha256
-        (base32 "0x2zkskia5lb1838ys0bhpp9v6y80jkhchzdz874spbhzggx4zrs"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-mypy
-           python-pytest
-           python-setuptools
-           python-setuptools-scm))
-    (propagated-inputs
-     (list python-typing-extensions))
-    (home-page "https://github.com/agronholm/typeguard")
-    (synopsis "Run-time type checker for Python")
-    (description
-     "@code{typeguard} provides run-time type checking for functions defined
-with PEP 484 argument (and return) type annotations.")
     (license license:expat)))
 
 (define-public bpython
@@ -38633,6 +38548,91 @@ frequencies) of over a million different unigrams (single words or tokens), or o
 bigrams (pairs of two words or tokens), or of trigrams.  Icegrams is useful for
 instance in spelling correction, predictive typing, to help disabled people
 write text fast, and for various text generation, statistics, and modeling tasks.")
+    (license license:expat)))
+
+(define-public python-typeapi
+  (package
+    (name "python-typeapi")
+    (version "2.2.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "typeapi" version))
+       (sha256
+        (base32 "0yzx10cn33gxqvs33vwdf0f959hbkir4yzjp42imf28ca9khga6s"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false)) ;there are none
+    (propagated-inputs (list python-typing-extensions))
+    (native-inputs (list python-hatchling))
+    (home-page "https://pypi.org/project/typeapi/")
+    (synopsis "Type hints")
+    (description "The typeapi package provides an object-oriented interface
+for introspecting PEP484 type hints at runtime, including forward references
+that make use of the more recent PEP585 and PEP604 type hint features in
+Python versions that don't natively support them.")
+    (license license:expat)))
+
+(define-public python-typeguard
+  (package
+    (name "python-typeguard")
+    (version "4.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "typeguard" version))
+       (sha256
+        (base32 "0x2zkskia5lb1838ys0bhpp9v6y80jkhchzdz874spbhzggx4zrs"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-mypy
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-typing-extensions))
+    (home-page "https://github.com/agronholm/typeguard")
+    (synopsis "Run-time type checker for Python")
+    (description
+     "@code{typeguard} provides run-time type checking for functions defined
+with PEP 484 argument (and return) type annotations.")
+    (license license:expat)))
+
+(define-public python-typer
+  (package
+    (name "python-typer")
+    (version "0.19.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fastapi/typer")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13lkzlpb35xzz1spdisrmq7md9wq3msqxwcqj85vk905iq80xjwq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))))
+    (native-inputs
+     (list python-coverage      ;this is required in tests
+           python-pdm-backend
+           python-pytest
+           python-pytest-xdist))
+    (propagated-inputs
+     (list python-click
+           python-typing-extensions
+           ;; [optional]
+           python-rich
+           python-shellingham))
+    (home-page "https://github.com/fastapi/typer")
+    (synopsis "Typer builds CLI based on Python type hints")
+    (description
+     "Typer is a library for building CLI applications.  It's based on Python
+3.6+ type hints.")
     (license license:expat)))
 
 (define-public python-ua-parser
