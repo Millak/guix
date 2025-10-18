@@ -4976,7 +4976,7 @@ applications within subclasses of @code{QOpenGLWidget} and
 (define-public qtkeychain
   (package
     (name "qtkeychain")
-    (version "0.14.3")
+    (version "0.15.0")
     (source
      (origin
        (method git-fetch)
@@ -4986,7 +4986,7 @@ applications within subclasses of @code{QOpenGLWidget} and
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1li40ka0g8v2f1q01gpabpx264wmk5zrv2961sg3byj70kf9fmgv"))))
+         "0j1mn6vl0zc54b0pcffr20sqa5lbiwyi0l6vfa1ad3av0b66h1zy"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config qttools-5))
