@@ -17143,19 +17143,24 @@ functionality and customization to your projects with their own plugins.")
     (version "2.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pysendfile" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/giampaolo/pysendfile")
+              (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "05qf0m32isflln1zjgxlpw0wf469lj86vdwwqyizp1h94x5l22ji"))))
-    (build-system python-build-system)
+        (base32 "1d2pcqad57l5ilc2icabybzzjgsg46djklhvyf17fgbkb0x3yc7c"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases #~(modify-phases %standard-phases
-                   (replace 'check
-                     (lambda* (#:key tests? #:allow-other-keys)
-                       (when tests?
-                         (setenv "HOME" "/tmp")
-                         (invoke "make" "test")))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (invoke "make" "test")))))))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/giampaolo/pysendfile")
     (synopsis "Python interface to sendfile(2)")
     (description "The @code{pysendfile} Python library provides an interface to
