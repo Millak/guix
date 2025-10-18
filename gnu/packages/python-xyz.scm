@@ -22810,15 +22810,27 @@ useful to combine multiple data objects as one.")
     (version "0.6.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "clikit" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sdispater/clikit")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0ngdkmb73gkp5y00q7r9k1cdlfn0wyzws2wrqlshc4hlkbdyabj4"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))  ; no test in the PyPI tarball
-    (propagated-inputs
-     (list python-crashtest python-pastel python-pylev))
+        (base32 "1l11iriqc61m30fp17yxwkgl5900kiw8x8vw2i93n1jh2lv182y4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("^crashtest.*")
+                 (format #f "crashtest=~s"
+                         #$(package-version
+                            (this-package-input "python-crashtest"))))))))))
+    (native-inputs (list python-poetry-core python-pytest python-pytest-mock))
+    (propagated-inputs (list python-crashtest python-pastel python-pylev))
     (home-page "https://github.com/sdispater/clikit")
     (synopsis "Group of utilities to build command line interfaces")
     (description
