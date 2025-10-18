@@ -369,13 +369,13 @@ This package is part of the KDE multimedia module.")
 (define-public haruna
   (package
     (name "haruna")
-    (version "1.4.0")
+    (version "1.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/haruna/" version
                                   "/haruna-" version ".tar.xz"))
               (sha256
-               (base32 "0vnzv13m6dfpj3vql0h0rqpdqpnaj0rmfqjjzwvqdk4d2kippd1w"))))
+               (base32 "0pgg90z8jykzndmgb32j0avlwrw0n0x3n9gmbs58c238ydi4xryk"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -390,7 +390,7 @@ This package is part of the KDE multimedia module.")
                                      (search-input-file inputs "bin/yt-dlp")
                                      "\""))))))))
     (native-inputs
-     (list extra-cmake-modules))
+     (list extra-cmake-modules pkg-config))
     (inputs
      (list breeze ;default theme
            breeze-icons ;default icon set
@@ -399,6 +399,7 @@ This package is part of the KDE multimedia module.")
            kconfig
            kcoreaddons
            kcrash
+           kdsingleapplication
            kfilemetadata
            ki18n
            kiconthemes
