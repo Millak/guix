@@ -13147,7 +13147,7 @@ and unsafe rides.  Which path will you take?")
 (define-public ultrastar-deluxe
   (package
     (name "ultrastar-deluxe")
-    (version "2024.10.0")
+    (version "2025.10.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -13156,7 +13156,7 @@ and unsafe rides.  Which path will you take?")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16q6b5nnjx5baq4m30ys47970kjgp06xihyd6qyb08s0yk2f54jz"))
+                "009fbxdv4qkc15y4lisi6d4phv3dk9mypl2hhzfhyjh0i04d2wwa"))
               (patches (search-patches "ultrastar-deluxe-no-freesans.patch"))
               (modules '((guix build utils)))
               (snippet
@@ -13194,10 +13194,9 @@ and unsafe rides.  Which path will you take?")
                   (string-append
                    "linkflags := -lpthread -lsqlite3 -lSDL2"
                    " -lSDL2_image -ldl "
-                   " -lz -lfreetype -lportaudio -lavcodec"
+                   " -lfreetype -lportaudio -lavcodec"
                    " -lavformat -lavutil -lswresample"
                    " -lswscale -llua -ldl -lX11 -lportmidi"
-                   " -L" (where inputs "lib/libz.so")
                    " -L" (where inputs "lib/libX11.so")
                    " -L" (where inputs "lib/libportmidi.so"))))))
            (add-after 'install 'font-paths
@@ -13221,8 +13220,7 @@ and unsafe rides.  Which path will you take?")
                   portmidi
                   sdl2
                   sdl2-image
-                  sqlite
-                  zlib))
+                  sqlite))
     (native-inputs (list pkg-config fpc autoconf automake))
     (synopsis "Karaoke game")
     (description
