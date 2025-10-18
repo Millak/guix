@@ -1789,6 +1789,42 @@ Snake with a message.")
 be displayed terminal.")
     (license license:expat)))
 
+(define-public python-sqlglot
+  (package
+    (name "python-sqlglot")
+    (version "26.33.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sqlglot" version))
+       (sha256
+        (base32 "0wqdpix71bzx61qwk3mi7v42afmrj03dg81sykgdclgsg63jf5r8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "SQLGLOTRS_TOKENIZER" "0"))))))
+    (native-inputs
+     (list python-duckdb
+           python-pytz
+           python-pandas
+           python-setuptools
+           python-setuptools-scm
+           python-tzdata))
+    (home-page "https://sqlglot.com/")
+    (synopsis "Python SQL Parser and Transpiler")
+    (description
+     "SQLGlot is a no-dependency SQL parser, transpiler, optimizer, and
+engine.  It can be used to format SQL or translate between 31 different
+dialects like DuckDB, Presto / Trino, Spark / Databricks, Snowflake, and
+BigQuery.  It aims to read a wide variety of SQL inputs and output
+syntactically and semantically correct SQL in the targeted dialects.")
+    (license license:expat)))
+
 (define-public python-streamtracer
   (package
     (name "python-streamtracer")
