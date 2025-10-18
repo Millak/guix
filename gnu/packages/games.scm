@@ -11736,7 +11736,7 @@ Xjump game, using SDL instead of Xlib.")
 (define-public xmoto
   (package
     (name "xmoto")
-    (version "0.6.2")
+    (version "0.6.3")
     (source
      (origin
        (method git-fetch)
@@ -11745,7 +11745,7 @@ Xjump game, using SDL instead of Xlib.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14z3yqpiyv4y5l37b12kf8ipgsmb9krb4b5d9adlrry0j43hd7wz"))
+        (base32 "08yi6sgz349s7wa07dyrlbhpkmi25arz0c849qgpsj65vr8n7n8c"))
        (modules '((guix build utils)
                   (ice-9 ftw)
                   (srfi srfi-1)))
