@@ -26902,17 +26902,21 @@ their files and supports any packaging format (including wheels).")
 in human-readable HTML format.")
     (license license:unlicense)))
 
+;; XXX: This project was archived by the owner on Oct 4, 2023. It is now
+;; read-only.  Consider to remvoe when nothing depends on it.
 (define-public python-ratelimiter
+  ;; From https://github.com/RazerM/ratelimiter/pull/11
+  (let ((commit "59a0827c434706d62b89e16a220e4ae12e618858")
+        (revision "0"))
   (package
     (name "python-ratelimiter")
-    (version "1.2.0.post1")
+    (version (git-version "1.2.0.post1" revision commit))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/RazerM/ratelimiter")
-             ;; From https://github.com/RazerM/ratelimiter/pull/11
-             (commit "59a0827c434706d62b89e16a220e4ae12e618858")))
+             (commit commit)))
        (sha256
         (base32
          "1v34w12f41j0l2gy9ji9ip01kj4idjfjx7a97wrlr1ibxi7hg3bs"))))
@@ -26926,15 +26930,14 @@ in human-readable HTML format.")
                     (("pytest.collect.File") "pytest.File")))))))
     (native-inputs
      (list python-pytest
-           python-pytest-asyncio
-           python-setuptools
-           python-wheel))
+           python-pytest-asyncio-0.26
+           python-setuptools))
     (home-page "https://github.com/RazerM/ratelimiter")
     (synopsis "Simple rate limiting object")
     (description
      "The @code{ratelimiter} module ensures that an operation will not be
 executed more than a given number of times during a given period.")
-    (license license:asl2.0)))
+    (license license:asl2.0))))
 
 (define-public python-rbfly
   (package
