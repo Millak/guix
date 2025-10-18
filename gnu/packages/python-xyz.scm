@@ -15897,27 +15897,32 @@ multiprecision arithmetic.")
     (version "1.3.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "plac" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ialbert/plac")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1410h6jw1ksi24kb55xzkwqzba2qqjwiga1s354bf3s5s1jdig9q"))))
-    (build-system python-build-system)
+        (base32 "1n0cbil1snbn0diw8zjm7qs77zpbgmf2k76mc2jknhk1hbnksyak"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-tkinter
-           (lambda _
-             (substitute* "plac_tk.py"
-               (("from Tkinter import Tk")
-                "from tkinter import Tk")
-               (("from ScrolledText import ScrolledText")
-                "from tkinter.scrolledtext import ScrolledText")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tkinter
+            (lambda _
+              (substitute* "plac_tk.py"
+                (("from Tkinter import Tk")
+                 "from tkinter import Tk")
+                (("from ScrolledText import ScrolledText")
+                 "from tkinter.scrolledtext import ScrolledText")))))))
     (native-inputs
-     `(("python-tkinter" ,python "tk")))
+     (list (list python "tk") python-pytest python-setuptools))
     (home-page "https://github.com/ialbert/plac")
     (synopsis "Command line arguments parser")
-    (description "This package can generate command line parameters from
-function signatures.")
+    (description
+     "This package can generate command line parameters from function
+signatures.")
     (license license:bsd-3)))
 
 (define-public python-syllables
