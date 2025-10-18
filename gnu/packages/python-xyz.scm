@@ -17090,20 +17090,32 @@ when an operation takes longer than expected.")
 (define-public python-straight-plugin
   (package
     (name "python-straight-plugin")
-    (version "1.4.1")
+    (properties '((commit . "363b0af4a2560bf9a3cb61160ecf28a1a1b9c91f")
+                  (revision . "0")))
+    (version (git-version "1.4.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "straight.plugin" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ironfroggy/straight.plugin")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "069pjll4383p4kkgvcc40hgyvf79j2wdbpgwz77yigzxksh1gj62"))))
-    (build-system python-build-system)
+        (base32 "03p2apj7i9m38nmccfhvzldmzd61icv145vpmifln3mvh09jm6c2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "tests.py")))
+    (native-inputs (list python-mock python-setuptools))
     (home-page "https://github.com/ironfroggy/straight.plugin")
     (synopsis "Simple namespaced plugin facility")
-    (description "Straight Plugin provides a type of plugin you can create from
-almost any existing Python modules, and an easy way for outside developers to
-add functionality and customization to your projects with their own plugins.")
+    (description
+     "Straight Plugin provides a type of plugin you can create from almost any
+existing Python modules, and an easy way for outside developers to add
+functionality and customization to your projects with their own plugins.")
     (license license:expat)))
 
 (define-public python-strenum
