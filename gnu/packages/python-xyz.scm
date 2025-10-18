@@ -36236,24 +36236,6 @@ but not binary streams.")
 multipurpose analysis in Python.")
     (license license:bsd-3)))
 
-(define-public python-types-python-dateutil
-  (package
-    (name "python-types-python-dateutil")
-    (version "2.9.0.20250708")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "types_python_dateutil" version))
-       (sha256
-        (base32 "1ay8sp8qshx2na2sa9sz9hg2hb7yrws9ymshqfb9cv1dmdfxgnyc"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;no tests in PyPI archive
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/python/typeshed")
-    (synopsis "Typing stubs for python-dateutil")
-    (description "This package providis typing stubs for python-dateutil.")
-    (license license:asl2.0)))
-
 (define-public python-types-tqdm
   (package
     (name "python-types-tqdm")
@@ -36351,25 +36333,6 @@ multipurpose analysis in Python.")
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for urllib3")
     (description "This package provides typing stubs for urllib3.")
-    (license license:asl2.0)))
-
-(define-public python-types-pyyaml
-  (package
-    (name "python-types-pyyaml")
-    (version "6.0.12.20250915")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "types_pyyaml" version))
-       (sha256
-        (base32 "1lyirqjacfmn6bv27b7w0z483yps6gfqfmhnyzkg00y352jm92qg"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;no tests in PyPI archive
-    (native-inputs
-     (list python-setuptools))
-    (home-page " https://github.com/python/typeshed")
-    (synopsis "Typing stubs for PyYAML")
-    (description "This package provides typing stubs for @code{PyYAML}.")
     (license license:asl2.0)))
 
 (define-public python-typeshed-client
@@ -36477,73 +36440,6 @@ async I/O support.")
     (description
      "This package adds ANSI colors and decorations to your strings.")
     (license license:isc)))
-
-(define-public python-types-freezegun
-  (package
-    (name "python-types-freezegun")
-    (version "1.1.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "types-freezegun" version))
-       (sha256
-        (base32 "08g926s8343zwq140zcfwly3qfgmahm7lp0vgb3ics549b2hifzl"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; XXX: No tests in PyPi source, but it's also unclear how to get the
-     ;; right files from source, so ignore them for now.
-     (list #:tests? #f))
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "https://github.com/python/typeshed")
-    (synopsis "Typing stubs for @code{freezegun}")
-    (description "This package contains typing stubs for for @code{freezegun}, a
-very small subset the Python stubs contained in the complete @code{typeshed}
-collection.")
-    (license license:asl2.0)))
-
-(define-public python-types-protobuf
-  (package
-    (name "python-types-protobuf")
-    (version "3.20.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "types-protobuf" version))
-              (sha256
-               (base32
-                "000f8n6d4ilihiaf590k73rx3327jh8ima5q5dpxlwz3frj45qrn"))))
-    (build-system pyproject-build-system)
-    (arguments
-     ;; XXX: No tests in PyPi source, but it's also unclear how to get the
-     ;; right files from source, so ignore them for now.
-     (list #:tests? #f))
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "https://github.com/python/typeshed")
-    (synopsis "Typing stubs for @code{protobuf}")
-    (description "This package contains typing stubs for @code{protobuf}, a
-very small subset the Python stubs contained in the complete @code{typeshed}
-collection.")
-    (license license:asl2.0)))
-
-(define-public python-types-pytz
-  (package
-    (name "python-types-pytz")
-    (version "2025.2.0.20250809")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "types_pytz" version))
-       (sha256
-        (base32 "1r91pvn1w9rb1395qw8w8k22s7w0wf2qfkl3z1qqiclvlbk34bi2"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))        ;no tests provided
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/python/typeshed")
-    (synopsis "Typing stubs for pytz")
-    (description "This package contains typing stubs for @code{pytz}, a very
-small subset the Python stubs contained in the complete @code{typeshed}
-collection.")
-    (license license:asl2.0)))
 
 (define-public python-types-toml
   (package
@@ -38024,26 +37920,6 @@ slice file content line by line or column by column or a combination of
 both.")
     (license license:bsd-3)))
 
-(define-public python-types-orjson
-  (package
-    (name "python-types-orjson")
-    (version "3.6.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "types-orjson" version))
-       (sha256
-        (base32 "0f66lf2qrl9d4vad42db3dmnzv89h4rr05r5zxx5qcl6kb3zr6ng"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;no tests
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/python/typeshed")
-    (synopsis "Typing stubs for orjson")
-    (description "This is a PEP 561 type stub package for the @code{orjson}
-package.  It can be used by type-checking tools like mypy, PyCharm, pytype
-etc. to check code that uses @code{orjson}.")
-    (license license:asl2.0)))
-
 (define-public python-types-regex
   (package
     (name "python-types-regex")
@@ -38633,6 +38509,130 @@ package.")
     (synopsis "Typing stubs for docutils")
     (description "This package provides a collection of library stubs for
 Python, with static types.")
+    (license license:asl2.0)))
+
+(define-public python-types-freezegun
+  (package
+    (name "python-types-freezegun")
+    (version "1.1.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types-freezegun" version))
+       (sha256
+        (base32 "08g926s8343zwq140zcfwly3qfgmahm7lp0vgb3ics549b2hifzl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: No tests in PyPi source, but it's also unclear how to get the
+     ;; right files from source, so ignore them for now.
+     (list #:tests? #f))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for @code{freezegun}")
+    (description "This package contains typing stubs for for @code{freezegun}, a
+very small subset the Python stubs contained in the complete @code{typeshed}
+collection.")
+    (license license:asl2.0)))
+
+(define-public python-types-orjson
+  (package
+    (name "python-types-orjson")
+    (version "3.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types-orjson" version))
+       (sha256
+        (base32 "0f66lf2qrl9d4vad42db3dmnzv89h4rr05r5zxx5qcl6kb3zr6ng"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for orjson")
+    (description "This is a PEP 561 type stub package for the @code{orjson}
+package.  It can be used by type-checking tools like mypy, PyCharm, pytype
+etc. to check code that uses @code{orjson}.")
+    (license license:asl2.0)))
+
+(define-public python-types-protobuf
+  (package
+    (name "python-types-protobuf")
+    (version "3.20.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "types-protobuf" version))
+              (sha256
+               (base32
+                "000f8n6d4ilihiaf590k73rx3327jh8ima5q5dpxlwz3frj45qrn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: No tests in PyPi source, but it's also unclear how to get the
+     ;; right files from source, so ignore them for now.
+     (list #:tests? #f))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for @code{protobuf}")
+    (description "This package contains typing stubs for @code{protobuf}, a
+very small subset the Python stubs contained in the complete @code{typeshed}
+collection.")
+    (license license:asl2.0)))
+
+(define-public python-types-python-dateutil
+  (package
+    (name "python-types-python-dateutil")
+    (version "2.9.0.20250708")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_python_dateutil" version))
+       (sha256
+        (base32 "1ay8sp8qshx2na2sa9sz9hg2hb7yrws9ymshqfb9cv1dmdfxgnyc"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in PyPI archive
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for python-dateutil")
+    (description "This package providis typing stubs for python-dateutil.")
+    (license license:asl2.0)))
+
+(define-public python-types-pytz
+  (package
+    (name "python-types-pytz")
+    (version "2025.2.0.20250809")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_pytz" version))
+       (sha256
+        (base32 "1r91pvn1w9rb1395qw8w8k22s7w0wf2qfkl3z1qqiclvlbk34bi2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests provided
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for pytz")
+    (description "This package contains typing stubs for @code{pytz}, a very
+small subset the Python stubs contained in the complete @code{typeshed}
+collection.")
+    (license license:asl2.0)))
+
+(define-public python-types-pyyaml
+  (package
+    (name "python-types-pyyaml")
+    (version "6.0.12.20250915")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_pyyaml" version))
+       (sha256
+        (base32 "1lyirqjacfmn6bv27b7w0z483yps6gfqfmhnyzkg00y352jm92qg"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in PyPI archive
+    (native-inputs
+     (list python-setuptools))
+    (home-page " https://github.com/python/typeshed")
+    (synopsis "Typing stubs for PyYAML")
+    (description "This package provides typing stubs for @code{PyYAML}.")
     (license license:asl2.0)))
 
 (define-public python-ua-parser
