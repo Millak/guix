@@ -16449,18 +16449,22 @@ complexity of Python source code.")
     (version "0.2.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "flake8-blind-except" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/elijahandrews/flake8-blind-except")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "05nxsxfzfhwsm8gys90228imm2qbnqnw5y8bfqyfngnbkmd5fnpj"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f))                    ; no tests
-    (native-inputs (list python-pycodestyle))
+        (base32 "09zrfrm0896miysrpb7fhxzqjn6pm8y0b638nncswm2wvw9by72q"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ;no tests
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-pycodestyle))
     (home-page "https://github.com/elijahandrews/flake8-blind-except")
     (synopsis "Check for blind @code{except:} statements")
-    (description "This package provides a flake8 extension that checks for
-blind @code{except:} statements.")
+    (description
+     "This package provides a flake8 extension that checks for blind
+@code{except:} statements.")
     (license license:expat)))
 
 (define-public python-flake8-bugbear
