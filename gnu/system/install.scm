@@ -102,6 +102,7 @@
     ("en" . "System Installation")
     ("es" . "Instalación del sistema")
     ("fr" . "Installation du système")
+    ("it" . "Installazione del Sistema")
     ("pt_BR" . "Instalação do sistema")
     ("ru" . "Установка системы")
     ("zh_CN" . "系统安装")))
