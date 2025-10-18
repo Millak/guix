@@ -16684,14 +16684,17 @@ first-class forward references that stub files use.")
     (version "0.7")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "flake8-todo" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/schlamar/flake8-todo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "05arm0sch3r8248035kilmf01z0mxsahw6vpbbz0d343zy8m8k3f"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-pycodestyle))
+        (base32 "0bx4bs9l6cvqk5v21my4dn0zmkrr0sajsw6f3x1dj4fpg3dp5d8s"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-pycodestyle))
     (home-page "https://github.com/schlamar/flake8-todo")
     (synopsis "TODO notes checker, plugin for flake8")
     (description
