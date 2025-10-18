@@ -17215,11 +17215,13 @@ It has a flexible system of @samp{authorizers} able to manage both
     (version "2.4.16")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "fs" version))
-       (sha256
-        (base32 "04ykd7q49qgv13hl2n71lzihs2c9099r50lmd85vgx0k2bawg5xf"))))
-    (build-system python-build-system)
+       (method git-fetch)
+       (uri (git-reference (url
+                            "https://github.com/PyFilesystem/pyfilesystem2/")
+                           (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "1wrkhsv57kv4jcadn7w330mgbjjsimgzfvicni8cka6y1a8chbjs"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? (and (not (%current-target-system))
@@ -17239,15 +17241,16 @@ It has a flexible system of @samp{authorizers} able to manage both
      (if (and (not (%current-target-system))
               (supported-package? python-pyftpdlib))
          (list python-mock python-parameterized python-pyftpdlib
-               python-pytest)
+               python-pytest python-setuptools)
          '()))
     (home-page "https://github.com/PyFilesystem/pyfilesystem2/")
     (synopsis "File system abstraction layer for Python")
-    (description "PyFilesystem's @code{FS} object is a file system abstraction
-sharing similarities with Python's own @code{file} object for single files.
-It allows opening all the files under a given directory recursively, as a
-single @code{FS} object.  This enables, for example, counting the combined
-number of lines in the contained files easily.")
+    (description
+     "PyFilesystem's @code{FS} object is a file system abstraction sharing
+similarities with Python's own @code{file} object for single files.  It allows
+opening all the files under a given directory recursively, as a single
+@code{FS} object.  This enables, for example, counting the combined number of
+lines in the contained files easily.")
     (license license:expat)))
 
 ;;; Tests are left out in the main package to avoid cycles.
