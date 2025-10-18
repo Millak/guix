@@ -3570,42 +3570,6 @@ started on demand.")
 with su and ssh respectively.")
     (license license:lgpl2.1+)))
 
-(define-public kemoticons
-  (package
-    (name "kemoticons")
-    (version "5.116.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/frameworks/"
-                    (version-major+minor version) "/"
-                    name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0lv8cb7h7v4fbf8vyrsf9kygnhjxznf5sj92nv5is5gy0wdk8qxc"))))
-    (build-system cmake-build-system)
-    (propagated-inputs
-     (list kservice-5))
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list karchive-5 kconfig-5 kcoreaddons-5 qtbase-5))
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-before 'check 'check-setup
-                          (lambda _
-                            (setenv "HOME"
-                                    (getcwd))
-                            ;; make Qt render "offscreen", required for tests
-                            (setenv "QT_QPA_PLATFORM" "offscreen"))))))
-    (home-page "https://community.kde.org/Frameworks")
-    (synopsis "Convert text emoticons to graphical emoticons")
-    (description "KEmoticons converts emoticons from text to a graphical
-representation with images in HTML.  It supports setting different themes for
-emoticons coming from different providers.")
-    ;; dual licensed, image files are licensed under cc-by-sa4.0
-    (license (list license:gpl2+ license:lgpl2.1+ license:cc-by-sa4.0))))
-
 (define-public kglobalaccel
   (package
     (name "kglobalaccel")
