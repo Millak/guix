@@ -15748,21 +15748,28 @@ approach.")
 (define-public python-pyqrcode
   (package
     (name "python-pyqrcode")
-    (version "1.2.1")
+    (properties '((commit . "674a77b5eaf850d063f518bd90c243ee34ad6b5d")
+                  (revision . "0")))
+    (version (git-version "1.2.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "PyQRCode" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mnooner256/pyqrcode")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1m9ln8k9v7dfbh1i81225hx5mdsh8mpf9g7r4wpbfmiyfcs7dgzx"))))
-    (build-system python-build-system)
-    (home-page
-     "https://github.com/mnooner256/pyqrcode")
+        (base32 "0ks4sqwcwsnb5r65z6zdfbir34f35sfv3agnlmcq1w36fya2y62m"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'nose))
+    (native-inputs (list python-pynose python-pypng python-setuptools))
+    (home-page "https://github.com/mnooner256/pyqrcode")
     (synopsis "QR code generator")
     (description
-     "Pyqrcode is a QR code generator written purely in Python with
-SVG, EPS, PNG and terminal output.")
+     "Pyqrcode is a QR code generator written purely in Python with SVG, EPS,
+PNG and terminal output.")
     (license license:bsd-3)))
 
 (define-public python-seaborn
