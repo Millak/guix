@@ -1063,6 +1063,28 @@ minimalistic.")
 usable with any list--including files, command history, processes and more.")
     (license license:expat)))
 
+(define-public python-pyfzf
+  (package
+    (name "python-pyfzf")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyfzf" version))
+       (sha256
+        (base32 "1lkbnhjf92063gg9snxskcx4n2yj7mck2qgrh8q9rjpyrws2x46x"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests
+    (native-inputs
+     (list python-setuptools))
+    (inputs
+     (list fzf))
+    (home-page "https://github.com/nk412/pyfzf")
+    (synopsis "Python wrapper for junegunn's fuzzyfinder (fzf)")
+    (description "This package provides a thin wrapper for @code{fzf}.")
+    (license license:expat)))
+
 (define-public tmate
   (package
     (name "tmate")
