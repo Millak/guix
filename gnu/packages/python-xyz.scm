@@ -36514,14 +36514,17 @@ collection.")
 (define-public python-types-pytz
   (package
     (name "python-types-pytz")
-    (version "2023.3.1.1")
+    (version "2025.2.0.20250809")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "types-pytz" version))
+       (uri (pypi-uri "types_pytz" version))
        (sha256
-        (base32 "16mbinqac2fjjh4gqw2940q8ysjqwj0hrvj4p9mqz76l5hcx08yc"))))
-    (build-system python-build-system)
+        (base32 "1r91pvn1w9rb1395qw8w8k22s7w0wf2qfkl3z1qqiclvlbk34bi2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests provided
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for pytz")
     (description "This package contains typing stubs for @code{pytz}, a very
