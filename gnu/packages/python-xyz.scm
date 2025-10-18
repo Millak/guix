@@ -36725,8 +36725,9 @@ install @code{python-pandas}.")
     (native-inputs
      (list python-pytest
            python-setuptools-scm
-           python-setuptools
-           python-wheel))
+           python-setuptools))
+    (propagated-inputs
+     (list python-wcwidth))
     (home-page "https://github.com/astanin/python-tabulate")
     (synopsis "Pretty-print tabular data")
     (description
