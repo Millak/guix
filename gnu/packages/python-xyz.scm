@@ -16541,21 +16541,23 @@ should be used in preference to using a backslash for line continuation.
     (version "4.1.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "flake8-debugger" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jbkahn/flake8-debugger")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0h1qlzbxxhjsw6kg3mcml9h8byy77m9a5z06z2dnvqs115b05c2j"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f))              ; no tests in PyPI and no setup.py in GitHub
-    (propagated-inputs
-     (list python-flake8 python-pycodestyle))
+        (base32 "1nmqs238a02ypld32lwbagbk1jppm3pddrjdrrngc1xpbzb9nyl0"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-poetry-core python-pytest python-setuptools))
+    (propagated-inputs (list python-flake8 python-pycodestyle))
     (home-page "https://github.com/jbkahn/flake8-debugger")
     (synopsis "@code{ipdb} and @code{pdb} statement checker plugin for flake8")
-    (description "This package provides a Flake8 plugin that checks for
-@code{ipdb} and @code{pdb} imports and set traces, as well as
-@code{from IPython.terminal.embed}, @code{import InteractiveShellEmbed}
-and @code{InteractiveShellEmbed()()}.")
+    (description
+     "This package provides a Flake8 plugin that checks for @code{ipdb} and
+@code{pdb} imports and set traces, as well as @code{from
+IPython.terminal.embed}, @code{import InteractiveShellEmbed} and
+@code{InteractiveShellEmbed()()}.")
     (license license:expat)))
 
 (define-public python-flake8-implicit-str-concat
