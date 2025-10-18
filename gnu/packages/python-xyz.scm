@@ -17069,8 +17069,9 @@ stdin/stdout/stderr.")
        (uri (pypi-uri "stopit" version))
        (sha256
         (base32 "0vcrcvky249q4rbgmwf18mwmnypfk8jpn4h6knyjf86r7xc9rwzp"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f)) ;there are none
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;there are none
+    (native-inputs (list python-setuptools))
     (home-page "https://pypi.python.org/pypi/stopit")
     (synopsis "Timeout control decorator and context managers")
     (description
