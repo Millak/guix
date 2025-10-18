@@ -1668,6 +1668,31 @@ three consecutive points in a polyline or polygon
 @end itemize")
     (license license:expat)))
 
+(define-public python-snakesay
+  (package
+    (name "python-snakesay")
+    (version "0.10.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pythonanywhere/snakesay")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06p776nf2v5r9643i6f7hv8z984bjiz0k6z9whzla6b2y637mk93"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: We don't have python-uv-build yet.
+     (list #:build-backend "setuptools.build_meta"))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/pythonanywhere/snakesay")
+    (synopsis "Like @command{cowsay} but with Python flavor")
+    (description
+     "This package provides a simple ASCII art pictures generator of a
+Snake with a message.")
+    (license license:expat)))
+
 (define-public python-spinners
   (package
     (name "python-spinners")
