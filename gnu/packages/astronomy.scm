@@ -2829,13 +2829,13 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "7.1.0")
+    (version "7.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "1iakikzhw173djb2p24229ndpvzpbcanyg9h4k7viccm48r59wn8"))
+        (base32 "1y5hip9pkndx13yrq9ssw4gcmr6hz65ld11l25q4zhz20l08y4kd"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -2872,7 +2872,7 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
               (substitute* "pyproject.toml"
                 (("xfail_strict = true") "xfail_strict = false"))
               ;; Replace reference to external ply.
-              (substitute* "astropy/utils/parsing.py"
+              (substitute* (find-files "." "\\.py$")
                 (("astropy.extern.ply") "ply"))
               ;; Replace reference to external configobj.
               (substitute* "astropy/config/configuration.py"
@@ -2916,17 +2916,15 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
            python-ply            ;to replace custom module
            python-pyerfa
            python-pyyaml
-           ;; [recommended]
+           ;; [optional]
            python-matplotlib
            python-scipy
-           ;; [jupyter]
            ;; python-ipydatagrid         ;no packaged
            python-ipykernel
            python-ipython
            python-ipywidgets
            python-jupyter-core
            python-pandas
-           ;; [optional]
            python-asdf
            python-asdf-astropy
            python-beautifulsoup4
