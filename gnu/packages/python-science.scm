@@ -5960,6 +5960,8 @@ Python style, together with a fast and comfortable execution environment.")
         ;; This test attempts to change S3 buckets on AWS and fails
         ;; because there are no AWS credentials.
         "--ignore=tests/test_tibanna.py"
+        ;; E   ModuleNotFoundError: No module named 'google'
+        "--ignore=tests/test_google_lifesciences.py"
         ;; Unclear failure.
         "-k" "not test_lint[long_run-positive]")
       #:phases
