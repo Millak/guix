@@ -15984,15 +15984,33 @@ as possible in order to be comprehensible and easily extensible.")
 (define-public python-q
   (package
     (name "python-q")
-    (version "2.6")
+    (properties '((commit . "cbad74095e20017f33d3ab75aa8375aa046ee697")
+                  (revision . "0")))
+    (version (git-version "2.7"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "q" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zestyping/q")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1mgfazh8fkizh6walra2zv885f3lcgr3nb02v1frfm4p8ddcy3yy"))))
-    (build-system python-build-system)
+        (base32 "17bzi4xma4313waxanz5lly0cf0k6h33qrpy24sra2frh7gp0j0j"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Deduced from the makefile.
+      #:test-backend #~'custom
+      #:test-flags #~(list "test/test_basic.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'configure-tests
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "TMPDIR" "/tmp")))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/zestyping/q")
     (synopsis "Quick-and-dirty debugging output for tired programmers")
     (description
