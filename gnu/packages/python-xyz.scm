@@ -36225,14 +36225,16 @@ static types.")
 (define-public python-types-docutils
   (package
     (name "python-types-docutils")
-    (version "0.18.2")
+    (version "0.22.2.20251006")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "types-docutils" version))
+       (uri (pypi-uri "types_docutils" version))
        (sha256
-        (base32 "14ypv0x6fk1pjw0bvvr1lkb2g6dvq2pwvbd5b5pzjl6182fhmaim"))))
-    (build-system python-build-system)
+        (base32 "1cp3p4bsaa646fa3kpjwjwsqbn6vz77pn57913lkknkf21ch8v63"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for docutils")
     (description "This package provides a collection of library stubs for
