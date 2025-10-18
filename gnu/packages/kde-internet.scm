@@ -110,7 +110,7 @@ KDSoap.")
   (package
     (name "qxmpp")
     ;; kaidan requires a precise version
-    (version "1.10.3")
+    (version "1.12.0")
     (source
      (origin
        (method git-fetch)
@@ -119,7 +119,7 @@ KDSoap.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qinrbr63b1baqv1a7cph8bma6kj1ib8s8ywq6d9497lc1yl2kgi"))))
+        (base32 "14cz04fabdlwynn9js97pnpjdqmjfi3kkq29q4fj3zcjkklax0xj"))))
     (build-system qt-build-system)
     (arguments
      `(#:qtbase ,qtbase
