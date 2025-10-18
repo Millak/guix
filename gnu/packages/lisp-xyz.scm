@@ -330,8 +330,8 @@ compatible, and adds new functionality.")
   (sbcl-package->ecl-package sbcl-3d-math))
 
 (define-public sbcl-3d-matrices
-  (let ((commit "b4f5a58299f8437fad2d77f0879c374e3430f4b5")
-        (revision "2"))
+  (let ((commit "bc1ffa08dcf4732523e09adcf9deba4ddeb559ff")
+        (revision "3"))
     (package
       (name "sbcl-3d-matrices")
       (version (git-version "1.0.0" revision commit))
@@ -339,17 +339,17 @@ compatible, and adds new functionality.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/3d-matrices")
+               (url "https://codeberg.org/shinmera/3d-matrices")
                (commit commit)))
          (file-name (git-file-name "cl-3d-matrices" version))
          (sha256
-          (base32 "1s8b4zlmqwyplghs73riz1khf0c5sk64w6b12jd599091d5nr6sr"))))
+          (base32 "0jzckgb5lsmh1gn1f4mczjfc5ckkw01a73wrl1shyb9sil93a751"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-parachute))
       (inputs
        (list sbcl-3d-vectors sbcl-documentation-utils))
-      (home-page "https://shinmera.github.io/3d-matrices/")
+      (home-page "https://codeberg.org/shinmera/3d-matrices")
       (synopsis "Utility library implementing 2x2, 3x3, 4x4 and NxM matrices")
       (description
        "@code{3D-MATRICES} is a library implementing common matrix operations,
