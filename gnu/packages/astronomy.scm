@@ -3012,13 +3012,13 @@ astronomy and astrophysics.")
 (define-public python-astropy-iers-data
   (package
     (name "python-astropy-iers-data")
-    (version "0.2025.9.15.0.37.0")
+    (version "0.2025.10.13.0.37.17")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy_iers_data" version))
        (sha256
-        (base32 "1n4i60fni2l6bph2kj2smy9rzcjhl3s79ihw9v1sgdf1zpf17r9k"))))
+        (base32 "1xhdrnbsp3910w34kkk9j826xsnzpll0lj89lf426zj0zjlcdv61"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f)) ; no tests
