@@ -7280,18 +7280,20 @@ files.")
 (define-public python-cli-helpers
   (package
     (name "python-cli-helpers")
-    (version "2.4.0")
+    (version "2.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cli_helpers" version))
        (sha256
-        (base32 "0kbs5106kh4yr49wp6cb0xaf6mc6ylkgl86v64vlfai1b9q3p42m"))))
+        (base32 "1h4b0ka9nh9qidl6s1ard1ixh9c3d0ai5ph3013grhpbvc81glb2"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-setuptools python-wheel))
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
-     (list python-configobj python-tabulate python-wcwidth))
+     (list python-configobj
+           python-tabulate))
     (home-page "https://github.com/dbcli/cli_helpers")
     (synopsis "Helpers for building command-line apps")
     (description
