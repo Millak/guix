@@ -210,6 +210,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dbm)
+  #:use-module (gnu packages dictionaries)
   #:use-module (gnu packages digest)
   #:use-module (gnu packages django)
   #:use-module (gnu packages djvu)
@@ -15929,13 +15930,17 @@ signatures.")
   (package
     (name "python-syllables")
     (version "1.0.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "syllables" version))
-              (sha256
-               (base32
-                "0wkl6h0rg6fbsxfp0a8fnibf3l4l6lbh6z12cvcilgb6qhxzpmv3"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/prosegrinder/python-syllables")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12yv9d7hmrkw10p2nivk0c9b96rm6040zfif6pj4sm1vg3n8ik6n"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-cmudict python-pytest python-setuptools))
     (home-page "https://github.com/prosegrinder/python-syllables")
     (synopsis "Package for estimating the number of syllables in a word")
     (description
