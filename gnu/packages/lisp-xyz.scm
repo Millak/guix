@@ -492,8 +492,8 @@ alternative 4x4 matrix representation.")
   (sbcl-package->clasp-package sbcl-3d-transforms))
 
 (define-public sbcl-3d-vectors
-  (let ((commit "257969402864ac3859d77b981abf0aa5373c4e78")
-        (revision "2"))
+  (let ((commit "fc751c65b2285e971c348539bfbc3cbb58b253b0")
+        (revision "3"))
     (package
       (name "sbcl-3d-vectors")
       (version (git-version "3.1.0" revision commit))
@@ -501,11 +501,11 @@ alternative 4x4 matrix representation.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/3d-vectors")
+               (url "https://codeberg.org/shinmera/3d-vectors")
                (commit commit)))
          (file-name (git-file-name "cl-3d-vectors" version))
          (sha256
-          (base32 "0vmf7nycc49ydcy0dfs25cgs655kwjc6jcjvpwxw61jq4gl2fh7x"))))
+          (base32 "0im0c4yv3bmlipbpfqfcbkdpqknr4468xjvdmrr01pchc8r4m11j"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-parachute))
