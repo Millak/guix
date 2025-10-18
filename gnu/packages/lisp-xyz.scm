@@ -4296,20 +4296,20 @@ operating on them.")
   (sbcl-package->ecl-package sbcl-cl-algebraic-data-type))
 
 (define-public sbcl-cl-all
-  (let ((commit "4ce1ea9d9f33c0dd6212044e7952a0c854757ace")
-        (revision "0"))
+  (let ((commit "8db710a4a92a25ca7c8f09fe1ad91a48ad6bd0c9")
+        (revision "1"))
     (package
       (name "sbcl-cl-all")
-      (version (git-version "1.0.0" revision commit))
+      (version (git-version "2.0.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/cl-all")
+               (url "https://codeberg.org/shinmera/cl-all")
                (commit commit)))
          (file-name (git-file-name "cl-all" version))
          (sha256
-          (base32 "0n4sjarj373zpxn78m32rmhxnsnr8qahdslrd9vrkkwjpzar2bwp"))))
+          (base32 "08jsbnkapijn0v4n5h9g6s87i279xmg4fnbw6jajylrg512n38cx"))))
       (build-system asdf-build-system/sbcl)
       (outputs '("out" "bin"))
       (arguments
@@ -4323,7 +4323,7 @@ operating on them.")
                  outputs
                  #:entry-program '((cl-all:toplevel arguments))
                  #:compress? #t))))))
-      (home-page "https://github.com/Shinmera/cl-all")
+      (home-page "https://shinmera.com/docs/cl-all")
       (synopsis "Evaluate Common Lisp expressions in multiple implementations")
       (description "@samp{cl-all} is a library and script for evaluating Common
 Lisp expressions in multiple implementations.")
