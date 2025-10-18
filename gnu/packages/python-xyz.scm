@@ -17360,22 +17360,44 @@ from an XML-based format.")
 (define-public python-ly
   (package
     (name "python-ly")
-    (version "0.9.5")
+    (version "0.9.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri name version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/frescobaldi/python-ly")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0x98dv7p8mg26p4816yy8hz4f34zf6hpnnfmr56msgh9jnsm2qfl"))))
-    (build-system python-build-system)
+        (base32 "1q9jdvc4mrv3xkp7jm4g4kisq1k1d05b5d3wfvhpd85a9yqjrhq8"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; FIXME: Some tests need network access.
-     '(#:tests? #f))
+     (list
+      #:phases
+      (let ((namespace-url "http://www.w3.org/2001/03/xml.xsd")
+            (xlink-url "http://www.w3.org/XML/2008/06/xlink.xsd"))
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'inject-data
+              (lambda _
+                (substitute* "tests/musicxml.xsd"
+                  (((string-join (string-split #$namespace-url #\.) "\\."))
+                   #$(origin
+                       (method url-fetch)
+                       (uri namespace-url)
+                       (sha256 (base32 "\
+1j6h0sp0pcqi5dv9m6sxwr8brrb59fyx091ld1x6wlh28js4vn8f"))))
+                  (((string-join (string-split #$xlink-url #\.) "\\."))
+                   #$(origin
+                       (method url-fetch)
+                       (uri xlink-url)
+                       (sha256 (base32 "\
+0jpjha5iiq4rf4hx3qfnmyya9cf17ysxz0rbhsffn5nwgxnghgf8")))))))))))
+    (native-inputs (list python-hatchling python-lxml python-pytest))
     (synopsis "Tool and library for manipulating LilyPond files")
-    (description "This package provides a Python library to parse, manipulate
-or create documents in LilyPond format.  A command line program ly is also
-provided that can be used to do various manipulations with LilyPond files.")
+    (description
+     "This package provides a Python library to parse, manipulate or create
+documents in LilyPond format.  A command line program ly is also provided that
+can be used to do various manipulations with LilyPond files.")
     (home-page "https://pypi.org/project/python-ly/")
     (license license:gpl2+)))
 
