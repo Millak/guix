@@ -15478,27 +15478,35 @@ of the structure, dynamics, and functions of complex networks.")
 (define-public python-datrie
   (package
     (name "python-datrie")
-    (version "0.8.2")
+    (version "0.8.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "datrie" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kmike/datrie")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0pbn32flkrpjiwfcknmj6398qa81ba783kbcvwan3kym73v0hnsj"))))
-    (build-system python-build-system)
+        (base32 "1jfyhzfjgin370l6chd0cjg521ql3y53db194n94ff6cdbdbg7cg"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'ensure-no-mtimes-pre-1980 'inject-libdatrie
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((headers (search-input-directory inputs
+                                                      "include/datrie"))
+                     (base (dirname (dirname headers))))
+                (symlink headers "libdatrie/datrie")
+                (setenv "LDFLAGS" (string-append "-L" base "/lib")))))
           (add-before 'build 'relax-gcc-14-strictness
             (lambda _
               (setenv "CFLAGS"
-                      (string-append "-g -O2"
-                                     " -Wno-error=incompatible-pointer-types")))))))
+                      "-g -O2 -Wno-error=incompatible-pointer-types"))))))
     (native-inputs
-     (list python-cython python-hypothesis python-pytest
-           python-pytest-runner))
+     (list python-cython python-hypothesis python-pytest python-setuptools))
+    (inputs (list libdatrie))
     (home-page "https://github.com/kmike/datrie")
     (synopsis "Fast, efficiently stored trie for Python")
     (description
