@@ -19364,48 +19364,61 @@ command-line parsers like @code{getopt} and @code{argparse}.")
 (define-public python-pythonanywhere
   (package
     (name "python-pythonanywhere")
-    (version "0.12.1")
+    (version "0.17.0")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/pythonanywhere/helper_scripts")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-          (base32
-           "12898jrq8bi90s5v3wirj7zprk08smwzwdx09y07x770frqd80vl"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pythonanywhere/helper_scripts")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hsxrw1inqqnxbfvjk0j218ijx5xv4lkfh1qzvay7pzk9ifc0sfz"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'change-home
-           (lambda _
-             (setenv "HOME" "/tmp")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; Exclude tests marked as slowtest that assume running
-               ;; inside Git repository on system with virtualenvwrapper
-               ;; installed.
-               (invoke "pytest" "-m" "not slowtest")))))))
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/test_django_project.py" ;depedns on submodule
+              "-k" (string-join
+                    ;; Network access is required to clone external
+                    ;; repositories.
+                    (list "not test_actually_creates_django_project_in_vir"
+                          "test_actually_downloads_repo"
+                          "test_actually_installing_a_real_package"
+                          "test_actually_works_against_example_repo"
+                          "test_autoconfigure_actually_works_against_example_repo"
+                          "test_exits_because_boolean_not_satisfied"
+                          "test_gets_version"
+                          "test_nuke_option_lets_you_run_twice"
+                          "test_nuke_option_lets_you_run_twice"
+                          "test_start_actually_creates_django_project_in_vir")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'change-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
-      (list python-pytest
-            python-psutil
-            python-responses
-            python-pytest-mock))
+     (list python-psutil
+           python-pytest
+           python-pytest-mock
+           python-responses
+           python-setuptools))
     (propagated-inputs
-      (list python-dateutil
-            python-docopt
-            python-packaging
-            python-requests
-            python-schema
-            python-tabulate
-            python-typer))
+     (list python-dateutil
+           python-docopt
+           python-packaging
+           python-pythonanywhere-core
+           python-requests
+           python-schema
+           python-snakesay
+           python-tabulate
+           python-typer))
     (home-page "https://github.com/pythonanywhere/helper_scripts/")
     (synopsis "PythonAnywhere helper tools for users")
-    (description "PythonAnywhere provides a command-line interface and an
-application programming interface that allows managing files Web apps, scheduled
+    (description
+     "PythonAnywhere provides a command-line interface and an application
+programming interface that allows managing files Web apps, scheduled
 tasks and students.  It includes single-command deployment for the Django Girls
 tutorial.")
     (license license:expat)))
