@@ -1540,72 +1540,7 @@ of archive formats and features self-extracting archives.")
                    license:public-domain))))
 
 (define-public p7zip
-  (package
-    (name "p7zip")
-    (version "16.02")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/" name "/" name "/"
-                                  version "/" name "_" version
-                                  "_src_all.tar.bz2"))
-              (sha256
-               (base32
-                "07rlwbbgszq8i7m8jh3x6j2w2hc9a72dc7fmqawnqkwlwb00mcjy"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Remove non-free source files
-                  (for-each delete-file
-                            (append
-                             (find-files "CPP/7zip/Compress" "Rar.*")
-                             (find-files "CPP/7zip/Crypto" "Rar.*")
-                             (find-files "DOC/unRarLicense.txt")
-                             (find-files  "Utils/file_Codecs_Rar_so.py")))
-                  (delete-file-recursively "CPP/7zip/Archive/Rar")
-                  (delete-file-recursively "CPP/7zip/Compress/Rar")
-                  ;; Fix FTBFS with gcc-10.
-                  (substitute* "CPP/Windows/ErrorMsg.cpp"
-                    (("switch\\(errorCode\\) \\{")
-                     "switch(static_cast<HRESULT>(errorCode)) {"))))
-              (patches (search-patches "p7zip-CVE-2016-9296.patch"
-                                       "p7zip-CVE-2017-17969.patch"
-                                       "p7zip-fix-build-with-gcc-11.patch"
-                                       "p7zip-remove-unused-code.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:make-flags
-       (list (string-append "DEST_HOME=" (assoc-ref %outputs "out")) "all3")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda _
-             (copy-file
-               ,(cond ((target-x86-64?)
-                       "makefile.linux_amd64_asm")
-                      ((target-x86-32?)
-                       "makefile.linux_x86_asm_gcc_4.X")
-                      (else
-                        "makefile.linux_any_cpu_gcc_4.X"))
-               "makefile.machine")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "make" "test")
-               (invoke "make" "test_7z")
-               (invoke "make" "test_7zr")))))))
-    (native-inputs
-      (cond ((target-x86-64?)
-             (list yasm))
-            ((target-x86-32?)
-             (list nasm))
-            (else '())))
-    (home-page "https://p7zip.sourceforge.net/")
-    (synopsis "Command-line file archiver with high compression ratio")
-    (description "p7zip is a command-line port of 7-Zip, a file archiver that
-handles the 7z format which features very high compression ratios.")
-    (license (list license:lgpl2.1+
-                   license:gpl2+
-                   license:public-domain))))
+  (deprecated-package "p7zip" 7zip))
 
 (define-public gzstream
   (package

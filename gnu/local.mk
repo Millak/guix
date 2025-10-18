@@ -2003,14 +2003,10 @@ dist_patch_DATA =						\
   %D%/packages/patches/orpheus-cast-errors-and-includes.patch	\
   %D%/packages/patches/ots-no-include-missing-file.patch	\
   %D%/packages/patches/owncloud-disable-updatecheck.patch	\
-  %D%/packages/patches/p7zip-CVE-2016-9296.patch		\
-  %D%/packages/patches/p7zip-CVE-2017-17969.patch		\
   %D%/packages/patches/pnet-fix-line-number-info.patch		\
   %D%/packages/patches/pnet-fix-off-by-one.patch		\
   %D%/packages/patches/pnet-newer-libgc-fix.patch		\
   %D%/packages/patches/pnet-newer-texinfo-fix.patch		\
-  %D%/packages/patches/p7zip-fix-build-with-gcc-11.patch	\
-  %D%/packages/patches/p7zip-remove-unused-code.patch		\
   %D%/packages/patches/pam-krb5-CVE-2020-10595.patch		\
   %D%/packages/patches/pango-skip-libthai-test.patch		\
   %D%/packages/patches/password-store-tree-compat.patch		\
