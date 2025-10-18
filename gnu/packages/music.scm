@@ -1158,7 +1158,7 @@ MusePack, Monkey's Audio, and WavPack files.")
 (define-public flacon
   (package
     (name "flacon")
-    (version "11.4.0")
+    (version "12.0.0")
     (source
       (origin
         (method git-fetch)
@@ -1169,16 +1169,15 @@ MusePack, Monkey's Audio, and WavPack files.")
             (recursive? #t)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0yp73yl5x9m2l4whrzj6yx8aqv1915khmlihgp1p12m9m540dql2"))))
-    (build-system cmake-build-system)
+         (base32 "1r8sr4cd1djackfwk7m3qvjlbvh54kcm5cgdqh3clk491r19vm5g"))))
+    (build-system qt-build-system)
     (arguments
       ;; The tests fail while attempting to exercise MacOS functionality.
-      (list #:tests? #f))
-    (native-inputs (list pkg-config))
+      (list #:tests? #f
+            #:qtbase qtbase))
+    (native-inputs (list pkg-config qttools))
     (inputs
-      (list qtbase-5
-            qttools-5
-            taglib
+      (list taglib
             uchardet
             zlib))
     (home-page "https://flacon.github.io/")
