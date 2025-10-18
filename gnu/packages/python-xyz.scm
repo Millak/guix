@@ -15625,11 +15625,16 @@ language, in Python.")
     (version "0.4.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "py-tes" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ohsu-comp-bio/py-tes")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0b272y392v0mnq0f3sm5kgcx8fn4qwfbym89hhvqxz3xkganr4pn"))))
-    (build-system python-build-system)
+        (base32 "0nacmw7whmbfqa6y728l6f646wpgaanfa0v4p5mggag2044v55qx"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest python-requests-mock python-setuptools))
     (propagated-inputs
      (list python-attrs python-dateutil python-future python-requests))
     (home-page "https://github.com/ohsu-comp-bio/py-tes")
