@@ -36233,13 +36233,13 @@ static types.")
 (define-public python-types-aiofiles
   (package
     (name "python-types-aiofiles")
-    (version "24.1.0.20250822")
+    (version "25.1.0.20251011")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "types_aiofiles" version))
        (sha256
-        (base32 "0ysar1an6il2rsd54fwzwdis209z3qq3i4zhgixfjzrh1j70vfcs"))))
+        (base32 "1zyk53h1017s1pc094w909miwvjsq3yhxlgr2l6d8g6bc2r8laqw"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ;no tests in PyPI archive
     (native-inputs (list python-setuptools))
