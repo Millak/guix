@@ -16500,23 +16500,38 @@ and pycodestyle.")
     (version "1.0.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "flake8-continuation" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/planetlabs/flake8-continuation")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0dzaw8jr7yhlabxhrblnrizxx17xa9ngjnbr1kidg5lapq6b9q1y"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-flake8 python-pycodestyle python-six))
+        (base32 "04fsd361x03mgyydsdm9vr28ikr2mdip13c805i2wzxc45qsc9x7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-python-six-dependency
+            (lambda _
+              (substitute* "flake8_continuation.py"
+                (("import six|six\\.moves\\.")
+                 ""))
+              (substitute* "setup.py"
+                ((", \"six\"")
+                 "")))))))
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-flake8 python-pycodestyle))
     (home-page "https://github.com/planetlabs/flake8-continuation")
     (synopsis "Flake8 Line Continuation Plugin")
-    (description "A Flake8 plugin that checks for the line continuation
-style to be in the preferred method according to PEP-8, specifically:
+    (description
+     "A Flake8 plugin that checks for the line continuation style to be in the
+preferred method according to PEP-8, specifically:
 @quotation
-The preferred way of wrapping long lines is by using Python's implied
-line continuation inside parentheses, brackets and braces.  Long lines
-can be broken over multiple lines by wrapping expressions in parentheses.
-These should be used in preference to using a backslash for line continuation.
+The preferred way of wrapping long lines is by using Python's implied line
+continuation inside parentheses, brackets and braces.  Long lines can be
+broken over multiple lines by wrapping expressions in parentheses.  These
+should be used in preference to using a backslash for line continuation.
 @end quotation")
     (license license:asl2.0)))
 
