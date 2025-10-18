@@ -38015,13 +38015,15 @@ both.")
   (package
     (name "python-types-orjson")
     (version "3.6.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "types-orjson" version))
-              (sha256
-               (base32
-                "0f66lf2qrl9d4vad42db3dmnzv89h4rr05r5zxx5qcl6kb3zr6ng"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types-orjson" version))
+       (sha256
+        (base32 "0f66lf2qrl9d4vad42db3dmnzv89h4rr05r5zxx5qcl6kb3zr6ng"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for orjson")
     (description "This is a PEP 561 type stub package for the @code{orjson}
