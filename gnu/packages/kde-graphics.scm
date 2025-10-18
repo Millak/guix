@@ -150,13 +150,13 @@ for scanner hardware.")
 (define-public digikam
   (package
     (name "digikam")
-    (version "8.7.0")
+    (version "8.8.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/digikam/"
                                   version "/digiKam-" version ".tar.xz"))
               (sha256
-               (base32 "0bx0kpzgq47pj3msrnd7gxr8n2qbak0cjird6bw4r4s31b15xqvr"))))
+               (base32 "16kbxfyx1fsaxr7m6rnbk38yrljx8m93y07qvzih7ybk7ip1nfnv"))))
     (build-system qt-build-system)
     (home-page "https://www.digikam.org/download/git/")
     (arguments (list
