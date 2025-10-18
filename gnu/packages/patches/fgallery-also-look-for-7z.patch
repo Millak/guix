@@ -1,0 +1,37 @@
+Note: The 7zip package only provides the bin/7z, not bin/7zz or bin/7za.
+
+From 71148e6f8d98936064733eeeac7d42b4cddddd23 Mon Sep 17 00:00:00 2001
+From: "kestrelwx" <kestrel.w@proton.me>
+Date: Sat, 18 Oct 2025 14:56:04 +0300
+Subject: [PATCH] Also check for 7z in $PATH.
+To: wave++ "Yuri D'Elia" <wavexx@thregr.org>
+
+From: kestrel <kestrel.w@proton.me>
+
+---
+ fgallery | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fgallery b/fgallery
+index 1bf90e5..1da2c82 100755
+--- a/fgallery
++++ b/fgallery
+@@ -444,12 +444,14 @@ if($facedet && system("facedetect -h >/dev/null 2>&1")) {
+ my $p7zipcmd;
+ if(!system("7zz -h >/dev/null 2>&1")) {
+   $p7zipcmd = "7zz";
++} elsif(!system("7z -h >/dev/null 2>&1")) {
++  $p7zipcmd = "7z";
+ } elsif(!system("7za -h >/dev/null 2>&1")) {
+   $p7zipcmd = "7za";
+ } else {
+   $p7zip = 0;
+   if(system("zip -h >/dev/null 2>&1")) {
+-    fatal("cannot run \"zip\" (check if 7zz, 7za or zip is installed)");
++    fatal("cannot run \"zip\" (check if 7zz, 7za, 7z or zip is installed)");
+   }
+ }
+ 
+-- 
+2.51.0
+

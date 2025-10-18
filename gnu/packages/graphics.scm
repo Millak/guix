@@ -2219,7 +2219,10 @@ improve the thumbnail cutting region, so that faces are always centered.")
                 "fgallery-" version ".zip"))
               (sha256
                (base32
-                "0zf6r88m2swgj1ylgh3qa1knzb4if501hzvga37h9psy8k179w8n"))))
+                "0zf6r88m2swgj1ylgh3qa1knzb4if501hzvga37h9psy8k179w8n"))
+              ;; TODO: Remove this patch when updating the package.
+              ;; Merged upstream at https://gitlab.com/wavexx/fgallery/-/commit/67b4a41de3f788e77ca619658950bae0e33b277b.
+              (patches (search-patches "fgallery-also-look-for-7z.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no tests
@@ -2255,7 +2258,7 @@ improve the thumbnail cutting region, so that faces are always centered.")
                                          "zip"
                                          "jpegoptim"
                                          "pngcrush"
-                                         "p7zip")))
+                                         "7zip")))
                  `("PERL5LIB" ":" prefix (,perl5lib)))))))))
     (native-inputs
      (list unzip))
@@ -2272,7 +2275,7 @@ improve the thumbnail cutting region, so that faces are always centered.")
            perl-image-exiftool
            jpegoptim
            pngcrush
-           p7zip))
+           7zip))
     (home-page "https://www.thregr.org/~wavexx/software/fgallery/")
     (synopsis "Static photo gallery generator")
     (description
