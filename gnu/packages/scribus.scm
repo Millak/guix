@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2018, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2017, 2018, 2021, 2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017, 2018, 2021, 2022, 2024, 2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -50,14 +50,14 @@
 (define-public scribus
   (package
     (name "scribus")
-    (version "1.6.3")
+    (version "1.6.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/scribus/scribus/"
                            version "/scribus-" version ".tar.gz"))
        (sha256
-        (base32 "1dfj0jg5p25rq9i9bkcmnx96sasdf5w06m009lkkv0d41c3c62hh"))))
+        (base32 "1ddsga862wwq2lb12rlsm6009gfx9nxx3s5323jifs53fs1y3knp"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no test target
