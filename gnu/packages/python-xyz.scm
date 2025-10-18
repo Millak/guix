@@ -17024,24 +17024,27 @@ checksums.  It implement more than a hundred checksum routines.")
 stdin/stdout/stderr.")
     (license license:expat)))
 
+;; TODO: This package is not necessary in Guix. It should be replaced by a
+;; trivial python package providing the same functionality.
 (define-public python-stdlib-list
   (package
     (name "python-stdlib-list")
-    (version "0.8.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "stdlib-list" version))
-              (sha256
-               (base32
-                "17vdn4q0sdlndc2fr9svapxx6366hnrhkn0fswp1xmr0jxqh7rd1"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ; Tests require more dependencies.
-    (native-inputs
-     (list python-sphinx))
+    (version "0.11.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jackmaney/python-stdlib-list")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14aw5xbqcs0ww9n4659z5dbs89xqpw2s4m3q4gp66br2xr9iybjf"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-flit-core python-pytest python-sphinx))
     (home-page "https://github.com/jackmaney/python-stdlib-list")
     (synopsis "Python Standard Libraries")
-    (description "This package contains a list of Python Standard Libraries.")
+    (description
+     "This package contains a list of Python Standard Libraries.")
     (license license:expat)))
 
 (define-public python-stopit
