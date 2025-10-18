@@ -1025,26 +1025,28 @@ It was formerly known as nbconvert's @code{ExecutePreprocessor.}")
 (define-public python-nbdime
   (package
     (name "python-nbdime")
-    (version "3.1.1")
+    (version "4.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "nbdime" version))
        (sha256
-        (base32 "12v41lricbg713lzlfcx0cilfm9spndaanhp39q4ydvix4h76xk7"))))
-    (build-system python-build-system)
+        (base32 "1whvdz9i3c2f4fgy1mnvv0z88rxv6540rmi07cjhnv139f7ry9yq"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-ipython-genutils
-            ;; TODO: Remove when a release newer than 3.1.1 is made.
+          (add-before 'check 'pre-check
             (lambda _
-              (substitute* "nbdime/config.py"
-                (("from ipython_genutils import py3compat")
-                 "")
-                (("py3compat\\.getcwd")
-                 "os.getcwd")))))))
+              (setenv "HOME" "/tmp")
+              (setenv "GIT_AUTHOR_NAME" "Your Name")
+              (setenv "GIT_COMMITTER_NAME" "Your Name")
+              (setenv "GIT_AUTHOR_EMAIL" "you@example.com")
+              (setenv "GIT_COMMITTER_EMAIL" "you@example.com")
+              (invoke "git" "init")
+              (invoke "git" "config" "--global" "user.name" "Your Name")
+              (invoke "git" "config" "--global" "user.email" "you@example.com"))))))
     (propagated-inputs
      (list python-colorama
            python-gitpython
@@ -1056,12 +1058,12 @@ It was formerly known as nbconvert's @code{ExecutePreprocessor.}")
            python-requests
            python-tornado-6))
     (native-inputs
-     (list python-jupyter-server
+     (list git-minimal/pinned
+           python-hatch-jupyter-builder
+           python-hatchling
            python-mock
-           python-notebook
            python-pytest
-           python-pytest-tornado
-           python-tabulate))
+           python-pytest-tornado))
     (home-page "https://nbdime.readthedocs.io")
     (synopsis "Diff tools for Jupyter Notebooks")
     (description "@code{nbdime} provides tools for diffing and merging of
