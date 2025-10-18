@@ -14838,12 +14838,15 @@ installing @code{kernelspec}s for use with Jupyter frontends.")
     (version "0.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "backcall" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/takluyver/backcall/")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "07jy4562lvnhkk6kfr3cphmizy88anlhmbwb8kdzlz2ypqkvzgaw"))))
-    (build-system python-build-system)
+        (base32 "0br41zib1zph2jazanyjfl03rrb7frplk639fb10wvdqkrzgm6cd"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-flit-core python-pytest))
     (home-page "https://github.com/takluyver/backcall/")
     (synopsis "Specifications for callback functions passed in to an API")
     (description
