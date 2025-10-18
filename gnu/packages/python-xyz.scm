@@ -15435,12 +15435,15 @@ some are not yet implemented).")
         (method url-fetch)
         (uri (pypi-uri "netifaces" version))
         (sha256
-          (base32
-            "0cnajf5rl4w1sa72j921scbigr6zndig56cq8ggpx45jdqa7jfh4"))))
-    (build-system python-build-system)
+          (base32 "0cnajf5rl4w1sa72j921scbigr6zndig56cq8ggpx45jdqa7jfh4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "test.py")))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/al45tair/netifaces")
-    (synopsis
-      "Python module for portable network interface information")
+    (synopsis "Python module for portable network interface information")
     (description
       "Netifaces is a Python module providing information on network
 interfaces in an easy and portable manner.")
