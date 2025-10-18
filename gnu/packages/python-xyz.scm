@@ -17445,13 +17445,18 @@ refactoring library.")
   (package
     (name "python-gorilla")
     (version "0.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "gorilla" version))
-              (sha256
-               (base32
-                "0b40blcp6fih4nvqbilra4qw1dfccv1ahjmr41ac4d9rjadqkcpy"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/christophercrouzet/gorilla")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hm5ynswhz6i763s6cjlh8lv5ai0f3x17mjvlihqs8idlk4vbrn0"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/christophercrouzet/gorilla")
     (synopsis "Convenient monkey patching with Python")
     (description
