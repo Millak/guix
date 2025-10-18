@@ -36195,14 +36195,16 @@ multipurpose analysis in Python.")
 (define-public python-types-dataclasses
   (package
     (name "python-types-dataclasses")
-    (version "0.6.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "types-dataclasses" version))
-              (sha256
-               (base32
-                "1mq6qd365m8ml889zl5dxj9kncjv71iq1d1fvgj59y0ixlpm6s35"))))
-    (build-system python-build-system)
+    (version "0.6.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types-dataclasses" version))
+       (sha256
+        (base32 "1fgp96m4kfxrwy6rdv3p24jzh6hf68702sfdfhcmm3aniv7jynjb"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/python/typeshed")
     (synopsis "Typing stubs for dataclasses")
     (description
