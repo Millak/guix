@@ -32827,13 +32827,13 @@ facility for filtering those results.")
 (define-public python-safety
   (package
     (name "python-safety")
-    (version "3.6.0")
+    (version "3.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "safety" version))
        (sha256
-        (base32 "1qzplv044yfr8w41h0qmjc8lj2admk029azsqbax70wzd4kzh858"))))
+        (base32 "1gijl0ip1fm1z91p05iqcngcpad3nnvpha0l5iykhbmdlkcqq51f"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -32844,9 +32844,22 @@ facility for filtering those results.")
                           ;; Tests below need a network connection.
                           "test_check_live"
                           "test_check_live_cached"
-                          "test_get_packages_licenses_without_api_key")
+                          "test_get_packages_licenses_without_api_key"
+                          ;; AttributeError: 'PackageInstalledPayload' object
+                          ;; has no attribute 'tool_path'
+                          "test_emit_diff_operations_with_multiple_operations"
+                          "test_emit_diff_operations_with_empty_locations"
+                          "test_emit_diff_operations_with_different_tools"
+                          "test_emit_diff_operations_creates_correct_payload_structure")
                     " and not "))
       #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'disable-telemetry
+                     (lambda _
+                       (substitute* (find-files "." "\\.py$")
+                         (("telemetry: bool = True")
+                          "telemetry: bool = False")
+                         (("telemetry=True")
+                          "telemetry=False"))))
                    (add-before 'check 'set-home ; some tests run mkdir
                      (lambda _
                        (setenv "HOME" "/tmp"))))))
