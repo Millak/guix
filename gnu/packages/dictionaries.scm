@@ -75,6 +75,39 @@
   #:use-module (gnu packages wordnet)
   #:use-module (gnu packages xml))
 
+(define-public cmudict
+  (package
+    (name "cmudict")
+    (properties '((commit . "0f8072f814306c5ee4fbf992ed853601b12c01f9")
+                  (revision . "0")))
+    (version (git-version "0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cmusphinx/cmudict")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ri9r9ljbwv282lmv9cp3gmbwlanf99nhzvw83fjf12bc4nxl0qd"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'install-license-files))))
+    (home-page "https://github.com/cmusphinx/cmudict")
+    (synopsis "Pronouncing English dictionary")
+    (description
+     "CMUdict (the Carnegie Mellon Pronouncing Dictionary) is a free
+pronouncing dictionary of English, suitable for uses in speech technology and
+is maintained by the Speech Group in the School of Computer Science at
+Carnegie Mellon University.")
+    (license (license:fsdg-compatible
+              "https://github.com/cmusphinx/cmudict/blob/master/LICENSE"))))
+
 (define-public dico
   (package
     (name "dico")
