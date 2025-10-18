@@ -27663,41 +27663,37 @@ source bytes using the UTF-8 encoding and then rewrites Python 3.6 style
 (define-public python-typer
   (package
     (name "python-typer")
-    (version "0.16.0")
+    (version "0.19.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/fastapi/typer")
-             (commit version)))
+              (url "https://github.com/fastapi/typer")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1axd3840b2vipfp9l36cnh5ipbsladizmjadgsnpnk502qily7sq"))))
+        (base32 "13lkzlpb35xzz1spdisrmq7md9wq3msqxwcqj85vk905iq80xjwq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "HOME" "/tmp")  ; some tests need it
-                ;; This is for completion tests
-                (with-output-to-file "/tmp/.bashrc"
-                  (lambda _ (display "# dummy")))))))))
-    (propagated-inputs (list python-click
-                             python-rich
-                             python-shellingham
-                             python-typing-extensions))
-    (native-inputs (list python-coverage ; this is required in tests
-                         python-pdm-backend
-                         python-pytest))
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))))
+    (native-inputs
+     (list python-coverage      ;this is required in tests
+           python-pdm-backend
+           python-pytest
+           python-pytest-xdist))
+    (propagated-inputs
+     (list python-click
+           python-typing-extensions
+           ;; [optional]
+           python-rich
+           python-shellingham))
     (home-page "https://github.com/fastapi/typer")
     (synopsis "Typer builds CLI based on Python type hints")
     (description
      "Typer is a library for building CLI applications.  It's based on Python
 3.6+ type hints.")
-    ;; MIT license
     (license license:expat)))
 
 (define-public python-typeguard
