@@ -6958,6 +6958,31 @@ Transformers\" available @uref{http://okmij.org/ftp/papers/LogicT.pdf,
 online}.")
     (license license:bsd-3)))
 
+(define-public ghc-lrucache
+  (package
+    (name "ghc-lrucache")
+    (version "1.2.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "lrucache" version))
+       (sha256
+        (base32 "11avhnjnb89rvn2s41jhh5r40zgp7r6kb5c0hcfiibpabqvv46pw"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "lrucache")))
+    (inputs (list ghc-contravariant))
+    (arguments
+     `(#:cabal-revision ("1"
+                         "0v2wc5k2knvv5knbarzspmbzf657r52jyjm9kf6r4ylsmi9cbq0k")))
+    (home-page "https://github.com/chowells79/lrucache")
+    (synopsis "Implementation of a simple LRU cache")
+    (description
+     "This package contains a simple and pure @acronym{LRU, Least Recently
+Used} cache.  The implementation is based on @code{Data.Map} from the
+@code{containers} library.  Further, the package also containes a multiple IO
+wrapper that enables atomic updates of the cache.")
+    (license license:bsd-3)))
+
 (define-public ghc-lucid
   (package
     (name "ghc-lucid")
