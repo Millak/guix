@@ -19896,17 +19896,21 @@ the construction of PyQt/PySide stylesheets.")
   (package
     (name "python-click-threading")
     (version "0.5.0")
-    (source (origin
-             (method url-fetch)
-             (uri (pypi-uri "click-threading" version))
-             (sha256
-              (base32
-               "0f9lmxwcq0y9lb8w0whbni7gwy12gbv74h1igh85qn9aq0iydkxd"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-click))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/click-contrib/click-threading")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "185pzw12ap7wrjpyxhsyrkhh7i1l5qclaa3zlpn8qvm39fz0kjni"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-click))
     (synopsis "Utilities for multithreading in Click")
-    (description "This package provides utilities for multithreading in Click
+    (description
+     "This package provides utilities for multithreading in Click
 applications.")
     (home-page "https://github.com/click-contrib/click-threading")
     (license license:expat)))
