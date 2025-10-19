@@ -22384,16 +22384,15 @@ format.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: skips=638, successes=9759
+      #:test-backend #~'custom
+      #:test-flags
+      #~(list "-m" "twisted.trial"
+              "--temp-directory=/tmp/_trial_temp"
+              (string-append "-j" (number->string (min 8 (parallel-job-count))))
+              "twisted")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-build-system
-            (lambda _
-              (substitute* "pyproject.toml"
-                (("    \"version\",") "")
-                (("name = \"Twisted\".*" m)
-                 (string-append m "version = \"" #$version "\"\n"))
-                (("\\[tool.hatch.version\\]") "")
-                (("source = \"incremental\"") ""))))
           (add-after 'unpack 'disable-broken-tests
             (lambda _
               (for-each delete-file
@@ -22416,14 +22415,7 @@ format.")
                          ;; These complain about missing test modules.
                          "src/twisted/test/test_failure.py"
                          "src/twisted/web/test/test_http2.py"
-                         "src/twisted/conch/test/test_forwarding.py"))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion #$output
-                  (setenv "HOME" (getcwd))
-                  (invoke "python3" "-m" "twisted.trial" "twisted")
-                  (delete-file-recursively "_trial_temp"))))))))
+                         "src/twisted/conch/test/test_forwarding.py")))))))
     (propagated-inputs
      (list python-attrs
            python-automat
@@ -22448,11 +22440,11 @@ format.")
            python-pyserial))
     (native-inputs
      (list glibc-utf8-locales ;for OpenTestLogTests.test_utf8
-           python-coverage
            python-hatch-fancy-pypi-readme
            python-hatchling
            python-httpx
            python-hypothesis
+           python-incremental
            python-pyhamcrest
            python-pytest))
     (home-page "https://twistedmatrix.com/")
