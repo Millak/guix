@@ -3330,10 +3330,7 @@ and gene expression visualization.")
                              python-scipy
                              python-threadpoolctl
                              python-umap-learn))
-    (native-inputs (list python-pytest
-                         python-setuptools
-                         python-sphinx
-                         python-sphinx-rtd-theme))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/tanaylab/metacells.git")
     (synopsis "Single-cell RNA Sequencing Analysis")
     (description "The metacells package implements the improved metacell
