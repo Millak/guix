@@ -17199,33 +17199,41 @@ It has a flexible system of @samp{authorizers} able to manage both
     (source
      (origin
        (method git-fetch)
-       (uri (git-reference (url
-                            "https://github.com/PyFilesystem/pyfilesystem2/")
-                           (commit (string-append "v" version))))
+       (uri (git-reference
+              (url "https://github.com/PyFilesystem/pyfilesystem2/")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "1wrkhsv57kv4jcadn7w330mgbjjsimgzfvicni8cka6y1a8chbjs"))))
+       (sha256
+        (base32 "1wrkhsv57kv4jcadn7w330mgbjjsimgzfvicni8cka6y1a8chbjs"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1995 passed, 21 skipped, 411 deselected, 14 warnings
+      #:test-flags #~(list "-m" "not slow")
       #:tests? (and (not (%current-target-system))
                     (->bool (this-package-native-input "python-pytest")))
-      #:phases #~(modify-phases %standard-phases
-                   (replace 'check
-                     (lambda* (#:key tests? #:allow-other-keys)
-                       (when tests?
-                         (setenv "HOME" "/tmp")
-                         (invoke "pytest" "-m" "not slow")))))))
-    (propagated-inputs
-     (list python-appdirs python-pytz python-six))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
-     ;; 'python-pyftpdlib' is needed for tests but it indirectly depends Rust,
-     ;; which is currently unavailable on aarch64-linux.  Remove all the test
-     ;; dependencies in that case.
-     (if (and (not (%current-target-system))
-              (supported-package? python-pyftpdlib))
-         (list python-mock python-parameterized python-pyftpdlib
-               python-pytest python-setuptools)
-         '()))
+     (append
+      (list python-setuptools)
+      ;; 'python-pyftpdlib' is needed for tests but it indirectly depends Rust,
+      ;; which is currently unavailable on aarch64-linux.  Remove all the test
+      ;; dependencies in that case.
+      (if (and (not (%current-target-system))
+               (supported-package? python-pyftpdlib))
+          (list python-mock
+                python-parameterized
+                python-pyftpdlib
+                python-pytest)
+          '())))
+    (propagated-inputs
+     (list python-appdirs
+           python-pytz
+           python-six))         ;still hard itegrated
     (home-page "https://github.com/PyFilesystem/pyfilesystem2/")
     (synopsis "File system abstraction layer for Python")
     (description
