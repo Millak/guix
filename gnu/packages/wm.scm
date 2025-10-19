@@ -1106,8 +1106,6 @@ your own layouts, widgets, and built-in commands.")
               "-DDISTRIBUTOR_DEBUGINFO_AVAILABLE=NO")
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'build (lambda _ (invoke "cmake" "--build" ".")))
-          (replace 'install (lambda _ (invoke "cmake" "--install" ".")))
           (add-after 'install 'wrap-program
             (lambda _
               (wrap-program (string-append #$output "/bin/quickshell")
