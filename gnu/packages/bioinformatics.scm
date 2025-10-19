@@ -3356,8 +3356,7 @@ cells).")
         (base32 "07sj4x95b5hvx57pw24f80sk4ag4hkg1z6wzym3pzi8n5gn85n1z"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-ete3 python-numpy python-six))
-    (native-inputs (list python-black python-flake8 python-pytest python-twine
-                         python-wheel))
+    (native-inputs (list python-pytest))
     (home-page "https://github.com/tresoldi/ngesh")
     (synopsis "Library for phylogenetic tree simulation")
     (description
