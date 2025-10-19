@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 pukkamustard <pukkamustard@posteo.net>
+;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,6 +21,9 @@
   #:use-module (guix packages)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
+  #:use-module (guix git-download)
+  #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:))
 
 (define-public pikchr
@@ -57,3 +61,33 @@ diagrams in technical documentation.  Pikchr is designed to be embedded in
 fenced code blocks of Markdown or similar mechanisms of other documentation
 markup languages.")
       (license license:bsd-0))))
+
+(define-public dpic
+  (let ((commit "1354b63eb7120e5d0d40855c18d69e413a636ef2")
+        (revision "0"))
+    (package
+      (name "dpic")
+      (version (git-version "2025.08.01" revision commit))
+      (home-page "https://gitlab.com/aplevich/dpic")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url (string-append home-page ".git"))
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "00r4dqwmlbpbb7kshprp9n29cmb8vxy345xqpzlba6bnw5vrgpv9"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f
+        #:make-flags
+        #~(list (string-append "CC=" #$(cc-for-target))
+                (string-append "DESTDIR=" #$output))))
+      (synopsis "Implementation of the pic language")
+      (description
+       "Dpic is an implementation of the pic \"little language\" for creating
+line drawings and illustrations for documents, web pages, and other
+uses.")
+      (license (list license:bsd-2 license:cc-by3.0 license:lppl1.3c)))))
