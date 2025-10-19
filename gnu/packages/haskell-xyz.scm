@@ -4930,6 +4930,70 @@ the ‘haddock’ package.")
     (license license:bsd-3)
     (properties '((hidden? #t)))))
 
+(define-public ghc-hakyll
+  (package
+    (name "ghc-hakyll")
+    ;; XXX: Stackage LTS version is incompatible with our packaged
+    ;; version of optparse-applicative and template-haskell.
+    (version "4.16.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (hackage-uri "hakyll" version))
+       (sha256
+        (base32 "18wg5ay6l3ngsmqq00g6y7djmg4f8285kwdi47g0rg70mq6sn0py"))))
+    (build-system haskell-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "tests/Hakyll/Core/UnixFilter/Tests.hs"
+                (("unixFilter \"([^\"]+)\"" all cmd)
+                 (string-append
+                   "unixFilter "
+                   "\""
+                   (search-input-file inputs (string-append "/bin/" cmd))
+                   "\""))))))))
+    (properties '((upstream-name . "hakyll")))
+    (inputs (list ghc-aeson
+                  ghc-blaze-html
+                  ghc-data-default
+                  ghc-file-embed
+                  ghc-hashable
+                  ghc-lrucache
+                  ghc-network-uri
+                  ghc-optparse-applicative
+                  ghc-random
+                  ghc-regex-tdfa
+                  ghc-resourcet
+                  ghc-scientific
+                  ghc-tagsoup
+                  ghc-time-locale-compat
+                  ghc-vector
+                  ghc-wai-app-static
+                  ghc-yaml
+                  ghc-xml-conduit
+                  ghc-wai
+                  ghc-warp
+                  ghc-http-types
+                  ghc-fsnotify
+                  ghc-http-conduit
+                  ghc-pandoc
+                  ghc-pandoc-types))
+    (native-inputs (list ghc-quickcheck ghc-tasty ghc-tasty-golden
+                         ghc-tasty-hunit ghc-tasty-quickcheck util-linux))
+    (home-page "https://jaspervdj.be/hakyll/")
+    (synopsis
+     "This package provides a Haskell-based static website compiler library")
+    (description
+     "Hakyll is a static website compiler library.  That is, it provides you
+with the tools to create a simple or advanced static website using a Haskell
+@acronym{EDSL, Embedded Domain Specific Language} and input formats such as
+Markdown or @acronym{RST, reStructuredText}.")
+    (license license:bsd-3)))
+
 (define-public ghc-half
   (package
     (name "ghc-half")
