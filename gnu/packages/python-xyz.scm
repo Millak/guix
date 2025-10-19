@@ -19472,39 +19472,32 @@ Jupyter kernels such as IJulia and IRKernel.")
 (define-public python-jsbeautifier
   (package
     (name "python-jsbeautifier")
-    (version "1.10.2")
+    (version "1.15.3")
     (home-page "https://github.com/beautify-web/js-beautify")
-    (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url home-page)
-                   (commit (string-append "v" version))))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "0wawb070ki1axb3jc9xvsrgpji52vcfif3zmjzc3z4g98m5xw4kg"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zl1g6w5zn2hxk5qq83j52cxa1ig75ryjwsjxv9wiwkar4qq88zg"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'chdir
-                    (lambda _
-                      ;; The upstream Git repository contains all the code,
-                      ;; but this package only builds the python code.
-                      (chdir "python")
-                      #t))
-                  (add-after 'unpack 'patch-python-six-requirements
-                    (lambda _
-                      (substitute* "python/setup.py"
-                        (("six>=1.12.0")
-                         "six>=1.11.0"))
-                      #t)))))
-    (propagated-inputs
-     (list python-editorconfig python-six))
-    (native-inputs
-     (list python-pytest))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "python")
+              (rename-file "setup-js.py" "setup.py"))))))
+    (propagated-inputs (list python-editorconfig python-six))
+    (native-inputs (list python-pytest python-setuptools))
     (synopsis "JavaScript unobfuscator and beautifier")
-    (description "Beautify, unpack or deobfuscate JavaScript, leveraging
-popular online obfuscators.")
+    (description
+     "This packages provides tooling to beautify, unpack or deobfuscate
+JavaScript, leveraging popular online obfuscators.")
     (license license:expat)))
 
 (define-public python-chardet
