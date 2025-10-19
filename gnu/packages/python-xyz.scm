@@ -23239,31 +23239,6 @@ feels like an AST.")
            python-setuptools-scm
            python-wheel)))))
 
-(define-public python-typing-inspect
-  (package
-    (name "python-typing-inspect")
-    (version "0.9.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "typing_inspect" version))
-              (sha256
-               (base32
-                "0y0z8v4wr5bahlgzjd1il2z8vlfd2asiyb45wia6kvznyqpw8gxj"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-mypy-extensions
-           python-typing-extensions))
-    (home-page "https://github.com/ilevkivskyi/typing_inspect")
-    (synopsis "API for inspection of types in the Python @code{typing} module")
-    (description
-     "The @code{typing_inspect} module defines experimental API for runtime
-inspection of types defined in the Python standard typing module.")
-    (license license:expat)))
-
 (define-public python-lazy-loader
   (package
     (name "python-lazy-loader")
@@ -34146,37 +34121,6 @@ entities
 @end enumerate")
     (license license:bsd-3)))
 
-(define-public python-typogrify
-  (package
-    (name "python-typogrify")
-    (version "2.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "typogrify" version))
-       (sha256
-        (base32 "1vk17q04sax8rpdqll5zldnf6l3ixgknbnn9wimnwah3k1701aph"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--doctest-modules"
-              "typogrify/filters.py"
-              "typogrify/packages/titlecase/tests.py")))
-    (native-inputs
-     (list python-pytest
-           python-hatchling))
-    (propagated-inputs
-     (list python-smartypants))
-    (home-page "https://github.com/justinmayer/typogrify")
-    (synopsis "Filters to transform text into typographically-improved HTML")
-    (description
-     "@code{typogrify} provides a set of custom filters that automatically
-apply various transformations to plain text in order to yield
-typographically-improved HTML.  While often used in conjunction with Jinja and
-Django template systems, the filters can be used in any environment.")
-    (license license:bsd-3)))
-
 (define-public python-ld
   (package
     (name "python-ld")
@@ -36236,133 +36180,6 @@ but not binary streams.")
 multipurpose analysis in Python.")
     (license license:bsd-3)))
 
-(define-public python-types-tqdm
-  (package
-    (name "python-types-tqdm")
-    (version "4.67.0.20250809")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "types_tqdm" version))
-       (sha256
-        (base32 "006md2hnsq79p7d5z3kiaapvl9wwa4dz3yb39jf0n22n2awpmgq2"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;no tests in PyPI archive
-    (native-inputs (list python-setuptools))
-    (propagated-inputs (list python-types-requests))
-    (home-page "https://github.com/python/typeshed")
-    (synopsis "Typing stubs for python-tqdm")
-    (description "This package providis typing stubs for python-tqdm.")
-    (license license:asl2.0)))
-
-(define-public python-types-requests
-  (package
-    (name "python-types-requests")
-    (version "2.32.4.20250611")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "types_requests" version))
-       (sha256
-        (base32 "09pqdfa66d3p5dig26chrd6rpxs5wamxcm0yyl5q69b4xmvqf73l"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;no tests in PyPI archive
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-urllib3))
-    (home-page "https://github.com/python/typeshed")
-    (synopsis "Typing stubs for requests")
-    (description "This package provides typing stubs for requests.")
-    (license license:asl2.0)))
-
-(define-public python-types-simplejson
-  (package
-    (name "python-types-simplejson")
-    (version "3.19.0.20241221")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "types_simplejson" version))
-       (sha256
-        (base32 "0w7wvr84d7bj27hc2bsyh69s9d84zpkdhsibbmsibba91zdzjjhi"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f)) ; no tests in PyPI archive, no release or tags on GitHub
-    (native-inputs
-     (list python-setuptools python-wheel))
-    (home-page "https://github.com/python/typeshed")
-    (synopsis "Typing stubs for simplejson")
-    (description "Typing stubs for simplejson.")
-    (license license:asl2.0)))
-
-(define-public python-types-setuptools
-  (package
-    (name "python-types-setuptools")
-    (version "80.9.0.20250529")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "types_setuptools" version))
-       (sha256
-        (base32 "149w6lg8n56k50n08jx450ni9frs2hzbv729sv48c8ds1jx8iq3r"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;no tests in PyPI archive
-    (native-inputs
-     (list python-setuptools))
-    (home-page "https://github.com/python/typeshed")
-    (synopsis "Typing stubs for setuptools")
-    (description "This package provides typing stubs for setuptools.")
-    (license license:asl2.0)))
-
-(define-public python-types-urllib3
-  (package
-    (name "python-types-urllib3")
-    (version "1.26.25.14")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "types-urllib3" version))
-       (sha256
-        (base32 "13ys7c7k9pg3lb11qvdgs9xq8j8bvcpjpg61j8dqq6wmgibpz6r2"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;no tests in PyPI archive
-    (native-inputs
-     (list python-setuptools))
-    (home-page "https://github.com/python/typeshed")
-    (synopsis "Typing stubs for urllib3")
-    (description "This package provides typing stubs for urllib3.")
-    (license license:asl2.0)))
-
-(define-public python-typeshed-client
-  (package
-    (name "python-typeshed-client")
-    (version "2.8.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/JelleZijlstra/typeshed_client")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0i74ygf49184ab1ipfdzf706wnzs3id15rkysqarzcngdydrcszs"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-backend #~'custom
-           #:test-flags #~(list "tests/test.py")))
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-importlib-resources
-           python-typing-extensions))
-    (home-page "https://github.com/JelleZijlstra/typeshed_client")
-    (synopsis "Library for accessing stubs in typeshed")
-    (description
-     "This package provides a library for accessing stubs in typeshed.")
-    (license license:expat)))
-
 (define-public python-psycopg2-binary
   (package
     (name "python-psycopg2-binary")
@@ -36440,49 +36257,6 @@ async I/O support.")
     (description
      "This package adds ANSI colors and decorations to your strings.")
     (license license:isc)))
-
-(define-public python-types-toml
-  (package
-    (name "python-types-toml")
-    (version "0.10.8.20240310")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "types-toml" version))
-       (sha256
-        (base32 "0c83hfw4aqy01vzlh6r84mz6b2b6n98chfdjp2k3c94p089m0h9x"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))        ;no tests provided
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/python/typeshed")
-    (synopsis "Typing stubs for TOML")
-    (description
-     "This package contains typing stubs for TOML, a very small subset the
-Python stubs contained in the complete @code{typeshed} collection.")
-    (license license:asl2.0)))
-
-(define-public python-types-ujson
-  (package
-    (name "python-types-ujson")
-    (version "5.10.0.20250822")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "types_ujson" version))
-       (sha256
-        (base32 "01m0gdcy6plrjxxih96ra86wd2zhn4skzw7k7hvk51gpw5c5ay8a"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))        ;no tests provided
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/python/typeshed")
-    (synopsis "Typing stubs for ujson")
-    (description
-     "This is a PEP 561 type stub package for the ujson package.  It can be
-used by type-checking tools like mypy, PyCharm, pytype etc. to check code that
-uses ujson.")
-    (license license:asl2.0)))
 
 (define-public python-stltools
   (package
@@ -37920,24 +37694,6 @@ slice file content line by line or column by column or a combination of
 both.")
     (license license:bsd-3)))
 
-(define-public python-types-regex
-  (package
-    (name "python-types-regex")
-    (version "2025.9.18.20250921")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "types_regex" version))
-       (sha256
-        (base32 "0gqc8b9d38pdm1l6nryi9rq9vmpis575hqnxlvj904n3n4hhqw71"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;no tests in PyPI archive
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/python/typeshed")
-    (synopsis "Typing stubs for regex")
-    (description "This package provides typing stubs for regex.")
-    (license license:asl2.0)))
-
 (define-public python-rpds-py
   (package
     (name "python-rpds-py")
@@ -38634,6 +38390,250 @@ collection.")
     (synopsis "Typing stubs for PyYAML")
     (description "This package provides typing stubs for @code{PyYAML}.")
     (license license:asl2.0)))
+
+(define-public python-types-regex
+  (package
+    (name "python-types-regex")
+    (version "2025.9.18.20250921")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_regex" version))
+       (sha256
+        (base32 "0gqc8b9d38pdm1l6nryi9rq9vmpis575hqnxlvj904n3n4hhqw71"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in PyPI archive
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for regex")
+    (description "This package provides typing stubs for regex.")
+    (license license:asl2.0)))
+
+(define-public python-types-requests
+  (package
+    (name "python-types-requests")
+    (version "2.32.4.20250611")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_requests" version))
+       (sha256
+        (base32 "09pqdfa66d3p5dig26chrd6rpxs5wamxcm0yyl5q69b4xmvqf73l"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in PyPI archive
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-urllib3))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for requests")
+    (description "This package provides typing stubs for requests.")
+    (license license:asl2.0)))
+
+(define-public python-types-setuptools
+  (package
+    (name "python-types-setuptools")
+    (version "80.9.0.20250529")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_setuptools" version))
+       (sha256
+        (base32 "149w6lg8n56k50n08jx450ni9frs2hzbv729sv48c8ds1jx8iq3r"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in PyPI archive
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for setuptools")
+    (description "This package provides typing stubs for setuptools.")
+    (license license:asl2.0)))
+
+(define-public python-types-simplejson
+  (package
+    (name "python-types-simplejson")
+    (version "3.19.0.20241221")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_simplejson" version))
+       (sha256
+        (base32 "0w7wvr84d7bj27hc2bsyh69s9d84zpkdhsibbmsibba91zdzjjhi"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ; no tests in PyPI archive, no release or tags on GitHub
+    (native-inputs
+     (list python-setuptools python-wheel))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for simplejson")
+    (description "Typing stubs for simplejson.")
+    (license license:asl2.0)))
+
+(define-public python-types-toml
+  (package
+    (name "python-types-toml")
+    (version "0.10.8.20240310")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types-toml" version))
+       (sha256
+        (base32 "0c83hfw4aqy01vzlh6r84mz6b2b6n98chfdjp2k3c94p089m0h9x"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests provided
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for TOML")
+    (description
+     "This package contains typing stubs for TOML, a very small subset the
+Python stubs contained in the complete @code{typeshed} collection.")
+    (license license:asl2.0)))
+
+(define-public python-types-tqdm
+  (package
+    (name "python-types-tqdm")
+    (version "4.67.0.20250809")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_tqdm" version))
+       (sha256
+        (base32 "006md2hnsq79p7d5z3kiaapvl9wwa4dz3yb39jf0n22n2awpmgq2"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in PyPI archive
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-types-requests))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for python-tqdm")
+    (description "This package providis typing stubs for python-tqdm.")
+    (license license:asl2.0)))
+
+(define-public python-types-ujson
+  (package
+    (name "python-types-ujson")
+    (version "5.10.0.20250822")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types_ujson" version))
+       (sha256
+        (base32 "01m0gdcy6plrjxxih96ra86wd2zhn4skzw7k7hvk51gpw5c5ay8a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests provided
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for ujson")
+    (description
+     "This is a PEP 561 type stub package for the ujson package.  It can be
+used by type-checking tools like mypy, PyCharm, pytype etc. to check code that
+uses ujson.")
+    (license license:asl2.0)))
+
+(define-public python-types-urllib3
+  (package
+    (name "python-types-urllib3")
+    (version "1.26.25.14")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "types-urllib3" version))
+       (sha256
+        (base32 "13ys7c7k9pg3lb11qvdgs9xq8j8bvcpjpg61j8dqq6wmgibpz6r2"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in PyPI archive
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/python/typeshed")
+    (synopsis "Typing stubs for urllib3")
+    (description "This package provides typing stubs for urllib3.")
+    (license license:asl2.0)))
+
+(define-public python-typeshed-client
+  (package
+    (name "python-typeshed-client")
+    (version "2.8.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/JelleZijlstra/typeshed_client")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i74ygf49184ab1ipfdzf706wnzs3id15rkysqarzcngdydrcszs"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "tests/test.py")))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-importlib-resources
+           python-typing-extensions))
+    (home-page "https://github.com/JelleZijlstra/typeshed_client")
+    (synopsis "Library for accessing stubs in typeshed")
+    (description
+     "This package provides a library for accessing stubs in typeshed.")
+    (license license:expat)))
+
+(define-public python-typing-inspect
+  (package
+    (name "python-typing-inspect")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "typing_inspect" version))
+       (sha256
+        (base32 "0y0z8v4wr5bahlgzjd1il2z8vlfd2asiyb45wia6kvznyqpw8gxj"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-mypy-extensions
+           python-typing-extensions))
+    (home-page "https://github.com/ilevkivskyi/typing_inspect")
+    (synopsis "API for inspection of types in the Python @code{typing} module")
+    (description
+     "The @code{typing_inspect} module defines experimental API for runtime
+inspection of types defined in the Python standard typing module.")
+    (license license:expat)))
+
+(define-public python-typogrify
+  (package
+    (name "python-typogrify")
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "typogrify" version))
+       (sha256
+        (base32 "1vk17q04sax8rpdqll5zldnf6l3ixgknbnn9wimnwah3k1701aph"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--doctest-modules"
+              "typogrify/filters.py"
+              "typogrify/packages/titlecase/tests.py")))
+    (native-inputs
+     (list python-pytest
+           python-hatchling))
+    (propagated-inputs
+     (list python-smartypants))
+    (home-page "https://github.com/justinmayer/typogrify")
+    (synopsis "Filters to transform text into typographically-improved HTML")
+    (description
+     "@code{typogrify} provides a set of custom filters that automatically
+apply various transformations to plain text in order to yield
+typographically-improved HTML.  While often used in conjunction with Jinja and
+Django template systems, the filters can be used in any environment.")
+    (license license:bsd-3)))
 
 (define-public python-ua-parser
   (package
