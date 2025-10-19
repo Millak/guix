@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2019, 2022-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2019, 2022-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
@@ -297,9 +297,9 @@ service is transient."
   "Load and register the services from FILES, where FILES contain code that
 returns a shepherd <service> object."
   (eval-there `(register-services
-                ,@(map (lambda (file)
-                         `(primitive-load ,file))
-                       files))))
+                (list ,@(map (lambda (file)
+                               `(primitive-load ,file))
+                             files)))))
 
 (define load-services/safe
   ;; Deprecated.  It used to behave differently before service replacements
