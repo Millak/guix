@@ -20275,22 +20275,42 @@ Python ecosystem.")
 (define-public python-promise
   (package
     (name "python-promise")
-    (version "0.4.2")
+    (version "2.3.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "promise" version))
-        (sha256
-         (base32
-          "1k19ms8l3d5jzjh557rgkxb5sg4mqgfc315rn4hx1z3n8qq6lr3h"))))
-    (build-system python-build-system)
-    ;; Tests wants python-futures, which is a python2 only program, and
-    ;; can't be found by python-promise at test time.
-    (arguments `(#:tests? #f))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/syrusakbary/promise")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17mq1bm78xfl0x1g50ng502m5ldq6421rzz35hlqafsj0cq8dkp6"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/test_benchmark.py"
+              ;;  Issues with pytest-asyncio
+              "--ignore=tests/test_awaitable.py"
+              "-k" (string-join
+                    (list "not test_issue_9_safe"
+                          ;; Stacktrace issues.
+                          "test_thrown_exceptions_have_stacktrace"
+                          "test_thrown_exceptions_preserve_stacktrace")
+                    " and not "))))
+    (native-inputs
+     (list python-mock
+           python-pytest
+           python-pytest-asyncio
+           python-setuptools))
+    (propagated-inputs (list python-six))
     (home-page "https://github.com/syrusakbary/promise")
     (synopsis "Promises/A+ implementation for Python")
     (description
-     "Promises/A+ implementation for Python")
+     "This package provides an implementation of Promises in Python. It is a
+super set of Promises/A+ designed to have readable, performant code and to
+provide just the extensions that are absolutely necessary for using promises
+in Python.")
     (license license:expat)))
 
 (define-public python-progress
