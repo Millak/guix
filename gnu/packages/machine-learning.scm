@@ -5384,7 +5384,6 @@ implementations and an easy-to-use API to create custom metrics.  It offers:
            python-typing-extensions
            python-requests
            python-pillow
-           python-pillow-simd
            python-pytorch))
     (native-inputs
      (list pybind11
