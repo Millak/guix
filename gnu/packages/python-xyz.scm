@@ -19138,19 +19138,24 @@ functions to find and load entry points.")
 (define-public python-epc
   (package
     (name "python-epc")
-    (version "0.0.5")
+    (properties '((commit . "f3673ae5c35f20a0f71546ab34c28e3dde3595c1")
+                  (revision . "0")))
+    (version (git-version "0.0.5"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "epc" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tkf/python-epc")
+             (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "09bx1ln1bwa00917dndlgs4k589h8qx2x080xch5m58p92kjwkd1"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-sexpdata))
-    (native-inputs
-     (list python-nose))
+        (base32 "0q27bj49yan2qg6i8m5czs5b5jv26ff42yz7j4r5652s7j3f42mm"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'nose))
+    (propagated-inputs (list python-sexpdata))
+    (native-inputs (list python-pynose python-setuptools))
     (home-page "https://github.com/tkf/python-epc")
     (synopsis "Remote procedure call (RPC) stack for Emacs Lisp and Python")
     (description
