@@ -335,6 +335,65 @@ individual low-level driver modules.")
     (home-page "https://www.comedi.org/")
     (license license:lgpl2.1)))
 
+(define-public eqy
+  (package
+    (name "eqy")
+    (version "0.59")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/YosysHQ/eqy/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lbi3pn4d2zmqy2pd3pvdv007znildr06ink2g8sh6c9zb74xrk4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:imported-modules (append %default-gnu-imported-modules
+                                 %python-build-system-modules)
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'build)
+          (delete 'check)
+          (add-after 'unpack 'build-info
+            (lambda _
+              (invoke "make" "-C" "docs" "info")
+              (install-file "docs/build/texinfo/yosyshqeqy.info"
+                            (string-append #$output "/share/info"))))
+          (add-after 'unpack 'patch-/usr/bin/env
+            (lambda _
+              (substitute* "src/eqy_job.py"
+                (("\"/usr/bin/env\", ") ""))))
+          (add-after 'install 'check-after-install
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "PATH"
+                        (string-append #$output "/bin:" (getenv "PATH")))
+                ;; make test fails on upstream, see:
+                ;; https://github.com/YosysHQ/eqy/actions/runs/18767539188/job/53545383858
+                (invoke "make" "-C" "examples/spm")
+                (invoke "make" "-C" "examples/simple"))))
+          (add-after 'install 'python:wrap
+            (@@ (guix build python-build-system) wrap)))))
+    (native-inputs
+     (list clang python-minimal-wrapper python-sphinx texinfo yosys-clang))
+    (inputs
+     (list python-click python-json5 readline))
+    (home-page "https://yosyshq.readthedocs.io/projects/eqy/en/latest/")
+    (synopsis "Equivalence checking using formal verification with Yosys")
+    (description
+     "@command{Eqy} is a front-end driver program for Yosys-based formal
+hardware equivalence checking.  It performs formal verification on two
+designs, such as ensuring that a synthesis tool has not introduced functional
+changes into a design, or ensuring that a design refactor preserves
+correctness in all conditions.")
+    (license license:isc)))
+
 (define-public ieee-p1076
   (package
     (name "ieee-p1076")
