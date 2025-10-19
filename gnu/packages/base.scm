@@ -740,7 +740,10 @@ change.  GNU make offers many powerful extensions over the standard utility.")
            ;; For some reason, the build machinery insists on rebuilding .info
            ;; files, even though they're already provided by the tarball.
            #:make-flags #~'("MAKEINFO=true")))
-    (native-inputs (list bison))        ;needed to build 'gprofng'
+    (native-inputs
+     (list bison                        ;needed to build 'gprofng'
+           pkg-config))
+    (inputs (list `(,zstd "lib")))
     (synopsis "Binary utilities: bfd gas gprof ld")
     (description
      "GNU Binutils is a collection of tools for working with binary files.
@@ -796,6 +799,12 @@ included.")
              (lambda _
                (substitute* "gold/Makefile.in"
                  (("/bin/sh") (which "sh")))))
+           (add-before 'check 'set-LD_LIBRARY_PATH
+             (lambda* (#:key inputs #:allow-other-keys)
+               ;; Some test binaries are linked with gold, which lack RUNPATH
+               ;; info due to not being linked with our ld-wrapper script.
+               (setenv "LD_LIBRARY_PATH"
+                       (dirname (search-input-file inputs "lib/libzstd.so")))))
            ;; Multiple failing tests on some architectures in the gold testsuite.
            #$@(if (or (target-arm?)
                       (target-ppc32?))
