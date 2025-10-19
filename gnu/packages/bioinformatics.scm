@@ -22365,8 +22365,8 @@ effective when applied to the signal dataset.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/nanoporetech/ont_fast5_api")
-             (commit (string-append "release_" version))))
+              (url "https://github.com/nanoporetech/ont_fast5_api")
+              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
@@ -22376,15 +22376,17 @@ effective when applied to the signal dataset.")
         '(delete-file-recursively "ont_fast5_api/vbz_plugin"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'copy-plugin
-           (lambda* (#:key inputs #:allow-other-keys)
-             (mkdir-p "ont_fast5_api/vbz_plugin/")
-             (install-file (string-append
-                            (assoc-ref inputs "vbz-compression")
-                            "/hdf5/lib/plugin/libvbz_hdf_plugin.so")
-                           "ont_fast5_api/vbz_plugin/"))))))
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-plugin
+            (lambda* (#:key inputs #:allow-other-keys)
+              (mkdir-p "ont_fast5_api/vbz_plugin/")
+              (install-file (string-append
+                             #$(this-package-input "vbz-compression")
+                             "/hdf5/lib/plugin/libvbz_hdf_plugin.so")
+                            "ont_fast5_api/vbz_plugin/"))))))
     (inputs
      (list vbz-compression))
     (propagated-inputs
