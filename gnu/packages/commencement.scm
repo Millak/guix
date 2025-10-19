@@ -38,6 +38,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages c)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages m4)
@@ -3600,6 +3601,9 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
   ;; The final sed.
   (let ((sed (with-boot6 (package-with-bootstrap-guile sed))))
     (package/inherit sed (native-inputs `(("perl" ,perl-boot0))))))
+
+(define xxhash-final
+  ((compose with-boot6 package-with-bootstrap-guile) xxhash))
 
 (define-public %final-inputs
   ;; The 'glibc-final' package is not the same depending on what system is
