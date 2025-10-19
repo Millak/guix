@@ -18388,39 +18388,52 @@ or doubles.  Basically, a stub is an object that returns pre-canned responses,
 rather than doing any computation.")
     (license license:bsd-3)))
 
-;;; Variant used to break a dependency cycle with
-;;; python-pytest-perf-bootstrap.
-(define-public python-pip-run-bootstrap
-  (hidden-package
-   (package
-     (name "python-pip-run-bootstrap")
-     (version "8.8.0")
-     (source (origin
-               (method git-fetch)
-               (uri (git-reference
-                     (url "https://github.com/jaraco/pip-run")
-                     (commit (string-append "v" version))))
-               (file-name (git-file-name name version))
-               (sha256
-                (base32
-                 "0ycrjj3jgqcr9c2k7y8vprq65iblg0q0hvwz8zwi13gmb0ffds0c"))))
-     (build-system python-build-system)
-     (arguments
-      (list
-       #:tests? #f
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-before 'build 'pretend-version
-             ;; The version string is usually derived via setuptools-scm, but
-             ;; without the git metadata available this fails.
-             (lambda _
-               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
-     (native-inputs (list python-setuptools-scm))
-     (propagated-inputs (list python-autocommand python-path-bootstrap
-                              python-packaging))
-     (home-page "https://github.com/jaraco/pip-run")
-     (synopsis "Dynamic dependency loader for Python")
-     (description "The @command{pip-run} command provides on-demand temporary
+(define-public python-pip-run
+  (package
+    (name "python-pip-run")
+    (version "8.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jaraco/pip-run")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ycrjj3jgqcr9c2k7y8vprq65iblg0q0hvwz8zwi13gmb0ffds0c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? (not (%current-target-system))
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; Do not test the myproject.toml build as it tries
+                    ;; to pull dependencies from the internet.
+                    "not project "
+                    ;; These tests attempt to install dependencies from
+                    ;; the network and fail.
+                    "and not test_pkg_imported "
+                    "and not test_pkg_loaded_from_alternate_index "
+                    "and not test_pkg_loaded_from_url "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pretend-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-nbformat
+           python-pygments
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-autocommand
+           python-packaging
+           python-path
+           python-pip))
+    (home-page "https://github.com/jaraco/pip-run")
+    (synopsis "Dynamic dependency loader for Python")
+    (description "The @command{pip-run} command provides on-demand temporary
 package installation for a single interpreter run.  It replaces this series of
 commands:
 @example
@@ -18429,39 +18442,10 @@ $ /tmp/env/bin/pip install pkg1 pkg2 -r reqs.txt
 $ /tmp/env/bin/python ...
 $ rm -rf /tmp/env
 @end example")
-     (license license:expat))))
+    (license license:expat)))
 
-(define-public python-pip-run
-  (package/inherit python-pip-run-bootstrap
-    (name "python-pip-run")
-    (arguments
-     (substitute-keyword-arguments (package-arguments python-pip-run-bootstrap)
-       ((#:tests? _ #f)
-        (not (%current-target-system)))
-       ((#:phases phases #~%standard-phases)
-        #~(modify-phases #$phases
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  (invoke "pytest" "-k"
-                          (string-append
-                           ;; Do not test the myproject.toml build as it tries
-                           ;; to pull dependencies from the internet.
-                           "not project "
-                           ;; These tests attempt to install dependencies from
-                           ;; the network and fail.
-                           "and not test_pkg_imported "
-                           "and not test_pkg_loaded_from_alternate_index ")))))))))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-pip-run-bootstrap)
-       (replace "python-path-bootstrap" python-path)))
-    (native-inputs
-     (modify-inputs (package-native-inputs python-pip-run-bootstrap)
-       (append python-nbformat
-               python-pygments
-               python-pytest)))
-    (properties (alist-delete 'hidden? (package-properties
-                                        python-pip-run-bootstrap)))))
+;; It may be removed after 2026-01-24.
+(define-deprecated/public-alias python-pip-run-bootstrap python-pip-run)
 
 (define-public python-tlsh
   (package
