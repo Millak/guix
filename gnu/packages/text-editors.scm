@@ -426,7 +426,8 @@ based command language.")
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
+       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
+             (string-append "CXX=" ,(cxx-for-target)))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-source
