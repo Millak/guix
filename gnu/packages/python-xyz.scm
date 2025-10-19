@@ -19706,37 +19706,44 @@ tutorial.")
 @code{PythonAnywhere} services.")
     (license license:expat)))
 
-(define-public python-pythondialog
+(define-public python-dialog
   (package
-    (name "python-pythondialog")
-    (version "3.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pythondialog" version))
-              (sha256
-               (base32
-                "1728ghsran47jczn9bhlnkvk5bvqmmbihabgif5h705b84r1272c"))))
-    (build-system python-build-system)
+    (name "python-dialog")
+    (version "3.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pythondialog" version))
+       (sha256
+        (base32 "08v3flvbhpc0p20drniiaalc3ijghlxk9ka5vz5mqqm6y254m8xj"))
+       (modules '((guix build utils)))
+       (snippet #~(delete-file-recursively "doc"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-path
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let* ((dialog (assoc-ref inputs "dialog")))
-                        (substitute* "dialog.py"
-                          (("os.getenv\\(\"PATH\", \":/bin:/usr/bin\"\\)") (string-append
-                                                                            "os.getenv(\"PATH\")  + \":"
-                                                                            dialog
-                                                                            "/bin\"")))
-                        #t))))
-       #:tests? #f))
-    (propagated-inputs (list dialog))
+     (list
+      ;; XXX: There are no tests, but some examples.  However, they need to
+      ;; be run on a terminal.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "dialog.py"
+                (("_path_to_executable\\(dialog\\)")
+                 (format #f "os.path.realpath(~s)"
+                         (search-input-file inputs "bin/dialog")))))))))
+    (native-inputs (list python-setuptools))
+    (inputs (list dialog))
     (home-page "https://pythondialog.sourceforge.net/")
     (synopsis "Python interface to the UNIX dialog utility")
     (description
-     "A Python wrapper for the dialog utility.  Its purpose is to
-provide an easy to use, pythonic and comprehensive Python interface to dialog.
-This allows one to make simple text-mode user interfaces on Unix-like systems")
+     "A Python wrapper for the dialog utility.  Its purpose is to provide an
+easy to use, pythonic and comprehensive Python interface to dialog.  This
+allows one to make simple text-mode user interfaces on Unix-like systems")
     (license license:lgpl2.1)))
+
+(define-public python-pythondialog
+  (deprecated-package "python-pythondialog" python-dialog))
 
 (define-public python-confection
   (package
