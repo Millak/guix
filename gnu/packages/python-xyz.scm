@@ -18588,12 +18588,21 @@ a hash value.")
     (version "3.1.0")
     (source
       (origin
-        (method url-fetch)
-        (uri (pypi-uri "terminaltables" version))
-        (sha256
-         (base32
-          "109vhldk6nv1z3hzp4dyqf6rjvlhl0y2k5k7qcm9fcrq5swhxszk"))))
-    (build-system python-build-system)
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/Robpol86/terminaltables")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256 (base32 "1jlm7n6kxypbr8mvwpd7hf9hbfk0a002ad03wqgxlri4aw8pk39a"))))
+    (build-system pyproject-build-system)
+    ;; XXX: A lot of test fail with flaky behavior.
+    (arguments (list #:tests? #f))
+    (native-inputs
+     (list python-colorclass
+           python-colorama
+           python-pytest
+           python-setuptools
+           python-termcolor))
     (home-page "https://github.com/Robpol86/terminaltables")
     (synopsis
      "Generate simple tables in terminals from a nested list of strings")
