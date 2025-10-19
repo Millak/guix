@@ -240,19 +240,7 @@ color, font attributes (weight, posture), or underlining.")
        (sha256
         (base32 "0kgbm0af7jwpfspa2xxiy9nc2l1r2s1rhbhz4r229zcqv49ak6sq"))))
     (build-system python-build-system)
-    (native-inputs
-     (list python-bump2version
-           python-flake8
-           python-flake8-implicit-str-concat
-           python-flake8-print
-           python-isort
-           python-pytest
-           python-pytest-cov
-           python-sphinx
-           python-sphinx-argparse
-           python-sphinx-rtd-theme
-           python-twine
-           python-yamllint))
+    (native-inputs (list python-bump2version python-pytest python-yamllint))
     (propagated-inputs
      (list python-polib python-pymd4c))
     (home-page "https://github.com/mondeja/mdpo")
