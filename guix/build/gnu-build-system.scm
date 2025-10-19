@@ -2,7 +2,7 @@
 ;;; Copyright © 2012-2021, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +28,7 @@
   #:use-module (ice-9 regex)
   #:use-module (ice-9 format)
   #:use-module (ice-9 ftw)
+  #:use-module (ice-9 popen)
   #:use-module (ice-9 threads)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-19)
@@ -577,6 +578,66 @@ makefiles."
                                 strip-directories)))
                  outputs))))
 
+(define* (compress-debug-info
+          #:key parallel-build? target outputs
+          (objcopy-command (if target
+                               (string-append target "-objcopy")
+                               "objcopy"))
+          (dwz-command (which "dwz"))
+          #:allow-other-keys)
+  (define debug-output (assoc-ref outputs "debug"))
+  (when debug-output
+    (let* ((common-file (string-append debug-output
+                                       "/lib/debug/" (assoc-ref outputs "out")
+                                       "/common.debug"))
+           (shared-object-file?
+            (lambda (file)
+              (and (elf-file? file)
+                   (member (call-with-input-file file
+                             (compose elf-type parse-elf
+                                      get-bytevector-all))
+                           (list ET_EXEC ET_DYN)))))
+           (objcopy-can-compress?
+            (let* ((input-pipe (open-pipe* OPEN_READ "objcopy" "--help"))
+                   (output (get-string-all input-pipe)))
+              (close-pipe input-pipe)
+              (string-contains output "--compress-debug-sections")))
+           ;; DWZ only operates on ELF shared object files.
+           (debug-files (find-files debug-output
+                                    (lambda (f st)
+                                      ;; Ignore symlinks.
+                                      (and (eq? 'regular (stat:type st))
+                                           (shared-object-file? f)))
+                                    #:stat lstat))
+           (debug-files-count (length debug-files)))
+      (unless (zero? debug-files-count)
+        (when (> debug-files-count 1)
+          (mkdir-p (dirname common-file)))
+        ;; Deduplicate debug symbols with DWZ.
+        (when dwz-command               ;not available during early bootstrap
+          (apply invoke dwz-command
+                 "-j" (number->string (if parallel-build?
+                                          (parallel-job-count)
+                                          1))
+                 `(,@(if (> debug-files-count 1)
+                         `("--multifile" ,common-file)
+                         '())
+                   ,@debug-files)))
+        ;; Compress the debug sections with Zstd
+        (when objcopy-can-compress?     ;not available during early bootstrap
+          ;; It's safe to use multiple threads as objcopy produces no output.
+          (n-par-for-each (if parallel-build?
+                              (parallel-job-count)
+                              1)
+                          (lambda (f)
+                            (make-file-writable f)
+                            (or (false-if-exception
+                                 (invoke objcopy-command
+                                         "--compress-debug-sections=zstd" f))
+                                (invoke objcopy-command
+                                        "--compress-debug-sections=zlib" f)))
+                          debug-files))))))
+
 (define* (validate-runpath #:key
                            (validate-runpath? #t)
                            (elf-directories '("lib" "lib64" "libexec"
@@ -951,7 +1012,7 @@ that traversing all the RUNPATH entries entails."
             patch-usr-bin-file
             patch-source-shebangs configure patch-generated-file-shebangs
             build check install
-            patch-shebangs strip
+            patch-shebangs strip compress-debug-info
             validate-runpath
             validate-documentation-location
             delete-info-dir-file
