@@ -18904,9 +18904,9 @@ Python.")
             (copy-file "lib/debian/_version.py.in" "lib/debian/_version.py")
             (substitute* "lib/debian/_version.py"
               (("__CHANGELOG_VERSION__") #$version))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-six python-chardet))
     (synopsis "Debian package related modules")
