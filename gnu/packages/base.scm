@@ -693,62 +693,63 @@ change.  GNU make offers many powerful extensions over the standard utility.")
 
 (define-public binutils
   (package
-   (name "binutils")
-   (version "2.44")
-   (source
-    (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnu/binutils/binutils-"
-                          version ".tar.bz2"))
-      (sha256
-       (base32 "0fnwaasfglbphqzvz5n25js9gl695p7pjbmb1z81g8gsc6k90qzn"))
-      (patches (search-patches
-                "binutils-2.41-fix-cross.patch"
-                "binutils-loongson-workaround.patch"))))
-   (build-system gnu-build-system)
-   (arguments
-    (list #:out-of-source? #t ;recommended in the README
-          #:configure-flags #~'(;; Add `-static-libgcc' to not retain a dependency
-                                ;; on GCC when bootstrapping.
-                                "LDFLAGS=-static-libgcc"
+    (name "binutils")
+    (version "2.44")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/binutils/binutils-"
+                           version ".tar.bz2"))
+       (sha256
+        (base32 "0fnwaasfglbphqzvz5n25js9gl695p7pjbmb1z81g8gsc6k90qzn"))
+       (patches (search-patches
+                 "binutils-2.41-fix-cross.patch"
+                 "binutils-loongson-workaround.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:out-of-source? #t          ;recommended in the README
+           #:configure-flags
+           #~'( ;; Add `-static-libgcc' to not retain a dependency
+               ;; on GCC when bootstrapping.
+               "LDFLAGS=-static-libgcc"
 
-                                ;; Turn on --enable-new-dtags by default to make the
-                                ;; linker set RUNPATH instead of RPATH on binaries.
-                                ;; This is important because RUNPATH can be overriden
-                                ;; using LD_LIBRARY_PATH at runtime.
-                                "--enable-new-dtags"
+               ;; Turn on --enable-new-dtags by default to make the
+               ;; linker set RUNPATH instead of RPATH on binaries.
+               ;; This is important because RUNPATH can be overriden
+               ;; using LD_LIBRARY_PATH at runtime.
+               "--enable-new-dtags"
 
-                                ;; Don't search under /usr/lib & co.
-                                "--with-lib-path=/no-ld-lib-path"
+               ;; Don't search under /usr/lib & co.
+               "--with-lib-path=/no-ld-lib-path"
 
-                                ;; Install BFD.  It ends up in a hidden directory,
-                                ;; but it's here.
-                                "--enable-install-libbfd"
+               ;; Install BFD.  It ends up in a hidden directory,
+               ;; but it's here.
+               "--enable-install-libbfd"
 
-                                ;; Make sure 'ar' and 'ranlib' produce archives in a
-                                ;; deterministic fashion.
-                                "--enable-deterministic-archives"
+               ;; Make sure 'ar' and 'ranlib' produce archives in a
+               ;; deterministic fashion.
+               "--enable-deterministic-archives"
 
-                                "--enable-64-bit-bfd"
-                                "--enable-compressed-debug-sections=all"
-                                "--enable-lto"
-                                "--enable-separate-code"
-                                "--enable-threads")
+               "--enable-64-bit-bfd"
+               "--enable-compressed-debug-sections=all"
+               "--enable-lto"
+               "--enable-separate-code"
+               "--enable-threads")
 
-          ;; For some reason, the build machinery insists on rebuilding .info
-          ;; files, even though they're already provided by the tarball.
-          #:make-flags #~'("MAKEINFO=true")))
-   (native-inputs (list bison))                   ;needed to build 'gprofng'
-   (synopsis "Binary utilities: bfd gas gprof ld")
-   (description
-    "GNU Binutils is a collection of tools for working with binary files.
+           ;; For some reason, the build machinery insists on rebuilding .info
+           ;; files, even though they're already provided by the tarball.
+           #:make-flags #~'("MAKEINFO=true")))
+    (native-inputs (list bison))        ;needed to build 'gprofng'
+    (synopsis "Binary utilities: bfd gas gprof ld")
+    (description
+     "GNU Binutils is a collection of tools for working with binary files.
 Perhaps the most notable are \"ld\", a linker, and \"as\", an assembler.
 Other tools include programs to display binary profiling information, list
 the strings in a binary file, and utilities for working with archives.  The
 \"bfd\" library for working with executable and object formats is also
 included.")
-   (license gpl3+)
-   (home-page "https://www.gnu.org/software/binutils/")))
+    (license gpl3+)
+    (home-page "https://www.gnu.org/software/binutils/")))
 
 ;; FIXME: ath9k-firmware-htc-binutils.patch do not apply on 2.34 because of a
 ;; big refactoring of xtensa-modules.c (commit 567607c11fbf7105 upstream).
