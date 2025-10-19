@@ -2240,14 +2240,10 @@ from account statements and other documents and for managing documents.")
            python-werkzeug))
     (native-inputs
      (list python-babel
-           python-mypy
            python-pytest
-           python-pytest-cov
            python-setuptools
-           python-twine
            python-types-setuptools
-           python-types-simplejson
-           python-wheel))
+           python-types-simplejson))
     (home-page "https://beancount.github.io/fava/")
     (synopsis "Web interface for the accounting tool Beancount")
     (description "Fava is a web interface for the double-entry bookkeeping
