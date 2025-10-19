@@ -38,6 +38,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages c)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages gawk)
@@ -3261,6 +3262,26 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                          ,@(%boot2-inputs)))
                       (_ (%boot2-inputs)))
        (append `(,zstd-final "lib"))))))
+
+(define elfutils-final
+  (package
+    (inherit elfutils)
+    (source (bootstrap-origin (package-source elfutils)))
+    (arguments
+     (ensure-keyword-arguments
+      (package-arguments elfutils)
+      (list #:guile %bootstrap-guile
+            #:implicit-inputs? #f
+            #:allowed-references (list "out" "bin"
+                                       bash-final
+                                       (gexp-input gcc-final "lib")
+                                       glibc-final
+                                       xz-final
+                                       zlib-final))))
+    (native-inputs (list m4-boot0))
+    (inputs (modify-inputs (%boot6-inputs)
+              (append xz-final
+                      zlib-final)))))
 
 (define zlib-final
   ;; Zlib used by GCC-FINAL.
