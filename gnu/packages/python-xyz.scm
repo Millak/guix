@@ -31997,38 +31997,6 @@ happened, and what caused it.")
      "This package provides a Python module for parsing and splitting PEM files.")
     (license license:expat)))
 
-(define-public python-txsni
-  (package
-    (name "python-txsni")
-    (version "0.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/glyph/txsni")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1fl8xi7vl24hwbva5v41l6nsrbkj2l2mlsgcvdjxgph61aznwywq"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-backend #~'custom
-           #:test-flags #~(list "-m" "twisted.trial"
-                                "--temp-directory=/tmp/_trial_temp"
-                                "txsni")))
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-pyopenssl
-           python-service-identity
-           python-twisted))
-    (home-page "https://github.com/glyph/txsni")
-    (synopsis "Run TLS servers with Twisted")
-    (description
-     "This package provides an easy-to-use SNI endpoint for use with the
-Twisted web framework.")
-    (license license:expat)))
-
 (define-public python-txacme
   ;; 0.9.3 tag was placed in 2020 and there a lot of changes providing
   ;; compatibility wit twisted, use the latest commit from trunk branch.

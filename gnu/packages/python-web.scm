@@ -3845,6 +3845,38 @@ high-speed transfers via libcurl and frequently outperforms alternatives.")
     ;; under the terms of LGPLv2.1+ or Expat.
     (license (list license:lgpl2.1+ license:expat))))
 
+(define-public python-txsni
+  (package
+    (name "python-txsni")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/glyph/txsni")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fl8xi7vl24hwbva5v41l6nsrbkj2l2mlsgcvdjxgph61aznwywq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "-m" "twisted.trial"
+                                "--temp-directory=/tmp/_trial_temp"
+                                "txsni")))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-pyopenssl
+           python-service-identity
+           python-twisted))
+    (home-page "https://github.com/glyph/txsni")
+    (synopsis "Run TLS servers with Twisted")
+    (description
+     "This package provides an easy-to-use SNI endpoint for use with the
+Twisted web framework.")
+    (license license:expat)))
+
 (define-public python-url-normalize
   (package
     (name "python-url-normalize")
