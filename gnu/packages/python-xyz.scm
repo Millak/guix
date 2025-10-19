@@ -19919,18 +19919,21 @@ applications.")
   (package
     (name "python-click-log")
     (version "0.3.2")
-    (source (origin
-             (method url-fetch)
-             (uri (pypi-uri "click-log" version))
-             (sha256
-              (base32
-               "091i03bhxyzsdbc6kilxhivfda2f8ymz3b33xa6cj5kbzjiirz8n"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-click))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/click-contrib/click-log")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01zpjyqnyzrx6xi7cii2180bqdcg2a6b1sdbjijri8jv755r7ray"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-click))
     (synopsis "Logging for click applications")
-    (description "This package provides a Python library for logging Click
-applications.")
+    (description
+     "This package provides a Python library for logging Click applications.")
     (home-page "https://github.com/click-contrib/click-log")
     (license license:expat)))
 
