@@ -4943,20 +4943,18 @@ in the audio domain.")
                python-sympy)))))
 
 (define-public python-pytorch-geometric
-  (let ((commit "85cf9fc12b1138c1f2adbed8a761356c3f4197e7")
-        (revision "0"))
     (package
       (name "python-pytorch-geometric")
-      (version (git-version "2.6.1" revision commit))
+      (version "2.7.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                        (url "https://github.com/pyg-team/pytorch_geometric/")
-                       (commit commit)))
+                       (commit version)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "104v3w9yv7akyxpyd8aq85mw1mncql8mvr1p1b34ph09csqh68hq"))))
+                  "0w6gpw0wf9w6h317mbqcf3iidx9yqjba34348p44g80ihskb6ly6"))))
       (build-system pyproject-build-system)
       (arguments
        (list
@@ -5031,7 +5029,7 @@ in the audio domain.")
       (description
        "PyG is a library built upon PyTorch to easily write and train Graph
 Neural Networks for a wide range of applications related to structured data.")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public python-lightning-cloud
   (package
