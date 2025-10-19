@@ -18483,7 +18483,7 @@ $ rm -rf /tmp/env
        (file-name (git-file-name name version))
        (sha256
         (base32 "1gb5j73nw3nmx030rf8pm75rns5syxhv44zxr6i74kjicyly1i9w"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
@@ -18498,7 +18498,7 @@ $ rm -rf /tmp/env
                    (when tests?
                      (with-directory-excursion "../Testing"
                        (invoke "./python_test.sh"))))))))
-    (native-inputs (list cmake-minimal))
+    (native-inputs (list cmake-minimal python-setuptools))
     (synopsis "Fuzzy matching library for Python")
     (description
      "Trend Micro Locality Sensitive Hash (TLSH) is a fuzzy matching library.
