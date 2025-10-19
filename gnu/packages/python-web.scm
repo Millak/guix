@@ -3845,6 +3845,52 @@ high-speed transfers via libcurl and frequently outperforms alternatives.")
     ;; under the terms of LGPLv2.1+ or Expat.
     (license (list license:lgpl2.1+ license:expat))))
 
+(define-public python-txacme
+  ;; 0.9.3 tag was placed in 2020 and there a lot of changes providing
+  ;; compatibility wit twisted, use the latest commit from trunk branch.
+  ;;
+  ;;See: <https://github.com/twisted/txacme/issues/165>.
+  (let ((commit "ac18f92f6dde971a6b38f2ecfae44665815db583")
+        (revision "0"))
+    (package
+      (name "python-txacme")
+      (version (git-version "0.9.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)               ;no fresh release in PyPI
+         (uri (git-reference
+                (url "https://github.com/twisted/txacme")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0mgdfxldv8qflbn75ywslbarnd4i3l7c4krs4aibl2dpryclsjzs"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list #:test-backend #~'custom
+             #:test-flags #~(list "-m" "twisted.trial" "txacme")))
+      (native-inputs
+       (list python-setuptools))
+      (propagated-inputs
+       (list python-acme
+             python-attrs
+             python-eliot
+             python-josepy
+             python-pem
+             python-treq
+             python-twisted
+             python-txsni))
+      (home-page "https://github.com/twisted/txacme")
+      (synopsis "Twisted implexmentation of the ACME protocol")
+      (description
+       "ACME is Automatic Certificate Management Environment, a protocol that
+allows clients and certificate authorities to automate verification and
+certificate issuance.  The ACME protocol is used by the free Let's Encrypt
+Certificate Authority.
+
+txacme is an implementation of the protocol for Twisted, the event-driven
+networking engine for Python.")
+    (license license:expat))))
+
 (define-public python-txaio
   (package
     (name "python-txaio")
