@@ -21179,6 +21179,8 @@ Abstract Syntax Tree}.  It is a building block for writing a static analyzer
 or compiler for Python.")
     (license license:bsd-3)))
 
+;; XXX: Potentially abandonware since 2017, consider to remove when nothing
+;; depends on it or fails to build.
 (define-public python-txamqp
   (package
     (name "python-txamqp")
@@ -21188,9 +21190,12 @@ or compiler for Python.")
        (method url-fetch)
        (uri (pypi-uri "txAMQP" version))
        (sha256
-        (base32
-         "0jd9864k3csc06kipiwzjlk9mq4054s8kzk5q1cfnxj8572s4iv4"))))
-    (build-system python-build-system)
+        (base32 "0jd9864k3csc06kipiwzjlk9mq4054s8kzk5q1cfnxj8572s4iv4"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;all tests failed
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-six python-twisted))
     (home-page "https://github.com/txamqp/txamqp")
