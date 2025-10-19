@@ -11,6 +11,7 @@
 ;;; Copyright © 2023 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2023-2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +33,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -113,11 +115,11 @@ biography, where the reader has the benefit of both the biographer's original
 words and the subject's response.")
     (license license:fdl1.3+)))
 
-(define-public sicp
+(define-public book-sicp
   (let ((commit "bda03f79d6e2e8899ac2b5ca6a3732210e290a79")
         (revision "3"))
     (package
-      (name "sicp")
+      (name "book-sicp")
       (version (git-version "20180718" revision commit))
       (source (origin
                 (method git-fetch)
@@ -155,6 +157,9 @@ Using Scheme, a dialect of the Lisp programming language, the book explains
 core computer science concepts such as abstraction in programming,
 metalinguistic abstraction, recursion, interpreters, and modular programming.")
       (license license:cc-by-sa4.0))))
+
+;; It may be removed after 2025-12-19.
+(define-deprecated/public-alias sicp book-sicp)
 
 (define-public book-sparc
   (package
