@@ -71,6 +71,7 @@
   #:use-module (gnu packages readline)
   #:use-module (gnu packages rsync)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages selinux)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages sphinx)
