@@ -17469,22 +17469,33 @@ third-party code.")
 (define-public python-llfuse
   (package
     (name "python-llfuse")
-    (version "1.4.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "llfuse" version))
-              (sha256
-               (base32
-                "1jb4c9avvb0v3830xlbj1r9kj05i98vv6nq05105ppg57y7lq14j"))))
-    (build-system python-build-system)
-    (inputs
-     (list fuse-2 attr))
+    (version "1.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/python-llfuse/python-llfuse")
+             (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16wsrg1py4gvcxfgsfkll73lfq62psc0hcqvs73az7s4b1pvyy62"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" "not test_listdir")  ; requires /usr/bin access.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'build-cython
+            (lambda _
+              (invoke "python" "setup.py" "build_cython"))))))
+    (inputs (list fuse-2 attr))
     (native-inputs
-     (list pkg-config python-pytest))
+     (list pkg-config python-cython python-pytest python-setuptools))
     (synopsis "Python bindings for FUSE")
     (description
      "Python-LLFUSE is a set of Python bindings for the low level FUSE API.")
-    (home-page "https://bitbucket.org/nikratio/python-llfuse/")
+    (home-page "https://github.com/python-llfuse/python-llfuse")
     (license license:lgpl2.0+)))
 
 (define-public python-msgpack
