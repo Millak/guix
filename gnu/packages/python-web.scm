@@ -481,6 +481,26 @@ extracting, creating, and converting between formats.")
 @code{.conda} and @code{.tar.bz2} conda packages.")
     (license license:bsd-3)))
 
+(define-public python-dependency-groups
+  (package
+    (name "python-dependency-groups")
+    (version "1.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "dependency_groups" version))
+       (sha256
+        (base32 "1zgymnk6k984h2wfdpp0vws2ihwqrr9lmxhrij9zs5q5140q61vq"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-packaging python-tomli))
+    (native-inputs (list python-flit-core))
+    (home-page "https://dependency-groups.readthedocs.io/")
+    (synopsis "Tools and library for resolving PEP 735 Dependency Group data")
+    (description
+     "This package provides a library which is able to parse dependency groups (PEP
+735), following includes, and provide that data as output.")
+    (license license:expat)))
+
 (define-public python-devpi-common
   (package
     (name "python-devpi-common")
