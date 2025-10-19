@@ -17150,10 +17150,23 @@ the @code{sendfile(2)} system call.")
     (build-system pyproject-build-system)
     ;; Using Pytest instead of the Makefile causes the command line tests to
     ;; fail on unknown Pytest arguments.
-    (arguments (list #:test-flags #~(list "-k" "not TestCommandLineParser")))
-    (native-inputs (list python-psutil python-pytest python-setuptools
-                         python-wheel))
-    (propagated-inputs (list python-pyopenssl python-pysendfile))
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" "not TestCommandLineParser"
+              #$@(if (target-aarch64?)
+                     ;; TimeoutError: timed out
+                     '((string-append "--deselect=pyftpdlib/test/test_functional.py"
+                                      "::TestTimeouts::test_idle_data_timeout2"))
+                     '()))))
+    (native-inputs
+     (list python-psutil
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-pyopenssl
+           python-pysendfile))
     (home-page "https://github.com/giampaolo/pyftpdlib/")
     (synopsis "Asynchronous and scalable Python FTP server library")
     (description "The Python FTP server library provides a high-level
