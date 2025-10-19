@@ -5003,13 +5003,13 @@ Unicode-to-LaTeX conversion.")
 (define-public python-cftime
   (package
     (name "python-cftime")
-    (version "1.6.4")
+    (version "1.6.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cftime" version))
        (sha256
-        (base32 "1p5fw25hjqpzwxw3662f72ga30kpf8pbbph8fgb7x2kmjdhl09g3"))))
+        (base32 "07p8s5a0xacn404x6l0i04q1gz2h0h9m5azbhdvbhgxlp7bgw9c2"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
@@ -5027,7 +5027,6 @@ Unicode-to-LaTeX conversion.")
      (list python-cython
            python-pytest
            python-setuptools
-           python-twine
            python-wheel))
     (home-page "https://unidata.github.io/cftime/")
     (synopsis "Library for time handling")
