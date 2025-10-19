@@ -19200,11 +19200,15 @@ Features:
     (version "0.9.12")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "simpleeval" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/danthedeckie/simpleeval")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0diysdzvx865yy2rjfah75ha2qfxaxz7r108kp7j2kkd903ya2ry"))))
-    (build-system python-build-system)
+        (base32 "0khgl729q5133fgc00d550f4r77707rkkn7r56az4v8bvx0q8xp4"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/danthedeckie/simpleeval")
     (synopsis "Simple, safe single expression evaluator library")
     (description
