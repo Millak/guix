@@ -942,8 +942,8 @@ traversing network address translators (@dfn{NAT}s) and firewalls.")
            ncurses
            openvpn
            procps
+           python-dialog
            python-jinja2
-           python-pythondialog
            python-requests
            which))
     (synopsis "Command-line client for ProtonVPN")
