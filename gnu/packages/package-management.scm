@@ -340,9 +340,9 @@ $(prefix)/etc/openrc\n")))
               (lambda* (#:key system target inputs #:allow-other-keys)
                 ;; Copy the bootstrap guile tarball in the store
                 ;; used by the test suite.
-                (define (intern file recursive?)
-                  ;; Note: don't use 'guix download' here because we
-                  ;; need to set the 'recursive?' argument.
+                (define* (intern file #:optional recursive? name)
+                  ;; Note: don't use 'guix download' here because we need to
+                  ;; set the 'recursive?' argument to keep permissions bits.
                   (define base
                     (strip-store-file-name file))
 
@@ -350,7 +350,7 @@ $(prefix)/etc/openrc\n")))
                     `(begin
                        (use-modules (guix))
                        (with-store store
-                         (let* ((item (add-to-store store ,base
+                         (let* ((item (add-to-store store ,(or name base)
                                                     ,recursive?
                                                     "sha256" ,file))
                                 (root (string-append "/tmp/gc-root-"
@@ -364,18 +364,25 @@ $(prefix)/etc/openrc\n")))
                           (object->string code)))
 
                 (unless target
-                  (intern (assoc-ref inputs "boot-guile") #f)
-
-                  ;; On x86_64 some tests need the i686 Guile.
-                  (when (and (not target)
-                             (string=? system "x86_64-linux"))
-                    (intern (assoc-ref inputs "boot-guile/i686") #f))
+                  (if (string=? system "x86_64-linux")
+                      ;; On x86_64 a test needs the i686 Guile. Unfortunately,
+                      ;; their tarballs can have the same input label.
+                      (for-each
+                       (match-lambda
+                         ((label . file)
+                          (and (string-prefix? "guile-" label)
+                               (string-suffix? ".tar.xz" label)
+                               (intern file))))
+                       inputs)
+                      (intern (assoc-ref inputs #$(basename
+                                                   (bootstrap-guile-url-path
+                                                    (%current-system))))))
 
                   ;; Copy the bootstrap executables.
-                  (for-each (lambda (input)
-                              (intern (assoc-ref inputs input) #t))
-                            '("bootstrap/bash" "bootstrap/mkdir"
-                              "bootstrap/tar" "bootstrap/xz")))))
+                  (for-each (lambda (bin)
+                              (let ((input (string-append "bootstrap-" bin)))
+                                (intern (assoc-ref inputs input) #t bin)))
+                            (list "bash" "mkdir" "tar" "xz")))))
             (add-after 'unpack 'disable-failing-tests
               ;; XXX FIXME: These tests fail within the build container.
               (lambda _
@@ -490,45 +497,39 @@ $(prefix)/etc/openrc\n")))
                      help2man
                      po4a-minimal)))
       (inputs
-       `(("bash-minimal" ,bash-minimal)
-         ("bzip2" ,bzip2)
-         ("gzip" ,gzip)
-         ("sqlite" ,sqlite)
-         ("libgcrypt" ,libgcrypt)
-         ("zlib" ,zlib)
-
-         ("guile" ,guile-3.0-latest)
-
-         ;; Some of the tests use "unshare" when it is available.
-         ("util-linux" ,util-linux)
-         ,@(if (target-linux?)
-               `(("slirp4netns" ,slirp4netns))
-               '())
-
-         ;; Many tests rely on the 'guile-bootstrap' package, which is why we
-         ;; have it here.
-         ("boot-guile" ,(bootstrap-guile-origin (%current-system)))
-         ,@(if (and (not (%current-target-system))
-                    (string=? (%current-system) "x86_64-linux"))
-               `(("boot-guile/i686" ,(bootstrap-guile-origin "i686-linux")))
-               '())
-         ,@(if (%current-target-system)
-               `(("xz" ,xz))
-               '())
-
-         ;; Tests also rely on these bootstrap executables.
-         ("bootstrap/bash" ,(bootstrap-executable "bash" (%current-system)))
-         ("bootstrap/mkdir" ,(bootstrap-executable "mkdir" (%current-system)))
-         ("bootstrap/tar" ,(bootstrap-executable "tar" (%current-system)))
-         ("bootstrap/xz" ,(bootstrap-executable "xz" (%current-system)))
-
-         ("disarchive" ,disarchive)               ;for 'guix perform-download'
-         ("guile-bzip2" ,guile-bzip2)             ;for Disarchive
-         ("guile-lzma" ,guile-lzma)               ;for Disarchive
-
-         ("git-minimal" ,git-minimal)             ;for 'guix perform-download'
-
-         ("glibc-utf8-locales" ,(libc-utf8-locales-for-target))))
+       (append (list bash-minimal
+                     bzip2
+                     gzip
+                     sqlite
+                     libgcrypt
+                     zlib
+                     guile-3.0-latest
+                     ;; Some of the tests use "unshare" when it is available.
+                     util-linux
+                     ;; Tests also rely on these bootstrap executables.
+                     (bootstrap-executable "bash" (%current-system) "bootstrap-bash")
+                     (bootstrap-executable "mkdir" (%current-system) "bootstrap-mkdir")
+                     (bootstrap-executable "tar" (%current-system) "bootstrap-tar")
+                     (bootstrap-executable "xz" (%current-system) "bootstrap-xz")
+                     disarchive         ;for 'guix perform-download'
+                     guile-bzip2        ;for Disarchive
+                     guile-lzma         ;for Disarchive
+                     git-minimal        ;for 'guix perform-download'
+                     (libc-utf8-locales-for-target))
+               (if (target-linux?)
+                   (list slirp4netns)
+                   '())
+               ;; Many tests rely on the 'guile-bootstrap' package.
+               (cons*
+                (bootstrap-guile-origin (%current-system))
+                ;; On x86_64 a test needs the i686 Guile.
+                (if (and (not (%current-target-system))
+                         (string=? (%current-system) "x86_64-linux"))
+                    (list (bootstrap-guile-origin "i686-linux"))
+                    '()))
+               (if (%current-target-system)
+                   (list xz)
+                   '())))
       (propagated-inputs
        (append (if (target-hurd?)
                    '()
@@ -592,7 +593,9 @@ the Nix package manager.")
        (delete "po4a" "graphviz" "font-ghostscript" "help2man")))
     (inputs
      (modify-inputs (package-inputs guix)
-       (delete "boot-guile" "boot-guile/i686" "util-linux")
+       (delete (basename (bootstrap-guile-url-path (%current-system)))
+               (basename (bootstrap-guile-url-path "i686-linux"))
+               "util-linux")
        (prepend guile-gnutls guile-git guile-json-4 guile-gcrypt)))
 
     (propagated-inputs '())

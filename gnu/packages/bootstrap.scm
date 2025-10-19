@@ -46,7 +46,8 @@
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (ice-9 match)
-  #:export (bootstrap-origin
+  #:export (bootstrap-guile-url-path
+            bootstrap-origin
             package-with-bootstrap-guile
             glibc-dynamic-linker
 
@@ -181,8 +182,8 @@
     (_ (string-append system "/" program
                       "?id=44f07d1dc6806e97c4e9ee3e6be883cc59dc666e"))))
 
-(define bootstrap-executable
-  (mlambda (program system)
+(define bootstrap-executable*
+  (mlambda (program system file-name)
     "Return an origin for PROGRAM, a statically-linked bootstrap executable
 built for SYSTEM."
     (let ((system (if (string=? system "x86_64-linux")
@@ -203,8 +204,14 @@ for system '~a'")
            (uri (map (cute string-append <>
                            (bootstrap-executable-file-name system program))
                      %bootstrap-executable-base-urls))
-           (file-name program)
+           ;; XXX: In the long term, migrate all boostrap executables to
+           ;; (string-append "bootstrap-" program), and drop the additional
+           ;; file-name argument.
+           (file-name file-name)
            (hash (content-hash bv sha256))))))))
+
+(define* (bootstrap-executable program system #:optional file-name)
+  (bootstrap-executable* program system (or file-name program)))
 
 
 ;;;
