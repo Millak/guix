@@ -20385,12 +20385,19 @@ visual (yet text based) progress to long running operations.")
     (version "2.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "progressbar33" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/germangh/python-progressbar")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1zvf6zs5hzrc03p9nfs4p16vhilqikycvv1yk0pxn8s07fdhvzji"))))
-    (build-system python-build-system)
+        (base32 "0vyn2l6i7fgqskqfx3nfs1dibc5v1cxydg3v3422xf41pkba282c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "examples.py")))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/germangh/python-progressbar")
     (synopsis "Text progress bar library for Python")
     (description
