@@ -9,7 +9,7 @@
 ;;; Copyright © 2019-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2022 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
-;;; Copyright © 2021 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
@@ -3269,6 +3269,32 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
        #:implicit-inputs? #f
        #:allowed-references ("out" ,glibc-final)
        ,@(package-arguments zlib)))
+    (inputs (%boot2-inputs))))
+
+(define zstd-final
+  ;; Zstd used by BINUTILS-FINAL.
+  (package
+    (inherit zstd)
+    (source (bootstrap-origin (package-source zstd)))
+    (arguments
+     (substitute-keyword-arguments
+         (ensure-keyword-arguments
+          (package-arguments zstd)
+          (list #:guile %bootstrap-guile
+                #:implicit-inputs? #f
+                #:allowed-references (list "out" "lib" glibc-final)))
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            ;; Avoid retaining references to bash & grep in the zstdless
+            ;; script.
+            (delete 'patch-command-file-names)
+            (add-after 'install 'unpatch-bash-shebangs
+              (lambda _
+                (with-directory-excursion (string-append #$output "/bin")
+                  (substitute* '("zstdgrep" "zstdless")
+                    (("#!/gnu/store/.*/bin/sh")
+                     "#!/bin/sh")))))
+            (delete 'patch-shebangs)))))
     (inputs (%boot2-inputs))))
 
 (define/system-dependent ld-wrapper-boot3
