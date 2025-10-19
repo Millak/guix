@@ -2248,40 +2248,40 @@ exec " gcc "/bin/" program
     (source (bootstrap-origin (package-source binutils)))
     (name "binutils-cross-boot0")
     (arguments
-     (append (list #:guile %bootstrap-guile
-                   #:implicit-inputs? #f
+     (ensure-keyword-arguments
+      (substitute-keyword-arguments (package-arguments binutils)
+        ((#:modules modules '((guix build gnu-build-system)
+                              (guix build utils)))
+         (cons '(ice-9 ftw) modules))
+        ((#:configure-flags cf ''())
+         #~(append (list #$(string-append "--target="
+                                          (boot-triplet))
+                         "--disable-gprofng") ;requires Bison
+                   #$cf))
+        ((#:phases phases '%standard-phases)
+         #~(modify-phases #$phases
+             (add-after 'install 'add-symlinks
+               (lambda* (#:key outputs #:allow-other-keys)
+                 ;; The cross-gcc invokes 'as', 'ld', etc, without the
+                 ;; triplet prefix, so add symlinks.
+                 (let ((out (assoc-ref outputs "out"))
+                       (triplet-prefix (string-append #$(boot-triplet)
+                                                      "-")))
+                   (define (has-triplet-prefix? name)
+                     (string-prefix? triplet-prefix name))
+                   (define (remove-triplet-prefix name)
+                     (substring name
+                                (string-length triplet-prefix)))
 
-                   #:modules '((guix build gnu-build-system)
-                               (guix build utils)
-                               (ice-9 ftw)) ; for 'scandir'
-                   #:phases
-                   #~(modify-phases %standard-phases
-                       (add-after 'install 'add-symlinks
-                         (lambda* (#:key outputs #:allow-other-keys)
-                           ;; The cross-gcc invokes 'as', 'ld', etc, without the
-                           ;; triplet prefix, so add symlinks.
-                           (let ((out (assoc-ref outputs "out"))
-                                 (triplet-prefix (string-append #$(boot-triplet)
-                                                                "-")))
-                             (define (has-triplet-prefix? name)
-                               (string-prefix? triplet-prefix name))
-                             (define (remove-triplet-prefix name)
-                               (substring name
-                                          (string-length triplet-prefix)))
-
-                             (with-directory-excursion (string-append out "/bin")
-                               (for-each (lambda (name)
-                                           (symlink name
-                                                    (remove-triplet-prefix name)))
-                                         (scandir "."
-                                                  has-triplet-prefix?))))))))
-             (substitute-keyword-arguments (package-arguments binutils)
-               ((#:configure-flags cf)
-                #~(append (list #$(string-append "--target="
-                                                 (boot-triplet))
-                                "--disable-gprofng") ;requires Bison
-                          #$cf)))))
-    (native-inputs '())                           ;no Bison
+                   (with-directory-excursion (string-append out "/bin")
+                     (for-each (lambda (name)
+                                 (symlink name
+                                          (remove-triplet-prefix name)))
+                               (scandir "."
+                                        has-triplet-prefix?)))))))))
+      (list #:guile %bootstrap-guile
+            #:implicit-inputs? #f)))
+    (native-inputs '())                 ;no Bison
     (inputs (%boot0-inputs))))
 
 (define libstdc++-boot0
