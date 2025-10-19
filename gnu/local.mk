@@ -298,7 +298,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/fortran-xyz.scm			\
   %D%/packages/freedesktop.scm			\
   %D%/packages/freeipmi.scm			\
-  %D%/packages/fsf.scm				\
   %D%/packages/ftp.scm				\
   %D%/packages/fribidi.scm			\
   %D%/packages/fvwm.scm				\
