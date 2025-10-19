@@ -3109,7 +3109,7 @@ backported from Python 2.7 for Python 2.4+.")
     (native-inputs
      (list python-mock
            python-assertpy
-           python-pathpy
+           python-path
            python-pyhamcrest
            python-pytest
            python-pytest-html
