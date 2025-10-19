@@ -3264,6 +3264,27 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                       (_ (%boot2-inputs)))
        (append `(,zstd-final "lib"))))))
 
+(define dwz-final
+  (package
+    (inherit dwz)
+    (source (bootstrap-origin (package-source dwz)))
+    (arguments
+     (ensure-keyword-arguments
+      (package-arguments dwz)
+      (list #:guile %bootstrap-guile
+            #:implicit-inputs? #f
+            #:tests? #f
+            #:allowed-references (list "out" glibc-final
+                                       elfutils-final
+                                       (gexp-input gcc-final "lib")
+                                       xxhash-final
+                                       xz-final
+                                       zlib-final))))
+    (native-inputs (list pkg-config-final)) ;without test inputs
+    (inputs (modify-inputs (%boot6-inputs)
+              (append elfutils-final
+                      xxhash-final)))))
+
 (define elfutils-final
   (package
     (inherit elfutils)
