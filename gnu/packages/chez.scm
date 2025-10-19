@@ -1373,3 +1373,40 @@ required to port the program @code{Scmutils} to Chez Scheme.")
 Scmutils program to Chez Scheme.  The port consists of a set of
 libraries providing most of the functionality of the original.")
     (license license:gpl3+)))
+
+(define-public schemesh
+  (package
+    (name "schemesh")
+    (version "0.9.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cosmos72/schemesh")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "0rnd2mz3vnsxdac5q7i625mkmfc1znp865wxdqqx1c6dqb26bqrv"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-Makefile
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("CC=cc")
+                      (string-append "CC=" #$(cc-for-target)))
+                     (("^(prefix[^/]*)/.*" all prefix)
+                      (string-append prefix #$output "\n")))))
+               (delete 'configure))))
+    (inputs (list chez-scheme
+                  lz4
+                  zlib
+                  ncurses
+                  `(,util-linux "lib")))
+    (home-page "https://github.com/cosmos72/schemesh")
+    (synopsis "Unix shell and Lisp REPL, fused together")
+    (description "Schemesh is an interactive shell scriptable in Lisp.  It
+supports interactive line editing, autocompletion, history and the familiar Unix
+shell syntax.")
+    (license license:gpl2)))
