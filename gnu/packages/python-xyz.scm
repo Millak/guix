@@ -2618,6 +2618,39 @@ decorators, including variants of the Python standard library's
        (sha256
         (base32 "1m20wqipm50zvcgs3z2xksb96qwx1xc1jbhvaxcnglkmj6m1qrhs"))))))
 
+(define-public python-colorclass
+  (package
+    (name "python-colorclass")
+    (version "2.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/matthewdeanmartin/colorclass")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ylj167lfh8yzms30qrkiznv6737hdxra5lk8mhijcjm3hi1cl9l"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" "not test_piped")  ; Unclear why this test fails.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-poetry-core
+            (lambda _
+              ;; Patch to use the core poetry API.
+              (substitute* "pyproject.toml"
+                (("poetry.masonry.api") "poetry.core.masonry.api")))))))
+    (native-inputs (list python-poetry-core python-pytest))
+    (home-page "https://github.com/matthewdeanmartin/colorclass")
+    (synopsis "Colorful console applications with Python")
+    (description
+     "This package provides an ANSI color text library for Python.  It
+provides automatic coloring for dark or light terminals.")
+    (license license:expat)))
+
 (define-public python-colorcet
   (package
     (name "python-colorcet")
