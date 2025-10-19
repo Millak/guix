@@ -31998,30 +31998,36 @@ happened, and what caused it.")
     (license license:expat)))
 
 (define-public python-txsni
-  ;; We need a few commits on top of 0.1.9 for compatibility with newer
-  ;; Python and OpenSSL.
-  (let ((commit "5014c141a7acef63e20fcf6c36fa07f0cd754ce1")
-        (revision "0"))
-    (package
-      (name "python-txsni")
-      (version (git-version "0.1.9" revision commit))
-      (home-page "https://github.com/glyph/txsni")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference (url home-page) (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0imfxx4yjj1lbq0n5ad45al3wvv4qv96sivnc1r51i66mxi658z8"))))
-      (build-system python-build-system)
-      (propagated-inputs
-       (list python-pyopenssl python-service-identity python-twisted))
-      (synopsis "Run TLS servers with Twisted")
-      (description
-       "This package provides an easy-to-use SNI endpoint for use
-with the Twisted web framework.")
-      (license license:expat))))
+  (package
+    (name "python-txsni")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/glyph/txsni")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fl8xi7vl24hwbva5v41l6nsrbkj2l2mlsgcvdjxgph61aznwywq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "-m" "twisted.trial"
+                                "--temp-directory=/tmp/_trial_temp"
+                                "txsni")))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-pyopenssl
+           python-service-identity
+           python-twisted))
+    (home-page "https://github.com/glyph/txsni")
+    (synopsis "Run TLS servers with Twisted")
+    (description
+     "This package provides an easy-to-use SNI endpoint for use with the
+Twisted web framework.")
+    (license license:expat)))
 
 (define-public python-txacme
   ;; 0.9.3 tag was placed in 2020 and there a lot of changes providing
