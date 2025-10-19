@@ -18303,19 +18303,22 @@ is binding LibSass.")
     (version "1.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "idna-ssl" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aio-libs/idna-ssl")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0ydrc8hpg9mdr5hqq1lqfsfbn6sjq69slwpfrnlrm3k0phqg14qj"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f))          ;circular dependency with python-aiohttp
+        (base32 "1fj4zkcnx3mk7kbnf4d6pjgv331n17wzpphpwdnmr498ghbsph9k"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))  ;circular dependency with python-aiohttp
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-idna))
     (home-page "https://github.com/aio-libs/idna-ssl")
-    (synopsis "Patch @code{ssl.match_hostname} for Unicode(idna) domains support")
-    (description "Patch @code{ssl.match_hostname} for Unicode(idna)
-domains support.")
+    (synopsis "Support Unicode(idna) domains for Python's @code{ssl} module")
+    (description
+     "This package provides Unicode(idna) domains support for Python's
+@code{ssl} module.  It patches @code{ssl.match_hostname} for that purpose.")
     (license license:expat)))
 
 ;;; Variant used to break a cycle with python-pip-run-bootstrap.
