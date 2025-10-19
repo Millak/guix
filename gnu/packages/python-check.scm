@@ -629,13 +629,12 @@ counterexamples for you.")
             (lambda _
               (chdir "python"))))))
     (native-inputs
-     (list python-pathpy
+     (list python-path
            python-pytest
            python-pytest-html
            python-pyyaml
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (home-page "https://github.com/cucumber/tag-expressions")
     (synopsis "Tag-expression parser for cucumber/behave")
     (description
