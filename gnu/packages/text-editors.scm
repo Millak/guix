@@ -439,8 +439,14 @@ based command language.")
                (("if \\(m_shell.empty\\(\\)\\)" line)
                 (string-append "m_shell = \"" (which "sh")
                                "\";\n        " line)))))
+         (add-after 'install 'wrap-executable
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (wrap-program (string-append (assoc-ref outputs "out") "/bin/kak")
+              `("PATH" ":" prefix
+                (,(dirname (search-input-file inputs "bin/perl")))))))
          (delete 'configure))))            ; no configure script
     (native-inputs (list pkg-config))
+    (inputs (list perl))
     (synopsis "Vim-inspired code editor")
     (description
      "Kakoune is a code editor heavily inspired by Vim, as such most of its
