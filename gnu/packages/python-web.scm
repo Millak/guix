@@ -3845,6 +3845,27 @@ high-speed transfers via libcurl and frequently outperforms alternatives.")
     ;; under the terms of LGPLv2.1+ or Expat.
     (license (list license:lgpl2.1+ license:expat))))
 
+(define-public python-txaio
+  (package
+    (name "python-txaio")
+    (version "25.9.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "txaio" version))
+       (sha256
+        (base32 "16ch62yk2gdikkak113h6qw13ns9ksca817hky0vabn0fyh08874"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/crossbario/txaio")
+    (synopsis "Compatibility layer between Python asyncio and Twisted")
+    (description
+     "Txaio provides a compatibility layer between the Python @code{asyncio}
+ bsmodule and @code{Twisted}.")
+    (license license:expat)))
+
 ;; XXX: Potentially abandonware since 2017, consider to remove when nothing
 ;; depends on it or fails to build.
 (define-public python-txamqp
