@@ -3125,7 +3125,6 @@ types (i.e. Convention, Warn, and Error) fail the build.")
      (list python-pre-commit
            python-setuptools
            python-setuptools-scm
-           python-tox
            python-wheel))
     (home-page "https://github.com/pytest-dev/pytest-qt")
     (synopsis "Pytest support for PyQt and PySide applications")
