@@ -18679,26 +18679,26 @@ Python's @code{ctypes} foreign function interface (FFI).")
 (define-public python-file
   (package/inherit file
     (name "python-file")
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f                                ;no tests
-       #:configure-flags '("--single-version-externally-managed" "--root=/")
-       #:phases (modify-phases %standard-phases
-                  (add-before 'build 'change-directory
-                    (lambda _
-                      (chdir "python")
-                      #t))
-                  (add-before 'build 'set-library-file-name
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((file (assoc-ref inputs "file")))
-                        (substitute* "magic.py"
-                          (("find_library\\('magic'\\)")
-                           (string-append "'" file "/lib/libmagic.so'")))
-                        #t))))))
-    (inputs `(("file" ,file)))
-    (native-inputs (if (%current-target-system)
-                       `(("self" ,this-package))
-                       '()))
+     (list
+      #:tests? #f                                ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'change-directory
+            (lambda _
+              (chdir "python")))
+          (add-before 'build 'set-library-file-name
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "magic.py"
+                (("find_library\\('magic'\\)")
+                 (format #f "~s" (search-input-file inputs
+                                                    "lib/libmagic.so")))))))))
+    (inputs (list file))
+    (native-inputs (cons* python-setuptools
+                          (if (%current-target-system)
+                              (list this-package)
+                              '())))
     (synopsis "Python bindings to the libmagic file type guesser")
     (description "This package provides Python bindings to the libmagic file
 type guesser.
