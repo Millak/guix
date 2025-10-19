@@ -20319,17 +20319,27 @@ in Python.")
     (version "1.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "progress" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/verigak/progress/")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1k9lpb7lqr6mywpnqcz71y6qny54xlgprdp327za2gy0nnc6xj69"))))
-    (build-system python-build-system)
-    (home-page "http://github.com/verigak/progress/")
+        (base32 "0qz5b9d3cvfdy2f1gb4r20f1qgcsihhmbc2bm2jgbvryxylp0f5k"))
+       (snippet #~(delete-file "demo.gif"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "test_progress.py")))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/verigak/progress/")
     (synopsis "Progress reporting bars for Python")
-    (description "This Python package provides progress reporting for visual
-of progress of long running operations.  There are multiple choices of
-progress bars and spinners, with customizable options, such as width, fill
-character, and suffix.")
+    (description
+     "This Python package provides progress reporting for visual of progress
+of long running operations.  There are multiple choices of progress bars and
+spinners, with customizable options, such as width, fill character, and
+suffix.")
     (license license:isc)))
 
 (define-public python-progressbar2
