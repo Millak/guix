@@ -3511,24 +3511,26 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
 (define %boot5-inputs %boot4-inputs)
 (define with-boot5 with-boot4)
 
+(define pkg-config-final
+  (package
+    (inherit %pkg-config)               ;the native pkg-config
+    (arguments
+     (ensure-keyword-arguments
+      (package-arguments %pkg-config)
+      (list #:implicit-inputs? #f
+            #:guile %bootstrap-guile)))
+    (inputs (%boot2-inputs))))
+
 (define (make-gnu-make-final)
   "Compute the final GNU Make, which uses the final Guile."
-  (let ((pkg-config (package
-                      (inherit %pkg-config)       ;the native pkg-config
-                      (inputs `(("guile" ,guile-final)
-                                ,@(%boot5-inputs)))
-                      (arguments
-                       `(#:implicit-inputs? #f
-                         ,@(package-arguments %pkg-config))))))
-    (package
-      (inherit (package-with-bootstrap-guile gnu-make))
-      (inputs `(("guile" ,guile-final)
-                ,@(%boot5-inputs)))
-      (native-inputs `(("pkg-config" ,pkg-config)))
-      (arguments
-       `(#:implicit-inputs? #f
-         ,@(package-arguments gnu-make))))))
-
+  (package
+    (inherit (package-with-bootstrap-guile gnu-make))
+    (inputs `(("guile" ,guile-final)
+              ,@(%boot5-inputs)))
+    (native-inputs `(("pkg-config" ,pkg-config-final)))
+    (arguments
+     `(#:implicit-inputs? #f
+       ,@(package-arguments gnu-make)))))
 
 (define coreutils-final
   ;; The final Coreutils.  Treat them specially because some packages, such as
