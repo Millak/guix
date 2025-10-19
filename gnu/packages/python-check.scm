@@ -1653,8 +1653,7 @@ also ensuring that the notebooks are running without errors.")
     (native-inputs
      (list python-hatchling
            python-jinja2
-           python-pytest
-           python-tox))
+           python-pytest))
     (home-page "https://nox.thea.codes/")
     (synopsis "Flexible test automation")
     (description
