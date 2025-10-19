@@ -604,6 +604,38 @@ Satisfiability modulo theories} solver explore viable execution paths and find
 counterexamples for you.")
     (license (list license:asl2.0 license:expat license:psfl))))
 
+(define-public python-cucumber-expressions
+  (package
+    (name "python-cucumber-expressions")
+    (version "18.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cucumber/cucumber-expressions")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1syxa142v9sajy7n2az7d0jc6lsjg93kw659pxfs3g6ddrngpdri"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Project's repository contains go, java, javascript, perl, python
+          ;; and ruby implementations.
+          (add-after 'unpack 'chdir-python
+            (lambda _
+              (chdir "python"))))))
+    (native-inputs
+     (list python-poetry-core python-pytest python-pyyaml))
+    (home-page "https://github.com/cucumber/cucumber-expressions")
+    (synopsis "A simpler alternative to Regular Expressions")
+    (description
+     "This package provides an alternative to Regular Expressions with a more
+intuitive syntax.")
+    (license license:expat)))
+
 (define-public python-cucumber-tag-expressions
   (package
     (name "python-cucumber-tag-expressions")
