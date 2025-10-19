@@ -736,6 +736,14 @@ change.  GNU make offers many powerful extensions over the standard utility.")
                "--enable-lto"
                "--enable-separate-code"
                "--enable-threads")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'use-zstd-compression-level-19
+                 (lambda _
+                   ;; The default level (3) is hard-coded.  Use a higher level to
+                   ;; compact debug sections as much as possible.
+                   (substitute* "bfd/compress.c"
+                     (("ZSTD_CLEVEL_DEFAULT") "19")))))
 
            ;; For some reason, the build machinery insists on rebuilding .info
            ;; files, even though they're already provided by the tarball.
@@ -795,6 +803,12 @@ included.")
                  (delete "LDFLAGS=-static-libgcc" #$flags)))
        ((#:phases phases '%standard-phases)
         #~(modify-phases #$phases
+            (add-after 'unpack 'use-zstd-compression-level-19-for-gold
+              (lambda _
+                ;; The default level (3) is hard-coded.  Use a higher level to
+                ;; compact debug sections as much as possible.
+                (substitute* "gold/compressed_output.cc"
+                  (("ZSTD_CLEVEL_DEFAULT") "19"))))
            (add-after 'patch-source-shebangs 'patch-more-shebangs
              (lambda _
                (substitute* "gold/Makefile.in"
