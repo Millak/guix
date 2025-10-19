@@ -3656,6 +3656,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
           ("grep" ,grep-final)
           ("xz" ,xz-final)
           ("coreutils" ,coreutils-final)
+          ("dwz" ,dwz-final)
           ("make" ,(make-gnu-make-final))
           ("bash" ,bash-final)
           ("ld-wrapper" ,ld-wrapper)
