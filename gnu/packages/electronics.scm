@@ -2348,6 +2348,7 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
     (build-system gnu-build-system)
     (arguments
      (list
+      #:parallel-tests? #f
       #:test-target "test"
       #:modules `((guix build gnu-build-system)
                   ((guix build python-build-system) #:prefix python:)
@@ -2363,10 +2364,7 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
           ;; (add-after 'install 'build-info
           ;; (lambda _
           ;; (invoke "make" "-C" "docs" "info")))
-          (add-before 'check 'git-init
-            (lambda _
-              (invoke "git" "init")))   ;check expects a git repo
-          (add-after 'git-init 'patch-/usr/bin/env
+          (add-after 'unpack 'patch-/usr/bin/env
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "sbysrc/sby_core.py"
                 (("\"/usr/bin/env\", ")
@@ -2378,20 +2376,19 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
             (assoc-ref python:%standard-phases 'wrap)))))
     (inputs (list abc-yosyshq
                   boolector
-                  git-minimal/pinned
                   python
                   python-click
                   python-xmlschema
                   z3
                   yices
-                  yosys))
+                  yosys-clang))
     ;; TODO: see above build-info phase comment.
     ;; (native-inputs (list
     ;;                 python-sphinx python-sphinx-argparse texinfo))
-    (home-page "https://github.com/YosysHQ/sby/")
-    (synopsis "Formal hardware verification with yosys")
+    (home-page "https://yosyshq.readthedocs.io/projects/sby/en/latest/")
+    (synopsis "Formal hardware verification with Yosys")
     (description
-     "SimbyYosys is a front-end program for yosys-based formal hardware
+     "code{Simbiyosys} is a front-end program for Yosys-based formal hardware
 verification flows.")
     (license license:isc)))
 
