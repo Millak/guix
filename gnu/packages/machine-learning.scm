@@ -4308,7 +4308,7 @@ PyTorch.")
         (base32
          "0hdpkhcjry22fjx2zg2r48v7f4ljrclzj0li2pgk76kvyblfbyvm"))))))
 
-(define %python-pytorch-version "2.8.0")
+(define %python-pytorch-version "2.9.0")
 
 (define %python-pytorch-src
   (origin
@@ -4319,7 +4319,7 @@ PyTorch.")
     (file-name (git-file-name "python-pytorch" %python-pytorch-version))
     (sha256
      (base32
-      "0am8mx0mq3hqsk1g99a04a4fdf865g93568qr1f247pl11r2jldl"))
+      "005gj27qikkgbibbk00z8xs9a8xms2fxapm53inp31zxm4853myh"))
     (patches (search-patches "python-pytorch-system-libraries.patch"
                              "python-pytorch-runpath.patch"
                              "python-pytorch-without-kineto.patch"
@@ -4476,8 +4476,14 @@ PyTorch.")
           ;; the 'sanity-check phase to fail.
           (add-after 'unpack 'remove-fr-trace-script
             (lambda _
+             (substitute* "setup.py"
+               (("entry_points\\[\"console_scripts\"\\]\\.append\\(") "("))))
+          (add-after 'remove-fr-trace-script 'skip-pip-redirect
+            (lambda _
+              ;; Keep using setup.py directly instead of invoking pip.
               (substitute* "setup.py"
-                (("entry_points\\[\"console_scripts\"\\]\\.append\\(") "("))))
+                (("if arg == \"install\":")
+                 "if False and arg == \"install\":"))))
           (add-before 'build 'use-system-libraries
             (lambda _
               (for-each
@@ -4494,7 +4500,8 @@ PyTorch.")
 
               ;; Fix moodycamel/concurrentqueue includes for system package
               (substitute* '("c10/util/Semaphore.h"
-                             "c10/test/util/Semaphore_test.cpp")
+                             "c10/test/util/Semaphore_test.cpp"
+                             "torch/nativert/executor/ParallelGraphExecutor.cpp")
                 (("<moodycamel/concurrentqueue\\.h>") "<concurrentqueue.h>")
                 (("<moodycamel/lightweightsemaphore\\.h>") "<lightweightsemaphore.h>"))
 
@@ -4655,6 +4662,7 @@ PyTorch.")
            python-pytest-shard
            python-pytest-xdist
            python-hypothesis
+           python-setuptools
            python-types-dataclasses
            shaderc
            valgrind/pinned))
