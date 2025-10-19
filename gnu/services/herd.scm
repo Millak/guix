@@ -58,7 +58,6 @@
             unload-services
             unload-service
             load-services
-            load-services/safe
             start-service
             stop-service
             restart-service
@@ -300,11 +299,6 @@ returns a shepherd <service> object."
                 (list ,@(map (lambda (file)
                                `(primitive-load ,file))
                              files)))))
-
-(define load-services/safe
-  ;; Deprecated.  It used to behave differently before service replacements
-  ;; were a thing.
-  load-services)
 
 (define* (start-service name #:optional (arguments '()))
   (invoke-action name 'start arguments

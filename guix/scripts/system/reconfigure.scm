@@ -175,7 +175,7 @@ canonical names (symbols)."
         ;; Silence messages coming from shepherd such as "Evaluating
         ;; expression ..." since they are unhelpful.
         (parameterize ((shepherd-message-port (%make-void-port "w")))
-          (load-services/safe '#$service-files))
+          (load-services '#$service-files))
 
         ;; Unload obsolete services and start new services.
         (for-each unload-service '#$to-unload)
