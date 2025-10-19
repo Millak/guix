@@ -12489,7 +12489,6 @@ list, create, update, or delete resources (e.g. Order, Product, Collection).")
     (propagated-inputs (list python-jinja2 python-requests))
     (native-inputs (list python-flask
                          python-fonttools
-                         python-nox
                          python-pillow
                          python-pytest
                          python-setuptools
