@@ -665,49 +665,6 @@ syntactic extensions.  The resulting expression or program is then evaluated
 by an existing Scheme implementation.")
       (license license:expat))))
 
-(define-public sicp
-  (let ((commit "bda03f79d6e2e8899ac2b5ca6a3732210e290a79")
-        (revision "3"))
-    (package
-      (name "sicp")
-      (version (git-version "20180718" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/sarabander/sicp")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "0mng7qrj2dvssyffr9ycnf4a5k0kadp4dslq7mc5bhzq1qxyjs2w"))
-                (file-name (git-file-name name version))))
-      (build-system copy-build-system)
-      (native-inputs (list gzip texinfo))
-      (arguments
-       (list #:install-plan ''(("html" "share/doc/sicp/")
-                               ("sicp.info" "share/info/"))
-             #:phases #~(modify-phases %standard-phases
-                          (add-after 'unpack 'remove-obsolete-commands
-                            (lambda _
-                              ;; Reported upstream:
-                              ;; https://github.com/sarabander/sicp/issues/46.
-                              (substitute* "sicp-pocket.texi"
-                                (("@setshortcontentsaftertitlepage")
-                                 ""))))
-                          (add-before 'install 'build
-                            (lambda _
-                              (invoke "makeinfo" "--no-split"
-                                      "--output=sicp.info"
-                                      "sicp-pocket.texi"))))))
-      (home-page "https://sarabander.github.io/sicp")
-      (synopsis "Structure and Interpretation of Computer Programs")
-      (description "Structure and Interpretation of Computer Programs (SICP) is
-a textbook aiming to teach the principles of computer programming.
-
-Using Scheme, a dialect of the Lisp programming language, the book explains
-core computer science concepts such as abstraction in programming,
-metalinguistic abstraction, recursion, interpreters, and modular programming.")
-      (license license:cc-by-sa4.0))))
-
 (define-public scheme48-rx
   (let* ((commit "dd9037f6f9ea01019390614f6b126b7dd293798d")
          (revision "2"))

@@ -1,5 +1,13 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2017 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2017 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
+;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2023 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2023-2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
@@ -52,6 +60,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages tex)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages texlive)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages webkit)
@@ -103,6 +112,49 @@ prefaces by both authors written for the occasion.  It is a rare kind of
 biography, where the reader has the benefit of both the biographer's original
 words and the subject's response.")
     (license license:fdl1.3+)))
+
+(define-public sicp
+  (let ((commit "bda03f79d6e2e8899ac2b5ca6a3732210e290a79")
+        (revision "3"))
+    (package
+      (name "sicp")
+      (version (git-version "20180718" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sarabander/sicp")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0mng7qrj2dvssyffr9ycnf4a5k0kadp4dslq7mc5bhzq1qxyjs2w"))
+                (file-name (git-file-name name version))))
+      (build-system copy-build-system)
+      (native-inputs (list gzip texinfo))
+      (arguments
+       (list #:install-plan ''(("html" "share/doc/sicp/")
+                               ("sicp.info" "share/info/"))
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'remove-obsolete-commands
+                            (lambda _
+                              ;; Reported upstream:
+                              ;; https://github.com/sarabander/sicp/issues/46.
+                              (substitute* "sicp-pocket.texi"
+                                (("@setshortcontentsaftertitlepage")
+                                 ""))))
+                          (add-before 'install 'build
+                            (lambda _
+                              (invoke "makeinfo" "--no-split"
+                                      "--output=sicp.info"
+                                      "sicp-pocket.texi"))))))
+      (home-page "https://sarabander.github.io/sicp")
+      (synopsis "Structure and Interpretation of Computer Programs")
+      (description "Structure and Interpretation of Computer Programs (SICP) is
+a textbook aiming to teach the principles of computer programming.
+
+Using Scheme, a dialect of the Lisp programming language, the book explains
+core computer science concepts such as abstraction in programming,
+metalinguistic abstraction, recursion, interpreters, and modular programming.")
+      (license license:cc-by-sa4.0))))
 
 (define-public book-sparc
   (package
