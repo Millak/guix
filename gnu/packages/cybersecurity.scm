@@ -110,7 +110,7 @@ Refresh}in-DRAM mitigations effectively and as such can trigger bit flips.")
 (define-public gallia
   (package
     (name "gallia")
-    (version "1.9.0")
+    (version "2.0.0b2")
     (source
      (origin
        (method git-fetch)
@@ -119,10 +119,11 @@ Refresh}in-DRAM mitigations effectively and as such can trigger bit flips.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11pyq2jn0py6n4xi5yxbsazybbdn9m8fgllqmfrsiqg9k96i6cwb"))))
+        (base32 "0bf9zq89dcnnm8ir322l69assrhxrspa97m7yk153q0vv9vib6q9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:build-backend "poetry.core.masonry.api" ;XXX: python-uv-build is required
       ;; NOTE: Test steps are sourced from GitHub Actions attached to the
       ;; project. This is a minimal test suite, more precise tests require
       ;; setting up local service with Bats (Bash Automated Testing System)
