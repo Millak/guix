@@ -2297,43 +2297,43 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
          "1smz3wlpfyjn0czmpl8bj4hw33p1zi9nnfygpsx7jl1523nypa1n"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ;no tests
-       #:phases
-       (modify-phases %standard-phases
-         ;; Delete unneeded tribits(build system) directory which makes validate-runpath
-         ;; phase to fail.
-         (add-before 'validate-runpath 'delete-tribits
-           (lambda* (#:key outputs #:allow-other-keys)
-             (delete-file-recursively
-              (string-append (assoc-ref outputs "out")
-                             "/lib/cmake/tribits")))))
-       #:configure-flags
-       (list "-DCMAKE_CXX_FLAGS=-O3 -fPIC"
-             "-DCMAKE_C_FLAGS=-O3 -fPIC"
-             "-DCMAKE_Fortran_FLAGS=-O3 -fPIC"
-             "-DTrilinos_ENABLE_NOX=ON"
-             "-DNOX_ENABLE_LOCA=ON"
-             "-DTrilinos_ENABLE_EpetraExt=ON"
-             "-DEpetraExt_BUILD_BTF=ON"
-             "-DEpetraExt_BUILD_EXPERIMENTAL=ON"
-             "-DEpetraExt_BUILD_GRAPH_REORDERINGS=ON"
-             "-DTrilinos_ENABLE_TrilinosCouplings=ON"
-             "-DTrilinos_ENABLE_Ifpack=ON"
-             "-DTrilinos_ENABLE_Isorropia=ON"
-             "-DTrilinos_ENABLE_AztecOO=ON"
-             "-DTrilinos_ENABLE_Belos=ON"
-             "-DTrilinos_ENABLE_Teuchos=ON"
-             "-DTeuchos_ENABLE_COMPLEX=ON"
-             "-DTrilinos_ENABLE_Amesos=ON"
-             "-DAmesos_ENABLE_KLU=ON"
-             "-DAmesos_ENABLE_UMFPACK=ON"
-             "-DTrilinos_ENABLE_Sacado=ON"
-             "-DTrilinos_ENABLE_Kokkos=OFF"
-             "-DTrilinos_ENABLE_ALL_OPTIONAL_PACKAGES=OFF"
-             "-DTPL_ENABLE_AMD=ON"
-             "-DTPL_ENABLE_UMFPACK=ON"
-             "-DTPL_ENABLE_BLAS=ON"
-             "-DTPL_ENABLE_LAPACK=ON")))
+     (list
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Delete unneeded tribits(build system) directory which makes
+          ;; validate-runpath phase to fail.
+          (add-before 'validate-runpath 'delete-tribits
+            (lambda _
+              (delete-file-recursively
+               (string-append #$output "/lib/cmake/tribits")))))
+      #:configure-flags
+      #~(list "-DCMAKE_CXX_FLAGS=-O3 -fPIC"
+              "-DCMAKE_C_FLAGS=-O3 -fPIC"
+              "-DCMAKE_Fortran_FLAGS=-O3 -fPIC"
+              "-DTrilinos_ENABLE_NOX=ON"
+              "-DNOX_ENABLE_LOCA=ON"
+              "-DTrilinos_ENABLE_EpetraExt=ON"
+              "-DEpetraExt_BUILD_BTF=ON"
+              "-DEpetraExt_BUILD_EXPERIMENTAL=ON"
+              "-DEpetraExt_BUILD_GRAPH_REORDERINGS=ON"
+              "-DTrilinos_ENABLE_TrilinosCouplings=ON"
+              "-DTrilinos_ENABLE_Ifpack=ON"
+              "-DTrilinos_ENABLE_Isorropia=ON"
+              "-DTrilinos_ENABLE_AztecOO=ON"
+              "-DTrilinos_ENABLE_Belos=ON"
+              "-DTrilinos_ENABLE_Teuchos=ON"
+              "-DTeuchos_ENABLE_COMPLEX=ON"
+              "-DTrilinos_ENABLE_Amesos=ON"
+              "-DAmesos_ENABLE_KLU=ON"
+              "-DAmesos_ENABLE_UMFPACK=ON"
+              "-DTrilinos_ENABLE_Sacado=ON"
+              "-DTrilinos_ENABLE_Kokkos=OFF"
+              "-DTrilinos_ENABLE_ALL_OPTIONAL_PACKAGES=OFF"
+              "-DTPL_ENABLE_AMD=ON"
+              "-DTPL_ENABLE_UMFPACK=ON"
+              "-DTPL_ENABLE_BLAS=ON"
+              "-DTPL_ENABLE_LAPACK=ON")))
     (native-inputs (list gfortran swig))
     (inputs (list boost lapack suitesparse))
     (home-page "https://trilinos.org")
