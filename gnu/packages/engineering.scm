@@ -2359,25 +2359,22 @@ unique design feature of Trilinos is its focus on packages.")
                "09flp1xywbb2laayd9rg8vd0fjsh115y6k1p71jacy0nrbdvvlcg"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f
-       #:configure-flags
-       (list
-        "CXXFLAGS=-O3"
-        (string-append "CFLAGS="
-                       " -Wno-error=builtin-declaration-mismatch"
-                       " -Wno-error=implicit-function-declaration"
-                       " -Wno-error=implicit-int")
-        (string-append "ARCHDIR="
-                       (assoc-ref %build-inputs "trilinos")))))
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(list
+         "CXXFLAGS=-O3"
+         (string-append "CFLAGS="
+                        " -Wno-error=builtin-declaration-mismatch"
+                        " -Wno-error=implicit-function-declaration"
+                        " -Wno-error=implicit-int")
+         (string-append "ARCHDIR=" #$trilinos-serial-xyce))))
     (native-inputs
-     `(("bison" ,bison-3.0)                  ;'configure' fails with Bison 3.4
-       ("flex" ,flex)
-       ("fortran" ,gfortran)))
+     (list bison-3.0                    ;'configure' fails with Bison 3.4
+           flex
+           gfortran))
     (inputs
-     `(("fftw" ,fftw)
-       ("suitesparse" ,suitesparse)
-       ("lapack" ,lapack)
-       ("trilinos" ,trilinos-serial-xyce)))
+     (list fftw lapack suitesparse trilinos-serial-xyce))
     (home-page "https://xyce.sandia.gov/")
     (synopsis "High-performance analog circuit simulator")
     (description
