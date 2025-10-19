@@ -19164,17 +19164,17 @@ from elisp.")
     (version "1.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "forex-python" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/MicroPyramid/forex-python")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1ma8cl1i2dh8aa99pifnlilyy4d1gd1s07fj0yd17wcbpsh532cj"))))
-    (build-system python-build-system)
-    (arguments
-     ;; Tests are not included in the PyPI tarball.  Also, the tests in the
-     ;; repository require online data.
-     `(#:tests? #f))
-    (propagated-inputs
-     (list python-requests python-simplejson))
+        (base32 "0pl5sfd0wkv1a2y324l518h6sing7wkadrbr5xcf6hjykn2mbi5h"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; Tests require online data.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-requests python-simplejson))
     (home-page "https://github.com/MicroPyramid/forex-python")
     (synopsis "Foreign exchange rates and currency conversion")
     (description
