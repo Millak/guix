@@ -18050,19 +18050,19 @@ provides a collection of cache libraries in the same API interface.")
     (version "1.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pylru" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jlhutch/pylru")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "15yj46307sw703vjfkgnr04dqvaicmfcj0hc6yrciildp55r6bs9"))))
-    (build-system python-build-system)
+        (base32 "0sqai530d7fpjzny476f3zqq9mv05xqbyw500jmbhrpj9yy1l9xp"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "test.py")))))))
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "test.py")))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/jlhutch/pylru")
     (synopsis "Least recently used (LRU) cache implementation")
     (description
