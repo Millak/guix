@@ -1099,11 +1099,18 @@ your own layouts, widgets, and built-in commands.")
     (arguments
      (list
       #:tests? #f ; tests are development-only for now
+      ;; NOTE: Ninja used because that is what upstream uses and because
+      ;; parallel build with Makefile fails.
+      #:generator "Ninja"
       #:configure-flags
-      #~(list "-GNinja"
-              "-DCRASH_REPORTER=OFF" ; Breakpad is not packaged in Guix
-              "-DDISTRIBUTOR=\"GNU Guix\""
-              "-DDISTRIBUTOR_DEBUGINFO_AVAILABLE=NO")
+      #~(list
+         "-DCRASH_REPORTER=OFF" ; Breakpad is not packaged in Guix
+         "-DDISTRIBUTOR=\"GNU Guix\""
+         "-DDISTRIBUTOR_DEBUGINFO_AVAILABLE=NO"
+         ;; Shared object libraries for other Qt/QML tooling to find definitions
+         ;; of Quickshell values. Quickshell statically links to its own
+         ;; libraries by default.
+         "-DINSTALL_QML_PREFIX=lib/qt6/qml")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'wrap-program
