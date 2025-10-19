@@ -19817,23 +19817,20 @@ and dataclasses.")
     (version "1.6.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "texttable" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/foutaise/texttable/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1sbn821394rix6xgj3zqk743pj6nqm1qz81zgis2bcpp2ng7pvj2"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests? (invoke "pytest" "-vv" "tests.py")))))))
-    (native-inputs
-     (list python-pytest))
+        (base32 "1lcn76wx6fsj8d79gs985irkqz5qbwq1v9ji9jxsra6dbb643v5j"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-flags #~(list "tests.py")))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/foutaise/texttable/")
-    (synopsis "Python module for creating simple ASCII tables")
-    (description "Texttable is a Python module for creating simple ASCII
+    (synopsis "Create simple ASCII tables in Python")
+    (description
+     "This package provides a Python module for creating simple ASCII
 tables.")
     (license license:expat)))
 
