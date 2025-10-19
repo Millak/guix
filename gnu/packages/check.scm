@@ -3093,30 +3093,29 @@ backported from Python 2.7 for Python 2.4+.")
 (define-public behave
   (package
     (name "behave")
-    ;; The 1.2.6 release from 2018 has several problems with newer Python
-    ;; versions, so we package a recent snapshot.
-    (version "1.2.7.dev5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/behave/behave")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "14162pclfvy4wy2az4v9gkgb3v0b338zxrb2ikqcqifckrmk8nhv"))))
+    (version "1.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/behave/behave")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fxj51kailsdakqi7qbw700k258n7r3lv75mgxs45ld5xh2jfyxh"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-mock
-           python-assertpy
+     (list python-assertpy
+           python-chardet
+           python-mock
            python-path
            python-pyhamcrest
            python-pytest
            python-pytest-html
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-colorama
+           python-cucumber-expressions
            python-cucumber-tag-expressions
            python-parse
            python-parse-type))
