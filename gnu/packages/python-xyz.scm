@@ -25325,21 +25325,11 @@ manipulation and interaction with formal grammars.")
          "1jb4skmy8awix345jk2pnar0sxmrf1gvn3kg9xyyivv0xr3iskzv"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      ;; Tests require twisted, which needs this package.
-      #:tests? #false
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-build-system
-           (lambda _
-             (substitute* "pyproject.toml"
-               (("^backend-path.*") "")
-               (("^build-backend.*")
-                "build-backend = 'setuptools.build_meta'\n")))))))
-    (native-inputs (list python-pytest
-                         python-setuptools
-                         python-wheel))
-    (propagated-inputs (list python-tomli))
+     ;; Tests require twisted, which needs this package.
+     (list #:tests? #false
+           #:build-backend "setuptools.build_meta"))
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/hawkowl/incremental")
     (synopsis "Library for versioning Python projects")
     (description "Incremental is a small library that versions your Python
