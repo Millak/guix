@@ -20186,15 +20186,31 @@ output, progress bar display, and pipes.")
   (package
     (name "python-rply")
     (version "0.7.8")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "rply" version))
-              (sha256
-               (base32
-                "1j81nddvnb145x4p81bnfpyai6g26i2dc1633ycsk025bb18m01a"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-appdirs))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/alex/rply")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kn8vikyf95mr8l9g3324b7gk4cgxlvvy1abqpl1h803idqg1vwq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--ignore=tests/test_ztranslation.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fix-pytest-use
+            (lambda _
+              (substitute* (find-files "tests" "\\.py$")
+                (("import py")
+                 "import pytest")
+                (("py\\.test")
+                 "pytest"))
+              (setenv "HOME" (getcwd)))))))
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-appdirs))
     (home-page "https://github.com/alex/rply")
     (synopsis "Parser generator for Python")
     (description
