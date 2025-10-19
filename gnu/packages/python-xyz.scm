@@ -20251,20 +20251,25 @@ Python at your fingertips, in Lisp form.")
 (define-public python-hissp
   (package
     (name "python-hissp")
-    (version "0.2.0")
+    (version "0.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "hissp" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gilch/hissp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0yns7f0q699zn2ziagyas2nkndl7mp1hhssv9x9mpl7jxj2p5myw"))))
-    (build-system python-build-system)
+        (base32 "03lxna935c0qs3lppb2xrvvgh0dkwz8lh5pmgqrmpddin1kxyjri"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-hypothesis python-setuptools))
     (home-page "https://github.com/gilch/hissp")
     (synopsis "It's Python with a Lissp")
-    (description "Hissp is a modular Lisp implementation that compiles to a
-functional subset of Python—Syntactic macro metaprogramming with full access
-to the Python ecosystem.")
+    (description
+     "Hissp is a modular Lisp implementation that compiles to a functional
+subset of Python—Syntactic macro metaprogramming with full access to the
+Python ecosystem.")
     (license license:asl2.0)))
 
 (define-public python-promise
