@@ -12912,7 +12912,7 @@ generates it as a string.  Please see the homepage for usage examples.")
               (emacs-substitute-variables "jedi-core.el"
                 ("jedi:server-command"
                  `(list ,(search-input-file outputs "bin/jediepcserver")))))))))
-    (native-inputs (list emacs-mocker python-wrapper python-tox))
+    (native-inputs (list emacs-mocker python-wrapper))
     (inputs (list python-wrapper python-epc python-jedi)) ;wrapped
     (propagated-inputs
      (list emacs-auto-complete emacs-python-environment emacs-epc))
