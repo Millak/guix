@@ -22817,8 +22817,7 @@ running in.")
     (build-system pyproject-build-system)
     (native-inputs
      (list python-poetry-core
-           python-pytest
-           python-tox))
+           python-pytest))
     (home-page "https://github.com/zqqqqz2000/shshsh")
     (synopsis "Write Shell commands simply and safely within Python")
     (description "This package provides a way to write Shell commands from
