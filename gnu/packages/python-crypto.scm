@@ -1351,37 +1351,6 @@ Derivation function (HKDF) defined in RFC 5869.")
 Password-Authenticated Key Exchange algorithm.")
     (license license:expat)))
 
-(define-public python-txtorcon
-  (package
-    (name "python-txtorcon")
-    (version "24.8.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "txtorcon" version))
-              (sha256
-               (base32
-                "1l4ajw4h7nay4vmllh6cs7zh3hnh8vj4yvgfnq3m734wil9ikzmy"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
-    (inputs
-     (list lsof))
-    (propagated-inputs
-     (list python-automat
-           python-idna
-           python-incremental
-           python-pyopenssl
-           python-service-identity
-           python-twisted
-           python-zope-interface))
-    (home-page "https://github.com/meejah/txtorcon")
-    (synopsis "Twisted-based Tor controller client")
-    (description "This package provides a Twisted-based Tor controller client,
-with state-tracking and configuration abstractions.")
-    (license license:expat)))
-
 (define-public python-keyutils
   (package
     (name "python-keyutils")

@@ -4,7 +4,7 @@
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2020, 2023 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016, 2017, 2019-2023 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2016-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2015-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017, 2020 Julien Lepiller <julien@lepiller.eu>
@@ -25,12 +25,11 @@
 ;;; Copyright © 2017 Mark Meyer <mark@ofosos.org>
 ;;; Copyright © 2018 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2018, 2019, 2021, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2018 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2018 swedebugia <swedebugia@riseup.net>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
-;;; Copyright © 2019 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2019, 2023 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -65,6 +64,7 @@
 ;;; Copyright © 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
 ;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2024 Fabio Natali <me@fabionatali.com>
 ;;; Copyright © 2024 Steve George <steve@futurile.net>
@@ -131,6 +131,7 @@
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages lsof)
   #:use-module (gnu packages node)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages pcre)
@@ -3972,6 +3973,38 @@ applications.")
     (description
      "This package provides an easy-to-use SNI endpoint for use with the
 Twisted web framework.")
+    (license license:expat)))
+
+(define-public python-txtorcon
+  (package
+    (name "python-txtorcon")
+    (version "24.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "txtorcon" version))
+       (sha256
+        (base32 "1l4ajw4h7nay4vmllh6cs7zh3hnh8vj4yvgfnq3m734wil9ikzmy"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (inputs
+     (list lsof))
+    (propagated-inputs
+     (list python-automat
+           python-idna
+           python-incremental
+           python-pyopenssl
+           python-service-identity
+           python-twisted
+           python-zope-interface))
+    (home-page "https://github.com/meejah/txtorcon")
+    (synopsis "Twisted-based Tor controller client")
+    (description
+     "This package provides a Twisted-based Tor controller client,with
+state-tracking and configuration abstractions.")
     (license license:expat)))
 
 (define-public python-url-normalize
