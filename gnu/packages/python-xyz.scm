@@ -19838,16 +19838,20 @@ tables.")
   (package
     (name "python-atomicwrites")
     (version "1.4.0")
-    (source (origin
-             (method url-fetch)
-             (uri (pypi-uri "atomicwrites" version))
-             (sha256
-              (base32
-               "0yla2svfhfqrcj8qbyqzx7wi4jy0dwcxvlkg0k3zjd54s5m3jw5f"))))
-    (build-system python-build-system)
-    (arguments `(#:tests? #f))          ;avoid circular dependency with pytest
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/untitaker/python-atomicwrites")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f21l5fyh8qmsacbsknwwgnd1b9x4i0aw0zpczr05wklkkbvd58y"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (synopsis "Atomic file writes in Python")
-    (description "Library for atomic file writes using platform dependent tools
+    (description
+     "Library for atomic file writes using platform dependent tools
 for atomic file system operations.")
     (home-page "https://github.com/untitaker/python-atomicwrites")
     (license license:expat)))
