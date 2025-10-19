@@ -761,10 +761,8 @@ JavaScript build steps.")
      (list #:test-flags '(list "-k" "not test_hatch_build")))
     (propagated-inputs (list python-hatchling))
     (native-inputs (list python-pytest
-                         python-pytest-cov
                          python-pytest-mock
-                         python-tomli
-                         python-twine))
+                         python-tomli))
     (home-page "https://github.com/jupyterlab/hatch-jupyter-builder")
     (synopsis "Hatch plugin to help build Jupyter packages")
     (description
