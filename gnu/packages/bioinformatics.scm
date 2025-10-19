@@ -22323,19 +22323,19 @@ multiple experimental contexts.")
 (define-public vbz-compression
   (package
     (name "vbz-compression")
-    (version "1.0.3")
+    (version "1.0.13")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/nanoporetech/vbz_compression/")
-             (commit (string-append "v" version))
+             (commit version)
              ;; We include the streamvbyte sources
              (recursive? #true)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rn5d98flvjblhj4zjpcdqqh8qlgsh5cmb13i49fnm187p03097z"))))
+         "1jf5i5v0h58s7w6rhgi4w1vvxnk9jzbgmiic14d48ngr204m0w5c"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
