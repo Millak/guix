@@ -8285,19 +8285,18 @@ average nucleotide identity.")
 (define-public python-pyahocorasick
   (package
     (name "python-pyahocorasick")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/WojciechMula/pyahocorasick")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fsnivwcw56q7lwz41c5kbfvxv0v17mmkx43i2a293l49fxj08j8"))))
+        (base32 "0r9n8awy80dg8dmgza4kpgwbpkvjf4s85cyswnq04h3x6cf62lll"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-twine python-setuptools
-                         python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/WojciechMula/pyahocorasick")
     (synopsis "Library for finding multiple key strings in text")
     (description
