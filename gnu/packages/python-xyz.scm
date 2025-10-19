@@ -19746,15 +19746,21 @@ be set via config files and/or environment variables.")
     (version "0.0.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "connection_pool" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zhouyl/ConnectionPool")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1p6hfkcl4n3hhhcgjbaxn21i7b1yipag6j7dnilir4k5xxx9whmz"))))
-    (build-system python-build-system)
+        (base32 "1c6676vga0p4xxa3f0jpbwgp3n69mxjisnfcwibd9x23iyxf3sr2"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests.
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/zhouyl/ConnectionPool")
     (synopsis "Thread-safe connection pool")
-    (description "This package provides a library implementing a thread-safe
-connection pool.")
+    (description
+     "This package provides a library implementing a thread-safe connection
+pool.")
     (license license:expat)))
 
 (define-public python-argparse-dataclass
