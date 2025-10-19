@@ -443,47 +443,6 @@ embedded systems.")
 Libraries stack (eo, evas, ecore, edje, emotion, ethumb and elementary).")
     (license license:lgpl3)))
 
-(define-public edi
-  (package
-    (name "edi")
-    (version "0.8.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://github.com/Enlightenment/edi/releases/"
-                            "download/v" version "/edi-" version ".tar.xz"))
-        (sha256
-         (base32
-          "01k8gp8r2wa6pyg3dkbm35m6hdsbss06hybghg0qjmd4mzswcd3a"))))
-    (build-system meson-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-clang-header
-           (lambda _
-             (substitute* "scripts/clang_include_dir.sh"
-               (("grep clang") "grep clang | head -n1"))
-             #t))
-         (add-after 'unpack 'set-home-directory
-           ;; FATAL: Cannot create run dir '/homeless-shelter/.run' - errno=2
-           (lambda _ (setenv "HOME" "/tmp") #t)))
-       #:tests? #f)) ; tests require running dbus service
-    (native-inputs
-     `(("check" ,check)
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
-    (inputs
-     (list clang efl))
-    (home-page "https://www.enlightenment.org/about-edi")
-    (synopsis "Development environment for Enlightenment")
-    (description "EDI is a development environment designed for and built using
-the EFL.  It's aim is to create a new, native development environment for Linux
-that tries to lower the barrier to getting involved in Enlightenment development
-and in creating applications based on the Enlightenment Foundation Library suite.")
-    (license (list license:public-domain ; data/extra/skeleton
-                   license:gpl2          ; edi
-                   license:gpl3))))      ; data/extra/examples/images/mono-runtime.png
-
 (define-public ephoto
   (package
     (name "ephoto")
