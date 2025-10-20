@@ -2363,6 +2363,10 @@ unique design feature of Trilinos is its focus on packages.")
        #:configure-flags
        (list
         "CXXFLAGS=-O3"
+        (string-append "CFLAGS="
+                       " -Wno-error=builtin-declaration-mismatch"
+                       " -Wno-error=implicit-function-declaration"
+                       " -Wno-error=implicit-int")
         (string-append "ARCHDIR="
                        (assoc-ref %build-inputs "trilinos")))))
     (native-inputs
