@@ -343,6 +343,23 @@ building blocks to develop LSP implementations in Zig.")
                  (base32
                   "0ah1m8mjqjc2szl5lx62zqj69irkbb3y245z14pknikxgg8xdzg7")))))))
 
+(define-public zig-diffz-for-zls-0.15
+  (let ((commit "a20dd1f11b10819a6f570f98b42e1c91e3704357")
+        (revision "0"))
+    (package
+      (inherit zig-diffz)
+      (name "zig-diffz")
+      (version (git-version "0.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/ziglibs/diffz")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1qz7jqdh4f5dcrzkxipdmsgkfs37k450r9gm7ik7r72dfvjs9c6b")))))))
+
 (define-public zig-known-folders
   (let ((commit "1cceeb70e77dec941a4178160ff6c8d05a74de6f")
         (revision "0"))
