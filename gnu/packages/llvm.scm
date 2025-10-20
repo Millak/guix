@@ -2264,3 +2264,44 @@ required to build Swift.")
 ;       ((#:configure-flags flags)
 ;        #~(cons "-DCOMPILER_RT_INTERCEPT_LIBDISPATCH=ON"
 ;                #$flags))))))
+
+(define-public swift-llvm-6.2
+  (package
+    (inherit swift-llvm)
+    (version "6.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/apple/llvm-project.git")
+                    (commit (string-append "swift-" version "-RELEASE"))))
+              (file-name (git-file-name "swift-llvm" version))
+              (sha256
+               (base32
+                "00bpplh8zd495n7dw5a64ncy23r2sgj7071kyhw7r9s53ihw1k1m"))
+              (patches (search-patches "clang-18.0-libc-search-path.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments swift-llvm)
+       ((#:configure-flags flags)
+        #~(cons "-DUSE_DEPRECATED_GCC_INSTALL_PREFIX=ON" #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'fix-demangle-includes
+              (lambda _
+                (substitute* "include/llvm/Demangle/MicrosoftDemangleNodes.h"
+                  (("#include <array>")
+                   "#include <array>
+#include <cstdint>
+#include <string>"))
+                (substitute* "../third-party/benchmark/src/benchmark_register.h"
+                  (("#include <vector>")
+                   "#include <vector>
+#include <limits>"))
+                (substitute* "include/llvm/Support/Signals.h"
+                  (("#include <string>")
+                   "#include <string>
+#include <cstdint>"))
+                (substitute* "lib/Analysis/ConstantFolding.cpp"
+                  (("#include \"llvm/Config/config.h\"")
+                   "#include \"llvm/Config/config.h\"
+#define _GLIBCXX_HAVE_FENV_H 1
+#include <fenv.h>"))))))))))
