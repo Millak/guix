@@ -14,7 +14,7 @@
 # Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 # Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 # Copyright © 2019, 2023 Efraim Flashner <efraim@flashner.co.il>
-# Copyright © 2020, 2021, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+# Copyright © 2020, 2021, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 # Copyright © 2021 Andrew Tropin <andrew@trop.in>
 # Copyright © 2023 Clément Lassieur <clement@lassieur.org>
@@ -590,6 +590,7 @@ SCM_TESTS =					\
   tests/http-client.scm				\
   tests/inferior.scm				\
   tests/ipfs.scm				\
+  tests/ld-wrapper.scm				\
   tests/lint.scm				\
   tests/modules.scm				\
   tests/monads.scm				\
