@@ -1519,7 +1519,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/grantlee-register-metaenumvariable.patch	\
   %D%/packages/patches/grep-timing-sensitive-test.patch		\
   %D%/packages/patches/grfcodec-gcc-compat.patch		\
-  %D%/packages/patches/gromacs-tinyxml2.patch			\
   %D%/packages/patches/groovy-add-exceptionutilsgenerator.patch	\
   %D%/packages/patches/grub-efi-fat-serial-number.patch		\
   %D%/packages/patches/grub-hurd64.patch			\

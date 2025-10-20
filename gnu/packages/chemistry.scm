@@ -60,6 +60,7 @@
   #:use-module (gnu packages lisp)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
+  #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -493,23 +494,47 @@ stored with user-specified precision.")
 (define-public gromacs
   (package
     (name "gromacs")
-    (version "2022.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://ftp.gromacs.org/pub/gromacs/gromacs-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "15vjwasxjq0h18dmzacjkdim51zrvr0ni42hbc30557j5xhbw4f5"))
-              ;; Our version of tinyxml2 is far newer than the bundled one and
-              ;; require fixing `testutils' code. See patch header for more info
-              (patches (search-patches "gromacs-tinyxml2.patch"))))
+    (version "2025.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/gromacs/gromacs")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1p9vvlbrysh8lwnbgy845pgx664k6mkw8p66f8bx468f7z2rp900"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Still bundled: part of gromacs, source behind registration
+           ;; but free software anyways
+           ;;(delete-file-recursively "src/external/vmd_molfile")
+           ;; Still bundled: threads-based OpenMPI-compatible fallback
+           ;; designed to be bundled like that
+           ;;(delete-file-recursively "src/external/thread_mpi")
+           ;; Still bundled: Colvars is intended to be built as part of a
+           ;; molecular simulation program.
+           ;;(delete-file-recursively "src/external/colvars")
+           ;; Unbundling
+           (delete-file-recursively "src/external/lmfit")
+           (delete-file-recursively "src/external/clFFT")
+           (delete-file-recursively "src/external/fftpack")
+           (delete-file-recursively "src/external/build-fftw")
+           (delete-file-recursively "src/external/tng_io")
+           (delete-file-recursively "src/external/tinyxml2")
+           (delete-file-recursively "src/external/googletest")
+           (delete-file-recursively "src/external/muparser")
+           (delete-file-recursively "src/external/rpc_xdr")
+           (delete-file-recursively "src/external/vkfft")))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
            #~(list "-DGMX_DEVELOPER_BUILD=on"     ; Needed to run tests
                    ;; Unbundling
                    "-DGMX_USE_LMFIT=EXTERNAL"
+                   "-DGMX_USE_MUPARSER=EXTERNAL"
                    "-DGMX_BUILD_OWN_FFTW=off"
                    "-DGMX_EXTERNAL_BLAS=on"
                    "-DGMX_EXTERNAL_LAPACK=on"
@@ -521,31 +546,29 @@ stored with user-specified precision.")
                    ;; Workaround for cmake/FindSphinx.cmake version parsing that does
                    ;; not understand the guix-wrapped `sphinx-build --version' answer
                    (string-append "-DSPHINX_EXECUTABLE_VERSION="
-                                  #$(package-version python-sphinx)))
+                                  #$(package-version python-sphinx))
+                   (string-append
+                    "-DCMAKE_CXX_FLAGS=-I"
+                    (search-input-directory %build-inputs "/include/tirpc")))
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fixes
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   ;; Still bundled: part of gromacs, source behind registration
-                   ;; but free software anyways
-                   ;;(delete-file-recursively "src/external/vmd_molfile")
-                   ;; Still bundled: threads-based OpenMPI-compatible fallback
-                   ;; designed to be bundled like that
-                   ;;(delete-file-recursively "src/external/thread_mpi")
-                   ;; Unbundling
-                   (delete-file-recursively "src/external/lmfit")
-                   (delete-file-recursively "src/external/clFFT")
-                   (delete-file-recursively "src/external/fftpack")
-                   (delete-file-recursively "src/external/build-fftw")
-                   (delete-file-recursively "src/external/tng_io")
-                   (delete-file-recursively "src/external/tinyxml2")
-                   (delete-file-recursively "src/external/googletest")
-                   (copy-recursively #$(package-source googletest)
+                 (lambda _
+                   (copy-recursively #$(package-source googletest-1.13)
                                      "src/external/googletest")
                    ;; This test warns about the build host hardware, disable
                    (substitute* "src/gromacs/hardware/tests/hardwaretopology.cpp"
                      (("TEST\\(HardwareTopologyTest, HwlocExecute\\)")
-                      "void __guix_disabled()")))))))
+                      "void __guix_disabled()"))
+                   (substitute* "cmake/gmxTestXDR.cmake"
+                     (("TestXDR\\.cpp\"" orig)
+                      (string-append orig " LINK_LIBRARIES -ltirpc")))
+                   (substitute* "CMakeLists.txt"
+                     (("set\\(GMX_EXTRA_LIBRARIES.*" orig)
+                      (string-append
+                       orig "\nlist(APPEND GMX_EXTRA_LIBRARIES \"-ltirpc\")\n")))
+                   (substitute* "src/external/CMakeLists.txt"
+                     (("add_subdirectory\\(rpc_xdr\\)") "")))))))
     (native-inputs
      (list doxygen
            graphviz
@@ -556,7 +579,9 @@ stored with user-specified precision.")
     (inputs
      (list fftwf
            `(,hwloc-2 "lib")
+           libtirpc
            lmfit
+           muparser
            openblas
            perl
            tinyxml2
