@@ -134,14 +134,14 @@
 (define-public ed
   (package
     (name "ed")
-    (version "1.21")
+    (version "1.22.2")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/ed/ed-"
                                  version ".tar.lz"))
              (sha256
               (base32
-               "0xddpcdsdhf1cx7izk9l5dmf8vakjx5ncm1cy1f3libxfac4kqk0"))))
+               "1qzzjhvxir0mq68yzaxhbhnjmylhv1h4rwqkdzvmmqan40j1b3gm"))))
     (build-system gnu-build-system)
     (native-inputs (list lzip))
     (arguments
