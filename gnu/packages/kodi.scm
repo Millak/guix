@@ -30,6 +30,7 @@
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
@@ -525,7 +526,7 @@ plug-in system.")
         (revision "1"))                                     ; `$HOME/.kodirc'.
     (package
       (name "kodi-cli")
-      (version (string-append "1.1-" revision "." (string-take commit 7)))
+      (version (git-version "1.1" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference (url "https://github.com/nawar/kodi-cli")
@@ -533,29 +534,30 @@ plug-in system.")
                 (sha256
                  (base32
                   "1xjhasc5gngfxpr1dlzy6q24w0wpdfjx12p43fanjppxw4i49n5p"))
-                (file-name (string-append name "-" version "-checkout"))))
+                (file-name (git-file-name name version))))
       (build-system trivial-build-system)
       (inputs
-       (list bash curl mps-youtube))
+       (list bash-minimal curl python-yewtube))
       (arguments
-       `(#:modules ((guix build utils))
-         #:builder
-         (begin
-           (use-modules (guix build utils))
-           (copy-recursively (assoc-ref %build-inputs "source") ".")
-           (substitute* "kodi-cli"
-             (("/bin/bash")
-              (search-input-file %build-inputs "/bin/bash"))
-             (("output=\\$\\((curl)" all curl)
-              (string-append "output=$("
-                             (assoc-ref %build-inputs "curl")
-                             "/bin/" curl))
-             (("play_youtube `(mpsyt)" all mpsyt)
-              (string-append "play_youtube `"
-                             (assoc-ref %build-inputs "mps-youtube")
-                             "/bin/" mpsyt)))
-           (install-file "kodi-cli" (string-append %output "/bin"))
-           #t)))
+       (list
+        #:modules '((guix build utils))
+        #:builder
+        #~(begin
+          (use-modules (guix build utils))
+          (copy-recursively (assoc-ref %build-inputs "source") ".")
+          (substitute* "kodi-cli"
+            (("/bin/bash")
+             (search-input-file %build-inputs "/bin/bash"))
+            (("output=\\$\\((curl)" all curl)
+             (string-append "output=$("
+                            #$(this-package-input "curl")
+                            "/bin/" curl))
+            ;; Executable is just called yt with yewtube.
+            (("play_youtube `mpsyt")
+             (string-append "play_youtube `"
+                            #$(this-package-input "python-yewtube")
+                            "/bin/yt")))
+          (install-file "kodi-cli" (string-append %output "/bin")))))
       (home-page "https://github.com/nawar/kodi-cli")
       (synopsis "Control Kodi from the command line")
       (description "@code{kodi-cli} is a tool for sending commands to a Kodi
