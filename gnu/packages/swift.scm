@@ -23,11 +23,37 @@
   #:use-module (guix gexp)
   #:use-module (guix build-system cmake)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
+  #:use-module (gnu packages compression)
+  #:use-module (gnu packages gcc)
+  #:use-module (gnu packages icu4c)
+  #:use-module (gnu packages libedit)
+  #:use-module (gnu packages libffi)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages ninja)
-  #:use-module (gnu packages python))
+  #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages xml))
 
 (define %swift-bootstrap-version "5.7.3")
+
+(define %swift-bootstrap-source
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/apple/swift.git")
+          (commit (string-append "swift-" %swift-bootstrap-version
+                                 "-RELEASE"))))
+    (file-name (git-file-name "swift" %swift-bootstrap-version))
+    (sha256
+     (base32
+      "012m91yp2d69l0k6s0gjz6gckxq4hvid197a8kpc5mi9wbchzjvs"))
+    (patches (search-patches "swift-5.7.3-sdk-path.patch"
+                             "swift-5.7.3-sourcekit-rpath.patch"))))
 
 (define-public swift-cmark
   (package
@@ -70,3 +96,224 @@
      "This is Apple's fork of cmark (CommonMark implementation) with
 Swift-specific modifications, required to build Swift 4.2.4.")
     (license license:bsd-2)))
+
+(define %swift-libdispatch-source
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/apple/swift-corelibs-libdispatch.git")
+          (commit (string-append "swift-" %swift-bootstrap-version
+                                 "-RELEASE"))))
+    (file-name "swift-corelibs-libdispatch")
+    (sha256
+     (base32
+      "0skg1azbhbg7y0ql2a5sx6lmfip8l1rajqm95zzf9xv45n4dg9nn"))
+    (patches (search-patches "swift-corelibs-libdispatch-5.6.3-lock-cpp.patch"
+                             "swift-corelibs-libdispatch-5.7.3-modulemap.patch"))))
+
+(define-public swift-bootstrap
+  (package
+    (name "swift-bootstrap")
+    (version %swift-bootstrap-version)
+    (source %swift-bootstrap-source)
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f ; we don't have the compatible (old) googletest
+      #:modules '((ice-9 match)
+                  (guix build cmake-build-system)
+                  (guix build utils))
+      #:configure-flags
+      #~(list "-GNinja"
+              "-DCMAKE_BUILD_TYPE=Release"
+              ;"-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON"
+              "-DCMAKE_C_FLAGS=-Wno-unknown-warning-option -Werror=unguarded-availability-new -fno-stack-protector"
+              "-DCMAKE_CXX_FLAGS=-Wno-unknown-warning-option -Werror=unguarded-availability-new -fno-stack-protector"
+              "-DCMAKE_C_FLAGS_RELWITHDEBINFO=-O2 -DNDEBUG"
+              "-DCMAKE_CXX_FLAGS_RELWITHDEBINFO=-O2 -DNDEBUG"
+              (string-append "-DCMAKE_C_COMPILER="
+                             (assoc-ref %build-inputs "swift-llvm")
+                             "/bin/clang")
+              (string-append "-DCMAKE_CXX_COMPILER="
+                             (assoc-ref %build-inputs "swift-llvm")
+                             "/bin/clang++")
+              "-DSWIFT_STDLIB_BUILD_TYPE=Release"
+              "-DSWIFT_STDLIB_ASSERTIONS=TRUE"
+              "-DSWIFT_ENABLE_DISPATCH=TRUE"
+              "-DSWIFT_ENABLE_RUNTIME_FUNCTION_COUNTERS=TRUE"
+              "-DLLVM_ENABLE_ASSERTIONS=TRUE"
+              ;; Python swift.py product class (not build-script-impl).
+              "-DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE"
+              ;; Python swift.py product class (not build-script-impl).
+              "-DSWIFT_FORCE_OPTIMIZED_TYPECHECKER=FALSE"
+              ;; Python swift.py product class (not build-script-impl).
+              "-DSWIFT_STDLIB_ENABLE_STDLIBCORE_EXCLUSIVITY_CHECKING=FALSE"
+              ;; The build-script wrapper passes --swift-analyze-code-coverage false
+              ;; to build-script-impl.
+              "-DSWIFT_ANALYZE_CODE_COVERAGE=FALSE"
+              "-DSWIFT_INCLUDE_TOOLS=TRUE"
+              "-DSWIFT_BUILD_REMOTE_MIRROR=TRUE"
+              "-DSWIFT_STDLIB_SIL_DEBUGGING=FALSE"
+              "-DSWIFT_CHECK_INCREMENTAL_COMPILATION=FALSE"
+              "-DSWIFT_REPORT_STATISTICS=FALSE"
+              (string-append "-DSWIFT_NATIVE_LLVM_TOOLS_PATH="
+                             (assoc-ref %build-inputs "swift-llvm")
+                             "/bin")
+              ;(string-append "-DSWIFT_NATIVE_CLANG_TOOLS_PATH="
+              ;               (assoc-ref %build-inputs "swift-clang")
+              ;               "/bin")
+              "-DSWIFT_BUILD_DYNAMIC_STDLIB=TRUE"
+              "-DSWIFT_BUILD_STATIC_STDLIB=FALSE"
+              "-DSWIFT_BUILD_DYNAMIC_SDK_OVERLAY=TRUE"
+              "-DSWIFT_BUILD_STATIC_SDK_OVERLAY=FALSE"
+              ; not there "-DSWIFT_BUILD_EXAMPLES=TRUE"
+              "-DSWIFT_INCLUDE_TESTS=FALSE"
+              "-DSWIFT_INCLUDE_TEST_BINARIES=FALSE"
+              "-DSWIFT_INSTALL_EXCLUDE_TESTSUITE_TOOLS=TRUE"
+              "-DSWIFT_EMBED_BITCODE_SECTION=FALSE"
+              "-DSWIFT_TOOLS_ENABLE_LTO="
+              "-DSWIFT_BUILD_RUNTIME_WITH_HOST_COMPILER=FALSE"
+              ; not there "-DLIBDISPATCH_CMAKE_BUILD_TYPE=Release"
+              "-DSWIFT_NATIVE_SWIFT_TOOLS_PATH:STRING="
+              ; not there "-DSWIFT_BUILD_PERF_TESTSUITE:BOOL=TRUE"
+              ; not there "-DSWIFT_BUILD_EXTERNAL_PERF_TESTSUITE:BOOL=FALSE"
+              "-DLLVM_LIT_ARGS=-sv -j 16"
+              "-DCOVERAGE_DB="
+              ; not there "-DSWIFT_SOURCEKIT_USE_INPROC_LIBRARY:BOOL=TRUE"
+              "-DSWIFT_DARWIN_XCRUN_TOOLCHAIN:STRING=default"
+              "-DSWIFT_AST_VERIFIER:BOOL=TRUE"
+              "-DSWIFT_SIL_VERIFY_ALL:BOOL=FALSE"
+              "-DSWIFT_RUNTIME_ENABLE_LEAK_CHECKER:BOOL=FALSE"
+              "-DSWIFT_SDKS:STRING=LINUX"
+              (string-append "-DCMAKE_INSTALL_PREFIX=" #$output)
+              (string-append "-DCMAKE_INSTALL_RPATH=" #$output "/lib/swift/linux;" #$output "/lib")
+              (string-append "-DSWIFT_PATH_TO_CLANG_BUILD="
+                             (assoc-ref %build-inputs "swift-llvm"))
+              (string-append "-DLLVM_BUILD_LIBRARY_DIR="
+                             (assoc-ref %build-inputs "swift-llvm")
+                             "/lib")
+              (string-append "-DLLVM_BUILD_MAIN_INCLUDE_DIR="
+                             (assoc-ref %build-inputs "swift-llvm")
+                             "/include")
+              (string-append "-DLLVM_BUILD_BINARY_DIR="
+                             (assoc-ref %build-inputs "swift-llvm"))
+              (string-append "-DLLVM_BUILD_MAIN_SRC_DIR="
+                             (assoc-ref %build-inputs "swift-llvm"))
+              (string-append "-DSWIFT_PATH_TO_CMARK_BUILD="
+                             (assoc-ref %build-inputs "swift-cmark"))
+              (string-append "-DSWIFT_CMARK_LIBRARY_DIR="
+                             (assoc-ref %build-inputs "swift-cmark")
+                             "/lib")
+              (string-append "-DSWIFT_PATH_TO_LIBDISPATCH_SOURCE="
+                             (assoc-ref %build-inputs "swift-corelibs-libdispatch"))
+              (string-append "-DLLVM_DIR="
+                             (assoc-ref %build-inputs "swift-llvm")
+                             "/lib/cmake/llvm")
+              (string-append "-DClang_DIR="
+                             (assoc-ref %build-inputs "swift-llvm")
+                             "/lib/cmake/clang")
+              ;; Disable gold linker - ld.gold would bypass Guix's ld-wrapper
+              ;; which automatically adds -rpath flags for store libraries.
+              "-DSWIFT_USE_LINKER=")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (let ((platform (match #$(or (%current-target-system)
+                                             (%current-system))
+                                  ("x86_64-linux" "linux-x86_64")
+                                  ("aarch64-linux" "linux-aarch64")
+                                  ("i686-linux" "linux-i686")
+                                  (system (error "Unsupported system" system)))))
+                  (invoke "ninja" (string-append "check-swift-" platform))))))
+          (add-after 'install 'install-dispatch-libs
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (lib-dir (string-append out "/lib/swift/linux")))
+                (install-file "lib/swift/linux/libdispatch.so" lib-dir)
+                (install-file "lib/swift/linux/libBlocksRuntime.so" lib-dir))))
+          (add-after 'unpack 'setup
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; The BFD linker has issues wrt relocation of the protocol
+              ;; conformance section on arm and thumb targets.
+              ;;
+              ;; It also generates COPY relocations for final executables.
+              ;; The BFD linker has issues wrt relocations against protected
+              ;; symbols.
+              ;;
+              ;; Nevertheless, we use BFD linker for easier bootstrapping
+              ;; (since we use ld-wrapper to wrap the BFD linker).
+              (substitute* "lib/Driver/UnixToolChains.cpp"
+               (("return \"gold\";")
+                "return \"\";"))
+              ;; New gcc needs explicit #include <cstdint>.
+              (substitute* "include/swift/SIL/SILLinkage.h"
+                (("#include \"llvm/Support/ErrorHandling.h\"")
+                 "#include <cstdint>\n#include \"llvm/Support/ErrorHandling.h\""))
+              ;; New gcc needs explicit #include <cstdint>.
+              (substitute* "include/swift/Basic/ExternalUnion.h"
+                (("#include \"llvm/Support/ErrorHandling.h\"")
+                 "#include <cstdint>\n#include \"llvm/Support/ErrorHandling.h\""))
+              ;; Take clang from swift-llvm package (clang is built alongside llvm).
+              (substitute* "stdlib/CMakeLists.txt"
+                (("set\\(CMAKE_CXX_COMPILER \"\\$\\{SWIFT_NATIVE_LLVM_TOOLS_PATH\\}/clang\\+\\+\"\\)")
+                 (string-append "set(CMAKE_CXX_COMPILER \""
+                                (assoc-ref %build-inputs "swift-llvm")
+                                "/bin/clang++\")"))
+                (("set\\(CMAKE_C_COMPILER \"\\$\\{SWIFT_NATIVE_LLVM_TOOLS_PATH\\}/clang\"\\)")
+                 (string-append "set(CMAKE_C_COMPILER \""
+                                (assoc-ref %build-inputs "swift-llvm")
+                                "/bin/clang\")")))
+              ;; Fix hardcoded /usr/include path for glibc headers.
+              (substitute* "stdlib/public/Platform/CMakeLists.txt"
+                (("set\\(GLIBC_SYSROOT_RELATIVE_INCLUDE_PATH \"/usr/include\"\\)")
+                 (string-append "set(GLIBC_SYSROOT_RELATIVE_INCLUDE_PATH \""
+                                (assoc-ref %build-inputs "glibc")
+                                "/include\")")))
+              ;; Fix GenerateVersionFromVCS.cmake path
+              (substitute* "lib/Basic/CMakeLists.txt"
+                (("\\$\\{LLVM_MAIN_SRC_DIR\\}/cmake/modules/GenerateVersionFromVCS.cmake")
+                 "${LLVM_CMAKE_DIR}/GenerateVersionFromVCS.cmake"))
+              ;; Fix features.json path - use installed location instead of source
+              (substitute* "lib/Option/CMakeLists.txt"
+                (("\\$\\{LLVM_MAIN_SRC_DIR\\}/\\.\\./clang/tools/driver/features\\.json")
+                 "${LLVM_BUILD_BINARY_DIR}/share/clang/features.json"))
+              ;; cmarkTargets.cmake is already at the correct path via install-cmake-exports phase
+              ;;; clang is built as part of swift-llvm.
+              (substitute* "lib/IRGen/CMakeLists.txt"
+                (("    clangCodeGen")
+                 "    ${SWIFT_PATH_TO_CLANG_BUILD}/lib/libclangCodeGen.a")
+                (("    clangAST")
+                 "    ${SWIFT_PATH_TO_CLANG_BUILD}/lib/libclangAST.a"))
+              (substitute* "lib/Markup/CMakeLists.txt"
+                (("    libcmark_static")
+                 "    ${SWIFT_PATH_TO_CMARK_BUILD}/lib/libcmark.a"))
+              (substitute* "lib/AST/CMakeLists.txt"
+                (("    clangAPINotes")
+                 "    ${SWIFT_PATH_TO_CLANG_BUILD}/lib/libclangAPINotes.a")
+                (("    clangBasic")
+                 "    ${SWIFT_PATH_TO_CLANG_BUILD}/lib/libclangBasic.a"))
+              (substitute* "lib/FrontendTool/CMakeLists.txt"
+                (("    clangAPINotes")
+                 "    ${SWIFT_PATH_TO_CLANG_BUILD}/lib/libclangAPINotes.a")
+                (("    clangBasic")
+                 "    ${SWIFT_PATH_TO_CLANG_BUILD}/lib/libclangBasic.a")))))))
+    (native-inputs
+     (list cmake
+           ninja
+           perl
+           pkg-config
+           python-3
+           swift-cmark
+           %swift-libdispatch-source))
+    (inputs
+     (list glibc icu4c libedit libxml2 swift-llvm `(,util-linux "lib")))
+    (home-page "https://swift.org/")
+    (synopsis "Swift programming language (bootstrap from C++)")
+    (description
+     "Swift is a general-purpose programming language built using a modern
+approach to safety, performance, and software design patterns.  This package
+provides a bootstrap build of Swift 4.2.4 compiled from C++ without requiring
+a previous Swift compiler.")
+    (license license:asl2.0)))

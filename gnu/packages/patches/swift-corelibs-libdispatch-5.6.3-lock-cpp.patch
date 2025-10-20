@@ -1,0 +1,49 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2025-10-19
+Subject: Work around silly (unused) atomic problem
+
+Exclude static inline functions with atomics from C++ compilation.
+
+block.cpp is the only C++ file in libdispatch and doesn't call the static
+inline functions from lock.h.  These functions fail to compile in C++ mode
+because stdatomic.h was only standardized for C++ in C++23.  Before C++23,
+stdatomic.h doesn't provide memory_order_* constants.  We use GCC's libstdc++
+which only provides C11 atomics in C++23 mode, not in C++11 mode.
+
+Wrap all static inline functions in #ifndef __cplusplus so they are not
+compiled when lock.h is included from C++ files, while keeping the type
+definitions available.
+
+--- a/src/shims/lock.h
++++ b/src/shims/lock.h
+@@ -296,6 +296,7 @@
+ #endif
+ }
+ 
++#ifndef __cplusplus
+ DISPATCH_ALWAYS_INLINE
+ static inline void
+ _dispatch_thread_event_signal(dispatch_thread_event_t dte)
+@@ -341,6 +342,7 @@
+ 	_dispatch_sema4_dispose(&dte->dte_sema, _DSEMA4_POLICY_FIFO);
+ #endif
+ }
++#endif // __cplusplus
+ 
+ #pragma mark - unfair lock
+ 
+@@ -348,6 +350,7 @@
+ 	dispatch_lock dul_lock;
+ } dispatch_unfair_lock_s, *dispatch_unfair_lock_t;
+ 
++#ifndef __cplusplus
+ DISPATCH_NOT_TAIL_CALLED
+ void _dispatch_unfair_lock_lock_slow(dispatch_unfair_lock_t l,
+ 		dispatch_lock_options_t options);
+@@ -701,5 +704,6 @@
+ 		uint32_t flags);
+ 
+ #endif // TARGET_OS_MAC
++#endif // __cplusplus
+ 
+ #endif // __DISPATCH_SHIMS_LOCK__
