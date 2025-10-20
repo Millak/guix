@@ -1,0 +1,39 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2025-10-20
+Subject: Fix libc search path
+
+Swift LLVM 5.7.3 (based on LLVM 14.0) - libc search path fix
+
+This patch makes it easy to insert libc's $libdir so that Clang passes the
+correct absolute file name of crt1.o etc. to 'ld'.  It removes the hard-coded
+FHS directory names to make sure Clang also works on foreign distros.
+
+--- a/clang/lib/Driver/ToolChains/Linux.cpp
++++ b/clang/lib/Driver/ToolChains/Linux.cpp
+@@ -297,21 +297,12 @@
+
+   Generic_GCC::AddMultiarchPaths(D, SysRoot, OSLibDir, Paths);
+
+-  // Similar to the logic for GCC above, if we are currently running Clang
+-  // inside of the requested system root, add its parent library path to those
+-  // searched.
+-  // FIXME: It's not clear whether we should use the driver's installed
+-  // directory ('Dir' below) or the ResourceDir.
+-  if (StringRef(D.Dir).startswith(SysRoot)) {
+-    // Even if OSLibDir != "lib", this is needed for Clang in the build
+-    // directory (not installed) to find libc++.
+-    addPathIfExists(D, D.Dir + "/../lib", Paths);
+-    if (OSLibDir != "lib")
+-      addPathIfExists(D, D.Dir + "/../" + OSLibDir, Paths);
+-  }
++  // Add libc's lib/ directory to the search path, so that crt1.o, crti.o,
++  // and friends can be found.
++  addPathIfExists(D, "@GLIBC_LIBDIR@", Paths);
+
+-  addPathIfExists(D, SysRoot + "/lib", Paths);
+-  addPathIfExists(D, SysRoot + "/usr/lib", Paths);
++  // Add GCC's lib/ directory so libstdc++.so can be found.
++  addPathIfExists(D, GCCInstallation.getParentLibPath(), Paths);
+ }
+
+ ToolChain::RuntimeLibType Linux::GetDefaultRuntimeLibType() const {
