@@ -30,14 +30,14 @@
 (define-public m4
   (package
    (name "m4")
-   (version "1.4.19")
+   (version "1.4.20")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/m4/m4-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "15mghcksh11saylpm86h1zkz4in0rbi0pk8i6nqxkdikdmfdxbk3"))))
+              "0axgilr6n88br7msm3ls8m4zlwgk4q3vcjqw1cknqpyg3hxfldp2"))))
    (build-system gnu-build-system)
    (arguments
     `(;; Explicitly disable tests when cross-compiling, otherwise 'make check'
