@@ -283,15 +283,20 @@ corresponding to the top-level definition containing the staged changes."
   (define variable-name
     (second old))
   (define version
-    (and=> ((xpath:node-or
+    (match ((xpath:node-or
              (xpath:sxpath '(*any* *any* package version *any*))
              ;; For let binding
              (xpath:sxpath '(*any* *any* (*any*) package version *any*)))
             (cons '*TOP* new))
-           first))
-  (format port
-          "gnu: ~a: Update to ~a.~%~%* ~a (~a): Update to ~a.~%"
-          variable-name version file-name variable-name version)
+      (() #f)
+      ((version . rest) version)))
+  (if version
+      (format port
+              "gnu: ~a: Update to ~a.~%~%* ~a (~a): Update to ~a.~%"
+              variable-name version file-name variable-name version)
+      (format port
+              "gnu: ~a: Update.~%~%* ~a (~a): Update.~%"
+              variable-name file-name variable-name))
   (for-each (lambda (field)
               (let ((old-values (get-values old field))
                     (new-values (get-values new field)))
