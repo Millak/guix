@@ -7943,23 +7943,29 @@ memory usage and transliteration quality.")
 (define-public python-pyjwt
   (package
     (name "python-pyjwt")
-    (version "2.6.0")
+    (version "2.10.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "PyJWT" version))
+       (uri (pypi-uri "pyjwt" version))
        (sha256
-        (base32
-         "1z85kwr945rbzrn5wabrsmck5x8disa9wc7b3y5gci7w65z5qa39"))))
+        (base32 "0lqr73wnrnxflbh8wr768hxp493qayhdis86mwy26280n8p7gi9w"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 286 passed, 4 skipped, 1 deselected
+      ;;
+      ;; jwt.exceptions.PyJWKClientConnectionError: Fail to fetch data from
+      ;; the url, err: "<urlopen error [Errno -3] Temporary failure in name
+      ;; resolution>"
+      #:test-flags #~(list "-k" "not test_get_jwt_set_sslcontext_default")))
     (native-inputs
-     (list python-coverage
-           python-cryptography
-           python-pytest
-           python-sphinx
-           python-sphinx-rtd-theme
-           python-setuptools
-           python-wheel))
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (if (supported-package? python-cryptography)
+         (list python-cryptography)
+         '()))
     (home-page "https://github.com/progrium/pyjwt")
     (synopsis "JSON Web Token implementation in Python")
     (description
