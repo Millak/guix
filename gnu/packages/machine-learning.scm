@@ -1860,12 +1860,18 @@ with a single function call.")
                    "--ignore=transformers/test_gpt2_to_onnx.py"
                    "--ignore=transformers/test_optimizer_huggingface_bert.py"
                    "--ignore=transformers/test_parity_huggingface_gpt_attention.py"
-                   "--ignore=transformers/test_shape_infer_helper.py"
-                   ;; XXX: onnxscript ModuleNotFound
-                   "--ignore=transformers/test_gelu_fusions.py"
-                   "--ignore=transformers/test_gemma3_vision.py"
-                   ;; XXX: Other failing tests.
-                   "-k" ,(string-append
+                  "--ignore=transformers/test_shape_infer_helper.py"
+                  ;; XXX: onnxscript ModuleNotFound
+                  "--ignore=transformers/test_gelu_fusions.py"
+                  "--ignore=transformers/test_gemma3_vision.py"
+                  ;; XXX: PyTorch 2.9 ONNX exporter requires python-onnxscript.
+                  ;; Skip exporter-dependent tests until packaged/enabled.
+                  "--ignore=test_pytorch_export_contrib_ops.py"
+                  "--ignore=transformers/test_parity_gelu.py"
+                  "--ignore=transformers/test_parity_layernorm.py"
+                  "--ignore=transformers/test_phi_vision.py"
+                  ;; XXX: Other failing tests.
+                  "-k" ,(string-append
                           "not test_gelu_is_fused_by_default"
                           " and not test_inverse"))))))
           (add-after 'check 'python-sanity-check
