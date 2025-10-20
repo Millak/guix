@@ -2444,6 +2444,35 @@ Features:
 @end itemize")
     (license license:mpl2.0)))
 
+(define-public python-pycognito
+  (package
+    (name "python-pycognito")
+    (version "2024.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pycognito" version))
+       (sha256
+        (base32 "1r1sq87spqcfgg17khgpqc2ga8m9nk10flg9h23drhy2k1kcc4g2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: cycles with python-moto, bootstrap/minimal variant is required.
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-boto3
+           python-envs
+           python-pyjwt
+           python-requests))
+    (home-page "https://github.com/pvizeli/pycognito")
+    (synopsis "Python library for using AWS Cognito")
+    (description
+     "This package provides a Python class to integrate Boto3's Cognito
+client so it is easy to login users, with @acronym{Secure Remote Password,
+SRP} support.")
+    (license license:asl2.0)))
+
 (define-public python-python3-saml
   (package
     (name "python-python3-saml")
