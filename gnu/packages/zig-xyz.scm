@@ -404,6 +404,27 @@ across several operating systems.")
        (substitute-keyword-arguments (package-arguments base)
          ((#:zig _ #f) zig-0.14))))))
 
+(define-public zig-known-folders-for-zls-0.15
+  (let ((commit "92defaee76b07487769ca352fd0ba95bc8b42a2f")
+        (revision "0")
+        (base zig-known-folders))
+    (package
+      (inherit base)
+      (name "zig-known-folders")
+      (version (git-version "0.7.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ziglibs/known-folders")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1bwv7kndr4lv7khrrjwg2vgg3cy41y28rmv7rbv7jy06shqy4nzq"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:zig _ #f) zig-0.15))))))
+
 (define-public zig-pixman
   (package
     (name "zig-pixman")
