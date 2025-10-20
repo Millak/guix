@@ -1100,6 +1100,21 @@ generation.")
        (sha256
         (base32 "1zn701fgmbk29y45p49sajaswm01i2bv89ds2kkbiq8i0p2cr08w"))))))
 
+(define-public googletest-1.13
+  (package
+    (inherit googletest)
+    (name "googletest")
+    (version "1.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/googletest")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x5lr1k4kgw3i8d7c12vp759p0w8c8r2y8lwvqswswxvwygw8lid"))))))
+
 (define-public googletest-1.8
   (package
     (inherit googletest)
