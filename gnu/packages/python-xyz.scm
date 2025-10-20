@@ -13122,6 +13122,8 @@ experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
                 (sha256 (base32 hash))))))
      '(("aac/latm_stereo_to_51.ts" .
         "05h8389i944gb7f2y9c7848vqn8xz1mnm602fwala85npj4z8p4m")
+       ("h264/extradata-reload-multi-stsd.mov" .
+        "1rwlkl9vxp925vzh13cq5dfr983jxbkng0w6ivaymqqwvi7bvg5m")
        ("amv/MTV_high_res_320x240_sample_Penguin_Joke_MTV_from_WMV.amv" .
         "1hiifhdmd0ygzny5mplqdxl3dh9g95384ilkr4ccwv5l9y7hrmiv")
        ("audio-reference/chorusnoise_2ch_44kHz_s16.wav" .
@@ -13140,6 +13142,8 @@ experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
         "07wg7mxa799z8dcvnbbrr9f0b5l6r42bd7d414isk3kc3jw0z6ka")
        ("mpeg2/mpeg2_field_encoding.ts" .
         "1f3waj8jhp6v655hnqpxi2bx3b36976vdjmr74hjr7jv2hx3724n")
+       ("vorbis/vorbis_chapter_extension_demo.ogg" .
+        "1prhhwi44psk9xji2mvk7rnvk899h5rx9wi3dmzkgwaz11r0cjdk")
        ("mxf/track_01_v02.mxf" .
         "04gpbma4kxvhn4dr1sh2k4pq2kbpmnmk2s2bdhq081jzap2983q1")
        ("png1/55c99e750a5fd6_50314226.png" .
@@ -13170,11 +13174,8 @@ experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
       ;; - <https://github.com/PyAV-Org/PyAV/issues/1946>
       ;; - <https://github.com/PyAV-Org/PyAV/pull/1944>
       #:test-flags
-      ;; Network access is required.
-      #~(list "--deselect=tests/test_chapters.py::test_chapters"
-              "--deselect=tests/test_packet.py::TestPacketSideData::test_iter"
-              "--deselect=tests/test_packet.py::TestPacketSideData::test_palette"
-              "-k" "not test_writing_to_custom_io_dash")
+      ;; Writing to custom IO requires network access.
+      #~(list "-k" "not test_writing_to_custom_io_dash")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
