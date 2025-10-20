@@ -365,10 +365,6 @@ template<class N> bool string2Int(const string & s, N & n)
 }
 
 
-/* Return true iff `s' ends in `suffix'. */
-bool hasSuffix(const string & s, const string & suffix);
-
-
 /* Read string `s' from stream `str'. */
 void expect(std::istream & str, std::string_view s);
 

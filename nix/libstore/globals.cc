@@ -2,10 +2,8 @@
 
 #include "globals.hh"
 #include "util.hh"
-#include "archive.hh"
 
 #include <map>
-#include <algorithm>
 #include <format>
 
 namespace nix {

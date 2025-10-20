@@ -1573,7 +1573,7 @@ HookReply DerivationGoal::tryBuildHook()
     string reply;
     while (true) {
         string s = readLine(worker.hook->fromAgent.readSide);
-        if (string(s, 0, 2) == "# ") {
+        if (s.starts_with("# ")) {
             reply = string(s, 2);
             break;
         }

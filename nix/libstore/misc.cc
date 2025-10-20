@@ -2,7 +2,6 @@
 #include <math.h>
 #include "store-api.hh"
 #include "local-store.hh"
-#include "globals.hh"
 
 #include <format>
 

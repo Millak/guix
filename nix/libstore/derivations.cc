@@ -2,7 +2,6 @@
 #include "store-api.hh"
 #include "globals.hh"
 #include "util.hh"
-#include "misc.hh"
 
 #include <format>
 
@@ -16,7 +15,7 @@ void DerivationOutput::parseHashInfo(bool & recursive, HashType & hashType, Hash
     recursive = false;
     string algo = hashAlgo;
 
-    if (string(algo, 0, 2) == "r:") {
+    if (algo.starts_with("r:")) {
         recursive = true;
         algo = string(algo, 2);
     }
@@ -200,7 +199,7 @@ string unparseDerivation(const Derivation & drv)
 
 bool isDerivation(const string & fileName)
 {
-    return hasSuffix(fileName, drvExtension);
+    return fileName.ends_with(drvExtension);
 }
 
 

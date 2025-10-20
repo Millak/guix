@@ -60,7 +60,7 @@ void checkStoreName(const string & name)
     string validChars = "+-._?=";
     /* Disallow names starting with a dot for possible security
        reasons (e.g., "." and ".."). */
-    if (string(name, 0, 1) == ".")
+    if (name.starts_with("."))
         throw Error(std::format("invalid name: `{}' (can't begin with dot)", name));
     for (const auto& i : name)
         if (!((i >= 'A' && i <= 'Z') ||

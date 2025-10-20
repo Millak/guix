@@ -65,7 +65,7 @@ static const std::map<std::string, derivationBuilder> builtins =
 
 derivationBuilder lookupBuiltinBuilder(const std::string & name)
 {
-    if (name.substr(0, 8) == "builtin:")
+    if (name.starts_with("builtin:"))
     {
 	auto realName = name.substr(8);
 	auto builder = builtins.find(realName);

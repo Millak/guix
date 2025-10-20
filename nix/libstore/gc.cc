@@ -2,8 +2,6 @@
 #include "misc.hh"
 #include "local-store.hh"
 
-#include <functional>
-#include <queue>
 #include <random>
 #include <algorithm>
 #include <format>
@@ -108,7 +106,7 @@ Path addPermRoot(StoreAPI & store, const Path & _storePath,
         if (!allowOutsideRootsDir) {
             Path rootsDir = canonPath(std::format("{}/{}", settings.nixStateDir, gcRootsDir));
 
-            if (string(gcRoot, 0, rootsDir.size() + 1) != rootsDir + "/")
+            if (gcRoot.starts_with(rootsDir + "/"))
                 throw Error(std::format(
                     "path `{}' is not a valid garbage collector root; "
                     "it's not in the directory `{}'",
@@ -383,7 +381,7 @@ struct LocalStore::GCState
 bool LocalStore::isActiveTempFile(const GCState & state,
     const Path & path, const string & suffix)
 {
-    return hasSuffix(path, suffix)
+    return path.ends_with(suffix)
         && state.tempRoots.find(string(path, 0, path.size() - suffix.size())) != state.tempRoots.end();
 }
 

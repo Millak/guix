@@ -5,9 +5,7 @@
 #include "pathlocks.hh"
 #include "worker-protocol.hh"
 #include "derivations.hh"
-#include "affinity.hh"
 
-#include <iostream>
 #include <algorithm>
 #include <format>
 #include <cstring>

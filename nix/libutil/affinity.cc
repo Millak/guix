@@ -3,7 +3,7 @@
 #include "affinity.hh"
 
 #include <format>
- 
+
 #if HAVE_SCHED_H
 #include <sched.h>
 #endif

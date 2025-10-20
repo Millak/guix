@@ -7,7 +7,6 @@
 #include <cerrno>
 #include <cstdio>
 #include <cstdlib>
-#include <sstream>
 #include <cstring>
 #include <cassert>
 #include <format>
@@ -1340,12 +1339,6 @@ string statusToString(int status)
 bool statusOk(int status)
 {
     return WIFEXITED(status) && WEXITSTATUS(status) == 0;
-}
-
-
-bool hasSuffix(const string & s, const string & suffix)
-{
-    return s.size() >= suffix.size() && string(s, s.size() - suffix.size()) == suffix;
 }
 
 

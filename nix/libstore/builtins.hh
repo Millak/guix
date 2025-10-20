@@ -25,20 +25,20 @@
 
 namespace nix {
 
-    inline bool isBuiltin(const Derivation & drv)
-    {
-	return string(drv.builder, 0, 8) == "builtin:";
-    }
+inline bool isBuiltin(const Derivation & drv)
+{
+	return drv.builder.starts_with("builtin:");
+}
 
-    /* Build DRV, which lives at DRVPATH.  */
-    typedef void (*derivationBuilder) (const Derivation &drv,
-				       const std::string &drvPath,
-				       const std::string &output);
+/* Build DRV, which lives at DRVPATH.  */
+typedef void (*derivationBuilder) (const Derivation &drv,
+                   const std::string &drvPath,
+				   const std::string &output);
 
-    /* Return the built-in builder called BUILDER, or NULL if none was
-       found.  */
-    derivationBuilder lookupBuiltinBuilder(const std::string &builder);
+/* Return the built-in builder called BUILDER, or NULL if none was
+   found.  */
+derivationBuilder lookupBuiltinBuilder(const std::string &builder);
 
-    /* Return the list of supported built-in builder names.  */
-    std::list<std::string> builtinBuilderNames();
+/* Return the list of supported built-in builder names.  */
+std::list<std::string> builtinBuilderNames();
 }
