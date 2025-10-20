@@ -681,4 +681,34 @@ Language Server Protocol} for the Zig programming language.")
          (replace "zig-diffz" zig-diffz-for-zig-zls-0.14)
          (replace "zig-known-folders" zig-known-folders-for-zig-0.14))))))
 
+(define-public zig-zls-0.15
+  (let ((base zig-zls-0.14))
+    (package
+      (inherit base)
+      (name "zig-zls")
+      (version "0.15.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/zigtools/zls")
+                      (commit version)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0ydnaxf29mj3gamig9phf991s1civfk6jkydn2xiqwv394fx4p0q"))
+                (snippet
+                 (rename-zig-dependencies
+                  '(("diffz" . "zig-diffz")
+                    ("known_folders" . "zig-known-folders")
+                    ("lsp_kit" . "zig-lsp-kit"))))))
+      (native-inputs
+       (modify-inputs (package-native-inputs base)
+         (replace "zig" zig-0.15)))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (prepend zig-lsp-kit-for-zls-0.15)
+         (delete "zig-lsp-codegen")
+         (replace "zig-diffz" zig-diffz-for-zls-0.15)
+         (replace "zig-known-folders" zig-known-folders-for-zls-0.15))))))
+
 (define-public zig-zls zig-zls-0.13)
