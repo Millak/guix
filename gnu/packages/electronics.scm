@@ -1518,6 +1518,35 @@ verification.")
         #~(modify-phases #$phases
             (delete 'fix-scripts)))))))
 
+(define-public python-pyucis
+  (package
+    (name "python-pyucis")
+    (version "0.1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fvutils/pyucis/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19bxmhqkdmhbibkbzcjqvzvcni1kzg28nqz9vh6zj73hl26lf2ij"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-jsonschema-objects
+           python-lxml
+           python-pyyaml))
+    (home-page "https://fvutils.github.io/pyucis//")
+    (synopsis "Python interface to UCIS data")
+    (description
+     "The code{PyUCIS} library provides two APIs for creating and accessing
+coverage data via the @acronym{UCIS, Unified Coverage Interoperability
+Standard} data mode.")
+    (license license:asl2.0)))
+
 (define-public python-cocotb
   (package
     (name "python-cocotb")
