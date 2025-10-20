@@ -84,6 +84,7 @@
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
 ;;; Copyright © 2025 Artur Wroblewski <wrobell@riseup.net>
+;;; Copyright © 2025 Allan Adair <allan@adair.no>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1219,6 +1220,45 @@ of a fake DNS resolver.")
     (description
      "This package provides a client library to download and publish models,
 datasets and other repos on the @url{huggingface.co} hub.")
+    (license license:asl2.0)))
+
+(define-public python-kubernetes
+  (package
+    (name "python-kubernetes")
+    (version "34.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "kubernetes" version))
+       (sha256
+        (base32 "04ir03887spls3wqspvbsivqjrbwz0innn86mkrs546jnnqfvs4g"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; The following tests expect a local running Kubernetes cluster.
+         "--ignore=kubernetes/e2e_test"
+         "--ignore=kubernetes/dynamic")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-certifi
+           python-dateutil
+           python-durationpy
+           python-google-auth
+           python-pyyaml
+           python-requests
+           python-requests-oauthlib
+           python-six           ;XXX: hard dependency
+           python-urllib3-1.26  ;sanity check, requires urllib3<2.4.0,>=1.24.2
+           python-websocket-client))
+    (home-page "https://github.com/kubernetes-client/python")
+    (synopsis "Python client for Kubernetes")
+    (description
+     "This package provides an official Python client library for
+@url{http://kubernetes.io, Kubernetes}.")
     (license license:asl2.0)))
 
 (define-public python-lazr-restfulclient
