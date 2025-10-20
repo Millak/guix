@@ -648,6 +648,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/storage.scm			\
   %D%/packages/suckless.scm			\
   %D%/packages/sugar.scm			\
+  %D%/packages/swift.scm			\
   %D%/packages/swig.scm				\
   %D%/packages/sycl.scm				\
   %D%/packages/sync.scm			\
