@@ -2332,9 +2332,9 @@ suite.")
 them usable as simple logic analyzer and/or oscilloscope hardware.")
       (license license:gpl2+))))
 
-(define-public symbiyosys
+(define-public sby
   (package
-    (name "symbiyosys")
+    (name "sby")
     (version "0.59")
     (source
      (origin
@@ -2388,9 +2388,12 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
     (home-page "https://yosyshq.readthedocs.io/projects/sby/en/latest/")
     (synopsis "Formal hardware verification with Yosys")
     (description
-     "code{Simbiyosys} is a front-end program for Yosys-based formal hardware
+     "@command{sby} is a front-end program for Yosys-based formal hardware
 verification flows.")
     (license license:isc)))
+
+(define-deprecated-package symbiyosys
+  sby)
 
 (define-public systemc
   (package
