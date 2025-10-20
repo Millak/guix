@@ -14,7 +14,7 @@
 ;;; Copyright © 2021 David Dashyan <mail@davie.li>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 (unmatched parenthesis <paren@disroot.org>
-;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
@@ -958,17 +958,17 @@ replacement for the syslog() call, but retains its ease of use.")
 (define-public liblognorm
   (package
     (name "liblognorm")
-    (version "2.0.6")
+    (version "2.0.7")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/rsyslog/liblognorm.git")
+             (url "https://github.com/rsyslog/liblognorm")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1pyy1swvq6jj12aqma42jimv71z8m66zy6ydd5v19cp2azm4krml"))))
+         "1syh3lx58q6izzgmpq8pj4j5aw6qr5nzplnmk42f2alrw38sprd5"))))
     (build-system gnu-build-system)
     (arguments
      (list
