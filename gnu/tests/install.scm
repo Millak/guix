@@ -2068,6 +2068,7 @@ build (current-guix) and then store a couple of full system images.")
       (list (service gnome-desktop-service-type)
             (service xfce-desktop-service-type)
             (service mate-desktop-service-type)
+            (service plasma-desktop-service-type)
             (set-xorg-configuration
              (xorg-configuration
               (keyboard-layout keyboard-layout)))
@@ -2147,7 +2148,7 @@ build (current-guix) and then store a couple of full system images.")
                              #:encrypted? #t)
                             ;; XXX: The disk-image size guess is too low. Use
                             ;; a constant value until this is fixed.
-                            #:install-size (* 8000 MiB)
-                            #:target-size (* 9000 MiB)))
+                            #:install-size (* 15000 MiB)
+                            #:target-size (* 15000 MiB)))
 
 ;;; install.scm ends here
