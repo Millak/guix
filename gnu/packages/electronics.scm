@@ -102,6 +102,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
@@ -909,6 +910,69 @@ which allows one to install the M8 firmware on any Teensy.")
                    license:expat
                    license:public-domain
                    license:zlib))))
+
+;; TODO: Unbundle scintilla when ScintillaEdit.h is available.
+(define-public mcy
+  (package
+    (name "mcy")
+    (version "0.59")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/YosysHQ/mcy/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12hfnbb2kamins2azy43j2ii8ih7agnj9zizg9zv6h5zyrwb3rw9"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;there are no tests
+      #:imported-modules (append %qt-build-system-modules
+                                 %python-build-system-modules)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'build-info-documentation
+            (lambda _
+              (invoke "make" "-C" "docs" "info")
+              (install-file "docs/build/texinfo/yosyshqmcy.info"
+                            (string-append #$output "/share/info"))))
+          (add-before 'configure 'chdir
+            (lambda _
+              (chdir "gui")))
+          ;; As per main Makefile install target.
+          (add-after 'install 'make-install
+            (lambda _
+              (chdir "..")
+              (copy-recursively
+               "scripts" (string-append #$output "/share/mcy/scripts"))
+              (copy-recursively
+               "dash" (string-append #$output "/share/mcy/dash"))
+              ;; (mkdir-p (string-append #$output "/bin"))
+              (define (install-it filename)
+                (let* ((bin (format #f "~a/bin" #$output))
+                       (bin_ (format #f "~a/~a" bin filename)))
+                  (install-file (format #f "~a.py" filename) bin)
+                  (rename-file (format #f "~a/~a.py" bin filename) bin_)
+                  (chmod bin_ #o755)))
+              (install-it "mcy")
+              (install-it "mcy-dash")))
+          (add-after 'make-install 'python:wrap
+            (@@ (guix build python-build-system) wrap)))))
+    (native-inputs
+     (list pkg-config
+           python-sphinx
+           python-minimal-wrapper       ;remove with unbundling of scintilla
+           texinfo))
+    (inputs
+     (list boost python python-click python-flask))
+    (home-page "https://yosyshq.readthedocs.io/projects/mcy/en/latest/")
+    (synopsis "Mutation Cover with Yosys")
+    (description
+     "@command{Mcy} is a tool to help digital designers and project managers
+understand and improve testbench coverage.")
+    (license license:isc)))
 
 (define-public nextpnr
   (let ((commit "ad76625d4d828cb093b55aa9f5aae59b7ba9724f")
