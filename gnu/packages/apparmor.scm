@@ -41,7 +41,7 @@
 (define-public libapparmor
   (package
     (name "libapparmor")
-    (version "3.1.2")
+    (version "4.1.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -50,7 +50,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1h77a7ww0rxfv5nsi1iy4fffklxdr2vq6r7kdsqm15yysglhbjyi"))))
+                "0p3vq0awvn4ar6sblmhcs0i9m7zc9kbwm3f3zcggx4lqgmy8s18b"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -84,6 +84,7 @@
                    (chdir "libraries/libapparmor"))))))
     (native-inputs
      (list autoconf
+           autoconf-archive
            automake
            bison
            dejagnu
