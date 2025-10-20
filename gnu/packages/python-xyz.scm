@@ -20488,87 +20488,74 @@ text.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 10000 passed, 16 skipped, 2 xfailed, 42 warnings
+      ;; tests: 10230 passed, 39 skipped, 73 deselected, 2 xfailed, 4 warnings
       #:test-flags
-      '(list "-m" "not network and not requires_docker"
-             "--numprocesses" (number->string (min 8 (parallel-job-count)))
-             ;; This needs pycognito.
-             "--ignore-glob=tests/test_cognitoidp/*"
-             ;; This needs Internet access.
-             "--ignore=tests/test_core/test_request_passthrough.py"
-             "-k"
-             (string-append
-              ;; XXX: This test is timing sensitive and may
-              ;; fail non-deterministically.
-              "not test_cancel_pending_job"
-
-              ;; The error message is more detailed than expected.
-              " and not test_list_queue_tags_errors"
-
-              ;; Unknown failure: invalid length for parameter IpAdresses.
-              " and not test_route53resolver_bad_create_endpoint_subnets"
-              " and not test_route53resolver_invalid_create_endpoint_args"
-
-              ;; These tests require Docker.
-              " and not test_terminate_job"
-              " and not test_invoke_function_from_sqs_exception"
-              " and not test_create_custom_lambda_resource__verify_cfnresponse_failed"
-              " and not test_lambda_function"
-              " and not test_invoke_local_lambda_layers"
-
-              ;; These tests also require the network.
-              " and not test_s3_server_post_cors_multiple_origins"
-              " and not test_put_record_batch_http_destination"
-              " and not test_put_record_http_destination"
-              " and not test_with_custom_request_header"
-              " and not test_dependencies"
-              " and not test_cancel_running_job"
-              " and not test_container_overrides"
-
-              ;; TypeError: Got unexpected keyword argument
-              ;; 'account_id_endpoint_mode'
-              " and not test_dynamodb_with_account_id_routing"
-
-              ;; botocore.exceptions.ParamValidationError: Parameter
-              ;; validation failed
-              " and not test_create_firewall"
-              " and not test_describe_logging_configuration"
-              " and not test_update_logging_configuration"
-              " and not test_list_firewalls"
-              ;; AttributeError: 'TimestreamInfluxDB' object has no attribute
-              ;; 'list_db_clusters'
-
-              " and not test_create_db_cluster"
-              " and not test_get_db_cluster"
-              " and not test_list_db_clusters"
-
-              ;; XXX: misc
-              " and not test_list_objects_v2_checksum_algo"
-              " and not test_upload_file_with_checksum_algorithm"))
+      #~(list "-m" "not network and not requires_docker"
+              ;; Not all of the tests are thread save, see:
+              ;; <https://github.com/getmoto/moto/issues/7786>.
+              ;; "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              "-k" (string-join
+                    ;; Outbound access to AWS servcies is required to reach
+                    ;; endpoint URLs:
+                    ;; "https://s3.amazonaws.com/"
+                    ;; "https://realbucket.s3.amazonaws.com/"
+                    ;; "https://s3.amazonaws.com/companyname_prod"
+                    (list "not test_passthrough_calls_for_entire_service"
+                          "test_passthrough_calls_for_specific_url"
+                          "test_passthrough_calls_for_wildcard_urls"
+                          ;; TypeError: Got unexpected keyword argument
+                          ;; 'account_id_endpoint_mode'
+                          "test_dynamodb_with_account_id_routing[disabled]"
+                          "test_dynamodb_with_account_id_routing[preferred]"
+                          "test_dynamodb_with_account_id_routing[required]"
+                          ;; botocore.exceptions.ParamValidationError:
+                          ;; Parameter validation failed: Missing required
+                          ;; parameter in input: "VpcId"; Missing required
+                          ;; parameter in input: "SubnetMappings"
+                          "test_create_firewall"
+                          "test_describe_logging_configuration"
+                          "test_list_firewalls"
+                          "test_update_logging_configuration"
+                          ;; RuntimeError: Firehose PutRecord(Batch) to HTTP
+                          ;; destination failed
+                          "test_put_record_http_destination"
+                          "test_put_record_batch_http_destination"
+                          ;; Timed out to connect to foo.localhost:5001
+                          "test_with_custom_request_header"
+                          ;; Timed out to connect to testcors.localhost:6789
+                          "test_s3_server_post_cors_multiple_origins"
+                          ;; AttributeError: 'TimestreamInfluxDB' object has
+                          ;; no attribute 'list_db_clusters'
+                          "test_list_db_clusters"
+                          "test_get_db_cluster"
+                          "test_create_db_cluster"
+                          ;; Checksum error
+                          "test_upload_file_with_checksum_algorithm"
+                          "test_list_objects_v2_checksum_algo")
+                    " and not ")
+              "tests")
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'compatibility
-           (lambda _
-             ;; pyparsing 3.0.6 does not support the "min" argument for
-             ;; DelimitedList.
-             (substitute* "moto/glue/utils.py"
-               (("DelimitedList\\(literal, min=1\\)")
-                "DelimitedList(literal)"))))
-         (add-after 'unpack 'patch-hardcoded-executable-names
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((bash-exec (search-input-file inputs "/bin/sh")))
-               (substitute* "moto/batch/models.py"
-                 (("/bin/sh") bash-exec))
-               (substitute* (find-files "tests" "\\.py$")
-                 (("#!/bin/bash") (string-append "#!" bash-exec)))))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-hardcoded-executable-names
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((bash-exec (search-input-file inputs "/bin/sh")))
+                (substitute* "moto/batch/models.py"
+                  (("/bin/sh") bash-exec))
+                (substitute* (find-files "tests" "\\.py$")
+                  (("#!/bin/bash") (string-append "#!" bash-exec))))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "AWS_ACCESS_KEY_ID" "guix-access-key-id")
+              (setenv "AWS_SECRET_ACCESS_KEY" "guix-secret-access-key")
+              (setenv "TESTS_SKIP_REQUIRES_DOCKER" "true"))))))
     (native-inputs
      (list python-flask
            python-flask-cors
            python-freezegun
+           python-pycognito
+           python-pyotp
            python-pytest
-           python-pytest-xdist
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (inputs
      (list bash-minimal))
     (propagated-inputs
