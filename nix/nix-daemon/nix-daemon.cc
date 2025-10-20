@@ -1,5 +1,5 @@
 #include "config.h"
-#include "shared.hh"
+#include "nix-daemon.hh"
 #include "local-store.hh"
 #include "util.hh"
 #include "serialise.hh"

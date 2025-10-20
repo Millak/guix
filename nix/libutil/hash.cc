@@ -103,10 +103,6 @@ unsigned int hashLength32(const Hash & hash)
 }
 
 
-// omitted: E O U T
-const string base32Chars = "0123456789abcdfghijklmnpqrsvwxyz";
-
-
 string printHash32(const Hash & hash)
 {
     Hash hash2(hash);

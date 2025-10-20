@@ -24,8 +24,6 @@ static string archiveVersion1 = "nix-archive-1";
 
 static string caseHackSuffix = "~nix~case~hack~";
 
-PathFilter defaultPathFilter;
-
 
 static void dumpContents(const Path & path, size_t size,
     Sink & sink)

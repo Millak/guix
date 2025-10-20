@@ -253,16 +253,3 @@ template<class T> T readStorePaths(Source & from)
 template PathSet readStorePaths(Source & from);
 
 }
-
-
-#include "local-store.hh"
-#include "serialise.hh"
-
-
-namespace nix {
-
-
-std::shared_ptr<StoreAPI> store;
-
-
-}

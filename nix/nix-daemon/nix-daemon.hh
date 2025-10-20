@@ -20,9 +20,14 @@
 
 #pragma once
 
+#include <vector>
+
 #include <stdlib.h>
 #include <signal.h>
 
-extern volatile ::sig_atomic_t blockInt;
+/* Variables used by `nix-daemon.cc'.  */
+inline volatile ::sig_atomic_t blockInt;
+inline char **argvSaved;
 
-extern char **argvSaved;
+/* Entry point in `nix-daemon.cc'.  */
+void run (const std::vector<int> &);

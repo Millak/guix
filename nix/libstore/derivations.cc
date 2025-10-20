@@ -211,9 +211,6 @@ bool isFixedOutputDrv(const Derivation & drv)
 }
 
 
-DrvHashes drvHashes;
-
-
 /* Returns the hash of a derivation modulo fixed-output
    subderivations.  A fixed-output derivation is a derivation with one
    output (`out') for which an expected hash and hash algorithm are

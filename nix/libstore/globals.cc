@@ -17,9 +17,6 @@ namespace nix {
 #define DEFAULT_SOCKET_PATH "/daemon-socket/socket"
 
 
-Settings settings;
-
-
 Settings::Settings()
 {
     keepFailed = false;
@@ -203,9 +200,6 @@ Settings::SettingsMap Settings::getOverrides()
 {
     return overrides;
 }
-
-
-const string nixVersion = PACKAGE_VERSION;
 
 
 }

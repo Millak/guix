@@ -50,7 +50,7 @@ struct PathFilter
     virtual bool operator () (const Path & path) { return true; }
 };
 
-extern PathFilter defaultPathFilter;
+inline PathFilter defaultPathFilter;
 
 void dumpPath(const Path & path, Sink & sink,
     PathFilter & filter = defaultPathFilter);

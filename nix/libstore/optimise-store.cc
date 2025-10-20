@@ -16,9 +16,6 @@
 
 namespace nix {
 
-/* Any file smaller than this is not considered for deduplication.
-   Keep in sync with (guix store deduplication).  */
-const size_t deduplicationMinSize = 8192;
 
 static void makeWritable(const Path & path)
 {

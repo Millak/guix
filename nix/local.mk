@@ -113,7 +113,7 @@ guix_daemon_LDADD =				\
   $(SQLITE3_LIBS) $(LIBGCRYPT_LIBS)
 
 guix_daemon_headers =				\
-  %D%/nix-daemon/shared.hh
+  %D%/nix-daemon/nix-daemon.hh
 
 if HAVE_LIBBZ2
 

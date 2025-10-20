@@ -19,7 +19,7 @@ namespace nix {
 const int nixSchemaVersion = 7;
 
 
-extern string drvsLogDir;
+inline std::string drvsLogDir {"drvs"};
 
 
 struct Derivation;
@@ -293,6 +293,8 @@ void canonicaliseTimestampAndPermissions(const Path & path);
 MakeError(PathInUse, Error);
 
 /* Size below which a file is not considered for deduplication.  */
-extern const size_t deduplicationMinSize;
+/* Any file smaller than this is not considered for deduplication.
+   Keep in sync with (guix store deduplication).  */
+inline const size_t deduplicationMinSize {8192};
 
 }

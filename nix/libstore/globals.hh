@@ -227,10 +227,10 @@ private:
 
 
 // FIXME: don't use a global variable.
-extern Settings settings;
+inline Settings settings;
 
 
-extern const string nixVersion;
+inline const string nixVersion {PACKAGE_VERSION};
 
 
 }

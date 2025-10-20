@@ -77,7 +77,7 @@ Hash hashDerivationModulo(StoreAPI & store, Derivation drv);
 /* Memoisation of hashDerivationModulo(). */
 typedef std::map<Path, Hash> DrvHashes;
 
-extern DrvHashes drvHashes;
+inline DrvHashes drvHashes;
 
 /* Split a string specifying a derivation and a set of outputs
    (/nix/store/hash-foo!out1,out2,...) into the derivation path and

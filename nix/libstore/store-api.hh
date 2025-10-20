@@ -363,7 +363,7 @@ Paths topoSortPaths(StoreAPI & store, const PathSet & paths);
 
 /* For now, there is a single global store API object, but we'll
    purify that in the future. */
-extern std::shared_ptr<StoreAPI> store;
+inline std::shared_ptr<StoreAPI> store;
 
 
 /* Display a set of paths in human-readable form (i.e., between quotes

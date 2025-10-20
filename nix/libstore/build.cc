@@ -3367,9 +3367,6 @@ void DerivationGoal::registerOutputs()
 }
 
 
-string drvsLogDir = "drvs";
-
-
 Path DerivationGoal::openLogFile()
 {
     logSize = 0;

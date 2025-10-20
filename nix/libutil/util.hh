@@ -132,8 +132,8 @@ typedef enum {
     ltFlat      /* no nesting */
 } LogType;
 
-extern LogType logType;
-extern Verbosity verbosity; /* suppress msgs > this */
+inline LogType logType {ltPretty};
+inline Verbosity verbosity {lvlInfo}; /* suppress msgs > this */
 
 class Nest
 {
@@ -167,7 +167,7 @@ void warnOnce(bool & haveWarned, std::string_view fs);
 
 void writeToStderr(const string & s);
 
-extern void (*_writeToStderr) (const unsigned char * buf, size_t count);
+inline void (*_writeToStderr) (const unsigned char * buf, size_t count) = 0;
 
 
 /* Wrappers arount read()/write() that read/write exactly the
@@ -323,7 +323,7 @@ void commonChildInit(Pipe & logPipe);
 
 /* User interruption. */
 
-extern volatile sig_atomic_t _isInterrupted;
+inline volatile sig_atomic_t _isInterrupted = 0;
 
 void _interrupted();
 
