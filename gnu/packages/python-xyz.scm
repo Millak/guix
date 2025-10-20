@@ -7746,6 +7746,35 @@ you traverse a schema like paths and access a schema on demand with separate
 dereferencing accessor layer.")
     (license license:asl2.0)))
 
+(define-public python-jsonschema-objects
+  (package
+    (name "python-jsonschema-objects")
+    (version "0.5.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cwacek/python-jsonschema-objects/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0p3m0fbj25brhfma4bl47xjq6x4ay14yx284qwrki96dwd6v46xd"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-mock
+           python-setuptools))
+    (propagated-inputs
+     (list python-inflection
+           python-jsonschema
+           python-markdown))
+    (home-page "http://python-jsonschema-objects.readthedocs.org/")
+    (synopsis "Automatic Python binding generation from JSON schemas")
+    (description
+     "This package provides an automatic class-based binding to JSON
+Schemas for use in python.")
+    (license license:expat)))
+
 (define-public python-jsonschema-specifications
   (package
     (name "python-jsonschema-specifications")
