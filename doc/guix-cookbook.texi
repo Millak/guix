@@ -518,7 +518,7 @@ as ``SICP'', this book is a reference.
 You can also install it and read it from your computer:
 
 @example
-guix install sicp info-reader
+guix install book-sicp info-reader
 info sicp
 @end example
 
