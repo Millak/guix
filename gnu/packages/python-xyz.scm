@@ -783,6 +783,29 @@ implemented in pure Python, and most of them are also implemented in C.")
 packaging tasks.")
     (license license:expat)))
 
+(define-public python-envs
+  (package
+    (name "python-envs")
+    (version "1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "envs" version))
+       (sha256
+        (base32 "160358zskyg6g606lndjcv7yd2nv5f7ca14y55lds72xk333b14x"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest))
+    (native-inputs
+     (list python-poetry-core))
+    (home-page "https://github.com/capless/envs")
+    (synopsis "Easy access of environment variables from Python")
+    (description
+     "This package implements a functionality to access of environment
+variables from Python with support for strings, booleans, list, tuples, and
+dicts.")
+    (license license:asl2.0)))
+
 (define-public python-exitcode
   (package
     (name "python-exitcode")
