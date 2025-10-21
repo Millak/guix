@@ -2129,6 +2129,8 @@ input and outputs an XML dataset.")
           (add-after 'unpack 'adjust-default-settings
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "qucs/settings.cpp"
+                (("\"/usr/local/Xyce.*\"")
+                 (format #f "~s" (search-input-file inputs "bin/Xyce")))
                 (("\"ngspice\"")
                  (format #f "~s" (search-input-file inputs "bin/ngspice")))
                 (("\"octave\"")
@@ -2139,11 +2141,20 @@ input and outputs an XML dataset.")
                 `("PATH" ":" prefix
                   (,(string-append #$(this-package-input "ngspice") "/bin")
                    ,(string-append
-                     #$(this-package-input "qucsator-rf") "/bin")))))))))
+                     #$(this-package-input "qucsator-rf") "/bin")
+                   ,(string-append
+                     #$(this-package-input "xyce-serial") "/bin")))))))))
     (native-inputs (list qttools))
     (inputs
-     ;; TODO Add xyce-serial to the list.
-     (list bash-minimal octave qtbase qtcharts qtsvg qtwayland qucsator-rf ngspice))
+     (list bash-minimal
+           ngspice
+           octave
+           qtbase
+           qtcharts
+           qtsvg
+           qtwayland
+           qucsator-rf
+           xyce-serial))
     (synopsis "GUI for different circuit simulation kernels")
     (description
      "@acronym{Qucs-S, Quite universal circuit simulator with SPICE} provides
