@@ -1,0 +1,40 @@
+LegacyVersion does not exist anymore in packaging.version 25.0
+(https://github.com/pypa/packaging/pull/407). This patch is needed until
+389-ds-base is updated to a newer version.
+
+diff --git a/src/lib389/lib389/utils_orig.py b/src/lib389/lib389/utils.py
+index da966ed..30f127d 100644
+--- a/src/lib389/lib389/utils.py
++++ b/src/lib389/lib389/utils.py
+@@ -46,7 +46,12 @@ try:
+     from pkg_resources.extern.packaging.version import LegacyVersion
+ # Fallback to a normal 'packaging' module in case 'setuptools' is stripped
+ except:
+-    from packaging.version import LegacyVersion
++    from packaging.version import Version
++
++    # Define a stub LegacyVersion for compatibility.
++    class LegacyVersion(Version):
++        def __init__(self, v):
++            super().__init__(v)
+ from socket import getfqdn
+ from ldapurl import LDAPUrl
+ from contextlib import closing
+diff --git a/src/lib389/lib389/nss_ssl_orig.py b/src/lib389/lib389/nss_ssl.py
+index 3561597..6622a46 100644
+--- a/src/lib389/lib389/nss_ssl_orig.py
++++ b/src/lib389/lib389/nss_ssl.py
+@@ -31,7 +31,12 @@ try:
+     from pkg_resources.extern.packaging.version import LegacyVersion
+ # Fallback to a normal 'packaging' module in case 'setuptools' is stripped
+ except:
+-    from packaging.version import LegacyVersion
++    from packaging.version import Version
++
++    # Define a stub LegacyVersion for compatibility.
++    class LegacyVersion(Version):
++        def __init__(self, v):
++            super().__init__(v)
+ 
+ KEYBITS = 4096
+ CA_NAME = 'Self-Signed-CA'

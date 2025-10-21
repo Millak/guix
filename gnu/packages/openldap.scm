@@ -236,6 +236,7 @@ servers from Python programs.")
               (sha256
                (base32
                 "1sdvfbjfg0091f47562gw3gdc2vgvvhyhdi21lrpwnw9lqc8xdxk"))
+              (patches (search-patches "389-ds-base-legacy-version.patch"))
               (modules '((guix build utils)))
               (snippet
                ;; Put '#define f_type' after '#include <sys/statvfs.h>' to
