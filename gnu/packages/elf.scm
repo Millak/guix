@@ -15,6 +15,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,12 +38,17 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system gnu)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
+  #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages pkg-config)
@@ -390,6 +396,60 @@ changed.")
               (lambda _
                 (substitute* "tests/set-empty-rpath.sh"
                   (("^\\$\\{SCRATCH\\}\\/simple.$") ""))))))))))
+
+(define-public pax-utils
+  (package
+    (name "pax-utils")
+    (version "1.3.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://anongit.gentoo.org/git/proj/pax-utils.git")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1vxklqnabhy15idrg5s2m07lk1hqyf9fnvsfy66n2rdmqijn5rvw"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:modules '((guix build meson-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
+      #:configure-flags #~(list "-Dlddtree_implementation=sh")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-lddtree
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((needed-bin
+                      (map (cut string-append <> "/bin")
+                           (list #$(this-package-input "coreutils-minimal")
+                                 #$(this-package-input "gawk")
+                                 #$(this-package-input "sed")
+                                 #$output)))
+                     (PATH `("PATH" = (,@needed-bin))))
+                (for-each (lambda (p)
+                            (wrap-program
+                                (search-input-file outputs
+                                                   (string-append "bin/" p))
+                              PATH))
+                          (list "lddtree" "symtree"))))))))
+    (native-inputs (list docbook-xsl xmlto))
+    (inputs (list bash-minimal coreutils-minimal gawk sed))
+    (home-page "https://wiki.gentoo.org/wiki/Hardened/PaX_Utilities")
+    (synopsis "ELF integrity and security-focused utils")
+    (description "The pax-utils package contains a small set of utilities
+for performing mostly security checks on systems.  It is focused on the ELF
+format.  The included utilities are:
+@table @command
+@item pspax List ELF/PaX information about running processes
+@item scanelf Scan ELF binaries
+@item dumpelf Dump internal ELF structure
+@item scanmacho Scan Mach-O binaries
+@item symtree Display libraries that satisfy undefined symbols, as a tree
+@item lddtree Display ELF dependencies as a tree.
+@end table")
+    (license license:gpl2+)))
 
 (define-public libdwarf
   (package

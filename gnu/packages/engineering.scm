@@ -3858,7 +3858,6 @@ data structures and to operate on them.")
               (method url-fetch)
               (uri (string-append "mirror://gnu/poke/poke-elf-" version
                                   ".tar.gz"))
-
               (sha256
                (base32
                 "0x3shih7sjj34f5305kvbp4cfy11m92zwidjk3658m23zkd6gdqa"))))
