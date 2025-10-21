@@ -35550,6 +35550,33 @@ package.")
 @code{nerd-icons} package.  It supports @code{vertico} and @code{marginalia}.")
       (license license:gpl3+))))
 
+(define-public emacs-nerd-icons-corfu
+  (package
+    (name "emacs-nerd-icons-corfu")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/LuigiPiucco/nerd-icons-corfu")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "036p45wqwrqhn5xv5sn3gsm2mb79gj6fk24zpkfa7wrv45qqgb21"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f))                   ;no tests
+    (propagated-inputs
+     (list emacs-corfu
+           emacs-nerd-icons))
+    (home-page "https://github.com/LuigiPiucco/nerd-icons-corfu")
+    (synopsis "Icons for Corfu via Nerd Icons")
+    (description
+     "This package adds icons to @code{corfu}, using the @code{nerd-icons}
+package.")
+    (license license:gpl3+)))
+
 (define-public emacs-all-the-icons
   ;; The latest release was on 3 June 2021.
   (let ((commit "4778632b29c8c8d2b7cd9ce69535d0be01d846f9")
