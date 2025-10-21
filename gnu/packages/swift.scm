@@ -41,6 +41,8 @@
 
 (define %swift-bootstrap-version "5.7.3")
 
+(define %swift-6.2-version "6.2")
+
 (define %swift-bootstrap-source
   (origin
     (method git-fetch)
@@ -96,6 +98,26 @@
      "This is Apple's fork of cmark (CommonMark implementation) with
 Swift-specific modifications, required to build Swift 4.2.4.")
     (license license:bsd-2)))
+
+(define-public swift-cmark-6.2
+  (package
+    (inherit swift-cmark)
+    (version %swift-6.2-version)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/apple/swift-cmark.git")
+                    (commit (string-append "swift-" %swift-6.2-version
+                                           "-RELEASE"))))
+              (file-name (git-file-name "swift-cmark" %swift-6.2-version))
+              (sha256
+               (base32
+                "1405irbglx933i6jc8546gcrgb3y3703h66jm1jnd6acgfyg74ly"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments swift-cmark)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'install-cmake-exports)))))))
 
 (define %swift-libdispatch-source
   (origin
