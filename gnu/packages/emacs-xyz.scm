@@ -35522,6 +35522,34 @@ GUI and terminal, and requires a nerd font installed on your system.")
 package.")
     (license license:gpl3+)))
 
+(define-public emacs-nerd-icons-completion
+  ;; No tags provided upstream
+  (let ((commit "63a6b3f1eb98bb381c86a1658ac401c8967079b8")
+        (revision "0"))
+    (package
+      (name "emacs-nerd-icons-completion")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/rainstormstudio/nerd-icons-completion")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "08p361rh5mv3ng10av1381kzl9s4msdjyca96hsgsh05qwq5pdrf"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f))                   ;no tests
+      (propagated-inputs (list emacs-nerd-icons))
+      (home-page "https://github.com/rainstormstudio/nerd-icons-completion")
+      (synopsis "Icons for Emacs minibuffer completion via Nerd Icons")
+      (description
+       "This package adds icons to minibuffer completion in Emacs, using the
+@code{nerd-icons} package.  It supports @code{vertico} and @code{marginalia}.")
+      (license license:gpl3+))))
+
 (define-public emacs-all-the-icons
   ;; The latest release was on 3 June 2021.
   (let ((commit "4778632b29c8c8d2b7cd9ce69535d0be01d846f9")
