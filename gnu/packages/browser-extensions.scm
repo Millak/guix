@@ -193,15 +193,15 @@ ungoogled-chromium.")
 (define-public passff-host
   (package
     (name "passff-host")
-    (version "1.2.4")
-    (home-page "https://github.com/passff/passff-host")
+    (version "1.2.5")
+    (home-page "https://codeberg.org/PassFF/passff-host")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page) (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lcwa1qzfxlifmj33qndp1wgi6yx6vj21ir0az79vhm5k03p961z"))))
+                "01kw5w6ihm4d6l5va7c0mb7539rnmqfn16c9w543xf5s0n5f2i7h"))))
     (build-system copy-build-system)
     (arguments
      (let ((native-manifests "lib/icecat/native-messaging-hosts"))
