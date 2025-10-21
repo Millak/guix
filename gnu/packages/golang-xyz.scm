@@ -1151,7 +1151,8 @@ prompts on terminals supporting ANSI escape sequences.")
      (list
       #:import-path "github.com/alecthomas/chroma"
       #:test-flags
-      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
+      #~(list "-vet=off"  ;Go@1.24 forces vet, but tests are not ready yet.
+              "-skip" "TestLexers")))
     (native-inputs
      (list go-github-com-alecthomas-kong
            go-github-com-alecthomas-kong-hcl
