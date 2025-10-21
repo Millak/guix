@@ -87,19 +87,26 @@ suites of application implementing the standard.")
 (define-public specification-json-schema-test-suite
   (package
     (name "specification-json-schema-test-suite")
-    (version "23.1.0")
+    ;; XXX: Upstream did not place any fresh tags since 2023, use the commit
+    ;; which is compatible with go-github-com-santhosh-tekuri-jsonschema-v6.
+    (properties '((commit . "83e866b46c9f9e7082fd51e83a61c5f2145a1ab7")
+                  (revision . "0")))
+    (version (git-version "23.1.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/json-schema-org/JSON-Schema-Test-Suite")
-             (commit version)))
+              (url "https://github.com/json-schema-org/JSON-Schema-Test-Suite")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1400r7v5rl0bdhiygg37in0wzbqagc8jprcsw8wxfw082ayn57gq"))))
+        (base32 "0fgp1rfxh8rp39i3sn8gbps3v1s892j4x37xggsqn1rva2rnh9kx"))))
     (build-system copy-build-system)
     (arguments
-     '(#:install-plan '(("./tests" "share/tests"))))
+     '(#:install-plan '(("./tests" "share/tests")
+                        ("./remotes" "share/remotes"))))
     (home-page "https://github.com/json-schema-org/JSON-Schema-Test-Suite")
     (synopsis "Language agnostic test suite for the JSON Schema specifications")
     (description
