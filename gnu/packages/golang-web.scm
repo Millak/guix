@@ -2320,6 +2320,42 @@ Wasm}.
      "This Go package provides the gRPC API for containerd.")
     (license license:asl2.0)))
 
+(define-public go-github-com-containerd-go-cni
+  (package
+    (name "go-github-com-containerd-go-cni")
+    (version "1.1.13")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containerd/go-cni")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09j4arw5x8qx2blck9g5m6a7bwmfsyjpcmfznilklyypaqn7ri5z"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/containerd/go-cni/integration
+            (delete-file-recursively "integration")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containerd/go-cni"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-containernetworking-cni
+           go-github-com-sasha-s-go-deadlock))
+    (home-page "https://github.com/containerd/go-cni")
+    (synopsis "Generic CNI library to provide APIs for CNI plugin interactions")
+    (description
+     "This package provides a generic @acronym{Container Network Interface, CNI}
+library to provide APIs for CNI plugin interactions.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-containerd-ttrpc
   (package
     (name "go-github-com-containerd-ttrpc")
