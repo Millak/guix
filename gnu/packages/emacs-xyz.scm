@@ -1919,19 +1919,29 @@ separate, named tab groups.")
     (build-system emacs-build-system)
     (arguments
      (list
+      #:tests? #f                       ;no tests
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-dcmtk-executables
+          (add-after 'unpack 'patch-commands
             (lambda* (#:key inputs #:allow-other-keys)
               (make-file-writable "dicom.el")
               (let ((dcm2xml (search-input-file inputs "/bin/dcm2xml"))
-                    (dcmj2pnm (search-input-file inputs "/bin/dcmj2pnm")))
+                    (dcmj2pnm (search-input-file inputs "/bin/dcmj2pnm"))
+                    (ffmpeg (search-input-file inputs "/bin/ffmpeg"))
+                    (mpv (search-input-file inputs "/bin/mpv")))
                 (substitute* "dicom.el"
                   (("\"dcm2xml")
                    (string-append "\"" dcm2xml))
                   (("\"dcmj2pnm")
-                   (string-append "\"" dcmj2pnm)))))))))
-    (inputs (list dcmtk))
+                   (string-append "\"" dcmj2pnm))
+                  (("(^|[^`])ffmpeg" _ start)
+                   (string-append start ffmpeg))
+                  (("(^|[^`])mpv" _ start)
+                   (string-append start mpv))))))
+          (add-before 'install 'makeinfo
+            (lambda _ (emacs-makeinfo))))))
+    (native-inputs (list texinfo))
+    (inputs (list dcmtk ffmpeg mpv))
     (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/minad/dicom")
     (synopsis
