@@ -1,0 +1,17 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2025-10-20
+Subject: Move test to tests.
+
+--- a/tools/CMakeLists.txt	1970-01-01 00:00:01.000000000 +0000
++++ b/tools/CMakeLists.txt	2025-10-21 15:10:03.861123680 +0000
+@@ -27,9 +27,9 @@
+ add_swift_tool_subdirectory(libStaticMirror)
+ add_swift_tool_subdirectory(libMockPlugin)
+ add_swift_tool_subdirectory(swift-plugin-server)
+-add_swift_tool_subdirectory(swift-scan-test)
+ 
+ if(SWIFT_INCLUDE_TESTS OR SWIFT_INCLUDE_TEST_BINARIES)
++  add_swift_tool_subdirectory(swift-scan-test)
+   add_swift_tool_subdirectory(swift-ide-test)
+   add_swift_tool_subdirectory(swift-remoteast-test)
+   add_swift_tool_subdirectory(lldb-moduleimport-test)

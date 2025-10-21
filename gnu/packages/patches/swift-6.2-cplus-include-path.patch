@@ -1,0 +1,116 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: 2025-10-20
+Subject: Make clang importer heed CPLUS_INCLUDE_PATH
+
+--- a/include/swift/ClangImporter/ClangImporter.h	1970-01-01 00:00:01.000000000 +0000
++++ b/include/swift/ClangImporter/ClangImporter.h	2025-10-21 14:31:53.328441417 +0000
+@@ -787,6 +787,9 @@
+   SmallVector<std::pair<std::string, std::string>, 1> overridenFiles;
+ 
+   bool requiresBuiltinHeadersInSystemModules;
++
++  /// Extra arguments to pass to the Clang invocation (e.g., -isystem paths).
++  std::vector<std::string> extraArgs;
+ };
+ 
+ /// On Linux, some platform libraries (glibc, libstdc++) are not modularized.
+--- a/lib/ClangImporter/ClangImporter.cpp	1970-01-01 00:00:01.000000000 +0000
++++ b/lib/ClangImporter/ClangImporter.cpp	2025-10-21 14:34:20.744234737 +0000
+@@ -1326,6 +1326,12 @@
+   importer->requiresBuiltinHeadersInSystemModules =
+       fileMapping.requiresBuiltinHeadersInSystemModules;
+ 
++  // Add extra arguments from file mapping (e.g., C++ stdlib include paths).
++  ctx.ClangImporterOpts.ExtraArgs.insert(
++      ctx.ClangImporterOpts.ExtraArgs.end(),
++      fileMapping.extraArgs.begin(),
++      fileMapping.extraArgs.end());
++
+   // Create a new Clang compiler invocation.
+   {
+     if (auto ClangArgs = importer->getClangCC1Arguments(ctx, VFS))
+--- a/lib/ClangImporter/ClangIncludePaths.cpp	1970-01-01 00:00:01.000000000 +0000
++++ b/lib/ClangImporter/ClangIncludePaths.cpp	2025-10-21 14:32:26.864394627 +0000
+@@ -21,6 +21,7 @@
+ #include "clang/Driver/ToolChain.h"
+ #include "clang/Frontend/CompilerInstance.h"
+ #include "llvm/WindowsDriver/MSVCPaths.h"
++#include <cstdlib>
+ 
+ using namespace swift;
+ 
+@@ -306,9 +307,71 @@
+                                      {"cstdlib", "string", "vector"}, vfs)) {
+     cxxStdlibDir = dir.value();
+   } else {
+-    if (!suppressDiagnostic)
+-      ctx.Diags.diagnose(SourceLoc(), diag::libstdcxx_not_found, triple.str());
+-    return;
++    // FALLBACK: Try reading CPLUS_INCLUDE_PATH from environment.
++    // This is needed because Swift doesn't go through the full clang driver
++    // command construction that processes environment variables into -cxx-isystem
++    // arguments. When AddClangCXXStdlibIncludeArgs fails to find GCC (e.g., due
++    // to --gcc-toolchain pointing to wrong location or GCC detection failing),
++    // parsedStdlibArgs will be empty and findFirstIncludeDir returns nullopt.
++    // In Guix, CPLUS_INCLUDE_PATH is set by the build environment.
++    const char *cplusIncludePath = std::getenv("CPLUS_INCLUDE_PATH");
++    if (cplusIncludePath) {
++      llvm::SmallVector<llvm::StringRef, 8> envPaths;
++      llvm::StringRef(cplusIncludePath).split(envPaths, ':', -1, false);
++
++      for (const auto &envPath : envPaths) {
++        Path dir(envPath.str());
++        // Check if this directory contains C++ stdlib headers
++        Path testFile(dir);
++        llvm::sys::path::append(testFile, "cstdlib");
++        if (vfs->exists(testFile)) {
++          llvm::sys::path::remove_dots(dir, /*remove_dot_dot=*/true);
++          cxxStdlibDir = dir;
++          break;
++        }
++      }
++    }
++
++    if (cxxStdlibDir.empty()) {
++      if (!suppressDiagnostic)
++        ctx.Diags.diagnose(SourceLoc(), diag::libstdcxx_not_found, triple.str());
++      return;
++    }
++  }
++
++  // ADD INCLUDE PATHS FOR ARCH-SPECIFIC HEADERS:
++  // GCC's libstdc++ has architecture-specific headers in subdirectories.
++  // Standard clang driver adds THREE separate -internal-isystem include paths:
++  //   1. /path/to/gcc/include/c++            (base: cstdlib, string, vector, etc.)
++  //   2. /path/to/gcc/include/c++/TRIPLE     (arch: bits/c++config.h, ext/*, etc.)
++  //   3. /path/to/gcc/include/c++/backward   (backward compatibility headers)
++  // This allows clang to find both generic headers (cstddef) and arch-specific
++  // headers (bits/c++config.h) in their respective directories.
++  //
++  // We add these three paths as -isystem arguments via fileMapping.extraArgs.
++  // This is equivalent to what clang's AddClangCXXStdlibIncludeArgs does when
++  // it calls addSystemInclude three times in Gnu.cpp:addLibStdCXXIncludePaths.
++  // Using -isystem instead of VFS redirects ensures error messages reference
++  // real filesystem paths that users can verify exist.
++
++  // 1. Base directory (already found above in cxxStdlibDir)
++  fileMapping.extraArgs.push_back("-isystem");
++  fileMapping.extraArgs.push_back(std::string(cxxStdlibDir));
++
++  // 2. Architecture-specific subdirectory (e.g., x86_64-unknown-linux-gnu)
++  Path archSpecificDir(cxxStdlibDir);
++  llvm::sys::path::append(archSpecificDir, triple.str());
++  if (vfs->exists(archSpecificDir)) {
++    fileMapping.extraArgs.push_back("-isystem");
++    fileMapping.extraArgs.push_back(std::string(archSpecificDir));
++  }
++
++  // 3. Backward compatibility directory
++  Path backwardDir(cxxStdlibDir);
++  llvm::sys::path::append(backwardDir, "backward");
++  if (vfs->exists(backwardDir)) {
++    fileMapping.extraArgs.push_back("-isystem");
++    fileMapping.extraArgs.push_back(std::string(backwardDir));
+   }
+ 
+   Path actualModuleMapPath;

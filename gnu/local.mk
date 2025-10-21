@@ -2318,6 +2318,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/supertux-unbundle-squirrel.patch		\
   %D%/packages/patches/swift-5.7.3-sdk-path.patch			\
   %D%/packages/patches/swift-5.7.3-sourcekit-rpath.patch		\
+  %D%/packages/patches/swift-6.2-cplus-include-path.patch		\
+  %D%/packages/patches/swift-6.2-exclude-scan-test.patch		\
   %D%/packages/patches/swift-corelibs-libdispatch-5.6.3-lock-cpp.patch	\
   %D%/packages/patches/swift-corelibs-libdispatch-5.7.3-modulemap.patch	\
   %D%/packages/patches/swift-llvm-5.7.3-linux.patch	\

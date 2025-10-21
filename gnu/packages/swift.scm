@@ -21,6 +21,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
+  #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
@@ -41,8 +42,6 @@
 
 (define %swift-bootstrap-version "5.7.3")
 
-(define %swift-6.2-version "6.2")
-
 (define %swift-bootstrap-source
   (origin
     (method git-fetch)
@@ -56,6 +55,24 @@
       "012m91yp2d69l0k6s0gjz6gckxq4hvid197a8kpc5mi9wbchzjvs"))
     (patches (search-patches "swift-5.7.3-sdk-path.patch"
                              "swift-5.7.3-sourcekit-rpath.patch"))))
+
+(define %swift-6.2-version "6.2")
+
+(define %swift-6.2-source
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/apple/swift.git")
+          (commit (string-append "swift-" %swift-6.2-version
+                                 "-RELEASE"))))
+    (file-name (git-file-name "swift" %swift-6.2-version))
+    (sha256
+     (base32
+      "1615yxdjlglfq0skrj0kfxzlp6riig8nkn07qddh2r89whj3gv2g"))
+    (patches (search-patches "swift-5.7.3-sdk-path.patch"
+                             "swift-5.7.3-sourcekit-rpath.patch"
+                             "swift-6.2-cplus-include-path.patch"
+                             "swift-6.2-exclude-scan-test.patch"))))
 
 (define-public swift-cmark
   (package
@@ -132,6 +149,31 @@ Swift-specific modifications, required to build Swift 4.2.4.")
       "0skg1azbhbg7y0ql2a5sx6lmfip8l1rajqm95zzf9xv45n4dg9nn"))
     (patches (search-patches "swift-corelibs-libdispatch-5.6.3-lock-cpp.patch"
                              "swift-corelibs-libdispatch-5.7.3-modulemap.patch"))))
+
+(define %swift-libdispatch-6.2-source
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/apple/swift-corelibs-libdispatch.git")
+          (commit (string-append "swift-" %swift-6.2-version
+                                 "-RELEASE"))))
+    (file-name "swift-corelibs-libdispatch")
+    (sha256
+     (base32
+      "1nrm69zwf7i5rxgc9gzdknl6p9aggfnzcrydh1qsvqhga3s8dvaf"))
+    (patches (search-patches "swift-corelibs-libdispatch-5.6.3-lock-cpp.patch"))))
+
+(define %swift-syntax-6.2-source
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/swiftlang/swift-syntax.git")
+          (commit (string-append "swift-" %swift-6.2-version
+                                 "-RELEASE"))))
+    (file-name "swift-syntax")
+    (sha256
+     (base32
+      "17z2c7kign0cjvnsm2m75c4nsjr3wbxzlzybwb5pnpxnbvmmyxf9"))))
 
 (define-public swift-bootstrap
   (package
@@ -339,3 +381,135 @@ approach to safety, performance, and software design patterns.  This package
 provides a bootstrap build of Swift 4.2.4 compiled from C++ without requiring
 a previous Swift compiler.")
     (license license:asl2.0)))
+
+(define-public swift-6.2
+  (package
+    (inherit swift-bootstrap)
+    (name "swift")
+    (version %swift-6.2-version)
+    (source %swift-6.2-source)
+    (arguments
+     (substitute-keyword-arguments (package-arguments swift-bootstrap)
+       ((#:configure-flags flags)
+        #~(append (cons (string-append "-DCMAKE_INSTALL_RPATH="
+                                       #$output "/lib/swift/linux:"
+                                       #$output "/lib/swift/host/compiler:"
+                                       #$output "/lib")
+                        (filter (lambda (flag)
+                                  (not (string-prefix? "-DCMAKE_INSTALL_RPATH=" flag)))
+                                #$flags))
+                  (list "-DSWIFT_BUILD_SWIFT_SYNTAX=TRUE"
+                        (string-append "-DSWIFT_PATH_TO_SWIFT_SYNTAX_SOURCE="
+                                       (assoc-ref %build-inputs "swift-syntax"))
+                        "-DSWIFT_MODULE_CACHE_PATH=/tmp/module-cache"
+                        "-DCMAKE_Swift_FLAGS=-module-cache-path /tmp/module-cache"
+                        (string-append "-DCMAKE_Swift_COMPILER="
+                                       (assoc-ref %build-inputs "swift-bootstrap")
+                                       "/bin/swiftc")
+                        "-DBOOTSTRAPPING_MODE=BOOTSTRAPPING"
+                        ;; Disable Swift-in-Swift compiler components because Swift 6.2's
+                        ;; CMake forces BOOTSTRAPPING_MODE=HOSTTOOLS when
+                        ;; SWIFT_ENABLE_SWIFT_IN_SWIFT is enabled on Linux, which requires
+                        ;; Swift 5.8+. We only have Swift 5.7.3 for bootstrap.
+                        ;;
+                        ;; What we lose by disabling SWIFT_ENABLE_SWIFT_IN_SWIFT:
+                        ;;
+                        ;; 1. 48 Swift-based optimizer passes:
+                        ;;    - CopyToBorrowOptimization, AssumeSingleThreaded,
+                        ;;      BooleanLiteralFolding, DestroyHoisting,
+                        ;;      ComputeEscapeEffects, ComputeSideEffects,
+                        ;;      DiagnoseInfiniteRecursion, InitializeStaticGlobals,
+                        ;;      MandatoryRedundantLoadElimination,
+                        ;;      EarlyRedundantLoadElimination, RedundantLoadElimination,
+                        ;;      DeadStoreElimination, LifetimeDependenceDiagnostics,
+                        ;;      LifetimeDependenceInsertion, LifetimeDependenceScopeFixup,
+                        ;;      MergeCondFails, ObjCBridgingOptimization, ObjectOutliner,
+                        ;;      DeinitDevirtualizer, ReleaseDevirtualizer,
+                        ;;      LetPropertyLowering, FunctionStackProtection, Simplification,
+                        ;;      OnoneSimplification, LateOnoneSimplification,
+                        ;;      CleanupDebugSteps, NamedReturnValueOptimization,
+                        ;;      StripObjectHeaders, StackPromotion, UpdateBorrowedFrom,
+                        ;;      ExperimentalSwiftBasedClosureSpecialization,
+                        ;;      AutodiffClosureSpecialization, AsyncDemotion,
+                        ;;      MandatoryPerformanceOptimizations, ReadOnlyGlobalVariablesPass,
+                        ;;      StackProtection, DiagnoseUnknownConstValues,
+                        ;;      and various dumper/test passes
+                        ;;
+                        ;; 2. 2 C++ optimizer passes that are disabled without Swift-in-Swift
+                        ;;    (they cause verification failures in C++-only mode):
+                        ;;    - LoopRotate
+                        ;;    - SimplifyCFG
+                        ;;
+                        ;; 3. Swift macro implementations (@OptionSet, @DebugDescription,
+                        ;;    @TaskLocal, @Swiftify, @DistributedResolvable)
+                        ;;    The stdlib has fallbacks with #if hasFeature(Macros), so it
+                        ;;    builds without them.
+                        ;;
+                        ;; The compiler and stdlib will still build and work for all language
+                        ;; features. Core functionality (parsing, type checking, SIL
+                        ;; generation, code generation) is unaffected. However, generated code
+                        ;; will be less optimized (159 C++ optimizer passes still work).
+                        "-DSWIFT_ENABLE_SWIFT_IN_SWIFT=FALSE")))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'setup
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "lib/Driver/UnixToolChains.cpp"
+                 (("return \"gold\";")
+                  "return \"\";"))
+                (substitute* "include/swift/SIL/SILLinkage.h"
+                  (("#include \"llvm/Support/ErrorHandling.h\"")
+                   "#include <cstdint>\n#include \"llvm/Support/ErrorHandling.h\""))
+                (substitute* "include/swift/Basic/ExternalUnion.h"
+                  (("#include \"llvm/Support/ErrorHandling.h\"")
+                   "#include <cstdint>\n#include \"llvm/Support/ErrorHandling.h\""))
+                (substitute* "stdlib/CMakeLists.txt"
+                  (("set\\(CMAKE_CXX_COMPILER \"\\$\\{SWIFT_NATIVE_LLVM_TOOLS_PATH\\}/clang\\+\\+\"\\)")
+                   (string-append "set(CMAKE_CXX_COMPILER \""
+                                  (assoc-ref %build-inputs "swift-llvm")
+                                  "/bin/clang++\")"))
+                  (("set\\(CMAKE_C_COMPILER \"\\$\\{SWIFT_NATIVE_LLVM_TOOLS_PATH\\}/clang\"\\)")
+                   (string-append "set(CMAKE_C_COMPILER \""
+                                  (assoc-ref %build-inputs "swift-llvm")
+                                  "/bin/clang\")")))
+                (substitute* "stdlib/public/Platform/CMakeLists.txt"
+                  (("set\\(GLIBC_SYSROOT_RELATIVE_INCLUDE_PATH \"/usr/include\"\\)")
+                   (string-append "set(GLIBC_SYSROOT_RELATIVE_INCLUDE_PATH \""
+                                  (assoc-ref %build-inputs "glibc")
+                                  "/include\")")))
+                (substitute* "lib/Basic/CMakeLists.txt"
+                  (("\\$\\{LLVM_MAIN_SRC_DIR\\}/cmake/modules/GenerateVersionFromVCS.cmake")
+                   "${LLVM_CMAKE_DIR}/GenerateVersionFromVCS.cmake"))
+                (substitute* "lib/Option/CMakeLists.txt"
+                  (("\\$\\{LLVM_MAIN_SRC_DIR\\}/\\.\\./clang/tools/driver/features\\.json")
+                   "${LLVM_BUILD_BINARY_DIR}/share/clang/features.json"))
+                ;; swiftBasic uses clangBasic symbols in Platform.cpp (DarwinSDKInfo)
+                ;; but doesn't declare it as a PUBLIC dependency. Add clangBasic to
+                ;; executables that link swiftBasic but not swiftAST (which provides it).
+                (substitute* "tools/swift-scan-test/CMakeLists.txt"
+                  (("swiftBasic\n" all)
+                   (string-append all "                      clangBasic\n")))
+                (substitute* "unittests/Remangler/CMakeLists.txt"
+                  (("swiftBasic\n" all)
+                   (string-append all "  clangBasic\n")))
+                ;; Fix cmark-gfm path - use CMake-installed export with correct include paths
+                (substitute* "cmake/modules/SwiftSharedCMakeConfig.cmake"
+                  (("\\$\\{PATH_TO_CMARK_BUILD\\}/src/cmarkTargets\\.cmake")
+                   "${PATH_TO_CMARK_BUILD}/lib/cmake/cmark-gfm/cmark-gfm.cmake"))
+                ))))))
+    (native-inputs
+     (list cmake
+           ninja
+           perl
+           pkg-config
+           python-3
+           swift-bootstrap
+           swift-cmark-6.2
+           %swift-libdispatch-6.2-source
+           %swift-syntax-6.2-source))
+    (inputs
+     (list glibc icu4c libedit libxml2 swift-llvm-6.2 `(,util-linux "lib")))
+    (synopsis "Swift programming language")
+    (description
+     "Swift is a general-purpose programming language built using a modern
+approach to safety, performance, and software design patterns.")))
