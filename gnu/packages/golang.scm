@@ -25,7 +25,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2021, 2023 Sharlatan Hellseher <sharlatanus@mgail.com>
+;;; Copyright © 2021-2025 Sharlatan Hellseher <sharlatanus@mgail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
@@ -1059,6 +1059,51 @@ in the style of communicating sequential processes (@dfn{CSP}).")
          ("powerpc64le" ,@%go-1.17-powerpc64le-micro-architectures)
          ("x86_64" ,@%go-1.18-x86_64-micro-architectures))))))
 
+(define-public go-1.25
+  (package
+    (inherit go-1.24)
+    (name "go")
+    (version "1.25.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/golang/go")
+              (commit (string-append "go" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "037gcrl8nagdsq2kv8irx7n0nijjmlqpz0b0zyj482xz2wzar0fs"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments go-1.24)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            ;; There is no real discussion on the issue among humans, a lot
+            ;; of gopherbot updates and it's closed without final resolution.
+            ;; https://github.com/golang/go/issues/73977
+            (add-after 'unpack 'skip-TestSynctest-tests
+              (lambda _
+                (substitute* "src/runtime/synctest_test.go"
+                  (("TestSynctest\\(.*" all)
+                   (string-append all "\n        t.Skip(\"golang.org/issue/73977\")\n")))))
+            #$@(if (target-aarch64?)
+                   '((add-after 'unpack 'skip-shaky-tests-on-aarch64-system
+                      (lambda _
+                        (substitute* "src/net/mptcpsock_linux_test.go"
+                          ;; Kernel specific <2024-08-02>
+                          ;; https://github.com/golang/go/issues/68717
+                          (("TestMultiPathTCP\\(.*" all)
+                           (string-append all "\n        t.Skip(\"golang.org/issue/68717\")\n")))
+                        (substitute* "src/sync/atomic/atomic_test.go"
+                          ;; QEMU aarch64 emulation related <2021-12-15>
+                          ;; https://github.com/golang/go/issues/50188
+                          (("TestStoreLoadSeqCst.*" all)
+                           (string-append all "\n        t.Skip(\"golang.org/issue/50188\")\n")))
+                        (substitute* "src/syscall/syscall_ptrace_test.go"
+                          ;; Shaky <2025-10-01> https://github.com/golang/go/issues/75720
+                          (("TestExecPtrace\\(.*" all)
+                           (string-append all "\n        t.Skip(\"golang.org/issue/75720\")\n"))))))
+                   '())))))))
+
 ;;
 ;; Default Golang version used in guix/build-system/go.scm to build packages.
 ;;
@@ -1104,6 +1149,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 (define-public go-std-1.22 (make-go-std go-1.22))
 (define-public go-std-1.23 (make-go-std go-1.23))
 (define-public go-std-1.24 (make-go-std go-1.24))
+(define-public go-std-1.25 (make-go-std go-1.25))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
