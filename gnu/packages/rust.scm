@@ -2013,7 +2013,7 @@ exec -a \"$0\" \"~a\" \"$@\""
                       `("procps" ,procps)
                       (package-native-inputs base-rust)))
       (native-search-paths
-       (cons
+       (cons*
          ;; For HTTPS access, Cargo reads from a single-file certificate
          ;; specified with $CARGO_HTTP_CAINFO. See
          ;; https://doc.rust-lang.org/cargo/reference/environment-variables.html
