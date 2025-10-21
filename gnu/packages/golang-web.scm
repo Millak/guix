@@ -10217,6 +10217,39 @@ information or even the peer of a VETH interface.")
      "Package jsonschema provides json-schema compilation and validation.")
     (license license:asl2.0)))
 
+(define-public go-github-com-santhosh-tekuri-jsonschema-v6
+  (package
+    (inherit go-github-com-santhosh-tekuri-jsonschema-v5)
+    (name "go-github-com-santhosh-tekuri-jsonschema-v6")
+    (version "6.0.2")
+    (source
+     (origin (inherit
+              (package-source go-github-com-santhosh-tekuri-jsonschema-v5))
+             (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/santhosh-tekuri/jsonschema")
+                    (commit (string-append "v" version))))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32 "0d1mpp77a9080r7n45wi2avf2zpgjyvxk5zqzxdyd8q0rvb811h0"))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-santhosh-tekuri-jsonschema-v5)
+       ((#:import-path _) "github.com/santhosh-tekuri/jsonschema/v6")
+       ((#:test-flags _) #~'())
+       ((#:phases _ '%standard-phases)
+        #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-example-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                ;; Tests try to download from
+                ;; https://raw.githubusercontent.com/santhosh-tekuri/boon\
+                ;; /main/tests/examples/schema.json
+                (delete-file "example_http_test.go"))))))))
+    (propagated-inputs
+     (list go-github-com-dlclark-regexp2
+           go-golang-org-x-text))))
+
 (define-public go-github-com-schollz-peerdiscovery
   (package
     (name "go-github-com-schollz-peerdiscovery")
