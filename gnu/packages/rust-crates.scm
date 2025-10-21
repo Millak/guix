@@ -2368,6 +2368,10 @@
   (crate-source "cc" "1.2.39"
                 "0py3546wz3k5qi6pbfz80jvg0g3qgzr21c7a1p5wjvscjm4l6dg1"))
 
+(define rust-cc-1.2.41
+  (crate-source "cc" "1.2.41"
+                "1dvwli6fljqc7kgmihb249rmdfs5irla1h0n6vkavdi4pg6yd7xc"))
+
 (define rust-cc-1.2.43
   (crate-source "cc" "1.2.43"
                 "1hpg1f1srgd5bfivvln1s3kcajdxpqvjsvd8m4y4nmap8pwv17kk"))
@@ -7447,6 +7451,10 @@
   (crate-source "globset" "0.4.16"
                 "1xa9ivqs74imf1q288spxh49g6iw2mn3x9snibdgapazzj6h58al"))
 
+(define rust-globset-0.4.17
+  (crate-source "globset" "0.4.17"
+                "0193nqd7xy7625x4ba81yarw78j8i2zi7mygfn01z52dh0q93dpa"))
+
 (define rust-globwalk-0.8.1
   (crate-source "globwalk" "0.8.1"
                 "1k6xwkydr7igvwjn3xkwjywk4213lcs53f576ilqz1h84jaazqwk"))
@@ -7552,17 +7560,33 @@
   (crate-source "grep" "0.3.2"
                 "1rij3x9xi70xmiqgjcp3iib4hrvmgcn22cvgm14xfa2ffd4yg2ih"))
 
+(define rust-grep-0.4.0
+  (crate-source "grep" "0.4.0"
+                "1c91w5i1qcm6inl45643541w8l29m9ai5dzda4916gh15jgqi8l2"))
+
 (define rust-grep-cli-0.1.11
   (crate-source "grep-cli" "0.1.11"
                 "1h6fwhkbxxvp4wpsh9vr6lms5lpwwcblryi697w7kwh61s7jiwa7"))
+
+(define rust-grep-cli-0.1.12
+  (crate-source "grep-cli" "0.1.12"
+                "0c9n8lidrk7a72v6ybmsja21inxgvpsrfw2qrqijmk6mqmix4cng"))
 
 (define rust-grep-matcher-0.1.7
   (crate-source "grep-matcher" "0.1.7"
                 "00mcjar5b6y1pwf0gjdywzgh1fnp6jl612n9qznwyfm420d198s7"))
 
+(define rust-grep-matcher-0.1.8
+  (crate-source "grep-matcher" "0.1.8"
+                "08w0i8iai5y672fp3fhqnpmlmbk663gxfh0bg0nv4nijjc8bgmrn"))
+
 (define rust-grep-pcre2-0.1.8
   (crate-source "grep-pcre2" "0.1.8"
                 "0imybpfr9vpwna4qw30gxp9bs9j52f5152p06ak6x1sz0dp8cvyq"))
+
+(define rust-grep-pcre2-0.1.9
+  (crate-source "grep-pcre2" "0.1.9"
+                "1c7rswvi3v7xy1qhx3zj9k5fyhpa0vqx1wdd59p8y7z57q5bjyv6"))
 
 (define rust-grep-printer-0.1.7
   (crate-source "grep-printer" "0.1.7"
@@ -7572,13 +7596,25 @@
   (crate-source "grep-printer" "0.2.2"
                 "1zhkw3agp0sy2y37chvg0rylj1xk6kvyr0mbhd6sm4d8wh5124n1"))
 
+(define rust-grep-printer-0.3.0
+  (crate-source "grep-printer" "0.3.0"
+                "0q26gfq0af60z0yxm07i53wa3789ri0czi1afszcjkpy1a766rsq"))
+
 (define rust-grep-regex-0.1.13
   (crate-source "grep-regex" "0.1.13"
                 "0zhzz5hffx30ff7xi3p4m3amg5c4rr2i7a6kdfifg5ijgry19pcy"))
 
+(define rust-grep-regex-0.1.14
+  (crate-source "grep-regex" "0.1.14"
+                "1vqjf7dk8lk9jr7i45cf5q99ily1bsj1ab41gg0br0mdqdbc5q0c"))
+
 (define rust-grep-searcher-0.1.14
   (crate-source "grep-searcher" "0.1.14"
                 "1nici6klcniqph272i323rlrwl60vqqk4kb0sq3s3q627x5w3dmr"))
+
+(define rust-grep-searcher-0.1.15
+  (crate-source "grep-searcher" "0.1.15"
+                "11lm06xjvgl0hgj4p5xl2m2r6kqmcry9chd2piyc85zb11fywgsz"))
 
 (define rust-group-0.13.0
   (crate-source "group" "0.13.0"
@@ -8501,6 +8537,10 @@
 (define rust-ignore-0.4.23
   (crate-source "ignore" "0.4.23"
                 "0jysggjfmlxbg60vhhiz4pb8jfb7cnq5swdsvxknbs7x18wgv2bd"))
+
+(define rust-ignore-0.4.24
+  (crate-source "ignore" "0.4.24"
+                "00q41xq3wri74kpjmxb60mpkpj81n4pfa0wdqby2lhv4jipnwxw1"))
 
 (define rust-ignore-files-1.3.1
   (crate-source "ignore-files" "1.3.1"
@@ -12734,11 +12774,20 @@
   (crate-source "pciid-parser" "0.6.3"
                 "0d6pliaab6xs2m1vnialy1biaw3nv6g9s0ykdrracx2a5h1p4jdd"))
 
+(define rust-pcre2-0.2.11
+  (crate-source "pcre2" "0.2.11"
+                "0rzwjybyi03s336h7kxp25pws77j27vlyx32yrpfxiz0rh7hp5wy"))
+
 (define rust-pcre2-0.2.9
   (crate-source "pcre2" "0.2.9"
                 "0avb52h3ppw6kp9ynlw988c745am9j7px2cdsm0la10qmi1mrr9v"))
 
 (define rust-pcre2-0.2.9.85b7afb rust-pcre2-utf32-0.2)
+
+(define rust-pcre2-sys-0.2.10
+  (crate-source "pcre2-sys" "0.2.10"
+                "19300zx9g20lmq3c6nw4pw4imfq3v6a2r8zlkd0bsj9538y0gf8q"
+                #:snippet '(delete-file-recursively "upstream")))
 
 (define rust-pcre2-sys-0.2.9
   (crate-source "pcre2-sys" "0.2.9"
@@ -17265,6 +17314,10 @@
   (crate-source "syn" "2.0.106"
                 "19mddxp1ia00hfdzimygqmr1jqdvyl86k48427bkci4d08wc9rzd"))
 
+(define rust-syn-2.0.107
+  (crate-source "syn" "2.0.107"
+                "06q8dmpafa19i1pqk9y5jhw0gz2nms6h2306xwhisig56kcxn9ia"))
+
 (define rust-syn-2.0.108
   (crate-source "syn" "2.0.108"
                 "05z908svb0yw5wzrlv27l2i8j1d8l16hd5r8bjh809146myr2n6s"))
@@ -17887,10 +17940,20 @@
                 "0baf5vjpg9ipa388md4yxim77rdblnk8r95mnp1akbqjcj860g6d"
                 #:snippet '(delete-file-recursively "jemalloc")))
 
+(define rust-tikv-jemalloc-sys-0.6.1+5.3.0-1-ge13ca993e8ccb9ba9847cc330696e02839f328f7
+  (crate-source "tikv-jemalloc-sys"
+                "0.6.1+5.3.0-1-ge13ca993e8ccb9ba9847cc330696e02839f328f7"
+                "0frahmfl05hppiy1sz9g14qb5jv2q4wr323d83xcx8l6mfrab2nd"
+                #:snippet '(delete-file-recursively "jemalloc")))
+
 (define rust-tikv-jemallocator-0.6.0
   (crate-source "tikv-jemallocator" "0.6.0"
                 "0r985npb7d9hrbs3mb0bkfbv0nvzjpgvzsbpyj21bn0qhpqmzv2c"
                 #:snippet '(delete-file ".Cargo.toml.swp")))
+
+(define rust-tikv-jemallocator-0.6.1
+  (crate-source "tikv-jemallocator" "0.6.1"
+                "0fh55m13396lii5wj69qh547fq9n2k7r3cczwrkhaklmgwrb8n83"))
 
 (define rust-time-0.1.45
   (crate-source "time" "0.1.45"
@@ -42801,67 +42864,60 @@
                                 rust-zerovec-derive-0.11.1))
                      (ripgrep =>
                               (list rust-aho-corasick-1.1.3
-                                    rust-anyhow-1.0.98
-                                    rust-bitflags-2.9.0
+                                    rust-anyhow-1.0.100
                                     rust-bstr-1.12.0
-                                    rust-cc-1.2.19
-                                    rust-cfg-if-1.0.0
+                                    rust-cc-1.2.41
+                                    rust-cfg-if-1.0.4
                                     rust-crossbeam-deque-0.8.6
                                     rust-crossbeam-epoch-0.9.18
                                     rust-crossbeam-utils-0.8.21
                                     rust-encoding-rs-0.8.35
                                     rust-encoding-rs-io-0.1.7
-                                    rust-getrandom-0.3.2
-                                    rust-globset-0.4.16
-                                    rust-grep-0.3.2
-                                    rust-grep-cli-0.1.11
-                                    rust-grep-matcher-0.1.7
-                                    rust-grep-pcre2-0.1.8
-                                    rust-grep-printer-0.2.2
-                                    rust-grep-regex-0.1.13
-                                    rust-grep-searcher-0.1.14
-                                    rust-ignore-0.4.23
+                                    rust-find-msvc-tools-0.1.4
+                                    rust-getrandom-0.3.4
+                                    rust-globset-0.4.17
+                                    rust-grep-0.4.0
+                                    rust-grep-cli-0.1.12
+                                    rust-grep-matcher-0.1.8
+                                    rust-grep-pcre2-0.1.9
+                                    rust-grep-printer-0.3.0
+                                    rust-grep-regex-0.1.14
+                                    rust-grep-searcher-0.1.15
+                                    rust-ignore-0.4.24
                                     rust-itoa-1.0.15
-                                    rust-jemalloc-sys-0.5.4+5.3.0-patched
-                                    rust-jemallocator-0.5.4
-                                    rust-jobserver-0.1.33
+                                    rust-jobserver-0.1.34
                                     rust-lexopt-0.3.1
-                                    rust-libc-0.2.172
-                                    rust-log-0.4.27
-                                    rust-memchr-2.7.4
-                                    rust-memmap2-0.9.5
-                                    rust-pcre2-0.2.9
-                                    rust-pcre2-sys-0.2.9
+                                    rust-libc-0.2.177
+                                    rust-log-0.4.28
+                                    rust-memchr-2.7.6
+                                    rust-memmap2-0.9.8
+                                    rust-pcre2-0.2.11
+                                    rust-pcre2-sys-0.2.10
                                     rust-pkg-config-0.3.32
-                                    rust-proc-macro2-1.0.95
-                                    rust-quote-1.0.40
-                                    rust-r-efi-5.2.0
-                                    rust-regex-automata-0.4.9
-                                    rust-regex-syntax-0.8.5
+                                    rust-proc-macro2-1.0.101
+                                    rust-quote-1.0.41
+                                    rust-r-efi-5.3.0
+                                    rust-regex-automata-0.4.13
+                                    rust-regex-syntax-0.8.8
                                     rust-ryu-1.0.20
                                     rust-same-file-1.0.6
-                                    rust-serde-1.0.219
-                                    rust-serde-derive-1.0.219
-                                    rust-serde-json-1.0.140
+                                    rust-serde-1.0.228
+                                    rust-serde-core-1.0.228
+                                    rust-serde-derive-1.0.228
+                                    rust-serde-json-1.0.145
                                     rust-shlex-1.3.0
-                                    rust-syn-2.0.100
+                                    rust-syn-2.0.107
                                     rust-termcolor-1.4.1
                                     rust-textwrap-0.16.2
-                                    rust-unicode-ident-1.0.18
+                                    rust-tikv-jemalloc-sys-0.6.1+5.3.0-1-ge13ca993e8ccb9ba9847cc330696e02839f328f7
+                                    rust-tikv-jemallocator-0.6.1
+                                    rust-unicode-ident-1.0.20
                                     rust-walkdir-2.5.0
-                                    rust-wasi-0.14.2+wasi-0.2.4
-                                    rust-winapi-util-0.1.9
-                                    rust-windows-sys-0.59.0
-                                    rust-windows-targets-0.52.6
-                                    rust-windows-aarch64-gnullvm-0.52.6
-                                    rust-windows-aarch64-msvc-0.52.6
-                                    rust-windows-i686-gnu-0.52.6
-                                    rust-windows-i686-gnullvm-0.52.6
-                                    rust-windows-i686-msvc-0.52.6
-                                    rust-windows-x86-64-gnu-0.52.6
-                                    rust-windows-x86-64-gnullvm-0.52.6
-                                    rust-windows-x86-64-msvc-0.52.6
-                                    rust-wit-bindgen-rt-0.39.0))
+                                    rust-wasip2-1.0.1+wasi-0.2.4
+                                    rust-winapi-util-0.1.11
+                                    rust-windows-link-0.2.1
+                                    rust-windows-sys-0.61.2
+                                    rust-wit-bindgen-0.46.0))
                      (ripgrep-all =>
                                   (list rust-addr2line-0.24.2
                                    rust-adler2-2.0.1
