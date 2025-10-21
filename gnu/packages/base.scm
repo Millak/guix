@@ -1686,9 +1686,6 @@ test environments.")
 (define-public glibc-locales-2.29
   (package (inherit (make-glibc-locales glibc-2.29))
            (name "glibc-locales-2.29")))
-(define-public glibc-utf8-locales-2.29
-  (package (inherit (make-glibc-utf8-locales glibc-2.29))
-           (name "glibc-utf8-locales-2.29")))
 
 (define-public which
   (package
