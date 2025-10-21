@@ -273,6 +273,12 @@ servers from Python programs.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-references
             (lambda _
+              ;; Add the nss:bin output to the search path, so that certutil
+              ;; can be found below.  As nss:bin does not have a sub "/bin"
+              ;; directory it cannot be found directly.
+              (let ((path (getenv "PATH"))
+                    (nss (string-append ":" #$nss:bin)))
+                (setenv "PATH" (string-append path ":" nss)))
               ;; Avoid dependency on systemd-detect-virt
               (substitute* "src/lib389/lib389/instance/setup.py"
                 (("container_result = subprocess.*") "container_result = 1\n")
