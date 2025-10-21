@@ -3838,6 +3838,10 @@ program that can perform mesh processing tasks in batch mode, without a GUI.")
                              "/share/vim/vimfiles/pack/guix/start/poke")
               (string-append "--with-lispdir="
                              (emacs:elpa-directory #$output)))))
+    (native-search-paths
+     (list (search-path-specification
+             (variable "POKE_LOAD_PATH")
+             (files '("share/poke/pickles")))))
     (home-page "https://www.gnu.org/software/poke/#documentation")
     (synopsis "Editing of arbitrary binary data")
     (description "GNU poke is an interactive, extensible editor for binary data.
