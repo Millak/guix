@@ -35465,6 +35465,37 @@ GUI and terminal, and requires a nerd font installed on your system.")
        "This package adds icons to Dired, using the @code{nerd-icons} package.")
       (license license:gpl3+))))
 
+(define-public emacs-nerd-icons-ivy-rich
+  ;; Tagged release is not up-to-date, according to the "Version:" keyword in
+  ;; main file.
+  (let ((commit "5006f91b49e86e232cdc1a628501b76124c41dac")
+        (revision "0"))
+    (package
+      (name "emacs-nerd-icons-ivy-rich")
+      (version (git-version "1.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/seagle0128/nerd-icons-ivy-rich")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0m62l4cl9j3ssd25rz40vgrv99bmwn6l4ig2sf8zzi0fpzm8axgh"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f))                   ;tests require Cask
+      (propagated-inputs
+       (list emacs-ivy-rich
+             emacs-nerd-icons))
+      (home-page "https://github.com/seagle0128/nerd-icons-ivy-rich")
+      (synopsis "Icons for Ivy via Nerd Icons")
+      (description
+       "This package adds icons to Ivy, using the @code{ivy-rich} and
+@code{nerd-icons} packages.")
+      (license license:gpl3+))))
+
 (define-public emacs-all-the-icons
   ;; The latest release was on 3 June 2021.
   (let ((commit "4778632b29c8c8d2b7cd9ce69535d0be01d846f9")
