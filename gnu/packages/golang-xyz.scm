@@ -6325,7 +6325,7 @@ mtime,ctime and btime for files.")
 (define-public go-github-com-dlclark-regexp2
   (package
     (name "go-github-com-dlclark-regexp2")
-    (version "1.4.0")
+    (version "1.11.5")
     (source
      (origin
        (method git-fetch)
@@ -6334,11 +6334,14 @@ mtime,ctime and btime for files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1irfv89b7lfkn7k3zgx610ssil6k61qs1wjj31kvqpxb3pdx4kry"))))
+        (base32 "0i5c7ak8r4wwlyrx5f1mdipqk6p6ms1jgclb7hlb4qgy83c7xplc"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/dlclark/regexp2"))
+      #:import-path "github.com/dlclark/regexp2"
+      #:test-flags
+      ;; Time sensitive not deterministic tests.
+      #~(list "-skip" "TestDeadline|TestStopTimeoutClock")))
     (home-page "https://github.com/dlclark/regexp2/")
     (synopsis "Full featured regular expressions for Go")
     (description
