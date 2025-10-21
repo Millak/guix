@@ -518,6 +518,12 @@ makefiles."
                            (debug-file file))
             file))
 
+  (define (guile-bytecode? file)
+    (and (string-suffix? ".go" file)
+         (elf-section-by-name
+          (parse-elf (call-with-input-file file get-bytevector-all))
+          ".guile.procprops")))
+
   (define (strip-dir dir)
     (format #t "stripping binaries in ~s with ~s and flags ~s~%"
             dir strip-command strip-flags)
@@ -526,7 +532,11 @@ makefiles."
               debug-output objcopy-command))
 
     (for-each (lambda (file)
-                (when (or (elf-file? file) (ar-file? file))
+                (when (and (or (elf-file? file) (ar-file? file))
+                           ;; XXX: 'strip' (and 'objdump') choke on the Guile
+                           ;; byte-compiled objects, with errors like "Unable
+                           ;; to recognise the format of the input file".
+                           (not (guile-bytecode? file)))
                   ;; If an error occurs while processing a file, issue a
                   ;; warning and continue to the next file.
                   (guard (c ((invoke-error? c)
