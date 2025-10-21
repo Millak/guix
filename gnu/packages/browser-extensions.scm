@@ -231,15 +231,15 @@ properly.")
 (define passff
   (package
     (name "passff")
-    (version "1.16")
-    (home-page "https://github.com/passff/passff")
+    (version "1.23")
+    (home-page "https://codeberg.org/passff/passff")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page) (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0y3cbgy89lgvq6lfabp7mi1zhphdvihcccn3yw5mmaql9yrdm5kc"))))
+                "0y6ji3mqmp9dadj1rm712n1bjpl021a4yssv7m1ydllmw10gs009"))))
     (propagated-inputs (list passff-host))
     (build-system copy-build-system)
     (properties '((addon-id . "passff@invicem.pro")))
