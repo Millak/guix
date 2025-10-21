@@ -3850,6 +3850,27 @@ full-fledged procedural, interactive programming language designed to describe
 data structures and to operate on them.")
     (license license:gpl3+)))
 
+(define-public poke-elf
+  (package
+    (name "poke-elf")
+    (version "1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/poke/poke-elf-" version
+                                  ".tar.gz"))
+
+              (sha256
+               (base32
+                "0x3shih7sjj34f5305kvbp4cfy11m92zwidjk3658m23zkd6gdqa"))))
+    (build-system gnu-build-system)
+    (native-inputs (list poke))         ;for the test suite
+    (home-page "https://jemarch.net/poke-elf")
+    (synopsis "GNU poke pickle for ELF object files")
+    (description "@code{poke-elf} is a GNU poke pickle for editing ELF object files,
+executables, shared libraries and core dumps.  It supports many architectures
+and extensions.")
+    (license license:gpl3+)))
+
 (define-public emacs-poke
   ;; The 'emacs-poke' name may eventually refer to 'poke' from ELPA, which is
   ;; a different beast.
