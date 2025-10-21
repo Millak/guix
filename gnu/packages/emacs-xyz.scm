@@ -10182,39 +10182,44 @@ configuration.")
       (license license:gpl3+))))
 
 (define-public emacs-nyan-mode
-  (package
-    (name "emacs-nyan-mode")
-    (version "1.1.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/TeMPOraL/nyan-mode/")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0d0hdjliad8afz4br38gwidph9zhmm5s09y45n95kqlazq62jfsx"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:include #~(cons* "img/" "mus/" %default-include)
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-sources
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "nyan-mode.el"
-                (("mplayer ")
-                 (string-append (search-input-file inputs "bin/mplayer")
-                                " "))))))))
-    (inputs (list mplayer))
-    (home-page "https://github.com/TeMPOraL/nyan-mode/")
-    (synopsis "Nyan Cat as buffer position indicator")
-    (description
-     "Nyan mode is an analog indicator of your position in the buffer.  The cat
+  ;; Tagged release is not up-to-date, according to the "Version:" keyword in
+  ;; main file.
+  (let ((commit "09904af23adb839c6a9c1175349a1fb67f5b4370")
+        (revision "0"))
+    (package
+      (name "emacs-nyan-mode")
+      (version (git-version "1.1.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/TeMPOraL/nyan-mode/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "03xp4dvq3y3q9xyb6pm9m5gb756rvbxcqk52ind08n7prqv4w1lp"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no tests
+        #:include #~(cons* "img/" "mus/" %default-include)
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-sources
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "nyan-mode.el"
+                  (("mplayer ")
+                   (string-append (search-input-file inputs "bin/mplayer")
+                                  " "))))))))
+      (inputs (list mplayer))
+      (home-page "https://github.com/TeMPOraL/nyan-mode/")
+      (synopsis "Nyan Cat as buffer position indicator")
+      (description
+       "Nyan mode is an analog indicator of your position in the buffer.  The cat
 should go from left to right in your mode-line, as you move your point from 0%
 to 100%.  You can click on the rainbow or the empty space to scroll backwards
 and forwards and also animate it.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-smart-mode-line
   (package
