@@ -1478,7 +1478,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-reinstate-prlimit64-fallback.patch	\
   %D%/packages/patches/glibc-skip-c++.patch			\
   %D%/packages/patches/glibc-versioned-locpath.patch		\
-  %D%/packages/patches/glibc-2.29-git-updates.patch     	\
   %D%/packages/patches/glibc-2.29-supported-locales.patch     	\
   %D%/packages/patches/glibc-supported-locales.patch     	\
   %D%/packages/patches/gmime-disable-tests.patch		\

@@ -1472,27 +1472,6 @@ with the Linux kernel.")
                                        "glibc-reinstate-prlimit64-fallback.patch"
                                        "glibc-2.29-supported-locales.patch"))))))
 
-(define-public glibc-2.29
-  (package
-    (inherit glibc-2.30)
-    (version "2.29")
-    (source (origin
-              (inherit (package-source glibc))
-              (uri (string-append "mirror://gnu/glibc/glibc-" version ".tar.xz"))
-              (sha256
-               (base32
-                "0jzh58728flfh939a8k9pi1zdyalfzlxmwra7k0rzji5gvavivpk"))
-              (patches (search-patches "glibc-skip-c++.patch"
-                                       "glibc-ldd-x86_64.patch"
-                                       "glibc-CVE-2019-7309.patch"
-                                       "glibc-CVE-2019-9169.patch"
-                                       "glibc-2.29-git-updates.patch"
-                                       "glibc-hidden-visibility-ldconfig.patch"
-                                       "glibc-versioned-locpath.patch"
-                                       "glibc-allow-kernel-2.6.32.patch"
-                                       "glibc-reinstate-prlimit64-fallback.patch"
-                                       "glibc-2.29-supported-locales.patch"))))))
-
 (define-public (make-gcc-libc base-gcc libc)
   "Return a GCC that targets LIBC."
   (package (inherit base-gcc)
