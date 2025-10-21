@@ -208,14 +208,14 @@ Faenza-Fresh icon packs.")
 (define-public mate-themes
   (package
     (name "mate-themes")
-    (version "3.22.24")
+    (version "3.22.26")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://mate/themes/" (version-major+minor version)
                            "/mate-themes-" version ".tar.xz"))
        (sha256
-        (base32 "0jkfrz5fp4qnixfpc1pjjlba3nj6v2fqqpfgqhjdwcak50m3m2rx"))))
+        (base32 "1msyfpmhgijzr2i4jhzmrf9ilhlq994havbmrzqp6fzbck9qjki2"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool gdk-pixbuf ; gdk-pixbuf+svg isn't needed
