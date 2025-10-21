@@ -1902,6 +1902,31 @@ specified image or color, easing the process of theme creation.")
 @code{cffi} bindings as well as rust binaries as python packages.")
     (license (list license:expat license:asl2.0))))
 
+(define-public mollysocket
+  (package
+    (name "mollysocket")
+    (version "1.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "mollysocket" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "08kgcwc1b9s221sy2pjmzxz4i8iagkfj8wr1k2c6d4pbgzgwqm8y"))))
+    (build-system cargo-build-system)
+    (arguments
+     '(#:install-source? #f
+       #:tests? #f)) ; tests require internet
+    (inputs (cons* openssl sqlite (cargo-inputs 'mollysocket)))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/mollyim/mollysocket")
+    (synopsis "Signal push notifications through UnifiedPush")
+    (description "MollySocket is a UnifiedPush provider that receives push
+notifications from Signal through the Molly app, and pushes them to a user's
+distributor.  Message encryption keys are never stored nor received by
+Mollysocket.")
+    (license license:agpl3+)))
+
 (define-public netavark
   (package
     (name "netavark")
