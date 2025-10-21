@@ -42,8 +42,23 @@
   #:use-module (ice-9 regex)
   #:use-module (ice-9 match)
   #:use-module (ice-9 ftw)
-  #:use-module (ice-9 threads)
-  #:export (MS_RDONLY
+  #:export (PROT_NONE
+            PROT_READ
+            PROT_WRITE
+            PROT_EXEC
+            PROT_SEM
+            MAP_SHARED
+            MAP_PRIVATE
+            MAP_FAILED
+            mmap
+            munmap
+
+            MS_ASYNC
+            MS_INVALIDATE
+            MS_SYNC
+            msync
+
+            MS_RDONLY
             MS_NOSUID
             MS_NODEV
             MS_NOEXEC
@@ -1105,6 +1120,99 @@ backend device."
           (throw 'system-error "setxattr" "~S: ~A"
                  (list file key value (strerror err))
                  (list err)))))))
+
+
+;;;
+;;; Memory maps.
+;;;
+
+;;; Constants from <sys/mman.h>
+(define PROT_NONE   #x0)   ;page can not be accessed
+(define PROT_READ   #x1)   ;page can be read
+(define PROT_WRITE  #x2)   ;page can be written
+(define PROT_EXEC   #x4)   ;page can be executed
+(define PROT_SEM    #x8)   ;page can be used for atomic operations
+
+(define MAP_SHARED  #x01)  ;share changes with other processes
+(define MAP_PRIVATE #x02)  ;private copy-on-write mapping
+(define MAP_FAILED  #xffffffffffffffff) ;mmap failure sentinel
+
+(define %mmap
+  (syscall->procedure '* "mmap" (list '* size_t int int int long)))
+
+(define %mmap-guardian
+  (make-guardian))
+
+(define %unmapped-bytevectors
+  (make-weak-key-hash-table))
+
+(define (unmapped-bytevector? bv)
+  "True if the bytevector BV was already munmap'd."
+  (hashq-ref %unmapped-bytevectors bv #f))
+
+(define (pump-mmap-guardian)
+  (let ((bv (%mmap-guardian)))
+    (when bv
+      (if (unmapped-bytevector? bv)
+          (hashq-remove! %unmapped-bytevectors bv)
+          (munmap bv))
+      (pump-mmap-guardian))))
+
+(add-hook! after-gc-hook pump-mmap-guardian)
+
+(define* (mmap fd len #:key
+               (protection PROT_READ)
+               (flags (if (logtest PROT_WRITE protection)
+                          MAP_SHARED
+                          MAP_PRIVATE))
+               (offset 0))
+  "Return a bytevector to a memory-mapped region of length LEN bytes
+for the open file descriptor FD.  The mapping is created with the given memory
+PROTECTION and FLAGS, biwise-or of PROT_* and MAP_* constants which
+determine whether updates are visible to other processes and/or carried
+through to the underlying file.  Raise a 'system-error' exception on error.
+The memory is automatically unmapped with `munmap' when the bytevector object
+is no longer referenced."
+  (let-values (((ptr err) (%mmap %null-pointer len protection flags fd offset)))
+    (when (= MAP_FAILED (pointer-address ptr))
+      (throw 'system-error "mmap" "mmap ~S with len ~S: ~A"
+             (list fd len (strerror err))
+             (list err)))
+    (let ((bv (pointer->bytevector ptr len)))
+      (%mmap-guardian bv)
+      bv)))
+
+(define %munmap
+  (syscall->procedure int "munmap" (list '* size_t)))
+
+(define (munmap bv)
+  "Unmap the memory region described by BV, a bytevector object."
+  (let*-values (((ptr) (bytevector->pointer bv))
+                ((len) (bytevector-length bv))
+                ((ret err) (%munmap ptr len)))
+    (unless (zero? ret)
+      (throw 'system-error "munmap" "munmap ~S with len ~S: ~A"
+             (list ptr len (strerror err))
+             (list err)))
+    (hashq-set! %unmapped-bytevectors bv #t)))
+
+(define MS_ASYNC 1)                     ;sync memory asynchronously
+(define MS_INVALIDATE 2)                ;invalidate the caches
+(define MS_SYNC 4)                      ;synchronous memory sync
+
+(define %msync
+  (syscall->procedure int "msync" (list '* size_t int)))
+
+(define* (msync bv #:key (flags MS_SYNC))
+  "Flush changes made to the in-core copy of a file that was mapped into memory
+using `mmap' back to the file system."
+  (let*-values (((ptr) (bytevector->pointer bv))
+                ((len) (bytevector-length bv))
+                ((ret err) (%msync ptr len flags)))
+    (unless (zero? ret)
+      (throw 'system-error "msync" "msync ~S with len ~S: ~A"
+             (list ptr len (strerror err))
+             (list err)))))
 
 
 ;;;

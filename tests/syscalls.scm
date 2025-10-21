@@ -22,8 +22,11 @@
 
 (define-module (test-syscalls)
   #:use-module (guix utils)
+  #:use-module (guix build io)
   #:use-module (guix build syscalls)
+  #:use-module (guix build utils)
   #:use-module (gnu build linux-container)
+  #:use-module (rnrs bytevectors)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-64)
@@ -31,13 +34,16 @@
   #:use-module (system foreign)
   #:use-module ((ice-9 ftw) #:select (scandir))
   #:use-module (ice-9 match)
-  #:use-module (ice-9 threads))
+  #:use-module (ice-9 textual-ports))
 
 ;; Test the (guix build syscalls) module, although there's not much that can
 ;; actually be tested without being root.
 
 (define temp-file
   (string-append "t-utils-" (number->string (getpid))))
+
+(define strace-output
+  (string-append "t-utils-strace" (number->string (getpid))))
 
 
 (test-begin "syscalls")
@@ -735,6 +741,68 @@
       (member (system-error-errno args)
               (list EPERM ENOSYS)))))
 
+(test-assert "mmap and munmap"
+  (begin
+    (call-with-output-file temp-file
+      (lambda (p)
+        (display "abcdefghij")))
+    (let* ((len 5)
+           (bv (mmap (open-fdes temp-file O_RDONLY) len)))
+      (munmap bv))))
+
+(test-equal "file->bytevector, reading"
+  #\6
+  (begin
+    (call-with-output-file temp-file
+      (lambda (p)
+        (display "0123456789\n" p)))
+    (sync)
+    (integer->char
+     (bytevector-u8-ref (file->bytevector temp-file) 6))))
+
+(test-equal "file->bytevector, writing"
+  "0000000700"
+  (begin
+    (call-with-output-file temp-file
+      (lambda (p)
+        (display "0000000000" p)))
+    (sync)
+    (let ((bv (file->bytevector temp-file
+                                #:protection PROT_WRITE)))
+
+      (bytevector-u8-set! bv 7 (char->integer #\7))
+      (msync bv))                       ;ensure the file gets written
+    (call-with-input-file temp-file get-string-all)))
+
+(unless (which "strace")
+  (test-skip 1))
+;;; This test currently fails, due to protected items in a guardian being
+;;; dropped from weak hash tables (see:
+;;; <https://codeberg.org/guile/guile/issues/44>).
+(test-expect-fail 1)
+(test-equal "manual munmap does not lead to double free"
+  1                                     ;single munmap call
+  (begin
+    (call-with-output-file temp-file
+      (lambda (p)
+        (display "something interesting\n" p)))
+    (sync)
+    (gc)
+    (system (string-append "strace -o " strace-output
+                           " -p " (number->string (getpid))
+                           " -e trace=munmap &"))
+    (sleep 1)                           ;allow strace to start
+    (let ((bv (file->bytevector temp-file)))
+      (munmap bv))
+    (gc)
+    (sync)
+    (let ((text (call-with-input-file strace-output get-string-all)))
+      ;; The address seen by strace is not the same as the one seen by Guile,
+      ;; so we can't use it in the pattern.
+      (length (filter (cut string-prefix? "munmap(0x" <>)
+                      (string-split text #\newline))))))
+
 (test-end)
 
 (false-if-exception (delete-file temp-file))
+(false-if-exception (delete-file strace-output))

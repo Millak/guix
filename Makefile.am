@@ -265,6 +265,7 @@ MODULES =					\
   guix/build/kconfig.scm			\
   guix/build/linux-module-build-system.scm	\
   guix/build/store-copy.scm			\
+  guix/build/io.scm				\
   guix/build/json.scm				\
   guix/build/pack.scm				\
   guix/build/utils.scm				\
