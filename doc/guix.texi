@@ -31777,6 +31777,50 @@ Owner's group of the broker process.
 @end table
 @end deftp
 
+@subsubheading Mollysocket Service
+
+@url{https://github.com/mollyim/mollysocket,Mollysocket} is a UnifiedPush
+provider for the messaging app @url{https://molly.im,Molly}, a fork of Signal.
+
+@defvar mollysocket-service-type
+The Mollysocket service.  Takes @code{mollysocket-configuration} as its value.
+By default, this service listens on port 8020 for any Molly client.
+@end defvar
+
+@deftp {Data Type} mollysocket-configuration
+The configuration for Mollysocket, with the following fields:
+
+@table @asis
+@item @code{package} (default: @code{mollysocket})
+The Mollysocket package to use.
+
+@item @code{host} (default: @code{"0.0.0.0"})
+Address for the webserver to listen on. It is recommended that this be set to
+localhost, and instead configure a TLS-supporting reverse proxy in front of it.
+
+@item @code{port} (default: @code{8020})
+Port for the webserver to listen on.
+
+@item @code{webserver} (default: @code{#t})
+Whether the webserver sould be enabled. If disabled, the server is considered to
+be in airgapped mode, and clients must be configured likewise.
+
+@item @code{allowed-endpoints} (default: @code{'("*")})
+Allowlist of UnifiedPush distributor endpoints, represented as IP addresses or
+domain names. Addresses on the local network must be specified explicitly.
+
+@item @code{allowed-uuids} (default: @code{'("*")})
+Allowlist of Signal account UUIDs.
+
+@item @code{db} (default: @code{"/var/lib/mollysocket/db.sqlite"})
+Path to the Mollysocket database. Will be created if it doesn't exist.
+
+@item @code{vapid-key-file} (default: @code{"/var/lib/mollysocket/vapid.key"})
+Path to the VAPID key used to authorize requests to the UnifiedPush distributor.
+Will be created if it doesn't exist.
+@end table
+@end deftp
+
 @node Telephony Services
 @subsection Telephony Services
 

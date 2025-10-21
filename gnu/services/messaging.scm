@@ -27,6 +27,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages irc)
   #:use-module (gnu packages messaging)
+  #:autoload   (gnu packages rust-apps) (mollysocket)
   #:use-module (gnu packages tls)
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
@@ -196,7 +197,18 @@
             mosquitto-configuration-config-file
             mosquitto-configuration-user
             mosquitto-configuration-group
-            mosquitto-service-type))
+            mosquitto-service-type
+
+            mollysocket-configuration
+            mollysocket-configuration?
+            mollysocket-configuration-host
+            mollysocket-configuration-port
+            mollysocket-configuration-webserver
+            mollysocket-configuration-allowed-endpoints
+            mollysocket-configuration-allowed-uuids
+            mollysocket-configuration-db
+            mollysocket-configuration-vapid-key-file
+            mollysocket-service-type))
 
 ;;; Commentary:
 ;;;
@@ -2283,3 +2295,94 @@ multiple machines simultaneously.")))
                              (const %snuik-accounts))
           (service-extension shepherd-root-service-type
                              snuik-services)))))
+
+
+;;;
+;;; Mollysocket.
+;;;
+(define (ms-format label str)
+  (format #f "~a = ~a~%" label (string-map (match-lambda (#\- #\_) (x x)) str)))
+(define (ms-serialize-string label val)
+  (ms-format label (string-append "'" val "'")))
+(define (ms-serialize-integer label val)
+  (ms-format label (number->string val)))
+(define (ms-serialize-boolean label val)
+  (ms-format label (if val "true" "false")))
+(define (ms-serialize-list-of-strings label val)
+  (ms-format label (format #f "[ ~{'~a'~^, ~} ]" val)))
+
+(define-configuration mollysocket-configuration
+  (package (file-like mollysocket) "Mollysocket package to use."
+           (serializer empty-serializer))
+  (host (string "127.0.0.1") "Listening address. It is recommended to connect
+to Mollysocket through a TLS-supporting reverse proxy.")
+  (port (integer 8020) "Listening port.")
+  (webserver (boolean #t) "Enable webserver. If disabled, clients must use
+airgapped mode.")
+  (allowed-endpoints (list-of-strings '("*")) "Allowlist of UnifiedPush
+distributor endpoints, represented as IP addresses or domain names. Addresses
+on the local network must be specified explicitly.")
+  (allowed-uuids (list-of-strings '("*")) "Allowlist of Signal account UUIDs.")
+  (db (string "/var/lib/mollysocket/db.sqlite") "Path to the database. Will be
+created if it does not exist.")
+  (vapid-key-file (string "/var/lib/mollysocket/vapid.key") "Path to the VAPID
+key used to authorize requests to the UnifiedPush distributor. Will be created
+if it does not exist.")
+  (prefix ms-))
+
+(define (mollysocket-shepherd-service config)
+  (list (shepherd-service
+          (documentation "UnifiedPush provider for the Signal client Molly.")
+          (provision '(mollysocket))
+          (requirement '(networking syslogd user-processes))
+          (start #~(make-forkexec-constructor
+                     (list #$(file-append mollysocket "/bin/mollysocket")
+                           "-c" #$(mixed-text-file "mollysocket.toml"
+                                    (serialize-configuration config
+                                      mollysocket-configuration-fields))
+                           "server")
+                     #:user "mollysocket" #:group "mollysocket"
+                     #:log-file "/var/log/mollysocket.log"))
+          (stop #~(make-kill-destructor SIGINT)))))
+
+(define (mollysocket-account-service config)
+  (list (user-group (name "mollysocket") (system? #t))
+        (user-account
+          (name "mollysocket")
+          (group "mollysocket")
+          (system? #t)
+          (comment "Mollysocket daemon user")
+          (home-directory "/var/empty")
+          (shell (file-append shadow "/sbin/nologin")))))
+
+(define (mollysocket-activation-service config)
+  #~(let* ((mollysocket #$(file-append
+                            (mollysocket-configuration-package config)
+                            "/bin/mollysocket"))
+           (user (getpwnam "mollysocket"))
+           (key #$(mollysocket-configuration-vapid-key-file config))
+           (dbdir (dirname #$(mollysocket-configuration-db config)))
+           (keydir (dirname key)))
+      (define (create file proc mode)
+        (let ((ret (proc file)))
+          (chmod file mode)
+          (chown file (passwd:uid user) (passwd:gid user))
+          ret))
+      (unless (file-exists? dbdir) (create dbdir mkdir-p #o700))
+      (unless (file-exists? keydir) (create keydir mkdir-p #o700))
+      (unless (file-exists? key)
+        (let ((p (create key open-output-file #o600))) ; restrict then write
+          (with-output-to-port p (lambda () (invoke mollysocket "vapid" "gen")))
+          (close-port p)))))
+
+(define mollysocket-service-type
+  (service-type
+    (name 'mollysocket)
+    (extensions (list (service-extension shepherd-root-service-type
+                                         mollysocket-shepherd-service)
+                      (service-extension account-service-type
+                                         mollysocket-account-service)
+                      (service-extension activation-service-type
+                                         mollysocket-activation-service)))
+    (default-value (mollysocket-configuration))
+    (description "UnifiedPush provider for the Signal client Molly.")))
