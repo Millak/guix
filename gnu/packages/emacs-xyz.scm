@@ -35577,6 +35577,34 @@ package.")
 package.")
     (license license:gpl3+)))
 
+(define-public emacs-nerd-icons-mode-line
+  ;; No tags provided upstream
+  (let ((commit "23eca8e16799524889d661f4140355e81b8f929c")
+        (revision "0"))
+    (package
+      (name "emacs-nerd-icons-mode-line")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/grolongo/nerd-icons-mode-line")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0l2bg22cllab9wz5wxd6zhrywavqrlvv1a6y49ij63qhlsfncy6s"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f))                   ;no tests
+      (propagated-inputs (list emacs-nerd-icons))
+      (home-page "https://github.com/grolongo/nerd-icons-mode-line")
+      (synopsis "Icons for the Emacs modeline via Nerd Icons")
+      (description
+       "This package adds icons to the modeline in Emacs, using the
+@code{nerd-icons} package.")
+      (license license:gpl3+))))
+
 (define-public emacs-all-the-icons
   ;; The latest release was on 3 June 2021.
   (let ((commit "4778632b29c8c8d2b7cd9ce69535d0be01d846f9")
