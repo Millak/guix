@@ -124,6 +124,33 @@ fuzzing engine that provides an array or slice of bytes can be used with
 go-fuzz-headers.")
     (license license:asl2.0)))
 
+(define-public go-github-com-adamkorcz-go-118-fuzz-build
+  (package
+    (name "go-github-com-adamkorcz-go-118-fuzz-build")
+    (version "0.0.0-20250520111509-a70c2aa677fa")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/AdamKorcz/go-118-fuzz-build")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1523sncv9q82abhhmixj27l1frxw1srkkzv7nfsfmkhp9wgdn9b3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/AdamKorcz/go-118-fuzz-build"))
+    (propagated-inputs
+     (list go-github-com-adalogics-go-fuzz-headers
+           go-golang-org-x-tools))
+    (home-page "https://github.com/AdamKorcz/go-118-fuzz-build")
+    (synopsis "Fuzzy testing for Golang")
+    (description
+     "This package implements a tool to compile native Golang fuzzers to
+@code{libFuzzer} fuzzers.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-alecthomas-assert-v2
   (package
     (name "go-github-com-alecthomas-assert-v2")
