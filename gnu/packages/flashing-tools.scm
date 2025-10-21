@@ -61,6 +61,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages electronics)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages embedded)
   #:use-module (gnu packages flex)
@@ -76,7 +77,10 @@
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages readline)
+  #:use-module (gnu packages swig)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xml)
   #:use-module (srfi srfi-26))
@@ -161,29 +165,29 @@ brick your device.")
 (define-public avrdude
   (package
     (name "avrdude")
-    (version "8.0")
+    (version "8.1")
     (source
      (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/avrdudes/avrdude/")
-            (commit (string-append "v" version))))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32 "1r8cfi1lkic8zknb7x44i2mmwxzfwfbblr894x36mffa5da0g7y3"))))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/avrdudes/avrdude/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jfz0z8i5vib181f854zwxd8avw5fy59lh3d78igqxwm08sv8nlb"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:tests? #f))                      ; no tests
+     (list #:tests? #f))                     ;no tests
     (inputs
-     (list libelf libusb-compat libftdi))
+     (list libelf libusb-compat libftdi libserialport readline))
     (native-inputs
-     (list bison flex))
+     (list bison flex python-wrapper))
     (home-page "https://www.nongnu.org/avrdude/")
     (synopsis "AVR downloader and uploader")
     (description
-     "@code{AVRDUDE} is a utility to download/upload/manipulate the ROM and EEPROM
-contents of AVR microcontrollers using the @acronym{ISP, in-system programming}
-technique.")
+     "@code{AVRDUDE} is a utility to download/upload/manipulate the ROM and
+EEPROM contents of AVR microcontrollers using the @acronym{ISP, in-system
+programming} technique.")
     (license license:gpl2+)))
 
 (define-public dfu-programmer
