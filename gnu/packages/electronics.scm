@@ -13,7 +13,7 @@
 ;;; Copyright © 2022, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2016 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2019 Amin Bandali <bandali@gnu.org>
-;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023, 2024, 2025 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Andrew Miloradovsky <andrew@interpretmath.pw>
 ;;; Copyright © 2022 Christian Gelinek <cgelinek@radlogic.com.au>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
@@ -21,6 +21,8 @@
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2025 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022, 2025 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2025, Ekaitz Zarraga <ekaitz@elenq.tech>
+;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -92,6 +94,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages mpi)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -620,6 +623,48 @@ used in the declarative section of design units.")
       (native-inputs
        '()))))
 
+(define-public libngspice
+  ;; Note: The ngspice's build system does not allow us to build both the
+  ;; library and the executables in one go.  Thus, we have two packages.
+  ;; See <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=27344#236>.
+  (package
+    (name "libngspice")
+    (version "44.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.code.sf.net/p/ngspice/ngspice")
+              (commit (string-append "ngspice-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vp27149kx8l7397bv5p708jqph1kma8rb9bl7ckgmbr9sw9cn3q"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;there are no tests for libngspice
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'install 'delete-scripts
+                     (lambda _
+                       (delete-file-recursively
+                        (string-append #$output
+                                       "/share/ngspice/scripts")))))
+      #:configure-flags #~(list "--enable-openmp" "--enable-cider"
+                                "--enable-xspice" "--with-ngshared")))
+    (native-inputs (list autoconf automake bison flex libtool))
+    (inputs (list openmpi))
+    (home-page "https://ngspice.sourceforge.io/")
+    (synopsis "Mixed-level/mixed-signal circuit simulator")
+    (description
+     "Ngspice is a mixed-level/mixed-signal circuit simulator.  It includes
+@code{Spice3f5}, a circuit simulator, and @code{Xspice}, an extension that
+provides code modeling support and simulation of digital components through
+an embedded event driven algorithm.")
+    (license (list license:lgpl2.0+ ;code in frontend/numparam
+                   (license:non-copyleft "file:///COPYING") ;spice3 bsd-style
+                   license:bsd-3 ;ciderlib
+                   license:public-domain)))) ;xspice
+
 (define librnd
   (package
     (name "librnd")
@@ -1008,6 +1053,25 @@ which allows one to install the M8 firmware on any Teensy.")
 
 (define-public nextpnr-ice40
   (deprecated-package "nextpnr-ice40" nextpnr))
+
+(define-public ngspice
+  ;; The ngspice executables (see libngpsice above.)
+  (package
+    (inherit libngspice)
+    (name "ngspice")
+    (arguments
+     (substitute-keyword-arguments (package-arguments libngspice)
+       ;; Tests require a X server running, so we keep them disabled
+       ((#:configure-flags flags)
+        #~(cons*  "--enable-rpath" "--with-x" "--with-readline=yes"
+                  (delete "--with-ngshared" #$flags)))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'delete-scripts)))))
+    (native-inputs
+     (modify-inputs (package-native-inputs libngspice)
+       (append perl)))
+    (inputs (list libngspice readline libxaw libx11))))
 
 (define-public nvc
   (package

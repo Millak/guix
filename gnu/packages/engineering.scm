@@ -105,6 +105,7 @@
   #:use-module (gnu packages digest)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages electronics)
   #:use-module (gnu packages emacs-build)
   #:use-module (gnu packages emacs-xyz)
   #:use-module (gnu packages file)
@@ -2270,67 +2271,6 @@ and a fallback for environments without libc for Zydis.")
      "ASCO brings circuit optimization capabilities to existing SPICE simulators using a
 high-performance parallel differential evolution (DE) optimization algorithm.")
     (license license:gpl2+)))
-
-(define-public libngspice
-  ;; Note: The ngspice's build system does not allow us to build both the
-  ;; library and the executables in one go.  Thus, we have two packages.
-  ;; See <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=27344#236>.
-  (package
-    (name "libngspice")
-    (version "44.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://git.code.sf.net/p/ngspice/ngspice")
-              (commit (string-append "ngspice-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1vp27149kx8l7397bv5p708jqph1kma8rb9bl7ckgmbr9sw9cn3q"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f ;there are no tests for libngspice
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'install 'delete-scripts
-                     (lambda _
-                       (delete-file-recursively
-                        (string-append #$output
-                                       "/share/ngspice/scripts")))))
-      #:configure-flags #~(list "--enable-openmp" "--enable-cider"
-                                "--enable-xspice" "--with-ngshared")))
-    (native-inputs (list autoconf automake bison flex libtool))
-    (inputs (list openmpi))
-    (home-page "https://ngspice.sourceforge.io/")
-    (synopsis "Mixed-level/mixed-signal circuit simulator")
-    (description
-     "Ngspice is a mixed-level/mixed-signal circuit simulator.  It includes
-@code{Spice3f5}, a circuit simulator, and @code{Xspice}, an extension that
-provides code modeling support and simulation of digital components through
-an embedded event driven algorithm.")
-    (license (list license:lgpl2.0+ ;code in frontend/numparam
-                   (license:non-copyleft "file:///COPYING") ;spice3 bsd-style
-                   license:bsd-3 ;ciderlib
-                   license:public-domain)))) ;xspice
-
-(define-public ngspice
-  ;; The ngspice executables (see libngpsice above.)
-  (package
-    (inherit libngspice)
-    (name "ngspice")
-    (arguments
-     (substitute-keyword-arguments (package-arguments libngspice)
-       ;; Tests require a X server running, so we keep them disabled
-       ((#:configure-flags flags)
-        #~(cons*  "--enable-rpath" "--with-x" "--with-readline=yes"
-                 (delete "--with-ngshared" #$flags)))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (delete 'delete-scripts)))))
-    (native-inputs
-     (modify-inputs (package-native-inputs libngspice)
-       (append perl)))
-    (inputs (list libngspice readline libxaw libx11))))
 
 (define trilinos-serial-xyce
   ;; Note: This is a Trilinos containing only the packages Xyce needs, so we
