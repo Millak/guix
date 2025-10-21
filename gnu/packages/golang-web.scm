@@ -10188,21 +10188,8 @@ information or even the peer of a VETH interface.")
      (list
       #:import-path "github.com/santhosh-tekuri/jsonschema/v5"
       #:test-flags
-      #~(list "-skip" (string-join
-                       ;; TODO: Figure out why these test patterns fail.
-                       (list "TestDraft2019/optional"
-                             "TestDraft2019/refRemote.json"
-                             "TestDraft2019/vocabulary.json"
-                             "TestDraft2020/dynamicRef.json"
-                             "TestDraft2020/optional"
-                             "TestDraft2020/refRemote.json"
-                             "TestDraft2020/vocabulary.json"
-                             "TestDraft4/refRemote.json"
-                             "TestDraft6/refRemote.json"
-                             "TestDraft7/optional"
-                             "TestDraft7/refRemote.json"
-                             "TestExtra/draft2020")
-                       "|"))
+      ;; Figure out why these test patterns fail.
+      #~(list "-skip" "TestDraft2020")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'copy-json-schema-specs
@@ -10212,12 +10199,16 @@ information or even the peer of a VETH interface.")
                  (string-append #$(this-package-native-input
                                    "specification-json-schema-test-suite")
                                 "/share/tests")
-                 "testdata/JSON-Schema-Test-Suite/tests"))))
+                 "testdata/JSON-Schema-Test-Suite/tests")
+                (copy-recursively
+                 (string-append #$(this-package-native-input
+                                   "specification-json-schema-test-suite")
+                                "/share/remotes")
+                 "testdata/JSON-Schema-Test-Suite/remotes"))))
           (add-after 'check 'remove-json-schema-specs
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
-                (delete-file-recursively
-                 "testdata/JSON-Schema-Test-Suite/tests")))))))
+                (delete-file-recursively "testdata")))))))
     (native-inputs
      (list specification-json-schema-test-suite))
     (home-page "https://github.com/santhosh-tekuri/jsonschema")
