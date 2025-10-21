@@ -35496,6 +35496,32 @@ GUI and terminal, and requires a nerd font installed on your system.")
 @code{nerd-icons} packages.")
       (license license:gpl3+))))
 
+(define-public emacs-nerd-icons-ibuffer
+  (package
+    (name "emacs-nerd-icons-ibuffer")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/seagle0128/nerd-icons-ibuffer")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wj6kcgvh700maj9i5pmgzc48lbj0dbxx849a8w519m4anr7b23s"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f))                   ;tests require Cask
+    (propagated-inputs
+     (list emacs-nerd-icons))
+    (home-page "https://github.com/seagle0128/nerd-icons-ibuffer")
+    (synopsis "Icons for Ibuffer via Nerd Icons")
+    (description
+     "This package adds icons to ibuffer in Emacs, using the @code{nerd-icons}
+package.")
+    (license license:gpl3+)))
+
 (define-public emacs-all-the-icons
   ;; The latest release was on 3 June 2021.
   (let ((commit "4778632b29c8c8d2b7cd9ce69535d0be01d846f9")
