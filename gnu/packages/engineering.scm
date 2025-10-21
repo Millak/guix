@@ -2297,7 +2297,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
          "1smz3wlpfyjn0czmpl8bj4hw33p1zi9nnfygpsx7jl1523nypa1n"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:out-of-source? #t
+     `(#:tests? #f                      ;no tests
        #:phases
        (modify-phases %standard-phases
          ;; Delete unneeded tribits(build system) directory which makes validate-runpath
