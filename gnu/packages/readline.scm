@@ -4,6 +4,7 @@
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,22 +50,10 @@
   (list (readline-patch version seqno (base32 hash))
         ...))
 
-(define %patch-series-8.2
+(define %patch-series-8.3
   (patch-series
-   "8.2"
-   (1 "1xxgfgr6hn3ads8m8xsrdi1kbx1f3s69k0danpd9x4haqhg7zydv")
-   (2 "0ly0siy6qy3l7hv12847adpfa34yq1w4qz9qkw6vrxv25j106rg0")
-   (3 "1c5cwvvkx9mfmpaapymq9cavmzh4fnagkjlchsqx4vml8sx8gx94")
-   (4 "1b15sndx9v5vj3x1f3h73099nlagknx4rbfpd5ldrbw2xgm2wmvr")
-   (5 "16ac25jz1a1mgkpfp1sydqf6qpsfh0s0dcmrnjpqbhg5va3s6av2")
-   (6 "18gmh6y3klh0vv28cyqz4is3rlb32pl7f1kf5r482kfjq3w5zd67")
-   (7 "1xmnpahs983n4w0gn3j0wr8nh1dpva33yj7fvfmhm46ph2wsa4ar")
-   (8 "0smjjzhwxi2ibpdisnk53lh1pzgka6rhlqyh3662xy69v34ysxx1")
-   (9 "05m1fwbs7mbs3pz3pg87gbbayandrrcgaqawzliqb6g1jbk8b61x")
-   (10 "0k3vyrjs2g6y2cfs03l2gp37fhxgqpiwvxb1c7z4q88cbb32x3km")
-   (11 "1msdahvz56l9m5m69a87zp2c7qrfv0dxwd09rj1697isgy83s0g0")
-   (12 "1lybzig73pqpcbw79im0kn6299lkcbnh24yigygn5jm2sj7dz2kc")
-   (13 "1a48lyrhvn6nbj5qhradfpbbs3md5maz7wb32yvaghvfgnak990y")))
+   "8.3"
+   (1 "1pl4midx7kc56bw4ansrdpdjpanv1vmp0p6jghrrgrnv0qqs1w11")))
 
 (define %patch-series-7.0
   (patch-series
@@ -78,16 +67,16 @@
 (define-public readline
   (package
     (name "readline")
-    (version (string-append "8.2."
-                            (number->string (length %patch-series-8.2))))
+    (version (string-append "8.3."
+                            (number->string (length %patch-series-8.3))))
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/readline/readline-"
                                   (version-major+minor version) ".tar.gz"))
               (sha256
                (base32
-                "0dbw02ai0z8x6d9s14pl0hnaa2g1kdxnv8qqra1fx13ay5qp3srz"))
-              (patches (append %patch-series-8.2
+                "1k31j1prf9zn86hccay2i49vlzks0cy1v3gfjpa8r0k78hh86lzy"))
+              (patches (append %patch-series-8.3
                                (search-patches "readline-link-ncurses.patch")))
               (patch-flags '("-p0"))))
     (build-system gnu-build-system)
