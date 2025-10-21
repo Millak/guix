@@ -37653,6 +37653,34 @@ user interfaces for various built-in modes.")
 (define-deprecated-package emacs-casual-avy
   emacs-casual)
 
+(define-public emacs-calibre
+  (package
+    (name "emacs-calibre")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/calibre-" version
+                           ".tar"))
+       (sha256
+        (base32 "08rcwrydrlc995sdxn5ssm5f6ighxi5yr6i7bx9a1nf7n91mgbgh"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'build-info-manual
+            (lambda _
+              (invoke "makeinfo" "doc/calibre.texi"))))))
+    (propagated-inputs (list emacs-compat))
+    (native-inputs (list texinfo))
+    (home-page "https://git.disroot.org/kjartanoli/calibre.el")
+    (synopsis "Interact with Calibre libraries from Emacs")
+    (description "@code{Emacs-Calibre} is a package for interacting with
+@url{https://calibre-ebook.com/}{Calibre} libraries from Emacs.")
+    (license license:gpl3+)))
+
 (define-public emacs-calibredb
   (package
     (name "emacs-calibredb")
