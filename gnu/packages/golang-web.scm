@@ -2404,6 +2404,47 @@ Any}.")
      (list go-github-com-gogo-protobuf
            go-google-golang-org-protobuf))))
 
+(define-public go-github-com-containernetworking-cni
+  (package
+    (name "go-github-com-containernetworking-cni")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containernetworking/cni")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x4apykvfwbx282hgrc9151rb1kx9w40kzfv78x548hrryqa7rn5"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/containernetworking/cni/plugins/debug
+            (delete-file-recursively "plugins/debug")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/containernetworking/cni"
+      #:test-flags
+      ;; Some tests depend on go modules
+      #~(list "-skip" "TestLibcni|TestInvoke|TestLegacyExamples|TestTesthelpers")))
+    (native-inputs
+     (list go-github-com-onsi-ginkgo-v2
+           go-github-com-onsi-gomega))
+    (propagated-inputs
+     (list go-github-com-vishvananda-netns))
+    (home-page "https://www.cni.dev/")
+    (synopsis "Container Network Interface")
+    (description
+     "This package provides a specification and libraries for writing plugins to
+configure network interfaces in Linux containers, along with a number of
+supported plugins.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-coreos-go-oidc
   (package
     (name "go-github-com-coreos-go-oidc")
