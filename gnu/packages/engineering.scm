@@ -2412,12 +2412,18 @@ parallel computing platforms.  It also supports serial execution.")
                    "F77=mpif77"
                    "--enable-mpi"
                    (string-append
+                           "CFLAGS="
+                           " -Wno-error=builtin-declaration-mismatch"
+                           " -Wno-error=implicit-function-declaration"
+                           " -Wno-error=implicit-int")
+                   (string-append
                     "ARCHDIR="
                     (assoc-ref %build-inputs "trilinos")))))))
     (propagated-inputs
      `(("mpi" ,openmpi)))
     (inputs
      `(("trilinos" ,trilinos-parallel-xyce)
+       ("zlib" ,zlib)
        ,@(alist-delete "trilinos"
                        (package-inputs xyce-serial))))))
 
