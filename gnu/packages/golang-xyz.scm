@@ -20092,6 +20092,34 @@ storage system.")
 @url{https://en.wikipedia.org/wiki/Bloom_filter, bloom filter}.")
     (license license:bsd-2)))
 
+(define-public go-github-com-tchap-go-patricia-v2
+  (package
+    (name "go-github-com-tchap-go-patricia-v2")
+    (version "2.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tchap/go-patricia")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a6scgr6474654mvhg26sj0xl1q6js0q9q4wrzs79ivj07ap4278"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      ;; patricia_dense_test.go:279: Heap space leak, grew 20632 bytes (256488
+      ;; to 277120)
+      #:test-flags #~(list "-skip" "TestTrie_DeleteLeakageDense")
+      #:import-path "github.com/tchap/go-patricia/v2"))
+    (home-page "https://github.com/tchap/go-patricia")
+    (synopsis "Generic patricia trie (radix tree) implemented in Golang")
+    (description
+     "This package implements a generic patricia trie (also called
+@url{https://en.wikipedia.org/wiki/Radix_tree, radix tree}).")
+    (license license:expat)))
+
 (define-public go-github-com-tdewolff-argp
   (package
     (name "go-github-com-tdewolff-argp")
