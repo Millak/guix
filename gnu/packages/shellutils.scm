@@ -443,22 +443,39 @@ all of the regexes given on the command line in order.")
 (define-public shfmt
   (package
     (name "shfmt")
-    (version "3.9.0")
+    (version "3.12.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mvdan/sh")
-             (commit (string-append "v" version))))
+              (url "https://github.com/mvdan/sh")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0qqrggliwicmrqzwv9ivg7w1chy1b97w8p7ifpvqfsbal0qcr1xi"))))
+        (base32 "11rlx3l37aspd9674xdisw394bdly0yb38asqxaz4riadgj0vbfx"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; It fails during check phase, looks like a MVP: gosh is a proof
+            ;; of concept shell built on top of [interp].
+            (delete-file-recursively "cmd/gosh")))))
     (build-system go-build-system)
     (arguments
      (list
       #:install-source? #f
       #:import-path "mvdan.cc/sh/v3/cmd/shfmt"
       #:unpack-path "mvdan.cc/sh/v3"
+      #:test-flags
+      ;; Tests fail for these groups unable to set locale.
+      #~(list "-skip" (string-join
+                       (list "FuzzQuote"
+                             "TestKillTimeout"
+                             "TestParseBashConfirm"
+                             "TestParseErrBashConfirm"
+                             "TestRunnerRun"
+                             "TestRunnerRunConfirm")
+                       "|"))
+      #:test-subdirs #~(list "../../...")       ;test the whole libary
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-version
@@ -472,21 +489,13 @@ all of the regexes given on the command line in order.")
                     (("version = \"\\(devel\\)\"")
                      (format #f "version = \"~a\"" fixed-version)))
                   (substitute* "cmd/shfmt/testdata/script/flags.txtar"
-                    (("devel\\|v3") #$version))))))
-          ;; XXX: Replace when go-build-system supports nested path.
-          (replace 'check
-            (lambda* (#:key import-path tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+                    (("devel\\|v3") #$version)))))))))
     (native-inputs
      (list go-github-com-creack-pty
            go-github-com-go-quicktest-qt
            go-github-com-google-go-cmp
            go-github-com-google-renameio-v2
-           go-github-com-muesli-cancelreader
-           go-github-com-rogpeppe-go-internal
-           go-golang-org-x-sync
+           go-github-com-rogpeppe-go-internal-1.14
            go-golang-org-x-sys
            go-golang-org-x-term
            go-mvdan-cc-editorconfig))
@@ -494,9 +503,9 @@ all of the regexes given on the command line in order.")
     (synopsis "Shell formatter with bash support")
     (description
      "This package provides a shell formatter.  Supports
-@url{https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html,POSIX
-Shell}, @url{https://www.gnu.org/software/bash/,Bash}, and
-@url{http://www.mirbsd.org/mksh.htm,mksh}.")
+@url{https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html,
+POSIX Shell}, @url{https://www.gnu.org/software/bash/, Bash}, and
+@url{http://www.mirbsd.org/mksh.htm, mksh}.")
     (license license:bsd-3)))
 
 (define-public starship
