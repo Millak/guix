@@ -30,6 +30,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages textutils))
@@ -37,7 +38,7 @@
 (define-public hunspell
   (package
     (name "hunspell")
-    (version "1.7.0")
+    (version "1.7.2")
     (source
       (origin
         (method git-fetch)
@@ -47,10 +48,10 @@
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0qxlkd012r45ppd21kldbq9k5ac5nmxz290z6m2kch9l56v768k1"))))
+          "03rlc00l0qwpwwcnz6gpzw35fxq247vp4421zpwwgaj8fp35fqf7"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list autoconf automake libtool))
+     (list autoconf automake gettext-minimal libtool))
     (inputs
      (list perl))
     (native-search-paths (list (search-path-specification
