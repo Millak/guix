@@ -6277,6 +6277,65 @@ router.")
      "Package alice provides a convenient way to chain HTTP handlers.")
     (license license:expat)))
 
+(define-public go-github-com-knqyf263-go-plugin
+  (package
+    (name "go-github-com-knqyf263-go-plugin")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/knqyf263/go-plugin")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c81xa5zcwzbi5r1lf1phh53vpzgc1hq0lymwa741xn9qmj9g0ac"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:build-flags
+      #~(list (string-append "-ldflags=-X"
+                             " github.com/knqyf263/go-plugin/version.Version="
+                             #$version))
+      #:test-flags
+      ;; TODO: Figure out how to generate wasm files:
+      ;; open plugin/plugin.wasm: no such file or directory
+      #~(list "-skip" (string-join
+                       (list "TestEmpty"
+                             "TestEmptyRequest"
+                             "TestErrorResponse"
+                             "TestFields"
+                             "TestHostFunctions"
+                             "TestImport"
+                             "TestStd"
+                             "TestWellKnownTypes")
+                       "|"))
+      #:import-path "github.com/knqyf263/go-plugin"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-planetscale-vtprotobuf
+           go-github-com-tetratelabs-wazero
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/knqyf263/go-plugin")
+    (synopsis "Golang Plugin System over WebAssembly")
+    (description
+     "This package provides a plugin system over @code{WebAssembly}.  As a
+ plugin is compiled to Wasm, it can be size-efficient, memory-safe, sandboxed
+and portable.  The plugin system auto-generates Go SDK for plugins from
+@url{https://developers.google.com/protocol-buffers/docs/overview, Protocol
+Buffers} files.  While it is powered by Wasm, plugin authors/users don't have
+to be aware of the Wasm specification since the raw Wasm APIs are capsulated
+by the SDK.")
+    (license license:expat)))
+
 (define-public go-github-com-kolo-xmlrpc
   (package
     (name "go-github-com-kolo-xmlrpc")
@@ -14571,6 +14630,26 @@ carries no encryption keys and cannot decode the traffic that it proxies.")))
        ((#:tests? _ #t) #f)))
     (native-inputs (package-propagated-inputs
                     go-google-golang-org-grpc-cmd-protoc-gen-go-grpc))
+    (propagated-inputs '())
+    (inputs '())))
+
+(define-public protoc-gen-go-plugin
+  (package/inherit go-github-com-knqyf263-go-plugin
+    (name "protoc-gen-go-plugin")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-knqyf263-go-plugin)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:import-path _)
+        "github.com/knqyf263/go-plugin/cmd/protoc-gen-go-plugin")
+       ((#:unpack-path _ "") "github.com/knqyf263/go-plugin")
+       ((#:phases %standard-phases)
+        #~(modify-phases %standard-phases
+            (delete 'remove-examples)))))
+    (native-inputs (package-propagated-inputs
+                    go-github-com-knqyf263-go-plugin))
     (propagated-inputs '())
     (inputs '())))
 
