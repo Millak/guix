@@ -96,7 +96,6 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
-  #:use-module (gnu packages cmake)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages glib)
@@ -24517,22 +24516,21 @@ recognizers) at run time.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mvdan/editorconfig")
-             (commit (string-append "v" version))))
+              (url "https://github.com/mvdan/editorconfig")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0mi1cp6fyaknjn7smvaas4lj03fws5qib5vbi4mrz3qrmvmhh9l4"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "mvdan.cc/editorconfig"))
-    (native-inputs
-     (list cmake-minimal))
+      #:import-path "mvdan.cc/editorconfig"
+      #:test-flags #~(list "-skip" "TestViaCmake")))
     (home-page "https://github.com/mvdan/editorconfig")
     (synopsis "EditorConfig support in Go")
     (description
-     "Package editorconfig allows parsing and using @code{EditorConfig} files, as
-defined in @url{https://editorconfig.org/,https://editorconfig.org/}.")
+     "Package editorconfig allows parsing and using @code{EditorConfig}
+files, as defined in https://editorconfig.org/.")
     (license license:bsd-3)))
 
 (define-public go-mvdan-cc-gofumpt
