@@ -686,6 +686,7 @@ conditions.")
         (base32
          "1mpzjaksc2qg2hzqflf39pl06p53qam2dn3hkhkcv6p00d2n4kx3"))))
     (build-system gnu-build-system)
+    (native-inputs (list gcc-13))
     (home-page "https://github.com/samhocevar/zzuf")
     (synopsis "Transparent application input fuzzer")
     (description "Zzuf is a transparent application input fuzzer.  It works by
