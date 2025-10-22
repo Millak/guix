@@ -25109,15 +25109,23 @@ library.")
 ;;;
 
 (define-public glua
-  (package
-    (inherit go-github-com-yuin-gopher-lua)
+  (package/inherit go-github-com-yuin-gopher-lua
     (name "glua")
     (arguments
-     (list
-      #:tests? #f
-      #:install-source? #f
-      #:import-path "github.com/yuin/gopher-lua/cmd/glua"
-      #:unpack-path "github.com/yuin/gopher-lua"))))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-yuin-gopher-lua)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "github.com/yuin/gopher-lua/cmd/glua")
+       ((#:unpack-path _ "") "github.com/yuin/gopher-lua")
+       ((#:phases %standard-phases)
+        #~(modify-phases %standard-phases
+            (delete 'disable-failing-tests)))))
+    (native-inputs
+     (append (package-native-inputs go-github-com-yuin-gopher-lua)
+             (package-propagated-inputs go-github-com-yuin-gopher-lua)))
+    (propagated-inputs '())
+    (inputs '())))
 
 (define-public go-asmfmt
   (package
