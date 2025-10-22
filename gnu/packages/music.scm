@@ -2517,7 +2517,7 @@ effects.")
 (define-public samplv1
   (package
     (name "samplv1")
-    (version "1.2.0")
+    (version "1.3.2")
     (source (origin
               (method url-fetch)
               (uri
@@ -2525,7 +2525,7 @@ effects.")
                               "/samplv1-" version ".tar.gz"))
               (sha256
                (base32
-                "06k8bhkkfwm86kcji4hprjzzm0l2zskg7vwfn5gw1mcld02gmixc"))))
+                "0n44006jx7mxvi4fpj4crv4app86wfhh6p87ia06plqg23snsb30"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
