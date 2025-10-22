@@ -512,42 +512,8 @@ true, display what would be built without actually building it."
   ;; The user-friendly name of %CURRENT-PROFILE.
   (string-append (config-directory #:ensure? #f) "/current"))
 
-(define (migrate-generations profile directory)
-  "Migrate the generations of PROFILE to DIRECTORY."
-  (format (current-error-port)
-          (G_ "Migrating profile generations to '~a'...~%")
-          %profile-directory)
-  (let ((current (generation-number profile)))
-    (for-each (lambda (generation)
-                (let ((source (generation-file-name profile generation))
-                      (target (string-append directory "/current-guix-"
-                                             (number->string generation)
-                                             "-link")))
-                  ;; Note: Don't use 'rename-file' as SOURCE and TARGET might
-                  ;; live on different file systems.
-                  (symlink (readlink source) target)
-                  (delete-file source)))
-              (profile-generations profile))
-    (symlink (string-append "current-guix-"
-                            (number->string current) "-link")
-             (string-append directory "/current-guix"))))
-
 (define (ensure-default-profile)
   (ensure-profile-directory)
-
-  ;; In 0.15.0+ we'd create ~/.config/guix/current-[0-9]*-link symlinks.  Move
-  ;; them to %PROFILE-DIRECTORY.
-  ;;
-  ;; XXX: Ubuntu's 'sudo' preserves $HOME by default, and thus the second
-  ;; condition below is always false when one runs "sudo guix pull".  As a
-  ;; workaround, skip this code when $SUDO_USER is set.  See
-  ;; <https://bugs.gnu.org/36785>.
-  (unless (or (getenv "SUDO_USER")
-              (not (file-exists? %user-profile-directory))
-              (string=? %profile-directory
-                        (dirname
-                         (canonicalize-profile %user-profile-directory))))
-    (migrate-generations %user-profile-directory %profile-directory))
 
   ;; Make sure ~/.config/guix/current points to /var/guix/profiles/….
   (let ((link %user-profile-directory))
