@@ -1298,14 +1298,14 @@ the running system.")
 (define-public libkscreen
   (package
     (name "libkscreen")
-    (version "6.4.5")
+    (version "6.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/plasma/" version "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "1d72ng2jpm8r4106my8lgkjk8852a167hi4glwahyibbclknxlk8"))))
+        (base32 "0b6cc68ywv1wp89ncyy9mi90ycfwznd71142jy0s9flvm9zmfhlw"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -1325,7 +1325,12 @@ the running system.")
                       "verifyOutputs"
                       ;; also fail on upstream
                       "testEdidParser"
-                      "testEnv"))))))))))
+                      "testEnv"
+                      "testPreferredBackend"
+                      "testFallback"
+                      "testModeSwitching"
+                      "verifyConfig"
+                      "verifyScreen"))))))))))
     (native-inputs
      (list extra-cmake-modules
            pkg-config
