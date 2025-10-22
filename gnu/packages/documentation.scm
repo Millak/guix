@@ -410,7 +410,7 @@ the Net to search for documents which are not on the local system.")
 (define-public zeal
   (package
     (name "zeal")
-    (version "0.7.1")
+    (version "0.7.2")
     (source
      (origin
        (method git-fetch)
@@ -419,7 +419,7 @@ the Net to search for documents which are not on the local system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yz9zz18rh1d67w40ib4pna70vqkwa9i9nyj423rjysv5rdj2pzp"))))
+        (base32 "1slq3asssszim9y4lvqx08svilmyisk3cl35mmb676fsx7pningn"))))
     (build-system qt-build-system)
     (arguments
       (list
