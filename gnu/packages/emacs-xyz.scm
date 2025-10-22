@@ -5955,7 +5955,7 @@ the ability to jump forward and backward to the next bookmark.")
 (define-public emacs-calfw
   (package
     (name "emacs-calfw")
-    (version "1.6")
+    (version "2.0")
     (source
      (origin
        (method git-fetch)
@@ -5965,8 +5965,9 @@ the ability to jump forward and backward to the next bookmark.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0r42cagvmvvib76kd15nd9ix55ys6i549vxnls4z16s864695zpa"))))
+         "0vmd9dl1hnmwjfr9gy8n91724bl05walhjx2myszh6qs28xay0z4"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs
      (list emacs-howm))
     (home-page "https://github.com/kiwanami/emacs-calfw/")
