@@ -2356,6 +2356,78 @@ Wasm}.
 library to provide APIs for CNI plugin interactions.")
     (license license:asl2.0)))
 
+(define-public go-github-com-containerd-nri
+  (package
+    (name "go-github-com-containerd-nri")
+    (version "0.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containerd/nri")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h08xvph1z237qw5djhadk35n2w4ivvsgzl4dlm0pgy340qpvg8w"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/containerd/nri/examples
+            ;; - github.com/containerd/nri/plugins/device-injector
+            ;; - github.com/containerd/nri/plugins/differ
+            ;; - github.com/containerd/nri/plugins/hook-injector
+            ;; - github.com/containerd/nri/plugins/logger
+            ;; - github.com/containerd/nri/plugins/network-device-injector
+            ;; - github.com/containerd/nri/plugins/network-logger
+            ;; - github.com/containerd/nri/plugins/template
+            ;; - github.com/containerd/nri/plugins/ulimit-adjuster
+            ;; - github.com/containerd/nri/plugins/v010-adapter
+            ;; - github.com/containerd/nri/plugins/wasm
+            (for-each delete-file-recursively
+                      (list "examples"
+                            "plugins/device-injector"
+                            "plugins/differ"
+                            "plugins/hook-injector"
+                            "plugins/logger"
+                            "plugins/network-device-injector"
+                            "plugins/network-logger"
+                            "plugins/template"
+                            "plugins/ulimit-adjuster"
+                            "plugins/v010-adapter"
+                            "plugins/wasm"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containerd/nri"))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-onsi-gomega
+           go-github-com-onsi-ginkgo-v2))
+    (propagated-inputs
+     (list go-github-com-containerd-ttrpc
+           go-github-com-google-go-cmp
+           go-github-com-knqyf263-go-plugin
+           go-github-com-moby-sys-mountinfo
+           go-github-com-opencontainers-runtime-spec
+           go-github-com-opencontainers-runtime-tools
+           go-github-com-sirupsen-logrus
+           go-github-com-tetratelabs-wazero
+           go-golang-org-x-sys
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/containerd/nri")
+    (synopsis "Node Resource Interface")
+    (description
+     "This package implements a functionality plugin domain or vendor specific
+custom logic into OCI - compatible runtimes.  This logic can make controlled
+changes to containers or perform extra actions outside the scope of OCI at
+certain points in a containers lifecycle.  This can be used, for instance, for
+improved allocation and management of devices and other container resources.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-containerd-ttrpc
   (package
     (name "go-github-com-containerd-ttrpc")
