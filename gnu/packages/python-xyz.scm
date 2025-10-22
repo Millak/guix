@@ -21399,21 +21399,20 @@ synchronously (wait until ready).")
 (define-public python-translitcodec
   (package
     (name "python-translitcodec")
-    (version "0.4.0")
+    (version "0.7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "translitcodec" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/claudep/translitcodec")
+             (commit (string-append "version-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "10x6pvblkzky1zhjs8nmx64nb9jdzxad4bxhq4iwv0j4z2aqjnki"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f))  ; no tests provided
-    (home-page
-     "https://github.com/claudep/translitcodec")
-    (synopsis
-     "Unicode to 8-bit charset transliteration codec")
+        (base32 "1cj11sa5hy8ga7p0dgwi4g4gv0qx6c1yi2csgnvxiir16ywslhpw"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/claudep/translitcodec")
+    (synopsis "Unicode to 8-bit charset transliteration codec")
     (description
      "This package contains codecs for transliterating ISO 10646 texts into
 best-effort representations using smaller coded character sets (ASCII,
