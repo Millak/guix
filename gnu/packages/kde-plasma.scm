@@ -2544,7 +2544,7 @@ PulseAudio.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0wp69ylhcqhy4l282fns0grhpf20w8jrhj2jmv7gdmhxnpnh9lk9"))
+                  "1hfwpnyijkmm05rq9yyq0bzh0ls1d3wcg68ssy69qm3xf6b0g1qf"))
                 (file-name (git-file-name name version))))
       (build-system qt-build-system)
       (native-inputs (list extra-cmake-modules))
