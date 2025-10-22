@@ -76,18 +76,17 @@
     (version "1.18.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "termdown" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/trehn/termdown")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "07nxsqpwnpr9jkvif2ngjlcq05z0ldnmqxd15d1l593lzmxdyrci"))))
+        (base32 "15i7ilwzwdj831bcd1gjnirydcdbr1b10d7jw5syjv0xwqq3yy8y"))))
     (build-system pyproject-build-system)
-    (native-inputs
-     (list python-setuptools python-wheel))
-    (propagated-inputs
-     (list python-click
-           python-pyfiglet
-           python-dateutil))
+    (arguments (list #:tests? #f)) ; No tests.
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-click python-pyfiglet python-dateutil))
     (home-page "https://github.com/trehn/termdown")
     (synopsis "Countdown timer for your terminal")
     (description
