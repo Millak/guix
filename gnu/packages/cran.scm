@@ -11060,13 +11060,13 @@ matrix) for the double-truncated multinormal case.")
 (define-public r-rvest
   (package
     (name "r-rvest")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rvest" version))
        (sha256
-        (base32 "19lw0jk8d8x88z247hz761gwbx9f5n3yqnv63mn7pkwl55mpqw3x"))))
+        (base32 "005wadzdhxf6hgr8vl4nl0nfi2crj6467mhwbccqfy26njh38z0y"))))
     (build-system r-build-system)
     (arguments
      (list
