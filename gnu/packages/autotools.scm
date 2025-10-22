@@ -157,7 +157,7 @@ know anything about Autoconf or M4.")
        (base32
         "0niz4852fgyavfh3gr4h4kzalk01nk70v6vfsja6r3ap349mr25s"))))))
 
-(define-public autoconf autoconf-2.69)
+(define-public autoconf autoconf-2.72)
 
 (define-public autoconf-2.68
   (package (inherit autoconf)
