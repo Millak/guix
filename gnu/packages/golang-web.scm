@@ -2428,6 +2428,51 @@ certain points in a containers lifecycle.  This can be used, for instance, for
 improved allocation and management of devices and other container resources.")
     (license license:asl2.0)))
 
+(define-public go-github-com-containerd-otelttrpc
+  (package
+    (name "go-github-com-containerd-otelttrpc")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containerd/otelttrpc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1npi48pj4g0w1s1wwqky146xc10i4r9dpc5mcgm0nbjpk1f0ixwb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containerd/otelttrpc"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "example")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-containerd-ttrpc
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-trace
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/containerd/otelttrpc")
+    (synopsis "Opentelemetry instrumentation support for ttRPC")
+    (description
+     "This package implements Opentelemetry instrumentation support for
+@code{ttRPC}.  The interceptors can be passed as @code{ttrpc.ClientOpts} and
+ttrpc.@code{ServerOpt} to @code{ttRPC} during client and server creation.  The
+interceptors then automatically handle generating trace spans for all called
+and served unary method calls.  If the rest of the code is properly set up to
+collect and export tracing data to opentelemetry, these spans should show up
+as part of the collected traces.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-containerd-ttrpc
   (package
     (name "go-github-com-containerd-ttrpc")
