@@ -2751,14 +2751,14 @@ sensors, process information and other system resources.")
 (define-public plasma-workspace
   (package
     (name "plasma-workspace")
-    (version "6.4.5")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1yqh55ijxbznvaa164idjp5g4lcdp0cl01x7bca3kxbl6nzrx68r"))))
+                "081gdyb31s7z3i014jbvb1si1y8i9a4dddm7qz2kalxwzbxym4b4"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules kdoctools pkg-config qtsvg
                          qttools
@@ -2796,7 +2796,7 @@ sensors, process information and other system resources.")
                   kidletime
                   kio
                   lsof
-                  xdotool
+                  xdotool                     ;for X11
                   qqc2-desktop-style
                   qcoro-qt6
                   kirigami-addons
@@ -2816,7 +2816,6 @@ sensors, process information and other system resources.")
                   kscreenlocker
                   ktexteditor
                   ktextwidgets
-                  kunitconversion
                   kuserfeedback
                   kwallet
                   kwayland
