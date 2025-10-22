@@ -753,7 +753,7 @@ Winamp/XMMS skins.")
 (define-public strawberry
   (package
     (name "strawberry")
-    (version "1.0.21")
+    (version "1.2.14")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -762,32 +762,21 @@ Winamp/XMMS skins.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ibs7x7i1zz2r13wg238c5bhr1j4x8vl7hvjg01vdl5hfrh2gk1i"))
-              (modules '((guix build utils)
-                         (ice-9 regex)))
+                "0sli0wm1l34ca8y6m3rfa604v1bbzbaiala13kzndcqqwnrsh66f"))
+              (modules '((guix build utils)))
+              ;; Unbundle and disable discord-rpc.
               (snippet
                '(begin
-                  (use-modules ((ice-9 regex)))
-                  (for-each
-                   (lambda (dir)
-                     ;; TODO: The following dependencies are still bundled:
-                     ;; - "singleapplication"
-                     (let ((bundled '("singleapplication")))
-                       (if (not
-                            (string-match
-                             (string-append ".?*(" (string-join bundled "|") ")")
-                             dir))
-                           (delete-file-recursively dir))))
-                   (find-files "3rdparty"
-                               (lambda (file stat)
-                                 (string-match "^3rdparty/[^/]*$" file))
-                               #:directories? #t))))))
+                  (delete-file-recursively "3rdparty")
+                  (substitute* "CMakeLists.txt"
+                    ((".*3rdparty\\/discord-rpc.*") "")
+                    ((".*src/discord.*") "")
+                    ((".*:discord-rpc.*") "")
+                    (("DISCORD_RPC ON") "DISCORD_RPC OFF"))))))
     (build-system qt-build-system)
     (arguments
      (list
       #:qtbase qtbase
-      #:configure-flags
-      #~(list "-DBUILD_WITH_QT6=ON")
       #:modules '((guix build qt-build-system)
                   ((guix build gnu-build-system) #:prefix gnu:)
                   (guix build utils))
@@ -829,13 +818,17 @@ Winamp/XMMS skins.")
            gst-plugins-base
            gst-plugins-good
            icu4c
+           kdsingleapplication
            libcdio
            libebur128
+           libgpod
            libmtp
            protobuf
            pulseaudio
            qtbase
            qtwayland
+           rapidjson
+           sparsehash
            sqlite
            taglib))
     (home-page "https://www.strawberrymusicplayer.org/")
@@ -845,8 +838,6 @@ It is a fork of Clementine aimed at music collectors and audiophiles.")
     (license (list
               ;; strawberry.
               license:gpl3+
-              ;; singleapplication
-              license:expat
               ;; icons.
               license:cc-by-sa3.0))))
 
