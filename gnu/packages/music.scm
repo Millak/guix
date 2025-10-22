@@ -5636,7 +5636,7 @@ studio.")
 (define-public gsequencer
   (package
     (name "gsequencer")
-    (version "7.7.6")
+    (version "8.1.24")
     (source
      (origin
        (method git-fetch)
@@ -5645,7 +5645,7 @@ studio.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03rahab7vcdmzajkv3v8x0czbg76aykqjqz37x8jggv71f3djni2"))))
+        (base32 "0rpidmawdrnaqrddy5vlfpybkgdfcg0ybfl9pcdqrd03yc1hhalp"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:phases
