@@ -22207,8 +22207,9 @@ common sequence} values from two arbitrary arrays.")
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
       #:import-path "github.com/yuin/gopher-lua"
+      #:test-flags
+      #~(list "-vet=off") ;Go@1.24 forces vet, but tests are not ready yet.
       #:phases
       #~(modify-phases %standard-phases
           ;; FIXME: "ls" needs to be substituted in _glua-tests/issues.lua and
