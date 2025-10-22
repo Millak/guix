@@ -1474,7 +1474,7 @@ KDE Frameworks components.")
 (define-public kwin
   (package
     (name "kwin")
-    (version "6.4.5")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1483,11 +1483,51 @@ KDE Frameworks components.")
               (patches (search-patches "kwin-unwrap-executable-name-for-dot-desktop-search.patch"))
               (sha256
                (base32
-                "1xsiq5m9a2wgfn2jdj1m8wqjziwp9zzyfs57xp3qbhi7j6virkyy"))))
+                "10prbkvcad4xi0d4w7gq35lpf1l2izqwj59dwdzy4vr6h1wsdsp0"))))
     (build-system qt-build-system)
     (arguments
      (list
       #:qtbase qtbase
+      #:test-exclude
+      (string-append "("
+                     (string-join
+                         '(;; Fails on an Apple M1 (aarch64) with the following error:
+                           ;; TestColorspaces::roundtripConversion fails
+                           "kwin-testColorspaces"
+
+                           "kwin-testDrm" ;; require Drm
+                           "kwin-testInputMethod"
+                           "kwin-testPlasmaWindow" ;; require plasma-workspace qml module.
+                           "kwin-testButtonRebind"
+                           "kwin-testDecorationInput"
+                           "kwin-testPointerInput"
+                           "kwin-testXdgShellWindow"
+                           "kwin-testXdgShellWindow-waylandonly"
+                           "kwin-testSceneOpenGLES"
+                           "kwin-testSceneOpenGLES-waylandonly"
+                           "kwin-testNightColor"
+                           "kwin-testNightColor-waylandonly"
+                           "kwin-testScriptedEffects"
+                           "kwayland-testServerSideDecoration"
+                           "kwayland-testWaylandSurface"
+
+                           "kwin-testLibinputDevice"
+                           "kwin-testLockScreen"
+                           "kwin-testTabBox"
+                           "kwin-testKeyboardInput"
+                           "kwin-testKeyboardLayout"
+                           "kwin-testQuickTiling"
+                           "kwin-testDbusInterface"
+                           "kwin-testX11KeyRead"
+                           "kwin-testVirtualKeyboardDBus"
+                           "kwin-testGlobalShortcuts"
+                           "kwin-testKWinBindings"
+                           "kwin-testMinimizeAllScript"
+                           "kwin-testLibinputDevice"
+                           "kwin-testX11Window"
+                           "kwin-testXwaylandInput"
+                           "kwin-testWindowRules")
+                         "|"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch
@@ -1519,7 +1559,7 @@ KDE Frameworks components.")
                 (("/usr/share")
                  (string-append #$(this-package-input "hwdata") "/share")))))
           (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
               (when tests?
                 (setenv "XDG_RUNTIME_DIR" (getcwd))
                 (setenv "HOME" (getcwd))
@@ -1533,48 +1573,7 @@ KDE Frameworks components.")
                 (setenv "DISPLAY" ":1")
                 (system "Xvfb :1 &")
                 (sleep 5)
-                (invoke "dbus-launch"
-                        "ctest"
-                        "-E"
-                        (string-join
-                         (list
-                          ;; Fails on an Apple M1 (aarch64) with the following error:
-                          ;; TestColorspaces::roundtripConversion fails
-                          "kwin-testColorspaces"
-
-                          "kwin-testDrm" ;; require Drm
-                          "kwin-testInputMethod"
-                          "kwin-testPlasmaWindow" ;; require plasma-workspace qml module.
-                          "kwin-testButtonRebind"
-                          "kwin-testDecorationInput"
-                          "kwin-testPointerInput"
-                          "kwin-testXdgShellWindow"
-                          "kwin-testXdgShellWindow-waylandonly"
-                          "kwin-testSceneOpenGLES"
-                          "kwin-testSceneOpenGLES-waylandonly"
-                          "kwin-testNightColor"
-                          "kwin-testNightColor-waylandonly"
-                          "kwin-testScriptedEffects"
-                          "kwayland-testServerSideDecoration"
-                          "kwayland-testWaylandSurface"
-
-                          "kwin-testLibinputDevice"
-                          "kwin-testLockScreen"
-                          "kwin-testTabBox"
-                          "kwin-testKeyboardInput"
-                          "kwin-testKeyboardLayout"
-                          "kwin-testQuickTiling"
-                          "kwin-testDbusInterface"
-                          "kwin-testX11KeyRead"
-                          "kwin-testVirtualKeyboardDBus"
-                          "kwin-testGlobalShortcuts"
-                          "kwin-testKWinBindings"
-                          "kwin-testMinimizeAllScript"
-                          "kwin-testLibinputDevice"
-                          "kwin-testX11Window"
-                          "kwin-testXwaylandInput"
-                          "kwin-testWindowRules")
-                         "|"))))))))
+                (invoke "dbus-launch" "ctest" "-E" test-exclude)))))))
     (native-inputs (list extra-cmake-modules
                          dbus
                          kdoctools
@@ -1596,7 +1595,6 @@ KDE Frameworks components.")
                   kcmutils
                   kcompletion
                   kconfig
-                  kconfigwidgets
                   kcoreaddons
                   kcrash
                   kdbusaddons
@@ -1640,7 +1638,6 @@ KDE Frameworks components.")
                   qtsvg
                   wayland
                   xcb-util ;fails at build time without this
-                  xcb-util-cursor
                   xcb-util-keysyms
                   xcb-util-wm
                   xcmsdb
