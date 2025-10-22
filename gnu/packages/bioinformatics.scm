@@ -23528,15 +23528,16 @@ The output is in SAM format.")
 (define-public libsbml
   (package
     (name "libsbml")
-    (version "5.18.0")
+    (version "5.20.5")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/sbml/libsbml/"
-                                  version "/stable/libSBML-"
-                                  version "-core-src.tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/sbmlteam/libsbml")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0slkagrk3nfi2qsksv6b1brj6zhx4bj4bkib2sdycvrcd10ql2lh"))))
+                "1bzsgwblh5l15xxy7kpdwiya5kwm26sj6daqr9i93h04manpqmfw"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
