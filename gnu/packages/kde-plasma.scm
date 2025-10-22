@@ -1716,7 +1716,7 @@ on top of Baloo.")
 (define-public qqc2-breeze-style
   (package
     (name "qqc2-breeze-style")
-    (version "6.4.5")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1724,7 +1724,7 @@ on top of Baloo.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1zrpf34z0c23g3rgb7x9b8784xq8gd2hx9z4g304c66x8glpadfz"))))
+                "1n96yrzfbcac45f617zxfvzdgkn4wsnvh4gr4a1cl5zwn2jf47b7"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -1732,7 +1732,7 @@ on top of Baloo.")
     (native-inputs
      (list extra-cmake-modules))
     (inputs (list qtdeclarative
-                  kiconthemes kguiaddons kconfig kirigami kcoreaddons
+                  kiconthemes kguiaddons kconfig kirigami
                   kcolorscheme kquickcharts))
     (home-page "https://invent.kde.org/plasma/qqc2-breeze-style")
     (synopsis "Breeze inspired Qt Quick Controls Style")
