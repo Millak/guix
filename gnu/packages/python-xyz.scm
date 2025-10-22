@@ -21422,26 +21422,37 @@ ISO 8859, etc.).")
 (define-public python-anyqt
   (package
     (name "python-anyqt")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "AnyQt" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ales-erjavec/anyqt")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0fvnhdk0nzhlm1xydisvdq1w7lwaakdkbwb1rkyz4vd232wji4jb"))))
-    (build-system python-build-system)
+        (base32 "0dci4sx53icd3jxv5gm22yr5g4dcyqbyvkkwliqpmbkxxjxj0dc8"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ;there are no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'delete-files
-           ;; Delete files related to other operating systems.
-           (lambda _
-             (delete-file "AnyQt/QtMacExtras.py")
-             (delete-file "AnyQt/QtWinExtras.py"))))))
+     (list
+      ;; XXX: Qt tests require Qt modules, see test/test_import.py.
+      ;; TODO Add/configure the right Qt inputs.
+      #:test-flags
+      #~(list "--ignore-glob=tests/test_q*.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-files
+            ;; Delete files related to other operating systems.
+            (lambda _
+              (delete-file "AnyQt/QtMacExtras.py")
+              (delete-file "AnyQt/QtWinExtras.py"))))))
+    (native-inputs (list python-pytest-qt python-setuptools))
     (home-page "https://github.com/ales-erjavec/anyqt")
-    (synopsis "PyQt4/PyQt5 compatibility layer")
-    (description "AnyQt is a PyQt4/PyQt5 compatibility layer.")
+    (synopsis "PyQt compatibility layer")
+    (description
+     "This package provides a PyQt/PySide compatibility layer. More precisely,
+it provides compatibility for the following modules: PyQt4, PyQt5, PyQt6,
+PySide, PySide2.")
     (license license:gpl3)))
 
 (define-public python-qasync
