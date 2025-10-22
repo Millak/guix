@@ -1057,14 +1057,14 @@ to automatically switch between light and dark themes.")
 (define-public kpipewire
   (package
     (name "kpipewire")
-    (version "6.4.5")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
                                   version "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "14hsdd5hj4cy13lzszajmfkf2ijfphr9rffnynsbbv9hl2k099yh"))))
+                "19qb4az64cq3511jq18z4905fwj6mcql98h89zmf7zv273mbhl86"))))
     (build-system cmake-build-system)
     (native-inputs (list extra-cmake-modules pkg-config))
     (propagated-inputs (list qtbase qtdeclarative
