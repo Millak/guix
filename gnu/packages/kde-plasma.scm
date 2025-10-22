@@ -2423,14 +2423,14 @@ connections.")
 (define-public plasma-mobile
   (package
     (name "plasma-mobile")
-    (version "6.4.5")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
                                   version "/plasma-mobile-" version ".tar.xz"))
               (sha256
                (base32
-                "1rcbzds23s774vn1lrrdrqf00kk9vjhmyf9g87gl6a4sv3dghg57"))))
+                "019mb14gs45nkkmrx1rfa9amnv415s92xhkx0mp64i7rpgnn9gr1"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f))      ;only small add-hoc test scripts
     (native-inputs (list extra-cmake-modules pkg-config qttools))
