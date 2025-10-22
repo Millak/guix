@@ -1236,14 +1236,14 @@ the running system.")
 (define-public kscreenlocker
   (package
     (name "kscreenlocker")
-    (version "6.4.5")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/kscreenlocker-" version ".tar.xz"))
               (sha256
                (base32
-                "0389ny32hz8ypdla1m7gbp8p26a7iz185sqgx439pjv37pazki7s"))))
+                "0ay35snrgyrb9ssqk36jh3x5mxjxj5vaw24vkvh8cz746d57vi0f"))))
     (build-system qt-build-system)
     (arguments
      (list #:tests? #f ;TODO: make tests pass
