@@ -21028,6 +21028,32 @@ many small values.  For multi-line CSV parsing, the standard library is
 recommended.")
     (license license:expat)))
 
+(define-public go-github-com-tonistiigi-dchapes-mode
+  (package
+    (name "go-github-com-tonistiigi-dchapes-mode")
+    (version "0.0.0-20250318174251-73d941a28323")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tonistiigi/dchapes-mode")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bs5jvq3045mspyq42pk3dliqgn3a975l30030abvggidnbxpggw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tonistiigi/dchapes-mode"))
+    (home-page "https://github.com/tonistiigi/dchapes-mode")
+    (synopsis "BSD's setmode and getmode for Golang")
+    (description
+     "Package @code{mode} provides a native Go implementation of BSD's
+setmode and getmode which can be used to modify the mode bits of an
+@code{os.FileMode} value based on a symbolic value as described by the Unix
+chmod command.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-tonistiigi-units
   (package
     (name "go-github-com-tonistiigi-units")
