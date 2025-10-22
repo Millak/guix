@@ -384,6 +384,51 @@ replace a file or symbolic link.")
 1.1: Authentication and Security Services.")
     (license license:bsd-3)))
 
+(define-public go-github-com-magefile-mage
+  (package
+    (name "go-github-com-magefile-mage")
+    (version "1.15.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/magefile/mage")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zjglw9ra0mc77d6i3yavhihp94qzr9rqx1lhs9whm3qw7gyz4v9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/magefile/mage"
+      #:test-flags
+      #~(list "-tags" "CI"
+              "-skip" (string-join
+                       ;; Some tests need the "mage" binary to bootstrap
+                       ;; tests, other fail on comparing output of options.
+                       (list "TestBootstrap"
+                             "TestGoModules"
+                             "TestGoRun"
+                             "TestInvalidAlias"
+                             "TestMagefilesFolderMixedWithMagefiles"
+                             "TestNoArgNoDefaultList"
+                             "TestTimeout"
+                             "TestWrongDependency")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (home-page "https://github.com/magefile/mage")
+    (synopsis "Make/rake-like dev tool for Golang")
+    (description
+     "Mage is a make-like build tool using for Go.  It implements a
+functionality of writing plain-old go functions which Mage automatically uses
+as Makefile-like runnable targets consistent across a project.  This package
+provides a source library and built command @command{mage}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-matttproud-golang-protobuf-extensions
   (package
     (name "go-github-com-matttproud-golang-protobuf-extensions")
