@@ -3007,14 +3007,14 @@ hardware management, and a high degree of customizability.")
 (define-public print-manager
   (package
     (name "print-manager")
-    (version "6.4.5")
+    (version "6.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/plasma/" version
                            "/print-manager-" version ".tar.xz"))
        (sha256
-        (base32 "1jj2l89nxdmyhlr9arkcjsqxbm8qp7h2rg8lqnswh2nij81gsf72"))))
+        (base32 "1krvpk8izwyyn2r4nv167jig2l266jlggn25aqhyqnfil23pcx0g"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
@@ -3025,7 +3025,6 @@ hardware management, and a high degree of customizability.")
            kconfigwidgets
            kcoreaddons
            kdbusaddons
-           kiconthemes
            kirigami
            ki18n
            kio
