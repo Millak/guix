@@ -1634,6 +1634,7 @@ corresponding layout." layout))
            gnu-make
            grep
            python
+           python-appdirs
            python-dotty-dict
            python-hid
            python-hjson
