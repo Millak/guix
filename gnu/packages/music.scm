@@ -2550,7 +2550,7 @@ effects.")
 (define-public padthv1
   (package
     (name "padthv1")
-    (version "1.2.0")
+    (version "1.3.2")
     (source (origin
               (method url-fetch)
               (uri
@@ -2558,7 +2558,7 @@ effects.")
                               "/padthv1-" version ".tar.gz"))
               (sha256
                (base32
-                "155q82rib92jpxahwihklfv4a1dck76bmnji6qdvxdir0fn4v7lw"))))
+                "1lvgwzg4r351m0ycnhlva4lvq7wd08806abwb3mv5ypx7s64jymi"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
