@@ -16947,16 +16947,21 @@ specification-runtime-spec.")
 (define-public go-github-com-opencontainers-runtime-tools
   (package
     (name "go-github-com-opencontainers-runtime-tools")
-    (version "0.9.0")
+    ;; XXX: See: <https://github.com/opencontainers/runtime-tools/issues/792>.
+    (properties '((commit . "0ea5ed0382a279b30530acccafaf070fefeddafd")
+                  (revision . "0")))
+    (version (git-version "0.9.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/opencontainers/runtime-tools")
-              (commit (string-append "v" version))))
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pli3jb1rq9lkzzz83f7jw788vijg7x6ly3vgasdlwri7kiph1sa"))
+        (base32 "1385hh25ysni83wp5xdn4zajzavmnbrgz9mrpqsj3byk33xqyh3z"))
        (snippet
         #~(begin (use-modules (guix build utils))
                  (delete-file-recursively "vendor")))))
@@ -16964,8 +16969,6 @@ specification-runtime-spec.")
     (arguments
      (list
       #:skip-build? #t
-      ;; XXX: See: <https://github.com/opencontainers/runtime-tools/issues/792>.
-      #:tests? #f
       #:import-path "github.com/opencontainers/runtime-tools"
       #:build-flags
       #~(list (format #f "-ldflags=-X ~s"
@@ -16979,14 +16982,15 @@ specification-runtime-spec.")
            go-github-com-stretchr-testify
            go-github-com-urfave-cli))
     (propagated-inputs
-     (list go-github-com-blang-semver
+     (list go-github-com-blang-semver-v4
+           go-github-com-google-uuid
            go-github-com-hashicorp-go-multierror
+           go-github-com-moby-sys-capability
+           go-github-com-moby-sys-mountinfo
            go-github-com-mrunalp-fileutils
            go-github-com-opencontainers-runtime-spec
            go-github-com-opencontainers-selinux
-           go-github-com-satori-go-uuid
            go-github-com-sirupsen-logrus
-           go-github-com-syndtr-gocapability
            go-github-com-xeipuuv-gojsonschema
            go-golang-org-x-sys))
     (home-page "https://github.com/opencontainers/runtime-tools")
