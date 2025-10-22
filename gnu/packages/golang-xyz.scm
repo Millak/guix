@@ -25561,6 +25561,58 @@ system calls.
 It allows one to safely call Unveil / Pledge on non-OpenBSD operating systems.")
     (license license:isc)))
 
+(define-public go-tags-cncf-io-container-device-interface
+  (package
+    (name "go-tags-cncf-io-container-device-interface")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cncf-tags/container-device-interface")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1wpp8fsrfjmgfkwwanakbigf68khwycdxbmr82k309fawfpbz7fj"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - tags.cncf.io/container-device-interface/cmd/cdi
+            ;; - tags.cncf.io/container-device-interface/specs-go
+            ;; - tags.cncf.io/container-device-interface/schema
+            ;; - tags.cncf.io/container-device-interface/cmd/validate
+            (for-each delete-file-recursively
+                      (list"cmd" "schema"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "tags.cncf.io/container-device-interface"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-fsnotify-fsnotify
+           go-github-com-opencontainers-runtime-spec
+           go-github-com-opencontainers-runtime-tools
+           go-golang-org-x-mod
+           go-golang-org-x-sys
+           go-gopkg-in-yaml-v3
+           go-sigs-k8s-io-yaml))
+    (home-page "https://tags.cncf.io/container-device-interface")
+    (synopsis "CNCF's Container Device Interface")
+    (description
+     "This package provides @acronym{Cloud Native Computing Foundation, CNCF}'s
+@acronym{CDI, Container Device Interface} specification, for
+container-runtimes, to support third-party devices. It also includes
+@code{tags.cncf.io/container-device-interface/specs-go} submodule.")
+    (license license:asl2.0)))
+
+;; To make importer happy.
+(define-public go-tags-cncf-io-container-device-interface-specs-go
+  go-tags-cncf-io-container-device-interface)
+
 (define-public go-zgo-at-jfmt
   (package
     (name "go-zgo-at-jfmt")
