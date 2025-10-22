@@ -640,14 +640,14 @@ applications.")
 (define-public kdecoration
   (package
     (name "kdecoration")
-    (version "6.4.5")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/kdecoration-" version ".tar.xz"))
               (sha256
                (base32
-                "0k2axz2hdfwpjyi9pdi2bifj65gpg9rwf25wn2ijawfgar1frlzr"))))
+                "06wwicrc1aa2iq7bfa1w7qjxj2ia6vazlgk5r394d9hzwm7ikbpr"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs
