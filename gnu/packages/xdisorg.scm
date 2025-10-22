@@ -71,6 +71,7 @@
 ;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 iamawacko <iamawacko@protonmail.com>
+;;; Copyright © 2025 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4499,3 +4500,78 @@ a simple GUI for XKB (X KeyBoard extension) and just sends commands to and
 accepts events from XKB.  That means that it will work with the existing
 setup of your X Server without any modifications.")
     (license license:artistic2.0)))
+
+(define-public darkman
+  (package
+    (name "darkman")
+    (version "2.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/WhyNotHugo/darkman")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "039xqi9pll7vl1m8lri5x626s7n0wqrjzyy979kh3wmpqbk8jz3j"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Makefile"
+             ;; Avoid building the binary again when installing.
+             (("install: build") "install: darkman.1")
+             ;; Don't install the systemd service.
+             ((".@install.*systemd.*") "")
+             ;; The binary will be installed by `go install'.
+             ((".@install.*bin.*") ""))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; No tests.
+      #:install-source? #f
+      #:import-path "gitlab.com/WhyNotHugo/darkman/cmd/darkman"
+      #:unpack-path "gitlab.com/WhyNotHugo/darkman"
+      #:build-flags
+      #~(list (string-append "-ldflags= -X main.Version=" #$version))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (let ((source (string-append "src/" unpack-path "/contrib/dbus/")))
+                (substitute*
+                    (list (string-append
+                           source "nl.whynothugo.darkman.service")
+                          (string-append
+                           source
+                           "org.freedesktop.impl.portal.desktop.darkman.service"))
+                  (("/usr") #$output)))))
+          (replace 'install
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (let ((darkman (string-append #$output "/bin/darkman")))
+                  (with-output-to-file "_darkman.zsh"
+                    (lambda ()
+                      (invoke darkman "completion" "zsh")))
+                  (with-output-to-file "darkman.bash"
+                    (lambda ()
+                      (invoke darkman "completion" "bash")))
+                  (with-output-to-file "darkman.fish"
+                    (lambda ()
+                      (invoke darkman "completion" "fish"))))
+                (invoke "make" "install" (string-append "PREFIX=" #$output))))))))
+    (native-inputs
+     (list gnu-make
+           go-github-com-adrg-xdg
+           go-github-com-godbus-dbus-v5
+           go-github-com-rxwycdh-rxhash
+           go-github-com-sj14-astral
+           go-github-com-spf13-cobra
+           go-gopkg-in-yaml-v3
+           scdoc))
+    (home-page "https://gitlab.com/WhyNotHugo/darkman")
+    (synopsis "Control dark-mode and light-mode transitions")
+    (description
+     "Darkman is a framework for dark-mode and light-mode transitions on Unix-like
+desktops.")
+    (license license:bsd-0)))
