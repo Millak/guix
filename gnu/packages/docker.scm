@@ -144,6 +144,34 @@ loading Compose files as specified by the
 @url{https://github.com/compose-spec/compose-spec, Compose specification}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-docker-go-events
+  (package
+    (name "go-github-com-docker-go-events")
+    (version "0.0.0-20250808211157-605354379745")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/docker/go-events")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q3ylzyl670m3an32nhb0l5bsc3f4d9b963x3pjwsc94brg9l5qp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/docker/go-events"))
+    (propagated-inputs
+     (list go-github-com-sirupsen-logrus))
+    (home-page "https://github.com/docker/go-events")
+    (synopsis "Composable event distribution for Golang")
+    (description
+     "This package implements a composable event distribution library,
+originally created to implement the notifications in
+@url{https://github.com/distribution/distribution/blob/v3.0.0/docs/content/about/notifications.md,
+Docker Registry 2}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-docker-go-metrics
   (package
     (name "go-github-com-docker-go-metrics")
