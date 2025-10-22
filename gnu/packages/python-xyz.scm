@@ -21492,24 +21492,26 @@ by providing an implementation of the PEP 3156 event-loop.")
 
 (define-public python-editor
   (package
-  (name "python-editor")
-  (version "1.0.4")
-  (source
-    (origin
-      (method url-fetch)
-      (uri (pypi-uri "python-editor" version))
-      (sha256
-        (base32
-          "0yrjh8w72ivqxi4i7xsg5b1vz15x8fg51xra7c3bgfyxqnyadzai"))))
-  (build-system python-build-system)
-  (arguments
-   '(#:tests? #f))   ;XXX: needs a TTY and an editor
-  (home-page "https://github.com/fmoo/python-editor")
-  (synopsis "Programmatically open an editor, capture the result")
-  (description
-    "python-editor is a library that provides the editor module for
-programmatically interfacing with your system's $EDITOR.")
-  (license license:asl2.0)))
+    (name "python-editor")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/fmoo/python-editor")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hm5gcz5117dsq39bqfxpwazk4khqd272ran0n12x0x84mnqvfxa"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;XXX: needs a TTY and an editor
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/fmoo/python-editor")
+    (synopsis "Programmatically open an editor, capture the result")
+    (description
+     "This package provides the editor module for programmatically interfacing
+with your system's $EDITOR.")
+    (license license:asl2.0)))
 
 (define-public python-multiprocessing-logging
   (package
