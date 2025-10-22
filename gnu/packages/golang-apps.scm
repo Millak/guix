@@ -1,4 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2023 JOULAUD François <Francois.JOULAUD@radiofrance.com>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -109,6 +110,39 @@ translators for Pygments lexers and styles.")
 special case for no-op or fake fxevent.Loggers, it ignores implementations
 that handle none of the event types.")
     (license license:expat)))
+
+(define-public go-jsonnet
+  (package
+    (name "go-jsonnet")
+    (version "0.21.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/go-jsonnet")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d05f16qxabfhaj0l3da3x7zl5g8jbvkcyn39bidd2a278sb3p97"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/google/go-jsonnet/cmd/jsonnet"
+      #:unpack-path "github.com/google/go-jsonnet"))
+    (native-inputs
+     (list go-github-com-fatih-color
+           go-github-com-sergi-go-diff
+           go-golang-org-x-crypto
+           go-sigs-k8s-io-yaml))
+    (home-page "https://github.com/google/go-jsonnet")
+    (synopsis "Go implementation of Jsonnet")
+    (description
+     "This package provides an implementation of the @url{http://jsonnet.org/,
+Jsonnet} data templating language in Go.  It is a feature-complete,
+production-ready implementation, compatible with the original Jsonnet
+C++implementation.")
+    (license license:asl2.0)))
 
 (define-public godef
   (package
