@@ -64,6 +64,7 @@
   #:use-module (gnu packages messaging)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages nss)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
@@ -1581,47 +1582,71 @@ can be used as backgrounds in the MATE Desktop environment.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://mate/" (version-major+minor version) "/"
-                           name "-" version ".tar.xz"))
+       (uri (string-append "mirror://mate/"
+                           (version-major+minor version)
+                           "/"
+                           name
+                           "-"
+                           version
+                           ".tar.xz"))
        (sha256
         (base32 "1m51cmcl6z68bx37zhi72wfl58kq9bg7xcih1sjr6l1li6axz2ma"))))
     (build-system glib-or-gtk-build-system)
     (arguments
-     `(; Tests can not succeed.
-       ;; https://github.com/mate-desktop/mate-text-editor/issues/33
-       #:tests? #f))
-    (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("gobject-introspection" ,gobject-introspection)
-       ("intltool" ,intltool)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("yelp-tools" ,yelp-tools)))
-    (inputs
-     (list at-spi2-core
-           cairo
-           enchant-1.6
-           glib
-           gtk+
-           gtksourceview-4
-           gdk-pixbuf
-           iso-codes/pinned
-           libcanberra
-           libx11
-           libsm
-           libpeas
-           libxml2
-           libice
-           mate-desktop
-           packagekit
-           pango
-           python
-           startup-notification))
+     (list
+      #:configure-flags
+      #~(list "--enable-python")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-pluma
+            (lambda* (#:key outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/pluma")
+                ;; For plugins (same as gedit).
+                `("GI_TYPELIB_PATH" ":" prefix
+                  (,(getenv "GI_TYPELIB_PATH")))
+                `("GUIX_PYTHONPATH" ":" prefix
+                  (,(getenv "GUIX_PYTHONPATH")))
+                ;; For language-specs.
+                `("XDG_DATA_DIRS" ":" prefix
+                  (,(string-append #$(this-package-input "gtksourceview")
+                                   "/share")))))))
+      ;; Tests can not succeed.
+      ;; https://github.com/mate-desktop/mate-text-editor/issues/33
+      #:tests? #f))
+    (native-inputs (list gettext-minimal
+                         gtk-doc/stable
+                         gobject-introspection
+                         intltool
+                         libtool
+                         perl
+                         pkg-config
+                         yelp-tools))
+    (inputs (list at-spi2-core
+                  cairo
+                  enchant
+                  glib
+                  gtk+
+                  gtksourceview-4
+                  gdk-pixbuf
+                  iso-codes/pinned
+                  libcanberra
+                  libx11
+                  libsm
+                  libpeas
+                  libxml2
+                  libice
+                  mate-desktop
+                  packagekit
+                  pango
+                  python
+                  python-pygobject
+                  python-wrapper
+                  python-pycairo
+                  python-six
+                  startup-notification))
     (home-page "https://mate-desktop.org/")
     (synopsis "Text Editor for MATE")
-    (description
-     "Pluma is the text editor for the MATE Desktop.")
+    (description "Pluma is the text editor for the MATE Desktop.")
     (license license:gpl2)))
 
 (define-public mate-system-monitor
