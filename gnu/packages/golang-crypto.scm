@@ -62,7 +62,8 @@
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages password-utils)
   #:use-module (gnu packages security-token)
-  #:use-module (gnu packages specifications))
+  #:use-module (gnu packages specifications)
+  #:use-module (gnu packages tls))
 
 ;;; Commentary:
 ;;;
@@ -2417,6 +2418,54 @@ user-defined collections.")
 adding the ability to obtain the list of host key algorithms for a known
 host.")
     (license license:asl2.0)))
+
+(define-public go-github-com-smallstep-pkcs7
+  (package
+    (name "go-github-com-smallstep-pkcs7")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/smallstep/pkcs7")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h8l7aabaxmgzixz4wn0k9f0v4hld86kzis6dpjz2zgf61czk7ri"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/smallstep/pkcs7"
+      #:test-flags
+      ;; XXX: Two test fails in validation certificates.
+      #~(list "-skip" (string-append
+                       ;; sign_test.go:130: test SHA1-RSA/SHA1-RSA/SHA1-RSA:
+                       ;; cannot add signer: pkcs7: certificate signature from
+                       ;; parent is invalid: x509: cannot verify signature:
+                       ;; insecure algorithm SHA1-RSA
+                       "TestSign"
+                       ;; verify_test.go:825: Verify failed with
+                       ;; error: pkcs7: failed to verify
+                       ;; certificate chain: x509: certificate
+                       ;; signed by unknown authority (possibly
+                       ;; because of "x509: cannot verify
+                       ;; signature: insecure algorithm
+                       ;; SHA1-RSA" while trying to verify
+                       ;; candidate authority certificate "PKCS7
+                       ;; Test Intermediate Cert")
+                       "|TestSignWithOpenSSLAndVerify"))))
+    (native-inputs
+     (list openssl))
+    (propagated-inputs
+     (list go-golang-org-x-crypto))
+    (home-page "https://github.com/smallstep/pkcs7")
+    (synopsis
+     "Subset of PKCS #7 / Cryptographic Message Syntax implemented in Golang")
+    (description
+     "This package implements a subset of PKCS #7 / Cryptographic Message
+Syntax (@url{https://www.rfc-editor.org/rfc/rfc2315, RFC 2315},
+@url{https://www.rfc-editor.org/rfc/rfc5652, RFC 5652}).")
+    (license license:expat)))
 
 (define-public go-github-com-spaolacci-murmur3
   (package
