@@ -24159,6 +24159,33 @@ dependencies.")
 XML, Apple Binary, OpenStep, and GNUStep) from/to arbitrary Go types.")
     (license license:giftware)))
 
+(define-public go-k8s-io-api
+  (package
+    (name "go-k8s-io-api")
+    (version "0.34.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kubernetes/api")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1skg38mksg282jlbmf3asmsyij27r9257h3vixqrk50v7rp45zi5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "k8s.io/api"))
+    (propagated-inputs
+     (list go-github-com-gogo-protobuf
+           go-k8s-io-apimachinery))
+    (home-page "https://k8s.io/api")
+    (synopsis "Kubernetes API definition")
+    (description
+     "This package provides schema of the external API types that are served
+by the Kubernetes API server.")
+    (license license:asl2.0)))
+
 (define-public go-k8s-io-apimachinery
   (package
     (name "go-k8s-io-apimachinery")
