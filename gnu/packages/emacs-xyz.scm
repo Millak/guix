@@ -14543,7 +14543,7 @@ completion using Consult.")
 (define-public emacs-consult-denote
   (package
     (name "emacs-consult-denote")
-    (version "0.3.1")
+    (version "0.4.0")
     (source
      (origin
        (method git-fetch)
@@ -14551,20 +14551,15 @@ completion using Consult.")
               (url "https://github.com/protesilaos/consult-denote/")
               (commit version)))
        (sha256
-        (base32 "1wj0aylm0jzh5mmkzayqgzw22dlavd9bliggjq2s4cs5lv77w05l"))))
+        (base32 "1glkb9jz2549x8n9wfkzg654gqkpgx2imq1iwv9c4l0bryk47cg6"))))
     (build-system emacs-build-system)
     (arguments
      (list
       #:tests? #f ;no tests
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'build-info-manual
-            (lambda* (#:key outputs #:allow-other-keys)
-              (invoke "emacs"
-                      "--batch"
-                      "--eval=(require 'ox-texinfo)"
-                      "--eval=(find-file \"README.org\")"
-                      "--eval=(org-texinfo-export-to-info)"))))))
+          (add-before 'install 'makeinfo
+            (lambda _ (emacs-makeinfo))))))
     (native-inputs (list texinfo))
     (propagated-inputs (list emacs-consult emacs-denote))
     (home-page "https://github.com/protesilaos/consult-denote")
