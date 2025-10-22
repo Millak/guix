@@ -2492,6 +2492,31 @@ revision (aka MurmurHash3).  Reference algorithm has been slightly hacked as
 to support the streaming mode required by Go's standard Hash interface.")
     (license license:bsd-3)))
 
+(define-public go-github-com-stefanberger-go-pkcs11uri
+  (package
+    (name "go-github-com-stefanberger-go-pkcs11uri")
+    (version "0.0.0-20230803200340-78284954bff6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/stefanberger/go-pkcs11uri")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05gdfpb2h69fypp91dz1m8mff7mzg5x0kg1vsqh4wwd9cxwdhj10"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/stefanberger/go-pkcs11uri"))
+    (home-page "https://github.com/stefanberger/go-pkcs11uri")
+    (synopsis "Golang pkcs11 URI library")
+    (description
+     "This package implements @url{https://tools.ietf.org/html/rfc7512,
+ RFC 7512} - the PKCS #11 URI Scheme; and
+@url{https://www.rfc-editor.org/errata/rfc7512, errata} specifications.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-tjfoc-gmsm
   (package
     (name "go-github-com-tjfoc-gmsm")
