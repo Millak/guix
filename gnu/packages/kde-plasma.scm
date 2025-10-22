@@ -2297,7 +2297,7 @@ activities effectively, without being distracting.")
 (define-public plasma-integration
   (package
     (name "plasma-integration")
-    (version "6.4.5")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -2305,22 +2305,12 @@ activities effectively, without being distracting.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0b3vq6lcmdxwjxpz4avlwj2ll2ccbsncqs8b8hrqhv523zg73qn3"))))
+                "03hfsayi05n71h8nqvwwsbbhjldsp4q9csqkyz397akbwnyf19q2"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
            #:configure-flags #~(list "-DBUILD_QT5=OFF")
-           #:tests? #f                  ;TODO: Failing tests
-           #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (setenv "HOME" (getcwd))
-                              (setenv "XDG_RUNTIME_DIR" (getcwd))
-                              (setenv "XDG_CACHE_HOME" (getcwd))
-                              (setenv "QT_QPA_PLATFORM" "offscreen")
-                              (invoke "ctest" "-E"
-                                      "(frameworkintegration-kdeplatformtheme_unittest|frameworkintegration-kfontsettingsdata_unittest|frameworkintegration-kfiledialog_unittest|qmltests|frameworkintegration-kfiledialogqml_unittest")))))))
+           #:tests? #f)) ;TODO: Failing tests
     (native-inputs (list extra-cmake-modules pkg-config))
     (inputs (list breeze
                   kconfig
