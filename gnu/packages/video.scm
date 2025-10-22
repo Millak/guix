@@ -3134,7 +3134,7 @@ video streaming services of the Finnish national broadcasting company Yle.")
 (define-public yt-dlp
   (package
     (name "yt-dlp")
-    (version "2025.09.26")
+    (version "2025.10.14")
     (source
      (origin
        (method git-fetch)
@@ -3146,7 +3146,7 @@ video streaming services of the Finnish national broadcasting company Yle.")
        (snippet #~(substitute* "pyproject.toml"
                     (("^.*Programming Language :: Python :: 3\\.13.*$") "")))
        (sha256
-        (base32 "0j6l2zskmsvqk8h3ialbymk75i0bfzn2qmc2gk6s1ybhnpryrv7y"))))
+        (base32 "187rwpdh881m922h6m32pikqah1wlxjqww73ijw511i2fnwykfy7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3192,7 +3192,7 @@ video streaming services of the Finnish national broadcasting company Yle.")
                   python-certifi
                   python-mutagen
                   python-pycryptodomex
-                  python-requests ; TODO Remove this special package
+                  python-requests
                   python-urllib3
                   python-websockets))
     (native-inputs
