@@ -20975,6 +20975,33 @@ structures using selector strings.  It's similar to @code{jq}/@code{yq}, but
 supports JSON, YAML, TOML, XML and CSV with zero runtime dependencies.")
     (license license:expat)))
 
+(define-public go-github-com-tonistiigi-go-archvariant
+  (package
+    (name "go-github-com-tonistiigi-go-archvariant")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tonistiigi/go-archvariant")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kmchhx374ahd9a7p0qx3gq9cffxfkkgq503q95ygya986xkgnjz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tonistiigi/go-archvariant"))
+    (home-page "https://github.com/tonistiigi/go-archvariant")
+    (synopsis "System's maximum compatibility version of Golang")
+    (description
+     "This Go package provides a functionality to determine the maximum
+compatibility version of the current system.  On x86-64 platforms it returns
+the maximum current microarchitecture level as defined in
+@url{https://en.wikipedia.org/wiki/X86-64#Microarchitecture_levels,
+Microarchitecture levels}.")
+    (license license:expat)))
+
 (define-public go-github-com-tonistiigi-go-csvvalue
   (package
     (name "go-github-com-tonistiigi-go-csvvalue")
