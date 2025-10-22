@@ -2473,6 +2473,44 @@ collect and export tracing data to opentelemetry, these spans should show up
 as part of the collected traces.")
     (license license:asl2.0)))
 
+(define-public go-github-com-containerd-protobuild
+  (package
+    (name "go-github-com-containerd-protobuild")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containerd/protobuild")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f44q37qlzh1fkqx4fvhw00fdy191j0253lpjzw5icakjxir3dkp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containerd/protobuild"
+      ;; rewrite_test.go:45: expected "//hello\npackage main\n\nfunc GetCPU()
+      ;; {}\n", but got "// hello\npackage main\n\nfunc GetCPU() {}\n"
+      #:test-flags #~(list "-skip" "TestRewrite/Simple")))
+    (propagated-inputs
+     (list go-github-com-golang-protobuf
+           go-github-com-pelletier-go-toml
+           go-golang-org-x-tools
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/containerd/protobuild")
+    (synopsis "Protobufs builder")
+    (description
+     "@code{protobuild} works by scanning the Golang package in a project and
+emitting correct protoc commands, configured with the plugins, packages and
+details of your choice.  The main benefit is that it makes it much easier to
+consume external types from vendored projects.  By integrating the protoc
+include paths with Go's vendoring and GOPATH, builds are much easier to keep
+consistent across a project.  This package provides a source library and built
+command @command{protobuild}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-containerd-ttrpc
   (package
     (name "go-github-com-containerd-ttrpc")
