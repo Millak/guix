@@ -244,12 +244,13 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
            pango
            readline
            gtk+
-           gtksourceview-3
+           gtksourceview-4
            spread-sheet-widget
            zlib))
     (native-inputs
      (list autoconf ;for tests
            `(,glib "bin") ;for glib-genmarshal
+           glibc-locales ;for test 1597: tex non-ascii
            perl
            pkg-config
            python-3 ;for tests
