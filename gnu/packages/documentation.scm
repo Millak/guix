@@ -423,6 +423,7 @@ the Net to search for documents which are not on the local system.")
     (build-system qt-build-system)
     (arguments
       (list
+       #:qtbase qtbase
        #:tests? #f))                    ;no tests
     (native-inputs
      (list extra-cmake-modules pkg-config))
@@ -430,12 +431,10 @@ the Net to search for documents which are not on the local system.")
      (list bash-minimal
            libarchive
            sqlite
-           qtbase-5
-           qtdeclarative-5
-           qtwayland-5
-           qtwebchannel-5
-           qtwebengine-5
-           qtquickcontrols-5
+           qtdeclarative
+           qtwayland
+           qtwebchannel
+           qtwebengine
            qtx11extras
            xcb-util-keysyms))
     (home-page "https://zealdocs.org/")
