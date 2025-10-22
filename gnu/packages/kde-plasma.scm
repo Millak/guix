@@ -2069,14 +2069,14 @@ the KDE Plasma 6 desktop.")
 (define-public plasma-desktop
   (package
     (name "plasma-desktop")
-    (version "6.4.5")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1dvvl757fi2v61gkzwdafw4n6i6kmfmbjsvjarvmpgycqz3y8lkm"))))
+                "0hnyvva5g20fvj9xpp13si74fd4qkc171k0vl9vklj4m4z0w4zf2"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules
                          dbus
@@ -2091,7 +2091,6 @@ the KDE Plasma 6 desktop.")
     (inputs (list packagekit-qt6
                   signon-plugin-oauth2
                   signond-qt6
-                  icu4c
                   attica
                   appstream-qt6
                   baloo
@@ -2183,6 +2182,14 @@ the KDE Plasma 6 desktop.")
     (propagated-inputs (list iso-codes/pinned kirigami kcmutils plasma-workspace))
     (arguments
      (list #:qtbase qtbase
+           #:test-exclude
+           (string-append "("
+                          (string-join '("positionertest"
+                                         "kcm-keyboard-keyboard_memory_\
+persister_test"
+                                         "foldermodeltest")
+                                       "|")
+                          ")")
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-wallpaper
@@ -2199,14 +2206,12 @@ the KDE Plasma 6 desktop.")
                       (string-append "\"" (search-input-directory
                                            inputs "/share/xml/iso-codes")
                                      "\"")))))
-               (replace 'check
+               (add-before 'check 'check-setup
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
                      (setenv "HOME" (getcwd))
                      (setenv "XDG_RUNTIME_DIR" (getcwd))
-                     (setenv "XDG_CACHE_HOME" (getcwd))
-                     (setenv "QT_QPA_PLATFORM" "offscreen")
-                     (invoke "ctest" "-E" "(positionertest|kcm-keyboard-keyboard_memory_persister_test|foldermodeltest)")))))))
+                     (setenv "XDG_CACHE_HOME" (getcwd))))))))
     (home-page "https://kde.org/plasma-desktop/")
     (synopsis "Plasma for the Desktop")
     (description
