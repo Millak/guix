@@ -5159,6 +5159,60 @@ responses.  It is only suitable for use as a \"private\" cache (i.e. for a
 web-browser or an API-client and not for a shared proxy).")
     (license license:expat)))
 
+(define-public go-github-com-grpc-ecosystem-go-grpc-middleware
+  (package
+    (name "go-github-com-grpc-ecosystem-go-grpc-middleware")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/grpc-ecosystem/go-grpc-middleware")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04g3yw8ywfjcgg6rli0vij2z6b9dd5vpsh39l33ysnr6zdrb76np"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/grpc-ecosystem/go-grpc-middleware"
+      #:test-flags
+      #~(list "-vet=off")  ;Go@1.24 forces vet, but tests are not ready yet.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-failing-tests
+            ;; panic: proto: message mwitkow.testproto.PingRequest is already
+            ;; registered See
+            ;; https://protobuf.dev/reference/go/faq#namespace-conflict FAIL
+            ;; github.com/grpc-ecosystem/go-grpc-middleware/tags 0.006s
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file
+                          (find-files "tags" ".*_test\\.go$"))))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-kit-log
+           go-github-com-gogo-protobuf
+           go-github-com-golang-protobuf
+           go-github-com-opentracing-opentracing-go
+           go-github-com-sirupsen-logrus
+           go-go-uber-org-zap
+           go-golang-org-x-net
+           go-golang-org-x-oauth2
+           go-google-golang-org-grpc))
+    (home-page "https://github.com/grpc-ecosystem/go-grpc-middleware")
+    (synopsis "Golang gRPC Middlewares")
+    (description
+     "This package provides gRPC Go Middlewares: interceptors, helpers and
+utilities - middleware that is executed either on the gRPC Server before the
+request is passed onto the user's application logic, or on the gRPC client
+either around the user call.  It is a perfect way to implement common
+patterns: auth, logging, tracing, metrics, validation, retries, rate limiting
+and more, which can be a great generic building blocks that make it easy to
+build multiple microservices easily.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-grpc-ecosystem-grpc-gateway-v2
   (package
     (name "go-github-com-grpc-ecosystem-grpc-gateway-v2")
