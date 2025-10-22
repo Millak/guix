@@ -67,6 +67,38 @@ the @code{c2go} tool at
 @url{https://github.com/andybalholm/c2go,https://github.com/andybalholm/c2go}.")
     (license license:expat)))
 
+(define-public go-github-com-containerd-stargz-snapshotter-estargz
+  (package
+    (name "go-github-com-containerd-stargz-snapshotter-estargz")
+    (version "0.18.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containerd/stargz-snapshotter")
+              (commit (go-version->git-ref version
+                                           #:subdir "estargz"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0058acl307d8gkkp0iyd9w290kwixi9362ji48azl5cp7mx4l27f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containerd/stargz-snapshotter/estargz"
+      #:unpack-path "github.com/containerd/stargz-snapshotter"))
+    (propagated-inputs
+     (list go-github-com-klauspost-compress
+           go-github-com-opencontainers-go-digest
+           go-github-com-vbatts-tar-split
+           go-golang-org-x-sync))
+    (home-page "https://github.com/containerd/stargz-snapshotter")
+    (synopsis "Reader/writer library for eStargz container image format")
+    (description
+     "This package implements reader/writer library
+@url{https://github.com/containerd/stargz-snapshotter/blob/v0.18.0/docs/estargz.md,
+eStargz} - a lazily-pullable image format.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-datadog-zstd
   (package
     (name "go-github-com-datadog-zstd")
