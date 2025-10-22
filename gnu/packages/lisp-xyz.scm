@@ -22962,11 +22962,11 @@ extensions to Common Lisp.  It contains:
   (sbcl-package->clasp-package sbcl-misc-extensions))
 
 (define-public sbcl-mito
-  (let ((commit "47ba4865ca4bb2894b53703a49a299e973f8eb86")
-        (revision "3"))
+  (let ((commit "10c22b64047053b079beb5168d21222abe4d4b1d")
+        (revision "4"))
     (package
       (name "sbcl-mito")
-      (version (git-version "0.1" revision commit))
+      (version (git-version "0.2.0" revision commit))
       (home-page "https://github.com/fukamachi/mito")
       (source
        (origin
@@ -22976,23 +22976,24 @@ extensions to Common Lisp.  It contains:
                (commit commit)))
          (file-name (git-file-name "mito" version))
          (sha256
-          (base32 "0313nxlj1zqw6zyc23xpf85v0jk32sg0543ql8363jki0pmg7yhs"))))
+          (base32 "0yx1hf22k3wgl0b274i25i6cnshijzy7wppi6clgmhi2y5svgddr"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-prove))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cl-package-locks" ,sbcl-cl-package-locks)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("cl-reexport" ,sbcl-cl-reexport)
-         ("closer-mop" ,sbcl-closer-mop)
-         ("dbi" ,sbcl-dbi)
-         ("dissect" ,sbcl-dissect)
-         ("esrap" ,sbcl-esrap)
-         ("local-time" ,sbcl-local-time)
-         ("sxql" ,sbcl-sxql)
-         ("trivia" ,sbcl-trivia)
-         ("uuid" ,sbcl-uuid)))
+       (list sbcl-alexandria
+             sbcl-chipz
+             sbcl-cl-package-locks
+             sbcl-cl-ppcre
+             sbcl-cl-reexport
+             sbcl-closer-mop
+             sbcl-dbi
+             sbcl-dissect
+             sbcl-esrap
+             sbcl-local-time
+             sbcl-sxql
+             sbcl-trivia
+             sbcl-uuid))
       (arguments
        '(#:phases
          (modify-phases %standard-phases
