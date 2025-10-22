@@ -21516,18 +21516,20 @@ with your system's $EDITOR.")
 (define-public python-multiprocessing-logging
   (package
     (name "python-multiprocessing-logging")
-    (version "0.3.1")
+    (version "0.3.4")
     (home-page "https://github.com/jruere/multiprocessing-logging")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url home-page)
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1625wy3djlr3b2fpd3vi822f8gw6b75mnls5a4318dbi9za5pf0y"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ib1plsyi4g68n0crc2cqhk54fccsmcijzh66g89fd3lgababgxd"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (synopsis "Manage logs from multiple processes")
     (description
      "This Python module implements a multiprocessing-aware @code{Handler}
