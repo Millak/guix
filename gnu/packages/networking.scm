@@ -331,7 +331,7 @@ network can support simultaneously.")
 (define-public lcrq
   (package
     (name "lcrq")
-    (version "0.2.4")
+    (version "0.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -340,7 +340,7 @@ network can support simultaneously.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1d2mk3ii189462dmkksjsaqybj7cizn9vm9c8plml881brlz8a2n"))))
+                "0xspyqjrpjyx79z027ax4d3nrh09qj9vwfvb4pad716avd4zklc4"))))
     (build-system gnu-build-system)
     (arguments
      (list
