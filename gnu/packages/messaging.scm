@@ -16,7 +16,6 @@
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <contact@parouby.fr>
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2019, 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2019, 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>

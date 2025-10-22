@@ -1,4 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2019, 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2022, 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Saku Laesvuori <saku@laesvuori.fi>
