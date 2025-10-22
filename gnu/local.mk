@@ -1290,6 +1290,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/flatpak-fix-fonts-icons.patch	\
   %D%/packages/patches/flatpak-fix-icon-validation.patch	\
   %D%/packages/patches/flatpak-unset-gdk-pixbuf-for-sandbox.patch	\
+  %D%/packages/patches/flex-fix-make-dependencies.patch         \
   %D%/packages/patches/fluxbox-1.3.7-no-dynamic-cursor.patch	\
   %D%/packages/patches/fluxbox-1.3.7-gcc.patch			\
   %D%/packages/patches/fmt-9-overspecified-tests.patch	\
