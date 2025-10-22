@@ -3139,24 +3139,18 @@ of a Plasma shell.")
 (define-public spectacle
   (package
     (name "spectacle")
-    (version "6.4.5")
+    (version "6.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/plasma/" version
                            "/spectacle-" version ".tar.xz"))
        (sha256
-        (base32 "1rs0anx22fhglasgvfsg6m4a43iawgkgd3h8c6vcgif0jc2nz9a2"))))
+        (base32 "1wfwy3msjv48mlnvqhkandy4cpr1p39by5grjqvqllzjy735fip1"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "ctest" "-E"
-                             "filename_test")))))))
+           #:tests? #f)) ;no tests
     (native-inputs
      (list extra-cmake-modules kdoctools))
     (inputs
