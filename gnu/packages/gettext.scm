@@ -55,14 +55,14 @@
 (define-public gettext-minimal
   (package
     (name "gettext-minimal")
-    (version "0.23.1")
+    (version "0.26")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gettext/gettext-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0j8fijicvg8jkrisgsqbpnbmfb2mz3gx2p6pcwip82731yb7i9aj"))))
+                "0zqxpdc6xxf7rz69xfxiv7z32djvrsm64m80c05i36qy6yqg9b1r"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "doc"))                            ;9 MiB of HTML

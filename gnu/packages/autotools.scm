@@ -438,14 +438,14 @@ Makefile, simplifying the entire process for the developer.")
 (define-public automake
   (package/inherit automake-1.16.5
     (name "automake")
-    (version "1.17")
+    (version "1.18.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/automake/automake-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "146rkdcwri2dkwn3pjrjs9v0wm4xyav9vvq4yw5vj4qy87yc2849"))
+                "11v8ckqx7z8hv4mq9dnhg58cwnssaa7l9136yndbhlc34xis72hn"))
               (patches
                (search-patches "automake-skip-amhello-tests.patch"))))
     (arguments
