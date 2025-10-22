@@ -1170,7 +1170,7 @@ call it if it is not associated to a terminal.")
 (define-public ksystemstats
   (package
     (name "ksystemstats")
-    (version "6.4.5")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1178,15 +1178,11 @@ call it if it is not associated to a terminal.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1lj99bhgnzkx2jx9bx67pcffxsa5hz1s6ksvhb591zdb767jhnvi"))))
+                "1sk0cd4v4q7fmlqg18d4pz0m0wl4s0dw4a2xjpf0fi8s5y8dimn0"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
-           #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "ctest" "-E" "ksystemstatstest")))))))
+           #:test-exclude "ksystemstatstest"))
     (native-inputs (list extra-cmake-modules pkg-config))
     (inputs (list glib
                   kcoreaddons
