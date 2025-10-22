@@ -712,27 +712,25 @@ KDE Frameworks 5 to better interact with the system.")
 (define-public kdeplasma-addons
   (package
     (name "kdeplasma-addons")
-    (version "6.4.5")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1kkvny9420jr9cd82valn45f3p7zyxvj3h767cf23xmvj8ldrnsb"))))
+                "02xrjdkanwgc8smy9j3hqdk9zfmahb1jx2y02g010lbx6145s2nc"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
+           #:test-exclude "converterrunnertest"
            #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? inputs #:allow-other-keys)
+                        (add-before 'check 'check-setup
+                          (lambda* (#:key inputs #:allow-other-keys)
 
-                            (when tests?
-                              (setenv "TZDIR"
-                                      (search-input-directory
-                                       inputs "share/zoneinfo"))
-                              (invoke "ctest" "-E"
-                                      "(converterrunnertest)")))))))
+                            (setenv "TZDIR"
+                                    (search-input-directory
+                                     inputs "share/zoneinfo")))))))
     (native-inputs (list extra-cmake-modules tzdata-for-tests))
     (inputs (list karchive
                   kauth
