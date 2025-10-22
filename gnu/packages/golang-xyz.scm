@@ -20077,6 +20077,31 @@ names.")
 compatible with the standard library logger.")
     (license license:expat)))
 
+(define-public go-github-com-sj14-astral
+  (package
+    (name "go-github-com-sj14-astral")
+    (version "0.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sj14/astral")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zwykcmlg48jqc37n0z0i5w7njsh3rp727bk75ylm9b5f96nv2sp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/sj14/astral"
+      #:skip-build? #t))
+    (propagated-inputs (list go-github-com-logrusorgru-aurora-v4))
+    (home-page "https://github.com/sj14/astral")
+    (synopsis "Calculations for the position of the sun and moon")
+    (description "Calculations for the position of the sun and moon.  This is a Go port of the
+@code{python-astral} package.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-skip2-go-qrcode
   (package
     (name "go-github-com-skip2-go-qrcode")
