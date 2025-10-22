@@ -1991,29 +1991,17 @@ by which applications, and what documents have been linked to which activity.")
 (define-public plasma5support
   (package
     (name "plasma5support")
-    (version "6.4.5")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0hpr9l7mm4lgnvn0qydsly6vmnmmrgiv256m6nyzfflf5z4gpzdc"))))
+                "1np3172xn92dfqvm5nhmmvzzhi5npvsy1m3r4jj4j7z2x1b7falp"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase
-
-                     #:phases
-                     #~(modify-phases %standard-phases
-                         (replace 'check
-                           (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
-                             (invoke "ctest"
-                                     "-E"
-                                     ;; also fail in upstream.
-                                     "(pluginloadertest)"
-                                     "-j"
-                                     (if parallel-tests?
-                                         (number->string (parallel-job-count))
-                                         "1")))))))
+                     #:tests? #f)) ;no tests
     (native-inputs (list extra-cmake-modules pkg-config))
     (propagated-inputs (list kcoreaddons))
     (inputs (list
@@ -2022,8 +2010,10 @@ by which applications, and what documents have been linked to which activity.")
              kio
              kidletime
              kguiaddons
+             kholidays
              knotifications
              kservice
+             kunitconversion
              libksysguard
              networkmanager-qt
              plasma-activities
