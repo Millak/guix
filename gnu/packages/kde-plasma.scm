@@ -543,7 +543,7 @@ desktop.")
 (define-public krdp
   (package
     (name "krdp")
-    (version "6.4.5")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -551,7 +551,7 @@ desktop.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0i8ak6zijxihl3wabbi5896y0ai7r7284mb5f4njvdmnbl12q71q"))))
+                "12xm2902g2f52m13kchgsf2d0g483szwaaafw9md7bdf8avmq1ki"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase
                      #:tests? #f
@@ -571,20 +571,22 @@ desktop.")
                          ;; for wayland-scanner
                          wayland))
     (inputs (list
+             freerdp-3
              kconfig
+             kcmutils
+             kcoreaddons
              kcrash
              kdbusaddons
-             kcmutils
+             kguiaddons
              ki18n
-             kcoreaddons
-             kstatusnotifieritem
              kpipewire
+             kstatusnotifieritem
+             linux-pam
              openssl
              plasma-wayland-protocols
-             freerdp-3
-             qtwayland
              qtdeclarative
              qtkeychain-qt6
+             qtwayland
              wayland-protocols
              wayland))
     (synopsis "Library and examples for creating an RDP server")
