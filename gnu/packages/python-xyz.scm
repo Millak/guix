@@ -21051,19 +21051,32 @@ Amazon Web Services (AWS) API.")
 (define-public python-pyfiglet
   (package
     (name "python-pyfiglet")
-    (version "0.8.post1")
+    (version "1.0.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyfiglet" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pwaller/pyfiglet")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0f9n2076ga2ccsg174k2d7n0z4d44ml96yzc72s6g4nhalbk5hn6"))))
-    (build-system python-build-system)
+        (base32 "1r1fyphz99jar2xfk761cl740zxk4b0gygajgjfx6i1kf0dxdv40"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fallback-on-default-build
+            (lambda _
+              ;; This pyproject has little value and fails because of the
+              ;; :__legacy__ suffix.  Removing it to rely on defaults.
+              (delete-file "pyproject.toml"))))))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/pwaller/pyfiglet")
     (synopsis "Draw ASCII art big letters in Python")
-    (description "This module lets you draw large letter from ordinary characters
-in pure Python.")
+    (description
+     "This module lets you draw large letter from ordinary characters in pure
+ Python.")
     (license license:expat)))
 
 (define-public python-mako
