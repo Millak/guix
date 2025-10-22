@@ -20880,15 +20880,16 @@ view your Denote directory.")
 (define-public emacs-denote-org
   (package
     (name "emacs-denote-org")
-    (version "0.1.1")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/denote-org-" version
                            ".tar"))
        (sha256
-        (base32 "0nwyyzx96d5k6dw4jb8bvni9fjr1plip57mdsyabrha19p6n282d"))))
+        (base32 "05jyy4gmd4nhgbh0cfjnjspwjzdkrljgl12wygqlai4d4hpv54mr"))))
     (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs (list emacs-denote))
     (home-page "https://github.com/protesilaos/denote-org")
     (synopsis "Denote extensions for Org mode")
