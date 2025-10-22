@@ -1806,6 +1806,36 @@ implementations are described in \"Fast SHA-256 Implementations on Intel
 Architecture Processors\" by J. Guilford et al.")
     (license license:asl2.0)))
 
+;; XXX: Deprecated in upstream: This repository has been archived by the owner
+;; on Jul 22, 2024. It is now read-only.
+;; Consider to remove when nothing is depend on it.
+(define-public go-github-com-mitchellh-hashstructure
+  (package
+    (name "go-github-com-mitchellh-hashstructure")
+    (version "2.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mitchellh/hashstructure")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yyr1igvyv7dzjxs9hbwk7qhshwxys0hq59sy2g2a46hjgi311iv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mitchellh/hashstructure/v2"))
+    (home-page "https://github.com/mitchellh/hashstructure")
+    (synopsis "Unique hash value for arbitrary values in Go")
+    (description
+     "This package is a Go library for creating a unique hash value for
+arbitrary values in Go. This can be used to key values in a hash (for use in a
+map, set, etc.) that are complex.  The most common use case is comparing two
+values without sending data across the network, caching values
+locally (de-dup), and so on.")
+    (license license:expat)))
+
 (define-public go-github-com-mr-tron-base58
   (package
     (name "go-github-com-mr-tron-base58")
