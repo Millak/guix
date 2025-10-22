@@ -20143,7 +20143,7 @@ components required by the produced @file{.tex} file.")
 (define-public emacs-org-contrib
   (package
     (name "emacs-org-contrib")
-    (version "0.6")
+    (version "0.7")
     (source
      (origin
        (method git-fetch)
@@ -20152,12 +20152,11 @@ components required by the produced @file{.tex} file.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08m3aa8vsrlkacbvindjwqzviv5r8i9a0vzsrl8rx01xq5b0zd42"))))
+        (base32 "1mjgfpjs32hnsj631mvmwrwxqvdb6clj3j077xmfrrp80r25gvqx"))))
     (build-system emacs-build-system)
     (arguments
-     (list #:lisp-directory "lisp"))
-    (propagated-inputs
-     (list emacs-org))
+     (list #:tests? #f                  ;no tests
+           #:lisp-directory "lisp"))
     (home-page "https://git.sr.ht/~bzg/org-contrib")
     (synopsis "Unmaintained add-ons for Org mode")
     (description
