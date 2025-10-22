@@ -598,14 +598,14 @@ RDP server.")
 (define-public kde-gtk-config
   (package
     (name "kde-gtk-config")
-    (version "6.4.5")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/kde-gtk-config-" version ".tar.xz"))
               (sha256
                (base32
-                "1hhfi31k5wx4s43x804nzhybifw4n7yrkaa0qs6616skzlg1ra7p"))))
+                "03if8vz046mslbagkw39hff6da26hrxpj2yyvzjxydvpq2x5ixzd"))))
     (build-system qt-build-system)
     (arguments
      (list
