@@ -24241,6 +24241,66 @@ without direct type dependencies. Its first consumers are
 @code{k8s.io/apiserver}.")
     (license license:asl2.0)))
 
+(define-public go-k8s-io-client-go
+  (package
+    (name "go-k8s-io-client-go")
+    (version "0.34.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kubernetes/client-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s3pfrqjk1zjg7hyn90ykgkn5ak5x1r5w5jfcr0sdlv9p42q0yqi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "k8s.io/client-go"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; Two tests failed while setting up networking.
+               (list "TestFallbackClient_WebSocketHTTPSProxyNoFallback"
+                     "TestWebSocketClient_ProxySucceeds")
+               "|"))))
+    (native-inputs
+     (list go-github-com-gogo-protobuf
+           go-github-com-google-go-cmp
+           go-github-com-stretchr-testify
+           go-go-uber-org-goleak
+           go-sigs-k8s-io-randfill))
+    (propagated-inputs
+     (list go-github-com-go-logr-logr
+           go-github-com-google-gnostic-models
+           go-github-com-google-uuid
+           go-github-com-gorilla-websocket
+           go-github-com-gregjones-httpcache
+           go-github-com-munnerz-goautoneg
+           go-github-com-peterbourgon-diskv
+           go-github-com-spf13-pflag
+           go-golang-org-x-net
+           go-golang-org-x-oauth2
+           go-golang-org-x-term
+           go-golang-org-x-time
+           go-google-golang-org-protobuf
+           go-gopkg-in-evanphx-json-patch-v4
+           go-k8s-io-api
+           go-k8s-io-apimachinery
+           go-k8s-io-klog-v2
+           go-k8s-io-kube-openapi
+           go-k8s-io-utils
+           go-sigs-k8s-io-json
+           go-sigs-k8s-io-structured-merge-diff-v6
+           go-sigs-k8s-io-yaml))
+    (home-page "https://k8s.io/client-go")
+    (synopsis "Golang client for Kubernetes")
+    (description
+     "This package provides Go clients for talking to a
+@url{http://kubernetes.io/,kubernetes} cluster.")
+    (license license:asl2.0)))
+
 (define-public go-k8s-io-gengo-v2
   (package
     (name "go-k8s-io-gengo-v2")
