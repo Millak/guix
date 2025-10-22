@@ -567,6 +567,38 @@ decompressing data.  The package is completely written in Go and doesn't have
 any dependency on any C code.")
     (license license:bsd-3)))
 
+(define-public go-github-com-vbatts-tar-split
+  (package
+    (name "go-github-com-vbatts-tar-split")
+    (version "0.12.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/vbatts/tar-split")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08zf59nsfkfndjb2hgf4ccvpsi8aijd1daa5v19my2bfiabqf0za"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/vbatts/tar-split"))
+    (native-inputs
+     (list go-github-com-fatih-color
+           go-github-com-magefile-mage
+           go-github-com-sirupsen-logrus
+           go-github-com-stretchr-testify
+           go-github-com-urfave-cli))
+    (home-page "https://github.com/vbatts/tar-split")
+    (synopsis "Checksum-reproducible tar archives")
+    (description
+     "This package implements a functionality for pristinely disassembling a tar
+archive, and stashing needed raw bytes and offsets to reassemble a validating
+original archive.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-xi2-xz
   (package
     (name "go-github-com-xi2-xz")
@@ -626,6 +658,20 @@ tool."))))
      (string-append (package-description go-github-com-pierrec-lz4-v4)
                     "  This package provides an additional command line
 interface tool to compress and decompress LZ4 files."))))
+
+(define-public go-tar-split
+  (package/inherit go-github-com-vbatts-tar-split
+    (name "go-tar-split")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-vbatts-tar-split)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:import-path _) "github.com/vbatts/tar-split/cmd/tar-split")
+       ((#:unpack-path _ "") "github.com/vbatts/tar-split")))
+    (propagated-inputs '())
+    (inputs '())))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
