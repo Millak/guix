@@ -99,8 +99,11 @@
        (snippet
         '(begin
            ;; QProgressIndicator is not available in Guix.
-           ;; FIXME: Fix building with the system kirigami.
-           (let* ((keep '("QProgressIndicator" "kirigami")))
+           ;; FIXME: Fix building with the system kirigami and qtsolutions.
+           (let* ((keep '("QProgressIndicator"
+                          "kirigami"
+                          "qtlockedfile"
+                          "qtsingleapplication")))
              (with-directory-excursion "src/3rdparty"
                (for-each delete-file-recursively
                          (lset-difference string=?
@@ -109,17 +112,7 @@
            (with-directory-excursion "src/gui"
              (substitute* "CMakeLists.txt"
                ;; Remove references of deleted 3rdparties.
-               (("[ \t]*\\.\\./3rdparty/qtlockedfile/?.*\\.(cpp|h)")
-                "")
-               (("[ \t]*\\.\\./3rdparty/qtsingleapplication/?.*\\.(cpp|h)")
-                "")
                (("[ \t]*\\.\\./3rdparty/kmessagewidget/?.*\\.(cpp|h)")
-                "")
-               (("[ \t]*list\\(APPEND 3rdparty_SRC \\.\\./3rdparty/?.*\\)")
-                "")
-               (("\\$\\{CMAKE_SOURCE_DIR\\}/src/3rdparty/qtlockedfile")
-                "")
-               (("\\$\\{CMAKE_SOURCE_DIR\\}/src/3rdparty/qtsingleapplication")
                 "")
                (("\\$\\{CMAKE_SOURCE_DIR\\}/src/3rdparty/kmessagewidget")
                 ;; For this, we rely on build inputs, so let's just replace
@@ -129,15 +122,7 @@
                ;; no longer are post-vendoring.
                (("KF6::Archive")
                 (string-append "KF6::Archive "
-                               "QtSolutions_LockedFile "
-                               "QtSolutions_SingleApplication "
-                               "KF6WidgetsAddons")))
-             ;; Fix compatibility with QtSingleApplication from QtSolutions.
-             (substitute* '("application.h" "application.cpp")
-               (("SharedTools::QtSingleApplication")
-                "QtSingleApplication")
-               (("slotParseMessage\\(const QString &(msg)?.*\\)")
-                "slotParseMessage(const QString &msg)")))
+                               "KF6WidgetsAddons"))))
            #t))))
     (build-system qt-build-system)
     (arguments
@@ -245,7 +230,6 @@
            qt5compat
            qtdeclarative
            qtkeychain-qt6
-           qtsolutions
            qtsvg
            qtwayland
            qtwebchannel
