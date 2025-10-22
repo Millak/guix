@@ -25194,16 +25194,16 @@ correctly.")))
 (define-public go-jsonnet
   (package
     (name "go-jsonnet")
-    (version "0.20.0")
+    (version "0.21.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/google/go-jsonnet")
-             (commit (string-append "v" version))))
+              (url "https://github.com/google/go-jsonnet")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qfr6yvhj33rhx1icxh99bbpngh5kwq1x7r39315y53bw216vbrz"))))
+        (base32 "0d05f16qxabfhaj0l3da3x7zl5g8jbvkcyn39bidd2a278sb3p97"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -25213,15 +25213,15 @@ correctly.")))
     (native-inputs
      (list go-github-com-fatih-color
            go-github-com-sergi-go-diff
-           go-gopkg-in-yaml-v2
+           go-golang-org-x-crypto
            go-sigs-k8s-io-yaml))
     (home-page "https://github.com/google/go-jsonnet")
     (synopsis "Go implementation of Jsonnet")
     (description
      "This package provides an implementation of the @url{http://jsonnet.org/,
-Jsonnet} data templating language in Go.  It is a
-feature-complete,production-ready implementation, compatible with the original
-Jsonnet C++implementation.")
+Jsonnet} data templating language in Go.  It is a feature-complete,
+production-ready implementation, compatible with the original Jsonnet
+C++implementation.")
     (license license:asl2.0)))
 
 (define-public go-ifacemaker
