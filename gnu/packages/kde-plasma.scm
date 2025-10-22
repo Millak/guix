@@ -109,7 +109,7 @@
 (define-public libplasma
   (package
     (name "libplasma")
-    (version "6.4.5")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -117,7 +117,7 @@
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0921kh0a8xwxjza1zkxyhbb9c83hly14x1jmdc7hhmpcrxa6qnwl"))))
+                "1s3cgf1rc1z519z88njzsnd5sv2hj09qzl4kgphrf4kk8i4q37xw"))))
     (build-system qt-build-system)
     (propagated-inputs
      (list kpackage kwindowsystem))
@@ -135,7 +135,6 @@
              kirigami
              kio
              ki18n
-             kcmutils
              ksvg
              kglobalaccel
              knotifications
@@ -148,20 +147,23 @@
              libxkbcommon))
     (arguments
      (list #:qtbase qtbase
+           #:test-exclude
+           (string-append "("
+                          (string-join '("plasma-dialogstatetest"
+                                         "plasma-iconitemtest"
+                                         "plasma-dialogqmltest"
+                                         "plasma-themetest"
+                                         "iconitemhidpitest"
+                                         "bug485688test"
+                                         "dialognativetest")
+                                       "|")
+                          ")")
            #:phases
            #~(modify-phases %standard-phases
-               (replace 'check
+               (add-before 'check 'check-setup
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
-                     (setenv "HOME" (getcwd))
-                     (invoke "ctest" "-E"
-                             (string-append "(plasma-dialogstatetest"
-                                            "|plasma-iconitemtest"
-                                            "|plasma-dialogqmltest"
-                                            "|plasma-themetest"
-                                            "|iconitemhidpitest"
-                                            "|bug485688test"
-                                            "|dialognativetest)"))))))))
+                     (setenv "HOME" (getcwd))))))))
     (home-page "https://invent.kde.org/plasma/libplasma")
     (synopsis "Libraries, components and tools of Plasma workspaces")
     (description "The plasma framework provides QML components, libplasma and
