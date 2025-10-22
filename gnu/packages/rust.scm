@@ -1696,37 +1696,6 @@ ge13ca993e8ccb9ba9847cc330696e02839f328f7/jemalloc"))
                              ,@(make-ignore-test-list
                                 '("fn test_missing_tests")))))))
                    `())
-             ,@(if (target-aarch64?)
-                   ;; Keep this phase separate so it can be adjusted without needing
-                   ;; to adjust the skipped tests on other architectures.
-                   `((add-after 'unpack 'disable-tests-broken-on-aarch64
-                       (lambda _
-                         (with-directory-excursion "src/tools/cargo/tests/testsuite"
-                           (substitute* "build_script_extra_link_arg.rs"
-                             ,@(make-ignore-test-list
-                                '("fn build_script_extra_link_arg_bin_single")))
-                           (substitute* "build_script.rs"
-                             ,@(make-ignore-test-list
-                                '("fn env_test")))
-                           (substitute* "cache_lock.rs"
-                             ,@(make-ignore-test-list
-                                '("fn download_then_mutate")))
-                           (substitute* "collisions.rs"
-                             ,@(make-ignore-test-list
-                                '("fn collision_doc_profile_split")))
-                           (substitute* "concurrent.rs"
-                             ,@(make-ignore-test-list
-                                '("fn no_deadlock_with_git_dependencies")))
-                           (substitute* "features2.rs"
-                             ,@(make-ignore-test-list
-                                '("fn dep_with_optional_host_deps_activated"))))
-                         (with-directory-excursion "src/tools/clippy/tests"
-                           ;; `"vectorcall"` is not a supported ABI for the current target
-                           (delete-file "ui/missing_const_for_fn/could_be_const.rs")
-                           (substitute* "missing-test-files.rs"
-                             ,@(make-ignore-test-list
-                                '("fn test_missing_tests")))))))
-                   `())
              (add-after 'unpack 'disable-miscellaneous-broken-tests
                (lambda _
                  (substitute* "src/tools/cargo/tests/testsuite/check_cfg.rs"
