@@ -39,12 +39,14 @@
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages digest)
+  #:use-module (gnu packages documentation)
   #:use-module (gnu packages fcitx5)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages hunspell)
   #:use-module (gnu packages image)
@@ -57,6 +59,7 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages messaging)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages php)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
@@ -437,6 +440,44 @@ and not propagated to upstream.")
    (sha256
     (base32
      "0fg4x4ikj7f3706bmfvkwq4smxc98qr3cgpm25w48n4ys6wfgadg"))))
+
+(define-public tdlib
+  (let ((commit "7d257dcda5dd2c616c1146540ef51147c5bb2c69"))
+    (package
+      (name "tdlib")
+      (version "1.8.55")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tdlib/td")
+               (commit commit)))
+         (sha256
+          (base32 "0w36jwblwi4rb61id0jkfasy01p69c9myvm51qgmv3hlw60kwq51"))
+         (file-name (git-file-name name version))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:build-type "Release"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'remove-failing-tests
+              (lambda _
+                (substitute* "test/CMakeLists.txt"
+                  ;; The test cases are compiled into a distinct binary
+                  ;; which uses mtproto.cpp to attempt to connect to
+                  ;; a remote server. Removing this file from the sources
+                  ;; list disables those specific test cases.
+                  (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/mtproto.cpp") "")))))))
+      (native-inputs
+       (list gperf openssl zlib php doxygen))
+      (synopsis "Cross-platform library for building Telegram clients")
+      (description "Tdlib is a cross-platform library for creating custom
+Telegram clients following the official Telegram API.  It can be easily used
+from almost any programming language with a C-FFI and features first-class
+support for high performance Telegram Bot creation.")
+      (home-page "https://core.telegram.org/tdlib")
+      (license license:boost1.0))))
 
 (define tde2e
   (let ((base tdlib))

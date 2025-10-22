@@ -103,7 +103,6 @@
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
-  #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
@@ -132,7 +131,6 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
-  #:use-module (gnu packages php)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
@@ -2640,44 +2638,6 @@ replacement.")
     ;; Code under tgl/ (the Telegram library) is LGPLv2.1+, but the plugin
     ;; itself is GPLv2+.
     (license license:gpl2+)))
-
-(define-public tdlib
-  (let ((commit "7d257dcda5dd2c616c1146540ef51147c5bb2c69"))
-    (package
-      (name "tdlib")
-      (version "1.8.55")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/tdlib/td")
-               (commit commit)))
-         (sha256
-          (base32 "0w36jwblwi4rb61id0jkfasy01p69c9myvm51qgmv3hlw60kwq51"))
-         (file-name (git-file-name name version))))
-      (build-system cmake-build-system)
-      (arguments
-       (list
-        #:build-type "Release"
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'remove-failing-tests
-              (lambda _
-                (substitute* "test/CMakeLists.txt"
-                  ;; The test cases are compiled into a distinct binary
-                  ;; which uses mtproto.cpp to attempt to connect to
-                  ;; a remote server. Removing this file from the sources
-                  ;; list disables those specific test cases.
-                  (("\\$\\{CMAKE_CURRENT_SOURCE_DIR\\}/mtproto.cpp") "")))))))
-      (native-inputs
-       (list gperf openssl zlib php doxygen))
-      (synopsis "Cross-platform library for building Telegram clients")
-      (description "Tdlib is a cross-platform library for creating custom
-Telegram clients following the official Telegram API.  It can be easily used
-from almost any programming language with a C-FFI and features first-class
-support for high performance Telegram Bot creation.")
-      (home-page "https://core.telegram.org/tdlib")
-      (license license:boost1.0))))
 
 (define-public purple-mm-sms
   (package
