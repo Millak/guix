@@ -626,6 +626,61 @@ Cryptography (ECC).")
 @code{encoding/base64} library.")
     (license (list license:asl2.0 license:asl2.0))))
 
+(define-public go-github-com-containers-ocicrypt
+  (package
+    (name "go-github-com-containers-ocicrypt")
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containers/ocicrypt")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hy08qfb68hggw343axaj2k262zv40a7gb464kvp5j0f4qi43p74"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containers/ocicrypt"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; pkcs11helpers_test.go:72: No module could be found;
+                       ;; it's just empty test file.
+                       (list "TestParsePkcs11KeyFileGood"
+                             ;; Tests search for gnutls, when added still
+                             ;; failing.
+                             "TestKeyWrapPkcs11Invalid"
+                             "TestKeyWrapPkcs11Success"
+                             "TestPkcs11EncryptDecrypt"
+                             "TestPkcs11EncryptDecryptPubkey")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-jose-go-jose-v4
+           go-github-com-golang-protobuf
+           go-github-com-miekg-pkcs11
+           go-github-com-opencontainers-go-digest
+           go-github-com-opencontainers-image-spec
+           go-github-com-sirupsen-logrus
+           go-github-com-smallstep-pkcs7
+           go-github-com-stefanberger-go-pkcs11uri
+           go-golang-org-x-crypto
+           go-golang-org-x-term
+           go-google-golang-org-grpc
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/containers/ocicrypt")
+    (synopsis "Encryption libraries for Encrypted OCI Container images")
+    (description
+     "The @code{ocicrypt} library is the OCI image spec implementation of container
+image encryption.  More details of the spec can be seen in the
+@url{https://github.com/opencontainers/image-spec/pull/775, OCI repository}.
+The purpose of this library is to encode spec structures and consts in code,
+as well as provide a consistent implementation of image encryption across
+container runtimes and build tools.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-davidlazar-go-crypto
   (package
     (name "go-github-com-davidlazar-go-crypto")
