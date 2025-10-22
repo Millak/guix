@@ -98,6 +98,7 @@
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gd)
+  #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
@@ -3222,6 +3223,57 @@ highly customized logos illustrating the properties of DNA, RNA, or protein
 sequences.  Logos are rendered as vector graphics embedded within native
 matplotlib Axes objects, making them easy to style and incorporate into
 multi-panel figures.")
+    (license license:expat)))
+
+(define-public python-weblogo
+  (package
+    (name "python-weblogo")
+    (version "3.7.12")
+    (home-page "https://github.com/gecrooks/weblogo")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "weblogo" version))
+       (sha256
+        (base32
+         "0mw6aa0dq3kk9k1nakdvm64icz9504spqbvq4v2h0rb1cb52frkw"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list ghostscript
+                             python-numpy
+                             python-pluggy
+                             python-scipy))
+    (native-inputs (list ghostscript
+                         python-importlib-metadata
+                         python-importlib-resources
+                         python-pytest
+                         python-setuptools
+                         python-setuptools-scm
+                         python-wheel))
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k"
+             ;; These tests fail because of circular imports
+             (string-append "not test_cli.py"
+                            " and not test_transformseq.py"))))
+    (synopsis "Sequence Logo Generator")
+    (description "WebLogo is a web based application designed to make the
+generation of sequence logos as easy and painless as possible.
+
+WebLogo can create output in several common graphics' formats, including the
+bitmap formats GIF and PNG, suitable for on-screen display, and the vector
+formats EPS and PDF, more suitable for printing, publication, and further
+editing.  Additional graphics options include bitmap resolution, titles,
+optional axis, and axis labels, antialiasing, error bars, and alternative
+symbol formats.
+
+A sequence logo is a graphical representation of an amino acid or nucleic acid
+multiple sequence alignment.  Each logo consists of stacks of symbols, one
+stack for each position in the sequence.  The overall height of the stack
+indicates the sequence conservation at that position, while the height of
+symbols within the stack indicates the relative frequency of each amino or
+nucleic acid at that position.  The width of the stack is proportional to the
+fraction of valid symbols in that position.")
     (license license:expat)))
 
 (define-public python-magic-impute
