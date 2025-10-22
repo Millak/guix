@@ -3239,7 +3239,7 @@ of a Plasma shell.")
 (define-public wacomtablet
   (package
     (name "wacomtablet")
-    (version "6.4.5")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri
@@ -3247,18 +3247,24 @@ of a Plasma shell.")
                               "/wacomtablet-" version ".tar.xz"))
               (sha256
                (base32
-                "0a37h9lb6j3lnzmip5582p5pcjfxizvh7iawf0gk8adxlp05riz0"))))
+                "05r4k28jcsyvdsj5zv224nx6z7dqvjpb42g9124sajb4vm0crb4f"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
-           #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "dbus-launch" "ctest" "-E"
-                                      "(Test.KDED.DBusTabletService\
-|Test.KDED.TabletHandler|Test.KDED.XInputAdaptor|\
-Test.KDED.XsetWacomAdaptor)")))))))
+           #:test-exclude
+           (string-append "("
+                          (string-join '("Test.KDED.DBusTabletService"
+                                         "Test.KDED.TabletHandler"
+                                         "Test.KDED.XInputAdaptor"
+                                         "Test.KDED.XsetWacomAdaptor")
+                                       "|")
+                          ")")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
+                   (when tests?
+                     (invoke "dbus-launch" "ctest" "-E" test-exclude)))))))
     (native-inputs (list dbus extra-cmake-modules kdoctools pkg-config))
     (inputs (list kcoreaddons
                   ki18n
