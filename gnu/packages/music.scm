@@ -2357,7 +2357,7 @@ a JACK session.")
 (define-public mixxx
   (package
     (name "mixxx")
-    (version "2.5.2")
+    (version "2.5.3")
     (source
      (origin
        (method git-fetch)
@@ -2366,7 +2366,7 @@ a JACK session.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08j0xaqxn01w7q72smlnvv7iq7p6jrjfg3dk5mkpg2l3fagkgabl"))
+        (base32 "1k1lz001774q0m78bd41qr0yfrqy0hd9v1fnikkh5jhma9p2hrjs"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete libraries that we already have or don't need.
@@ -2405,7 +2405,7 @@ a JACK session.")
                   eudev
                   libxkbcommon          ;required by qtbase
                   faad2
-                  ffmpeg-4              ;XXX: chromaprint linked with ffmpeg-4
+                  ffmpeg
                   fftw
                   flac
                   glu
@@ -2434,6 +2434,7 @@ a JACK session.")
                   qtkeychain-qt6
                   qtsvg
                   qtshadertools
+                  qtwayland
                   qt5compat
                   rubberband
                   soundtouch
