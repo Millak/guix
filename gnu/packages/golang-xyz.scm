@@ -19218,6 +19218,30 @@ specification at http://partners.adobe.com/public/developer/en/tiff/TIFF6.pdf
 @end itemize")
       (license license:bsd-2))))
 
+(define-public go-github-com-rxwycdh-rxhash
+  (package
+    (name "go-github-com-rxwycdh-rxhash")
+    (version "0.0.0-20230131062142-10b7a38b400d")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rxwycdh/rxhash")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qw4kn5r0xjfy9mycv57f7lmlpksybzr2qcdr4713svrxakwmgyz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/rxwycdh/rxhash"))
+    (home-page "https://github.com/rxwycdh/rxhash")
+    (synopsis "Creating unique hash value for structs in Go.")
+    (description
+     "rxhash is a Go library for creating a unique hash value for struct in Go, but
+@strong{data consistency}.")
+    (license license:expat)))
+
 (define-public go-github-com-ryanuber-columnize
   (package
     (name "go-github-com-ryanuber-columnize")
