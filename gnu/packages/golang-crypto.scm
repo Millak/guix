@@ -2396,6 +2396,35 @@ Boneh and Victor Shoup's cryptography book} (pg 789, PAKE2 protocol).")
 seed} Go's random number generator (if possible).")
     (license license:expat)))
 
+(define-public go-github-com-serialx-hashring
+  (package
+    (name "go-github-com-serialx-hashring")
+    (version "0.0.0-20200727003509-22c0c7ab6b1b")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/serialx/hashring")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dbqc69z6hjqvvbbls97cizb3rixil67jq37fnjw2pkf0zhs9i4q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-vet=off")    ;Go@1.24 forces vet, but tests are not ready yet.
+      #:import-path "github.com/serialx/hashring"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/serialx/hashring")
+    (synopsis "Consistent hashing for Golang")
+    (description
+     "This package implements consistent hashing that can be used when the
+ number of server nodes increase or decrease (like in memcached).  The hashing
+ring is built using the same algorithm as libketama.")
+    (license license:expat)))
+
 (define-public go-github-com-shadowsocks-go-shadowsocks2
   (package
     (name "go-github-com-shadowsocks-go-shadowsocks2")
