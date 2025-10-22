@@ -402,7 +402,7 @@ on any distribution, and the nroff source is included."))))
   ;; input "locales" contain the original (English) text.
   (package
     (name "help2man")
-    (version "1.49.2")
+    (version "1.49.3")
     (source
      (origin
        (method url-fetch)
@@ -410,7 +410,7 @@ on any distribution, and the nroff source is included."))))
                            version ".tar.xz"))
        (sha256
         (base32
-         "0dnxx96lbcb8ab8yrdkqll14cl5n0bch8qpd9qj3c2ky78hhwbly"))))
+         "0kzxla1w0w4z5la255lg9q51wy3qx8f1b0i6gbhaz9pcybg4yzjd"))))
     (build-system gnu-build-system)
     (arguments
      (list
