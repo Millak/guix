@@ -197,7 +197,9 @@
                            '%base-services)))
          (native-console-font (match (false-if-exception
                                       (string-take (getenv "LANGUAGE") 2))
-                                ((or "be" "bg" "el" "eo" "kk" "ky"
+                                ((or "el" ;easier with more complete Greek font
+                                     ;; These need Cyrillic:
+                                     "be" "bg" "kk" "ky"
                                      "mk" "mn" "ru" "sr" "tg" "uk")
                                  "LatGrkCyr-8x16")
                                 (_ #f)))
