@@ -1429,7 +1429,7 @@ you login.")
 (define-public kwayland-integration
   (package
     (name "kwayland-integration")
-    (version "6.4.5")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1437,7 +1437,7 @@ you login.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "00ymvq1l7lmqw7isdds18ahp7b9hhc2q4mwy1hvvsfvnacqdcazx"))))
+                "1fim63sbdpcmjl704v9y35lvz6hbdwzzw85z6avda56dhrsadbf2"))))
     (build-system qt-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -1448,8 +1448,7 @@ you login.")
                               (setenv "HOME" (getcwd))
                               (setenv "XDG_RUNTIME_DIR" (getcwd))
                               (setenv "QT_QPA_PLATFORM" "offscreen")
-                              ;; https://bugs.gentoo.org/668872
-                              (invoke "ctest" "-E" "(idleTest-kwayland-test)"))))
+                              (invoke "ctest"))))
                         (add-before 'check-after-install 'check-setup
                           (lambda* (#:key outputs #:allow-other-keys)
                             (setenv "QT_PLUGIN_PATH"
