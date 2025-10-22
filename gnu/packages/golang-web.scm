@@ -10001,6 +10001,42 @@ implementation, as described in
 for Go.")
     (license license:bsd-2)))
 
+(define-public go-github-com-planetscale-vtprotobuf
+  (package
+    (name "go-github-com-planetscale-vtprotobuf")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/planetscale/vtprotobuf")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qd76dcy5ij49cvrqjnbr9smfkhzrl2s9czx9kz5g3530nhrgn2s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/planetscale/vtprotobuf"
+      #:test-flags
+      ;; TODO: Generate proto files to complete tests, see Makefile.
+      ;; conformance_test.go:56: execution error: fork/exec
+      ;; conformance/conformance-test-runner: no such file or directory
+      #~(list "-skip" "Test")))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://github.com/planetscale/vtprotobuf")
+    (synopsis "Protocol Buffers compiler for ProtoBuf APIv2 Golang code")
+    (description
+     "This package provides @@code{protoc-gen-go-vtproto} plug-in for
+@code{protoc}, which is used by Vitess to generate optimized marshall &
+unmarshal code.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-pquerna-cachecontrol
   (package
     (name "go-github-com-pquerna-cachecontrol")
@@ -14535,6 +14571,23 @@ carries no encryption keys and cannot decode the traffic that it proxies.")))
        ((#:tests? _ #t) #f)))
     (native-inputs (package-propagated-inputs
                     go-google-golang-org-grpc-cmd-protoc-gen-go-grpc))
+    (propagated-inputs '())
+    (inputs '())))
+
+(define-public protoc-gen-go-vtproto
+  (package/inherit go-github-com-planetscale-vtprotobuf
+    (name "protoc-gen-go-vtproto")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-planetscale-vtprotobuf)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:import-path _)
+        "github.com/planetscale/vtprotobuf/cmd/protoc-gen-go-vtproto")
+       ((#:unpack-path _ "") "github.com/planetscale/vtprotobuf")))
+    (native-inputs (package-propagated-inputs
+                    go-github-com-planetscale-vtprotobuf))
     (propagated-inputs '())
     (inputs '())))
 
