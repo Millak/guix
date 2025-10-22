@@ -414,9 +414,6 @@ problems for efficient solution on parallel systems.")
     (license license:gpl3+)
     (home-page "https://openfoam.org")))
 
-(define-public openfoam
-  (deprecated-package "openfoam" openfoam-org))
-
 (define-public openfoam-com
   ;; This is a fork of 'openfoam-org', maintained separately.
   (package
