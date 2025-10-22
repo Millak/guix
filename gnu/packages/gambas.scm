@@ -55,7 +55,7 @@
 (define-public gambas
   (package
     (name "gambas")
-    (version "3.20.2")
+    (version "3.21.0")
     (source
      (origin
        (method git-fetch)
@@ -64,7 +64,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "060f8w19jf78mappqgy11873ss3h97gi47ga3c1ws1bazix9x7rk"))))
+        (base32 "0lkm4fbxqmkqpk2f2z660m77xshhmvj4pnlv0z43zrarsij8l6gf"))))
     (build-system gnu-build-system)
     (arguments
      (list
