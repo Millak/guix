@@ -25,6 +25,8 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages avahi)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages freedesktop)
@@ -36,6 +38,7 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages ocr)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages textutils)
@@ -44,10 +47,9 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix deprecation)
   #:use-module (guix download)
-  #:use-module (guix git-download)
   #:use-module (guix gexp)
-  #:use-module ((guix licenses)
-                #:prefix license:)
+  #:use-module (guix git-download)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix search-paths)
   #:use-module (guix utils))
@@ -254,61 +256,101 @@ hand-held scanner, video- and still-cameras, frame-grabbers, etc.).  The
 package contains the library and drivers.")))
 
 (define-public utsushi
-  (let ((commit "839d06a5a80b353cb604eb9f7d352a1648ab1fdf"))
+  (let ((commit "b296671703ea3317ae1621f8ae67f7086208369d")
+        (revision "2"))
     (package
       (name "utsushi")
-      (version (git-version "0.65.0" "1" commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://gitlab.com/utsushi/utsushi")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0i6ipqy61abbsmqqqy5sii0vlib146snvp975sgjmv4nzy9mwf24"))))
+      (version (git-version "0.65.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://gitlab.com/utsushi/utsushi")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0sa2im75ymrkhxhhm93g81vv02yjwg3wn9myrjzlrfl2xnwk3bzb"))))
       (build-system gnu-build-system)
       (arguments
-       (list #:tests? #f
-             #:configure-flags
-             #~(list (string-append "--with-boost-libdir="
-                                    #$(this-package-input "boost") "/lib")
-                     "CXXFLAGS=-Wno-error")
-             #:phases
-             #~(modify-phases %standard-phases
-                 (add-before 'bootstrap 'zap-unnecessary-git-dependency
-                   (lambda _
-                     (substitute* "configure.ac"
-                       (("-m4_esyscmd_s\\(\\[git describe --always\\]\\)") ""))))
-                 (add-after 'install 'install-udev-rules
-                   (lambda* (#:key outputs #:allow-other-keys)
-                     (mkdir-p (string-append #$output "/lib/udev/rules.d"))
-                     (install-file "drivers/esci/utsushi-esci.rules"
-                                   (string-append #$output
-                                                  "/lib/udev/rules.d")))))))
-      (inputs (list boost
-                    eudev
-                    sane
-                    libusb
-                    libjpeg-turbo
-                    imagemagick
-                    libtiff
-                    zlib))
-      (native-inputs (list util-linux
-                           autoconf
-                           autoconf-archive
-                           automake
-                           gettext-minimal
-                           libtool
-                           libxslt
-                           pkg-config))
+       (list
+        #:configure-flags
+        #~(list (string-append "--with-boost-libdir="
+                               #$(this-package-input "boost") "/lib")
+                "CXXFLAGS=-Wno-error")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-bootstrap-fail-on-error
+              (lambda _
+                (substitute* "bootstrap"
+                  ;; Don't continue when errors occurred.
+                  (("^usage") "set -e\n\nusage"))))
+            (add-after 'unpack 'fix-escaped-comment-marker
+              (lambda _
+                (substitute* "drivers/esci/Makefile.am"
+                  ;; Fixes a fatal warning: "escaping \# comment markers
+                  ;; is not portable".
+                  (("\\\\#") "\\x23"))))
+            (add-after 'unpack 'zap-unnecessary-git-dependency
+              (lambda _
+                (substitute* "configure.ac"
+                  (("-m4_esyscmd_s\\(\\[git describe --always\\]\\)")
+                   ""))))
+            (add-after 'unpack 'update-gettext-version
+              (lambda _
+                (substitute* "configure.ac"
+                  (("AM_GNU_GETTEXT_VERSION\\(.*\\)")
+                   (format #f "AM_GNU_GETTEXT_VERSION([~a])"
+                           #$(package-version (this-package-native-input
+                                               "gettext-minimal")))))))
+            (add-after 'unpack 'fix-newer-sane-support
+              (lambda _
+                (substitute* "sane/version.hpp"
+                  (("#error \"SANE.*violates.*versioning.*\"" all)
+                   (string-append "//" all)))))
+            (add-after 'unpack 'patch-shell-paths
+              (lambda _
+                (for-each (lambda (file)
+                            (substitute* file
+                              (("/bin/sh") (which "sh"))))
+                          '("filters/shell-pipe.cpp"
+                            "lib/run-time.cpp"
+                            "utsushi/test/command-line.hpp"))))
+            (add-after 'install 'install-udev-rules
+              (lambda _
+                (install-file "drivers/esci/utsushi-esci.rules"
+                              (string-append #$output "/lib/udev/rules.d")))))))
+      (inputs
+       (list bash-minimal
+             boost
+             eudev
+             gtkmm-2
+             imagemagick
+             libjpeg-turbo
+             libtiff
+             libusb
+             sane
+             zlib))
+      (native-inputs
+       (list autoconf
+             autoconf-archive
+             automake
+             gettext-minimal
+             libtool
+             libxslt
+             pkg-config
+             util-linux
+             ;; For tests.
+             coreutils
+             tesseract-ocr-tessdata-fast tesseract-ocr))    ; order matters
       (home-page "https://gitlab.com/utsushi/utsushi")
       (synopsis "Image scanning software for EPSON devices")
       (description
-       "Utsushi is a set of applications for image scanning with
-support for a number of EPSON scanners, including a compatibility driver to
-interface with software built around the @acronym{SANE, Scanner Access Now Easy}
-standard.")
+       "Utsushi is a set of applications for image scanning with support for a
+number of EPSON scanners, including a compatibility driver to interface with
+software built around the @acronym{SANE, Scanner Access Now Easy} standard.
+
+To enable auto-rotation functionality, install the @code{tesseract-ocr} and
+@code{tesseract-ocr-tessdata-fast} packages.")
       (license license:gpl3+))))
 
 (define-public scanbd
