@@ -765,7 +765,7 @@ KDE Frameworks 5 to better interact with the system.")
 (define-public kgamma
   (package
     (name "kgamma")
-    (version "6.4.5")
+    (version "6.5.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -773,7 +773,7 @@ KDE Frameworks 5 to better interact with the system.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "05mvgbr9w1dk9lmdik0vzfrkif69ljfyrnckqbnli0jhpxhbsvlr"))))
+                "1wqbv9a0zr8nmwyxkd2ypfjnani3zbdkdvpdwmyypm5mgqp3b062"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
