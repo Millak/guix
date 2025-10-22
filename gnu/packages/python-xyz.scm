@@ -21541,33 +21541,27 @@ main process so that they are handled correctly.")
   (package
     (name "python-munkres")
     (version "1.1.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "munkres" version))
-              (sha256
-               (base32
-                "00yvj8bxmhhhhd74v7j0x673is7vizmxwgb3dd5xmnkr74ybyi7w"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "munkres" version))
+       (sha256
+        (base32 "00yvj8bxmhhhhd74v7j0x673is7vizmxwgb3dd5xmnkr74ybyi7w"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'disable-test
-           (lambda _
-             ;; See https://github.com/bmc/munkres/issues/40
-             (substitute* "test/test_munkres.py"
-               (("^def test_profit_float" m)
-                (string-append "\
-import platform
-@pytest.mark.skipif(platform.architecture()[0] == \"32bit\",
-  reason=\"Fails on 32 bit architectures\")
-" m))))))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest))
+      ;; See https://github.com/bmc/munkres/issues/40
+      #:test-flags
+      (if (member (%current-system) %32bit-supported-systems)
+          #~(list "-k" "not test_profit_float")
+          #~(list))))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://software.clapper.org/munkres/")
     (synopsis "Implementation of the Munkres algorithm")
-    (description "The Munkres module provides an implementation of the Munkres
-algorithm (also called the Hungarian algorithm or the Kuhn-Munkres algorithm),
-useful for solving the Assignment Problem.")
+    (description
+     "The Munkres module provides an implementation of the Munkres algorithm
+(also called the Hungarian algorithm or the Kuhn-Munkres algorithm), useful
+for solving the Assignment Problem.")
     (license license:bsd-3)))
 
 (define-public python-codespell
