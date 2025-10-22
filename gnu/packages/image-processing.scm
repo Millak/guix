@@ -1025,6 +1025,7 @@ recalculates.")
     (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:build-type "Release"            ; 542 MiB in release mode
       #:tests? #f                       ; Downloads test data
       #:configure-flags
@@ -1173,6 +1174,7 @@ recalculates.")
            libtiff
            libxcursor
            libxml2
+           libxslt
            libxt
            lz4
            lzip
@@ -1190,15 +1192,13 @@ recalculates.")
            python-mpi4py
            python-numpy
            python-wrapper
-           qtbase-5
-           qtdeclarative-5
-           qtmultimedia-5
-           qtsvg-5
-           qttools-5
-           qtwebchannel-5
-           qtwebengine-5
-           qtx11extras
-           qtxmlpatterns-5
+           qt5compat
+           qtdeclarative
+           qtmultimedia
+           qtsvg
+           qttools
+           qtwebchannel
+           qtwebengine
            sdl2
            sqlite
            tbb
