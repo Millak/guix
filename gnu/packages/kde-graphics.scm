@@ -557,8 +557,7 @@ painting, image manipulating and icon editing.")
            gettext-minimal
            kitemmodels
            pkg-config
-           qwt
-           vc))
+           qwt))
     (inputs
      (list bash-minimal
            boost
