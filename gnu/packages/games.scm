@@ -2817,51 +2817,6 @@ map formats, MAPINFO support, full controller support, debug and scripting
 features, rewinding, and a strict mode for speedrunning.")
     (license license:gpl2+)))
 
-(define-public prboom-plus
-  (package
-   (name "prboom-plus")
-   (version "2.5.1.4")
-   (source (origin
-            (method url-fetch)
-            (uri (string-append "mirror://sourceforge/prboom-plus/prboom-plus/"
-                                version "/prboom-plus-" version ".tar.gz"))
-            (sha256
-             (base32 "151v6nign86m1a2vqz27krsccpc9m4d1jax4y43v2fa82wfj9qp0"))
-            (modules '((guix build utils)))
-            (snippet
-             '(begin
-                (substitute* "src/version.c"
-                  (("__DATE__") "")
-                  (("__TIME__") ""))
-                #t))))
-   (build-system gnu-build-system)
-   (arguments
-    '(#:configure-flags '("--disable-cpu-opt" "CFLAGS=-fcommon")
-      #:make-flags `(,(string-append "gamesdir="
-                                     (assoc-ref %outputs "out") "/bin"))
-      #:phases
-      (modify-phases %standard-phases
-        (add-after 'set-paths 'set-sdl'paths
-          (lambda* (#:key inputs #:allow-other-keys)
-            (setenv "CPATH"
-                    (string-append
-                     (search-input-directory inputs "/include/SDL")
-                     ":" (or (getenv "CPATH") ""))))))))
-   (inputs
-    (list fluidsynth
-          glu
-          libmad
-          libpng
-          libvorbis
-          pcre
-          portmidi
-          (sdl-union (list sdl sdl-image sdl-mixer sdl-net))))
-   (home-page "https://prboom-plus.sourceforge.net/")
-   (synopsis "Version of the classic 3D shoot'em'up game Doom")
-   (description
-    "PrBoom+ is a Doom source port developed from the original PrBoom project.")
-   (license license:gpl2+)))
-
 (define-public redeal
   (let ((commit "e2e81a477fd31ae548a340b5f0f380594d3d0ad6")
         (revision "1"))
