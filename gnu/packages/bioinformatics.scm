@@ -367,23 +367,6 @@ transparently with both VCFs and BCFs, both uncompressed and BGZF-compressed.")
                           (delete-file-recursively "htslib-1.12")))))
     (native-inputs (list htslib-1.12 perl))))
 
-(define-public bcftools-1.10
-  (package/inherit bcftools
-    (version "1.10")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/samtools/bcftools/"
-                                  "releases/download/"
-                                  version "/bcftools-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "10xgwfdgqb6dsmr3ndnpb77mc3a38dy8kh2c6czn6wj7jhdp4dra"))
-              (modules '((guix build utils)))
-              (snippet '(begin
-                          ;; Delete bundled htslib.
-                          (delete-file-recursively "htslib-1.10")))))
-    (native-inputs (list htslib-1.10 perl))))
-
 (define-public bedops
   (package
     (name "bedops")
