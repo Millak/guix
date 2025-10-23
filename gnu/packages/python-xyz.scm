@@ -30151,37 +30151,26 @@ a mypy plugin that smooths over some limitations in the basic type hints.
 (define-public python-trio-websocket
   (package
     (name "python-trio-websocket")
-    (version "0.11.1")
+    (version "0.12.2")
     (source
      (origin
-       (method git-fetch)               ;no tests in pypi archive
+       (method git-fetch)      
        (uri (git-reference
-             (url "https://github.com/HyperionGray/trio-websocket")
-             (commit version)))
+              (url "https://github.com/HyperionGray/trio-websocket")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sw85r8gikd86zc8jaqv0vmgcf2k62v6zjzxiv8xr6zm8ridplkm"))))
+        (base32 "1lm712gakpskcn3adna22kj8m1hspz9l68pmlziklr0ycphmyqac"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list "-k"
-             ;; FIXME: These raise nursery exceptions.  Perhaps pytest-trio is
-             ;; too old?
-             (string-append "not test_handshake_exception_before_accept"
-                            " and not test_reject_handshake"
-                            " and not test_reject_handshake_invalid_info_status"
-                            " and not test_client_open_timeout"
-                            " and not test_client_close_timeout"
-                            " and not test_client_connect_networking_error"
-                            " and not test_finalization_dropped_exception"))))
     (native-inputs
      (list python-pytest
            python-pytest-trio
            python-setuptools
-           python-trustme
-           python-wheel))
-    (propagated-inputs (list python-async-generator python-trio python-wsproto))
+           python-trustme))
+    (propagated-inputs
+     (list python-outcome
+           python-trio
+           python-wsproto))
     (home-page "https://github.com/HyperionGray/trio-websocket")
     (synopsis "WebSocket library for Trio")
     (description "This library implements both server and client aspects of
