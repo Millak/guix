@@ -12504,7 +12504,7 @@ against local background noises.")
              (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
                (install-file "stringtie" bin)))))))
     (inputs
-     (list bzip2 htslib-for-stringtie libdeflate zlib))
+     (list bzip2 htslib libdeflate zlib))
     (home-page "https://ccb.jhu.edu/software/stringtie/")
     (synopsis "Transcript assembly and quantification for RNA-Seq data")
     (description
