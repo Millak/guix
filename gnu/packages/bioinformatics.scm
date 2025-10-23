@@ -2930,7 +2930,7 @@ demultiplexing step.")
      (list python-anndata
            python-ipywidgets
            python-leidenalg
-           python-vtraag-louvain
+           python-louvain-igraph
            python-matplotlib
            python-numpy
            python-pandas
