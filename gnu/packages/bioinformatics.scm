@@ -12440,14 +12440,14 @@ against local background noises.")
 (define-public stringtie
   (package
     (name "stringtie")
-    (version "2.2.0")
+    (version "3.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://ccb.jhu.edu/software/stringtie/dl/"
                                   "stringtie-" version ".tar.gz"))
               (sha256
                (base32
-                "08w3ish4y9kf9acp7k38iwi8ixa6j51m6qyf0vvfj7yz78a3ai3x"))
+                "1mrqcvnhxbidyhf521naywb5ci579160ydqnl5kb4hqjqvm01mn2"))
               ;; This package bundles an annoying amount of third party source
               ;; code.
               (modules '((guix build utils)))
