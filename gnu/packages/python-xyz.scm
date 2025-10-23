@@ -1397,6 +1397,37 @@ intervals, where the intervals include the lower bound but not the upper
 bound.")
     (license license:asl2.0)))
 
+(define-public python-jschon
+  (package
+    (name "python-jschon")
+    (version "0.11.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/marksparkza/jschon/")
+              (commit (string-append "v" version))
+              (recursive? #t)))         ;required for tests
+       (sha256
+        (base32 "0javlbq83ffy98kinhl7i17ja00917856yg55qlbn8048lhc9sxq"))
+       (file-name (git-file-name name version))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-rfc3986))
+    (native-inputs
+     (list python-coverage
+           python-hypothesis
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-httpserver
+           python-requests
+           python-setuptools))
+    (home-page "https://jschon.readthedocs.io/")
+    (synopsis "Object-oriented JSON Schema implementation for Python")
+    (description
+     "This package provides a JSON toolkit for Python developers.")
+    (license license:expat)))
+
 (define-public python-jsonpath-ng
   (package
     (name "python-jsonpath-ng")
