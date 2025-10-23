@@ -21992,6 +21992,7 @@ check if a package meets certain version requirements, query CFLAGS and
 LDFLAGS and parse the output to build extensions with setup.py.")
     (license license:expat)))
 
+;; This package is unmaintained since 2014, but still used in `khmer'.
 (define-public python-bz2file
   (package
     (name "python-bz2file")
@@ -22001,11 +22002,10 @@ LDFLAGS and parse the output to build extensions with setup.py.")
        (method url-fetch)
        (uri (pypi-uri "bz2file" version))
        (sha256
-        (base32
-         "126s53fkpx04f33a829yqqk8fj4png3qwg4m66cvlmhmwc8zihb4"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f)) ; Tests use deprecated python modules.
+        (base32 "126s53fkpx04f33a829yqqk8fj4png3qwg4m66cvlmhmwc8zihb4"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; Tests use deprecated python modules.
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/nvawda/bz2file")
     (synopsis "Read and write bzip2-compressed files")
     (description
