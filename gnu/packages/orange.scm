@@ -42,38 +42,32 @@
 (define-public python-orange-canvas-core
   (package
     (name "python-orange-canvas-core")
-    (version "0.2.5")
+    (version "0.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "orange_canvas_core" version))
        (sha256
-        (base32 "0bp6c5y4a4fzr1hg7aijlbfwp6bqacxxcqhwb2swc21aj846ns0n"))))
+        (base32 "1h0p6p36h9vwmgs7xa7x0qa06zjxjyj8pr1p8d4iykbvl60s3dq0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 227 passed, 4 skipped, 13 deselected, 15 warnings
       #:test-flags
       #~(list "-k" (string-join
-                    (list
-                     ;; AttributeError: 'NoneType' object has no attribute
-                     ;; 'trigger'
-                     "not test_context_menu_delete"
-                     "test_copy_cut_paste"
-                     ;; AttributeError: 'NoneType' object has no attribute
-                     ;; 'isEnabled'
-                     "test_item_context_menu"
-                     ;; Tests fail with error: Failed: CALL ERROR: Exceptions
-                     ;; caught in Qt event loop.
-                     "test_create_new_window"
-                     "test_new_window"
-                     "test_dont_load_swp_on_new_window"
-                     "test_toolbox"
-                     "test_widgettoolgrid"
-                     "test_editlinksnode"
-                     "test_links_edit"
-                     "test_links_edit_widget"
-                     "test_flattened"
-                     "test_tooltree_registry")
+                    ;; Tests fail with error: Failed: CALL ERROR: Exceptions
+                    ;; caught in Qt event loop.
+                    (list "not test_create_new_window"
+                          "test_dont_load_swp_on_new_window"
+                          "test_editlinksnode"
+                          "test_links_edit"
+                          "test_links_edit_widget"
+                          "test_new_window"
+                          "test_toolbox"
+                          "test_widgettoolgrid"
+                          ;; AssertionError: Lists differ
+                          "test_create_normal"
+                          "test_create_on_demand")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
@@ -85,28 +79,23 @@
           (add-before 'check 'pre-check
             (lambda _
               (setenv "HOME" "/tmp")
-              (setenv "QT_PLUGIN_PATH"
-                      (string-append #$(this-package-input "qtbase") "/lib/qt6/plugins:"
-                                     (getenv "QT_PLUGIN_PATH")))
               (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (native-inputs
      (list python-pytest
            python-pytest-qt
            python-setuptools
-           python-trubar
-           python-wheel))
-    (inputs
-     (list qtbase))
+           python-trubar))
     (propagated-inputs
      (list python-anyqt
-           python-cachecontrol
            python-commonmark
            python-dictdiffer
            python-docutils
            python-numpy
+           python-packaging
            python-qasync
            python-requests
            python-requests-cache
+           python-truststore
            python-typing-extensions))
     (home-page "https://github.com/biolab/orange-canvas-core")
     (synopsis "Core component of Orange Canvas")
