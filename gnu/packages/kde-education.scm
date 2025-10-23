@@ -187,6 +187,7 @@ Currently available boards include:
     (build-system qt-build-system)
     (arguments
      (list
+      #:qtbase qtbase
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
@@ -211,7 +212,6 @@ Currently available boards include:
            kxmlgui
            libplasma
            ncurses
-           qtbase
            qtdeclarative
            qtsvg
            qtwayland
