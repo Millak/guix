@@ -2717,9 +2717,7 @@ files.")
      (list python-greenlet
            python-pytest
            python-pytest-httpbin
-           python-readme-renderer
            python-setuptools
-           python-twine
            python-werkzeug))
     (propagated-inputs (list python-requests))
     (home-page "https://github.com/ross/requests-futures")
