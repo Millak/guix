@@ -5465,6 +5465,7 @@ visual integration of spatially referenced datasets.")
     (native-inputs (list python-ipython
                          python-matplotlib
                          python-numpy
+                         python-pyqt-6
                          python-pytest
                          python-pytest-cov
                          python-pytest-qt
