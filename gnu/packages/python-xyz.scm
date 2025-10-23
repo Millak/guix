@@ -21663,37 +21663,39 @@ can also be used to get the exact location, font or color of the text.")
 (define-public python-rarfile
   (package
     (name "python-rarfile")
-    (version "4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "rarfile" version))
-              (sha256
-               (base32
-                "1882wv9szcm29mnyhjmspyflyr2l7z73srn14w4dlnww49lqfm37"))))
-    (build-system python-build-system)
+    (version "4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/markokr/rarfile")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lm4vz4w0hrnzln7w10ijhdiwxy7gz45m44zw4fz7rdnn7c06b36"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ;; The bsdtar utility is very limited and most tests fail.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "rarfile.py"
-               ;; Disable unrar and unar, which are unavailable on Guix.
-               (("(unrar|unar)=True" all tool) (string-append tool "=False"))
-               ;; Hardcode path to bsdtar
-               (("\"bsdtar\"")
-                (string-append "\"" (assoc-ref inputs "libarchive") "/bin/bsdtar\"")))
-             #t))
-         (replace 'check
-           (lambda* (#:key inputs tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-pytest))
+     (list
+      #:tests? #f ;The bsdtar utility is very limited and most tests fail.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "rarfile.py"
+                ;; Disable unrar and unar, which are unavailable on Guix.
+                (("(unrar|unar)=True" all tool)
+                 (string-append tool "=False"))
+                ;; Hardcode path to bsdtar
+                (("\"bsdtar\"")
+                 (format #f "~s"
+                         (search-input-file inputs "bin/bsdtar")))))))))
+    (native-inputs (list python-pytest python-setuptools))
     (inputs (list libarchive))
     (home-page "https://github.com/markokr/rarfile")
     (synopsis "RAR archive reader for Python")
-    (description "This is Python module for RAR archive reading.  The interface
-is made as zipfile like as possible.")
+    (description
+     "This is Python module for RAR archive reading.  The interface is made as
+zipfile like as possible.")
     (license license:isc)))
 
 (define-public python-slugid
