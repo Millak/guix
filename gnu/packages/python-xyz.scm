@@ -22540,43 +22540,33 @@ focus on event-based network programming and multiprotocol integration.")
 (define-public python-pika
   (package
     (name "python-pika")
-    (version "1.2.1")
+    (version "1.3.2")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/pika/pika")
-              (commit version)))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "0sqj3bg6jwign8vwvn337fbwy69sm684ns1vh5kbfnskq4him9i2"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pika/pika")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bmp79lds26y2976xrpf53r3acqzpf3wpkprhlh3asqpfv5pwipb"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'disable-live-tests
-                    (lambda _
-                      ;; Disable tests that require RabbitMQ, which is not
-                      ;; yet available in Guix.
-                      (substitute* "nose2.cfg"
-                        (("tests=tests/unit,tests/acceptance")
-                         "start-dir=tests/unit"))
-                      (with-directory-excursion "tests"
-                        (for-each delete-file
-                                '("unit/base_connection_tests.py"
-                                  "unit/threaded_test_wrapper_test.py")))))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (setenv "PYTHONPATH" (getcwd))
-                        (invoke "nose2" "-v")))))))
-    (native-inputs
-     (list python-mock
-           python-nose2
-           ;; These are optional at runtime, and provided here for tests.
-           python-gevent
-           python-tornado
-           python-twisted))
+     (list
+      #:test-flags
+      ;; XXX: These test most likely require a running RabbitMQ server.
+      #~(list "--ignore=tests/acceptance/blocking_adapter_test.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'configure-tests
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "PYTHONPATH" (getcwd))))))))
+    (native-inputs (list python-pytest
+                         python-gevent
+                         python-tornado
+                         python-twisted
+                         python-setuptools))
     (home-page "https://pika.readthedocs.org")
     (synopsis "Pure Python AMQP Client Library")
     (description
