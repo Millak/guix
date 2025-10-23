@@ -8429,14 +8429,15 @@ solver, that can compute Craig interpolants for various theories.")
 (define-public yices
   (package
    (name "yices")
-   (version "2.6.4")
+   (version "2.7.0")
    (source (origin
-            (method url-fetch)
-            (uri (string-append "https://yices.csl.sri.com/releases/"
-                                version "/yices-" version "-src.tar.gz"))
+            (method git-fetch)
+            (uri (git-reference
+                   (url "https://github.com/SRI-CSL/yices2/")
+                   (commit (string-append "yices-" version))))
             (sha256
-             (base32
-              "1jvqvf35gv2dj936yzl8w98kc68d8fcdard90d6dddzc43h28fjk"))))
+             (base32 "1jikmka2bi2as08lsvpf43r7s4lscpg0g4lg7dr68aba1jk9wb5j"))
+            (file-name (git-file-name name version))))
    (build-system gnu-build-system)
    (arguments
     (list #:configure-flags
@@ -8469,7 +8470,7 @@ solver, that can compute Craig interpolants for various theories.")
                     (("install_dir=.*")
                      (string-append "install_dir=" #$output))))))))
    (inputs (list cudd gmp gperf libpoly))
-   (native-inputs (list autoconf automake bash-minimal))
+   (native-inputs (list autoconf automake bash-minimal python-minimal-wrapper))
    (home-page "https://yices.csl.sri.com/")
    (synopsis "Satisfiability modulo theories solver")
    (description "Yices is a solver for @acronym{SMT, satisfiability modulo
