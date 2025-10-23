@@ -2414,7 +2414,7 @@ transport data and for performing public transport journey queries.")
                            "/src/libgravatar-" version ".tar.xz"))
        (sha256
         (base32 "1rn1dc994xff9bha59155ardib0mshj18h9jj1dhf8qhs0nv1nrb"))))
-    (build-system qt-build-system)
+    (build-system cmake-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kconfig
                   ki18n
@@ -2427,8 +2427,7 @@ transport data and for performing public transport journey queries.")
                   kwidgetsaddons
                   qtbase))
     (arguments
-     (list #:qtbase qtbase
-           #:tests? #f)) ;; 2/7 tests fail (due to network issues?)
+     (list #:tests? #f)) ;; 2/7 tests fail (due to network issues?)
     (home-page "https://invent.kde.org/pim/libgravatar")
     (synopsis "Online avatar lookup library")
     (description "This library retrieves avatar images based on a
