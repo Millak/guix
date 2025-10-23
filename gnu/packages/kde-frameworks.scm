@@ -4201,7 +4201,8 @@ notifications which can be embedded in your application.")
                 "1n2hwgpkq32xprg4dgirb22rijplvp4rf6brllgz98y09xm3pp6d"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases
+     (list #:qtbase qtbase
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'disable-partloader-test
                  (lambda _
@@ -4222,8 +4223,7 @@ notifications which can be embedded in your application.")
       kitemviews
       ki18n
       kjobwidgets
-      kwidgetsaddons
-      qtbase))
+      kwidgetsaddons))
     (home-page "https://community.kde.org/Frameworks")
     (synopsis "Plugin framework for user interface components")
     (description "This library implements the framework for KDE parts, which are
@@ -4244,6 +4244,9 @@ widgets with a user-interface defined in terms of actions.")
               (sha256
                (base32
                 "0czrlqh5cxnj1mlbz839c7hifhnpzl476d92lv4hxji50wnjlfqr"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments kparts)
+       ((#:qtbase _ #f) qtbase-5)))
     (propagated-inputs
      (list kio-5 ktextwidgets-5 kxmlgui-5))
     (native-inputs
