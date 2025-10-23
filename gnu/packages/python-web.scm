@@ -10183,6 +10183,30 @@ conflicts detected by that mechanism.")
 for Python.  It is mainly used by the ZODB.")
     (license license:zpl2.1)))
 
+(define-public python-truststore
+  (package
+    (name "python-truststore")
+    (version "0.10.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "truststore" version))
+       (sha256
+        (base32 "00f3xc7720rkddsn291yrw871kfnimi6d9xbwi75xbb3ci1vv4cx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;all tests require Internet access
+    (native-inputs
+     (list python-flit-core))
+    (home-page "https://github.com/sethmlarson/truststore")
+    (synopsis "Verify certificates using native system trust stores")
+    (description
+     "Truststore is a library which exposes native system certificate stores (ie
+\"trust stores\") through an @code{ssl.SSLContext-like} API.  This means that
+Python applications no longer need to rely on certifi as a root certificate
+store.")
+    (license license:expat)))
+
 (define-public python-robot-detection
   (package
     (name "python-robot-detection")
