@@ -1445,6 +1445,29 @@ implement path classes for non-local filesystems")
 Standalone}.")
     (license license:expat)))
 
+(define-public python-phply
+  (package
+    (name "python-phply")
+    (version "1.2.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "phply" version))
+       (sha256
+        (base32 "05s9v2q6b2r0i65zfw4jf1nzb619zgw0anl08ls7ll2z516pf9qb"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-ply))
+    (home-page "https://github.com/viraptor/phply")
+    (synopsis "PHP parser written in Python using PLY")
+    (description
+     "@code{phply} is a parser for the PHP programming language written using
+PLY,a Lex/YACC-style parser generator toolkit for Python.")
+    (license license:bsd-3)))
+
 (define-public python-puccinialin
   (package
     (name "python-puccinialin")
