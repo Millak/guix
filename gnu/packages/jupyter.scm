@@ -1399,13 +1399,13 @@ analyzing Jupyter Notebooks.")
 (define-public python-qtconsole
   (package
     (name "python-qtconsole")
-    (version "5.6.1")
+    (version "5.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "qtconsole" version))
        (sha256
-        (base32 "1r8bznf8mlajh8rcrhikp694naq653nx4zw58f0yzlvmdiz1rbaw"))))
+        (base32 "0w9i0s70dm39cxgn3vh4wcaxdywzp9j0ac7f49q4qmggx4f3fcqd"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1423,22 +1423,23 @@ analyzing Jupyter Notebooks.")
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
             (lambda _
-              (setenv "PYTEST_QT_API" "pyqt5")
-              (setenv "QT_LIB" "pyqt5")
+              (setenv "PYTEST_QT_API" "pyqt6")
+              (setenv "QT_LIB" "pyqt6")
               (setenv "QT_QPA_PLATFORM" "offscreen")
               (system "Xvfb :1 -screen 0 640x480x24 &")
               (setenv "DISPLAY" ":1")
               (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-flaky
-           python-pyqt
+           python-pyqt-6
            python-pytest
+           python-pytest-asyncio
            python-pytest-qt
            python-setuptools
-           python-wheel
            xorg-server-for-tests))
     (propagated-inputs
      (list python-ipykernel
+           python-ipython-pygments-lexers
            python-jupyter-client
            python-jupyter-core
            python-packaging
