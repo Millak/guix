@@ -918,7 +918,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
 (define-public gnuradio
   (package
     (name "gnuradio")
-    (version "3.10.11.0")
+    (version "3.10.12.0")
     (source
      (origin
        (method git-fetch)
@@ -927,7 +927,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1px44c9clafivjw37zy6h6d94xf70v7i5iyarrdgm6cr7x95grj0"))))
+        (base32 "0al8rci1fpz8sqkk4i2ncy8lc0hd5d04in9wj7isw7gsmirlzkz3"))))
     (build-system cmake-build-system)
     (native-inputs
      (list doxygen
