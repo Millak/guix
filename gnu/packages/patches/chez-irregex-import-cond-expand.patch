@@ -1,0 +1,34 @@
+From 6b2512d9004856a67aad241a62a499244b3eb33f Mon Sep 17 00:00:00 2001
+From: Andre Kuehne <andre.kuehne.77@gmail.com>
+Date: Sat, 1 Jun 2024 18:34:46 +0200
+Subject: [PATCH] fix chezscheme: import (srfi :0 cond-expand)
+
+---
+ irregex-utils.chezscheme.sls | 1 +
+ irregex.chezscheme.sls       | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/irregex-utils.chezscheme.sls b/irregex-utils.chezscheme.sls
+index 456d9a6..b8f2c28 100644
+--- a/irregex-utils.chezscheme.sls
++++ b/irregex-utils.chezscheme.sls
+@@ -31,6 +31,7 @@
+    irregex-opt
+    sre->string)
+   (import 
++    (srfi :0 cond-expand)
+     (except (rnrs) error find filter remove)
+     (only (chezscheme) include get-output-string open-output-string)
+     (irregex)
+diff --git a/irregex.chezscheme.sls b/irregex.chezscheme.sls
+index f23c3ea..55f0669 100644
+--- a/irregex.chezscheme.sls
++++ b/irregex.chezscheme.sls
+@@ -66,6 +66,7 @@
+     irregex-split
+     sre->cset)
+   (import 
++    (srfi :0 cond-expand)
+     (except (rnrs) error find filter remove)
+     (rnrs r5rs)
+     (rnrs mutable-pairs)

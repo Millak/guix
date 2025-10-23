@@ -1185,16 +1185,19 @@ Chez Scheme.")
 (define-public chez-irregex
   (package
     (name "chez-irregex")
-    (version "0.9.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/fedeinthemix/chez-irregex")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32 "0jh6piylw545j81llay9wfivgpv6lcnwd81gm4w17lkasslir50q"))
-       (file-name (git-file-name name version))))
+    (version "0.9.11")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://synthcode.com/scheme/irregex/irregex-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "026kzl96pmwbjqdc7kh8rdh8ng813sjvdsik0dag5acza20sjm19"))
+              (patches
+               ;; TODO: Remove this patch if upstream release a new version.
+               ;; See https://github.com/ashinn/irregex/issues/49
+               (search-patches "chez-irregex-import-cond-expand.patch"))))
     (build-system gnu-build-system)
     (inputs
      (list chez-matchable)) ; for tests
@@ -1204,11 +1207,21 @@ Chez Scheme.")
      (list chez-scheme))
     (arguments
      (list #:make-flags (chez-make-flags name version)
-           #:test-target "test"
+           #:tests? #f                  ; no test available for Chez Scheme
            #:phases #~(modify-phases %standard-phases
                         (replace 'configure
-                          #$configure-chezschemelibdirs))))
-    (home-page "https://github.com/fedeinthemix/chez-irregex")
+                          #$configure-chezschemelibdirs)
+                        (replace 'build
+                          (lambda* (#:key make-flags #:allow-other-keys)
+                            (apply invoke `("make" "chez-build"
+                                            ,@make-flags))))
+                        (replace 'install
+                          (lambda* (#:key make-flags #:allow-other-keys)
+                            (apply invoke `("make" "chez-install"
+                                            ,@make-flags))
+                            (apply invoke `("make" "chez-install-src"
+                                            ,@make-flags)))))))
+    (home-page "https://synthcode.com/scheme/irregex")
     (synopsis "Portable regular expression library for Scheme")
     (description "This package provides a portable and efficient
 R[4567]RS implementation of regular expressions, supporting both POSIX
