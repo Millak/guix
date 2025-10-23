@@ -4182,31 +4182,24 @@ provided for the main Python test runners.")
 (define-public python-syrupy
   (package
     (name "python-syrupy")
-    (version "4.9.1")
+    (version "5.0.0")
     (source
      (origin
-       (method git-fetch)               ;no tests in PyPI archive
+       (method git-fetch)
        (uri (git-reference
               (url "https://github.com/syrupy-project/syrupy")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10q1xdwbcy9jfq8gd4r9q4r2p2zpcfrh4yj58nl9sbr2nc3irbh0"))))
+        (base32 "1ysm42an2pf4ppd1i5yzh11bq1rfydhg6rmmh5v91gcixpvi872d"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "invoke" "test")))))))
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "-m" "invoke" "test")))
     (native-inputs
      (list python-invoke
-           python-debugpy
-           python-twine
            python-poetry-core
-           python-pytest
+           python-pytest-bootstrap
            python-pytest-xdist
            python-setuptools-scm))
     (home-page "https://github.com/syrupy-project/syrupy")
