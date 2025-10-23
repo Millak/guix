@@ -2114,7 +2114,14 @@ modems and setup connections with them.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "00ss14hf1qwb42648cldghmfjfn1nkjvpy508b7vaz322fj37qa4"))))
+           "00ss14hf1qwb42648cldghmfjfn1nkjvpy508b7vaz322fj37qa4"))
+         (modules '((guix build utils)))
+         (snippet
+          ;; Add missing 'const' qualifier to '_error' function.  This fixes
+          ;; an "incompatible pointer type" error with libxml2 2.14.
+          #~(substitute* "lib/ext/wocky/wocky/wocky-xmpp-reader.c"
+              (("xmlErrorPtr error")
+               "const xmlError *error")))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -2315,7 +2322,10 @@ share connections to real-time communication services without conflicting.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "195pz8dgwhyy1cygd0rlncyr3c4wzhnf99sfjj5qmc8j195j1k7a"))))
+           "195pz8dgwhyy1cygd0rlncyr3c4wzhnf99sfjj5qmc8j195j1k7a"))
+         (modules '((guix build utils)))
+         (snippet                                 ;for wocky
+          (origin-snippet (package-source telepathy-gabble)))))
       (build-system gnu-build-system)
       (arguments
        (list
