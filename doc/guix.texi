@@ -51852,6 +51852,50 @@ is passed to the @code{xorg-start-command-xinit} procedure producing the
 @command{startx} used.  Default value is @code{(xorg-configuration)}.
 @end defvar
 
+@defvar home-darkman-service-type
+This is the service type for the
+@uref{https://gitlab.com/WhyNotHugo/darkman, Darkman}, a program for
+dark-mode and light-mode transitions on Unix-like desktops.  It invokes
+scripts in @code{$XDG_DATA_DIRS/dark-mode.d} at sundown, and invokes
+scripts in @code{$XDG_DATA_DIRS/light-mode.d} at sunrise.  Darkman tries
+to determine the user's current location from:
+@itemize
+@item The config file.
+@item The cache file from last time it ran.
+@item Using the system geoclue.
+@end itemize
+@end defvar
+
+@deftp {Data Type} home-darkman-configuration
+The configuration record for @code{home-darkman-service-type}.  Its
+available fields are:
+
+@table @asis
+@item @code{darkman} (default: @code{darkman}) (type: file-like)
+The @code{darkman} package to use.
+
+@item @code{latitude} (type: maybe-number)
+Latitude, used at startup or when @code{use-geoclue} is @code{#f}.  More
+than one decimal point is generally not needed.
+
+@item @code{longitude} (type: maybe-number)
+Longitude, used at startup or when @code{use-geoclue} is @code{#f}.
+More than one decimal point is generally not needed.
+
+@item @code{use-geoclue} (default: @code{#f}) (type: boolean)
+Whether to use a local geoclue instance to determine the current
+location.  Setting this to false without explicitly setting latitude and
+longtitude disables automatic transitions entirely.
+
+@item @code{dbus-server} (default: @code{#t}) (type: boolean)
+Whether to expose the current mode via darkman's own D-Bus API.
+
+@item @code{portal} (default: @code{#t}) (type: boolean)
+Whether to expose the current mode via the XDG settings portal D-Bus
+API.
+
+@end table
+@end deftp
 
 @node Guix Home Services
 @subsection Guix Home Services

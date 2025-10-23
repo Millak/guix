@@ -3,6 +3,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 conses <contact@conses.eu>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,7 +26,7 @@
   #:use-module (gnu services configuration)
   #:use-module (gnu services xorg)
   #:autoload   (gnu packages glib)    (dbus)
-  #:autoload   (gnu packages xdisorg) (redshift unclutter)
+  #:autoload   (gnu packages xdisorg) (darkman redshift unclutter)
   #:autoload   (gnu packages xorg) (setxkbmap xmodmap)
   #:use-module (guix records)
   #:use-module (guix gexp)
@@ -46,7 +47,11 @@
             home-xmodmap-configuration
             home-xmodmap-service-type
 
-            home-startx-command-service-type))
+            home-startx-command-service-type
+
+            home-darkman-configuration
+            home-darkman-configuration?
+            home-darkman-service-type))
 
 
 ;;;
@@ -447,3 +452,93 @@ buttons under the Xorg display server via user-defined expressions.")))
 
 (define-service-type-mapping
   startx-command-service-type => home-startx-command-service-type)
+
+
+;;;
+;;; Darkman.
+;;;
+
+(define-maybe number)
+
+(define (serialize-number field value)
+  (string-append (match field
+                   ('latitude "lat")
+                   ('longitude "lng")
+                   (_ (symbol->string field)))
+                 ": " (number->string value) "\n"))
+
+(define (serialize-boolean field value)
+  (string-append (match field
+                   ('use-geoclue "usegeoclue")
+                   ('dbus-server "dbusserver")
+                   (_ "portal"))
+                 ": " (if value "true" "false") "\n"))
+
+(define-configuration home-darkman-configuration
+  (darkman
+   (file-like darkman)
+   "The @code{darkman} package to use.")
+
+  (latitude
+   maybe-number
+   "Latitude, used at startup or when @code{use-geoclue} is @code{#f}.  More than
+one decimal point is generally not needed.")
+
+  (longitude
+   maybe-number
+   "Longitude, used at startup or when @code{use-geoclue} is @code{#f}.  More than
+one decimal point is generally not needed.")
+
+  (use-geoclue
+   (boolean #f)
+   "Whether to use a local geoclue instance to determine the current location.
+Setting this to false without explicitly setting latitude and longtitude
+disables automatic transitions entirely.")
+
+  (dbus-server
+   (boolean #t)
+   "Whether to expose the current mode via darkman's own D-Bus API.")
+
+  (portal
+   (boolean #t)
+   "Whether to expose the current mode via the XDG settings portal D-Bus API."))
+
+(define (serialize-home-darkman-configuration config)
+  (mixed-text-file
+   "config.yaml"
+   (serialize-configuration config home-darkman-configuration-fields)))
+
+(define (home-darkman-configuration-files config)
+  `(("darkman/config.yaml" ,(serialize-home-darkman-configuration config))))
+
+(define (home-darkman-profile-service config)
+  (list (home-darkman-configuration-darkman config)))
+
+(define (home-darkman-shepherd-service config)
+  (list
+   (shepherd-service
+     (provision '(darkman))
+     (requirement '(dbus))
+     (modules '((shepherd support)))      ;for '%user-log-dir'
+     (start #~(make-forkexec-constructor
+               (list #$(file-append (home-darkman-configuration-darkman config)
+                                    "/bin/darkman")
+                     "run")
+               #:log-file
+               (string-append %user-log-dir "/darkman.log")))
+     (stop #~(make-kill-destructor)))))
+
+(define home-darkman-service-type
+  (service-type
+    (name 'home-darkman)
+    (extensions
+     (list (service-extension home-shepherd-service-type
+                              home-darkman-shepherd-service)
+           (service-extension home-xdg-configuration-files-service-type
+                              home-darkman-configuration-files)
+           (service-extension home-profile-service-type
+                              home-darkman-profile-service)))
+    (default-value (home-darkman-configuration))
+    (description "Run the @code{darkman} daemon, which will invoke scripts in
+$XDG_DATA_DIRS/dark-mode.d/ when sundown, and invoke scripts in
+$XDG_DATA_DIRS/light-mode.d/ when sunrise.")))
