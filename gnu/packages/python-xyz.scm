@@ -33393,28 +33393,28 @@ Generalized Mark-up Language}.")
 (define-public python-cwcwidth
   (package
     (name "python-cwcwidth")
-    (version "0.1.9")
+    (version "0.1.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "cwcwidth" version))
        (sha256
-        (base32 "1f3nvc4f2icg0c285bl6l4ak9km8pj9nxjb4s2n8qjld2jh137gi"))))
+        (base32 "0951lwciwslnzcvfvnk9daiiwh00q15qbcmjw5xi1x61f87pcs3l"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'build-extensions
+          (add-before 'check 'remove-local-cwcwidth
             (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+              ;; This would otherwise interfere with finding the installed
+              ;; cwcwidth when running tests.
+              (delete-file-recursively "cwcwidth"))))))
     (native-inputs
      (list python-cython
            python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-toml
-           python-wheel))
+           python-setuptools-scm))
     (home-page "https://github.com/sebastinas/cwcwidth")
     (synopsis "Python bindings for wc(s)width")
     (description
