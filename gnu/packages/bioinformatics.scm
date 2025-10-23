@@ -20178,26 +20178,31 @@ set.")
 (define-public instrain
   (package
     (name "instrain")
-    (version "1.9.0")
+    ;; Git repository does not tag releases, use the latest commit from master
+    ;; branch.
+    (properties '((commit . "6180be7b49a61b7e1ffe9f1489da5c6aa2ff9ac3")
+                  (revision . "0")))
+    (version (git-version "1.10.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/MrOlm/instrain")
-             ;; There are no tags.
-             (commit "168f3f777b45139a9f6099f68974105b45e2d8ba")))
+              (url "https://github.com/MrOlm/instrain")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1wc69ggyiacm1slb678239lqmf1g5dlb4alwsbp14gi6393gj9fg"))))
+        (base32 "1njsxjf3248121yw3q1ig6asf6b3wa5fgjfyc6dkgk6nd4ih8wni"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; Tests assume that test files exist (they don't) and are located in
-      ;; the developer's home directory.
+      ;; the developer's home directory, see:
+      ;; <https://github.com/MrOlm/inStrain/issues/218>.
       #:tests? #false
       #:phases
-      '(modify-phases %standard-phases
+      #~(modify-phases %standard-phases
          (add-after 'unpack 'patch-relative-imports
            (lambda _
              (substitute* (find-files "test/tests" "test_.*\\.py")
@@ -20208,7 +20213,11 @@ set.")
                (("from s3_utils")
                 "from .s3_utils")
                (("from job_utils")
-                "from .job_utils")))))))
+                "from .job_utils"))))
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.py"
+               ((".*pytest.*") "")))))))
     (propagated-inputs
      (list python-biopython-1.73
            python-h5py
@@ -20222,10 +20231,7 @@ set.")
            python-seaborn
            python-tqdm))
     (native-inputs
-     (list python-boto3
-           python-pytest
-           python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (home-page "https://github.com/MrOlm/inStrain")
     (synopsis "Calculation of strain-level metrics")
     (description
