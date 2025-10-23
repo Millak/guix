@@ -23711,24 +23711,26 @@ characters, mouse support, and auto suggestions.")
 (define-public python-proselint
   (package
     (name "python-proselint")
-    (version "0.13.0")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "proselint" version))
        (sha256
-        (base32
-         "0n1ahnq2mkgvh94g05xhc3l1fs3hh0ycskqlqivhhfdaq8ybdlkx"))))
-    (build-system python-build-system)
+        (base32 "11hfd207bhsvb0iznlnbr0w7jxihvn3ismpjbmz7c57a5ckn8jb2"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'set-home-directory
-           (lambda _
-             (setenv "HOME" "/tmp"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-home-directory
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest))
     (propagated-inputs
-     (list python-click python-future python-six))
+     (list python-click))
     (home-page "http://proselint.com/")
     (synopsis "Linter for prose")
     (description "@code{python-proselint} is a linter for English prose, that
