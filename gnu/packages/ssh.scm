@@ -19,7 +19,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2023 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024, 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
 ;;;
@@ -344,6 +344,92 @@ Additionally, various channel-specific options can be negotiated.")
     (inputs (modify-inputs (package-inputs openssh)
               (delete "xauth")))
     (synopsis "OpenSSH client and server without X11 support")))
+
+(define-public hpn-ssh
+  (package
+    (inherit openssh)
+    (name "hpn-ssh")
+    (version "18.8.0")
+    (source
+     (origin
+       (inherit (package-source openssh))
+       (method git-fetch)
+       (uri
+        (git-reference
+          (url "https://github.com/rapier1/hpn-ssh")
+          (commit (string-append "hpn-" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "13g7b652rf9lqlp492fiyi8ypf04v65ar3z174gjmkskl77m4b7k"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments openssh)
+       ((#:configure-flags flags #~(list))
+        #~(cons* "--with-privsep-user=sshd"
+                 "--with-pam-service=sshd"
+                 #$flags))
+       ((#:modules mods %default-gnu-modules)
+        (cons '(ice-9 string-fun) mods))
+       ((#:imported-modules mods %default-gnu-imported-modules)
+        (cons '(ice-9 string-fun) mods))
+       ((#:phases phases #~(list))
+        #~(modify-phases #$phases
+            (add-after 'unpack 'patch-ssh-stuff
+              (lambda _
+                (substitute* "Makefile.in"
+                  (("^sysconfdir=.*$")
+                   "sysconfdir=/etc/ssh\n")
+                  ((".*MKDIR_P.*PRIVSEP_PATH.*")
+                   ""))
+                (substitute* "ssh.h"
+                  (("#define HPNSSH_DEFAULT_PORT.*$")
+                   "#define HPNSSH_DEFAULT_PORT 22\n"))))
+            (replace 'install
+              (lambda* (#:key (make-flags '()) #:allow-other-keys)
+                (let ((bindir (string-append #$output "/bin"))
+                      (sbindir (string-append #$output "/sbin"))
+                      (mandir (string-append #$output "/share/man")))
+                  ;; Install without host keys and system configuration files.  This
+                  ;; will install /var/empty to the store, which is needed by the
+                  ;; system openssh-service-type.
+                  (apply invoke "make" "install-nosysconf" make-flags)
+                  ;; rename files so it can act as replacement for openssh
+                  (with-directory-excursion "contrib"
+                    (chmod "hpnssh-copy-id" #o555)
+                    (install-file "hpnssh-copy-id" bindir)
+                    (install-file "hpnssh-copy-id.1"
+                                  (string-append mandir "/man1/")))
+                  (for-each
+                   (lambda (file)
+                     (when (string-prefix? (string-append bindir "/hpn") file)
+                       (symlink (basename file)
+                                (string-replace-substring file "/bin/hpn" "/bin/"))))
+                   (find-files bindir))
+                  (for-each
+                   (lambda (file)
+                     (when (string-prefix? (string-append sbindir "/hpn") file)
+                       (symlink (basename file)
+                                (string-replace-substring file "/sbin/hpn" "/sbin/"))))
+                   (find-files sbindir))
+                  (for-each
+                   (lambda (file)
+                     (when (string-prefix? "hpn" (basename file))
+                       (symlink (basename file)
+                                (string-replace-substring file "/hpn" "/"))))
+                   (find-files mandir)))))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs openssh)
+       (append autoconf automake)))
+    (synopsis "High performance SSH/SCP client, and server")
+    (description "HPN-SSH is a series of modifications to OpenSSH, the predominant implementation
+of the ssh protocol.  It was originally developed to address performance issues when using ssh on high speed long distance networks.")
+    (home-page "https://hpnssh.org/")))
+
+(define-public hpn-ssh-sans-x
+  (package
+    (inherit hpn-ssh)
+    (inputs
+     (modify-inputs (package-inputs hpn-ssh)
+       (delete "xauth")))
+    (synopsis "High performance SSH/SCP client, and server without X11 support")))
 
 (define-public guile-ssh
   (package
