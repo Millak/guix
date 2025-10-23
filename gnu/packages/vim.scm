@@ -872,7 +872,7 @@ is based on Vim's builtin plugin support.")
                        #$(local-file (search-auxiliary-file "guix-nvim.vim"))
                        (string-append nvimdir "/sysinit.vim"))))))))
     (inputs (list libuv-for-luv
-                  msgpack
+                  msgpack-c
                   libtermkey
                   libvterm
                   unibilium
