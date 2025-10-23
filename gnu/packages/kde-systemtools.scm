@@ -227,6 +227,8 @@ unmount drives and view them in a file manager.")
        (sha256
         (base32 "1nmhg3v73p8yapmvp3chac3vi6jpjwmc0jj28ksbmdrp952yaygb"))))
     (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules kdoctools perl))
     (inputs
@@ -244,7 +246,6 @@ unmount drives and view them in a file manager.")
            kwindowsystem
            libxml2
            breeze-icons ;; default icon set
-           qtbase
            xapian
            qtwayland
            qtwebengine))
