@@ -1409,45 +1409,6 @@ with the Linux kernel.")
                    (("^install-others =.*$")
                     (string-append "install-others = " out "/etc/rpc\n"))))))))))))
 
-(define-public glibc-2.31
-  (package
-    (inherit glibc-2.35)
-    (version "2.31")
-    (source (origin
-              (inherit (package-source glibc))
-              (uri (string-append "mirror://gnu/glibc/glibc-" version ".tar.xz"))
-              (sha256
-               (base32
-                "05zxkyz9bv3j9h0xyid1rhvh3klhsmrpkf3bcs6frvlgyr2gwilj"))
-              (patches (search-patches
-                        "glibc-skip-c++.patch"
-                        "glibc-ldd-powerpc.patch"
-                        "glibc-ldd-x86_64.patch"
-                        "glibc-dl-cache.patch"
-                        "glibc-hidden-visibility-ldconfig.patch"
-                        "glibc-versioned-locpath.patch"
-                        "glibc-allow-kernel-2.6.32.patch"
-                        "glibc-reinstate-prlimit64-fallback.patch"
-                        "glibc-supported-locales.patch"
-                        "glibc-hurd-clock_t_centiseconds.patch"
-                        "glibc-2.31-hurd-clock_gettime_monotonic.patch"
-                        "glibc-hurd-signal-sa-siginfo.patch"
-                        "glibc-hurd-mach-print.patch"
-                        "glibc-hurd-gettyent.patch"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments glibc)
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-before 'configure 'set-etc-rpc-installation-directory
-             (lambda* (#:key outputs #:allow-other-keys)
-               ;; Install the rpc data base file under `$out/etc/rpc'.
-               (let ((out (assoc-ref outputs "out")))
-                 (substitute* "sunrpc/Makefile"
-                   (("^\\$\\(inst_sysconfdir\\)/rpc(.*)$" _ suffix)
-                    (string-append out "/etc/rpc" suffix "\n"))
-                   (("^install-others =.*$")
-                    (string-append "install-others = " out "/etc/rpc\n"))))))))))))
-
 (define-public (make-gcc-libc base-gcc libc)
   "Return a GCC that targets LIBC."
   (package (inherit base-gcc)
