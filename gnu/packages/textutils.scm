@@ -1173,14 +1173,21 @@ file, but can even be dynamic.")
   (package
     (name "txt2tags")
     (version "3.9")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "txt2tags" version))
-              (sha256
-               (base32
-                "0ik7gpr3gymgxnj0p86k8768kyxncbncv93zq67sbak3dbdl8hky"))))
-    (build-system python-build-system)
-    (native-inputs (list python-tox))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/txt2tags/txt2tags")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nfps6c3jchjkbwzh8v919fxql91l1lxa6q1vssprxivk0jcc0rz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "test/run.py")))
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://txt2tags.org")
     (synopsis "Convert between markup languages")
     (description
