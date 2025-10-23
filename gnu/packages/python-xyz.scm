@@ -27281,10 +27281,19 @@ Glob2 currently based on the glob code from Python 3.3.1.")
         (base32 "18w1fi3gh8i3kl58n6jpixzc2w42znxqhb3lj6hwn1641wq2hyrz"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; Some tests seem to require an older version of pytest.
-     (list #:tests? #f))
-    (native-inputs (list python-pytest python-setuptools))
-    (propagated-inputs (list python-gevent))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'adjust-for-pytest-8
+            (lambda _
+              (substitute* "test/test_gipc.py"
+                (("def setup") "def setup_method")
+                (("def teardown") "def teardown_method")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-gevent))
     (home-page "https://gehrcke.de/gipc/")
     (synopsis "Child process management in the context of gevent")
     (description
