@@ -472,10 +472,9 @@ illustrate project schedules.")
               (sha256
                (base32
                 "0s9b3q7wvrbz52d500mcaflkrfjwhbzh5bsf5gxzgxjdzdiywaw7"))))
-    (build-system cmake-build-system)
+    (build-system qt-build-system)
     (inputs
-     (list qtbase
-           boost
+     (list boost
            graphviz
            ki18n
            kiconthemes
@@ -485,7 +484,9 @@ illustrate project schedules.")
            qtwayland))
     (native-inputs
      (list pkg-config extra-cmake-modules kdoctools))
-    (arguments (list #:tests? #f))
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
     (home-page "https://apps.kde.org/kgraphviewer/")
     (synopsis "Graphviz dot graph viewer for KDE")
     (description "KGraphViewer is a Graphviz DOT graph file viewer, aimed to
