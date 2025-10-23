@@ -2060,11 +2060,16 @@ that allows you to run services and through them access the Bitcoin Cash network
     (arguments
      (list
       #:test-flags
-      #~(list "-k" (string-append
-                    ;; ModuleNotFoundError: No module named 'pytest'
-                    "not test_parse_stdin"
-                    ;; AssertionError: 5 not greater than 20
-                    " and not test_setup"))
+      #~(list
+         ;; These tests require network.
+         "--ignore=beancount/web/web_test.py"
+         "-k" (string-join
+               (list "not test_parse_stdin" ; ModuleNotFoundError: 'pytest'
+                     "test_setup" ; AssertionError: 5 not greater than 20
+                     ;; Require network
+                     "test_bake_archive__known"
+                     "test_bake_directory")
+               " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements
