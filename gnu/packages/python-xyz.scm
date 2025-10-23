@@ -21458,31 +21458,29 @@ PySide, PySide2.")
 (define-public python-qasync
   (package
     (name "python-qasync")
-    (version "0.27.1")
+    (version "0.28.0")
     (source
      (origin
-       ;; There are no tests in the PyPI tarball.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/CabbageDevelopment/qasync/")
-             (commit (string-append "v" version))))
+              (url "https://github.com/CabbageDevelopment/qasync/")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j6ksfnq9qfjdfppbkdz7jh6w0gnslwnckhafmlgim29b25g0z51"))))
+        (base32 "13i5riq7ig4csxlx61fzb8xl12ny0dkwj4h8f8r95xz5rii7a0kr"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags
-           ;; XXX: Added with python@3.11, not fixed upstream.
-           #~(list "-k" "not test_regression_bug13")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'check 'set-qpa
-                 (lambda _
-                   (setenv "QT_QPA_PLATFORM" "offscreen"))))))
+     (list
+      #:build-backend "poetry.core.masonry.api" ;XXX: python-uv-build is required
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-qpa
+            (lambda _
+              (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (native-inputs
      (list python-poetry-core python-pytest))
     (propagated-inputs
-     (list python-pyqt))
+     (list python-pyqt-6))
     (home-page "https://github.com/CabbageDevelopment/qasync")
     (synopsis "Implementation of the PEP 3156 Event-Loop with Qt")
     (description
