@@ -11274,27 +11274,6 @@ viewer.")
     (inputs
      (list htslib-1.12 ncurses perl python zlib))))
 
-(define-public samtools-1.10
-  (package (inherit samtools)
-    (name "samtools")
-    (version "1.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (string-append "mirror://sourceforge/samtools/samtools/"
-                       version "/samtools-" version ".tar.bz2"))
-       (sha256
-        (base32
-         "119ms0dpydw8dkh3zc4yyw9zhdzgv12px4l2kayigv31bpqcb7kv"))
-       (modules '((guix build utils)))
-       (snippet '(begin
-                   ;; Delete bundled htslib.
-                   (delete-file-recursively "htslib-1.10")
-                   #t))))
-    (inputs
-     (list htslib-1.10 ncurses perl python zlib))))
-
 (define-public samtools-0.1
   ;; This is the most recent version of the 0.1 line of samtools.  The input
   ;; and output formats differ greatly from that used and produced by samtools
