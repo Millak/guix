@@ -1736,6 +1736,28 @@ coverage data via the @acronym{UCIS, Unified Coverage Interoperability
 Standard} data mode.")
     (license license:asl2.0)))
 
+(define-public python-pyvcd
+  (package
+    (name "python-pyvcd")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyvcd" version))
+       (sha256
+        (base32 "15nnydvr1a4ykh8cagi484sfgvdg0dnjxaw6c0ivhjbrbblpaqnw"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest-cov
+           python-setuptools
+           python-setuptools-scm))
+    (home-page "http://pyvcd.readthedocs.io/")
+    (synopsis "Library to manipulate digital wave files")
+    (description
+     "The code{PyVcd} Python library writes @acronym{VCD, Value Change Dump}
+files as specified in IEEE 1364-2005.")
+    (license license:expat)))
+
 (define-public python-cocotb
   (package
     (name "python-cocotb")
