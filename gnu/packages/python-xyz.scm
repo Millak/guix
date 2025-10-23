@@ -21446,7 +21446,11 @@ ISO 8859, etc.).")
             (lambda _
               (delete-file "AnyQt/QtMacExtras.py")
               (delete-file "AnyQt/QtWinExtras.py"))))))
-    (native-inputs (list python-pytest-qt python-setuptools))
+    (native-inputs
+     (list python-pyqt-6
+           python-pytest
+           python-pytest-qt
+           python-setuptools))
     (home-page "https://github.com/ales-erjavec/anyqt")
     (synopsis "PyQt compatibility layer")
     (description
