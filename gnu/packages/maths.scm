@@ -10004,7 +10004,7 @@ diagrams.")
 (define-public libpoly
   (package
    (name "libpoly")
-   (version "0.1.12")
+   (version "0.2.0")
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -10013,11 +10013,11 @@ diagrams.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "1cgdj7mxjyq4r2n852nxqacml90jm9irbvv27an0fmg7q4v1p2kb"))))
+              "0vwdffmff3widzj8x1pjvpw48s7h1y1pm8cad3zscmg2hzaqwkc0"))))
    (build-system cmake-build-system)
-   (arguments
-    (list #:configure-flags #~(list "-DLIBPOLY_BUILD_PYTHON_API=off")))
    (inputs (list gmp))
+   (native-inputs
+    (list python-minimal-wrapper))
    (home-page "https://github.com/SRI-CSL/libpoly")
    (synopsis "Manipulate polynomials")
    (description "LibPoly is a C library for manipulating polynomials to support
