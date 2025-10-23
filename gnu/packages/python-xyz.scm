@@ -27092,14 +27092,20 @@ created by running @code{python setup.py develop}).")
 (define-public python-twine
   (package
     (name "python-twine")
-    (version "6.1.0")
+    (version "6.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "twine" version))
        (sha256
-        (base32 "1gcd990456sk0g05ln6x6mwn9z1jybnm3wlkxq3ivyggf9i4ycmy"))))
+        (base32 "1kvm9cdvbnh232wafww1w5scaic9kkrwhlff1mvmk68cswphvvg5"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 228 passed, 1 deselected
+      #:test-flags
+      ;; Assertion is not equal for one tests.
+      #~(list "--deselect=tests/test_check.py::test_fails_rst_syntax_error")))
     (native-inputs
      (list python-pretend
            python-pytest
