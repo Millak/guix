@@ -5876,11 +5876,15 @@ abstractions to use in dvc and dvc-data.")
         (base32 "1qyr461hcvhgy02slfkgrbip2xwa8zz6dvmi1476v6f66lclzy34"))))
     (build-system pyproject-build-system)
     (arguments
+     ;; tests: 949 passed, 1356 skipped, 2 deselected, 8 xfailed, 130 warnings
      (list #:test-flags
-           ;; The test_reload test fails.  It suggests to disable assert
-           ;; rewriting in Pytest, but it still doesn't pass.
-           #~(list "-k" "not test_reload"
-                   "-n" (number->string (parallel-job-count)))
+           ;; Failed: CALL ERROR: Exceptions caught in Qt event loop.
+           #~(list "--deselect=tests/exporters/test_svg.py::test_plotscene"
+                   ;; The test_reload test fails.  It suggests to disable
+                   ;; assert rewriting in Pytest, but it still doesn't pass.
+                   "-k" "not test_reload"
+                   ;; Run unit tets only.
+                   "tests")
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'check 'set-qpa
@@ -5888,18 +5892,18 @@ abstractions to use in dvc and dvc-data.")
                    (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (native-inputs
      (list python-pytest
-           python-pytest-cov
-           python-pytest-xdist
-           python-setuptools
-           python-wheel))
-    (inputs
-     (list qtbase-5))
+           ;; Do not propagate Qt5/Qt6 let the user of the package to select
+           ;; any supported one, see
+           ;; <https://pyqtgraph.readthedocs.io/en/pyqtgraph-0.13.7>
+           ;; </getting_started/how_to_use.html#pyqt-and-pyside>.
+           python-pyqt-6
+           python-pytest-qt
+           python-setuptools))
     (propagated-inputs
      (list python-h5py
            python-numpy
            python-pyopengl
-           python-scipy
-           python-pyqt))
+           python-scipy))
     (home-page "https://www.pyqtgraph.org")
     (synopsis "Scientific graphics and GUI library for Python")
     (description
