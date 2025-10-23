@@ -350,23 +350,6 @@ transparently with both VCFs and BCFs, both uncompressed and BGZF-compressed.")
     ;; The sources are dual MIT/GPL, but becomes GPL-only when USE_GPL=1.
     (license (list license:gpl3+ license:expat))))
 
-(define-public bcftools-1.12
-  (package/inherit bcftools
-    (version "1.12")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/samtools/bcftools/"
-                                  "releases/download/"
-                                  version "/bcftools-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1x94l1hy2pi3lbz0sxlbw0g6q5z5apcrhrlcwda94ns9n4r6a3ks"))
-              (modules '((guix build utils)))
-              (snippet '(begin
-                          ;; Delete bundled htslib.
-                          (delete-file-recursively "htslib-1.12")))))
-    (native-inputs (list htslib-1.12 perl))))
-
 (define-public bedops
   (package
     (name "bedops")
