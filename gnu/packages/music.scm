@@ -8080,7 +8080,7 @@ streaming audio server.")
            gtk+
            gtksourceview-4 ; undo, redo, multiline text fields
            hicolor-icon-theme
-           keybinder-3.0 ; keybindings outside of GNOME
+           keybinder ; keybindings outside of GNOME
            (librsvg-for-system)
            libsoup-minimal
            python
