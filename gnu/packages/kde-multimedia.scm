@@ -548,7 +548,6 @@ This package is part of the KDE multimedia module.")
            kwindowsystem
            kxmlgui
            breeze-icons ; default icon set
-           qtbase
            qtmultimedia
            qtsvg
            qtwayland
