@@ -21857,49 +21857,40 @@ for Python inspired by modern web development.")
        (uri (git-reference (url home-page) (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1x11kfn4g244fia9a7y4ly8dqv5zsxfg3l5azc54dl6gkp2bk7vx"))
-       (modules '((guix build utils)))
-       ;; Adjust expected output for file@5.45.
-       (snippet #~(substitute* "test/libmagic_test.py"
-                    (("PDF document, version 1\\.2, 2 pages")
-                     "PDF document, version 1.2, 2 page(s)")))))
-    (build-system python-build-system)
+        (base32 "1x11kfn4g244fia9a7y4ly8dqv5zsxfg3l5azc54dl6gkp2bk7vx"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  ;; Replace a specific method call with a hard-coded
-                  ;; path to the necessary libmagic.so file in the
-                  ;; store.  If we don't do this, then the method call
-                  ;; will fail to find the libmagic.so file, which in
-                  ;; turn will cause any application using
-                  ;; python-magic to fail.
-                  (add-before 'build 'hard-code-path-to-libmagic
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((magic (search-input-file inputs "/lib/libmagic.so")))
-                        (substitute* "magic/loader.py"
-                          (("find_library\\('magic'\\)")
-                           (string-append "'" magic "'"))))))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      ;; The test suite mandates this variable.
-                      (setenv "LC_ALL" "C.UTF-8")
-                      (if tests?
-                          (with-directory-excursion "test"
-                            (invoke "python" "./libmagic_test.py"))
-                          (format #t "test suite not run~%")))))))
-    (native-inputs
-     (list which))
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "test/libmagic_test.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda _
+              ;; Adjust expected output for file@5.45.
+              (substitute* "test/libmagic_test.py"
+                (("PDF document, version 1\\.2, 2 pages")
+                 "PDF document, version 1.2, 2 page(s)"))))
+          ;; Replace a specific method call with a hard-coded path to the
+          ;; necessary libmagic.so file in the store.
+          (add-before 'build 'hard-code-path-to-libmagic
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "magic/loader.py"
+                (("find_library\\('magic'\\)")
+                 (format #f "~s"
+                         (search-input-file inputs "lib/libmagic.so")))))))))
+    (native-inputs (list which python-setuptools))
     (inputs
      ;; python-magic needs to be able to find libmagic.so.
      (list file))
     (synopsis "File type identification using libmagic")
     (description
-     "This module uses ctypes to access the libmagic file type
-identification library.  It makes use of the local magic database and
-supports both textual and MIME-type output.  Note that this module and
-the python-file module both provide a \"magic.py\" file; these two
-modules, which are different and were developed separately, both serve
-the same purpose: to provide Python bindings for libmagic.")
+     "This module uses ctypes to access the libmagic file type identification
+library.  It makes use of the local magic database and supports both textual
+and MIME-type output.  Note that this module and the python-file module both
+provide a \"magic.py\" file; these two modules, which are different and were
+developed separately, both serve the same purpose: to provide Python bindings
+for libmagic.")
     (license license:expat)))
 
 (define-public s3cmd
