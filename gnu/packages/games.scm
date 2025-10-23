@@ -3365,7 +3365,7 @@ Superfluous Returnz.")
 (define-public sosage
   (package
     (name "sosage")
-    (version "1.6.0")
+    (version "1.6.1")
     (source
      (origin
        (method git-fetch)
@@ -3374,7 +3374,7 @@ Superfluous Returnz.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xgk3r18aj9xvrrqr9qdrr6800hkv6lhfcnmm5z21g8kbfh9x4jm"))
+        (base32 "029mcnx2r86gc7chzd0avga4x7gm1yxl2wi3wqxmzhlh51q0p44x"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
