@@ -22112,34 +22112,35 @@ in strings and comments.")
 (define-public python-py3status
   (package
     (name "python-py3status")
-    (version "3.50")
+    (version "3.62")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "py3status" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ultrabug/py3status")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0j2dx9lzpic15r8p0r0s3jmcskxpacahxl640b4864ldn5rlnh9d"))))
-    (build-system python-build-system)
-    (inputs
-     (list file))
+        (base32 "13ggwr35w5isylrg1n7akhycm18r03bxin95hdpcmqg7fvqyfppz"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         ;; 'file' is used for detection of configuration file encoding
-         ;; let's make link the dependency to particular input
-         (add-before 'build 'patch-file-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((file-path (assoc-ref inputs "file")))
-               (substitute* "py3status/parse_config.py"
-                 (("\\[\"file\", \"-b\"")
-                  (string-append "['" file-path "/bin/file', '-b'")))
-               #t))))
-       #:tests? #f)) ; TODO: Requires many libraries not in Guix.
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'hardcode-file-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "py3status/parse_config.py"
+                (("\\[\"file\", \"-b\"")
+                 (format #f "[~s, \"-b\""
+                         (search-input-file inputs "bin/file")))))))))
+    (native-inputs (list python-hatchling python-pytest))
+    (inputs (list file))
     (home-page "https://github.com/ultrabug/py3status")
     (synopsis "Extensible i3status wrapper written in Python")
-    (description "py3status is an i3status wrapper which extends i3status
-functionality in a modular way, allowing you to extend your panel with your
-own code, responding to click events and updating clock every second.")
+    (description
+     "py3status is an i3status wrapper which extends i3status functionality in
+a modular way, allowing you to extend your panel with your own code,
+responding to click events and updating clock every second.")
     (license license:bsd-3)))
 
 (define-public python-tblib
