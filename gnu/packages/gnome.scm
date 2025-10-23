@@ -82,6 +82,7 @@
 ;;; Copyright © 2024 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
+;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -11263,6 +11264,18 @@ is suitable as a default application in a Desktop environment.")
            `(,gtk+ "bin") intltool pkg-config))
     (inputs
      (list gtk+ gtksourceview-4 libsm))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-configure
+                 (lambda _
+                   ;; xpad fails to build due to gettext version mismatch, so
+                   ;; we force it to use gettext 0.23.
+                   (substitute* "configure.ac"
+                     (("AM_GNU_GETTEXT_VERSION.*")
+                      (string-append
+                       "AM_GNU_GETTEXT_VERSION([0.23])\n"
+                       "AM_GNU_GETTEXT_REQUIRE_VERSION([0.23])\n"))))))))
     (home-page "https://wiki.gnome.org/Apps/Xpad")
     (synopsis "Virtual sticky note")
     (description
