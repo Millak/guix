@@ -1932,6 +1932,11 @@ exec -a \"$0\" \"~a\" \"$@\""
           (file-type 'regular)
           (separator #f)              ;single entry
           (files '("etc/ssl/certs/ca-certificates.crt")))
+         ;; Make the sources discoverable not just when wrapped.
+         (search-path-specification
+          (variable "RUST_SRC_PATH")
+          (separator #f)              ;single entry
+          (files '("lib/rustlib/src/rust/library")))
          ;; rustc invokes gcc, so we need to set its search paths accordingly.
          %gcc-search-paths)))))
 
