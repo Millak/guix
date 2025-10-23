@@ -11204,47 +11204,6 @@ viewer.")
     (inputs
      (list htslib-1.14 ncurses perl python zlib))))
 
-(define-public samtools-1.12
-  (package/inherit samtools
-    (version "1.12")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (string-append "mirror://sourceforge/samtools/samtools/"
-                       version "/samtools-" version ".tar.bz2"))
-       (sha256
-        (base32
-         "1jrdj2idpma5ja9cg0rr73b565vdbr9wyy6zig54bidicc2pg8vd"))
-       (modules '((guix build utils)))
-       (snippet '(begin
-                   ;; Delete bundled htslib.
-                   (delete-file-recursively "htslib-1.12")))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments samtools)
-       ((#:modules _ #f)
-        '((ice-9 ftw)
-          (ice-9 regex)
-          (guix build gnu-build-system)
-          (guix build utils)))
-       ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'install 'install-library
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((lib (string-append (assoc-ref outputs "out") "/lib")))
-                 (install-file "libbam.a" lib))))
-           (add-after 'install 'install-headers
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((include (string-append (assoc-ref outputs "out")
-                                             "/include/samtools/")))
-                 (for-each (lambda (file)
-                             (install-file file include))
-                           (scandir "." (lambda (name)
-                                          (string-match "\\.h$" name)))))))))))
-    (native-inputs (list pkg-config))
-    (inputs
-     (list htslib-1.12 ncurses perl python zlib))))
-
 (define-public samtools-0.1
   ;; This is the most recent version of the 0.1 line of samtools.  The input
   ;; and output formats differ greatly from that used and produced by samtools
