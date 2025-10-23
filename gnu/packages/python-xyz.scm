@@ -22184,32 +22184,36 @@ multiple processes (imagine multiprocessing, billiard, futures, celery etc).
 (define-public python-tftpy
   (package
     (name "python-tftpy")
-    (version "0.8.2")
+    (version "0.8.6")
     (source
      (origin
-       (method git-fetch)               ;no tests in PyPI archive
+       (method git-fetch)
        (uri (git-reference
              (url "https://github.com/msoulier/tftpy")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1gl04ps8h8r7av3h0zbm8gwmkqs9rkk5vf7n8mv2bzrkwvy9hacc"))))
-    (build-system python-build-system)
+        (base32 "11cs52skmisg7rlmcxghmpcxfszcwmph6cvmfdn2p0ks6ckfy9q2"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-                      (when tests?
-                        ;; The default DEBUG logging level is way too verbose.
-                        (substitute* "t/test.py"
-                          (("logging\\.DEBUG")
-                           "logging.INFO"))
-                        (invoke "python" "-m" "unittest" "t/test.py")))))))
+     (list
+      #:test-backend #~'unittest
+      #:test-flags #~(list "tests/test.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'configure-tests
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; The default DEBUG logging level is way too verbose.
+                (substitute* "tests/test.py"
+                  (("logging\\.DEBUG")
+                   "logging.INFO"))))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://tftpy.sourceforge.net/")
     (synopsis "Python trivial file transfer protocol (TFTP) library")
-    (description "TFTPy is a trivial file transfer protocol (TFTP) Python
-library.  It can be used to act both as a TFTP client or TFTP server.")
+    (description
+     "TFTPy is a trivial file transfer protocol (TFTP) Python library.  It can
+be used to act both as a TFTP client or TFTP server.")
     (license license:expat)))
 
 (define-public python-greenlet
