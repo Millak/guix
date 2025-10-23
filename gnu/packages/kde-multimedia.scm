@@ -893,10 +893,13 @@ autoloading of subtitle files for use while playing video.")
     (inputs
      (list gstreamer
            gst-plugins-base
+           gst-plugins-bad
+           gst-plugins-good-qt
            kconfig
            ki18n
            kio
            kirigami
+           kitemmodels
            knotifications
            kparts
            breeze-icons ; default icon set
