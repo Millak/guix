@@ -1436,27 +1436,26 @@ dist_patch_DATA =						\
   %D%/packages/patches/glib-appinfo-watch.patch			\
   %D%/packages/patches/glib-skip-failing-test.patch		\
   %D%/packages/patches/glibc-2.33-riscv64-miscompilation.patch	\
+  %D%/packages/patches/glibc-2.35-CVE-2023-4911.patch	\
+  %D%/packages/patches/glibc-2.37-hurd-clock_t_centiseconds.patch	\
+  %D%/packages/patches/glibc-2.37-versioned-locpath.patch	\
+  %D%/packages/patches/glibc-2.38-ldd-x86_64.patch		\
   %D%/packages/patches/glibc-2.39-git-updates.patch	\
   %D%/packages/patches/glibc-2.40-dl-cache.patch		\
-  %D%/packages/patches/glibc-2.35-CVE-2023-4911.patch	\
+  %D%/packages/patches/glibc-2.41-bootstrap-system.patch	\
+  %D%/packages/patches/glibc-2.41-hurd-local-clock_gettime_MONOTONIC.patch	\
+  %D%/packages/patches/glibc-2.41-ldd-x86_64.patch		\
   %D%/packages/patches/glibc-allow-kernel-2.6.32.patch		\
-  %D%/packages/patches/glibc-boot-2.16.0.patch			\
   %D%/packages/patches/glibc-boot-2.2.5.patch			\
+  %D%/packages/patches/glibc-boot-2.16.0.patch			\
   %D%/packages/patches/glibc-bootstrap-system-2.2.5.patch 	\
   %D%/packages/patches/glibc-bootstrap-system-2.16.0.patch 	\
   %D%/packages/patches/glibc-bootstrap-system.patch		\
-  %D%/packages/patches/glibc-2.41-bootstrap-system.patch	\
   %D%/packages/patches/glibc-cross-objcopy.patch		\
   %D%/packages/patches/glibc-cross-objdump.patch		\
   %D%/packages/patches/glibc-dl-cache.patch			\
   %D%/packages/patches/glibc-hidden-visibility-ldconfig.patch	\
   %D%/packages/patches/glibc-hurd-clock_gettime_monotonic.patch	\
-  %D%/packages/patches/glibc-2.31-hurd-clock_gettime_monotonic.patch	\
-  %D%/packages/patches/glibc-2.37-hurd-clock_t_centiseconds.patch	\
-  %D%/packages/patches/glibc-2.41-hurd-local-clock_gettime_MONOTONIC.patch	\
-  %D%/packages/patches/glibc-2.37-versioned-locpath.patch	\
-  %D%/packages/patches/glibc-2.38-ldd-x86_64.patch		\
-  %D%/packages/patches/glibc-2.41-ldd-x86_64.patch		\
   %D%/packages/patches/glibc-hurd-clock_t_centiseconds.patch	\
   %D%/packages/patches/glibc-hurd-getauxval.patch		\
   %D%/packages/patches/glibc-hurd-gettyent.patch		\
@@ -1472,9 +1471,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-ldd-x86_64.patch			\
   %D%/packages/patches/glibc-locales.patch			\
   %D%/packages/patches/glibc-reinstate-prlimit64-fallback.patch	\
-  %D%/packages/patches/glibc-skip-c++.patch			\
-  %D%/packages/patches/glibc-versioned-locpath.patch		\
   %D%/packages/patches/glibc-supported-locales.patch     	\
+  %D%/packages/patches/glibc-versioned-locpath.patch		\
   %D%/packages/patches/gmime-disable-tests.patch		\
   %D%/packages/patches/gmp-arm-asm-nothumb.patch		\
   %D%/packages/patches/gmp-faulty-test.patch			\
