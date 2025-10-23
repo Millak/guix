@@ -1772,8 +1772,7 @@ output relays.")
     (name "python-usbrelay")
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (inputs
      (list usbrelay))
     (propagated-inputs
@@ -1791,7 +1790,11 @@ output relays.")
               (chmod (string-append #$output "/sbin/usbrelayd") #o555)))
           (add-after 'install-daemon 'chdir
             (lambda _
-              (chdir "usbrelay_py"))))))
+              (chdir "usbrelay_py")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "tests/usbrelay_test.py")))))))
     (synopsis "Python library to control USB relay modules")
     (description
      "This is the Python extension to @code{usbrelay}, a Linux driver based on
