@@ -22430,17 +22430,23 @@ graphviz.")
 (define-public python-fastimport
   (package
     (name "python-fastimport")
-    (version "0.9.9")
+    (version "0.9.16")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "fastimport" version))
-        (sha256
-          (base32 "06gk14qgm9dxx3pzjn0ckdbywc8ial2bjfzddqwlr4bn1nnqkbll"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jelmer/python-fastimport")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pbnp9ffjs09ngva9qcizpscxl9s47rmd4dhxl62f5iwl6c46798"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/jelmer/python-fastimport")
     (synopsis "VCS fastimport parser and generator in Python")
-    (description "This package provides a parser for and generator of the Git
+    (description
+     "This package provides a parser for and generator of the Git
 @url{https://www.kernel.org/pub/software/scm/git/docs/git-fast-import.html,fastimport}
 format.")
     (license license:gpl2+)))
