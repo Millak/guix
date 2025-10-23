@@ -187,6 +187,8 @@ different notification systems.")
         (base32
          "0lqirjirjxin4b2bkf9raalygvjp35qs1r51ydmgf97gjk6nhzzv"))))
     (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase))
     (native-inputs
      (list extra-cmake-modules pkg-config qttools))
     (inputs
