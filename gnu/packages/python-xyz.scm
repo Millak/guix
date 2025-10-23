@@ -21711,21 +21711,14 @@ zipfile like as possible.")
         (file-name (git-file-name name version))
         (sha256
          (base32 "1h64p2jlqv6lsmw8h2j203kx3bhv72cwzpk5gdhsaamw30cp3h1i"))))
-    (build-system python-build-system)
-    (native-inputs (list python-nose))
-    (arguments
-      (list #:phases
-        #~(modify-phases %standard-phases
-            (replace 'check
-              (lambda* (#:key inputs tests? #:allow-other-keys)
-                (when tests?
-                  ;; The project uses tox to run the tests via nose.
-                  (invoke "nosetests" "-v" "test.py")))))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'nose))
+    (native-inputs (list python-pynose python-setuptools))
     (home-page "http://taskcluster.github.io/slugid.py")
     (synopsis "Module for Base64 encoded UUID v4 slugs")
-    (description "This package provides a module for generating v4
-UUIDs and encoding them into 22 character URL-safe base64 slug
-representation.")
+    (description
+     "This package provides a module for generating v4 UUIDs and encoding them
+into 22 character URL-safe base64 slug representation.")
     (license license:mpl2.0)))
 
 (define-public python-rich
