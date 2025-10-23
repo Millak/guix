@@ -1102,7 +1102,7 @@ tables.")
   (package
     (name "guile-fibers")
     (version "1.3.1")
-    (home-page "https://codeberg.org/fibers/fibers")
+    (home-page "https://codeberg.org/guile/fibers")
     (source (origin
               (method git-fetch)
               (uri (git-reference
