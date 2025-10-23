@@ -1707,6 +1707,45 @@ verification.")
         #~(modify-phases #$phases
             (delete 'fix-scripts)))))))
 
+(define-public python-amaranth
+  (package
+    (name "python-amaranth")
+    (version "0.5.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/amaranth-lang/amaranth/")
+              (commit (string-append "v" version))))
+       (sha256
+        (base32 "06sgc76z9r4ngphpr5slfrjqy4nr11qdx0fj1gwmzksi0b4j18w6"))
+       (file-name (git-file-name name version))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "PDM_BUILD_SCM_VERSION" #$version))))))
+    (native-inputs
+     (list python-pdm-backend
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm
+           sby
+           yices
+           yosys-clang))
+    (propagated-inputs
+     (list python-jinja2 python-jschon python-pyvcd))
+    (home-page "https://amaranth-lang.org/docs/amaranth/latest/")
+    (synopsis "Amaranth hardware definition language")
+    (description "The Amaranth project provides an open-source toolchain for
+developing hardware based on synchronous digital logic using the Python
+programming language, as well as evaluation board definitions and a System on
+Chip toolkit.")
+    (license license:bsd-3)))
+
 (define-public python-pyucis
   (package
     (name "python-pyucis")
