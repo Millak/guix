@@ -1583,9 +1583,6 @@ test environments.")
 (define-public glibc-locales-2.33
   (package (inherit (make-glibc-locales glibc-2.33))
            (name "glibc-locales-2.33")))
-(define-public glibc-locales-2.32
-  (package (inherit (make-glibc-locales glibc-2.32))
-           (name "glibc-locales-2.32")))
 
 (define-public which
   (package
