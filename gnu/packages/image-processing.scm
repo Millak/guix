@@ -2061,14 +2061,15 @@ processing pipelines.")
     (native-inputs
      (list python-pytest
            python-pytest-qt
-           xorg-server-for-tests
-           python-wheel))
+           python-setuptools
+           xorg-server-for-tests))
     (propagated-inputs
      (list python-imgviz
            python-matplotlib
            python-natsort
            python-numpy
            python-pillow
+           python-pyqt
            python-pyyaml
            python-qtpy
            python-termcolor))
