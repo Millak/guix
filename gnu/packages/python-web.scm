@@ -8836,37 +8836,33 @@ such as IoT applications or multi-user database-driven business applications.")
 (define-public python-ws4py
   (package
     (name "python-ws4py")
-    (version "0.5.1")
+    (version "0.6.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ws4py" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Lawouach/WebSocket-for-Python")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "10slbbf2jm4hpr92jx7kh7mhf48sjl01v2w4d8z3f1p0ybbp7l19"))))
-    (build-system python-build-system)
+         "00y6s8gk20936njqbxr8vjliviiz7r7pqrlwg7xi8zzs6903xvv6"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'python3.7-compatibility
-           (lambda _
-             (substitute* '("ws4py/server/tulipserver.py"
-                            "ws4py/async_websocket.py")
-               (("asyncio.async")
-                "asyncio.ensure_future"))
-             #t))
-         ;; We don't have a package for cherrypy.
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
          (add-after 'unpack 'remove-cherrypy-support
            (lambda _
              (delete-file "ws4py/server/cherrypyserver.py")
-             #t)))))
+             (delete-file "test/test_cherrypy.py"))))))
+    (native-inputs (list python-setuptools python-pytest))
     (propagated-inputs
      (list python-gevent python-tornado))
     (home-page "https://github.com/Lawouach/WebSocket-for-Python")
     (synopsis "WebSocket client and server library")
     (description
-     "This package provides a WebSocket client and server library for
-Python.")
+     "This package provides a WebSocket client and server library for Python.")
     (license license:bsd-3)))
 
 (define-public python-slowapi
