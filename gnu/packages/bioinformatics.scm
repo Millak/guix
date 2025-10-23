@@ -9618,25 +9618,6 @@ data.  It also provides the @command{bgzip}, @command{htsfile}, and
      (modify-inputs (package-propagated-inputs htslib)
                     (delete "htscodecs")))))
 
-(define-public htslib-1.12
-  (package/inherit htslib
-    (version "1.12")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/samtools/htslib/releases/download/"
-                    version "/htslib-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "1jplnvizgr0fyyvvmkfmnsywrrpqhid3760vw15bllz98qdi9012"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments htslib)
-       ((#:configure-flags cf #~'())
-        #~(delete "--with-external-htscodecs" #$cf))))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs htslib)
-                    (delete "htscodecs")))))
-
 (define-public htslib-1.9
   (package/inherit htslib
     (version "1.9")
