@@ -7967,7 +7967,7 @@ choice.")
 (define-public musikcube
   (package
     (name "musikcube")
-    (version "3.0.1")
+    (version "3.0.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7976,7 +7976,7 @@ choice.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09q15xlssgg67zg5m0q574k3al2pdjdnm1580mlf0wzr6a021fnd"))))
+                "0kfdfai2w4qh31kypl94yknir9f41y1wh93k38cpj04w3chdzdx2"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f ; No test suite
@@ -7994,7 +7994,7 @@ choice.")
      (list alsa-lib
            boost
            curl
-           ffmpeg-4
+           ffmpeg
            lame
            libev
            libgme
