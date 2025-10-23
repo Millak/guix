@@ -844,6 +844,10 @@ ca-certificates.crt file in the system profile."
                  (default "127.0.0.1"))
   (port          nar-herder-configuration-port
                  (default 8734))
+  (control-host  nar-herder-configuration-control-host
+                 (default "127.0.0.1"))
+  (control-port  nar-herder-configuration-control-port
+                 (default 8735))
   (storage       nar-herder-configuration-storage
                  (default #f))
   (storage-limit nar-herder-configuration-storage-limit
@@ -968,6 +972,8 @@ ca-certificates.crt file in the system profile."
                       "--pid-file=/var/run/nar-herder/pid"
                       #$(string-append "--port=" (number->string port))
                       #$(string-append "--host=" host)
+                      #$(string-append "--control-port=" (number->string port))
+                      #$(string-append "--control-host=" host)
                       #$@(if mirror
                              (list (string-append "--mirror=" mirror))
                              '())

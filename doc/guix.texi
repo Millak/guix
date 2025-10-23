@@ -43491,6 +43491,12 @@ The port to bind the server to.
 @item @code{host} (default: @code{"127.0.0.1"})
 The host to bind the server to.
 
+@item @code{control-port} (default: @code{8734})
+The port to bind the control server to.
+
+@item @code{control-host} (default: @code{"127.0.0.1"})
+The host to bind the control server to.
+
 @item @code{mirror} (default: @code{#f})
 Optional URL of the other Nar Herder instance which should be mirrored.
 This means that this Nar Herder instance will download it's database,
