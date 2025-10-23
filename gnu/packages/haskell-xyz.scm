@@ -14611,7 +14611,7 @@ parts.")
                   ghc-data-default-class
                   ghc-blaze-markup
                   ghc-blaze-html))
-    (native-inputs (list ghc-hspec ghc-hunit ghc-doctest ghc-cabal-doctest))
+    (native-inputs (list ghc-hspec ghc-hunit ghc-doctest cabal-doctest))
     (home-page "https://github.com/snoyberg/xml")
     (synopsis "Utilities for dealing with XML with the conduit package")
     (description
@@ -16272,7 +16272,7 @@ Documentation is at
     (build-system haskell-build-system)
     (properties '((upstream-name . "pcg-random")))
     (inputs (list ghc-primitive ghc-random ghc-entropy))
-    (native-inputs (list ghc-doctest ghc-cabal-doctest))
+    (native-inputs (list ghc-doctest cabal-doctest))
     (arguments
      `(#:cabal-revision ("1"
                          "1f8h0lv34cmqaxccg2yf6q4s8r5g2s8q8s9kql212iggd2l3vv77")))
