@@ -902,3 +902,31 @@ user-provided Lua scripts.
 aspects of Vulkan performance.  The way in which each scene is rendered is
 configurable through a set of options.")
       (license license:lgpl2.1+))))
+
+(define-public osu-micro-benchmarks
+  (package
+    (name "osu-micro-benchmarks")
+    (version "7.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://mvapich.cse.ohio-state.edu/download/mvapich/" name "-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "08ifql3q8kv22xncvp6asfqp62dvfnc7w96b1r925c1w7ig0s38n"))))
+    (build-system gnu-build-system)
+    (inputs (list openmpi))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append
+               "CC=" #$(this-package-input "openmpi") "/bin/mpicc")
+              (string-append
+               "CXX=" #$(this-package-input "openmpi") "/bin/mpicxx"))))
+    (home-page "https://mvapich.cse.ohio-state.edu/benchmarks/")
+    (synopsis "Benchmarking suite from the MVAPICH project")
+    (description
+     "Microbenchmarks suite to evaluate MPI and PGAS (OpenSHMEM, UPC, and
+UPC++) libraries for CPUs and GPUs.")
+    (license license:bsd-3)))
