@@ -1574,7 +1574,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/highlight-gui-data-dir.patch		\
   %D%/packages/patches/hplip-usb-timeout.patch			\
   %D%/packages/patches/http-parser-CVE-2020-8287.patch		\
-  %D%/packages/patches/htslib-for-stringtie.patch		\
   %D%/packages/patches/hubbub-sort-entities.patch		\
   %D%/packages/patches/hueplusplus-mbedtls.patch		\
   %D%/packages/patches/hugs-fix-build.patch			\

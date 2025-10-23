@@ -9662,18 +9662,6 @@ data.  It also provides the @command{bgzip}, @command{htsfile}, and
                (base32
                 "1rja282fwdc25ql6izkhdyh8ppw8x2fs0w0js78zgkmqjlikmma9"))))))
 
-(define htslib-for-stringtie
-  (package
-    (inherit htslib-1.12)
-    (source (origin
-              (inherit (package-source htslib-1.12))
-              (patches
-               (search-patches "htslib-for-stringtie.patch"))))
-    (arguments
-     `(#:configure-flags '("--with-libdeflate")))
-    (inputs
-     (list bzip2 libdeflate openssl))))
-
 (define-public idr
   (package
     (name "idr")
