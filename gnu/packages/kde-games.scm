@@ -416,7 +416,7 @@ This package is part of the KDE games module.")
            ki18n
            libkmahjongg
            python
-           python-pyqt
+           python-pyqt-6
            python-twisted
            python-qtpy
            python-zope-interface
