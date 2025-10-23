@@ -37,7 +37,7 @@
 (define-public pmbootstrap
   (package
     (name "pmbootstrap")
-    (version "3.4.0")
+    (version "3.6.0")
     (source
      (origin
        (method git-fetch)
@@ -47,7 +47,7 @@
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16naj8ykipbrs2a93zaxci1wl045cc9jn7rq8sy76d1rqlqb9mmw"))))
+        (base32 "161q8nr9vwa7bbi5d7bqan0h7dn573xqmr48iadr3km897d3ivdh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
