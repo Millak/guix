@@ -977,6 +977,34 @@ computer's hardware.")
     (home-page "https://invent.kde.org/plasma/kmenuedit")
     (license license:gpl2+)))
 
+(define-public knighttime
+  (package
+    (name "knighttime")
+    (version "6.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/"
+                                  version "/" name "-" version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "1bxss7ail0ini8y7nk7y3hgirn1xf9cdfjf8f7y9p88wl1lg2ymc"))))
+    (build-system qt-build-system)
+    (arguments (list #:qtbase qtbase))
+    (native-inputs (list extra-cmake-modules qttools))
+    (inputs (list kconfig
+                  kcoreaddons
+                  kdbusaddons
+                  kholidays
+                  ki18n
+                  qtpositioning))
+    (synopsis "Helpers for scheduling the dark-light cycle")
+    (description "KNightTime provides helpers for scheduling the dark-light
+cycle.  It can be used to implement features such as adjusting the screen color
+temperature based on time of day, etc.")
+    (home-page "https://invent.kde.org/plasma/knighttime")
+    (license license:lgpl3+)))
+
 (define-public koi
   (package
     (name "koi")
