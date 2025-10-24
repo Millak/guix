@@ -1340,6 +1340,45 @@ comparison operators, as defined in the original
 Management} services.")
       (license license:expat))))
 
+(define-public python-keeper-secrets-manager-helper
+  ;; released alongside keeper-secrets-manager-core, but with a different
+  ;; versioning scheme.
+  (let ((commit "2c9a63d433721dee129a3647077d59bb243b52ec")
+        (revision "0"))
+    (package
+      (name "python-keeper-secrets-manager-helper")
+      (version (git-version "1.0.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/Keeper-Security/secrets-manager")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1mqx0xv28xyljd4s7wwi154h8v22ayi8k337afhhw0pg2c8150pp"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _
+                (chdir "sdk/python/helper"))))))
+      (propagated-inputs
+       (list python-iso8601
+             python-keeper-secrets-manager-core
+             python-pyyaml))
+      (native-inputs
+       (list python-pytest
+             python-setuptools))
+      (home-page "https://github.com/Keeper-Security/secrets-manager")
+      (synopsis "Keeper Secrets Manager for Python SDK helper for managing records")
+      (description
+       "Keeper Secrets Manager SDK helper is for creating and managing secret
+records.  It is intended to be used with @code{keeper-secrets-manager-core}.")
+      (license license:expat))))
+
 (define-public python-language-data
   (package
     (name "python-language-data")
