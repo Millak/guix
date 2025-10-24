@@ -1034,7 +1034,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
 (define-public hydrogen
   (package
     (name "hydrogen")
-    (version "1.2.4")
+    (version "1.2.6")
     (source
      (origin
        (method git-fetch)
@@ -1043,7 +1043,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i5gz5zck8s0kskjgnx9c75gh7zx0kbjsqzl2765f99p9svprirq"))))
+        (base32 "0fwyabkvrh1q30sqyhylly0c28cryq39lnqzgsv69jqvcc001bi4"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f ; require audio subsystem
