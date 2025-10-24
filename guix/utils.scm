@@ -747,7 +747,7 @@ a character other than '@'."
 (define* (target-hurd64? #:optional (target (or (%current-target-system)
                                                 (%current-system))))
   "Does TARGET represent the 64bit GNU(/Hurd) system?"
-  (and (target-hurd?)
+  (and (target-hurd? target)
        (target-64bit? target)))
 
 (define* (system-hurd64?)
