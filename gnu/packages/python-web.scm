@@ -11691,8 +11691,8 @@ as Flask.")
            python-pytest-sugar
            python-pytest-trio))
     (propagated-inputs
-     (list python-exceptiongroup
-           python-hypercorn
+     (list hypercorn
+           python-exceptiongroup
            python-quart
            python-trio))
     (home-page "https://github.com/pgjones/quart-trio")
