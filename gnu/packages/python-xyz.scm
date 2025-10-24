@@ -30143,9 +30143,11 @@ and dates in \"human readable\" forms.  For example, it would display
        (sha256
         (base32
          "14zvz51gzf9i1i3d1sj363ba4rksl6lcf4lz1arl8hpqgcbir8r3"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;tests are not included in PyPI archive
     (native-inputs
-     (list python-nose))
+     (list python-setuptools))
     (home-page "https://github.com/brentp/toolshed/")
     (synopsis "Collection of modules and functions for working with data")
     (description "This is a collection of well-tested, simple modules and
