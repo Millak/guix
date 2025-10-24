@@ -27840,35 +27840,27 @@ and @code{tokens_to_src} to roundtrip.")
 (define-public python-towncrier
   (package
     (name "python-towncrier")
-    (version "23.6.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "towncrier" version))
-              (sha256
-               (base32
-                "1hbhzxcn30qlnab1rnk2bf09jfy5bpxzfdp6zfn8sz3jnidbsagw"))))
+    (version "25.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "towncrier" version))
+       (sha256
+        (base32 "1c8fjjwlx29jgllxvyzby4cn51iraxba0cmfnfmmgb9iz0lnvwgf"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags
-           ;; TODO: Why is this failing?
-           #~'("-k" "not test_version")))
-    (propagated-inputs
-     (list python-click
-           python-click-default-group
-           python-incremental
-           python-jinja2
-           python-tomli))
     (native-inputs
      (list git-minimal/pinned           ;tests create git repositories
            python-hatchling
-           python-packaging
            python-pytest
            python-twisted))
+    (propagated-inputs
+     (list python-click
+           python-jinja2))
     (home-page "https://towncrier.readthedocs.io/en/stable/")
     (synopsis "Manage release notes")
     (description
-     "@code{towncrier} is a utility to produce useful, summarized news
-files (also known as changelogs) for a project.")
+     "@code{towncrier} is a utility to produce useful, summarized news files
+ (also known as changelogs) for a project.")
     (license license:expat)))
 
 (define-public python-future-fstrings
