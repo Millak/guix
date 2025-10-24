@@ -171,6 +171,42 @@ script engines.")
     ;; dual licensed
     (license (list license:gpl2+ license:lgpl2.1+))))
 
+(define-public aurorae
+  (package
+    (name "aurorae")
+    (version "6.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/" version "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0nzvn21fx0d6mj6sci40cgpw338m7rdbb52f7cjhfg2dvzrfclcf"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f))
+    (native-inputs
+     (list extra-cmake-modules qttools))
+    (inputs
+     (list kcmutils
+           kcolorscheme
+           kconfig
+           kdecoration
+           ki18n
+           knewstuff
+           kpackage
+           ksvg
+           qtdeclarative))
+    (synopsis "Themeable window decoration for KWin")
+    (description
+     "Aurorae is a themeable window decoration for KWin.  It supports theme
+files consisting of several SVG files for decoration and buttons.  Themes can
+be installed and selected directly in the configuration module of KWin
+decorations.")
+    (home-page "https://invent.kde.org/plasma/aurorae")
+    (license license:gpl2+)))
+
 (define-public bluedevil
   (package
     (name "bluedevil")
