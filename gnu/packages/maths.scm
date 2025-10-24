@@ -3017,7 +3017,7 @@ and quadratic objectives using the Simplex algorithm.")
     (propagated-inputs (list python-numpy python-pytest python-scipy))
     (inputs (list cbc))
     (native-inputs (list pkg-config
-                         python-cython-3
+                         python-cython
                          python-hypothesis
                          python-numpy
                          python-pytest
@@ -4651,7 +4651,7 @@ can return results in exact arithmetic.")
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
                      (invoke "python" "test/runtests.py")))))))
-    (native-inputs (list python-cython-3))
+    (native-inputs (list python-cython))
     (inputs (list petsc-openmpi python-numpy))
     (home-page "https://bitbucket.org/petsc/petsc4py/")
     (synopsis "Python bindings for PETSc")
@@ -4681,7 +4681,7 @@ bindings to almost all functions of PETSc.")
      (list #:tests? #f)) ; there are no tests
     (native-inputs
      (list python-cysignals
-           python-cython-3
+           python-cython
            python-setuptools
            python-wheel))
     (inputs
@@ -4948,7 +4948,7 @@ arising after the discretization of partial differential equations.")
                  (lambda* (#:key tests? #:allow-other-keys)
                    (when tests?
                      (invoke "python" "test/runtests.py")))))))
-    (native-inputs (list python-cython-3))
+    (native-inputs (list python-cython))
     (inputs (list python-numpy python-petsc4py petsc-openmpi slepc-openmpi))
     (home-page "https://bitbucket.org/slepc/slepc4py/")
     (synopsis "Python bindings for SLEPc")

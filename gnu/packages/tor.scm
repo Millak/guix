@@ -304,7 +304,7 @@ key, and private key are written to a new directory.")
         (base32 "16yr25llnbgl2iwk458ca0rhrxsmpfx72q4gdg4a52i6g546p3hd"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-poetry-core
            python-pytest
            python-setuptools))

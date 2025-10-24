@@ -138,7 +138,7 @@ This Python package wraps the Blosc library.")
     (native-inputs
      (list cmake-minimal
            pkg-config
-           python-cython-3
+           python-cython
            python-pytest
            python-scikit-build
            python-setuptools))

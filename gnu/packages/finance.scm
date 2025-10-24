@@ -2437,7 +2437,7 @@ interactive controls.  This package provides a GTK+ graphical user interface
                        (invoke "make" "cython"))))))
     (inputs (list ta-lib))
     (propagated-inputs (list python-numpy))
-    (native-inputs (list python-cython-3
+    (native-inputs (list python-cython
                          python-pandas
                          python-pytest
                          python-setuptools

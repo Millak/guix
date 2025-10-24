@@ -2117,7 +2117,7 @@ computing environments.")
     (native-inputs
      (list gfortran
            meson-python
-           python-cython-3
+           python-cython
            python-pandas
            python-pytest
            python-pytest-xdist))
@@ -2360,7 +2360,7 @@ for k-neighbor-graph construction and approximate nearest neighbor search.")
               (setenv "NUMBA_CACHE_DIR" "/tmp")
               ;; Rebuild extensions to run tests.
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (native-inputs (list python-cython-3 python-pytest python-setuptools
+    (native-inputs (list python-cython python-pytest python-setuptools
                          python-wheel))
     (inputs (list fftw))
     (propagated-inputs (list python-numpy python-pynndescent

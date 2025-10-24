@@ -819,7 +819,7 @@ wrappers for common SDL2 functionality.")
               (setenv "HOME" "/tmp")
               (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-pytest
            python-setuptools
            python-setuptools-scm

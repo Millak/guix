@@ -152,7 +152,7 @@
     (native-inputs
      (list imagemagick                  ;for "convert"
            nss-certs-for-test
-           python-cython-3
+           python-cython
            python-defusedxml
            python-flit-core
            python-pytest

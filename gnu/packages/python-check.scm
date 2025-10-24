@@ -1339,7 +1339,7 @@ result documents that can be read by tools such as Jenkins or Bamboo.")
       ;; sync. kernprof.line_profiler = . kernprof.__version__ = 4.2.0.
       #~(list "--deselect=tests/test_cli.py::test_version_agreement")))
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-pytest
            python-setuptools
            python-ubelt

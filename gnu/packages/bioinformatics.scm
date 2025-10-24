@@ -9989,7 +9989,7 @@ sequencing tag position and orientation.")
            python-scikit-learn
            python-scipy))
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-pytest
            python-setuptools
            python-wheel
@@ -20056,7 +20056,7 @@ bgzipped text file that contains a pair of genomic coordinates per line.")
     (propagated-inputs (list python-archspec))
     (native-inputs
      (list cmake-minimal
-           python-cython-3
+           python-cython
            python-scikit-build-core))
     (home-page "https://github.com/althonos/pyrodigal")
     (synopsis "Cython bindings and Python interface for Prodigal")

@@ -2184,7 +2184,7 @@ easy logging and rotating to a console or a file.")
     (build-system pyproject-build-system)
     (native-inputs
      (list python-brotli
-           python-cython-3
+           python-cython
            python-pytest
            python-setuptools
            python-wheel))
@@ -5035,7 +5035,7 @@ of the netcdf4 package before.")
                   (setenv "NO_CDL" "1")
                   (invoke "python" "run_all.py"))))))))
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-setuptools
            python-wheel))
     (propagated-inputs
@@ -8072,7 +8072,7 @@ environments and back.")
         (base32 "0gmwggzm0j0iprx074g5hah91y2f68sfhhldq0f8crddj7ndk16m"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-pytest
            python-setuptools
            python-wheel))
@@ -10418,7 +10418,8 @@ writing C extensions for Python as easy as Python itself.")
               ;; time of the test suite.
               (setenv "CFLAGS" "-O0"))))))))
 
-(define-public python-cython-3 python-cython)
+;; It may be removed after 2026-01-24.
+(define-deprecated/public-alias python-cython-3 python-cython)
 
 ;; NOTE: when upgrading numpy please make sure that python-numba,
 ;; python-pandas and python-scipy still build, as these three packages are
@@ -11438,7 +11439,7 @@ convert between colorspaces like sRGB, XYZ, CIEL*a*b*, CIECAM02, CAM02-UCS, etc.
                (("build_inplace=False") "build_inplace=True")))))))
     (native-inputs
      (list python-covdefaults
-           python-cython-3
+           python-cython
            python-expandvars
            python-pytest
            python-pytest-cov
@@ -13246,7 +13247,7 @@ a front-end for C compilers or analysis tools.")
      (list meson
            ninja
            pkg-config
-           python-cython-3
+           python-cython
            python-meson-python
            python-numpy
            python-pytest))
@@ -20764,7 +20765,7 @@ document.")
                     (invoke "nose2" "-v" "symengine.tests"))
                   (format #t "test suite not run~%")))))))
     (native-inputs (list cmake-minimal
-                         python-cython-3
+                         python-cython
                          python-nose2
                          python-setuptools
                          python-wheel))
@@ -22065,7 +22066,7 @@ codebase to support both Python 2 and Python 3 with minimal overhead.")
     (build-system pyproject-build-system)
     (native-inputs (list meson-python
                          pkg-config
-                         python-cython-3
+                         python-cython
                          python-pytest
                          python-sphinx))
     (home-page "https://github.com/sagemath/cysignals")
@@ -24770,7 +24771,7 @@ from the header, as well as section details and data available.")
     (build-system pyproject-build-system)
     (propagated-inputs (list python-numpy))
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-pytest
            python-setuptools
            python-setuptools-scm
@@ -27194,7 +27195,7 @@ executed more than a given number of times during a given period.")
               (substitute* "pyproject.toml"
                 ((".*addopts.*") "")))))))
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-pytest
            python-pytest-asyncio
            python-pytest-timeout

@@ -828,7 +828,7 @@ the API, and provides features such as:
       #:tests? #f
       #:build-backend "setuptools.build_meta"))
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-setuptools
            python-wheel))
     (propagated-inputs
@@ -4772,7 +4772,7 @@ with the @code{psycopg} PostgreSQL driver.")
 	          (invoke "psql" "-h" dbdir "-d" "postgres"
                           "-c" "CREATE DATABASE nixbld;"))))))))
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-mypy
            python-psycopg-pool
            python-pytest
@@ -5582,7 +5582,7 @@ __version_tuple__ = version_tuple = (~a)~%" version version-tuple))))))
     (native-inputs
      (list cmake ;needs 3.25
            pkg-config
-           python-cython-3
+           python-cython
            python-pytest
            python-pytest-runner
            python-setuptools-scm))

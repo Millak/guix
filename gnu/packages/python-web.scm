@@ -1828,7 +1828,7 @@ for adding, removing and dropping callbacks.")
            python-yarl))
     (native-inputs
      (list gunicorn-bootstrap
-           python-cython-3
+           python-cython
            python-freezegun
            python-pytest
            python-pytest-cov
@@ -2790,7 +2790,7 @@ AWS S3 Service using boto3 S3 resource as a driver.")
     (native-inputs
      (list python-aiofiles
            python-cbor2
-           python-cython-3                ;for faster binaries
+           python-cython                ;for faster binaries
            python-fakeredis
            python-httpx
            python-mujson
@@ -8297,7 +8297,7 @@ name resolutions asynchronously.")
                (("build_inplace=False") "build_inplace=True")))))))
     (native-inputs
      (list python-covdefaults
-           python-cython-3
+           python-cython
            python-expandvars
            python-pytest
            python-pytest-cov
@@ -8936,7 +8936,7 @@ hard or impossible to fix in cssselect.")
                 (delete-file-recursively "uvloop")))))))
     (native-inputs
      (list python-aiohttp
-           python-cython-3
+           python-cython
            python-psutil
            python-pyopenssl
            python-pytest

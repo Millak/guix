@@ -1684,7 +1684,7 @@ developed mainly for Ren'py.")
                        (setenv "SDL_AUDIODRIVER" "disk"))))))
     (native-inputs (list meson-python
                          pkg-config
-                         python-cython-3
+                         python-cython
                          python-numpy
                          python-pytest
                          python-setuptools))

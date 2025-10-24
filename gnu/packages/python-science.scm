@@ -2406,7 +2406,7 @@ Evapotranspiration using various standard methods.")
               (with-directory-excursion (site-packages inputs outputs)
                 (for-each delete-file (find-files "." "test*"))))))))
     (native-inputs
-     (list python-cython-3 python-pytest python-setuptools python-wheel))
+     (list python-cython python-pytest python-setuptools python-wheel))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/storpipfugl/pykdtree")
@@ -2591,7 +2591,7 @@ factorization routine for quasi-definite linear system.")
                 (with-directory-excursion #$output
                   (apply invoke "pytest" "-vv" test-flags))))))))
     (propagated-inputs (list python-numpy python-packaging python-scipy))
-    (native-inputs (list python-cython-3
+    (native-inputs (list python-cython
                          python-numpy
                          python-packaging
                          python-pytest
@@ -2975,7 +2975,7 @@ logic, also known as grey logic.")
                              python-spin))
     (native-inputs (list gfortran
                          pkg-config
-                         python-cython-3
+                         python-cython
                          python-meson-python
                          python-numpy
                          python-pytest
@@ -3106,7 +3106,7 @@ be accessible and easy to use in many contexts.")
               ;; permission.
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-pandas
            python-pytest
            python-setuptools
@@ -3839,7 +3839,7 @@ tissue-specificity metrics for gene expression.")
     (native-inputs
      (list meson-python
            python-beautifulsoup4
-           python-cython-3
+           python-cython
            python-html5lib
            python-lxml
            python-matplotlib
@@ -4590,7 +4590,7 @@ readable.")
            python-six
            python-tabulate))
     (native-inputs
-     (list python-pytest python-cython-3 python-setuptools python-wheel))
+     (list python-pytest python-cython python-setuptools python-wheel))
     (home-page "https://www.github.com/maartenbreddels/vaex")
     (synopsis "Core of Vaex library for exploring tabular datasets")
     (description "Vaex is a high performance Python library for lazy

@@ -6616,7 +6616,7 @@ basic eye-candy effects.")
            python-lz4                   ; Faster compression than zlib.
            python-netifaces
            python-pycups))
-    (native-inputs (list pkg-config pandoc python-cython-3))
+    (native-inputs (list pkg-config pandoc python-cython))
     (arguments
      (list
       #:configure-flags #~(list "--without-Xdummy"

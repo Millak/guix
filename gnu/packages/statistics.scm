@@ -1403,7 +1403,7 @@ conformal prediction methods intervals.")
            python-patsy
            python-scipy))
     (native-inputs
-     (list python-cython-3
+     (list python-cython
            python-matplotlib
            python-setuptools
            python-setuptools-scm))
@@ -3312,7 +3312,7 @@ files, including Rmarkdown files.")
     (build-system python-build-system)
     (propagated-inputs (list python-pandas))
     (inputs (list libiconv zlib))
-    (native-inputs (list python-cython-3))
+    (native-inputs (list python-cython))
     (home-page "https://github.com/Roche/pyreadstat")
     (synopsis
      "Read and write SAS, SPSS and Stata files into/from Pandas DataFrames")
