@@ -11847,30 +11847,28 @@ regular expressions.")
 (define-public python-scrapy
   (package
     (name "python-scrapy")
-    (version "2.13.1")
+    (version "2.13.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scrapy" version))
        (sha256
-        (base32 "18anr8jjjqyv6pfzdm4fr5hx4vddb8qclyja0y874f5slcnsfsrx"))))
+        (base32 "0k90pni6vkj7axx3cji0b2x7yg4yfh5kh1csqiq9ssp42265h5xz"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
            #~(list "--numprocesses" (number->string (parallel-job-count))
-                   ;; Tests requiring a display.
-                   "-k" (string-append
-                         "not " (string-join
-                                 (list "test_pformat"
-                                       "test_pformat_old_windows"
-                                       "test_pformat_windows"
-                                       ;; AssertionError.
-                                       "test_start_deprecated_super"
-                                       ;; Connection refused.
-                                       "test_persist")
-                                 " and not "))
-                   ;; Connection refused to some local FTP server.
-                   "--ignore=tests/test_feedexport.py"
+                   "-k" (string-join
+                         ;; ConnectionRefusedError: [Errno 111] Connection
+                         ;; refused
+                         (list "not test_append"
+                               "test_append_active_mode"
+                               "test_overwrite"
+                               "test_overwrite_active_mode"
+                               "test_persist"
+                               ;; AssertionError
+                               "test_start_deprecated_super")
+                         " and not ")
                    ;; Skip documentation testing.
                    "--ignore=docs")
            #:phases
@@ -11890,24 +11888,22 @@ regular expressions.")
            python-protego
            python-pydispatcher
            python-pyopenssl
+           python-pypydispatcher
            python-queuelib
            python-service-identity
            python-tldextract
-           python-typing-extensions
            python-twisted
            python-w3lib
            python-zope-interface))
     (native-inputs
      (list nss-certs-for-test
            python-hatchling
-           python-mypy
            python-pexpect
            python-pytest
            python-pytest-xdist
            python-setuptools
            python-sybil
-           python-testfixtures
-           python-wheel))
+           python-testfixtures))
     (home-page "https://scrapy.org")
     (synopsis "High-level Web crawling and Web scraping framework")
     (description "Scrapy is a fast high-level web crawling and web
