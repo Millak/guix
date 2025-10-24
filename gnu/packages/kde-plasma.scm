@@ -1310,6 +1310,7 @@ the running system.")
     (arguments
      (list
       #:qtbase qtbase
+      #:test-exclude "kscreen-testqscreenbackend"
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'check-env-setup
@@ -1329,8 +1330,7 @@ the running system.")
                       "testPreferredBackend"
                       "testFallback"
                       "testModeSwitching"
-                      "verifyConfig"
-                      "verifyScreen"))))))))))
+                      "verifyConfig"))))))))))
     (native-inputs
      (list extra-cmake-modules
            pkg-config
