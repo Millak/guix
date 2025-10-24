@@ -9,6 +9,7 @@
 ;;; Copyright © 2024 Luis Guilherme Coelho <lgcoelho@disroot.org>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -281,7 +282,7 @@ Features:
 (define-public liferea
   (package
     (name "liferea")
-    (version "1.14.6")
+    (version "1.16.5")
     (source
      (origin
        (method git-fetch)
@@ -290,7 +291,7 @@ Features:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1d701rjjpf2d8i88xdl7m9bi5lfl88920aj7wajk3vl1fwg3pzqp"))))
+        (base32 "1bphjmab2zj0ivydzlr00ds57krfcfaakk02yyxzxr3wsgdi8saf"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
@@ -298,10 +299,6 @@ Features:
          "--disable-static")
        #:phases
        (modify-phases %standard-phases
-         (add-before 'configure 'prepare-build-environment
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Workaround for https://github.com/lwindolf/liferea/issues/767.
-             (setenv "WEBKIT_DISABLE_COMPOSITING_MODE" "1")))
          (add-after 'install 'wrap-gi-python
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out               (assoc-ref outputs "out"))
@@ -309,8 +306,7 @@ Features:
                    (python-path       (getenv "GUIX_PYTHONPATH")))
                (wrap-program (string-append out "/bin/liferea")
                  `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))
-                 `("GUIX_PYTHONPATH" ":" prefix (,python-path))))
-             #t)))))
+                 `("GUIX_PYTHONPATH" ":" prefix (,python-path)))))))))
     (native-inputs
      (list autoconf
            automake
@@ -330,9 +326,9 @@ Features:
            gstreamer
            json-glib
            libnotify
-           libpeas
+           libpeas-2
            libsecret
-           libsoup-minimal-2
+           libsoup-minimal
            libxml2
            libxslt
            pango
@@ -340,7 +336,7 @@ Features:
            python-pycairo
            python-pygobject
            sqlite
-           webkitgtk-with-libsoup2))
+           webkitgtk-for-gtk3))
     (home-page "https://lzone.de/liferea/")
     (synopsis "News reader for GTK/GNOME")
     (description "Liferea is a desktop feed reader/news aggregator that
