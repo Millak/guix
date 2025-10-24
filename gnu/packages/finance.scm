@@ -2385,7 +2385,7 @@ trading, and risk management in real-life.")
 (define-public optionmatrix
   (package
     (name "optionmatrix")
-    (version "1.4.3")
+    (version "1.4.4")
     (source
      (origin
        (method url-fetch)
@@ -2393,7 +2393,7 @@ trading, and risk management in real-life.")
              "mirror://sourceforge/optionmatrix/optionmatrix-"
              version ".tar.xz"))
        (sha256
-        (base32 "1zd0pfiphnijh1l94swb3mjrpmjsn37z11mklamd7zw6h2d4zh4d"))))
+        (base32 "0ijwj798jli5rw1dj8dkz6sqbsa4hia407imicrk3djqmhn1ky3z"))))
     (build-system gnu-build-system)
     (inputs
      (list gsl gtk+ ncurses))
