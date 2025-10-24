@@ -138,7 +138,7 @@ command-line arguments, multiple languages, and so on.")
           ;; integer in 'hurd_types.defs', so this Gnulib test always fails.
           #:make-flags
           #~#$(if (and (not (%current-target-system))
-                       (string=? (%current-system) "i586-gnu"))
+                       (target-hurd32?))
                   #~'("XFAIL_TESTS=test-year2038")
                   #~'())
 
@@ -269,8 +269,7 @@ implementation offers several extensions over the standard utility.")
            '(#:make-flags (list "TESTSUITEFLAGS= -k '!tricky time stamps'")))
           (else '()))
       ;; XXX: 32-bit Hurd platforms don't support 64bit time_t
-      ,@(if (and (target-hurd?)
-                 (not (target-64bit?)))
+      ,@(if (target-hurd32?)
             (list #:configure-flags ''("--disable-year2038"))
             '())
       #:phases (modify-phases %standard-phases
@@ -346,7 +345,7 @@ differences.")
     (arguments
      (substitute-keyword-arguments (package-arguments patch/pinned)
        ((#:configure-flags flags #~'())
-        (if (and (target-hurd?) (not (target-64bit?)))
+        (if (target-hurd32?)
             #~(cons* "--disable-year2038"
                      #$flags)
             flags))))
@@ -370,7 +369,7 @@ differences.")
      ;; integer in 'hurd_types.defs', so this Gnulib test always fails.
      #:make-flags
      #~#$(cond ((and (not (%current-target-system))
-                     (string=? (%current-system) "i586-gnu"))
+                     (target-hurd32?))
                 #~'("XFAIL_TESTS=test-year2038"))
                ;; TODO: Figure out why these gnulib tests are failing.
                ((and (not (%current-target-system))
@@ -428,8 +427,7 @@ interactive means to merge two files.")
    (arguments
     `(#:configure-flags (list
                          ;; XXX: 32-bit Hurd platforms don't support 64bit time_t
-                         ,@(if (and (target-hurd?)
-                                    (not (target-64bit?)))
+                         ,@(if (target-hurd32?)
                                '("--disable-year2038")
                                '())
                          ;; Tell 'updatedb' to write to /var.

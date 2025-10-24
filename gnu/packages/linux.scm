@@ -3261,8 +3261,7 @@ deviation, and minimum and maximum values.  It can show a nice histogram too.")
                    (string-append "--with-bashcompletiondir=" #$output
                                   "/etc/bash_completion.d")
                    ;; XXX: 32-bit Hurd platforms don't support 64bit time_t
-                   #$@(if (and (target-hurd?)
-                               (not (target-64bit?)))
+                   #$@(if (target-hurd32?)
                           '("--disable-year2038")
                           '()))
 
