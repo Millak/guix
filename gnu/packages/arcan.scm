@@ -84,70 +84,69 @@
                    (delete-file-recursively "external/sqlite")))))
     (build-system cmake-build-system)
     (arguments
-     (list #:configure-flags #~'("-DBUILD_PRESET=everything"
-                                 "-DDISTR_TAG='Guix'")
-           #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'patch-paths
-                          (lambda* (#:key outputs #:allow-other-keys)
-                            (substitute* "src/platform/posix/paths.c"
-                              (("/usr/local")
-                               (assoc-ref outputs "out")))))
-                        ;; Normally, it tries to fetch patched openal with git
-                        ;; but copying files manually in the right place seems
-                        ;; to work too.
-                        (add-after 'unpack 'prepare-static-openal
-                          (lambda* (#:key inputs #:allow-other-keys)
-                            (let ((arcan-openal (assoc-ref inputs
-                                                           "arcan-openal")))
-                              (copy-recursively arcan-openal
-                                                "external/git/openal")) #t))
-                        (add-after 'prepare-static-openal 'generate-man
-                          (lambda _
-                            (with-directory-excursion "doc"
-                              (invoke "ruby" "docgen.rb" "mangen")) #t))
-                        (add-before 'configure 'chdir
-                          (lambda _
-                            (chdir "src") #t)))
+     (list
+      #:configure-flags
+      #~'("-DBUILD_PRESET=everything" "-DDISTR_TAG='Guix'")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda _
+              (substitute* "src/platform/posix/paths.c"
+                (("/usr/local") #$output))))
+          ;; Normally, it tries to fetch patched openal with git
+          ;; but copying files manually in the right place seems
+          ;; to work too.
+          (add-after 'unpack 'prepare-static-openal
+            (lambda* (#:key inputs #:allow-other-keys)
+              (copy-recursively #$(this-package-input "arcan-openal-checkout")
+                                "external/git/openal")))
+          (add-after 'prepare-static-openal 'generate-man
+            (lambda _
+              (with-directory-excursion "doc"
+                (invoke "ruby" "docgen.rb" "mangen"))))
+          (add-before 'configure 'chdir
+            (lambda _
+              (chdir "src"))))
            #:tests? #f))
-    (inputs `(("bash-minimal" ,bash-minimal)
-              ("espeak" ,espeak)
-              ("ffmpeg" ,ffmpeg-6)
-              ("freetype" ,freetype)
-              ("gumbo-parser" ,gumbo-parser)
-              ("harfbuzz" ,harfbuzz)
-              ("jbig2dec" ,jbig2dec)
-              ("leptonica" ,leptonica)
-              ("libdrm" ,libdrm)
-              ("libjpeg-turbo" ,libjpeg-turbo)
-              ("libseccomp" ,libseccomp)
-              ("libusb" ,libusb)
-              ("libvnc" ,libvnc)
-              ("libxkbcommon" ,libxkbcommon)
-              ("luajit" ,luajit)
-              ("mupdf" ,mupdf)
-              ("openal" ,openal)
-              ("openjpeg" ,openjpeg)
-              ("sdl2" ,sdl2)
-              ("sqlite" ,sqlite)
-              ("tesseract-ocr" ,tesseract-ocr)
-              ("vlc" ,vlc)
-              ("wayland" ,wayland)
-              ("wayland-protocols" ,wayland-protocols)
-              ("xcb-util" ,xcb-util)
-              ("xcb-util-wm" ,xcb-util-wm)
-              ("zlib" ,zlib)
-              ;; To build arcan_lwa, we need a patched version of openal.
-              ;; https://github.com/letoram/arcan/wiki/packaging
-              ("arcan-openal"
-               ,(origin
-                  (method git-fetch)
-                  (file-name "arcan-openal-0.6.2")
-                  (uri (git-reference (url
-                                       "https://github.com/letoram/openal")
-                                      (commit "0.6.2")))
-                  (sha256
-                   (base32
-                    "0vg3fda47q2dk1n43ijcc64q39z044pa8h6scmfyi22g6r6bfw2z"))))))
+    (inputs
+     (list bash-minimal
+           espeak
+           ffmpeg-6
+           freetype
+           gumbo-parser
+           harfbuzz
+           jbig2dec
+           leptonica
+           libdrm
+           libjpeg-turbo
+           libseccomp
+           libusb
+           libvnc
+           libxkbcommon
+           luajit
+           mupdf
+           openal
+           openjpeg
+           sdl2
+           sqlite
+           tesseract-ocr
+           vlc
+           wayland
+           wayland-protocols
+           xcb-util
+           xcb-util-wm
+           zlib
+           ;; To build arcan_lwa, we need a patched version of openal.
+           ;; https://github.com/letoram/arcan/wiki/packaging
+           (origin
+             (method git-fetch)
+             (file-name "arcan-openal-checkout")
+             (uri (git-reference (url
+                                  "https://github.com/letoram/openal")
+                                 (commit "0.6.2")))
+             (sha256
+              (base32
+               "0vg3fda47q2dk1n43ijcc64q39z044pa8h6scmfyi22g6r6bfw2z")))))
     (native-inputs (list pkg-config ruby)) ;For documentation and testing
     (home-page "https://arcan-fe.com")
     (synopsis "Display server, multimedia framework and game engine")
