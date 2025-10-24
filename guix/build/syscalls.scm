@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2024 Noah Evans <noahevans256@gmail.com>
+;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,6 +42,7 @@
   #:use-module (ice-9 regex)
   #:use-module (ice-9 match)
   #:use-module (ice-9 ftw)
+  #:use-module (ice-9 threads)
   #:export (MS_RDONLY
             MS_NOSUID
             MS_NODEV
@@ -144,6 +146,9 @@
             CLONE_NEWUSER
             CLONE_NEWPID
             CLONE_NEWNET
+            CLONE_SIGHAND
+            CLONE_THREAD
+            CLONE_VM
             clone
             unshare
             setns
@@ -1146,6 +1151,9 @@ caller lacks root privileges."
 (define CLONE_NEWUSER        #x10000000)
 (define CLONE_NEWPID         #x20000000)
 (define CLONE_NEWNET         #x40000000)
+(define CLONE_SIGHAND	     #x00000800)
+(define CLONE_THREAD	     #x00010000)
+(define CLONE_VM	     #x00000100)
 
 (define %set-automatic-finalization-enabled?!
   ;; When using a statically-linked Guile, for instance in the initrd, we
@@ -1215,22 +1223,40 @@ are shared between the parent and child processes."
                    (list err))
             ret)))))
 
+(define (thread-count)
+  "Return the complete thread count of the current process.  Unlike
+`all-threads', this also counts the Guile signal delivery, and finalizer
+threads."
+  (scandir "/proc/self/task"
+           (negate (cut member <> '("." "..")))))
+
 (define unshare
   (let ((proc (syscall->procedure int "unshare" (list int))))
     (lambda (flags)
       "Disassociate the current process from parts of its execution context
-according to FLAGS, which must be a logical or of CLONE_NEW* constants.
-
-Note that CLONE_NEWUSER requires that the calling process be single-threaded,
-which is possible if and only if libgc is running a single marker thread; this
-can be achieved by setting the GC_MARKERS environment variable to 1.  If the
-calling process is multi-threaded, this throws to 'system-error' with EINVAL."
-      (let-values (((ret err)
-                    (without-automatic-finalization (proc flags))))
-        (unless (zero? ret)
-          (throw 'system-error "unshare" "~a: ~A"
-                 (list flags (strerror err))
-                 (list err)))))))
+according to FLAGS, which must be a logical or of CLONE_* constants.  When
+CLONE_NEWUSER, CLONE_SIGHAND, CLONE_THREAD or CLONE_VM are specified, this
+wrapper verifies the caller's environment is single-threaded.  If this
+requirement is not met, it produces a warning and throws to 'system-error'
+with EINVAL."
+      (let* ((require-single-thread? (logtest (logior CLONE_NEWUSER
+                                                      CLONE_SIGHAND
+                                                      CLONE_THREAD
+                                                      CLONE_VM)
+                                              flags))
+             (warn/maybe (lambda ()
+                           (when (and require-single-thread?
+                                      (< 1 (length (thread-count))))
+                             (format (current-warning-port)
+                                     "warning: unshare single-thread \
+requirement violated~%")))))
+        (let-values (((ret err) (begin
+                                  (warn/maybe)
+                                  (proc flags))))
+          (unless (zero? ret)
+            (throw 'system-error "unshare" "~a: ~A"
+                   (list flags (strerror err))
+                   (list err))))))))
 
 (define setns
   ;; Some systems may be using an old (pre-2.14) version of glibc where there
