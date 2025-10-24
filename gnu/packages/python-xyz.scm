@@ -31422,17 +31422,11 @@ an upload option to send your work back to the platform.")
        (method url-fetch)
        (uri (pypi-uri "titlecase" version))
        (sha256
-        (base32
-         "1x9myq3rlbw6wh946ncch8px7wyabhzacy2fjji13nmvrivs50vx"))))
+        (base32 "1x9myq3rlbw6wh946ncch8px7wyabhzacy2fjji13nmvrivs50vx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (apply invoke "python" "-m" "unittest" test-flags)))))))
+      #:test-backend #~'unittest))
     (native-inputs
      (list python-setuptools))
     (home-page "https://github.com/ppannuto/python-titlecase")
