@@ -722,12 +722,21 @@ multipole-accelerated algorithm.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "083nz7vj7a334575smjry6257535h68gglh8a381xxa36dw96aqs"))))
+        (base32 "083nz7vj7a334575smjry6257535h68gglh8a381xxa36dw96aqs"))
+       (patches (search-patches "fritzing-0.9.6-fix-types.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-files
+            (lambda _
+              ;; Trick the internal mechanism to load the parts
+              (substitute* "src/version/partschecker.cpp"
+                ((".*git_libgit2_init.*")
+                 "return \"083nz7vj7a334575smjry6257535h68gglh8a381xxa36dw96aqs\";"))
+              (substitute* "src/utils/textutils.cpp"
+                (("QUuid::createUuid\\(\\)") "QUuid()"))))
           (replace 'configure
             (lambda _
               ;; Integrate parts library
@@ -744,17 +753,22 @@ multipole-accelerated algorithm.")
                   "INCLUDEPATH += $$LIBGIT2INCLUDE\n"
                   "LIBS += -L$$LIBGIT2LIB -lgit2\n"))
                 (("^.*pri/libgit2detect.pri.") ""))
-              ;; Trick the internal mechanism to load the parts
-              (substitute* "src/version/partschecker.cpp"
-                ((".*git_libgit2_init.*")
-                 "return \"083nz7vj7a334575smjry6257535h68gglh8a381xxa36dw96aqs\";"))
-              ;; XXX: NixOS and Gento have a phase where they generate part
-              ;; SQLite library, have proper investigation if it's required in
-              ;; Guix as well.
               (invoke "qmake"
                       (string-append "QMAKE_LFLAGS_RPATH=-Wl,-rpath," #$output "/lib")
                       (string-append "PREFIX=" #$output)
-                      "phoenix.pro"))))))
+                      "phoenix.pro")))
+          (add-after 'install 'generate-parts-db
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out"))
+                    (env-qt-qpa-platform (getenv "QT_QPA_PLATFORM"))
+                    (env-qt-hash-seed (getenv "QT_HASH_SEED")))
+                (setenv "QT_QPA_PLATFORM" "offscreen")
+                (setenv "QT_HASH_SEED" "0")
+                (invoke (string-append out "/bin/Fritzing")
+                        "-db" (string-append out "/share/fritzing/parts/parts.db")
+                        "-folder" (string-append out "/share/fritzing"))
+                (setenv "QT_QPA_PLATFORM" env-qt-qpa-platform)
+                (setenv "QT_HASH_SEED" env-qt-hash-seed)))))))
     (native-inputs
      (list fritzing-parts))
     (inputs
