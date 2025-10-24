@@ -303,22 +303,23 @@ corresponding to the top-level definition containing the staged changes."
                 (or (equal? old-values new-values)
                     (let ((removed (lset-difference equal? old-values new-values))
                           (added (lset-difference equal? new-values old-values)))
-                      (format port
-                              "[~a]: ~a~%" field
-                              (break-string
-                               ;; A dependency can be a list of (pkg output).
-                               (match (list (map object->string removed)
-                                            (map object->string added))
-                                 ((() added)
-                                  (format #f "Add ~a."
-                                          (listify added)))
-                                 ((removed ())
-                                  (format #f "Remove ~a."
-                                          (listify removed)))
-                                 ((removed added)
-                                  (format #f "Remove ~a; add ~a."
-                                          (listify removed)
-                                          (listify added))))))))))
+                      (unless (and (null? added) (null? removed))
+                        (format port
+                                "[~a]: ~a~%" field
+                                (break-string
+                                 ;; A dependency can be a list of (pkg output).
+                                 (match (list (map object->string removed)
+                                              (map object->string added))
+                                   ((() added)
+                                    (format #f "Add ~a."
+                                            (listify added)))
+                                   ((removed ())
+                                    (format #f "Remove ~a."
+                                            (listify removed)))
+                                   ((removed added)
+                                    (format #f "Remove ~a; add ~a."
+                                            (listify removed)
+                                            (listify added)))))))))))
             '(inputs propagated-inputs native-inputs)))
 
 (define* (add-commit-message file-name variable-name
