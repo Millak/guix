@@ -1237,13 +1237,13 @@ tst_qt_cmake_create.cpp"
   (package
     (inherit qtbase-5)
     (name "qt3d")
-    (version "5.15.16")
+    (version "5.15.17")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1nvkb4bcfjkdbm8c81b4ivxa8b9qwip7zs95mmli6i52i21xd319"))))
+                "13kha7x0zlgkm19lvvs1jmp1s75j70p9cy7iayfrgrygnlh1ckj3"))))
     (propagated-inputs `())
     (native-inputs (list perl))
     (inputs (list mesa qtbase-5 vulkan-headers zlib))
