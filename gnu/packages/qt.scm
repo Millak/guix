@@ -4763,17 +4763,23 @@ top of the PyQt bindings for Qt.  PyQt-builder is used to build PyQt itself.")
               "--ignore=qtpy/tests/test_qtwidgets.py"
               "--ignore=qtpy/tests/test_uic.py"
               ;; ModuleNotFoundError: No module named 'PyQt5.QtTextToSpeech'
-              "-k" "not test_qttexttospeech")))
+              "-k" (string-append "not test_qttexttospeech"
+                                  ;; Fatal Python error: Segmentation fault
+                                  " and not test_qtsql_members_aliases"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              ;; Drop test coverage requirements.
+              (substitute* "pytest.ini"
+                (("--cov-report=term-missing") "")
+                (("--cov-report=xml") "")))))))
+    ;; XXX: Do not include, even supported: Qt5, PySide2 PySide6, only test
+    ;; agains Qt6 to reduce closure size..
     (native-inputs
-     (list python-pyqt
-           python-pyqt-6
-           python-pyside-2
-           python-pyside-6
+     (list python-pyqt-6
            python-pytest
-           python-pytest-cov
-           python-pytest-qt
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-packaging))
     (home-page "https://github.com/spyder-ide/qtpy")
