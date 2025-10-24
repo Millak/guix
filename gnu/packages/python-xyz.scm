@@ -27127,28 +27127,6 @@ distributions.  It authenticates the user over HTTPS, allows them to pre-sign
 their files and supports any packaging format (including wheels).")
     (license license:asl2.0)))
 
-(define-public python-tracerite
-  (package
-    (name "python-tracerite")
-    (version "1.1.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "tracerite" version))
-              (sha256
-               (base32
-                "07mkg0sl0h335kj6yjvxki2c19gxhb7rkks1zgzh7aj0y83c17qi"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))        ;no tests in PyPI or Git
-    (native-inputs (list python-setuptools python-setuptools-scm))
-    (propagated-inputs (list python-html5tagger))
-    (home-page "https://github.com/sanic-org/tracerite")
-    (synopsis "Human-readable HTML tracebacks")
-    (description
-     "@code{tracerite} converts Python tracebacks into useful error messages
-in human-readable HTML format.")
-    (license license:unlicense)))
-
 ;; XXX: This project was archived by the owner on Oct 4, 2023. It is now
 ;; read-only.  Consider to remvoe when nothing depends on it.
 (define-public python-ratelimiter

@@ -3930,6 +3930,31 @@ high-speed transfers via libcurl and frequently outperforms alternatives.")
     ;; under the terms of LGPLv2.1+ or Expat.
     (license (list license:lgpl2.1+ license:expat))))
 
+(define-public python-tracerite
+  (package
+    (name "python-tracerite")
+    (version "1.1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tracerite" version))
+       (sha256
+        (base32 "07mkg0sl0h335kj6yjvxki2c19gxhb7rkks1zgzh7aj0y83c17qi"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests in PyPI or Git
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-html5tagger))
+    (home-page "https://github.com/sanic-org/tracerite")
+    (synopsis "Human-readable HTML tracebacks")
+    (description
+     "@code{tracerite} converts Python tracebacks into useful error messages
+in human-readable HTML format.")
+    (license license:unlicense)))
+
 (define-public python-trio-websocket
   (package
     (name "python-trio-websocket")
