@@ -28895,9 +28895,9 @@ the public ICANN TLDs and their exceptions.  It can optionally support the
 Public Suffix List's private domains as well.")
     (license license:bsd-3)))
 
-(define-public python-tldr
+(define-public tldr
   (package
-    (name "python-tldr")
+    (name "tldr")
     (version "3.4.3")
     (source
      (origin
@@ -28922,7 +28922,7 @@ Public Suffix List's private domains as well.")
      (list python-hatchling
            python-pytest
            python-sphinx-argparse))
-    (propagated-inputs
+    (inputs
      (list python-colorama
            python-termcolor
            python-shtab))
@@ -28932,6 +28932,9 @@ Public Suffix List's private domains as well.")
 to view @code{tldr} pages from a shell.  The @code{tldr} pages are a community
 effort to simplify the man pages with practical examples.")
     (license license:expat)))
+
+(define-public python-tldr
+  (deprecated-package "python-tldr" tldr))
 
 (define-public python-nodeenv
   (package
