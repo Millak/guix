@@ -1864,21 +1864,20 @@ managers.")
 (define-public python-tatsu
   (package
     (name "python-tatsu")
-    (version "5.13.1")
+    (version "5.13.2")
     (source
      (origin
-       (method git-fetch) ; no tests in PyPI releasefor tests
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/neogeny/TatSu")
-             (commit (string-append "v" version))))
+              (url "https://github.com/neogeny/TatSu")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pdq9d45vbp7j600ig4k21mv2wipvmz05dji91x7kifhzfl5i6w9"))))
+        (base32 "0ppgi5r55iirzhnf988b32yvh8ly8lzxbg59y0zgqfaxbma50650"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://tatsu.readthedocs.io/en/stable/")
     (synopsis "PEG/Packrat Parser generator for Python")
     (description
