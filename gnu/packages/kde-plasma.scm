@@ -2847,15 +2847,14 @@ sensors, process information and other system resources.")
                   breeze
                   breeze-icons
                   dbus
+                  eudev
                   fontconfig
+                  gmp
+                  gpsd
                   icu4c
                   iso-codes/pinned
-                  plasma-activities
-                  plasma-activities-stats
                   karchive
                   kauth
-                  ksvg
-                  kstatusnotifieritem
                   kcmutils
                   kcoreaddons
                   kcrash
@@ -2871,25 +2870,25 @@ sensors, process information and other system resources.")
                   kiconthemes
                   kidletime
                   kio
-                  lsof
-                  xdotool                     ;for X11
-                  qqc2-desktop-style
-                  qcoro-qt6
-                  kirigami-addons
                   kio-extras
-                  kitemmodels
                   kirigami
                   kirigami-addons
+                  kirigami-addons
+                  kitemmodels
                   knewstuff
+                  knighttime
                   knotifications
                   knotifyconfig
-                  kquickcharts
                   kpackage
                   kpeople
                   kpipewire
                   kquickcharts
+                  kquickcharts
                   krunner
+                  kscreen                     ;qml dependency
                   kscreenlocker
+                  kstatusnotifieritem
+                  ksvg
                   ktexteditor
                   ktextwidgets
                   kuserfeedback
@@ -2897,55 +2896,55 @@ sensors, process information and other system resources.")
                   kwayland
                   kwin
                   layer-shell-qt
+                  libkexiv2
                   libkscreen
                   libksysguard
+                  libplasma
                   libqalculate
-                  gmp
-                  mpfr
-                  eudev
                   libsm
                   libxcrypt
+                  libxcursor
                   libxft
                   libxkbcommon
                   libxrender
                   libxtst
+                  lsof
+                  mpfr
                   networkmanager-qt
+                  packagekit-qt6
                   phonon
                   pipewire
-                  libplasma
-                  plasma5support
-                  plasma-workspace-wallpapers
+                  plasma-activities
+                  plasma-activities-stats
+                  plasma-nm                   ;qml dependency
+                  plasma-pa                   ;qml dependency
                   plasma-wayland-protocols
+                  plasma-workspace-wallpapers
+                  plasma5support
+                  polkit-qt6
                   prison
-                  qtlocation
+                  qcoro-qt6
+                  qqc2-desktop-style
                   qt5compat
-                  qtsvg
-                  qtshadertools
                   qtdeclarative
-                  qttools
+                  qtlocation
                   qtpositioning
+                  qtshadertools
+                  qtsvg
+                  qttools
                   qtwayland
+                  ucd
                   wayland
                   wayland-protocols
                   xcb-util
+                  xcb-util-cursor
                   xcb-util-image
                   xcb-util-keysyms
-                  xrdb
+                  xdotool                     ;for X11
                   xmessage
+                  xrdb
                   xsetroot
-                  polkit-qt6
-                  ucd
-
-                  xcb-util-cursor
-                  libxcursor
-                  libkexiv2
-                  gpsd
-                  zlib
-
-                  ;; qml dependency
-                  plasma-nm
-                  plasma-pa
-                  kscreen))
+                  zlib))
     (arguments
      (list #:qtbase qtbase
            #:configure-flags
@@ -2958,23 +2957,9 @@ sensors, process information and other system resources.")
                              "/libexec/kglobalacceld"))
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-workspace-bins
+               (add-after 'unpack 'patch-qttools-path
                  (lambda* (#:key inputs #:allow-other-keys)
-                   (let ((xmessage (search-input-file inputs "/bin/xmessage"))
-                         (xsetroot (search-input-file inputs "/bin/xsetroot"))
-                         (xrdb (search-input-file inputs "/bin/xrdb"))
-                         (qttools #$(this-package-input "qttools")))
-                     (substitute* "applets/devicenotifier/plugin/\
-deviceerrormonitor_p.cpp"
-                       (("lsof") (search-input-file inputs "/bin/lsof")))
-                     (substitute* "startkde/startplasma.cpp"
-                       (("xmessage") xmessage))
-                     (substitute* "kcms/krdb/krdb.cpp"
-                       (("xsetroot") xsetroot))
-                     (substitute* (list "kcms/fonts/fontinit.cpp"
-                                        "kcms/fonts/fonts.cpp"
-                                        "kcms/krdb/krdb.cpp")
-                       (("xrdb") xrdb))
+                   (let ((qttools #$(this-package-input "qttools")))
                      ;; QT_INSTALL_BINS refers to qtbase, but qdbus is in
                      ;; qttools.
                      (substitute* "CMakeLists.txt"
