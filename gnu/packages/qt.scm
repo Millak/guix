@@ -500,13 +500,13 @@ system, and the core design of Django is reused in Grantlee.")
 (define-public qtbase-5
   (package
     (name "qtbase")
-    (version "5.15.16")
+    (version "5.15.17")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "14hm0kyp1y8lsc6wn3bsy28i6zf8l9b6f81pm1mqn18qih2iaj5h"))
+                "1zsnww4hp5n46jyg43w039lgxxrnjj1w0ngp54ibv9glng5i65fv"))
               ;; Use TZDIR to avoid depending on package "tzdata".
               (patches (search-patches "qtbase-5-use-TZDIR.patch"
                                        "qtbase-moc-ignore-gcc-macro.patch"
