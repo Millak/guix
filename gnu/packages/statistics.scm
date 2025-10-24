@@ -3633,7 +3633,10 @@ and Causal), and simulations in Bayesian Networks.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1p0cmgy19kbkxia139cb5w9dnkp2cdqp5n3baag6cq3prn3n71mf"))))
+                  "1p0cmgy19kbkxia139cb5w9dnkp2cdqp5n3baag6cq3prn3n71mf"))
+                (patches
+                 (search-patches
+                  "xlispstat-fix-compilation-with-modern-gcc.patch"))))
       (build-system gnu-build-system)
       (arguments
        `(#:parallel-build? #f   ; Parallel builds are not supported

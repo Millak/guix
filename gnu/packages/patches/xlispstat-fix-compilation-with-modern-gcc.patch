@@ -1,0 +1,213 @@
+From 29d14d78a17f2d85bc9e37f380e71221c2055dd8 Mon Sep 17 00:00:00 2001
+From: "Artyom V. Poptsov" <poptsov.artyom@gmail.com>
+Date: Thu, 23 Oct 2025 22:13:53 +0300
+Subject: [PATCH] src: Fix compilation with GCC version 14 or newer
+
+GCC version 14 now treats some deprecation warnings as errors, namely
+it is not allowed to use implicit "int" types, implicit function
+declarations (see <https://gcc.gnu.org/gcc-14/porting_to.html>.)  In
+this patch, deprecated code updated to match the new requirements of
+GCC.
+
+* src/c/ddists.c, src/c/objects.c, src/include/sysvr4-foreign.h,
+src/c/iviewdat.c, src/c/postscript.c: Explicitly specify variable
+types and procedure return value types to satisfy requirements of
+GCC version 14 or newer.
+* src/c/X11graph.c: Likewise.
+(StBlockForInput): Modernize "select" call.
+* src/c/X11BSDstuff.c (line_available): Modernize "select" call.
+---
+ src/c/X11BSDstuff.c          |  4 +++-
+ src/c/X11graph.c             | 10 +++++++---
+ src/c/ddists.c               |  4 +++-
+ src/c/iviewdat.c             |  2 +-
+ src/c/objects.c              |  6 ++++--
+ src/c/postscript.c           |  7 ++++---
+ src/include/sysvr4-foreign.h |  2 +-
+ 7 files changed, 23 insertions(+), 12 deletions(-)
+
+diff --git a/src/c/X11BSDstuff.c b/src/c/X11BSDstuff.c
+index 5bb7144..4a9b91b 100644
+--- a/src/c/X11BSDstuff.c
++++ b/src/c/X11BSDstuff.c
+@@ -3,6 +3,8 @@
+ /* Additions to Xlisp 2.1, Copyright (c) 1989 by David Michael Betz    */
+ /* You may give out copies of this software; for conditions see the    */
+ /* file COPYING included with this distribution.                       */
++/* Additions to XLISP-STAT 2.1, Copyright (c) 2025,                    */
++/* by Artyom V. Poptsov <poptsov.artyom@gmail.com>                     */
+ /*                                                                     */
+ /* Some modifications included from WINTERP                            */
+ /* WINTERP 1.0 Copyright 1989 Hewlett-Packard Company (by Niels Mayer).*/
+@@ -549,7 +551,7 @@ LOCAL int line_available()
+   FD_ZERO(&readmask);
+   FD_SET(fileno(stdin), &readmask);
+ 
+-  result = select(ndfs, (int *) &readmask, NULL, NULL, &tv);
++  result = select(ndfs, &readmask, NULL, NULL, &tv);
+   if (result > 0) return(TRUE);
+   /* *** should merge the select here with the one for blocking ***/
+   else return(StBlockForInput());
+diff --git a/src/c/X11graph.c b/src/c/X11graph.c
+index 70dff08..920957c 100644
+--- a/src/c/X11graph.c
++++ b/src/c/X11graph.c
+@@ -1,6 +1,8 @@
+ /* X11graph - X11 support for XLISP-STAT                               */
+ /* XLISP-STAT 2.1 Copyright (c) 1990, by Luke Tierney                  */
+ /* Additions to Xlisp 2.1, Copyright (c) 1989 by David Michael Betz    */
++/* Additions to XLISP-STAT 2.1, Copyright (c) 2025,                    */
++/* by Artyom V. Poptsov <poptsov.artyom@gmail.com>                     */
+ /* You may give out copies of this software; for conditions see the    */
+ /* file COPYING included with this distribution.                       */
+ 
+@@ -23,8 +25,8 @@ extern VOID InstallMenuButton P2H(Window, LVAL);
+ extern VOID DeleteMenuButton P1H(Window);
+ extern VOID StX11FinishMenus(V);
+ extern VOID StX11FinishDialogs(V);
+-extern StX11InitMenus(V);
+-extern StX11InitDialogs(V);
++extern void StX11InitMenus(V);
++extern void StX11InitDialogs(V);
+ 
+ extern char *getenv();
+ 
+@@ -316,7 +318,7 @@ int StBlockForInput()
+       if (tmp > maxfd) maxfd = tmp;
+       FD_SET(maxfd, &readmask);
+     }
+-    result = select(maxfd+1, (int *) &readmask, NULL, NULL, NULL);
++    result = select(maxfd+1, &readmask, NULL, NULL, NULL);
+     return((FD_ISSET(fileno(stdin), &readmask)) ? TRUE : FALSE);
+   }
+   else return(FALSE);
+@@ -1221,6 +1223,7 @@ VOID StWGetLocation(w, left, top, frame)
+ VOID StWSetSize(w, width, height, frame)
+      Window w;
+      int width, height;
++     int frame;
+ {
+   Display *dpy = StX11Display();
+   StGWWinInfo *gwinfo;
+@@ -1286,6 +1289,7 @@ VOID StWGetSize(w, pwidth, pheight, frame)
+ VOID StGWSetSize(gwinfo, width, height, frame)
+      StGWWinInfo *gwinfo;
+      int width, height;
++     int frame;
+ {
+   Window w;
+   if (gwinfo == NULL || (w = gwinfo->window) == NullWindow) return;
+diff --git a/src/c/ddists.c b/src/c/ddists.c
+index e6abeaa..dcefa23 100644
+--- a/src/c/ddists.c
++++ b/src/c/ddists.c
+@@ -3,6 +3,8 @@
+ /* Additions to Xlisp 2.1, Copyright (c) 1989 by David Michael Betz    */
+ /* You may give out copies of this software; for conditions see the    */
+ /* file COPYING included with this distribution.                       */
++/* Additions to XLISP-STAT 2.1, Copyright (c) 2025,                    */
++/* by Artyom V. Poptsov <poptsov.artyom@gmail.com>                     */
+  
+ #include "xlisp.h"
+ #include "xlstat.h"
+@@ -29,7 +31,7 @@ LOCAL VOID getpoisarg P1H(double *);
+ LOCAL double poisson_cdf P2H(int, double);
+ LOCAL int binomial_quant P3H(double, int, double);
+ LOCAL int poisson_quant P2H(double, double);
+-LOCAL poisson_rand P1H(double);
++LOCAL int poisson_rand P1H(double);
+ LOCAL int binomial_rand P2H(int, double);
+ 
+ /* numerical distribution function */
+diff --git a/src/c/iviewdat.c b/src/c/iviewdat.c
+index 0b35e05..28fd2df 100644
+--- a/src/c/iviewdat.c
++++ b/src/c/iviewdat.c
+@@ -237,7 +237,7 @@ static VOID IViewBasicPointsSetTransformation P2C(IViewBasicPoints, p, double **
+ static VOID IViewBasicPointsApplyTransformation P3C(IViewBasicPoints, p,
+                                                     double **, a, int *, inbasis)
+ {
+-  static maxvars = 0;
++  static int maxvars = 0;
+   static Fixed **b, *x, **screen_data, *screen_location;
+   int vars, n, i, j;
+   double *scale = p->scale, *location = p->location;
+diff --git a/src/c/objects.c b/src/c/objects.c
+index d9c61f2..1084b47 100644
+--- a/src/c/objects.c
++++ b/src/c/objects.c
+@@ -3,7 +3,9 @@
+ /* Additions to Xlisp 2.1, Copyright (c) 1989 by David Michael Betz    */
+ /* You may give out copies of this software; for conditions see the    */
+ /* file COPYING included with this distribution.                       */
+- 
++/* Additions to XLISP-STAT 2.1, Copyright (c) 2025,                    */
++/* by Artyom V. Poptsov <poptsov.artyom@gmail.com>                     */
++
+ #include "xlisp.h"
+ #include "xlstat.h"
+ 
+@@ -1260,7 +1262,7 @@ LVAL xsobject_isnew(V)
+ VOID xsaddmsg P2C(LVAL, object, char *, str)
+ {
+   LVAL fcn;
+-  static offset = FIRST_METHOD_OFFSET;
++  static int offset = FIRST_METHOD_OFFSET;
+ 
+   xlsave1(fcn);
+   fcn = cvsubr(funtab[offset].fd_subr,funtab[offset].fd_type,offset);
+diff --git a/src/c/postscript.c b/src/c/postscript.c
+index 6ddbfb9..ea57351 100644
+--- a/src/c/postscript.c
++++ b/src/c/postscript.c
+@@ -9,6 +9,7 @@
+ /* pbmtops.c - read a portable bitmap and produce a PostScript bitmap file
+ **
+ ** Copyright (C) 1988 by Jef Poskanzer.
++** Copyright (C) 2025 by Artyom V. Poptsov <poptsov.artyom@gmail.com>
+ **
+ ** Permission to use, copy, modify, and distribute this software and its
+ ** documentation for any purpose and without fee is hereby granted, provided
+@@ -60,7 +61,7 @@ static FILE *fp;
+ /**************************************************************************/
+ 
+ /* set up global variables and print the postscript preamble */
+-psputinit(file, cols, rows, scale )
++void psputinit(file, cols, rows, scale )
+      FILEP file;
+      int cols, rows;
+      double scale;
+@@ -120,7 +121,7 @@ psputinit(file, cols, rows, scale )
+ }
+ 
+ /* enter a bit into the image */
+-psputbit(b)
++void psputbit(b)
+      int b;
+ {
+   if ( bitsperitem == 8 ) {
+@@ -133,7 +134,7 @@ psputbit(b)
+ }
+ 
+ /* clean up and print the showpage command */
+-psputrest( )
++void psputrest( )
+ {
+   if ( bitsperitem > 0 )
+     putitem( );
+diff --git a/src/include/sysvr4-foreign.h b/src/include/sysvr4-foreign.h
+index f40acc8..709fc6c 100644
+--- a/src/include/sysvr4-foreign.h
++++ b/src/include/sysvr4-foreign.h
+@@ -16,7 +16,7 @@ LOCAL VOID link_and_load(fname, libs, fort)
+      char *fname, *libs;
+      int fort;
+ {
+-  static initialized = FALSE;
++  static int initialized = FALSE;
+   void *handle;
+ 
+   if (! initialized) {
+-- 
+2.51.0
+
