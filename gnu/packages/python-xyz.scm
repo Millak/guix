@@ -1838,110 +1838,6 @@ regularly spaced grids.  The actual streamline tracing is done at a low level
 in Rust, with a nice Python API provided on top.")
     (license license:gpl3+)))
 
-(define-public python-takethetime
-  (package
-    (name "python-takethetime")
-    (version "0.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "TakeTheTime" version))
-       (sha256
-        (base32 "1y9gzqb9l1f2smx8783ccjzjvby5mphshgrfks7s75mml59h9qyv"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f)) ; tests are time dependent and not provided in PyPI
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
-    (home-page "https://github.com/ErikBjare/TakeTheTime")
-    (synopsis "Timing chunks of code")
-    (description
-     "This package implements a functionality for time taking using context
-managers.")
-    (license license:expat)))
-
-(define-public python-tatsu
-  (package
-    (name "python-tatsu")
-    (version "5.13.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/neogeny/TatSu")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0ppgi5r55iirzhnf988b32yvh8ly8lzxbg59y0zgqfaxbma50650"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (home-page "https://tatsu.readthedocs.io/en/stable/")
-    (synopsis "PEG/Packrat Parser generator for Python")
-    (description
-     "TatSu (竜) takes a grammar in a variation of Extended Backus-Naur
-Form (EBNF) as input, and outputs a memoizing Parsing Expression Grammar (PEG)
-or Packrat parser in Python.")
-    (license license:bsd-2)))
-
-(define-public python-term-image
-  (package
-    (name "python-term-image")
-    (version "0.7.2")
-    (source
-     (origin
-       ;; We need the full repo to run the tests.
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/AnonymouX47/term-image")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1lsd5m0k5m99arkca2rzrrlln10c8ax6xfawqwjnspcbf8l3h3dq"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags
-           #~(list "tests"
-                   ;; These tests require network access.
-                   "-k" (string-append "not test_from_url"
-                                       " and not test_source"
-                                       " and not test_close"))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'adjust-dependencies
-                 (lambda _
-                   (substitute* "setup.py"
-                     (("pillow>=9.1,<11") "pillow>=9.1,<12")))))))
-    (propagated-inputs (list python-pillow python-requests))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-urwid))
-    (home-page "https://github.com/AnonymouX47/term-image")
-    (synopsis "Display images in the terminal")
-    (description "term-image is a library and program to display images on
-compatible terminals.
-
-Features:
-@enumerate
-@item Multiple image formats (basically all formats supported by
-@code{PIL.Image.open()})
-@item Multiple image source types: PIL image instance, local file, URL
-@item Multiple image render styles (with automatic support detection)
-@item Support for multiple terminal graphics protocols, including Kitty
-@item Transparency support (with multiple options)
-@item Animated image support (including transparent ones)
-@item Integration into various TUI / terminal-based output libraries
-@item Terminal size awareness
-@item Automatic and manual image sizing
-@item Horizontal and vertical alignment
-@item Automatic and manual font ratio adjustment (to preserve image aspect
-ratio)
-@end enumerate")
-    (license license:expat)))
-
 (define-public python-trubar
   (package
     (name "python-trubar")
@@ -3563,31 +3459,6 @@ library.")
      "This package provides a lazy-loading, fancy-sliceable iterable.  Think
 of it like a generator that is \"reusable\" and has a length.")
     (license license:bsd-3)))
-
-(define-public python-tenacity
-  (package
-    (name "python-tenacity")
-    (version "9.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "tenacity" version))
-       (sha256
-        (base32 "0fyp421r038naskvyhj90hkq0az96477njad4rhs6annjz53fzw0"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-tornado-6
-           python-typeguard
-           python-wheel))
-    (home-page "https://github.com/jd/tenacity")
-    (synopsis "Retrying library for python")
-    (description
-     "Tenacity is a general-purpose python library to simplify the task of
-adding retry behavior to just about anything.")
-    (license license:asl2.0)))
 
 (define-public python-pytelegrambotapi
   (package
@@ -5410,26 +5281,6 @@ text interfaces more user-friendly.  It includes tools to parse and format
 numbers, file sizes, and timespans, timers for long-running operations, menus
 to allow the user to choose from a list of options, and terminal interaction
 helpers.")
-    (license license:expat)))
-
-(define-public python-textparser
-  (package
-    (name "python-textparser")
-    (version "0.24.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "textparser" version))
-       (sha256
-        (base32 "0dc3aqbzh0x13i6cmr73q777wv8nxyk3p0kdnynh5l59bbkhixsn"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-backend #~'unittest))
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/eerimoq/textparser")
-    (synopsis "Fast text parser for Python")
-    (description "This library provides a text parser written in the Python
-language.  It aims to be fast.")
     (license license:expat)))
 
 ;; XXX: The project might be abandoned and this package has no users in Guix,
@@ -7929,30 +7780,6 @@ Capabilities include:
 @item Debugging production issues
 @end itemize")
     (license license:expat)))
-
-(define-public python-text-unidecode
-  (package
-    (name "python-text-unidecode")
-    (version "1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "text-unidecode" version))
-       (sha256
-        (base32 "14xb99fdv52j21dsljgsbmbaqv10ps4b453p229r29sdn4xn1mms"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (home-page "https://github.com/kmike/text-unidecode/")
-    (synopsis "Decode Unicode data")
-    (description
-     "@code{text-unidecode} is a basic Python port of the @code{Text::Unidecode}
-Perl library.  It can create ASCII representations of Unicode data.  In general
-users should prefer the @code{python-unidecode} package which offers better
-memory usage and transliteration quality.")
-    ;; The user can choose either license.
-    (license (list license:clarified-artistic license:gpl2+))))
 
 (define-public python-pyjwt
   (package
@@ -12752,96 +12579,6 @@ ImageJ ROIs, an undocumented and ImageJ application specific format to store
 regions of interest, geometric shapes, paths, text, etc for image overlays.")
     (license license:bsd-3)))
 
-(define-public python-tifffile
-  (package
-    (name "python-tifffile")
-    (version "2025.10.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "tifffile" version))
-       (sha256
-        (base32 "0f1ybmr2jz19gjg92p9vz3qib49m0x4ipxvrvjyfa6r1mcb7qhrf"))))
-    (build-system pyproject-build-system)
-    ;; Tests require lfdfiles, which depends on tifffile
-    (arguments (list #:tests? #f))
-    (propagated-inputs
-     (list python-numpy))
-    (native-inputs
-     (list python-setuptools))
-    (home-page "https://www.lfd.uci.edu/~gohlke/")
-    (synopsis "Read and write TIFF(r) files")
-    (description
-     "This package lets you read image and metadata from many bio-scientific
-formats such as plain TIFF, BigTIFF, OME-TIFF, STK, LSM, SGI,NIH, ImageJ,
-MicroManager, MD GEL, and FluoView files.  It also lets you write numpy arrays
-to TIFF, BigTIFF, and ImageJ hyperstack compatible files.")
-    (license license:bsd-3)))
-
-(define-public python-tifffile-for-dask-image
-  ;; It's for python-dask-image@2024.5.3, remove when no longer required.
-  (hidden-package
-   (package
-     (inherit python-tifffile)
-     (name "python-tifffile")
-     (version "2023.12.9")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "tifffile" version))
-        (sha256
-         (base32 "1f6d8qdlq0zlksfdhp1mhj9icpwhw4cz47r4i80m6r0a328xmlcx")))))))
-
-(define-public python-tiktoken
-  (package
-    (name "python-tiktoken")
-    (version "0.9.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "tiktoken" version))
-       (sha256
-        (base32 "0p9cg6n8mzdi4lbbwxrrp26chy5hr14bqmzr3w74kq1qm6k5qanh"))))
-    (build-system cargo-build-system)
-    (arguments
-     (list
-      #:install-source? #false
-      #:imported-modules
-      (append %pyproject-build-system-modules
-              %cargo-build-system-modules)
-      #:modules
-      '((guix build cargo-build-system)
-        ((guix build pyproject-build-system) #:prefix py:)
-        (guix build utils))
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'build
-            (assoc-ref py:%standard-phases 'build))
-          (add-after 'install 'wrap
-            (lambda _
-              ;; Collection of python- and pyproject-build-system phases
-              ;; between 'install and 'check.
-              (assoc-ref py:%standard-phases 'add-install-to-pythonpath)
-              (assoc-ref py:%standard-phases 'add-install-to-path)
-              (assoc-ref py:%standard-phases 'wrap)
-              (assoc-ref py:%standard-phases 'create-entrypoints)
-              (assoc-ref py:%standard-phases 'compile-bytecode)))
-          (replace 'install
-            (assoc-ref py:%standard-phases 'install)))))
-    (propagated-inputs (list python-regex python-requests))
-    (inputs (cargo-inputs 'python-tiktoken))
-    (native-inputs
-     (list python-setuptools
-           python-setuptools-rust
-           python-wheel
-           python-wrapper))
-    (home-page "https://github.com/openai/tiktoken/")
-    (synopsis "Fast BPE tokeniser for use with OpenAI's models")
-    (description
-     "Tiktoken is a fast @dfn{byte pair encoding} (BPE) tokeniser for use with
-@code{OpenAI's} models.")
-    (license license:expat)))
-
 (define-public python-lfdfiles
   (package
     (name "python-lfdfiles")
@@ -15243,44 +14980,6 @@ computing.")
 code.")
     (license license:bsd-3)))
 
-(define-public python-textdistance
-  (package
-    (name "python-textdistance")
-    (version "4.6.3")
-    (source
-     (origin
-       ;; There are no tests in the PyPI tarball.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/life4/textdistance")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1qaplikab46p38jqr93bxd26vvxcnvib15fjxmmp4cbsiy5196sg"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--numprocesses" (number->string (min 4 (parallel-job-count))))))
-    (native-inputs
-     (list python-numpy
-           python-pytest
-           python-pytest-xdist
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-jellyfish
-           python-distance
-           python-levenshtein
-           python-pylev
-           python-pyxdameraulevenshtein
-           python-rapidfuzz))
-    (home-page "https://github.com/life4/textdistance")
-    (synopsis "Compute distance between the two texts")
-    (description "@code{textdistance} is a pure Python library for comparing
-distance between two or more sequences by many algorithms.")
-    (license license:expat)))
-
 (define-public python-pydbus
   (package
     (name "python-pydbus")
@@ -15672,61 +15371,6 @@ algorithm.")
 "This package provides tools for constructing graphs, BFS and DFS
 traversals, topological sort, shortest paths, and more with graphviz
 output.")
-    (license license:expat)))
-
-(define-public python-three-merge
-  (package
-    (name "python-three-merge")
-    (version "0.1.1")
-    (source
-     (origin
-       ;; There are no tests in the PyPI tarball.
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/spyder-ide/three-merge")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1fw28swh6jq4myr09j7gv68l241b8vwg470ak5xv0x4xwh2a1m86"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-diff-match-patch))
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
-    (home-page "https://github.com/spyder-ide/three-merge")
-    (synopsis "Library for merging two strings with respect to a base one")
-    (description
-     "This package provides a Python library to perform a 3-way merge between
-strings, based on @code{diff-match-patch}.  This library performs merges at a
-character level, as opposed to most VCS systems, which opt for a line-based
-approach.")
-    (license license:expat)))
-
-(define-public python-throttler
-  (package
-    (name "python-throttler")
-    (version "1.2.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/uburuntu/throttler")
-             (commit (string-append "v" version))))
-       (sha256
-        (base32 "1gn21x0zkm7rr7qijlz7nvw7z0mm1j2r0r2lslg7wln1z36gjkbw"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-aiohttp
-                         python-codecov
-                         python-flake8
-                         python-pytest
-                         python-pytest-asyncio
-                         python-pytest-cov
-                         python-setuptools
-                         python-wheel))
-    (home-page "https://github.com/uburuntu/throttler")
-    (synopsis "Throttling with asyncio support")
-    (description
-     "This is a Python package for easy throttling with asyncio support.")
     (license license:expat)))
 
 (define-public python-pyqrcode
@@ -17095,27 +16739,6 @@ stdin/stdout/stderr.")
 blocks or callables with two context managers and two decorators.")
     (license license:expat)))
 
-(define-public python-timeout-decorator
-  ;; TODO: Remove when python-requests-caches releses a fresh version dropping
-  ;; it, see, <https://github.com/requests-cache/requests-cache/pull/1111>.
-  (package
-    (name "python-timeout-decorator")
-    (version "0.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "timeout-decorator" version))
-       (sha256
-        (base32 "1mxk2qyydhzncm93z08kvj5ssxq3fr2n7pkrrji28nqwvdc2ybva"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))
-    (native-inputs (list python-setuptools python-wheel))
-    (home-page "https://github.com/pnpnpn/timeout-decorator")
-    (synopsis "Timeout decorator")
-    (description "This package provides a decorator that raises an error
-when an operation takes longer than expected.")
-    (license license:expat)))
-
 (define-public python-straight-plugin
   (package
     (name "python-straight-plugin")
@@ -17734,113 +17357,6 @@ printing of sub-tables by specifying a row range.")
 programming.  It provides standard programming abstractions such as as
 tasks, sockets, files, locks, and queues.")
     (license license:bsd-3)))
-
-(define-public python-tables
-  (package
-    (name "python-tables")
-    (version "3.10.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "tables" version))
-       (sha256
-        (base32
-         "0469jrkmp0qv8cmlqkizm3b8imyc97mk9pfn66ldpyl6f4m82i15"))
-       (snippet '(begin
-                   (use-modules (guix build utils))
-                   ;; TODO: Unbundle.
-                   ;; (delete-file-recursively "hdf5-blosc")
-                   (delete-file-recursively "c-blosc")))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-tuning
-            (lambda _
-              (substitute* "setup.py"
-                (("cpu_flags = .*")
-                 "cpu_flags = ['sse2']\n"))))
-          (add-after 'unpack 'fix-reference-to-blosc2
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "tables/__init__.py"
-                (("( +)os.path.join\\(current_dir, blosc2_lib_hardcoded\\),"
-                  m indent)
-                 (string-append indent
-                                "\""
-                                (search-input-file inputs "/lib/libblosc2.so")
-                                "\",\n" m)))))
-          (add-before 'build 'pre-build
-            (lambda _
-              (invoke "make" "distclean")       ;Regenerate C code with Cython
-              (setenv "BLOSC2_DIR" #$(this-package-input "cblosc2"))
-              (setenv "BLOSC_DIR" #$(this-package-input "c-blosc"))
-              (setenv "BZIP2_DIR" #$(this-package-input "bzip2"))
-              (setenv "HDF5_DIR" #$(this-package-input "hdf5"))
-              (setenv "LZO_DIR" #$(this-package-input "lzo"))))
-          (add-before 'check 'pre-check
-            (lambda _
-              (setenv "HOME" "/tmp")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion "/tmp"
-                  ;; Performing only a light (yet comprehensive) subset of the
-                  ;; test suite.  If you want a more complete test, try
-                  ;; passing the --heavy flag to this script (or set the
-                  ;; 'heavy' parameter in case you are using tables.test()
-                  ;; call).  The whole suite will take more than 4 hours to
-                  ;; complete on a relatively modern CPU and around 512 MB of
-                  ;; main memory.
-                  (invoke "python" "-m" "tables.tests.test_all"))))))))
-    (native-inputs
-     (list pkg-config
-           python-cython
-           python-pytest
-           python-setuptools
-           python-sphinx))
-    (inputs
-     (list bzip2
-           c-blosc
-           c-blosc2
-           hdf5
-           lzo))
-    (propagated-inputs
-     (list python-blosc2
-           python-numexpr
-           python-numpy
-           python-packaging
-           python-py-cpuinfo
-           python-typing-extensions))
-    (home-page "https://www.pytables.org/")
-    (synopsis "Hierarchical datasets for Python")
-    (description "PyTables is a package for managing hierarchical datasets and
-designed to efficiently cope with extremely large amounts of data.")
-    (license license:bsd-3)))
-
-(define-public python-tasklogger
-  (package
-    (name "python-tasklogger")
-    (version "1.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "tasklogger" version))
-       (sha256
-        (base32 "1901mibcp6aiyjy8afnybrxnb0dkbdxlbvjqbr3gginlw7dr18xh"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-numpy
-           python-setuptools))
-    (propagated-inputs
-     (list python-deprecated))
-    (home-page "https://github.com/scottgigante/tasklogger")
-    (synopsis "Extension to the core Python logging library")
-    (description "This package provides an extension to the core Python
-logging library for logging the beginning and completion of tasks and
-subtasks.")
-    (license license:gpl2)))
 
 (define-public python-sniffio
   (package
@@ -18465,142 +17981,6 @@ $ rm -rf /tmp/env
 
 ;; It may be removed after 2026-01-24.
 (define-deprecated/public-alias python-pip-run-bootstrap python-pip-run)
-
-(define-public python-tlsh
-  (package
-    (name "python-tlsh")
-    (version "4.11.2")
-    (home-page "https://github.com/trendmicro/tlsh")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference (url home-page) (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1gb5j73nw3nmx030rf8pm75rns5syxhv44zxr6i74kjicyly1i9w"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'build 'configure
-                 (lambda _
-                   (invoke "cmake" ".")))      ;to generate tlsh_version.h
-               (add-after 'configure 'chdir
-                 (lambda _
-                   (chdir "py_ext")))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (with-directory-excursion "../Testing"
-                       (invoke "./python_test.sh"))))))))
-    (native-inputs (list cmake-minimal python-setuptools))
-    (synopsis "Fuzzy matching library for Python")
-    (description
-     "Trend Micro Locality Sensitive Hash (TLSH) is a fuzzy matching library.
-Given a byte stream with a minimum length of 256 bytes, TLSH generates a hash
-value which can be used for similarity comparisons.  Similar objects have
-similar hash values, which allows for the detection of similar objects by
-comparing their hash values.  The byte stream should have a sufficient amount
-of complexity; for example, a byte stream of identical bytes will not generate
-a hash value.")
-    (license license:asl2.0)))
-
-(define-public python-termcolor
-  (package
-    (name "python-termcolor")
-    (version "2.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "termcolor" version))
-       (sha256
-        (base32 "0vwaxyr2vk8gi7s1slq74nb0ssbb0wcn208ziqp48j3dv8kqv3cr"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-hatch-vcs
-           python-hatchling
-           python-pytest
-           python-pytest-cov))
-    (home-page "https://pypi.org/project/termcolor/")
-    (synopsis "ANSII Color formatting for terminal output")
-    (description
-     "This package provides ANSII Color formatting for output in terminals.")
-    (license license:expat)))
-
-(define-public python-termcolor-1
-  (package
-    (inherit python-termcolor)
-    (version "1.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "termcolor" version))
-       (sha256
-        (base32
-         "0fv1vq14rpqwgazxg4981904lfyp84mnammw7y046491cv76jv8x"))))
-    ;; There are no tests
-    (arguments (list #:tests? #false))
-    (native-inputs
-     (list python-setuptools
-           python-wheel))))
-
-(define-public python-terminaltables
-  (package
-    (name "python-terminaltables")
-    (version "3.1.0")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/Robpol86/terminaltables")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256 (base32 "1jlm7n6kxypbr8mvwpd7hf9hbfk0a002ad03wqgxlri4aw8pk39a"))))
-    (build-system pyproject-build-system)
-    ;; XXX: A lot of test fail with flaky behavior.
-    (arguments (list #:tests? #f))
-    (native-inputs
-     (list python-colorclass
-           python-colorama
-           python-pytest
-           python-setuptools
-           python-termcolor))
-    (home-page "https://github.com/Robpol86/terminaltables")
-    (synopsis
-     "Generate simple tables in terminals from a nested list of strings")
-    (description
-     "This package makes it easy to draw tables in terminal/console
-applications from a list of lists of strings.  It supports multi-line rows.")
-    (license license:expat)))
-
-(define-public python-term-background
-  (package
-    (name "python-term-background")
-    (version "1.0.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "term_background" version))
-       (sha256
-        (base32 "0p674silrwc3jncncmdnj1lr6pl2q5qbx0xi3mzjq9sgcs5vmp4n"))))
-    (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'fix-build
-           (lambda _ (delete-file "setup.py"))))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wrapper
-           python-wheel))
-    (home-page "http://github.com/rocky/shell-term-background")
-    (synopsis "Determine if shell has a light or dark background")
-    (description "This package determines if shell has a light or dark
-background.")
-    (license license:gpl2+)))
 
 (define-public python-libarchive-c
   (package
@@ -19902,29 +19282,6 @@ and dataclasses.")
      "This package provides tools to build manual pages from Python's
 @code{ArgumentParser} object.")
     (license license:asl2.0)))
-
-(define-public python-texttable
-  (package
-    (name "python-texttable")
-    (version "1.6.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/foutaise/texttable/")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1lcn76wx6fsj8d79gs985irkqz5qbwq1v9ji9jxsra6dbb643v5j"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:test-flags #~(list "tests.py")))
-    (native-inputs (list python-pytest python-setuptools))
-    (home-page "https://github.com/foutaise/texttable/")
-    (synopsis "Create simple ASCII tables in Python")
-    (description
-     "This package provides a Python module for creating simple ASCII
-tables.")
-    (license license:expat)))
 
 (define-public python-atomicwrites
   (package
@@ -21801,58 +21158,6 @@ attractive help output from click, formatted with rich, with minimal
 customization required.")
     (license license:expat)))
 
-(define-public python-textual
-  (package
-    (name "python-textual")
-    (version "3.5.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Textualize/textual")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1sldkhy8phk9c7pln70dyb6aya7qpxb5niym9s91z144dv6ykgws"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags
-           ;; Snapshot tests require python-pytest-textual-snapshot which
-           ;; in turn depends on python-textual.
-           '(list "--ignore=tests/snapshot_tests/test_snapshots.py"
-             "-k" (string-append
-                   ;; Broken for unknown reason.
-                   "not test_textual_env_var"
-                   ;; Tests that require python-treesitter-languages.
-                   " and not test_widget_construct"
-                   " and not test_setting_builtin_language_via_constructor"
-                   " and not test_setting_builtin_language_via_attribute"
-                   " and not test_setting_language_to_none"
-                   " and not test_setting_unknown_language"
-                   " and not test_register_language"
-                   " and not test_update_highlight_query"
-                   " and not test_default_theme"
-                   " and not test_setting_builtin_themes"
-                   " and not test_setting_unknown_theme_raises_exception"
-                   " and not test_registering_and_setting_theme"))))
-    (propagated-inputs
-     (list python-markdown-it-py
-           python-platformdirs
-           python-rich
-           python-tree-sitter
-           ;; python-tree-sitter-languages ; optional, not packed yet
-           python-typing-extensions))
-    (native-inputs
-     (list python-poetry-core
-           python-pytest
-           python-pytest-asyncio
-           python-pytest-xdist))
-    (home-page "https://github.com/Textualize/textual")
-    (synopsis "Build text user interfaces in Python")
-    (description "Textual is a @acronym{TUI, Text User Interface} framework
-for Python inspired by modern web development.")
-    (license license:expat)))
-
 (define-public python-magic
   (package
     (name "python-magic")
@@ -22149,79 +21454,6 @@ in strings and comments.")
 a modular way, allowing you to extend your panel with your own code,
 responding to click events and updating clock every second.")
     (license license:bsd-3)))
-
-(define-public python-tblib
-  (package
-    (name "python-tblib")
-    (version "3.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "tblib" version))
-       (sha256
-        (base32 "0lnnbicpxx774s29nkbic4rrqvy4rhxd8skx5pp6zxh7kwn4qh06"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; Don't run benchmark tests.
-      #:test-flags #~(list "--ignore=tests/test_perf.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pytest.ini"
-                (("--benchmark-disable") "")))))))
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (home-page "https://github.com/ionelmc/python-tblib")
-    (synopsis "Traceback serialization library")
-    (description
-     "Traceback serialization allows you to:
-
-@enumerate
-@item Pickle tracebacks and raise exceptions with pickled tracebacks in
-different processes.  This allows better error handling when running code over
-multiple processes (imagine multiprocessing, billiard, futures, celery etc).
-
-@item Parse traceback strings and raise with the parsed tracebacks.
-@end enumerate\n")
-    (license license:bsd-3)))
-
-(define-public python-tftpy
-  (package
-    (name "python-tftpy")
-    (version "0.8.6")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/msoulier/tftpy")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "11cs52skmisg7rlmcxghmpcxfszcwmph6cvmfdn2p0ks6ckfy9q2"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-backend #~'unittest
-      #:test-flags #~(list "tests/test.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'configure-tests
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; The default DEBUG logging level is way too verbose.
-                (substitute* "tests/test.py"
-                  (("logging\\.DEBUG")
-                   "logging.INFO"))))))))
-    (native-inputs (list python-setuptools))
-    (home-page "https://tftpy.sourceforge.net/")
-    (synopsis "Python trivial file transfer protocol (TFTP) library")
-    (description
-     "TFTPy is a trivial file transfer protocol (TFTP) Python library.  It can
-be used to act both as a TFTP client or TFTP server.")
-    (license license:expat)))
 
 (define-public python-greenlet
   (package
@@ -22603,29 +21835,6 @@ network support library.")
     (description "PLY is a @code{lex}/@code{yacc} implemented purely in Python.
 It uses LR parsing and does extensive error checking.")
     (license license:bsd-3)))
-
-(define-public python-tabulate
-  (package
-    (name "python-tabulate")
-    (version "0.9.0")
-    (source (origin
-             (method url-fetch)
-             (uri (pypi-uri "tabulate" version))
-             (sha256
-              (base32
-               "0g4b0qnbw55igbpxfxzciqvb6w8ncw4gmcgyq0lyavcnylmv3580"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools-scm
-           python-setuptools
-           python-wheel))
-    (home-page "https://github.com/astanin/python-tabulate")
-    (synopsis "Pretty-print tabular data")
-    (description
-     "Tabulate is a library and command-line utility to pretty-print tabular
-data in Python.")
-    (license license:expat)))
 
 (define-public python-kazoo
   (package
@@ -24815,27 +24024,6 @@ Werman's implementation of the Earth Mover's Distance.")
      "This package allows determination of image size from PNG, JPEG,
 JPEG2000 and GIF files in pure Python.")
     (license license:expat)))
-
-(define-public python-termstyle
-  (package
-    (name "python-termstyle")
-    (version "0.1.11")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "termstyle" version))
-       (sha256
-        (base32 "17wzkkcqy5zc0g68xlad3kcv66iw14d2pwqc0h9420gak0vbhx7g"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-backend #~'custom
-           #:test-flags #~(list "test3.py")))
-    (native-inputs
-     (list python-setuptools))
-    (home-page "https://github.com/gfxmonk/termstyle")
-    (synopsis "Console text coloring for Python")
-    (description "This package provides console text coloring for Python.")
-    (license license:bsd-3)))
 
 (define-public python-argcomplete
   (package
@@ -27392,59 +26580,6 @@ definitions to simplify the use of C bindings.")
     (description
      "Pyclipper is a Cython wrapper for the C++ translation of the
 Angus Johnson's polygon clipping Clipper library (ver. 6.4.2).")
-    (license license:expat)))
-
-(define-public python-tempdir
-  (package
-    (name "python-tempdir")
-    (version "0.7.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "tempdir" version))
-       (sha256
-        (base32 "13msyyxqbicr111a294x7fsqbkl6a31fyrqflx3q7k547gnq15k8"))))
-    (build-system pyproject-build-system)
-    (arguments (list #:tests? #f)) ; No tests.
-    (native-inputs (list python-setuptools))
-    (home-page "https://pypi.org/project/tempdir/")
-    (synopsis "Python library for managing temporary directories")
-    (description
-     "This library manages temporary directories that are automatically
-deleted with all their contents when they are no longer needed.  It is
-particularly convenient for use in tests.")
-    (license license:expat)))
-
-(define-public python-tempora
-  (package
-    (name "python-tempora")
-    (version "5.8.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "tempora" version))
-       (sha256
-        (base32 "1k9d6qmlp0i4v3d0dcqcsndvmng3lfdh4y0p8gwy9i8cg7ndkddb"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; Do not test the myproject.toml build as it tries to pull dependencies
-      ;; from the Internet.
-      #:test-flags #~(list "-k" "not project"
-                           "tests")))
-    (native-inputs
-     (list python-freezegun
-           python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-tzdata))
-    (propagated-inputs (list python-dateutil python-jaraco-functools))
-    (home-page "https://github.com/jaraco/tempora")
-    (synopsis "Python date and time objects and routines")
-    (description "The @code{tempora} Python library contains miscellaneous
-date and time related utilities and constants, routines for measuring,
-profiling, and getting datetime-aware @acronym{UTC, Coordinated Universal
-Time} values as well as an event scheduler.")
     (license license:expat)))
 
 (define-public python-semver
@@ -31389,31 +30524,6 @@ dedicated platform.  The tool proposes a unified interface for any format and
 an upload option to send your work back to the platform.")
     (license license:gpl3+)))
 
-(define-public python-titlecase
-  (package
-    (name "python-titlecase")
-    (version "2.4.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "titlecase" version))
-       (sha256
-        (base32 "1x9myq3rlbw6wh946ncch8px7wyabhzacy2fjji13nmvrivs50vx"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-backend #~'unittest))
-    (native-inputs
-     (list python-setuptools))
-    (home-page "https://github.com/ppannuto/python-titlecase")
-    (synopsis "Capitalize strings similar to book titles")
-    (description
-     "Python-Titlecase is a Python port of John Gruber's titlecase.pl.
-It capitalizes (predominantly English) strings in a way that is similar to
-book titles, using the New York Times Manual of Style to leave certain words
-lowercase.")
-    (license license:expat)))
-
 (define-public python-pypng
   (package
     (name "python-pypng")
@@ -32953,33 +32063,6 @@ By default it uses the open Python vulnerability database Safety DB.")
      "This package provides the @command{rnc2rng} command-line tool as well as
 a Python library to convert RELAX NG schemata in Compact syntax (rnc) to
 equivalent schemata in the XML-based default RELAX NG syntax.")
-    (license license:expat)))
-
-(define-public python-telethon
-  (package
-    (name "python-telethon")
-    (version "1.41.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/LonamiWebs/Telethon")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0rbzqbxsihqm2w1zrvaaafvzwyqqyjx49wfffxrnsr9m32giwzsp"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-pytest-asyncio-0.26
-           python-pytest-trio
-           python-setuptools))
-    (propagated-inputs
-     (list python-rsa python-pyaes))
-    (home-page "https://docs.telethon.dev")
-    (synopsis "Full-featured Telegram client library for Python 3")
-    (description "This library is designed to make it easy to write Python
-programs that can interact with Telegram.")
     (license license:expat)))
 
 (define-public python-citeproc-py
@@ -35229,66 +34312,6 @@ Braintree Gateway.  Braintree is a US-based payments service provider.")
     (description "This Python module attempts to make it easier to generate
 HTML/XML from a Python program in an intuitive, lightweight, customizable and
 pythonic way.")
-    (license license:expat)))
-
-(define-public python-tablib
-  (package
-    (name "python-tablib")
-    (version "3.9.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "tablib" version))
-       (sha256
-        (base32 "1qjzbpaln1grr5ngcm2apd5dxp0gcrwis5n60hg60d8gvf7bsshv"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-setuptools
-           python-setuptools-scm))
-    (inputs ;; [cli]
-     (list python-tabulate))
-    (propagated-inputs
-     (list python-markuppy
-           python-odfpy
-           python-openpyxl
-           python-pyyaml
-           python-xlrd
-           python-xlwt))
-    (home-page "https://tablib.readthedocs.io")
-    (synopsis "Format agnostic tabular data library")
-    (description
-     "@code{tablib} is a format-agnostic tabular dataset library,
-written in Python.  Supported output formats are Excel (Sets + Books),
-JSON (Sets + Books), YAML (Sets + Books), HTML (Sets), Jira (Sets),
-TSV (Sets), ODS (Sets), CSV (Sets), and DBF (Sets).
-
-@code{tablib} also supports Pandas DataFrames (Sets).  Anyhow, since pandas is
-quite huge, this Guix package doesn't depend on pandas.  In case, just also
-install @code{python-pandas}.")
-    (license license:expat)))
-
-(define-public python-taskgroup
-  (package
-    (name "python-taskgroup")
-    (version "0.0.0a4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "taskgroup" version))
-       (sha256
-        (base32 "170m7b59nxrhzs0nz6brj9brz4rzvw6k587ja0cnc9qy48nr027b"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f)) ; no tests in PyPI and Git checkout
-    (native-inputs
-     (list python-flit-core))
-    (home-page "https://github.com/graingert/taskgroup")
-    (synopsis "Backport of asyncio.TaskGroup, asyncio.Runner and asyncio.timeout")
-    (description
-     "This package provides a backport of @code{asyncio.TaskGroup},
-@code{asyncio.Runner} and @code{asyncio.timeout}.")
     (license license:expat)))
 
 (define-public python-csb43
@@ -38083,6 +37106,986 @@ bigrams (pairs of two words or tokens), or of trigrams.  Icegrams is useful for
 instance in spelling correction, predictive typing, to help disabled people
 write text fast, and for various text generation, statistics, and modeling tasks.")
     (license license:expat)))
+
+(define-public python-tables
+  (package
+    (name "python-tables")
+    (version "3.10.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tables" version))
+       (sha256
+        (base32
+         "0469jrkmp0qv8cmlqkizm3b8imyc97mk9pfn66ldpyl6f4m82i15"))
+       (snippet '(begin
+                   (use-modules (guix build utils))
+                   ;; TODO: Unbundle.
+                   ;; (delete-file-recursively "hdf5-blosc")
+                   (delete-file-recursively "c-blosc")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-tuning
+            (lambda _
+              (substitute* "setup.py"
+                (("cpu_flags = .*")
+                 "cpu_flags = ['sse2']\n"))))
+          (add-after 'unpack 'fix-reference-to-blosc2
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "tables/__init__.py"
+                (("( +)os.path.join\\(current_dir, blosc2_lib_hardcoded\\),"
+                  m indent)
+                 (string-append indent
+                                "\""
+                                (search-input-file inputs "/lib/libblosc2.so")
+                                "\",\n" m)))))
+          (add-before 'build 'pre-build
+            (lambda _
+              (invoke "make" "distclean")       ;Regenerate C code with Cython
+              (setenv "BLOSC2_DIR" #$(this-package-input "cblosc2"))
+              (setenv "BLOSC_DIR" #$(this-package-input "c-blosc"))
+              (setenv "BZIP2_DIR" #$(this-package-input "bzip2"))
+              (setenv "HDF5_DIR" #$(this-package-input "hdf5"))
+              (setenv "LZO_DIR" #$(this-package-input "lzo"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "/tmp"
+                  ;; Performing only a light (yet comprehensive) subset of the
+                  ;; test suite.  If you want a more complete test, try
+                  ;; passing the --heavy flag to this script (or set the
+                  ;; 'heavy' parameter in case you are using tables.test()
+                  ;; call).  The whole suite will take more than 4 hours to
+                  ;; complete on a relatively modern CPU and around 512 MB of
+                  ;; main memory.
+                  (invoke "python" "-m" "tables.tests.test_all"))))))))
+    (native-inputs
+     (list pkg-config
+           python-cython
+           python-pytest
+           python-setuptools
+           python-sphinx))
+    (inputs
+     (list bzip2
+           c-blosc
+           c-blosc2
+           hdf5
+           lzo))
+    (propagated-inputs
+     (list python-blosc2
+           python-numexpr
+           python-numpy
+           python-packaging
+           python-py-cpuinfo
+           python-typing-extensions))
+    (home-page "https://www.pytables.org/")
+    (synopsis "Hierarchical datasets for Python")
+    (description "PyTables is a package for managing hierarchical datasets and
+designed to efficiently cope with extremely large amounts of data.")
+    (license license:bsd-3)))
+
+(define-public python-tablib
+  (package
+    (name "python-tablib")
+    (version "3.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tablib" version))
+       (sha256
+        (base32 "1qjzbpaln1grr5ngcm2apd5dxp0gcrwis5n60hg60d8gvf7bsshv"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-setuptools-scm))
+    (inputs ;; [cli]
+     (list python-tabulate))
+    (propagated-inputs
+     (list python-markuppy
+           python-odfpy
+           python-openpyxl
+           python-pyyaml
+           python-xlrd
+           python-xlwt))
+    (home-page "https://tablib.readthedocs.io")
+    (synopsis "Format agnostic tabular data library")
+    (description
+     "@code{tablib} is a format-agnostic tabular dataset library,
+written in Python.  Supported output formats are Excel (Sets + Books),
+JSON (Sets + Books), YAML (Sets + Books), HTML (Sets), Jira (Sets),
+TSV (Sets), ODS (Sets), CSV (Sets), and DBF (Sets).
+
+@code{tablib} also supports Pandas DataFrames (Sets).  Anyhow, since pandas is
+quite huge, this Guix package doesn't depend on pandas.  In case, just also
+install @code{python-pandas}.")
+    (license license:expat)))
+
+(define-public python-tabulate
+  (package
+    (name "python-tabulate")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tabulate" version))
+       (sha256
+        (base32 "0g4b0qnbw55igbpxfxzciqvb6w8ncw4gmcgyq0lyavcnylmv3580"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools-scm
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/astanin/python-tabulate")
+    (synopsis "Pretty-print tabular data")
+    (description
+     "Tabulate is a library and command-line utility to pretty-print tabular
+data in Python.")
+    (license license:expat)))
+
+(define-public python-takethetime
+  (package
+    (name "python-takethetime")
+    (version "0.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "TakeTheTime" version))
+       (sha256
+        (base32 "1y9gzqb9l1f2smx8783ccjzjvby5mphshgrfks7s75mml59h9qyv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; tests are time dependent and not provided in PyPI
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (home-page "https://github.com/ErikBjare/TakeTheTime")
+    (synopsis "Timing chunks of code")
+    (description
+     "This package implements a functionality for time taking using context
+managers.")
+    (license license:expat)))
+
+(define-public python-taskgroup
+  (package
+    (name "python-taskgroup")
+    (version "0.0.0a4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "taskgroup" version))
+       (sha256
+        (base32 "170m7b59nxrhzs0nz6brj9brz4rzvw6k587ja0cnc9qy48nr027b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests in PyPI and Git checkout
+    (native-inputs
+     (list python-flit-core))
+    (home-page "https://github.com/graingert/taskgroup")
+    (synopsis "Backport of asyncio.TaskGroup, asyncio.Runner and asyncio.timeout")
+    (description
+     "This package provides a backport of @code{asyncio.TaskGroup},
+@code{asyncio.Runner} and @code{asyncio.timeout}.")
+    (license license:expat)))
+
+(define-public python-tasklogger
+  (package
+    (name "python-tasklogger")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tasklogger" version))
+       (sha256
+        (base32 "1901mibcp6aiyjy8afnybrxnb0dkbdxlbvjqbr3gginlw7dr18xh"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-numpy
+           python-setuptools))
+    (propagated-inputs
+     (list python-deprecated))
+    (home-page "https://github.com/scottgigante/tasklogger")
+    (synopsis "Extension to the core Python logging library")
+    (description "This package provides an extension to the core Python
+logging library for logging the beginning and completion of tasks and
+subtasks.")
+    (license license:gpl2)))
+
+(define-public python-tatsu
+  (package
+    (name "python-tatsu")
+    (version "5.13.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/neogeny/TatSu")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ppgi5r55iirzhnf988b32yvh8ly8lzxbg59y0zgqfaxbma50650"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://tatsu.readthedocs.io/en/stable/")
+    (synopsis "PEG/Packrat Parser generator for Python")
+    (description
+     "TatSu (竜) takes a grammar in a variation of Extended Backus-Naur
+Form (EBNF) as input, and outputs a memoizing Parsing Expression Grammar (PEG)
+or Packrat parser in Python.")
+    (license license:bsd-2)))
+
+(define-public python-tblib
+  (package
+    (name "python-tblib")
+    (version "3.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tblib" version))
+       (sha256
+        (base32 "0lnnbicpxx774s29nkbic4rrqvy4rhxd8skx5pp6zxh7kwn4qh06"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Don't run benchmark tests.
+      #:test-flags #~(list "--ignore=tests/test_perf.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pytest.ini"
+                (("--benchmark-disable") "")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/ionelmc/python-tblib")
+    (synopsis "Traceback serialization library")
+    (description
+     "Traceback serialization allows you to:
+
+@enumerate
+@item Pickle tracebacks and raise exceptions with pickled tracebacks in
+different processes.  This allows better error handling when running code over
+multiple processes (imagine multiprocessing, billiard, futures, celery etc).
+
+@item Parse traceback strings and raise with the parsed tracebacks.
+@end enumerate\n")
+    (license license:bsd-3)))
+
+(define-public python-telethon
+  (package
+    (name "python-telethon")
+    (version "1.41.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/LonamiWebs/Telethon")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rbzqbxsihqm2w1zrvaaafvzwyqqyjx49wfffxrnsr9m32giwzsp"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio-0.26
+           python-pytest-trio
+           python-setuptools))
+    (propagated-inputs
+     (list python-rsa python-pyaes))
+    (home-page "https://docs.telethon.dev")
+    (synopsis "Full-featured Telegram client library for Python 3")
+    (description "This library is designed to make it easy to write Python
+programs that can interact with Telegram.")
+    (license license:expat)))
+
+(define-public python-tempdir
+  (package
+    (name "python-tempdir")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tempdir" version))
+       (sha256
+        (base32 "13msyyxqbicr111a294x7fsqbkl6a31fyrqflx3q7k547gnq15k8"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ; No tests.
+    (native-inputs (list python-setuptools))
+    (home-page "https://pypi.org/project/tempdir/")
+    (synopsis "Python library for managing temporary directories")
+    (description
+     "This library manages temporary directories that are automatically
+deleted with all their contents when they are no longer needed.  It is
+particularly convenient for use in tests.")
+    (license license:expat)))
+
+(define-public python-tempora
+  (package
+    (name "python-tempora")
+    (version "5.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tempora" version))
+       (sha256
+        (base32 "1k9d6qmlp0i4v3d0dcqcsndvmng3lfdh4y0p8gwy9i8cg7ndkddb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Do not test the myproject.toml build as it tries to pull dependencies
+      ;; from the Internet.
+      #:test-flags #~(list "-k" "not project"
+                           "tests")))
+    (native-inputs
+     (list python-freezegun
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-tzdata))
+    (propagated-inputs (list python-dateutil python-jaraco-functools))
+    (home-page "https://github.com/jaraco/tempora")
+    (synopsis "Python date and time objects and routines")
+    (description
+     "The @code{tempora} Python library contains miscellaneous date and time
+related utilities and constants, routines for measuring, profiling, and
+getting datetime-aware @acronym{UTC, Coordinated Universal Time} values as
+well as an event scheduler.")
+    (license license:expat)))
+
+(define-public python-tenacity
+  (package
+    (name "python-tenacity")
+    (version "9.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tenacity" version))
+       (sha256
+        (base32 "0fyp421r038naskvyhj90hkq0az96477njad4rhs6annjz53fzw0"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-tornado-6
+           python-typeguard
+           python-wheel))
+    (home-page "https://github.com/jd/tenacity")
+    (synopsis "Retrying library for python")
+    (description
+     "Tenacity is a general-purpose python library to simplify the task of
+adding retry behavior to just about anything.")
+    (license license:asl2.0)))
+
+(define-public python-term-background
+  (package
+    (name "python-term-background")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "term_background" version))
+       (sha256
+        (base32 "0p674silrwc3jncncmdnj1lr6pl2q5qbx0xi3mzjq9sgcs5vmp4n"))))
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'fix-build
+           (lambda _ (delete-file "setup.py"))))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-wrapper
+           python-wheel))
+    (home-page "http://github.com/rocky/shell-term-background")
+    (synopsis "Determine if shell has a light or dark background")
+    (description "This package determines if shell has a light or dark
+background.")
+    (license license:gpl2+)))
+
+(define-public python-term-image
+  (package
+    (name "python-term-image")
+    (version "0.7.2")
+    (source
+     (origin
+       ;; We need the full repo to run the tests.
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/AnonymouX47/term-image")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lsd5m0k5m99arkca2rzrrlln10c8ax6xfawqwjnspcbf8l3h3dq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           #~(list "tests"
+                   ;; These tests require network access.
+                   "-k" (string-append "not test_from_url"
+                                       " and not test_source"
+                                       " and not test_close"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'adjust-dependencies
+                 (lambda _
+                   (substitute* "setup.py"
+                     (("pillow>=9.1,<11") "pillow>=9.1,<12")))))))
+    (propagated-inputs (list python-pillow python-requests))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-urwid))
+    (home-page "https://github.com/AnonymouX47/term-image")
+    (synopsis "Display images in the terminal")
+    (description "term-image is a library and program to display images on
+compatible terminals.
+
+Features:
+@enumerate
+@item Multiple image formats (basically all formats supported by
+@code{PIL.Image.open()})
+@item Multiple image source types: PIL image instance, local file, URL
+@item Multiple image render styles (with automatic support detection)
+@item Support for multiple terminal graphics protocols, including Kitty
+@item Transparency support (with multiple options)
+@item Animated image support (including transparent ones)
+@item Integration into various TUI / terminal-based output libraries
+@item Terminal size awareness
+@item Automatic and manual image sizing
+@item Horizontal and vertical alignment
+@item Automatic and manual font ratio adjustment (to preserve image aspect
+ratio)
+@end enumerate")
+    (license license:expat)))
+
+(define-public python-termcolor
+  (package
+    (name "python-termcolor")
+    (version "2.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "termcolor" version))
+       (sha256
+        (base32 "0vwaxyr2vk8gi7s1slq74nb0ssbb0wcn208ziqp48j3dv8kqv3cr"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-pytest
+           python-pytest-cov))
+    (home-page "https://pypi.org/project/termcolor/")
+    (synopsis "ANSII Color formatting for terminal output")
+    (description
+     "This package provides ANSII Color formatting for output in terminals.")
+    (license license:expat)))
+
+(define-public python-termcolor-1
+  (package
+    (inherit python-termcolor)
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "termcolor" version))
+       (sha256
+        (base32
+         "0fv1vq14rpqwgazxg4981904lfyp84mnammw7y046491cv76jv8x"))))
+    ;; There are no tests
+    (arguments (list #:tests? #false))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))))
+
+(define-public python-terminaltables
+  (package
+    (name "python-terminaltables")
+    (version "3.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Robpol86/terminaltables")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "1jlm7n6kxypbr8mvwpd7hf9hbfk0a002ad03wqgxlri4aw8pk39a"))))
+    (build-system pyproject-build-system)
+    ;; XXX: A lot of test fail with flaky behavior.
+    (arguments (list #:tests? #f))
+    (native-inputs
+     (list python-colorclass
+           python-colorama
+           python-pytest
+           python-setuptools
+           python-termcolor))
+    (home-page "https://github.com/Robpol86/terminaltables")
+    (synopsis
+     "Generate simple tables in terminals from a nested list of strings")
+    (description
+     "This package makes it easy to draw tables in terminal/console
+applications from a list of lists of strings.  It supports multi-line rows.")
+    (license license:expat)))
+
+(define-public python-termstyle
+  (package
+    (name "python-termstyle")
+    (version "0.1.11")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "termstyle" version))
+       (sha256
+        (base32 "17wzkkcqy5zc0g68xlad3kcv66iw14d2pwqc0h9420gak0vbhx7g"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "test3.py")))
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/gfxmonk/termstyle")
+    (synopsis "Console text coloring for Python")
+    (description "This package provides console text coloring for Python.")
+    (license license:bsd-3)))
+
+(define-public python-text-unidecode
+  (package
+    (name "python-text-unidecode")
+    (version "1.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "text-unidecode" version))
+       (sha256
+        (base32 "14xb99fdv52j21dsljgsbmbaqv10ps4b453p229r29sdn4xn1mms"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/kmike/text-unidecode/")
+    (synopsis "Decode Unicode data")
+    (description
+     "@code{text-unidecode} is a basic Python port of the @code{Text::Unidecode}
+Perl library.  It can create ASCII representations of Unicode data.  In general
+users should prefer the @code{python-unidecode} package which offers better
+memory usage and transliteration quality.")
+    ;; The user can choose either license.
+    (license (list license:clarified-artistic license:gpl2+))))
+
+(define-public python-textdistance
+  (package
+    (name "python-textdistance")
+    (version "4.6.3")
+    (source
+     (origin
+       ;; There are no tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/life4/textdistance")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qaplikab46p38jqr93bxd26vvxcnvib15fjxmmp4cbsiy5196sg"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 4 (parallel-job-count))))))
+    (native-inputs
+     (list python-numpy
+           python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-jellyfish
+           python-distance
+           python-levenshtein
+           python-pylev
+           python-pyxdameraulevenshtein
+           python-rapidfuzz))
+    (home-page "https://github.com/life4/textdistance")
+    (synopsis "Compute distance between the two texts")
+    (description "@code{textdistance} is a pure Python library for comparing
+distance between two or more sequences by many algorithms.")
+    (license license:expat)))
+
+(define-public python-textparser
+  (package
+    (name "python-textparser")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "textparser" version))
+       (sha256
+        (base32 "0dc3aqbzh0x13i6cmr73q777wv8nxyk3p0kdnynh5l59bbkhixsn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/eerimoq/textparser")
+    (synopsis "Fast text parser for Python")
+    (description "This library provides a text parser written in the Python
+language.  It aims to be fast.")
+    (license license:expat)))
+
+(define-public python-texttable
+  (package
+    (name "python-texttable")
+    (version "1.6.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/foutaise/texttable/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lcn76wx6fsj8d79gs985irkqz5qbwq1v9ji9jxsra6dbb643v5j"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-flags #~(list "tests.py")))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/foutaise/texttable/")
+    (synopsis "Create simple ASCII tables in Python")
+    (description
+     "This package provides a Python module for creating simple ASCII
+tables.")
+    (license license:expat)))
+
+(define-public python-textual
+  (package
+    (name "python-textual")
+    (version "3.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Textualize/textual")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sldkhy8phk9c7pln70dyb6aya7qpxb5niym9s91z144dv6ykgws"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           ;; Snapshot tests require python-pytest-textual-snapshot which
+           ;; in turn depends on python-textual.
+           '(list "--ignore=tests/snapshot_tests/test_snapshots.py"
+             "-k" (string-append
+                   ;; Broken for unknown reason.
+                   "not test_textual_env_var"
+                   ;; Tests that require python-treesitter-languages.
+                   " and not test_widget_construct"
+                   " and not test_setting_builtin_language_via_constructor"
+                   " and not test_setting_builtin_language_via_attribute"
+                   " and not test_setting_language_to_none"
+                   " and not test_setting_unknown_language"
+                   " and not test_register_language"
+                   " and not test_update_highlight_query"
+                   " and not test_default_theme"
+                   " and not test_setting_builtin_themes"
+                   " and not test_setting_unknown_theme_raises_exception"
+                   " and not test_registering_and_setting_theme"))))
+    (propagated-inputs
+     (list python-markdown-it-py
+           python-platformdirs
+           python-rich
+           python-tree-sitter
+           ;; python-tree-sitter-languages ; optional, not packed yet
+           python-typing-extensions))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-xdist))
+    (home-page "https://github.com/Textualize/textual")
+    (synopsis "Build text user interfaces in Python")
+    (description "Textual is a @acronym{TUI, Text User Interface} framework
+for Python inspired by modern web development.")
+    (license license:expat)))
+
+(define-public python-tftpy
+  (package
+    (name "python-tftpy")
+    (version "0.8.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/msoulier/tftpy")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11cs52skmisg7rlmcxghmpcxfszcwmph6cvmfdn2p0ks6ckfy9q2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:test-flags #~(list "tests/test.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'configure-tests
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; The default DEBUG logging level is way too verbose.
+                (substitute* "tests/test.py"
+                  (("logging\\.DEBUG")
+                   "logging.INFO"))))))))
+    (native-inputs (list python-setuptools))
+    (home-page "https://tftpy.sourceforge.net/")
+    (synopsis "Python trivial file transfer protocol (TFTP) library")
+    (description
+     "TFTPy is a trivial file transfer protocol (TFTP) Python library.  It can
+be used to act both as a TFTP client or TFTP server.")
+    (license license:expat)))
+
+(define-public python-three-merge
+  (package
+    (name "python-three-merge")
+    (version "0.1.1")
+    (source
+     (origin
+       ;; There are no tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spyder-ide/three-merge")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fw28swh6jq4myr09j7gv68l241b8vwg470ak5xv0x4xwh2a1m86"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-diff-match-patch))
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
+    (home-page "https://github.com/spyder-ide/three-merge")
+    (synopsis "Library for merging two strings with respect to a base one")
+    (description
+     "This package provides a Python library to perform a 3-way merge between
+strings, based on @code{diff-match-patch}.  This library performs merges at a
+character level, as opposed to most VCS systems, which opt for a line-based
+approach.")
+    (license license:expat)))
+
+(define-public python-throttler
+  (package
+    (name "python-throttler")
+    (version "1.2.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/uburuntu/throttler")
+              (commit (string-append "v" version))))
+       (sha256
+        (base32 "1gn21x0zkm7rr7qijlz7nvw7z0mm1j2r0r2lslg7wln1z36gjkbw"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-aiohttp
+           python-codecov
+           python-flake8
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-cov
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/uburuntu/throttler")
+    (synopsis "Throttling with asyncio support")
+    (description
+     "This is a Python package for easy throttling with asyncio support.")
+    (license license:expat)))
+
+(define-public python-tifffile
+  (package
+    (name "python-tifffile")
+    (version "2025.10.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tifffile" version))
+       (sha256
+        (base32 "0f1ybmr2jz19gjg92p9vz3qib49m0x4ipxvrvjyfa6r1mcb7qhrf"))))
+    (build-system pyproject-build-system)
+    ;; Tests require lfdfiles, which depends on tifffile
+    (arguments (list #:tests? #f))
+    (propagated-inputs
+     (list python-numpy))
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://www.lfd.uci.edu/~gohlke/")
+    (synopsis "Read and write TIFF(r) files")
+    (description
+     "This package lets you read image and metadata from many bio-scientific
+formats such as plain TIFF, BigTIFF, OME-TIFF, STK, LSM, SGI,NIH, ImageJ,
+MicroManager, MD GEL, and FluoView files.  It also lets you write numpy arrays
+to TIFF, BigTIFF, and ImageJ hyperstack compatible files.")
+    (license license:bsd-3)))
+
+(define-public python-tifffile-for-dask-image
+  ;; It's for python-dask-image@2024.5.3, remove when no longer required.
+  (hidden-package
+   (package
+     (inherit python-tifffile)
+     (name "python-tifffile")
+     (version "2023.12.9")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "tifffile" version))
+        (sha256
+         (base32 "1f6d8qdlq0zlksfdhp1mhj9icpwhw4cz47r4i80m6r0a328xmlcx")))))))
+
+(define-public python-tiktoken
+  (package
+    (name "python-tiktoken")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tiktoken" version))
+       (sha256
+        (base32 "0p9cg6n8mzdi4lbbwxrrp26chy5hr14bqmzr3w74kq1qm6k5qanh"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #false
+      #:imported-modules
+      (append %pyproject-build-system-modules
+              %cargo-build-system-modules)
+      #:modules
+      '((guix build cargo-build-system)
+        ((guix build pyproject-build-system) #:prefix py:)
+        (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (assoc-ref py:%standard-phases 'build))
+          (add-after 'install 'wrap
+            (lambda _
+              ;; Collection of python- and pyproject-build-system phases
+              ;; between 'install and 'check.
+              (assoc-ref py:%standard-phases 'add-install-to-pythonpath)
+              (assoc-ref py:%standard-phases 'add-install-to-path)
+              (assoc-ref py:%standard-phases 'wrap)
+              (assoc-ref py:%standard-phases 'create-entrypoints)
+              (assoc-ref py:%standard-phases 'compile-bytecode)))
+          (replace 'install
+            (assoc-ref py:%standard-phases 'install)))))
+    (propagated-inputs (list python-regex python-requests))
+    (inputs (cargo-inputs 'python-tiktoken))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-rust
+           python-wheel
+           python-wrapper))
+    (home-page "https://github.com/openai/tiktoken/")
+    (synopsis "Fast BPE tokeniser for use with OpenAI's models")
+    (description
+     "Tiktoken is a fast @dfn{byte pair encoding} (BPE) tokeniser for use with
+@code{OpenAI's} models.")
+    (license license:expat)))
+
+(define-public python-timeout-decorator
+  ;; TODO: Remove when python-requests-caches releses a fresh version dropping
+  ;; it, see, <https://github.com/requests-cache/requests-cache/pull/1111>.
+  (package
+    (name "python-timeout-decorator")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "timeout-decorator" version))
+       (sha256
+        (base32 "1mxk2qyydhzncm93z08kvj5ssxq3fr2n7pkrrji28nqwvdc2ybva"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/pnpnpn/timeout-decorator")
+    (synopsis "Timeout decorator")
+    (description "This package provides a decorator that raises an error
+when an operation takes longer than expected.")
+    (license license:expat)))
+
+(define-public python-titlecase
+  (package
+    (name "python-titlecase")
+    (version "2.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "titlecase" version))
+       (sha256
+        (base32 "1x9myq3rlbw6wh946ncch8px7wyabhzacy2fjji13nmvrivs50vx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'unittest))
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/ppannuto/python-titlecase")
+    (synopsis "Capitalize strings similar to book titles")
+    (description
+     "Python-Titlecase is a Python port of John Gruber's titlecase.pl.
+It capitalizes (predominantly English) strings in a way that is similar to
+book titles, using the New York Times Manual of Style to leave certain words
+lowercase.")
+    (license license:expat)))
+
+(define-public python-tlsh
+  (package
+    (name "python-tlsh")
+    (version "4.11.2")
+    (home-page "https://github.com/trendmicro/tlsh")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference (url home-page) (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gb5j73nw3nmx030rf8pm75rns5syxhv44zxr6i74kjicyly1i9w"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'configure
+            (lambda _
+              (invoke "cmake" ".")))      ;to generate tlsh_version.h
+          (add-after 'configure 'chdir
+            (lambda _
+              (chdir "py_ext")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "../Testing"
+                  (invoke "./python_test.sh"))))))))
+    (native-inputs (list cmake-minimal python-setuptools))
+    (synopsis "Fuzzy matching library for Python")
+    (description
+     "Trend Micro Locality Sensitive Hash (TLSH) is a fuzzy matching library.
+Given a byte stream with a minimum length of 256 bytes, TLSH generates a hash
+value which can be used for similarity comparisons.  Similar objects have
+similar hash values, which allows for the detection of similar objects by
+comparing their hash values.  The byte stream should have a sufficient amount
+of complexity; for example, a byte stream of identical bytes will not generate
+a hash value.")
+    (license license:asl2.0)))
 
 (define-public python-typeapi
   (package
