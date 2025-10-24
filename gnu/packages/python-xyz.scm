@@ -20646,34 +20646,6 @@ text.")
 @code{boto} library.")
     (license license:asl2.0)))
 
-;; XXX: This project was archived by the owner on Apr 20, 2025. It is now
-;; read-only.  Consider to remove when starts failing to build and nothing
-;; depends on it.
-(define-public python-rsa
-  (package
-   (name "python-rsa")
-   (version "4.9.1")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (pypi-uri "rsa" version))
-     (sha256
-      (base32 "0xdfs3mhdb9wjpckj7i4zyv9sr82m7hk0mfkvw3lrnlpakdvzgg7"))))
-   (build-system pyproject-build-system)
-   (arguments
-    (list #:tests? #f))         ;tests are not included in PyPI archive
-   (native-inputs
-    (list python-poetry-core))
-   (propagated-inputs
-    (list python-pyasn1))
-   (home-page "https://stuvel.eu/rsa")
-   (synopsis "Pure-Python RSA implementation")
-   (description "Python-RSA is a pure-Python RSA implementation.  It supports
-encryption and decryption, signing and verifying signatures, and key
-generation according to PKCS#1 version 1.5.  It can be used as a Python
-library as well as on the command line.")
-   (license license:asl2.0)))
-
 (define-public python-plumbum
   (package
     (name "python-plumbum")
