@@ -1046,19 +1046,20 @@ settings (aliasing, linear interpolation and cubic interpolation).")
         (base32 "0fwyabkvrh1q30sqyhylly0c28cryq39lnqzgsv69jqvcc001bi4"))))
     (build-system qt-build-system)
     (arguments
-     `(#:tests? #f ; require audio subsystem
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-data-directory
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "CMakeLists.txt"
-               (("/usr/share/pixmaps")
-                (string-append (assoc-ref outputs "out")
-                               "/share/pixmaps"))))))))
+     (list
+      #:tests? #f                       ; require audio subsystem
+      #:configure-flags #~(list "-DWANT_QT6=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-data-directory
+            (lambda* (#:key outputs #:allow-other-keys)
+              (substitute* "CMakeLists.txt"
+                (("/usr/share/pixmaps")
+                 (string-append #$output "/share/pixmaps"))))))))
     (native-inputs
      (list cppunit
            pkg-config
-           qttools-5))
+           qttools))
     (inputs
      (list alsa-lib
            jack-1
@@ -1068,10 +1069,9 @@ settings (aliasing, linear interpolation and cubic interpolation).")
            libsndfile
            lrdf
            pulseaudio
-           qtbase-5
-           qtsvg-5
-           qtxmlpatterns-5
-           qtwayland-5
+           qtbase
+           qtsvg
+           qtwayland
            zlib))
     (home-page "http://hydrogen-music.org/")
     (synopsis "Drum machine")
