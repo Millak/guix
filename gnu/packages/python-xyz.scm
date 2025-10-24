@@ -28865,40 +28865,6 @@ a file (or some information about a file), return a set of standardized tags
 identifying what the file is.")
     (license license:expat)))
 
-(define-public python-tldextract
-  (package
-    (name "python-tldextract")
-    (version "5.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "tldextract" version))
-       (sha256
-        (base32 "02c6cyh8f3dagcw786m9nl5y0n3xa98p5mb7d7xfr84l2l5bglmk"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list nss-certs-for-test
-           python-pytest
-           python-pytest-mock
-           python-responses
-           python-setuptools
-           python-setuptools-scm
-           python-syrupy))
-    (propagated-inputs
-     (list python-filelock
-           python-idna
-           python-requests
-           python-requests-file))
-    (home-page "https://github.com/john-kurkowski/tldextract")
-    (synopsis
-     "Separate the TLD from the registered domain and subdomains of a URL")
-    (description
-     "TLDExtract accurately separates the TLD from the registered domain and
-subdomains of a URL, using the Public Suffix List.  By default, this includes
-the public ICANN TLDs and their exceptions.  It can optionally support the
-Public Suffix List's private domains as well.")
-    (license license:bsd-3)))
-
 (define-public tldr
   (package
     (name "tldr")

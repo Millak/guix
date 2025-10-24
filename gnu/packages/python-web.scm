@@ -23,6 +23,7 @@
 ;;; Copyright © 2017 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2015, 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2017 Mark Meyer <mark@ofosos.org>
+;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2018, 2019, 2021, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -3929,6 +3930,40 @@ high-speed transfers via libcurl and frequently outperforms alternatives.")
     ;; Per 'README.rst', this is dual-licensed: users can redistribute pycurl
     ;; under the terms of LGPLv2.1+ or Expat.
     (license (list license:lgpl2.1+ license:expat))))
+
+(define-public python-tldextract
+  (package
+    (name "python-tldextract")
+    (version "5.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tldextract" version))
+       (sha256
+        (base32 "02c6cyh8f3dagcw786m9nl5y0n3xa98p5mb7d7xfr84l2l5bglmk"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list nss-certs-for-test
+           python-pytest
+           python-pytest-mock
+           python-responses
+           python-setuptools
+           python-setuptools-scm
+           python-syrupy))
+    (propagated-inputs
+     (list python-filelock
+           python-idna
+           python-requests
+           python-requests-file))
+    (home-page "https://github.com/john-kurkowski/tldextract")
+    (synopsis
+     "Separate the TLD from the registered domain and subdomains of a URL")
+    (description
+     "TLDExtract accurately separates the TLD from the registered domain and
+subdomains of a URL, using the Public Suffix List.  By default, this includes
+the public ICANN TLDs and their exceptions.  It can optionally support the
+Public Suffix List's private domains as well.")
+    (license license:bsd-3)))
 
 (define-public python-tracerite
   (package
