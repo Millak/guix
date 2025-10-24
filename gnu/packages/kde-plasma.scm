@@ -1590,8 +1590,16 @@ KDE Frameworks components.")
                            "kwin-testLibinputDevice"
                            "kwin-testX11Window"
                            "kwin-testXwaylandInput"
-                           "kwin-testWindowRules")
-                         "|"))
+                           "kwin-testWindowRules"
+
+                           "kwin-testXdgShellWindowRules"
+                           "kwin-testStickyKeys"
+                           "kwin-testFractionalRepaint"
+                           "kwin-testDrmLegacy"
+                           "kwin-testInputCapture"
+                           "kwin-testMockDrm")
+                         "|")
+                     ")")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch
@@ -1649,13 +1657,13 @@ KDE Frameworks components.")
                          python-minimal
                          ;; for QtWaylandScanner
                          qtwayland))
-    (inputs (list breeze
+    (inputs (list aurorae
+                  breeze
                   eudev
                   fontconfig
                   freetype
-
                   hwdata
-                  plasma-activities
+                  kauth
                   kcmutils
                   kcompletion
                   kconfig
@@ -1666,12 +1674,14 @@ KDE Frameworks components.")
                   kdecoration
                   kglobalaccel
                   kglobalacceld
+                  kguiaddons
                   ki18n
                   kiconthemes
                   kidletime
                   kio
                   kirigami
                   knewstuff
+                  knighttime
                   knotifications
                   kpackage
                   kpipewire
@@ -1682,17 +1692,18 @@ KDE Frameworks components.")
                   kwindowsystem
                   kxmlgui
                   ksvg
-                  kauth
-                  kguiaddons
-                  libqaccessibilityclient
                   lcms
                   libcanberra
                   libcap
+                  libdisplay-info
+                  libei
                   libepoxy
                   libinput
+                  libplasma
+                  libqaccessibilityclient
                   libxkbcommon
                   pipewire
-                  libplasma
+                  plasma-activities
                   plasma-wayland-protocols
                   qt5compat
                   qtdeclarative
@@ -1702,12 +1713,12 @@ KDE Frameworks components.")
                   qtsvg
                   wayland
                   xcb-util ;fails at build time without this
+                  xcb-util-cursor
                   xcb-util-keysyms
                   xcb-util-wm
                   xcmsdb
                   xinput ;XXX: Says disabled in configure phase
                   xorg-server-xwayland
-                  libdisplay-info
                   zlib))
     ;; Runtime-only dependency needed for mapping monitor hardware vendor IDs to full names
     ;; * QtQuick.Controls-QMLModule, QML module 'QtQuick.Controls' is a runtime dependency.
