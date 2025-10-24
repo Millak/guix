@@ -28898,16 +28898,16 @@ Public Suffix List's private domains as well.")
 (define-public python-tldr
   (package
     (name "python-tldr")
-    (version "3.3.0")
+    (version "3.4.3")
     (source
      (origin
-       (method git-fetch) ; there's no test in PyPI
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/tldr-pages/tldr-python-client")
-             (commit version)))
+              (url "https://github.com/tldr-pages/tldr-python-client")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15mab6a7ph2rviy5f2ypid6qdbb583fvaf5zhd6q0nrggxx0kkcm"))))
+        (base32 "06rhpywaypqwakw8v187cdf52yl5c7fm19f1q7nbbsydbs0ndmb1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -28919,11 +28919,9 @@ Public Suffix List's private domains as well.")
             (lambda _
               (invoke "make" "-C" "docs"))))))
     (native-inputs
-     (list python-pytest
-           python-pytest-runner
-           python-setuptools
-           python-sphinx-argparse
-           python-wheel))
+     (list python-hatchling
+           python-pytest
+           python-sphinx-argparse))
     (propagated-inputs
      (list python-colorama
            python-termcolor
@@ -28933,7 +28931,7 @@ Public Suffix List's private domains as well.")
     (description "This package provides the @code{tldr} command allowing users
 to view @code{tldr} pages from a shell.  The @code{tldr} pages are a community
 effort to simplify the man pages with practical examples.")
-    (license license:expat))) ; MIT license
+    (license license:expat)))
 
 (define-public python-nodeenv
   (package
