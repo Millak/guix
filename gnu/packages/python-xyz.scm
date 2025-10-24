@@ -1838,45 +1838,6 @@ regularly spaced grids.  The actual streamline tracing is done at a low level
 in Rust, with a nice Python API provided on top.")
     (license license:gpl3+)))
 
-(define-public python-trubar
-  (package
-    (name "python-trubar")
-    (version "0.3.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "trubar" version))
-       (sha256
-        (base32 "149l5wid1b41gmfzsrhapcigcbcsflviz8p1pfa937443fxw1dkd"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k" (string-join
-                    ;; AttributeError: module 'libcst' has no attribute
-                    ;; 'FlattenSentinel'. Did you mean: 'MaybeSentinel'?
-                    (list "not test_import_from_future"
-                          "test_inport_after_docstring"
-                          ;; AssertionError: Items in the second set but not
-                          ;; the first
-                          "test_walk_files")
-                    " and not "))))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-libcst
-           python-pyyaml))
-    (home-page "https://github.com/janezd/trubar")
-    (synopsis "Utility for translation of Python sources")
-    (description
-     "This package provides a tool for translation and localization of Python
-programs via modification of source files. Trubar supports f-strings and does
-not require any changes to the original source code, such as marking strings
-for translation.")
-    (license license:expat)))
-
 (define-public python-jaconv
   (package
     (name "python-jaconv")
@@ -14339,63 +14300,6 @@ cluster down and deletes the throwaway profile.")
 connect strings, then issue SQL commands within IPython or IPython Notebook.")
     (license license:expat)))
 
-(define-public python-traitlets
-  (package
-    (name "python-traitlets")
-    (version "5.14.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "traitlets" version))
-       (sha256
-        (base32
-         "0zjj8ha4z5lbhhmvcl3q8wp5qmwqq0lwxma3d8qvh10s6xdi11c5"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list "-k" "not mypy_list_typing and not mypy_dict_typing")))
-    (native-inputs
-     (list python-argcomplete
-           python-hatchling
-           python-mypy
-           python-pytest
-           python-pytest-mock
-           python-pytest-mypy-testing))
-    (home-page "https://ipython.org")
-    (synopsis "Configuration system for Python applications")
-    (description
-     "Traitlets is a framework that lets Python classes have attributes with
-type checking, dynamically calculated default values, and ‘on change’
-callbacks.  The package also includes a mechanism to use traitlets for
-configuration, loading values from files or from command line arguments.  This
-is a distinct layer on top of traitlets, so you can use traitlets in your code
-without using the configuration machinery.")
-    (license license:bsd-3)))
-
-(define-public python-treelib
-  (package
-    (name "python-treelib")
-    (version "1.8.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/caesar0301/treelib")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0jd3rdaq8v7ykb626cm1gxa03higqnn2pmnv46fc0lc55xbrkxlf"))
-       (patches
-        (search-patches "python-treelib-remove-python2-compat.patch"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-poetry-core python-pytest))
-    (home-page "https://github.com/caesar0301/treelib")
-    (synopsis "Implementation of a tree structure in Python")
-    (description
-     "This package provides a Python implementation of a tree structure.")
-    (license license:asl2.0)))
-
 (define-public python-optree
   (package
     (name "python-optree")
@@ -15329,29 +15233,6 @@ language, in Python.")
     (description "This package provides a library for communicating with the
 GA4GH Task Execution API.")
     (license license:expat)))
-
-(define-public python-toposort
-  (package
-    (name "python-toposort")
-    (version "1.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "toposort" version))
-       (sha256
-        (base32
-         "1gd66z5dy6j7qs5qkj1pg0vb15rwd571yq02fkm9d9nhaff4gfxz"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-backend #~'custom
-           #:test-flags #~(list "-m" "test.test_toposort")))
-    (native-inputs (list python-setuptools))
-    (home-page "https://gitlab.com/ericvsmith/toposort")
-    (synopsis "Topological sort algorithm")
-    (description
-     "This package provides an implementation of a topological sort
-algorithm.")
-    (license license:asl2.0)))
 
 (define-public python-altgraph
   (package
@@ -20744,29 +20625,6 @@ Eventlet, or gevent.  Tasks can execute asynchronously (in the background) or
 synchronously (wait until ready).")
     (license license:bsd-3)))
 
-(define-public python-translitcodec
-  (package
-    (name "python-translitcodec")
-    (version "0.7.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/claudep/translitcodec")
-             (commit (string-append "version-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1cj11sa5hy8ga7p0dgwi4g4gv0qx6c1yi2csgnvxiir16ywslhpw"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools))
-    (home-page "https://github.com/claudep/translitcodec")
-    (synopsis "Unicode to 8-bit charset transliteration codec")
-    (description
-     "This package contains codecs for transliterating ISO 10646 texts into
-best-effort representations using smaller coded character sets (ASCII,
-ISO 8859, etc.).")
-    (license license:expat)))
-
 (define-public python-anyqt
   (package
     (name "python-anyqt")
@@ -21690,92 +21548,6 @@ graphviz.")
 format.")
     (license license:gpl2+)))
 
-(define-public python-twisted
-  (package
-    (name "python-twisted")
-    (version "24.11.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/twisted/twisted")
-                    (commit (string-append "twisted-" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0k4rd5bpx40j1k0mgbhzqa35dyni0kk7pxjr8x3pm1iaka1718rh"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: skips=638, successes=9759
-      #:test-backend #~'custom
-      #:test-flags
-      #~(list "-m" "twisted.trial"
-              "--temp-directory=/tmp/_trial_temp"
-              (string-append "-j" (number->string (min 8 (parallel-job-count))))
-              "twisted")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-broken-tests
-            (lambda _
-              (for-each delete-file
-                        (list
-                         ;; No idea why they fail
-                         "src/twisted/test/test_log.py"
-                         ;; Network tests
-                         "src/twisted/conch/test/test_cftp.py"
-                         "src/twisted/internet/test/test_endpoints.py"
-                         "src/twisted/protocols/test/test_tls.py"
-                         "src/twisted/test/test_sslverify.py"
-                         "src/twisted/web/test/test_agent.py"
-                         "src/twisted/web/test/test_tap.py"
-                         ;; These need a git executable
-                         "src/twisted/python/test/test_release.py"
-                         ;; These leave behind a socket file, which breaks the
-                         ;; build with "...has an unsupported type"
-                         "src/twisted/internet/test/test_unix.py"
-                         "src/twisted/test/test_unix.py"
-                         ;; These complain about missing test modules.
-                         "src/twisted/test/test_failure.py"
-                         "src/twisted/web/test/test_http2.py"
-                         "src/twisted/conch/test/test_forwarding.py")))))))
-    (propagated-inputs
-     (list python-attrs
-           python-automat
-           python-bcrypt
-           python-constantly
-           python-hyperlink
-           python-incremental
-           python-typing-extensions
-           python-zope-interface
-           ;; [conch]
-           python-appdirs
-           python-bcrypt
-           python-cryptography
-           ;; [http2]
-           python-h2
-           python-priority
-           ;; [tls]
-           python-idna
-           python-pyopenssl
-           python-service-identity
-           ;; [serial]
-           python-pyserial))
-    (native-inputs
-     (list glibc-utf8-locales ;for OpenTestLogTests.test_utf8
-           python-hatch-fancy-pypi-readme
-           python-hatchling
-           python-httpx
-           python-hypothesis
-           python-incremental
-           python-pyhamcrest
-           python-pytest))
-    (home-page "https://twistedmatrix.com/")
-    (synopsis "Asynchronous networking framework written in Python")
-    (description
-     "Twisted is an extensible framework for Python programming, with special
-focus on event-based network programming and multiprotocol integration.")
-    (license license:expat)))
-
 (define-public python-pika
   (package
     (name "python-pika")
@@ -22025,31 +21797,6 @@ Wikipedia code samples at
     (description
      "Cleo allows you to create command-line commands with signature in
 docstring and colored output.")
-    (license license:expat)))
-
-(define-public python-tomlkit
-  (package
-    (name "python-tomlkit")
-    (version "0.13.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "tomlkit" version))
-       (sha256
-        (base32 "18fjmmhiv5jkkg1dwidmxd0sjqnkf675igizxsa2ppspxr3z4323"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-poetry-core
-           python-pytest
-           python-pyyaml))
-    (home-page "https://github.com/sdispater/tomlkit")
-    (synopsis "Style-preserving TOML library")
-    (description
-     "TOML Kit is a 1.0.0rc1-compliant TOML library.  It includes a parser that
-preserves all comments, indentations, whitespace and internal element ordering,
-and makes them accessible and editable via an intuitive API.  It can also
-create new TOML documents from scratch using the provided helpers.  Part of the
-implementation has been adapted, improved, and fixed from Molten.")
     (license license:expat)))
 
 (define-public python-shellingham
@@ -26209,37 +25956,6 @@ version of @code{SocksiPy} with bug fixes and extra features.")
 @code{ffmpeg} to open various audio formats.")
     (license license:expat))) ; MIT license
 
-(define-public python-tqdm
-  (package
-    (name "python-tqdm")
-    (version "4.67.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "tqdm" version))
-         (sha256
-           (base32 "1wi7cql2fc76b5z9v1sr96ix2gxcb974z8qfydjkmh885k2zkbpq"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags
-           '(list "-o" "asyncio_mode=auto"
-                  "-k" "not perf and not test_rlock_creation")))
-    (native-inputs
-     (list python-pytest
-           python-pytest-asyncio
-           python-pytest-timeout
-           python-setuptools
-           python-setuptools-scm
-           python-toml
-           python-wheel))
-    (home-page "https://github.com/tqdm/tqdm")
-    (synopsis "Fast, extensible progress meter")
-    (description
-      "Make loops show a progress bar on the console by just wrapping any
-iterable with @code{|tqdm(iterable)|}.  Offers many options to define
-design and layout.")
-    (license (list license:mpl2.0 license:expat))))
-
 (define-public python-pkginfo
   (package
     (name "python-pkginfo")
@@ -26268,47 +25984,6 @@ running bdist_egg).  It can also query the EGG-INFO directory of an installed
 distribution, and the *.egg-info stored in a \"development checkout\" (e.g,
 created by running @code{python setup.py develop}).")
     (license license:expat)))
-
-(define-public python-twine
-  (package
-    (name "python-twine")
-    (version "6.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "twine" version))
-       (sha256
-        (base32 "1kvm9cdvbnh232wafww1w5scaic9kkrwhlff1mvmk68cswphvvg5"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 228 passed, 1 deselected
-      #:test-flags
-      ;; Assertion is not equal for one tests.
-      #~(list "--deselect=tests/test_check.py::test_fails_rst_syntax_error")))
-    (native-inputs
-     (list python-pretend
-           python-pytest
-           python-pytest-socket
-           python-setuptools
-           python-setuptools-scm))
-    (propagated-inputs
-     (list python-id
-           python-keyring
-           python-packaging
-           python-readme-renderer
-           python-requests
-           python-requests-toolbelt
-           python-rfc3986
-           python-rich
-           python-urllib3))
-    (home-page "https://github.com/pypa/twine")
-    (synopsis "Collection of utilities for interacting with PyPI")
-    (description
-     "@code{twine} currently supports registering projects and uploading
-distributions.  It authenticates the user over HTTPS, allows them to pre-sign
-their files and supports any packaging format (including wheels).")
-    (license license:asl2.0)))
 
 ;; XXX: This project was archived by the owner on Oct 4, 2023. It is now
 ;; read-only.  Consider to remvoe when nothing depends on it.
@@ -26942,56 +26617,6 @@ implements the week definition of ISO 8601.  This standard also defines
 a notation for identifying weeks; yyyyWww (where the W is a literal).
 Week instances stringify to this form.")
     (license license:bsd-3)))
-
-(define-public python-tokenize-rt
-  (package
-    (name "python-tokenize-rt")
-    (version "6.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/asottile/tokenize-rt")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1maa9sifma0a6v7kl7mmyqzj0jdclzlp4wjr0vkdx95raihxx4fv"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools))
-    (home-page "https://github.com/asottile/tokenize-rt")
-    (synopsis "Wrapper around the stdlib tokenize which roundtrips")
-    (description
-     "This Python library is a wrapper around @code{tokenize} from the Python
-standard library.  It provides two additional tokens @code{ESCAPED_NL} and
-@code{UNIMPORTANT_WS}, and a @code{Token} data type.  Use @code{src_to_tokens}
-and @code{tokens_to_src} to roundtrip.")
-    (license license:expat)))
-
-(define-public python-towncrier
-  (package
-    (name "python-towncrier")
-    (version "25.8.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "towncrier" version))
-       (sha256
-        (base32 "1c8fjjwlx29jgllxvyzby4cn51iraxba0cmfnfmmgb9iz0lnvwgf"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list git-minimal/pinned           ;tests create git repositories
-           python-hatchling
-           python-pytest
-           python-twisted))
-    (propagated-inputs
-     (list python-click
-           python-jinja2))
-    (home-page "https://towncrier.readthedocs.io/en/stable/")
-    (synopsis "Manage release notes")
-    (description
-     "@code{towncrier} is a utility to produce useful, summarized news files
- (also known as changelogs) for a project.")
-    (license license:expat)))
 
 (define-public python-future-fstrings
   (package
@@ -28513,63 +28138,6 @@ library's @code{threading} module.")
 instead of pickle.")
     (license license:psfl)))
 
-(define-public python-toolrack
-  (package
-    (name "python-toolrack")
-    (version "4.0.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/albertodonato/toolrack")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1aglfj7j25fiwx9jh1rl34mlhfpdhn8yrkn30vhkz9yw7zrx42h0"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-/bin/sh
-            (lambda _
-              (substitute* "tests/aio/process_test.py"
-                (("/bin/sh")
-                 (which "sh"))))))))
-    (native-inputs (list python-pytest
-                         python-pytest-asyncio
-                         python-pytest-mock
-                         python-setuptools))
-    (home-page "https://github.com/albertodonato/toolrack")
-    (synopsis "Collection of Python utility functions and classes")
-    (description "This package provides a collection of miscellaneous utility
-functions and classes.")
-    (license license:lgpl3+)))
-
-(define-public python-toolz
-  (package
-    (name "python-toolz")
-    (version "1.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "toolz" version))
-       (sha256
-        (base32
-         "00ks0jhl1jwm9576c5sh10pnla8ni21yvg4kcxasr627l3cy71ic"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
-    (home-page "https://github.com/pytoolz/toolz/")
-    (synopsis "List processing tools and functional utilities")
-    (description
-     "This package provides a set of utility functions for iterators,
-functions, and dictionaries.")
-    (license license:bsd-3)))
-
 (define-public python-cytoolz
   (package
     (name "python-cytoolz")
@@ -29082,140 +28650,6 @@ project.")
     ;; Either license applies.
     (license (list license:expat license:asl2.0))))
 
-(define-public python-trio
-  (package
-    (name "python-trio")
-    (version "0.28.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "trio" version))
-       (sha256
-        (base32 "019wqwlbj185skknbjd7paxqqx6vl5gpqk2fwmc5d2lyzsb7hm2f"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      `(list "-k"
-             (string-append
-              ;; This tests times out.
-              "not test_ki_protection_works"
-              " and not test_KI_interrupts"
-              ;; This fails with: signal only works in main thread of the main interpreter
-              " and not test_catch_signals_race_condition_on_exit"
-              ;; Assertion errors.
-              " and not test_named_thread_os"
-              " and not test_has_pthread_setname_np"
-              " and not test_guest_mode_ki"
-              " and not test_run_in_trio_thread_ki"
-              " and not test_simple_cancel_scope_usage_doesnt_create\
-_cyclic_garbage"
-              " and not test_nursery_cancel_doesnt_create_cyclic_garbage"
-              " and not test_cancel_scope_exit_doesnt_create_cyclic_garbage"
-              " and not test_locals_destroyed_promptly_on_cancel"
-              " and not test_ipython_exc_handler"
-              " and not test_for_leaking_fds"
-              ;; Signals don’t work in the build sandbox.
-              " and not test_open_signal_receiver"
-              ;; These try to raise KeyboardInterrupt which does not work
-              ;; in the build environment.
-              " and not test_ki_self"
-              " and not test_ki_wakes_us_up"
-              ;; Failure in name resolution.
-              " and not test_getnameinfo"
-              " and not test_SocketType_resolve"
-              ;; OSError: protocol not found.
-              " and not test_getprotobyname"
-              ;; EOFError: Ran out of input.
-              " and not test_static_tool_sees_all_symbols")
-             ,@(if (package? (this-package-native-input "python-trustme"))
-                  '()
-                  `("--ignore=src/trio/_tests/test_dtls.py"
-                    "--ignore=src/trio/_tests/test_highlevel_ssl_helpers.py"
-                    "--ignore=src/trio/_tests/test_ssl.py"))
-             ;; It rerquires black and ruff to generate a final report.
-             "--ignore=src/trio/_tests/tools/test_gen_exports.py"
-             "src/trio/_tests")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'ignore-deprecations
-           (lambda _
-             (substitute* "pyproject.toml"
-               (("  \"error\",") "  \"ignore\","))))
-         (add-before 'check 'set-env
-           (lambda _
-             ;; Tests require a writable home.
-             (setenv "HOME" "/tmp")
-             ;; #$output is first in path which causes "import file mismatch"
-             (setenv "PYTHONPATH" (string-append (getcwd) "/src:$PYTHONPATH")))))))
-    (native-inputs
-     (append
-       (if (supported-package? python-pyopenssl)
-           (list python-pyopenssl)
-           '())
-       (list python-pytest
-             python-setuptools)
-       (if (supported-package? python-trustme)
-           (list python-trustme)
-           '())
-       (list python-wheel)))
-    (propagated-inputs
-     (list python-attrs
-           python-cffi
-           python-exceptiongroup
-           python-idna
-           python-outcome
-           python-sniffio
-           python-sortedcontainers))
-    (home-page "https://github.com/python-trio/trio")
-    (synopsis "Friendly Python library for async concurrency and I/O")
-    (description
-     "Trio strives to be a production-quality, async/await-native I/O library
-for Python.  Like all async libraries, its main purpose is to help you write
-programs that do multiple things at the same time with parallelized I/O.")
-    ;; Either license applies.
-    (license (list license:expat license:asl2.0))))
-
-(define-public python-trio-typing
-  (package
-    (name "python-trio-typing")
-    (version "0.10.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "trio-typing" version))
-       (sha256
-        (base32 "1hvsj3w500i33ykfgh3sfkjnxhxf05incx131smshlkd562fcph6"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
-    (propagated-inputs
-     (list python-async-generator
-           python-importlib-metadata
-           python-mypy-extensions
-           python-packaging
-           python-trio
-           python-typing-extensions))
-    (home-page "https://github.com/python-trio/trio-typing")
-    (synopsis "Static type checking support for Trio and related projects")
-    (description
-     "This package provides:
-
-@itemize
-@item PEP 561 typing stubs packages for the Trio project packages:
-
-@itemize
-@item trio (@code{trio-stubs})
-@item outcome (@code{outcome-stubs})
-@item async_generator (@code{async_generator-stubs})
-@end itemize
-
-@item A package @code{trio_typing} containing types that Trio programs often
-want to refer to (@code{AsyncGenerator[Y, S]} and @code{TaskStatus[T])} and
-a mypy plugin that smooths over some limitations in the basic type hints.
-@end itemize")
-    ;; Either license applies.
-    (license (list license:expat license:asl2.0))))
-
 (define-public python-humanize
   (package
     (name "python-humanize")
@@ -29236,28 +28670,6 @@ a mypy plugin that smooths over some limitations in the basic type hints.
 and dates in \"human readable\" forms.  For example, it would display
 \"12345591313\" as \"12.3 billion\".")
     (license license:expat)))
-
-(define-public python-toolshed
-  (package
-    (name "python-toolshed")
-    (version "0.4.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "toolshed" version))
-       (sha256
-        (base32
-         "14zvz51gzf9i1i3d1sj363ba4rksl6lcf4lz1arl8hpqgcbir8r3"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))        ;tests are not included in PyPI archive
-    (native-inputs
-     (list python-setuptools))
-    (home-page "https://github.com/brentp/toolshed/")
-    (synopsis "Collection of modules and functions for working with data")
-    (description "This is a collection of well-tested, simple modules and
-functions that aim to reduce boilerplate when working with data.")
-    (license license:bsd-2)))
 
 (define-public python-annoy
   (package
@@ -38086,6 +37498,591 @@ comparing their hash values.  The byte stream should have a sufficient amount
 of complexity; for example, a byte stream of identical bytes will not generate
 a hash value.")
     (license license:asl2.0)))
+
+(define-public python-tokenize-rt
+  (package
+    (name "python-tokenize-rt")
+    (version "6.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/asottile/tokenize-rt")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1maa9sifma0a6v7kl7mmyqzj0jdclzlp4wjr0vkdx95raihxx4fv"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/asottile/tokenize-rt")
+    (synopsis "Wrapper around the stdlib tokenize which roundtrips")
+    (description
+     "This Python library is a wrapper around @code{tokenize} from the Python
+standard library.  It provides two additional tokens @code{ESCAPED_NL} and
+@code{UNIMPORTANT_WS}, and a @code{Token} data type.  Use @code{src_to_tokens}
+and @code{tokens_to_src} to roundtrip.")
+    (license license:expat)))
+
+(define-public python-tomlkit
+  (package
+    (name "python-tomlkit")
+    (version "0.13.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "tomlkit" version))
+       (sha256
+        (base32 "18fjmmhiv5jkkg1dwidmxd0sjqnkf675igizxsa2ppspxr3z4323"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core
+           python-pytest
+           python-pyyaml))
+    (home-page "https://github.com/sdispater/tomlkit")
+    (synopsis "Style-preserving TOML library")
+    (description
+     "TOML Kit is a 1.0.0rc1-compliant TOML library.  It includes a parser that
+preserves all comments, indentations, whitespace and internal element ordering,
+and makes them accessible and editable via an intuitive API.  It can also
+create new TOML documents from scratch using the provided helpers.  Part of the
+implementation has been adapted, improved, and fixed from Molten.")
+    (license license:expat)))
+
+(define-public python-toolrack
+  (package
+    (name "python-toolrack")
+    (version "4.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/albertodonato/toolrack")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1aglfj7j25fiwx9jh1rl34mlhfpdhn8yrkn30vhkz9yw7zrx42h0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-/bin/sh
+            (lambda _
+              (substitute* "tests/aio/process_test.py"
+                (("/bin/sh")
+                 (which "sh"))))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-mock
+           python-setuptools))
+    (home-page "https://github.com/albertodonato/toolrack")
+    (synopsis "Collection of Python utility functions and classes")
+    (description "This package provides a collection of miscellaneous utility
+functions and classes.")
+    (license license:lgpl3+)))
+
+(define-public python-toolshed
+  (package
+    (name "python-toolshed")
+    (version "0.4.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "toolshed" version))
+       (sha256
+        (base32 "14zvz51gzf9i1i3d1sj363ba4rksl6lcf4lz1arl8hpqgcbir8r3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;tests are not included in PyPI archive
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/brentp/toolshed/")
+    (synopsis "Collection of modules and functions for working with data")
+    (description "This is a collection of well-tested, simple modules and
+functions that aim to reduce boilerplate when working with data.")
+    (license license:bsd-2)))
+
+(define-public python-toolz
+  (package
+    (name "python-toolz")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "toolz" version))
+       (sha256
+        (base32 "00ks0jhl1jwm9576c5sh10pnla8ni21yvg4kcxasr627l3cy71ic"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/pytoolz/toolz/")
+    (synopsis "List processing tools and functional utilities")
+    (description
+     "This package provides a set of utility functions for iterators,
+functions, and dictionaries.")
+    (license license:bsd-3)))
+
+(define-public python-toposort
+  (package
+    (name "python-toposort")
+    (version "1.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "toposort" version))
+       (sha256
+        (base32 "1gd66z5dy6j7qs5qkj1pg0vb15rwd571yq02fkm9d9nhaff4gfxz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "-m" "test.test_toposort")))
+    (native-inputs (list python-setuptools))
+    (home-page "https://gitlab.com/ericvsmith/toposort")
+    (synopsis "Topological sort algorithm")
+    (description
+     "This package provides an implementation of a topological sort
+algorithm.")
+    (license license:asl2.0)))
+
+(define-public python-towncrier
+  (package
+    (name "python-towncrier")
+    (version "25.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "towncrier" version))
+       (sha256
+        (base32 "1c8fjjwlx29jgllxvyzby4cn51iraxba0cmfnfmmgb9iz0lnvwgf"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list git-minimal/pinned           ;tests create git repositories
+           python-hatchling
+           python-pytest
+           python-twisted))
+    (propagated-inputs
+     (list python-click
+           python-jinja2))
+    (home-page "https://towncrier.readthedocs.io/en/stable/")
+    (synopsis "Manage release notes")
+    (description
+     "@code{towncrier} is a utility to produce useful, summarized news files
+ (also known as changelogs) for a project.")
+    (license license:expat)))
+
+(define-public python-tqdm
+  (package
+    (name "python-tqdm")
+    (version "4.67.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "tqdm" version))
+         (sha256
+           (base32 "1wi7cql2fc76b5z9v1sr96ix2gxcb974z8qfydjkmh885k2zkbpq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags
+           '(list "-o" "asyncio_mode=auto"
+                  "-k" "not perf and not test_rlock_creation")))
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-timeout
+           python-setuptools
+           python-setuptools-scm
+           python-toml
+           python-wheel))
+    (home-page "https://github.com/tqdm/tqdm")
+    (synopsis "Fast, extensible progress meter")
+    (description
+      "Make loops show a progress bar on the console by just wrapping any
+iterable with @code{|tqdm(iterable)|}.  Offers many options to define
+design and layout.")
+    (license (list license:mpl2.0 license:expat))))
+
+(define-public python-traitlets
+  (package
+    (name "python-traitlets")
+    (version "5.14.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "traitlets" version))
+       (sha256
+        (base32 "0zjj8ha4z5lbhhmvcl3q8wp5qmwqq0lwxma3d8qvh10s6xdi11c5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      '(list "-k" "not mypy_list_typing and not mypy_dict_typing")))
+    (native-inputs
+     (list python-argcomplete
+           python-hatchling
+           python-mypy
+           python-pytest
+           python-pytest-mock
+           python-pytest-mypy-testing))
+    (home-page "https://ipython.org")
+    (synopsis "Configuration system for Python applications")
+    (description
+     "Traitlets is a framework that lets Python classes have attributes with
+type checking, dynamically calculated default values, and ‘on change’
+callbacks.  The package also includes a mechanism to use traitlets for
+configuration, loading values from files or from command line arguments.  This
+is a distinct layer on top of traitlets, so you can use traitlets in your code
+without using the configuration machinery.")
+    (license license:bsd-3)))
+
+(define-public python-translitcodec
+  (package
+    (name "python-translitcodec")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/claudep/translitcodec")
+              (commit (string-append "version-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cj11sa5hy8ga7p0dgwi4g4gv0qx6c1yi2csgnvxiir16ywslhpw"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/claudep/translitcodec")
+    (synopsis "Unicode to 8-bit charset transliteration codec")
+    (description
+     "This package contains codecs for transliterating ISO 10646 texts into
+best-effort representations using smaller coded character sets (ASCII,
+ISO 8859, etc.).")
+    (license license:expat)))
+
+(define-public python-treelib
+  (package
+    (name "python-treelib")
+    (version "1.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/caesar0301/treelib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jd3rdaq8v7ykb626cm1gxa03higqnn2pmnv46fc0lc55xbrkxlf"))
+       (patches
+        (search-patches "python-treelib-remove-python2-compat.patch"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-poetry-core python-pytest))
+    (home-page "https://github.com/caesar0301/treelib")
+    (synopsis "Implementation of a tree structure in Python")
+    (description
+     "This package provides a Python implementation of a tree structure.")
+    (license license:asl2.0)))
+
+(define-public python-trio
+  (package
+    (name "python-trio")
+    (version "0.28.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trio" version))
+       (sha256
+        (base32 "019wqwlbj185skknbjd7paxqqx6vl5gpqk2fwmc5d2lyzsb7hm2f"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      `(list "-k"
+             (string-append
+              ;; This tests times out.
+              "not test_ki_protection_works"
+              " and not test_KI_interrupts"
+              ;; This fails with: signal only works in main thread of the main interpreter
+              " and not test_catch_signals_race_condition_on_exit"
+              ;; Assertion errors.
+              " and not test_named_thread_os"
+              " and not test_has_pthread_setname_np"
+              " and not test_guest_mode_ki"
+              " and not test_run_in_trio_thread_ki"
+              " and not test_simple_cancel_scope_usage_doesnt_create\
+_cyclic_garbage"
+              " and not test_nursery_cancel_doesnt_create_cyclic_garbage"
+              " and not test_cancel_scope_exit_doesnt_create_cyclic_garbage"
+              " and not test_locals_destroyed_promptly_on_cancel"
+              " and not test_ipython_exc_handler"
+              " and not test_for_leaking_fds"
+              ;; Signals don’t work in the build sandbox.
+              " and not test_open_signal_receiver"
+              ;; These try to raise KeyboardInterrupt which does not work
+              ;; in the build environment.
+              " and not test_ki_self"
+              " and not test_ki_wakes_us_up"
+              ;; Failure in name resolution.
+              " and not test_getnameinfo"
+              " and not test_SocketType_resolve"
+              ;; OSError: protocol not found.
+              " and not test_getprotobyname"
+              ;; EOFError: Ran out of input.
+              " and not test_static_tool_sees_all_symbols")
+             ,@(if (package? (this-package-native-input "python-trustme"))
+                  '()
+                  `("--ignore=src/trio/_tests/test_dtls.py"
+                    "--ignore=src/trio/_tests/test_highlevel_ssl_helpers.py"
+                    "--ignore=src/trio/_tests/test_ssl.py"))
+             ;; It rerquires black and ruff to generate a final report.
+             "--ignore=src/trio/_tests/tools/test_gen_exports.py"
+             "src/trio/_tests")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'ignore-deprecations
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("  \"error\",") "  \"ignore\","))))
+         (add-before 'check 'set-env
+           (lambda _
+             ;; Tests require a writable home.
+             (setenv "HOME" "/tmp")
+             ;; #$output is first in path which causes "import file mismatch"
+             (setenv "PYTHONPATH" (string-append (getcwd) "/src:$PYTHONPATH")))))))
+    (native-inputs
+     (append
+       (if (supported-package? python-pyopenssl)
+           (list python-pyopenssl)
+           '())
+       (list python-pytest
+             python-setuptools)
+       (if (supported-package? python-trustme)
+           (list python-trustme)
+           '())
+       (list python-wheel)))
+    (propagated-inputs
+     (list python-attrs
+           python-cffi
+           python-exceptiongroup
+           python-idna
+           python-outcome
+           python-sniffio
+           python-sortedcontainers))
+    (home-page "https://github.com/python-trio/trio")
+    (synopsis "Friendly Python library for async concurrency and I/O")
+    (description
+     "Trio strives to be a production-quality, async/await-native I/O library
+for Python.  Like all async libraries, its main purpose is to help you write
+programs that do multiple things at the same time with parallelized I/O.")
+    ;; Either license applies.
+    (license (list license:expat license:asl2.0))))
+
+(define-public python-trio-typing
+  (package
+    (name "python-trio-typing")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trio-typing" version))
+       (sha256
+        (base32 "1hvsj3w500i33ykfgh3sfkjnxhxf05incx131smshlkd562fcph6"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (propagated-inputs
+     (list python-async-generator
+           python-importlib-metadata
+           python-mypy-extensions
+           python-packaging
+           python-trio
+           python-typing-extensions))
+    (home-page "https://github.com/python-trio/trio-typing")
+    (synopsis "Static type checking support for Trio and related projects")
+    (description
+     "This package provides:
+
+@itemize
+@item PEP 561 typing stubs packages for the Trio project packages:
+
+@itemize
+@item trio (@code{trio-stubs})
+@item outcome (@code{outcome-stubs})
+@item async_generator (@code{async_generator-stubs})
+@end itemize
+
+@item A package @code{trio_typing} containing types that Trio programs often
+want to refer to (@code{AsyncGenerator[Y, S]} and @code{TaskStatus[T])} and
+a mypy plugin that smooths over some limitations in the basic type hints.
+@end itemize")
+    ;; Either license applies.
+    (license (list license:expat license:asl2.0))))
+
+(define-public python-trubar
+  (package
+    (name "python-trubar")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "trubar" version))
+       (sha256
+        (base32 "149l5wid1b41gmfzsrhapcigcbcsflviz8p1pfa937443fxw1dkd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; AttributeError: module 'libcst' has no attribute
+                    ;; 'FlattenSentinel'. Did you mean: 'MaybeSentinel'?
+                    (list "not test_import_from_future"
+                          "test_inport_after_docstring"
+                          ;; AssertionError: Items in the second set but not
+                          ;; the first
+                          "test_walk_files")
+                    " and not "))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-libcst
+           python-pyyaml))
+    (home-page "https://github.com/janezd/trubar")
+    (synopsis "Utility for translation of Python sources")
+    (description
+     "This package provides a tool for translation and localization of Python
+programs via modification of source files. Trubar supports f-strings and does
+not require any changes to the original source code, such as marking strings
+for translation.")
+    (license license:expat)))
+
+(define-public python-twine
+  (package
+    (name "python-twine")
+    (version "6.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "twine" version))
+       (sha256
+        (base32 "1kvm9cdvbnh232wafww1w5scaic9kkrwhlff1mvmk68cswphvvg5"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 228 passed, 1 deselected
+      #:test-flags
+      ;; Assertion is not equal for one tests.
+      #~(list "--deselect=tests/test_check.py::test_fails_rst_syntax_error")))
+    (native-inputs
+     (list python-pretend
+           python-pytest
+           python-pytest-socket
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-id
+           python-keyring
+           python-packaging
+           python-readme-renderer
+           python-requests
+           python-requests-toolbelt
+           python-rfc3986
+           python-rich
+           python-urllib3))
+    (home-page "https://github.com/pypa/twine")
+    (synopsis "Collection of utilities for interacting with PyPI")
+    (description
+     "@code{twine} currently supports registering projects and uploading
+distributions.  It authenticates the user over HTTPS, allows them to pre-sign
+their files and supports any packaging format (including wheels).")
+    (license license:asl2.0)))
+
+(define-public python-twisted
+  (package
+    (name "python-twisted")
+    (version "24.11.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/twisted/twisted")
+              (commit (string-append "twisted-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k4rd5bpx40j1k0mgbhzqa35dyni0kk7pxjr8x3pm1iaka1718rh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: skips=638, successes=9759
+      #:test-backend #~'custom
+      #:test-flags
+      #~(list "-m" "twisted.trial"
+              "--temp-directory=/tmp/_trial_temp"
+              (string-append "-j" (number->string (min 8 (parallel-job-count))))
+              "twisted")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-broken-tests
+            (lambda _
+              (for-each delete-file
+                        (list
+                         ;; No idea why they fail
+                         "src/twisted/test/test_log.py"
+                         ;; Network tests
+                         "src/twisted/conch/test/test_cftp.py"
+                         "src/twisted/internet/test/test_endpoints.py"
+                         "src/twisted/protocols/test/test_tls.py"
+                         "src/twisted/test/test_sslverify.py"
+                         "src/twisted/web/test/test_agent.py"
+                         "src/twisted/web/test/test_tap.py"
+                         ;; These need a git executable
+                         "src/twisted/python/test/test_release.py"
+                         ;; These leave behind a socket file, which breaks the
+                         ;; build with "...has an unsupported type"
+                         "src/twisted/internet/test/test_unix.py"
+                         "src/twisted/test/test_unix.py"
+                         ;; These complain about missing test modules.
+                         "src/twisted/test/test_failure.py"
+                         "src/twisted/web/test/test_http2.py"
+                         "src/twisted/conch/test/test_forwarding.py")))))))
+    (propagated-inputs
+     (list python-attrs
+           python-automat
+           python-bcrypt
+           python-constantly
+           python-hyperlink
+           python-incremental
+           python-typing-extensions
+           python-zope-interface
+           ;; [conch]
+           python-appdirs
+           python-bcrypt
+           python-cryptography
+           ;; [http2]
+           python-h2
+           python-priority
+           ;; [tls]
+           python-idna
+           python-pyopenssl
+           python-service-identity
+           ;; [serial]
+           python-pyserial))
+    (native-inputs
+     (list glibc-utf8-locales ;for OpenTestLogTests.test_utf8
+           python-hatch-fancy-pypi-readme
+           python-hatchling
+           python-httpx
+           python-hypothesis
+           python-incremental
+           python-pyhamcrest
+           python-pytest))
+    (home-page "https://twistedmatrix.com/")
+    (synopsis "Asynchronous networking framework written in Python")
+    (description
+     "Twisted is an extensible framework for Python programming, with special
+focus on event-based network programming and multiprotocol integration.")
+    (license license:expat)))
 
 (define-public python-typeapi
   (package
