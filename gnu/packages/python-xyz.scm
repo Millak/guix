@@ -5416,15 +5416,17 @@ helpers.")
 (define-public python-textparser
   (package
     (name "python-textparser")
-    (version "0.23.0")
+    (version "0.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "textparser" version))
        (sha256
-        (base32
-         "0w5lyhrsvzs5a9q1l3sjgxgljrvd3ybf796w93kc39wayzvd02gh"))))
-    (build-system python-build-system)
+        (base32 "0dc3aqbzh0x13i6cmr73q777wv8nxyk3p0kdnynh5l59bbkhixsn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/eerimoq/textparser")
     (synopsis "Fast text parser for Python")
     (description "This library provides a text parser written in the Python
