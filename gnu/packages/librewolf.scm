@@ -530,15 +530,11 @@
               ;; The following two functions are from Guix's icecat package in
               ;; (gnu packages gnuzilla).  See commit
               ;; b7a0935420ee630a29b7e5ac73a32ba1eb24f00b.
-              (define (runpath-of lib)
-                (call-with-input-file lib
-                  (compose elf-dynamic-info-runpath elf-dynamic-info
-                           parse-elf get-bytevector-all)))
               (define (runpaths-of-input label)
                 (let* ((dir (string-append (assoc-ref inputs label)
                                            "/lib"))
                        (libs (find-files dir "\\.so$")))
-                  (append-map runpath-of libs)))
+                  (append-map file-runpath libs)))
               (let* ((out (assoc-ref outputs "out"))
                      (lib (string-append out "/lib"))
                      (libs (map

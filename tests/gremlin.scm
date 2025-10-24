@@ -23,6 +23,7 @@
   #:use-module (guix tests)
   #:use-module ((guix utils) #:select (call-with-temporary-directory
                                        target-aarch64?))
+  #:use-module (guix build io)
   #:use-module (guix build utils)
   #:use-module (guix build gremlin)
   #:use-module (gnu packages bootstrap)
@@ -44,9 +45,6 @@
     (_
      #f)))
 
-(define read-elf
-  (compose parse-elf get-bytevector-all))
-
 (define c-compiler
   (or (which "gcc") (which "cc") (which "g++")))
 
@@ -55,8 +53,7 @@
 
 (unless %guile-executable (test-skip 1))
 (test-assert "elf-dynamic-info-needed, executable"
-  (let* ((elf     (call-with-input-file %guile-executable read-elf))
-         (dyninfo (elf-dynamic-info elf)))
+  (let ((dyninfo (file-dynamic-info %guile-executable)))
     (or (not dyninfo)                             ;static executable
         (lset<= string=?
                 (list (string-append "libguile-" (effective-version))
@@ -140,9 +137,7 @@
            (display "int main () { puts(\"hello\"); }" port)))
        (invoke c-compiler "t.c"
                "-Wl,--enable-new-dtags" "-Wl,-rpath=/foo" "-Wl,-rpath=/bar")
-       (let* ((dyninfo (elf-dynamic-info
-                        (parse-elf (call-with-input-file "a.out"
-                                     get-bytevector-all))))
+       (let* ((dyninfo (file-dynamic-info "a.out"))
               (old     (elf-dynamic-info-runpath dyninfo))
               (new     (strip-runpath "a.out"))
               (new*    (strip-runpath "a.out")))
@@ -196,10 +191,7 @@
            (display "// empty file" port)))
        (invoke c-compiler "t.c"
                "-shared" "-Wl,-soname,libfoo.so.2")
-       (let* ((dyninfo (elf-dynamic-info
-                       (parse-elf (call-with-input-file "a.out"
-                                    get-bytevector-all))))
-              (soname  (elf-dynamic-info-soname dyninfo)))
-	 soname)))))
+       (let ((dyninfo (file-dynamic-info "a.out")))
+	 (elf-dynamic-info-soname dyninfo))))))
 
 (test-end "gremlin")

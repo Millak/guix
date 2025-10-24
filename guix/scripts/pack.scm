@@ -5,7 +5,7 @@
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2020-2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2022 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2023 Graham James Addis <graham@addis.org.uk>
@@ -1221,12 +1221,14 @@ libfakechroot.so and related ld.so machinery as a fallback."
 
   (define build
     (with-imported-modules (source-module-closure
-                            '((guix build utils)
+                            '((guix build io)
+                              (guix build utils)
                               (guix build union)
                               (guix build gremlin)
                               (guix elf)))
       #~(begin
-          (use-modules (guix build utils)
+          (use-modules (guix build io)
+                       (guix build utils)
                        ((guix build union) #:select (symlink-relative))
                        (guix elf)
                        (guix build gremlin)
@@ -1260,7 +1262,7 @@ libfakechroot.so and related ld.so machinery as a fallback."
             (match (find (lambda (segment)
                            (= (elf-segment-type segment) PT_INTERP))
                          (elf-segments elf))
-              (#f #f)                             ;maybe a .so
+              (#f #f)                   ;maybe a .so
               (segment
                (let ((bv (make-bytevector (- (elf-segment-memsz segment) 1))))
                  (bytevector-copy! (elf-bytes elf)
@@ -1280,8 +1282,7 @@ libfakechroot.so and related ld.so machinery as a fallback."
             #$(if fakechroot?
                   ;; TODO: Handle scripts by wrapping their interpreter.
                   #~(if (elf-file? program)
-                        (let* ((bv      (call-with-input-file program
-                                          get-bytevector-all))
+                        (let* ((bv      (file->bytevector program))
                                (elf     (parse-elf bv))
                                (interp  (elf-interpreter elf))
                                (gconv   (and interp
