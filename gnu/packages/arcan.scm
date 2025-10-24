@@ -111,7 +111,7 @@
            #:tests? #f))
     (inputs `(("bash-minimal" ,bash-minimal)
               ("espeak" ,espeak)
-              ("ffmpeg" ,ffmpeg)
+              ("ffmpeg" ,ffmpeg-6)
               ("freetype" ,freetype)
               ("gumbo-parser" ,gumbo-parser)
               ("harfbuzz" ,harfbuzz)
