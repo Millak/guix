@@ -7935,20 +7935,16 @@ Capabilities include:
   (package
     (name "python-text-unidecode")
     (version "1.3")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "text-unidecode" version))
-              (sha256
-               (base32
-                "14xb99fdv52j21dsljgsbmbaqv10ps4b453p229r29sdn4xn1mms"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest" "-vv"))))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "text-unidecode" version))
+       (sha256
+        (base32 "14xb99fdv52j21dsljgsbmbaqv10ps4b453p229r29sdn4xn1mms"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/kmike/text-unidecode/")
     (synopsis "Decode Unicode data")
     (description
