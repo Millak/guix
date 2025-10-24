@@ -35234,27 +35234,26 @@ pythonic way.")
 (define-public python-tablib
   (package
     (name "python-tablib")
-    (version "3.8.0")
+    (version "3.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tablib" version))
        (sha256
-        (base32 "0ayv93q7kpii6z3n57i6b78mpr1ibwd70nvd981a05d7cpfbrn4l"))))
+        (base32 "1qjzbpaln1grr5ngcm2apd5dxp0gcrwis5n60hg60d8gvf7bsshv"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pandas
-           python-pytest
+     (list python-pytest
            python-pytest-cov
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
+    (inputs ;; [cli]
+     (list python-tabulate))
     (propagated-inputs
      (list python-markuppy
            python-odfpy
            python-openpyxl
            python-pyyaml
-           python-tabulate
            python-xlrd
            python-xlwt))
     (home-page "https://tablib.readthedocs.io")
