@@ -783,6 +783,7 @@ KDE Frameworks 5 to better interact with the system.")
                   knotifications
                   krunner
                   kservice
+                  ksvg
                   kunitconversion
                   knewstuff
                   libplasma
