@@ -1187,14 +1187,14 @@ popular puzzle games for one player.")
 (define-public bzflag
   (package
     (name "bzflag")
-    (version "2.4.26")
+    (version "2.4.30")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.bzflag.org/bzflag/source/"
                            version "/bzflag-" version ".tar.bz2"))
        (sha256
-        (base32 "050h933lmcdf4bw9z3c6g3k8c9sch9f6kq57jp2ivb96zw2h90q1"))))
+        (base32 "0kc9ag8yq3iqmwlrdwhbqp3sqjcan1mr0ddx25yamrxwwx8bfy5v"))))
     (build-system gnu-build-system)
     (arguments
      (list
