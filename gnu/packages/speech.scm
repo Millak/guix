@@ -5,7 +5,7 @@
 ;;; Copyright © 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020, 2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2024 Sébastien Lerique <sl@eauchat.org>
@@ -31,6 +31,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (gnu packages)
@@ -182,36 +183,38 @@ based on human speech recordings.")
        (license license:gpl3+)))
 
 (define-public espeak-ng
-  (package
-    (name "espeak-ng")
-    (version "1.51")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/espeak-ng/espeak-ng")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0xhgdmvpgi464x9ba586c6hvscfkbhry75cv796hl9pz1nawq31b"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags '("--disable-static")
-       ;; Building in parallel triggers a race condition in 1.49.2.
-       #:parallel-build? #f
-       ;; XXX: Some tests require an audio device.
-       #:tests? #f))
-    (native-inputs
-     (list autoconf automake libtool which))
-    (inputs
-     (list libcap pcaudiolib))
-    (home-page "https://github.com/espeak-ng/espeak-ng")
-    (synopsis "Software speech synthesizer")
-    (description
-     "eSpeak NG is a software speech synthesizer for more than 100 languages.
+  (let ((commit "0d451f8c1c6ae837418b823bd9c4cbc574ea9ff5")
+        (revision "1"))
+    (package
+      (name "espeak-ng")
+      (version (git-version "1.52.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/espeak-ng/espeak-ng")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0s1kiq8y7vlz8p5xgkxdrbiyh3p0rd32hdzib421nbnji3wy54y2"))))
+      (build-system cmake-build-system)
+      (arguments
+       `(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
+         ;; Building in parallel triggers a race condition in 1.49.2.
+         #:parallel-build? #f
+         ;; XXX: Some tests require an audio device.
+         #:tests? #f))
+      (native-inputs
+       (list which))
+      (inputs
+       (list libcap pcaudiolib sonic))
+      (home-page "https://github.com/espeak-ng/espeak-ng")
+      (synopsis "Software speech synthesizer")
+      (description
+       "eSpeak NG is a software speech synthesizer for more than 100 languages.
 It is based on the eSpeak engine and supports spectral and Klatt formant
 synthesis, and the ability to use MBROLA voices.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public mitlm
   (package
