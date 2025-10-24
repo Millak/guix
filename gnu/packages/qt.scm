@@ -2137,7 +2137,7 @@ record media, and manage a collection of media content.")
   (package
     (inherit qtsvg-5)
     (name "qtwayland")
-    (version "5.15.16")
+    (version "5.15.17")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
@@ -2146,7 +2146,7 @@ record media, and manage a collection of media content.")
                                        "qtwayland-update-wayland-xml.patch"))
               (sha256
                (base32
-                "0ky74sl5d4yhk789kjihjsb3am0rg8jh2gmvrin9sznnmb9jbyjf"))))
+                "1pz380ndfdb78nzhwvjjwyijil2x9vr51nv4sl01q9wrfcw2ylam"))))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:phases phases)
