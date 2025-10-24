@@ -1472,6 +1472,29 @@ cache directory, to avoid modifying the host's environment, and further
 activated using a set of environment variables.")
     (license (list license:expat license:asl2.0))))
 
+(define-public python-pypydispatcher
+  (package
+    (name "python-pypydispatcher")
+    (version "2.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyPyDispatcher" version))
+       (sha256
+        (base32 "1wihj7xgq5fk91li0id6a311lyrnmq7ch8rbr9dm7lprrzgwbgmn"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (home-page "https://github.com/scrapy/pypydispatcher")
+    (synopsis "Multi-producer-multi-consumer signal dispatching mechanism")
+    (description
+     "This package implements a functionality of pulti-producer-multi-consumer
+signal dispatching mechanism.  It's a fork of
+http://pydispatcher.sourceforge.net/ with PyPy support.")
+    (license license:bsd-3)))
+
 (define-public python-pyte
   (package
     (name "python-pyte")
