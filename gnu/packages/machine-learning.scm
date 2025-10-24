@@ -5333,7 +5333,7 @@ implementations and an easy-to-use API to create custom metrics.  It offers:
                 (setenv "TORCHVISION_LIBRARY"
                         (string-append jpegdir "/lib/"))))))))
     (inputs
-     (list ffmpeg
+     (list ffmpeg-6
            libpng
            libjpeg-turbo))
     (propagated-inputs
