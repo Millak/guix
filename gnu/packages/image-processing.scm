@@ -27,6 +27,7 @@
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2025 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -303,7 +304,20 @@ licences similar to the Modified BSD licence."))))
                    ;; (see https://github.com/AcademySoftwareFoundation/OpenColorIO/blob/v2.4.2/tests/cpu/Config_tests.cpp#L6227)
                    (substitute* "tests/cpu/Config_tests.cpp"
                      (("cs1\\\\t\\\\n   \\\\n,   \\\\ncs2")
-                      "cs1, cs2")))))))
+                      "cs1, cs2"))))
+               ;; Disable a failing test case on arm and riscv due to FMA
+               ;; instructions being generated.
+               ;; (see https://github.com/AcademySoftwareFoundation/OpenColorIO/issues/1784)
+               #$@(if (or (target-arm?)
+                          (target-riscv64?))
+                      #~((add-after 'unpack 'disable-failing-test
+                           (lambda _
+                             (substitute* "tests/cpu/ops/gamma/GammaOpCPU_tests.cpp"
+                               ((".*apply_moncurve_mirror_style_fwd.*" all)
+                                (string-append "#if 0\n" all))
+                               ((".*apply_moncurve_mirror_style_rev.*" all)
+                                (string-append "#endif\n" all))))))
+                      #~()))))
     (native-inputs
      ;; XXX: OCIO has unit tests for OpenShadingLanguage, but they fail.
      ;; They also require OIIO, but OCIO is an optional dependency to it.
