@@ -596,7 +596,7 @@ algorithm.
 Usually, FET is able to solve a complicated timetable in maximum 5-20 minutes.
 For extremely difficult timetables, it may take a longer time, a matter of
 hours.")
-    (license license:agpl3+)))
+    (license license:agpl3)))
 
 (define-public klavaro
   (package
