@@ -38165,6 +38165,9 @@ as its configuration and access token.
 @item @code{run-directory} (default: @code{"/var/run/forgejo-runner"})
 Directory where @command{forgejo-runner} stores cached data.
 
+@item @code{log-file} (default: @code{"/var/log/forgejo-runner.log"})
+Name of the @command{forgejo-runner} log file.
+
 @end table
 @end deftp
 

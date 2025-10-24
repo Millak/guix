@@ -180,6 +180,8 @@
                    (default "/var/lib/forgejo-runner"))
   (run-directory   forgejo-runner-configuration-run-directory
                    (default "/var/run/forgejo-runner"))
+  (log-file        forgejo-runner-configuration-log-file
+                   (default "/var/log/forgejo-runner.log"))
 
   ;; Configuration options for the YAML config file:
   ;; <https://forgejo.org/docs/latest/admin/runner-installation/#configuration>.
@@ -259,7 +261,7 @@
 
 (define (forgejo-runner-shepherd-service config)
   (match-record config <forgejo-runner-configuration>
-    (package data-directory run-directory name
+    (package data-directory run-directory log-file name
              capacity timeout fetch-timeout fetch-interval report-interval
              labels)
     (define runner (file-append package "/bin/forgejo-runner"))
@@ -286,6 +288,7 @@
                       #:user "forgejo-runner"
                       #:group "forgejo-runner"
                       #:directory #$run-directory
+                      #:log-file #$log-file
                       #:environment-variables
                       ;; Provide access to a fresh Guix obtained via 'guix
                       ;; pull'.
