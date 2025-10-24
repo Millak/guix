@@ -24841,19 +24841,17 @@ JPEG2000 and GIF files in pure Python.")
     (name "python-termstyle")
     (version "0.1.11")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "termstyle" version))
-        (sha256
-          (base32
-            "17wzkkcqy5zc0g68xlad3kcv66iw14d2pwqc0h9420gak0vbhx7g"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "termstyle" version))
+       (sha256
+        (base32 "17wzkkcqy5zc0g68xlad3kcv66iw14d2pwqc0h9420gak0vbhx7g"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "python" "test3.py"))))))
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "test3.py")))
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/gfxmonk/termstyle")
     (synopsis "Console text coloring for Python")
     (description "This package provides console text coloring for Python.")
