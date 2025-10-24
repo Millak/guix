@@ -15624,13 +15624,9 @@ GA4GH Task Execution API.")
          "1gd66z5dy6j7qs5qkj1pg0vb15rwd571yq02fkm9d9nhaff4gfxz"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:phases
-      '(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (invoke "python3" "-m" "test.test_toposort"))))))
-    (native-inputs (list python-setuptools python-wheel))
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "-m" "test.test_toposort")))
+    (native-inputs (list python-setuptools))
     (home-page "https://gitlab.com/ericvsmith/toposort")
     (synopsis "Topological sort algorithm")
     (description
