@@ -7247,7 +7247,7 @@ Rate} 3600x2250 bit/s vocoder used in various radio systems.")
     (propagated-inputs
      ;; This is because include/ableton/platforms/asio/AsioWrapper.hpp
      ;; contains '#include <asio.hpp>'.
-     (list asio))
+     (list asio-1.28))
     (arguments
      `(#:configure-flags
        '("-DLINK_BUILD_QT_EXAMPLES=ON"
