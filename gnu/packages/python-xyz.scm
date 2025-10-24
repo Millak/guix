@@ -1299,6 +1299,47 @@ comparison operators, as defined in the original
 @url{http://goessner.net/articles/JsonPath/, JSONPath} proposal.")
     (license license:asl2.0)))
 
+(define-public python-keeper-secrets-manager-core
+  ;; released from a monorepo with other packages following various versioning
+  ;; schemes. This commit was selected because some failing tests were fixed
+  ;; since the most recent release of the Python SDK packages.
+  (let ((commit "2c9a63d433721dee129a3647077d59bb243b52ec")
+        (revision "0"))
+    (package
+      (name "python-keeper-secrets-manager-core")
+      (version (git-version "17.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/Keeper-Security/secrets-manager")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1mqx0xv28xyljd4s7wwi154h8v22ayi8k337afhhw0pg2c8150pp"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _
+                (chdir "sdk/python/core"))))))
+      (propagated-inputs
+       (list python-cryptography
+             python-importlib-metadata
+             python-requests))
+      (native-inputs
+       (list python-pytest
+             python-setuptools))
+      (home-page "https://github.com/Keeper-Security/secrets-manager")
+      (synopsis "Keeper Secrets Manager for Python SDK")
+      (description
+       "The Keeper Secrets Manager Python SDK provides access to
+@url{https://www.keepersecurity.com/secrets-manager.html, Keeper Secrets
+Management} services.")
+      (license license:expat))))
+
 (define-public python-language-data
   (package
     (name "python-language-data")
