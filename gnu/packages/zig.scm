@@ -2009,14 +2009,10 @@ toolchain.  Among other features it provides
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/ziglang/libc-abi-tools")
-          (commit "21993a6036cc165485b20229589340dff9d4fc3c")))
+          (commit "6878b563bd0620c626dc92c7b641a903b648c592")))
     (file-name "libc-abi-tools")
     (sha256
-     (base32 "0miwb0zfgfmm4bh2bs7982wpk0wp5vj2mz10x9c3m8fw7zzcyvbh"))
-    (modules '((guix build utils)))
-    (snippet
-     #~(substitute* "netbsd/consolidate.zig"
-         ((".write_buffer = buffer") ".write_buffer = &buffer")))))
+     (base32 "0yfg3ggjmsricg44yalg2l6l5r3hk8lmgh485p6nhhgdiqfdwzng"))))
 
 (define-public zig-0.15
   (package
