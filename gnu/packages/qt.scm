@@ -1362,13 +1362,13 @@ came with the @code{qtgraphicaleffects} Qt 5 package.")
   (package
     (inherit qtbase-5)
     (name "qtsvg")
-    (version "5.15.16")
+    (version "5.15.17")
     (source (origin
               (method url-fetch)
               (uri (qt-url name version))
               (sha256
                (base32
-                "1h8b20kkwh86mrd0g35bvr39jilrrr2r08jmdvf84a5whh034knc"))))
+                "0v0yldb5kwsq309p2rqiy4mcn7r1azm1i6zvrp93kry0f36x82km"))))
     (propagated-inputs `())
     (native-inputs (list perl))
     (inputs
