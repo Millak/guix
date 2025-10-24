@@ -781,6 +781,7 @@ EXTRA_DIST +=						\
   etc/manifests/kernels.scm				\
   etc/manifests/release-minimal.scm			\
   etc/manifests/release-desktop.scm			\
+  etc/manifests/release-user-packages.scm		\
   etc/manifests/source.scm				\
   etc/manifests/system-tests.scm			\
   etc/manifests/time-travel.scm				\
