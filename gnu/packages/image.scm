@@ -36,7 +36,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022-2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2023-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2023-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2023, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 chris <chris@bumblehead.com>
 ;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
@@ -130,7 +130,7 @@
 (define-public converseen
   (package
     (name "converseen")
-    (version "0.12.2.5")
+    (version "0.15.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -139,7 +139,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03jsf5418kk1j8mk0gjzxb79lv44yy1wsycn6g6fmvg4zhl2cls3"))))
+                "05nm6h4d2rq0kcf2maz95zvx8hd811wdqxxbzwahq1m2az1b11cn"))))
     (build-system cmake-build-system)
     (arguments
      (list
