@@ -28868,23 +28868,27 @@ identifying what the file is.")
 (define-public python-tldextract
   (package
     (name "python-tldextract")
-    (version "3.3.0")
+    (version "5.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "tldextract" version))
        (sha256
-        (base32 "1wac4yvcpgqjvls770mfx165amvy7gr00nnd2w24bqqwyamj9kdd"))))
+        (base32 "02c6cyh8f3dagcw786m9nl5y0n3xa98p5mb7d7xfr84l2l5bglmk"))))
     (build-system pyproject-build-system)
-    (native-inputs (list nss-certs-for-test
-                         python-pytest
-                         python-pytest-mock
-                         python-responses
-                         python-setuptools
-                         python-setuptools-scm
-                         python-wheel))
-    (propagated-inputs (list python-filelock python-idna python-requests
-                             python-requests-file))
+    (native-inputs
+     (list nss-certs-for-test
+           python-pytest
+           python-pytest-mock
+           python-responses
+           python-setuptools
+           python-setuptools-scm
+           python-syrupy))
+    (propagated-inputs
+     (list python-filelock
+           python-idna
+           python-requests
+           python-requests-file))
     (home-page "https://github.com/john-kurkowski/tldextract")
     (synopsis
      "Separate the TLD from the registered domain and subdomains of a URL")
