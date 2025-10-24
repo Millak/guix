@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Calum Irwin <calumirwin1@gmail.com>
 ;;; Copyright © 2022-2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023, 2024 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2025 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2018,12 +2019,12 @@ toolchain.  Among other features it provides
   (package
     (inherit zig-0.14)
     (name "zig")
-    (version "0.15.1")
+    (version "0.15.2")
     (source
      (origin
        (inherit (zig-source
                  version version
-                 "1cp18plf0x5wip4rnxiqavaqnqxnqzhipb34in6zd3y7wihwjmj4"))
+                 "0kr8y1xzb7ffqg4yy7ncg4jh6kndxn5xfqf2viy5gvqdqqql8ymv"))
        (patches
         (search-patches
          "zig-0.14-use-baseline-cpu-by-default.patch"
