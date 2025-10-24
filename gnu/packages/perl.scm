@@ -3203,7 +3203,7 @@ The maths behind this is unfortunately fiddly, hence this module.")
 (define-public perl-data-printer
   (package
     (name "perl-data-printer")
-    (version "0.40")
+    (version "1.002001")
     (source
      (origin
        (method url-fetch)
@@ -3211,11 +3211,9 @@ The maths behind this is unfortunately fiddly, hence this module.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "0njjh8zp5afc4602jrnmg89icj7gfsil6i955ypcqxc2gl830sb0"))))
+         "0x1vdydmj0yp681w0f2nkdxv2h4wa2py002af88clppqxlljsacn"))))
     (build-system perl-build-system)
-    (propagated-inputs
-     (list perl-clone-pp perl-file-homedir perl-package-stash
-           perl-sort-naturally))
+    (native-inputs (list perl-capture-tiny))
     (home-page "https://metacpan.org/release/Data-Printer")
     (synopsis "Colored pretty-print of Perl data structures and objects")
     (description "Display Perl variables and objects on screen, properly
