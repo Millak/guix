@@ -17829,9 +17829,12 @@ designed to efficiently cope with extremely large amounts of data.")
        (sha256
         (base32 "1901mibcp6aiyjy8afnybrxnb0dkbdxlbvjqbr3gginlw7dr18xh"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-deprecated))
-    (native-inputs (list python-coverage python-coveralls python-nose2
-                         python-numpy python-setuptools python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-numpy
+           python-setuptools))
+    (propagated-inputs
+     (list python-deprecated))
     (home-page "https://github.com/scottgigante/tasklogger")
     (synopsis "Extension to the core Python logging library")
     (description "This package provides an extension to the core Python
