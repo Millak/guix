@@ -2836,3 +2836,52 @@ on KMime.  The goal is given a MIME tree to extract a list of parts and a list
 of attachments, check the validity of the signatures and decrypt any encrypted
 part.")
     (license license:lgpl2.0+)))
+
+(define-public zanshin
+  (package
+    (name "zanshin")
+    (version "25.08.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/zanshin-" version ".tar.xz"))
+       (sha256
+        (base32 "140km4ma9lzyky8c2ywj4bgf83pjj33zmxx0n36lys1irivjg4jb"))))
+    (build-system qt-build-system)
+    (arguments
+     (list ;; TODO: Do not exclude this test when
+           ;; AkonadiSerializerTest::shouldNotBreakRecurrenceDuringSerialization
+           ;; passes.
+           #:test-exclude "tests-units-akonadi-akonadiserializertest"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'check-setup
+                 (lambda _
+                   (setenv "HOME" (getcwd))))
+               (replace 'check
+                 (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
+                   (when tests?
+                     (invoke "dbus-launch" "ctest" "-E" test-exclude)))))))
+    (native-inputs
+     (list dbus extra-cmake-modules))
+    ;; TODO: Unbundle mockitopp, which is needed for tests.
+    (inputs
+     (list boost
+           akonadi
+           akonadi-calendar
+           kcalendarcore
+           kcrash
+           ki18n
+           kitemmodels
+           kontactinterface
+           kparts
+           krunner
+           kwindowsystem))
+    (home-page "https://community.kde.org/Frameworks")
+    (synopsis "TO-do management application")
+    (description "Zanshin is a powerful yet simple application for managing
+your day to day actions.  It helps you organize and reduce the cognitive
+pressure of what one has to do in his job and personal life.")
+    (license (list license:gpl3+
+                   license:expat))))     ;for mockitopp
