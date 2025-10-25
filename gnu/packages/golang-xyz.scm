@@ -13938,6 +13938,31 @@ implementing features like:
 @end itemize")
       (license license:expat))))
 
+(define-public go-github-com-maruel-natural
+  (package
+    (name "go-github-com-maruel-natural")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/maruel/natural")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "040aikizdd7c4zm8xindb2ps16s60i0fkf8gkll2rir7lwv6q7ks"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/maruel/natural"))
+    (home-page "https://github.com/maruel/natural")
+    (synopsis "Natural sorting (natsort) in Golang")
+    (description
+     "This package implements a speed-optimized natural sorting (natsort) in
+Golang.  This implementation @emph{does not allocate memory}, does not depend
+on @code{sort} and hence doesn't depend on @code{reflect}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-masterminds-goutils
   (package
     (name "go-github-com-masterminds-goutils")
