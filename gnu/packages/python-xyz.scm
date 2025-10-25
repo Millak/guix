@@ -24344,25 +24344,27 @@ can even create animations with the cursor controls.")
 (define-public python-pycosat
   (package
     (name "python-pycosat")
-    (version "0.6.3")
+    (version "0.6.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pycosat" version ".zip"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ContinuumIO/pycosat")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1vg0f2fwcybpdqv92z0hwdl603n2safh3fqvjjxkksd78r4qg6ac"))))
+        (base32 "1p62d7fqny4ayr218lshrp35g75ljaxlgza9yr2hm44aqggvmqbw"))))
     ;; TODO: Unundle picosat. http://fmv.jku.at/picosat/
-    (build-system python-build-system)
-    (native-inputs
-     (list unzip))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list unzip python-setuptools))
     (home-page "https://github.com/ContinuumIO/pycosat")
     (synopsis "Bindings to picosat (a SAT solver)")
     (description
-     "This package provides efficient Python bindings to @code{picosat} on
-     the C level.  When importing pycosat, the @code{picosat} solver becomes part
-     of the Python process itself.  @code{picosat} is a @dfn{Boolean Satisfiability
-                                                                     Problem} (SAT) solver.")
+     "This package provides efficient Python bindings to @code{picosat} on the
+C level.  When importing pycosat, the @code{picosat} solver becomes part of
+the Python process itself.  @code{picosat} is a @dfn{Boolean Satisfiability
+Problem} (SAT) solver.")
     (license license:expat)))
 
 (define-public python-pypeg2
