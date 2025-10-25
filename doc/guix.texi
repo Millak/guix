@@ -10490,6 +10490,29 @@ run SCons can be specified by selecting the appropriate SCons package
 with the @code{#:scons} parameter.
 @end defvar
 
+@defvar hare-build-system
+This variable is exported by @code{(guix build-system hare)}.  It implements the
+Makefile build process typically used by Hare packages, removing the
+@code{configure} phase used by @code{gnu-build-system} and modifying existing
+phases to set the Hare architecture tag, module path, and package install
+destinations appropriately.
+
+This relies on the package's Makefile supporting, at minimum, the variables
+@code{HAREFLAGS} and @code{THIRDPARTYDIR}.  Packages may set @code{make-flags}
+to override or supplement these variables.
+
+By default, Hare modules are installed to the @code{lib} output if it exists,
+and all other files to the @code{bin} output. If an output does not exist,
+the default @code{out} output is used instead. This behavior may be overriden
+through the @code{#:binary-output} and @code{#:module-output} keyword arguments.
+
+@code{(guix build-system hare)} also provides utility definitions for creating
+Hare packages.  The variable @code{%hare-supported-systems} is the list of build
+targets currently supported by @code{hare}, for use in @code{supported-systems}
+(@pxref{package Reference}).  The procedure @code{target->hare-arch} may be used
+to get the Hare architecture tag for a given (supported) Guix target or system.
+@end defvar
+
 @defvar haskell-build-system
 This variable is exported by @code{(guix build-system haskell)}.  It
 implements the Cabal build procedure used by Haskell packages, which
