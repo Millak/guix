@@ -24989,26 +24989,36 @@ parts of the lines that were modified.")
 (define-public python-levenshtein
   (package
     (name "python-levenshtein")
-    (version "0.12.2")
+    (version "0.27.1")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "python-Levenshtein" version))
-      (sha256
-       (base32
-        "1xj60gymwx1jl2ra9razx2wk8nb9cv1i7l8d14qsp8a8s7xra8yw"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/ztane/python-Levenshtein")
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rapidfuzz/Levenshtein")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1khr1vjmrwakjfdsb22k508h3g8awjp0yb398ca8n1xanwzk4l8h"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-rapidfuzz))
+    (native-inputs
+     (list cmake-minimal
+           python-cython
+           python-pytest
+           python-scikit-build-core
+           python-setuptools
+           rapidfuzz-cpp))
+    (home-page "https://github.com/rapidfuzz/Levenshtein")
     (synopsis "Fast computation of Levenshtein distance and string similarity")
     (description
      "The Levenshtein Python C extension module contains functions for fast computation of
-     @enumerate
-     @item Levenshtein (edit) distance, and edit operations
-     @item string similarity
-     @item approximate median strings, and generally string averaging
-     @item string sequence and set similarity
-     @end enumerate
-     It supports both normal and Unicode strings.")
+@enumerate
+@item Levenshtein (edit) distance, and edit operations
+@item string similarity
+@item approximate median strings, and generally string averaging
+@item string sequence and set similarity
+@end enumerate
+It supports both normal and Unicode strings.")
     (license license:gpl2+)))
 
 (define-public python-scandir
