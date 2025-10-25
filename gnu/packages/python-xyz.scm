@@ -24851,21 +24851,28 @@ applications in seconds while maintaining all the flexibility.")
 (define-public python-kneed
   (package
     (name "python-kneed")
-    (version "0.7.0")
+    (version "0.8.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "kneed" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/arvkevi/kneed")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0vkwi0pr7nfkp3c46hnmx0275yx68v96v10rmspv0wis33x6f39l"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-matplotlib python-numpy python-scipy))
+        (base32 "0kcglaql1nqvjv5q62myybznii1n1akln5yacp63rg8xv7l0zad1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--ignore=tests/test_no_matplotlib.py")))
+    (native-inputs (list python-hatchling python-pytest python-pytest-cov))
+    (propagated-inputs (list python-matplotlib python-numpy python-scipy))
     (home-page "https://github.com/arvkevi/kneed")
     (synopsis "Knee-point detection in Python")
-    (description "This package implements the kneedle algorithm.  Given a set
-of x and y values, kneed will return the knee point of the function.  The knee
-point is the point of maximum curvature.")
+    (description
+     "This package implements the kneedle algorithm.  Given a set of x and y
+values, kneed will return the knee point of the function.  The knee point is
+the point of maximum curvature.")
     (license license:bsd-3)))
 
 (define-public python-diff-cover
