@@ -6802,6 +6802,38 @@ implementations
 fewer GC pauses.")
     (license license:expat)))
 
+(define-public go-github-com-editorconfig-editorconfig-core-go-v2
+  (package
+    (name "go-github-com-editorconfig-core-go-v2")
+    (version "2.6.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/editorconfig/editorconfig-core-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m8jjxj73l6hva5idpbawcm1f3jiyd2qpfj8n2h21w07virhlib2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/editorconfig/editorconfig-core-go/v2"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-golang-org-x-mod
+           go-gopkg-in-ini-v1))
+    (home-page "https://editorconfig.org/")
+    (synopsis "EditorConfig core library for Golang")
+    (description
+     "EditorConfig makes it easy to maintain the correct coding style when
+switching between different text editors and between different projects.  It
+maintains a file format and plugins for various text editors which allow this
+file format to be read and used by those editors.")
+    (license license:expat)))
+
 (define-public go-github-com-edsrzf-mmap-go
   (package
     (name "go-github-com-edsrzf-mmap-go")
