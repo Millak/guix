@@ -4893,7 +4893,10 @@ consensus sequences.")
                         (("'argparse[^']*',")
                          "") ;only for python2
                         (("==")
-                         ">="))))
+                         ">=")
+                        ;; This package changed names.
+                        (("python-Levenshtein")
+                         "levenshtein"))))
                   (add-before 'build 'build-libssw
                     (lambda _
                       (with-directory-excursion "libs/striped_smith_waterman"
