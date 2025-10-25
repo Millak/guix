@@ -1769,46 +1769,30 @@ instant messenger with audio and video chat capabilities.")
     (name "qtox")
     (version "1.17.6")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/qTox/qTox/releases"
-                                  "/download/v" version
-                                  "/v" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/TokTok/qTox")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ml8z1xpp3qhip4vkr375jf7y5kc18g0apm91n5am6ricx37c01r"))
-              (file-name (string-append name "-" version ".tar.gz"))))
-    (build-system cmake-build-system)
+                "0pb0ag9z9fz5m1f6lxzl86vksv0n290bw0nh2800scsjhyi9d8lx"))))
+    (build-system qt-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-reproducibility-issues
-                 (lambda _
-                   (substitute* "src/main.cpp"
-                     (("__DATE__") "\"\"")
-                     (("__TIME__") "\"\"")
-                     (("TIMESTAMP") "\"\""))))
                (add-after 'unpack 'disable-network-tests
                  (lambda _
                    ;; These tests require network access.
                    (substitute* "cmake/Testing.cmake"
                      (("auto_test\\(core core\\)") "# auto_test(core core)")
-                     (("auto_test\\(net bsu\\)") "# auto_test(net bsu)"))))
-               ;; Ensure that icons are found at runtime.
-               (add-after 'install 'wrap-executable
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   (let ((out (assoc-ref outputs "out")))
-                     (wrap-program (string-append out "/bin/qtox")
-                       `("QT_PLUGIN_PATH" prefix
-                         ,(list (search-input-directory
-                                 inputs "lib/qt5/plugins/"))))))))))
+                     (("auto_test\\(net bsu\\)") "# auto_test(net bsu)")))))))
     (native-inputs
      (list pkg-config qttools-5))
     (inputs
      (list bash-minimal
            ffmpeg-6
            filteraudio
-           glib
-           gtk+-2
            libsodium
            c-toxcore
            libvpx
@@ -1818,8 +1802,8 @@ instant messenger with audio and video chat capabilities.")
            sqlite
            openal
            qrencode
-           qtbase-5
            qtsvg-5
+           sonnet-5
            sqlcipher))
     (home-page "https://qtox.github.io/")
     (synopsis "Tox chat client using Qt")
