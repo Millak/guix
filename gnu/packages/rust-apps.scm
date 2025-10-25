@@ -3543,8 +3543,8 @@ Full featured offline client with caching support.")
           (add-after 'unpack 'use-guix-vendored-dependencies
             (lambda _
               (substitute* "Cargo.toml"
-                (("git.*, rev.*}")
-                 "version = \"*\"}"))))
+                (("git[^,]*, rev[^,}]*")
+                 "version = \"*\""))))
           (add-after 'unpack 'prepare-cargo-build-system
             (lambda args
               (for-each
