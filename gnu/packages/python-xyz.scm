@@ -23064,7 +23064,7 @@ discovery, monitoring and configuration.")
 (define-public python-schematics
   (package
     (name "python-schematics")
-    (version "1.1.1")
+    (version "2.1.1")
     (source
      (origin
        (method git-fetch)
@@ -23073,17 +23073,21 @@ discovery, monitoring and configuration.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xdqskycznqc7mfp60bhw1zq8wx7yx1dvmbq3brnm1dx3xnqa0zd"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-six))
-    (arguments
-     ;; The tests require a bunch of not very nice packages with fixed
-     ;; version requirements (e.g. python-coveralls).
-     `(#:tests? #f))
+        (base32 "0nf14wy422f08zzxx4jv8kbym3asgfpjm7b2p51b8hgqgxqlmjcd"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-dateutil python-mock python-pytest python-setuptools))
     (home-page "https://github.com/schematics/schematics")
     (synopsis "Python Data Structures for Humans")
-    (description "Python Data Structures for Humans.")
+    (description
+     "Schematics is a Python library to combine types into structures,
+validate them, and transform the shapes of your data based on simple
+descriptions.
+
+The internals are similar to ORM type systems, but there is no database layer
+in Schematics.  Instead, building a database layer is easily made when
+Schematics handles everything except for writing the query.  Schematics can be
+used for tasks where having a database involved is unusual.")
     (license license:bsd-3)))
 
 (define-public python-odfpy
