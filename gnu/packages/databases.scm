@@ -6156,16 +6156,16 @@ mechanism of @code{dogpile}.")
 (define-public datasette
   (package
     (name "datasette")
-    (version "1.0a16")
-    (source (origin
-              (method git-fetch)        ;for tests
-              (uri (git-reference
-                    (url "https://github.com/simonw/datasette")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "10c754idn9ka5hhai1qwjwlxw4dajdlrh162k71i5gwn4cgq6wr5"))))
+    (version "1.0a19")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/simonw/datasette")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wb73iksrc5vg2lnq3q4vr7yhlzxwr711jfmjdndd0s77996zsfh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -6175,7 +6175,14 @@ mechanism of @code{dogpile}.")
                     ;; These contain two unexpected extra items.
                     "not test_searchable"
                     " and not test_searchmode")
-              "-n" (number->string (parallel-job-count)))))
+              "--ignore=tests/test_black.py"
+              "-n" (number->string (parallel-job-count)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                (("\"pip\",") "")))))))
     (propagated-inputs
      (list python-aiofiles
            python-asgi-csrf
@@ -6197,17 +6204,14 @@ mechanism of @code{dogpile}.")
     (native-inputs
      (list nss-certs-for-test
            python-beautifulsoup4
-           python-black
            python-cogapp
-           python-pip
            python-pytest
-           python-pytest-asyncio
+           python-pytest-asyncio-0.26
            python-pytest-runner
            python-pytest-timeout
            python-pytest-xdist
            python-setuptools
-           python-trustme
-           python-wheel))
+           python-trustme))
     (home-page "https://datasette.io/")
     (synopsis "Multi-tool for exploring and publishing data")
     (description "Datasette is a tool for exploring and publishing data.
