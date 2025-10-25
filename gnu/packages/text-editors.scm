@@ -1197,6 +1197,45 @@ various text editors which allow this file format to be read and used by those
 editors.")
     (license license:bsd-2)))
 
+(define-public editorconfig-checker
+  (package
+    (name "editorconfig-checker")
+    (version "3.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/editorconfig-checker/editorconfig-checker")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "147kykawss6ld4xcd0v3v7xibnw8mz0n5vgfa4vr9vz0dsqch1d9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:unpack-path "github.com/editorconfig-checker/editorconfig-checker/v3"
+      #:import-path (string-append "github.com/editorconfig-checker/"
+                                   "editorconfig-checker/v3/"
+                                   "cmd/editorconfig-checker")
+      #:build-flags
+      #~(list (format #f "-ldflags=~a"
+                      (string-append "-X main.version=" #$version)))))
+    (native-inputs
+     (list go-github-com-editorconfig-editorconfig-core-go-v2
+           go-github-com-gabriel-vasile-mimetype
+           go-github-com-gkampitakis-go-snaps
+           go-github-com-baulk-chardet
+           go-golang-org-x-text))
+    (home-page "https://editorconfig-checker.github.io/")
+    (synopsis "Tool to verify that project files match @code{.editorconfig}")
+    (description
+     "@code{editorconfig-checker} is a lint tool to verify that a project
+matches the specifications in @{.editorconfig} file.  It runs quickly,
+providing a frequent style check and the output format can be configured to
+interface with CI pipeline UIs.")
+    (license license:expat)))
+
 (define-public texmacs
   (package
     (name "texmacs")
