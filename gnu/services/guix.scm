@@ -984,8 +984,10 @@ ca-certificates.crt file in the system profile."
                       "--pid-file=/var/run/nar-herder/pid"
                       #$(string-append "--port=" (number->string port))
                       #$(string-append "--host=" host)
-                      #$(string-append "--control-port=" (number->string port))
-                      #$(string-append "--control-host=" host)
+                      #$(string-append "--control-port="
+                                       (number->string control-port))
+                      #$(string-append "--control-host="
+                                       control-host)
                       #$@(if mirror
                              (list (string-append "--mirror=" mirror))
                              '())
