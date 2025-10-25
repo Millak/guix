@@ -89,6 +89,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages package-management) ; flatpak
   #:use-module (gnu packages rdesktop)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages unicode)
   #:use-module (gnu packages video)
   #:use-module (gnu packages vpn)
@@ -2202,6 +2203,7 @@ the KDE Plasma 6 desktop.")
                   knotifyconfig
                   kpackage
                   kpeople
+                  kpipewire
                   krunner
                   kscreenlocker
                   ktexteditor
@@ -2238,7 +2240,9 @@ the KDE Plasma 6 desktop.")
                   qqc2-desktop-style
                   qt5compat
                   qtdeclarative
+                  qtshadertools
                   qtwayland
+                  sdl2
                   wayland
                   wayland-protocols
                   xcb-util
@@ -2255,7 +2259,12 @@ the KDE Plasma 6 desktop.")
                   libxkbfile
                   libxcursor
                   libxkbcommon))
-    (propagated-inputs (list iso-codes/pinned kirigami kcmutils plasma-workspace))
+    (propagated-inputs (list font-google-noto-emoji
+                             iso-codes/pinned
+                             kirigami
+                             kirigami-addons
+                             kcmutils
+                             plasma-workspace))
     (arguments
      (list #:qtbase qtbase
            #:test-exclude
