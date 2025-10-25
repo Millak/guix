@@ -3257,7 +3257,7 @@ Caller-ID.")
            python-ipython
            python-numpy
            python-pyserial
-           python-pyside-2
+           python-pyside-6
            python-pyusb))
     (arguments
      (list
