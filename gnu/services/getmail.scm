@@ -245,7 +245,7 @@ lines.")
    (symbol "unset")
    "A symbol to identify the getmail service.")
   (package
-   (file-like getmail)
+   (file-like getmail6)
    "The getmail package to use.")
   (user
    (string "getmail")
