@@ -24200,25 +24200,24 @@ creating a tag.")
        (method url-fetch)
        (uri (pypi-uri "pbkdf2" version))
        (sha256
-        (base32
-         "0yb99rl2mbsaamj571s1mf6vgniqh23v98k4632150hjkwv9fqxc"))))
-    (build-system python-build-system)
+        (base32 "0yb99rl2mbsaamj571s1mf6vgniqh23v98k4632150hjkwv9fqxc"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "python" "test/test_pbkdf2.py"))))))
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "test/test_pbkdf2.py")))
+    (native-inputs (list python-setuptools))
     (home-page "https://www.dlitz.net/software/python-pbkdf2/")
     (synopsis "Password-based key derivation")
-    (description "This module implements the password-based key derivation
-     function, PBKDF2, specified in RSA PKCS#5 v2.0.
+    (description
+     "This module implements the password-based key derivation function,
+PBKDF2, specified in RSA PKCS#5 v2.0.
 
-     PKCS#5 v2.0 Password-Based Key Derivation is a key derivation function which
-     is part of the RSA Public Key Cryptography Standards series.  The provided
-     implementation takes a password or a passphrase and a salt value (and
-                                                                       optionally a iteration count, a digest module, and a MAC module) and provides
-     a file-like object from which an arbitrarily-sized key can be read.")
+PKCS#5 v2.0 Password-Based Key Derivation is a key derivation function which
+is part of the RSA Public Key Cryptography Standards series.  The provided
+implementation takes a password or a passphrase and a salt value (and
+optionally a iteration count, a digest module, and a MAC module) and provides
+a file-like object from which an arbitrarily-sized key can be read.")
     (license license:expat)))
 
 (define-public python-qrcode
