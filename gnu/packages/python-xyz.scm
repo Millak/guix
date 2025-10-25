@@ -24310,7 +24310,7 @@ converting text with ANSI color codes to HTML or LaTeX.")
 (define-public python-easy-ansi
   (package
     (name "python-easy-ansi")
-    (version "0.3")
+    (version "2.1")
     (source
      (origin
        (method git-fetch)
@@ -24319,16 +24319,26 @@ converting text with ANSI color codes to HTML or LaTeX.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0albh55ynzs98qy9pln4qaxw5qhhh3lk09jy9bx19gycrp1c3lc3"))))
-    (build-system python-build-system)
+        (base32 "16zk4vyrr3hhb6aijmqchjlz181mgk7mi9zyyjd8i53h9rr00wkx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'remove-extra
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (with-directory-excursion (site-packages inputs outputs)
+                (delete-file-recursively "tests")
+                (delete-file "setup.py")))))))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://gitlab.com/joeysbytes/easy-ansi")
     (synopsis "Terminal framework API")
     (description
      "Easy ANSI is a terminal framework API to give you an easy way to use
-     colors, cursor control movements, and line/box drawing.  It is not meant as a
-     replacement to more full-featured frameworks (such as curses or urwid), but as
-     a tool to quickly create nice-looking screens in your terminal window.  You
-     can even create animations with the cursor controls.")
+colors, cursor control movements, and line/box drawing.  It is not meant as a
+replacement to more full-featured frameworks (such as curses or urwid), but as
+a tool to quickly create nice-looking screens in your terminal window.  You
+can even create animations with the cursor controls.")
     (license license:expat)))
 
 (define-public python-pycosat
