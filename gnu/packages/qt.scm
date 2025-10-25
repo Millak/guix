@@ -3378,14 +3378,14 @@ using the Enchant spell-checking library.")
   (package
     (inherit qtsvg-5)
     (name "qtwebengine")
-    (version "5.15.16")
+    (version "5.15.17")
     (source
      (origin
        (method url-fetch)
        (uri (qt-url name version))
        (sha256
         (base32
-         "04jmmz21bqzxkjddgyv3j7lxqfip12hp8r3dyq5pw002i9cqd7s3"))
+         "11hir1dwsfy96jxmsmadcr46m034dpjlnpqw60nqk6wk0qscxvg8"))
        (modules '((ice-9 ftw)
                   (ice-9 match)
                   (srfi srfi-1)
@@ -3577,6 +3577,7 @@ linux/libcurl_wrapper.h")
            node-lts
            perl
            pkg-config
+           python-beautifulsoup4
            python-six
            python-wrapper
            ruby))
