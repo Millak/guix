@@ -24648,22 +24648,28 @@ builds partial trees by inspecting living objects.")
 (define-public python-isbnlib
   (package
     (name "python-isbnlib")
-    (version "3.10.4")
+    (version "3.10.14")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "isbnlib" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xlcnd/isbnlib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0iin0x2xqwyphyyzd0mzrq5v5xm7b6dlbb294k4dywra5qvbrgzm"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))  ; No test
+        (base32 "07vpq8y0mn16489d1pl4zxgczgl1s2ydli4lci7f73z4zv179akp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "-m" "not network")))
+    (native-inputs (list python-pytest python-pytest-cov python-setuptools))
     (home-page "https://github.com/xlcnd/isbnlib")
     (synopsis "Python library to work with ISBN strings")
-    (description "@code{python-isbnlib} is a (pure) python library that provides
-     several useful methods and functions to validate, clean, transform, hyphenate and
-     get metadata for ISBN strings.  Its origin was as the core of isbntools.  This short
-     version, is suitable to be include as a dependency in other projects.")
+    (description
+     "@code{python-isbnlib} is a (pure) python library that provides several
+useful methods and functions to validate, clean, transform, hyphenate and get
+metadata for ISBN strings.  Its origin was as the core of isbntools.  This
+short version, is suitable to be include as a dependency in other projects.")
     (license license:lgpl3+)))
 
 (define-public python-isoduration
