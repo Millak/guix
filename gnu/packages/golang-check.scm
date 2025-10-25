@@ -824,6 +824,44 @@ tests.")
 tests.")
     (license license:expat)))
 
+(define-public go-github-com-gkampitakis-ciinfo
+  (package
+    (name "go-github-com-gkampitakis-ciinfo")
+    (version "0.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gkampitakis/ciinfo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14pkbqirxsp14lb7yazpqrvlhm26kc7pwn3ldi8wxnfzscqvhba9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gkampitakis/ciinfo"
+      #:unpack-path "github.com/gkampitakis/ciinfo"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'generate-vendors-constants
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              ;; Matches the "make compile-constants" body
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (install-file "vendors.go" "compile-constants/")
+                (substitute* "compile-constants/vendors.go"
+                  (("ciinfo") "main"))))))))
+    (home-page "https://github.com/gkampitakis/ciinfo")
+    (synopsis "Get details about the current Continuous Integration environment")
+    (description
+     "This package provides @code{ciinfo}, a tool to get details about the
+current Continuous Integration environment, including checking if running in a
+CI system, which CI system, build id, and more.
+
+This is a reimplementation of @uref{https://github.com/watson/ci-info,
+ci-info} in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-go-playground-assert-v2
   (package
     (name "go-github-com-go-playground-assert-v2")
@@ -3219,6 +3257,20 @@ thoroughly
 ;;;
 ;;; Executables:
 ;;;
+
+(define-public go-ciinfo
+  (package/inherit go-github-com-gkampitakis-ciinfo
+    (name "go-ciinfo")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-gkampitakis-ciinfo)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _) "github.com/gkampitakis/ciinfo/ciinfo")))
+    (native-inputs
+     (package-propagated-inputs go-github-com-gkampitakis-ciinfo))
+    (propagated-inputs '())
+    (inputs '())))
 
 (define-public go-ginkgo
   (package/inherit go-github-com-onsi-ginkgo-v2
