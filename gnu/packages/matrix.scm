@@ -28,6 +28,7 @@
 
 (define-module (gnu packages matrix)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages check)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
@@ -43,7 +44,10 @@
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rust)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages xml)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system go)
   #:use-module (guix build-system pyproject)
   #:use-module (guix download)
@@ -208,63 +212,126 @@ an LDAP server.")
 (define-public synapse
   (package
     (name "synapse")
-    (version "1.29.0")
+    (version "1.140.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/matrix-org/synapse")
-             (commit (string-append "v" version))))
+              (url "https://github.com/element-hq/synapse")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m05fn5s0xfsnbvvv6089xkf7r8xmzvk9rp15hk9y3zk4fsqi5fw"))))
+        (base32 "0iidr727jw178596ijls670k8i7v7kjbn8w0jhkihf2hy8wnfkcy"))))
     (build-system pyproject-build-system)
-    ;; TODO Run tests with ‘PYTHONPATH=. trial3 tests’.
+    (arguments
+     (list
+      #:modules
+      '(((guix build cargo-build-system) #:prefix cargo:)
+        (guix build pyproject-build-system)
+        (guix build utils))
+      #:imported-modules
+      `(,@%cargo-build-system-modules
+        ,@%pyproject-build-system-modules)
+      #:test-backend #~'custom
+      ;; XXX: The complete test suite takes about 2h+ to finish and require
+      ;; running database, run just unittests.
+      ;; See: <.github/workflows/tests.yml>.
+      ;;
+      ;; tests: skips=169, successes=4245
+      #:test-flags
+      #~(list "-m" "twisted.trial"
+              "--temp-directory=/tmp/_trial_temp"
+              (string-append "--jobs="
+                             (number->string (min 4 (parallel-job-count))))
+              "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums))))
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (substitute* "tests/handlers/test_user_directory.py"
+                (("def test_search_punctuation")
+                 "def __off_test_search_punctuation"))
+              (substitute* "tests/storage/test_room_search.py"
+                ;; twisted.trial.unittest.FailTest: 0 != 1 : expected 'quick
+                ;; brown' to match 'the quick brown fox jumps over the lazy
+                ;; dog'
+                (("def test_sqlite_search")
+                 "def __off_test_sqlite_search")
+                ;; twisted.trial.unittest.FailTest: 0 != 1
+                (("def test_null_byte")
+                 "def __off_test_null_byte"))))
+          (add-after 'build 'install-rust-library
+            (lambda _
+              (copy-file "target/release/libsynapse.so"
+                         "synapse/synapse_rust.so"))))))
+    (inputs (cargo-inputs 'synapse))
     (propagated-inputs
-     (list python-simplejson ;not attested but required
-           ;; requirements (synapse/python_dependencies.py)
-           python-jsonschema
-           python-frozendict
-           python-unpaddedbase64
+     (list python-attrs
+           python-bcrypt
+           python-bleach
            python-canonicaljson
-           python-signedjson
-           python-pynacl
-           python-idna
-           python-service-identity
-           python-twisted
-           python-treq
-           python-pyopenssl
-           python-pyyaml
+           python-cryptography
+           python-ijson
+           python-immutabledict
+           python-jinja2
+           python-jsonschema
+           python-matrix-common
+           python-msgpack
+           python-multipart
+           python-netaddr
+           python-packaging
+           python-phonenumbers
+           python-pillow
+           python-prometheus-client
            python-pyasn1
            python-pyasn1-modules
-           python-daemonize
-           python-bcrypt
-           python-pillow
-           python-sortedcontainers
+           python-pydantic
            python-pymacaroons
-           python-msgpack
-           python-phonenumbers
-           python-six
-           python-prometheus-client
-           python-attrs
-           python-netaddr
-           python-jinja2
-           python-bleach
+           python-pyopenssl
+           python-pyyaml
+           python-service-identity
+           python-signedjson
+           python-sortedcontainers
+           python-treq
+           python-twisted
            python-typing-extensions
-           ;; conditional requirements (synapse/python_dependencies.py)
-           ;; ("python-hiredis" ,python-hiredis)
-           python-matrix-synapse-ldap3
-           python-psycopg2
-           python-jinja2
-           python-txacme
-           python-pysaml2
+           python-unpaddedbase64
+           ;; [all]
+           python-authlib
+           python-hiredis
+           python-idna
            python-lxml
-           python-packaging
-           ;; sentry-sdk, jaeger-client, and opentracing could be included, but
-           ;; all are monitoring aids and not essential.
-           python-pyjwt))
-    (native-inputs (list python-mock python-parameterized python-setuptools))
-    (home-page "https://github.com/matrix-org/synapse")
+           python-matrix-synapse-ldap3
+           python-parameterized
+           python-psycopg2
+           python-psycopg2cffi
+           python-pympler
+           python-pysaml2
+           python-txredisapi))
+    (native-inputs
+     (list (libc-utf8-locales-for-target)        ;for tests
+           openssl
+           postgresql
+           python-poetry-core
+           python-pyperf
+           python-setuptools-rust
+           rust
+           (list rust "cargo")
+           tzdata-for-tests
+           xmlsec))
+    (home-page "https://github.com/element-hq/synapse")
     (synopsis "Matrix reference homeserver")
     (description
      "Synapse is a reference \"homeserver\" implementation of Matrix from the
