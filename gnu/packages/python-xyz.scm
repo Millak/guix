@@ -34871,7 +34871,11 @@ Python CLI apps.")
         (uri (pypi-uri "style" version))
         (sha256
           (base32 "1dcfb578v9mrwh92rgms87gql0gp4vgj6l9hpgyfg0wbd3rh3bfh"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests in PyPI, package is 6y old
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/lmittmann/style")
     (synopsis "Terminal string styling")
     (description
