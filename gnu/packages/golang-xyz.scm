@@ -2423,6 +2423,31 @@ supports generating diffs in the
 Unified Format}.")
     (license license:expat)))
 
+(define-public go-github-com-baulk-chardet
+  (package
+    (name "go-github-com-baulk-chardet")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/baulk/chardet")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0sjs572wri69fj97byhf1xmzw7fdrlpasp0k2mc96h5804fwm08l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/baulk/chardet"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
+    (home-page "https://github.com/baulk/chardet")
+    (synopsis "Character set detection for Go")
+    (description
+     "The chardet package ports character set detection from ICU to Go.")
+    (license license:expat)))
+
 (define-public go-github-com-beorn7-perks
   (package
     (name "go-github-com-beorn7-perks")
