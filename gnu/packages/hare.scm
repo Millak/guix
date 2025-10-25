@@ -25,27 +25,17 @@
   #:use-module (gnu packages less)
   #:use-module (gnu packages man)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system hare)
+  #:use-module (guix deprecation)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix search-paths)
   #:use-module (guix utils)
-  #:export (hare-supported-systems
-            target->hare-arch))
+  #:re-export (%hare-supported-systems target->hare-arch))
 
-(define hare-supported-systems
-  '("x86_64-linux" "aarch64-linux" "riscv64-linux"))
-
-(define* (target->hare-arch #:optional (target (or (%current-target-system)
-                                                   (%current-system))))
-  ;; Only error on supported systems, so we don't break guix pull.
-  (if (member (%current-system) hare-supported-systems)
-      (cond ((target-x86-64? target) "x86_64")
-            ((target-aarch64? target) "aarch64")
-            ((target-riscv64? target) "riscv64")
-            (else (error "unsupported hare target" target)))
-      ""))
+(define-deprecated/public-alias hare-supported-systems %hare-supported-systems)
 
 (define (cross-target? target) ; only has to work for supported arches
   (and target (not (if (%current-target-system)
@@ -101,7 +91,7 @@
                 (replace 'configure
                   (lambda _ (copy-file #$hare-config "config.mk"))))))
     (native-inputs (list qbe))
-    (supported-systems hare-supported-systems)
+    (supported-systems %hare-supported-systems)
     (home-page "https://harelang.org")
     (synopsis "Harelang bootstrap compiler")
     (description "@code{harec} is a bootstrap compiler written in C for the Hare
@@ -163,7 +153,7 @@ package.")
                              (tc "riscv64-linux-gnu")
                              (tc "x86_64-linux-gnu")))))
     (native-inputs (list harec qbe scdoc))
-    (supported-systems hare-supported-systems)
+    (supported-systems %hare-supported-systems)
     (search-paths (list (search-path-specification
                           (variable "HAREPATH")
                           (files '("share/hare")))))
@@ -189,21 +179,14 @@ static typing, manual memory management, and a minimal runtime.")
               (sha256
                 (base32
                   "0hpcgiyg458v353g3wm2iaz2kszhc2n2rc40lnvxbg9q6i232m76"))))
-    (build-system gnu-build-system)
-    (arguments
-      (list #:make-flags #~(list (string-append "PREFIX=" #$output))
-            #:phases
-            #~(modify-phases %standard-phases
-                (delete 'configure)
-                (replace 'build
-                  (lambda _
-                    ;; genrules is invoked during build, so we can't just set
-                    ;; make-flags to cross-compile all.
-                    (invoke "make" "hare-update-genrules")
-                    (invoke "make" "hare-update"
-                      (format #f "HAREFLAGS=-a ~a" #$(target->hare-arch))))))))
-    (native-inputs (list hare))
-    (supported-systems hare-supported-systems)
+    (build-system hare-build-system)
+    (arguments (list #:phases
+                     #~(modify-phases %standard-phases
+                         (add-before 'build 'build-rules
+                           ;; genrules is invoked during build, so we have to
+                           ;; build it natively separately
+                           (lambda _ (invoke "make" "hare-update-genrules"))))))
+    (supported-systems %hare-supported-systems)
     (home-page "https://harelang.org")
     (synopsis "Harelang interversion updater tool")
     (description "@code{hare-update} updates Harelang source files to newer
