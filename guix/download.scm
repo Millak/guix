@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012-2021, 2024-2025 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2013, 2014, 2015 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2013, 2014, 2015, 2025 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
@@ -348,12 +348,19 @@
        "http://pub.mate-desktop.org/releases/")
       (qt
        "https://mirrors.ocf.berkeley.edu/qt/official_releases/"
+       "https://mirrors.ocf.berkeley.edu/qt/archive/" ; Qt5
        "https://ftp.jaist.ac.jp/pub/qtproject/official_releases/"
+       "https://ftp.jaist.ac.jp/pub/qtproject/archive/"
        "https://ftp.nluug.nl/languages/qt/official_releases/"
+       "https://ftp.nluug.nl/languages/qt/archive/"
        "https://mirrors.cloud.tencent.com/qt/official_releases/"
+       "https://mirrors.cloud.tencent.com/qt/archive/"
        "https://mirrors.sjtug.sjtu.edu.cn/qt/official_releases/"
+       "https://mirrors.sjtug.sjtu.edu.cn/qt/archive/"
        "https://qtproject.mirror.liquidtelecom.com/official_releases/"
-       "https://download.qt.io/official_releases/")))) ;slow
+       "https://qtproject.mirror.liquidtelecom.com/archive/"
+       "https://download.qt.io/official_releases/" ;slow
+       "https://download.qt.io/archive/"))))
 
 (define %mirror-file
   ;; Copy of the list of mirrors to a file.  This allows us to keep a single
