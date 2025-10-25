@@ -4571,17 +4571,9 @@ into separate processes; and more.")
         (base32
          "1bv25qhr1dwym2j7llsd3ggnjb9l3h4bchng7bp7cq57s9g0bnjz"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-biopython
-           python-matplotlib
-           python-pybio
-           python-scipy
-           python-seaborn))
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
     (arguments
      (list
+      #:tests? #f                       ; There are none.
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'set-HOME
@@ -4594,6 +4586,14 @@ into separate processes; and more.")
                 (copy-file
                  data-file
                  (string-append data-dir "/" (basename data-file)))))))))
+    (propagated-inputs
+     (list python-biopython
+           python-matplotlib
+           python-pybio
+           python-scipy
+           python-seaborn))
+    (native-inputs
+     (list python-setuptools))
     (synopsis "Tool for creating a RNA RBP heatmap in Python")
     (description "python-scanrbp is a Python package that provides the scanRBP
 tool that loads RNA-protein binding motif PWM and computes the log-odds scores
