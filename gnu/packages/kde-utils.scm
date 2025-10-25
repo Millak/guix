@@ -802,6 +802,51 @@ with support for QR scanning.")
       (license ;GPL for programs, LGPL for libraries
        (list license:gpl2+ license:lgpl2.0)))))
 
+(define-public komodo
+  (package
+    (name "komodo")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/komodo/" version
+                           "/komodo-" version ".tar.xz"))
+       (sha256
+        (base32 "1xdn3k71a5s801p2cpddyvjbpb8ki8i4y2mig15am0v1r2ag16mi"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase))
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list kcolorscheme
+           kconfig
+           kcoreaddons
+           kdbusaddons
+           kguiaddons
+           ki18n
+           kiconthemes
+           kirigami
+           kirigami-addons
+           kitemmodels
+           qqc2-desktop-style
+           qtdeclarative))
+    (home-page "https://apps.kde.org/komodo/")
+    (synopsis "To-do manager that uses todo.txt")
+    (description "KomoDo is a to-do manager that uses
+@uref{https://github.com/todotxt/todo.txt/blob/master/README.md, todo.txt
+specification}.  It parses any compliant @uref{https://todotxt.org/, todo.txt}
+files and turns them into easy to use list of tasks.  It also has built-in help
+for the todo.txt specification.
+
+It's features include:
+@itemize
+@item Open and create new todo.txt files
+@item Add, delete and edit tasks
+@item Filter and search tasks
+@end itemize")
+    (license license:gpl2+)))
+
 (define-public kongress
   (package
     (name "kongress")
