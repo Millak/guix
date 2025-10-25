@@ -1393,8 +1393,8 @@ The following features are currently available:
 
 (define-public opensta
   ;; There are no releases, we use last commit.
-  (let ((commit "12f03395ec80d3593f4796b2a3cf5480e75735bd")
-        (revision "0"))
+  (let ((commit "6e29fcb3f0d8a73af3a0913eb945b665a72e69cb")
+        (revision "1"))
     (package
       (name "opensta")
       ;; The version string is taken from the CMakeLists.txt.
@@ -1407,7 +1407,7 @@ The following features are currently available:
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1gka50p4wv2b49d8jbw5fs3qg7cppa8ynl3diqgdf8mqgskwapzf"))))
+          (base32 "1drhgp4s6q8j4fhsbxn6szmxl48xdlq0x5z4g6z72img453qvglx"))))
       (build-system cmake-build-system)
       (arguments
        (list
