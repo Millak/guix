@@ -21854,19 +21854,23 @@ without worrying about command injection.")
 (define-public python-memcached
   (package
     (name "python-memcached")
-    (version "1.59")
+    (version "1.62")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python-memcached" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/linsomniac/python-memcached")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0kvyapavbirk2x3n1jx4yb9nyigrj1s3x15nm3qhpvhkpqvqdqm2"))
-       (patches (search-patches "python-memcached-syntax-warnings.patch"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-six))
-    (home-page
-     "https://github.com/linsomniac/python-memcached")
+        (base32 "1chw36v1g4zz32s2qc2ql1hzrd1ys8d4abjdjnjgg8anpx13hjj2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f  ;Requires a connection to a socket.
+      #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/linsomniac/python-memcached")
     (synopsis "Pure python memcached client")
     (description
      "This software is a pure Python interface to the memcached memory cache
