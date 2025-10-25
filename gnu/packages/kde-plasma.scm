@@ -2521,6 +2521,7 @@ connections.")
     (native-inputs (list extra-cmake-modules pkg-config qttools))
     (inputs (list bash-minimal
                   eudev
+                  kauth
                   kcmutils
                   kdbusaddons
                   kdeclarative
@@ -2541,6 +2542,7 @@ connections.")
                   modemmanager-qt
                   networkmanager-qt
                   plasma-activities
+                  plasma-wayland-protocols
                   plasma-workspace
                   qcoro-qt6
                   qtbase
