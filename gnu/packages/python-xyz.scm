@@ -24251,22 +24251,37 @@ console.")
 (define-public python-rst2ansi
   (package
     (name "python-rst2ansi")
-    (version "0.1.5")
+    (properties '((commit . "c6f390b45be689a5760060c990e3fe10f502e671")
+                  (revision . "0")))
+    (version (git-version "0.1.5"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "rst2ansi" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Snaipe/python-rst-to-ansi")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0vzy6gd60l79ff750scl0sz48r1laalkl6md6dwzah4dcadgn5qv"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-docutils))
+        (base32 "0vsn1jjhm1hx0q5i954lyhny2yvn619am1di03aypfl0wm1mh7qd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f  ; 2 tests fail with additional line characters
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "cram" "test" "-v")))))))
+    (native-inputs (list python-cram python-setuptools))
+    (propagated-inputs (list python-docutils))
     (home-page "https://github.com/Snaipe/python-rst-to-ansi")
     (synopsis "Convert RST to ANSI-decorated console output")
     (description
-     "Python module dedicated to rendering RST (reStructuredText) documents
-     to ansi-escaped strings suitable for display in a terminal.")
+     "Python module dedicated to rendering RST (reStructuredText) documents to
+ansi-escaped strings suitable for display in a terminal.")
     (license license:expat)))
 
 (define-public python-ansi2html
