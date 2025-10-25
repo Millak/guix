@@ -21603,18 +21603,19 @@ It uses LR parsing and does extensive error checking.")
 (define-public python-kazoo
   (package
     (name "python-kazoo")
-    (version "2.8.0")
+    (version "2.10.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "kazoo" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/python-zk/kazoo")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1zpj5cc8624w6i0pxgcxqkjwbkm4pkrv19d7wh5df3jais32g3jq"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f)) ; XXX: needs zookeeper
-    (propagated-inputs
-     (list python-six))
+        (base32 "1ic1ky4v64jw59in02hqmyxskd98v32msd46pmsp39l7iighjrn2"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; XXX: needs zookeeper
+    (native-inputs (list python-setuptools))
     (home-page "https://kazoo.readthedocs.org")
     (synopsis "High-level Zookeeper client library")
     (description
