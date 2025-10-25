@@ -126,14 +126,18 @@
             nar-herder-configuration-database-dump
             nar-herder-configuration-host
             nar-herder-configuration-port
+            nar-herder-configuration-control-host
+            nar-herder-configuration-control-port
             nar-herder-configuration-storage
             nar-herder-configuration-storage-limit
+            nar-herder-configuration-storage-minimum-free-space
             nar-herder-configuration-storage-nar-removal-criteria
             nar-herder-configuration-log-level
             nar-herder-configuration-cached-compressions
             nar-herder-configuration-cached-compression-min-uses
             nar-herder-configuration-cached-compression-workers
             nar-herder-configuration-cached-compression-nar-source
+            nar-herder-configuration-extra-options
             nar-herder-configuration-extra-environment-variables
 
             nar-herder-cached-compression-configuration
@@ -852,6 +856,9 @@ ca-certificates.crt file in the system profile."
                  (default #f))
   (storage-limit nar-herder-configuration-storage-limit
                  (default "none"))
+  (storage-minimum-free-space
+   nar-herder-configuration-storage-minimum-free-space
+   (default "none"))
   (storage-nar-removal-criteria
    nar-herder-configuration-storage-nar-removal-criteria
    (default '()))
@@ -875,6 +882,9 @@ ca-certificates.crt file in the system profile."
   (cached-compression-nar-source
    nar-herder-configuration-cached-compression-nar-source
    (default #f))
+  (extra-options
+   nar-herder-configuration-extra-options
+   (default '()))
   (extra-environment-variables
    nar-herder-configuration-extra-environment-variables
    (default '())))
@@ -951,10 +961,12 @@ ca-certificates.crt file in the system profile."
              mirror
              database database-dump
              host port
-             storage storage-limit storage-nar-removal-criteria
+             storage storage-limit storage-minimum-free-space
+             storage-nar-removal-criteria
              ttl new-ttl negative-ttl log-level
              cached-compressions cached-compression-min-uses
              cached-compression-workers cached-compression-nar-source
+             extra-options
              extra-environment-variables)
 
     (unless (or mirror storage)
@@ -986,6 +998,11 @@ ca-certificates.crt file in the system profile."
                                        (if (number? storage-limit)
                                            (number->string storage-limit)
                                            storage-limit))
+                      #$(string-append
+                         "--storage-minimum-free-space="
+                         (if (number? storage-minimum-free-space)
+                             (number->string storage-minimum-free-space)
+                             storage-minimum-free-space))
                       #$@(map (lambda (criteria)
                                 (string-append
                                  "--storage-nar-removal-criteria="
@@ -1022,7 +1039,8 @@ ca-certificates.crt file in the system profile."
                              (list (simple-format
                                     #f "--cached-compression-nar-source=~A"
                                     cached-compression-nar-source))
-                             '()))
+                             '())
+                      #$@extra-options)
                 #:user #$user
                 #:group #$group
                 #:directory "/var/lib/nar-herder"
