@@ -369,13 +369,13 @@ This package is part of the KDE multimedia module.")
 (define-public haruna
   (package
     (name "haruna")
-    (version "1.5.0")
+    (version "1.6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/haruna/" version
                                   "/haruna-" version ".tar.xz"))
               (sha256
-               (base32 "0pgg90z8jykzndmgb32j0avlwrw0n0x3n9gmbs58c238ydi4xryk"))))
+               (base32 "1nlzilqajdiwf6daa9g7kiw6s0lc10q1zb23icq5ckc61492cwhq"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
