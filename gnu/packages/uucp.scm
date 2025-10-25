@@ -20,6 +20,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages uucp)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-compression)
@@ -59,6 +60,7 @@
                        (string-append "--prefix=" out)
                        (string-append "--infodir=" out
                                       "/share/info"))))))))
+    (native-inputs (list gcc-13))
     (home-page "https://www.gnu.org/software/uucp/uucp.html")
     (synopsis "UUCP protocol implementation")
     (description
