@@ -30653,27 +30653,18 @@ information for your operating system.")
 (define-public python-canonicaljson
   (package
     (name "python-canonicaljson")
-    (version "1.6.3")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "canonicaljson" version))
        (sha256
-        (base32 "0j5lq191jkd483q6xzc16c9fahxf15lrv03mvah9ka3lq85pcnfa"))))
+        (base32 "0gqi5z8j3myfblrc96l0jykdsk863gad1lwvnnf5vp7sszqsxzg2"))))
     (build-system pyproject-build-system)
     (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'loosen-requirements
-           (lambda _
-             ;; Permit newer versions of setuptools_scm
-             (substitute* "pyproject.toml"
-               ((">= 2.0.0, <3") ">= 2.0.0")))))))
+     (list #:test-backend #~'unittest))
     (native-inputs
-     (list python-pypa-build python-pytest python-setuptools python-setuptools-scm))
-    (propagated-inputs
-     (list python-six python-frozendict python-simplejson))
+     (list python-setuptools))
     (home-page "https://github.com/matrix-org/python-canonicaljson")
     (synopsis "Canonical JSON")
     (description
