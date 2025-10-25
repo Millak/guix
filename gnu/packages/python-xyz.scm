@@ -22626,16 +22626,21 @@ Xon/Xoff.  The port is accessed in RAW mode.")
     (version "0.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyserial-asyncio" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pyserial/pyserial-asyncio")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0bx3syngmq2j9mh81byzka1x4ilw8ac9mbx52zn7b7ayw0ijj0xn"))))
-    (build-system python-build-system)
+        (base32 "0c8kzy2a4awsh580qrniwq0vyydlsvicjw79r270sqflxmjlns6n"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-pyserial))
     (home-page "https://github.com/pyserial/pyserial-asyncio")
     (synopsis "Pyserial asynchronous I/O extension")
-    (description "This package extends Pyserial with asynchronous I/O
-     support.")
+    (description
+     "This package extends Pyserial with asynchronous I/O support.")
     (license license:bsd-3)))
 
 (define-public python-pymemcache
