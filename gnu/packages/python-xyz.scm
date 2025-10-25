@@ -23345,35 +23345,40 @@ stemmer.")
 (define-public python-setproctitle
   (package
     (name "python-setproctitle")
-    (version "1.3.2")
+    (version "1.3.7")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "setproctitle" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dvarrazzo/py-setproctitle")
+             (commit (string-append "version-" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1zbp6kyzfbrmbh9j3idai0mnpa28zn5db3k5l07jc3c3gj89gyxr"))))
-    (build-system python-build-system)
+        (base32 "0k51ypmr2p2c55dyl2pq3dclih9jk2zx7dxm8010li4pyfsrvwvm"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (setenv "PYTHON" (or (which "python3") (which "python")))
-             (setenv "PYCONFIG" (if (which "python3-config")
-                                    "python3-config --embed"
-                                    "python-config"))
-             (substitute* "tests/conftest.py"
-               (("cc") "gcc"))
-             (when tests?
-               (invoke "pytest" "tests/")))))))
-    (native-inputs
-     (list procps python-pytest))   ; required for tests
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'configure-tests
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "PYTHON"
+                        (or (which "python3")
+                            (which "python")))
+                (setenv "PYCONFIG"
+                        (if (which "python3-config")
+                            "python3-config --embed"
+                            "python-config"))
+                (substitute* "tests/conftest.py"
+                  (("cc") "gcc"))))))))
+    (native-inputs (list procps python-pytest python-setuptools)) ;required for tests
     (home-page "https://github.com/dvarrazzo/py-setproctitle")
     (synopsis
      "Setproctitle implementation for Python to customize the process title")
-    (description "The library allows a process to change its title (as displayed
-by system tools such as @code{ps} and @code{top}).
+    (description
+     "The library allows a process to change its title (as displayed by system
+tools such as @code{ps} and @code{top}).
 
 Changing the title is mostly useful in multi-process systems, for example when a
 master process is forked: changing the children's title allows identifying the
