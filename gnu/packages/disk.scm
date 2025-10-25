@@ -471,14 +471,14 @@ output without any plausibility checks.")
 (define-public gptfdisk
   (package
     (name "gptfdisk")
-    (version "1.0.9")
+    (version "1.0.10")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://sourceforge/gptfdisk/gptfdisk/"
                           version "/gptfdisk-" version ".tar.gz"))
       (sha256
-       (base32 "1hjh5m77fmfq5m44yy61kchv7mbfgx026aw3jy5qxszsjckavzns"))))
+       (base32 "10m2jgb2m6r0m6snjh0lsxr7ljw0ic5l9h3ki54yrffjqqdxdgia"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
