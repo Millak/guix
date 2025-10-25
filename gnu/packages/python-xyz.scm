@@ -21755,19 +21755,27 @@ Kerberos 5 C API.")
 (define-public python-pylev
   (package
     (name "python-pylev")
-    (version "1.3.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pylev" version))
-              (sha256
-               (base32
-                "1hz1x9blsbxya1y9nnhnwwdnqmakxi9mc0jkwj0rn6b1h44i0f86"))))
-    (build-system python-build-system)
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/toastdriven/pylev")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fgxjdnvnvavnxmxxd0fl5jyr2f31g3a26bwyxcpy56mgpd095c1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "tests.py")))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/toastdriven/pylev")
     (synopsis "Levenshtein distance implementation in Python")
-    (description "Pure Python Levenshtein implementation, based off the
-Wikipedia code samples at
-@url{http://en.wikipedia.org/wiki/Levenshtein_distance}.")
+    (description
+     "Pure Python Levenshtein implementation, based off the Wikipedia code
+samples at @url{http://en.wikipedia.org/wiki/Levenshtein_distance}.")
     (license license:bsd-3)))
 
 (define-public python-cleo
