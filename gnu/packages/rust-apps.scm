@@ -43,6 +43,7 @@
 ;;; Copyright © 2025 Igorj Gorjaĉev <igor@goryachev.org>
 ;;; Copyright © 2025 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2025 Samuel Sehnert <mail@buffersquid.com>
+;;; Copyright © 2025 Julian Flake <julian@flake.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -124,7 +125,9 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages video)
-  #:use-module (gnu packages xorg))
+  #:use-module (gnu packages xdisorg)
+  #:use-module (gnu packages xorg)
+  #:use-module (gnu packages wxwidgets))
 
 (define-public aardvark-dns
   (package
@@ -4236,3 +4239,66 @@ compose file, or existing object.")
     (description
      "This package provides a command-line tool for flashing Espressif devices.")
     (license (list license:expat license:asl2.0))))
+
+(define-public espanso-x11
+  (package
+    (name "espanso-x11")
+    (version "2.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/espanso/espanso")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fb83qqzdji5nn75j4h9v0pb9521xgqnsi65gj1a3hbicvwmbwas"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-install-paths ''("espanso")
+      #:features '(list "modulo" "vendored-tls")))
+    (native-inputs (list pkg-config))
+    (inputs (cons* dbus
+                   libx11
+                   libxkbcommon
+                   libxtst
+                   openssl
+                   wxwidgets
+                   xdo
+                   (cargo-inputs 'espanso)))
+    (home-page "https://espanso.org")
+    (synopsis "Cross-platform Text Expander written in Rust")
+    (description
+     "Espanso is a text expander.  A text expander is a program
+that detects when you type a specific keyword and replaces it with something
+else.
+
+To make espanso work, you need to allow @command{espanso} to read inputs.  This
+is a privileged operation, the capability @code{cap_dac_override+p} is
+required.  This can be achieved with @code{sudo setcap \"cap_dac_override+p\"
+$(which espanso)}.  On a Guix system, you can define the following in your
+ @code{operating-system} definition:
+@lisp
+(operating-system
+  ...
+  (privileged-programs
+    (append (list (privileged-program
+                  (program (file-append espanso \"/bin/espanso\"))
+                  (capabilities \"cap_dac_override+p\")))
+          %default-privileged-programs)))
+@end lisp")
+    (license license:gpl3+)))
+
+(define-public espanso-wayland
+  (package
+    (inherit espanso-x11)
+    (name "espanso-wayland")
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-install-paths ''("espanso")
+      #:features '(list "modulo" "vendored-tls" "wayland")))
+    (inputs (modify-inputs (package-inputs espanso-x11)
+              (append wl-clipboard)))))
