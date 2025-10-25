@@ -4645,9 +4645,7 @@ the scores.")
               (substitute* "setup.py"
                 ;; bs4 is an alternative name for beautifulsoup4, only used to
                 ;; avoid name squatting on pypi.
-                (("bs4") "beautifulsoup4")
-                ;; levenshtein can only be found as python-levenshtein
-                (("levenshtein") "python-levenshtein"))))
+                (("bs4") "beautifulsoup4"))))
           ;; fireducks seems to be a binary-only python-panda replacement
           (add-after 'unpack 'remove-fireducks
             (lambda _
