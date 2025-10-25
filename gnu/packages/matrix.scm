@@ -145,6 +145,34 @@ on @url{https://github.com/tulir/whatsmeow, whatsmeow}.")
     (description "This package provides client-server SDK for Matrix.")
     (license license:asl2.0)))
 
+(define-public python-matrix-common
+  (package
+    (name "python-matrix-common")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/matrix-org/matrix-python-common")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ryih7xladx9888gwi71q78d9f92zjr066jj3ksgcjkfp3djdxjk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "-m" "twisted.trial" "tests")))
+    (native-inputs
+     (list python-setuptools
+           python-twisted))
+    (propagated-inputs
+     (list python-attrs))
+    (home-page "https://github.com/matrix-org/matrix-python-common")
+    (synopsis "Common utilities for Synapse, Sydent and Sygnal")
+    (description
+     "This package contains code used by Synapse, Sydent, and Sygnal.")
+    (license license:asl2.0)))
+
 (define-public python-matrix-synapse-ldap3
   (package
     (name "python-matrix-synapse-ldap3")
