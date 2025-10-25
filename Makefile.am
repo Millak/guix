@@ -170,6 +170,7 @@ MODULES =					\
   guix/build-system/gnu.scm			\
   guix/build-system/go.scm			\
   guix/build-system/guile.scm			\
+  guix/build-system/hare.scm			\
   guix/build-system/haskell.scm		\
   guix/build-system/julia.scm			\
   guix/build-system/linux-module.scm		\
@@ -240,6 +241,7 @@ MODULES =					\
   guix/build/gnu-build-system.scm		\
   guix/build/gnu-dist.scm			\
   guix/build/guile-build-system.scm		\
+  guix/build/hare-build-system.scm		\
   guix/build/luanti-build-system.scm		\
   guix/build/maven-build-system.scm		\
   guix/build/minetest-build-system.scm		\
