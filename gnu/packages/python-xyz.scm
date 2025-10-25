@@ -22699,17 +22699,21 @@ etc.")
 (define-public python-easyprocess
   (package
     (name "python-easyprocess")
-    (version "0.3")
+    (version "1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "EasyProcess" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ponty/easyprocess")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "115rzzr0hx4af4m6krf7dxn8851n4l8jfxahjzjc2r0zq2m8v57v"))))
-    (build-system python-build-system)
+        (base32 "1dysr0z2mijhxl4z86wxf4w94sszdm4i2w3id0a6qwyid6xqjksp"))))
+    (build-system pyproject-build-system)
     (arguments
      ;; Tests require pyvirtualdisplay, which requires this package.
-     `(#:tests? #f))
+     (list #:tests? #f))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/ponty/easyprocess")
     (synopsis "Python subprocess interface")
     (description
