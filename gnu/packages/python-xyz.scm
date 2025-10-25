@@ -24824,23 +24824,25 @@ applications in seconds while maintaining all the flexibility.")
 (define-public python-mwclient
   (package
     (name "python-mwclient")
-    (version "0.10.1")
+    (version "0.11.0")
     (source
      (origin
        (method git-fetch)
-       ;; The PyPI version wouldn't contain tests.
        (uri (git-reference
               (url "https://github.com/mwclient/mwclient")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "120snnsh9n5svfwkyj1w9jrxf99jnqm0jk282yypd3lpyca1l9hj"))))
-    (build-system python-build-system)
+        (base32 "14kg353vzrwh7zks7zsza4hfb2n5vxprh9hnw4rjsimm8509axda"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-requests-oauthlib python-six))
+     (list python-requests-oauthlib))
     (native-inputs
-     (list python-mock python-pytest python-pytest-cov
-           python-pytest-runner python-responses))
+     (list python-mock
+           python-pytest
+           python-pytest-cov
+           python-responses
+           python-setuptools))
     (home-page "https://github.com/btongminh/mwclient")
     (synopsis "MediaWiki API client")
     (description "This package provides a MediaWiki API client.")
