@@ -172,16 +172,14 @@ Currently available boards include:
 (define-public kalgebra
   (package
     (name "kalgebra")
-    (version "25.08.1")
+    (version "25.08.2")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://invent.kde.org/education/kalgebra")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/"
+                           version "/src/kalgebra-" version ".tar.xz"))
        (sha256
-        (base32 "00cryk135104pdid6sai763yxh6ghlzgg9rfi5qxlb0nidia0mgl"))))
+        (base32 "042gf5d9fb1gryx9lp94bdrz0zrndxnf1aifyjrv8vl7cpwv8212"))))
     (build-system qt-build-system)
     (arguments
      (list
