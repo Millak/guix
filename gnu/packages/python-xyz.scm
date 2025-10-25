@@ -22541,19 +22541,24 @@ YAML-serialized data.")
 (define-public python-pyyaml-env-tag
   (package
     (name "python-pyyaml-env-tag")
-    (version "0.1")
+    (version "1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyyaml_env_tag" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/waylan/pyyaml-env-tag")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1nsva88jsmwn0cb9jnrfiz4dvs9xakkpgfii7g1xwkx1pmsjc2bh"))))
-    (build-system python-build-system)
+        (base32 "16zkwmnlzzsdlxs9ww3b51mcarni2ykmi0v7752l7j4najxw875n"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-pyyaml))
     (home-page "https://github.com/waylan/pyyaml-env-tag")
     (synopsis "Custom YAML tag for environment variables")
-    (description "This package provides a custom YAML tag for referencing
-environment variables in YAML files.")
+    (description
+     "This package provides a custom YAML tag for referencing environment
+variables in YAML files.")
     (license license:expat)))
 
 (define-public python-prompt-toolkit
