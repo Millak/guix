@@ -23093,28 +23093,24 @@ used for tasks where having a database involved is unusual.")
 (define-public python-odfpy
   (package
     (name "python-odfpy")
-    (version "1.4.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "odfpy" version))
-              (sha256
-               (base32
-                "1v1qqk9p12qla85yscq2g413l3qasn6yr4ncyc934465b5p6lxnv"))))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "-vv"))))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest))
-    (propagated-inputs
-     (list python-defusedxml))
+    (version "1.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/eea/odfpy")
+             (commit (string-append "release-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15y0fvkk8akgx30dxld7mdqhdrrkwr16jy1q0znkzvwcgmpywrf4"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-defusedxml))
     (home-page "https://github.com/eea/odfpy")
     (synopsis "Python API and tools to manipulate OpenDocument files")
-    (description "Collection of libraries and utility programs written in
-     Python to manipulate OpenDocument 1.2 files.")
+    (description
+     "Collection of libraries and utility programs written in Python to
+manipulate OpenDocument 1.2 files.")
     (license
      ;; The software is mainly dual GPL2+ and ASL2.0, but includes a
      ;; number of files with other licenses.
