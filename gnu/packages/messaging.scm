@@ -1805,7 +1805,7 @@ instant messenger with audio and video chat capabilities.")
      (list pkg-config qttools-5))
     (inputs
      (list bash-minimal
-           ffmpeg
+           ffmpeg-6
            filteraudio
            glib
            gtk+-2
