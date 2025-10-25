@@ -334,9 +334,10 @@ host	all	all	::1/128 	trust"))))))
    (service dhcpcd-service-type)
    (service nar-herder-service-type
             (nar-herder-configuration
-             (host "0.0.0.0")
-             ;; Not a realistic value, but works for the test
-             (storage "/tmp")))))
+              (host "0.0.0.0")
+              (control-host "0.0.0.0")
+              ;; Not a realistic value, but works for the test
+              (storage "/tmp")))))
 
 (define (run-nar-herder-test)
   (define os
@@ -349,11 +350,17 @@ host	all	all	::1/128 	trust"))))))
     (nar-herder-configuration-port
      (nar-herder-configuration)))
 
+  (define control-forwarded-port
+    (nar-herder-configuration-control-port
+     (nar-herder-configuration)))
+
   (define vm
     (virtual-machine
      (operating-system os)
      (memory-size 1024)
-     (port-forwardings `((,forwarded-port . ,forwarded-port)))))
+     (port-forwardings `((,forwarded-port . ,forwarded-port)
+                         (,control-forwarded-port
+                          . ,control-forwarded-port)))))
 
   (define test
     (with-imported-modules '((gnu build marionette))
@@ -387,6 +394,16 @@ host	all	all	::1/128 	trust"))))))
                 (((response text)
                   (http-get #$(simple-format
                                #f "http://localhost:~A/" forwarded-port)
+                            #:decode-body? #t)))
+              (response-code response)))
+
+          (test-equal "control http-get"
+            404
+            (let-values
+                (((response text)
+                  (http-get #$(simple-format
+                               #f "http://localhost:~A/"
+                               control-forwarded-port)
                             #:decode-body? #t)))
               (response-code response)))
 
@@ -477,3 +494,5 @@ host	all	all	::1/128 	trust"))))))
    (name "bffe")
    (description "Connect to a running Build Farm Front-end.")
    (value (run-bffe-test))))
+
+%nar-herder-os

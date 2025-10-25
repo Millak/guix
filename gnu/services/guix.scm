@@ -961,6 +961,7 @@ ca-certificates.crt file in the system profile."
              mirror
              database database-dump
              host port
+             control-host control-port
              storage storage-limit storage-minimum-free-space
              storage-nar-removal-criteria
              ttl new-ttl negative-ttl log-level
