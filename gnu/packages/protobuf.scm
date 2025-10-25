@@ -564,7 +564,12 @@ mechanism for serializing structured data.")
        (sha256
         (base32
          "1wh5f4rnzbv46xy1rx62cprhg5hqf2py06s9b7rfpzwwki12fd1f"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f)) ; no tests provided for Python variant
+    (native-inputs
+     (list python-setuptools))
     ;; The C++ implementation is not compatible with Python 3.11, so we cannot
     ;; pass --cpp_implementation any more.
     (inputs (list protobuf-3.20))
