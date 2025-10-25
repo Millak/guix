@@ -23437,23 +23437,31 @@ Format (DWARF).")
 (define-public python-pefile
   (package
     (name "python-pefile")
-    (version "2022.5.30")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/erocarrera/pefile")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1qj90a0s2gd5hn2zggypqc1077inid5dcl1fp5973b04kf2b9z8a"))))
-    (build-system python-build-system)
+    (version "2024.8.26")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/erocarrera/pefile")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14bh23b7jipf2pxjivyn2khifal6fmk0pjsddrd3h1gd9n0wl9zd"))
+       (snippet #~(delete-file "tests/test_data.tar.bz2.enc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: Taken from tox.ini. Unclear why devs don't supply test data.
+     ;; It seems clear however that test_data.tar.bz2.enc needs to be
+     ;; decrypted and unpacked before we can run them.
+     (list #:test-flags #~(list "--ignore=tests/pefile_test.py")))
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-future))
     (home-page "https://github.com/erocarrera/pefile")
     (synopsis "Portable Executable (PE) file parser")
-    (description "This python library provides interfaces for parsing and
-working with Portable Executable (PE) files.  It makes to most information
-from the header, as well as section details and data available.")
+    (description
+     "This python library provides interfaces for parsing and working with
+Portable Executable (PE) files.  It makes to most information from the header,
+as well as section details and data available.")
     (license license:expat)))
 
 (define-public python-pyemd
