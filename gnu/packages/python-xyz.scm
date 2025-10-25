@@ -23558,25 +23558,19 @@ the network.")
     (name "python-csscompressor")
     (version "0.9.5")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "csscompressor" version))
-        (sha256
-         (base32
-          "018ssffvlpnc1salmnpyl52c11glzzwj4k9f757hl4pkpjnjp8mg"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "py.test"))))))
-    (native-inputs
-     (list python-pytest))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sprymix/csscompressor")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gzzb474lgs8l539z2vyyvcvm1j7nxxnb5jk79ys63ysbg4jwmz8"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/sprymix/csscompressor")
     (synopsis "Python port of YUI CSS Compressor")
-    (description
-     "This package provides a python port of YUI CSS Compressor.")
+    (description "This package provides a python port of YUI CSS Compressor.")
     (license license:bsd-3)))
 
 (define-public python-rcssmin
