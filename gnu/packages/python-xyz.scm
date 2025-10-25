@@ -21712,16 +21712,18 @@ ordinals, indefinite articles; it also can convert numbers to words.")
 (define-public python-inflection
   (package
     (name "python-inflection")
-    (version "0.3.1")
+    (version "0.5.1")
     (source
-     (origin (method url-fetch)
-             (uri (pypi-uri "inflection" version))
-             (sha256
-              (base32
-               "1jhnxgnw8y3mbzjssixh6qkc7a3afc4fygajhqrqalnilyvpzshq"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jpvanhal/inflection")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mvs6wgpi963k7mqrwzdkh32m29zcm772q0fy7pwszlcsh3l50kg"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/jpvanhal/inflection")
     (synopsis "Python string transformation library")
     (description
