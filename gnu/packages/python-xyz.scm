@@ -21890,14 +21890,15 @@ more, possibly remote, memcached servers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1msvvdzk33sxzgyvs4fs8dlsrsi7fjj038z83s0yw5h8m8d78469"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest))
+        (base32 "1msvvdzk33sxzgyvs4fs8dlsrsi7fjj038z83s0yw5h8m8d78469"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/clarketm/mergedeep")
     (synopsis "Deep merge function for Python")
-    (description "This package provides a deep merge function for Python,
-useful to combine multiple data objects as one.")
+    (description
+     "This package provides a deep merge function for Python, useful to
+combine multiple data objects as one.")
     (license license:expat)))
 
 (define-public python-clikit
