@@ -19,6 +19,7 @@
 ;;; Copyright © 2024 Romain Garbage <romain.garbage@inria.fr>
 ;;; Copyright © 2024 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Reza Housseini <reza@housseini.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -833,3 +834,47 @@ outside of a PMIx-enabled environment.")
    (home-page "https://openpmix.github.io/")
    ;; The provided license is kind of BSD-style but specific.
    (license (license:fsf-free "https://github.com/openpmix/prrte?tab=License-1-ov-file#License-1-ov-file"))))
+
+(define-public python-simple-slurm
+  (package
+    (name "python-simple-slurm")
+    (version "0.3.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/amq92/simple_slurm")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1vfbd8rp4qd9375f2v26dm99c53jc3x3dpcllz812ly964qi7rnd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; these tests need slurm installed
+         "--deselect=test/test_cli.py::Testing::test_01_using_equal"
+         "--deselect=test/test_cli.py::Testing::test_02_using_spaces"
+         "--deselect=test/test_cli.py::Testing::test_03_using_equal_and_spaces"
+         "--deselect=test/test_core.py::Testing::test_14_srun_returncode"
+         "--deselect=test/test_core.py::Testing::test_15_sbatch_execution"
+         "--deselect=test/test_core.py::Testing::test_19_sbatch_execution_with_job_file"
+         "--deselect=test/test_core.py::Testing::test_22_parsable_sbatch_execution")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'hardcode-sbatch-and-srun-command
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "simple_slurm/core.py"
+                (("\"sbatch\"")
+                 (string-append "\"" (search-input-file inputs "/bin/sbatch") "\""))
+                (("\"srun\"")
+                 (string-append "\"" (search-input-file inputs "/bin/srun") "\""))))))))
+    (native-inputs (list python-setuptools python-pytest))
+    (inputs (list slurm))
+    (home-page "https://github.com/amq92/simple_slurm")
+    (synopsis "Simple Python wrapper for Slurm with flexibility in mind")
+    (description
+     "This package provides a simple Python wrapper for Slurm with flexibility in
+mind.")
+    (license license:agpl3)))
