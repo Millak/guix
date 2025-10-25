@@ -2878,7 +2878,7 @@ part.")
            kparts
            krunner
            kwindowsystem))
-    (home-page "https://community.kde.org/Frameworks")
+    (home-page "https://apps.kde.org/zanshin/")
     (synopsis "TO-do management application")
     (description "Zanshin is a powerful yet simple application for managing
 your day to day actions.  It helps you organize and reduce the cognitive
