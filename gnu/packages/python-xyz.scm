@@ -23229,34 +23229,27 @@ numbers, real numbers, mixed types and more, and comes with a shell command
     (name "python-graphql-relay")
     (version "3.1.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "graphql-relay" version))
-        (sha256
-         (base32
-          "1d70vwam9gjhx7fqzsa03x7lc6ivcqki5r9pk8m7rslmb7pagmbh"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "tests")))))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/graphql-python/graphql-relay-py")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06ybi4bwqdffa5kn8xnns06wh3l0zj3qlzrxk1wpxqq320hyzx9x"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-flags #~(list "tests")))
     (native-inputs
-     (list
-       python-pytest
-       python-pytest-asyncio))
-    (propagated-inputs
-     (list python-graphql-core))
+     (list python-pytest python-pytest-asyncio python-poetry-core))
+    (propagated-inputs (list python-graphql-core))
     (home-page "https://github.com/graphql-python/graphql-relay-py")
     (synopsis "Relay implementation for Python")
     (description
      "This is a library to allow the easy creation of Relay-compliant servers
-     using the GraphQL Python reference implementation of a GraphQL server.  It
-     should be noted that the code is a exact port of the original
-     @url{https://github.com/graphql/graphql-relay-js,graphql-relay js implementation}
-     from Facebook.")
+using the GraphQL Python reference implementation of a GraphQL server.  It
+should be noted that the code is a exact port of the original
+@url{https://github.com/graphql/graphql-relay-js,graphql-relay js
+implementation} from Facebook.")
     (license license:expat)))
 
 (define-public python-graphene
