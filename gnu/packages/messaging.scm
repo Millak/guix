@@ -1767,7 +1767,7 @@ instant messenger with audio and video chat capabilities.")
 (define-public qtox
   (package
     (name "qtox")
-    (version "1.17.6")
+    (version "1.18.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1776,22 +1776,22 @@ instant messenger with audio and video chat capabilities.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pb0ag9z9fz5m1f6lxzl86vksv0n290bw0nh2800scsjhyi9d8lx"))))
+                "0qxaq5nzsjmxa3w4nl04p7ydfzyjq15scnyrjlzdwxh9vgsgg4g6"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases
+     (list #:qtbase qtbase
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'disable-network-tests
                  (lambda _
-                   ;; These tests require network access.
+                   ;; This test requires network access.
                    (substitute* "cmake/Testing.cmake"
-                     (("auto_test\\(core core\\)") "# auto_test(core core)")
-                     (("auto_test\\(net bsu\\)") "# auto_test(net bsu)")))))))
+                     (("auto_test\\(net bsu") "# auto_test(net bsu")))))))
     (native-inputs
-     (list pkg-config qttools-5))
+     (list pkg-config qttools))
     (inputs
      (list bash-minimal
-           ffmpeg-6
+           ffmpeg
            filteraudio
            libsodium
            c-toxcore
@@ -1802,8 +1802,8 @@ instant messenger with audio and video chat capabilities.")
            sqlite
            openal
            qrencode
-           qtsvg-5
-           sonnet-5
+           qtsvg
+           sonnet
            sqlcipher))
     (home-page "https://qtox.github.io/")
     (synopsis "Tox chat client using Qt")
