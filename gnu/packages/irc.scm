@@ -319,7 +319,6 @@ setting @env{LUA_PATH} and @env{LUA_CPATH} in glirc's run-time environment.")
            qtmultimedia-5
            qtscript-5
            qtsvg-5
-           snorenotify
            sonnet
            zlib))
     (home-page "https://quassel-irc.org/")
