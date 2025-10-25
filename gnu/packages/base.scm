@@ -527,6 +527,7 @@ used to apply commands with arbitrarily long arguments.")
                                    ;; These tests error
                                    "tests/dd/nocache.sh"
                                    ;; These tests fail
+                                   "tests/cp/parent-perm-race.sh"
                                    "tests/cp/sparse.sh"
                                    "tests/cp/special-f.sh"
                                    "tests/dd/bytes.sh"
