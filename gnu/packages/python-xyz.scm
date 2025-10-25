@@ -30927,9 +30927,12 @@ that may need or want to use SVG files as geometric data.")
        (method url-fetch)
        (uri (pypi-uri "svgutils" version))
        (sha256
-        (base32
-         "0lz0w2ajdvwd269a7ppnzawmx8px0116j0nx8xvhlihxrd28zx4y"))))
-    (build-system python-build-system)
+        (base32 "0lz0w2ajdvwd269a7ppnzawmx8px0116j0nx8xvhlihxrd28zx4y"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))         ;no test in PyPI archive, depend on Nose
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-lxml))
     (home-page "https://svgutils.readthedocs.io")
