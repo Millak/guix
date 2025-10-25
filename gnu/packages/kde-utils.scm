@@ -1322,49 +1322,44 @@ redone.")
      (list license:gpl2+ license:lgpl2.0+ license:fdl1.2+))))
 
 (define-public rsibreak
-  (let ((commit "6795af6339e5e7c0fdf469290eafdb0f9365a96b")
-        (revision "0"))
-    (package
-      (name "rsibreak")
-      (version (git-version "0.12.15" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://invent.kde.org/utilities/rsibreak.git/")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0p3xxbiwdmbp1cxagl1bnqicr8wv2mlzb5d5f4x6l7m7qzkicga4"))))
-      (build-system qt-build-system)
-      (native-inputs
-       (list extra-cmake-modules kdoctools))
-      (inputs
-       (list breeze-icons ;; default icon set
-             kcolorscheme
-             kconfig
-             kconfigwidgets
-             kcoreaddons
-             kcrash
-             kdbusaddons
-             ki18n
-             kidletime
-             knotifications
-             knotifyconfig
-             kstatusnotifieritem
-             ktextwidgets
-             kwindowsystem
-             kxmlgui
-             qtwayland))
-      (arguments (list #:qtbase qtbase))
-      (home-page "https://apps.kde.org/rsibreak/")
-      (synopsis "Assists in the Recovery and Prevention of Repetitive Strain
-Injury")
-      (description "Repetitive Strain Injury is an illness which can occur as a
+  (package
+    (name "rsibreak")
+    (version "0.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/rsibreak/" version
+                           "/rsibreak-" version ".tar.xz"))
+              (sha256
+               (base32
+                "086ipa9jbpiaj8j79cygk2p5bgpbgpw9bsh8hcbya3vxql4wxcka"))))
+    (build-system qt-build-system)
+    (native-inputs
+     (list extra-cmake-modules kdoctools))
+    (inputs
+     (list breeze-icons ;; default icon set
+           kcolorscheme
+           kconfig
+           kconfigwidgets
+           kcoreaddons
+           kcrash
+           kdbusaddons
+           ki18n
+           kidletime
+           knotifications
+           knotifyconfig
+           kstatusnotifieritem
+           ktextwidgets
+           kwindowsystem
+           kxmlgui
+           qtwayland))
+    (arguments (list #:qtbase qtbase))
+    (home-page "https://apps.kde.org/rsibreak/")
+    (synopsis "Recovery and Repetitive Strain Injury prevention assistsant")
+    (description "Repetitive Strain Injury is an illness which can occur as a
 result of working with a mouse and keyboard.  This utility can be used to
 remind you to take a break now and then.")
-      (license ;; GPL for programs, FDL for documentation
-       (list license:gpl2+ license:fdl1.2+)))))
+    (license ;; GPL for programs, FDL for documentation
+     (list license:gpl2+ license:fdl1.2+))))
 
 (define-public sweeper
   (package
