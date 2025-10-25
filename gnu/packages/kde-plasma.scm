@@ -500,6 +500,43 @@ games, and tools.")
     (home-page "https://invent.kde.org/plasma/drkonqi")
     (license license:gpl2+)))
 
+(define-public flatpak-kcm
+  (package
+    (name "flatpak-kcm")
+    (version "6.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/plasma/" version
+                           "/flatpak-kcm-" version ".tar.xz"))
+       (sha256
+        (base32 "0i8qlmvf33c48khyw50dfgkbj9c5idzbqf7n2bxzv9jvrx8snfnk"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase))
+    (native-inputs
+     (list extra-cmake-modules pkg-config))
+    (inputs
+     (list flatpak
+           kcmutils
+           kconfig
+           kcoreaddons
+           ki18n
+           kitemmodels
+           kservice
+           libostree     ;required by flatpak
+           qtdeclarative
+           qtsvg))
+    (home-page "https://invent.kde.org/plasma/flatpak-kcm")
+    (synopsis "Flatpak permission management KCM")
+    (description "This package provides a KCModule to configure permissions for
+portal interactions.  It also allows changing @code{flatpak} settings via the
+subsumed Flatpak KCM.
+
+Note: Some permissions don't make sense to show for non-sandboxed apps as they
+are only roxying @code{dbus}.")
+    (license license:gpl3+)))
+
 (define-public kactivitymanagerd
   (package
     (name "kactivitymanagerd")
