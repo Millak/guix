@@ -1696,16 +1696,16 @@ library.")
 (define-public rapidfuzz-cpp
   (package
     (name "rapidfuzz-cpp")
-    (version "3.3.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/rapidfuzz/rapidfuzz-cpp")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1im0k0pjg1fnzsixl5k7j706kwwdhkw15a9hpkyr8yqbmmbg9q82"))))
+    (version "3.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rapidfuzz/rapidfuzz-cpp")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ma2hpp4c53fwjb8yi7rpkgivhsw7bkd8agw3sw5zwdlwsks88xv"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1713,8 +1713,9 @@ library.")
     (native-inputs (list catch2))
     (home-page "https://github.com/rapidfuzz/rapidfuzz-cpp")
     (synopsis "Rapid fuzzy string matching using the Levenshtein Distance")
-    (description "RapidFuzz is a fast string matching library for Python and
-C++, which is using the string similarity calculations from FuzzyWuzzy.")
+    (description
+     "RapidFuzz is a fast string matching library for Python and C++, which is
+using the string similarity calculations from FuzzyWuzzy.")
     (license license:expat)))
 
 (define-public cpplint
