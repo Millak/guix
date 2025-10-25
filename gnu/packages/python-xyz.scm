@@ -23034,28 +23034,32 @@ natural language processing libraries.")
     (description "Python driver for MongoDB.")
     (license license:asl2.0)))
 
-(define-public python-consul
+(define-public python-py-consul
   (package
-    (name "python-consul")
-    (version "0.6.1")
+    (name "python-py-consul")
+    (version "1.6.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "python-consul" version))
-        (sha256
-         (base32
-          "0rfyxcy4cr3x848vhx876ifalxd5ghq6l5x813m49h4vq2d4jiq8"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:tests? #f)) ; The tests are not distributed
-    (propagated-inputs
-     (list python-requests python-six))
-    (home-page "https://github.com/cablehead/python-consul")
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              ;; Fork from https://github.com/cablehead/python-consul
+              (url "https://github.com/criteo/py-consul")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jx0sx572akir5ks30d1hvxwmy2apc51idm5k73dfp9biyjhbllh"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))  ; Tests require docker.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-requests))
+    (home-page "https://github.com/criteo/py-consul")
     (synopsis "Python client for Consul")
     (description
      "Python client for @url{http://www.consul.io/,Consul}, a tool for service
-     discovery, monitoring and configuration.")
+discovery, monitoring and configuration.")
     (license license:expat)))
+
+(define-deprecated-package python-consul python-py-consul)
 
 (define-public python-schematics
   (package
