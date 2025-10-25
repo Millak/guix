@@ -173,6 +173,7 @@
 ;;; Copyright © 2025 Matthias Riße <matrss@0px.xyz>
 ;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
 ;;; Copyright © 2025 Allan Adair <allan@adair.no>
+;;; Copyright © 2025 Hennadii Stepanov <hebasto@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36267,7 +36268,7 @@ platform using the ActivityPub protocol.")
 (define-public python-lief
   (package
     (name "python-lief")
-    (version "0.17.0")
+    (version "0.17.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -36276,7 +36277,7 @@ platform using the ActivityPub protocol.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "037ffw62yygkn74p51dnia9rhk81byj1xm8xzy3ciz4qv1di3k49"))))
+                "0cxryrxyirx64v6v0rglklqicrkrmwxipb6v430h2shlh25ryl1s"))))
     (build-system pyproject-build-system)
     (native-inputs (list cmake-minimal
                          ninja
