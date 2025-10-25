@@ -6357,16 +6357,16 @@ library supports sample rates up to 96 kHz and up to eight channels (7.1
 (define-public libfreeaptx
   (package
     (name "libfreeaptx")
-    (version "0.1.1")
+    (version "0.2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/iamthehorker/libfreeaptx")
+                    (url "https://github.com/regularhunter/libfreeaptx")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fm5041nd08yzg0m9474g0943lb3x54zmn59b53nhvxan8x22ibq"))))
+                "0xk247w2l7jd51rbavqnmqk6sqnifhf46k4wwfj572pz7k9cbmly"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ;no tests.
@@ -6378,8 +6378,8 @@ library supports sample rates up to 96 kHz and up to eight channels (7.1
            #:phases
            #~(modify-phases %standard-phases
                (delete 'configure))))
-    (home-page "https://github.com/iamthehorker/libfreeaptx")
-    (synopsis "aptX codec library")
+    (home-page "https://github.com/regularhunter/libfreeaptx")
+    (synopsis "Free implementation of aptX")
     (description "libfreeaptx is an implementation of the Audio Processing
 Technology codecs aptX and aptX HD, mainly intended for use with an A2DP
 bluetooth profile.")
