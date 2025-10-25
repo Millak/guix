@@ -4065,22 +4065,28 @@ distribute/setuptools setup.py script.")
 (define-public python-rapidfuzz
   (package
     (name "python-rapidfuzz")
-    (version "3.6.1")
+    (version "3.14.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "rapidfuzz" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rapidfuzz/RapidFuzz")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1rrx043zqqql31pcp92k61digibymp3l382gaxr4h8717kp0nrim"))))
+        (base32 "1kqy9paxri1ih47mwmsxwz7a222sn2si5n8qd7gxhdf1wdrpdrm7"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-packaging
+     (list cmake-minimal
+           python-cython
            python-pytest
-           python-scikit-build
-           python-setuptools))
+           python-scikit-build-core
+           rapidfuzz-cpp
+           taskflow))
     (home-page "https://github.com/rapidfuzz/RapidFuzz")
     (synopsis "Rapid fuzzy string matching")
-    (description "RapidFuzz is a fast string matching library for Python and
+    (description
+     "RapidFuzz is a fast string matching library for Python and
 C++, which is using the string similarity calculations from FuzzyWuzzy.")
     (license license:expat)))
 
