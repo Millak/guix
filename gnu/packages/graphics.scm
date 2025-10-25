@@ -657,14 +657,14 @@ typically encountered in feature film production.")
 (define-public blender
   (package
     (name "blender")
-    (version "3.6.19")                   ;4.2.x+ requires Python >= 3.12
+    (version "3.6.23")                   ;4.2.x+ requires Python >= 3.12
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.blender.org/source/"
                                   "blender-" version ".tar.xz"))
               (sha256
                (base32
-                "0mx5q3kb3bgx8ni4qpy02gc4kx3cc1zqc5p5vkrdggis3rk3k76h"))))
+                "16ah70kqznxz60n39d4hnlnwh1vi7xn9kx37di708n03l5bn6mmw"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -720,7 +720,7 @@ typically encountered in feature film production.")
            bullet
            eigen
            embree
-           ffmpeg-5
+           ffmpeg-6
            fftw
            freetype-with-brotli
            glew
