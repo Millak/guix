@@ -23622,61 +23622,60 @@ runtime (rather than during a preprocessing step).")
     (name "python-cheetah")
     (version "3.3.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "CT3" version))
-        (sha256
-          (base32
-           "1j36vampqip18jx0jzngb9rnkhhhl8hqnscg117y0d6cgrgm57qw"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "CT3" version))
+       (sha256
+        (base32 "1j36vampqip18jx0jzngb9rnkhhhl8hqnscg117y0d6cgrgm57qw"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'use-absolute-python
-                    (lambda _
-                      (substitute* "Cheetah/CheetahWrapper.py"
-                        (("#!/usr/bin/env python")
-                         (string-append "#!" (which "python"))))))
-                  (add-after 'unpack 'fix-tests
-                    (lambda _
-                      (substitute* "Cheetah/Tests/ImportHooks.py"
-                        (("os.path.dirname\\(__file__\\)")
-                         (string-append "'" (getcwd) "/Cheetah/Tests'")))))
-                  (replace 'check
-                    (lambda _
-                      (setenv "TMPDIR" "/tmp")
-                      (substitute* "Cheetah/Tests/Test.py"
-                        (("unittest.TextTestRunner\\(\\)")
-                         "unittest.TextTestRunner(verbosity=2)"))
-
-                      (invoke "python" "Cheetah/Tests/Test.py"))))))
-    (propagated-inputs
-     (list python-markdown))    ;optional
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "Cheetah/Tests/Test.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-absolute-python
+            (lambda _
+              (substitute* "Cheetah/CheetahWrapper.py"
+                (("#!/usr/bin/env python")
+                 (string-append "#!" (which "python"))))))
+          (add-before 'check 'configure-tests
+            (lambda* (#:key tests? #:allow-other-keys)
+              (substitute* "Cheetah/Tests/ImportHooks.py"
+                (("os.path.dirname\\(__file__\\)")
+                 (string-append "'" (getcwd) "/Cheetah/Tests'")))
+              (substitute* "Cheetah/Tests/Test.py"
+                (("unittest.TextTestRunner\\(\\)")
+                 "unittest.TextTestRunner(verbosity=2)"))
+              (setenv "TMPDIR" "/tmp"))))))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-markdown)) ;optional
     (home-page "https://cheetahtemplate.org/")
     (synopsis "Template engine")
-    (description "Cheetah is a text-based template engine and Python code
-     generator.
+    (description
+     "Cheetah is a text-based template engine and Python code generator.
 
-     Cheetah can be used as a standalone templating utility or referenced as
-     a library from other Python applications.  It has many potential uses,
-     but web developers looking for a viable alternative to ASP, JSP, PHP and
-     PSP are expected to be its principle user group.
+     Cheetah can be used as a standalone templating utility or referenced as a
+library from other Python applications.  It has many potential uses, but web
+developers looking for a viable alternative to ASP, JSP, PHP and PSP are
+expected to be its principle user group.
 
-     Features:
-     @enumerate
-     @item Generates HTML, SGML, XML, SQL, Postscript, form email, LaTeX, or any other
-     text-based format.
-     @item Cleanly separates content, graphic design, and program code.
-     @item Blends the power and flexibility of Python with a simple template language
-     that non-programmers can understand.
-     @item Gives template writers full access to any Python data structure, module,
-     function, object, or method in their templates.
-     @item Makes code reuse easy by providing an object-orientated interface to
-     templates that is accessible from Python code or other Cheetah templates.
-     One template can subclass another and selectively reimplement sections of it.
-     @item Provides a simple, yet powerful, caching mechanism that can dramatically
-     improve the performance of a dynamic website.
-     @item Compiles templates into optimized, yet readable, Python code.
-     @end enumerate")
+Features:
+@enumerate
+@item Generates HTML, SGML, XML, SQL, Postscript, form email, LaTeX, or any
+other text-based format.
+@item Cleanly separates content, graphic design, and program code.
+@item Blends the power and flexibility of Python with a simple template
+language that non-programmers can understand.
+@item Gives template writers full access to any Python data structure, module,
+function, object, or method in their templates.
+@item Makes code reuse easy by providing an object-orientated interface to
+templates that is accessible from Python code or other Cheetah templates.  One
+template can subclass another and selectively reimplement sections of it.
+@item Provides a simple, yet powerful, caching mechanism that can dramatically
+improve the performance of a dynamic website.
+@item Compiles templates into optimized, yet readable, Python code.
+@end enumerate")
     (license (license:x11-style "file://LICENSE"))))
 
 (define-public python-chevron
