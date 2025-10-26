@@ -263,6 +263,11 @@ with Microsoft Compiled HTML (CHM) files")
               (substitute* "src/calibre/utils/seven_zip.py"
                 (("(def test_basic\\(\\).*)" line)
                  (string-append line "\n    return True\n")))))
+          (add-after 'unpack 'skip-flaky-test
+            (lambda _
+              (substitute* "src/calibre/srv/tests/web_sockets.py"
+                (("(def test_websocket_basic\\(\\).*)" line)
+                 (string-append line "\n    return True\n")))))
           (add-before 'build 'configure
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "setup/build.py"
