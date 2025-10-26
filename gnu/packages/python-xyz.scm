@@ -3862,15 +3862,28 @@ structure or other iterative computation.")
        (sha256
         (base32 "1cnaqnckpcrpc4b8ba18s5ds05w1yfiszcp7ql7pmx0jnrj25qax"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #false))  ;there are none
+    (arguments
+     (list
+      #:tests? #false                   ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-shellescape-requirement
+            (lambda _
+              (substitute* "src/__init__.py"
+                (("import shellescape")
+                 "import shlex")
+                (("shellescape\\.quote")
+                 "shlex.quote"))
+              (substitute* "setup.py"
+                (("\"shellescape\",")
+                 "")))))))
     (propagated-inputs
      (list python-beautifulsoup4
            python-emoji-for-gh-md-to-html
            python-pillow
            python-requests
-           python-shellescape
            python-webcolors))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/phseiff/github-flavored-markdown-to-html/")
     (synopsis "Github-flavored Markdown")
     (description
