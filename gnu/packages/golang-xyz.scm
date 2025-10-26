@@ -1546,6 +1546,30 @@ handlers, log levels, zero-allocation, scopes, custom formatting, and
 environment and runtime configuration.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-anchore-go-struct-converter
+  (package
+    (name "go-github-com-anchore-go-struct-converter")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/anchore/go-struct-converter")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jvhq19wd061wmfsskqgh3hkm5p5a5wzpzlivzyd97vzrj2y0hn3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/anchore/go-struct-converter"))
+    (home-page "https://github.com/anchore/go-struct-converter")
+    (synopsis "Struct converter for Golang")
+    (description
+     "This package provides a set of conversion utilities to migrate between
+different versioned Go structs.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-andreasbriese-bbloom
   (package
     (name "go-github-com-andreasbriese-bbloom")
