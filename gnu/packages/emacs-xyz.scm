@@ -37704,8 +37704,8 @@ to be examined using Ediff.")
     (license license:expat)))
 
 (define-public emacs-info-plus
-  (let ((commit "34d54e58b6cbb4f135dc0583ebdce4437b052dce")
-        (revision "4"))
+  (let ((commit "a2322ad090676ccebad540ee8480103e01ca32c3")
+        (revision "5"))
     (package
       (name "emacs-info-plus")
       (version (git-version "0" revision commit))
@@ -37718,8 +37718,9 @@ to be examined using Ediff.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0xkn26a2h47v5y4fgznbflsbh7vz61nz4j9kkshg3lv8wnkbipmv"))))
+           "0gv6fy92il3927i0wfdy6wccgxcz1k4mr6vhfj4fn84nszsx1k4m"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ;no tests
       (home-page "https://github.com/emacsmirror/info-plus")
       (synopsis "Extensions to @file{info.el}")
       (description "This package extends Emacs' @file{info.el} by allowing
