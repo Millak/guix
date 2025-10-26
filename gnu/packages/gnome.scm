@@ -3003,8 +3003,13 @@ Freedesktop Icon Naming Specification.")
            #~(modify-phases %standard-phases
                (add-after 'unpack 'patch-meson
                  ;; Don't create 'icon-theme.cache'.
-                 (lambda _ (substitute* "meson.build"
-                        (("gtk4?-update-icon-cache") "true")))))))
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("gtk4?-update-icon-cache") "true")))))))
+    ;; The Adwaita icon theme inherits from both AdwaitaLegacy and hicolor,
+    ;; per its index.theme file ("Inherits=AdwaitaLegacy,hicolor"); propagate
+    ;; them so the theme is always fully defined.
+    (propagated-inputs (list adwaita-icon-theme-legacy hicolor-icon-theme))
     (home-page "https://gitlab.gnome.org/GNOME/adwaita-icon-theme")
     (synopsis "GNOME icon theme")
     (description "Icons for the GNOME desktop.")
