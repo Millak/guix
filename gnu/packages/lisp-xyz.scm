@@ -13717,8 +13717,8 @@ the ncurses terminal library.")
   (sbcl-package->ecl-package sbcl-croatoan))
 
 (define-public sbcl-crypto-shortcuts
-  (let ((commit "7efd22d80e867cd8c9f8f363d4fe7b51ee2dadc0")
-        (revision "1"))
+  (let ((commit "9b77282d7d52ff89753bd71b5584169b53942dbc")
+        (revision "2"))
     (package
       (name "sbcl-crypto-shortcuts")
       (version (git-version "2.0.0" revision commit))
@@ -13726,19 +13726,19 @@ the ncurses terminal library.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/crypto-shortcuts")
+               (url "https://codeberg.org/shinmera/crypto-shortcuts")
                (commit commit)))
          (file-name (git-file-name "crypto-shortcuts" version))
          (sha256
-          (base32 "0c0m0ar04jn7qf2v8c4sivamlzki03r13rnxy8b3n27rh9r6hgin"))))
+          (base32 "1b0dzf84xzw444kib1744sls4l24zh3nx1cz77xbc8qphic0m0ms"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       (list sbcl-cl-base64 sbcl-flexi-streams sbcl-ironclad))
+       (list sbcl-cl-base64 sbcl-cl-base32 sbcl-flexi-streams sbcl-ironclad))
       (synopsis "Collection of common cryptography functions")
       (description
        "This is a collection of common cryptography functions for Common
 Lisp.")
-      (home-page "https://shinmera.github.io/crypto-shortcuts/")
+      (home-page "https://shinmera.com/docs/crypto-shortcuts")
       (license license:zlib))))
 
 (define-public cl-crypto-shortcuts
