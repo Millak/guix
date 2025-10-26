@@ -22428,7 +22428,7 @@ bit of zlib) in Emacs in a portable fashion.")
     (propagated-inputs
      (list emacs-defaultencrypt))
     (description
-     ;; TRANSLATORS: ExtendSMIME, DefaultEncrypt, and emacs-default-encrypt
+     ;; TRANSLATORS: ExtendSMIME, DefaultEncrypt, and emacs-defaultencrypt
      ;; should not be translated.  The name "emacs-defaultencrypt" refers to
      ;; the Guix package that provides DefaultEncrypt.
      "ExtendSMIME is designed to be used with Gnus in Emacs.  It enhances
