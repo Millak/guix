@@ -13792,7 +13792,7 @@ profiler via Sysprof, debugging support, and more.")
            python-natsort
            python-piexif
            python-pillow
-           python-pillow-heif
+           python-pillow-heif-0.22
            python-pure-protobuf
            python-pycairo
            python-pygobject
