@@ -25241,41 +25241,40 @@ filetypes can be easily added by creating plugins for them.")
 (define-public python-radon
   (package
     (name "python-radon")
-    (version "5.1.0")
+    (version "6.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "radon" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rubik/radon")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1vmf56zsf3paa1jadjcjghiv2kxwiismyayq42ggnqpqwm98f7fb"))))
-    (build-system python-build-system)
+        (base32 "01n3idnrglgbjgwvvgs7yg9amjda3zs2659sp2zqpllp9gva73y9"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'relax-requirements
-                    (lambda _
-                      (substitute* "setup.py"
-                        ((".*'future'.*")
-                         "")
-                        (("mando>=0\\.6,<0\\.7")
-                         "mando>=0.6")
-                        (("colorama==0.4.1")
-                         "colorama>=0.4.1"))))
-                  (replace 'check
-                    (lambda _
-                      (invoke "python" "radon/tests/run.py"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* (list "pyproject.toml" "requirements.txt")
+                (("(mando.*>=0\\.6),<0\\.8" _ mando-lower-bound)
+                 mando-lower-bound)))))))
     (propagated-inputs (list python-colorama python-mando))
-    (native-inputs (list python-pytest python-pytest-mock))
+    (native-inputs (list python-poetry-core python-pytest python-pytest-mock
+                         python-setuptools))
     (home-page "https://radon.readthedocs.org/")
     (synopsis "Code Metrics in Python")
-    (description "Radon is a Python tool which computes various code metrics.
-     Supported metrics are:
-     @itemize @bullet
-     @item raw metrics: SLOC, comment lines, blank lines, &c.
-     @item Cyclomatic Complexity (i.e., McCabe’s Complexity)
-     @item Halstead metrics (all of them)
-     @item the Maintainability Index (a Visual Studio metric)
-     @end itemize")
+    (description
+     "Radon is a Python tool which computes various code metrics. Supported
+metrics are:
+@itemize @bullet
+@item raw metrics: SLOC, comment lines, blank lines, &c.
+@item Cyclomatic Complexity (i.e., McCabe’s Complexity)
+@item Halstead metrics (all of them)
+@item the Maintainability Index (a Visual Studio metric)
+@end itemize")
     (license license:expat)))
 
 (define-public python-rgbxy
