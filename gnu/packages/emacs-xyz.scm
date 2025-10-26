@@ -42850,6 +42850,30 @@ should replace it.  However, if you call them again immediately after, they
 restore that occurrence of the placeholder and move to the next.")
       (license license:gpl3+))))
 
+(define-public emacs-pdd
+  (package
+    (name "emacs-pdd")
+    (version "0.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/lorniu/pdd.el/")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0xap7i2x8mqpwr52xdqb8c6lhjmxm1d6car2533ynyr4k2fn4lw5"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #f))                ;tests require networking
+    (home-page "https://github.com/lorniu/pdd.el")
+    (synopsis "HTTP requests and asynchronous operations in Emacs")
+    (description "@code{pdd} provides a library for HTTP requests and
+asynchronous operations in Emacs.  It featuring a single, consistent API that
+works identically across different backends, maximizing code portability and
+simplifying development.")
+    (license license:gpl3+)))
+
 (define-public emacs-pddl-mode
   (package
     (name "emacs-pddl-mode")
