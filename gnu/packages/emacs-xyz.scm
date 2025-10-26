@@ -31636,7 +31636,7 @@ the GIF result.")
 (define-public emacs-gt
   (package
     (name "emacs-gt")
-    (version "3.0.9")
+    (version "3.2.1")
     (source
      (origin
        (method git-fetch)
@@ -31645,7 +31645,7 @@ the GIF result.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1j5knkb8h0wpr6pzvrb6kvisjkm4kkd7jzad6h566sn0si2x9y5g"))))
+        (base32 "1z9rvk9ksva2xpwgb7bgw9zy0lv9sr7sq77f6dpm9fkdwzpj38mi"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -31663,6 +31663,8 @@ the GIF result.")
                          (("\\(ert-deftest test--gt-valid-literally .*"
                            all)
                           (string-append all "(skip-unless nil)\n"))))))))
+    (propagated-inputs
+     (list emacs-pdd))
     (home-page "https://github.com/lorniu/gt.el/")
     (synopsis "Configurable and scalable translation framework")
     (description
