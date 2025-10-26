@@ -584,30 +584,27 @@ mechanism for serializing structured data.")
 (define-public python-pure-protobuf
   (package
     (name "python-pure-protobuf")
-    (version "2.0.1")
+    (version "3.1.5")
     (source
      (origin
-       ;; The PyPI tarball is broken: it has no tests.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/eigenein/protobuf")
-             (commit version)))
+              (url "https://github.com/eigenein/protobuf")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15dp5pvazd0jx4wzzh79080ah7hkpd3axh40al9vhzs2hf3v90hx"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-flake8 python-pytest python-pytest-cov python-isort))
+        (base32 "1ab665h5nmvg52zqdaa0pnmvimh6m6zis2l2vz3lqjd0jqm5zghs"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "pytest" "--cov-report" "term-missing" "--cov"
-                     "pure_protobuf")
-             (invoke "flake8" "pure_protobuf" "tests"
-                     "--ignore=F541")
-             (invoke "isort" "-rc" "-c" "pure_protobuf" "tests"))))))
+     (list
+      #:build-backend "poetry.core.masonry.api"))
+    (native-inputs
+     (list python-poetry-core
+           python-poetry-dynamic-versioning
+           python-pydantic-2
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-cov))
     (home-page "https://pypi.org/project/pure-protobuf/")
     (synopsis "Protobuf implementation using dataclasses")
     (description
