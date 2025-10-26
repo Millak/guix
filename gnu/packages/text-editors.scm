@@ -1407,6 +1407,58 @@ more.")
      "Mogan is a scientific structural text editor, a fork of GNU TeXmacs.")
     (license license:gpl3+)))
 
+(define-public tecoc
+  ;; No tagged releases; this is the master tip.
+  (let ((commit "b4a96395a18c7e64ccaef0e25fdde3b7ef33ac4b")
+        (revision "0"))
+    (package
+      (name "tecoc")
+      ;; Version taken from tecoc.h
+      (version (git-version "147" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/blakemcbride/TECOC")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0q6kcynvrhwl0pmyvdrkdzg0nxshrn05cdp5knn1s9ki7fqqccr9"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ; No tests
+        #:make-flags
+        #~(list "-C" "src"
+                "-f" "makefile.linux"
+                (string-append "CC=" #$(cc-for-target)))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (replace 'install
+              (lambda _
+                (let ((bin-dir (string-append #$output "/bin"))
+                      (doc-dir (string-append #$output:doc "/share/doc/"
+                                              #$name "-" #$version)))
+                  (install-file "src/tecoc" bin-dir)
+                  (for-each (lambda (file)
+                              (install-file file doc-dir))
+                            (find-files "doc")))))
+            (add-after 'install 'create-symlinks
+              (lambda _
+                (with-directory-excursion (string-append #$output "/bin")
+                  (for-each (lambda (link)
+                              (symlink "tecoc" link))
+                            (list "Make" "inspect" "mung" "teco"))))))))
+      (outputs (list "out" "doc"))
+      (inputs (list ncurses))
+      (synopsis "@acronym{TECO, Text Editor and Corrector} written in C")
+      (description
+       "Tecoc is a portable version of the venerable @acronym{TECO, Text Editor
+and Corrector} written in C that strives to keep the original behavior.")
+      (home-page "https://github.com/blakemcbride/TECOC")
+      (license license:bsd-3))))
+
 (define-public textpieces
   (package
     (name "textpieces")
