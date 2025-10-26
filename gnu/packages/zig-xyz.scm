@@ -476,7 +476,7 @@ across several operating systems.")
 (define-public zig-wayland
   (package
     (name "zig-wayland")
-    (version "0.2.0")
+    (version "0.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -485,10 +485,16 @@ across several operating systems.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1cf5085f6c0yly4fcr49jry3mh12bybw98x5lvickl6w5gxsvy3n"))))
+                "0kkmg2gxb03xjrsd4kzxwvchxlcj3mvx0hajzpbcz949k0ihhlms"))))
     (build-system zig-build-system)
     (arguments
-     (list #:phases
+     (list #:zig zig-0.15
+           #:zig-release-type "safe"
+           #:zig-build-flags
+           #~(list "-Denable-tests")
+           #:zig-test-flags
+           #~(list "-Denable-tests")
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'configure 'fix-cross-compilation
                  (lambda _
