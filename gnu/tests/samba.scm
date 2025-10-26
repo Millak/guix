@@ -137,15 +137,19 @@
           (test-equal "smbclient connect"
             0
             (marionette-eval
-             '(system* #$(file-append samba "/bin/smbclient")
-                       "--list=localhost" "--no-pass")
+             '(begin
+                (sleep 2)
+                (system* #$(file-append samba "/bin/smbclient")
+                         "--list=localhost" "--no-pass"))
              marionette))
 
           (test-equal "smbclient connect"
             0
             (marionette-eval
-             '(system* #$(file-append samba "/bin/smbclient")
-                       "--list=localhost" "--no-pass")
+             '(begin
+                (sleep 2)
+                (system* #$(file-append samba "/bin/smbclient")
+                         "--list=localhost" "--no-pass"))
              marionette))
 
           (test-end))))
