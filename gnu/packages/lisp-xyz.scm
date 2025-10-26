@@ -10188,8 +10188,8 @@ Development into CL+SSL was done by David Lichteblau.")
          ((#:tests? _ #f) #f))))))
 
 (define-public sbcl-cl-steamworks
-  (let ((commit "9d6a4de653a8cc256ae35e0298912b518aa92ba3")
-        (revision "1"))
+  (let ((commit "95f25ae89d6ecc1a9461720d91d208e537eb8f17")
+        (revision "2"))
     (package
       (name "sbcl-cl-steamworks")
       (version (git-version "1.0.0" revision commit))
@@ -10197,10 +10197,10 @@ Development into CL+SSL was done by David Lichteblau.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/cl-steamworks/")
+               (url "https://codeberg.org/shinmera/cl-steamworks")
                (commit commit)))
          (sha256
-          (base32 "1fzj3rlqw1kwdlmh0ga0y71p2n1adflcamzx4yp9kga552c1db5j"))
+          (base32 "1h9qz603ab62sw0j7yyixb20z05pfgxqpg8mhd8zxhgmfm7cccy7"))
          (file-name (git-file-name "cl-steamworks" version))))
       (build-system asdf-build-system/sbcl)
       (inputs
@@ -10209,13 +10209,14 @@ Development into CL+SSL was done by David Lichteblau.")
              sbcl-cffi
              sbcl-documentation-utils
              sbcl-float-features
+             sbcl-pathname-utils
              sbcl-trivial-features
              sbcl-trivial-garbage
              sbcl-trivial-gray-streams))
       (synopsis "Wrapper for the Valve SteamWorks API")
       (description "This is a wrapper library to allow you to interface with
 the Valve SteamWorks API.")
-      (home-page "https://shinmera.github.io/cl-steamworks/")
+      (home-page "https://shinmera.com/docs/cl-steamworks")
       (license license:zlib))))
 
 (define-public cl-steamworks
