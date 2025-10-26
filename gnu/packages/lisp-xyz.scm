@@ -367,8 +367,8 @@ operations in 3D space.")
   (sbcl-package->clasp-package sbcl-3d-matrices))
 
 (define-public sbcl-3d-quaternions
-  (let ((commit "b79c15cca8d9c409216a6cee8ec9e182dcdec9e2")
-        (revision "0"))
+  (let ((commit "f477801d1c85020f8173d2951a54e7be10460048")
+        (revision "1"))
     (package
       (name "sbcl-3d-quaternions")
       (version (git-version "1.0.0" revision commit))
@@ -376,17 +376,17 @@ operations in 3D space.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/3d-quaternions")
+               (url "https://codeberg.org/shinmera/3d-quaternions")
                (commit commit)))
          (file-name (git-file-name "cl-3d-quaternions" version))
          (sha256
-          (base32 "1mrq6yhb90mhvxdkg3fx58ci5yj5xlixbbzf1q6p76wyq40qjv76"))))
+          (base32 "1vyagfn432d8gzhfcg1wy38zygks78by8q75qiybv4iarg41lm8i"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-parachute))
       (inputs
        (list sbcl-3d-matrices sbcl-3d-vectors sbcl-documentation-utils))
-      (home-page "https://shinmera.github.io/3d-quaternions/")
+      (home-page "https://codeberg.org/shinmera/3d-quaternions")
       (synopsis "Quaternion and dual-quaternion functionality in Common Lisp")
       (description
        "This is a library for quaternions.  It contains most of the quaternion
