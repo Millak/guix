@@ -969,10 +969,10 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
            python-numpy
            python-pycairo
            python-pygobject
-           python-pyqt
+           python-pyqt-6
            python-pyqtgraph
            python-pyyaml
-           qtbase-5
+           qtbase
            qwt
            sdl
            soapysdr
