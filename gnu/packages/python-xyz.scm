@@ -27003,62 +27003,57 @@ You can simply type pybtex instead of bibtex.")
 (define-public python-online-judge-api-client
   (package
     (name "python-online-judge-api-client")
-    (version "10.10.1")
-    ;; Source distributions are not uploaded to PyPI.
-    ;; https://pypi.org/project/online-judge-api-client/10.10.1/#files
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/online-judge-tools/api-client")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0yjqhh44va5nawd9rpqcjyf0g7rjlkvn7s90fmwmwjyqvy6lhjiz"))
-              (patches (search-patches
-                        "python-online-judge-api-client-tests.patch"))))
-    (build-system python-build-system)
+    (properties '((commit . "615c345f169e2603e0b907287559a4535fc3c6f9")
+                  (revision . "0")))
+    (version (git-version "10.10.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/online-judge-tools/api-client")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13m3cxv6bd3igj6649149xb27ljmzqzpli6hpfrywvgbm238hbws"))
+       (patches
+        (search-patches "python-online-judge-api-client-tests.patch"))
+       ))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        ;; These tests require network connections
-                        (add-after 'unpack 'remove-failing-test
-                          (lambda _
-                            (for-each delete-file
-                                      '("tests/get_contest_atcoder.py"
-                                        "tests/get_contest_atcoder_problems.py"
-                                        "tests/get_contest_codechef.py"
-                                        "tests/get_contest_codeforces.py"
-                                        "tests/get_contest_yukicoder.py"
-                                        "tests/get_problem_anarchygolf.py"
-                                        "tests/get_problem_aoj.py"
-                                        "tests/get_problem_atcoder.py"
-                                        "tests/get_problem_codechef.py"
-                                        "tests/get_problem_codeforces.py"
-                                        "tests/get_problem_csacademy.py"
-                                        "tests/get_problem_facebook.py"
-                                        "tests/get_problem_hackerrank.py"
-                                        "tests/get_problem_kattis.py"
-                                        "tests/get_problem_library_checker.py"
-                                        "tests/get_problem_poj.py"
-                                        "tests/get_problem_topcoder.py"
-                                        "tests/get_problem_toph.py"
-                                        "tests/get_problem_yukicoder.py"
-                                        "tests/login_service.py")) #t)))))
-    (propagated-inputs (list python-appdirs
-                             python-beautifulsoup4
-                             python-colorlog
-                             python-lxml
-                             python-requests
-                             python-toml
-                             python-jsonschema))
+     (list
+      #:test-flags
+      #~(list "--ignore-glob=tests/get_contest_*.py"
+              "--ignore-glob=tests/get_problem_*.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'configure-tests
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (delete-file-recursively
+               (string-append (site-packages inputs outputs)
+                              "/tests"))
+              (call-with-output-file "pytest.ini"
+                (lambda (port)
+                  (format port "\
+[pytest]
+python_files = tests/*.py"))))))))
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs
+     (list python-appdirs
+           python-beautifulsoup4
+           python-colorlog
+           python-lxml
+           python-requests
+           python-toml
+           python-jsonschema))
     (home-page "https://github.com/online-judge-tools/api-client")
     (synopsis "API client for various online judges")
     (description
      "This is an API client for various online judges, used as the backend
-library of @code{oj} command.  You can use the Python
-library (@code{onlinejudge} module) and the command-line
-interface (@command{oj-api} command) which talks JSON compatible with
-jmerle/competitive-companion.")
+library of @code{oj} command.  You can use the Python library
+(@code{onlinejudge} module) and the command-line interface (@command{oj-api}
+command) which talks JSON compatible with jmerle/competitive-companion.")
     (license license:expat)))
 
 (define-public online-judge-tools
