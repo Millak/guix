@@ -27676,24 +27676,20 @@ and corruption checks.")
 (define-public python-requests-file
   (package
     (name "python-requests-file")
-    (version "1.5.1")
+    (version "3.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "requests-file" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/dashea/requests-file")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "13kx4k83i9zcv20h0fnmawwwdzhcmw1z97mqib1h379qsc445mq7"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "tests/test_requests_file.py")))))))
-    (propagated-inputs
-     (list python-requests python-six))
-    (home-page "https://github.com/dashea/requests-file")
+        (base32 "0wvz2fkx01libz731a9pfx0l5p44cd33ba8gs7kw5dksfzfwvark"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-requests))
+    (home-page "https://codeberg.org/dashea/requests-file")
     (synopsis "File transport adapter for Requests")
     (description
      "Requests-File is a transport adapter for use with the Requests Python
