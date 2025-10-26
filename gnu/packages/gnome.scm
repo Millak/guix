@@ -2954,6 +2954,37 @@ Specification, the icon naming utility maps the icon names used by the
 GNOME and KDE desktops to the icon names proposed in the specification.")
     (license license:lgpl2.1+)))
 
+(define-public adwaita-icon-theme-legacy
+  ;; Copied from adwaita-icon-theme@46.2.  The adwaita-icon-theme package
+  ;; ships (introduced in 46.2) an index.theme that inherits from
+  ;; AdwaitaLegacy, with the expectation that distributions may choose to make
+  ;; it a dependency of Adwaita for compatibility purposes.
+  (package
+    (name "adwaita-icon-theme-legacy")
+    (version "46.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32 "1d1gyacqy7rf9vbljwhqwdkxbyszn5avfcw8s5r4p9c9hpsq112l"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-meson
+                 ;; Don't create 'icon-theme.cache'.
+                 (lambda _ (substitute* "meson.build"
+                             (("gtk4?-update-icon-cache") "true")))))))
+    (home-page "https://gitlab.gnome.org/GNOME/adwaita-icon-theme")
+    (synopsis "Legacy GNOME icon theme")
+    (description
+     "Legacy Adwaita icon theme.  This provides GNOME's \"old-style\" fullcolor
+icons, for compatibility with applications that request icons following the
+Freedesktop Icon Naming Specification.")
+    (license (list license:lgpl3 license:cc-by-sa3.0))))
+
 (define-public adwaita-icon-theme
   (package
     (name "adwaita-icon-theme")
