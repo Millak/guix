@@ -29,7 +29,7 @@
 ;;; Copyright © 2020, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2020, 2021, 2022, 2023, 2024 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021, 2026 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021 Alexandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
@@ -42,8 +42,9 @@
 ;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2025 Jake Forster <jakecameron.forster@gmail.com>
 ;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
-;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
+;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
+;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -129,7 +130,6 @@
   #:use-module (guix build-system guile)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system scons)
   #:use-module (guix deprecation)
@@ -3044,77 +3044,89 @@ GIF, TIFF, WEBP, BMP, PNG, XPM formats.")
 (define-public mypaint
   (package
     (name "mypaint")
-    (version "2.0.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/mypaint/mypaint/"
-                                  "releases/download/v" version "/mypaint-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "05mvay73vb9d2sh1ckv4vny45n059dmsps1jcppjizfmrpbkgr7k"))))
-    (build-system python-build-system)
+    ;; The latest changes contains support for Python 3.12+.
+    (properties '((commit . "35aa9d33cd3deba6cafea6d8fc901b5a1d161ceb")
+                  (revision . "0")))
+    (version (git-version "2.0.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mypaint/mypaint")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1p1i799dzpx0zr7chkz0pjdq9l32ahckgyagbiw82c27mwxqabfh"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:imported-modules ((guix build glib-or-gtk-build-system)
-                           ,@%python-build-system-modules)
-       #:modules ((guix build python-build-system)
+     (list
+      #:imported-modules `(,@%pyproject-build-system-modules
+                           (guix build glib-or-gtk-build-system))
+      #:modules '((guix build pyproject-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
                   (guix build utils))
-       ;; XXX: Tests are not discovered.
-       #:tests? #false
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'python3.11-compatibility
-           (lambda _
-             (substitute* "setup.py"
-               (("\"rU\"") "\"r\"")
-               (("test_suite='tests'.*") ""))
-             (substitute* "setup.cfg"
-               (("install-") "install_"))
-             ;; This file makes Python confuse it for a module, so we rename
-             ;; it.
-             (rename-file "lib/xml.py" "lib/xmlo.py")
-             (substitute* (find-files "." "\\.py$")
-               (("lib.xml") "lib.xmlo"))
-             ;; This procedure has been removed.
-             (substitute* "lib/gettext_setup.py"
-               (("c = gettext.bind_textdomain_codeset.*") "c = True\n"))))
-         (add-after 'install 'glib-or-gtk-wrap
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
-         (add-after 'install 'wrap-program
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (gdk-pixbuf (assoc-ref inputs "gdk-pixbuf"))
-                    (gtk+ (assoc-ref inputs "gtk+")))
-               ;; This is replaced with an invalid shebang.
-               (substitute* (string-append out "/bin/mypaint")
-                 (("#!python")
-                  (string-append "#!" (which "python3"))))
-               (wrap-program (string-append out "/bin/mypaint")
-                 `("GI_TYPELIB_PATH" ":" prefix
-                   (,(getenv "GI_TYPELIB_PATH")))))))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Tests need writing access
-             (setenv "HOME" "/tmp"))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'move-assets-to-data
+            ;; XXX: Check why.
+            ;;
+            ;; ERROR: gui.application: Missing icon 'org.mypaint.MyPaint':
+            ;; check that mypaint icons have been installed into
+            ;; /gnu/store/<...>/data/icons
+            ;;
+            ;; gi.repository.GLib.GError: g-file-error-quark: Failed to open
+            ;; file
+            ;; “/gnu/store/<...>/data/mypaint/pixmaps/cursor_color_picker.png”:
+            ;; No such file or directory (4)
+            (lambda _
+              (let* ((data (string-append #$output "/data"))
+                     (data-icons (string-append data "/icons"))
+                     (data-mypaint (string-append data "/mypaint"))
+                     (icons (string-append #$output "/icons"))
+                     (mypaint (string-append #$output "/mypaint")))
+                (mkdir-p data-icons)
+                (mkdir-p data-mypaint)
+                (copy-recursively icons data-icons)
+                (copy-recursively mypaint data-mypaint)
+                (delete-file-recursively icons)
+                (delete-file-recursively mypaint))))
+          (add-after 'install 'glib-or-gtk-wrap
+            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
+          (add-after 'install 'wrap-program
+            (lambda* (#:key outputs inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/mypaint")
+                `("GI_TYPELIB_PATH" ":" prefix
+                  (,(getenv "GI_TYPELIB_PATH"))))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Need to get the 'lib' in 'build/'.
+              (delete-file-recursively "lib")
+              ;; Tests need writing access
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list pkg-config
+     (list gettext-minimal
            gobject-introspection
-           swig-4.0
-           gettext-minimal))
+           pkg-config
+           python-pytest
+           python-setuptools
+           swig))
     (inputs
      (list bash-minimal
+           gdk-pixbuf
            gtk+
-           (librsvg-for-system)
            hicolor-icon-theme
-           libmypaint
-           mypaint-brushes
            json-c
            lcms
+           libmypaint-next
+           libpng
+           (librsvg-for-system)
+           mypaint-brushes
            python-numpy
            python-pycairo
            python-pygobject))
-    (home-page "http://mypaint.org/")
+    (home-page "https://mypaint.org/")
     (synopsis "Fast and simple painting app for artists")
     (description
      "MyPaint is a simple drawing and painting program that works well with
