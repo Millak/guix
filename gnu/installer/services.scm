@@ -6,6 +6,7 @@
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2023 Denys Nykula <vegan@libre.net.ua>
 ;;; Copyright © 2025 Florian Pelz <pelzflorian@pelzflorian.de>
+;;; Copyright © 2025 Fredrik Salomonsson <plattfot@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -107,6 +108,11 @@
       (packages '((specification->package "emacs")
                   (specification->package "emacs-exwm")
                   (specification->package "emacs-desktop-environment"))))
+     (desktop-environment
+      (name "Sway")
+      (packages (map (lambda (package)
+                       `(specification->package ,package))
+                     '("sway" "wmenu" "foot"))))
 
      ;; Networking.
      (system-service

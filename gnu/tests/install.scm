@@ -46,6 +46,7 @@
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages ratpoison)
   #:use-module (gnu packages suckless)
+  #:use-module (gnu packages terminals)
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages wm)
   #:use-module (gnu packages xorg)
@@ -2061,7 +2062,8 @@ build (current-guix) and then store a couple of full system images.")
     (packages (append
                (list icewm openbox awesome i3-wm i3status
                      dmenu st ratpoison xterm
-                     emacs emacs-exwm emacs-desktop-environment)
+                     emacs emacs-exwm emacs-desktop-environment
+                     sway wmenu foot)
                %base-packages))
     (services
      (append
