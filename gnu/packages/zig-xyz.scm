@@ -246,7 +246,7 @@ mission-critical safety and performance for financial services.")
 (define-public waylock
   (package
     (name "waylock")
-    (version "1.3.0")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -255,10 +255,11 @@ mission-critical safety and performance for financial services.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0jlq23cb5069sa5ipshhj82a9rn30frflwi9skp2kplqpxm15wwd"))))
+        (base32 "1bxs0gbczw8hb42fzl0i51jbzq82gvi3dad7xzhlall6fkl8882d"))))
     (build-system zig-build-system)
     (arguments
      (list
+      #:zig zig-0.15
       #:install-source? #f
       ;; No tests.
       #:tests? #f
