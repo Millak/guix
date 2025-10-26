@@ -14720,6 +14720,43 @@ be used as both a binary and a library.")
 protocol.")
     (license license:isc)))
 
+(define-public go-sigs-k8s-io-knftables
+  (package
+    (name "go-sigs-k8s-io-knftables")
+    (version "0.0.19")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kubernetes-sigs/knftables")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dx0flrdhxbvk8wxgk90px91gx731qjq4j2di3nyfnn2sp3yfz1d"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "sigs.k8s.io/knftables"
+      ;; Tests are not copatible with Go 1.24+.
+      #:test-flags #~(list "-vet=off")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (substitute* (string-append "src/" import-path "/exec_test.go")
+                (("/bin/true") (which "true"))
+                (("/bin/false") (which "false"))))))))
+    (native-inputs
+     (list go-github-com-google-go-cmp
+           go-github-com-lithammer-dedent))
+    (home-page "https://github.com/kubernetes-sigs/knftables")
+    (synopsis "Golang nftables library for Kubernetes")
+    (description
+     "This package provides nftables bindings in Go. It is not intended to
+support arbitrary use cases, but instead specifically focuses on supporting
+Kubernetes components which are using nftables.")
+    (license license:asl2.0)))
+
 ;;;
 ;;; Executables:
 ;;;
