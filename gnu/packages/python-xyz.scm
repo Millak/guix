@@ -27398,7 +27398,7 @@ commit, but it also includes some other useful statistics.")
 (define-public python-gitignore-parser
   (package
     (name "python-gitignore-parser")
-    (version "0.1.12")
+    (version "0.1.13")
     (source
      (origin
        (method git-fetch)
@@ -27407,18 +27407,10 @@ commit, but it also includes some other useful statistics.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00s8vvslnlbqnmkgnmc374mjzbsw7b167gh7wf5ygigd79cpnnxk"))))
+        (base32 "0lx1lip9p70my7z77szxc6izg3dj3000r6z71f2bnx2z13rl5pld"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; Tests are missing in PyPI.
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python" "-m" "unittest")))))))
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/mherrmann/gitignore_parser")
     (synopsis "Spec-compliant gitignore parser for Python")
     (description
