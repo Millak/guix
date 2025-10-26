@@ -5956,7 +5956,7 @@ the electronic or dubstep genre.")
 (define-public sonivox
   (package
     (name "sonivox")
-    (version "3.6.14")
+    (version "3.6.16")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5965,10 +5965,18 @@ the electronic or dubstep genre.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0zn9v4lxjpnpdlpnv2px8ch3z0xagmqlvff5pd39pss3mxfp32g0"))))
+                "0yxgyzx5144f5rfqsqhlsfzjxy6a27605dr1g874y8wra6dsbrfq"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:tests? (not (%current-target-system)))) ; run unless cross-compiling
+     (list #:tests? (not (%current-target-system)) ; run unless cross-compiling
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'symlink-soundfont
+                 (lambda _
+                   (setenv "TEMP" (getcwd))
+                   (symlink #$soundfont-airfont-340
+                            (string-append (getenv "TEMP")
+                                           "/soundfont.dls")))))))
     (native-inputs
      (list googletest))
     (home-page "https://github.com/pedrolcl/sonivox")
