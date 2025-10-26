@@ -202,6 +202,31 @@ and GCC’s decimal extension.")
          (package-arguments go-github-com-cockroachdb-apd)
        ((#:import-path _) "github.com/cockroachdb/apd/v3")))))
 
+(define-public go-github-com-google-go-intervals
+  (package
+    (name "go-github-com-google-go-intervals")
+    (version "0.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/google/go-intervals")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0v9i46g1vdbyinagj94jvaibw4bpgh2l9f9p5268wg6msf761jm9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/google/go-intervals"))
+    (home-page "https://github.com/google/go-intervals")
+    (synopsis "Operations on 1-dimensional intervals for Golang")
+    (description
+     "This package provides utilities for performing set operations on
+1-dimensional intervals, such as time ranges.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-johncgriffin-overflow
   (package
     (name "go-github-com-johncgriffin-overflow")
