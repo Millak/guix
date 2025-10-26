@@ -8388,8 +8388,8 @@ Common Lisp with support of other audio formats available on GNU/Linux systems:
   (sbcl-package->ecl-package sbcl-cl-mixed))
 
 (define-public sbcl-cl-modio
-  (let ((commit "2fd288af27b574f448357fa6de4b42acf44e2f11")
-        (revision "1"))
+  (let ((commit "b1322bbfb306f5fbd39ef3141150a213603c5d22")
+        (revision "2"))
     (package
       (name "sbcl-cl-modio")
       (version (git-version "1.0.0" revision commit))
@@ -8397,10 +8397,10 @@ Common Lisp with support of other audio formats available on GNU/Linux systems:
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/cl-modio/")
+               (url "https://codeberg.org/shinmera/cl-modio")
                (commit commit)))
          (sha256
-          (base32 "0hz87v81pi8kr2c7az30czpdf7v757lkzlsmdcc59p94pipca7m9"))
+          (base32 "11njccizmpak57fxprvf84xbx45r03xgyrqbdjdhwrj1r1k9fdny"))
          (file-name (git-file-name "cl-modio" version))))
       (build-system asdf-build-system/sbcl)
       (inputs
@@ -8417,7 +8417,7 @@ Common Lisp with support of other audio formats available on GNU/Linux systems:
 for games and other applications.  It covers the full v1 API and includes
 convenience methods to make interacting with the API as well as syncing mods
 and so on easy.")
-      (home-page "https://shinmera.github.io/cl-modio/")
+      (home-page "https://codeberg.org/shinmera/cl-modio")
       (license license:zlib))))
 
 (define-public cl-modio
