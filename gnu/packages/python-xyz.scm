@@ -27652,23 +27652,38 @@ derivation parsing, namingly @code{b32decode()}, @code{b32encode()} and
 (define-public python-dns-lexicon
   (package
     (name "python-dns-lexicon")
-    (version "2.4.0")
+    (version "3.21.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "dns-lexicon" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dns-lexicon/dns-lexicon")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0jdn3ns71bsybr7njgsqr9xlxsqh7zh6phn4ld0liazqdn2l5f6m"))))
-    (build-system python-build-system)
+        (base32 "138j8nrkrisn7kh5rqi2wz130p6vr4bkaw1pmbfpjkdjk118ng8c"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))                    ;requires internet access
+     (list
+      ;; Integration tests require network access.
+      #:test-flags #~(list "--ignore-glob=tests/providers/*.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'configure-tests
+            (lambda _
+              (setenv "HOME" (getcwd)))))))
+    (native-inputs (list nss-certs-for-test python-hatchling python-pytest))
     (propagated-inputs
-     (list python-future python-pynamecheap python-requests
-           python-tldextract python-urllib3))
-    (home-page "https://github.com/AnalogJ/lexicon")
-    (synopsis
-     "Manipulate DNS records on various DNS providers")
+     (list python-beautifulsoup4
+           python-cryptography
+           python-dnspython
+           python-importlib-metadata
+           python-pyotp
+           python-pyyaml
+           python-requests
+           python-tldextract))
+    (home-page "https://github.com/dns-lexicon/dns-lexicon")
+    (synopsis "Manipulate DNS records on various DNS providers")
     (description
      "Lexicon provides a way to manipulate DNS records on multiple DNS
 providers in a standardized way.  It has a CLI but it can also be used as a
