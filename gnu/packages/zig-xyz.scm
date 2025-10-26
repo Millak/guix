@@ -547,7 +547,7 @@ interface.")
 (define-public zig-xkbcommon
   (package
     (name "zig-xkbcommon")
-    (version "0.2.0")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -556,7 +556,7 @@ interface.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16f59n7l2gcpnq8gb4v8skr4jhb2l6ax75rna92nqzj15f4ikqag"))))
+                "117nw4b5q14mb6j5yhvydlwllbd7gyxp176as4gj9qb5zh8wz5kv"))))
     (build-system zig-build-system)
     (arguments (list #:skip-build? #t))
     (propagated-inputs (list libxkbcommon))
