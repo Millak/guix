@@ -44983,14 +44983,8 @@ hacker.")
                                               (search-input-file inputs
                                                                  "/bin/curl")
                                               space "\"")))))
-                        (add-after 'unpack 'makeinfo
-                          (lambda _
-                            (emacs-makeinfo
-                             "README.org"
-                             '(progn
-                               (require 'ox-texinfo)
-                               (setq org-texinfo-with-broken-links t)
-                               (org-texinfo-export-to-info))))))))
+                        (add-before 'install 'makeinfo
+                          (lambda _ (emacs-makeinfo))))))
     (inputs (list curl))
     (native-inputs (list texinfo))
     (propagated-inputs (list emacs-compat))
