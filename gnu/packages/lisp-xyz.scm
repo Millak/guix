@@ -12955,8 +12955,8 @@ collecting values easier.")
   (sbcl-package->ecl-package sbcl-collectors))
 
 (define-public sbcl-colored
-  (let ((commit "bee87efb0b047da0f071f5cf1457997ab5f93feb")
-        (revision "1"))
+  (let ((commit "54e6184da4aca380cc7240c417f1e2a0d76b3a84")
+        (revision "2"))
     (package
       (name "sbcl-colored")
       (version (git-version "1.0.0" revision commit))
@@ -12964,11 +12964,11 @@ collecting values easier.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/colored/")
+               (url "https://codeberg.org/shinmera/colored")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0mpg91r6yfb9xqccd4r8z3hl2qzjhdj6daswb1cinrm8ffxrvy5k"))))
+          (base32 "1n9k8rh2p7kb2ikxpgw8sywaxw0n5m3iky808dwc4hqz04piqmmh"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-parachute))
@@ -12978,7 +12978,7 @@ collecting values easier.")
       (description
        "This is a library for representing and mapping colours between their
 various spaces.")
-      (home-page "https://shinmera.github.io/colored/")
+      (home-page "https://shinmera.com/docs/colored")
       (license license:zlib))))
 
 (define-public cl-colored
