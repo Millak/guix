@@ -26930,29 +26930,24 @@ close matches in Python.")
 (define-public python-pybtex
   (package
     (name "python-pybtex")
-    (version "0.24.0")
+    (version "0.25.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pybtex" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/pybtex/pybtex")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0ma7sc10hk6caq5zghbk865vrlaynz7x5z630z0facqpnqssx3l1"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest))
-    (propagated-inputs
-     (list python-latexcodec python-pyyaml python-six))
-    (arguments
-     (list
-      #:phases #~(modify-phases %standard-phases
-                   (replace 'check
-                     (lambda* (#:key tests? #:allow-other-keys)
-                       (when tests?
-                         (invoke "pytest")))))))
+        (base32 "12rixrciizlvdxxja7qm6c02yzyslzd0jcv07niaii1ly0dg1fq4"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-latexcodec python-pyyaml))
     (home-page "https://pybtex.org/")
     (synopsis "BibTeX-compatible bibliography processor")
-    (description "Pybtex is a BibTeX-compatible bibliography processor written
-in Python.  You can simply type pybtex instead of bibtex.")
+    (description
+     "Pybtex is a BibTeX-compatible bibliography processor written in Python.
+You can simply type pybtex instead of bibtex.")
     (license license:expat)))
 
 (define-public python-pybtex-apa-style
