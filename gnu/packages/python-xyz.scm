@@ -26869,16 +26869,18 @@ working with iterables.")
 (define-public python-latexcodec
   (package
     (name "python-latexcodec")
-    (version "2.0.1")
+    (version "3.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "latexcodec" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mcmtroffaes/latexcodec/")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "16pynfnn8y8xp55yp06i721fccv5dlx9ba6k5bzcwq9j6wf5b8ia"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-six))
+        (base32 "0j4hkn161h0hsx3ixs85dqnsaya27ck9c2ri1lv8cayc5a9kqvcp"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://readthedocs.org/projects/latexcodec/")
     (synopsis "Work with LaTeX code in Python")
     (description "Lexer and codec to work with LaTeX code in Python.")
