@@ -9689,6 +9689,36 @@ according @@url{https://rfc-editor.org/rfc/rfc8785.html, RFC 8785}.")
  with some code optimisations to make it run faster.")
     (license license:bsd-3)))
 
+(define-public go-github-com-graylog2-go-gelf
+  (package
+    (name "go-github-com-graylog2-go-gelf")
+    (version "0.0.0-20170811154226-7ebf4f536d8f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Graylog2/go-gelf")
+              (commit (go-version->git-ref version
+                                           #:subdir "gelf"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0a51xrh798y7712kmpflh74jqhvrvy7n6rvr83b17w86n56z9ba7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Graylog2/go-gelf/gelf"
+      #:unpack-path "github.com/Graylog2/go-gelf"))
+    (home-page "https://github.com/Graylog2/go-gelf")
+    (synopsis "GELF library and writer for Golang")
+    (description
+     "This package is a @acronym{Graylog Extended Log Format,GELF}
+(@url{https://go2docs.graylog.org/current/home.htm, specification}) library
+for Go. GELF is an application-level logging protocol that avoids many of the
+shortcomings of @code{syslog}.  While it can be run over any stream or
+datagram transport protocol, it has special support to allow long messages to
+be split over multiple datagrams.")
+    (license license:expat)))
+
 (define-public go-github-com-guptarohit-asciigraph
   (package
     (name "go-github-com-guptarohit-asciigraph")
