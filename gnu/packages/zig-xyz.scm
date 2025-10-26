@@ -130,7 +130,7 @@ performance of multiple commands with a colorful terminal user interface.")
 (define-public river
   (package
     (name "river")
-    (version "0.3.6")
+    (version "0.3.12")
     (source
      (origin
        (method git-fetch)
@@ -139,10 +139,11 @@ performance of multiple commands with a colorful terminal user interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g4p1fa9kf23ldq1p8yplkb7hnkhfynhn93z6qqm67nacss2idbc"))))
+        (base32 "1jh374v6c0mfrppj0fgz177qxi3ihcisq158ismqnhagnbdk3z2w"))))
     (build-system zig-build-system)
     (arguments
-     (list #:install-source? #f
+     (list #:zig zig-0.15
+           #:install-source? #f
            #:zig-release-type "safe"
            #:zig-build-flags
            #~(list "-Dpie" "-Dxwayland")
@@ -152,6 +153,20 @@ performance of multiple commands with a colorful terminal user interface.")
                  (lambda _
                    (substitute* "build.zig"
                      (("/bin/sh") (which "sh")))))
+               (add-after 'unpack 'prepare-build.zig.zon
+                 (lambda _
+                   (substitute* "build.zig.zon"
+                     (("\\.pixman") ".@\"zig-pixman\"")
+                     (("\\.wayland") ".@\"zig-wayland\"")
+                     (("\\.wlroots") ".@\"zig-wlroots\"")
+                     (("\\.xkbcommon") ".@\"zig-xkbcommon\""))))
+               (add-before 'build 'revert-build.zig.zon
+                 (lambda _
+                   (substitute* "build.zig.zon"
+                     (("\\.@\"zig-pixman\"") ".pixman")
+                     (("\\.@\"zig-wayland\"") ".wayland")
+                     (("\\.@\"zig-wlroots\"") ".wlroots")
+                     (("\\.@\"zig-xkbcommon\"") ".xkbcommon"))))
                (add-after 'install 'install-wayland-session
                  (lambda _
                    (let ((wayland-sessions
