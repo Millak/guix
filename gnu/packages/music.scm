@@ -5990,7 +5990,7 @@ real time GM synthesizer.")
 (define-public sonivox-eas
   (package
     (name "sonivox-eas")
-    (version "1.5.1")
+    (version "1.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5999,7 +5999,7 @@ real time GM synthesizer.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1y67bi2vcwb1avwz18i41q85cmqx9svwx4q3kpmh951l49s9k8vz"))))
+                "1dzknbc9b4cbf1smql3b7g9smg45z1z8qrq0y6m4659k0jc3svs4"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
