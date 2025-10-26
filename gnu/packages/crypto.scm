@@ -1372,8 +1372,8 @@ API.")
 
 (define-public python-olm
   (package
-    ;; python-olm is part of libolm and must be updated at the same time.
-    (inherit libolm)
+    ;; python-olm is part of olm and must be updated at the same time.
+    (inherit olm)
     (name "python-olm")
     (build-system python-build-system)
     (arguments
@@ -1390,7 +1390,7 @@ API.")
              (when tests?
                (add-installed-pythonpath inputs outputs)
                (invoke "pytest")))))))
-    (inputs (list libolm))
+    (inputs (list olm))
     (propagated-inputs
      (list python-cffi python-future))
     (native-inputs
