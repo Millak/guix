@@ -581,7 +581,7 @@ reading the extensive documentation about BookmarkPlus on the Emacs Wiki.")
   (package
     (name "emacs-bqn-mode")
     ;; Upstream releases are tagged by date.
-    (version "2025-04-10")
+    (version "2025-07-06")
     (source
      (origin
        (method git-fetch)
@@ -590,7 +590,7 @@ reading the extensive documentation about BookmarkPlus on the Emacs Wiki.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zl6s0c0nd8m55f83yamgnl8kg1a9jrzl0wrmixrixzn7zmdj6qk"))))
+        (base32 "1b25k66nn4qa4ryhm8mzc53qvsvhgjzdngisw28cpdh109627iz3"))))
     (build-system emacs-build-system)
     (arguments
      (list #:tests? #f)) ;No tests found in source.
