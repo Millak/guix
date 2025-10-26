@@ -5637,6 +5637,42 @@ API.")
 types and related helper functions.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-mdns
+  (package
+    (name "go-github-com-hashicorp-mdns")
+    (version "1.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hashicorp/mdns")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pl9b4h46vzkxsxg1sq9g01y4cmxwfcy07a4v3r5c5b125p57fg6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/mdns"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; err: no multicast listeners could be started
+               (list "TestServer_StartStop"
+                     "TestServer_Lookup")
+               "|"))))
+    (propagated-inputs
+     (list go-github-com-miekg-dns
+           go-golang-org-x-net))
+    (home-page "https://github.com/hashicorp/mdns")
+    (synopsis "Simple mDNS client/server library in Golang")
+    (description
+     "This package is a simple @acronym{mDNS,Multicast Domain Name Service}
+client/server library in Go. @code{mDNS} can be used to discover services on
+the local network without the use of an authoritative DNS server.  This
+enables peer-to-peer discovery.")
+    (license license:expat)))
+
 (define-public go-github-com-hashicorp-memberlist
   (package
     (name "go-github-com-hashicorp-memberlist")
