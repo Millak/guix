@@ -4704,7 +4704,7 @@ This package expects the game(s) to be placed in subdirectories of
     (home-page "http://exult.info/")
     (license license:gpl2+)))
 
-(define %supertuxkart-version "1.4")
+(define %supertuxkart-version "1.5")
 (define supertuxkart-source
   (origin
     (method git-fetch)
@@ -4713,7 +4713,7 @@ This package expects the game(s) to be placed in subdirectories of
           (commit %supertuxkart-version)))
        (sha256
         (base32
-         "1hv4p0430zw6qm5fgsmayhj8hdxx7qpzggwks5w26z0dz1b5m9w2"))
+         "0q2dsv9vxblnv04d73qlvbbnkrxgywplz6qsqmfbamn7lj57kypx"))
        (file-name (git-file-name "supertuxkart" %supertuxkart-version))
        (modules '((guix build utils)))
        (snippet
@@ -4734,7 +4734,7 @@ This package expects the game(s) to be placed in subdirectories of
   ;; There are no tags or releases for the stk-assets data, nor indication of
   ;; which revision is bundled into the released SuperTuxKart-*-src tarball;
   ;; use the latest SVN revision available.
-  (let ((commit "18612"))
+  (let ((commit "18621"))
     (hidden-package
      (package
        (name "supertuxkart-data")
@@ -4751,7 +4751,7 @@ This package expects the game(s) to be placed in subdirectories of
           (file-name (string-append name "-" commit "-checkout"))
           (sha256
            (base32
-            "1r21m1aginn4wmgrasv2a0cky75l2wk50pqja80k3fbc1gs3hbhz"))))
+            "0bz4rab0h6dyf014andw7lpd5gh3b2xqdslx0ffdglmf65xi594a"))))
        (build-system copy-build-system)
        (arguments
         (list #:install-plan
@@ -4834,7 +4834,7 @@ This package expects the game(s) to be placed in subdirectories of
            enet
            libjpeg-turbo
            openssl))
-    (native-inputs (list mcpp pkg-config python))
+    (native-inputs (list mcpp pkg-config python shaderc))
     (home-page "https://supertuxkart.net/Main_Page")
     (synopsis "3D kart racing game")
     (description "SuperTuxKart is a 3D kart racing game, with a focus on
