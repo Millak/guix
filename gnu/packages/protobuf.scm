@@ -56,6 +56,7 @@
   #:use-module (gnu packages ruby-check)
   #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages time)
   #:use-module (srfi srfi-1))
 
 (define-public fstrm
@@ -619,15 +620,27 @@ structured data.")
 (define-public python-proto-plus
   (package
     (name "python-proto-plus")
-    (version "1.20.3")
+    (version "1.26.1")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "proto-plus" version))
+       (uri (pypi-uri "proto_plus" version))
        (sha256
-        (base32 "1raad9qnmfva94nm33k40bcwrckgljbfky5pdwh4xhg6r5dj52zj"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-protobuf))
+        (base32 "04m0jsy1cf7fqzafswvcqvwihgfyp9xkrqlr71vql260qjj1b991"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Not packaged <https://github.com/google/pytype>:
+      ;; ModuleNotFoundError: No module named 'google.type'
+      #~(list "--deselect=tests/test_fields_enum.py::test_unwrapped_enum_fields")))
+    (native-inputs
+     (list python-pytest
+           ;; python-pytype
+           python-pytz
+           python-setuptools))
+    (propagated-inputs
+     (list python-protobuf))
     (home-page "https://github.com/googleapis/proto-plus-python.git")
     (synopsis "Pythonic protocol buffers")
     (description "This is a wrapper around protocol buffers.  Protocol buffers
