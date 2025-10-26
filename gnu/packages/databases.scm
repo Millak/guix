@@ -128,6 +128,7 @@
   #:use-module (gnu packages language)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libevent)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lisp)
   #:use-module (gnu packages lisp-xyz)
@@ -876,6 +877,30 @@ they exist.")
      "Prisma Client Python is an auto-generated and fully type-safe database
 client.")
     (license license:asl2.0)))
+
+(define-public python-psycopg2cffi
+  (package
+    (name "python-psycopg2cffi")
+    (version "2.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "psycopg2cffi" version))
+       (sha256
+        (base32 "0ljwsglgjm0c28dzlqlyvbz1jnn4hpmqa8dn28fkmpipv3f2w9vy"))))
+    (build-system pyproject-build-system)
+    ;; TODO: Fix tests: ImportError: cannot import name 'psycopg2_tests' from
+    ;; partially initialized module 'psycopg2cffi.tests' (most likely due to a
+    ;; circular import)
+    (arguments '(#:tests? #f))
+    (propagated-inputs (list python-cffi
+                             python-six)) ;; hard dependency
+    (native-inputs (list python-setuptools postgresql))
+    (home-page "https://github.com/chtd/psycopg2cffi")
+    (synopsis "Port of psycopg2 to CFFI")
+    (description
+     "This package is an implementation of @code{psycopg2} using CFFI.")
+    (license license:lgpl3)))
 
 (define-public python-pylibmc
   (package
