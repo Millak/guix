@@ -12193,6 +12193,10 @@ resources using Web Application Description Language (WADL) files as guides.")
       '(modify-phases %standard-phases
          (add-after 'unpack 'compatibility
            (lambda _
+             ;; Relax requests-file requirement.
+             (substitute* "pyproject.toml"
+               (("\"requests-file.*\",")
+                "\"requests-file\","))
              ;; httpx removed the "proxies" keyword.  It's now either "mounts"
              ;; or "proxy".  See https://github.com/encode/httpx/pull/2879.
              (substitute* "src/zeep/transports.py"
