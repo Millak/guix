@@ -99,6 +99,30 @@ the @code{c2go} tool at
 eStargz} - a lazily-pullable image format.")
     (license license:asl2.0)))
 
+(define-public go-github-com-cpuguy83-tar2go
+  (package
+    (name "go-github-com-cpuguy83-tar2go")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cpuguy83/tar2go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vag88n77kfmb4msygkyyywcjyxlmjbsx4sqnhmi92jcb8bh93bb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cpuguy83/tar2go"))
+    (home-page "https://github.com/cpuguy83/tar2go")
+    (synopsis "Tar files interfaces for Golang")
+    (description
+     "This package defines basic interfaces to handle tar files.  It is similar
+to @url{https://pkg.go.dev/io/fs#FS, fs.FS}, but for tar files.")
+    (license license:expat)))
+
 (define-public go-github-com-datadog-zstd
   (package
     (name "go-github-com-datadog-zstd")
