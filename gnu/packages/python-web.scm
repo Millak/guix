@@ -3976,6 +3976,15 @@ high-speed transfers via libcurl and frequently outperforms alternatives.")
        (sha256
         (base32 "02c6cyh8f3dagcw786m9nl5y0n3xa98p5mb7d7xfr84l2l5bglmk"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"requests-file.*\",")
+                 "\"requests-file\",")))))))
     (native-inputs
      (list nss-certs-for-test
            python-pytest
