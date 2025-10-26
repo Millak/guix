@@ -26982,16 +26982,22 @@ You can simply type pybtex instead of bibtex.")
     (version "1.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "onetimepass" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tadeck/onetimepass/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "09vagxgbq78wvq4xbikmn2hpqqsa2i96kqsmphf7dqynfv0dlsd5"))))
-    (build-system python-build-system)
+        (base32 "0wmv62l3r8r4428gdzyj80lhgadfqvj220khz1wnm9alyzg60wkh"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))  ; Requires unpackaged timecop.
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-six))
     (home-page "https://github.com/tadeck/onetimepass/")
     (synopsis "One-time password library")
-    (description "Python one-time password library for HMAC-based (HOTP) and
-time-based (TOTP) passwords.")
+    (description
+     "Python one-time password library for HMAC-based (HOTP) and time-based
+(TOTP) passwords.")
     (license license:expat)))
 
 (define-public python-online-judge-api-client
