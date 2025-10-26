@@ -6,6 +6,7 @@
 ;;; Copyright © 2018 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
+;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -248,6 +249,10 @@ access to exported repositories under @file{/srv/git}."
             "fastcgi_param GIT_HTTP_EXPORT_ALL \"\";"
             "")
         (list "fastcgi_param GIT_PROJECT_ROOT " git-root ";")
+        (list "fastcgi_param GIT_CONFIG_GLOBAL "
+              (plain-file "gitconfig"
+                          (string-append "[safe]\n\tdirectory = " git-root "/*\n"))
+              ";")
         "fastcgi_param PATH_INFO $1;"))))))
 
 
