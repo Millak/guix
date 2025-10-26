@@ -2392,6 +2392,32 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
 verification flows.")
     (license license:isc)))
 
+(define-public sby-gui
+  (let ((commit "6c977084c17c4842c504829c6d455a07d67e119c")
+        (revision "0"))
+    (package
+      (name "sby-gui")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/YosysHQ/sby-gui/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "137x3s5mwbzlcv2p6671ijvbafzwhxpvszzfi9wifq0wcli6cxxg"))))
+      (build-system qt-build-system)
+      (arguments
+       (list #:tests? #f))               ;no tests
+      (propagated-inputs (list sby))
+      (home-page "https://github.com/YosysHQ/sby-gui/")
+      (synopsis "Graphical user interface for code{sby}")
+      (description
+       "@code{sby-gui} is a GUI for front-end driver program for
+code{yosys}-based formal hardware verification flows.")
+      (license license:isc))))
+
 (define-deprecated-package symbiyosys
   sby)
 
