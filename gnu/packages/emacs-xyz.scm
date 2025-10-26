@@ -31633,15 +31633,15 @@ A screenshot is taken for every user action.  Call
 the GIF result.")
     (license license:gpl3+)))
 
-(define-public emacs-go-translate
+(define-public emacs-gt
   (package
-    (name "emacs-go-translate")
+    (name "emacs-gt")
     (version "3.0.9")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/lorniu/go-translate/")
+             (url "https://github.com/lorniu/gt.el/")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
@@ -31663,13 +31663,16 @@ the GIF result.")
                          (("\\(ert-deftest test--gt-valid-literally .*"
                            all)
                           (string-append all "(skip-unless nil)\n"))))))))
-    (home-page "https://github.com/lorniu/go-translate/")
+    (home-page "https://github.com/lorniu/gt.el/")
     (synopsis "Configurable and scalable translation framework")
     (description
      "This is a translation framework on Emacs, with high configurability
 and extensibility.  It can easily be extended to various Text-to-Text
 conversion scenarios.")
     (license license:gpl3+)))
+
+(define-deprecated-package emacs-go-translate
+  emacs-gt)
 
 (define-public emacs-google-translate
   (package
