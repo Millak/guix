@@ -25767,6 +25767,30 @@ package.")
     ;; License type does latterly says it' "UNLICENSE".
     (license license:unlicense)))
 
+(define-public go-resenje-org-singleflight
+  (package
+    (name "go-resenje-org-singleflight")
+    (version "0.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/janos/singleflight")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0by4pj1kvqjdv73p420mmj7787rdr2rzzzpg80gnj394i07m8gfq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "resenje.org/singleflight"))
+    (home-page "https://github.com/janos/singleflight")
+    (synopsis "Duplicate function call suppression mechanism for Golang")
+    (description
+     "This package provides a duplicate function call suppression mechanism
+with support for context cancellation.")
+    (license license:bsd-3)))
+
 (define-public go-rsc-io-binaryregexp
   (package
     (name "go-rsc-io-binaryregexp")
