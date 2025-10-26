@@ -10341,6 +10341,29 @@ expressing configuration which is easy for both humans and machines to read.")
     (home-page "https://github.com/hashicorp/hcl")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-logutils
+  (package
+    (name "go-github-com-hashicorp-logutils")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hashicorp/logutils")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "076wf4sh5p3f953ndqk1cc0x7jhmlqrxak9953rz79rcdw77rjvv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/hashicorp/logutils"))
+    (home-page "https://github.com/hashicorp/logutils")
+    (synopsis "Utilities for better logging for Golang")
+    (description
+     "Package logutils augments the standard log package with levels.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hdrhistogram-hdrhistogram-go
   (package
     (name "go-github-com-hdrhistogram-hdrhistogram-go")
