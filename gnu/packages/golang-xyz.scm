@@ -19879,6 +19879,33 @@ converting them to the @code{time.Duration} type.")
 implementation.")
     (license license:expat)))
 
+(define-public go-github-com-spdx-gordf
+  (package
+    (name "go-github-com-spdx-gordf")
+    (version "0.0.0-20250128162952-000978ccd6fb")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spdx/gordf")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0almcq8p3sj0wbp3c276xdhva1imwnprvbd7klgfjnzlh11pllcw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/spdx/gordf"
+      #:test-flags
+      #~(list "-vet=off"))) ;Go@1.24 forces vet, but tests are not ready yet.
+    (home-page "https://github.com/spdx/gordf")
+    (synopsis "RDF parser for Golang")
+    (description
+     "This package provides a parser for RDF files linearized using RDF/XML
+format.  It is used to represent the RDF files in memory and write back in
+possibly different formats like JSON and XML.")
+    (license license:expat)))
+
 (define-public go-github-com-spf13-afero
   (package
     (name "go-github-com-spf13-afero")
