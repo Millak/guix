@@ -3363,14 +3363,14 @@ backends, including ALSA, OSS, Network and FluidSynth.")
 (define-public vmpk
   (package
     (name "vmpk")
-    (version "0.9.0")
+    (version "0.9.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/vmpk/vmpk/"
                                   version "/vmpk-" version ".tar.bz2"))
               (sha256
                (base32
-                "1ndwmshw3skfcxb3f606hv4y80hfisfp5bdc81a0f0qrpx6f2zn4"))))
+                "1p28dnxsyamzdm9zaxfhman6245js22r4h4yxhnprs5aan1qiyrv"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
