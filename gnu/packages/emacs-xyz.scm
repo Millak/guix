@@ -45192,7 +45192,7 @@ for pdb allowing completion in a @code{*gud-pdb*} buffer.")
 (define-public emacs-bitbake-modes
   (package
    (name "emacs-bitbake-modes")
-   (version "0.5.3")
+   (version "0.8.0")
    (source
      (origin
        (method git-fetch)
@@ -45200,7 +45200,7 @@ for pdb allowing completion in a @code{*gud-pdb*} buffer.")
              (url "https://bitbucket.org/olanilsson/bitbake-modes")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1580cfpfmsjwiq6v2vsqjwhzj9m4lrhhf3nffmbzp36r6q5n8611"))
+        (base32 "11hrnkg2kn07hydjwvm1vax3wm34mvh4k0xl3cakfcih31wbkj1k"))
        (file-name (git-file-name name version))))
    (build-system emacs-build-system)
    (arguments (list #:tests? #f))       ; tests require networking
