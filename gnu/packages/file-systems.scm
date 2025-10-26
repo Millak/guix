@@ -49,6 +49,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system linux-module)
   #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (guix utils)
@@ -2010,50 +2011,48 @@ compatible directories.")
 (define-public dbxfs
   (package
     (name "dbxfs")
-    (version "1.0.63")
+    (version "2.0.1")
     (source
-      (origin
-        ;; Release tarball contains files not in git repository.
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://thelig.ht/code/dbxfs")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32
-          "1vzfhw3z2r0rb6s0qdzirh3pl7rv1z8xmxa0z5h7h1wqhpl05ai7"))
-        (patches (search-patches "dbxfs-remove-sentry-sdk.patch"))
-        (snippet
-         #~(begin (use-modules (guix build utils))
-                  ;; Don't check for package updates.
-                  (substitute* "dbxfs/main.py"
-                    (("if version") "if False"))))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "dbxfs" version))
+       (sha256
+        (base32 "1ml03anr6zz26ab3d8z1r8klz9bfincrn5v53l725svar9an0b12"))))
     (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.py"
-               (("keyrings.alt>=3.1,<5")
-                "keyrings.alt>=3.1")))))))
+     (list
+      ;; XXX: No tests in Pypi archive. git-fetch fails to download the
+      ;; git source upstream though.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                (("\"sentry_sdk.*\",")
+                 ""))
+              (substitute* "dbxfs/main.py"
+                (("import sentry_sdk")
+                 "")
+                (("^(\\s)sentry_sdk\\.init" all space)
+                 (string-append space "import sentry_sdk\n" all))
+                ;; Don't check for package updates.
+                (("if version")
+                 "if False")))))))
     (propagated-inputs
      (list python-appdirs
            python-block-tracing
            python-dropbox
-           python-keyring
-           python-keyrings-alt
            python-privy
            python-userspacefs))
     (native-inputs
      (list python-setuptools))
-  (home-page "https://thelig.ht/code/dbxfs/")
-  (synopsis "User-space file system for Dropbox")
-  (description
-   "@code{dbxfs} allows you to mount your Dropbox folder as if it were a
+    (home-page "https://thelig.ht/code/dbxfs/")
+    (synopsis "User-space file system for Dropbox")
+    (description
+     "@code{dbxfs} allows you to mount your Dropbox folder as if it were a
 local file system using FUSE.")
-  (license license:gpl3+)))
+    (license license:gpl3+)))
 
 (define-public rewritefs
   (let ((revision "1")
