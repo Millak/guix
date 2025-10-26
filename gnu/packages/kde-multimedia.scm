@@ -15,6 +15,7 @@
 ;;; Copyright © 2024 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024, 2025 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2025 Sergio Pastor Pérez <sergio.pastorperez@gmail.com>
+;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -98,6 +99,23 @@
     (arguments
      (list #:configure-flags
            #~(list "-DCMAKE_CXX_FLAGS=-fPIC")))
+    (home-page "https://community.kde.org/Phonon")
+    (synopsis "KDE's multimedia library")
+    (description "KDE's multimedia library.")
+    (license license:lgpl2.1+)))
+
+(define-public phonon-qt5
+  (package
+    (inherit phonon)
+    (name "phonon-qt5")
+    (native-inputs
+     (list appstream extra-cmake-modules pkg-config qttools-5))
+    (inputs (list qtbase-5 glib pulseaudio))
+    (arguments
+     (list #:configure-flags
+           #~(list "-DPHONON_BUILD_QT5=ON"
+                   "-DPHONON_BUILD_QT6=OFF"
+                   "-DCMAKE_CXX_FLAGS=-fPIC")))
     (home-page "https://community.kde.org/Phonon")
     (synopsis "KDE's multimedia library")
     (description "KDE's multimedia library.")

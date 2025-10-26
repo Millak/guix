@@ -2693,7 +2693,7 @@ covers feedback and persistent events.")
            kwindowsystem-5
            libcanberra
            libdbusmenu-qt
-           phonon
+           phonon-qt5
            qtdeclarative-5
            qtbase-5
            qtspeech-5
@@ -4570,7 +4570,7 @@ the passwords on KDE work spaces.")
            kwidgetsaddons-5
            kwindowsystem-5
            libgcrypt
-           phonon
+           phonon-qt5
            qgpgme
            qca
            qtbase-5))))
@@ -4727,7 +4727,7 @@ descriptions for integrating actions from plugins.")
                   kxmlgui-5
                   ;; XXX: "undefined reference to `glGetString'" errors occur without libglvnd,
                   libglvnd
-                  phonon
+                  phonon-qt5
                   qtbase-5
                   qtdeclarative-5
                   qtquickcontrols2-5
