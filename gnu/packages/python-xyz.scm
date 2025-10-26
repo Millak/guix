@@ -27340,9 +27340,9 @@ Features include, but are not limited to:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "055xf7ja7zjhxis0ab5fnfsx16fsvr5fvc6mixqybanwxh8sgfjk"))))
-    (build-system python-build-system)
+        (base32 "055xf7ja7zjhxis0ab5fnfsx16fsvr5fvc6mixqybanwxh8sgfjk"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/asharov/globber")
     (synopsis "Library for string matching with glob patterns")
     (description
