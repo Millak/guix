@@ -512,7 +512,7 @@ interface.")
 (define-public zig-wlroots
   (package
     (name "zig-wlroots")
-    (version "0.18.1")
+    (version "0.19.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -521,10 +521,11 @@ interface.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rckbrdqc4b5q6r8ppijkkf0xi01536sfsnfgmy9f3mfj3hvifvy"))))
+                "0d21vyrav2vi42kr1gpf4y6i27gspskzb1fma963qp8wyrlrn3dg"))))
     (build-system zig-build-system)
     (arguments
-     (list #:zig-release-type "safe"
+     (list #:zig zig-0.15
+           #:zig-release-type "safe"
            #:zig-build-flags
            #~(list "-Denable-tests")
            #:zig-test-flags
@@ -540,7 +541,7 @@ interface.")
                           `(,@args #:install-source? #f))
                    (chdir ".."))))))
     (propagated-inputs
-     (list wlroots-0.18
+     (list wlroots-0.19
            zig-pixman
            zig-wayland
            zig-xkbcommon))
