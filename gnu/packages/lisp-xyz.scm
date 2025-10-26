@@ -400,11 +400,12 @@ most modern systems and compilers.")
 (define-public cl-3d-quaternions
   (sbcl-package->cl-source-package sbcl-3d-quaternions))
 
-;; TODO: Build failure:
-;; https://github.com/Shinmera/3d-quaternions/issues/2
-;;
-;; (define-public ecl-3d-quaternions
-;;   (sbcl-package->ecl-package sbcl-3d-quaternions))
+(define-public ecl-3d-quaternions
+  (package
+    (inherit (sbcl-package->ecl-package sbcl-3d-quaternions))
+    (arguments
+     ;; See <https://codeberg.org/shinmera/3d-quaternions/issues/1>.
+     (list #:tests? #f))))
 
 (define-public clasp-3d-quaternions
   (sbcl-package->clasp-package sbcl-3d-quaternions))
