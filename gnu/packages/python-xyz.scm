@@ -27599,15 +27599,13 @@ environments.")
        (method url-fetch)
        (uri (pypi-uri "PyNamecheap" version))
        (sha256
-        (base32
-         "0wkbwz208j8nfrsmzmclvxg22ymknn0mlz76wbdza9k2bx2zja6l"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-requests))
-    (home-page
-     "https://github.com/Bemmu/PyNamecheap")
-    (synopsis
-     "Namecheap API client in Python")
+        (base32 "0wkbwz208j8nfrsmzmclvxg22ymknn0mlz76wbdza9k2bx2zja6l"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-requests))
+    (home-page "https://github.com/Bemmu/PyNamecheap")
+    (synopsis "Namecheap API client in Python")
     (description
      "PyNamecheap is a Namecheap API client in Python.")
     (license license:expat)))
