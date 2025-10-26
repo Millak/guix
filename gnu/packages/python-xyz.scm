@@ -24951,13 +24951,13 @@ the point of maximum curvature.")
 (define-public python-diff-cover
   (package
     (name "python-diff-cover")
-    (version "9.2.0")
+    (version "9.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "diff_cover" version))
        (sha256
-        (base32 "0dms5f3axwkjpcck4mlglfn0pga5nmskyc7ahyg8yrxvxd9v7845"))))
+        (base32 "0j1m8rfs080zsil516pvr0hy3x24dny4c77ilzfjgp5pcjy7hfx0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -24979,7 +24979,7 @@ the point of maximum curvature.")
            python-pygments
            python-setuptools ; For pkg_resources.
            python-tomli))
-    (home-page "https://github.com/Bachmann1234/diff-cover")
+    (home-page "https://github.com/Bachmann1234/diff_cover")
     (synopsis "Run coverage and linting reports on diffs")
     (description
      "Automatically find diff lines that need test coverage.  It also finds
