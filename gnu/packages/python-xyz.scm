@@ -25445,39 +25445,31 @@ in pure Python.")
 
 ;; The latest commit contains fixes for building with both python3 and python2.
 (define-public python-rfc6555
-  (let ((commit "1a181b432312731f6742a5eb558dae4761d32361")
-        (revision "1"))
-    (package
-      (name "python-rfc6555")
-      (version (git-version "0.0.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                       (url "https://github.com/sethmlarson/rfc6555")
-                       (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1bxl17j9vs69cshcqnlwamr03hnykxqnwz3mdgi6x3s2k4q18npp"))))
-      (build-system python-build-system)
-      (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (if tests?
-                 ;; Other tests require network access.
-                 (invoke "pytest" "tests/test_ipv6.py")
-                 #t))))))
-      (native-inputs
-       (list python-pytest))
-      (home-page "https://pypi.org/project/rfc6555/")
-      (synopsis "Python implementation of RFC 6555")
-      (description
-       "Python implementation of the Happy Eyeballs Algorithm described in RFC
-     6555.  Provided with a single file and dead-simple API to allow easy vendoring
-     and integration into other projects.")
-      (license license:asl2.0))))
+  (package
+    (name "python-rfc6555")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sethmlarson/rfc6555")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cynzrs3l6ywmkpcpx9m36604dav64sk3rk1s12hj49qqyx20v1f"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Other tests require network access.
+      #:test-flags #~(list "tests/test_ipv6.py")))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://pypi.org/project/rfc6555/")
+    (synopsis "Python implementation of RFC 6555")
+    (description
+     "Python implementation of the Happy Eyeballs Algorithm described in RFC
+6555.  Provided with a single file and dead-simple API to allow easy vendoring
+and integration into other projects.")
+    (license license:asl2.0)))
 
 (define-public python-sacn
   (package
