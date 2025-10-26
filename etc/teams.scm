@@ -705,8 +705,8 @@ the haskell-build-system."
 
 (define-team hpc
   (team 'hpc
-        #:name "Hpc team"
-        #:description "High performance computing related packages."
+        #:name "High-performance computing team"
+        #:description "High-performance computing (HPC) related packages."
         #:scope (list "gnu/packages/mpi.scm"
                       "gnu/packages/oneapi.scm"
                       "gnu/packages/rocm.scm"
