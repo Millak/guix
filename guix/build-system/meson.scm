@@ -103,7 +103,10 @@ TRIPLET."
     (objcopy . ,(string-append triplet "-objcopy"))
     (ar . ,(string-append triplet "-ar"))
     (ld . ,(string-append triplet "-ld"))
-    (strip . ,(string-append triplet "-strip"))))
+    (strip . ,(string-append triplet "-strip"))
+    ,@(if (target-mingw? triplet)
+          `((windres . ,(string-append triplet "-windres")))
+          '())))
 
 (define (make-built-in-options-alist triplet)
   (if (target-avr? triplet)
