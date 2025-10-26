@@ -26600,19 +26600,23 @@ interpreter. bpython's main features are
   (package
     (name "python-pyinotify")
     (version "0.9.6")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pyinotify" version))
-              (sha256
-               (base32
-                "1x3i9wmzw33fpkis203alygfnrkcmq9w1aydcm887jh6frfqm6cw"))))
-    (build-system python-build-system)
-    (arguments `(#:tests? #f))          ;no tests
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/seb-m/pyinotify")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0qfvs1sfvlpfb10rxlivwa96mg0ibczis554s2rx32s11nynzvbk"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/seb-m/pyinotify")
     (synopsis "Python library for monitoring inotify events")
     (description
-     "@code{pyinotify} provides a Python interface for monitoring
-file system events on Linux.")
+     "@code{pyinotify} provides a Python interface for monitoring file system
+events on Linux.")
     (license license:expat)))
 
 (define-public python-more-itertools
