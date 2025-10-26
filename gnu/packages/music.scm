@@ -5946,6 +5946,13 @@ your favorite sampled sounds and bashing away on a MIDI controller.")
 the electronic or dubstep genre.")
       (license license:gpl3+))))
 
+(define soundfont-airfont-340
+  (origin
+    (method url-fetch)
+    (uri "http://www.ronimusic.com/sf2/Airfont_340.dls")
+    (sha256
+     (base32 "011vg0y6s3zribkkwk143nlp251nn26xsvzkvzs1xicz7jgf7cxy"))))
+
 (define-public sonivox
   (package
     (name "sonivox")
