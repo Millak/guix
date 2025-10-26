@@ -27269,25 +27269,29 @@ Glob2 currently based on the glob code from Python 3.3.1.")
 (define-public python-gipc
   (package
     (name "python-gipc")
-    (version "0.6.0")
+    (version "1.8.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "gipc" version ".zip"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jgehrcke/gipc")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0pd9by719qh882hqs6xpby61sn1x5h98hms5p2p8yqnycrf1s0h2"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list unzip))
-    (propagated-inputs
-     (list python-gevent))
+        (base32 "18w1fi3gh8i3kl58n6jpixzc2w42znxqhb3lj6hwn1641wq2hyrz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Some tests seem to require an older version of pytest.
+     (list #:tests? #f))
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-gevent))
     (home-page "https://gehrcke.de/gipc/")
     (synopsis "Child process management in the context of gevent")
-    (description "Usage of Python's multiprocessing package in a
-gevent-powered application may raise problems.  With @code{gipc},
-process-based child processes can safely be created anywhere within a
-gevent-powered application.")
+    (description
+     "Usage of Python's multiprocessing package in a gevent-powered
+application may raise problems.  With @code{gipc}, process-based child
+processes can safely be created anywhere within a gevent-powered
+application.")
     (license license:expat)))
 
 (define-public python-beautifultable
