@@ -25886,46 +25886,45 @@ web frameworks.")
 (define-public python-apache-libcloud
   (package
     (name "python-apache-libcloud")
-    (version "3.1.0")
+    (version "3.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "apache-libcloud" version))
        (sha256
-        (base32
-         "1b28j265kvibgxrgxx0gwfm6cmv252c8ph1j2vb0cpms8ph5if5v"))))
-    (build-system python-build-system)
+        (base32 "14bc4z246ka0h6kywpxqdfgb2c5y6lfclpx99ki2bhiv285lrgvm"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f ; XXX: all tests fail requiring additional credentials
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-ssh
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "libcloud/compute/ssh.py"
-               (("'ssh'")
-                (string-append "'" (search-input-file inputs "/bin/ssh")
-                               "'")))))
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             (substitute* "libcloud/test/compute/test_ssh_client.py"
-               (("^class ShellOutSSHClientTests")
-                "@unittest.skip(\"Guix container doesn't have ssh service\")
+     (list
+      #:tests? #f ; XXX: all tests fail requiring additional credentials
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-ssh
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "libcloud/compute/ssh.py"
+                (("'ssh'")
+                 (format #f "~s" (search-input-file inputs "/bin/ssh"))))))
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              (substitute* "libcloud/test/compute/test_ssh_client.py"
+                (("^class ShellOutSSHClientTests")
+                 "@unittest.skip(\"Guix container doesn't have ssh service\")
 class ShellOutSSHClientTests"))))
-         (add-before 'check 'copy-secret
-           (lambda _
-             (copy-file "libcloud/test/secrets.py-dist"
-                        "libcloud/test/secrets.py"))))))
+          (add-before 'check 'copy-secret
+            (lambda _
+              (copy-file "libcloud/test/secrets.py-dist"
+                         "libcloud/test/secrets.py"))))))
     (inputs
      (list openssh))
     (propagated-inputs
-     (list python-paramiko python-requests))
+     (list python-requests))
     (native-inputs
-     (list python-lockfile python-mock python-pytest python-pytest-runner
-           python-requests-mock))
+     (list python-pytest python-requests-mock python-setuptools))
     (home-page "https://libcloud.apache.org/")
     (synopsis "Unified Cloud API")
-    (description "@code{libcloud} is a Python library for interacting with
-     many of the popular cloud service providers using a unified API.")
+    (description
+     "@code{libcloud} is a Python library for interacting with many of the
+popular cloud service providers using a unified API.")
     (license license:asl2.0)))
 
 (define-public python-smmap
