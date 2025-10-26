@@ -455,7 +455,7 @@ across several operating systems.")
 (define-public zig-pixman
   (package
     (name "zig-pixman")
-    (version "0.2.0")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -464,7 +464,7 @@ across several operating systems.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0il6nw51kf08bcxpf45n7h78k1iyfi1zarcvpb7n19g2r48dkiyd"))))
+                "1mg0fmcnfl5il8nx9nplxm8hg54jkdg9ks7r40w4451rx9m3il7j"))))
     (build-system zig-build-system)
     (arguments (list #:skip-build? #t))
     (propagated-inputs (list pixman))
