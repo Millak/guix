@@ -13454,6 +13454,45 @@ using the PLY parsing library.  It parses C code into an AST and can serve as
 a front-end for C compilers or analysis tools.")
     (license license:bsd-3)))
 
+(define-public python-txredisapi
+  (let ((commit "d2259a379695284f4a84d7821ed47e1db409501d")
+        ;; The latest version is 1.4.11, but it contains a bug:
+        ;; https://github.com/IlyaSkriblovsky/txredisapi/pull/157. That bug is
+        ;; patched in commit d2259a3.
+        (revision "0"))
+    (package
+      (name "python-txredisapi")
+      (version (git-version "1.4.11" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         ;; The source distribution on PyPi is missing test files:
+         ;; https://github.com/IlyaSkriblovsky/txredisapi/pull/155
+         (uri (git-reference
+                (url "https://github.com/IlyaSkriblovsky/txredisapi")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0v9r01cn5zb0jjb1h394y667345yp17485bl5d4k80019b34dm98"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list #:test-backend #~'custom
+             #:test-flags #~(list "-m" "twisted.trial" "tests")
+             #:phases
+             #~(modify-phases %standard-phases
+                 ;; The tests require a running Redis server.
+                 (add-before 'check 'start-redis
+                   (lambda _
+                     (invoke "redis-server" "--daemonize" "yes"))))))
+      (propagated-inputs (list python-twisted))
+      (native-inputs (list python-mock python-setuptools redis))
+      (home-page "https://github.com/IlyaSkriblovsky/txredisapi")
+      (synopsis "Non-blocking Redis client for Python")
+      (description "txredisapi is a non-blocking client driver for the Redis
+database, written in Python.  It uses Twisted for asynchronous communication
+with Redis.")
+      (license license:asl2.0))))
+
 (define-public python-pywavelets
   (package
     (name "python-pywavelets")
