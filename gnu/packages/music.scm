@@ -5732,7 +5732,7 @@ specification and header.")
 (define-public rosegarden
   (package
     (name "rosegarden")
-    (version "24.12")
+    (version "25.06")
     (source
      (origin
        (method url-fetch)
@@ -5740,20 +5740,15 @@ specification and header.")
                            (version-major+minor version) "/"
                            "rosegarden-" version ".tar.xz"))
        (sha256
-        (base32 "1k0mpxpakcywss7pi50nzn54ak90svjavr4qk6yi9bq9dc9ncgvz"))))
+        (base32 "0vf3ln51f9layj7ann8nykl1rvimbnz58j8f9g6735490nq55zkm"))))
     (build-system qt-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "-DCMAKE_BUILD_TYPE=Release")
+      #:qtbase qtbase
+      #:configure-flags #~(list "-DUSE_QT6=ON")
+      #:test-exclude "test_notationview_selection"
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-tests
-            (lambda _
-              (substitute* "CMakeLists.txt"
-                (("(BUILD_TESTING .* )OFF" _ prefix)
-                 (string-append prefix "ON"))
-                ;; Make tests work.
-                ((" -fvisibility=hidden") ""))))
           (add-after 'unpack 'fix-references
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "src/gui/general/ProjectPackager.cpp"
@@ -5781,15 +5776,11 @@ specification and header.")
               (substitute* "src/CMakeLists.txt"
                 (("COMMAND [$][{]QT_RCC_EXECUTABLE[}]")
                  "COMMAND ${QT_RCC_EXECUTABLE} --format-version 1")
-                ;; Extraneous.
-                ;;(("qt5_add_resources[(]rg_SOURCES ../data/data.qrc[)]")
-                ;; "qt5_add_resources(rg_SOURCES ../data/data.qrc OPTIONS --format-version 1)")
                 )
               ;; Make hashtable traversal order predicable.
               (setenv "QT_RCC_TEST" "1"))) ; important
           (add-before 'check 'prepare-check
             (lambda _
-              (setenv "QT_QPA_PLATFORM" "offscreen")
               ;; Tests create files in $HOME/.local/share/rosegarden and
               ;; expect permissions set to 0700.
               (mkdir-p "/tmp/foo")
@@ -5797,10 +5788,10 @@ specification and header.")
               (setenv "HOME" "/tmp/foo")
               (setenv "XDG_RUNTIME_DIR" "/tmp/foo")))
           (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? (test-exclude "") #:allow-other-keys)
               (when tests?
                 ;; Skip a failing test.
-                (invoke "ctest" "-E" "test_notationview_selection")))))))
+                (invoke "ctest" "-E" test-exclude)))))))
     (inputs
      (list alsa-lib
            bash-minimal
@@ -5811,17 +5802,19 @@ specification and header.")
            ladspa
            liblo
            libsamplerate
+           lilv
            lilypond
            lrdf
-           qtbase-5
-           qtwayland-5
+           lv2
+           qt5compat
+           qtwayland
            shared-mime-info
            tar
            lirc
            wavpack
            zlib))
     (native-inputs
-     (list pkg-config qttools-5))       ;for qtlinguist
+     (list pkg-config qttools))       ;for qtlinguist
     (synopsis "Music composition and editing environment based around a MIDI
 sequencer")
     (description "Rosegarden is a music composition and editing environment
