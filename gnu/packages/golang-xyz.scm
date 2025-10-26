@@ -1431,6 +1431,34 @@ strings for a safe use as command line arguments in the most common POSIX
 shells.")
     (license license:expat)))
 
+(define-public go-github-com-alexflint-go-filemutex
+  (package
+    (name "go-github-com-alexflint-go-filemutex")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/alexflint/go-filemutex")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kx31qar8265jrvdvwja1snlfy6kxpaay654lqqsalp1spgrcazp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/alexflint/go-filemutex"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/alexflint/go-filemutex")
+    (synopsis "File Mutex that synchronizes across processes")
+    (description
+     "@code{FileMutex} is similar to @code{sync.RWMutex}, but also
+synchronizes across processes.")
+    (license license:expat)))
+
 (define-public go-github-com-alsm-ioprogress
   (package
     (name "go-github-com-alsm-ioprogress")
