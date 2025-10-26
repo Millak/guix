@@ -1207,15 +1207,25 @@ It currently houses implementations of
 (define-public python-pot
   (package
     (name "python-pot")
-    (version "0.9.5")
+    (version "0.9.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pot" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/PythonOT/POT")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0hk0dmjgnpwka0a7gyzrcq155wzlvzcrsav3qaizyg0wymzywi4n"))
-       (snippet '(delete-file "ot/lp/emd_wrap.cpp"))))
+        (base32 "1zzh6jsnagsmcmf91hhb0f1asnby11h2zc92h7myld4wik986bx7"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k"
+              ;; Semirelaxed GW init partitions by size via np.where(shapes <= N);
+              ;; dtype mix triggers str vs int TypeError under our NumPy.
+              "not test_entropic_semirelaxed_gromov"
+              "test")))
     (propagated-inputs
      (list python-autograd
            python-numpy
@@ -1225,8 +1235,9 @@ It currently houses implementations of
            python-scikit-learn
            python-scipy))
     (native-inputs (list python-cython
-                         python-setuptools
-                         python-wheel))
+                         python-pytest
+                         python-pytest-cov
+                         python-setuptools))
     (home-page "https://github.com/PythonOT/POT")
     (synopsis "Python Optimal Transport Library")
     (description "This Python library provides several solvers for
