@@ -3872,8 +3872,8 @@ the format used by the popular compression tool bzip2.")
   (sbcl-package->clasp-package sbcl-chipz))
 
 (define-public sbcl-chirp
-  (let ((commit "01c79fa41939688216d1f86d0766a687becb0654")
-        (revision "1"))
+  (let ((commit "49050a0765736ffbed82ccd09cafdfdcf42884c1")
+        (revision "2"))
     (package
       (name "sbcl-chirp")
       (version (git-version "0.2.0" revision commit))
@@ -3881,11 +3881,11 @@ the format used by the popular compression tool bzip2.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/chirp")
+               (url "https://codeberg.org/shinmera/chirp")
                (commit commit)))
          (file-name (git-file-name "chirp" version))
          (sha256
-          (base32 "10xlz1vwdv3jv48kmpndpnrg6672m0r5vsjgm2pksfl8bc05j2m0"))))
+          (base32 "0f6syqam0vsldnqdbccfzx4zqw0jcqyv8yw947qlm9n8zpkhhm06"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:asd-systems '("chirp-core" "chirp-dexador" "chirp-drakma" "chirp")))
@@ -3902,7 +3902,7 @@ the format used by the popular compression tool bzip2.")
          ("split-sequence" ,sbcl-split-sequence)
          ("uuid" ,sbcl-uuid)
          ("yason" ,sbcl-yason)))
-      (home-page "https://shinmera.github.io/chirp/")
+      (home-page "https://codeberg.org/shinmera/chirp")
       (synopsis "Twitter client library for Common Lisp")
       (description
        "This package provides a Common Lisp Twitter client featuring full API
