@@ -27297,29 +27297,25 @@ application.")
 (define-public python-beautifultable
   (package
     (name "python-beautifultable")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "beautifultable" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pri22296/beautifultable")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0wwlbifcbpzy3wfv6yzsxncarsngzizmmxbn6cy5gazlcq7h4k5x"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-wcwidth))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-setup.py
-           (lambda _
-             (substitute* "setup.py"
-               (("setup\\(")
-                "setup(\n    test_suite=\"test\",")))))))
+        (base32 "0b6c7dpc45sm3vn65qm00q20sdgpi78xxzwc0rij7hnj9c45w97x"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-pandas python-setuptools))
+    (propagated-inputs (list python-wcwidth))
     (home-page "https://github.com/pri22296/beautifultable")
     (synopsis "Print ASCII tables for terminals")
-    (description "@code{python-beautifultable} provides a class for easily
-printing tabular data in a visually appealing ASCII format to a terminal.
+    (description
+     "@code{python-beautifultable} provides a class for easily printing
+tabular data in a visually appealing ASCII format to a terminal.
 
 Features include, but are not limited to:
 @itemize
