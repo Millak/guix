@@ -2089,7 +2089,7 @@ re-sequencer LV2 plugin.")
   (package
     (inherit bsequencer)
     (name "bschaffl")
-    (version "1.4.8")
+    (version "1.4.10")
     (source
      (origin
        (method git-fetch)
@@ -2098,7 +2098,7 @@ re-sequencer LV2 plugin.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kfc75xhj365fwl8cbvhg5chwz1snzcvf4929flds02ljylc7k6d"))))
+        (base32 "1az938a2bwpsmy39rcsayz41pyi2i1yvbnbfay3xal0ygrh4zy6d"))))
     (inputs
      `(("cairo" ,cairo)
        ("fontconfig" ,fontconfig)
