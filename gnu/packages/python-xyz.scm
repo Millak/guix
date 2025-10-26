@@ -39318,21 +39318,17 @@ parsing (browser/HTTP) user agent strings.")
 (define-public python-userspacefs
   (package
     (name "python-userspacefs")
-    (version "2.0.5")
+    (version "3.1.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "userspacefs" version))
         (sha256
-         (base32
-          "0v0qkdwfc61s2yiq7d7amin93x5biypfmi9pfhf8yj1rdpx5yvsx"))))
+         (base32 "0lfzgijza3p4wbrhlf8pzj89j7caj8x6aij78d4izppvq4kfjqs6"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f)) ;no tests
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-fusepyng))
+    (arguments (list #:tests? #f))      ;no tests
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-aiohttp python-typing-extensions))
     (home-page "https://thelig.ht/code/userspacefs/readme.html")
     (synopsis "User-space file systems for Python")
     (description
