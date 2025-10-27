@@ -23,7 +23,8 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
-  #:use-module (gnu packages))
+  #:use-module (gnu packages)
+  #:use-module (gnu packages gcc))
 
 (define-public hugs
   (package
@@ -72,6 +73,7 @@
                (("/bin/cp") (which "cp")))
              #t)))
        #:tests? #f)) ; no test target
+    (native-inputs (list gcc-13))
     (home-page "https://www.haskell.org/hugs/")
     (synopsis "Functional programming system based on Haskell 98")
     (description
