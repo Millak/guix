@@ -1312,6 +1312,8 @@ corresponds to the symbols listed in FLAGS."
        (logior MS_STRICTATIME (loop rest)))
       (('lazy-time rest ...)
        (logior MS_LAZYTIME (loop rest)))
+      (('remount rest ...)
+       (logior MS_REMOUNT (loop rest)))
       (('shared rest ...)
        (loop rest))
       (()
