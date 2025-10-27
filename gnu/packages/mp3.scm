@@ -245,7 +245,7 @@ a highly stable and efficient implementation.")
 (define-public taglib
   (package
     (name "taglib")
-    (version "1.12")
+    (version "2.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -254,23 +254,12 @@ a highly stable and efficient implementation.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0q7dkn5rh9v6b0scmcp2qmjv3iransafmpn6jvgid0yq75m2nqd2"))))
+                "0m1xyjsg6a8p4prn1xr1g29zsxqr7606cv3cblgjgxkb1dk26fx7"))))
     (build-system cmake-build-system)
     (arguments
-      '(#:tests? #f ; Tests are not ran with BUILD_SHARED_LIBS on.
-        #:configure-flags (list "-DBUILD_SHARED_LIBS=ON")
-        #:phases (modify-phases %standard-phases
-                   (add-before 'configure 'adjust-zlib-ldflags
-                     (lambda* (#:key inputs #:allow-other-keys)
-                       ;; Make sure users of 'taglib-config --libs' get the -L
-                       ;; flag for zlib.
-                       (substitute* "CMakeLists.txt"
-                         (("set\\(ZLIB_LIBRARIES_FLAGS -lz\\)")
-                          (string-append "set(ZLIB_LIBRARIES_FLAGS \"-L"
-                                         (assoc-ref inputs "zlib")
-                                         "/lib -lz\")")))
-                       #t)))))
-    (inputs (list zlib))
+     (list #:configure-flags
+           #~(list "-DBUILD_SHARED_LIBS=ON")))
+    (inputs (list cppunit utfcpp zlib))
     (home-page "https://taglib.org")
     (synopsis "Library to access audio file meta-data")
     (description
