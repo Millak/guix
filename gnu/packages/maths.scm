@@ -4610,14 +4610,14 @@ can return results in exact arithmetic.")
 (define-public python-petsc4py
   (package
     (name "python-petsc4py")
-    (version "3.21.4")
+    (version "3.24.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "petsc4py" version))
         (sha256
           (base32
-           "1kffxhcwkx6283n2p83ymanz6m8j2xmz5kpa5s8qc4f9iiah59sb"))))
+           "06wi2r43drlfj3hml5392pckn2n99rjfb1p1hz75n3d84z5jrj9x"))))
     (build-system python-build-system)
     (arguments
      (list #:phases
