@@ -266,8 +266,8 @@ with Microsoft Compiled HTML (CHM) files")
           (add-after 'unpack 'skip-flaky-test
             (lambda _
               (substitute* "src/calibre/srv/tests/web_sockets.py"
-                (("(def test_websocket_basic\\(.*)" line)
-                 (string-append line "\n    return True\n")))))
+                (("^([ \t]*)def test_websocket_basic\\(.*" line lead)
+                 (string-append line "\n" lead "    return True\n")))))
           (add-before 'build 'configure
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "setup/build.py"
