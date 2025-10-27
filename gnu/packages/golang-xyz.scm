@@ -12937,6 +12937,33 @@ bus system.  This is a fork of @url{https://github.com/godbus/dbus} maintained
 by Kovid Goyal for use in Kitty.")
     (license license:bsd-2)))
 
+(define-public go-github-com-kovidgoyal-exiffix
+  (package
+    (name "go-github-com-kovidgoyal-exiffix")
+    (version "0.0.0-20250919160812-dbef770c2032")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kovidgoyal/exiffix")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1pibiw33h4gwg0dzaqblr2a2x2m6cwsnz1i568kj593d9dnf82m7"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/kovidgoyal/exiffix"))
+    (propagated-inputs
+     (list go-github-com-kovidgoyal-imaging
+           go-github-com-rwcarlsen-goexif))
+    (home-page "https://github.com/kovidgoyal/exiffix")
+    (synopsis "EXIF orientation correction for images")
+    (description
+     "This package provides utilities for correcting image orientation based on
+EXIF metadata. It's an alternative fork of
+@url{https://github.com/edwvee/exiffix} maintained by Kitty comunity.")
+    (license license:expat)))
+
 (define-public go-github-com-kpango-fastime
   (package
     (name "go-github-com-kpango-fastime")
