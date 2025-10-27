@@ -651,7 +651,7 @@ and WebP.")
 (define-public luminance-hdr
   (package
     (name "luminance-hdr")
-    (version "2.6.0")
+    (version "2.6.1.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -659,7 +659,7 @@ and WebP.")
                     version "/luminance-hdr-" version ".tar.bz2"))
               (sha256
                (base32
-                "188q0l63nfasqfvwbq4mwx2vh7wsfi2bq9n5nksddspl1qz01lnp"))))
+                "18ihaggdp9zwylvk6kwcqii46l1p5s6143c8an2zicpfcb0np2qc"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config qttools-5))
