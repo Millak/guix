@@ -8194,6 +8194,31 @@ data.  EpiScanpy is the epigenomic extension of the very popular scRNA-seq
 analysis tool Scanpy (Genome Biology, 2018).")
     (license license:bsd-3)))
 
+(define-public python-modbedtools
+  (package
+    (name "python-modbedtools")
+    (version "0.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "modbedtools" version))
+       (sha256
+        (base32 "0c2f8fl0mi3wcvv4fygkf6jj1d0zavhc7v9wwbqchpyb7m23cmp9"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pysam))
+    (native-inputs (list python-pytest
+                         python-setuptools
+                         python-setuptools-scm
+                         python-wheel))
+    (arguments (list #:tests? #f)) ;No tests
+    (home-page "https://github.com/lidaof/modbedtools")
+    (synopsis
+     "Generate modbed track files for visualization on WashU Epigenome Browser")
+    (description
+     "modbedtools is a python command line tool to generate modbed files for
+visualization on the WashU Epigenome Browser.")
+    (license license:expat)))
+
 (define-public python-ete3
   (package
     (name "python-ete3")
