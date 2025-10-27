@@ -28,7 +28,7 @@
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
   #:use-module (guix gexp)
-  #:use-module (guix licenses)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils))
 
 (define-public nvi
@@ -36,37 +36,35 @@
     (name "nvi")
     (version "1.81.6")
     (source
-      (origin
-        (method url-fetch)
-        (uri          ;; sites.google.coma/bostic.com/keithbostic/vi is stale.
-          (string-append "http://harrier.slackbuilds.org/misc/nvi-" version
-                         ".tar.bz2"))
-        (sha256
-          (base32 "0nbbs1inyrqds0ywn3ln5slv54v5zraq7lszkg8nsavv4kivhh9l"))
-        (patches (search-patches "nvi-assume-preserve-path.patch"
-                                 "nvi-dbpagesize-binpower.patch"
-                                 "nvi-add-function-prototypes.patch"
-                                 "nvi-db4.patch"))
-        (modules '((guix build utils)))
-        (snippet
-          ;; Create a wrapper for the configure script, make it executable.
-          '(let ((conf-wrap (open-output-file "configure")))
-             (display "#!/bin/sh" conf-wrap)
-             (newline conf-wrap)
-             (display
-               "../nvi-1.81.6/dist/configure --srcdir=../nvi-1.81.6/dist $@"
-               conf-wrap)
-             (newline conf-wrap)
-             (close-output-port conf-wrap)
-             (chmod "configure" #o0755)
+     (origin
+       (method url-fetch)
+       ;; The home-page does not provide the latest version.
+       (uri (string-append "http://harrier.slackbuilds.org/misc/nvi-"
+                           version ".tar.bz2"))
+       (sha256
+        (base32 "0nbbs1inyrqds0ywn3ln5slv54v5zraq7lszkg8nsavv4kivhh9l"))
+       (patches (search-patches "nvi-assume-preserve-path.patch"
+                                "nvi-dbpagesize-binpower.patch"
+                                "nvi-add-function-prototypes.patch"
+                                "nvi-db4.patch"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Create a wrapper for the configure script, make it executable.
+        #~(let ((conf-wrap (open-output-file "configure")))
+            (display "#!/bin/sh" conf-wrap)
+            (newline conf-wrap)
+            (display
+              "../nvi-1.81.6/dist/configure --srcdir=../nvi-1.81.6/dist $@"
+              conf-wrap)
+            (newline conf-wrap)
+            (close-output-port conf-wrap)
+            (chmod "configure" #o0755)
 
-             ;; Glibc 2.30 removed the deprecated <sys/stropts.h>, so fall back
-             ;; to the internal PTY allocation logic.
-             (substitute* "ex/ex_script.c"
-               (("#ifdef HAVE_SYS5_PTY")
-                "#if defined(HAVE_SYS5_PTY) && !defined(__GLIBC__)"))
-             #t))))
-
+            ;; Glibc 2.30 removed the deprecated <sys/stropts.h>, so fall back
+            ;; to the internal PTY allocation logic.
+            (substitute* "ex/ex_script.c"
+              (("#ifdef HAVE_SYS5_PTY")
+               "#if defined(HAVE_SYS5_PTY) && !defined(__GLIBC__)"))))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -101,17 +99,18 @@
                             file)
                     "."))
                  '("config.sub" "config.guess"))))))))
-    (inputs
-      (list bdb ncurses))
+    (inputs (list bdb ncurses))
     (native-inputs
      (list automake)) ;Up to date 'config.guess' and 'config.sub'.
     (synopsis "The Berkeley Vi Editor")
     (description
-      "Vi is the original screen based text editor for Unix systems.  It is
-considered the standard text editor, and is available on almost all Unix
-systems.  Nvi is intended as a \"bug-for-bug compatible\" clone of the
-original BSD vi editor.  As such, it doesn't have a lot of snazzy features as
-do some of the other vi clones such as elvis and vim.  However, if all you
-want is vi, this is the one to get.")
-    (home-page "https://sites.google.com/a/bostic.com/keithbostic/vi")
-    (license bsd-3)))
+     "Vi is the original screen based text editor for Unix systems.  It
+is considered the standard text editor, and is available on almost all
+Unix systems.  Nvi is intended as a \"bug-for-bug compatible\" clone of
+the original BSD vi editor.  As such, it doesn't have a lot of snazzy
+features as do some of the other vi clones such as elvis and vim.
+However, if all you want is vi, this is the one to get.")
+    (home-page
+     (string-append "https://sites.google.com/a/bostic.com/keithbostic/"
+                    "the-berkeley-vi-editor-home-page"))
+    (license license:bsd-3)))
