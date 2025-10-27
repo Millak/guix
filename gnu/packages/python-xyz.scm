@@ -27719,12 +27719,15 @@ readable error messages.")
     (version "0.4.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "commandlines" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/chrissimpkins/commandlines")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0r7xcr0knv02p4mswa2bng61nn8nbhhrs6kvdnb9bb3hhjvm1dl6"))))
-    (build-system python-build-system)
+        (base32 "03mxsknqbiwdl4cydnmr3dbid5rh1y1pwfcnbf6k4sf0wiw98y67"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/chrissimpkins/commandlines")
     (synopsis "Command line argument to object parsing library")
     (description
