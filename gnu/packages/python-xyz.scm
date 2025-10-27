@@ -28299,11 +28299,15 @@ with a non-list @code{cdr}.")
     (version "0.1.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "readlike" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jangler/readlike")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "027w8fvi50ksl57q0a7kb5zvmq8jxaawnviib1jdqw0p3igvm1j4"))))
-    (build-system python-build-system)
+        (base32 "1mw8j8ads8hqdbz42siwpffi4wi5s33z9g14a5c2i7vxp8m68qc1"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/jangler/readlike")
     (synopsis "GNU Readline-like line editing module")
     (description
