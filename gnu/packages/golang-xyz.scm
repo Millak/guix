@@ -12964,6 +12964,34 @@ EXIF metadata. It's an alternative fork of
 @url{https://github.com/edwvee/exiffix} maintained by Kitty comunity.")
     (license license:expat)))
 
+(define-public go-github-com-kovidgoyal-imaging
+  (package
+    (name "go-github-com-kovidgoyal-imaging")
+    (version "1.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kovidgoyal/imaging")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17ivgnqlwwxbjs2s3w5phxf1n27z8r7an70ih904wrx6gmjkyd94"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/kovidgoyal/imaging"))
+    (native-inputs
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-golang-org-x-image))
+    (home-page "https://github.com/kovidgoyal/imaging")
+    (synopsis "Simple image processing package for Golang")
+    (description
+     "This package provides basic image processing functions including resize,
+rotate, crop, and various adjustments.  This is a fork maintained by Kovid
+Goyal for use in Kitty.")
+    (license license:expat)))
+
 (define-public go-github-com-kpango-fastime
   (package
     (name "go-github-com-kpango-fastime")
