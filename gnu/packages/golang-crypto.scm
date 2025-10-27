@@ -2937,6 +2937,42 @@ vectorized version of BLAKE3 implementation in Golang.")
 Congruential Generator} (PCG) algorithm.")
     (license license:cc0)))
 
+(define-public go-github-com-zeebo-xxh3
+  (package
+    (name "go-github-com-zeebo-xxh3")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zeebo/xxh3")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gy666r5v1d1n2cfig9plhyp7z09f06k6mr5lrf0mk6psk6bnwgi"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/zeebo/xxh3/avo
+            ;; - github.com/zeebo/xxh3/internal/compare
+            (delete-file-recursively "avo")
+            (delete-file-recursively "internal/compare")))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/zeebo/xxh3"))
+    (native-inputs
+     (list go-github-com-zeebo-assert))
+    (propagated-inputs
+     (list go-github-com-klauspost-cpuid-v2))
+    (home-page "https://github.com/zeebo/xxh3")
+    (synopsis "XXH3 hash algorithm in Golang")
+    (description
+     "This package provides a port of the XXH3 hash algorithm to Golang.  XXH3
+is an extremely fast non-cryptographic hash algorithm.")
+    (license license:bsd-2)))
+
 (define-public go-gitlab-com-nyarla-go-crypt
   (package
     (name "go-gitlab-com-nyarla-go-crypt")
