@@ -4069,12 +4069,6 @@ scientific applications modeled by partial differential equations.")
             ,@(delete "--with-mpi=0" #$cf)))
        ((#:phases phases)
         #~(modify-phases #$phases
-            (add-before 'configure 'adjust-pt-scotch-library-names
-              (lambda _
-                ;; Adjust to the library name changes in Scotch 7.0.
-                (substitute* "config/BuildSystem/config/packages/PTScotch.py"
-                  (("libptesmumps") "libesmumps")
-                  (("libptscotchparmetis") "libptscotchparmetisv3"))))
             (add-before 'configure 'mpi-setup
               #$%openmpi-setup)
             (add-after 'install 'patch-header-inclusions
