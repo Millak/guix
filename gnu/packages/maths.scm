@@ -3887,7 +3887,7 @@ September 2004}")
 (define-public petsc
   (package
     (name "petsc")
-    (version "3.21.4")
+    (version "3.24.0")
     (source
      (origin
       (method url-fetch)
@@ -3895,7 +3895,7 @@ September 2004}")
       (uri (string-append "https://web.cels.anl.gov/projects/petsc/download/release-snapshots/"
                           "petsc-lite-" version ".tar.gz"))
       (sha256
-       (base32 "1394ybnchawb2kghx4xk36gw26930aa73lxyw96diiqp8rnhgbm9"))))
+       (base32 "10q9bnf7j6nr3fn9x7b8l0c3hqa9mhmsk1j5sdyshg5f1kc6746c"))))
     (outputs '("out"                    ; libraries and headers
                "examples"))             ; ~30MiB of examples
     (build-system gnu-build-system)
