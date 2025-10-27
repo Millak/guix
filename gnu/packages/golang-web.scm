@@ -21,7 +21,7 @@
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2022 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
-;;; Copyright © 2022 jgart via Guix-patches via <guix-patches@gnu.org>
+;;; Copyright © 2022, 2025 jgart via Guix-patches via <guix-patches@gnu.org>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022, 2023, 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Felix Lechner <felix.lechner@lease-up.com>
@@ -70,6 +70,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages crypto)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
@@ -273,6 +274,42 @@ API service accounts for Go.")
      "Package gitea implements a client for the Gitea API. The version
 corresponds to the highest supported version of the gitea API, but
 backwards-compatibility is mostly given.")
+    (license license:expat)))
+
+(define-public go-codeberg-org-tslocum-gmitohtml
+  (package
+    (name "go-codeberg-org-tslocum-gmitohtml")
+    (version "1.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/tslocum/gmitohtml.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04dxnvrygxxm0z4vvyh11qv3cscjlfwp9wm6wkcibxra3qa7a0vb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: There a no tests, upstream have no keen to write documentation
+      ;; or unit tests, see <https://codeberg.org/tslocum/gmitohtml/issues/1>.
+      #:tests? #f
+      #:import-path "codeberg.org/tslocum/gmitohtml"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-xdg-command
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/codeberg.org/tslocum/gmitohtml/main.go"
+                (("xdg-open")
+                 (search-input-file inputs "bin/xdg-open"))))))))
+    (inputs (list xdg-utils))
+    (propagated-inputs
+     (list go-gopkg-in-yaml-v2))
+    (home-page "https://codeberg.org/tslocum/gmitohtml")
+    (synopsis "Gemini to HTML conversion tool and daemon")
+    (description
+     "This package provides a Gemini to HTML conversion tool and daemon.")
     (license license:expat)))
 
 (define-public go-connectrpc-com-connect
