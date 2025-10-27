@@ -18,6 +18,7 @@
 ;;; Copyright © 2024 Noisytoot <ron@noisytoot.org>
 ;;; Copyright © 2025 Rutherther <rutherther@ditigal.xyz>
 ;;; Copyright © 2025 Jordan Moore <lockbox@struct.foo>
+;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1707,7 +1708,7 @@ users.")
      '(#:configure-flags
        (list "--enable-fldigi-xmlrpc")))
     (native-inputs
-     (list autoconf automake perl pkg-config))
+     (list autoconf automake gcc-13 perl pkg-config))
     (inputs
      (list cmocka
            glib
