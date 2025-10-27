@@ -28266,18 +28266,23 @@ decisions with any given backend.")
 (define-public python-ilinkedlist
   (package
     (name "python-ilinkedlist")
-    (version "0.4.0")
+    (properties '((commit . "b5ea3f67833071c2e0aba2eac35e82496f469238")
+                  (revision . "0")))
+    (version (git-version "0.4.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (home-page "https://github.com/luther9/ilinkedlist-py")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ilinkedlist" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0nrw4sr3afldrp7073hvc0rgdz282s0l819jdmj1i6nn05v33h0l"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest))
-    (inputs (list python))
-    (home-page "https://github.com/luther9/ilinkedlist-py")
+        (base32 "0lrs6arzm7dg70ny4ri06alhi40s03n71jsx5hsi0fimvwyvfhch"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (synopsis "Immutable linked list library")
     (description
      "This is a implementation of immutable linked lists for Python.  It
