@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2013, 2014 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014 Marek Benc <merkur32@gmail.com>
 ;;; Copyright © 2015-2022, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 José Miguel Sánchez García <jmi2k@openmailbox.org>
 ;;; Copyright © 2016 Carlo Zancanaro <carlo@zancanaro.id.au>
@@ -42,6 +43,7 @@
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
 ;;; Copyright © 2025 benjamin wil <hey@benjaminwil.info>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2026 Ignatius Menzies <ignatius.menzies@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -92,6 +94,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages datastructures)
+  #:use-module (gnu packages dbm)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages enchant)
   #:use-module (gnu packages fontutils)
@@ -986,6 +989,90 @@ basic editing, it supports: undo/redo, syntax highlighting, spell checking,
 justifying, auto-indentation, bracket matching, interactive search-and-replace
 (with regular expressions), and the editing of multiple files.")
     (license license:gpl3+))) ; some files are under GPLv2+
+
+(define-public nvi
+  (package
+    (name "nvi")
+    (version "1.81.6")
+    (source
+     (origin
+       (method url-fetch)
+       ;; The home-page does not provide the latest version.
+       (uri (string-append "http://harrier.slackbuilds.org/misc/nvi-"
+                           version ".tar.bz2"))
+       (sha256
+        (base32 "0nbbs1inyrqds0ywn3ln5slv54v5zraq7lszkg8nsavv4kivhh9l"))
+       (patches (search-patches "nvi-assume-preserve-path.patch"
+                                "nvi-dbpagesize-binpower.patch"
+                                "nvi-add-function-prototypes.patch"
+                                "nvi-db4.patch"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Create a wrapper for the configure script, make it executable.
+        #~(let ((conf-wrap (open-output-file "configure")))
+            (display "#!/bin/sh" conf-wrap)
+            (newline conf-wrap)
+            (display
+              "../nvi-1.81.6/dist/configure --srcdir=../nvi-1.81.6/dist $@"
+              conf-wrap)
+            (newline conf-wrap)
+            (close-output-port conf-wrap)
+            (chmod "configure" #o0755)
+
+            ;; Glibc 2.30 removed the deprecated <sys/stropts.h>, so fall back
+            ;; to the internal PTY allocation logic.
+            (substitute* "ex/ex_script.c"
+              (("#ifdef HAVE_SYS5_PTY")
+               "#if defined(HAVE_SYS5_PTY) && !defined(__GLIBC__)"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:out-of-source? #t
+      #:configure-flags
+      #~'("--enable-widechar"
+          #$@(if (%current-target-system)
+                 '("vi_cv_sprintf_count=yes")
+                 '()))
+      #:make-flags
+      #~(list
+         ;; Add CFLAGS to relax gcc-14's strictness.
+         ;; nvi's configure chokes on passing CFLAGS and ignores
+         ;; CFLAGS set in the environment.
+         (string-append "CFLAGS=-g -O2"
+                        " -Wno-error=incompatible-pointer-types"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-configure
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              ;; Replace outdated config.sub and config.guess:
+              (with-directory-excursion "dist"
+                (for-each
+                 (lambda (file)
+                   (chmod file #o755)
+                   (install-file
+                    (format #f "~a/share/automake-~a/~a"
+                            (assoc-ref (or native-inputs inputs)
+                                       "automake")
+                            #$(version-major+minor
+                               (package-version automake))
+                            file)
+                    "."))
+                 '("config.sub" "config.guess"))))))))
+    (inputs (list bdb ncurses))
+    (native-inputs
+     (list automake)) ;Up to date 'config.guess' and 'config.sub'.
+    (synopsis "The Berkeley Vi Editor")
+    (description
+     "Vi is the original screen based text editor for Unix systems.  It
+is considered the standard text editor, and is available on almost all
+Unix systems.  Nvi is intended as a \"bug-for-bug compatible\" clone of
+the original BSD vi editor.  As such, it doesn't have a lot of snazzy
+features as do some of the other vi clones such as elvis and vim.
+However, if all you want is vi, this is the one to get.")
+    (home-page
+     (string-append "https://sites.google.com/a/bostic.com/keithbostic/"
+                    "the-berkeley-vi-editor-home-page"))
+    (license license:bsd-3)))
 
 (define-public qemacs
   (package

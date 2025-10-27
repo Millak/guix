@@ -62,7 +62,6 @@
   #:use-module (gnu packages less)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
-  #:use-module (gnu packages nvi)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages texinfo)
