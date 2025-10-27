@@ -28162,12 +28162,18 @@ data.")
     (version "1.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "locket" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mwilliamson/locket.py")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0cm6290zm3ba62n2x2piy3s8d41hrmffda2nw18ggfwb582lq3aw"))))
-    (build-system python-build-system)
+        (base32 "0xx57gq5r7x58yd2mq6zxlr2kpzbyb0b5y5hiprgvkib948jxx0p"))))
+    (build-system pyproject-build-system)
+    ;; XXX: Requires python-spur, which requires another version of
+    ;; python-paramiko.
+    (arguments (list #:tests? #f))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/mwilliamson/locket.py")
     (synopsis "File-based locks for Python")
     (description
