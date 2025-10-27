@@ -27927,12 +27927,15 @@ codecs for use in data storage and communication applications.")
     (version "0.3.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "asciitree" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mbr/asciitree")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0vhgri2m2xlnibhz4xwn4hpbc7xacisxjqrk6k5kyppq96vbk92a"))))
-    (build-system python-build-system)
+        (base32 "071wlpyi8pa262sj9xdy0zbj163z84dasxad363z3sfndqxw78h1"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/mbr/asciitree")
     (synopsis "Draws ASCII trees")
     (description "This package draws tree structures using characters.")
