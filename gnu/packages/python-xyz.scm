@@ -28422,21 +28422,32 @@ of Python libraries for building Python applications.")
 (define-public python-astor
   (package
     (name "python-astor")
-    (version "0.8.1")
+    (properties '((commit . "df09001112f079db54e7c5358fa143e1e63e74c4")
+                  (revision . "0")))
+    (version (git-version "0.8.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "astor" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/berkerpeksag/astor")
+             (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0ppscdzzvxpznclkmhhj53iz314x3pfv4yc7c6gwxqgljgdgyvka"))))
-    (build-system python-build-system)
-    ;; FIXME: There are two errors and two test failures.
-    (arguments `(#:tests? #f))
+        (base32 "0ymj0n23b6b4qc6x8ycysh2dipdry5a3gakcaf8nravzp5ma2psl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; FIXME: Unclear why this test fails.
+      #:test-flags #~(list "--deselect=\
+tests/test_rtrip.py::RtripTestCase::test_convert_stdlib")))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/berkerpeksag/astor")
     (synopsis "Read and write Python ASTs")
-    (description "Astor is designed to allow easy manipulation of Python
-source via the Abstract Syntax Tree.")
+    (description
+     "Astor is designed to allow easy manipulation of Python source via the
+Abstract Syntax Tree.")
     (license license:bsd-3)))
 
 (define-public python-astunparse
