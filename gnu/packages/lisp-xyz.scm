@@ -3737,6 +3737,46 @@ non-consing when possible.")
 (define-public clasp-charje.loop
   (sbcl-package->clasp-package sbcl-charje.loop))
 
+(define-public sbcl-charje.lambda-list
+  (package
+    (name "sbcl-charje.lambda-list")
+    (version "0.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~charje/lambda-list")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-charje.lambda-list" version))
+       (sha256
+        (base32
+         "1yb96w6alaqg7lllwpl9m5lmcq6r03bhcn84wnhxdzmy3vh93dkd"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list
+      sbcl-binding-arrows
+      sbcl-charje.loop
+      sbcl-ctype))
+    (home-page "https://git.sr.ht/~charje/lambda-list")
+    (synopsis "Common Lisp lambda list parsing and manipulation library")
+    (description
+     "charje.lambda-list can parse every kind of lambda list defined in the
+ANSI Common Lisp standard.  Parsing yields only one object that has all the
+parsed parts of the lambda list inside.  New kinds of lambda lists can be made
+too.")
+    (license license:agpl3+)))
+
+(define-public cl-charje.lambda-list
+  (sbcl-package->cl-source-package sbcl-charje.lambda-list))
+
+;; TODO: Waiting on next ecl release.
+;; See: https://gitlab.com/embeddable-common-lisp/ecl/-/issues/750
+;; (define-public ecl-charje.lambda-list
+;;   (sbcl-package->ecl-package sbcl-charje.lambda-list))
+
+(define-public clasp-charje.lambda-list
+  (sbcl-package->clasp-package sbcl-charje.lambda-list))
+
 (define-public sbcl-chemboy
   (package
     (name "sbcl-chemboy")
