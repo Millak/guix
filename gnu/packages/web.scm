@@ -30,7 +30,7 @@
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
-;;; Copyright © 2019, 2020-2021, 2023, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019-2021, 2023-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -9064,46 +9064,47 @@ instructions on how to use Guix in a shared HPC environment.")
     (license license:agpl3+)))
 
 (define-public httrack
-  (package
-    (name "httrack")
-    (version "3.49.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/xroche/httrack")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1izn1h7gaxb2barclm2pj5kaz1mmddx2c35n70m0552q8ms4lvks"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'autogen
-            ;; Force reconfiguration to generate "test-driver".
-            (lambda _
-              (substitute* "configure.ac"
-                ;; Fix errors when running "configure" script.
-                (("AX_CHECK_(COMPILE|LINK)_FLAG\\(.*") "")
-                (("AX_CHECK_ALIGNED_ACCESS_REQUIRED") "")
-                (("gl_VISIBILITY") ""))
-              (invoke "autoreconf" "-vif")))
-          (add-after 'unpack 'copy-coucal-source
-            ;; Install Coucal source to work around missing submodule.
-            (lambda* (#:key inputs #:allow-other-keys)
-              (for-each (lambda (f) (install-file f "src/coucal"))
-                        (find-files #$(this-package-input "coucal")
-                                    "\\.(c|h|diff|orig)$")))))))
-    (native-inputs
-     (list autoconf automake libtool))
-    (inputs
-     (list coucal libressl zlib))
-    (home-page "https://www.httrack.com/")
-    (synopsis "Easy-to-use offline browser utility")
-    (description "HTTrack allows you to download a World Wide Web site from
+  (let ((commit "748c35de7858ead963daf1393ad023d75b7820c2")) ;version bump
+    (package
+      (name "httrack")
+      (version "3.49.6")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/xroche/httrack")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0z24ki0idiv4cqd8gl4521f2hfbzic85wlfgxfzqcpmd5yn3k1c8"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'autogen
+              ;; Force reconfiguration to generate "test-driver".
+              (lambda _
+                (substitute* "configure.ac"
+                  ;; Fix errors when running "configure" script.
+                  (("AX_CHECK_(COMPILE|LINK)_FLAG\\(.*") "")
+                  (("AX_CHECK_ALIGNED_ACCESS_REQUIRED") "")
+                  (("gl_VISIBILITY") ""))
+                (invoke "autoreconf" "-vif")))
+            (add-after 'unpack 'copy-coucal-source
+              ;; Install Coucal source to work around missing submodule.
+              (lambda* (#:key inputs #:allow-other-keys)
+                (for-each (lambda (f) (install-file f "src/coucal"))
+                          (find-files #$(this-package-input "coucal")
+                                      "\\.(c|h|diff|orig)$")))))))
+      (native-inputs
+       (list autoconf-2.71 automake libtool))
+      (inputs
+       (list coucal libressl zlib))
+      (home-page "https://www.httrack.com/")
+      (synopsis "Easy-to-use offline browser utility")
+      (description "HTTrack allows you to download a World Wide Web site from
 the Internet to a local directory, building recursively all directories,
 getting HTML, images, and other files from the server to your computer.
 
@@ -9113,7 +9114,7 @@ site from link to link, as if you were viewing it online.  HTTrack can also
 update an existing mirrored site, and resume interrupted downloads.
 
 HTTrack is fully configurable, and has an integrated help system.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public binaryen
   (package
