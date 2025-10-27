@@ -116,7 +116,7 @@ TRIPLET."
        '()))
 
 (define (make-cross-file triplet)
-  (computed-file "cross-file"
+  (computed-file (string-append "cross-" triplet ".ini")
     (with-imported-modules '((guix build meson-configuration))
       #~(begin
           (use-modules (guix build meson-configuration))
