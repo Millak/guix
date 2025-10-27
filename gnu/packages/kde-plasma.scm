@@ -1954,7 +1954,8 @@ for xdg-desktop-portal that is using Qt/KF5.")
      (list #:builder #~(begin
                          (mkdir #$output))))
     ;; TODO: cleanup, check what is no need
-    (propagated-inputs (list baloo
+    (propagated-inputs (list aurorae
+                             baloo
                              bluedevil
                              breeze
                              breeze-gtk
