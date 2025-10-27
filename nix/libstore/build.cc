@@ -1638,15 +1638,15 @@ void chmod_(const Path & path, mode_t mode)
 
 
 /* UID and GID of the build user inside its own user namespace.  */
-static const uid_t guestUID = 30001;
-static const gid_t guestGID = 30000;
+static const uid_t defaultGuestUID = 30001;
+static const gid_t defaultGuestGID = 30000;
 
 /* Initialize the user namespace of CHILD.  */
 static void initializeUserNamespace(pid_t child,
 				    uid_t hostUID = getuid(),
 				    gid_t hostGID = getgid(),
-                                    uid_t guestUID = guestUID,
-                                    gid_t guestGID = guestGID,
+                                    uid_t guestUID = defaultGuestUID,
+                                    gid_t guestGID = defaultGuestGID,
 				    const std::vector<std::pair<gid_t, gid_t>> extraGIDs = {},
 				    bool haveCapSetGID = false)
 {
@@ -2763,14 +2763,14 @@ void DerivationGoal::startBuilder()
             std::format(
                 "nixbld:x:{}:{}:Nix build user:/:/noshell\n"
                 "nobody:x:65534:65534:Nobody:/:/noshell\n",
-                buildUser.enabled() ? buildUser.getUID() : guestUID,
-                buildUser.enabled() ? buildUser.getGID() : guestGID));
+                buildUser.enabled() ? buildUser.getUID() : defaultGuestUID,
+                buildUser.enabled() ? buildUser.getGID() : defaultGuestGID));
 
         /* Declare the build user's group so that programs get a consistent
            view of the system (e.g., "id -gn"). */
         writeFile(chrootRootDir + "/etc/group",
             std::format("nixbld:!:{}:\n",
-                buildUser.enabled() ? buildUser.getGID() : guestGID));
+                buildUser.enabled() ? buildUser.getGID() : defaultGuestGID));
 
         if (fixedOutput) {
             /* Fixed-output derivations typically need to access the network,
@@ -3020,7 +3020,7 @@ void DerivationGoal::startBuilder()
 	    auto extraGIDs = kvmGIDMapping();
 	    initializeUserNamespace(pid,
 				    getuid(), getgid(),
-				    guestUID, guestGID, extraGIDs);
+				    defaultGuestUID, defaultGuestGID, extraGIDs);
             writeFull(parentSetupSocket, (unsigned char*)"go\n", 3);
         }
 
