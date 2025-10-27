@@ -30681,7 +30681,7 @@ dictionaries.")
 (define-public pyzo
   (package
     (name "pyzo")
-    (version "4.18.0")
+    (version "4.20.0")
     (source
      (origin
        (method git-fetch)
@@ -30690,15 +30690,18 @@ dictionaries.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0agq171cz7y10cknjypwrvsvikja3w9d28hlr3kw5k2sdvfqnpam"))))
+        (base32 "1a82k7hjmv20lrwiwsdrvczrm21wq16m4snwsirwhj0jh5k1x9iw"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list "--ignore-glob=pyzo/yoton/tests/*"     ; XXX: yoton is outdated.
               "--ignore=pyzo/codeeditor/_test.py"))) ; XXX: cannot import qt.
-    (native-inputs (list python-pytest python-setuptools))
-    (propagated-inputs (list python-pyqt))
+    (native-inputs
+     (list python-flit-core
+           python-pytest
+           python-setuptools))
+    (inputs (list python-pyside-6))
     (home-page "https://pyzo.org")
     (synopsis "Python IDE for scientific computing")
     (description
