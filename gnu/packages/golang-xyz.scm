@@ -12898,6 +12898,45 @@ processing.")
 aid data snapshotting.")
     (license license:isc)))
 
+(define-public go-github-com-kovidgoyal-dbus
+  (package
+    (name "go-github-com-kovidgoyal-dbus")
+    (version "0.0.0-20250519011319-e811c41c0bc1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kovidgoyal/dbus")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11ysb00zhgqxa0fnrp4rrsgmlzxbyn044p1r7aqsdr4hig2r71xp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/kovidgoyal/dbus"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion (string-append "src/" import-path)
+                  (invoke "dbus-run-session" "--"
+                          "go" "test" "./..."
+                          ;; Tests requireing a system D-Bus instance.
+                          "-skip" (string-append "TestConnectToDifferentUserNamespace"
+                                                 "|TestSystemBus"
+                                                 "|TestConnectSystemBus")))))))))
+    (native-inputs
+     (list dbus)) ;dbus-launch
+    (home-page "https://github.com/kovidgoyal/dbus")
+    (synopsis "Native Golang bindings for D-Bus")
+    (description
+     "This package provides native Golang client bindings for the D-Bus message
+bus system.  This is a fork of @url{https://github.com/godbus/dbus} maintained
+by Kovid Goyal for use in Kitty.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-kpango-fastime
   (package
     (name "go-github-com-kpango-fastime")
