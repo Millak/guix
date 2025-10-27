@@ -28327,13 +28327,18 @@ are not supported.")
     (version "1.4.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "ReParser" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/xmikos/reparser")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0nniqb69xr0fv7ydlmrr877wyyjb61nlayka7xr08vlxl9caz776"))))
-    (build-system python-build-system)
+        (base32 "04v7h52wny0j2qj37501nk33j0s4amm134kagdicx2is49zylzq1"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests.
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/xmikos/reparser")
-    (synopsis "Simple lexer/parser for inline markup based on regular expressions")
+    (synopsis "Lexer/parser for inline markup based on regular expressions")
     (description
      "This Python library provides a simple lexer/parser for inline markup based
 on regular expressions.")
