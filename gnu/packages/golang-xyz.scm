@@ -19225,6 +19225,32 @@ is undetermined, a customizable spinner is shown.")
      "This package provides binary tree and trie data structures for Golang.")
     (license license:asl2.0)))
 
+(define-public go-github-com-seancfoley-ipaddress-go
+  (package
+    (name "go-github-com-seancfoley-ipaddress-go")
+    (version "1.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/seancfoley/ipaddress-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0885jq4bvi0yrkn8al4vgsvkh00g65i1xfvvl39h325rjhddjwab"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:skip-build? #t
+           #:import-path "github.com/seancfoley/ipaddress-go"))
+    (propagated-inputs (list go-github-com-seancfoley-bintree))
+    (home-page "https://seancfoley.github.io/IPAddress/")
+    (synopsis "IP address library for Golang")
+    (description
+     "This package provides a library for handling IP addresses, including IPv4
+and IPv6 addresses, subnets, and ranges with support for parsing, validation,
+and manipulation.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-sebdah-goldie-v2
   (package
     (name "go-github-com-sebdah-goldie-v2")
