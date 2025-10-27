@@ -1978,6 +1978,41 @@ to the absence of the @samp{motor} and @samp{aioboto3} package dependencies.")
 support for aiohttp asyncio-powered asynchronous HTTP server.")
     (license license:asl2.0)))
 
+(define-public python-aiohttp-retry
+  (package
+    (name "python-aiohttp-retry")
+    (version "2.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/inyutin/aiohttp_retry")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r5lxnxc4s8js7l86pfmdxl455v9lg3m41nz6m1xg4kwwf6j0bpi"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-aiohttp
+           python-setuptools))
+    (propagated-inputs
+     (list python-aiohttp))
+    (home-page "https://github.com/inyutin/aiohttp_retry")
+    (synopsis "Simple retry client for aiohttp")
+    (description
+     "This package implements @code{RetryClient} for @code{aiohttp} to retry
+connection to provided endpoint with timeouts logic or use:
+
+@itemize
+@item @code{ExponentialRetry} with exponential backoff
+@item @code{RandomRetry} for random backoff
+@item @code{ListRetry} with backoff you predefine by list
+@item @code{FibonacciRetry} with backoff that looks like fibonacci sequence
+@item @code{JitterRetry} exponential retry with a bit of randomness
+@end itemize")
+    (license license:expat)))
+
 (define-public python-aiohttp-socks
   (package
     (name "python-aiohttp-socks")
