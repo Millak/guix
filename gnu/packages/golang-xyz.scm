@@ -19202,6 +19202,29 @@ detect the number of bytes written to a stream, so you can use it as a
 is undetermined, a customizable spinner is shown.")
     (license license:expat)))
 
+(define-public go-github-com-seancfoley-bintree
+  (package
+    (name "go-github-com-seancfoley-bintree")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/seancfoley/bintree")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ldfqlni6radygrnh1dzhrwjxdzsg96335awwhxhvrd8syb33s89"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:skip-build? #t
+           #:import-path "github.com/seancfoley/bintree"))
+    (home-page "https://github.com/seancfoley/bintree")
+    (synopsis "Binary trees and tries for Golang")
+    (description
+     "This package provides binary tree and trie data structures for Golang.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-sebdah-goldie-v2
   (package
     (name "go-github-com-sebdah-goldie-v2")
