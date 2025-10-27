@@ -99,7 +99,7 @@ the ‘binaries’ section of the cross file when cross-compiling for
 TRIPLET."
   `((c . ,(cc-for-target triplet))
     (cpp . ,(cxx-for-target triplet))
-    (pkgconfig . ,(pkg-config-for-target triplet))
+    (pkg-config . ,(pkg-config-for-target triplet))
     (objcopy . ,(string-append triplet "-objcopy"))
     (ar . ,(string-append triplet "-ar"))
     (ld . ,(string-append triplet "-ld"))
