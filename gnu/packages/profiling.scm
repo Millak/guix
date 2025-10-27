@@ -4,6 +4,7 @@
 ;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2025 Luca Cirrottola <luca.cirro@gmail.com>
+;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -371,7 +372,7 @@ applications.  CubeGUI is the graphical explorer of the CUBE project.")))
                   mesa
                   wayland
                   `(,zstd "lib")))
-    (native-inputs (list pkg-config))
+    (native-inputs (list gcc-13 pkg-config))
     (home-page "https://github.com/wolfpld/tracy")
     (synopsis "Frame profiler")
     (description
