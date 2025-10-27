@@ -12,6 +12,7 @@
 ;;; Copyright © 2022, 2023 Maxim Cournoyer  <maxim@guixotic.coop>
 ;;; Copyright © 2023 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2024 chris <chris@bumblehead.com>
+;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,6 +46,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages file)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages groff)
@@ -196,6 +198,7 @@ output (HTML, RTF, TeX, LaTeX, BBCode, Pango).")
     (arguments
      ;; Must define DIFF_CMD for tests to pass
      '(#:configure-flags '("CPPFLAGS=-DDIFF_CMD=\\\"diff\\\"")))
+    (native-inputs (list gcc-13))
     (home-page "https://www.gnu.org/software/trueprint/")
     (synopsis "Pretty-print C sources and other plain text to PostScript")
     (description
