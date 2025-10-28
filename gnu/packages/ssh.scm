@@ -876,6 +876,35 @@ server implementation of the SSHv2 protocol on top of the Python 3.6+ asyncio
 framework.")
     (license license:epl2.0)))
 
+(define-public python-mock-ssh-server
+  (package
+    (name "python-mock-ssh-server")
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/carletes/mock-ssh-server")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fmnn2ddfagi0qybnw1n10hn29jawnj01bgwl4p9lnwx71c7x5y8"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list inetutils
+           openssh
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-paramiko))
+    (home-page "https://github.com/carletes/mock-ssh-server")
+    (synopsis "Mock SSH server for testing purposes")
+    (description
+     "@code{mock-ssh-server} packs a Python context manager that implements an
+SSH server for testing purposes.  It is built on top of paramiko, so it does not
+need OpenSSH binaries to be installed.")
+    (license license:expat)))
+
 (define-public clustershell
   (package
     (name "clustershell")
