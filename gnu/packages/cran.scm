@@ -51536,18 +51536,16 @@ avoid system fonts to make sure your outputs are reproducible.")
                     "--without-harfbuzz")))))
        ("static-harfbuzz"
         ,(package
-           (inherit (static-package harfbuzz))
+           (inherit harfbuzz)
            (arguments
             `(#:tests? #false ; fail because shared library is disabled
               #:configure-flags
-              (list "--enable-static=yes"
-		    "--enable-shared=no"
-		    "--with-pic=yes"
-		    "--with-freetype=yes"
-		    "--without-icu"
-		    "--without-cairo"
-		    "--without-fontconfig"
-		    "--without-glib")))))))
+              (list "--default-library=static"
+                   "--default-both-libraries=static"
+                   "-Dfreetype=enabled"
+                   "-Dicu=disabled"
+                   "-Dcairo=disabled"
+                   "-Dglib=disabled")))))))
     (inputs
      (list zlib))
     (home-page "https://cran.r-project.org/package=freetypeharfbuzz")
