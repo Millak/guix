@@ -62,7 +62,6 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rust)
-  #:use-module (gnu packages rust-crates)
   #:use-module (gnu packages search)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages gcc)
