@@ -45,6 +45,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
@@ -1052,6 +1053,34 @@ algorithms from the FORTRAN library MINPACK.")
 Optional thin wrappers allow usage of the library from other languages.")
     (license (list license:expat        ;SymEngine
                    license:bsd-3))))    ;3rd party code
+
+(define-public python-symengine
+  (package
+    (name "python-symengine")
+    (version "0.14.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "symengine" version))
+       (sha256
+        (base32 "1w7hwavbxgikljy9m3p89k3x2zdhv81h9bh330aw4wb3qm74p7jf"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--pyargs" "symengine")))
+    (native-inputs
+     (list cmake-minimal
+           python-cython
+           python-pytest
+           python-setuptools))
+    (inputs
+     (list symengine))
+    (home-page "https://github.com/symengine/symengine.py")
+    (synopsis "Python library providing wrappers to SymEngine")
+    (description
+     "This library provides a Python wrapper to SymEngine, a fast C++ symbolic
+manipulation library.")
+    (license license:expat)))
 
 (define-public ginac
   (package
