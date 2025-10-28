@@ -27812,12 +27812,10 @@ tool).")
            python-py-cpuinfo
            python-pydata-sphinx-theme
            python-pytest
-           python-pytest-cov
            python-setuptools
            python-setuptools-scm ;for correct version
            python-sphinx
-           python-sphinx-issues
-           python-wheel))
+           python-sphinx-issues))
     (home-page "https://github.com/zarr-developers/numcodecs")
     (synopsis "Buffer compression and transformation codecs")
     (description
