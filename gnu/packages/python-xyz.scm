@@ -12476,6 +12476,10 @@ colorspaces like sRGB, XYZ, CIEL*a*b*, CIECAM02, CAM02-UCS, etc.")
       #:test-flags '(list "--ignore=tests/test_benchmarks.py")
       #:phases
       '(modify-phases %standard-phases
+         (add-after 'unpack 'avoid-pytest-cov-preload
+           (lambda _
+             (substitute* "pytest.ini"
+               (("-p pytest_cov") ""))))
          (add-after 'unpack 'patch-build-system
            (lambda _
              ;; XXX: I don't know how to tell it to build the extensions in
@@ -12483,15 +12487,12 @@ colorspaces like sRGB, XYZ, CIEL*a*b*, CIECAM02, CAM02-UCS, etc.")
              (substitute* "packaging/pep517_backend/_backend.py"
                (("build_inplace=False") "build_inplace=True")))))))
     (native-inputs
-     (list python-covdefaults
-           python-cython
+     (list python-cython
            python-expandvars
            python-pytest
-           python-pytest-cov
            python-pytest-xdist
            python-setuptools
-           python-tomli
-           python-wheel))
+           python-tomli))
     (home-page "https://github.com/aio-libs/propcache")
     (synopsis "Accelerated property cache")
     (description "The module provides a fast implementation of cached
