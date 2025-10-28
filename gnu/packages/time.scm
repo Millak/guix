@@ -363,17 +363,23 @@ Pendulum instances.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags '(list ;avoid freezegun dependency
-                          "--ignore=tests/test_utils.py"
-                          "--ignore=tests/test_rrule.py"
-                          ;; XXX: Fails to get timezone from /etc/localtime.
-                          "--ignore=tests/test_tz.py")))
+      #:test-flags
+      #~(list ;avoid freezegun dependency
+         "--ignore=tests/test_utils.py"
+         "--ignore=tests/test_rrule.py"
+         ;; XXX: Fails to get timezone from /etc/localtime.
+         "--ignore=tests/test_tz.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-pytest-cov-requirement
+            (lambda _
+              (substitute* "tests/conftest.py"
+                (("\\item.add_marker\\(pytest\\.mark\\.no_cover\\)")
+                 "continue")))))))
     (native-inputs
      (list python-pytest
-           python-pytest-cov
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-six))
     (home-page "https://dateutil.readthedocs.io/en/stable/")
