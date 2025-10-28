@@ -9163,6 +9163,16 @@ statistical analyses or create publication-ready tables and plots.")
         (base32 "01ly4hxwa64a0ya5gla8rvv72s9mcknsfznivjkh937pbjwb7iih"))))
     (properties `((upstream-name . "parallelDist")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'relax-gcc-14-strictness
+            (lambda _
+              (substitute* "src/Makevars"
+                (("CXX_STD = CXX11")
+                 "CXX_STD = CXX11
+PKG_CXXFLAGS=-g -O2 -Wno-error=changes-meaning")))))))
     (propagated-inputs (list r-rcpp r-rcpparmadillo r-rcppparallel))
     (native-inputs (list r-dtw r-ggplot2 r-proxy r-rcppxptrutils r-testthat))
     (home-page "https://github.com/alexeckert/parallelDist")
