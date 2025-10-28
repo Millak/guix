@@ -2239,8 +2239,7 @@ asynchronous version of botocore.")
     (native-inputs
      (list python-poetry-core
            python-pytest
-           python-pytest-asyncio-0.26
-           python-pytest-cov))
+           python-pytest-asyncio-0.26))
     (home-page "https://github.com/aio-libs/aiohappyeyeballs")
     (synopsis "Happy Eyeballs for asyncio")
     (description "This library exists to allow connecting with Happy
