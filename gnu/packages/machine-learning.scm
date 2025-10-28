@@ -2565,7 +2565,7 @@ and a few related numerical optimization tools.")
 (define-public python-cmaes
   (package
     (name "python-cmaes")
-    (version "0.11.1")
+    (version "0.12.0")
     (source
      (origin
        (method git-fetch) ;no tests in PyPI
@@ -2573,10 +2573,14 @@ and a few related numerical optimization tools.")
              (url "https://github.com/CyberAgentAILab/cmaes")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1xh7cwcz38g7qk9y4668bxv4qc33wwv6q0gkql6d0dzwv59s0q5v"))
+        (base32 "1sykjif7dkq3aa2c672sh567i1d69cswrmb7fmkqh912rmxcvz8j"))
        (file-name (git-file-name name version))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (arguments
+     (list
+      #:test-flags                      ;see .github/workflows/tests.yml
+      #~(list "tests" "--ignore=" "tests/test_free_threaded.py")))
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-numpy))
     (home-page "https://github.com/CyberAgentAILab/cmaes")
     (synopsis "CMA-ES implementation for Python")
