@@ -37117,25 +37117,19 @@ memory usage and transliteration quality.")
     (version "4.6.3")
     (source
      (origin
-       ;; There are no tests in the PyPI tarball.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/life4/textdistance")
-             (commit version)))
+              (url "https://github.com/life4/textdistance")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1qaplikab46p38jqr93bxd26vvxcnvib15fjxmmp4cbsiy5196sg"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--numprocesses" (number->string (min 4 (parallel-job-count))))))
+    ;; tests: 430 passed, 1446 warnings
     (native-inputs
      (list python-numpy
            python-pytest
-           python-pytest-xdist
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-jellyfish
            python-distance
