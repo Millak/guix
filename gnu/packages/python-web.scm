@@ -9202,6 +9202,10 @@ asynchronously.")
       #:test-flags '(list "--ignore-glob=tests/test_*_benchmarks.py")
       #:phases
       '(modify-phases %standard-phases
+         (add-after 'unpack 'avoid-pytest-cov-preload
+           (lambda _
+             (substitute* "pytest.ini"
+               (("-p pytest_cov") ""))))
          (add-after 'unpack 'patch-build-system
            (lambda _
              ;; XXX: I don't know how to tell it to build the extensions in
@@ -9209,15 +9213,12 @@ asynchronously.")
              (substitute* "packaging/pep517_backend/_backend.py"
                (("build_inplace=False") "build_inplace=True")))))))
     (native-inputs
-     (list python-covdefaults
-           python-cython
+     (list python-cython
            python-expandvars
            python-pytest
-           python-pytest-cov
            python-pytest-xdist
            python-setuptools
-           python-tomli
-           python-wheel))
+           python-tomli))
     (propagated-inputs
      (list python-packaging python-idna python-multidict python-propcache))
     (home-page "https://github.com/aio-libs/yarl/")
