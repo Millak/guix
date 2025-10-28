@@ -4708,9 +4708,7 @@ and function call return values in a human-readable way.")
     (native-inputs
      (list python-freezegun
            python-pytest
-           python-pytest-cov
            python-setuptools
-           python-wheel
            tzdata-for-tests))
     (propagated-inputs
      (list python-pytz))
