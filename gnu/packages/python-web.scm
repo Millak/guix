@@ -11121,13 +11121,13 @@ Python.")
 (define-public python-azure-storage-blob
   (package
     (name "python-azure-storage-blob")
-    (version "12.26.0")
+    (version "12.27.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "azure_storage_blob" version))
        (sha256
-        (base32 "07ypg1ny5rivy51f4q9h2xajd60wc19jf0zbpw0dxxr48a1dgmsx"))))
+        (base32 "16nb17f6bi0k53qlxybwqxdld3nj742hmsk4qcq3jwka5b6y5s4r"))))
     (build-system pyproject-build-system)
     (arguments
     ;; XXX: devtools_testutils is not provided as a proper package on PyPI,
