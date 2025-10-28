@@ -384,7 +384,6 @@ resembles Python.")
            python-cython
            python-gitpython
            python-pytest
-           python-pytest-cov
            python-pytest-mock))
     (home-page "https://github.com/mesonbuild/meson-python")
     (synopsis "Meson-based build backend for Python")
