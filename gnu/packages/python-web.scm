@@ -9675,7 +9675,6 @@ and serve updated contents upon changes to the directory.")
            python-hatchling
            python-pytest
            python-pytest-asyncio
-           python-pytest-cov
            python-pytest-httpbin
            python-pytest-trio
            python-uvicorn
