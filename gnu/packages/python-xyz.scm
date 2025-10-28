@@ -21294,15 +21294,13 @@ graphviz.")
      (list python-greenlet python-zope-event python-zope-interface))
     (native-inputs
      (list python-cffi
-           python-coverage
            python-cython
            python-dnspython
            python-idna
            python-objgraph
            python-psutil
            python-requests
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (inputs
      (list c-ares libev libuv))
     (home-page "https://www.gevent.org/")
