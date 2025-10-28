@@ -2768,9 +2768,11 @@ failures.")
        (sha256
         (base32 "0gxsr0wk8kzf8rqfnhy84yh1zi0b55j76c0m9n006d8q4bzy1v25"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "-k" "not test_coverage_explicit")))
     (native-inputs
      (list python-pytest
-           python-pytest-cov
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
