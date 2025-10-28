@@ -26995,6 +26995,23 @@ the earlier snpMatrix package, allowing for uncertainty in genotypes.")
          "071aipwk1awr71hvzflps49dzp83p12zm1pbyx4l8d2v3wbj0dlz"))))
     (properties `((upstream-name . "chromstaR")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'fix-r-4.5.0
+            ;; Changes in R 4.5.0: C-Level Facilities.
+            ;; Strict R headers are now the default. This removes the legacy
+            ;; definitions of PI, Calloc, Realloc and Free: use M_PI,
+            ;; R_Calloc, R_Realloc or R_Free instead.
+            ;; https://cran.r-project.org/doc/manuals/r-release/NEWS.html
+            (lambda _
+              (substitute* '("src/densities.cpp"
+                             "src/scalehmm.cpp"
+                             "src/utility.cpp")
+                (("Calloc\\(") "R_Calloc(")
+                (("Free\\(") "R_Free(")
+                (("Realloc\\(") "R_Realloc(")))))))
     (propagated-inputs
      (list r-bamsignals
            r-biocgenerics
