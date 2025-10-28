@@ -21060,45 +21060,6 @@ developed separately, both serve the same purpose: to provide Python bindings
 for libmagic.")
     (license license:expat)))
 
-(define-public s3cmd
-  (package
-    (name "s3cmd")
-    (version "2.4.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/s3tools/s3cmd")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "168c49d1v8r7azv66zz0w07jalf434c2jpg2xzads5jnxzmiy73k"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ; XXX: Tests require network access.
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'hide-wrapping
-            (lambda _
-              (substitute* "S3/MultiPart.py"
-                (("sys\\.argv\\[0\\]")
-                 "\"s3cmd\""))
-              (substitute* "s3cmd"
-                (("optparser\\.get_prog_name\\(\\)")
-                 "\"s3cmd\"")))))))
-    (native-inputs (list python-setuptools))
-    (inputs (list python-dateutil python-magic))
-    (home-page "https://s3tools.org/s3cmd")
-    (synopsis "Command line tool for S3-compatible storage services")
-    (description
-     "S3cmd is a command line tool for uploading, retrieving and managing data
-in storage services that are compatible with the Amazon Simple Storage
-Service (S3) protocol, including S3 itself.  It supports rsync-like backup,
-GnuPG encryption, and more.  It also supports management of Amazon's
-CloudFront content delivery network.")
-    (license license:gpl2+)))
-
 (define-public python-securetar
   (package
     (name "python-securetar")
