@@ -1372,7 +1372,7 @@ for Python.")
      (list python-aiofiles
            python-aiostream
            python-click
-           python-easy-ansi
+           python-easy-ansi-0.3
            python-pyte))
     (home-page "https://github.com/dankilman/multiplex")
     (synopsis "Parallel stream of outputs from multiple processes")
@@ -24346,6 +24346,22 @@ replacement to more full-featured frameworks (such as curses or urwid), but as
 a tool to quickly create nice-looking screens in your terminal window.  You
 can even create animations with the cursor controls.")
     (license license:expat)))
+
+(define-public python-easy-ansi-0.3
+  (package
+    (inherit python-easy-ansi)
+    (name "python-easy-ansi")
+    (version "0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/joeysbytes/easy-ansi")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0albh55ynzs98qy9pln4qaxw5qhhh3lk09jy9bx19gycrp1c3lc3"))))
+    (arguments '())))
 
 (define-public python-pycosat
   (package
