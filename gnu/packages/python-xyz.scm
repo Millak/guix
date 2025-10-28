@@ -39947,6 +39947,32 @@ be imported, but only a few components are understood in a sophisticated way.")
 intended for validating data coming into Python as JSON, YAML, etc.")
     (license license:bsd-3)))
 
+(define-public python-wadler-lindig
+  (package
+    (name "python-wadler-lindig")
+    (version "0.1.7")
+    (source
+     (origin
+       ;; GitHub includes the tests, unlike the PyPI tarball
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/patrick-kidger/wadler_lindig")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nl2zx75p0fza3xyd5qsl4gx68hma677gin68d290ivk6zmkdzx8"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hatchling python-pytest python-numpy))
+    (home-page "https://docs.kidger.site/wadler_lindig")
+    (synopsis "Pretty printer for Python using the Wadler-Lindig algorithm")
+    (description
+     "Wadler-Lindig is a minimal, zero-dependency pretty-printing
+library for Python that implements a simplified version of the Wadler-Lindig
+algorithm. Designed to consume less horizontal space than Python's
+built-in pprint.pprint, it produces compact, well-formatted representations
+even for complex custom types.")
+    (license license:asl2.0)))
+
 (define-public python-wand
   (package
     (name "python-wand")
