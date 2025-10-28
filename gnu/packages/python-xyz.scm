@@ -30463,14 +30463,31 @@ key.
     (version "2.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "daemonize" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/thesharp/daemonize")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1hwbl3gf9fdds9sc14zgjyjisjvxidrvqc11xlbb0b6jz17nw0nx"))))
-    (build-system python-build-system)
+        (base32 "0pz914x6dfq133nfv0y8q8fss4zr52ip8mq3ds50rx0ddlbb0k2x"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "tests/test.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fix-tests
+            (lambda _
+              ;; XXX: nobody has group nogroup on Guix.
+              (substitute* "tests/test.py"
+                (("grp\\.getgrnam\\(\"nobody\"\\)\\.gr_gid")
+                 (number->string (passwd:gid (getpw "nobody"))))))))))
+    (native-inputs (list coreutils-minimal procps python-setuptools))
     (home-page "https://github.com/thesharp/daemonize")
     (synopsis "Library for writing system daemons in Python")
-    (description "Daemonize is a library for writing system daemons in Python.")
+    (description
+     "Daemonize is a library for writing system daemons in Python.")
     (license license:expat)))
 
 (define-public python-pymacaroons
