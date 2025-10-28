@@ -20304,23 +20304,27 @@ RabbitMQ messaging server is the most popular implementation.")
 (define-public python-billiard
   (package
     (name "python-billiard")
-    (version "4.2.0")
+    (version "4.2.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "billiard" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/celery/billiard")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0b2svqx81511m0k2swjkybcx69f541dzd4rgfdxa2ni7rf232g4s"))))
+        (base32 "1p08w9msiajhg23ifcgnkv8jlbnh3ip3qhxahl5q0338sk4kah19"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'remove-win-files
-                          (lambda _
-                            (for-each delete-file-recursively
-                                      '("billiard/popen_spawn_win32.py"
-                                        "billiard/_win.py")))))))
-    (native-inputs
-     (list python-psutil python-pytest python-setuptools python-wheel))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-win-files
+            (lambda _
+              (for-each delete-file-recursively
+                        '("billiard/popen_spawn_win32.py"
+                          "billiard/_win.py")))))))
+    (native-inputs (list python-psutil python-pytest python-setuptools))
     (home-page "https://github.com/celery/billiard")
     (synopsis "Python multiprocessing fork with improvements and bugfixes")
     (description
