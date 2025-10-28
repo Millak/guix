@@ -12977,27 +12977,6 @@ using the PLY parsing library.  It parses C code into an AST and can serve as
 a front-end for C compilers or analysis tools.")
     (license license:bsd-3)))
 
-(define-public python2-pycparser
-  (let ((base (package
-                (inherit python-pycparser)
-                (version "2.18")
-                (source
-                 (origin
-                   (method url-fetch)
-                   (uri (pypi-uri "pycparser" version))
-                   (sha256
-                    (base32
-                     "09mjyw82ibqzl449g7swy8bfxnfpmas0815d2rkdjlcqw81wma4r"))))
-                ;; FIXME: package-with-python2 needs to be updated to accept
-                ;; pyproject-build-system packages.
-                (build-system python-build-system)
-                (arguments
-                 (cons* #:tests? #f
-                        (strip-keyword-arguments
-                         '(#:test-backend)
-                         (package-arguments python-pycparser)))))))
-    (package-with-python2 base)))
-
 (define-public python-pywavelets
   (package
     (name "python-pywavelets")
@@ -15001,16 +14980,6 @@ implementation of D-Bus.")
     (home-page "https://www.freedesktop.org/wiki/Software/DBusBindings/")
     (properties `((python2-variant . ,(delay python2-dbus))))
     (license license:expat)))
-
-(define-public python2-dbus
-  (package/inherit python-dbus
-    (name "python2-dbus")
-    (inputs `(("python" ,python-2)
-              ("libxcrypt" ,libxcrypt)  ;required by Python.h
-              ,@(alist-delete "python"
-                              (package-inputs python-dbus))))
-    (arguments
-     `(#:configure-flags '("PYTHON_VERSION=2")))))
 
 (define-public python-notify2
   (package
@@ -41028,6 +40997,37 @@ to generate the archive prior to downloading or of a very large file that
 you do not want to store entirely on disk or on memory.")
     ;; No copyright headers in the source.  The LICENSE file indicates GPL3.
     (license license:gpl3)))
+
+(define-public python2-dbus
+  (package/inherit python-dbus
+    (name "python2-dbus")
+    (inputs `(("python" ,python-2)
+              ("libxcrypt" ,libxcrypt)  ;required by Python.h
+              ,@(alist-delete "python"
+                              (package-inputs python-dbus))))
+    (arguments
+     `(#:configure-flags '("PYTHON_VERSION=2")))))
+
+(define-public python2-pycparser
+  (let ((base (package
+                (inherit python-pycparser)
+                (version "2.18")
+                (source
+                 (origin
+                   (method url-fetch)
+                   (uri (pypi-uri "pycparser" version))
+                   (sha256
+                    (base32
+                     "09mjyw82ibqzl449g7swy8bfxnfpmas0815d2rkdjlcqw81wma4r"))))
+                ;; FIXME: package-with-python2 needs to be updated to accept
+                ;; pyproject-build-system packages.
+                (build-system python-build-system)
+                (arguments
+                 (cons* #:tests? #f
+                        (strip-keyword-arguments
+                         '(#:test-backend)
+                         (package-arguments python-pycparser)))))))
+    (package-with-python2 base)))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
