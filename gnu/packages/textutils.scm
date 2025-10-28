@@ -2004,32 +2004,6 @@ easily specify file types, match highlighting, Perl-Compatible Regular
 Expressions, and being faster to type than grep.")
     (license license:artistic2.0)))
 
-(define-public python-panflute
-  (package
-    (name "python-panflute")
-    (version "2.3.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "panflute" version))
-              (sha256
-               (base32
-                "07wg5md93jcdkpiqljwr3p1xzvm6nf7vbiay0bp84fgg6hmd06sz"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))        ;require pandoc to run tests
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-click
-           python-pyyaml))
-    (home-page "http://scorreia.com/software/panflute/")
-    (synopsis "Pythonic Pandoc filters")
-    (description
-     "Panflute is a Python package that makes Pandoc filters fun to
-write.  It is a pythonic alternative to John MacFarlane's pandocfilters, from
-which it is heavily inspired.")
-    (license license:bsd-3)))
-
 (define-public pandoc-include
   (package
     (name "pandoc-include")

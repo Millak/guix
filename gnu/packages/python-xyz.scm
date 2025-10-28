@@ -153,6 +153,7 @@
 ;;; Copyright © 2023 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
+;;; Copyright © 2023 Wiktor Żelazny <wz@freeshell.de>
 ;;; Copyright © 2024 Timothee Mathieu <timothee.mathieu@inria.fr>
 ;;; Copyright © 2024 Ian Eure <ian@retrospec.tv>
 ;;; Copyright © 2024 Adriel Dumas--Jondeau <leirda@disroot.org>
@@ -1400,6 +1401,32 @@ numbers like forty-second.")
     (description "Orderly Set is a package containing multiple implementations
 of Ordered Set.")
     (license license:expat)))
+
+(define-public python-panflute
+  (package
+    (name "python-panflute")
+    (version "2.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "panflute" version))
+       (sha256
+        (base32 "07wg5md93jcdkpiqljwr3p1xzvm6nf7vbiay0bp84fgg6hmd06sz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;require pandoc to run tests
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-click
+           python-pyyaml))
+    (home-page "http://scorreia.com/software/panflute/")
+    (synopsis "Pythonic Pandoc filters")
+    (description
+     "Panflute is a Python package that makes Pandoc filters fun to write.
+It is a pythonic alternative to John MacFarlane's pandocfilters, from which it
+is heavily inspired.")
+    (license license:bsd-3)))
 
 (define-public python-pastel
   (package
