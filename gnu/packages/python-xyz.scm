@@ -25070,93 +25070,6 @@ cases, factory_boy allows you to use objects customized for the current test,
 while only declaring the test-specific fields.")
     (license license:expat)))
 
-(define-public python-translate-toolkit
-  (package
-    (name "python-translate-toolkit")
-    (version "3.15.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "translate_toolkit" version))
-       (sha256
-        (base32 "0p23c5nvfw19wg2h4rqxf301z0023yl7ivpjyhr5byxf0sxnqnpq"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 2828 passed, 3 skipped, 28 deselected, 32 xfailed, 11 warnings
-      #:test-flags
-      ;; TODO: Some of the optional inputs are not packaged yet.
-      #~(list #$@(map (lambda (file) (string-append "--ignore="
-                                                    "tests/translate/"
-                                                    file))
-                      (list "convert/test_ini2po.py"
-                            "convert/test_php2po.py"
-                            "convert/test_po2ini.py"
-                            "convert/test_po2php.py"
-                            "storage/test_cpo.py"
-                            "storage/test_fluent.py"
-                            "storage/test_ini.py"
-                            "storage/test_php.py"
-                            "storage/test_po.py"
-                            "storage/test_pypo.py"
-                            "storage/test_subtitles.py"))
-              #$@(map (lambda (test) (string-append "--deselect="
-                                                    "tests/translate/storage/"
-                                                    test))
-                      ;; UnicodeDecodeError: 'utf-8' codec can't decode byte
-                      ;; 0xff in position 0: invalid start byte
-                      (list "test_csvl10n.py::TestCSV::test_encoding_save"
-                            ;; FileNotFoundError: [Errno 2] No such file or
-                            ;; directory: 'msgfmt'
-                            "test_mo.py::TestMOFile::test_output"
-                            ;; assert 0 == -16200
-                            "test_poheader.py::test_timezones"))
-              #$@(map (lambda (test) (string-append "--deselect="
-                                                    "tests/translate/tools/"
-                                                    test))
-                      ;; XXX: Some issues with XML parsing.
-                      (list "test_junitmsgfmt.py::test_output"
-                            "test_pocount.py::test_output"
-                            "test_pocount.py::test_cases"))
-              "-k" "not test_open_office_to_xliff and not test_po_to_xliff")))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm))
-    (propagated-inputs
-     (list python-cwcwidth
-           python-cheroot
-           ;; python-aeidon
-           ;; python-fluent
-           python-iniparse
-           python-lxml
-           python-mistletoe
-           python-phply
-           python-pyparsing
-           python-ruamel.yaml
-           python-vobject))
-    (home-page "https://toolkit.translatehouse.org")
-    (synopsis "Tools and API for translation and localization engineering")
-    (description
-     "Tools and API for translation and localization engineering.  It contains
-several utilities, as well as an API for building localization tools.")
-    (license license:gpl2+)))
-
-;; XXX: See: <https://codeberg.org/guix/guix/pulls/3780#issuecomment-7957715>
-(define-public python-translate-toolkit-for-offlate
-  (hidden-package
-   (package
-     (inherit python-translate-toolkit)
-     (version "3.6.2")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "translate-toolkit" version ".tar.gz"))
-        (sha256
-         (base32 "0m4cpsp7x7h5m5agg4ybscf7y86wla46q2lvxpi2myplb6qlgcli"))))
-     (arguments
-      (list #:tests? #f)))))
-
 (define-public python-gtts
   (package
     (name "python-gtts")
@@ -37871,6 +37784,93 @@ configuration, loading values from files or from command line arguments.  This
 is a distinct layer on top of traitlets, so you can use traitlets in your code
 without using the configuration machinery.")
     (license license:bsd-3)))
+
+(define-public python-translate-toolkit
+  (package
+    (name "python-translate-toolkit")
+    (version "3.15.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "translate_toolkit" version))
+       (sha256
+        (base32 "0p23c5nvfw19wg2h4rqxf301z0023yl7ivpjyhr5byxf0sxnqnpq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 2828 passed, 3 skipped, 28 deselected, 32 xfailed, 11 warnings
+      #:test-flags
+      ;; TODO: Some of the optional inputs are not packaged yet.
+      #~(list #$@(map (lambda (file) (string-append "--ignore="
+                                                    "tests/translate/"
+                                                    file))
+                      (list "convert/test_ini2po.py"
+                            "convert/test_php2po.py"
+                            "convert/test_po2ini.py"
+                            "convert/test_po2php.py"
+                            "storage/test_cpo.py"
+                            "storage/test_fluent.py"
+                            "storage/test_ini.py"
+                            "storage/test_php.py"
+                            "storage/test_po.py"
+                            "storage/test_pypo.py"
+                            "storage/test_subtitles.py"))
+              #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/translate/storage/"
+                                                    test))
+                      ;; UnicodeDecodeError: 'utf-8' codec can't decode byte
+                      ;; 0xff in position 0: invalid start byte
+                      (list "test_csvl10n.py::TestCSV::test_encoding_save"
+                            ;; FileNotFoundError: [Errno 2] No such file or
+                            ;; directory: 'msgfmt'
+                            "test_mo.py::TestMOFile::test_output"
+                            ;; assert 0 == -16200
+                            "test_poheader.py::test_timezones"))
+              #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/translate/tools/"
+                                                    test))
+                      ;; XXX: Some issues with XML parsing.
+                      (list "test_junitmsgfmt.py::test_output"
+                            "test_pocount.py::test_output"
+                            "test_pocount.py::test_cases"))
+              "-k" "not test_open_office_to_xliff and not test_po_to_xliff")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-cwcwidth
+           python-cheroot
+           ;; python-aeidon
+           ;; python-fluent
+           python-iniparse
+           python-lxml
+           python-mistletoe
+           python-phply
+           python-pyparsing
+           python-ruamel.yaml
+           python-vobject))
+    (home-page "https://toolkit.translatehouse.org")
+    (synopsis "Tools and API for translation and localization engineering")
+    (description
+     "Tools and API for translation and localization engineering.  It contains
+several utilities, as well as an API for building localization tools.")
+    (license license:gpl2+)))
+
+;; XXX: See: <https://codeberg.org/guix/guix/pulls/3780#issuecomment-7957715>
+(define-public python-translate-toolkit-for-offlate
+  (hidden-package
+   (package
+     (inherit python-translate-toolkit)
+     (version "3.6.2")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "translate-toolkit" version ".tar.gz"))
+        (sha256
+         (base32 "0m4cpsp7x7h5m5agg4ybscf7y86wla46q2lvxpi2myplb6qlgcli"))))
+     (arguments
+      (list #:tests? #f)))))
 
 (define-public python-translitcodec
   (package
