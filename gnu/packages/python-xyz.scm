@@ -36859,6 +36859,17 @@ ratio)
      (list python-setuptools
            python-wheel))))
 
+(define-public python-termcolor-next
+  (package
+    (inherit python-termcolor)
+    (version "3.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "termcolor" version))
+       (sha256
+        (base32 "0w2rwl4h7664illllkmicdh3fz3z3pznqxbaxkp0j6aqxvxxfvba"))))))
+
 (define-public python-terminaltables
   (package
     (name "python-terminaltables")
