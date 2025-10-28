@@ -32613,45 +32613,6 @@ for use by other package developers who want to include run-time testing
 features in their own packages.")
     (license license:gpl3+)))
 
-(define-public r-assertive
-  (package
-    (name "r-assertive")
-    (version "0.3-6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "assertive" version))
-       (sha256
-        (base32
-         "02palil82idqhhshcdjsfsja9qkqnd0dczqzj5gbccy4hfg1c0y4"))))
-    (build-system r-build-system)
-    (propagated-inputs
-     (list r-assertive-base
-           r-assertive-code
-           r-assertive-data
-           r-assertive-data-uk
-           r-assertive-data-us
-           r-assertive-datetimes
-           r-assertive-files
-           r-assertive-matrices
-           r-assertive-models
-           r-assertive-numbers
-           r-assertive-properties
-           r-assertive-reflection
-           r-assertive-sets
-           r-assertive-strings
-           r-assertive-types
-           r-knitr))
-    (native-inputs
-     (list r-knitr r-testthat))
-    (home-page "https://bitbucket.org/richierocks/assertive")
-    (synopsis "Readable check functions to ensure code integrity")
-    (description
-     "This package provides lots of predicates (@code{is_*} functions) to
-check the state of your variables, and assertions (@code{assert_*} functions)
-to throw errors if they aren't in the right form.")
-    (license license:gpl3+)))
-
 (define-public r-dotcall64
   (package
     (name "r-dotcall64")
