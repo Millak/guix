@@ -20,7 +20,8 @@
 ;;; Copyright © 2023 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Ashish SHUKLA <ashish.is@lostca.se>
-;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024, 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -904,6 +905,53 @@ framework.")
 SSH server for testing purposes.  It is built on top of paramiko, so it does not
 need OpenSSH binaries to be installed.")
     (license license:expat)))
+
+(define-public python-sshfs
+  (package
+    (name "python-sshfs")
+    (version "2025.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fsspec/sshfs")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cdq4wpx68k9bcrns2p2jr3f3rg8hck8588rnw6yn5rsfdlvyvr0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-importlib-metadata
+           python-mock-ssh-server
+           python-pytest
+           python-pytest-asyncio
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-asyncssh
+           python-bcrypt
+           python-fsspec))
+    (home-page "https://github.com/fsspec/sshfs")
+    (synopsis "SSH/SFTP implementation for fsspec")
+    (description
+     "This package provides an implementation of fsspec for the SFTP protocol
+using asyncssh, with the following features:
+
+@itemize
+@item A complete implementation of the fsspec protocol through SFTP
+@item Supports features outside of the SFTP
+@item Quite fast
+@item Builtin Channel Management
+@item Async
+@end itemize")
+    (license license:asl2.0)))
 
 (define-public clustershell
   (package
