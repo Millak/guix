@@ -151,7 +151,7 @@ interfaces for other technical domains.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'pathch-pytest-options
+          (add-after 'unpack 'patch-pytest-options
             (lambda _
               (substitute* "setup.cfg"
                 ((".*doctest.*") "")
@@ -167,10 +167,8 @@ interfaces for other technical domains.")
            graphviz
            python-mock
            python-pytest
-           python-pytest-cov
            python-pytest-mock
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://github.com/xflr6/graphviz")
     (synopsis "Simple Python interface for Graphviz")
     (description
