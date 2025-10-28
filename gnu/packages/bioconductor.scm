@@ -20974,7 +20974,7 @@ Gaussian distributions.")
                (add-after 'unpack 'patch-sources
                  (lambda _
                    (setenv "POPCNT_CAPABILITY" "0")))))))
-    (inputs (list))
+    (inputs (list zlib))
     (native-inputs
      (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/Rbowtie/")
