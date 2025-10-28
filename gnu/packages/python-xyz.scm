@@ -36196,12 +36196,8 @@ Storage}.")
                     (url "https://github.com/fzakaria/shrinkwrap")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (modules '((guix build utils)))
-              (snippet '(substitute* "pyproject.toml"
-                          (("lief = \"0\\.12\\.0\"") "lief = \"*\"")))
               (sha256
-               (base32
-                "1f3qrygj16y767q2c7pn9j6m95ggcmj9s5cx9v92ygygly4mr3jp"))))
+               (base32 "1f3qrygj16y767q2c7pn9j6m95ggcmj9s5cx9v92ygygly4mr3jp"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-click
