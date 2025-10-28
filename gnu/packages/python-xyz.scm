@@ -12590,22 +12590,39 @@ e.g. copy examples, fetch data, etc.")
 (define-public python-multidict
   (package
     (name "python-multidict")
-    (version "6.1.0")
+    (version "6.7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "multidict" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aio-libs/multidict/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0jlgjpclkh5g6vr1danl6alz0cza2jlzdqh3q03d4s8ckfzjxbi2"))))
+        (base32 "1rcd2vi4837ahb6nyi0vxhvvzaa7bpc7zpg0xynbdv8qgif98j1l"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-typing-extensions))
+    (arguments
+     (list
+      ;; tests: 1395 passed
+      #:test-flags
+      #~(list "--ignore-glob=tests/test_*_benchmarks.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pytest.ini"
+                (("-p pytest_cov") "")
+                (("--cov.*") "")))))))
     (native-inputs
-     (list python-pytest python-pytest-cov python-setuptools python-wheel))
+     (list python-objgraph
+           python-psutil
+           python-pytest
+           python-setuptools))
     (home-page "https://github.com/aio-libs/multidict/")
     (synopsis "Multidict implementation")
-    (description "Multidict is dict-like collection of key-value pairs
-where key might be occurred more than once in the container.")
+    (description
+     "Multidict is dict-like collection of key-value pairs where key might be
+occurred more than once in the container.")
     (license license:asl2.0)))
 
 (define-public python-orderedmultidict
