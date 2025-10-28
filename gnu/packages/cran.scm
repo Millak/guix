@@ -45549,7 +45549,13 @@ techniques to average Bayesian predictive distributions.")
              (setenv "TZ" "UTC+1")
              (setenv "TZDIR"
                      (search-input-directory inputs
-                                             "share/zoneinfo")))))))
+                                             "share/zoneinfo"))))
+         (add-before 'install 'relax-gcc-14-strictness
+            (lambda _
+              (substitute* "src/Makevars"
+                (("CXX_STD = CXX17")
+                 "CXX_STD = CXX17
+PKG_CXXFLAGS+=-g -O2 -Wno-error=changes-meaning")))))))
     (native-inputs
      (list r-knitr
            r-matrix
