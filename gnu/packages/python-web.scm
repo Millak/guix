@@ -11149,6 +11149,38 @@ Python.")
 Client Library for Python.")
     (license license:expat)))
 
+(define-public python-azure-storage-file-datalake
+  (package
+    (name "python-azure-storage-file-datalake")
+    (version "12.22.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "azure_storage_file_datalake" version))
+       (sha256
+        (base32 "0xxg94684b630p8jrz38sg7mdcwp1wa0p5di27mswyrjycshvvcs"))))
+    (build-system pyproject-build-system)
+    (arguments
+    ;; XXX: devtools_testutils is not provided as a proper package on PyPI,
+    ;; Git does not contains setup.py, setup.cfg or pyproject.toml which makes
+    ;; it hard to package in Guix.
+    ;; <https://raw.githubusercontent.com/Azure/azure-sdk-for-python/refs/
+    ;; heads/main/tools/azure-sdk-tools/devtools_testutils/README.md>.
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-azure-core
+           python-azure-storage-blob
+           python-isodate
+           python-typing-extensions))
+    (home-page "https://github.com/Azure/azure-sdk-for-python")
+    (synopsis "Microsoft Azure File DataLake Storage Client Library for Python")
+    (description
+     "This package provides the Microsoft Azure File @code{DataLake} Storage
+Client Library for Python.")
+    (license license:expat)))
+
 (define-public python-google-auth
   (package
     (name "python-google-auth")
