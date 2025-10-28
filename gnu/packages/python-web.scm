@@ -7531,13 +7531,13 @@ S3.")
 (define-public python-s3transfer
   (package
     (name "python-s3transfer")
-    (version "0.10.3")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "s3transfer" version))
        (sha256
-        (base32 "032bjky1q8r5x80mvb0ah60g0zq4snwf0xa4c7779m44mdsfsl2g"))))
+        (base32 "09a17scf96zfdw2chb22yyvmnj4anfijgkncfi89id68wxj25wgg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
