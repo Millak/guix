@@ -18,7 +18,7 @@
 ;;; Copyright © 2021 Mike Gerwitz <mtg@gnu.org>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2022, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2022, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2024 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2025 Zheng Junjie <873216071@qq.com>
@@ -2284,6 +2284,15 @@ Tool for Language Recognition v3).")
          #:phases
          (modify-phases %standard-phases
            (delete 'configure)
+           (add-before 'build 'relax-gcc-14-strictness
+             (lambda _
+               (substitute* "Makefile"
+                 (("	gcc(.*)$" all options)
+                  (string-append
+                   "	gcc"
+                   " -Wno-error=incompatible-pointer-types"
+                   " -Wno-error=implicit-function-declaration"
+                   options)))))
            (add-before 'install 'fix-wrapper
              (lambda* (#:key inputs #:allow-other-keys)
                (let ((jps (search-input-file inputs "/bin/jps")))
