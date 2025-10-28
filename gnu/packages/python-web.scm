@@ -4311,6 +4311,47 @@ desired
 with very acceptable performance.")
     (license license:zpl2.1)))
 
+(define-public python-weasel
+  (package
+    (name "python-weasel")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "weasel" version))
+       (sha256
+        (base32 "1aas113r29y6yxrmdlsw80rj8w4kgw1jhfjw9rsgc4rf0w7j3g5a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; Network access is required.
+      #~(list #$@(map (lambda (test) (string-append "--deselect="
+                                                    "weasel/tests/cli/"
+                                                    test))
+                      (list "test_cli.py::test_project_git_dir_asset"
+                            "test_cli.py::test_project_git_file_asset"
+                            "test_cli_app.py::test_project_assets")))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-cloudpathlib
+           python-confection
+           python-packaging
+           python-pydantic-2
+           python-requests
+           python-smart-open
+           python-srsly
+           python-typer
+           python-wasabi))
+    (home-page "https://github.com/explosion/weasel/")
+    (synopsis "Small and easy workflow system")
+    (description
+     "This package provides a minimalistic  workflow system to manage and
+share end-to-end workflows for different use cases and domains.")
+    (license license:expat)))
+
 (define-public python-webencodings
   (package
     (name "python-webencodings")
