@@ -17365,57 +17365,6 @@ structures.")
     (description "GPX file parser and GPS track manipulation library.")
     (license license:asl2.0)))
 
-(define-public wfetch
-  (let ((commit "e1cfa37814aebc9eb56ce994ebe877b6a6f9a715")
-        (revision "2"))
-    (package
-      (name "wfetch")
-      (version (git-version "0.1-pre" revision commit))
-      (home-page "https://github.com/Gcat101/Wfetch")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url home-page)
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1dmr85plx8zr6s14ym3r32g6crwxghkval5a24ah90ijx4dbn5q5"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:tests? #f ;no test suite
-        #:phases
-        #~(modify-phases %standard-phases
-            (delete 'build)
-            (replace 'install
-              (lambda _
-                (let ((bin (string-append #$output "/bin"))
-                      (share (string-append #$output "/share")))
-                  (mkdir-p share)
-                  (substitute* "wfetch/wfetch.py"
-                    (("os.sep, 'opt', 'wfetch'")
-                     (string-append "'" share "'")))
-                  ;; The documentation expects the executable to be named
-                  ;; 'wfetch', not 'wfetch.py'.
-                  (rename-file "wfetch/wfetch.py" "wfetch/wfetch")
-                  (install-file "wfetch/wfetch" bin)
-                  (copy-recursively "wfetch/icons" share)))))))
-      (native-inputs (list python-setuptools))
-      (inputs (list python-pyowm python-fire python-termcolor python-requests))
-      (synopsis "Command-line tool to display weather info")
-      (description
-       "This package provides a tool similar to Neofetch/pfetch, but for
-weather: it can display the weather condition, temperature, humidity, etc.
-
-To use it, you must first run:
-
-@example
-export WEATHER_CLI_API=@var{your OpenWeatherMap API key}
-@end example
-")
-      (license license:gpl3+))))
-
 (define-public python-get-version
   (package
     (name "python-get-version")

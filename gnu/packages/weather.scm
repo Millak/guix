@@ -1,6 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022, 2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2024 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +31,8 @@
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-web)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages xml))
 
@@ -60,6 +65,62 @@ forecast for one or seven days.  Displayed information includes temperature
 range---felt and measured---, wind speed and direction, viewing distance,
 precipitation amount and probability.")
     (license license:isc)))
+
+(define-public wfetch
+  (let ((commit "e1cfa37814aebc9eb56ce994ebe877b6a6f9a715")
+        (revision "2"))
+    (package
+      (name "wfetch")
+      (version (git-version "0.1-pre" revision commit))
+      (home-page "https://github.com/Gcat101/Wfetch")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url home-page)
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1dmr85plx8zr6s14ym3r32g6crwxghkval5a24ah90ijx4dbn5q5"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:tests? #f ;no test suite
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'build)
+            (replace 'install
+              (lambda _
+                (let ((bin (string-append #$output "/bin"))
+                      (share (string-append #$output "/share")))
+                  (mkdir-p share)
+                  (substitute* "wfetch/wfetch.py"
+                    (("os.sep, 'opt', 'wfetch'")
+                     (string-append "'" share "'")))
+                  ;; The documentation expects the executable to be named
+                  ;; 'wfetch', not 'wfetch.py'.
+                  (rename-file "wfetch/wfetch.py" "wfetch/wfetch")
+                  (install-file "wfetch/wfetch" bin)
+                  (copy-recursively "wfetch/icons" share)))))))
+      (native-inputs
+       (list python-setuptools))
+      (inputs
+       (list python-pyowm
+             python-fire
+             python-termcolor
+             python-requests))
+      (synopsis "Command-line tool to display weather info")
+      (description
+       "This package provides a tool similar to Neofetch/pfetch, but for
+weather: it can display the weather condition, temperature, humidity, etc.
+
+To use it, you must first run:
+
+@example
+export WEATHER_CLI_API=@var{your OpenWeatherMap API key}
+@end example
+")
+      (license license:gpl3+))))
 
 (define-public meteo-qt
   (package
