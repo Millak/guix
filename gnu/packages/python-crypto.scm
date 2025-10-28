@@ -576,15 +576,12 @@ is used by the Requests library to verify HTTPS requests.")
             python-cffi
             python-click
             python-cryptography-vectors
-            python-mypy
             python-pretend
             python-pytest
             python-pytest-benchmark
-            python-pytest-cov
             python-pytest-randomly
             python-pytest-xdist
             python-setuptools
-            python-wheel
             rust
             `(,rust "cargo"))
       (or (and=> (%current-target-system)
