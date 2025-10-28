@@ -27592,10 +27592,11 @@ identifying what the file is.")
            python-termcolor
            python-shtab))
     (home-page "https://github.com/tldr-pages/tldr-python-client")
-    (synopsis "Python command-line client for tldr pages")
+    (synopsis "Command-line client for tldr pages")
     (description "This package provides the @code{tldr} command allowing users
 to view @code{tldr} pages from a shell.  The @code{tldr} pages are a community
-effort to simplify the man pages with practical examples.")
+effort to simplify the man pages with practical examples described in
+@url{https://tldr.sh/}.")
     (license license:expat)))
 
 (define-public python-tldr
