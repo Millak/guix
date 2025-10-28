@@ -15158,6 +15158,37 @@ to help free up more global locks to handle other tasks.")
 names.")
     (license license:asl2.0)))
 
+(define-public go-github-com-moby-profiles-seccomp
+  (package
+    (name "go-github-com-moby-profiles-seccomp")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/moby/profiles")
+              (commit (go-version->git-ref version
+                                           #:subdir "seccomp"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1hgczgfxn41gyjljmfr1qaiql6k10xkbc5zpkd7vzj5l52lw7n13"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/moby/profiles/seccomp"
+      #:unpack-path "github.com/moby/profiles"))
+    (propagated-inputs
+     (list go-github-com-opencontainers-runtime-spec
+           go-golang-org-x-sys))
+    (home-page "https://github.com/moby/profiles")
+    (synopsis "Seccomp support for Golang")
+    (description
+     "@code{seccomp} is a computer security facility in the Linux kernel.  It
+ allows a process to make a one-way transition into a secure state where it
+cannot make any system calls except @code{exit}, @code{sigreturn}, @code{read}
+and @code{write} to already-open file descriptors.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-moby-pubsub
   (package
     (name "go-github-com-moby-pubsub")
