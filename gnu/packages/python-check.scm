@@ -4988,9 +4988,7 @@ which make writing and running functional and integration tests easier.")
         (base32 "1jx7cdqwpyq3gs9czvz0fwijkqhvmbny5h3zgdqlbrw8y3miv4gq"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pdm-backend
-           python-pytest
-           python-pytest-cov))
+     (list python-pdm-backend python-pytest))
     (propagated-inputs
      (list python-binaryornot))
     (home-page "https://github.com/nbiotcloud/test2ref")
