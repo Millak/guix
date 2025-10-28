@@ -25,6 +25,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system trivial)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages base)
@@ -34,6 +35,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages rust)
   #:use-module (gnu packages textutils))
 
 ;;;
@@ -100,7 +102,7 @@ transliterating them.  It supports Emoji and Chinese.")
   (hidden-package
    (package
      (name "rust-hypher")
-     (version "0.1.5")
+     (version "0.1.6")
      (source
       (origin
         (method git-fetch)
@@ -109,7 +111,7 @@ transliterating them.  It supports Emoji and Chinese.")
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1r01hhgxp5fmz1bgy11ilajd67lgfh7kqvd258c58c6y3w3rxpjq"))
+         (base32 "0mbgfq51gf98dl8b4m7q0s66njjc4hb87qmd4lf361nmwh63m9hk"))
         (modules '((guix build utils)))
         ;; Pre-generated.
         (snippet '(for-each delete-file (find-files "tries")))))
@@ -546,7 +548,7 @@ extensions, such as @code{wlr-protocols} and @code{plasma-wayland-protocols}.")
        (base32
         "0vzs9i3sdh6f1b25vdbxwyphmxzbqixrnjlgws56fzfngy4my9dj")))))
 
-(define-public rust-syntect-5
+(define-public rust-syntect-5.2
   (hidden-package
    (package
      (name "rust-syntect")
@@ -600,13 +602,37 @@ extensions, such as @code{wlr-protocols} and @code{plasma-wayland-protocols}.")
             inspired-github-color-scheme-for-rust-syntect-5
             solarized-for-rust-syntect-5
             spacegray-for-rust-syntect-5))
-     (inputs (cons oniguruma (cargo-inputs 'rust-syntect-5)))
+     (inputs (cons oniguruma (cargo-inputs 'rust-syntect-5.2)))
      (home-page "https://github.com/trishume/syntect")
      (synopsis "Library for syntax highlighting and code intelligence")
      (description
       "This package provides a library for syntax highlighting and code
 intelligence.")
      (license license:expat))))
+
+(define-public rust-syntect-5.3
+  (hidden-package
+    (package
+      (inherit rust-syntect-5.2)
+      (name "rust-syntect")
+      (version "5.3.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/trishume/syntect")
+               (commit (string-append "v" version))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "095yvdd4lpzfywcg5zr7pq28fm9iarx6a85mpgdc0g6d1waydp68"))
+         (modules '((guix build utils)))
+         (snippet (origin-snippet (package-source rust-syntect-5.2)))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments rust-syntect-5.2)
+        ((#:rust _ #f)
+         rust-1.88)))
+      (inputs (cons oniguruma
+                    (cargo-inputs 'rust-syntect-5.3))))))
 
 (define-public rust-web-view-0.7.3.82d7cbc
   (let ((commit "82d7cbce6228b1a964673cc0f22944ad808eab42")

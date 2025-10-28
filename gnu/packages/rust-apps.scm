@@ -2856,17 +2856,18 @@ blanks grouped by language.")
 (define-public typst
   (package
     (name "typst")
-    (version "0.13.1")
+    (version "0.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "typst-cli" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "10xnxf6z78hcck7647vfq9vigrvvz0a6g4ha4l4vn5zlarrxwd56"))))
+        (base32 "0dzl7q637mhlkd026aknjk566hzkyr6ivg7qcwxivf1img24fvb3"))))
     (build-system cargo-build-system)
     (arguments
      (list
+      #:rust rust-1.88
       #:install-source? #f
       #:modules '((guix build cargo-build-system)
                   (guix build utils)
