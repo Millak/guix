@@ -224,19 +224,30 @@ concerned with representation of names for languages and language groups.")
        (sha256
         (base32 "0qs99acz1vsj96s8pcwbnp3z3s01mzzvdayk7fm0nnl6lf3lz1g1"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-poetry-core python-pytest python-pytest-cov))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _  ; Removes the need for python-pytest-cov.
+              (substitute* "pyproject.toml"
+                (("--cov --cov-report=html --cov-report=term-missing")
+                 "")
+                (("^required_plugins =.*")
+                 "")))))))
+    (native-inputs (list python-poetry-core python-pytest))
     (home-page "https://github.com/pycountry/pycountry")
     (synopsis "ISO databases for languages, countries, currencies, etc.")
     (description
      "@code{pycountry} provides the ISO databases for the standards:
-     @enumerate
-     @item 639-3 (Languages)
-     @item 3166 (Countries)
-     @item 3166-3 (Deleted Countries)
-     @item 3166-2 (Subdivisions of countries)
-     @item 4217 (Currencies)
-     @item 15924 (Scripts)
-     @end enumerate
-     It includes a copy from Debian’s pkg-isocodes and makes the data accessible
-     through a Python API.")
+@enumerate
+@item 639-3 (Languages)
+@item 3166 (Countries)
+@item 3166-3 (Deleted Countries)
+@item 3166-2 (Subdivisions of countries)
+@item 4217 (Currencies)
+@item 15924 (Scripts)
+@end enumerate
+It includes a copy from Debian’s pkg-isocodes and makes the data accessible
+through a Python API.")
     (license license:lgpl2.1+)))
