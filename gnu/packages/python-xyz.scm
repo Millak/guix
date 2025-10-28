@@ -293,7 +293,6 @@
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
-  #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages tree-sitter)
