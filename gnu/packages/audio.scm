@@ -4378,6 +4378,7 @@ link REQUIRED)"))))))
        "ide"))                          ;qt ide
     (arguments
      (list
+      #:qtbase qtbase
       #:configure-flags
       #~(list "-DSYSTEM_BOOST=ON"
               "-DSYSTEM_YAMLCPP=ON"
