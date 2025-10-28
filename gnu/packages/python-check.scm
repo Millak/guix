@@ -2189,6 +2189,36 @@ rounds that are calibrated to the chosen timer.")
 Python code formatter \"black\".")
     (license license:expat)))
 
+(define-public python-pytest-cases
+  (package
+    (name "python-pytest-cases")
+    (version "3.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_cases" version))
+       (sha256
+        (base32 "13vzivzca36g3rbz3k3zny7jqv35vsl2z0fl32ik3j95npqq3qf4"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest-asyncio
+           python-pytest-bootstrap
+           python-pytest-harvest
+           python-pytest-steps
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-decopatch
+           python-makefun
+           python-packaging))
+    (home-page "https://github.com/smarie/python-pytest-cases")
+    (synopsis "Separate test code from test cases in pytest.")
+    (description
+     "This package provides a Pytest plugin which leverages
+@code{@@pytest.mark.parametrize} decorator separating test cases from test
+functions.")
+    (license license:bsd-3)))
+
 (define-public python-pytest-celery
   (package
     (name "python-pytest-celery")
