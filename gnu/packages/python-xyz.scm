@@ -36186,33 +36186,6 @@ and abstract ELF, PE and MachO formats.")
 Storage}.")
     (license license:lgpl3+)))
 
-(define-public shrinkwrap
-  (package
-    (name "shrinkwrap")
-    (version "0.1.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/fzakaria/shrinkwrap")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32 "1f3qrygj16y767q2c7pn9j6m95ggcmj9s5cx9v92ygygly4mr3jp"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-click
-           python-poetry-core
-           python-pypa-build
-           python-pytest))
-    (inputs (list python-lief python-sh))
-    (home-page "https://github.com/fzakaria/shrinkwrap")
-    (synopsis "Emboss needed dependencies on the top level executable")
-    (description
-     "@code{shrinkwrap} is a tool which will discover all transitive dynamic
-shared objects, and lift them up to the executable referenced by absolute
-path.")
-    (license license:expat)))
-
 (define-public python-pymonad
   (package
     (name "python-pymonad")
@@ -40900,6 +40873,34 @@ you do not want to store entirely on disk or on memory.")
                          '(#:test-backend)
                          (package-arguments python-pycparser)))))))
     (package-with-python2 base)))
+
+(define-public shrinkwrap
+  (package
+    (name "shrinkwrap")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fzakaria/shrinkwrap")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f3qrygj16y767q2c7pn9j6m95ggcmj9s5cx9v92ygygly4mr3jp"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-click
+           python-poetry-core
+           python-pypa-build
+           python-pytest))
+    (inputs (list python-lief python-sh))
+    (home-page "https://github.com/fzakaria/shrinkwrap")
+    (synopsis "Emboss needed dependencies on the top level executable")
+    (description
+     "@code{shrinkwrap} is a tool which will discover all transitive dynamic
+shared objects, and lift them up to the executable referenced by absolute
+path.")
+    (license license:expat)))
 
 (define-public staticsite
   (package
