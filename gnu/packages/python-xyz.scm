@@ -23089,6 +23089,8 @@ pytest-fixtures-style dependency injection.")
 (define-public binwalk
   (package
     (name "binwalk")
+    ;; TODO: It's the latest non Rust version, see:
+    ;; <https://codeberg.org/guix/guix/issues/3919>.
     (version "2.3.4")
     (source
      (origin
@@ -23105,7 +23107,7 @@ pytest-fixtures-style dependency injection.")
             (for-each delete-file
                       (list "testing/tests/input-vectors/firmware.zip"
                             "testing/tests/test_firmware_zip.py"))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -23113,7 +23115,7 @@ pytest-fixtures-style dependency injection.")
            (lambda _
              (setenv "HOME" ""))))))
     (native-inputs
-     (list python-coverage python-nose))
+     (list python-nose python-setuptools))
     (home-page "https://github.com/ReFirmLabs/binwalk")
     (synopsis "Firmware analysis tool")
     (description "Binwalk is a tool for analyzing, reverse engineering, and
