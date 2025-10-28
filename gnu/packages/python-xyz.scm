@@ -7196,7 +7196,7 @@ and is not compatible with JSON.")
         (base32 "0i6q4i8dzsax85w1l2hc7saymyh3fw43vkifh5flpkr8ayjxy6kx"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-hatchling python-pytest python-pytest-cov))
+     (list python-hatchling python-pytest))
     (home-page "https://pypi.org/project/expandvars/")
     (synopsis "Expand system variables Unix style")
     (description "This module is inspired by GNU bash's variable expansion
