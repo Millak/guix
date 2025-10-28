@@ -23086,45 +23086,6 @@ pytest-fixtures-style dependency injection.")
      binary or text.")
     (license license:bsd-3)))
 
-(define-public binwalk
-  (package
-    (name "binwalk")
-    ;; TODO: It's the latest non Rust version, see:
-    ;; <https://codeberg.org/guix/guix/issues/3919>.
-    (version "2.3.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ReFirmLabs/binwalk")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0cfm1khckq986l0q68kmfyfagc6zmb94hgjjm847fjcil77dnlw6"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            (for-each delete-file
-                      (list "testing/tests/input-vectors/firmware.zip"
-                            "testing/tests/test_firmware_zip.py"))))))
-    (build-system pyproject-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-home
-           (lambda _
-             (setenv "HOME" ""))))))
-    (native-inputs
-     (list python-nose python-setuptools))
-    (home-page "https://github.com/ReFirmLabs/binwalk")
-    (synopsis "Firmware analysis tool")
-    (description "Binwalk is a tool for analyzing, reverse engineering, and
-     extracting firmware images")
-    (license license:expat)))
-
-(define-deprecated-package python-binwalk
-  binwalk)
-
 (define-public python-bson
   (package
     (name "python-bson")

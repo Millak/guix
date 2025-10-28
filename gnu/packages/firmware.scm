@@ -3,12 +3,14 @@
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2017, 2018, 2022-2025 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
+;;; Copyright © 2018, 2020, 2021, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2018, 2019 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2021, 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
@@ -214,6 +216,44 @@
 assembler, disassembler, and debugging tools for the Linux kernel b43 wireless
 driver.")
       (license license:gpl2))))
+
+(define-public binwalk
+  (package
+    (name "binwalk")
+    ;; TODO: It's the latest non Rust version, see:
+    ;; <https://codeberg.org/guix/guix/issues/3919>.
+    (version "2.3.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ReFirmLabs/binwalk")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cfm1khckq986l0q68kmfyfagc6zmb94hgjjm847fjcil77dnlw6"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (for-each delete-file
+                      (list "testing/tests/input-vectors/firmware.zip"
+                            "testing/tests/test_firmware_zip.py"))))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'set-home
+           (lambda _
+             (setenv "HOME" ""))))))
+    (native-inputs
+     (list python-nose python-setuptools))
+    (home-page "https://github.com/ReFirmLabs/binwalk")
+    (synopsis "Firmware analysis tool")
+    (description "Binwalk is a tool for analyzing, reverse engineering, and
+     extracting firmware images")
+    (license license:expat)))
+
+(define-deprecated-package python-binwalk binwalk)
 
 (define-public fwupd-efi
   (package
