@@ -15,6 +15,7 @@
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2025 Simen Endsjø <contact@simendsjo.me>
+;;; Copyright © 2025 Murilo <murilo@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,6 +42,7 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix git-download)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
@@ -68,6 +70,7 @@
   #:use-module (gnu packages embedded)
   #:use-module (gnu packages flashing-tools)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
@@ -220,37 +223,36 @@ driver.")
 (define-public binwalk
   (package
     (name "binwalk")
-    ;; TODO: It's the latest non Rust version, see:
-    ;; <https://codeberg.org/guix/guix/issues/3919>.
-    (version "2.3.4")
+    (version "3.1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/ReFirmLabs/binwalk")
-              (commit (string-append "v" version))))
+             (url "https://github.com/ReFirmLabs/binwalk")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cfm1khckq986l0q68kmfyfagc6zmb94hgjjm847fjcil77dnlw6"))
-       (modules '((guix build utils)))
-       (snippet
-        #~(begin
-            (for-each delete-file
-                      (list "testing/tests/input-vectors/firmware.zip"
-                            "testing/tests/test_firmware_zip.py"))))))
-    (build-system pyproject-build-system)
+        (base32 "1jm1zx8jfj7fsxa87rkbq0qjjb66wqqmvqcs2127wr22g0xa6vvs"))))
+    (build-system cargo-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-home
-           (lambda _
-             (setenv "HOME" ""))))))
-    (native-inputs
-     (list python-nose python-setuptools))
+     (list
+      #:install-source? #f
+      ;; These tests fail on the v3.1.0 release.
+      ;; They will be most likely fixed on the next release, where the
+      ;; test files are included in the source itself.
+      ;; See <https://github.com/ReFirmLabs/binwalk/issues/882>.
+      #:cargo-test-flags ''("--"
+                            "--skip=binwalk::Binwalk"
+                            "--skip=binwalk::Binwalk::scan"
+                            "--skip=binwalk::Binwalk::analyze"
+                            "--skip=binwalk::Binwalk::extract")))
+    (native-inputs (list pkg-config))
+    (inputs (cons* fontconfig xz
+                   (cargo-inputs 'binwalk)))
     (home-page "https://github.com/ReFirmLabs/binwalk")
     (synopsis "Firmware analysis tool")
     (description "Binwalk is a tool for analyzing, reverse engineering, and
-     extracting firmware images")
+extracting firmware images.")
     (license license:expat)))
 
 (define-deprecated-package python-binwalk binwalk)
