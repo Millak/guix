@@ -21063,7 +21063,7 @@ for libmagic.")
 (define-public s3cmd
   (package
     (name "s3cmd")
-    (version "2.3.0")
+    (version "2.4.0")
     (source
      (origin
        (method git-fetch)
@@ -21072,7 +21072,7 @@ for libmagic.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rdgwwmmp8mdxc84bxq6k9a7v7z2qgc3df47djzs2b84gw81dglx"))))
+        (base32 "168c49d1v8r7azv66zz0w07jalf434c2jpg2xzads5jnxzmiy73k"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -21086,11 +21086,7 @@ for libmagic.")
                  "\"s3cmd\""))
               (substitute* "s3cmd"
                 (("optparser\\.get_prog_name\\(\\)")
-                 "\"s3cmd\""))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "python" "run-tests.py")))))))
+                 "\"s3cmd\"")))))))
     (native-inputs (list python-setuptools))
     (inputs (list python-dateutil python-magic))
     (home-page "https://s3tools.org/s3cmd")
