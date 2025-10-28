@@ -30639,22 +30639,33 @@ happened, and what caused it.")
 (define-public python-pem
   (package
     (name "python-pem")
-    (version "20.1.0")
+    (version "23.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pem" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hynek/pem")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1xh88ss279fprxnzd10dczmqwjhppbyvljm33zrg2mgybwd66qr7"))))
-    (build-system python-build-system)
+        (base32 "01x14j1pliyxvcx8hlwlwfchn893ddkxxpxbyqhyh6hjyag2ammd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
-     (list python-certifi
-           python-coverage
+     (list nss-certs-for-test
+           python-certifi
+           python-hatch-fancy-pypi-readme
+           python-hatch-vcs
+           python-hatchling
            python-pretend
            python-pyopenssl
            python-pytest
-           python-sphinx
            python-twisted))
     (home-page "https://pem.readthedocs.io/")
     (synopsis "Easy PEM file parsing in Python")
