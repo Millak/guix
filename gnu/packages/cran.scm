@@ -46500,6 +46500,19 @@ download images.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'relax-gcc-14-strictness
+            (lambda _
+              ;; XXX FIXME: $HOME/.R/Makevars seems to be the only way to
+              ;; set custom CFLAGS for R?
+              (setenv "HOME" (getcwd))
+              (mkdir-p ".R")
+              (with-directory-excursion ".R"
+                (with-output-to-file "Makevars"
+                  (lambda _
+                    (display (string-append
+                              "CFLAGS=-g -O2"
+                              " -std=gnu11"
+                              " -Wno-error=implicit-function-declaration\n")))))))
          (add-before 'install 'install-server-binary
            ;; Makevars tries to install to R's store directory.
            (lambda* (#:key outputs #:allow-other-keys)
