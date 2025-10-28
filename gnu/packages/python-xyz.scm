@@ -30195,22 +30195,26 @@ Python.  It also provides some custom formatters and handlers.")
 (define-public python-pifpaf
   (package
     (name "python-pifpaf")
-    (version "3.1.5")
+    (version "3.4.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pifpaf" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jd/pifpaf")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "19bdmxldc2m570isl7hbqgbb20si4sin7pi5fw8sv9py8dyv2s4n"))))
-    (build-system python-build-system)
+        (base32 "1mj41h5xrkx71d7g5di3ykd4bsbgr7x432zbp63majgjci86gmm9"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "python" "setup.py" "testr" "--slowest"
-                     "--testr-args=until-failure"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-drivers
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((site (site-packages inputs outputs)))
+                (copy-recursively "pifpaf/drivers"
+                                (string-append site "/pifpaf/drivers/"))))))))
     (propagated-inputs
      (list python-click
            python-daiquiri
@@ -30220,14 +30224,20 @@ Python.  It also provides some custom formatters and handlers.")
            python-psutil
            python-xattr))
     (native-inputs
-     (list python-mock python-os-testr python-requests
-           python-testrepository python-testtools))
+     (list python-mock
+           python-stestr
+           python-packaging
+           python-requests
+           python-testrepository
+           python-testtools
+           python-setuptools))
     (home-page "https://github.com/jd/pifpaf")
     (synopsis "Tools and fixtures to manage daemons for testing in Python")
-    (description "Pifpaf is a suite of fixtures and a command-line tool that
-starts and stops daemons for a quick throw-away usage.  This is typically
-useful when needing these daemons to run integration testing.  It originally
-evolved from its precursor @code{overtest}.")
+    (description
+     "Pifpaf is a suite of fixtures and a command-line tool that starts and
+stops daemons for a quick throw-away usage.  This is typically useful when
+needing these daemons to run integration testing.  It originally evolved from
+its precursor @code{overtest}.")
     (license license:asl2.0)))
 
 (define-public python-pytest-check-links
