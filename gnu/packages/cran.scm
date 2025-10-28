@@ -19568,6 +19568,22 @@ phylogenies and ancestral character states.")
         (base32 "0by01x4qpf1pin5l61wmm600bmsnlnns9knwb0qmjlj72pmwfkqh"))))
     (properties `((upstream-name . "dtwclust")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'relax-gcc-14-strictness
+            (lambda _
+              ;; XXX FIXME: $HOME/.R/Makevars seems to be the only way to
+              ;; set custom CFLAGS for R?
+              (setenv "HOME" (getcwd))
+              (mkdir-p ".R")
+              (with-directory-excursion ".R"
+                (with-output-to-file "Makevars"
+                  (lambda _
+                    (display (string-append
+                              "CXXFLAGS=-g -O2"
+                              " -Wno-error=changes-meaning\n"))))))))))
     (propagated-inputs
      (list r-clue
            r-cluster
