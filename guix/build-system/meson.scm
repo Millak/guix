@@ -58,6 +58,16 @@ for TRIPLET."
                         (&unsupported-cross-compilation-target-error
                          (build-system meson-build-system)
                          (target triplet)))))))
+    (kernel . ,(cond ((target-hurd? triplet) "gnu")
+                     ((target-linux? triplet) "linux")
+                     ((target-mingw? triplet) "nt")
+                     ((target-avr? triplet) "none")
+                     (else
+                      (raise
+                       (condition
+                        (&unsupported-cross-compilation-target-error
+                         (build-system meson-build-system)
+                         (target triplet)))))))
     (cpu_family . ,(cond ((target-x86-32? triplet) "x86")
                          ((target-x86-64? triplet) "x86_64")
                          ((target-arm32? triplet) "arm")
