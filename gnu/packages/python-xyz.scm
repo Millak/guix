@@ -12361,11 +12361,7 @@ apply unified diffs.  It has features such as:
                    "and not test_source_file_name_with_properties"))))
     (propagated-inputs (list python-sphinx python-tomli))
     (native-inputs
-     (list python-matplotlib
-           python-pytest
-           python-pytest-cov
-           python-setuptools
-           python-wheel))
+     (list python-matplotlib python-pytest python-setuptools))
     (home-page "https://pypi.org/project/numpydoc/")
     (synopsis "Numpy's Sphinx extensions")
     (description "Sphinx extension to support docstrings in Numpy format.")
