@@ -1402,6 +1402,34 @@ numbers like forty-second.")
 of Ordered Set.")
     (license license:expat)))
 
+(define-public python-pandocfilters
+  (package
+    (name "python-pandocfilters")
+    (version "1.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pandocfilters" version))
+       (sha256
+        (base32 "17lknixjja23jczlv8afgfky94m4gwl7wc36iczw1sz4brallaq0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;require pandoc to run tests
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/jgm/pandocfilters")
+    (synopsis "Python module for writing Pandoc filters")
+    (description "Pandoc is a powerful utility to transform various
+input formats into a wide range of output formats.  To alter the
+exported output document, Pandoc allows the usage of filters, which
+are pipes that read a JSON serialization of the Pandoc AST from stdin,
+transform it in some way, and write it to stdout.  It allows therefore
+to alter the processing of Pandoc's supported input formats, for
+instance one can add new syntax elements to markdown, etc.
+
+This package provides Python bindings.")
+    (license license:bsd-3)))
+
 (define-public python-panflute
   (package
     (name "python-panflute")
