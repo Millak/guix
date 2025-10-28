@@ -40921,17 +40921,15 @@ operating systems and an elegant approach to concurrency using threading.")
                (base32
                 "1dbj74q1iz349sdkxrkc90f7xd4y7a9bdvgxg3cqdcly7430rskj"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest
-                         python-pytest-cov
-                         python-setuptools
-                         python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/jquast/wcwidth")
     (synopsis "Measure number of terminal column cells of wide-character codes")
-    (description "Wcwidth measures the number of terminal column cells of
-wide-character codes.  It is useful for those implementing a terminal emulator,
-or programs that carefully produce output to be interpreted by one.  It is a
-Python implementation of the @code{wcwidth} and @code{wcswidth} C functions
-specified in POSIX.1-2001 and POSIX.1-2008.")
+    (description
+     "Wcwidth measures the number of terminal column cells of wide-character
+codes.  It is useful for those implementing a terminal emulator, or programs
+that carefully produce output to be interpreted by one.  It is a Python
+implementation of the @code{wcwidth} and @code{wcswidth} C functions specified
+in POSIX.1-2001 and POSIX.1-2008.")
     (license license:expat)))
 
 (define-public python-whatever
