@@ -1384,97 +1384,52 @@ OpenDocument presentations (*.odp).")
 (define-public cobib
   (package
     (name "cobib")
-    (version "5.4.0")
+    (version "6.0.1")
     (source
      (origin
-       (method git-fetch)               ;no tests in PyPI archive
+       (method git-fetch)
        (uri (git-reference
               (url "https://gitlab.com/cobib/cobib")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0amyfacm97av9srpwxvif16hcg8w9psdl4v70syihbwchyrbcsg9"))))
+        (base32 "0fsbhhkghjs6frbfz1x152ypd32vpkn8na9v54gldfhjk5xfzkmg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 302 passed, 43 skipped, 403 deselected
+      ;; tests: 563 passed, 33 skipped
       #:test-flags
       #~(list
-         "-k" (string-join
-               ;; Tests trying to access api.zotero.org.
-               (list "not test_cache"
-                     "test_command"
-                     "test_event_post_zotero_import"
-                     "test_event_pre_zotero_import"
-                     "test_fetch"
-                     "test_fetch_custom_user_id"
-                     ;; XXX: Various tests fail which require git history.
-                     "test_cmdline"
-                     "test_command"
-                     "test_event_post_redo_command"
-                     "test_event_post_undo_command"
-                     "test_event_pre_redo_command"
-                     "test_event_pre_undo_command"
-                     "test_skipping_redone_commits"
-                     "test_skipping_undone_commits"
-                     "test_overwrite_label"
-                     "test_configured_label_default"
-                     "test_disambiguate_label"
-                     "test_command_yes"
-                     "test_command_edit"
-                     "test_command_edit_no_changes"
-                     "test_command_skip"
-                     "test_command_fields"
-                     "test_command_context"
-                     "test_command_inline"
-                     "test_event_pre_git_commit"
-                     "test_warn_insufficient_config"
-                     "test_event_pre_init_command"
-                     "test_lint_auto_format"
-                     "test_field_cmdline_switch"
-                     "test_command_resume"
-                     "test_command_resume_graceful"
-                     "test_stringify"
-                     "test_handling_of_missing_schema"
-                     "test_main"
-                     "test_config_theme"
-                     "test_config_syntax"
-                     "test_config_user_tags"
-                     "test_log"
-                     "test_help"
-                     "test_empty_database"
-                     "test_prompt_action"
-                     "test_prompt_ask"
-                     "test_catch_invalid_command"
-                     "test_jump"
-                     "test_jump_missing"
-                     "test_jump_out_of_view"
-                     "test_sort"
-                     "test_sort_twice"
-                     "test_filter"
-                     "test_preset"
-                     "test_delete"
-                     "test_note_edit"
-                     "test_note_reset"
-                     "test_note_unsaved_quit"
-                     "test_note_unsaved_open_another"
-                     "test_search"
-                     "test_empty_results"
-                     "test_expand_all"
-                     "test_motion"
-                     "test_select"
-                     "test_open"
-                     "test_absolute_path")
-               " and not ")
-         "tests")
+         ;; Most of the tests fail to compare "/tmp" and "~/" paths.
+         #$@(map (lambda (file) (string-append "--ignore=" "tests/" file))
+                 (list "commands/test_add.py"
+                       "commands/test_lint.py"
+                       "commands/test_man.py"
+                       "commands/test_open.py"
+                       "database/test_entry.py"
+                       "importers/test_bibtex.py"
+                       "ui/shell/test_general.py"
+                       "ui/tui/test_general.py"
+                       "ui/tui/test_list.py"
+                       "ui/tui/test_note.py"
+                       "ui/tui/test_search.py"
+                       "ui/tui/test_select.py"
+                       "utils/test_rel_path.py")))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
             (lambda _
               (setenv "COBIB_CONFIG" "0")
+              (setenv "GIT_AUTHOR_EMAIL" "you@example.com")
+              (setenv "GIT_AUTHOR_NAME" "Your Name")
+              (setenv "GIT_COMMITTER_EMAIL" "you@example.com")
+              (setenv "GIT_COMMITTER_NAME" "Your Name")
               (setenv "HOME" "/tmp")
               (setenv "TERM" "linux")
-              (setenv "TMPDIR" "/tmp"))))))
+              (setenv "TMPDIR" "/tmp")
+              (invoke "git" "config" "--global" "user.email" "you@example.com")
+              (invoke "git" "config" "--global" "user.name" "Your Name")
+              (invoke "git" "init"))))))
     (native-inputs
      (list git-minimal/pinned
            nss-certs-for-test
@@ -1486,9 +1441,10 @@ OpenDocument presentations (*.odp).")
      (list python-beautifulsoup4
            python-bibtexparser
            python-lxml
+           python-mdit-py-plugins ;XXX: for sanity-check
+           python-natsort
            python-pylatexenc
            python-requests
-           python-requests-oauthlib
            python-rich
            python-ruamel.yaml
            python-text-unidecode
