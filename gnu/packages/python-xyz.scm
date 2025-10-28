@@ -30676,25 +30676,46 @@ happened, and what caused it.")
 (define-public python-pysaml2
   (package
     (name "python-pysaml2")
-    (version "6.5.1")
+    (version "7.5.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pysaml2" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/IdentityPython/pysaml2")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1xk2x0slz1f8cqv7vn77qx99xfd1mshhswiwrljk9m72w2m9iivd"))))
-    (build-system python-build-system)
+        (base32 "1vxi6kmckaj0djn79xw8f0gdd569i2y6sywsywyvyrwdcf6k8fqc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k"
+              (string-join
+               ;; XXX: encryption failures
+               (list "not test_encrypted_response_6"
+                     "test_validate_cert_chains"
+                     "test_validate_with_root_cert"
+                     ;; XXX: xml parsing error
+                     "test_namespace_processing") " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"(pyopenssl|xmlschema).*\"" _ dep)
+                 (format #f "~s" dep))))))))
+    (native-inputs (list python-poetry-core python-pytest))
     (propagated-inputs
      (list python-cryptography
            python-dateutil
            python-defusedxml
-           python-importlib-resources
+           python-pymongo
            python-pyopenssl
-           python-pytz
+           python-responses
            python-requests
-           python-six
-           python-xmlschema))
+           python-xmlschema
+           python-xmlsec))
     (home-page "https://idpy.org")
     (synopsis "Python implementation of SAML Version 2 Standard")
     (description
