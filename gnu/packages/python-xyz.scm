@@ -20063,21 +20063,14 @@ document.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (if tests?
-                  ;; Run tests against installed package.
-                  (with-directory-excursion "/tmp"
-                    (invoke "nose2" "-v" "symengine.tests"))
-                  (format #t "test suite not run~%")))))))
-    (native-inputs (list cmake-minimal
-                         python-cython
-                         python-nose2
-                         python-setuptools
-                         python-wheel))
-    (inputs (list symengine))
+      #:test-flags #~(list "--pyargs" "symengine")))
+    (native-inputs
+     (list cmake-minimal
+           python-cython
+           python-pytest
+           python-setuptools))
+    (inputs
+     (list symengine))
     (home-page "https://github.com/symengine/symengine.py")
     (synopsis "Python library providing wrappers to SymEngine")
     (description
