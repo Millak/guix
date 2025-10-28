@@ -2786,20 +2786,20 @@ MFNN (multifidelity neural network) algorithms.")
 (define-public python-jaxtyping
   (package
     (name "python-jaxtyping")
-    (version "0.2.21")
+    (version "0.3.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "jaxtyping" version))
               (sha256
                (base32
-                "19qmsnbn4wv2jl99lpn622qs49mrfxmx8s9pr5y8izzgdjq1fvii"))))
+                "11pajw47mj0px787m6f7vwfsi6ajawm9h7fszm3rpbd2dg8wy0w0"))))
     (build-system pyproject-build-system)
     ;; Tests require JAX, but JAX can't be packaged because it uses the Bazel
     ;; build system.
     (arguments (list #:tests? #f))
     (native-inputs (list python-hatchling))
     (propagated-inputs (list python-numpy python-typeguard
-                             python-typing-extensions))
+                             python-typing-extensions python-wadler-lindig))
     (home-page "https://github.com/google/jaxtyping")
     (synopsis
      "Type annotations and runtime checking for JAX arrays and others")
