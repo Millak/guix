@@ -4597,31 +4597,21 @@ into Python.")
 (define-public python-aiosqlite
   (package
     (name "python-aiosqlite")
-    (version "0.18.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/omnilib/aiosqlite")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1a8sggh1wwbpl46k5qcfmp97s9hjysna0x7mwwc53kyfm0m95wf8"))))
+    (version "0.21.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/omnilib/aiosqlite")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1njzxi130bbix53wl0gcsvryk1b2cazq0s2701jbkf6nvr3ywpyy"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "python" "-m" "coverage" "run" "-m"
-                                      "aiosqlite.tests")
-                              (invoke "python" "-m" "coverage" "report")))))))
-    (native-inputs (list python-flit-core
-                         python-coverage
-                         python-mypy))
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-flit-core))
     (home-page "https://github.com/jreese/aiosqlite")
-    (synopsis
-     "Asyncio bridge for sqlite3")
+    (synopsis "Asyncio bridge for sqlite3")
     (description
      "The package aiosqlite replicates the standard sqlite3 module, but with
 async versions of all the standard connection and cursor methods, and context
