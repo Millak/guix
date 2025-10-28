@@ -9683,7 +9683,6 @@ alternative representations which do not require this package.")
      (list graphviz ;for 'dot'
            python-pdm-backend
            python-pytest
-           python-pytest-cov
            python-pyyaml
            python-test2ref))
     (home-page "https://github.com/c0fec0de/anytree")
