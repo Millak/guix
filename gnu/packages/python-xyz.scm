@@ -27560,48 +27560,6 @@ a file (or some information about a file), return a set of standardized tags
 identifying what the file is.")
     (license license:expat)))
 
-(define-public tldr
-  (package
-    (name "tldr")
-    (version "3.4.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/tldr-pages/tldr-python-client")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "06rhpywaypqwakw8v187cdf52yl5c7fm19f1q7nbbsydbs0ndmb1"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; This test fails. It tries to open a network socket.
-      #:test-flags #~(list "-k" "not test_error_message")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'build 'build-doc
-            (lambda _
-              (invoke "make" "-C" "docs"))))))
-    (native-inputs
-     (list python-hatchling
-           python-pytest
-           python-sphinx-argparse))
-    (inputs
-     (list python-colorama
-           python-termcolor
-           python-shtab))
-    (home-page "https://github.com/tldr-pages/tldr-python-client")
-    (synopsis "Command-line client for tldr pages")
-    (description "This package provides the @code{tldr} command allowing users
-to view @code{tldr} pages from a shell.  The @code{tldr} pages are a community
-effort to simplify the man pages with practical examples described in
-@url{https://tldr.sh/}.")
-    (license license:expat)))
-
-(define-public python-tldr
-  (deprecated-package "python-tldr" tldr))
-
 (define-public python-nodeenv
   (package
     (name "python-nodeenv")

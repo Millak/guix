@@ -25,6 +25,8 @@
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
+;;; Copyright © 2021 Tanguy Le Carrour <tanguy@bioneland.org>
+;;; Copyright © 2022, 2024 kiasoc5 <kiasoc5@disroot.org>
 ;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 M <matf@disr.it>
@@ -32,8 +34,9 @@
 ;;; Copyright © 2023 Reza Housseini <reza@housseini.me>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023, 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2024 Timotej Lazar <timotej.lazar@araneo.si>
-;;; Copyright © 2024-2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2024-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 John Khoo <johnkhootf@gmail.com>
@@ -99,6 +102,7 @@
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages slang)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
@@ -1168,6 +1172,48 @@ Optional parameter completion assistance for functions and methods, ala
 Eclipse and NetBeans.  Completion information is typically specified in an XML
 file, but can even be dynamic.")
     (license license:bsd-3)))
+
+(define-public tldr
+  (package
+    (name "tldr")
+    (version "3.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tldr-pages/tldr-python-client")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06rhpywaypqwakw8v187cdf52yl5c7fm19f1q7nbbsydbs0ndmb1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; This test fails. It tries to open a network socket.
+      #:test-flags #~(list "-k" "not test_error_message")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-doc
+            (lambda _
+              (invoke "make" "-C" "docs"))))))
+    (native-inputs
+     (list python-hatchling
+           python-pytest
+           python-sphinx-argparse))
+    (inputs
+     (list python-colorama
+           python-termcolor
+           python-shtab))
+    (home-page "https://github.com/tldr-pages/tldr-python-client")
+    (synopsis "Command-line client for tldr pages")
+    (description "This package provides the @code{tldr} command allowing users
+to view @code{tldr} pages from a shell.  The @code{tldr} pages are a community
+effort to simplify the man pages with practical examples described in
+@url{https://tldr.sh/}.")
+    (license license:expat)))
+
+(define-public python-tldr
+  (deprecated-package "python-tldr" tldr))
 
 (define-public txt2tags
   (package
