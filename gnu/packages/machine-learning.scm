@@ -2203,35 +2203,39 @@ and are compatible with its API.")
 (define-public python-thinc
   (package
     (name "python-thinc")
-    (version "8.1.12")
+    (version "8.3.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "thinc" version))
               (sha256
                (base32
-                "0lx37vl84y2jcsfn9sphdzbjny2jjyfb85llrrvz0xmig5f2rlcx"))))
+                "1n7zyqasnbb67bcr67l96pvihn4ibjrpbqvi0z56vfwb961594mm"))))
     (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'build-ext
-           (lambda _
-             (invoke "python" "setup.py" "build_ext" "--inplace"
-                     "-j" (number->string (parallel-job-count))))))))
-    (propagated-inputs (list python-blis-for-thinc
+     (list
+      ;; tests: 1215 passed, 113 skipped, 1657 warnings
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-thinc
+            (lambda _
+              (copy-recursively "thinc/tests" "tests")
+              ;; This would otherwise interfere with finding the installed
+              ;; thinc when running tests.
+              (delete-file-recursively "thinc"))))))
+    (propagated-inputs (list python-blis
                              python-catalogue
                              python-confection
                              python-cymem
                              python-murmurhash
-                             python-numpy
+                             python-numpy-2
                              python-packaging
                              python-preshed
                              python-pydantic-2
                              python-setuptools
                              python-srsly
                              python-wasabi))
-    (native-inputs (list python-cython python-mock python-pytest
-                         python-setuptools python-wheel))
+    (native-inputs (list python-cython-0 python-mock python-pytest
+                         python-setuptools))
     (home-page "https://github.com/explosion/thinc")
     (synopsis "Functional take on deep learning")
     (description
