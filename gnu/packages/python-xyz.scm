@@ -732,6 +732,31 @@ fullscreen terminal rendering, and keyboard input event reporting.")
      "This package allows to detect if the user is using Dark Mode.")
     (license license:bsd-3)))
 
+(define-public python-decopatch
+  (package
+    (name "python-decopatch")
+    (version "1.4.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "decopatch" version))
+       (sha256
+        (base32 "082pnnc7a1d7rk40k7m72w7kw8dk7g8m3yzq4cn1hl217z4ljzwm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;XXX: cycles with python-pytest-cases
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-makefun))
+    (home-page "https://github.com/smarie/python-decopatch")
+    (synopsis "Create decorators easily in Python")
+    (description
+     "This package provide implements a functionality to simplify writing
+decorators in Python.")
+    (license license:bsd-3)))
+
 (define-public python-distance
   (let ((commit "ad7f9dc7e9b0e88a08d0cefd1442f4ab1dd1779b")
         (revision "0"))
