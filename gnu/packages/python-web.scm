@@ -2281,12 +2281,18 @@ for AsyncIO and mixed-type iterables.")
        (sha256
         (base32 "1isin9bp256scp59lbr35h48nw5p5i84b6f9kh1c50w08vcyqzpl"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'avoid-pytest-cov-preload
+            (lambda _
+              (substitute* "pytest.ini"
+                (("-p pytest_cov") "")))))))
     (native-inputs
      (list python-pytest
            python-pytest-asyncio
-           python-pytest-cov
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-frozenlist))
     (home-page "https://github.com/aio-libs/aiosignal")
