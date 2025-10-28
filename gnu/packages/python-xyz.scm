@@ -30059,21 +30059,29 @@ custom PNG processing.")
     (version "0.18.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "fuzzywuzzy" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/seatgeek/fuzzywuzzy")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1s00zn75y2dkxgnbw8kl8dw4p1mc77cv78fwfa4yb0274s96w0a5"))))
-    (build-system python-build-system)
+        (base32 "0zh8xd9k95waipsdz516rn51ya9xxlxbd7ivbka4gnkqm9ah79mc"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--deselect=test_fuzzywuzzy_pytest.py::test_process_warning")))
     (native-inputs
-     (list python-hypothesis python-pycodestyle python-pytest))
-    (propagated-inputs
-     (list python-levenshtein))
+     (list python-hypothesis
+           python-pycodestyle
+           python-pytest
+           python-setuptools))
+    (propagated-inputs (list python-levenshtein))
     (home-page "https://github.com/seatgeek/fuzzywuzzy")
     (synopsis "Fuzzy string matching in Python")
-    (description "Approximate string matching using
-@emph{Levenshtein Distance} to calculate the differences between
-sequences.")
+    (description
+     "Approximate string matching using @emph{Levenshtein Distance} to
+calculate the differences between sequences.")
     (license license:gpl2)))
 
 (define-public python-block-tracing
