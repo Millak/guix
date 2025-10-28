@@ -376,7 +376,7 @@ ideal (e.g. in LV2 implementations or embedded applications).")
              ;; These two tests attempt to use "pip install"
              "-k" "not test_sparqleval and not test_parser")))
     (native-inputs
-     (list python-pytest python-pytest-cov python-poetry-core))
+     (list python-pytest python-poetry-core))
     (propagated-inputs
       (list python-isodate
             python-lxml
