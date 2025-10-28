@@ -17348,8 +17348,7 @@ classes to wrap functions in a similar way, including a function decorator.")
          "1d5jyd8d2wxm6y0s39wwqw87gdm4zqlbyz78cf3yqbrim1xdch4w"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-coverage
-           python-hatch-vcs
+     (list python-hatch-vcs
            python-hatchling
            python-pytest))
     (home-page "https://github.com/flying-sheep/legacy-api-wrap")
