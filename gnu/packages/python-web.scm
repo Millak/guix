@@ -316,6 +316,60 @@ and JSON.
 @end itemize")
     (license license:expat)))
 
+(define-public python-cloudpathlib
+  (package
+    (name "python-cloudpathlib")
+    (version "0.23.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/drivendataorg/cloudpathlib")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dqwml269lpz51drgg3s27sqmvwa1vldw2rj34ssnqppcmc5h5lm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 977 passed, 15 skipped, 8642 warnings
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; TODO: Package azure-identity (required for this file)
+              "--ignore=tests/test_azure_specific.py"
+              ;; TypeError: Retry.__init__() got an unexpected keyword
+              ;; argument 'timeout'
+              "--deselect=tests/test_gs_specific.py::test_timeout_and_retry")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("addopts =.*") "")))))))
+    (native-inputs
+     (list ;; python-azure-identity
+           python-dotenv
+           python-flit-core
+           python-pydantic-2
+           python-pytest
+           python-pytest-cases
+           python-pytest-xdist
+           python-shortuuid
+           python-tenacity))
+    (propagated-inputs
+     (list python-azure-storage-blob
+           python-azure-storage-file-datalake
+           python-boto3
+           python-google-cloud-storage
+           python-typing-extensions))
+    (home-page "https://github.com/drivendataorg/cloudpathlib")
+    (synopsis "Pathlib-style classes for cloud storage services")
+    (description
+     "This package provides a Python library with classes that mimic
+@code{pathlib.Path}'s interface for URIs from different cloud storage
+services.")
+    (license license:expat)))
+
 (define-public python-devpi-common
   (package
     (name "python-devpi-common")
