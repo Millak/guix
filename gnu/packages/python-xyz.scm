@@ -36217,54 +36217,6 @@ shared objects, and lift them up to the executable referenced by absolute
 path.")
     (license license:expat)))
 
-(define-public staticsite
-  (package
-    (name "staticsite")
-    (version "2.5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/spanezz/staticsite")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0fk0yy0flwwfqwb4gsizr7gnkadas4rjffn3mnzlwmkn08z3w0c7"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'use-themes-in-output
-            (lambda _
-              (substitute* "staticsite/global_settings.py"
-                (("/usr/share/staticsite") #$output))))
-          (add-after 'install 'install-themes
-            (lambda _
-              (let ((themedir (string-append #$output "/themes")))
-                (copy-recursively "themes" themedir)))))))
-    (native-inputs
-     (list python-hatchling
-           python-pytest))
-    (inputs
-     (list perl-image-exiftool
-           python-dateutil
-           python-docutils
-           python-jinja2
-           python-markdown
-           python-pillow
-           python-pytz
-           python-pyyaml
-           python-ruamel.yaml
-           python-slugify
-           python-toml
-           tzdata-for-tests))
-    (home-page "https://github.com/spanezz/staticsite")
-    (synopsis "Static site generator")
-    (description "Statistic is a static site generator based on Markdown and
-Jinja2.")
-    (license (list license:gpl3+ license:expat))))
-
 (define-public python-pymonad
   (package
     (name "python-pymonad")
@@ -40952,6 +40904,54 @@ you do not want to store entirely on disk or on memory.")
                          '(#:test-backend)
                          (package-arguments python-pycparser)))))))
     (package-with-python2 base)))
+
+(define-public staticsite
+  (package
+    (name "staticsite")
+    (version "2.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spanezz/staticsite")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fk0yy0flwwfqwb4gsizr7gnkadas4rjffn3mnzlwmkn08z3w0c7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-themes-in-output
+            (lambda _
+              (substitute* "staticsite/global_settings.py"
+                (("/usr/share/staticsite") #$output))))
+          (add-after 'install 'install-themes
+            (lambda _
+              (let ((themedir (string-append #$output "/themes")))
+                (copy-recursively "themes" themedir)))))))
+    (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (inputs
+     (list perl-image-exiftool
+           python-dateutil
+           python-docutils
+           python-jinja2
+           python-markdown
+           python-pillow
+           python-pytz
+           python-pyyaml
+           python-ruamel.yaml
+           python-slugify
+           python-toml
+           tzdata-for-tests))
+    (home-page "https://github.com/spanezz/staticsite")
+    (synopsis "Static site generator")
+    (description
+     "Statistic is a static site generator based on Markdown and Jinja2.")
+    (license (list license:gpl3+ license:expat))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
