@@ -26125,8 +26125,7 @@ Angus Johnson's polygon clipping Clipper library (ver. 6.4.2).")
        (sha256
         (base32 "00lnb1mpppgq041kwcbg405rqsi2mzl8dw1s0c8hmvd5hk2xiixg"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-pytest-cov python-setuptools
-                         python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/k-bx/python-semver")
     (synopsis "Python helper for Semantic Versioning")
     (description
