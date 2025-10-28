@@ -30290,23 +30290,52 @@ there are extensions that allow you to use it with other frameworks.")
 (define-public python-click-plugins
   (package
     (name "python-click-plugins")
-    (version "1.1.1")
+    (version "2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "click-plugins" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/click-contrib/click-plugins")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0jr6bxj67vg988vkm6nz8jj98v9lg46bn49lkhak3n598jbrkas6"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest))
-    (propagated-inputs
-     (list python-click))
+        (base32 "1fgfb4pv9chry7jwigc5ax66njk1w0kcj75q4kz0b8bb3nh52z2i"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "tests/click_plugins_tests.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'mkdir-tests
+            (lambda _
+              (mkdir "tests")
+              (rename-file "click_plugins_tests.py"
+                           (string-append "tests/click_plugins_tests.py")))))))
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-click))
     (synopsis "Extension for Click to register external CLI commands")
-    (description "This package provides n extension module for Click to
-register external CLI commands via setuptools entry-points.")
+    (description
+     "This package provides n extension module for Click to register external
+CLI commands via setuptools entry-points.")
     (home-page "https://github.com/click-contrib/click-plugins")
     (license license:bsd-3)))
+
+(define-public python-click-plugins-1
+  (package
+    (inherit python-click-plugins)
+    (name "python-click-plugins")
+    (version "1.1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/click-contrib/click-plugins")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11i93dxb6vvlqb79p8qdbcxvcsb2bb2b9lbkqhv5hs93nry02gxl"))))
+    (arguments (list))))
 
 (define-public python-diceware
   (package
