@@ -30536,7 +30536,7 @@ enforcement of that policy.")
 (define-public python-ldap3
   (package
     (name "python-ldap3")
-    (version "2.7")
+    (version "2.9.1")
     (home-page "https://github.com/cannatag/ldap3")
     (source
      (origin
@@ -30545,18 +30545,14 @@ enforcement of that policy.")
                            (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xw9fkqld21xsvdpaqir8ccc2l805xnn9gxahsnl70xzp3mwl0xv"))))
-    (build-system python-build-system)
+        (base32 "07nxbv41wpg5567r07yvm4chgs761drsvn53gn548zi26gmrpr07"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f ;TODO: Tests need a real LDAP server to run
-       #:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "nosetests" "-s" "test"))
-                      #t)))))
+     (list
+      #:tests? #f ;TODO: Tests need a real LDAP server to run
+      #:test-backend #~'nose))
     (native-inputs
-     (list python-nose))
+     (list python-pynose python-setuptools))
     (propagated-inputs
      (list python-gssapi python-pyasn1))
     (synopsis "Python LDAP client")
