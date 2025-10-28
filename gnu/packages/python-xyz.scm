@@ -29951,13 +29951,14 @@ file to ensure it completely and accurately describes your project.")
         (sha256
          (base32
           "0gij55qzzq1h83kfpvhai1vf78kkhyvxa6l17m2nl24454lhfin4"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests.
+    (native-inputs (list python-setuptools))
     (home-page "https://framagit.org/tyreunom/python-android-strings-lib")
     (synopsis "Android strings.xml support")
-    (description "Android Strings Lib provides support for android's strings.xml
-files.  These files are used to translate strings in android apps.")
+    (description
+     "Android Strings Lib provides support for android's strings.xml files.
+These files are used to translate strings in android apps.")
     (license license:expat)))
 
 (define-public offlate
