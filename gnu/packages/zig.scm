@@ -2010,10 +2010,10 @@ toolchain.  Among other features it provides
     (method git-fetch)
     (uri (git-reference
           (url "https://github.com/ziglang/libc-abi-tools")
-          (commit "6878b563bd0620c626dc92c7b641a903b648c592")))
+          (commit "ec46122c7b8c7854f08e67e108083907d09996f5")))
     (file-name "libc-abi-tools")
     (sha256
-     (base32 "0yfg3ggjmsricg44yalg2l6l5r3hk8lmgh485p6nhhgdiqfdwzng"))))
+     (base32 "0s46f1wbqg53wxlrljb9afw4s8j5cl5vz5xhajy6fagy05xns2bc"))))
 
 (define-public zig-0.15
   (package
