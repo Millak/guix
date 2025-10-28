@@ -1261,6 +1261,20 @@ generation according to PKCS#1 version 1.5.  It can be used as a Python
 library as well as on the command line.")
    (license license:asl2.0)))
 
+(define-public python-rsa-for-awscli-1
+  (hidden-package
+   (package
+     (inherit python-rsa)
+     (version "3.4.2")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "rsa" version))
+        (sha256
+         (base32 "1dcxvszbikgzh99ybdc7jq0zb9wspy2ds8z9mjsqiyv3q884xpr5"))))
+     (native-inputs
+      (list python-setuptools)))))
+
 (define-public python-scrypt
   (package
     (name "python-scrypt")

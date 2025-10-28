@@ -6793,32 +6793,29 @@ opt.override_default_trust_store_from_path(None, os.getenv('SSL_CERT_FILE')) if 
   (package
     ;; Note: updating awscli typically requires updating botocore as well.
     (name "awscli")
-    (version "1.36.32")
+    (version "1.42.61")
     (source
      (origin
-       (method git-fetch)               ; no tests in PyPI release
+       (method git-fetch)
        (uri (git-reference
              (url "https://github.com/aws/aws-cli")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b4bfv7mgrxw7nfbv9ag97qcsqch2p7raip6111rqg5vdhvsck19"))))
+        (base32 "1fbqh4w7jj5abn87nbhyir25hdviirj0lblcdsqqkadcjh67877h"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 2692 passed, 40 warnings 
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
-              ;; Tests require networking.
-              "--ignore" "tests/integration"
-              ;; It struggles to set PYTHONPATH.
-              ;;
-              ;; AssertionError: 'argument operation: Invalid choice, valid
-              ;; choices are:' not found in '
-              "-k"
-              (string-append "not test_subscribe_to_shard_removed"
-                             " and not test_start_conversation_removed"
-                             ;; Tests fail during mocking.
-                             " and not test_no_groff_or_mandoc_exists"))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; Compete test suite is huge and compute hungry, run just unit
+              ;; tests.
+              "--ignore=tests/dependencies"
+              "--ignore=tests/functional"
+              "--ignore=tests/integration"
+              ;; TypeError: 'Mock' object is not subscriptable.
+              "-k" "not test_no_groff_or_mandoc_exists")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-reference-to-groff
@@ -6845,9 +6842,9 @@ opt.override_default_trust_store_from_path(None, os.getenv('SSL_CERT_FILE')) if 
      (list groff-minimal
            python-botocore
            python-colorama
-           python-docutils-0.16
+           python-docutils-0.19
            python-pyyaml
-           python-rsa
+           python-rsa-for-awscli-1
            python-s3transfer))
     (home-page "https://aws.amazon.com/cli/")
     (synopsis "Command line client for AWS")
