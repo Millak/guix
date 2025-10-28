@@ -30493,16 +30493,33 @@ key.
 (define-public python-pymacaroons
   (package
     (name "python-pymacaroons")
-    (version "0.13.0")
+    (properties '((commit . "78c55c1d33a0b23ddc71140a9c999f957d79e9dd")
+                  (revision . "0")))
+    (version (git-version "0.13.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pymacaroons" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ecordell/pymacaroons")
+             (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1f0357a6g1h96sk6wy030xmc1p4rd80a999qvxd28v7nlm1blsqy"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-six python-pynacl))
+        (base32 "0ybdxlx6crb7l850dzz50arqrm4d4dl5dvzlf8f7sdhdcn2lgr7m"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; XXX: Despite python-hypothesis, ModuleNotFoundError:
+      ;; No module named 'hypothesis.specifiers'
+      #~(list "--ignore=tests/property_tests/macaroon_property_tests.py")))
+    (native-inputs
+     (list python-hypothesis
+           python-mock
+           python-pytest
+           python-setuptools))
+    (propagated-inputs (list python-pynacl))
     (home-page "https://github.com/ecordell/pymacaroons")
     (synopsis "Python Macaroon Library")
     (description
