@@ -3514,6 +3514,33 @@ unexpectedly.")
 through Python's socket interface")
     (license license:expat)))
 
+(define-public python-pytest-steps
+  (package
+    (name "python-pytest-steps")
+    (version "1.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-steps" version))
+       (sha256
+        (base32 "05r2ch7191saj7sw6d47bfa5vnyyj157dl8hvlcc78xx6jyxy46j"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;XXX: cycles with python-pytest-harvest
+    (native-inputs
+     (list python-pytest-bootstrap
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-makefun
+           python-wrapt))
+    (home-page "https://github.com/smarie/python-pytest-steps")
+    (synopsis "Pytest plugin to create step-wise / incremental tests")
+    (description
+     "This package implements a functionality to share a state / intermediate
+ results across test steps.")
+    (license license:bsd-3)))
+
 (define-public python-pytest-subprocess
   (package
     (name "python-pytest-subprocess")
