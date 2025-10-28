@@ -3157,11 +3157,7 @@ to the OVHcloud APIs.")
         (base32 "15y78xcc3zkmvj1mdzz8gyhf3apbl91073kwhzbjk5abc1civwlw"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
+     (list python-pytest python-setuptools python-setuptools-scm))
     (home-page "https://github.com/agronholm/cbor2")
     (synopsis "Concise Binary Object Representation (CBOR) (de)serializer")
     (description "This Python library provides encoding and decoding for the
