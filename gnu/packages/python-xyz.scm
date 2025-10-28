@@ -20337,59 +20337,65 @@ Python 2.4 and 2.5, and will draw its fixes/improvements from python-trunk.")
 (define-public python-celery
   (package
     (name "python-celery")
-    (version "5.4.0")
+    (version "5.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "celery" version))
        (sha256
-        (base32 "01p7lyydhqk7fna5zn49qxj3yk0xah63725dmkajjc4d1qa1jjjh"))))
+        (base32 "198hdgy2mk2h6nzhg78jqlhps0w4z6iw60bz4a0m4awcjvkjm5vc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; The MongoDB backend test appears to expect an older
-      ;; version of MongoDB which provided its own bson
-      ;; module, fails with " AttributeError: module 'bson'
-      ;; has no attribute 'encode'".
-      #:test-flags #~(list "--ignore" "t/unit/backends/test_mongodb.py"
-                           ;; AssertionError.
-                           "-k" "not test_check_privileges_no_fchown")
-      #:phases #~(modify-phases %standard-phases
-                   ;; Celery requires tzdata >= 2022.7, we have 2022.1.
-                   (add-after 'unpack 'relax-requirements
-                     (lambda _
-                       (substitute* "requirements/default.txt"
-                         (("tzdata.*")
-                          "tzdata\n")))))))
+      #:test-flags
+      ;; The MongoDB backend test appears to expect an older version of
+      ;; MongoDB which provided its own bson module, fails with "
+      ;; AttributeError: module 'bson' has no attribute 'encode'".
+      #~(list "--ignore=t/unit/backends/test_mongodb.py"
+              ;; XXX: Requires google-cloud-firestore
+              "--ignore=t/unit/backends/test_gcs.py"
+              ;; AssertionError.
+              "-k" "not test_check_privileges_no_fchown")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "requirements/default.txt"
+                (("^tzdata.*")
+                 "tzdata\n")))))))
     (native-inputs
-     (list python-dnspython
+     (list python-azure-core
+           python-dnspython
            python-flaky
+           python-gevent
            python-google-cloud-storage
            python-iniconfig
            python-moto
            python-msgpack
-           python-pytest                ;for pytest-subtests
+           python-pymongo
+           python-pytest
            python-pytest-celery
            python-pytest-click
            python-pytest-subtests
            python-pytest-timeout
-           python-toml
-           python-setuptools
-           python-wheel))
+           python-redis
+           python-setuptools))
     (propagated-inputs
      (list python-billiard
            python-click
            python-click-didyoumean
-           python-click-plugins
+           python-click-plugins-1
            python-click-repl
+           python-dateutil
            python-kombu
            python-tzdata
            python-vine))
     (home-page "https://celeryproject.org")
     (synopsis "Distributed Task Queue")
-    (description "Celery is an asynchronous task queue/job queue based on
-distributed message passing.  It is focused on real-time operation, but
-supports scheduling as well.  The execution units, called tasks, are executed
+    (description
+     "Celery is an asynchronous task queue/job queue based on distributed
+message passing.  It is focused on real-time operation, but supports
+scheduling as well.  The execution units, called tasks, are executed
 concurrently on a single or more worker servers using multiprocessing,
 Eventlet, or gevent.  Tasks can execute asynchronously (in the background) or
 synchronously (wait until ready).")
