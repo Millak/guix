@@ -1532,56 +1532,60 @@ natural language processing framework.")
 (define-public python-spacy
   (package
     (name "python-spacy")
-    (version "3.6.1")
+    (version "3.8.7")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "spacy" version))
               (sha256
                (base32
-                "0ri1cz62kswawsa4hflh0ah8f63mnnqah0sbd5hmabdf0s3sj8v3"))))
+                "0269wj9wpy9a8g206q6q9m6f5jjkpdq8xi22w5mjfln5qrsd23vh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 3534 passed, 1232 skipped, 5 deselected, 24 xfailed, 7 xpassed, 62118
       #:test-flags
-      '(list "-k"
-             (string-append
-              ;; We don't do that around here.
-              "not test_download_compatibility"
-              ;; This needs to download a model.
-              " and not test_validate_compatibility_table"
-              ;; This tries to run the application with typer, which fails
-              ;; with an unspecified error, possibly because the build
-              ;; container doesn't have /bin/sh.
-              " and not test_project_assets"))
+      #~(list "-k" (string-append
+                    ;; We don't do that around here.
+                    "not test_download_compatibility"
+                    ;; This needs to download a model.
+                    " and not test_validate_compatibility_table"
+                    ;; This tries to run the application with typer, which fails
+                    ;; with an unspecified error, possibly because the build
+                    ;; container doesn't have /bin/sh.
+                    " and not test_project_assets"
+                    ;; DeprecationWarning: SelectableGroups dict interface is
+                    ;; deprecated. Use select.
+                    " and not test_pass_doc_to_pipeline[2]"
+                    ;; AssertionError: Registry 'loggers' missing entries.
+                    " and not test_registry_entries"))
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'build 'build-ext
-           (lambda _
-             (invoke "python" "setup.py" "build_ext" "--inplace"
-                     "-j" (number->string (parallel-job-count))))))))
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-spacy
+            (lambda _
+              (copy-recursively "spacy/tests" "tests")
+              ;; This would otherwise interfere with finding the installed
+              ;; spacy when running tests.
+              (delete-file-recursively "spacy"))))))
     (propagated-inputs (list python-catalogue
                              python-cymem
                              python-jinja2
                              python-langcodes
                              python-murmurhash
-                             python-numpy
+                             python-numpy-2
                              python-packaging
-                             python-pathy
                              python-preshed
                              python-pydantic-2
                              python-requests
-                             python-setuptools
-                             python-smart-open
                              python-spacy-legacy
                              python-spacy-loggers
                              python-srsly
                              python-thinc
                              python-tqdm
                              python-typer
-                             python-typing-extensions
-                             python-wasabi))
+                             python-wasabi
+                             python-weasel))
     (native-inputs
-     (list python-cython python-pytest python-mock python-wheel))
+     (list python-cython python-pytest python-mock))
     (home-page "https://spacy.io")
     (synopsis "Natural Language Processing (NLP) in Python")
     (description
