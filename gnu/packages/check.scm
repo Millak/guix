@@ -2394,14 +2394,13 @@ since the last commit or what tests are currently failing.")
 (define-public python-coverage
   (package
     (name "python-coverage")
-    (version "7.9.2")
+    (version "7.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "coverage" version))
        (sha256
-        (base32
-         "12qcm2j4bnc2gp6sci9brly2k406gp4jwjfpzxj04ag3a7x28w4r"))))
+        (base32 "0l403f6d59q8rik9vvzb6982qad0zrfj87dqydzsz8hwmh2dayqn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2436,11 +2435,16 @@ since the last commit or what tests are currently failing.")
          ;; No module named 'coverage.tracer'
          "--deselect=tests/test_api.py::ApiTest::test_completely_zero_reporting"
          "--deselect=tests/test_api.py::ApiTest::test_warnings"
+         "--deselect=tests/test_core.py::CoverageCoreTest::test_core_default"
+         "--deselect=tests/test_core.py::CoverageCoreTest\
+::test_core_request_ctrace_but_missing"
          "--deselect=tests/test_oddball.py::RecursionTest::test_long_recursion_recovery"
          ;; XXX: Checking coverage for too much files, not only the target one.
          "--deselect=tests/test_oddball.py::DoctestTest::test_doctest"
          ;; Module sys has no Python source
          "--deselect=tests/test_api.py::ApiTest::test_warnings_suppressed"
+         ;; XXX: pythonpath is not set correctly to find the module
+         "--deselect=tests/test_oddball.py::MockingProtectionTest::test_os_path_exists"
          ;; prevent FAILs on slow riscv64 SBCs
          #$@(if (equal? (%current-system) "riscv64-linux")
                 '("--deselect=tests/test_numbits.py::NumbitsOpTest::test_union"
