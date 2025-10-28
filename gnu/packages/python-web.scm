@@ -5126,12 +5126,10 @@ desired
          "07y3xyx2006f2ni5d55byh3y7w4kcg9xww7vmfjasi0cmzralak8"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; https://github.com/Pylons/waitress/issues/443
-     (list #:test-flags #~(list "-k" "not test_service_port")))
-    (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-setuptools))
+     (list
+      ;; https://github.com/Pylons/waitress/issues/443
+      #:test-flags #~(list "-k" "not test_service_port")))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/Pylons/waitress")
     (synopsis "Waitress WSGI server")
     (description
