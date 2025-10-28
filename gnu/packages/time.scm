@@ -762,7 +762,6 @@ timestamps.")
      (list python-dateparser
            python-flit-core
            python-pytest
-           python-pytest-cov
            python-pytest-mock
            python-pytz
            python-simplejson))
