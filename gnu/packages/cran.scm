@@ -50523,6 +50523,20 @@ parabolic or user defined by custom scale factors.")
             "036cv56wf42q2p3d5h15hbrp5rc29xxy20qwv4k1qzhkq6hmw0qs"))))
     (properties `((upstream-name . "decon")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'fix-r-4.5.0
+            ;; Changes in R 4.5.0: C-Level Facilities.
+            ;; Strict R headers are now the default. This removes the legacy
+            ;; definitions of PI, Calloc, Realloc and Free: use M_PI,
+            ;; R_Calloc, R_Realloc or R_Free instead.
+            ;; https://cran.r-project.org/doc/manuals/r-release/NEWS.html
+            (lambda _
+              (substitute* "src/Ckernel.c"
+                (("pow\\(PI") "pow(M_PI")
+                (("fint/PI") "fint/M_PI")))))))
     (native-inputs
      (list gfortran))
     (home-page
