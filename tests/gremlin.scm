@@ -19,7 +19,6 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (test-gremlin)
-  #:use-module (guix elf)
   #:use-module (guix tests)
   #:use-module ((guix utils) #:select (call-with-temporary-directory
                                        target-aarch64?))
@@ -31,6 +30,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-64)
+  #:use-module (system vm elf)
   #:use-module (rnrs io ports)
   #:use-module (ice-9 popen)
   #:use-module (ice-9 rdelim)

@@ -18,7 +18,6 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (test-debug-link)
-  #:use-module (guix elf)
   #:use-module (guix build utils)
   #:use-module (guix build debug-link)
   #:use-module (guix build io)
@@ -33,6 +32,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-64)
+  #:use-module (system vm elf)
   #:use-module (rnrs io ports)
   #:use-module (ice-9 match))
 
@@ -69,13 +69,12 @@
              (exp  (with-imported-modules (source-module-closure
                                            '((guix build io)
                                              (guix build utils)
-                                             (guix build debug-link)
-                                             (guix elf)))
+                                             (guix build debug-link)))
                      #~(begin
                          (use-modules (guix build io)
                                       (guix build utils)
                                       (guix build debug-link)
-                                      (guix elf)
+                                      (system vm elf)
                                       (rnrs io ports))
 
                          (define read-elf
@@ -115,13 +114,12 @@
              (exp   (with-imported-modules (source-module-closure
                                             '((guix build io)
                                               (guix build utils)
-                                              (guix build debug-link)
-                                              (guix elf)))
+                                              (guix build debug-link)))
                       #~(begin
                           (use-modules (guix build io)
                                        (guix build utils)
                                        (guix build debug-link)
-                                       (guix elf)
+                                       (system vm elf)
                                        (rnrs io ports))
 
                           (define read-elf

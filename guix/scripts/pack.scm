@@ -1224,20 +1224,19 @@ libfakechroot.so and related ld.so machinery as a fallback."
                             '((guix build io)
                               (guix build utils)
                               (guix build union)
-                              (guix build gremlin)
-                              (guix elf)))
+                              (guix build gremlin)))
       #~(begin
           (use-modules (guix build io)
                        (guix build utils)
                        ((guix build union) #:select (symlink-relative))
-                       (guix elf)
                        (guix build gremlin)
                        (ice-9 binary-ports)
                        (ice-9 ftw)
                        (ice-9 match)
                        (ice-9 receive)
                        (srfi srfi-1)
-                       (rnrs bytevectors))
+                       (rnrs bytevectors)
+                       (system vm elf))
 
           (define input
             ;; The OUTPUT* output of PACKAGE.

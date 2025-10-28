@@ -362,7 +362,7 @@ Browser.")
                   (srfi srfi-26)
                   (rnrs bytevectors)
                   (rnrs io ports)
-                  (guix elf)
+                  (system vm elf)
                   (guix build gremlin)
                   ,@%default-gnu-imported-modules)
       #:phases

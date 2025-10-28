@@ -24,10 +24,10 @@
   #:use-module ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
   #:use-module (guix build utils)
   #:use-module (guix build gremlin)
-  #:use-module (guix elf)
   #:use-module (ice-9 match)
   #:use-module (rnrs io ports)
   #:use-module (srfi srfi-1)
+  #:use-module (system vm elf)
   #:export (%standard-phases
             meson-build))
 

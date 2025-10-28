@@ -118,12 +118,12 @@ are not recursively applied to dependencies of DRV."
   (define build
     (with-imported-modules '((guix build graft)
                              (guix build utils)
-                             (guix build debug-link)
-                             (guix elf))
+                             (guix build debug-link))
       #~(begin
           (use-modules (guix build graft)
                        (guix build utils)
-                       (ice-9 match))
+                       (ice-9 match)
+                       (system vm elf))
 
           (define %outputs
             (ungexp (outputs->gexp outputs)))

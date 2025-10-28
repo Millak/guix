@@ -18,7 +18,6 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix build debug-link)
-  #:use-module (guix elf)
   #:use-module (guix build io)
   #:use-module ((guix build utils)
                 #:select (find-files elf-file? make-file-writable))
@@ -26,6 +25,7 @@
   #:use-module (rnrs io ports)
   #:use-module (srfi srfi-1)
   #:use-module (system foreign)
+  #:use-module (system vm elf)
   #:use-module (ice-9 match)
   #:export (debuglink-crc32
             elf-debuglink

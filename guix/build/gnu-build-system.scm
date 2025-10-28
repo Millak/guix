@@ -22,7 +22,6 @@
 (define-module (guix build gnu-build-system)
   #:use-module (guix build utils)
   #:use-module (guix build gremlin)
-  #:use-module (guix elf)
   #:use-module (ice-9 ftw)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
@@ -35,6 +34,7 @@
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-26)
+  #:use-module (system vm elf)
   #:use-module (rnrs io ports)
   #:export (%standard-phases
             %license-file-regexp

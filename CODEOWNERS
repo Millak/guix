@@ -45,7 +45,6 @@ guix/diagnostics\.scm                              @guix/core
 guix/discovery\.scm                                @guix/core
 guix/docker\.scm                                   @guix/core
 guix/download\.scm                                 @guix/core
-guix/elf\.scm                                      @guix/core
 guix/ftp-client\.scm                               @guix/core
 guix/gexp\.scm                                     @guix/core
 guix/git-authenticate\.scm                         @guix/core
