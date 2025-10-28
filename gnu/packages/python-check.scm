@@ -2688,6 +2688,35 @@ times and detect flakyness.")
 @url{https://github.com/spulec/freezegun, freezegun}.")
     (license license:expat)))
 
+(define-public python-pytest-harvest
+  (package
+    (name "python-pytest-harvest")
+    (version "1.10.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest-harvest" version))
+       (sha256
+        (base32 "066lqx46hqlvllq6ppmyi47fjc1dww7jwa4wfkkx2hrf3z7s9kr7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;XXX: cycle with python-pytest-harvest
+    (native-inputs
+     (list python-pytest-bootstrap
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-decopatch
+           python-makefun
+           python-packaging))
+    (home-page "https://github.com/smarie/python-pytest-harvest")
+    (synopsis "Pytest plugin to store data during runs")
+    (description
+     "This package implements a functionality to store data created during your
+pytest tests execution, and retrieve it at the end of the session, e.g. for
+applicative benchmarking purposes.")
+    (license license:bsd-3)))
+
 (define-public python-pytest-helpers-namespace
   (package
     (name "python-pytest-helpers-namespace")
