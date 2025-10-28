@@ -30564,15 +30564,18 @@ library.")
 (define-public python-boltons
   (package
     (name "python-boltons")
-    (version "23.0.0")
+    (version "25.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "boltons" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mahmoud/boltons")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1c5lpqi74i55li0wvpyxnircj40na797x7447k53an2j54cafl4c"))))
-    (build-system python-build-system)
+        (base32 "0j061hd1iwcyz1rvasprjwwgb39x6h36n1l3dw310ig3pzbr84wh"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-flit-core python-pytest python-setuptools))
     (home-page "https://github.com/mahmoud/boltons")
     (synopsis "Extensions to the Python standard library")
     (description
