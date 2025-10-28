@@ -36220,7 +36220,7 @@ path.")
 (define-public staticsite
   (package
     (name "staticsite")
-    (version "2.3")
+    (version "2.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -36229,7 +36229,7 @@ path.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rhr25xydvnlrrcz389j3f6nknmczm5x11cagrji1qww70piwy08"))))
+                "0fk0yy0flwwfqwb4gsizr7gnkadas4rjffn3mnzlwmkn08z3w0c7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -36244,22 +36244,21 @@ path.")
               (let ((themedir (string-append #$output "/themes")))
                 (copy-recursively "themes" themedir)))))))
     (native-inputs
+     (list python-hatchling
+           python-pytest))
+    (inputs
      (list perl-image-exiftool
            python-dateutil
-           python-docutils-0.19
+           python-docutils
            python-jinja2
            python-markdown
            python-pillow
-           python-pyinotify
            python-pytz
            python-pyyaml
            python-ruamel.yaml
            python-slugify
-           python-tornado
-           tzdata-for-tests
-           python-setuptools
-           python-wheel
-           python-toml))
+           python-toml
+           tzdata-for-tests))
     (home-page "https://github.com/spanezz/staticsite")
     (synopsis "Static site generator")
     (description "Statistic is a static site generator based on Markdown and
