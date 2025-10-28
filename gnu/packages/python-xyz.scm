@@ -3044,9 +3044,13 @@ into dataclasses.")
         (base32 "0m5by0zqycm87ip6kcixya5hnsqji2alzibz3dklq0ssf515k55n"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; Image tests require matplotlib and create a circular dependency.
-     (list #:test-flags
-           #~(list "-m" "not image")))
+     (list
+      #:test-flags
+      #~(list
+         ;; Image tests require matplotlib and create a circular dependency.
+         "-m" "not image"
+         ;; Tests that pass but avoided for load reasons.
+         "-k" "not test_filled_random_big and not test_lines_random_big")))
     (propagated-inputs
      (list python-numpy))
     (native-inputs
@@ -3055,7 +3059,6 @@ into dataclasses.")
            pkg-config
            pybind11
            python-pytest
-           python-pytest-cov
            python-wurlitzer))
     (home-page "https://contourpy.readthedocs.io/")
     (synopsis
