@@ -12486,41 +12486,33 @@ Python list with elements of type @code{PIL.Image} (from the
   (package
     (name "python-pillow")
     (version "11.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pillow" version))
-              (sha256
-               (base32
-                "081abgpz7g013cgzz7pjhmf8m7q626ngza4hnfs76vdk104ag39n"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pillow" version))
+       (sha256
+        (base32 "081abgpz7g013cgzz7pjhmf8m7q626ngza4hnfs76vdk104ag39n"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-ldconfig
-           (lambda _
-             (substitute* "setup.py"
-               (("\\['/sbin/ldconfig', '-p'\\]") "['true']"))))
-         (replace 'check
-           (lambda* (#:key outputs inputs tests? #:allow-other-keys)
-             (when tests?
-               (setenv "HOME"
-                       (getcwd))
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "selftest.py" "--installed")
-               (invoke "python" "-m" "pytest" "-vv")))))))
-    (native-inputs (list python-check-manifest
-                         python-coverage
-                         python-defusedxml
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-ldconfig
+            (lambda _
+              (substitute* "setup.py"
+                (("\\['/sbin/ldconfig', '-p'\\]") "['true']"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" (getcwd))
+                (invoke "python" "selftest.py" "--installed")
+                (invoke "python" "-m" "pytest" "-vv")))))))
+    (native-inputs (list python-defusedxml
                          python-markdown2
                          python-olefile
-                         python-packaging
                          python-pytest
-                         python-pytest-cov
-                         python-pytest-timeout
                          python-setuptools
-                         python-trove-classifiers
-                         python-wheel))
+                         python-trove-classifiers))
     (inputs (list freetype
                   lcms
                   libjpeg-turbo
