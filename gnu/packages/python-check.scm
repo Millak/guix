@@ -4443,15 +4443,12 @@ assertions. Sure is heavily inspired by @code{RSpec Expectations} and
         (sha256
          (base32 "0r491k91fi2nb0kdd6di8cb2kxcvsk1xzw3sgwsxhhg4qynsp3bi"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-mypy
-                         python-myst-parser
+    (native-inputs (list python-myst-parser
                          python-pytest
-                         python-pytest-cov
                          python-pyyaml
                          python-seedir
                          python-setuptools
-                         python-testfixtures
-                         python-wheel))
+                         python-testfixtures))
     (home-page "https://github.com/simplistix/sybil")
     (synopsis "Automated testing for examples in code and documentation")
     (description
