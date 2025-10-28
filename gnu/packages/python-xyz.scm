@@ -40833,17 +40833,15 @@ toolkit for Python.")
                           "test_select_fd")
                     " and not "))))
     (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-pytest-timeout
-           python-setuptools))
+     (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-pyyaml))
     (home-page "https://github.com/gorakhargosh/watchdog")
     (synopsis "File system events monitoring")
-    (description "This package provides a way to monitor file system events
-such as a file modification and trigger an action.  This is similar to inotify,
-but portable.")
+    (description
+     "This package provides a way to monitor file system events such as a file
+modification and trigger an action.  This is similar to inotify, but
+portable.")
     (license license:asl2.0)))
 
 (define-public python-watchfiles
