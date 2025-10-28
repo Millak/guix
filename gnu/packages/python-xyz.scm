@@ -18071,6 +18071,9 @@ significantly better performance.")
        (sha256
         (base32 "1j7dc8hlvrlhzkiv0vqzd6shhjaf14g9v3zlfn7x17j04c1g3iz7"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--ignore=tests/benchmarks/test_benchmark.py")))
     (native-inputs
      (list python-json-spec
            python-jsonschema
