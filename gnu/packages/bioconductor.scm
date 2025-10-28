@@ -20363,6 +20363,22 @@ gene-specific binding is expected.")
         (base32
          "04a11dsqd5y4b39nny94acnh0qhdazjc6d1803izza4vrgmw2csb"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'relax-gcc-14-strictness
+            (lambda _
+              ;; XXX FIXME: $HOME/.R/Makevars seems to be the only way to
+              ;; set custom CFLAGS for R?
+              (setenv "HOME" (getcwd))
+              (mkdir-p ".R")
+              (with-directory-excursion ".R"
+                (with-output-to-file "Makevars"
+                  (lambda _
+                    (display (string-append
+                              "CFLAGS=-g -O2"
+                              " -Wno-error=incompatible-pointer-types\n"))))))))))
     (propagated-inputs
      (list r-affy r-biobase r-biocgenerics r-gcrma r-genefilter))
     (home-page "https://bioconductor.org/packages/simpleaffy/")
