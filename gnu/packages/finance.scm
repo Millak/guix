@@ -1578,10 +1578,7 @@ features:
        (sha256
         (base32 "0yir8hka3vmpk0qhiaffagkdjg3mjgai808s0razsggbd5cn80bb"))))
     (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-setuptools))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://arthurdejong.org/python-stdnum/")
     (synopsis "Python module to handle standardized number and code formats")
     (description
