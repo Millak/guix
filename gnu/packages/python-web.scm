@@ -1478,7 +1478,7 @@ in Python 3.13 by PEP-594.")
            python-pytest
            python-setuptools))
     (propagated-inputs
-     (list python-pathlib-abc
+     (list python-pathlib-abc-for-python-pathy
            python-smart-open-6
            python-typer))
     (home-page "https://github.com/justindujardin/pathy")

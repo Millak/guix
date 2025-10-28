@@ -1491,13 +1491,13 @@ terminal.")
 (define-public python-pathlib-abc
   (package
     (name "python-pathlib-abc")
-    (version "0.1.1")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pathlib_abc" version))
        (sha256
-        (base32 "1gjsj7r331i54kbisy0zz1h9icx1hv6n97jaj5s7f3wvj7fpnkh8"))))
+        (base32 "1hy2rscq3msbpjs17jbhsqjs800kcnv2w1n425yh1ly609a9x726"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-hatchling))
     (home-page "https://github.com/barneygale/pathlib-abc")
@@ -1507,6 +1507,19 @@ terminal.")
 release of Python; specifically, it provides three ABCs that can be used to
 implement path classes for non-local filesystems")
     (license license:psfl)))
+
+;; XXX: It's for python-pathy@0.11.0, remove when no longer required.
+(define-public python-pathlib-abc-for-python-pathy
+  (hidden-package
+  (package
+    (inherit python-pathlib-abc)
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pathlib_abc" version))
+       (sha256
+        (base32 "1gjsj7r331i54kbisy0zz1h9icx1hv6n97jaj5s7f3wvj7fpnkh8")))))))
 
 (define-public python-pbs-installer
   (package
