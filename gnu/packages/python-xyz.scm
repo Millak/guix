@@ -30387,19 +30387,31 @@ cryptographically signed ones).")
   (package
     (name "python-dictdiffer")
     (version "0.9.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "dictdiffer" version))
-              (sha256
-               (base32
-                "0y3mk74qm2q9hsm37892i1wzn8bbdrvbs4nmnvqwq4z6pxgwzfhp"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/inveniosoftware/dictdiffer")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rc5jhjxzphip43frrlplcayng2cah1bzbzv6hpxnnjhg6rqy34m"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; XXX: The PyPI tarball lacks tests and the git repository
-     ;; fails to determine version.
-     '(#:tests? #f))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (delete-file "pytest.ini")
+              (substitute* "setup.py"
+                (("'pytest-runner.*',")
+                 "'pytest',")))))))
     (native-inputs
-     (list python-pytest-runner python-setuptools-scm))
+     (list python-pytest python-setuptools python-setuptools-scm))
     (home-page "https://github.com/inveniosoftware/dictdiffer")
     (synopsis "Diff and patch Python dictionary objects")
     (description
