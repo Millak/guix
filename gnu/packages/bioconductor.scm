@@ -25509,7 +25509,19 @@ decompression of raw bead-level data from the Illumina BeadArray platform.")
              (delete-file "tests/testthat/test_Axt.R")
              (substitute* "tests/testthat/test_CNE.R"
                ((".*test_CNE.*" m)
-                (string-append m "skip('guix')\n"))))))))
+                (string-append m "skip('guix')\n")))))
+         (add-before 'install 'fix-gcc-14-strictness
+           (lambda _
+              ;; XXX FIXME: $HOME/.R/Makevars seems to be the only way to
+              ;; set custom CFLAGS for R?
+              (setenv "HOME" (getcwd))
+              (mkdir-p ".R")
+              (with-directory-excursion ".R"
+                (with-output-to-file "Makevars"
+                  (lambda _
+                    (display (string-append
+                              "CFLAGS=-g -O2"
+                              " -std=gnu11 \n"))))))))))
     (build-system r-build-system)
     (inputs (list zlib))
     (propagated-inputs
