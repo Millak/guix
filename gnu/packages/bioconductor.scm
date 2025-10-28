@@ -28255,6 +28255,16 @@ visualizing bisulfite sequencing data.")
                 "0lxva0lvh3xcpkrjalkg2ps8jlzaypnsy3ibd9mk4lnjpbn5hiii"))))
     (properties `((upstream-name . "dada2")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'relax-gcc-14-strictness
+            (lambda _
+              (substitute* "src/Makevars"
+                (("CXX_STD = CXX11")
+                 "CXX_STD = CXX11
+PKG_CXXFLAGS=-g -O2 -Wno-error=changes-meaning")))))))
     (propagated-inputs
      (list r-biocgenerics
            r-biostrings
