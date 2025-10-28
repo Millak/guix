@@ -20300,29 +20300,28 @@ browser from Python.")
   ;; are compatible.
   (package
     (name "python-botocore")
-    (version "1.35.91")
+    (version "1.40.61")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "botocore" version))
        (sha256
         (base32
-         "0822q7w802vwngsxkfwjrbs4zc21avs1hsai5i6zy7vhaicrq2vv"))))
+         "1kajxzrh4nq4hx7rgbam0sffx06d45q7rw2csv69q3q9kgb7lj52"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 4491 passed, 72 skipped
       #:test-flags
       #~(list "--numprocesses" (number->string (min (parallel-job-count) 8))
-              ;; It struggles to find 'botocore'.
-              "--ignore" "tests/functional/leak/test_resource_leaks.py"
-              ;; Tests require networking.
-              "--ignore" "tests/integration")))
+              ;; The full test suite is huge, run some of it's portion.
+              "--ignore=tests/integration"
+              "--ignore=tests/functional")))
     (native-inputs
      (list python-jsonschema
            python-pytest
            python-pytest-xdist
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-dateutil
            python-jmespath
