@@ -30093,10 +30093,10 @@ calculate the differences between sequences.")
         (method url-fetch)
         (uri (pypi-uri "block_tracing" version))
         (sha256
-         (base32
-          "0s2y729qr5rs7n506qfh8cssk8m2bi6k2y5vbrh2z3raf2d01alz"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))  ; no tests
+         (base32 "0s2y729qr5rs7n506qfh8cssk8m2bi6k2y5vbrh2z3raf2d01alz"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))  ; No tests.
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/rianhunter/block_tracing")
     (synopsis "Protect process memory")
     (description
