@@ -231,8 +231,6 @@ concerned with representation of names for languages and language groups.")
           (add-after 'unpack 'fix-pytest-config
             (lambda _  ; Removes the need for python-pytest-cov.
               (substitute* "pyproject.toml"
-                (("--cov --cov-report=html --cov-report=term-missing")
-                 "")
                 (("^required_plugins =.*")
                  "")))))))
     (native-inputs (list python-poetry-core python-pytest))
