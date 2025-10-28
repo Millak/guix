@@ -20255,35 +20255,49 @@ or compiler for Python.")
 (define-public python-kombu
   (package
     (name "python-kombu")
-    (version "5.3.7")
+    (version "5.5.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "kombu" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/celery/kombu")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1gwp3b7w7jhsas40655pa9nlblm12irjapfkx0flmhamlgclq701"))))
+        (base32 "1fzpnwr3rhyf4fis1xmbdwlz40j9c09zpzzrchwxcvwsc6r45mcj"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags
-           ;; TODO: Package azure-identity (required for this file)
-           #~(list "--ignore" "t/unit/transport/test_azurestoragequeues.py")))
+     (list
+      #:test-flags
+      #~(list
+         ;; TODO: Package azure-identity (required for this file)
+         "--ignore=t/unit/transport/test_azurestoragequeues.py"
+         ;; XXX: Requires google-cloud-pubsub.
+         "--ignore=t/unit/transport/test_gcpubsub.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "requirements/default.txt"
+                (("^tzdata.*")
+                 "tzdata\n")))))))
     (native-inputs
      (list python-botocore
            python-pyro4
            python-pytest
            python-pytest-sugar
            python-setuptools
-           python-tzdata
-           python-wheel))
+           python-tzdata))
     (propagated-inputs
      (list python-amqp python-typing-extensions python-vine))
     (home-page "https://kombu.readthedocs.io")
     (synopsis "Message passing library for Python")
-    (description "The aim of Kombu is to make messaging in Python as easy as
-possible by providing an idiomatic high-level interface for the AMQ protocol,
-and also provide proven and tested solutions to common messaging problems.
-AMQP is the Advanced Message Queuing Protocol, an open standard protocol for
-message orientation, queuing, routing, reliability and security, for which the
+    (description
+     "The aim of Kombu is to make messaging in Python as easy as possible by
+providing an idiomatic high-level interface for the AMQ protocol, and also
+provide proven and tested solutions to common messaging problems.  AMQP is the
+Advanced Message Queuing Protocol, an open standard protocol for message
+orientation, queuing, routing, reliability and security, for which the
 RabbitMQ messaging server is the most popular implementation.")
     (license license:bsd-3)))
 
