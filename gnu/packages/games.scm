@@ -3707,50 +3707,6 @@ equipped with spoken co-driver notes and co-driver icons.")
 maps for the UFO: Alien Invasion strategy game.")
     (license license:gpl2+)))
 
-(define ufoai-data
-  (package
-    (name "ufoai-data")
-    (version %ufoai-version)
-    (home-page "https://ufoai.org/")
-    (source ufoai-source)
-    (build-system gnu-build-system)
-    (arguments
-     '(#:tests? #f
-       #:configure-flags '("CC=gcc" "CXX=g++")
-       #:phases (modify-phases %standard-phases
-                  (replace 'configure
-                    (lambda* (#:key outputs (configure-flags '()) #:allow-other-keys)
-                      (apply invoke "./configure" configure-flags)))
-                  (replace 'build
-                    (lambda* (#:key (parallel-build? #t) #:allow-other-keys)
-                      (invoke "make"
-                              "-j" (if parallel-build?
-                                       (number->string (parallel-job-count))
-                                       "1")
-                              "maps")))
-                  (add-after 'build 'pack
-                    (lambda _
-                      (invoke "make" "pk3")))
-                  (replace 'install
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
-                        (for-each (lambda (file)
-                                    (install-file file out))
-                                  (find-files "base" "\\.pk3$"))
-                        #t))))))
-    (native-inputs
-     `(("python" ,python-2)
-       ("ufo2map" ,ufo2map)
-       ("which" ,which)
-       ("zip" ,zip)))
-    (synopsis "UFO: AI data files")
-    (description
-     "This package contains maps and other assets for UFO: Alien Invasion.")
-    ;; Most assets are available under either GPL2 or GPL2+.  Some use other
-    ;; licenses, see LICENSES for details.
-    (license (list license:gpl2+ license:gpl2 license:cc-by3.0
-                   license:cc-by-sa3.0 license:public-domain))))
-
 (define-public xshogi
   (package
     (name "xshogi")
