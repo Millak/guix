@@ -3769,7 +3769,7 @@ configuration file.")
 (define-public python-pytooling
   (package
     (name "python-pytooling")
-    (version "8.7.0")
+    (version "8.7.6")
     (source
      (origin
        (method git-fetch)
@@ -3778,7 +3778,7 @@ configuration file.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "084zd009f280rhkry0vnzlrx21qv6djf3wda1l859z7iv592lwmq"))))
+        (base32 "1n0idfiwcsssvy3kfwkgdpwx7zmvzp44mv0285d8argdy6rd48p0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3799,8 +3799,7 @@ configuration file.")
            python-colorama
            python-pytest
            python-ruamel.yaml
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://pytooling.github.io/pyTooling/")
     (synopsis "Miscellaneous Python tools")
     (description
