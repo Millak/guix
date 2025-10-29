@@ -24362,6 +24362,88 @@ follows the GNU
 Program Argument Syntax Conventions}.")
     (license license:gpl3)))
 
+(define-public go-modernc-org-cc-v3
+  ;; XXX: Project distributes v2, v3, v4 and v5 as the same source without Golang
+  ;; subdir tags.
+  (package
+    (name "go-modernc-org-cc-v3")
+    (version "4.27.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/cznic/cc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hdaaksa2lkad6hfqxcmmmni8pagd8qd5w73gncrr45sj6cj5cg6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/cc/v3"
+      #:unpack-path "modernc.org/cc"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-submodules
+            (lambda* (#:key unpack-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" unpack-path)
+                (for-each delete-file-recursively
+                          (list "v2" "v4" "v5"))))))))
+    (native-inputs
+     (list go-github-com-dustin-go-humanize
+           go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-lukechampine-com-uint128
+           go-modernc-org-mathutil
+           go-modernc-org-strutil
+           go-modernc-org-token))
+    (home-page "https://gitlab.com/cznic/cc")
+    (synopsis "C99 compiler front end for Golang")
+    (description
+     "This package provides a C99 compiler front end.")
+    (license license:bsd-3)))
+
+(define-public go-modernc-org-cc-v4
+  (package/inherit go-modernc-org-cc-v3
+    (name "go-modernc-org-cc-v4")
+    (arguments
+     (list
+      #:import-path "modernc.org/cc/v4"
+      #:unpack-path "modernc.org/cc"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-source-assets
+            ;; TODO: Implement in go-build-system to embed the whole
+            ;; directory (fix-embed-files procedure).
+            (lambda _
+              ;; Remove symlinks, to resolve embed files.
+              (delete-file-recursively "src/modernc.org/ccorpus2/assets")
+              (copy-recursively
+               (string-append #$(this-package-native-input
+                                 "go-modernc-org-ccorpus2")
+                              "/src/modernc.org/ccorpus2/assets")
+               "src/modernc.org/ccorpus2/assets"))))))
+    (native-inputs
+     (list go-github-com-dustin-go-humanize
+           go-github-com-pbnjay-memory
+           go-github-com-pmezard-go-difflib
+           go-modernc-org-ccorpus2))
+    (propagated-inputs
+     (list go-modernc-org-mathutil
+           go-modernc-org-opt
+           go-modernc-org-sortutil
+           go-modernc-org-strutil
+           go-modernc-org-token))))
+
+(define-public go-modernc-org-cc-v5
+  (package/inherit go-modernc-org-cc-v4
+    (name "go-modernc-org-cc-v5")
+    (arguments
+     (list
+      #:tests? #f ;XXX: tests compile a lot of extra.
+      #:import-path "modernc.org/cc/v5"
+      #:unpack-path "modernc.org/cc"))))
+
 (define-public go-modernc-org-ebnf
   (package
     (name "go-modernc-org-ebnf")

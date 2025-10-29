@@ -3058,6 +3058,8 @@ advanced Go linter.")
     (synopsis "Continuation of ccorpus using @code{embed.FS}")
     (description
      "This package provides a test corpus of C code.")
+    ;; TODO: assets directory provides a lot of example sources for testing
+    ;; taken from other projects, check it covered by the licenses.
     (license license:bsd-3)))
 
 (define-public go-modernc-org-scannertest
