@@ -24387,6 +24387,33 @@ grammars.  The input is text @code{[]byte} satisfying the following
 grammar (represented itself in EBNF):.")
     (license license:bsd-3)))
 
+(define-public go-modernc-org-ebnfutil
+  (package
+    (name "go-modernc-org-ebnfutil")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/cznic/ebnfutil")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12hwaqy4c83q3yqj7qakysm7wr3l9cn9925pywssmflixm9cw19s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/ebnfutil"))
+    (propagated-inputs
+     (list  go-modernc-org-ebnf
+            go-modernc-org-strutil))
+    (home-page "https://gitlab.com/cznic/ebnfutil")
+    (synopsis "Utilities for messing with EBNF grammars")
+    (description
+     "This package provides some utilities for messing with @acronym{extended
+Backus–Naur form, EBNF} grammars.")
+    (license license:bsd-3)))
+
 (define-public go-modernc-org-fileutil
   (package
     (name "go-modernc-org-fileutil")
