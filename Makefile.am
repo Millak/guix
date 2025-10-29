@@ -488,6 +488,7 @@ AUX_FILES =						\
   gnu/packages/aux-files/linux-libre/5.10-x86_64.conf	\
   gnu/packages/aux-files/ovmf/51-edk2-ovmf-2m-raw-x64-nosb.json	\
   gnu/packages/aux-files/pack-audit.c			\
+  gnu/packages/aux-files/python/pytest_guix.py		\
   gnu/packages/aux-files/python/sanity-check.py		\
   gnu/packages/aux-files/python/sitecustomize.py	\
   gnu/packages/aux-files/renpy/renpy.in	\

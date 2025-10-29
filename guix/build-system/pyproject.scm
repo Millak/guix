@@ -23,15 +23,19 @@
   #:use-module (guix store)
   #:use-module (guix utils)
   #:use-module (guix gexp)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix monads)
   #:use-module (guix packages)
   #:use-module (guix search-paths)
   #:use-module (guix build-system)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system trivial)
   #:use-module (srfi srfi-1)
+  #:use-module (ice-9 match)
   #:export (%pyproject-build-system-modules
             default-python
+            default-pytest-guix-plugin
             default-sanity-check.py
             pyproject-build
             pyproject-build-system
@@ -62,6 +66,37 @@
   "Return the default guile-json package, resolved lazily."
   (@* (gnu packages guile) guile-json-4))
 
+;; Maybe try to upstream it at some point, it's currently flavored for guix
+;; but the idea itself is more general.
+(define (default-pytest-guix-plugin python)
+  (let* ((effective (version-major+minor (package-version python)))
+         (site (string-append "lib/python" effective "/site-packages/")))
+    (package
+      (name "python-pytest-guix")
+      (version "0.0.1")
+      (source (local-file (search-auxiliary-file "python/pytest_guix.py")))
+      (build-system trivial-build-system)
+      (arguments
+       (list
+        #:modules '((guix build utils))
+        #:builder
+        #~(begin
+            (use-modules (guix build utils))
+            (let* ((site (string-append #$output "/" #$site))
+                   (dist (string-append site "pytest_guix-" #$version
+                                        ".dist.info")))
+              (mkdir-p dist)
+              (copy-file #$source (string-append site "/pytest_guix.py"))
+              (call-with-output-file (string-append dist "/entry_points.txt")
+                (lambda (port)
+                  (format port "[pytest11]~%guix=pytest_guix~%")))))))
+      (home-page "https://guix.gnu.org/")
+      (synopsis "Ignore selected pytest options")
+      (description
+       "This package provides the script to cleanly ignore pytest options at the
+build-system level.")
+      (license license:gpl3+))))
+
 ;; TODO: On the next iteration of python-team, migrate the sanity-check to
 ;; importlib_metadata instead of setuptools.
 (define (default-sanity-check.py)
@@ -69,13 +104,21 @@
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target
+                test-backend
                 (python (default-python))
+                (python-pytest-guix (default-pytest-guix-plugin python))
                 (sanity-check.py (default-sanity-check.py))
                 #:allow-other-keys
                 #:rest arguments)
   "Return a bag for NAME."
   (define private-keywords
-    '(#:target #:python #:inputs #:native-inputs #:sanity-check.py))
+    '(#:target #:python #:inputs #:native-inputs
+      #:python-pytest-guix #:sanity-check.py))
+  (define native-inputs-labels (map car native-inputs))
+  (define has-pytest?
+    (or (member "python-pytest-bootstrap" native-inputs-labels)
+        (member "python-pytest" native-inputs-labels)))
+
 
   (and (not target)                               ;XXX: no cross-compilation
        (bag
@@ -88,9 +131,16 @@
 
                         ;; Keep the standard inputs of 'gnu-build-system'.
                         ,@(standard-packages)))
-         (build-inputs `(("python" ,python)
-                         ("sanity-check.py" ,sanity-check.py)
-                         ,@native-inputs))
+         (build-inputs
+          `(("python" ,python)
+            ("sanity-check.py" ,sanity-check.py)
+            ,@(if (and has-pytest?
+                       (match test-backend
+                         ((or 'pytest-with-guix-plugin #f) #t)
+                         (_ #f)))
+                  `(("python-pytest-guix" ,python-pytest-guix))
+                  `())
+            ,@native-inputs))
          (outputs (append outputs '(wheel)))
          (build pyproject-build)
          (arguments (strip-keyword-arguments private-keywords arguments)))))

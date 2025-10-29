@@ -314,7 +314,7 @@ without errors."
     (with-directory-excursion "/tmp"
       (invoke "python" sanity-check.py (site-packages inputs outputs)))))
 
-(define* (check #:key tests? test-backend test-flags #:allow-other-keys)
+(define* (check #:key inputs tests? test-backend test-flags #:allow-other-keys)
   "Run the test suite of a given Python package."
   (if tests?
       ;; Unfortunately with PEP 517 there is no common method to specify test
@@ -330,20 +330,24 @@ without errors."
              (tests-found (find-files "." "test.*\\.py$"))
              (use-test-backend
               (or test-backend
-                  ;; Prefer pytest
-                  (if pytest 'pytest #f)
-                  (if stestr 'stestr #f)
-                  (if nosetests 'nose #f)
-                  (if nose2 'nose2 #f)
+                  ;; By order of preference.
+                  (and (assoc-ref inputs "python-pytest-guix")
+                       'pytest-with-guix-plugin)
+                  (and pytest 'pytest)
+                  (and stestr 'stestr)
+                  (and nosetests 'nose)
+                  (and nose2 'nose2)
                   ;; Fall back to setup.py. The command is deprecated, but is
                   ;; a superset of unittest, so should work for most packages.
                   ;; Keep it until setuptools removes `setup.py test'.
                   ;; See https://setuptools.pypa.io/en/latest/deprecated/\
                   ;; commands.html#test-build-package-and-run-a-unittest-suite
-                  (if have-setup-py 'setup.py #f)
-                  (if tests-found 'unittest #f))))
+                  (and have-setup-py 'setup.py)
+                  (and tests-found 'unittest))))
         (format #t "Using ~a~%" use-test-backend)
         (match use-test-backend
+          ('pytest-with-guix-plugin
+           (apply invoke pytest "-vv" "-p" "pytest_guix" test-flags))
           ('pytest
            (apply invoke pytest "-vv" test-flags))
           ('nose
