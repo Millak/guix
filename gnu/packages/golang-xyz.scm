@@ -24752,6 +24752,35 @@ replacement for mattn/go-sqlite3.")
 @code{strings} package.")
     (license license:bsd-3)))
 
+(define-public go-modernc-org-y
+  (package
+    (name "go-modernc-org-y")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/cznic/y")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vp9dzw7m64yhf8j0sxir9lpn8zis1z06ia95iah62h6p0c3q9ys"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/y"))
+    (propagated-inputs
+     (list go-modernc-org-mathutil
+           go-modernc-org-parser
+           go-modernc-org-sortutil
+           go-modernc-org-strutil))
+    (home-page "https://gitlab.com/cznic/y")
+    (synopsis "Converter of @code{.y} (yacc) source files")
+    (description
+     "This package implements a functionality to convert @code{.y} (yacc[2])
+source files to data suitable for a parser generator.")
+    (license license:bsd-3)))
+
 (define-public go-mvdan-cc-editorconfig
   (package
     (name "go-mvdan-cc-editorconfig")
