@@ -41848,14 +41848,14 @@ information about the resources and format it as a bibtex entry.")
 (define-public emacs-persist
   (package
     (name "emacs-persist")
-    (version "0.7")
+    (version "0.8")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "persist-" version ".tar"))
        (sha256
-        (base32 "0g38vf4a4f4b8cp35qc7pwzj1qwrnw6dd6mc83mrjs35fx43lpjn"))))
+        (base32 "0lx4phndjr6x2bwlak0z232968vnzhnivq25531ykv4c4f45qyhj"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/persist.html")
     (synopsis "Persist variables between Emacs sessions")
