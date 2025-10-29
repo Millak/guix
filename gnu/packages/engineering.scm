@@ -3069,7 +3069,7 @@ but also adds new features and improves existing ones.")
 (define-public emacs-scad-mode
   (package
     (name "emacs-scad-mode")
-    (version "96.0")
+    (version "97.0")
     (source
      (origin
        (method git-fetch)
@@ -3077,7 +3077,7 @@ but also adds new features and improves existing ones.")
              (url "https://github.com/openscad/emacs-scad-mode")
              (commit version)))
        (sha256
-        (base32 "0vsidz3qws89z8blq5nng7mvzn3kj06lw9417aymhykyjgjn5f8m"))
+        (base32 "1h86z2qn9q7ww2m7p992fx8abzdffcd3bcp3bmck3c9q2aksjl5j"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-compat))
