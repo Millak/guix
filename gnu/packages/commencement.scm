@@ -1839,7 +1839,8 @@ exec " gcc "/bin/" program
                       (format (current-error-port) "C_INCLUDE_PATH=~a\n" (getenv "C_INCLUDE_PATH"))
                       (format (current-error-port) "CPLUS_INCLUDE_PATH=~a\n" (getenv "CPLUS_INCLUDE_PATH"))
                       (format (current-error-port) "LIBRARY_PATH=~a\n"
-                              (getenv "LIBRARY_PATH"))))))))))))
+                              (getenv "LIBRARY_PATH"))))))))))
+    (properties '((timeout . 72000)))))    ;20 hours
 
 (define gcc-mesboot-wrapper
   ;; We need this so gcc-mesboot can be used to create shared binaries that
