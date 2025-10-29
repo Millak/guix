@@ -1047,29 +1047,6 @@ applications with a @var{SEARCH_URL} variable.")
     (description "Pickled object field for Django")
     (license license:expat)))
 
-(define-public python-django-bulk-update
-  (package
-    (name "python-django-bulk-update")
-    (version "2.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "django-bulk-update" version))
-              (sha256
-               (base32
-                "0dxkmrm3skyw82i0qa8vklxw1ma1y308kh9w2hcnvhpacn5cxdss"))))
-    (build-system python-build-system)
-    (arguments
-     ;; XXX: Tests require a Postgres database.
-     `(#:tests? #f))
-    (propagated-inputs
-     (list python-django))
-    (home-page "https://github.com/aykut/django-bulk-update")
-    (synopsis "Simple bulk update over Django ORM or with helper function")
-    (description
-      "Simple bulk update over Django ORM or with helper function.  This
-project aims to bulk update given objects using one query over Django ORM.")
-    (license license:expat)))
-
 (define-public python-django-contact-form
   (package
     (name "python-django-contact-form")
