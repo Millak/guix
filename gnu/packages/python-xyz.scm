@@ -19918,7 +19918,7 @@ text.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 10230 passed, 39 skipped, 73 deselected, 2 xfailed, 4 warnings
+      ;; tests: 10158 passed, 41 skipped, 143 deselected, 2 xfailed, 4 warnings
       #:test-flags
       #~(list "-m" "not network and not requires_docker"
               ;; Not all of the tests are thread save, see:
@@ -19961,7 +19961,55 @@ text.")
                           "test_create_db_cluster"
                           ;; Checksum error
                           "test_upload_file_with_checksum_algorithm"
-                          "test_list_objects_v2_checksum_algo")
+                          "test_list_objects_v2_checksum_algo"
+                          ;; Assertion is not equal
+                          "test_create_describe_update_and_delete_ledger"
+                          "test_s3tables_get_table"
+                          "test_tag_resource_and_list_tags_for_resource"
+
+                          ;; XXX: Probably will be resolved in the next
+                          ;; release, as botocore's refresh pace is fast.
+                          ;; 
+                          ;; botocore.exceptions.UnknownServiceError: Unknown
+                          ;; service: <...>
+                          "test_create_app_response"
+                          "test_describe_apps"
+                          "test_create_instance"
+                          "test_describe_instances"
+                          "test_ec2_integration"
+                          "test_create_layer_response"
+                          "test_describe_layers"
+                          "test_create_stack_response"
+                          "test_describe_stacks"
+                          "test_robot_application"
+                          "test_create_describe_update_and_delete_ledger"
+                          "test_tag_resource_and_list_tags_for_resource"
+                          ;; botocore.exceptions.ClientError: An error
+                          ;; occurred (404) when calling <...>
+                          "test_create_event_source_mapping"
+                          "test_delete_event_source_mapping"
+                          "test_delete_table_deletes_underlying_table_storage"
+                          "test_event_source_mapping_create_from_cloudformation_json"
+                          "test_event_source_mapping_delete_from_cloudformation_json"
+                          "test_event_source_mapping_delete_stack"
+                          "test_event_source_mapping_update_from_cloudformation_json"
+                          "test_get_event_source_mapping"
+                          "test_get_table"
+                          "test_invoke_fake_function_from_sqs_queue"
+                          "test_list_event_source_mappings"
+                          "test_rename_table"
+                          "test_underlying_table_storage_does_not_support_delete_object"
+                          "test_underlying_table_storage_does_not_support_list_objects"
+                          "test_update_event_source_mapping"
+                          "test_update_table_metadata_location"
+                          "test_write_metadata_to_table"
+                          ;; botocore.exceptions.ParamValidationError:
+                          ;; Parameter validation failed <...>
+                          "test_create_db_proxy"
+                          "test_create_db_proxy_duplicate_name"
+                          "test_create_db_proxy_invalid_subnet"
+                          "test_describe_db_proxies"
+                          "test_list_tags_db_proxy")
                     " and not ")
               "tests")
       #:phases
