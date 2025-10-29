@@ -651,38 +651,6 @@ It can also speak English through eSpeak or Festival.")
                    ;; libmusicxml
                    license:mpl2.0))))
 
-(define-public sphinxbase
-  (package
-    (name "sphinxbase")
-    (version "5prealpha")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/cmusphinx/"
-                           "sphinxbase/" version "/"
-                           "sphinxbase-" version ".tar.gz"))
-       (sha256
-        (base32 "0vr4k8pv5a8nvq9yja7kl13b5lh0f9vha8fc8znqnm8bwmcxnazp"))
-       (patches (search-patches "sphinxbase-fix-doxygen.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:parallel-tests? #f))           ;tests fail otherwise
-    (native-inputs
-     (list bison
-           doxygen
-           perl ;for tests
-           python
-           swig))
-    (inputs
-     (list pulseaudio))
-    (home-page "https://cmusphinx.github.io/")
-    (synopsis "Support library required by Pocketsphinx and Sphinxtrain")
-    (description "This package contains the basic libraries shared by
-the CMU Sphinx trainer and all the Sphinx decoders (Sphinx-II,
-Sphinx-III, and PocketSphinx), as well as some common utilities for
-manipulating acoustic feature and audio files.")
-    (license license:bsd-4)))
-
 (define-public pocketsphinx
   (package
     (name "pocketsphinx")
@@ -721,3 +689,6 @@ manipulating acoustic feature and audio files.")
 large vocabulary, speaker-independent continuous speech recognition
 engine.")
     (license license:bsd-2)))
+
+(define-deprecated-package sphinxbase
+  pocketsphinx)
