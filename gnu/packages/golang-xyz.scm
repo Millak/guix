@@ -24957,8 +24957,8 @@ parsers.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.com/cznic/sqlite")
-             (commit (string-append "v" version))))
+              (url "https://gitlab.com/cznic/sqlite")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0579vip4vn488jppjpadryxyimkw2jr8ywr4j0piqcm2zs40h509"))))
@@ -24966,8 +24966,17 @@ parsers.")
     (arguments
      (list
       #:import-path "modernc.org/sqlite"
-      ;; Tests require modernc.org/ccgo/v4/lib, which is not packaged yet
-      #:tests? #f))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'check 'post-check-remove-test-data
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "testdata")))))))
+    (native-inputs
+     (list go-github-com-google-pprof
+           go-github-com-mattn-go-sqlite3
+           go-modernc-org-fileutil
+           go-modernc-org-mathutil))
     (propagated-inputs
      (list go-github-com-dustin-go-humanize
            go-github-com-google-uuid
@@ -24975,7 +24984,6 @@ parsers.")
            go-github-com-remyoudompheng-bigfft
            go-golang-org-x-sys
            go-modernc-org-libc
-           go-modernc-org-mathutil
            go-modernc-org-memory))
     (home-page "https://modernc.org/sqlite")
     (synopsis "CGo-free port of SQLite")
