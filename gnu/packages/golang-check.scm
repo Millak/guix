@@ -3060,6 +3060,33 @@ advanced Go linter.")
      "This package provides a test corpus of C code.")
     (license license:bsd-3)))
 
+(define-public go-modernc-org-scannertest
+  (package
+    (name "go-modernc-org-scannertest")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/cznic/scannertest")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06hk8pqaihhmfxfprg1fmdl2y8ffvrblm10z7qq3l921jjxc1ch7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/scannertest"))
+    (propagated-inputs
+     (list go-modernc-org-lex
+           go-modernc-org-lexer))
+    (home-page "https://gitlab.com/cznic/scannertest")
+    (synopsis "Helpers for automated testing of scanners/lexers/tokenizers")
+    (description
+     "This package provides helpers for automated testing of
+scanners/lexers/tokenizers.")
+    (license license:expat)))
+
 (define-public go-mvdan-cc-unparam
   (package
     (name "go-mvdan-cc-unparam")
