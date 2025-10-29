@@ -20989,7 +20989,7 @@ structure, or any other pattern.")
 (define-public emacs-tmr
   (package
     (name "emacs-tmr")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method git-fetch)
@@ -20998,7 +20998,7 @@ structure, or any other pattern.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a4jjgl3p54g45xnlxj81dvfpkvplijw31ylhl6lb9xz7w3kpvs0"))))
+        (base32 "1x7brjlmyxzdbixzc8fldyvmc8qyvi5s5is8s7zcv6fvxbm2dp1a"))))
     (build-system emacs-build-system)
     (arguments
      (list
