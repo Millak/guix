@@ -13241,14 +13241,14 @@ well as text folding, if any.")
 (define-public emacs-jit-spell
   (package
     (name "emacs-jit-spell")
-    (version "0.4")
+    (version "0.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/jit-spell-"
                                   version ".tar"))
               (sha256
                (base32
-                "1p83spcq52l7k63p56y3w5r3kl49wbrs4abynwn25ikhkd4wl8x3"))))
+                "0xdn4hm4d26vmqh75i2ghyissm2s2szgynwynpgmlvhr4q5nkswf"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-compat))
     (home-page "https://github.com/astoff/jit-spell")
