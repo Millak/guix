@@ -190,11 +190,11 @@ tests/home-import\.scm                             @guix/home
 tests/home-services\.scm                           @guix/home
 
 gnu/packages/mpi\.scm                              @guix/hpc
+gnu/packages/oneapi\.scm                           @guix/hpc
 gnu/packages/rocm\.scm                             @guix/hpc
 gnu/packages/sycl\.scm                             @guix/hpc
 gnu/packages/tbb\.scm                              @guix/hpc
 gnu/packages/vulkan\.scm                           @guix/hpc
-gnu/packages/oneapi\.scm                           @guix/hpc
 
 gnu/system/hurd\.scm                               @guix/hurd
 gnu/system/images/hurd\.scm                        @guix/hurd
