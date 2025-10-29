@@ -7935,16 +7935,8 @@ services or command-line parsing, converted from JSON/YAML (or
 something else) to Python data-types.")
     (license license:psfl)))
 
-(define-public python-schema-0.5
-  (package (inherit python-schema)
-    (version "0.5.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "schema" version))
-       (sha256
-        (base32
-         "10zqvpaky51kgb8nd42bk7jwl8cn2zvayxjpdc1wwmpybj92x67s"))))))
+;; It may be removed after 2025-11-29.
+(define-deprecated/public-alias python-schema-0.5 python-schema)
 
 (define-public python-kitchen
   (package
