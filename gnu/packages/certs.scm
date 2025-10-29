@@ -3,6 +3,7 @@
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
+;;; Copyright © 2025 Luca Kredel <luca.kredel@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,11 +30,14 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
+  #:use-module (guix build-system go)
   #:use-module (gnu packages)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages python)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-build)
   #:use-module (gnu packages tls))
 
 (define-public certdata2pem
@@ -223,3 +227,33 @@ port forwarding to your local machine.")
 Let's Encrypt root and intermediate certificates.  It is intended to be used
 within Guix.")
     (license license:public-domain)))
+
+(define-public mkcert
+  (package
+    (name "mkcert")
+    (version "1.4.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/FiloSottile/mkcert")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ms9mjspiwlsgsnir0ccj3w8vhvrphf5i6k9q3hrz47y2a6igh0l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "filippo.io/mkcert"
+      #:build-flags
+      #~(list (string-append "-ldflags=-X main.Version="
+                             #$version))))
+    (native-inputs (list go-golang-org-x-net
+                         go-software-sslmate-com-src-go-pkcs12))
+    (synopsis "Zero-config tool to make locally trusted development
+     certificates")
+    (description
+     "mkcert is a simple tool for making locally-trusted development
+     certificates.  It requires no configuration.")
+    (home-page "https://github.com/FiloSottile/mkcert")
+    (license license:bsd-3)))
