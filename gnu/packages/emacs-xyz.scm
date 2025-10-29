@@ -26911,7 +26911,7 @@ object @code{nil} corresponds 1:1 with @code{NULL} in the database.")
 (define-public emacs-closql
   (package
     (name "emacs-closql")
-    (version "2.3.0")
+    (version "2.3.1")
     (source
      (origin
        (method git-fetch)
@@ -26921,7 +26921,7 @@ object @code{nil} corresponds 1:1 with @code{NULL} in the database.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1vfanw02di8lgvbiijzbgm5rd8w1yzfd81srygacfbzp34diqvcy"))))
+         "0j2w719lv1zzwfanpqfa5lpgdvlnavb583ybipjxicki80x1g6jz"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ; no tests
     (propagated-inputs
