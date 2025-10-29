@@ -21087,7 +21087,7 @@ are common in Chromium-derived projects.")
 (define-public emacs-gnosis
   (package
     (name "emacs-gnosis")
-    (version "0.5.6")
+    (version "0.5.7")
     (source
      (origin
        (method git-fetch)
@@ -21096,7 +21096,7 @@ are common in Chromium-derived projects.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mri7rwfakjg7fgy50vdfap85a84d5088fx5bjrz4wi95lx7j2kj"))))
+        (base32 "1nzyys00jdh1d7sv8jigaxb1h1ghvkc9d1r0603rsmfkrsfq229p"))))
     (build-system emacs-build-system)
     (arguments (list #:test-command #~(list "make" "test")
                      #:emacs emacs   ; tests require built-in SQLite support
