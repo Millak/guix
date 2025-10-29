@@ -29494,37 +29494,6 @@ to and from JSON.  Common data types are implemented and it is easy to
 register custom encoders and decoders.")
     (license license:expat)))
 
-;; XXX: See: <https://codeberg.org/guix/guix/issues/3054>.
-(define-public python-iocapture
-  ;; The latest release is more than a year older than this commit.
-  (let ((commit "fdc021c431d0840303908dfc3ca8769db383595c")
-        (revision "1"))
-    (package
-      (name "python-iocapture")
-      (version "0.1.2")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/oinume/iocapture")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1mkbhqibxvgwg0p7slr8dfraa3g2s6bsayladhax2jccwj4kcndz"))))
-      (build-system pyproject-build-system)
-      (native-inputs
-       (list python-flexmock
-             python-pytest
-             python-pytest-cov
-             python-setuptools
-             python-six))
-      (home-page "https://github.com/oinume/iocapture")
-      (synopsis "Python capturing tool for stdout and stderr")
-      (description
-       "This package helps you to capture the standard out (stdout) and the
-standard error channel (stderr) in your program.")
-      (license license:expat))))
-
 (define-public python-ioctl-opt
   (package
     (name "python-ioctl-opt")
