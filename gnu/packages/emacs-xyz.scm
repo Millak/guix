@@ -20751,7 +20751,7 @@ you to deal with multiple log levels.")
 (define-public emacs-denote
   (package
     (name "emacs-denote")
-    (version "4.0.0")
+    (version "4.1.1")
     (source
      (origin
        (method git-fetch)
@@ -20760,7 +20760,7 @@ you to deal with multiple log levels.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1np3hyqcw6p5ajx102ng5nyc5gp1is88vk6803gf5alfbw0fzvj4"))))
+        (base32 "1shxv5wyyg2djpkmi933kvsg7yby2syk96arqqx74jxh2mxba4b7"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -20777,7 +20777,7 @@ you to deal with multiple log levels.")
                              "--eval"
                              "(ert-run-tests-batch-and-exit
              `(not ,(rx (or \"make-denote-directory\" \"date-convert\"
-\"--denote-directory\" \"get-identifier\"))))")))
+\"--denote-directory\" \"get-identifier\" \"identifier-p\"))))")))
     (native-inputs (list texinfo))
     (home-page "https://protesilaos.com/emacs/denote/")
     (synopsis "Simple notes for Emacs")
