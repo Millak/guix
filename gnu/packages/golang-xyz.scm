@@ -24444,6 +24444,75 @@ Program Argument Syntax Conventions}.")
       #:import-path "modernc.org/cc/v5"
       #:unpack-path "modernc.org/cc"))))
 
+(define-public go-modernc-org-ccgo-v3
+  ;; XXX: Project distributes v2, v3 and v4 as the same source without Golang
+  ;; subdir tags.
+  (package
+    (name "go-modernc-org-ccgo-v3")
+    (version "4.30.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/cznic/ccgo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11s0n7l10pqbdp8j02naqjiad0xad5s1zlwvy6mnxq00pra7h1b0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: Test and build require go-modernc-org-ccgo-v4.
+      #:tests? #f
+      #:skip-build? #t
+      #:import-path "modernc.org/ccgo/v3"
+      #:unpack-path "modernc.org/ccgo"))
+    (propagated-inputs
+     (list go-github-com-kballard-go-shellquote
+           go-golang-org-x-sys
+           go-golang-org-x-tools
+           go-modernc-org-libc
+           go-modernc-org-cc-v3
+           go-modernc-org-mathutil
+           go-modernc-org-opt))
+    (home-page "https://gitlab.com/cznic/ccgo")
+    (synopsis "CC ASTs to Golang source code translator")
+    (description
+     "This package implements a functionality to translate C to Go source
+code.")
+    (license license:bsd-3)))
+
+(define-public go-modernc-org-ccgo-v4
+  (package/inherit go-modernc-org-ccgo-v3
+    (name "go-modernc-org-ccgo-v4")
+    (source (origin
+              (inherit (package-source go-modernc-org-ccgo-v3))
+              (modules '((guix build utils)
+                         (ice-9 ftw)
+                         (srfi srfi-26)))
+              (snippet
+               #~(begin
+                   (define (delete-all-but directory . preserve)
+                     (with-directory-excursion directory
+                       (let* ((pred (negate (cut member <>
+                                                 (cons* "." ".." preserve))))
+                              (items (scandir "." pred)))
+                         (for-each (cut delete-file-recursively <>) items))))
+                   (delete-all-but "." "v4")))))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-modernc-org-ccgo-v3)
+       ((#:import-path _) "modernc.org/ccgo/v4")))
+    (propagated-inputs
+     (list go-golang-org-x-mod
+           go-golang-org-x-tools
+           go-modernc-org-cc-v4
+           go-modernc-org-gc-v2
+           go-modernc-org-gc-v3
+           go-modernc-org-mathutil
+           go-modernc-org-opt
+           go-modernc-org-strutil))))
+
 (define-public go-modernc-org-ebnf
   (package
     (name "go-modernc-org-ebnf")
