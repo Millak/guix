@@ -24438,6 +24438,85 @@ Backus–Naur form, EBNF} grammars.")
     (description "Package fileutil collects some file utility functions.")
     (license license:bsd-3)))
 
+(define-public go-modernc-org-gc
+  ;; XXX: Project distributes v2 and v3 as the same source without Golang
+  ;; subdir tags.
+  (package
+    (name "go-modernc-org-gc")
+    (version "3.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/cznic/gc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19z7ihk76rg40l3wgy6ajm819k4mlz8pf5ib3p38mv8pxs7q1y8p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests, probably, depend on deprecated std submodules:
+      ;; <...>-go-1.24.3/lib/go/test: no such file or directory
+      #:tests? #f
+      #:import-path "modernc.org/gc"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-submodules
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively (list "v2" "v3"))))))))
+    (propagated-inputs
+     (list go-github-com-edsrzf-mmap-go
+           go-modernc-org-token))
+    (home-page "https://gitlab.com/cznic/gc")
+    (synopsis "Golang compiler front end")
+    (description
+     "This package provides a Go compiler front end.")
+    (license license:bsd-3)))
+
+(define-public go-modernc-org-gc-v2
+  (package/inherit go-modernc-org-gc
+    (name "go-modernc-org-gc-v2")
+    (arguments
+     (list
+      #:import-path "modernc.org/gc/v2"
+      #:unpack-path "modernc.org/gc"
+      ;; all_test.go:274: open normalized.go.ebnf: permission denied
+      #:test-flags #~(list "-skip" "Test0")))
+    (native-inputs
+     (list go-github-com-dustin-go-humanize
+           go-github-com-pmezard-go-difflib
+           go-modernc-org-ebnf
+           go-modernc-org-ebnfutil
+           go-modernc-org-scannertest))
+    (propagated-inputs
+     (list go-modernc-org-token))))
+
+(define-public go-modernc-org-gc-v3
+  (package/inherit go-modernc-org-gc
+    (name "go-modernc-org-gc-v3")
+    (arguments
+     (list
+      #:import-path "modernc.org/gc/v3"
+      #:unpack-path "modernc.org/gc"
+      #:test-flags
+      #~(list "-vet=off"   ;Go@1.24 forces vet, but tests are not ready yet.
+              ;; all_test.go:119: open peg.ebnf.fs: permission denied
+              "-skip" "TestPEGEBNF")))
+    (native-inputs
+     (list go-github-com-pmezard-go-difflib
+           go-golang-org-x-tools
+           go-modernc-org-ebnfutil))
+    (propagated-inputs
+     (list go-github-com-dustin-go-humanize
+           go-github-com-dustin-go-humanize
+           go-github-com-hashicorp-golang-lru-v2
+           go-golang-org-x-exp
+           go-modernc-org-mathutil
+           go-modernc-org-strutil
+           go-modernc-org-token))))
+
 (define-public go-modernc-org-golex
   (package
     (name "go-modernc-org-golex")
