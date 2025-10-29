@@ -23872,42 +23872,27 @@ highlighting.")
     (license license:gpl3+)))
 
 (define-public emacs-jsonrpc
-  ;; Commit refers to a commit in the Emacs repository, as jsonrpc.el was
-  ;; upstreamed.  By convention, it should refer to a commit in which
-  ;; jsonrpc.el was actually touched.  In order to find this, you can refer to
-  ;; <https://git.savannah.gnu.org/cgit/emacs.git/log/?qt=grep&q=jsonrpc>.
-  (let ((commit "4e8e877c377e41d72705235922f97b69d81d0267")) ;version bump
-    (package
-      (name "emacs-jsonrpc")
-      (version "1.0.25")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.savannah.gnu.org/git/emacs/")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1vwk5pwmf61d7yb49wp0ljim3aw002bjdnpw45cpjcbqhbhkgsc6"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list #:phases
-             #~(modify-phases %standard-phases
-                 (replace 'unpack
-                   (lambda* (#:key source #:allow-other-keys)
-                     (mkdir "source")
-                     (chdir "source")
-                     (copy-file (string-append source "/lisp/jsonrpc.el")
-                                "jsonrpc.el"))))))
-      (home-page "https://elpa.gnu.org/packages/jsonrpc.html")
-      (synopsis "JSON-RPC library")
-      (description
-       "This library implements the JSONRPC 2.0 specification as
+  (package
+    (name "emacs-jsonrpc")
+    (version "1.0.26")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (list (string-append "https://elpa.gnu.org/packages/"
+                                 "jsonrpc-" version ".tar")
+                  (string-append "https://elpa.gnu.org/packages/"
+                                 "jsonrpc-" version ".tar.lz")))
+       (sha256
+        (base32 "0lsm17kak4wb9anplqlyqfy0527akb8vp2gl3lszbxh281kjg1qx"))))
+    (build-system emacs-build-system)
+    (home-page "https://elpa.gnu.org/packages/jsonrpc.html")
+    (synopsis "JSON-RPC library")
+    (description
+     "This library implements the JSONRPC 2.0 specification as
 described in @url{http://www.jsonrpc.org/}.  As the name suggests,
 JSONRPC is a generic Remote Procedure Call protocol designed around
 JSON objects.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-jsonnet-mode
   (package
