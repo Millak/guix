@@ -14010,6 +14010,33 @@ etc)
               ;; longer maintained since Feb 21, 2024.
               license:asl2.0))))
 
+(define-public go-modernc-org-ccorpus
+  (package
+    (name "go-modernc-org-ccorpus")
+    (version "1.11.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/cznic/ccorpus")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18d5npw8aw5qzy6qcrlrili2zxvmc2v4kkwjps6c3ayvi7aj7j09"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/ccorpus"))
+    (propagated-inputs (list go-modernc-org-httpfs))
+    (home-page "https://gitlab.com/cznic/ccorpus")
+    (synopsis "Test body of C code for Golang")
+    (description
+     "This package provides a test corpus of C code as subset of
+@code{modernc.org/httpfs}.")
+    ;; TODO: assets directory provides a lot of example sources for testing
+    ;; taken from other projects, check it covered by the licenses.
+    (license license:bsd-3)))
+
 (define-public go-modernc-org-httpfs
   (package
     (name "go-modernc-org-httpfs")
