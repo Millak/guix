@@ -3658,55 +3658,6 @@ equipped with spoken co-driver notes and co-driver icons.")
     (license (list license:cc0               ;textures and audio in data.zip
                    license:gpl2+))))
 
-(define-public ufo2map
-  (package
-    (name "ufo2map")
-    (version %ufoai-version)
-    (home-page "https://ufoai.org/")
-    (source ufoai-source)
-    (build-system gnu-build-system)
-    (arguments
-     '(#:configure-flags '("CC=gcc" "CXX=g++"
-                           "--enable-release"
-                           "--enable-ufo2map"
-                           "--disable-uforadiant"
-                           "--disable-cgame-campaign"
-                           "--disable-cgame-multiplayer"
-                           "--disable-cgame-skirmish"
-                           "--disable-game"
-                           "--disable-memory"
-                           "--disable-testall"
-                           "--disable-ufoded"
-                           "--disable-ufo"
-                           "--disable-ufomodel"
-                           "--disable-ufoslicer")
-       #:tests? #f ;no tests
-       #:phases (modify-phases %standard-phases
-                  (replace 'configure
-                    (lambda* (#:key (configure-flags '()) #:allow-other-keys)
-                      ;; The home-made configure script does not understand
-                      ;; some of the default flags of gnu-build-system.
-                      (apply invoke "./configure" configure-flags)))
-                  (replace 'install
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
-                        (install-file "ufo2map" (string-append out "/bin"))
-                        (install-file "debian/ufo2map.6"
-                                      (string-append out "/share/man/man6"))
-                        #t))))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     `(("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("lua" ,lua-5.1)
-       ("sdl-union" ,(sdl-union (list sdl2 sdl2-mixer sdl2-ttf)))))
-    (synopsis "UFO: AI map generator")
-    (description
-     "This package provides @command{ufo2map}, a program used to generate
-maps for the UFO: Alien Invasion strategy game.")
-    (license license:gpl2+)))
-
 (define-public xshogi
   (package
     (name "xshogi")
