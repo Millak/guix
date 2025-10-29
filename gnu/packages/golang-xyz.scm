@@ -24438,6 +24438,34 @@ Backus–Naur form, EBNF} grammars.")
     (description "Package fileutil collects some file utility functions.")
     (license license:bsd-3)))
 
+(define-public go-modernc-org-lex
+  (package
+    (name "go-modernc-org-lex")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/cznic/lex")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fad093cdkgdwk3sf0vklk05qzkis1ivri3hig1wigv4z908nmdj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/lex"))
+    (propagated-inputs
+     (list go-modernc-org-fileutil
+           go-modernc-org-lexer))
+    (home-page "https://gitlab.com/cznic/lex")
+    (synopsis "Support for a @code{*nix (f)lex} like tool on @code{.l} sources")
+    (description
+     "This package provides a support for a @code{*nix (f)lex} like tool on
+@code{.l} sources.  The syntax is similar to a subset of @code{}(f)lex}, see
+also: @url{https://github.com/westes/flex}.")
+    (license license:bsd-3)))
+
 (define-public go-modernc-org-lexer
   (package
     (name "go-modernc-org-lexer")
