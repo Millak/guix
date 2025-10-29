@@ -24608,6 +24608,35 @@ with ccgo-generated code.")
     (description "Package opt implements command-line flag parsing.")
     (license license:bsd-3)))
 
+(define-public go-modernc-org-parser
+  (package
+    (name "go-modernc-org-parser")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/cznic/parser")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mawi7qqd5pkpg1a9k3isnkm6c524ig83awmpc132x47qsxd2a6g"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "modernc.org/parser"))
+    (propagated-inputs
+     (list go-modernc-org-golex
+           go-modernc-org-scanner
+           go-modernc-org-strutil))
+    (home-page "https://gitlab.com/cznic/parser")
+    (synopsis "Collection of Golang parsers")
+    (description
+     "This package provides an imlementation of @code{nquads} and @code{yacc}
+parsers.")
+    (license license:bsd-3)))
+
 (define-public go-modernc-org-scanner
   (package
     (name "go-modernc-org-scanner")
