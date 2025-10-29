@@ -1671,30 +1671,18 @@ by calling @code{FrozenList.freeze}.")
 (define-public python-aiobotocore
   (package
     (name "python-aiobotocore")
-    (version "2.17.0")
+    (version "2.25.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "aiobotocore" version))
        (sha256
-        (base32 "1hlwgy1z6ln6bh7b2i9syv7q2bagjkjbws247gbgkgv5qlri6153"))))
+        (base32 "1g7dv81bw7vq55gv3c5jxdw7wp7dp6dwjbh79y3fiv6ppwwyg6za"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Too many tests fail seemingly because they need Internet access.
-      #:tests? #false
-      #:test-flags
-      '(list
-        ;; No module named 'tests'
-        "--ignore=tests/test_config.py"
-        ;; function uses no argument 's3_verify'
-        "--ignore=tests/test_basic_s3.py"
-        ;; function uses no argument 'signature_version'
-        "--ignore=tests/test_dynamodb.py"
-        ;; attempted relative import with no known parent package
-        "--ignore=tests/test_stubber.py"
-        ;; No module named 'pip'
-        "--ignore=tests/test_version.py")))
+      ;; TODO: Too many tests fail seemingly because they need Internet access.
+      #:tests? #false))
     (propagated-inputs (list python-aiohttp
                              python-aioitertools
                              python-botocore
@@ -1704,15 +1692,7 @@ by calling @code{FrozenList.freeze}.")
                              python-urllib3
                              python-wrapt))
     (native-inputs
-     (list python-dill
-           python-docutils
-           python-moto
-           python-pytest
-           python-pytest-asyncio
-           python-requests
-           python-setuptools
-           python-werkzeug
-           python-wheel))
+     (list python-setuptools))
     (home-page "https://pypi.org/project/aiobotocore/")
     (synopsis "Async client for AWS services using botocore and aiohttp")
     (description "This package provides an async client for Amazon services
