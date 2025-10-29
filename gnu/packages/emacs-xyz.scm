@@ -35378,7 +35378,7 @@ constant expressions.")
 (define-public emacs-docker
   (package
     (name "emacs-docker")
-    (version "2.3.1")
+    (version "2.4.0")
     (source
      (origin
        (method git-fetch)
@@ -35387,7 +35387,7 @@ constant expressions.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13927ns3393q40gxrfzyqh6ajxzfjg14d0srfxi6ild3pmaz0460"))))
+        (base32 "102hn0m91shyiz25x2c5ihhzbc8a3i9vnlkfcb3xm3w3nrqa5w64"))))
     (inputs
      (list emacs-undercover))
     (propagated-inputs
