@@ -3520,57 +3520,6 @@ can be imported and used to create puzzles with a wide range of sizes.  Games ar
 saved automatically, and you can select between currently in progress games.")
     (license license:gpl3+)))
 
-(define %ufoai-commit "a542a87a891f96b1ab2c44d35b2f6f16859a5019")
-(define %ufoai-revision "0")
-(define %ufoai-version (git-version "2.6.0_dev" %ufoai-revision %ufoai-commit))
-(define ufoai-source
-  (origin
-    (method git-fetch)
-    (uri (git-reference
-          (url "git://git.code.sf.net/p/ufoai/code") ;HTTPS fails mid-clone
-          (commit %ufoai-commit)))
-    (file-name (string-append "ufoai-" %ufoai-version "-checkout"))
-    (sha256
-     (base32
-      "024s7b9rcg7iw8i2p72gwnvabk23ljlq0nldws0y4b6hpwzyn1wz"))
-    (modules '((guix build utils)
-               (srfi srfi-1)
-               (ice-9 ftw)))
-    (snippet
-     '(begin
-        ;; Delete ~32MiB of bundled dependencies.
-        (with-directory-excursion "src/libs"
-          (for-each delete-file-recursively
-                    (lset-difference equal? (scandir ".")
-                                     '("." ".." "gtest" "mumble"))))
-
-        ;; Use relative path to Lua headers.
-        (substitute* "src/common/scripts_lua.h"
-          (("\\.\\./libs/lua/") ""))
-
-        ;; Adjust Makefile targets to not depend on 'ufo2map', since we build
-        ;; it as a separate package.  This way we don't need to make the same
-        ;; adjustments for 'ufoai-data' and 'ufoai' below.
-        (substitute* "build/maps.mk"
-          (("\\./ufo2map") "ufo2map")
-          (("maps: ufo2map") "maps:"))
-        (substitute* "build/modules/testall.mk"
-          (("testall: ufo2map") "testall:"))
-
-        ;; If no cURL headers are found, the build system will try to include
-        ;; the bundled version, even when not required.  Prevent that.
-        (substitute* "build/default.mk"
-          (("^include src/libs/curl/lib/Makefile\\.inc")
-           ""))
-
-        ;; While here, improve reproducibility by adding the '-X' flag to the
-        ;; zip command used to create the map files, in order to prevent time
-        ;; stamps from making it into the generated archives.
-        (substitute* "build/data.mk"
-          (("\\$\\(call ZIP\\)")
-           "$(call ZIP) -X"))
-        #t))))
-
 (define-public trigger-rally
   (package
     (name "trigger-rally")
