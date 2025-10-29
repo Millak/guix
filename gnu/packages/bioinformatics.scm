@@ -558,6 +558,122 @@ whole-genome bisulfite sequencing (WGBS) reads from directional protocol.")
     (supported-systems '("x86_64-linux"))
     (license license:asl2.0)))
 
+(define-public ngs-bits
+  (package
+    (name "ngs-bits")
+    (version "2025_09")
+    (home-page "https://github.com/imgag/ngs-bits")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url home-page)
+                     (commit version)
+                     (recursive? #t))) ;for src/ cppCORE, cppGUI, ccpXML, cppTFW
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18iphn4zxgs8iclk3kcahnb08581a6l01fhrrcql1z20fdh478np"))
+              (modules '((guix build utils)))
+              ;; This package bundles a modified copy of htslib, so we cannot
+              ;; unbundle it.
+              (snippet
+               '(for-each delete-file-recursively
+                          '("htslib"
+                            "libxml2")))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  (srfi srfi-26)
+                  (ice-9 match))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (setenv "CPLUS_INCLUDE_PATH"
+                      (string-append
+                       #$(this-package-input "libxml2")
+                       "/include/libxml2"
+                       ":" (getenv "CPLUS_INCLUDE_PATH")))
+              (substitute* "src/base.pri"
+                (("QMAKE_LFLAGS [+]=" all)
+                 (string-append all " -Wl,-rpath=" #$output "/lib")))))
+          (replace 'build
+            (lambda _
+              (invoke "make" "build_libs_release")
+              (invoke "make" "build_tools_release")))
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              ;; Programming exception: Requested key 'liftover_hg19_hg38' not
+              ;; found in settings!
+              (substitute* "src/tools-TEST/tools-TEST.pro"
+                (("BedLiftOver_Test.cpp") ""))
+              (let ((coreutils
+                     (match (assoc-ref '#$(standard-packages) "coreutils")
+                       ((package) package))))
+                (substitute* "src/cppCORE-TEST/Helper_Test.cpp"
+                  (("/usr/bin/whoami")
+                   (string-append coreutils "/bin/whoami"))))))
+          (replace 'check
+            (lambda _
+              ;; Could not create application data path
+              ;; '/homeless-shelter/.local/share/cppCORE-TEST'!
+              (setenv "HOME" "/tmp")
+              (invoke "make" "test_lib")
+              (invoke "make" "test_tools")))
+          (delete 'install)
+          (add-before 'check 'install   ;check creates garbage in bin/
+            (lambda _
+              (define (install-file* file target)
+                (let ((dest (string-append target "/" (basename file))))
+                  (format #t "`~a' -> `~a'~%" file dest)
+                  (mkdir-p (dirname dest))
+                  (let ((stat (lstat file)))
+                    (case (stat:type stat)
+                      ((symlink)
+                       (let ((target (readlink file)))
+                         (symlink target dest)))
+                      (else
+                       (copy-file file dest))))
+                  (delete-file file)))
+              (copy-recursively "bin" "tmp")
+              (let ((doc (string-append #$output "/share/doc/" #$name))
+                    (examples (find-files "tmp" "[.]example")))
+                (for-each (cute install-file* <> doc) examples))
+              ;; FIXME: .INI and .TSV files are read from the bin directory
+              ;; (let ((etc (string-append #$output "/etc"))
+              ;;       (ini (find-files "tmp" "[.]ini")))
+              ;;   (for-each (cute install-file* <> etc) ini))
+              (let ((lib (string-append #$output "/lib"))
+                    (libraries (find-files "tmp" "^lib.*so")))
+                (for-each (cute install-file* <> lib) libraries))
+              (let ((bin (string-append #$output "/bin"))
+                    (binaries (find-files "tmp")))
+                (for-each (cute install-file* <> bin) binaries))
+              (rmdir "tmp"))))))
+    (inputs (list
+             bzip2
+             curl
+             htslib
+             libdeflate
+             libxml2
+             lzip
+             openssl
+             qtbase-5
+             qtsvg-5
+             zlib))
+    (native-inputs (list libtool
+                         pkg-config
+                         python            ;for tests
+                         python-matplotlib ;for tests
+                         python-numpy))    ;for tests
+    (synopsis "Short-read and long-read sequencing tools for diagnostics")
+    (description
+     "Ngs-bits (Next-Generation Sequencing) is collection of short-read and
+long-read sequencing tools for diagnostics.")
+    (license license:expat)))
+
 (define-public bustools
   (package
     (name "bustools")
