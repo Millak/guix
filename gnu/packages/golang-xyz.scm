@@ -24608,6 +24608,32 @@ with ccgo-generated code.")
     (description "Package opt implements command-line flag parsing.")
     (license license:bsd-3)))
 
+(define-public go-modernc-org-scanner
+  (package
+    (name "go-modernc-org-scanner")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/cznic/scanner")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nj7iy8gr9f5vwmg5fvpvxsjy9668mkm9dyc8ajx8imvlx4n1lvw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/scanner"))
+    (propagated-inputs
+     (list go-modernc-org-token))
+    (home-page "https://gitlab.com/cznic/scanner")
+    (synopsis "Common source code scanner for Golang")
+    (description
+     ;; XXX: Project provides nearly 0 documentation.
+     "This package provides some common scanner stuff.")
+    (license license:bsd-3)))
+
 (define-public go-modernc-org-sortutil
   (package
     (name "go-modernc-org-sortutil")
