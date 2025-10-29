@@ -3590,7 +3590,10 @@ statistical summary in arrays and enumerables.")
                           ;; failed for 10th keyword liwork: dsyevr:liwork=1
                           "test_estimate"
                           "test_score_bnlearn"
-                          "test_score_manual")
+                          "test_score_manual"
+                          ;; FileNotFoundError in tearDown: removes missing
+                          ;; 'dog_problem.xml'.
+                          "test_get_edges")
                     " and not "))))
     (propagated-inputs (list python-daft
                              python-joblib
@@ -3609,7 +3612,6 @@ statistical summary in arrays and enumerables.")
                          python-pytest
                          python-pytest-xdist
                          python-setuptools
-                         python-wheel
                          python-xgboost))
     (home-page "https://github.com/pgmpy/pgmpy")
     (synopsis "Probabilistic Graphical Models library")
