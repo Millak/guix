@@ -1835,14 +1835,14 @@ some utility functions, and commands using that infrastructure.")
 (define-public emacs-flymake
   (package
     (name "emacs-flymake")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "flymake-" version ".tar"))
        (sha256
-        (base32 "0l20gxzlvpl0d3wvvsam3mda5hdlag4anplx3fd4xksbvfhndzlk"))))
+        (base32 "02y7fgg2m0ya4c6r4861nk0128wdb18892hc940an268zjjixghy"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-eldoc emacs-project))
     (home-page "https://elpa.gnu.org/packages/flymake.html")
@@ -1906,7 +1906,7 @@ separate, named tab groups.")
 (define-public emacs-dicom
   (package
     (name "emacs-dicom")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method git-fetch)
@@ -1915,7 +1915,7 @@ separate, named tab groups.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15xi5c6qp6k941zh0axb0xlgb596mqf52gvd23r50s4njpllbsqz"))))
+        (base32 "0pmqszfk5gn1wa9x37ywzsgwhf3cy44yihi3vjffgvhmik64hxpb"))))
     (build-system emacs-build-system)
     (arguments
      (list
