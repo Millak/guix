@@ -24822,8 +24822,14 @@ recognizers) at run time.")
     (arguments
      (list
       #:import-path "modernc.org/libc"
-      ;; Tests require modernc.org/ccgo/v4/lib, which is not packaged yet
-      #:tests? #f))
+      ;; all_musl_test.go:479: FAIL err=exit status 1 out=go: modules disabled
+      ;; by GO111MODULE=off; see 'go help modules'
+      #:test-flags #~(list "-skip" "TestLibc")))
+    (native-inputs
+     (list go-golang-org-x-tools
+           go-modernc-org-ccgo-v4
+           go-modernc-org-fileutil
+           go-modernc-org-goabi0))
     (propagated-inputs
      (list go-github-com-dustin-go-humanize
            go-github-com-google-uuid
