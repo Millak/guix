@@ -20792,14 +20792,14 @@ such files while providing facilities to link between them.")
 (define-public emacs-denote-journal
   (package
     (name "emacs-denote-journal")
-    (version "0.1.1")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/denote-journal-"
                            version ".tar"))
        (sha256
-        (base32 "0922hjzah7nz49z3q3qyq06n77yqxd7mxiw7fmawavjh920dv3fq"))))
+        (base32 "0pg471rfmc0i08igx2d8qp27qfz78c2zy07c19y5hks6iw0bayvr"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-denote))
     (home-page "https://github.com/protesilaos/denote-journal")
