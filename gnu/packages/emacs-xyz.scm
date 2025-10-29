@@ -27429,8 +27429,8 @@ into sections while preserving the structure imposed by any timestamps.")
     (license license:gpl3+)))
 
 (define-public emacs-elegant-agenda-mode
-  (let ((commit "c72f42e0f551c3dd81e68262f07a96c0ec90a589")
-        (revision "1"))
+  (let ((commit "5cbc688584ba103ea3be7d7b30e5d94e52f59eb6")
+        (revision "2"))
     (package
       (name "emacs-elegant-agenda-mode")
       (version (git-version "0.1.0" revision commit))
@@ -27443,8 +27443,9 @@ into sections while preserving the structure imposed by any timestamps.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0f8qk3vd41ffbkfqw5nks3bld0qpjrlnk9sb46wcbsyfnrs2v082"))))
+           "13jv4dars81b42593zijpjm0qci0z7hizbjsjab3xfxi3m3r4pk4"))))
       (build-system emacs-build-system)
+      (arguments (list #:tests? #f))    ;no tests
       (home-page "https://github.com/justinbarclay/elegant-agenda-mode")
       (synopsis "Elegant theme for your org-agenda")
       (description
