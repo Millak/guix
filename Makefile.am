@@ -784,7 +784,8 @@ EXTRA_DIST +=						\
   etc/manifests/disarchive.scm				\
   etc/manifests/hurd.scm				\
   etc/manifests/kernels.scm				\
-  etc/manifests/release.scm				\
+  etc/manifests/release-minimal.scm			\
+  etc/manifests/release-desktop.scm			\
   etc/manifests/source.scm				\
   etc/manifests/system-tests.scm			\
   etc/manifests/time-travel.scm				\
@@ -1240,9 +1241,10 @@ assert-no-store-file-names:
 # Make sure installer substitutes are available.  Check only the primary
 # server so that '--display-missing' doesn't print two lists.
 assert-binaries-available: $(GOBJECTS)
-	$(AM_V_at)$(top_builddir)/pre-inst-env				\
-	  guix weather -m "$(top_srcdir)/etc/manifests/release.scm"	\
-	                --substitute-urls="https://ci.guix.gnu.org"	\
+	$(AM_V_at)$(top_builddir)/pre-inst-env					\
+	  guix weather -m "$(top_srcdir)/etc/manifests/release-minimal.scm"	\
+	                -m "$(top_srcdir)/etc/manifests/release-desktop.scm"	\
+	                --substitute-urls="https://ci.guix.gnu.org"		\
 	                --display-missing
 
 # Make sure the final inputs don't refer to bootstrap tools.

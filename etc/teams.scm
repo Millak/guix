@@ -924,7 +924,8 @@ importer."
         "The current release team.  Members are expected to change with each
 release."
         #:scope (list "NEWS"
-                      "etc/manifests/release.scm")))
+                      "etc/manifests/release-minimal.scm"
+                      "etc/manifests/release-desktop.scm")))
 
 (define-team reproduciblebuilds
   (team 'reproduciblebuilds

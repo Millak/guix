@@ -23,7 +23,9 @@
 ;;; installer.
 
 (use-modules (guix packages)
-             ((gnu services xorg) #:select (%default-xorg-modules))
+             (gnu packages)
+             ((gnu system) #:select (%base-packages %base-firmware))
+             (guix profiles)
              (guix utils)
              (srfi srfi-1))
 
@@ -44,16 +46,14 @@ TARGET."
 (define %system-packages
   ;; Key packages proposed by the Guix System installer.
   (append (map specification->package
-               '("guix" "shepherd"
-                 "gnome" "xfce" "mate"
-                 "icewm" "openbox" "awesome"
-                 "i3-wm" "i3status" "dmenu" "st"
-                 "ratpoison" "xterm"
-                 "emacs" "emacs-exwm" "emacs-desktop-environment"
-                 "openssh" "tor" "ntp" "gpm"
+               '("guix" "shepherd" "guile-static-initrd"
+                 "openssh" "tor" "ntp" "gpm" "mingetty"
                  "connman" "network-manager" "wpa-supplicant" "isc-dhcp" "cups"
-                 "linux-libre" "grub-hybrid"))
-          %default-xorg-modules))
+                 "linux-libre" "grub-hybrid"
+                 ;; privileged programs
+                 "shadow" "sudo" "fuse" "inetutils" "util-linux"))
+          %base-firmware
+          %base-packages))
 
 (define %bootloader-packages
   ;; The bootloaders offered by the Guix System installer.
