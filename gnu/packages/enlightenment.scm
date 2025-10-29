@@ -519,35 +519,3 @@ directories.
      "This is a process monitor and system monitor using the
 @dfn{Enlightenment Foundation Libraries} (EFL).")
     (license license:bsd-2)))
-
-;; XXX: See: <https://codeberg.org/guix/guix/issues/3014>.
-(define-public epour
-  (package
-    (name "epour")
-    (version "0.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://download.enlightenment.org/rel/apps/epour"
-             "/epour-" version ".tar.xz"))
-       (sha256
-        (base32 "0g9f9p01hsq6dcf4cs1pwq95g6fpkyjgwqlvdjk1km1i5gj5ygqw"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f ;no test target
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'find-theme-dir
-            (lambda _
-              (substitute* "epour/gui/__init__.py"
-                (("join\\(data_path")
-                 (string-append "join(\"" #$output "/share/epour\""))))))))
-    (native-inputs (list intltool python-distutils-extra python-setuptools-67
-                         python-wheel-0.40))
-    (inputs (list libtorrent-rasterbar-1.2 python-dbus python-efl python-pyxdg))
-    (home-page "https://www.enlightenment.org")
-    (synopsis "EFL Bittorrent client")
-    (description "Epour is a BitTorrent client based on the @dfn{Enlightenment
-Foundation Libraries} (EFL) and rb-libtorrent.")
-    (license license:gpl3+)))
