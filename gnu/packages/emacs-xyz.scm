@@ -40383,7 +40383,7 @@ contributed packages to Telega.")))
 (define-public emacs-doom-modeline
   (package
     (name "emacs-doom-modeline")
-    (version "4.2.0")
+    (version "4.0.0")
     (source
      (origin
        (method git-fetch)
@@ -40391,7 +40391,7 @@ contributed packages to Telega.")))
              (url "https://github.com/seagle0128/doom-modeline")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "093faiamd6lk2abk5n61i86drawqb00v319yg9vv95an6silcmmg"))
+        (base32 "1yhz32rfks48a40cczfzmdhzjh9ng8w96g7id7rnagnsn2b2lqzg"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (native-inputs (list emacs-ert-runner))
