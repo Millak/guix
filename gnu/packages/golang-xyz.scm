@@ -24362,6 +24362,31 @@ follows the GNU
 Program Argument Syntax Conventions}.")
     (license license:gpl3)))
 
+(define-public go-modernc-org-ebnf
+  (package
+    (name "go-modernc-org-ebnf")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/cznic/ebnf")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "089gz09mcch505fkg9dfb480dkd659dlglpyan2qpic8by4xzagw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/ebnf"))
+    (home-page "https://gitlab.com/cznic/ebnf")
+    (synopsis "EBNF grammars for Golang")
+    (description
+     "This package provides a library for @acronym{extended Backus–Naur form, EBNF}
+grammars.  The input is text @code{[]byte} satisfying the following
+grammar (represented itself in EBNF):.")
+    (license license:bsd-3)))
+
 (define-public go-modernc-org-fileutil
   (package
     (name "go-modernc-org-fileutil")
