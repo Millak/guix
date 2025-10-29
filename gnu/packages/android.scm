@@ -53,6 +53,7 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages java)
   #:use-module (gnu packages linux)
@@ -1115,7 +1116,7 @@ safest way, on a file image.")
 (define-public python-androguard
   (package
     (name "python-androguard")
-    (version "3.2.1")
+    (version "3.3.5")
     (source
       (origin
         ;; The pypi release doesn't have the tests, but the tests use
@@ -1124,7 +1125,7 @@ safest way, on a file image.")
         (uri (pypi-uri "androguard" version))
         (sha256
          (base32
-          "0ndsw00pkyda4i2s3wi5ap8gbk6a9d23xhhxpdbk02padv8sxkfv"))))
+          "18nd08rbvc4d1p9r70qp76rcbldvpv89prsi15alrmxdlnimqrgh"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -1139,12 +1140,14 @@ safest way, on a file image.")
            python-nose-timer))
     (propagated-inputs
      (list python-asn1crypto
+           python-click
            python-colorama
            python-future
            python-ipython
            python-lxml
            python-matplotlib
            python-networkx
+           python-pydot
            python-pygments
            python-pyperclip))
     (home-page "https://github.com/androguard/androguard")
