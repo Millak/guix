@@ -5932,13 +5932,13 @@ linear algebra routines needed for structured matrices (or operators).")
 (define-public python-gpytorch
   (package
     (name "python-gpytorch")
-    (version "1.14")
+    (version "1.14.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "gpytorch" version))
               (sha256
                (base32
-                "13cs6dx8qa5j4ygji9w5xbmaqc68ihqyzz33fyyf9qa6d8gc2b03"))))
+                "1c30348kjawg0cl522qvbljg6adyy5bcpmqdg4mh09zk8r8z0hla"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:test-flags
@@ -5958,8 +5958,7 @@ linear algebra routines needed for structured matrices (or operators).")
     (native-inputs (list python-nbval
                          python-pytest
                          python-setuptools
-                         python-setuptools-scm
-                         python-wheel))
+                         python-setuptools-scm))
     (home-page "https://gpytorch.ai")
     (synopsis "Implementation of Gaussian Processes in PyTorch")
     (description
