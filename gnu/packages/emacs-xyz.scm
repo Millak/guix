@@ -20895,14 +20895,14 @@ Denote with Org mode.")
 (define-public emacs-denote-sequence
   (package
     (name "emacs-denote-sequence")
-    (version "0.1.1")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/denote-sequence-"
                            version ".tar"))
        (sha256
-        (base32 "06s2k555in897rpr2iabzv29dr79lm6fkpjp3yssidr9irxymf0h"))))
+        (base32 "0i0vm1n48aw7j4y6laa8fvs0av5smimdky980qgp69pha6hcvph5"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-denote))
     (home-page "https://github.com/protesilaos/denote-sequence")
