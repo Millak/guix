@@ -24668,6 +24668,30 @@ Backus–Naur form, EBNF} grammars.")
            go-modernc-org-strutil
            go-modernc-org-token))))
 
+(define-public go-modernc-org-goabi0
+  (package
+    (name "go-modernc-org-goabi0")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.com/cznic/goabi0")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nf3mcql5vjfymhy7l867zan2ynjg3wc3jplh4k1gby077h7jb3h"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/goabi0"))
+    (home-page "https://gitlab.com/cznic/goabi0")
+    (synopsis "Helpers for generating Go assembler ABI0 code")
+    (description
+     "This package provides helpers for generating Go assembler
+@url{https://go.dev/doc/asm, ABI0} code.")
+    (license license:bsd-3)))
+
 (define-public go-modernc-org-golex
   (package
     (name "go-modernc-org-golex")
