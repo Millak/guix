@@ -2776,7 +2776,7 @@ displayed at the bottom or at the top.")
 (define-public emacs-moody
   (package
     (name "emacs-moody")
-    (version "1.1.5")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -2785,7 +2785,7 @@ displayed at the bottom or at the top.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kkbsdw4xd3r81slfgqjrjm63qz3hz9a6v24zabs6rlpmlzmps72"))))
+        (base32 "17llgkykbl9b53frl4l61glxa2dd8jqh93hfklch0yl9x52fn3rb"))))
     (build-system emacs-build-system)
     (arguments
      (list #:test-command #~(list "make" "check-declare")))
