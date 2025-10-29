@@ -24438,6 +24438,40 @@ Backus–Naur form, EBNF} grammars.")
     (description "Package fileutil collects some file utility functions.")
     (license license:bsd-3)))
 
+(define-public go-modernc-org-golex
+  (package
+    (name "go-modernc-org-golex")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/cznic/golex")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01izinzm5j5210z09r6k8rygybw7s442hrhk0kv726ig9l9si7fi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "modernc.org/golex"
+      #:test-flags
+      #~(list "-vet=off"   ;Go@1.24 forces vet, but tests are not ready yet.
+              ;; Cant's parce "\xff".
+              "-skip" "Example_completeGeneratedProgram")))
+    (propagated-inputs
+     (list go-modernc-org-lex
+           go-modernc-org-lexer))
+    (home-page "https://gitlab.com/cznic/golex")
+    (synopsis "Lex/flex like (not fully POSIX lex compatible) utility")
+    (description
+     "Golex is a lex/flex like (not fully POSIX lex compatible) utility.  It
+renders @code{.l}
+@url{https://westes.github.io/flex/manual/Format.html#Format, formated data}
+to Go source code.  The @code{.l} data can come from a file named in a command
+line argument.  If no non-opt args are given, golex reads stdin.")
+    (license license:bsd-3)))
+
 (define-public go-modernc-org-lex
   (package
     (name "go-modernc-org-lex")
