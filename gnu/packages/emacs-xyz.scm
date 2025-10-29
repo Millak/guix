@@ -23510,7 +23510,7 @@ lines, and @code{gc} to comment out the target of a motion.")
 (define-public emacs-eglot
   (package
     (name "emacs-eglot")
-    (version "1.18")
+    (version "1.19")
     (source
      (origin
        (method url-fetch)
@@ -23518,15 +23518,14 @@ lines, and @code{gc} to comment out the target of a motion.")
                            ".tar"))
        (sha256
         (base32
-         "1zqs498yn3i8wn045jgq9nw4pddiyrwwgyq39mndzvgvi1j6a431"))))
+         "0bsz3grw41nh5r76brfdb4gb3hncs5chlhwsqm6qqg0ach69m7zi"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-compat
-           emacs-eldoc
+     (list emacs-eldoc
            emacs-external-completion
+           emacs-flymake
            emacs-jsonrpc
            emacs-project
-           emacs-track-changes
            emacs-xref))
     (home-page "https://github.com/joaotavora/eglot")
     (synopsis "Client for Language Server Protocol (LSP) servers")
