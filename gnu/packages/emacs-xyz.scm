@@ -22376,13 +22376,13 @@ bit of zlib) in Emacs in a portable fashion.")
      "https://informationelle-selbstbestimmung-im-internet.de/Emacs.html")
     (synopsis "Improved S/MIME support for Gnus in Emacs")
     (propagated-inputs
-     (list emacs-default-encrypt))
+     (list emacs-defaultencrypt))
     (description
      ;; TRANSLATORS: ExtendSMIME, DefaultEncrypt, and emacs-default-encrypt
-     ;; should not be translated.  The name "emacs-default-encrypt" refers to
+     ;; should not be translated.  The name "emacs-defaultencrypt" refers to
      ;; the Guix package that provides DefaultEncrypt.
      "ExtendSMIME is designed to be used with Gnus in Emacs.  It enhances
-DefaultEncrypt (emacs-default-encrypt) to support S/MIME (Secure/Multipurpose
+DefaultEncrypt (emacs-defaultencrypt) to support S/MIME (Secure/Multipurpose
 Internet Mail Extensions) via LDAP (Lightweight Directory Access Protocol).
 Before a message (e.g., email) is sent, ExtendSMIME searches for missing
 certificates via LDAP and imports them into @code{gpgsm}.  When certificates
