@@ -1355,6 +1355,11 @@ the \"texlive\" importer."
                        "daym")
   bootstrap hpc rust science)
 
+(define-member (person "Andy Tai"
+                       "atai@atai.org"
+                       "atai")
+  ai)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
