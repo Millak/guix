@@ -48,7 +48,7 @@
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 raingloom <raingloom@riseup.net>
-;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020, 2021, 2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Naga Malleswari <nagamalli@riseup.net>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
@@ -13347,42 +13347,46 @@ provided there is a DBus service present:
 (define-public parlatype
   (package
     (name "parlatype")
-    (version "3.1")
+    (version "4.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/gkarsay/parlatype")
-             (commit (string-append "v" version))))
+              (url "https://github.com/gkarsay/parlatype")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cqrzbkyksfsm57riirmjkwf2nf2dgl1xpps1wvqxpij475qcb9b"))))
+        (base32 "167ij050d6qqkg088rv7a4ply0bzfjz0z0arpymrw2vs7bwxd77x"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:tests? #f                      ;require internet access
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           (lambda _
-             (substitute* "data/meson_post_install.py"
-               (("gtk-update-icon-cache") "true"))))
-         (add-after 'install 'wrap-parlatype
-           ;; Add gstreamer plugin provided in this package to system's
-           ;; plugins.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (gst-plugin-path (string-append
-                                      out "/lib/gstreamer-1.0/"
-                                      ":"
-                                      (getenv "GST_PLUGIN_SYSTEM_PATH"))))
-               (wrap-program (string-append out "/bin/parlatype")
-                 `("GST_PLUGIN_SYSTEM_PATH" ":" = (,gst-plugin-path)))))))))
+     (list
+      #:glib-or-gtk? #t
+      #:tests? #f                       ;require internet access
+      #:configure-flags #~(list "-Dpocketsphinx=true")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-parlatype
+            ;; Add gstreamer plugin provided in this package to system's
+            ;; plugins.
+            (lambda _
+              (let ((gst-plugin-path
+                     (string-append #$output "/lib/gstreamer-1.0/"
+                                    ":"
+                                    (getenv "GST_PLUGIN_SYSTEM_PATH"))))
+                (wrap-program (string-append #$output "/bin/parlatype")
+                  `("GST_PLUGIN_SYSTEM_PATH" ":" = (,gst-plugin-path))))))
+          (add-after 'glib-or-gtk-wrap 'wrap-gdk-pixbuf
+            ;; This phase is necessary for Parlatype to load SVG icons.
+            (lambda _
+              (let ((pixbuf-module-file (getenv "GDK_PIXBUF_MODULE_FILE")))
+                (wrap-program (string-append #$output "/bin/parlatype")
+                  `("GDK_PIXBUF_MODULE_FILE" = (,pixbuf-module-file)))))))))
     (native-inputs
      (list appstream-glib
            desktop-file-utils           ;for desktop-file-validate
            gettext-minimal
            `(,glib "bin")               ;for glib-compile-resources
+           `(,gtk "bin")                ;for gtk-update-icon-cache
            pkg-config
            yelp-tools))
     (inputs
@@ -13390,11 +13394,11 @@ provided there is a DBus service present:
            gst-plugins-base
            gst-plugins-good
            gstreamer
-           gtk+
+           gtk
            iso-codes/pinned
+           libadwaita
            pocketsphinx
-           pulseaudio
-           sphinxbase))
+           pulseaudio))
     (home-page "https://www.parlatype.org")
     (synopsis "GNOME audio player for transcription")
     (description "Parlatype is an audio player for the GNOME desktop
