@@ -20832,14 +20832,14 @@ integrate Markdown with Denote.")
 (define-public emacs-denote-silo
   (package
     (name "emacs-denote-silo")
-    (version "0.1.2")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/denote-silo-"
                            version ".tar"))
        (sha256
-        (base32 "1z5afwd9gwn9fy132s87smffi5lgdk8f8c941y9ak6q7fbbpkya7"))))
+        (base32 "10n4xv179dl6zz1k28lcbrgyqx8k3hfh3isd7q3qg1vcahlw04vl"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-denote))
     (home-page "https://github.com/protesilaos/denote-silo")
