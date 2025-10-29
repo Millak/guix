@@ -50575,6 +50575,17 @@ Journal of Statistical Software, 39(10), 1-24.")
         (base32 "0ydnjyprv8fz037nkfvjd8w6hg4a19lbnq4kl7yankxksjfdyqc3"))))
     (properties `((upstream-name . "densEstBayes")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-gcc-14-strictness
+            (lambda _
+              (substitute* "configure"
+                ;; Modifying src/Makevars directly is overruled.
+                (("src/Makevars")
+                 "src/Makevars
+echo \"PKG_CXXFLAGS+=-g -O2 -Wno-error=changes-meaning\" >> src/Makevars")))))))
     (propagated-inputs
      (list r-bh
            r-mass
