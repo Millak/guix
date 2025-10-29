@@ -18381,6 +18381,48 @@ without configuration, but if desired, everything can be customized down to the
 smallest detail.")
     (license license:expat)))
 
+;; XXX: This repository was archived by the owner on Mar 18, 2019. It is
+;; now read-only.
+(define-public go-github-com-racksec-srslog
+  (package
+    (name "go-github-com-racksec-srslog")
+    (version "0.0.0-20180709174129-a4725f04ec91")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/RackSec/srslog")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fg5nxj8ps62b3yrw5nqskrps1zqhr7sry86fz0zysds81al8pmi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/RackSec/srslog"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; failed to dial: Unix syslog delivery error 
+                       (list "TestUnixDialer"
+                             "TestDial"
+                             "TestNew"
+                             "TestNewLogger"
+                             ;; failed to dial: tls: failed to verify
+                             ;; certificate: x509: certificate has expired or
+                             ;; is not yet valid: current time
+                             ;; 2025-10-29T23:15:00Z is after
+                             ;; 2018-12-31T00:00:00Z
+                             "TestTLSDialer"
+                             "TestTLSCertWrite"
+                             "TestTLSPathWrite")
+                       "|"))))
+    (home-page "https://github.com/RackSec/srslog")
+    (synopsis "Replacement for Golang's @code{log/syslog} with TLS support")
+    (description
+     "This package is a drop-in replacement for the Golang standard library
+@code{log/syslog}, but with support for TLS.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-rakyll-statik
   (package
     (name "go-github-com-rakyll-statik")
