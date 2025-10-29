@@ -25751,6 +25751,17 @@ cross-validation.")
         (base32 "00pxi5zj68796b3qkil3w66z446ib61xl2l5v1qia1mc9fznlzri"))))
     (properties `((upstream-name . "blavaan")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-gcc-14-strictness
+            (lambda _
+              (substitute* "configure"
+                ;; Modifying src/Makevars directly is overruled.
+                (("config\\(\\)\"")
+                 "config()\"
+echo \"PKG_CXXFLAGS+=-g -O2 -Wno-error=changes-meaning\" >> src/Makevars")))))))
     (propagated-inputs (list r-bayesplot
                              r-bh
                              r-coda
