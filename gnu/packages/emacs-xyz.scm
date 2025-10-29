@@ -27113,7 +27113,7 @@ text-mode (i.e. Org-mode).")
 (define-public emacs-outli
   (package
     (name "emacs-outli")
-    (version "0.2.3")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -27122,7 +27122,7 @@ text-mode (i.e. Org-mode).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01q37gbfc0mal3ha2x5a1axdcd2c0d55imav4w0cfzs3sm48azvs"))))
+                "1is10arx057278vyfkpcl3pkxps1i6f7rf79pdx0crs7gj1m80km"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ; no tests
     (home-page "https://github.com/jdtsmith/outli")
