@@ -3333,25 +3333,40 @@ phylogenetic trees also goes by the name simulationmethods for phylogenetic
 trees, synthetic data generation, or just phylogenetic tree simulation.")
     (license license:expat)))
 
-;; XXX: Probably unmaintained, build fails with Python 3.11, see
-;; <https://github.com/cancerit/parabam/issues/10>.
 (define-public python-parabam
   (package
     (name "python-parabam")
-    (version "3.0.1")
+    ;; XXX: Upstream works on modernization of the project, use the latest
+    ;; commit providing fixes.
+    ;; See: <https://github.com/cancerit/parabam/issues/10>.
+    (properties '((commit . "be5bd35012d37df8cfa88771325a0273519c8c98")
+                  (revision . "0")))
+    (version (git-version "3.0.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "parabam" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cancerit/parabam")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1cy9q3gzdawi1kilycpd7waymjmrwsg8czwycfp13g301ir9xyp3"))
-       (modules '((guix build utils)))
-       (snippet
-        '(substitute* "setup.py"
-           (("'argparse',") "")))))
+        (base32 "1x0c1zhlfplhm4n07vibvh4jprjsdlypnlig87a8r07d26d4qphh"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f        ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'cythonize
+            (lambda _
+              (with-directory-excursion "parabam"
+                (for-each (lambda (file)
+                            (invoke "cython" "-3" file "-I" "."))
+                          (find-files "." ".*\\.pyx$"))))))))
     (propagated-inputs (list python-numpy python-pysam))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-cython python-setuptools))
     (home-page "https://github.com/cancerit/parabam")
     (synopsis "Parallel BAM File Analysis")
     (description "Parabam is a tool for processing sequencing files in
