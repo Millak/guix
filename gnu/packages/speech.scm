@@ -29,6 +29,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
@@ -56,7 +57,8 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages texinfo)
-  #:use-module (gnu packages textutils))
+  #:use-module (gnu packages textutils)
+  #:use-module (gnu packages video))
 
 (define-public flite
   (package
@@ -684,21 +686,35 @@ manipulating acoustic feature and audio files.")
 (define-public pocketsphinx
   (package
     (name "pocketsphinx")
-    (version "5prealpha")
+    (version "5.0.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/cmusphinx/"
-                           "pocketsphinx/" version "/"
-                           "pocketsphinx-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cmusphinx/pocketsphinx")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1n9yazzdgvpqgnfzsbl96ch9cirayh74jmpjf7svs4i7grabanzg"))))
-    (build-system gnu-build-system)
+        (base32
+         "16andx54333rdyf6c33s8pfns2wvqfapqp9dhh8fpgzdyg6bfhhd"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #false              ;XXX: test binaries are missing
+           #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+                                     "-DBUILD_GSTREAMER=ON")))
     (native-inputs
-     (list pkg-config perl ;for tests
-           python swig))
+     (list pkg-config
+           perl                         ;for tests
+           python
+           swig))
     (inputs
-     (list gstreamer libcap pulseaudio sphinxbase))
+     (list alsa-lib
+           ffmpeg
+           gstreamer
+           libcap
+           pulseaudio
+           portaudio
+           sox))
     (home-page "https://cmusphinx.github.io/")
     (synopsis "Recognizer library written in C")
     (description "PocketSphinx is one of Carnegie Mellon University's
