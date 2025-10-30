@@ -3241,8 +3241,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                                             "libstdc++")
                                           ,@(if (target-powerpc? (%current-system))
                                                 (list static-bash-for-glibc)
-                                                '())
-                                          ,(gexp-input zstd-final "lib")))
+                                                '())))
              (substitute-keyword-arguments (package-arguments binutils)
                ((#:configure-flags flags #~'())
                 ;; For gprofng, tell the build system where to look for libstdc++.
@@ -3252,15 +3251,13 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                                                   "libstdc++")
                                                "/lib")))))))
     (native-inputs (list bison-boot0
-                         pkg-config-final ;to detect zstd
                          libstdc++))              ;for gprofng
     (inputs
-     (modify-inputs (match (%current-system)
-                      ((? target-powerpc?)
-                       `(("bash" ,static-bash-for-glibc)
-                         ,@(%boot2-inputs)))
-                      (_ (%boot2-inputs)))
-       (append `(,zstd-final "lib"))))))
+     (match (%current-system)
+       ((? target-powerpc?)
+        `(("bash" ,static-bash-for-glibc)
+          ,@(%boot2-inputs)))
+       (_ (%boot2-inputs))))))
 
 (define zlib-final
   ;; Zlib used by GCC-FINAL.
