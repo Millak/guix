@@ -195,10 +195,10 @@ by Cython."
     ;; Call the PEP 517 build function, which drops a .whl into wheel-dir.
     (invoke "python" "-c"
             "import sys, importlib, json
-backend_path = json.loads (sys.argv[1]) or []
-backend_path.extend (sys.path)
+backend_path = json.loads(sys.argv[1]) or []
+backend_path.extend(sys.path)
 sys.path = backend_path
-config_settings = json.loads (sys.argv[4])
+config_settings = json.loads(sys.argv[4])
 builder = importlib.import_module(sys.argv[2])
 builder.build_wheel(sys.argv[3], config_settings=config_settings)"
             use-backend-path
