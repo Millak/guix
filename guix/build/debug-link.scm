@@ -1,6 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2023 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,7 +18,6 @@
 
 (define-module (guix build debug-link)
   #:use-module (guix elf)
-  #:use-module (guix build io)
   #:use-module ((guix build utils)
                 #:select (find-files elf-file? make-file-writable))
   #:use-module (rnrs bytevectors)
@@ -149,13 +147,16 @@ Return #f for both if ELF lacks a '.gnu_debuglink' section."
 (define (set-debuglink-crc file debug-file)
   "Compute the CRC of DEBUG-FILE and set it as the '.gnu_debuglink' CRC in
 FILE."
-  (let* ((bv (file->bytevector file #:protection (logior PROT_READ PROT_WRITE)))
-         (elf (parse-elf bv))
+  (let* ((elf    (parse-elf (call-with-input-file file get-bytevector-all)))
          (offset (elf-debuglink-crc-offset elf)))
-    (when offset
-      (let ((crc (call-with-input-file debug-file debuglink-crc32)))
-        (bytevector-u32-set! bv offset crc (elf-byte-order elf))
-        (munmap bv)))))
+    (and offset
+         (let* ((crc (call-with-input-file debug-file debuglink-crc32))
+                (bv  (make-bytevector 4)))
+           (bytevector-u32-set! bv 0 crc (elf-byte-order elf))
+           (let ((port (open file O_RDWR)))
+             (set-port-position! port offset)
+             (put-bytevector port bv)
+             (close-port port))))))
 
 
 ;;;

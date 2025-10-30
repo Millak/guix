@@ -996,10 +996,16 @@ preferences/advanced-scripts.dtd"
                  (search-input-file inputs "lib/libavcodec.so")))))
           (add-after 'fix-ffmpeg-runtime-linker 'build-sandbox-whitelist
             (lambda* (#:key inputs #:allow-other-keys)
+              (define (runpath-of lib)
+                (call-with-input-file lib
+                  (compose elf-dynamic-info-runpath
+                           elf-dynamic-info
+                           parse-elf
+                           get-bytevector-all)))
               (define (runpaths-of-input label)
                 (let* ((dir (string-append (assoc-ref inputs label) "/lib"))
                        (libs (find-files dir "\\.so$")))
-                  (append-map file-runpath libs)))
+                  (append-map runpath-of libs)))
               ;; Populate the sandbox read-path whitelist as needed by ffmpeg.
               (let* ((whitelist
                       (map (cut string-append <> "/")
