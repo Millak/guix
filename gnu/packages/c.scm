@@ -149,8 +149,8 @@ slicing.")
      (license license:boost1.0))))
 
 (define-public cproc
-  (let ((commit "70fe9ef1810cc6c05bde9eb0970363c35fa7e802")
-        (revision "2"))
+  (let ((commit "14a8916e23bc6daebcb54f1384fa0eb2455072e3")
+        (revision "3"))
     (package
       (name "cproc")
       (version (git-version "0.0" revision commit))
@@ -162,7 +162,7 @@ slicing.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1qmgzll7z7mn587azkj4cizyyd8ii6iznfxpc66ja08140sbn9yx"))
+          (base32 "1yrs1ccsjypfsjsmxxjspaggn0bjwifs2slalnpvsrgzxw5559bx"))
          (patches (search-patches "cproc-extra-linkflags.patch"))))
       (build-system gnu-build-system)
       (arguments
