@@ -2948,7 +2948,7 @@ history.  It implements the changeset evolution concept for Mercurial.")
                     (guix build utils)
                     (guix build gremlin)
                     (ice-9 ftw)
-                    (system vm elf))
+                    (guix elf))
          #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'patch-paths

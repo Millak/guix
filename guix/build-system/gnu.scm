@@ -55,7 +55,8 @@
   ;; Build-side modules imported and used by default.
   '((guix build gnu-build-system)
     (guix build utils)
-    (guix build gremlin)))
+    (guix build gremlin)
+    (guix elf)))
 
 (define-deprecated/public-alias %gnu-build-system-modules
   %default-gnu-imported-modules)

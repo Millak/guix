@@ -318,7 +318,7 @@ This Guix package is built to use the nettle cryptographic library.")
                   (guix build union)
                   (guix build gnu-build-system)
                   (guix build gremlin)
-                  (system vm elf))
+                  (guix elf))
       #:builder
       #~(begin
           (use-modules (guix build utils)

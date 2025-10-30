@@ -21,6 +21,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu build linux-modules)
+  #:use-module (guix elf)
   #:use-module (guix glob)
   #:use-module (guix build syscalls)
   #:use-module ((guix build utils) #:select (find-files invoke))
@@ -38,7 +39,6 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 rdelim)
   #:autoload   (ice-9 pretty-print) (pretty-print)
-  #:use-module (system vm elf)
   #:export (dot-ko
             ensure-dot-ko
             module-formal-name

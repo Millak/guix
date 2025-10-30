@@ -282,7 +282,7 @@
                   (srfi srfi-26)
                   (rnrs bytevectors)
                   (rnrs io ports)
-                  (system vm elf)
+                  (guix elf)
                   (guix build gremlin)
                   ,@%default-gnu-imported-modules)
       #:phases

@@ -18,6 +18,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix build gremlin)
+  #:use-module (guix elf)
   #:use-module (guix build io)
   #:use-module ((guix build utils) #:select (store-file-name?))
   #:use-module (ice-9 match)
@@ -27,7 +28,6 @@
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (system foreign)
-  #:use-module (system vm elf)
   #:use-module (rnrs bytevectors)
   #:use-module (rnrs io ports)
   #:export (elf-error?
