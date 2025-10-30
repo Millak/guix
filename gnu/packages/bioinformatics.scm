@@ -4772,17 +4772,30 @@ sequences, and reconstructing germline sequences.")
 (define-public python-fastalite
   (package
     (name "python-fastalite")
-    (version "0.3")
+    (version "0.4.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "fastalite" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nhoffman/fastalite")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1qli6pxp77i9xn2wfciq2zaxhl82bdxb33cpzqzj1z25yd036wqj"))))
-    (build-system python-build-system)
+        (base32 "19sps1l8k2vp7sj943gccabfkr2h3fn1n93sn28h9gay2ywc41ly"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f)) ; Test data is not distributed.
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              ;; This version file is expected to be created with git describe.
+              (mkdir-p "fastalite/data")
+              (with-output-to-file "fastalite/data/ver"
+                (lambda () (display #$version))))))))
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/nhoffman/fastalite")
     (synopsis "Simplest possible FASTA parser")
     (description "This library implements a FASTA and a FASTQ parser without
