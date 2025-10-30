@@ -68,9 +68,9 @@
 ;; of several associated packages (docker-libnetwork and go-sctp).
 (define %docker-version "20.10.27")
 
-(define-public go-github-com-compose-spec-compose-go
+(define-public go-github-com-compose-spec-compose-go-v2
   (package
-    (name "go-github-com-compose-spec-compose-go")
+    (name "go-github-com-compose-spec-compose-go-v2")
     (version "2.9.0")
     (source
      (origin
