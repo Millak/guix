@@ -916,7 +916,7 @@ and aims to be maximally portable across operating systems and C compilers.")
 (define-public loksh
   (package
     (name "loksh")
-    (version "7.7")
+    (version "7.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -928,7 +928,7 @@ and aims to be maximally portable across operating systems and C compilers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dv2rlp806xcd0k3r4g5mjb3dm7fhqxfq5b31zjx6gqiki4kn507"))))
+                "1x5kg01r0k7g825ia71f8an6585azba8x5khwdvq4dmnib11vakm"))))
     (build-system meson-build-system)
     (inputs (list ncurses))
     (native-inputs (list pkg-config))
