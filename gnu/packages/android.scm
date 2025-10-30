@@ -1116,28 +1116,20 @@ safest way, on a file image.")
 (define-public python-androguard
   (package
     (name "python-androguard")
-    (version "3.3.5")
+    (version "3.3.5")    ;TODO: It was released in 2019, there is a fresh version
     (source
-      (origin
-        ;; The pypi release doesn't have the tests, but the tests use
-        ;; packaged binaries, so we skip them.
-        (method url-fetch)
-        (uri (pypi-uri "androguard" version))
-        (sha256
-         (base32
-          "18nd08rbvc4d1p9r70qp76rcbldvpv89prsi15alrmxdlnimqrgh"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "androguard" version))
+       (sha256
+        (base32 "18nd08rbvc4d1p9r70qp76rcbldvpv89prsi15alrmxdlnimqrgh"))))
+    (build-system pyproject-build-system)
+    ;; XXX: The pypi release doesn't have the tests, but the tests use
+    ;; packaged binaries, so we skip them.
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           ;; Adapted from .travis.yml
-           (lambda _
-             (invoke "nosetests" "--with-coverage" "--with-timer"
-                     "--timer-top-n" "50"))))))
+     (list #:tests? #f))
     (native-inputs
-     (list python-codecov python-coverage python-mock python-nose
-           python-nose-timer))
+     (list python-setuptools))
     (propagated-inputs
      (list python-asn1crypto
            python-click
