@@ -378,24 +378,37 @@ files and generates build instructions for the Ninja build system.")
               (sha256
                (base32
                 "13a9pj7d2mxgv5gbd78di4pb4w722vjis0vmk38m1vdm95v2f9yd"))))
-    (build-system pyproject-build-system)
+    (build-system gnu-build-system)
     (arguments
-     (list #:tests? #f                  ;disabled to avoid extra dependencies
-           #:phases
-           #~(modify-phases %standard-phases
-               ;; Meson calls the various executables in out/bin through the
-               ;; Python interpreter, so we cannot use the shell wrapper.
-               (replace 'wrap
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   (substitute* (search-input-file outputs "bin/meson")
-                     (("import sys" all)
-                      (string-append
-                       all "\n"
-                       "sys.path.insert(0, '"
-                       (site-packages inputs outputs)
-                       "')"))))))))
-    (native-inputs (list python-setuptools))
-    (inputs (list python ninja))
+     (list
+      #:tests? #f                       ;disabled to avoid extra dependencies
+      ;; Essentially a lighter copy of the former python-build-system.
+      ;; Using it rather than pyproject-build-system allows to edit the latter
+      ;; without a C++ world rebuild.
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'bootstrap)
+          (delete 'configure)
+          (replace 'build
+            (lambda _
+              (invoke "python" "./setup.py" "build")))
+          (replace 'install
+            (lambda _
+              (invoke "python" "./setup.py" "install"
+                      (string-append "--prefix=" #$output) "--no-compile")
+              (invoke "python" "-m" "compileall"
+                      "--invalidation-mode=unchecked-hash" #$output)))
+          ;; Meson calls the various executables in out/bin through the
+          ;; Python interpreter, so we cannot use the shell wrapper.
+          (add-after 'install 'wrap
+            (lambda _
+              (let* ((mdist (car (find-files #$output "^mdist\\.py$")))
+                     (site (dirname (dirname mdist))))
+                (substitute* (string-append #$output "/bin/meson")
+                  (("import sys" all)
+                   (format #f "~a~%sys.path.insert(0, ~s)" all site)))))))))
+    (native-inputs (list python-setuptools-bootstrap))
+    (inputs (list python-wrapper ninja))
     (home-page "https://mesonbuild.com/")
     (synopsis "Build system designed to be fast and user-friendly")
     (description
