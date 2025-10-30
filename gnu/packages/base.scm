@@ -731,8 +731,7 @@ change.  GNU make offers many powerful extensions over the standard utility.")
                "--enable-deterministic-archives"
 
                "--enable-64-bit-bfd"
-               ;; Note: Do not enable compression here, as dwz cannot process
-               ;; compressed debug sections.
+               "--enable-compressed-debug-sections=all"
                "--enable-lto"
                "--enable-separate-code"
                "--enable-threads")
