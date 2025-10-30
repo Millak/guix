@@ -4697,19 +4697,62 @@ into separate processes; and more.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f                       ; There are none.
+      ;; There are no tests in repository. However, running the example from the
+      ;; README is added as a test below. But that fails, because python-pybio
+      ;; needs to access the internet.
+      ;; TODO: Fix python-pybio to not (or optionally) require internet,
+      ;;       and then enable the tests here.
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'set-HOME
-            (lambda _ (setenv "HOME" "/tmp")))
-          (add-before 'check 'copy-data
-            (lambda _
-              (let ((data-dir (string-append (getenv "HOME") "/scanRBP_data"))
+          ;; Normally, importing scanRBP for the first time will first create
+          ;; configuration file `~/.scanRBP` with a `data_folder` specified as
+          ;; `~/scanRBP_data/`. Then `data.tar.gz` is downloaded from the github
+          ;; project and placed into this directory.
+          ;;
+          ;; Instead of doing all that, all internet access can be prevented:
+          ;; - copy the `data.tar.gz` tarball directly to the store,
+          ;; - refer to that directory in the example configuration file,
+          ;; - set the configuration file path to that example file.
+          (add-before 'build 'patchpath
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((data-dir (string-append (assoc-ref outputs "out")
+                                             "/share/scanRBP_data")))
+                (substitute* "scanRBP/scanRBP.config.example"
+                  (("~/scanRBP_data") data-dir))
+                (substitute* "scanRBP/config/__init__.py"
+                  (("config_fname = .*")
+                   (string-append
+                    "config_fname = \""
+                    (site-packages inputs outputs)
+                    "/scanRBP/scanRBP.config.example\"\n"))))))
+          (add-before 'install 'copy-data
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((data-dir (string-append (assoc-ref outputs "out")
+                                             "/share/scanRBP_data"))
                     (data-file "data/data.tar.gz"))
+                ;; Copy the tarball. The tarball is unpacked when files are
+                ;; imported in the [sanity-]check phase.
                 (mkdir-p data-dir)
                 (copy-file
                  data-file
-                 (string-append data-dir "/" (basename data-file)))))))))
+                 (string-append data-dir "/" (basename data-file))))))
+          (add-before 'check 'set-HOME
+            ;; Set the HOME directory to make python-pybio work.
+            (lambda _ (setenv "HOME" "/tmp")))
+          (replace 'check
+            ;; Run example from the README.
+            ;; The test currently fails (and is therefore disabled), because
+            ;; python-pybio currently needs to access the internet.
+            ;; TODO: Verify results?
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke
+                 "scanRBP"
+                 "AAAGCGGCGACTTATTATATCCCCATATATTATATCTTCTTCTCTTATATATAAACCAGAGATAGATGTGTGTGGTGG"
+                 "example1"
+                 "-heatmap"
+                 "example1")))))))
     (propagated-inputs
      (list python-biopython
            python-matplotlib
