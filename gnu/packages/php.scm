@@ -7,6 +7,7 @@
 ;;; Copyright © 2020, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,14 +65,14 @@
 (define-public php
   (package
     (name "php")
-    (version "8.3.26")
+    (version "8.3.27")
     (home-page "https://www.php.net/")
     (source
      (origin
        (method url-fetch)
        (uri (string-append home-page "distributions/" "php-" version ".tar.xz"))
        (sha256
-        (base32 "1lnbcc3b9k1j4c85a7sabvwp3iyl9xfg41qdc6a0qh1cl3pjwlig"))
+        (base32 "1fj1xq6dv2c4rhjcqjpk1j1cd9acxh9dgxzyxi272hwrs6lhjnn1"))
        (modules '((guix build utils)))
        (snippet
         '(with-directory-excursion "ext"
