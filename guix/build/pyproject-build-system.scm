@@ -18,7 +18,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix build pyproject-build-system)
-  #:use-module ((guix build python-build-system) #:prefix python:)
+  #:use-module ((guix build gnu-build-system) #:prefix gnu:)
   #:use-module (guix build utils)
   #:use-module (guix build toml)
   #:use-module (ice-9 match)
@@ -33,6 +33,7 @@
   #:use-module (srfi srfi-35)
   #:export (%standard-phases
             add-installed-pythonpath
+            ensure-no-mtimes-pre-1980
             site-packages
             python-version
             pyproject-build))
@@ -67,11 +68,40 @@
 ;;; Code:
 ;;;
 
-;; Re-export these variables from python-build-system as many packages
+;; Copy these procedures from python-build-system as many packages
 ;; rely on these.
-(define python-version python:python-version)
-(define site-packages python:site-packages)
-(define add-installed-pythonpath python:add-installed-pythonpath)
+(define (python-version python)
+  (let* ((version     (last (string-split python #\-)))
+         (components  (string-split version #\.))
+         (major+minor (take components 2)))
+    (string-join major+minor ".")))
+
+(define (python-output outputs)
+  "Return the path of the python output, if there is one, or fall-back to out."
+  (or (assoc-ref outputs "python")
+      (assoc-ref outputs "out")))
+
+(define (site-packages inputs outputs)
+  "Return the path of the current output's Python site-package."
+  (let ((out (python-output outputs))
+        (python (assoc-ref inputs "python")))
+    (string-append out "/lib/python" (python-version python) "/site-packages")))
+
+(define (add-installed-pythonpath inputs outputs)
+  "Prepend the site-package of OUTPUT to GUIX_PYTHONPATH.  This is useful when
+running checks after installing the package."
+  (setenv "GUIX_PYTHONPATH" (string-append (site-packages inputs outputs) ":"
+                                           (getenv "GUIX_PYTHONPATH"))))
+
+(define* (add-install-to-pythonpath #:key inputs outputs #:allow-other-keys)
+  "A phase that just wraps the 'add-installed-pythonpath' procedure."
+  (add-installed-pythonpath inputs outputs))
+
+(define* (add-install-to-path #:key outputs #:allow-other-keys)
+  "Adding Python scripts to PATH is also often useful in tests."
+  (setenv "PATH" (string-append (assoc-ref outputs "out")
+                                "/bin:"
+                                (getenv "PATH"))))
 
 ;; Base error type.
 (define-condition-type &python-build-error &error python-build-error?)
@@ -89,6 +119,37 @@
 
 ;; Raised, when no installation candidate wheel has been found.
 (define-condition-type &no-wheels-found &python-build-error no-wheels-found?)
+
+(define* (ensure-no-mtimes-pre-1980 #:rest _)
+  "Ensure that there are no mtimes before 1980-01-02 in the source tree."
+  ;; Rationale: patch-and-repack creates tarballs with timestamps at the POSIX
+  ;; epoch, 1970-01-01 UTC.  This causes problems with Python packages,
+  ;; because Python eggs are ZIP files, and the ZIP format does not support
+  ;; timestamps before 1980.
+  (let ((early-1980 315619200))  ; 1980-01-02 UTC
+    (ftw "." (lambda (file stat flag)
+               (unless (or (<= early-1980 (stat:mtime stat))
+                           (eq? (stat:type stat) 'symlink))
+                 (utime file early-1980 early-1980))))))
+
+(define* (enable-bytecode-determinism #:rest _)
+  "Improve determinism of pyc files."
+  ;; Use deterministic hashes for strings, bytes, and datetime objects.
+  (setenv "PYTHONHASHSEED" "0")
+  ;; Prevent Python from creating .pyc files when loading modules (such as
+  ;; when running a test suite).
+  (setenv "PYTHONDONTWRITEBYTECODE" "1"))
+
+(define* (ensure-no-cythonized-files #:rest _)
+  "Check the source code for @code{.c} files which may have been pre-generated
+by Cython."
+  (for-each
+    (lambda (file)
+      (let ((generated-file
+              (string-append (string-drop-right file 3) "c")))
+        (when (file-exists? generated-file)
+          (format #t "Possible Cythonized file found: ~a~%" generated-file))))
+    (find-files "." "\\.pyx$")))
 
 (define* (build #:key outputs build-backend backend-path configure-flags #:allow-other-keys)
   "Build a given Python package."
@@ -143,6 +204,43 @@ builder.build_wheel(sys.argv[3], config_settings=config_settings)"
             use-build-backend
             wheel-dir
             config-settings)))
+
+(define* (wrap #:key inputs outputs #:allow-other-keys)
+  (define (list-of-files dir)
+    (find-files dir (lambda (file stat)
+                      (and (eq? 'regular (stat:type stat))
+                           (not (wrapped-program? file))))))
+
+  (define bindirs
+    (append-map (match-lambda
+                  ((_ . dir)
+                   (list (string-append dir "/bin")
+                         (string-append dir "/sbin"))))
+                outputs))
+
+  ;; Do not require "bash" to be present in the package inputs
+  ;; even when there is nothing to wrap.
+  ;; Also, calculate (sh) only once to prevent some I/O.
+  (define %sh (delay (search-input-file inputs "bin/bash")))
+  (define (sh) (force %sh))
+
+  (let* ((var `("GUIX_PYTHONPATH" prefix
+                ,(search-path-as-string->list
+                  (or (getenv "GUIX_PYTHONPATH") "")))))
+    (for-each (lambda (dir)
+                (let ((files (list-of-files dir)))
+                  (for-each (cut wrap-program <> #:sh (sh) var)
+                            files)))
+              bindirs)))
+
+(define* (sanity-check #:key tests? inputs outputs #:allow-other-keys)
+  "Ensure packages depending on this package via setuptools work properly,
+their advertised endpoints work and their top level modules are importable
+without errors."
+  (let ((sanity-check.py (assoc-ref inputs "sanity-check.py")))
+    ;; Make sure the working directory is empty (i.e. no Python modules in it)
+    (with-directory-excursion "/tmp"
+      (invoke "python" sanity-check.py (site-packages inputs outputs)))))
 
 (define* (check #:key tests? test-backend test-flags #:allow-other-keys)
   "Run the test suite of a given Python package."
@@ -373,24 +471,49 @@ See https://reproducible-builds.org/specs/source-date-epoch/."
   ;; not support timestamps before 1980.
   (setenv "SOURCE_DATE_EPOCH" "315619200"))
 
+(define* (rename-pth-file #:key name inputs outputs #:allow-other-keys)
+  "Rename easy-install.pth to NAME.pth to avoid conflicts between packages
+installed with setuptools."
+  ;; Even if the "easy-install.pth" is not longer created, we kept this phase.
+  ;; There still may be packages creating an "easy-install.pth" manually for
+  ;; some good reason.
+  (let* ((site-packages (site-packages inputs outputs))
+         (easy-install-pth (string-append site-packages "/easy-install.pth"))
+         (new-pth (string-append site-packages "/" name ".pth")))
+    (when (file-exists? easy-install-pth)
+      (rename-file easy-install-pth new-pth))))
+
 (define %standard-phases
   ;; The build phase only builds C extensions and copies the Python sources,
   ;; while the install phase copies then byte-compiles the sources to the
   ;; prefix directory.  The check phase is moved after the installation phase
   ;; to ease testing the built package.
-  (modify-phases python:%standard-phases
+  (modify-phases gnu:%standard-phases
+    (add-after 'unpack 'ensure-no-mtimes-pre-1980 ensure-no-mtimes-pre-1980)
+    (add-after 'ensure-no-mtimes-pre-1980 'enable-bytecode-determinism
+      enable-bytecode-determinism)
+    (add-after 'enable-bytecode-determinism 'ensure-no-cythonized-files
+      ensure-no-cythonized-files)
+    (delete 'bootstrap)
     (replace 'set-SOURCE-DATE-EPOCH set-SOURCE-DATE-EPOCH*)
+    (delete 'configure)                 ;not needed
     (replace 'build build)
+    (delete 'check)                     ;moved after the install phase
     (replace 'install install)
-    (delete 'check)
+    (add-after 'install 'add-install-to-pythonpath add-install-to-pythonpath)
+    (add-after 'add-install-to-pythonpath 'add-install-to-path
+      add-install-to-path)
+    (add-after 'add-install-to-path 'wrap wrap)
     ;; Must be before tests, so they can use installed packages’ entry points.
     (add-before 'wrap 'create-entrypoints create-entrypoints)
-    (add-after 'wrap 'check check)
-    (add-before 'check 'compile-bytecode compile-bytecode)))
+    (add-after 'wrap 'sanity-check sanity-check)
+    (add-after 'sanity-check 'check check)
+    (add-before 'check 'compile-bytecode compile-bytecode)
+    (add-before 'strip 'rename-pth-file rename-pth-file)))
 
 (define* (pyproject-build #:key inputs (phases %standard-phases)
                           #:allow-other-keys #:rest args)
   "Build the given Python package, applying all of PHASES in order."
-  (apply python:python-build #:inputs inputs #:phases phases args))
+  (apply gnu:gnu-build #:inputs inputs #:phases phases args))
 
 ;;; pyproject-build-system.scm ends here
