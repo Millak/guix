@@ -48,6 +48,16 @@
                  "15g9bv236nzi665p9ggqjlfn4dwck5835vf0bbw2cz7h5c1swyp8"))
                (patches (search-patches "flex-fix-make-dependencies.patch")))))
     (build-system gnu-build-system)
+    (inputs
+     (let ((bison-for-tests
+            (package
+              (inherit bison)
+              (arguments
+               ;; Disable tests, since they require flex.
+               (substitute-keyword-arguments (package-arguments bison)
+                 ((#:tests? _ #f) #f)))
+              (inputs (alist-delete "flex" (package-inputs bison))))))
+       `(("bison" ,bison-for-tests))))
     (arguments
      (if (or (target-hurd64?) (%current-target-system))
          (list #:configure-flags
@@ -60,15 +70,7 @@
          '()))
     ;; m4 is not present in PATH when cross-building
     (native-inputs
-     (let ((bison-for-tests
-            (package
-              (inherit bison)
-              (arguments
-               ;; Disable tests, since they require flex.
-               (substitute-keyword-arguments (package-arguments bison)
-                 ((#:tests? _ #f) #f)))
-              (inputs (alist-delete "flex" (package-inputs bison))))))
-       (list bison-for-tests help2man m4)))
+     (list help2man m4))
     (propagated-inputs (list m4))
     (home-page "https://github.com/westes/flex")
     (synopsis "Fast lexical analyser generator")
