@@ -483,14 +483,16 @@ Makefile, simplifying the entire process for the developer.")
 (define-public libtool
   (package
     (name "libtool")
-    (version "2.5.4")
+    (version "2.4.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/libtool/libtool-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0xb64rhambx6mhxwr613xgyad7ybs5hgmpmd9gccf2vbcrh5h7zq"))))
+                "0pb3l4x37k6fj1lwnpzws55gi3pxl0hx56jm4bzmbrkw0mzj2zsg"))
+              (patches (search-patches "libtool-skip-tests2.patch"
+                                       "libtool-grep-compat.patch"))))
     (build-system gnu-build-system)
     (propagated-inputs (list m4))
     (native-inputs
@@ -516,12 +518,6 @@ Makefile, simplifying the entire process for the developer.")
 
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'skip-some-tests-on-extra-archs
-           (lambda _
-             (with-directory-excursion "tests"
-               (substitute* '("demo.at" "testsuite")
-                 (("hppa\\*\\|amd64\\*\\|x86_64\\*\\|s390\\*" all)
-                  (string-append all "|arm*|mips*|riscv*"))))))
          (add-before 'check 'pre-check
            (lambda* (#:key inputs native-inputs parallel-tests? #:allow-other-keys)
              ;; Run the test suite in parallel, if possible.
