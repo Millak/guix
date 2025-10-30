@@ -5276,7 +5276,7 @@ PyTorch code to decouple the science from the engineering.")
 (define-public python-torchmetrics
   (package
     (name "python-torchmetrics")
-    (version "1.4.1")
+    (version "1.8.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5285,7 +5285,7 @@ PyTorch code to decouple the science from the engineering.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0371kx2fpp46rlhzkafa7397kp1lirgykpzk9g12kxsqypb67v1l"))))
+                "0x4v1795w38p3067karn56qmv48fwf9cj012p50fsvcwj8k3di9s"))))
     (build-system pyproject-build-system)
     (arguments
      (list
