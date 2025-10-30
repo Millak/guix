@@ -147,9 +147,9 @@ Language (TOML) configuration files.")
 write-only counterpart to Tomli, which is a read-only TOML parser.")
     (license license:expat)))
 
-(define-public python-pygments-bootstrap
+(define-public python-pygments
   (package
-    (name "python-pygments-bootstrap")
+    (name "python-pygments")
     (version "2.19.1")
     (source
      (origin
@@ -159,14 +159,40 @@ write-only counterpart to Tomli, which is a read-only TOML parser.")
         (base32
          "07qm8mx3y5r8ri6zpn0hp9zx5g02bydhi7pkv54hdp3nhlm6vhb1"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))
+    (arguments
+     (list
+      #:test-flags
+      ;; 4568 passed, 16 skipped, 597 deselected
+      ;;
+      ;; Ignore tests requiring "wcag_contrast_ratio"
+      #~(list "--ignore=tests/contrast/test_contrasts.py"
+              ;; Tests fail with not matched diff.
+              "--ignore=tests/examplefiles/awk/test.awk"
+              "--ignore=tests/examplefiles/bash/example.sh"
+              "--ignore=tests/examplefiles/make/Makefile"
+              "--ignore=tests/examplefiles/phix/example.exw"
+              "--ignore=tests/examplefiles/sed/all_sorts_of_syntax.sed"
+              "--ignore=tests/examplefiles/sed/count_words.sed"
+              "--ignore=tests/examplefiles/sed/increment_number.sed"
+              "--ignore=tests/examplefiles/sed/reverse.sed"
+              "--ignore=tests/examplefiles/slurm/example.sl"
+              ;; Assertion error to find example file by following symlink:
+              ;; assert p.is_file(), f"Example file {p} not found"
+              "--deselect=tests/test_basic_api.py::test_lexer_classes")))
     (native-inputs
-     (list python-hatchling))
+     (list python-hatchling python-pytest-bootstrap))
     (home-page "https://pygments.org/")
     (synopsis "Syntax highlighting")
     (description
      "Pygments is a syntax highlighting package written in Python.")
     (license license:bsd-2)))
+
+(define-public python-pygments-bootstrap
+   (package/inherit python-pygments
+     (name "python-pygments-bootstrap")
+     (native-inputs
+      (list python-hatchling))
+     (arguments `(#:tests? #f))))
 
 (define-public python-pytest-bootstrap
   (package
