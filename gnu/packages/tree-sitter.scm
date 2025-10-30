@@ -1313,7 +1313,28 @@ which will be used as a snippet in origin."
    "1qlvk67fqd49138nxl81l4gx833271mns36g3lm884sdmw3225w8"
    "1.3.0"
    #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-starlark"
-   #:inputs (list tree-sitter-python)))
+   #:inputs (list tree-sitter-python)
+   #:get-cleanup-snippet
+   (lambda (grammar-directories)
+     #~(begin
+         (use-modules (guix build utils))
+         ;; FIXME: This grammar was built with tree-sitter-python@0.23.5.
+         ;; https://github.com/tree-sitter-grammars/tree-sitter-starlark/issues/9
+         (substitute* "grammar.js"
+           (("rules: \\{" rules)
+            "\
+  reserved: {global: _ => [],},
+  supertypes: $ => [
+    $._simple_statement,
+    $._compound_statement,
+    $.expression,
+    $.primary_expression,
+    $.pattern,
+    $.parameter,
+  ],
+  rules: {
+"))
+         #$(tree-sitter-delete-generated-files grammar-directories)))))
 
 (define-public tree-sitter-sway
   (let ((commit "f9e53e922496dd47208a141fa7ac315625a1874f")
