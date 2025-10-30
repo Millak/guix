@@ -546,7 +546,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/php.scm				\
   %D%/packages/php-xyz.scm			\
   %D%/packages/piet.scm			\
-  %D%/packages/pikchr.scm			\
+  %D%/packages/diagram.scm			\
   %D%/packages/pkg-config.scm			\
   %D%/packages/plan9.scm			\
   %D%/packages/plotutils.scm			\

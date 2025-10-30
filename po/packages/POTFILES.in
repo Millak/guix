@@ -468,7 +468,7 @@ gnu/packages/perl-compression.scm
 gnu/packages/perl6.scm
 gnu/packages/phabricator.scm
 gnu/packages/php.scm
-gnu/packages/pikchr.scm
+gnu/packages/diagram.scm
 gnu/packages/pkg-config.scm
 gnu/packages/plotutils.scm
 gnu/packages/postmarketos.scm
