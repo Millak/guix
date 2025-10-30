@@ -6112,7 +6112,7 @@ also includes an interface for tabix.")
 (define-public python-twobitreader
   (package
     (name "python-twobitreader")
-    (version "3.1.6")
+    (version "3.1.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6121,12 +6121,11 @@ also includes an interface for tabix.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qbxvv1h58cismbk1anpjrkpghsaiy64a11ir3lhy6qch6xf8n62"))))
-    (build-system python-build-system)
-    ;; Tests are not included
-    (arguments '(#:tests? #f))
+                "1yk86vgdh43wpg8wv4riiff3qv0nrmizxzv774ghjkgiss4g1l2q"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-sphinx))
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/benjschiller/twobitreader")
     (synopsis "Python library for reading .2bit files")
     (description
