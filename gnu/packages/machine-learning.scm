@@ -541,7 +541,7 @@ Learning usecases.")
 (define-public python-ml-dtypes
   (package
     (name "python-ml-dtypes")
-    (version "0.2.0")
+    (version "0.5.3")
     (source
      (origin
        (method git-fetch)
@@ -550,7 +550,11 @@ Learning usecases.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1yv90f28c9w34430xjwvn1lzxdylvp1zi6b02cx7crla6qkvrzn5"))))
+        (base32 "0pc6y4g1l7pc8mfqdpg020613gksb4vpipn67wnvamn0q64j9j7r"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Do not use bundled eigen.
+        '(delete-file-recursively "third_party/eigen"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -573,8 +577,7 @@ Learning usecases.")
     (native-inputs (list pybind11
                          python-absl-py
                          python-pytest
-                         python-setuptools
-                         python-wheel))
+                         python-setuptools))
     (home-page "https://github.com/jax-ml/ml_dtypes")
     (synopsis "NumPy dtype extensions used in machine learning")
     (description
