@@ -5791,7 +5791,7 @@ well as many of the command line options.")
 (define-public bwa-meth
   (package
     (name "bwa-meth")
-    (version "0.2.3")
+    (version "0.2.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5800,10 +5800,11 @@ well as many of the command line options.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0c695lkrr0996zwkibl7324wg2vxmn6522sz30xv4a9gaf0lnbh3"))))
-    (build-system python-build-system)
+                "0192h6rdaxa1rx16hgkanwsp3qv9knsmnghy07ya1231qia8h67p"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
+     `(#:tests? #f      ;no tests
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'keep-references-to-bwa
            (lambda* (#:key inputs #:allow-other-keys)
@@ -5812,10 +5813,11 @@ well as many of the command line options.")
                 (string-append (which "bwa") " " command))
                ;; There's an ill-advised check for "samtools" on PATH.
                (("^checkX.*") "")))))))
-    (inputs
-     (list bwa))
     (native-inputs
-     (list python-toolshed))
+     (list python-setuptools))
+    (inputs
+     (list bwa
+           python-toolshed))
     (home-page "https://github.com/brentp/bwa-meth")
     (synopsis "Fast and accurante alignment of BS-Seq reads")
     (description
