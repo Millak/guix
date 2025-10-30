@@ -7650,6 +7650,33 @@ Please vendor the library as it might change in future versions.")
 font files in your system's user and system font directories.")
     (license license:expat)))
 
+(define-public go-github-com-fluent-fluent-logger-golang
+  (package
+    (name "go-github-com-fluent-fluent-logger-golang")
+    (version "1.10.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fluent/fluent-logger-golang")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cg53gh4d0z9nl7bldan5whh9wrgyiahnkl0cxhyjm0w13064ck0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/fluent/fluent-logger-golang/fluent"))
+    (propagated-inputs
+     (list go-github-com-tinylib-msgp))
+    (home-page "https://github.com/fluent/fluent-logger-golang")
+    (synopsis "Structured event logger for Golang")
+    (description
+     "This package provides a structured event logger for Golang developed for
+@url{https://github.com/fluent/fluentd, fluentd}.")
+    (license license:asl2.0)))
+
 ;; XXX: This repository has been archived by the owner on Nov 9, 2017. It is
 ;; now read-only.
 (define-public go-github-com-flynn-archive-go-shlex
