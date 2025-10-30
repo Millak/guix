@@ -2204,10 +2204,21 @@ Format (GFF) with Biopython integration.")
      '((upstream-name . "bcbio-gff")))
     (license (license:non-copyleft "http://www.biopython.org/DIST/LICENSE"))))
 
-(define-public python-bcbio-gff/biopython-1.73
+(define-public python-bcbio-gff-for-python-cmseq
   (hidden-package
    (package
      (inherit python-bcbio-gff)
+     (name "python-bcbio-gff")
+     (version "0.6.9")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/chapmanb/bcbb")
+               (commit (string-append "bcbio-gff-v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "131hiir94jkm9jj2wfpybwndgzn8k0zc1ji1qjn5cz7w48x3ri13"))))
      (propagated-inputs
       (modify-inputs (package-propagated-inputs python-bcbio-gff)
         (replace "python-biopython" python-biopython-1.73))))))
@@ -2671,9 +2682,11 @@ cell types and subtypes.")
              (substitute* "cmseq/cmseq.py"
                (("'samtools'")
                 (string-append "'" (search-input-file inputs "/bin/samtools") "'"))))))))
+    (native-inputs
+     (list python-setuptools))
     (inputs (list samtools))
     (propagated-inputs
-     (list python-bcbio-gff/biopython-1.73
+     (list python-bcbio-gff-for-python-cmseq
            python-biopython-1.73
            python-numpy
            python-pandas
