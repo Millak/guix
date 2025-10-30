@@ -9725,7 +9725,7 @@ data.  It also provides the @command{bgzip}, @command{htsfile}, and
               ;; Delete generated C code.
               (snippet
                '(begin (delete-file "idr/inv_cdf.c") #t))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     ;; There is only one test ("test_inv_cdf.py") and it tests features that
     ;; are no longer part of this package.  It also asserts False, which
     ;; causes the tests to always fail.
@@ -9733,7 +9733,8 @@ data.  It also provides the @command{bgzip}, @command{htsfile}, and
     (propagated-inputs
      (list python-scipy python-sympy python-numpy python-matplotlib))
     (native-inputs
-     (list python-cython))
+     (list python-cython
+           python-setuptools))
     (home-page "https://github.com/nboley/idr")
     (synopsis "Tool to measure the irreproducible discovery rate (IDR)")
     (description
