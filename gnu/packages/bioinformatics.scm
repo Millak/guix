@@ -3912,54 +3912,57 @@ operators such as union, intersection, and difference.")
 (define-public python-ega-download-client
   (package
     (name "python-ega-download-client")
-    (version "5.1.0")
+    (version "5.2.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/EGA-archive/ega-download-client")
-             (commit (string-append "v" version))))
+              (url "https://github.com/EGA-archive/ega-download-client")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0k9rfq2yyvfxs5sq9lsm8krp9ddx4s18hv85ikf3b37zv24kpwjk"))))
+        (base32 "0wz36ii6sb65nknh56vr5ss6b446zy9iibz7jv3irgfas955jlrc"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 78 passed, 2 deselected, 1 warning
       #:test-flags
-      '(list
-        ;; These tests fail because they require internet access.
-        "--ignore=tests/functional/test_download.py"
-        "--ignore=tests/functional/test_htsget.py"
-        "-k"
-        (string-append "not test_error_5xx"
-                       " and not test_error_too_many_requests"
-                       ;; Something's wrong here.  On some powerful machines
-                       ;; (but not on my laptop) these fail, and tests like
-                       ;; test_file_is_saved_into_an_existing_directory_which_was_specified_by_the_user
-                       ;; take a *very* long time to complete.
-                       ;;
-                       ;; It looks like "dataset_in_fire.download" takes an
-                       ;; unusually long time on those machines.  We disable
-                       ;; tests that fail under these conditions.
-                       " and not test_download_file"
-                       " and not test_output_file_is_removed_if_md5_was_invalid"
-                       " and not test_post_stats_if_download_succeeded"))
+      ;; Test suite does a lot of fake os mocking and extensively hash
+      ;; checking on a large amount of generated files (up to 150GiB each)
+      ;; which would take some extra compute resources, therefor functional
+      ;; and some of unit tests are excluded to relax the load.
+      #~(list #$@(map (lambda (file) (string-append "--ignore="
+                                                    "tests/"
+                                                    file))
+                      (list "functional/"
+                            "unit/test_save_to_with_dataset.py"
+                            "unit/test_save_to_with_file.py"
+                            "unit/test_verify_output_dir.py"))
+              #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/unit/"
+                                                    "test_commands.py::"
+                                                    test))
+                      ;; requests.exceptions.RetryError: None: Max retries
+                      ;; exceeded with url:
+                      ;; https://test.data.server/metadata/datasets (Caused by
+                      ;; ResponseError('too many 503 error responses'))
+                      (list "test_error_5xx"
+                            "test_error_too_many_requests")))
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.py"
-               (("==") ">=")))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                (("==") ">=")))))))
     (propagated-inputs (list python-htsget python-psutil python-requests
                              python-tqdm python-urllib3))
     (native-inputs
-     (list python-coverage
+     (list nss-certs-for-test
            python-mock
            python-pyfakefs
            python-pytest
            python-responses
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://github.com/EGA-archive/ega-download-client")
     (synopsis "EGA download client")
     (description "PyEGA3 is a tool for viewing and downloading files from
