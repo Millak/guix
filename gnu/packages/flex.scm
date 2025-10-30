@@ -26,7 +26,6 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
-  #:use-module (gnu packages bootstrap)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages man)
   #:use-module (gnu packages bison)
@@ -36,17 +35,15 @@
   (package
     (name "flex")
     (version "2.6.4")
-    (source (bootstrap-origin           ;avoid a circular dependency
-             (origin
-               (method url-fetch)
-               (uri (string-append
-                     "https://github.com/westes/flex"
-                     "/releases/download/v" version "/"
-                     "flex-" version ".tar.gz"))
-               (sha256
-                (base32
-                 "15g9bv236nzi665p9ggqjlfn4dwck5835vf0bbw2cz7h5c1swyp8"))
-               (patches (search-patches "flex-fix-make-dependencies.patch")))))
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/westes/flex"
+                    "/releases/download/v" version "/"
+                    "flex-" version ".tar.gz"))
+              (sha256
+               (base32
+                "15g9bv236nzi665p9ggqjlfn4dwck5835vf0bbw2cz7h5c1swyp8"))))
     (build-system gnu-build-system)
     (inputs
      (let ((bison-for-tests
