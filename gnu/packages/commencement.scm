@@ -3600,7 +3600,8 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                               (native-inputs
                                (list (if (target-hurd?)
                                          glibc-utf8-locales-final/hurd
-                                         glibc-utf8-locales-final)))))))
+                                         glibc-utf8-locales-final)))))
+                   ("zstd" ,zstd)))
           ("sed" ,sed-final)
           ("grep" ,grep-final)
           ("xz" ,xz-final)
@@ -3611,8 +3612,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
           ("binutils" ,binutils-final)
           ("gcc" ,gcc-final)
           ("libc" ,glibc-final)
-          ("libc:static" ,glibc-final "static")
-          ("zstd" ,zstd-final))))))
+          ("libc:static" ,glibc-final "static"))))))
 
 (define-public canonical-package
   (let ((name->package (mlambda (system)
