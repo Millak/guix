@@ -770,6 +770,50 @@ environments.")
     (description "OMEMO cryptography library that was forked from python-axolotl.")
     (license license:gpl3)))
 
+(define-public python-oscrypto
+  (package
+    (name "python-oscrypto")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/wbond/oscrypto/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1v5wkmzcyiqy39db8j2dvkdrv2nlsc48556h73x4dzjwd6kg4q0a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags
+      #~(list "run.py"
+              (format #f "use_openssl=~a,~a"
+                      (search-input-file %build-inputs "/lib/libcrypto.so")
+                      (search-input-file %build-inputs "/lib/libssl.so"))
+              "skip_internet=true"
+              "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-envs
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv
+               "SSL_CERT_FILE"
+               (search-input-file
+                inputs "/etc/ssl/certs/ca-certificates.crt")))))))
+    (propagated-inputs (list python-asn1crypto))
+    (native-inputs (list nss-certs-for-test openssl python-setuptools))
+    (home-page "https://github.com/wbond/oscrypto/")
+    (synopsis "Compiler-free Python encryption library")
+    (description
+     "@code{Python-oscrypto} is a compilation-free encryption library which
+integrates with the encryption library that is part of the operating system.
+It supports TLS (SSL) sockets, key generation, encryption, decryption,
+signing, verification and KDFs using the OS crypto libraries.")
+    (license license:expat)))
+
 (define-public python-pyaes
   ;; XXX: Last updated in 2017.
   (package
