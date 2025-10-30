@@ -17,7 +17,7 @@
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019, 2020, 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2019 Jethro Cao <jethrocao@gmail.com>
-;;; Copyright © 2020-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
@@ -3242,14 +3242,14 @@ a.k.a. XenoCollide) as described in Game Programming Gems 7.")
 (define-public ode
   (package
     (name "ode")
-    (version "0.16.5")
+    (version "0.16.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://bitbucket.org/odedevs/ode/downloads/"
                            "ode-" version ".tar.gz"))
        (sha256
-        (base32 "0ya6slmy2iysx3fql7w7r56c7gsk93qp1apfjn3raw252vfmx1xs"))
+        (base32 "1s0k8nvwbq3b5b1kaynggv4gwshd71m75757hi3jhl16zz32h6n9"))
        (modules '((guix build utils)))
        (snippet
         '(begin
