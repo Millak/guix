@@ -5968,16 +5968,16 @@ linear algebra routines needed for structured matrices (or operators).")
 (define-public python-botorch
   (package
     (name "python-botorch")
-    (version "0.15.1")
+    (version "0.16.0")
     (source (origin
               (method git-fetch) ;no tests in PyPI
               (uri (git-reference
-                    (url "https://github.com/pytorch/botorch")
+                    (url "https://github.com/meta-pytorch/botorch")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1c6p5h5gypiyj59820q2w3k7rx715r3vxxcr5mnwdjbhi4l2q47a"))))
+                "1bk7ks2g0qfrjsi4vqy72jkc6pr0pcqq4k5z6dmqqs0ajxc2d5sy"))))
     (build-system pyproject-build-system)
     (arguments
      ;; 7 failed, 1502 passed, 1 skipped, 1 deselected, 807 warnings
@@ -5987,7 +5987,13 @@ linear algebra routines needed for structured matrices (or operators).")
                                  " and not test_input_constructors"
                                  " and not test_gen"
                                  " and not test_mock"
-                                 " and not test_evaluation"))
+                                 " and not test_evaluation"
+                                 ;; SciPy<1.13: gen.py doesn't import
+                                 ;; fmin_l_bfgs_b_batched; mock patch fails.
+                                 " and not test_emsemble_map_saas"
+                                 " and not test_negative_fixed_features")
+                                ;; Requires optional 'pfns' dependency.
+                                "--ignore=test_community/")
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'build 'pretend-version
@@ -6008,8 +6014,7 @@ linear algebra routines needed for structured matrices (or operators).")
                              python-typing-extensions))
     (native-inputs (list python-pytest
                          python-setuptools
-                         python-setuptools-scm
-                         python-wheel))
+                         python-setuptools-scm))
     (home-page "https://botorch.org")
     (synopsis "Bayesian Optimization in PyTorch")
     (description
