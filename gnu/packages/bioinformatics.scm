@@ -6447,7 +6447,15 @@ files.  The code was previously part of the cutadapt tool.")
               (sha256
                (base32
                 "1xnl80nblysj6dylj4683wgrfa425rkx4dp5k65hvwdns9pw753x"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--pyargs" "deeptoolsintervals"
+              "--doctest-modules")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (inputs
      (list zlib))
     (home-page "https://github.com/deeptools/deeptools_intervals")
