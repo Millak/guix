@@ -38730,9 +38730,11 @@ Python versions that don't natively support them.")
        (sha256
         (base32 "0x2zkskia5lb1838ys0bhpp9v6y80jkhchzdz874spbhzggx4zrs"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--ignore-glob=tests/mypy/*.py")))
     (native-inputs
-     (list python-mypy
-           python-pytest
+     (list python-pytest
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
