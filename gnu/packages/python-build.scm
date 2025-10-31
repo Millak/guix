@@ -168,6 +168,34 @@ write-only counterpart to Tomli, which is a read-only TOML parser.")
      "Pygments is a syntax highlighting package written in Python.")
     (license license:bsd-2)))
 
+(define-public python-pytest-bootstrap
+  (package
+    (name "python-pytest-bootstrap")
+    (version "9.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest" version))
+       (sha256
+        (base32 "04fz1vbhb2l6k8lmrk8wqhkxhprlnkq21z6rs48rdn1bm58nc63m"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools-bootstrap
+           python-setuptools-scm-bootstrap))
+    (propagated-inputs
+     (list python-iniconfig
+           python-packaging-bootstrap
+           python-pluggy
+           python-pygments-bootstrap))  ;it is in installation dependencies
+    (home-page "https://docs.pytest.org/en/latest/")
+    (synopsis "Python testing library")
+    (description
+     "Pytest is a testing tool that provides auto-discovery of test modules
+and functions, detailed info on failing assert statements, modular fixtures,
+and many external plugins.")
+    (license license:expat)))
+
 (define-public python-pytoml
   (package
     (name "python-pytoml")
