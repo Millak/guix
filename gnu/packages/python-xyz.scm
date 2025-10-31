@@ -35836,16 +35836,23 @@ markdown-compliant strings.")
 (define-public python-islenska
   (package
     (name "python-islenska")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "islenska" version))
        (sha256
-        (base32 "1fhpyqn8z8g4hrsxndspxqm6973c7cwy0cms2ql87xcmh5a86ky7"))))
+        (base32 "1jw3knms8h32jjq64mj4lb7b866dzc3z16w1dkyzd39xbmy4nyqg"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-cffi python-typing-extensions))
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     ;; XXX: Test data is not included, see:
+     ;; <.github/workflows/python-package.yml>.
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-cffi
+           python-typing-extensions))
     (home-page "https://github.com/mideind/BinPackage")
     (synopsis
      "Vocabulary of the modern Icelandic language, in a Python package")
