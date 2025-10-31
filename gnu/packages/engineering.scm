@@ -1726,7 +1726,7 @@ or an Ethernet connection.")
 (define-public harminv
   (package
     (name "harminv")
-    (version "1.4.1")
+    (version "1.4.2")
     (source (origin
               (method url-fetch)
               (uri
@@ -1735,7 +1735,7 @@ or an Ethernet connection.")
                               name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0w1n4d249vlpda0hi6z1v13qp21vlbp3ykn0m8qg4rd5132j7fg1"))))
+                "18n71d3wj0jnldh72vb9lfj3vv64s1i2rmnhcpq4494p23vip6js"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--enable-shared")
