@@ -644,8 +644,7 @@ useful tools for testing Django applications and projects.")
      (list python-django python-packaging))
     ;; (inputs (list gdal)) ; it's optional, tests fail when provided
     (native-inputs
-     (list python-coverage
-           python-dateutil
+     (list python-dateutil
            python-geopy
            python-pysolr
            python-requests
