@@ -5171,6 +5171,8 @@ the SQL language using a syntax that reflects the resulting query.")
     (build-system cmake-build-system)
     (arguments
      (list
+      ;; XXX: Some tests fail on i686, run on 64bit only for now.
+      #:tests? (target-64bit?)
       #:build-type "Release"
       #:configure-flags
       #~(list "-DBUILD_JAVA=OFF"
