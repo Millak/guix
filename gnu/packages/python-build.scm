@@ -181,6 +181,33 @@ working with iterables.")
 matching of file paths.")
     (license license:mpl2.0)))
 
+(define-public python-platformdirs-bootstrap
+  ;; Try to update simultaneously with the standard version in
+  ;; (gnu packages python-build).
+  (package
+    (name "python-platformdirs-bootstrap")
+    (version "4.3.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "platformdirs" version))
+       (sha256
+        (base32 "01xrwajkmxv3jp6n14y8jndkrhb48p9kxknkmwch8nw8pjnb4zrm"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; avoid introducing more dependencies.
+    (native-inputs
+     (list python-hatchling
+           python-hatch-vcs
+           python-pytest-bootstrap))
+    (home-page "https://github.com/platformdirs/platformdirs")
+    (synopsis "Determine the appropriate platform-specific directories")
+    (description "When writing applications, finding the right location to
+store user data and configuration varies per platform.  Even for
+single-platform apps, there may by plenty of nuances in figuring out the right
+location.  This small Python module determines the appropriate
+platform-specific directories, e.g. the ``user data dir''.")
+    (license license:expat)))
+
 (define-public python-pluggy
   (package
     (name "python-pluggy")
