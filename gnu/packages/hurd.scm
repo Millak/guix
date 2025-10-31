@@ -133,7 +133,7 @@ communication.")
 
 (define-public hurd-headers
   (let ((revision "5")
-        (commit "v0.9.git20250801"))
+        (commit "v0.9.git20251029"))
     (package
       (name "hurd-headers")
       (version (string-drop commit 1))
@@ -144,7 +144,7 @@ communication.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0k15zmrwdbmm62m0vy8pnkx18pyh2pj23gbrhrki37gkv73mijk9"))
+                  "09pi6ci375ivbjvxlgdqp6vpm47arfvlh325sr2a5dmwxhs9pnp9"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (native-inputs
@@ -180,6 +180,7 @@ communication.")
                              "ac_cv_func_exec_exec_paths=no"
                              "ac_cv_func__hurd_exec_paths=no"
                              "ac_cv_func__hurd_libc_proc_init=no"
+                             "ac_cv_func_mach_port_set_ktype=no"
                              "ac_cv_func_file_futimens=no"
                              "ac_cv_func_file_utimens=no"
                              "ac_cv_lib_acpica_acpi_init=no")

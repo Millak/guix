@@ -2787,7 +2787,7 @@ memoized as a function of '%current-system'."
    (package
      (inherit hurd-headers)
      (name "hurd-headers-boot0")
-     (version "0.9.git20250801")
+     (version "0.9.git20251029")
      (source
       (origin
         (inherit (package-source hurd-headers))
@@ -2800,7 +2800,7 @@ memoized as a function of '%current-system'."
                   "hurd-" version ".tar.gz"))
             (sha256
              (base32
-              "153pb6spa8dzrkl863d9y1nja4yqa3wr9g4c3gb5jrmzqf6vpj79")))))))
+              "0pjxh4qln8m7jznqlzsz81vi38chjv64jj9824dj7wkm36gxbn3a")))))))
      (native-inputs
       (list autoconf-boot0 automake-boot0 mig-boot0))
      (inputs '()))))
