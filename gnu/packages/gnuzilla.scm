@@ -941,7 +941,9 @@ preferences/advanced-scripts.dtd"
                  #$(local-file
                     (search-patch "icecat-use-system-wide-dir.patch"))
                  #$(local-file
-                    (search-patch "icecat-fhs-configure-option.patch"))))))
+                    (search-patch "icecat-fhs-configure-option.patch"))
+                 #$(local-file
+                    (search-patch "icecat-adjust-mozilla-desktop.patch"))))))
           (add-after 'apply-guix-specific-patches 'remove-bundled-libraries
             (lambda _
               ;; Remove bundled libraries that we don't use, since they may
