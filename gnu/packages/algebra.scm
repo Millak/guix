@@ -535,16 +535,16 @@ fast arithmetic.")
 (define-public python-flint
   (package
     (name "python-flint")
-    (version "0.7.1")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/fredrik-johansson/python-flint")
-             (commit version)))
+              (url "https://github.com/fredrik-johansson/python-flint")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09nsys2cajxsfh2c13nf98a2kwnm0msmab9f9zcjpkndj4ir453a"))))
+        (base32 "1xdclpxpas29v3g14z2fxqf7hv4a6iq7bknl9d9r1510dcpxm67a"))))
     (build-system pyproject-build-system)
     (arguments
      (list
