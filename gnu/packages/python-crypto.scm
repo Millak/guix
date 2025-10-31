@@ -693,7 +693,7 @@ OpenSSL library.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-backend #~'unittest
+      #:tests? #f                       ; No tests.
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-gcc-14-strictness
