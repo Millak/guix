@@ -1806,7 +1806,17 @@ for scientific simulations.")
        (list (string-append "--with-libctl="
                             (assoc-ref %build-inputs "libctl")
                             "/share/libctl")
-             "--enable-shared")))
+             "--enable-shared")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'relax-gcc-14-strictness
+           (lambda _
+             (setenv "CFLAGS"
+                     (string-join
+                      (list "-Wno-error=incompatible-pointer-types"
+                            "-Wno-error=implicit-function-declaration"
+                            "-Wno-error=int-conversion")
+                      " ")))))))
     (native-inputs
      `(("fortran" ,gfortran)
        ("pkg-config" ,pkg-config)
