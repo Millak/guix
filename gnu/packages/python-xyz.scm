@@ -25585,9 +25585,9 @@ offset, or using offset reference
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-backend #~'unittest
-      #:test-flags #~(list "-k" "not test_multicall_success")))
-    (native-inputs (list python-setuptools))
+      #:test-flags #~(list "--deselect=\
+tests/test_internal.py::InternalTests::test_multicall_success")))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/tcalmant/jsonrpclib")
     (synopsis "JSON-RPC 2.0 client library for Python")
     (description
