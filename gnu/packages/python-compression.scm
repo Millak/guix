@@ -204,14 +204,9 @@ package, an implementation of the Brotli lossless compression algorithm.")
          "1mh9sz50s1p8ik83a455pqd57syprad7xhfmk28yb5mwmw58sr50"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools-scm
-           python-coverage
-           python-coveralls
-           python-hypothesis
-           python-pytest
-           python-pytest-cov
+     (list python-pytest
            python-setuptools
-           python-wheel))
+           python-setuptools-scm))
     (home-page "https://github.com/miurahr/multivolume")
     (synopsis "Treat multiple files as one")
     (description "MultiVolumefile is a Python library that provides a
