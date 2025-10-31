@@ -1433,6 +1433,31 @@ package from a wheel distribution.  It provides basic functionality and
 abstractions for handling wheels and installing packages from wheels.")
     (license license:expat)))
 
+(define-public python-jaraco-classes
+  (package
+    (name "python-jaraco-classes")
+    (version "3.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jaraco.classes" version))
+       (sha256
+        (base32 "1k9s7wxhsy15730qab8bry7kpgl4yk3wch45ikfw0f823nsj9827"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list  ; Do not test the myproject.toml build as it pulls dependencies.
+      #:test-flags '(list "-k" "not project")))
+    (native-inputs
+     (list python-pytest-bootstrap
+           python-setuptools-bootstrap))
+    (propagated-inputs
+     (list python-more-itertools))
+    (home-page "https://github.com/jaraco/jaraco.classes")
+    (synopsis "Utility functions for Python class constructs")
+    (description "This Python library contains utility functions for Python
+class constructs.")
+    (license license:expat)))
+
 (define-public python-pdm-backend
   (package
     (name "python-pdm-backend")
