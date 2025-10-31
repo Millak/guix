@@ -416,14 +416,10 @@ a simple interface that makes it easy to organize and browse feeds.")
      (list python-beautifulsoup4 python-decorator python-kitchen
            python-requests python-six))
     (native-inputs
-     (list python-coverage
-           python-coveralls
-           python-mock
-           python-pylint
+     (list python-mock
            python-pytest
            python-setuptools
-           python-vcrpy
-           python-wheel))
+           python-vcrpy))
     (home-page "https://gitlab.com/ajak/tuir")
     (synopsis "Terminal viewer for Reddit (Terminal UI for Reddit)")
     (description
