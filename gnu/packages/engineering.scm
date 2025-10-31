@@ -2257,6 +2257,15 @@ and a fallback for environments without libc for Zydis.")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
+         (add-before 'build 'relax-gcc-14-strictness
+           (lambda _
+             (substitute* (find-files "." "Makefile")
+               (("CFLAGS = (.*)$" all options)
+                (string-append "CFLAGS = "
+                               " -Wno-error=incompatible-pointer-types"
+                               " -Wno-error=implicit-function-declaration"
+                               " "
+                               options)))))
          (add-before 'build 'fix-paths
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((coreutils (assoc-ref inputs "coreutils-minimal")))
