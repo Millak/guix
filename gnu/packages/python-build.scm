@@ -62,6 +62,26 @@
 ;;; These are dependencies used by the build systems contained herein; they
 ;;; feel a bit out of place but are kept here to prevent circular module
 ;;; dependencies.
+(define-public python-autocommand
+  (package
+    (name "python-autocommand")
+    (version "2.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "autocommand" version))
+       (sha256
+        (base32 "0d2zjms5xm236k46la5pnl7i7hs3a12jlp12cw8lk5jm7i1fk3c7"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest-bootstrap
+           python-setuptools-bootstrap))
+    (home-page "https://github.com/Lucretiel/autocommand")
+    (synopsis "Python library to build a command-line from a function")
+    (description "@code{autocommand} is library to automatically generate and
+run simple @code{argparse} parsers from function signatures.")
+    (license license:lgpl3+)))
+
 (define-public python-pathspec
   (package
     (name "python-pathspec")
