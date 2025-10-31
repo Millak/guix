@@ -1458,6 +1458,64 @@ abstractions for handling wheels and installing packages from wheels.")
 class constructs.")
     (license license:expat)))
 
+(define-public python-jaraco-collections
+  (package
+    (name "python-jaraco-collections")
+    (version "5.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jaraco_collections" version))
+       (sha256
+        (base32 "1v8qza70spm4d822bm7wq3j2cyd33nqg2i87n99spw6np9q1kf6s"))))
+    (build-system pyproject-build-system)
+    ;; Do not test pyproject.toml with python-pytest-checkdocs as it tries to
+    ;; download dependencies.
+    (arguments
+     '(#:test-flags '("-k" "not project")))
+    (native-inputs
+     (list python-pytest-bootstrap
+           python-setuptools-bootstrap
+           python-setuptools-scm-bootstrap))
+    (propagated-inputs
+     (list python-jaraco-text))
+    (home-page "https://github.com/jaraco/jaraco.collections")
+    (synopsis "Provides various collection objects")
+    (description
+     "This package provides models and classes to supplement the
+standard library @code{collections} module.  Examples include
+@itemize
+@item
+RangeMap: A mapping that accepts a range of values for keys.
+@item
+Projection: A subset over an existing mapping.
+@item
+KeyTransformingDict: Generalized mapping with keys transformed by a function.
+@item
+FoldedCaseKeyedDict: A dict whose string keys are case-insensitive.
+@item
+BijectiveMap: A map where keys map to values and values back to their keys.
+@item
+ItemsAsAttributes: A mapping mix-in exposing items as attributes.
+@item
+IdentityOverrideMap: A map whose keys map by default to themselves unless overridden.
+@item
+FrozenDict: A hashable, immutable map.
+@item
+Enumeration: An object whose keys are enumerated.
+@item
+Everything: A container that contains all things.
+@item
+Least, Greatest: Objects that are always less than or greater than any other.
+@item
+pop_all: Return all items from the mutable sequence and remove them from that sequence.
+@item
+DictStack: A stack of dicts, great for sharing scopes.
+@item
+WeightedLookup: A specialized RangeMap for selecting an item by weights.
+@end itemize")
+    (license license:expat)))
+
 (define-public python-jaraco-context
   (package
     (name "python-jaraco-context")
