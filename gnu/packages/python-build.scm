@@ -1074,6 +1074,32 @@ compatible build front-ends to build Poetry managed projects.")
 (define-deprecated/public-alias python-poetry-core-next
   python-poetry-core)                  ;may be removed after 2025-12-01
 
+(define-public python-filelock-bootstrap
+  ;; Try to update simultaneously with the standard version in
+  ;; (gnu packages python-build).
+  (package
+    (name "python-filelock-bootstrap")
+    (version "3.16.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "filelock" version))
+       (sha256
+        (base32
+         "0d8ljvmsfgriiqf5dqii91gfcpj7cpjrh8fnsvifaiyvspygnjf2"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; avoid extra dependencies.
+    (native-inputs
+     (list python-hatch-vcs-bootstrap
+           python-hatchling
+           python-setuptools-scm-bootstrap))
+    (home-page "https://github.com/tox-dev/py-filelock")
+    (synopsis "Platform independent file lock")
+    (description "@code{filelock} contains a single module implementing
+a platform independent file lock in Python, which provides a simple way of
+inter-process communication.")
+    (license license:unlicense)))
+
 ;;; This package exists to bootstrap python-tomli.
 (define-public python-flit-core-bootstrap
   (package

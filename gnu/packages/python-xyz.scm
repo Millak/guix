@@ -5888,6 +5888,8 @@ Python's built-in @code{re} module with compatible interfaces.")
     (license license:bsd-3)))
 
 (define-public python-filelock
+  ;; Try to update simultaneously with the bootstrap version in
+  ;; (gnu packages python-build).
   (package
     (name "python-filelock")
     (version "3.16.1")
