@@ -12909,13 +12909,13 @@ experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
 (define-public python-av
   (package
     (name "python-av")
-    (version "14.4.0")
+    (version "16.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "av" version))
        (sha256
-        (base32 "0hjb0v8pqq2f7w64zcmz216ymykb1n1s1bgdq0lp5xpxlw1zijry"))))
+        (base32 "1gqxzwbgwj164x211lsjgqj8xx9rpjxhzq6rls4mhpqbz9wyfb6x"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -12925,14 +12925,18 @@ experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
       ;; - <https://github.com/PyAV-Org/PyAV/issues/1946>
       ;; - <https://github.com/PyAV-Org/PyAV/pull/1944>
       #:test-flags
-      #~(list "-k" "not test_writing_to_custom_io_dash")
+      ;; Network access is required.
+      #~(list "--deselect=tests/test_chapters.py::test_chapters"
+              "--deselect=tests/test_packet.py::TestPacketSideData::test_iter"
+              "--deselect=tests/test_packet.py::TestPacketSideData::test_palette"
+              "-k" "not test_writing_to_custom_io_dash")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'build-extensions
-            (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace")))
           (add-before 'check 'pre-check
             (lambda _
+              ;; This would otherwise interfere with finding the installed
+              ;; av when running tests.
+              (delete-file-recursively "av")
               (setenv "PYAV_TESTDATA_DIR" #+python-av-testdata)
               (substitute* "tests/common.py"
                 (("^os\\.environ\\[\"PYAV_TESTDATA_DIR\"\\] = asset\\(\\)")
@@ -12943,8 +12947,7 @@ experimental data and metadata at the Laboratory for Fluorescence Dynamics.")
            python-numpy
            python-pillow
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (inputs (list ffmpeg))
     (home-page "https://github.com/PyAV-Org/PyAV")
     (synopsis "Pythonic bindings for FFmpeg's libraries")
