@@ -41,7 +41,7 @@
 (define-public dpdk
   (package
     (name "dpdk")
-    (version "24.07")
+    (version "25.07")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -50,7 +50,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04i4j4c5vcyldh0435hr01d2d5c0xf6y0sfg64764f79902i8p6i"))))
+                "12bzmaiw4f4hz62grsp7bid0z2rpibwc21j62bfwmz4j3zci0w81"))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config python-minimal python-pyelftools))
     (inputs (list
