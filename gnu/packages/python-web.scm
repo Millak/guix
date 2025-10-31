@@ -1904,17 +1904,11 @@ DNS name.")
        (sha256
         (base32 "0syxv2r90d6410hc68jxhk610pdgx19n1n5rc7shaxxv9xdhbaf2"))))
     (build-system pyproject-build-system)
-    ;; Curiously, no tests are collected although they exist.
-    (arguments (list #:tests? #false))
-    (propagated-inputs (list python-typing-extensions))
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "-m" "aioitertools.tests")))
     (native-inputs
-     (list python-coverage
-           python-flake8
-           python-flit-core
-           python-mypy
-           python-pytest
-           python-pytest-asyncio
-           python-sphinx))
+     (list python-flit-core))
     (home-page "https://pypi.org/project/aioitertools/")
     (synopsis "Itertools and builtins for AsyncIO and mixed iterables")
     (description
