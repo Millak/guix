@@ -1668,6 +1668,36 @@ WeightedLookup: A specialized RangeMap for selecting an item by weights.
      "This Python library provides context managers-related procedures.")
     (license license:expat)))
 
+(define-public python-jaraco-envs-bootstrap
+  (package
+    (name "python-jaraco-envs-bootstrap")
+    (version "2.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jaraco.envs" version))
+       (sha256
+        (base32 "1xb00gfhhhvh44wqq5yqb5bxi79nd97vzvh1xrbb43b40v29b4c0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list                              ; avoid extra dependencies.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'sanity-check))))
+    (propagated-inputs
+     (list python-path
+           python-virtualenv-bootstrap))
+    (native-inputs
+     (list python-setuptools-bootstrap
+           python-setuptools-scm-bootstrap))
+    (home-page "https://github.com/jaraco/jaraco.envs")
+    (synopsis "Classes for orchestrating Python (virtual) environments")
+    (description
+     "This package provides classes for orchestrating Python (virtual)
+environments.")
+    (license license:expat)))
+
 (define-public python-jaraco-functools
   (package
     (name "python-jaraco-functools")
