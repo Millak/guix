@@ -787,6 +787,29 @@ or doubles.  Basically, a stub is an object that returns pre-canned responses,
 rather than doing any computation.")
     (license license:bsd-3)))
 
+(define-public python-pyproject-hooks
+  (package
+    (name "python-pyproject-hooks")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyproject_hooks" version))
+       (sha256
+        (base32 "1y511nblr0lslz1d5s46844f5raryjnp3n1dci499bhgqkarp18y"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-flit-core
+           python-pytest-bootstrap
+           python-testpath))
+    (home-page "https://github.com/pypa/pyproject-hooks")
+    (synopsis "Low-level library for calling @file{pyproject.toml} backends")
+    (description
+     "@code{pyproject-hooks} is a low-level library for calling build backends
+in @file{pyproject.toml}-based projects.  It provides basic functionality to
+write tooling that generates distribution files from Python projects.")
+    (license license:expat)))
+
 ;;; The name 'python-pypa-build' is chosen rather than 'python-build' to avoid
 ;;; a name clash with python-build from (guix build-system python).
 (define-public python-pypa-build
