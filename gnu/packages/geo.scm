@@ -2139,7 +2139,7 @@ delivered to any client.")
 (define-public imposm3
   (package
     (name "imposm3")
-    (version "0.11.1")
+    (version "0.14.2")
     (source
       (origin
         (method git-fetch)
@@ -2149,7 +2149,7 @@ delivered to any client.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "1ifniw57l3s0sl7nb3zwxxm86i46451yrhfqnnkxr46cnpbzmwxr"))))
+          "1za04n0d73gqff4qmgxbn6rz2sqwnqcpyxvzjhsgfdysbx48nph6"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/omniscale/imposm3/cmd/imposm"
