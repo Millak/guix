@@ -128,6 +128,7 @@
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-vcs)
   #:use-module (gnu packages golang-web)
@@ -4288,27 +4289,27 @@ file contents on a remote server.")
 (define-public lfs-s3
   (package
     (name "lfs-s3")
-    (version "0.1.5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://git.sr.ht/~ngraves/lfs-s3")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0yilbxpia2lh36s872hiji77hazy83h2zc0iyqldrf3r18szqniw"))))
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nicolas-graves/lfs-s3")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d2jwpqfbcd1hb213i6fjln0sqyg8ldjfrkzf312mivp2b1bxjl3"))))
     (build-system go-build-system)
     (arguments
      (list
-      #:go go-1.23
-      #:import-path "git.sr.ht/~ngraves/lfs-s3"))
+      #:import-path "github.com/nicolas-graves/lfs-s3"))
     (inputs (list git-lfs))
     (propagated-inputs
      (list go-github-com-aws-aws-sdk-go-v2
            go-github-com-aws-aws-sdk-go-v2-config
            go-github-com-aws-aws-sdk-go-v2-feature-s3-manager
-           go-github-com-aws-aws-sdk-go-v2-service-s3))
+           go-github-com-aws-aws-sdk-go-v2-service-s3
+           go-github-com-klauspost-compress))
     (home-page "https://git.sr.ht/~ngraves/lfs-s3/")
     (synopsis "Git extension for versioning large files in S3")
     (description
