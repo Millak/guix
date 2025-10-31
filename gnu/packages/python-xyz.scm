@@ -19817,24 +19817,6 @@ for the module to work under Python 3.3.")
     ;; Either or both of these licenses may be selected.
     (license (list license:lgpl2.1+ license:bsd-3))))
 
-(define-public python-colorama
-  (package
-   (name "python-colorama")
-   (version "0.4.6")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (pypi-uri "colorama" version))
-     (sha256
-      (base32 "0i3fpq0w5mbfdpy3z9p5raw4fg17jxr6jwh5l8qhavpdnxf5ys88"))))
-   (build-system pyproject-build-system)
-   (native-inputs (list python-hatchling python-pytest))
-   (home-page "https://pypi.org/project/colorama/")
-   (synopsis "Colored terminal text rendering for Python")
-   (description "Colorama is a Python library for rendering colored terminal
-text.")
-   (license license:bsd-3)))
-
 ;; XXX: Not maintained since 2012.
 (define-public python-monthdelta
   (package
