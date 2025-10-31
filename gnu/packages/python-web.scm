@@ -10497,14 +10497,16 @@ based on filters.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/danvk/RangeHTTPServer")
-             (commit version)))
+              (url "https://github.com/danvk/RangeHTTPServer")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1dx533fsbq1mbz3by7qkm5bh2c253nwvm8214pqbwbfq07kqkwf2"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-coverage python-coveralls python-pytest
-                         python-setuptools python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-requests
+           python-setuptools))
     (home-page "https://github.com/danvk/RangeHTTPServer")
     (synopsis "SimpleHTTPServer with support for range requests")
     (description
