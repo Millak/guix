@@ -856,20 +856,19 @@ and can dramatically shorten the lifespan of the drive if left unchecked.")
     (build-system python-build-system)
     (arguments
      (list
+      #:tests? #f ;XXX: root access is required, see: <scripts/tests/test.sh>
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'setuptools-version
             (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "1.8")))
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           (add-after 'install 'install-udev-rules
             (lambda _
               (install-file "scripts/49-greaseweazle.rules"
                             (string-append #$output "/lib/udev/rules.d/")))))))
     (native-inputs
-     (list
-      python-setuptools
-      python-setuptools-scm
-      python-wheel))
+     (list python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
      (list python-bitarray python-crcmod python-pyserial python-requests))
     (synopsis "Tools for accessing a floppy drive at the raw flux level")
