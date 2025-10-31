@@ -12663,43 +12663,6 @@ from a program in a @dfn{pager} such as @command{less}.")
 and therefore easier to read and write.")
     (license license:expat)))
 
-(define-public python-distlib
-  (package
-    (name "python-distlib")
-    (version "0.3.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "distlib" version))
-       (sha256
-        (base32
-         "1a27f5p93j9i1l3324qgahs3g8ai91fmx783jpyyla506i5ybbwx"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'no-/bin/sh
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((/bin/sh (search-input-file inputs "bin/sh")))
-                (substitute* '("distlib/scripts.py" "tests/test_scripts.py")
-                  (("/bin/sh") /bin/sh)))))
-          (add-before 'check 'prepare-test-environment
-            (lambda _
-              (setenv "HOME" "/tmp")
-              ;; NOTE: Any value works, the variable just has to be present.
-              (setenv "SKIP_ONLINE" "1"))))))
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
-    (inputs
-     (list bash-minimal))
-    (home-page "https://github.com/pypa/distlib")
-    (synopsis "Distribution utilities")
-    (description "Distlib is a library which implements low-level functions that
-relate to packaging and distribution of Python software.  It is intended to be
-used as the basis for third-party packaging tools.")
-    (license license:psfl)))
-
 (define-public python-distutils-extra
   (package
     (name "python-distutils-extra")

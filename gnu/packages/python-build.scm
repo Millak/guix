@@ -40,6 +40,7 @@
 
 (define-module (gnu packages python-build)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bash)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
@@ -122,6 +123,44 @@ run simple @code{argparse} parsers from function signatures.")
    (description
     "Colorama is a Python library for rendering colored terminal text.")
    (license license:bsd-3)))
+
+(define-public python-distlib
+  (package
+    (name "python-distlib")
+    (version "0.3.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "distlib" version))
+       (sha256
+        (base32
+         "1a27f5p93j9i1l3324qgahs3g8ai91fmx783jpyyla506i5ybbwx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'no-/bin/sh
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((/bin/sh (search-input-file inputs "bin/sh")))
+                (substitute* '("distlib/scripts.py" "tests/test_scripts.py")
+                  (("/bin/sh") /bin/sh)))))
+          (add-before 'check 'prepare-test-environment
+            (lambda _
+              (setenv "HOME" "/tmp")
+              ;; NOTE: Any value works, the variable just has to be present.
+              (setenv "SKIP_ONLINE" "1"))))))
+    (native-inputs
+     (list python-pytest-bootstrap
+           python-setuptools-bootstrap))
+    (inputs
+     (list bash-minimal))
+    (home-page "https://github.com/pypa/distlib")
+    (synopsis "Distribution utilities")
+    (description "Distlib is a library which implements low-level functions that
+relate to packaging and distribution of Python software.  It is intended to be
+used as the basis for third-party packaging tools.")
+    (license license:psfl)))
 
 (define-public python-more-itertools
   (package
