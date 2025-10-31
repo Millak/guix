@@ -506,24 +506,21 @@ headers compressed with QPACK.")
 (define-public python-pyppmd
   (package
     (name "python-pyppmd")
-    (version "1.0.0")
+    (version "1.2.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pyppmd" version))
               (sha256
                (base32
-                "03w4x26mar0ha73c3v39psn1i0k6xrzwmaxfsxysic73jz99np07"))))
+                "1z91l54ncsdglqv49fajaixld5kwnbgkjd4njvn32s6jy69ay16c"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list #:test-flags #~(list "--ignore=tests/test_benchmark.py")))
     (native-inputs
-     (list python-coverage
-           python-hypothesis
-           python-pytest
+     (list python-pytest
            python-pytest-benchmark
-           python-pytest-cov
-           python-pytest-timeout
-           python-setuptools-scm
            python-setuptools
-           python-wheel))
+           python-setuptools-scm))
     (home-page "https://github.com/miurahr/pyppmd")
     (synopsis "PPMd compression/decompression library")
     (description "Pyppmd provides classes and functions for compressing and
