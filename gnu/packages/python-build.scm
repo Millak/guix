@@ -123,6 +123,42 @@ run simple @code{argparse} parsers from function signatures.")
     "Colorama is a Python library for rendering colored terminal text.")
    (license license:bsd-3)))
 
+(define-public python-more-itertools
+  (package
+    (name "python-more-itertools")
+    (version "10.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "more-itertools" version))
+       (sha256
+        (base32
+         "0fzfnfga0jdx217kff57lx3pam76162i0dd0nsgwqccw038zmmrc"))
+       (snippet
+        ;; distutils.errors.DistutilsOptionError: No configuration found for
+        ;; dynamic 'description'. Some dynamic fields need to be specified via
+        ;; `tool.setuptools.dynamic`others must be specified via the equivalent
+        ;; attribute in `setup.py`.
+        '(delete-file "setup.py"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "python" "-m" "unittest")))))))
+    (native-inputs
+     (list python-flit-core))
+    (home-page "https://github.com/erikrose/more-itertools")
+    (synopsis "More routines for operating on iterables, beyond itertools")
+    (description "Python's built-in @code{itertools} module implements a
+number of iterator building blocks inspired by constructs from APL, Haskell,
+and SML.  @code{more-itertools} includes additional building blocks for
+working with iterables.")
+    (license license:expat)))
+
 (define-public python-pathspec
   (package
     (name "python-pathspec")
