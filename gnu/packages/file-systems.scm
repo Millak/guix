@@ -2039,7 +2039,7 @@ compatible directories.")
                 ;; Don't check for package updates.
                 (("if version")
                  "if False")))))))
-    (propagated-inputs
+    (inputs
      (list python-block-tracing
            python-dropbox
            python-platformdirs
