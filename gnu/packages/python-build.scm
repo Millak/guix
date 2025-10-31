@@ -1570,6 +1570,37 @@ WeightedLookup: A specialized RangeMap for selecting an item by weights.
 module with a few extra procedures.")
     (license license:expat)))
 
+(define-public python-jaraco-path
+  (package
+    (name "python-jaraco-path")
+    (version "3.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jaraco/jaraco.path")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12bj9za1yp0yn0ppya6a4kwgmh7hvmw64x7ivp4y0sbv20r0vfdq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-pytest-bootstrap
+           python-setuptools-bootstrap
+           python-setuptools-scm-bootstrap))
+    (home-page "https://github.com/jaraco/jaraco.path")
+    (synopsis "Miscellaneous path functions")
+    (description
+     "This package provides miscellaneous path functions for Python.")
+    (license license:expat)))
+
 (define-public python-jaraco-text
   (package
     (name "python-jaraco-text")
