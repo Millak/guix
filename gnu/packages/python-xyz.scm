@@ -13095,13 +13095,9 @@ FFMPEG, reliably terminating the process when done.")
     (propagated-inputs
      (list python-imageio-ffmpeg python-numpy python-pillow python-tifffile))
     (native-inputs
-     (list python-black
-           python-flake8
-           python-fsspec
+     (list python-fsspec
            python-pytest
-           python-pytest-cov
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://imageio.github.io/")
     (synopsis "Library for reading and writing a wide range of image data")
     (description
