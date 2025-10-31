@@ -333,13 +333,9 @@ following algorithms are available:
     (build-system pyproject-build-system)
     (propagated-inputs (list python-importlib-metadata))
     (native-inputs
-     (list python-coverage
-           python-hypothesis
-           python-pytest
-           python-pytest-cov
-           python-setuptools-scm
+     (list python-pytest
            python-setuptools
-           python-wheel))
+           python-setuptools-scm))
     (home-page "https://codeberg.org/miurahr/pybcj")
     (synopsis "BCJ filter library")
     (description "In data compression, BCJ, short for Branch-Call-Jump, refers
