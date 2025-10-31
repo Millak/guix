@@ -4511,8 +4511,9 @@ desired
      ;; https://github.com/Pylons/waitress/issues/443
      (list #:test-flags #~(list "-k" "not test_service_port")))
     (native-inputs
-     (list python-coverage python-pytest python-pytest-cov
-           python-setuptools python-wheel))
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools))
     (home-page "https://github.com/Pylons/waitress")
     (synopsis "Waitress WSGI server")
     (description
