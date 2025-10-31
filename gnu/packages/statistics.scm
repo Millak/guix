@@ -1023,12 +1023,10 @@ and Vega-Lite examples.")
         (base32 "0zb3ihja3hyj6zjbhkpxhyyppnv58q2jjg0yd1lwmydqdaplvbqi"))))
     (build-system pyproject-build-system)
     (propagated-inputs (list python-numpy))
-    (native-inputs (list python-coverage
-                         python-pytest
-                         python-pytest-cov
-                         python-setuptools
-                         python-setuptools-scm
-                         python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
     (home-page "https://emcee.readthedocs.io/en/stable/")
     (synopsis "Ensemble sampling toolkit for MCMC")
     (description
