@@ -2734,15 +2734,15 @@ SRP} support.")
               (let ((lib (search-input-file inputs
                                             "lib/libxmlsec1-openssl.so")))
                 (setenv "LD_LIBRARY_PATH" (dirname lib))))))))
-    (inputs (list xmlsec-openssl))
-    (propagated-inputs (list python-isodate python-lxml python-xmlsec))
-    (native-inputs (list python-coverage
-                         python-flake8
-                         python-freezegun
-                         python-poetry-core
-                         python-pytest
-                         python-setuptools
-                         python-wheel))
+    (native-inputs
+     (list python-freezegun
+           python-poetry-core))
+    (inputs
+     (list xmlsec-openssl))
+    (propagated-inputs
+     (list python-isodate
+           python-lxml
+           python-xmlsec))
     (home-page "https://github.com/SAML-Toolkits/python3-saml")
     (synopsis "Saml Python toolkit")
     (description
