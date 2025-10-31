@@ -1482,6 +1482,36 @@ class constructs.")
      "This Python library provides context managers-related procedures.")
     (license license:expat)))
 
+(define-public python-jaraco-functools
+  (package
+    (name "python-jaraco-functools")
+    (version "4.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "jaraco_functools" version))
+       (sha256
+        (base32 "0lvk12qbl5zd1ikr6xzflj1jcs3vwgmwgy2k63x5dkmbrjzllqxy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? (not (%current-target-system))
+           ;; Do not test the myproject.toml build as it pulls dependencies.
+           ;; Do not run a test that tries to emulate a broken proprietary
+           ;; CI set-up, fails to do so correctly, and then throws an error.
+           #:test-flags
+           '(list "-k" "not project and not test_function_throttled")))
+    (native-inputs
+     (list python-jaraco-classes
+           python-pytest-bootstrap
+           python-setuptools-bootstrap
+           python-setuptools-scm-bootstrap))
+    (propagated-inputs (list python-more-itertools))
+    (home-page "https://github.com/jaraco/jaraco.functools")
+    (synopsis "Python library extending Python's @code{functools}")
+    (description "This library extends the standard @code{functools} Python
+module with a few extra procedures.")
+    (license license:expat)))
+
 (define-public python-pdm-backend
   (package
     (name "python-pdm-backend")
