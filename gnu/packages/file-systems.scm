@@ -2040,9 +2040,9 @@ compatible directories.")
                 (("if version")
                  "if False")))))))
     (propagated-inputs
-     (list python-appdirs
-           python-block-tracing
+     (list python-block-tracing
            python-dropbox
+           python-platformdirs
            python-privy
            python-userspacefs))
     (native-inputs
