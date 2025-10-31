@@ -586,28 +586,6 @@ including arbitrary-length lists, records, mixed types, and missing data,
 using NumPy-like idioms.")
     (license license:bsd-3)))
 
-(define-public python-backports-tarfile
-  (package
-    (name "python-backports-tarfile")
-    (version "1.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "backports_tarfile" version))
-       (sha256
-        (base32 "14d9xibla5aahjqf9y0nmpk5vs4qds5rfy628j0invkld3104pnp"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f)) ;XXX: Cycles with python-jaraco-context
-    (native-inputs
-     (list python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (home-page "https://github.com/jaraco/backports.tarfile")
-    (synopsis "Backport of CPython tarfile module")
-    (description "This package provides a backport of CPython tarfile module.")
-    (license license:expat)))
-
 (define-public python-bresenham
   (package
     (name "python-bresenham")
