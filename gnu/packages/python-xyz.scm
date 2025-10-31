@@ -31376,7 +31376,6 @@ applications with variable CPU loads).")
     (build-system pyproject-build-system)
     (native-inputs
      (list python-cloudpickle
-           python-coverage
            python-hatchling
            python-hatch-vcs
            python-ipython
