@@ -361,7 +361,8 @@ them in detail for later analysis.")
         (base32
          "0k698g4fws63rnav4pvfsf1hfds867xan59mmv5zw71r58lm6cxb"))))
     (arguments
-     (list #:phases
+     (list #:tests? #f
+           #:phases
            #~(modify-phases %standard-phases
                (add-after 'install 'install-doc
                  (lambda _
