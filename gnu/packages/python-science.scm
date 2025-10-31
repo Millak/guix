@@ -2557,7 +2557,7 @@ search in Python.")
     (arguments
      (list
       #:test-flags
-      ;; Tests takes about 10-15min to complete.
+      ;; Tests takes about 10-15min to complete, and not thread save.
       ;; Skip tests that require networking.
       #~(list "-k" (string-append
                     " not TestFindSCP"
@@ -2571,16 +2571,9 @@ search in Python.")
                     " and not test_pr_level_patient"
                     " and not test_pr_level_series"
                     " and not test_scp_cancelled"))))
-    (native-inputs (list python-codespell
-                         python-coverage
-                         python-poetry-core
-                         python-pytest
-                         python-pytest-cov
-                         python-pytest-xdist
-                         python-sphinx
-                         python-sphinx-rtd-theme))
-    (propagated-inputs (list python-mypy
-                             python-numpydoc
+    (native-inputs (list python-poetry-core
+                         python-pytest))
+    (propagated-inputs (list python-numpydoc
                              python-pydicom
                              python-pyfakefs
                              python-sqlalchemy))
