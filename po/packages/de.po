@@ -4,14 +4,14 @@
 # Mario Blättermann <mario.blaettermann@gmail.com>, 2014.
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2018, 2020, 2021, 2022, 2025.
 # Cancer Name <notcancername@protonmail.com>, 2025.
-#: gnu/packages/firmware.scm:1659 gnu/packages/firmware.scm:1926
-#: gnu/packages/linux.scm:1257
+#: gnu/packages/firmware.scm:1665 gnu/packages/firmware.scm:1932
+#: gnu/packages/linux.scm:1260
 msgid ""
 msgstr ""
 "Project-Id-Version: guix-packages 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-29 03:18+0000\n"
-"PO-Revision-Date: 2025-08-22 16:13+0000\n"
+"POT-Creation-Date: 2025-10-20 03:18+0000\n"
+"PO-Revision-Date: 2025-10-10 20:58+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/packages/de/>\n"
 "Language: de\n"
@@ -19,11 +19,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Weblate 5.12.2\n"
+"X-Generator: Weblate 5.13.2\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
-
-msgid "Session management in a clean and simple way"
-msgstr "Sitzungsverwaltung auf saubere und einfache Art"
 
 msgid "Word processing program"
 msgstr "Textverarbeitungsprogramm"
@@ -43,6 +40,22 @@ msgid ""
 msgstr ""
 "Libbraille ist eine Bibliothek zum einfachen Zugriff auf\n"
 "Braillezeilen."
+
+msgid "Braille TTY"
+msgstr "Braille-TTY"
+
+msgid ""
+"BRLTTY is a background process (daemon) which provides access\n"
+"to the Linux/Unix console (when in text mode) for a blind person using a\n"
+"refreshable braille display.  It drives the braille display, and provides\n"
+"complete screen review functionality.  Some speech capability has also been\n"
+"incorporated."
+msgstr ""
+"BRLTTY ist ein Hintergrundprozess (daemon), der blinden Menschen, die eine\n"
+"aktualisierbare Braillezeile verwenden, Zugriff auf die Linux/Unix-Konsole (im\n"
+"Textmodus) ermöglicht. Er steuert die Braillezeile und bietet eine vollständige\n"
+"Bildschirmüberprüfungsfunktion. Außerdem wurden einige Sprachfunktionen\n"
+"integriert."
 
 msgid "Extensible, scalable virtual keyboard for X11"
 msgstr "Erweiterbare, skalierbare virtuelle Tastatur für X11"
@@ -64,6 +77,9 @@ msgstr "Kleine Bildschirmlupe für X11"
 
 msgid "Standard login and process accounting utilities"
 msgstr "Standard-Anmelde- und -Prozessverwaltungs-Werkzeuge"
+
+msgid "Ada 83 interpreter"
+msgstr "Ada 83-Interpreter"
 
 msgid "System service manager"
 msgstr "Verwaltung von Systemdiensten"
@@ -811,6 +827,9 @@ msgstr "SDL-Anbindungen für Perl"
 
 msgid "Scheme implementation using a bytecode interpreter"
 msgstr "Scheme-Implementierung mit Bytecode-Interpretierer"
+
+msgid "Session management in a clean and simple way"
+msgstr "Sitzungsverwaltung auf saubere und einfache Art"
 
 msgid "Configuration files for LaTeX-related formats"
 msgstr "Konfigurationsdateien für LaTeX und verwandte Formate"

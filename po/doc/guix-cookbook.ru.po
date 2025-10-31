@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-02 03:18+0000\n"
+"POT-Creation-Date: 2025-10-21 03:18+0000\n"
 "PO-Revision-Date: 2025-09-12 11:50+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Russian <https://translate.codeberg.org/projects/guix/documentation-cookbook/ru/>\n"
@@ -28,9 +28,6 @@ msgstr "@documentencoding UTF-8"
 
 msgid "GNU Guix Cookbook"
 msgstr "GNU Guix Рецепты"
-
-msgid "Copyright @copyright{} 2019, 2022 Ricardo Wurmus@* Copyright @copyright{} 2019 Efraim Flashner@* Copyright @copyright{} 2019 Pierre Neidhardt@* Copyright @copyright{} 2020 Oleg Pykhalov@* Copyright @copyright{} 2020 Matthew Brooks@* Copyright @copyright{} 2020 Marcin Karpezo@* Copyright @copyright{} 2020 Brice Waegeneire@* Copyright @copyright{} 2020 André Batista@* Copyright @copyright{} 2020 Christine Lemmer-Webber@* Copyright @copyright{} 2021 Joshua Branson@* Copyright @copyright{} 2022, 2023 Maxim Cournoyer@* Copyright @copyright{} 2023-2024 Ludovic Courtès@* Copyright @copyright{} 2023 Thomas Ieong@* Copyright @copyright{} 2024 Florian Pelz@* Copyright @copyright{} 2025 45mg@*"
-msgstr "Copyright @copyright{} 2019, 2022 Ricardo Wurmus@* Copyright @copyright{} 2019 Efraim Flashner@* Copyright @copyright{} 2019 Pierre Neidhardt@* Copyright @copyright{} 2020 Oleg Pykhalov@* Copyright @copyright{} 2020 Matthew Brooks@* Copyright @copyright{} 2020 Marcin Karpezo@* Copyright @copyright{} 2020 Brice Waegeneire@* Copyright @copyright{} 2020 André Batista@* Copyright @copyright{} 2020 Christine Lemmer-Webber@* Copyright @copyright{} 2021 Joshua Branson@* Copyright @copyright{} 2022, 2023 Maxim Cournoyer@* Copyright @copyright{} 2023-2024 Ludovic Courtès@* Copyright @copyright{} 2023 Thomas Ieong@* Copyright @copyright{} 2024 Florian Pelz@* Copyright @copyright{} 2025 45mg@*"
 
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A copy of the license is included in the section entitled ``GNU Free Documentation License''."
 msgstr "Разрешено копирование, распространение и/или модификация этого документа на условиях лицензии свободной документации GNU (GNU FDL) версии 1.3 или любой более поздней версии, опубликованной Фондом свободного программного обеспечения (FSF), исключая неизменяемые секции, исключая тексты, размещенные на переплёте и задней стороне обложки. Копия лицензии включена в документ в разделе под названием \"GNU Free Documentation Licens\"."

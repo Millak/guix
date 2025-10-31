@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-24 03:18+0000\n"
-"PO-Revision-Date: 2025-09-27 14:50+0000\n"
+"POT-Creation-Date: 2025-10-24 03:18+0000\n"
+"PO-Revision-Date: 2025-10-27 12:09+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.codeberg.org/projects/guix/documentation-manual/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -26,7 +26,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.13.2\n"
+"X-Generator: Weblate 5.13.3\n"
 
 msgid "Contributing"
 msgstr "Contribuindo"
@@ -1365,7 +1365,7 @@ msgid "Going full circle."
 msgstr "Fazendo um círculo completo."
 
 msgid "Bulk Updates"
-msgstr "atualizações em massa"
+msgstr "Atualizações em massa"
 
 msgid "This Little Maneuver's Gonna Cost Us 51 Years."
 msgstr "Essa pequena manobra nos custará 51 anos."
@@ -2416,7 +2416,7 @@ msgid "Command-Line Interface"
 msgstr "Interface de linha de comando"
 
 msgid "mumi command-line interface"
-msgstr "Interface de linha de comando mumi"
+msgstr "interface de linha de comando mumi"
 
 msgid "mumi am"
 msgstr "mumi am"
@@ -2567,7 +2567,7 @@ msgid "Also note that, unlike @command{git send-email}, @command{mumi send-email
 msgstr "Observe também que, diferentemente de @command{git send-email}, @command{mumi send-email} funciona perfeitamente bem com patches únicos e múltiplos. Ele automatiza a dança dos debbugs de enviar o primeiro patch, esperar por uma resposta dos debbugs e enviar os patches restantes. Ele faz isso enviando o primeiro patch, sondando o servidor para uma resposta e, em seguida, enviando os patches restantes. Infelizmente, essa sondagem pode levar alguns minutos. Então, seja paciente."
 
 msgid "Emacs Interface"
-msgstr "interfaces com Emacs"
+msgstr "Interfaces com Emacs"
 
 msgid "If you use Emacs, you may find it more convenient to interact with issues using @file{debbugs.el}, which you can install with:"
 msgstr "Se você usa o Emacs, pode achar mais conveniente interagir com problemas usando @file{debbugs.el}, que pode ser instalado com:"
@@ -2633,7 +2633,7 @@ msgid "build event notifications, RSS feed"
 msgstr "criar notificações de eventos, feed RSS"
 
 msgid "notifications, build events"
-msgstr "notificações, eventos de compilção"
+msgstr "notificações, eventos de compilação"
 
 msgid "Cuirass includes @acronym{RSS, Really Simple Syndication} feeds as one of its features (@pxref{Notifications,,,cuirass}).  Since @url{https://ci.guix.gnu.org/, Berlin} runs an instance of Cuirass, this feature can be used to keep track of recently broken or fixed packages caused by changes pushed to the Guix git repository.  Any RSS client can be used.  A good one, included with Emacs, is @xref{Gnus,,,gnus}.  To register the feed, copy its URL, then from the main Gnus buffer, @samp{*Group*}, do the following:"
 msgstr "O Cuirass inclui feeds @acronym{RSS, Really Simple Syndication} como um de seus recursos (@pxref{Notifications,,,cuirass}). Como @url{https://ci.guix.gnu.org/, Berlin} executa uma instância do Cuirass, esse recurso pode ser usado para manter o controle de pacotes recentemente quebrados ou corrigidos causados por alterações enviadas ao repositório git do Guix. Qualquer cliente RSS pode ser usado. Um bom, incluído no Emacs, é @xref{Gnus,,,gnus}. Para registrar o feed, copie sua URL e, a partir do buffer principal do Gnus, @samp{*Group*}, faça o seguinte:"
@@ -2642,7 +2642,7 @@ msgid "Gnus, configuration to read CI RSS feeds"
 msgstr "Gnus, configuração para ler feeds RSS do CI"
 
 msgid "RSS feeds, Gnus configuration"
-msgstr "Feed RSS, Configuração do Gnus"
+msgstr "feed RSS, configuração do Gnus"
 
 msgid ""
 "@kbd{G R} https://ci.guix.gnu.org/events/rss/?specification=master RET\n"
@@ -2682,7 +2682,7 @@ msgid "Anyone with interest in a team's domain and willing to contribute to its 
 msgstr "Qualquer pessoa interessada no domínio de uma equipe e disposta a contribuir com seu trabalho pode se candidatar para se tornar um membro entrando em contato com os membros atuais por e-mail; acesso de commit não é uma pré-condição. A filiação é formalizada adicionando o nome e endereço de e-mail da pessoa em @file{etc/teams.scm}. Membros que não participam do trabalho da equipe por um ano ou mais podem ser removidos; eles são livres para se candidatar novamente para filiação mais tarde."
 
 msgid "team creation"
-msgstr "Criação de times"
+msgstr "criação de equipes"
 
 msgid "One or more people may propose the creation of a new team by reaching out to the community by email at @email{guix-devel@@gnu.org}, clarifying the intended scope and purpose.  When consensus is reached on the creation of this team, someone with commit access formalizes its creation by adding it and its initial members to @file{etc/teams.scm}."
 msgstr "Uma ou mais pessoas podem propor a criação de uma nova equipe entrando em contato com a comunidade por e-mail em @email{guix-devel@@gnu.org}, esclarecendo o escopo e o propósito pretendidos. Quando o consenso é alcançado sobre a criação desta equipe, alguém com acesso de commit formaliza sua criação adicionando-a e seus membros iniciais a @file{etc/teams.scm}."
@@ -2731,7 +2731,7 @@ msgstr ""
 "[env]$ git send-email --to=@var{NÚMERO_DE_ISSÃO}@@debbugs.gnu.org -2\n"
 
 msgid "teams, on Codeberg"
-msgstr "times, no Codeberg"
+msgstr "equipes, no Codeberg"
 
 msgid "To generate a @file{CODEOWNERS} file, which Forgejo---the software behind Codeberg---uses to determine which team or person should review changes to a given set of files, run:"
 msgstr "Para gerar o arquivo @file{CODEOWNERS}, que o Forgejo---o software por trás do Codeberg---usa para determinar qual time ou pessoa deve revisar mudanças feitas a um dado conjunto de arquivos, rode:"
@@ -3006,17 +3006,7 @@ msgid "When a package name changes, it must remain available under its old name 
 msgstr "Quando um nome de pacote muda, ele deve permanecer disponível sob seu nome antigo por @b{pelo menos um ano}. Por exemplo, @code{go-ipfs} foi renomeado para @code{kubo} após uma decisão tomada upstream; para comunicar a mudança de nome aos usuários, o módulo do pacote forneceu esta definição:"
 
 msgid "deprecated-package"
-msgstr "pacote-deprecado"
-
-msgid ""
-"(define-public go-ipfs\n"
-"  (deprecated-package \"go-ipfs\" kubo))\n"
-msgstr ""
-"(define-public go-ipfs\n"
-"  (deprecated-package \"go-ipfs\" kubo))\n"
-
-msgid "That way, someone running @command{guix install go-ipfs} or similar sees a deprecation warning mentioning the new name."
-msgstr "Dessa forma, alguém executando @command{guix install go-ipfs} ou similar verá um aviso de descontinuação mencionando o novo nome."
+msgstr "deprecated-package"
 
 msgid "package removal policy"
 msgstr "pacotes, politica de remoção"
@@ -3029,9 +3019,6 @@ msgstr "Remoção de pacote"
 
 msgid "Packages whose upstream developers have declared as having reached ``end of life'' or being unmaintained may be removed; likewise, packages that have been @b{failing to build for two months or more} may be removed."
 msgstr "Pacotes cujos desenvolvedores originais declararam que atingiram o ``fim da vida útil'' ou não são mantidos podem ser removidos; da mesma forma, pacotes que estão @b{falhando na compilação por dois meses ou mais} podem ser removidos."
-
-msgid "There is no formal deprecation mechanism for this case, unless a replacement exists, in which case the @code{deprecated-package} procedure mentioned above can be used."
-msgstr "Não há um mecanismo formal de descontinuação para este caso, a menos que exista uma substituição, caso em que o procedimento @code{deprecated-package} mencionado acima pode ser usado."
 
 msgid "If the package being removed is a ``leaf'' (no other packages depend on it), it may be removed after a @b{one-month review period} of the patch removing it (this applies even when the removal has additional motivations such as security problems affecting the package)."
 msgstr "Se o pacote que está sendo removido for um ``leaf'' (nenhum outro pacote depende dele), ele poderá ser removido após um @b{período de revisão de um mês} do patch que o removeu (isso se aplica mesmo quando a remoção tem motivações adicionais, como problemas de segurança que afetam o pacote)."
@@ -3049,7 +3036,7 @@ msgid "Examples include major version upgrades of programming language implement
 msgstr "Exemplos incluem grandes atualizações de versões de implementações de linguagens de programação, como vimos acima com Python, e grandes atualizações de bibliotecas ``grandes'' como Qt ou GTK."
 
 msgid "service deprecation"
-msgstr "Depreciação de serviço"
+msgstr "depreciação de serviço"
 
 msgid "Services"
 msgstr "Serviços"
@@ -8977,9 +8964,6 @@ msgstr "Antes de publicar seu canal, gostaríamos de compartilhar algumas palavr
 msgid "Before publishing a channel, please consider contributing your package definitions to Guix proper (@pxref{Contributing}).  Guix as a project is open to free software of all sorts, and packages in Guix proper are readily available to all Guix users and benefit from the project's quality assurance process."
 msgstr "Antes de publicar um canal, considere contribuir com suas definições de pacote para o Guix propriamente dito (@pxref{Contributing}). O Guix como um projeto é aberto a software livre de todos os tipos, e os pacotes no Guix propriamente dito estão prontamente disponíveis para todos os usuários do Guix e se beneficiam do processo de garantia de qualidade do projeto."
 
-msgid "Package modules and package definitions are Scheme code that uses various programming interfaces (APIs).  We, Guix developers, never change APIs gratuitously, but we do @emph{not} commit to freezing APIs either.  When you maintain package definitions outside Guix, we consider that @emph{the compatibility burden is on you}."
-msgstr "Módulos de pacote e definições de pacote são códigos Scheme que usam várias interfaces de programação (APIs). Nós, desenvolvedores Guix, nunca mudamos APIs gratuitamente, mas também @emph{não} nos comprometemos a congelar APIs. Quando você mantém definições de pacote fora do Guix, consideramos que @emph{o fardo da compatibilidade é seu}."
-
 msgid "Corollary: if you're using an external channel and that channel breaks, please @emph{report the issue to the channel authors}, not to the Guix project."
 msgstr "Corolário: se você estiver usando um canal externo e esse canal quebrar, @emph{reporte o problema aos autores do canal}, não ao projeto Guix."
 
@@ -12261,12 +12245,6 @@ msgstr "{Tipo de dados} greetd-wlgreet-sway-session"
 
 msgid "{Data Type} mcron-configuration"
 msgstr "{Tipo de dados} mcron-configuration"
-
-msgid "{Data Type} rottlog-configuration"
-msgstr "{Tipo de dados} rottlog-configuration"
-
-msgid "{Data Type} log-rotation"
-msgstr "{Tipo de dados} log-rotation"
 
 msgid "{Data Type} log-cleanup-configuration"
 msgstr "{Tipo de dados} log-cleanup-configuration"

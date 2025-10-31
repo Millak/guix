@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the guix package.
 # Joe Hansen <joedalton2@yahoo.dk>, 2015, 2016, 2017, 2018, 2019.
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2025.
-#: gnu/packages/firmware.scm:1659 gnu/packages/firmware.scm:1926
-#: gnu/packages/linux.scm:1257
+#: gnu/packages/firmware.scm:1665 gnu/packages/firmware.scm:1932
+#: gnu/packages/linux.scm:1260
 msgid ""
 msgstr ""
 "Project-Id-Version: guix-packages 1.0.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-29 03:18+0000\n"
+"POT-Creation-Date: 2025-10-20 03:18+0000\n"
 "PO-Revision-Date: 2025-01-15 20:38+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Danish <https://translate.fedoraproject.org/projects/guix/packages/da/>\n"

@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-02 03:18+0000\n"
+"POT-Creation-Date: 2025-10-21 03:18+0000\n"
 "PO-Revision-Date: 2025-09-12 11:35+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Spanish <https://translate.codeberg.org/projects/guix/documentation-cookbook/es/>\n"
@@ -35,9 +35,6 @@ msgstr ""
 
 msgid "GNU Guix Cookbook"
 msgstr "Libro de recetas de GNU Guix"
-
-msgid "Copyright @copyright{} 2019, 2022 Ricardo Wurmus@* Copyright @copyright{} 2019 Efraim Flashner@* Copyright @copyright{} 2019 Pierre Neidhardt@* Copyright @copyright{} 2020 Oleg Pykhalov@* Copyright @copyright{} 2020 Matthew Brooks@* Copyright @copyright{} 2020 Marcin Karpezo@* Copyright @copyright{} 2020 Brice Waegeneire@* Copyright @copyright{} 2020 André Batista@* Copyright @copyright{} 2020 Christine Lemmer-Webber@* Copyright @copyright{} 2021 Joshua Branson@* Copyright @copyright{} 2022, 2023 Maxim Cournoyer@* Copyright @copyright{} 2023-2024 Ludovic Courtès@* Copyright @copyright{} 2023 Thomas Ieong@* Copyright @copyright{} 2024 Florian Pelz@* Copyright @copyright{} 2025 45mg@*"
-msgstr "Copyright @copyright{} 2019, 2022 Ricardo Wurmus@* Copyright @copyright{} 2019 Efraim Flashner@* Copyright @copyright{} 2019 Pierre Neidhardt@* Copyright @copyright{} 2020 Oleg Pykhalov@* Copyright @copyright{} 2020 Matthew Brooks@* Copyright @copyright{} 2020 Marcin Karpezo@* Copyright @copyright{} 2020 Brice Waegeneire@* Copyright @copyright{} 2020 André Batista@* Copyright @copyright{} 2020 Christine Lemmer-Webber@* Copyright @copyright{} 2021 Joshua Branson@* Copyright @copyright{} 2022, 2023 Maxim Cournoyer@* Copyright @copyright{} 2023-2024 Ludovic Courtès@* Copyright @copyright{} 2023 Thomas Ieong@* Copyright @copyright{} 2024 Florian Pelz@* Copyright @copyright{} 2025 45mg@*"
 
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A copy of the license is included in the section entitled ``GNU Free Documentation License''."
 msgstr "Se garantiza el permiso de copia, distribución y/o modificación de este documento bajo los términos de la licencia de documentación libre de GNU (GNU Free Documentation License), versión 1.3 o cualquier versión posterior publicada por la Free Software Foundation; sin secciones invariantes, sin textos de cubierta delantera ni trasera. Una copia de la licencia está incluida en la sección titulada ``GNU Free Documentation License''."
@@ -759,13 +756,6 @@ msgstr "@uref{https://sarabander.github.io/sicp/, @i{Structure and Interpretatio
 
 msgid "You can also install it and read it from your computer:"
 msgstr "Además puede instalarlo desde su equipo:"
-
-msgid ""
-"guix install sicp info-reader\n"
-"info sicp\n"
-msgstr ""
-"guix install sicp info-reader\n"
-"info sicp\n"
 
 msgid "You'll find more books, tutorials and other resources at @url{https://schemers.org/}."
 msgstr "Encontrará más libros, tutoriales y otros recursos en @url{https://schemers.org/}."
@@ -4853,9 +4843,6 @@ msgstr ""
 
 msgid "The file @file{/etc/qemu/bridge.conf} must also be made to allow the bridge interface, as the default is to deny all.  Add the following to your list of services to do so:"
 msgstr "El archivo @file{/etc/qemu/bridge.conf} también se debe hacer para permitir la interfaz bridge, ya que el valor predeterminado es denegar todo.  Para ello, añada lo siguiente a la lista de servicios:"
-
-msgid "(extra-special-file \"/etc/qemu/host.conf\" \"allow br0\\n\")\n"
-msgstr "(extra-special-file \"/etc/qemu/host.conf\" \"allow br0\\n\")\n"
 
 msgid "Invoking QEMU with the right command line options"
 msgstr "Invocar QEMU con las opciones de línea de comandos adecuadas"

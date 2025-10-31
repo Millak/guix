@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-02 03:18+0000\n"
+"POT-Creation-Date: 2025-10-21 03:18+0000\n"
 "PO-Revision-Date: 2025-09-12 11:50+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Slovak <https://translate.codeberg.org/projects/guix/documentation-cookbook/sk/>\n"
@@ -736,13 +736,6 @@ msgstr "@uref{https://sarabander.github.io/sicp/, @i{Structure and Interpretatio
 
 msgid "You can also install it and read it from your computer:"
 msgstr "Môžete si ju tiež stiahnuť a prečítať na vašom počítači:"
-
-msgid ""
-"guix install sicp info-reader\n"
-"info sicp\n"
-msgstr ""
-"guix install sicp info-reader\n"
-"info sicp\n"
 
 msgid "You'll find more books, tutorials and other resources at @url{https://schemers.org/}."
 msgstr "Ďalšie knihy, návody ako aj iné druhy zdrojov nájdete na @url{https://schemers.org/}."

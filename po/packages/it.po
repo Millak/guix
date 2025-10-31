@@ -6,13 +6,13 @@
 # Fernandez Alonso Alberto Mario <albialonso7@icloud.com>, 2022.
 # Marco Rimoldi <marco.rimoldi@pm.me>, 2024.
 # Salvatore Cocuzza <info@salvatorecocuzza.it>, 2025.
-#: gnu/packages/firmware.scm:1659 gnu/packages/firmware.scm:1926
-#: gnu/packages/linux.scm:1257
+#: gnu/packages/firmware.scm:1665 gnu/packages/firmware.scm:1932
+#: gnu/packages/linux.scm:1260
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-29 03:18+0000\n"
+"POT-Creation-Date: 2025-10-20 03:18+0000\n"
 "PO-Revision-Date: 2025-06-08 14:57+0000\n"
 "Last-Translator: Salvatore Cocuzza <info@salvatorecocuzza.it>\n"
 "Language-Team: Italian <https://translate.fedoraproject.org/projects/guix/packages/it/>\n"

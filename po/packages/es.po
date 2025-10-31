@@ -9,13 +9,13 @@
 # "Fco. Javier F. Serrador" <fserrador@gmail.com>, 2025.
 # Weblate Translation Memory <noreply-mt-weblate-translation-memory@weblate.org>, 2025.
 # Jordán <switz@francemel.fr>, 2025.
-#: gnu/packages/firmware.scm:1659 gnu/packages/firmware.scm:1926
-#: gnu/packages/linux.scm:1257
+#: gnu/packages/firmware.scm:1665 gnu/packages/firmware.scm:1932
+#: gnu/packages/linux.scm:1260
 msgid ""
 msgstr ""
 "Project-Id-Version: guix-packages 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-29 03:18+0000\n"
+"POT-Creation-Date: 2025-10-20 03:18+0000\n"
 "PO-Revision-Date: 2025-09-29 11:09+0000\n"
 "Last-Translator: rchg <rchg@noreply.codeberg.org>\n"
 "Language-Team: Spanish <https://translate.codeberg.org/projects/guix/packages/es/>\n"

@@ -60,7 +60,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-24 03:18+0000\n"
+"POT-Creation-Date: 2025-10-24 03:18+0000\n"
 "PO-Revision-Date: 2025-09-27 14:50+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Spanish <https://translate.codeberg.org/projects/guix/documentation-manual/es/>\n"
@@ -15697,145 +15697,11 @@ msgstr "{Tipo de datos} mcron-configuration"
 msgid "The mcron package to use."
 msgstr "El paquete mcron usado."
 
-msgid "rottlog"
-msgstr "rottlog"
-
 msgid "log rotation"
 msgstr "rotación de logs"
 
 msgid "logging"
 msgstr "logging"
-
-msgid "The example below shows how to extend it with an additional @dfn{rotation}, should you need to do that (usually, services that produce log files already take care of that):"
-msgstr "El siguiente ejemplo muestra como extenderlo con una @dfn{rotación} adicional, en caso de que deba hacerlo (habitualmente los servicios que producen archivos de registro ya lo hacen ellos mismos):"
-
-msgid ""
-"(use-modules (guix) (gnu))\n"
-"(use-service-modules admin)\n"
-"\n"
-msgstr ""
-"(use-modules (guix) (gnu))\n"
-"(use-service-modules admin)\n"
-"\n"
-
-msgid ""
-"(define my-log-files\n"
-"  ;; Log files that I want to rotate.\n"
-"  '(\"/var/log/something.log\" \"/var/log/another.log\"))\n"
-"\n"
-msgstr ""
-"(define mis-archivos-de-registro\n"
-"  ;; Archivos que deseo rotar.\n"
-"  '(\"/var/log/un-archivo.log\" \"/var/log/otro.log\"))\n"
-"\n"
-
-msgid ""
-"(operating-system\n"
-"  ;; @dots{}\n"
-"  (services (cons (simple-service 'rotate-my-stuff\n"
-"                                  rottlog-service-type\n"
-"                                  (list (log-rotation\n"
-"                                         (frequency 'daily)\n"
-"                                         (files my-log-files))))\n"
-"                  %base-services)))\n"
-msgstr ""
-"(operating-system\n"
-"  ;; @dots{}\n"
-"  (services (cons (simple-service 'rota-mis-cosas\n"
-"                                  rottlog-service-type\n"
-"                                  (list (log-rotation\n"
-"                                         (frequency 'daily)\n"
-"                                         (files mis-archivos-de-registro))))\n"
-"                  %base-services)))\n"
-
-msgid "This is the type of the Rottlog service, whose value is a @code{rottlog-configuration} object."
-msgstr "Este es el tipo del servicio Rottlog, cuyo valor es un objeto @code{rottlog-configuration}."
-
-msgid "Other services can extend this one with new @code{log-rotation} objects (see below), thereby augmenting the set of files to be rotated."
-msgstr "Otros servicios pueden extenderlo con nuevos objetos @code{log-rotation} (véase a continuación), aumentando de dicho modo el conjunto de archivos a rotar."
-
-msgid "This service type can define mcron jobs (@pxref{Scheduled Job Execution}) to run the rottlog service."
-msgstr "Este servicio puede definir trabajos de mcron (@pxref{Scheduled Job Execution}) para ejecutar el servicio rottlog."
-
-msgid "{Data Type} rottlog-configuration"
-msgstr "{Tipo de datos} rottlog-configuration"
-
-msgid "Data type representing the configuration of rottlog."
-msgstr "Tipo de datos que representa la configuración de rottlog."
-
-msgid "@code{rottlog} (default: @code{rottlog})"
-msgstr "@code{rottlog} (predeterminado: @code{rottlog})"
-
-msgid "The Rottlog package to use."
-msgstr "El paquete Rottlog usado."
-
-msgid "@code{rc-file} (default: @code{(file-append rottlog \"/etc/rc\")})"
-msgstr "@code{rc-file} (predeterminado: @code{(file-append rottlog \"/etc/rc\")})"
-
-msgid "The Rottlog configuration file to use (@pxref{Mandatory RC Variables,,, rottlog, GNU Rot[t]log Manual})."
-msgstr "El archivo de configuración de Rottlog usado (@pxref{Mandatory RC Variables,,, rottlog, GNU Rot[t]log Manual})."
-
-msgid "@code{rotations} (default: @code{%default-rotations})"
-msgstr "@code{rotations} (predeterminadas: @code{%default-rotations})"
-
-msgid "A list of @code{log-rotation} objects as defined below."
-msgstr "Una lista de objetos @code{log-rotation} como se define a continuación."
-
-msgid "jobs"
-msgstr "jobs"
-
-msgid "This is a list of gexps where each gexp corresponds to an mcron job specification (@pxref{Scheduled Job Execution})."
-msgstr "Esta es una lista de expresiones-G donde cada expresión-G corresponde a una especificación de trabajo de mcron (@pxref{Scheduled Job Execution})."
-
-msgid "{Data Type} log-rotation"
-msgstr "{Tipo de datos} log-rotation"
-
-msgid "Data type representing the rotation of a group of log files."
-msgstr "Tipo de datos que representa la rotación de un grupo de archivos de log."
-
-msgid "Taking an example from the Rottlog manual (@pxref{Period Related File Examples,,, rottlog, GNU Rot[t]log Manual}), a log rotation might be defined like this:"
-msgstr "Tomando el ejemplo del manual de Rottlog (@pxref{Period Related File Examples,,, rottlog, GNU Rot[t]log Manual}), una rotación de registros se podría definir de esta manera:"
-
-msgid ""
-"(log-rotation\n"
-"  (frequency 'daily)\n"
-"  (files '(\"/var/log/apache/*\"))\n"
-"  (options '(\"storedir apache-archives\"\n"
-"             \"rotate 6\"\n"
-"             \"notifempty\"\n"
-"             \"nocompress\")))\n"
-msgstr ""
-"(log-rotation\n"
-"  (frequency 'daily)\n"
-"  (files '(\"/var/log/apache/*\"))\n"
-"  (options '(\"storedir apache-archives\"\n"
-"             \"rotate 6\"\n"
-"             \"notifempty\"\n"
-"             \"nocompress\")))\n"
-
-msgid "The list of fields is as follows:"
-msgstr "La lista de campos es como sigue:"
-
-msgid "@code{frequency} (default: @code{'weekly})"
-msgstr "@code{frequency} (predeterminada: @code{'weekly})"
-
-msgid "The log rotation frequency, a symbol."
-msgstr "La frecuencia de rotación de logs, un símbolo."
-
-msgid "The list of files or file glob patterns to rotate."
-msgstr "La lista de archivos o patrones extendidos de archivo a rotar."
-
-msgid "@code{post-rotate} (default: @code{#f})"
-msgstr "@code{post-rotate} (predeterminado: @code{#f})"
-
-msgid "Either @code{#f} or a gexp to execute once the rotation has completed."
-msgstr "O bien @code{#f}, o bien una expresión-G que se ejecutará una vez la rotación se haya completado."
-
-msgid "Specifies weekly rotation of @code{%rotated-files} and of @file{/var/log/guix-daemon.log}."
-msgstr "Especifica la rotación semanal de @code{%rotated-files} y de @file{/var/log/guix-daemon.log}."
-
-msgid "The list of syslog-controlled files to be rotated.  By default it is: @code{'(\"/var/log/messages\" \"/var/log/secure\" \"/var/log/debug\" \\ \"/var/log/maillog\")}."
-msgstr "La lista de archivos controlados por syslog que deben ser rotados. De manera predeterminada es @code{'(\"/var/log/messages\" \"/var/log/secure\" \"/var/log/maillog\")}."
 
 msgid "Data type representing the log cleanup configuration"
 msgstr "Tipo de datos que representa la configuración de purga del registro de mensajes"

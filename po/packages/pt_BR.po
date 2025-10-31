@@ -7,13 +7,13 @@
 # Frank McCay <frank.mccay@outlook.com.br>, 2024.
 # Krascovict Petrov <krascovict@yandex.ru>, 2024.
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2024, 2025.
-#: gnu/packages/firmware.scm:1659 gnu/packages/firmware.scm:1926
-#: gnu/packages/linux.scm:1257
+#: gnu/packages/firmware.scm:1665 gnu/packages/firmware.scm:1932
+#: gnu/packages/linux.scm:1260
 msgid ""
 msgstr ""
 "Project-Id-Version: guix 0.4-pre2\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-29 03:18+0000\n"
+"POT-Creation-Date: 2025-10-20 03:18+0000\n"
 "PO-Revision-Date: 2025-04-29 11:31+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.fedoraproject.org/projects/guix/packages/pt_BR/>\n"
@@ -7728,20 +7728,6 @@ msgstr ""
 "a C++ e Java. Sua missão é encontrar um novo planeta para viver e sobreviver.\n"
 "Você pode salvar a humanidade e obter habilidades de programação!"
 
-msgid "Modern Doom 2 source port"
-msgstr "Port de origem do Modern Doom 2"
-
-msgid ""
-"GZdoom is a port of the Doom 2 game engine, with a modern\n"
-"renderer.  It improves modding support with ZDoom's advanced mapping features\n"
-"and the new ZScript language.  In addition to Doom, it supports Heretic, Hexen,\n"
-"Strife, Chex Quest, and fan-created games like Harmony, Hacx and Freedoom."
-msgstr ""
-"GZdoom é uma porta do motor de jogo Doom 2, com um renderizador\n"
-"moderno. Ele melhora o suporte a modding com os recursos de mapeamento avançados do ZDoom\n"
-"e a nova linguagem ZScript. Além do Doom, ele suporta Heretic, Hexen,\n"
-"Strife, Chex Quest e jogos criados por fãs como Harmony, Hacx e Freedoom."
-
 msgid "Multiplayer Doom port"
 msgstr "Porta Doom multijogador"
 
@@ -11677,6 +11663,32 @@ msgid ""
 msgstr ""
 "Esta biblioteca fornece uma implementação malloc(3) que enfatiza\n"
 "a prevenção de fragmentação e o suporte de simultaneidade escalável."
+
+msgid "XMPP client and server library"
+msgstr "Biblioteca de cliente e servidor XMPP"
+
+msgid ""
+"QXmpp is a XMPP client and server library written in C++ and uses the Qt\n"
+"framework.  It builds XMPP clients complying with the XMPP Compliance Suites\n"
+"2021 for IM and Advanced Mobile."
+msgstr ""
+"QXmpp é uma biblioteca de cliente e servidor XMPP escrita em C++ e usa o framework Qt\n"
+"Ele cria clientes XMPP em conformidade com o XMPP Compliance Suites\n"
+"2021 para IM e Advanced Mobile."
+
+msgid "Qt-based XMPP/Jabber Client"
+msgstr "Cliente XMPP/Jabber baseado em Qt"
+
+msgid ""
+"Kaidan is a chat client.  It uses the open communication\n"
+"protocol XMPP (Jabber).  The user interface makes use of Kirigami and QtQuick,\n"
+"while the back-end of Kaidan is entirely written in C++ using Qt and the\n"
+"Qt-based XMPP library QXmpp."
+msgstr ""
+"Kaidan é um cliente de bate-papo. Ele usa o protocolo de comunicação aberto\n"
+"XMPP (Jabber). A interface do usuário faz uso de Kirigami e QtQuick,\n"
+"enquanto o back-end do Kaidan é inteiramente escrito em C++ usando Qt e a\n"
+"biblioteca XMPP baseada em Qt QXmpp."
 
 msgid "Paginator for terminals"
 msgstr "Paginador para terminais"
@@ -22747,18 +22759,6 @@ msgstr ""
 "mensagens privadas, mensagens instantâneas, canais e grupos, e vídeo e áudio\n"
 "conferência."
 
-msgid "XMPP client and server library"
-msgstr "Biblioteca de cliente e servidor XMPP"
-
-msgid ""
-"QXmpp is a XMPP client and server library written in C++ and uses the Qt\n"
-"framework.  It builds XMPP clients complying with the XMPP Compliance Suites\n"
-"2021 for IM and Advanced Mobile."
-msgstr ""
-"QXmpp é uma biblioteca de cliente e servidor XMPP escrita em C++ e usa o framework Qt\n"
-"Ele cria clientes XMPP em conformidade com o XMPP Compliance Suites\n"
-"2021 para IM e Advanced Mobile."
-
 msgid "Library for Lotus Instant Messaging"
 msgstr "Biblioteca para Lotus Instant Messaging"
 
@@ -23011,20 +23011,6 @@ msgstr ""
 "Dino é um cliente de bate-papo para desktop. Ele se concentra em fornecer\n"
 "uma experiência Jabber/XMPP mínima, porém confiável, e ter criptografia habilitada por\n"
 "padrão."
-
-msgid "Qt-based XMPP/Jabber Client"
-msgstr "Cliente XMPP/Jabber baseado em Qt"
-
-msgid ""
-"Kaidan is a chat client.  It uses the open communication\n"
-"protocol XMPP (Jabber).  The user interface makes use of Kirigami and QtQuick,\n"
-"while the back-end of Kaidan is entirely written in C++ using Qt and the\n"
-"Qt-based XMPP library QXmpp."
-msgstr ""
-"Kaidan é um cliente de bate-papo. Ele usa o protocolo de comunicação aberto\n"
-"XMPP (Jabber). A interface do usuário faz uso de Kirigami e QtQuick,\n"
-"enquanto o back-end do Kaidan é inteiramente escrito em C++ usando Qt e a\n"
-"biblioteca XMPP baseada em Qt QXmpp."
 
 msgid "Jabber (XMPP) server"
 msgstr "Servidor Jabber (XMPP)"

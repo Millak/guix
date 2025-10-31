@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-24 03:18+0000\n"
+"POT-Creation-Date: 2025-10-24 03:18+0000\n"
 "PO-Revision-Date: 2025-09-27 14:50+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Italian <https://translate.codeberg.org/projects/guix/documentation-manual/it/>\n"
@@ -2905,16 +2905,6 @@ msgstr "Quando il nome di un pacchetto cambia, deve rimanere disponibile con il 
 msgid "deprecated-package"
 msgstr "deprecated-package"
 
-msgid ""
-"(define-public go-ipfs\n"
-"  (deprecated-package \"go-ipfs\" kubo))\n"
-msgstr ""
-"(define-public go-ipfs\n"
-"  (deprecated-package \"go-ipfs\" kubo))\n"
-
-msgid "That way, someone running @command{guix install go-ipfs} or similar sees a deprecation warning mentioning the new name."
-msgstr "In questo modo, qualcuno che esegue @command{guix install go-ipfs} o simili vede un avviso di deprecazione che menziona il nuovo nome."
-
 msgid "package removal policy"
 msgstr "politica di rimozione dei pacchetti"
 
@@ -2923,9 +2913,6 @@ msgstr "politica-di-rimozione-pacchetto"
 
 msgid "Packages whose upstream developers have declared as having reached ``end of life'' or being unmaintained may be removed; likewise, packages that have been @b{failing to build for two months or more} may be removed."
 msgstr "I pacchetti i cui sviluppatori upstream hanno dichiarato di aver raggiunto ``fine vita'' o non essere più mantenuti possono essere rimossi; allo stesso modo, i pacchetti che @b{non sono stati compilati con successo per due mesi o più} possono essere rimossi."
-
-msgid "There is no formal deprecation mechanism for this case, unless a replacement exists, in which case the @code{deprecated-package} procedure mentioned above can be used."
-msgstr "Non esiste un meccanismo formale di deprecazione per questo caso, a meno che non esista una sostituzione, nel qual caso può essere utilizzata la procedura @code{deprecated-package} menzionata sopra."
 
 msgid "If the package being removed is a ``leaf'' (no other packages depend on it), it may be removed after a @b{one-month review period} of the patch removing it (this applies even when the removal has additional motivations such as security problems affecting the package)."
 msgstr "Se il pacchetto da rimuovere è una ``foglia'' (nessun altro pacchetto dipende da esso), può essere rimosso dopo un @b{periodo di revisione di un mese} della patch che lo rimuove (questo si applica anche quando la rimozione ha motivazioni aggiuntive come problemi di sicurezza che interessano il pacchetto)."

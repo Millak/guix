@@ -2,13 +2,13 @@
 # Copyright (C) YEAR the authors of Guix (msgids) and the following authors (msgstr)
 # This file is distributed under the same license as the GNU guix package.
 # عمّار عبدالله <ammar-dmour19@proton.me>, 2025.
-#: gnu/packages/firmware.scm:1659 gnu/packages/firmware.scm:1926
-#: gnu/packages/linux.scm:1257
+#: gnu/packages/firmware.scm:1665 gnu/packages/firmware.scm:1932
+#: gnu/packages/linux.scm:1260
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-29 03:18+0000\n"
+"POT-Creation-Date: 2025-10-20 03:18+0000\n"
 "PO-Revision-Date: 2025-08-12 14:12+0000\n"
 "Last-Translator: mb_phd <mb_phd@noreply.codeberg.org>\n"
 "Language-Team: Arabic <https://translate.codeberg.org/projects/guix/packages/ar/>\n"
@@ -18,18 +18,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
 "X-Generator: Weblate 5.12.2\n"
-
-msgid "Session management in a clean and simple way"
-msgstr "إدارة الحصص بطريقة منمقة وسهلة"
-
-msgid ""
-"abduco provides session management i.e. it allows programs to\n"
-"be run independently from their controlling terminal.  That is, programs can\n"
-"be detached---run in the background---and then later reattached."
-msgstr ""
-"abduco يوفر إدارة الحصص، بمعنى أنه يسمح للبرامج\n"
-"بالعمل بصفة مستقلة عن الواجهة الطرفية المتحكمة. بعبارة أخرى، يمكن للبرامج\n"
-"أن تفصل، تعمل في الخلفية، ثم توصل لاحقا."
 
 msgid "Word processing program"
 msgstr "برنامج معالجة نصوص"
@@ -99,6 +87,18 @@ msgstr ""
 "عامل تصفية حزم IPv6.\n"
 "\n"
 "يستهدف كلا الأمرين مسؤولي الأنظمة."
+
+msgid "Session management in a clean and simple way"
+msgstr "إدارة الحصص بطريقة منمقة وسهلة"
+
+msgid ""
+"abduco provides session management i.e. it allows programs to\n"
+"be run independently from their controlling terminal.  That is, programs can\n"
+"be detached---run in the background---and then later reattached."
+msgstr ""
+"abduco يوفر إدارة الحصص، بمعنى أنه يسمح للبرامج\n"
+"بالعمل بصفة مستقلة عن الواجهة الطرفية المتحكمة. بعبارة أخرى، يمكن للبرامج\n"
+"أن تفصل، تعمل في الخلفية، ثم توصل لاحقا."
 
 msgid "Entirely free browser derived from Mozilla Firefox"
 msgstr "متصفح مجاني بالكامل مشتق من Mozilla Firefox"

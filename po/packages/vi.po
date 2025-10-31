@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the guix package.
 # Trần Ngọc Quân <vnwildman@gmail.com>, 2013.
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2025.
-#: gnu/packages/firmware.scm:1659 gnu/packages/firmware.scm:1926
-#: gnu/packages/linux.scm:1257
+#: gnu/packages/firmware.scm:1665 gnu/packages/firmware.scm:1932
+#: gnu/packages/linux.scm:1260
 msgid ""
 msgstr ""
 "Project-Id-Version: guix 0.5-pre2\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-29 03:18+0000\n"
+"POT-Creation-Date: 2025-10-20 03:18+0000\n"
 "PO-Revision-Date: 2025-07-19 14:08+0000\n"
 "Last-Translator: VnPower <vnpower@noreply.codeberg.org>\n"
 "Language-Team: Vietnamese <https://translate.codeberg.org/projects/guix/packages/vi/>\n"

@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-24 03:18+0000\n"
-"PO-Revision-Date: 2025-09-27 14:50+0000\n"
+"POT-Creation-Date: 2025-10-24 03:18+0000\n"
+"PO-Revision-Date: 2025-10-30 11:09+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/documentation-manual/de/>\n"
 "Language: de\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13.2\n"
+"X-Generator: Weblate 5.13.3\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -9186,9 +9186,6 @@ msgstr "Ehe Sie Ihren Kanal der Welt zur Verfügung stellen, möchten wir Ihnen 
 
 msgid "Before publishing a channel, please consider contributing your package definitions to Guix proper (@pxref{Contributing}).  Guix as a project is open to free software of all sorts, and packages in Guix proper are readily available to all Guix users and benefit from the project's quality assurance process."
 msgstr "Bevor Sie einen Kanal veröffentlichen, überlegen Sie sich bitte erst, ob Sie die Pakete nicht besser zum eigentlichen Guix-Projekt beisteuern (siehe @ref{Contributing}). Das Guix-Projekt ist gegenüber allen Arten freier Software offen und zum eigentlichen Guix gehörende Pakete stehen allen Guix-Nutzern zur Verfügung, außerdem profitieren sie von Guix’ Qualitätssicherungsprozess."
-
-msgid "Package modules and package definitions are Scheme code that uses various programming interfaces (APIs).  We, Guix developers, never change APIs gratuitously, but we do @emph{not} commit to freezing APIs either.  When you maintain package definitions outside Guix, we consider that @emph{the compatibility burden is on you}."
-msgstr "Bedenken Sie, dass Paketmodule und Paketdefinitionen Scheme-Code sind, der verschiedene Programmierschnittstellen (APIs) benutzt. Wir, die Entwickler von Guix, ändern APIs nie einfach so, versprechen aber auch @emph{nicht}, APIs nicht zu verändern. Wenn Sie Paketdefinitionen außerhalb von Guix betreuen, sehen wir es als @emph{Ihre Aufgabe an, deren Kompatibilität sicherzustellen}."
 
 msgid "Corollary: if you're using an external channel and that channel breaks, please @emph{report the issue to the channel authors}, not to the Guix project."
 msgstr "Das bedeutet auch, dass Sie, wenn Sie einen externen Kanal verwenden und dieser kaputt geht, Sie dies bitte @emph{den Autoren des Kanals} und nicht dem Guix-Projekt melden."
@@ -23869,9 +23866,6 @@ msgstr "@code{date-format} (Typ: Vielleicht-Zeichenkette)"
 msgid "@code{(srfi srfi-19)} format string for date."
 msgstr "Formatzeichenkette gemäß @code{(srfi srfi-19)} für das Datum."
 
-msgid "rottlog"
-msgstr "rottlog"
-
 msgid "log rotation"
 msgstr "Log-Rotation"
 
@@ -23913,158 +23907,6 @@ msgstr "Sie können außerdem mit @command{herd files log-rotation} Dateien aufl
 
 msgid "This service is part of @code{%base-services}, and thus enabled by default, with the default settings."
 msgstr "Dieser Dienst gehört zu den @code{%base-services} und ist somit als aktiv vorgegeben, mit den vorgegebenen Einstellungen."
-
-msgid "Rottlog"
-msgstr "Rottlog"
-
-msgid "The example below shows how to extend it with an additional @dfn{rotation}, should you need to do that (usually, services that produce log files already take care of that):"
-msgstr "Das Beispiel unten zeigt, wie Sie ihn um eine weitere @dfn{rotation} erweitern können, wenn dies nötig wird (normalerweise kümmern sich darum schon die Dienste, die die Log-Dateien erzeugen):"
-
-msgid ""
-"(use-modules (guix) (gnu))\n"
-"(use-service-modules admin)\n"
-"\n"
-msgstr ""
-"(use-modules (guix) (gnu))\n"
-"(use-service-modules admin)\n"
-"\n"
-
-msgid ""
-"(define my-log-files\n"
-"  ;; Log files that I want to rotate.\n"
-"  '(\"/var/log/something.log\" \"/var/log/another.log\"))\n"
-"\n"
-msgstr ""
-"(define my-log-files\n"
-"  ;; Log-Dateien, die ich rotieren lassen will.\n"
-"  '(\"/var/log/irgendein.log\" \"/var/log/noch-ein.log\"))\n"
-"\n"
-
-msgid ""
-"(operating-system\n"
-"  ;; @dots{}\n"
-"  (services (cons (simple-service 'rotate-my-stuff\n"
-"                                  rottlog-service-type\n"
-"                                  (list (log-rotation\n"
-"                                         (frequency 'daily)\n"
-"                                         (files my-log-files))))\n"
-"                  %base-services)))\n"
-msgstr ""
-"(operating-system\n"
-"  ;; …\n"
-"  (services (cons (simple-service 'meinen-kram-rotieren\n"
-"                                  rottlog-service-type\n"
-"                                  (list (log-rotation\n"
-"                                         (frequency 'daily)\n"
-"                                         (files my-log-files))))\n"
-"                  %base-services)))\n"
-
-msgid "rottlog-service-type"
-msgstr "rottlog-service-type"
-
-msgid "This is the type of the Rottlog service, whose value is a @code{rottlog-configuration} object."
-msgstr "Dies ist der Typ des Rottlog-Dienstes, dessen Wert ein @code{rottlog-configuration}-Objekt ist."
-
-msgid "Other services can extend this one with new @code{log-rotation} objects (see below), thereby augmenting the set of files to be rotated."
-msgstr "Andere Dienste können diesen Dienst um neue @code{log-rotation}-Objekte erweitern (siehe unten), wodurch die Auswahl an zu rotierenden Dateien ausgeweitet wird."
-
-msgid "This service type can define mcron jobs (@pxref{Scheduled Job Execution}) to run the rottlog service."
-msgstr "Dieser Diensttyp kann mcron-Aufträge definieren (siehe @ref{Scheduled Job Execution}), die den rottlog-Dienst ausführen."
-
-msgid "{Data Type} rottlog-configuration"
-msgstr "{Datentyp} rottlog-configuration"
-
-msgid "Data type representing the configuration of rottlog."
-msgstr "Datentyp, der die Konfiguration von rottlog repräsentiert."
-
-msgid "@code{rottlog} (default: @code{rottlog})"
-msgstr "@code{rottlog} (Vorgabe: @code{rottlog})"
-
-msgid "The Rottlog package to use."
-msgstr "Das Rottlog-Paket, das verwendet werden soll."
-
-msgid "@code{rc-file} (default: @code{(file-append rottlog \"/etc/rc\")})"
-msgstr "@code{rc-file} (Vorgabe: @code{(file-append rottlog \"/etc/rc\")})"
-
-msgid "The Rottlog configuration file to use (@pxref{Mandatory RC Variables,,, rottlog, GNU Rot[t]log Manual})."
-msgstr "Die zu benutzende Rottlog-Konfigurationsdatei (siehe @ref{Mandatory RC Variables,,, rottlog, GNU Rot[t]log Manual})."
-
-msgid "@code{rotations} (default: @code{%default-rotations})"
-msgstr "@code{rotations} (Vorgabe: @code{%default-rotations})"
-
-msgid "A list of @code{log-rotation} objects as defined below."
-msgstr "Eine Liste von @code{log-rotation}-Objekten, wie wir sie weiter unten definieren."
-
-msgid "jobs"
-msgstr "jobs"
-
-msgid "This is a list of gexps where each gexp corresponds to an mcron job specification (@pxref{Scheduled Job Execution})."
-msgstr "Dies ist eine Liste von G-Ausdrücken. Jeder G-Ausdruck darin entspricht einer mcron-Auftragsspezifikation (siehe @ref{Scheduled Job Execution})."
-
-msgid "{Data Type} log-rotation"
-msgstr "{Datentyp} log-rotation"
-
-msgid "Data type representing the rotation of a group of log files."
-msgstr "Datentyp, der die Rotation einer Gruppe von Protokolldateien repräsentiert."
-
-msgid "Taking an example from the Rottlog manual (@pxref{Period Related File Examples,,, rottlog, GNU Rot[t]log Manual}), a log rotation might be defined like this:"
-msgstr "Um ein Beispiel aus dem Rottlog-Handbuch (siehe @ref{Period Related File Examples,,, rottlog, GNU Rot[t]log Manual}) aufzugreifen: Eine Log-Rotation kann auf folgende Art definiert werden:"
-
-msgid ""
-"(log-rotation\n"
-"  (frequency 'daily)\n"
-"  (files '(\"/var/log/apache/*\"))\n"
-"  (options '(\"storedir apache-archives\"\n"
-"             \"rotate 6\"\n"
-"             \"notifempty\"\n"
-"             \"nocompress\")))\n"
-msgstr ""
-"(log-rotation\n"
-"  (frequency 'daily) ;täglich\n"
-"  (files '(\"/var/log/apache/*\"))\n"
-"  (options '(\"storedir apache-archives\"\n"
-"             \"rotate 6\"\n"
-"             \"notifempty\"\n"
-"             \"nocompress\")))\n"
-
-msgid "The list of fields is as follows:"
-msgstr "Die Liste der Felder ist folgendermaßen aufgebaut:"
-
-msgid "@code{frequency} (default: @code{'weekly})"
-msgstr "@code{frequency} (Vorgabe: @code{'weekly})"
-
-msgid "The log rotation frequency, a symbol."
-msgstr "Die Häufigkeit der Log-Rotation, dargestellt als englischsprachiges Symbol."
-
-msgid "The list of files or file glob patterns to rotate."
-msgstr "Die Liste der Dateien oder Glob-Muster für Dateien, die rotiert werden sollen."
-
-msgid "%default-log-rotation-options"
-msgstr "%default-log-rotation-options"
-
-msgid "@code{options} (default: @code{%default-log-rotation-options})"
-msgstr "@code{options} (Vorgabe: @code{%default-log-rotation-options})"
-
-msgid "The list of rottlog options for this rotation (@pxref{Configuration parameters,,, rottlog, GNU Rot[t]log Manual})."
-msgstr "Die Liste der Rottlog-Optionen für diese Rotation (siehe @ref{Configuration parameters,,, rottlog, Handbuch von GNU Rot[t]log})."
-
-msgid "@code{post-rotate} (default: @code{#f})"
-msgstr "@code{post-rotate} (Vorgabe: @code{#f})"
-
-msgid "Either @code{#f} or a gexp to execute once the rotation has completed."
-msgstr "Entweder @code{#f} oder ein G-Ausdruck, der nach Abschluss der Rotation einmal ausgeführt wird."
-
-msgid "%default-rotations"
-msgstr "%default-rotations"
-
-msgid "Specifies weekly rotation of @code{%rotated-files} and of @file{/var/log/guix-daemon.log}."
-msgstr "Gibt wöchentliche Rotationen der @code{%rotated-files} und von @file{/var/log/guix-daemon.log} an."
-
-msgid "%rotated-files"
-msgstr "%rotated-files"
-
-msgid "The list of syslog-controlled files to be rotated.  By default it is: @code{'(\"/var/log/messages\" \"/var/log/secure\" \"/var/log/debug\" \\ \"/var/log/maillog\")}."
-msgstr "Die Liste der von Syslog verwalteten Dateien, die rotiert werden sollen. Vorgegeben ist @code{'(\"/var/log/messages\" \"/var/log/secure\" \"/var/log/debug\"  \"/var/log/maillog\")}."
 
 msgid "Some log files just need to be deleted periodically once they are old, without any other criterion and without any archival step.  This is the case of build logs stored by @command{guix-daemon} under @file{/var/log/guix/drvs} (@pxref{Invoking guix-daemon}).  The @code{log-cleanup} service addresses this use case.  For example, @code{%base-services} (@pxref{Base Services}) includes the following:"
 msgstr "Manche Protokolldateien müssen einfach nur regelmäßig gelöscht werden, wenn sie alt geworden sind, ohne Sonderfälle und ohne Archivierung. Das trifft auf Erstellungsprotokolle zu, die @command{guix-daemon} unter @file{/var/log/guix/drvs} vorhält (siehe @ref{Invoking guix-daemon}). Der Dienst @code{log-cleanup} kann diesen Anwendungsfall übernehmen. Zum Beispiel ist Folgendes Teil der @code{%base-services} (siehe @ref{Base Services}):"
@@ -29226,20 +29068,11 @@ msgstr "Scanner, Zugriff auf"
 msgid "sane-service-type"
 msgstr "sane-service-type"
 
-msgid "This service provides access to scanners @i{via} @uref{http://www.sane-project.org, SANE} by installing the necessary udev rules.  It is included in @code{%desktop-services} (@pxref{Desktop Services}) and relies by default on @code{sane-backends-minimal} package (see below) for hardware support."
-msgstr "Mit diesem Dienst wird Zugriff auf Scanner über @uref{http://www.sane-project.org, SANE} möglich, indem er die nötigen udev-Regeln installiert. Er ist Teil von @code{%desktop-services} (siehe @ref{Desktop Services}) und verwendet in den Vorgabeeinstellungen das Paket @code{sane-backends-minimal} (siehe unten) für die Hardwareunterstützung."
+msgid "This service provides access to scanners @i{via} @uref{http://www.sane-project.org, SANE} by installing the necessary udev rules and pluggable backends.  It is included in @code{%desktop-services} (@pxref{Desktop Services}) and relies by default on @code{sane-backends} package (see below) for hardware support."
+msgstr "Mit diesem Dienst wird Zugriff auf Scanner über @uref{http://www.sane-project.org, SANE} möglich, indem er die nötigen udev-Regeln und zusätzliche Backends installiert. Er ist Teil von @code{%desktop-services} (siehe @ref{Desktop Services}) und verwendet in den Vorgabeeinstellungen das Paket @code{sane-backends} (siehe unten) für die Hardwareunterstützung."
 
-msgid "sane-backends-minimal"
-msgstr "sane-backends-minimal"
-
-msgid "The default package which the @code{sane-service-type} installs.  It supports many recent scanners."
-msgstr "Das vorgegebene Paket, das durch den @code{sane-service-type} installiert wird. Es unterstützt viele aktuelle Scanner."
-
-msgid "sane-backends"
-msgstr "sane-backends"
-
-msgid "This package includes support for all scanners that @code{sane-backends-minimal} supports, plus older Hewlett-Packard scanners supported by @code{hplip} package.  In order to use this on a system which relies on @code{%desktop-services}, you may use @code{modify-services} (@pxref{Service Reference, @code{modify-services}}) as illustrated below:"
-msgstr "Dieses Paket bietet Unterstützung für alle Scanner, die @code{sane-backends-minimal} unterstützt, und außerdem für ältere Hewlett-Packard-Scanner, die das Paket @code{hplip} unterstützt. Um es auf einem System zu benutzen, das auf den @code{%desktop-services} aufbaut, können Sie @code{modify-services} benutzen (siehe @ref{Service Reference, @code{modify-services}}), etwa so:"
+msgid "In order to use additional backends on a system which relies on @code{%desktop-services}, you may use @code{modify-services} (@pxref{Service Reference, @code{modify-services}}) as illustrated below:"
+msgstr "Um weitere Scanner-Backends auf einem System zu benutzen, das auf den @code{%desktop-services} aufbaut, können Sie @code{modify-services} benutzen (siehe @ref{Service Reference, @code{modify-services}}), etwa so:"
 
 msgid ""
 "(use-modules (gnu))\n"
@@ -29264,14 +29097,18 @@ msgid ""
 "(define %my-desktop-services\n"
 "  ;; List of desktop services that supports a broader range of scanners.\n"
 "  (modify-services %desktop-services\n"
-"    (sane-service-type _ => sane-backends)))\n"
+"    (sane-service-type _ =>\n"
+"      (sane-configuration\n"
+"        (backends (list sane-backends sane-airscan))))))\n"
 "\n"
 msgstr ""
 "(define %my-desktop-services\n"
 "  ;; Alternative Diensteliste wie %desktop-services mit Unterstützung\n"
 "  ;; für mehr Scanner.\n"
 "  (modify-services %desktop-services\n"
-"    (sane-service-type _ => sane-backends)))\n"
+"    (sane-service-type _ =>\n"
+"      (sane-configuration\n"
+"        (backends (list sane-backends sane-airscan))))))\n"
 "\n"
 
 msgid ""
@@ -50363,9 +50200,6 @@ msgstr "Das Bash-Paket, was benutzt werden soll."
 msgid "@code{guix-defaults?} (default: @code{#t}) (type: boolean)"
 msgstr "@code{guix-defaults?} (Vorgabe: @code{#t}) (Typ: Boolescher-Ausdruck)"
 
-msgid "@code{environment-variables} (default: @code{'()}) (type: alist)"
-msgstr "@code{environment-variables} (Vorgabe: @code{'()}) (Typ: Assoziative-Liste)"
-
 msgid "Association list of environment variables to set for the Bash session.  The rules for the @code{home-environment-variables-service-type} apply here (@pxref{Essential Home Services}).  The contents of this field will be added after the contents of the @code{bash-profile} field."
 msgstr "Eine assoziative Liste der Umgebungsvariablen, die für die Bash-Sitzung gesetzt sein sollen. Dieselben Regeln wie für den @code{home-environment-variables-service-type} gelten auch hier (siehe @ref{Essential Home Services}). Der Inhalt dieses Felds wird anschließend an das, was im @code{bash-profile}-Feld steht, angefügt."
 
@@ -50381,20 +50215,11 @@ msgstr "wird zu"
 msgid "alias ls=\"ls -alF\"\n"
 msgstr "alias ls=\"ls -alF\"\n"
 
-msgid "@code{bash-profile} (default: @code{'()}) (type: text-config)"
-msgstr "@code{bash-profile} (Vorgabe: @code{'()}) (Typ: Konfigurationstexte)"
-
 msgid "List of file-like objects, which will be added to @file{.bash_profile}.  Used for executing user's commands at start of login shell (In most cases the shell started on tty just after login).  @file{.bash_login} won't be ever read, because @file{.bash_profile} always present."
 msgstr "Eine Liste dateiartiger Objekte, die in @file{.bash_profile} eingefügt werden. Damit können benutzereigene Befehle beim Start der Login-Shell ausgeführt werden. (In der Regel handelt es sich um die Shell, die gestartet wird, direkt nachdem man sich auf der Konsole (TTY) anmeldet.) @file{.bash_login} wird niemals gelesen, weil @file{.bash_profile} immer existiert."
 
-msgid "@code{bashrc} (default: @code{'()}) (type: text-config)"
-msgstr "@code{bashrc} (Vorgabe: @code{'()}) (Typ: Konfigurationstexte)"
-
 msgid "List of file-like objects, which will be added to @file{.bashrc}.  Used for executing user's commands at start of interactive shell (The shell for interactive usage started by typing @code{bash} or by terminal app or any other program)."
 msgstr "Eine Liste dateiartiger Objekte, die in @file{.bashrc} eingefügt werden. Damit können benutzereigene Befehle beim Start einer interaktiven Shell ausgeführt werden. (Interaktive Shells sind Shells für interaktive Nutzung, die man startet, indem man @code{bash} eintippt oder die durch Terminal-Anwendungen oder andere Programme gestartet werden.)"
-
-msgid "@code{bash-logout} (default: @code{'()}) (type: text-config)"
-msgstr "@code{bash-logout} (Vorgabe: @code{'()}) (Typ: Konfigurationstexte)"
 
 msgid "List of file-like objects, which will be added to @file{.bash_logout}.  Used for executing user's commands at the exit of login shell.  It won't be read in some cases (if the shell terminates by exec'ing another process for example)."
 msgstr "Eine Liste dateiartiger Objekte, die zu @file{.bash_logout} hinzugefügt werden. Damit können benutzereigene Befehle beim Verlassen der Login-Shell ausgeführt werden. Die Datei wird in manchen Fällen @emph{nicht} gelesen (wenn die Shell zum Beispiel durch exec eines anderen Prozesses terminiert)."
@@ -50402,22 +50227,22 @@ msgstr "Eine Liste dateiartiger Objekte, die zu @file{.bash_logout} hinzugefügt
 msgid "You can extend the Bash service by using the @code{home-bash-extension} configuration record, whose fields must mirror that of @code{home-bash-configuration} (@pxref{home-bash-configuration}).  The contents of the extensions will be added to the end of the corresponding Bash configuration files (@pxref{Bash Startup Files,,, bash, The GNU Bash Reference Manual}."
 msgstr "Sie können den Bash-Dienst mit Hilfe einer Konfiguration im Verbundsobjekt @code{home-bash-extension} erweitern. Dessen Felder spiegeln meistens die von @code{home-bash-configuration} (siehe @ref{home-bash-configuration}). Die Inhalte der Erweiterungen werden ans Ende der zugehörigen Bash-Konfigurationsdateien angehängt (siehe @ref{Bash Startup Files,,, bash, Referenzhandbuch von GNU Bash}."
 
-msgid "For example, here is how you would define a service that extends the Bash service such that @file{~/.bash_profile} defines an additional environment variable, @env{PS1}:"
-msgstr "Zum Beispiel können Sie so einen Dienst definieren, der den Bash-Dienst erweitert, um in @file{~/.bash_profile} eine weitere Umgebungsvariable @env{PS1} definieren zu lassen:"
+msgid "For example, here is how you would define a service that extends the Bash service such that @file{~/.bash_profile} defines an additional shell variable, @env{PS1}:"
+msgstr "Zum Beispiel können Sie so einen Dienst definieren, der den Bash-Dienst erweitert, um in @file{~/.bash_profile} eine weitere Shell-Variable @env{PS1} definieren zu lassen:"
 
 msgid ""
 "(define bash-fancy-prompt-service\n"
 "  (simple-service 'bash-fancy-prompt\n"
 "                  home-bash-service-type\n"
 "                  (home-bash-extension\n"
-"                   (environment-variables\n"
+"                   (variables\n"
 "                    '((\"PS1\" . \"\\\\u \\\\wλ \"))))))\n"
 msgstr ""
 "(define bash-tolle-eingabeaufforderung-service\n"
 "  (simple-service 'bash-tolle-eingabeaufforderung\n"
 "                  home-bash-service-type\n"
 "                  (home-bash-extension\n"
-"                   (environment-variables\n"
+"                   (variables\n"
 "                    '((\"PS1\" . \"\\\\u \\\\wλ \"))))))\n"
 
 msgid "You would then add @code{bash-fancy-prompt-service} to the list in the @code{services} field of your @code{home-environment}.  The reference of @code{home-bash-extension} follows."
@@ -50431,9 +50256,6 @@ msgstr "Verfügbare @code{home-bash-extension}-Felder sind:"
 
 msgid "Additional environment variables to set.  These will be combined with the environment variables from other extensions and the base service to form one coherent block of environment variables."
 msgstr "Zusätzliche Umgebungsvariable, die festgelegt werden sollen. Diese werden mit den Umgebungsvariablen anderer Erweiterungen und denen des zugrunde liegenden Dienstes zu einem zusammenhängenden Block aus Umgebungsvariablen vereint."
-
-msgid "@code{aliases} (default: @code{'()}) (type: alist)"
-msgstr "@code{aliases} (Vorgabe: @code{'()}) (Typ: Assoziative-Liste)"
 
 msgid "Additional aliases to set.  These will be combined with the aliases from other extensions and the base service."
 msgstr "Zusätzliche Alias-Namen, die festgelegt werden sollen. Diese werden mit den Alias-Namen anderer Erweiterungen und denen des zugrunde liegenden Dienstes zusammengelegt."
@@ -50467,6 +50289,9 @@ msgstr "@code{xdg-flavor?} (Vorgabe: @code{#t}) (Typ: Boolescher-Ausdruck)"
 
 msgid "Place all the configs to @file{$XDG_CONFIG_HOME/zsh}.  Makes @file{~/.zshenv} to set @env{ZDOTDIR} to @file{$XDG_CONFIG_HOME/zsh}.  Shell startup process will continue with @file{$XDG_CONFIG_HOME/zsh/.zshenv}."
 msgstr "Ob alle Konfigurationsdateien in @file{$XDG_CONFIG_HOME/zsh} platziert werden sollen. Auch wird @file{~/.zshenv} dann @env{ZDOTDIR} auf @file{$XDG_CONFIG_HOME/zsh} festlegen. Der Startvorgang der Shell wird mit @file{$XDG_CONFIG_HOME/zsh/.zshenv} fortgeführt."
+
+msgid "@code{environment-variables} (default: @code{'()}) (type: alist)"
+msgstr "@code{environment-variables} (Vorgabe: @code{'()}) (Typ: Assoziative-Liste)"
 
 msgid "Association list of environment variables to set for the Zsh session."
 msgstr "Eine assoziative Liste, welche Umgebungsvariable in der Zsh-Sitzung festgelegt sein sollen."

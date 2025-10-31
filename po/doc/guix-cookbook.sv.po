@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-02 03:18+0000\n"
-"PO-Revision-Date: 2025-09-12 11:50+0000\n"
+"POT-Creation-Date: 2025-10-21 03:18+0000\n"
+"PO-Revision-Date: 2025-10-31 22:39+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Swedish <https://translate.codeberg.org/projects/guix/documentation-cookbook/sv/>\n"
 "Language: sv\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13.2\n"
+"X-Generator: Weblate 5.14\n"
 
 msgid "GNU Guix Cookbook"
 msgstr "Kokbok för GNU Guix"
@@ -103,7 +103,7 @@ msgid "Thanks!"
 msgstr "Tack!"
 
 msgid "GNU Free Documentation License"
-msgstr "GNU Free Documentation License"
+msgstr "GNU's licens för fria dokumentation"
 
 msgid "The license of this document."
 msgstr "Licensen för det här dokumentet."
@@ -336,11 +336,17 @@ msgstr ""
 "@result{} 17\n"
 "\n"
 
+msgid "S-expression"
+msgstr "S-uttryck"
+
 msgid "#~"
 msgstr "#~"
 
 msgid "#$"
 msgstr "#$"
+
+msgid "gexp"
+msgstr "gexp"
 
 msgid "packaging"
 msgstr "paketering"
@@ -355,10 +361,10 @@ msgid "This field contains a description of the source code origin.  The @code{o
 msgstr "Det här fältet innehåller en beskrivning av ursprunget till källkoden.    The @code{origin} record contains these fields:"
 
 msgid "build-system"
-msgstr "byggnationssystem"
+msgstr "build-system"
 
 msgid "synopsis"
-msgstr "sammanfattning"
+msgstr "synopsis"
 
 msgid "It should be a concise summary of what the package does.  For many packages a tagline from the project's home page can be used as the synopsis."
 msgstr "Det bör vara en koncis summering av vad paketet gör.    För många paket kan en tagg från projektets webbsida användas som en summering."
@@ -367,7 +373,7 @@ msgid "description"
 msgstr "description"
 
 msgid "home-page"
-msgstr "hemsida"
+msgstr "home-page"
 
 msgid "Use HTTPS if available."
 msgstr "Använd HTTPS om det går."
@@ -403,7 +409,7 @@ msgid "Inputs"
 msgstr "Inmatningar"
 
 msgid "inputs"
-msgstr "inmatningar"
+msgstr "inputs"
 
 msgid "Note"
 msgstr "Observera"
@@ -418,7 +424,7 @@ msgid "mkdir-p"
 msgstr "mkdir-p"
 
 msgid "invoke"
-msgstr "Åberopa"
+msgstr "invoke"
 
 msgid "substitute*"
 msgstr "substitute*"
@@ -426,8 +432,29 @@ msgstr "substitute*"
 msgid "Guix offers a flexible language for declaratively configuring your Guix System.  This flexibility can at times be overwhelming.  The purpose of this chapter is to demonstrate some advanced configuration concepts."
 msgstr "Guix erbjuder ett flexibelt språk för att deklarativt konfigurera ditt Guix Syste.    Den här flexibiliteten kan ibland vara överväldigande.    Syftet med det här kapitlet är att demonstrera några avancerade konfigurationsbegrepp."
 
+msgid "run:"
+msgstr "kör:"
+
+msgid "or,"
+msgstr "eller,"
+
+msgid "wm"
+msgstr "wm"
+
+msgid "stumpwm"
+msgstr "stumpwm"
+
+msgid "sessionlock"
+msgstr "sessionslås"
+
+msgid "ssh-keygen\n"
+msgstr "ssh-nyckel\n"
+
 msgid "Don't forget to substitute the @var{server-ip-address}, @var{server-gateway}, @var{ssh-key-name} and @var{ssh-public-key-content} variables with your own values."
 msgstr "Kom ihåg att ersätta variablerna @var{server-ip-address}, @var{server-gateway}, @var{ssh-key-name} och @var{ssh-public-key-content} med dina egna värden."
+
+msgid "                ))\n"
+msgstr "                ))\n"
 
 msgid "Guix daemon can use a HTTP proxy to get substitutes, here we are configuring it to get them via Tor."
 msgstr "Guix-demon kan använda en HTTP-proxy för att få ersättningar, här konfigurerar vi den för få dem via Tor."
@@ -447,8 +474,17 @@ msgstr ""
 "guix build \\\n"
 "  --substitute-urls=@value{SUBSTITUTE-TOR-URL} @dots{}\n"
 
+msgid "ngx.say(stdout)\n"
+msgstr "ngx.say(stdout)\n"
+
+msgid "mpd"
+msgstr "mpd"
+
 msgid "Reconfigure your system with at least the following services and packages:"
 msgstr "Omkonfigurera ditt system med åtminstone följande tjänster och paket:"
+
+msgid "Important"
+msgstr "Viktigt"
 
 msgid "Interface"
 msgstr "Gränssnitt"
@@ -456,11 +492,24 @@ msgstr "Gränssnitt"
 msgid "Target"
 msgstr "Mål"
 
+msgid "192.168.2.0"
+msgstr "192.168.2.0"
+
 msgid "IPv4-Netmask"
 msgstr "IPv4-nätmask"
 
+msgid "255.255.255.0"
+msgstr "255.255.255.0"
+
 msgid "IPv4-Gateway"
 msgstr "IPv4-gateway"
+
+msgid ""
+"@}\n"
+"\n"
+msgstr ""
+"@}\n"
+"\n"
 
 msgid "Guix is a functional package manager that offers many features beyond what more traditional package managers can do.  To the uninitiated, those features might not have obvious use cases at first.  The purpose of this chapter is to demonstrate some advanced package management concepts."
 msgstr "Guix är en funktionell pakethanterare som erbjuder många fler funktioner än vad traditionella pakethanterare gör.   För den oinvigde kan dessa funktioner vid en första anblick tyckas sakna uppenbart användningsområde.    Syftet med det här kapitlet är att demonstrera några avancerade pakethanteringsbegrepp."
@@ -486,17 +535,36 @@ msgstr "utveckling, med Guix"
 msgid "software development, with Guix"
 msgstr "programutveckling, med Guix"
 
+msgid "Handy!"
+msgstr "Användningsbar!"
+
+msgid "@uref{https://git.savannah.gnu.org/cgit/guile.git/tree/.guix-channel?id=cd57379b3df636198d8cd8e76c1bfbc523762e79,@code{.guix-channel}};"
+msgstr "@uref{https://git.savannah.gnu.org/cgit/guile.git/tree/.guix-channel?id=cd57379b3df636198d8cd8e76c1bfbc523762e79,@code{.guix-channel}};"
+
+msgid "@uref{https://git.savannah.gnu.org/cgit/guile.git/tree/.guix/manifest.scm?id=cd57379b3df636198d8cd8e76c1bfbc523762e79,@code{.guix/manifest.scm}}."
+msgstr "@uref{https://git.savannah.gnu.org/cgit/guile.git/tree/.guix/manifest.scm?id=cd57379b3df636198d8cd8e76c1bfbc523762e79,@code{.guix/manifest.scm}}."
+
 msgid "With a couple of files, we get support for:"
 msgstr "Med några filer får vi stöd för:"
 
 msgid "development environments (@command{guix shell});"
 msgstr "utvecklingsmiljöer (@command{guix shell});"
 
+msgid "Voilà!"
+msgstr "Varsågod!"
+
 msgid "Network Access"
 msgstr "Nätverksåtkomst"
 
 msgid "Guix requires network access to download source code and pre-built binaries.  The good news is that only the head node needs that since compute nodes simply delegate to it."
 msgstr "Guix kräver en nätverksåtkomst för att hämta källkod och förbyggda binärfiler.    The good news is that only the head node needs that since compute nodes simply delegate to it."
+
+msgid ""
+"@dots{}\n"
+"\n"
+msgstr ""
+"@dots{}\n"
+"\n"
 
 msgid "(In case you're wondering, that's more than 320@ MiB of @emph{compressed} source code.)"
 msgstr "(Ifall du undrar är det där mer än 320 MiB av @emph{komprimerad} källkod.)"
@@ -534,6 +602,9 @@ msgstr "guix gc --referrers /gnu/store/…-glibc-2.25\n"
 
 msgid "This will report whether profiles exist that refer to this specific glibc variant."
 msgstr "Det här kommer att rapportera om profiler som refererar till den här specifika glibc-varianten existerar."
+
+msgid "sysadmin"
+msgstr "systemadministratör"
 
 msgid "Enable and start the service."
 msgstr "Aktivera och starta tjänsten."

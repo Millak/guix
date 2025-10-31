@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the GNU guix package.
 # ROCKTAKEY <rocktakey@gmail.com>, 2023.
 # gemmaro <gemmaro.dev@gmail.com>, 2023.
-#: gnu/packages/firmware.scm:1659 gnu/packages/firmware.scm:1926
-#: gnu/packages/linux.scm:1257
+#: gnu/packages/firmware.scm:1665 gnu/packages/firmware.scm:1932
+#: gnu/packages/linux.scm:1260
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-29 03:18+0000\n"
+"POT-Creation-Date: 2025-10-20 03:18+0000\n"
 "PO-Revision-Date: 2023-06-26 12:59+0000\n"
 "Last-Translator: gemmaro <gemmaro.dev@gmail.com>\n"
 "Language-Team: Japanese <https://translate.fedoraproject.org/projects/guix/packages/ja/>\n"

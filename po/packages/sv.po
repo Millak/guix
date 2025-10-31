@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the GNU guix package.
 # Rey Lopezch <taodeking@tutanota.com>, 2024, 2025.
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2025.
-#: gnu/packages/firmware.scm:1659 gnu/packages/firmware.scm:1926
-#: gnu/packages/linux.scm:1257
+#: gnu/packages/firmware.scm:1665 gnu/packages/firmware.scm:1932
+#: gnu/packages/linux.scm:1260
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-29 03:18+0000\n"
-"PO-Revision-Date: 2025-09-19 02:09+0000\n"
+"POT-Creation-Date: 2025-10-20 03:18+0000\n"
+"PO-Revision-Date: 2025-10-30 11:10+0000\n"
 "Last-Translator: Umeaman <umeaman@noreply.codeberg.org>\n"
 "Language-Team: Swedish <https://translate.codeberg.org/projects/guix/packages/sv/>\n"
 "Language: sv\n"
@@ -18,10 +18,35 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13.2\n"
+"X-Generator: Weblate 5.13.3\n"
 
 msgid "Word processing program"
 msgstr "Ordbehandlingsprogram"
+
+msgid "This package provides a tiny system info utility."
+msgstr "Det här paketet tillhandahåller ett pyttelitet verktyg för systeminformation."
+
+msgid ""
+"This package provides a simple, configurable system\n"
+"information tool."
+msgstr "Det här paketet tillhandahåller ett enkelt och konfigurerbart systeminformationsverktyg."
+
+msgid "This package provides @code{udev} bindings for Python."
+msgstr "Det här paketet tillhandahåller @code{udev}-bindningar till Python."
+
+msgid ""
+"This package provides Python bindings for the Littlewood-Richardson\n"
+"Calculator."
+msgstr ""
+"Det här paketet tillhandahåller Python-bindningar för Littlewood-Richardson\n"
+"-kalkylatorn."
+
+msgid ""
+"This package provides an implementation of APL in Java, extended from\n"
+"Dyalog APL."
+msgstr ""
+"Det här paketet tillhandahåller en implementering av APL i Java, förlängt från\n"
+"Dyalog APL."
 
 msgid "Spell checker"
 msgstr "Stavningskontroll"
@@ -39,8 +64,37 @@ msgstr ""
 "Ispell är ett interaktivt stavningskontrollverktyg som stödjer många\n"
 " europeiska språk."
 
+msgid "This package provides ASDF schemas for validating FITS tags."
+msgstr "Det här paketet tillhandahåller ASDF-scheman för bekräftelse av FITS-taggar."
+
+msgid "This package provides HEALPix to the Astropy project."
+msgstr "Det här paketet tillhandahåller HEALPix till Astropy-projektet."
+
+msgid "Python read-only implementation of the @code{EventIO} file format."
+msgstr "Python-implementation endast med läsrättigheter av filformatet @code{EventIO}."
+
+msgid ""
+"This package provides a cython-optimized implementations of empirical dust\n"
+"exitinction laws found in the literature."
+msgstr ""
+"Detta paket tillhandahåller cython-optimerade implementationer av empiriska damm \n"
+"utrotningslagar som hittas i litteraturen."
+
+msgid "This package implements a functionality to match sky on image mosaic."
+msgstr "Detta paket implementerar en funktion för att matcha himlen på en bildmosaik."
+
+msgid ""
+"This package provides a tooling for solar X-ray spectroscopy based on\n"
+"SunPy."
+msgstr ""
+"Detta paket tillhandahåller verktyg för solröntgenspektroskopi baserat på \n"
+"SunPy."
+
 msgid "Embedded Audio Acceleration"
 msgstr "Inbäddad ljudacceleration"
+
+msgid "Software Synthesizer"
+msgstr "Programvarusyntesizer"
 
 msgid "WebRTC's Audio Processing Library"
 msgstr "WebRTC:s ljudbehandlingsbibliotek"
@@ -74,6 +128,9 @@ msgstr ""
 
 msgid "Library to handle various audio file formats"
 msgstr "Bibliotek för att hantera olika ljudfilsformat"
+
+msgid "SoundFont synthesizer"
+msgstr "Syntesizern SoundFont"
 
 msgid "Virtual guitar amplifier"
 msgstr "Virtuell gitarrförstärkare"
@@ -113,6 +170,9 @@ msgstr "Ljudbibliotek för Portable C"
 msgid "Sound editor"
 msgstr "Ljudredigerare"
 
+msgid "This package provides a command-line AAC-encoder."
+msgstr "Det här paketet tillhandahåller en AAC-kodare för kommandoraden."
+
 msgid "XAudio reimplementation"
 msgstr "Återimplementering av XAudio"
 
@@ -134,14 +194,30 @@ msgstr "hgu95av2cdf"
 msgid "RnBeads"
 msgstr "RnBeads"
 
+msgid "This package provides a Python package for reading raw fcs files"
+msgstr "Det här paketet tillhandahåller ett Python-paket för läsning av råa fcs-filer"
+
 msgid "DNAmCrosshyb"
 msgstr "DNAmCrosshyb"
 
 msgid "PLSDA-batch"
 msgstr "PLSDA-batch"
 
+msgid "Implementation of the Smith-Waterman algorithm."
+msgstr "Implementation av Smith-Waterman-algoritmen."
+
 msgid "BitTorrent client"
 msgstr "BitTorrent-klient"
+
+msgid ""
+"This package provides a pytest plugin for generating NUnit3 test result\n"
+"XML output"
+msgstr ""
+"Det här paketet tillhandahåller ett pytest-insticksprogram för att generera testresultat \n"
+"av XML-utmatningen för NUnit3"
+
+msgid "Tools for writing macros."
+msgstr "Verktyg för att skriva makros."
 
 msgid "Compression library"
 msgstr "Kompressionsbibliotek"
@@ -155,6 +231,9 @@ msgstr "URL-tolkare"
 msgid "Aster Models"
 msgstr "Aster-modeller"
 
+msgid "R package providing subset of Boost headers"
+msgstr "R-paket som tillhandahåller en delmängd av Boost-rubriker"
+
 msgid "Signal processing"
 msgstr "Signalbehandling"
 
@@ -166,6 +245,9 @@ msgstr "Överlevnadsanalys"
 
 msgid "Clustering"
 msgstr "Klusterbildning"
+
+msgid "Key-value database"
+msgstr "Databasens nyckelvärde"
 
 msgid "Trivial database"
 msgstr "Ordinär databas"
@@ -367,8 +449,14 @@ msgstr "MUD-klient"
 msgid "Programming game"
 msgstr "Programmeringsspel"
 
+msgid "GameStream client"
+msgstr "GameStream-klient"
+
 msgid "Puzzle game"
 msgstr "Pusselspel"
+
+msgid "4D Tetris"
+msgstr "Tetris i 4D"
 
 msgid "Flight simulator"
 msgstr "Flygsimulator"
@@ -413,8 +501,20 @@ msgstr "Karaokespel"
 msgid "Color profile manager for the GNOME desktop"
 msgstr "Färgprofilhanterare för skrivbordsmiljön GNOME"
 
+msgid "GNOME Fonts"
+msgstr "Typsnitt för GNOME"
+
+msgid "Spreadsheet application"
+msgstr "Applikation för kalkylblad"
+
+msgid "Minesweeper game"
+msgstr "Spelet Minröj"
+
 msgid "Terminal emulator"
 msgstr "Terminal-emulator"
+
+msgid "Geolocation service"
+msgstr "Geolokaliseringstjänst"
 
 msgid "Music player for GNOME"
 msgstr "Musikspelare för GNOME"
@@ -521,14 +621,50 @@ msgstr "Anonyma paket"
 msgid "Parameterizable packages"
 msgstr "Parametriserbara paket"
 
+msgid "Infinite sets"
+msgstr "Oändliga uppsättningar"
+
 msgid "Align text"
 msgstr "Justera text"
+
+msgid "UNIVERSAL::can() reimplementation"
+msgstr "omimplementering av UNIVERSAL::can()"
+
+msgid "UNIVERSAL::isa() reimplementation"
+msgstr "omimplementering av UNIVERSAL::isa()"
+
+msgid "Session management in a clean and simple way"
+msgstr "Sessionshantering på ett rent och enkelt sätt"
+
+msgid "ConTeXt scheme"
+msgstr "ConTeXt-schema"
+
+msgid "Extended TeX"
+msgstr "Förlängd TeX"
+
+msgid "Calligraphic font"
+msgstr "Kaligrafiskt typsnitt"
+
+msgid "Intelligent cross-referencing"
+msgstr "Intelligent korsreferens"
+
+msgid "Color separation"
+msgstr "Färgseparation"
 
 msgid "Writing ``configurations''"
 msgstr "Skriver ``konfigurationer''"
 
+msgid "Vector arrows"
+msgstr "Vektor-pilar"
+
 msgid "Linguistic tools"
 msgstr "Lingvistiska verktyg"
+
+msgid "@code{hfbright} fonts"
+msgstr "@code{hfbright} typsnitt"
+
+msgid "Intelligent brackets"
+msgstr "Intelligenta parenteser"
 
 msgid "Documentation support"
 msgstr "Dokumentationsstöd"
@@ -542,11 +678,20 @@ msgstr "Ridgeway's typsnitt"
 msgid "Letter spacing"
 msgstr "Bokstavsavstånd"
 
+msgid "Mongolian LaTeX"
+msgstr "Mongolisk LaTeX"
+
 msgid "Documentation macros"
 msgstr "Dokumentationsmakron"
 
 msgid "Generate timetables"
 msgstr "Generera tidtabeller"
+
+msgid "Tree macros"
+msgstr "Trädmakron"
+
+msgid "Draw trees"
+msgstr "Rita träd"
 
 msgid "LaTeX laboratory"
 msgstr "LaTeX-laboratorium"
@@ -587,6 +732,12 @@ msgstr "Konsertprogram"
 msgid "Generate invoices"
 msgstr "Generera fakturor"
 
+msgid "Avoid widows"
+msgstr "Undvik änkor"
+
+msgid "Microraptor GUI"
+msgstr "Grafiskt gränssnitt för Microraptor"
+
 msgid "gotest.tools"
 msgstr "gotest.tools"
 
@@ -599,14 +750,30 @@ msgstr "JPEG-2000-bibliotek"
 msgid "Color picker"
 msgstr "Färgväljare"
 
+msgid "SILC ToolKit"
+msgstr "Verktygskit för SILC"
+
 msgid "Message broker"
 msgstr "Meddelandeförmedlare"
 
 msgid "Bandwidth monitor"
 msgstr "Bandbreddsövervakare"
 
+msgid "CAN utilities"
+msgstr "Verktyg för CAN"
+
 msgid "Denial-of-service countermeasure"
 msgstr "Åtgärd mot överbelastningsattack"
+
+msgid "Linter"
+msgstr "Kodgranskare"
+
+msgid ""
+"This package provides a Python library to send files to the\n"
+"user's @file{~/Trash} directory."
+msgstr ""
+"Det här paketet tillhandahåller ett Python-bibliotek för att skicka filer till\n"
+"användarens @file{~/Trash}-mapp"
 
 msgid "Python-ish shell"
 msgstr "Pytonaktigt skal"

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix 1.0.1.4876-09145-dirty\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-02 03:18+0000\n"
-"PO-Revision-Date: 2025-09-12 11:35+0000\n"
+"POT-Creation-Date: 2025-10-21 03:18+0000\n"
+"PO-Revision-Date: 2025-10-30 11:10+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/documentation-cookbook/de/>\n"
 "Language: de\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13.2\n"
+"X-Generator: Weblate 5.13.3\n"
 
 msgid "@documentencoding UTF-8"
 msgstr ""
@@ -27,9 +27,6 @@ msgstr ""
 
 msgid "GNU Guix Cookbook"
 msgstr "GNU-Guix-Kochbuch"
-
-msgid "Copyright @copyright{} 2019, 2022 Ricardo Wurmus@* Copyright @copyright{} 2019 Efraim Flashner@* Copyright @copyright{} 2019 Pierre Neidhardt@* Copyright @copyright{} 2020 Oleg Pykhalov@* Copyright @copyright{} 2020 Matthew Brooks@* Copyright @copyright{} 2020 Marcin Karpezo@* Copyright @copyright{} 2020 Brice Waegeneire@* Copyright @copyright{} 2020 André Batista@* Copyright @copyright{} 2020 Christine Lemmer-Webber@* Copyright @copyright{} 2021 Joshua Branson@* Copyright @copyright{} 2022, 2023 Maxim Cournoyer@* Copyright @copyright{} 2023-2024 Ludovic Courtès@* Copyright @copyright{} 2023 Thomas Ieong@* Copyright @copyright{} 2024 Florian Pelz@* Copyright @copyright{} 2025 45mg@*"
-msgstr "Copyright @copyright{} 2019, 2022 Ricardo Wurmus@* Copyright @copyright{} 2019 Efraim Flashner@* Copyright @copyright{} 2019 Pierre Neidhardt@* Copyright @copyright{} 2020 Oleg Pykhalov@* Copyright @copyright{} 2020 Matthew Brooks@* Copyright @copyright{} 2020 Marcin Karpezo@* Copyright @copyright{} 2020 Brice Waegeneire@* Copyright @copyright{} 2020 André Batista@* Copyright @copyright{} 2020 Christine Lemmer-Webber@* Copyright @copyright{} 2021 Joshua Branson@* Copyright @copyright{} 2022, 2023 Maxim Cournoyer@* Copyright @copyright{} 2023-2024 Ludovic Courtès@* Copyright @copyright{} 2023 Thomas Ieong@* Copyright @copyright{} 2024 Florian Pelz@* Copyright @copyright{} 2025 45mg@*"
 
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A copy of the license is included in the section entitled ``GNU Free Documentation License''."
 msgstr "Es ist Ihnen gestattet, dieses Dokument zu vervielfältigen, weiterzugeben und/oder zu verändern, unter den Bedingungen der GNU Free Documentation License, entweder gemäß Version 1.3 der Lizenz oder (nach Ihrer Option) einer späteren Version, die von der Free Software Foundation veröffentlicht wurde, ohne unveränderliche Abschnitte, ohne vorderen Umschlagtext und ohne hinteren Umschlagtext. Eine Kopie der Lizenz finden Sie im Abschnitt mit dem Titel „GNU-Lizenz für freie Dokumentation“."
@@ -751,13 +748,6 @@ msgstr "Eines der Referenzbücher zu Scheme ist das einflussreiche „Structure 
 
 msgid "You can also install it and read it from your computer:"
 msgstr "Das Buch können Sie auch installieren und von Ihrem Rechner aus lesen:"
-
-msgid ""
-"guix install sicp info-reader\n"
-"info sicp\n"
-msgstr ""
-"guix install sicp info-reader\n"
-"info sicp\n"
 
 msgid "You'll find more books, tutorials and other resources at @url{https://schemers.org/}."
 msgstr "Sie finden noch mehr Bücher, Anleitungen und andere Ressourcen auf @url{https://schemers.org/}."
@@ -4715,7 +4705,7 @@ msgid ""
 "@dots{}\n"
 msgstr ""
 "$ sudo /gnu/store/…-run-container\n"
-"system container is running as PID 5983\n"
+"System-Container läuft mit PID 5983\n"
 "…\n"
 
 msgid "Background the process with @key{Ctrl-z} followed by @command{bg}.  Note the process ID in the output; we will need it to connect to the container later.  You know what? Let's try attaching to the container right now.  We will use @command{nsenter}, a tool provided by the @code{util-linux} package:"
@@ -4928,9 +4918,6 @@ msgstr ""
 
 msgid "The file @file{/etc/qemu/bridge.conf} must also be made to allow the bridge interface, as the default is to deny all.  Add the following to your list of services to do so:"
 msgstr "Zudem muss in der Datei @file{/etc/qemu/bridge.conf} eine Erlaubnis für die Netzwerkbrücken-Schnittstelle eingetragen werden, denn nach Voreinstellung wird alles blockiert. Fügen Sie dazu folgenden Dienst zu Ihrer @code{services}-Liste hinzu:"
-
-msgid "(extra-special-file \"/etc/qemu/host.conf\" \"allow br0\\n\")\n"
-msgstr "(extra-special-file \"/etc/qemu/host.conf\" \"allow br0\\n\")\n"
 
 msgid "Invoking QEMU with the right command line options"
 msgstr "QEMU mit den richtigen Befehlszeilenoptionen aufrufen"
@@ -6544,6 +6531,9 @@ msgstr "Jedes Projekt, das eine @file{.envrc} mit einer Zeichenkette @code{use g
 
 msgid "Run @command{direnv allow} to setup the environment for the first time."
 msgstr "Führen Sie @command{direnv allow} aus, um die Umgebung bei der ersten Nutzung einzurichten."
+
+msgid "Or perhaps you'll find that you could just as well provide a package definition for your code---@pxref{Defining Packages,,, guix, GNU Guix Reference Manual}, to learn more on how to do that."
+msgstr "Oder vielleicht denken Sie sich, dass Sie auch gleich eine Paketdefinition für Ihren Code angeben könnten – siehe @ref{Pakete definieren,,, guix.de, Referenzhandbuch zu GNU Guix}, wenn sie erfahren möchten, wie das geht."
 
 msgid "cluster installation"
 msgstr "Installation auf einem Cluster"

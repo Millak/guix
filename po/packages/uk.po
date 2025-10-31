@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the GNU guix package.
 # Andrij Mizyk <andmizyk@gmail.com>, 2022.
 # Illia Demianchuk <illialoo99@gmail.com>, 2022.
-#: gnu/packages/firmware.scm:1659 gnu/packages/firmware.scm:1926
-#: gnu/packages/linux.scm:1257
+#: gnu/packages/firmware.scm:1665 gnu/packages/firmware.scm:1932
+#: gnu/packages/linux.scm:1260
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-29 03:18+0000\n"
+"POT-Creation-Date: 2025-10-20 03:18+0000\n"
 "PO-Revision-Date: 2022-12-24 17:58+0000\n"
 "Last-Translator: Illia Demianchuk <illialoo99@gmail.com>\n"
 "Language-Team: Ukrainian <https://translate.fedoraproject.org/projects/guix/packages/uk/>\n"

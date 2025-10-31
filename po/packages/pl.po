@@ -3,26 +3,84 @@
 # This file is distributed under the same license as the guix package.
 # Daniel Koć <daniel@xn--ko-wla.pl>, 2015.
 # Slawomir Siejka <slawomir.siejka@protonmail.com>, 2022.
-#: gnu/packages/firmware.scm:1659 gnu/packages/firmware.scm:1926
-#: gnu/packages/linux.scm:1257
+#: gnu/packages/firmware.scm:1665 gnu/packages/firmware.scm:1932
+#: gnu/packages/linux.scm:1260
 msgid ""
 msgstr ""
 "Project-Id-Version: guix-packages 0.9.0\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-29 03:18+0000\n"
-"PO-Revision-Date: 2022-09-18 11:19+0000\n"
-"Last-Translator: Slawomir Siejka <slawomir.siejka@protonmail.com>\n"
-"Language-Team: Polish <https://translate.fedoraproject.org/projects/guix/packages/pl/>\n"
+"POT-Creation-Date: 2025-10-20 03:18+0000\n"
+"PO-Revision-Date: 2025-10-10 14:35+0000\n"
+"Last-Translator: Emru <emru@noreply.codeberg.org>\n"
+"Language-Team: Polish <https://translate.codeberg.org/projects/guix/packages/pl/>\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 5.13.2\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Word processing program"
 msgstr "Edytor tekstu"
+
+msgid ""
+"AbiWord is a word processing program.  It is rapidly\n"
+"becoming a state of the art word processor, with lots of features useful for\n"
+"your daily work, personal needs, or for just some good old typing fun."
+msgstr ""
+"AbiWord jest procesorem tekstu. Szybko się rozwija,\n"
+"pozyskuje nowe funkcjonalności szczególnie użyteczne\n"
+"dla codziennej pracy czy też prywatnych potrzeb."
+
+msgid "Portable Braille Library"
+msgstr "Przenośna Biblioteka Braille'a"
+
+msgid ""
+"Libbraille is a library to easily access Braille displays and\n"
+"terminals."
+msgstr ""
+"Libbraille jest biblioteką dającą łatwy dostęp do wyświetlaczy\n"
+"i terminali Braille'a."
+
+msgid "Braille TTY"
+msgstr "Terminal Braille'a"
+
+msgid "Extensible, scalable virtual keyboard for X11"
+msgstr "Rozszerzalna, skalowalna wirtualna klawiatura dla X11"
+
+msgid "Command line utilities for PCsensor and Scythe foot switches"
+msgstr "Narzędzia linii poleceń dla przełączników nożnych PCsensor i Scythe"
+
+msgid ""
+"This package provides command line utilities for programming PCsensor\n"
+"and Scythe foot switches.  It works for both single pedal and three pedal\n"
+"devices."
+msgstr ""
+"Ten pakiet dostarcza narzędzia linii poleceń do programowania\n"
+"przełączników nożnych PCsensor i Scythe. Działa dla urządzeń jedno-\n"
+"i trzypedałowych."
+
+msgid "Tiny screen magnifier for X11"
+msgstr "Niewielka lupa ekranowa dla X11"
+
+msgid "File and directory integrity checker"
+msgstr "Sprawdzanie spójności plików i katalogów"
+
+msgid ""
+"AIDE (Advanced Intrusion Detection Environment) is a file and directory\n"
+"integrity checker.  It creates a database from the regular expression rules\n"
+"that it finds from its configuration files.  Once this database is initialized\n"
+"it can be used to verify the integrity of the files.  It has several message\n"
+"digest algorithms that are used to check the integrity of files.  All of the\n"
+"usual file attributes can be checked for inconsistencies."
+msgstr ""
+"AIDE (Advanced Intrusion Detection Environment) jest narzędziem\n"
+"sprawdzającym spójność plików i katalogów. Tworzy bazę danych\n"
+"z wyrażeń regularnych, które wyszukuje w swoich plikach konfiguracyjnych.\n"
+"Gdy baza zostanie stworzona, używa jej do sprawdzania spójności plików.\n"
+"Używa kilku algorytmów do sprawdzania spójności. Wszystkie powszechne\n"
+"atrybuty są sprawdzane pod kątem nieścisłości."
 
 msgid "Spell checker"
 msgstr "Korekta pisowni"
@@ -129,6 +187,9 @@ msgstr "Przeglądarka obrazów GNOME"
 msgid "GNOME web browser"
 msgstr "Przeglądarka internetu GNOME"
 
+msgid "Colorful log/slog handler for CLI applications "
+msgstr "Obsługa log/slog z kolorami dla programów konsolowych "
+
 msgid "Hyphenation library"
 msgstr "Biblioteka dzielenia wyrazów"
 
@@ -143,6 +204,18 @@ msgstr "Generator losowych haseł"
 
 msgid "Definition of MIME types"
 msgstr "Definicja typów MIME"
+
+msgid "Session management in a clean and simple way"
+msgstr "Zarządzanie sesją w prosty sposób"
+
+msgid ""
+"abduco provides session management i.e. it allows programs to\n"
+"be run independently from their controlling terminal.  That is, programs can\n"
+"be detached---run in the background---and then later reattached."
+msgstr ""
+"abduco dostarcza zarządzanie sesją, np. pozwala programom\n"
+"być uruchamianym niezależnie od terminala. Dzięki temu programy\n"
+"mogą zostać przeniesione i działać w tle, a potem ponownie wyświetlone w terminalu."
 
 msgid "Convert Texinfo to HTML"
 msgstr "Konwersja Texinfo do HTML"

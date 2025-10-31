@@ -53,16 +53,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-09-24 03:18+0000\n"
-"PO-Revision-Date: 2025-09-29 22:43+0000\n"
-"Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
+"POT-Creation-Date: 2025-10-24 03:18+0000\n"
+"PO-Revision-Date: 2025-10-29 13:36+0000\n"
+"Last-Translator: roptat <roptat@noreply.codeberg.org>\n"
 "Language-Team: French <https://translate.codeberg.org/projects/guix/documentation-manual/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.13.2\n"
+"X-Generator: Weblate 5.13.3\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -12289,7 +12289,7 @@ msgid "Many programs and libraries look for input data in a @dfn{search path}, a
 msgstr "De nombreux programmes et bibliothèques cherchent leurs données d'entrée dans un @dfn{chemin de recherch}, une liste de répertoire : les shells comme Bash cherchent des exécutables dans le chemin de recherche des commandes, un compilateur C cherche des fichiers @file{.h} dans son chemin de recherche d'en-têtes, l'interpréteur Python cheche des fichiers @file{.py} dans son chemin de recherche, le correcteur orthographique a un chemin de recherche pour les dictionnaires, et cætera."
 
 msgid "Search paths can usually be defined or overridden @i{via} environment variables (@pxref{Environment Variables,,, libc, The GNU C Library Reference Manual}).  For example, the search paths mentioned above can be changed by defining the @env{PATH}, @env{C_INCLUDE_PATH}, @env{PYTHONPATH} (or @env{GUIX_PYTHONPATH}), and @env{DICPATH} environment variables---you know, all these something-PATH variables that you need to get right or things ``won't be found''."
-msgstr "Les chemins de recherche peuvent habituellement être définis ou remplacés par des variables d'environnement (@pxref{Environment Variables,,, libc, le manuel de référence de la bibliothèque C de GNU}). Par exemple, les chemins de recherches mentionnés ci-dessus peuvent être modifiés en définissant les variables d'environnement @env{PATH}, @env{C_INCLUDE_PATH}, @env{PYTHONPATH} (ou @env{GUIX_PYTHONPATH}) et @env{DICPATH} --- vous savez, toutes ces variables comme PATH que vous devez paramétrer correctement sous peine de voir les choses « non trouvée »."
+msgstr "Les chemins de recherche peuvent habituellement être définis ou remplacés par des variables d'environnement (@pxref{Environment Variables,,, libc, le manuel de référence de la bibliothèque C de GNU}). Par exemple, les chemins de recherches mentionnés ci-dessus peuvent être modifiés en définissant les variables d'environnement @env{PATH}, @env{C_INCLUDE_PATH}, @env{PYTHONPATH} (ou @env{GUIX_PYTHONPATH}) et @env{DICPATH} --- vous savez, toutes ces variables en PATH que vous devez paramétrer correctement sous peine de voir les choses « non trouvées »."
 
 msgid "You may have noticed from the command line that Guix ``knows'' which search path environment variables should be defined, and how.  When you install packages in your default profile, the file @file{~/.guix-profile/etc/profile} is created, which you can ``source'' from the shell to set those variables.  Likewise, if you ask @command{guix shell} to create an environment containing Python and NumPy, a Python library, and if you pass it the @option{--search-paths} option, it will tell you about @env{PATH} and @env{GUIX_PYTHONPATH} (@pxref{Invoking guix shell}):"
 msgstr "Vous aurez peut-être remarqué en utilisant la ligne de commande, Guix « sait » quelles variables d'environnement de chemin de recherche doivent être définies et comment. Quand vous installez des paquets dans votre profil par défaut, le fichier @file{~/.guix-profile/etc/profile} est créé, et vous pouvez le « sourcer » à partir du shell pour initialiser ces variables. De même, si vous demandez à @command{guix shell} de créer un environnement contenant Python et NumPy, une bibliothèque Python, et que vous passez l'option @option{--search-paths}, il vous parlera de @env{PATH} et @env{GUIX_PYTHONPATH} (@pxref{Invoking guix shell}) :"
@@ -16289,7 +16289,7 @@ msgid "Sort lines according to @var{key}, one of the following options:"
 msgstr "Trie les lignes en fonction de la @var{clef}, l'une des options suivantes :"
 
 msgid "self"
-msgstr "self"
+msgstr "lui-même"
 
 msgid "the size of each item (the default);"
 msgstr "la taille de chaque élément (par défaut) ;"
@@ -20921,163 +20921,11 @@ msgstr "Chaine de format @code{(ice-9 format)} pour les message de journaux. La 
 msgid "@code{date-format} (type: maybe-string)"
 msgstr "@code{date-format} (type : peut-être-chaine)"
 
-msgid "rottlog"
-msgstr "rottlog"
-
 msgid "log rotation"
 msgstr "journaux, rotation"
 
 msgid "logging"
 msgstr "journalisation"
-
-msgid "The example below shows how to extend it with an additional @dfn{rotation}, should you need to do that (usually, services that produce log files already take care of that):"
-msgstr "L'exemple ci-dessous montre comment l'étendre avec une @dfn{rotation} supplémentaire, si vous devez le faire (généralement, les services qui produisent des fichiers journaux s'en chargent déjà) :"
-
-msgid ""
-"(use-modules (guix) (gnu))\n"
-"(use-service-modules admin)\n"
-"\n"
-msgstr ""
-"(use-modules (guix) (gnu))\n"
-"(use-service-modules admin)\n"
-"\n"
-
-msgid ""
-"(define my-log-files\n"
-"  ;; Log files that I want to rotate.\n"
-"  '(\"/var/log/something.log\" \"/var/log/another.log\"))\n"
-"\n"
-msgstr ""
-"(define my-log-files\n"
-"  ;; Journaux que je veux faire tourner.\n"
-"  '(\"/var/log/something.log\" \"/var/log/another.log\"))\n"
-"\n"
-
-msgid ""
-"(operating-system\n"
-"  ;; @dots{}\n"
-"  (services (cons (simple-service 'rotate-my-stuff\n"
-"                                  rottlog-service-type\n"
-"                                  (list (log-rotation\n"
-"                                         (frequency 'daily)\n"
-"                                         (files my-log-files))))\n"
-"                  %base-services)))\n"
-msgstr ""
-"(operating-system\n"
-"  ;; @dots{}\n"
-"  (services (cons (simple-service 'rotate-my-stuff\n"
-"                                  rottlog-service-type\n"
-"                                  (list (log-rotation\n"
-"                                         (frequency 'daily)\n"
-"                                         (files my-log-files))))\n"
-"                  %base-services)))\n"
-
-msgid "rottlog-service-type"
-msgstr "rottlog-service-type"
-
-msgid "This is the type of the Rottlog service, whose value is a @code{rottlog-configuration} object."
-msgstr "C'est le type du service Rotlog, dont la valeur est un objet @code{rottlog-configuration}."
-
-msgid "Other services can extend this one with new @code{log-rotation} objects (see below), thereby augmenting the set of files to be rotated."
-msgstr "D'autres services peuvent étendre celui-ci avec de nouveaux objets @code{log-rotation} (voir plus bas), en augmentant ainsi l'ensemble des fichiers à faire tourner."
-
-msgid "This service type can define mcron jobs (@pxref{Scheduled Job Execution}) to run the rottlog service."
-msgstr "Ce type de service peut définir des tâches (@pxref{Scheduled Job Execution}) pour lancer le service rottlog."
-
-msgid "{Data Type} rottlog-configuration"
-msgstr "{Type de données} rottlog-configuration"
-
-msgid "Data type representing the configuration of rottlog."
-msgstr "Type de données représentant la configuration de rottlog."
-
-msgid "@code{rottlog} (default: @code{rottlog})"
-msgstr "@code{rottlog} (par défaut : @code{rottlog})"
-
-msgid "The Rottlog package to use."
-msgstr "Le paquet Rottlog à utiliser."
-
-msgid "@code{rc-file} (default: @code{(file-append rottlog \"/etc/rc\")})"
-msgstr "@code{rc-file} (par défaut : @code{(file-append rottlog \"/etc/rc\")})"
-
-msgid "The Rottlog configuration file to use (@pxref{Mandatory RC Variables,,, rottlog, GNU Rot[t]log Manual})."
-msgstr "Le fichier de configuration Rottlog à utiliser (@pxref{Mandatory RC Variables,,, rottlog, GNU Rot[t]log Manual})."
-
-msgid "@code{rotations} (default: @code{%default-rotations})"
-msgstr "@code{rotations} (par défaut : @code{%default-rotations})"
-
-msgid "A list of @code{log-rotation} objects as defined below."
-msgstr "Une liste d'objets @code{log-rotation} définis plus bas."
-
-msgid "jobs"
-msgstr "jobs"
-
-msgid "This is a list of gexps where each gexp corresponds to an mcron job specification (@pxref{Scheduled Job Execution})."
-msgstr "C'est une liste de gexps où chaque gexp correspond à une spécification de tâche de mcron (@pxref{Scheduled Job Execution})."
-
-msgid "{Data Type} log-rotation"
-msgstr "{Type de données} log-rotation"
-
-msgid "Data type representing the rotation of a group of log files."
-msgstr "Type de données représentant la rotation d'un groupe de fichiers journaux."
-
-msgid "Taking an example from the Rottlog manual (@pxref{Period Related File Examples,,, rottlog, GNU Rot[t]log Manual}), a log rotation might be defined like this:"
-msgstr "En reprenant un exemple du manuel de Rottlog (@pxref{Period Related File Examples,,, rottlog, GNU Rot[t]log Manual}), on peut définir la rotation d'un journal de cette manière :"
-
-msgid ""
-"(log-rotation\n"
-"  (frequency 'daily)\n"
-"  (files '(\"/var/log/apache/*\"))\n"
-"  (options '(\"storedir apache-archives\"\n"
-"             \"rotate 6\"\n"
-"             \"notifempty\"\n"
-"             \"nocompress\")))\n"
-msgstr ""
-"(log-rotation\n"
-"  (frequency 'daily)\n"
-"  (files '(\"/var/log/apache/*\"))\n"
-"  (options '(\"storedir apache-archives\"\n"
-"             \"rotate 6\"\n"
-"             \"notifempty\"\n"
-"             \"nocompress\")))\n"
-
-msgid "The list of fields is as follows:"
-msgstr "La liste des champs est la suivante :"
-
-msgid "@code{frequency} (default: @code{'weekly})"
-msgstr "@code{frequency} (par défaut : @code{'weekly})"
-
-msgid "The log rotation frequency, a symbol."
-msgstr "La fréquence de rotation, un symbole."
-
-msgid "The list of files or file glob patterns to rotate."
-msgstr "La liste des fichiers ou des motifs de noms de fichiers à faire tourner."
-
-msgid "%default-log-rotation-options"
-msgstr "%default-log-rotation-options"
-
-msgid "@code{options} (default: @code{%default-log-rotation-options})"
-msgstr "@code{options} (par défaut : @code{%default-log-rotation-options})"
-
-msgid "The list of rottlog options for this rotation (@pxref{Configuration parameters,,, rottlog, GNU Rot[t]log Manual})."
-msgstr "La liste des options de rottlog pour cette rotation (@pxref{Configuration parameters,,, rottlog, GNU Rot[t]log Manual})."
-
-msgid "@code{post-rotate} (default: @code{#f})"
-msgstr "@code{post-rotate} (par défaut : @code{#f})"
-
-msgid "Either @code{#f} or a gexp to execute once the rotation has completed."
-msgstr "Soit @code{#f}, soit une gexp à exécuter une fois la rotation terminée."
-
-msgid "%default-rotations"
-msgstr "%default-rotations"
-
-msgid "Specifies weekly rotation of @code{%rotated-files} and of @file{/var/log/guix-daemon.log}."
-msgstr "Spécifie la rotation hebdomadaire de @code{%rotated-files} et de @file{/var/log/guix-daemon.log}."
-
-msgid "%rotated-files"
-msgstr "%rotated-files"
-
-msgid "The list of syslog-controlled files to be rotated.  By default it is: @code{'(\"/var/log/messages\" \"/var/log/secure\" \"/var/log/debug\" \\ \"/var/log/maillog\")}."
-msgstr "La liste des fichiers contrôlés par syslog à faire tourner.  Par défaut il s'agit de : @code{'(\"/var/log/messages\" \"/var/log/secure\" \"/var/log/debug\" \\ \"/var/log/maillog\")}."
 
 msgid "Some log files just need to be deleted periodically once they are old, without any other criterion and without any archival step.  This is the case of build logs stored by @command{guix-daemon} under @file{/var/log/guix/drvs} (@pxref{Invoking guix-daemon}).  The @code{log-cleanup} service addresses this use case.  For example, @code{%base-services} (@pxref{Base Services}) includes the following:"
 msgstr "Certains fichiers journaux doivent simplement être supprimés périodiquement quand ils deviennent trop vieux, sans autre critère et sans étape d'archivage. C'est le cas des journaux de construction stockés par @command{guix-daemon} dans @file{/var/log/guix/drvs} (@pxref{Invoking guix-daemon}). Le service @code{log-cleanup} gère ce cas. Par exemple, @code{%base-services} (@pxref{Base Services}) inclus ce qui suit :"
@@ -25384,21 +25232,6 @@ msgstr "accès au scanner"
 msgid "sane-service-type"
 msgstr "sane-service-type"
 
-msgid "This service provides access to scanners @i{via} @uref{http://www.sane-project.org, SANE} by installing the necessary udev rules.  It is included in @code{%desktop-services} (@pxref{Desktop Services}) and relies by default on @code{sane-backends-minimal} package (see below) for hardware support."
-msgstr "Ce service fournit un accès aux scanner via @uref{http://www.sane-project.org, SANE} en installant les règles udev nécessaires. Il est inclus dans @code{%desktop-services} (@pxref{Desktop Services}) et s'appuie sur le paquet @code{sane-backends-minimal} par défaut (voir plus bas) pour la prise en charge matérielle."
-
-msgid "sane-backends-minimal"
-msgstr "sane-backends-minimal"
-
-msgid "The default package which the @code{sane-service-type} installs.  It supports many recent scanners."
-msgstr "Le paquet par défaut installé par le @code{sane-service-type}. Il prend en charge beaucoup de scanners récents."
-
-msgid "sane-backends"
-msgstr "sane-backends"
-
-msgid "This package includes support for all scanners that @code{sane-backends-minimal} supports, plus older Hewlett-Packard scanners supported by @code{hplip} package.  In order to use this on a system which relies on @code{%desktop-services}, you may use @code{modify-services} (@pxref{Service Reference, @code{modify-services}}) as illustrated below:"
-msgstr "Ce paquet inclus la prise en charge de tous les scanners pris en charge par @code{sane-backends-minimal}, plus les scanners Hewlett-Packard plus anciens pris en charges par le paquet @code{hplip}. Pour l'utiliser sur un système qui utiliser les @code{%desktop-services}, vous pouvez utiliser @code{modify-services} (@pxref{Service Reference, @code{modify-services}}) comme montré ci-dessous :"
-
 msgid ""
 "(use-modules (gnu))\n"
 "(use-service-modules\n"
@@ -25422,13 +25255,17 @@ msgid ""
 "(define %my-desktop-services\n"
 "  ;; List of desktop services that supports a broader range of scanners.\n"
 "  (modify-services %desktop-services\n"
-"    (sane-service-type _ => sane-backends)))\n"
+"    (sane-service-type _ =>\n"
+"      (sane-configuration\n"
+"        (backends (list sane-backends sane-airscan))))))\n"
 "\n"
 msgstr ""
 "(define %my-desktop-services\n"
 "  ;; Liste des services de bureau qui prennent en charge un plus grand nombre de scanners.\n"
 "  (modify-services %desktop-services\n"
-"    (sane-service-type _ => sane-backends)))\n"
+"    (sane-service-type _ =>\n"
+"      (sane-configuration\n"
+"        (backends (list sane-backends sane-airscan))))))\n"
 "\n"
 
 msgid ""
@@ -43498,9 +43335,6 @@ msgstr "Le paquet Bash à utiliser."
 msgid "@code{guix-defaults?} (default: @code{#t}) (type: boolean)"
 msgstr "@code{guix-defaults?} (par défaut : @code{#t}) (type : booléen)"
 
-msgid "@code{environment-variables} (default: @code{'()}) (type: alist)"
-msgstr "@code{environment-variables} (par défaut : @code{'()}) (type : liste d'association)"
-
 msgid "Association list of environment variables to set for the Bash session.  The rules for the @code{home-environment-variables-service-type} apply here (@pxref{Essential Home Services}).  The contents of this field will be added after the contents of the @code{bash-profile} field."
 msgstr "Liste d'association de variables d'environnement à initialiser dans la session Bash. Les règles de @code{home-environment-variables-service-type} s'appliquent ici (@pxref{Essential Home Services}). Le contenu de ce champ sera ajouté après le contenu du champ @code{bash-profile}."
 
@@ -43516,44 +43350,17 @@ msgstr "devienne"
 msgid "alias ls=\"ls -alF\"\n"
 msgstr "alias ls=\"ls -alF\"\n"
 
-msgid "@code{bash-profile} (default: @code{'()}) (type: text-config)"
-msgstr "@code{bash-profile} (par défaut : @code{'()}) (type : text-config)"
-
 msgid "List of file-like objects, which will be added to @file{.bash_profile}.  Used for executing user's commands at start of login shell (In most cases the shell started on tty just after login).  @file{.bash_login} won't be ever read, because @file{.bash_profile} always present."
 msgstr "Liste d'objets simili-fichiers qui seront ajoutés à @file{.bash_profile}. C'est utilisé pour exécuter des commandes au démarrage d'un shell de connexion (dans la plupart des cas le shell qui démarre sur un tty après la connexion). @file{.bash_login} ne sera jamais lu parce que @file{.bash_profile} est toujours présent."
 
-msgid "@code{bashrc} (default: @code{'()}) (type: text-config)"
-msgstr "@code{bashrc} (par défaut : @code{'()}) (type : text-config)"
-
 msgid "List of file-like objects, which will be added to @file{.bashrc}.  Used for executing user's commands at start of interactive shell (The shell for interactive usage started by typing @code{bash} or by terminal app or any other program)."
 msgstr "Liste d'objets simili-fichiers qui seront ajoutés à @file{.bashrc}. C'est utilisé pour exécuter des commandes au lancement d'un shell interactif (le shell utilisé de manière interactive, démarré en tapant @code{bash} ou par votre application de terminal ou tout autre programme)."
-
-msgid "@code{bash-logout} (default: @code{'()}) (type: text-config)"
-msgstr "@code{bash-logout} (par défaut : @code{'()}) (type : text-config)"
 
 msgid "List of file-like objects, which will be added to @file{.bash_logout}.  Used for executing user's commands at the exit of login shell.  It won't be read in some cases (if the shell terminates by exec'ing another process for example)."
 msgstr "Liste d'objets simili-fichiers qui seront ajoutés à @file{.bash_logout}. C'est utilisé pour exécuter des commandes à la sortie d'un shell de connexion. Il ne sera pas lu dans certains cas (si le shell termine en utilisant exec sur un autre processus par exemple)."
 
 msgid "You can extend the Bash service by using the @code{home-bash-extension} configuration record, whose fields must mirror that of @code{home-bash-configuration} (@pxref{home-bash-configuration}).  The contents of the extensions will be added to the end of the corresponding Bash configuration files (@pxref{Bash Startup Files,,, bash, The GNU Bash Reference Manual}."
 msgstr "Vous pouvez étendre le service Bash en utilisant un enregistrement de configuration @code{home-bash-extension}, dont les champs correspondent à ceux de @code{home-bash-configuration} (@pxref{home-bash-configuration}). Le contenu des extensions seront ajoutées à la fin des fichiers de configuration Bash correspondants (@pxref{Bash Startup Files,,, bash, le manuel de référence de Bash}."
-
-msgid "For example, here is how you would define a service that extends the Bash service such that @file{~/.bash_profile} defines an additional environment variable, @env{PS1}:"
-msgstr "Par exemple, voici comment définir un service qui étend le service Bash de sorte que @file{~/.bash_profile} définisse une variable d'environnement supplémentaire, @env{PS1} :"
-
-msgid ""
-"(define bash-fancy-prompt-service\n"
-"  (simple-service 'bash-fancy-prompt\n"
-"                  home-bash-service-type\n"
-"                  (home-bash-extension\n"
-"                   (environment-variables\n"
-"                    '((\"PS1\" . \"\\\\u \\\\wλ \"))))))\n"
-msgstr ""
-"(define bash-fancy-prompt-service\n"
-"  (simple-service 'bash-fancy-prompt\n"
-"                  home-bash-service-type\n"
-"                  (home-bash-extension\n"
-"                   (environment-variables\n"
-"                    '((\"PS1\" . \"\\\\u \\\\wλ \"))))))\n"
 
 msgid "You would then add @code{bash-fancy-prompt-service} to the list in the @code{services} field of your @code{home-environment}.  The reference of @code{home-bash-extension} follows."
 msgstr "Vous ajouterez ensuite @code{bash-fancy-prompt-service} à la liste dans le champ @code{services} de votre @code{home-environment}. Voici la documentation de référence pour @code{home-bash-extension}."
@@ -43566,9 +43373,6 @@ msgstr "Les champs de @code{home-bash-extension} disponibles sont :"
 
 msgid "Additional environment variables to set.  These will be combined with the environment variables from other extensions and the base service to form one coherent block of environment variables."
 msgstr "Variables d'environnement supplémentaires à définir. Elles seront combinées aux variables d'environnement des autres extensions et du service de base pour former un bloc cohérent de variables d'environnement."
-
-msgid "@code{aliases} (default: @code{'()}) (type: alist)"
-msgstr "@code{aliases} (par défaut : @code{'()}) (type : liste d'association)"
 
 msgid "Additional aliases to set.  These will be combined with the aliases from other extensions and the base service."
 msgstr "Alias supplémentaires à définir. Ils seront combinés aux alias des autres extensions et du service de base."
@@ -43602,6 +43406,9 @@ msgstr "@code{xdg-flavor?} (par défaut : @code{#t}) (type : booléen)"
 
 msgid "Place all the configs to @file{$XDG_CONFIG_HOME/zsh}.  Makes @file{~/.zshenv} to set @env{ZDOTDIR} to @file{$XDG_CONFIG_HOME/zsh}.  Shell startup process will continue with @file{$XDG_CONFIG_HOME/zsh/.zshenv}."
 msgstr "Place tous les fichiers de configuration dans @file{$XDG_CONFIG_HOME/zsh}. Cela fait initialiser @env{ZDOTDIR} à @file{$XDG_CONFIG_HOME/zsh} dans @file{~/.zshenv}. Le processus de démarrage du shell continuera avec @file{$XDG_CONFIG_HOME/zsh/.zshenv}."
+
+msgid "@code{environment-variables} (default: @code{'()}) (type: alist)"
+msgstr "@code{environment-variables} (par défaut : @code{'()}) (type : liste d'association)"
 
 msgid "Association list of environment variables to set for the Zsh session."
 msgstr "Une liste d'association de variables d'environnement à initialiser dans la session Zsh."
@@ -45276,7 +45083,7 @@ msgstr ""
 "@dots{}\n"
 
 msgid "In the second case, @command{guix search} turns up nothing.  Instead, you can search the @TeX{} Live package database using the @command{tlmgr} command:"
-msgstr "Dans le second cas, @command{guix search} ne renvoie rien. À la place, vous pouvez chercher dans la base de données des paquets @TeX{} Live avec la commande @command{tlmgh} :"
+msgstr "Dans le second cas, @command{guix search} ne renvoie rien. À la place, vous pouvez chercher dans la base de données des paquets @TeX{} Live avec la commande @command{tlmgr} :"
 
 msgid ""
 "Packages containing `phvr7t' in their title/description:\n"
