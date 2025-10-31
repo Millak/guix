@@ -3108,13 +3108,11 @@ main use is as the driver for radian, the R console.")
                        (setenv "HOME" "/tmp"))))))
     (propagated-inputs (list python-prompt-toolkit python-pygments
                              python-rchitect))
-    (native-inputs (list python-coverage
-                         python-pexpect
+    (native-inputs (list python-pexpect
                          python-ptyprocess
                          python-pyte
                          python-pytest
                          python-setuptools
-                         python-wheel
                          ;; Needed afaict only for
                          ;; `tests/test_reticulate.py::test_completion`.
                          python-jedi
