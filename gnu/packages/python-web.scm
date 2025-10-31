@@ -10906,7 +10906,7 @@ interpreter written in pure Python.")
 (define-public python-http-ece
   (package
     (name "python-http-ece")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
       (origin
         (method git-fetch)
@@ -10915,18 +10915,19 @@ interpreter written in pure Python.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32
-          "11v9cpmx4jc0nk25af96plzjz3mg1ysm1m001nx6jns06hil1gpy"))))
-    (build-system python-build-system)
+         (base32 "16kd9dsfpyfvq4iw6bbrrqrvsnf5lwgwa6p9f3b1y56ab18y0kzx"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'change-directory
            (lambda _ (chdir "python") #t)))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-setuptools))
     (propagated-inputs
      (list python-cryptography))
-    (native-inputs
-     (list python-coverage python-flake8 python-mock python-nose))
     (home-page "https://github.com/web-push-libs/encrypted-content-encoding")
     (synopsis "Encrypted Content Encoding for HTTP")
     (description
