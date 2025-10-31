@@ -14473,40 +14473,6 @@ releases.")
     (description "This package provides testing support by jaraco.")
     (license license:expat)))
 
-(define-public python-jaraco-text
-  (package
-    (name "python-jaraco-text")
-    (version "4.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "jaraco_text" version))
-       (sha256
-        (base32 "1c0dy5jvhigcyryi2h8n1m87dnhyxr7w01n9shwzkdlslv7gwwav"))))
-    (build-system pyproject-build-system)
-    ;; Do not test pyproject.toml with python-pytest-checkdocs as it tries to
-    ;; download dependencies.
-    (arguments
-     '(#:test-flags '("-k" "not project")))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-setuptools-scm))
-    (propagated-inputs
-     (list python-autocommand
-           python-inflect
-           python-jaraco-context
-           python-jaraco-functools
-           python-more-itertools))
-    (home-page "https://github.com/jaraco/jaraco.text")
-    (synopsis "Provides various routines for text manipulation")
-    (description
-     "This package provides handy routines for dealing with text,
-such as wrapping, substitution, trimming, stripping, prefix and suffix
-removal, line continuation, indentation, comment processing, identifier
-processing, values parsing, case insensitive comparison, and more.")
-    (license license:expat)))
-
 (define-public python-jaraco-vcs
   (package
     (name "python-jaraco-vcs")
