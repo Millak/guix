@@ -1784,3 +1784,29 @@ processing, values parsing, case insensitive comparison, and more.")
 standards, which includes PEP 517, PEP 621 and PEP 660.")
     (license license:expat)))
 
+(define-public python-virtualenv-bootstrap
+  (package
+    (name "python-virtualenv-bootstrap")
+    (version "20.29.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "virtualenv" version))
+       (sha256
+        (base32
+         "0dfwnn8i1y33kgxhi4xyhsj4yr5vsin7zf9c343bcbyk700rgf5q"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; avoid extra dependencies.
+    (native-inputs
+     (list python-hatch-vcs-bootstrap
+           python-hatchling
+           python-setuptools-bootstrap))
+    (propagated-inputs
+     (list python-distlib
+           python-filelock-bootstrap
+           python-platformdirs-bootstrap))
+    (home-page "https://virtualenv.pypa.io/")
+    (synopsis "Virtual Python environment builder")
+    (description
+     "Virtualenv is a tool to create isolated Python environments.")
+    (license license:expat)))
