@@ -1356,6 +1356,33 @@ version control system (like Git) to determine project versions.")
      (list python-hatchling-bootstrap
            python-setuptools-scm-bootstrap))))
 
+(define-public python-inflect
+  (package
+    (name "python-inflect")
+    (version "7.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "inflect" version))
+              (sha256
+               (base32
+                "07spmlkmskwhxc0j5j4ms3w0f6pyv3h8iqwcbahdabklqc0riwgs"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pygments
+           python-pytest-bootstrap
+           python-setuptools-bootstrap
+           python-setuptools-scm-bootstrap))
+    (propagated-inputs
+     (list python-more-itertools
+           python-typeguard
+           python-typing-extensions))
+    (home-page "https://github.com/jaraco/inflect")
+    (synopsis "Correctly generate plurals, singular nouns, ordinals, indefinite articles")
+    (description
+     "This Python module lets you correctly generate plurals, singular nouns,
+ordinals, indefinite articles; it also can convert numbers to words.")
+    (license license:expat)))
+
 (define-public python-iniconfig
   (package
     (name "python-iniconfig")

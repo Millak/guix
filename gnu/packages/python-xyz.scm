@@ -21829,28 +21829,6 @@ Freecell and similar variants of Card Solitaire such as Eight Off, Forecell,
 and Seahaven Towers, as well as Simple Simon boards.")
     (license license:expat)))
 
-(define-public python-inflect
-  (package
-    (name "python-inflect")
-    (version "7.5.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "inflect" version))
-              (sha256
-               (base32
-                "07spmlkmskwhxc0j5j4ms3w0f6pyv3h8iqwcbahdabklqc0riwgs"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs (list python-more-itertools python-typeguard
-                             python-typing-extensions))
-    (native-inputs (list python-pygments python-pytest python-setuptools
-                         python-setuptools-scm python-wheel))
-    (home-page "https://github.com/jaraco/inflect")
-    (synopsis "Correctly generate plurals, singular nouns, ordinals, indefinite articles")
-    (description
-     "This Python module lets you correctly generate plurals, singular nouns,
-ordinals, indefinite articles; it also can convert numbers to words.")
-    (license license:expat)))
-
 (define-public python-inflection
   (package
     (name "python-inflection")
