@@ -159,6 +159,42 @@ and SML.  @code{more-itertools} includes additional building blocks for
 working with iterables.")
     (license license:expat)))
 
+(define-public python-path
+  (package
+    (name "python-path")
+    (version "17.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "path" version))
+       (sha256
+        (base32 "1scqbwgcbisx8mb28hw789a7np953851wg6z0bbzdm519znha7nl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? (not (%current-target-system))
+      #:test-flags
+      #~(list "-k"
+              (string-append
+               ;; Do not test the myproject.toml build as it tries
+               ;; to pull dependencies from the Internet.
+               "not project "
+               ;; This tests assumes a root user exists.
+               "and not test_get_owner"))))
+    (native-inputs
+     (list python-more-itertools
+           python-packaging-bootstrap
+           python-pygments-bootstrap
+           python-pytest-bootstrap
+           python-setuptools-bootstrap
+           python-setuptools-scm-bootstrap))
+    (home-page "https://github.com/jaraco/path")
+    (synopsis "Object-oriented file system path manipulation library")
+    (description "@code{path} (formerly @code{path.py}) implements path
+objects as first-class entities, allowing common operations on files to be
+invoked on those path objects directly.")
+    (license license:expat)))
+
 (define-public python-pathspec
   (package
     (name "python-pathspec")
