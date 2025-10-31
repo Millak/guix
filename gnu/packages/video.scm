@@ -3816,14 +3816,14 @@ and custom quantization matrices.")
 (define-public streamlink
   (package
     (name "streamlink")
-    (version "7.1.2")
+    (version "7.6.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "streamlink" version))
         (sha256
          (base32
-          "1mvg8lw3rkng6ciryziqh9r4ffj0ls7k0sv3byk3439s5d2qxh31"))))
+          "0rljq1zqa1z9jpn9n5gn90drl59pw8y56fsn3z35bavxmczrbpx1"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3833,8 +3833,7 @@ and custom quantization matrices.")
            python-pytest
            python-pytest-trio
            python-requests-mock
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-certifi
            python-exceptiongroup
