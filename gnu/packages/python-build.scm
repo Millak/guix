@@ -406,6 +406,33 @@ and many external plugins.")
 PyPI (pypi.org).")
     (license license:asl2.0)))
 
+(define-public python-typeguard
+  (package
+    (name "python-typeguard")
+    (version "4.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "typeguard" version))
+       (sha256
+        (base32 "0x2zkskia5lb1838ys0bhpp9v6y80jkhchzdz874spbhzggx4zrs"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--ignore-glob=tests/mypy/*.py")))
+    (native-inputs
+     (list python-pytest-bootstrap
+           python-setuptools-bootstrap
+           python-setuptools-scm-bootstrap))
+    (propagated-inputs
+     (list python-typing-extensions))
+    (home-page "https://github.com/agronholm/typeguard")
+    (synopsis "Run-time type checker for Python")
+    (description
+     "@code{typeguard} provides run-time type checking for functions defined
+with PEP 484 argument (and return) type annotations.")
+    (license license:expat)))
+
 (define-public python-typing-extensions
   (package
     (name "python-typing-extensions")
