@@ -2963,20 +2963,20 @@ color uncaught exception tracebacks.")
 (define-public python-colorful
   (package
     (name "python-colorful")
-    (version "0.5.5")
+    (version "0.5.8")
     (source
      (origin
-       (method git-fetch)   ; no tests data in PyPi package
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/timofurrer/colorful")
-             (commit (string-append "v" version))))
+              (url "https://github.com/timofurrer/colorful")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kyy9qhvrb5m9h8xmri7c88i0k1g5qc7017anw39gx44an7mn33y"))))
+        (base32 "00ag7h9g4v06japcva70sqibb9k49jrxq97nq3bi16b2y16mafwz"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-coverage python-flake8 python-pytest python-setuptools
-           python-wheel))
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-colorama))
     (home-page "http://github.com/timofurrer/colorful")
