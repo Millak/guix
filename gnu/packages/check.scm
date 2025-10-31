@@ -2404,70 +2404,80 @@ since the last commit or what tests are currently failing.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1303 passed, 23 skipped
       #:test-flags
-      #~(list
-         "--numprocesses" (number->string (parallel-job-count))
-         ;; TODO: Rework this test options by utilizing "-k" option.
-         ;;
-         ;; 1201 passed, 19 skipped, 389 warnings
-         ;; XXX: Unable to properly compare reports.
-         "--ignore=tests/test_report.py"
-         ;; XXX: PyTracer or missing dependencies.
-         "--ignore=tests/test_venv.py"
-         "--ignore=tests/test_plugins.py"
-         "--ignore=tests/test_debug.py"
-         ;; XXX: Unclear why these fail.
-         "--ignore=tests/test_python.py"
-         "--deselect=tests/test_concurrency.py\
-::SigtermTest::test_sigterm_multiprocessing_saves_data"
-         ;; XXX: Unexpected paths order.
-         "--ignore=tests/test_process.py"
-         ;; XXX: PermissionError
-         "--deselect=tests/test_annotate.py::AnnotationGoldTest::test_multi"
-         ;; XXX: Needs C extension
-         "--deselect=tests/test_cmdline.py::CmdLineStdoutTest::test_version"
-         "--deselect=tests/test_api.py::NamespaceModuleTest::test_bug_572"
-         ;; XXX: Finds more files at toplevel
-         "--deselect=tests/test_api.py::RelativePathTest::test_files_up_one_level"
-         "--deselect=tests/test_xml.py::XmlReportTest::test_no_duplicate_packages"
-         ;; XXX: zip1 module missing.
-         "--deselect=tests/test_filereporter.py::FileReporterTest::test_zipfile"
-         ;; No module named 'coverage.tracer'
-         "--deselect=tests/test_api.py::ApiTest::test_completely_zero_reporting"
-         "--deselect=tests/test_api.py::ApiTest::test_warnings"
-         "--deselect=tests/test_core.py::CoverageCoreTest::test_core_default"
-         "--deselect=tests/test_core.py::CoverageCoreTest\
-::test_core_request_ctrace_but_missing"
-         "--deselect=tests/test_oddball.py::RecursionTest::test_long_recursion_recovery"
-         ;; XXX: Checking coverage for too much files, not only the target one.
-         "--deselect=tests/test_oddball.py::DoctestTest::test_doctest"
-         ;; Module sys has no Python source
-         "--deselect=tests/test_api.py::ApiTest::test_warnings_suppressed"
-         ;; XXX: pythonpath is not set correctly to find the module
-         "--deselect=tests/test_oddball.py::MockingProtectionTest::test_os_path_exists"
-         ;; prevent FAILs on slow riscv64 SBCs
-         #$@(if (equal? (%current-system) "riscv64-linux")
-                '("--deselect=tests/test_numbits.py::NumbitsOpTest::test_union"
-                  "--deselect=tests/test_numbits.py::NumbitsOpTest::test_any_intersection")
-                '()))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              #$@(map (lambda (file) (string-append "--ignore=tests/" file))
+                      ;; XXX: The most of the tests fail.
+                      (list "test_process.py"
+                            ;; Unable to properly compare reports.
+                            "test_report.py"
+                            ;; Network connection is required
+                            "test_venv.py"))
+              #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/test_python.py::"
+                                                    "GetZipBytesTest::"
+                                                    "test_get_encoded_zip_files"
+                                                    test))
+                      ;; > assert zip_data is not None
+                      ;; E assert None is not None
+                      (list "[utf-8]@get_zip_bytes_test"
+                            "[gb2312]@get_zip_bytes_test"
+                            "[hebrew]@get_zip_bytes_test"
+                            "[shift_jis]@get_zip_bytes_test"
+                            "[cp1252]@get_zip_bytes_test"))
+              #$@(map (lambda (test) (string-append "--deselect=tests/test_"
+                                                    test))
+                      ;; AssertionError
+                      (list "api.py::RelativePathTest::test_files_up_one_level"
+                            "concurrency.py::SigtermTest::\
+test_sigterm_multiprocessing_saves_data"
+                            "oddball.py::DoctestTest::test_doctest"
+                            "oddball.py::MockingProtectionTest::\
+test_os_path_exists"
+                            "plugins.py::PluginTest::\
+test_local_files_are_importable"
+                            "regions.py::test_real_code_regions"
+                            "setup.py::SetupPyTest::test_metadata"
+                            "testing.py::test_all_our_source_files"
+                            "xml.py::XmlReportTest::test_no_duplicate_packages"
+                            ;; FileNotFoundError
+                            "setup.py::SetupPyTest::test_more_metadata"
+                            ;; ModuleNotFoundError
+                            "filereporter.py::FileReporterTest::test_zipfile"
+                            ;; OSError
+                            "annotate.py::AnnotationGoldTest::test_multi"))
+              #$@(if (or (equal? (%current-system) "riscv64-linux")
+                         (equal? (%current-system) "aarch64-linux"))
+                     ;; Thypothesis.errors.FailedHealthCheck: Data generation
+                     ;; is extremely slow.
+                     (map (lambda (test) (string-append "--deselect="
+                                                        "tests/test_numbits.py"
+                                                        test))
+                          (list "NumbitsOpTest::test_any_intersection"
+                                "NumbitsOpTest::test_conversion"
+                                "NumbitsOpTest::test_union"))
+                     '()))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-pyproject
+          (add-after 'unpack 'fix-pytest-config
             (lambda _
               (substitute* "pyproject.toml"
-                ;; Just run pytest with no frills.
-                (("addopts.*") ""))))
-          (add-before 'check 'fix-conftest
-            ;; It tries to scan the whole sys.path and "find some place to
-            ;; write to".
+                (("-q -n auto ") ""))))
+          (add-before 'check 'pre-check
             (lambda _
-              (with-output-to-file (string-append (getcwd) "/test.pth")
-                (lambda _ (display "")))
-              (substitute* "tests/conftest.py"
-                (("map(Path, sys.path)") (format #f "[~s]" (getcwd)))))))))
+              ;; WARNING: The directory '/homeless-shelter/.cache/pip' or its
+              ;; parent directory is not owned or is not writable by the
+              ;; current user. The cache has been disabled. Check the
+              ;; permissions and owner of that directory. If executing pip
+              ;; with sudo, you should use sudo's -H flag.
+              (setenv "HOME" "/tmp")
+              ;; This would otherwise interfere with finding the installed
+              ;; coverage when running tests.
+              (delete-file-recursively "coverage"))))))
     (native-inputs
      (list python-pytest
-           python-pytest-xdist ; hardcoded in tests/conftests.py
+           python-pytest-xdist  ;some tests need xdist_group
            python-flaky
            python-setuptools))
     (home-page "https://coverage.readthedocs.io")
