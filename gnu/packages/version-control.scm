@@ -2123,8 +2123,14 @@ will work.")
                                 (string-append
                                  "not test_remove_composite_keys"
                                  " and not test_remove_simple_keys"))))
-    (native-inputs (list python-psycopg2 python-pymysql python-pytest))
-    (propagated-inputs (list python-jinja2 python-multipart))
+    (native-inputs
+     (list python-psycopg2
+           python-pymysql
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-jinja2
+           python-multipart))
     (home-page "https://trac.edgewall.org")
     (synopsis "Integrated SCM, wiki, issue tracker and project environment")
     (description "Trac is a minimalistic web-based software project management
