@@ -14325,31 +14325,6 @@ enforced method signatures and consistent documentation.")
 releases.")
     (license license:expat)))
 
-(define-public python-jaraco-test
-  (package
-    (name "python-jaraco-test")
-    (version "5.5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "jaraco_test" version))
-       (sha256
-        (base32 "0xfkly5w4i4npi4pq1g32y8q8iijkq4pfcfs8wcjhfn4amj6212c"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags '(list "-k" "http")))
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-jaraco-collections
-           python-jaraco-context
-           python-jaraco-functools))
-    (home-page "https://github.com/jaraco/jaraco.test")
-    (synopsis "Testing support by jaraco")
-    (description "This package provides testing support by jaraco.")
-    (license license:expat)))
-
 (define-public python-jaraco-vcs
   (package
     (name "python-jaraco-vcs")
