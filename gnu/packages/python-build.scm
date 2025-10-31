@@ -126,6 +126,32 @@ matching of file paths.")
 stripped of Pytest specific details.")
     (license license:expat)))
 
+(define-public python-testpath
+  (package
+    (name "python-testpath")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jupyter/testpath")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0pib1xsvjwwyyhv0sqzxvgg814k83dmv1ppwfkkq9llkhr8k7s9y"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-flit-core
+           python-pytest-bootstrap))
+    (home-page "https://github.com/jupyter/testpath")
+    (synopsis "Test utilities for code working with files and commands")
+    (description
+     "Testpath is a collection of utilities for Python code working with files
+and commands.  It contains functions to check things on the file system, and
+tools for mocking system commands and recording calls to those.")
+    (license license:expat)))
+
 (define-public python-toml
   (package
     (name "python-toml")
