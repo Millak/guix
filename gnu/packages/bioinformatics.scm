@@ -7768,7 +7768,7 @@ of nucleic acid binding proteins.")
 (define-public eigensoft
   (package
     (name "eigensoft")
-    (version "7.2.1")
+    (version "8.0.0")
     (source
      (origin
        (method git-fetch)
@@ -7778,7 +7778,7 @@ of nucleic acid binding proteins.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1c141fqvhnzibmnf22sv23vbmzm20kjjyrib44cfh75wyndp2d9k"))
+         "1zb62sahci407s02c8xx94v55ynfr9mc1zapqjmgwmc0p9ykq1z8"))
        (modules '((guix build utils)))
        ;; Remove pre-built binaries.
        (snippet '(begin
