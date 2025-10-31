@@ -1,0 +1,51 @@
+Taken from
+https://cgit.git.savannah.gnu.org/cgit/hurd/gnumach.git/commit/?id=eec7037c885f6e54bf8f22d421d6abc55a2cd667
+
+From eec7037c885f6e54bf8f22d421d6abc55a2cd667 Mon Sep 17 00:00:00 2001
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Date: Wed, 27 Aug 2025 02:34:50 +0200
+Subject: [PATCH] idt_inittab: Fix terminator entry
+
+Better fill a complete entry, which is always two pointers, both in
+MACH_PV_DESCRIPTORS and !MACH_PV_DESCRIPTORS case.
+
+For the x86_64 case, only half a pointer was actually recorded, leaving
+to garbage getting registered in the idt. This was noticed by division
+by zero getting double-faults.
+
+Thanks Pellescours for the initial investigation!
+---
+ i386/i386/idt_inittab.S | 2 --
+ x86_64/idt_inittab.S    | 5 +----
+ 2 files changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/i386/i386/idt_inittab.S b/i386/i386/idt_inittab.S
+index fc80e21b..a946fece 100644
+--- a/i386/i386/idt_inittab.S
++++ b/i386/i386/idt_inittab.S
+@@ -134,7 +134,5 @@ EXCEPTION(0x1f,t_trap_1f)
+ /* Terminator */
+ 	.data	2
+ 	.long	0
+-#ifdef	MACH_PV_DESCRIPTORS
+ 	.long	0
+-#endif	/* MACH_PV_DESCRIPTORS */
+ 
+diff --git a/x86_64/idt_inittab.S b/x86_64/idt_inittab.S
+index 3a205ae4..cd5f5d22 100644
+--- a/x86_64/idt_inittab.S
++++ b/x86_64/idt_inittab.S
+@@ -140,9 +140,6 @@ EXCEPTION(0x1f,t_trap_1f)
+ 
+ /* Terminator */
+ 	.data	2
+-	.long	0
+-#ifdef	MACH_PV_DESCRIPTORS
+-	.long	0
+ 	.quad	0
+-#endif	/* MACH_PV_DESCRIPTORS */
++	.quad	0
+ 
+-- 
+2.51.0
+
