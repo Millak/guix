@@ -682,6 +682,33 @@ information.")
     ;; licenses.
     (license (list license:asl2.0 license:bsd-2))))
 
+(define-public python-pretend
+  (package
+    (name "python-pretend")
+    (version "1.0.9")
+    (source
+     (origin
+       (method git-fetch)       ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/alex/pretend")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "156l685r9mg7i4xyrk9ql3sxk088irxlg8x7md5i0d05hdw1z8rs"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-packaging-bootstrap
+           python-pytest-bootstrap
+           python-setuptools-bootstrap))
+    (home-page "https://github.com/alex/pretend")
+    (synopsis "Library for stubbing in Python")
+    (description
+     "Pretend is a library to make stubbing with Python easier.  Stubbing is a
+technique for writing tests.  You may hear the term mixed up with mocks,fakes,
+or doubles.  Basically, a stub is an object that returns pre-canned responses,
+rather than doing any computation.")
+    (license license:bsd-3)))
+
 ;;; The name 'python-pypa-build' is chosen rather than 'python-build' to avoid
 ;;; a name clash with python-build from (guix build-system python).
 (define-public python-pypa-build
