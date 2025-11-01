@@ -12,6 +12,7 @@
 ;;; Copyright © 2021, 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2022, 2024 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Imran Iqbal <imran@imraniqbal.org>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -320,7 +321,7 @@ PostScript, and PDF.  Additional tools include the @command{man} viewer, and
 (define-public man-pages
   (package
     (name "man-pages")
-    (version "6.02")
+    (version "6.16")
     (source
      (origin
        (method url-fetch)
@@ -330,7 +331,7 @@ PostScript, and PDF.  Additional tools include the @command{man} viewer, and
               (string-append "mirror://kernel.org/linux/docs/man-pages/Archive/"
                              "man-pages-" version ".tar.xz")))
        (sha256
-        (base32 "159p60a0w5ri3i7bbfxzjfmj8sbpf030m38spny1ws585fv0kn36"))))
+        (base32 "18yp64vb8br49d44jmq47dc901n7p20nqs88zsf8106dfnypl94f"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -342,7 +343,7 @@ PostScript, and PDF.  Additional tools include the @command{man} viewer, and
             ;; is man-for-txr, but that version seems unable to handle relative
             ;; ‘.so’ statements properly.  Disable HTML generation.
             (lambda _
-              (substitute* "lib/build-html.mk"
+              (substitute* "share/mk/build/html/_.mk"
                 (("(html:) .*" _ target) (string-append target "\n")))))
           (delete 'configure))
 
@@ -353,7 +354,7 @@ PostScript, and PDF.  Additional tools include the @command{man} viewer, and
 
       #:tests? #f
       #:make-flags
-      #~(list (string-append "mandir=" #$output "/share/man"))))
+      #~(list "-R" (string-append "mandir=" #$output "/share/man"))))
     (home-page "https://www.kernel.org/doc/man-pages/")
     (synopsis "Development manual pages from the Linux project")
     (description
