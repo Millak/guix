@@ -4007,31 +4007,31 @@ Python library and command line interface.")
 (define-public python-gfloat
   (package
     (name "python-gfloat")
-    (version "0.4")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "gfloat" version))
        (sha256
-        (base32 "0ffxg4igsx4mv4llig79zwla6al4wv9ny9sbnx25ha2ldq41a022"))))
+        (base32 "143424fqap9bxxybj8l48a00kqqh7vih67ycy7cmkd38kb31zcai"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
       #~(list
-         ;; XXX: Package python-ml-dtypes (tried unsuccessfully).
-         "--ignore=test/test_decode.py"
-         "--ignore=test/test_finfo.py"
-         "--ignore=test/test_jax.py"
-         "--ignore=test/test_microxcaling.py"
-         "--ignore=test/test_round.py"
+         "--ignore=test/test_array_api.py" ;requires array_api_strict
+         "--ignore=test/test_jax.py"    ;requires python-jax
+         "--ignore=test/test_microxcaling.py" ;requires torchao
          ;; Jupyter.
          "--ignore-glob=docs/source/*.ipynb")))
-    (propagated-inputs (list python-more-itertools python-numpy))
+    (propagated-inputs
+     (list python-array-api-compat python-more-itertools python-numpy))
     (native-inputs (list python-nbval
+                         python-ml-dtypes
                          python-pytest
+                         python-pytorch
                          python-setuptools
-                         python-wheel))
+                         openssl))
     (home-page "https://github.com/graphcore-research/gfloat")
     (synopsis "Generic floating point handling in Python")
     (description
