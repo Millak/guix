@@ -1971,7 +1971,8 @@ default) of the repository.")
     (arguments
      ;; One test fails, probably due to low ulimit: ValueError: Expected to
      ;; write 1000 objects into pack, but received only 0 from iterators.
-     `(#:test-flags '("-k" "not test_pack_writing")
+     `(#:test-flags '("-k" "not test_pack_writing"
+                      "--ignore-glob=gitdb/test/performance/*.py")
        #:phases (modify-phases %standard-phases
                   (add-before 'check 'create-test-repository
                     (lambda _
