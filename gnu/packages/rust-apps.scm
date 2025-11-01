@@ -868,6 +868,32 @@ Javascript, Python, Rust and Scheme.")
 Ansible syntax.  Benchmark files can be written in YAML.")
     (license license:gpl3)))
 
+(define-public dumbpipe
+  (package
+    (name "dumbpipe")
+    (version "0.32.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "dumbpipe" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1z3jxjylb2w3lgqf7g1dirnk7f37scim27xliii4pz4dx9lv33jf"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      ;; Tests require network access.
+      #:tests? #f))
+    (inputs (cargo-inputs 'dumbpipe))
+    (home-page "https://github.com/n0-computer/dumbpipe")
+    (synopsis "CLI tool to pipe data over the network, with NAT hole punching")
+    (description
+     "This package provides a cli tool to pipe data over the network, with NAT
+hole punching.  It uses iroh to establish peer-to-peer connections between
+systems.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public dutree
   (package
     (name "dutree")
