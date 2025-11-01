@@ -164,13 +164,13 @@ following the Japanese kanban (boarding) style.")
 (define-public annextimelog
   (package
     (name "annextimelog")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "annextimelog" version))
        (sha256
-        (base32 "0m1q0pbjy7d4yvgkflg7208gmdrqn1cx346b4li0mlss1kr91hvz"))))
+        (base32 "0mqv5w8m9g83wzlmmvrq4kaqm9sjcy3qsyp89lqm1xig2y1w82yp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
