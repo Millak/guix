@@ -7614,15 +7614,17 @@ to be bundled with the Zrythm @dfn{digital audio workstation} (DAW).")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/ssj71/reMID.lv2")
-             (commit (string-append "v" version))))
+              (url "https://github.com/ssj71/reMID.lv2")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
          "062kriniidsrhzwrf89kfxm9wb0cmgrl07asnlmgil8vcl7gl9y5"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f))                    ; no tests included
+     (list #:tests? #f ; no tests included
+           #:configure-flags
+           #~(list "-DCMAKE_C_FLAGS=-Wno-implicit-function-declaration")))
     (inputs
      (list alsa-lib glib jack-1 lv2))
     (native-inputs
