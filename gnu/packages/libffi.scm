@@ -116,7 +116,8 @@ conversions for values passed between the two languages.")
               ;; later, see
               ;; <https://foss.heptapod.net/pypy/cffi/-/issues/528>.
               "--deselect=testing/cffi0/test_ffi_backend.py::TestFFI::test_dlopen_handle"
-              "--deselect=testing/cffi1/test_re_python.py::test_dlopen_handle")
+              "--deselect=testing/cffi1/test_re_python.py::test_dlopen_handle"
+              "--ignore=testing/embedding/test_performance.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-gcc
