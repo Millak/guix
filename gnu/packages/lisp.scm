@@ -750,7 +750,7 @@ supporting ASDF, Sockets, Gray streams, MOP, and other useful components.")
 (define-public eisl
   (package
     (name "eisl")
-    (version "5.38")
+    (version "5.56")
     (source
      (origin
        (method git-fetch)
@@ -759,16 +759,15 @@ supporting ASDF, Sockets, Gray streams, MOP, and other useful components.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zrlsg77azlhm01djfqxglipqnz67r4h092f86rvvvhr332y2902"))))
+        (base32 "0a20qgk04018yc72zw6bzq88b0hgkjwfkl2zjypflx362hs8s48a"))))
     (build-system gnu-build-system)
     (inputs
      (list bash-minimal freeglut gdbm libiconv ncurses tcl tk))
-    (native-inputs
-     (list cppcheck))
     (arguments
      (list #:make-flags
            #~(list (string-append "PREFIX=" #$output)
                    (string-append "CC=" #$(cc-for-target)))
+           #:tests? #f  ; No runnable test suite
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-paths
@@ -782,6 +781,13 @@ supporting ASDF, Sockets, Gray streams, MOP, and other useful components.")
                      (("c-option \"-ltcl -ltk\" linux")
                       "c-option \"-ltcl8.6 -ltk8.6\" linux"))))
                (delete 'configure)
+               (add-after 'build 'build-library
+                 (lambda _
+                   (setenv "CFLAGS"
+                           (string-append "-Wno-implicit-function-declaration "
+                                          "-Wno-int-conversion "
+                                          "-Wno-incompatible-pointer-types "))
+                   (invoke "make" "lisp")))
                (add-after 'install 'wrap
                  (lambda* (#:key inputs #:allow-other-keys)
                    (wrap-program (string-append #$output "/bin/eisl")
