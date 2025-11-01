@@ -3071,14 +3071,14 @@ quadrilateral grids.  It is written in C++11 and wrapped using pybind11.")
 (define-public python-lunr
   (package
     (name "python-lunr")
-    (version "0.7.0.post1")
+    (version "0.8.0")
     (source
      (origin
        (method url-fetch)
        (uri
         (pypi-uri "lunr" version))
        (sha256
-        (base32 "1njb23lw619ppidqdzygdrscna4z15n9xjc4cc7yxiskkgsriz00"))))
+        (base32 "0a426nngs8h2mhqm60rwywxh2vb6snrip47w9fhpglkqjl2zav5l"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3086,16 +3086,13 @@ quadrilateral grids.  It is written in C++11 and wrapped using pybind11.")
       '(list "-k" "not TestLanguageSupport"
              "--ignore-glob=tests/acceptance_tests/*")))
     (native-inputs
-     (list python-coverage
-           python-hatch-fancy-pypi-readme
+     (list python-hatch-fancy-pypi-readme
            python-hatchling
            python-pytest
-           python-pytest-timeout
-           python-tox))
+           python-pytest-timeout))
     (propagated-inputs
-     (list python-importlib-metadata python-typing-extensions))
-    (home-page
-     "https://github.com/yeraydiazdiaz/lunr.py")
+     (list python-nltk))
+    (home-page "https://github.com/yeraydiazdiaz/lunr.py")
     (synopsis "Full-text search library")
     (description "This package provides python library for full-text search.
 It indexes documents and provides a search interface for retrieving documents
