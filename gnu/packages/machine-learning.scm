@@ -5056,22 +5056,20 @@ AI services.")
 (define-public python-lightning-utilities
   (package
     (name "python-lightning-utilities")
-    (version "0.14.3")
+    (version "0.15.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "lightning_utilities" version))
               (sha256
                (base32
-                "1xg9cngdz9dsxwcpcmzf28q306i15hw58h54allhb41q4wzziqip"))))
+                "091f0cng5s228xxn20c16djx3xgcs60g24ypxyn3v9hl099jzwfd"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:tests? #f))        ;XXX: broken tests
+     (list #:tests? #f))        ;XXX: cycles with  python-pytorch-lightning
     (native-inputs
-     (list python-coverage
-           python-setuptools))
+     (list python-setuptools))
     (propagated-inputs
-     (list python-importlib-metadata
-           python-packaging
+     (list python-packaging
            python-typing-extensions))
     (home-page "https://github.com/Lightning-AI/utilities")
     (synopsis "PyTorch Lightning sample project")
