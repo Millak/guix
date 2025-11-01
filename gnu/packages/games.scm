@@ -5491,6 +5491,57 @@ Transport Tycoon Deluxe.")
      (modify-inputs (package-native-inputs openttd-engine)
        (prepend openttd-opengfx openttd-openmsx openttd-opensfx)))))
 
+(define-public openttd-jgrpp
+  (package
+    (inherit openttd)
+    (name "openttd-jgrpp")
+    (version "0.67.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JGRennison/OpenTTD-patches")
+             (commit (string-append "jgrpp-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f6d53w23kg82dd8hnr24b5ssfsz9vdlvf4hipbx78n1fmzirj8q"))))
+    (inputs (modify-inputs (package-inputs openttd)
+              (append sdl2 zstd harfbuzz)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments openttd)
+       ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-before 'check 'build-tests
+                (lambda* (#:key (tests? #t) (make-flags '()) (parallel-build? #t) #:allow-other-keys)
+                  (use-modules (ice-9 threads))
+                  (when tests?
+                    (apply invoke "cmake"
+                           `("--build"
+                             "."
+                             ,@(if parallel-build?
+                                   `("-j" ,(number->string (parallel-job-count)))
+                                   ;; When unset CMake defers to the build system.
+                                   '("-j" "1"))
+                             ;; Pass the following options to the native tool.
+                             "--"
+                             ,@(if parallel-build?
+                                   ;; Set load average limit for Make and Ninja.
+                                   `("-l" ,(number->string (total-processor-count)))
+                                   '())
+                             "openttd_test"
+                             ,@make-flags)))))))))
+    (home-page "https://github.com/JGRennison/OpenTTD-patches")
+    (synopsis "OpenTTD with additional patches")
+    (description
+     "JGRPP is a collection of features and other modifications applied to OpenTTD.
+It's a separate version of the game which can be installed and played alongside
+the standard game, not a loadable mod (NewGRF, script, or so on).
+
+This is mainly intended to be used by players who are already familiar with the
+standard game and how to play it.  It is not aimed at beginner/novice players.
+Some features and settings are there for very experienced players and so may
+have a steep learning curve.")))
+
 (define openrct2-title-sequences
   (package
    (name "openrct2-title-sequences")
