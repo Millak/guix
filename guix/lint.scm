@@ -396,6 +396,15 @@ superfluous when building natively and incorrect when cross-compiling."
                        #:field 'description))
         '()))
 
+  (define (check-ends-with-period description)
+    "Checks that a description field ends with a period."
+    (if (not (string-suffix? "." description))
+        (list
+         (make-warning package
+                       (G_ "description should end with a period")
+                       #:field 'description))
+        '()))
+
   (define (check-texinfo-markup description)
     "Check that DESCRIPTION can be parsed as a Texinfo fragment.  If the
 markup is valid return a plain-text version of DESCRIPTION, otherwise #f."
@@ -515,6 +524,7 @@ by two spaces; possible infraction~p at ~{~a~^, ~}")
          (check-not-empty description)
          (check-quotes description)
          (check-trademarks description)
+         (check-ends-with-period description)
          (check-description-typo description
           '(("Infrastucture" . "Infrastructure")    ; codespell:ignore
             ("This packages" . "This package")      ; codespell:ignore

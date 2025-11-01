@@ -108,6 +108,13 @@
    (check-description-style
     (dummy-package "x" (description "")))))
 
+(test-equal "description: does not end with a period"
+  "description should end with a period"
+  (single-lint-warning-message
+   (let ((pkg (dummy-package "x"
+                             (description "This package provides a bad description"))))
+     (check-description-style pkg))))
+
 (test-equal "description: invalid Texinfo markup"
   "Texinfo markup in description is invalid"
   (single-lint-warning-message
