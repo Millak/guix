@@ -2014,37 +2014,42 @@ attachments).
 (define-public python-pyinstrument
   (package
     (name "python-pyinstrument")
-    (version "4.6.2")
+    (version "5.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyinstrument" version))
        (sha256
-        (base32 "1xnp1pjhcj1xl4dq20yzzj9599cmiyxb2azblsyjnl6qgr8yw0h0"))))
+        (base32 "1a5shhhqy45bqjdahy1lnxikrpq5sv5p610fivz1qg0bk7d1qh5w"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "-k" (string-append
-                    ;; Disable some failing tests.
-                    "not test_script_execution_details"
-                    " and not test_path_execution_details"
-                    " and not test_module_execution_details"
-                    " and not test_program_passed_as_string_execution_details"))
+      #~(list
+         #$@(map (lambda (test) (string-append "--deselect="
+                                               "test/test_cmdline.py::"
+                                               "TestCommandLine::"
+                                               test))
+                 ;; subprocess.CalledProcessError: Command '['pyinstrument',
+                 ;; '-m', 'busy_wait_module']' returned non-zero exit status
+                 ;; 1.
+                 (list "test_module_running[pyinstrument_invocation0]"
+                       "test_single_file_module_running[pyinstrument_invocation0]"
+                       "test_running_yourself_as_module[pyinstrument_invocation0]"
+                       "test_module_execution_details[pyinstrument_invocation0]")))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'build-extensions
+          (add-before 'check 'pre-check
             (lambda _
               (setenv "HOME" "/tmp")
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+              (delete-file-recursively "pyinstrument"))))))
     (native-inputs
      (list python-flaky
            python-greenlet
            python-pytest
            python-pytest-asyncio
            python-pytest-trio
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://github.com/joerick/pyinstrument")
     (synopsis "Call stack profiler for Python")
     (description
