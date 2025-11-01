@@ -31,6 +31,7 @@
 ;;; Copyright © 2024 Andy Tai <atai@atai.org>
 ;;; Copyright © 2025 Lapearldot <lapearldot@disroot.org>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -526,7 +527,7 @@ transforms.")
      (list
       #:test-flags '(list "--pyargs" "ml_collections/config_dict/tests")))
     (propagated-inputs
-     (list python-absl-py python-pyyaml))
+     (list python-absl-py python-pyyaml python-six))
     (native-inputs (list python-pylint
                          python-pytest
                          python-pytest-xdist
