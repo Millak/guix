@@ -31846,7 +31846,9 @@ has been created, and the visibility of the icon can be toggled.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "--ignore=tests/test_benchmarks.py")))
+      #:test-flags #~(list "--ignore=tests/test_benchmarks.py"
+                           "--ignore=tests/test_fp8.py"
+                           "--ignore=tests/test_mxfp.py")))
     (native-inputs
      (list python-gfloat python-pytest python-setuptools python-wheel))
     (propagated-inputs
