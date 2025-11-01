@@ -37,6 +37,7 @@
 ;;; Copyright © 2025 pinoaffe <pinoaffe@gmail.com>
 ;;; Copyright © 2025 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2025 Igorj Gorjaĉev <igor@goryachev.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -302,7 +303,7 @@ actions.")
 (define-public geeqie
   (package
     (name "geeqie")
-    (version "2.0.1")
+    (version "2.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -310,11 +311,22 @@ actions.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "199s0f3khnycr5vhk2ww3xnnasz7dzwxdl89pxjadq6rpgprfqyh"))
+                "08yr8jqli33rn1zvj9mjvinyzjp2myakxgf8wqqq8yidmm0vvn1p"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Disable test which requires binaries not present
+          ;; in the Guix repository.
+          (add-after 'unpack 'disable-failing-test
+            (lambda _
+              (substitute* "meson.build"
+                (("test\\('Ancillary files'.*") "")))))))
     (inputs
      (list djvulibre
+           evince
            exiv2
            ffmpegthumbnailer
            gtk+
@@ -327,12 +339,15 @@ actions.")
            libpng
            libraw
            libtiff
+           libjxl
            poppler
            libwebp))
     (native-inputs
      (list `(,glib "bin") ; glib-gettextize
            intltool
            pkg-config
+           python         ; for tests
+           python-lxml    ; for tests
            xxd
            yelp-tools))
     (home-page "https://www.geeqie.org/")
