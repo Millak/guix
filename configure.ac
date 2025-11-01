@@ -21,7 +21,7 @@
 AC_PREREQ([2.69])
 AC_INIT([GNU Guix],
   [m4_esyscmd([build-aux/git-version-gen .tarball-version])],
-  [bug-guix@gnu.org], [guix],
+  [https://codeberg.org/guix/guix/issues/], [guix],
   [https://www.gnu.org/software/guix/])
 AC_CONFIG_AUX_DIR([build-aux])
 

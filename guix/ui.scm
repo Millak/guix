@@ -584,7 +584,7 @@ There is NO WARRANTY, to the extent permitted by law.
   ;; ...\n" with the address for translation bugs (typically your translation
   ;; team's web or email address).
   (format #t (G_ "
-Report bugs to: ~a.") %guix-bug-report-address)
+Report bugs to: <~a>") %guix-bug-report-address)
   (format #t (G_ "
 ~a home page: <~a>") %guix-package-name %guix-home-page-url)
   (format #t (G_ "

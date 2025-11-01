@@ -1151,7 +1151,8 @@ itself."
                           (package-version "0")
                           (channel-metadata #f)
                           (config-variables %config-variables)
-                          (bug-report-address "bug-guix@gnu.org")
+                          (bug-report-address
+                           "https://codeberg.org/guix/guix/issues/")
                           (home-page-url "https://guix.gnu.org"))
 
   ;; Hack so that Geiser is not confused.
