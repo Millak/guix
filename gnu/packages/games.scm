@@ -11032,20 +11032,25 @@ simulator.")
 (define-public evtest-qt
   (package
     (name "evtest-qt")
-    (version "0.2.0")
+    ;; 0.2.0 was release in 2018, use the latest commit compatible with Qt6.
+    (properties '((commit . "6fb1b845ea3b9963bced1847f76c45d85a47beec")
+                  (revision . "0")))
+    (version (git-version "0.2.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/Grumbel/evtest-qt")
-                    (commit (string-append "v" version))))
+                     (url "https://github.com/Grumbel/evtest-qt")
+                     (commit (assoc-ref properties 'commit))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wfzkgq81764qzxgk0y5vvpxcrb3icvrr4dd4mj8njrqgbwmn0mw"))))
+                "0crpcf4rdghjza9k0q8v75kk8w732qi19hy3s32hpb6shdhqanka"))))
     (build-system qt-build-system)
     (arguments (list #:tests? #f))      ;no test suite
     (native-inputs (list tinycmmc))
-    (inputs (list qtbase-5 qtwayland-5))
+    (inputs (list qtbase qtwayland))
     (home-page "https://github.com/Grumbel/evtest-qt")
     (synopsis "Evdev Joystick Tester")
     (description "@command{evtest-qt} is a simple joystick tester for devices
