@@ -14,7 +14,7 @@
 ;;; Copyright © 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2019 Jesse Gildersleve <jessejohngildersleve@protonmail.com>
-;;; Copyright © 2019-2024 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2025 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021, 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
@@ -805,7 +805,7 @@ includes a compiler as well as an interpreter.")
 (define-public gcl
   (package
     (name "gcl")
-    (version "2.6.14")
+    (version "2.7.1")
     (source
      (origin
        (method git-fetch)
@@ -817,24 +817,11 @@ includes a compiler as well as an interpreter.")
                                                 version)))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b9m02rfnyflsr8n57v7llxz5m3mi7ip3ypwdww4pdhbgh0lzyg7"))))
+        (base32 "00jyzmpp8kszg5y6r62irlkwm40wg1l3gxxpgc9chld3mjx6w0q0"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:parallel-build? #f  ; The build system seems not to be thread safe.
-      #:test-target "ansi-tests/test_results"
-      #:configure-flags #~(list
-                           "--enable-ansi" ; required by the maxima package
-                           (string-append "CFLAGS=-I"
-                                          #$(this-package-input "libtirpc")
-                                          "/include/tirpc")
-                           (string-append "LDFLAGS=-L"
-                                          #$(this-package-input "libtirpc")
-                                          "/lib")
-                           "LIBS=-ltirpc")
-      #:make-flags #~(let ((gcc (search-input-file %build-inputs "/bin/gcc")))
-                       (list (string-append "GCL_CC=" gcc)
-                             (string-append "CC=" gcc)))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'realpath-workaround
@@ -853,43 +840,29 @@ includes a compiler as well as an interpreter.")
                 (("my_fprintf_styled\\(void \\*v,enum disassembler_style,")
                  "my_fprintf_styled(void *v,int disassembler_style,"))))
           (add-after 'unpack 'fix-makefile
-            ;; The "final" target doesn't exist.
             (lambda _
-              (substitute* "gcl/makefile"
-                (("\\$\\(MAKE\\) -C \\$\\(PORTDIR\\) final")
-                 "$(MAKE) -C $(PORTDIR)"))))
+              ;; Don't lose what we already have in C_INCLUDE_PATH, or some
+              ;; headers won't be found by gcc (<linux/limits.h> not found
+              ;; error).
+              (substitute* "gcl/Makefile.in"
+                (("C_INCLUDE_PATH=\\$\\(srcdir\\)/h:\\$\\(srcdir\\)/gcl-tk")
+                 "C_INCLUDE_PATH:=$(srcdir)/h:$(srcdir)/gcl-tk:$(C_INCLUDE_PATH)"))))
           (add-before 'configure 'pre-conf
             (lambda* (#:key inputs #:allow-other-keys)
               (chdir "gcl")
-              (substitute*
-                  (append
-                   '("pcl/impl/kcl/makefile.akcl"
-                     "add-defs"
-                     "unixport/makefile.dos"
-                     "add-defs.bat"
-                     "gcl-tk/makefile.prev"
-                     "add-defs1")
-                   (find-files "h" "\\.defs"))
-                (("SHELL=/bin/bash")
-                 (string-append "SHELL=" (which "bash")))
-                (("SHELL=/bin/sh")
-                 (string-append "SHELL=" (which "sh"))))
-              (substitute* "h/linux.defs"
-                (("#CC") "CC")
-                (("-fwritable-strings") "")
-                (("-Werror") ""))
+              (substitute* "configure"
+                (("/usr/include/tirpc")
+                 (search-input-directory inputs "include/tirpc")))
               (substitute* "lsp/gcl_top.lsp"
-                (("\"cc\"")
-                 (string-append "\"" (assoc-ref %build-inputs "gcc")
-                                "/bin/gcc\""))
-                (("\\(or \\(get-path \\*cc\\*\\) \\*cc\\*\\)") "*cc*")
-                (("\"ld\"")
-                 (string-append "\"" (assoc-ref %build-inputs "binutils")
-                                "/bin/ld\""))
-                (("\\(or \\(get-path \\*ld\\*\\) \\*ld\\*\\)") "*ld*")
+                (("\\(or \\(get-path \\*cc\\*\\) \\*cc\\*\\)")
+                 (string-append "\"" (search-input-file inputs "bin/gcc") "\""))
+
+                (("\\(or \\(get-path \\*ld\\*\\) \\*ld\\*\\)")
+                 (string-append "\"" (search-input-file inputs "bin/ld") "\""))
+
                 (("\\(get-path \"objdump --source \"\\)")
-                 (string-append "\"" (assoc-ref %build-inputs "binutils")
-                                "/bin/objdump --source \"")))))
+                 (string-append "\"" (search-input-file inputs "bin/objdump")
+                                " --source \"")))))
           (add-after 'install 'wrap
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let* ((gcl #$output)
@@ -900,7 +873,7 @@ includes a compiler as well as an interpreter.")
                 ;; GCC and the GNU binutils are necessary for GCL to be
                 ;; able to compile Lisp functions and programs (this is
                 ;; a standard feature in Common Lisp). While the
-                ;; the location of GCC is specified in the make-flags,
+                ;; the location of GCC is specified in the pre-conf phase,
                 ;; the GNU binutils must be available in GCL's $PATH.
                 (wrap-program (string-append gcl "/bin/gcl")
                   `("PATH" prefix ,(map (lambda (binary)
