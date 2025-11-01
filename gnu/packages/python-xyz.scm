@@ -2792,19 +2792,18 @@ from a docstring rather than the other way around.")
 (define-public python-array-api-compat
   (package
     (name "python-array-api-compat")
-    (version "1.9.1")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "array_api_compat" version))
        (sha256
-        (base32 "1a4y6ph3gx5fc2q74mkwc239d26b3yvlawc6ifxsay9wr4lbifhp"))))
+        (base32 "0x7r1ni9zpg68yz76dfza07q3pgwxjx15h5p4jn57pjhyqawcnsq"))))
     (build-system pyproject-build-system)
     ;; Tests would require all supported array libraries, including pytorch
     (arguments (list #:tests? #false))
     (native-inputs
-     (list python-setuptools python-wheel))
-    (propagated-inputs (list python-numpy))
+     (list python-setuptools))
     (home-page "https://data-apis.org/array-api-compat/")
     (synopsis "Array API compatibility wrapper for NumPy et al")
     (description
