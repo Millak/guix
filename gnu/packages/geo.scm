@@ -167,7 +167,7 @@
 (define-public gmt
   (package
     (name "gmt")
-    (version "6.5.0")
+    (version "6.6.0")
     (source
      (origin
        (method url-fetch)
@@ -175,7 +175,7 @@
                            "releases/download/"
                            version "/gmt-" version "-src.tar.xz"))
        (sha256
-        (base32 "07hlqg3adxrz7wqih8pydr44v7j40savcxfjlkaw3y9k82sas8j0"))))
+        (base32 "10hhpp6qwbhyk4xgd7xs1xw2d51fq22q64z57i329jcg3fqrib0q"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #false)) ;tests need costline data and caches
     (inputs
