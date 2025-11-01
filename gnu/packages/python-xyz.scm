@@ -29153,6 +29153,13 @@ and not test_install_requires_extra \
 and not test_validate_classifiers_private")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-pip-requirement
+            ;; python -m pip is available by default, no need to
+            ;; propagate pip.
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("\"pip\",")
+                 ""))))
           (add-before 'check 'pre-check
             (lambda* (#:key tests? inputs outputs #:allow-other-keys)
               (when tests?
