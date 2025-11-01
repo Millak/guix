@@ -25094,31 +25094,6 @@ spoken MP3 data to a file, a file-like object (bytestring) for further audio
 manipulation, or @code{stdout}.")
     (license license:expat)))
 
-(define-public python-packaging
-  (package/inherit python-packaging-bootstrap
-    (name "python-packaging")
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (invoke "pytest" "-vv")
-                          (format #t "test suite not run~%")))))))
-    (native-inputs
-     (list python-flit-core
-           python-pretend python-pytest))
-    (propagated-inputs (list python-pyparsing python-six))
-    (home-page "https://github.com/pypa/packaging")
-    (synopsis "Core utilities for Python packages")
-    (description "Packaging is a Python module for dealing with Python packages.
-     It offers an interface for working with package versions, names, and dependency
-     information.")
-    ;; From 'LICENSE': This software is made available under the terms of
-    ;; *either* of the licenses found in LICENSE.APACHE or LICENSE.BSD.
-    ;; Contributions to this software is made under the terms of *both* these
-    ;; licenses.
-    (license (list license:asl2.0 license:bsd-2))))
-
 (define-public python-packaging-legacy
   (package
     (name "python-packaging-legacy")

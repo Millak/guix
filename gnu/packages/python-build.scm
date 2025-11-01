@@ -657,9 +657,9 @@ of regular expressions.  The pyparsing module provides a library of classes
 that client code uses to construct the grammar directly in Python code.")
     (license license:expat)))
 
-(define-public python-packaging-bootstrap
+(define-public python-packaging
   (package
-    (name "python-packaging-bootstrap")
+    (name "python-packaging")
     (version "25.0")
     (source
      (origin
@@ -668,19 +668,31 @@ that client code uses to construct the grammar directly in Python code.")
        (sha256
         (base32 "0kzwn2ar4ndm90qrvgyjcbkqz3klrg0ziwm1yrhbyxynk0n8fhyl"))))
     (build-system pyproject-build-system)
-    (arguments `(#:tests? #f))         ;disabled to avoid extra dependencies
     (native-inputs
-     (list python-flit-core))
+     (list python-flit-core
+           python-pretend
+           python-pytest-bootstrap))
+    (propagated-inputs (list python-pyparsing python-six))
     (home-page "https://github.com/pypa/packaging")
     (synopsis "Core utilities for Python packages")
     (description "Packaging is a Python module for dealing with Python packages.
-It offers an interface for working with package versions, names, and dependency
-information.")
+     It offers an interface for working with package versions, names, and dependency
+     information.")
     ;; From 'LICENSE': This software is made available under the terms of
     ;; *either* of the licenses found in LICENSE.APACHE or LICENSE.BSD.
     ;; Contributions to this software is made under the terms of *both* these
     ;; licenses.
     (license (list license:asl2.0 license:bsd-2))))
+
+(define-public python-packaging-bootstrap
+  (package/inherit python-packaging
+    (name "python-packaging-bootstrap")
+    (arguments
+     ;; XXX: disabled to avoid extra dependencies
+     (list
+      #:tests? #f))
+    (native-inputs (list python-flit-core))
+    (propagated-inputs '())))
 
 (define-public python-pretend
   (package
