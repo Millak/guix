@@ -1597,14 +1597,14 @@ Emacs package archive}.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://mumble.net/~campbell/git/paredit.git")
+                    (url "https://paredit.org/paredit")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
                 "1hwl2jhv1fhsdrspfhprq77n763i4zsj350q024ajy0m2kaql6ws"))))
     (build-system emacs-build-system)
-    (home-page "https://mumble.net/~campbell/emacs/paredit/")
+    (home-page "https://paredit.org/")
     (synopsis "Emacs minor mode for editing parentheses")
     (description
      "ParEdit (paredit.el) is a minor mode for performing structured editing
