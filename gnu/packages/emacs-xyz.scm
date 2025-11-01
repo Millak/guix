@@ -830,7 +830,7 @@ e.g. emacs-geiser-guile for Guile.")
 (define-public emacs-gptel
   (package
     (name "emacs-gptel")
-    (version "0.9.9")
+    (version "0.9.9.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -839,18 +839,50 @@ e.g. emacs-geiser-guile for Guile.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00f391gaf0pnin6qncpnxl5yj0j089d1rdblwgv5cf3mkid9w8gj"))))
+                "080dk0101imvfkxcqlqhy8wf1wc8p2vqyp3cwdi48wn44y1csqy9"))))
     (build-system emacs-build-system)
     (arguments
      (list
+      #:test-command #~(list "make" "-C" "test" "test")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-tests
+            (lambda _
+              (copy-recursively
+               #$(this-package-native-input "emacs-gptel-test-files")
+               "test")
+              (invoke "chmod" "--recursive" "u+w" "test")))
+          ;; gptel-pkg.el produces an error during the check phase.
+          (add-before 'check 'rename-pkg
+            (lambda _ (rename-file "gptel-pkg.el" "gptel-pkg.el_")))
+          (add-after 'check 'rename-pkg-back
+            (lambda _ (rename-file "gptel-pkg.el_" "gptel-pkg.el")))
           (add-after 'unpack 'use-appropriate-curl
             (lambda* (#:key inputs #:allow-other-keys)
-              (emacs-substitute-variables "gptel.el"
-                ("gptel-use-curl" (search-input-file inputs "/bin/curl"))))))))
+              ;; These two alternatives error on the substitution.
+              ;; (emacs-substitute-variables "gptel-openai.el"
+              ;;   ("gptel-use-curl"
+              ;;    (search-input-file inputs "/bin/curl")))
+              ;; (emacs-substitute-sexps "gptel-openai.el"
+              ;;   ("(defvar gptel-use-curl"
+              ;;    (search-input-file inputs "/bin/curl")))
+              (substitute* "gptel-openai.el"
+                (("defvar gptel-use-curl")
+                 (format #f "defvar gptel-use-curl \"~a\""
+                         (search-input-file inputs "/bin/curl")))))))))
     (inputs (list curl))
     (propagated-inputs (list emacs-compat emacs-transient))
+    (native-inputs
+     (list
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/karthink/gptel-test")
+               (commit "5f5275c32ed240a03f38d9edef26d920d4535a41")))
+        (file-name "emacs-gptel-test-files")
+        (sha256
+         (base32
+          "0sd1y1m5abfqcm5v9x86xmnnx8ab82bfd0m3cgq9ycszxdf7gf3v")))))
     (home-page "https://github.com/karthink/gptel")
     (synopsis "GPTel is a simple ChatGPT client for Emacs")
     (description
