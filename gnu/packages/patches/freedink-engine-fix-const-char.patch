@@ -1,0 +1,23 @@
+Both of these functions, TTF_FontFaceStyleName() and
+TTF_FontFaceFamilyName() return 'const char *'. Update variables to
+match expected returned type.
+
+Bug-Debian: http://bugs.debian.org/1015106
+
+Taken from https://lists.gnu.org/archive/html/bug-freedink/2022-07/msg00001.html
+--- a/src/gfx_fonts.cpp	1970-01-01 07:30:01.000000000 +0730
++++ b/src/gfx_fonts.cpp	2025-11-02 14:12:38.939879534 +0800
+@@ -293,9 +293,9 @@
+  */
+ void setup_font(TTF_Font *font)
+ {
+-  char *familyname = TTF_FontFaceFamilyName(font);
++  const char *familyname = TTF_FontFaceFamilyName(font);
+   if(familyname)
+     log_info("The family name of the face in the font is: %s", familyname);
+-  char *stylename = TTF_FontFaceStyleName(font);
++  const char *stylename = TTF_FontFaceStyleName(font);
+   if(stylename)
+     log_info("The name of the face in the font is: %s", stylename);
+   log_info("The font max height is: %d", TTF_FontHeight(font));
+
