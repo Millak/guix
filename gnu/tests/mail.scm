@@ -484,7 +484,17 @@ addheader \"X-Sieve-Filtered\" \"Guix\";
                                (mail-location
                                 (string-append "maildir:~/Maildir"
                                                ":INBOX=~/Maildir/INBOX"
-                                               ":LAYOUT=fs"))))
+                                               ":LAYOUT=fs"))
+                               (namespaces
+                                (list
+                                 (namespace-configuration
+                                   (name "main")
+                                   (inbox? #t)
+                                   (mailboxes
+                                    (list
+                                     (mailbox-configuration
+                                       (name "TESTBOX")
+                                       (auto "create")))))))))
                      (service getmail-service-type
                               (list
                                (getmail-configuration
@@ -593,9 +603,6 @@ Subject: Hello Nice to meet you!")
               (write-line "a AUTHENTICATE ANONYMOUS" imap)
               (read-line imap) ;+
               (write-line "c2lyaGM=" imap)
-              (read-line imap) ;OK
-              ;; Create a TESTBOX mailbox
-              (write-line "a CREATE TESTBOX" imap)
               (read-line imap) ;OK
               ;; Append a message to a TESTBOX mailbox
               (write-line (format #f "a APPEND TESTBOX {~a}"
