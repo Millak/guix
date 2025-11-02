@@ -37155,6 +37155,14 @@ ratio)
        (sha256
         (base32 "0vwaxyr2vk8gi7s1slq74nb0ssbb0wcn208ziqp48j3dv8kqv3cr"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-coverage-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((".*coverage.*") "")))))))
     (native-inputs
      (list python-hatch-vcs
            python-hatchling
@@ -37186,13 +37194,15 @@ ratio)
 (define-public python-termcolor-next
   (package
     (inherit python-termcolor)
+    (name "python-termcolor-next")
     (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "termcolor" version))
        (sha256
-        (base32 "0w2rwl4h7664illllkmicdh3fz3z3pznqxbaxkp0j6aqxvxxfvba"))))))
+        (base32 "0w2rwl4h7664illllkmicdh3fz3z3pznqxbaxkp0j6aqxvxxfvba"))))
+    (arguments '())))
 
 (define-public python-terminaltables
   (package
