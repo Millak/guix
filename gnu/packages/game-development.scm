@@ -560,6 +560,24 @@ types (circle, polygon, thin line segments), and quite a few joint
 types (revolute, prismatic, wheel, etc.).")
     (license license:zlib)))
 
+(define-public python-nbt
+  (package
+    (name "python-nbt")
+    (version "1.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "NBT" version))
+              (sha256
+               (base32
+                "1i9ncrzy5zcfnxzkh2j31n9ayzxfncckzwa6fkz9vjq5fq9v4fys"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/twoolie/NBT")
+    (synopsis "Named Binary Tag reader and writer")
+    (description
+     "This library is a parser and writer for the NBT file format.  It is suited
+to inspect and edit the Minecraft data files.")
+    (license license:expat)))
+
 (define-public python-sge
   (package
     (name "python-sge")
