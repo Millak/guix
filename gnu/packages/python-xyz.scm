@@ -5970,8 +5970,7 @@ diagrams.")
        (sha256
         (base32 "0704smz9k6hdd6i5xh0xf0sk47kannjb77abilvvp34r6v9vdaxx"))))
     (build-system pyproject-build-system)
-    (arguments (list #:test-backend #~'custom
-                     #:test-flags #~(list "-m" "nose2")))
+    (arguments (list #:test-backend #~'nose2))
     (native-inputs
      (list python-nose2
            python-setuptools))
