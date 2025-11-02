@@ -422,6 +422,8 @@ HTTP-PORT."
             (gitile-configuration
              (base-git-url "http://localhost")
              (repositories "/srv/git")
+             ;; As /srv/git is root-owned, disable strict owner validation.
+             (git-owner-validation? #f)
              (nginx %gitile-configuration-nginx)))
    %test-repository-service))
 
