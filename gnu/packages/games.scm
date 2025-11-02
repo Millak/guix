@@ -1149,11 +1149,11 @@ original rogue game found on 4.2BSD.")
     (license license:bsd-3)))
 
 (define-public sgt-puzzles
-  (let ((commit "50985e9f2c54ad44e8c26491ddddd698bc02fd06")
+  (let ((commit "790f5851507be5845164d3ae7b32b2f86717fe50")
         (revision "0"))
     (package
       (name "sgt-puzzles")
-      (version (git-version "20250510" revision commit))
+      (version (git-version "20251021" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -1162,7 +1162,7 @@ original rogue game found on 4.2BSD.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0j3bnzw4bbbm1nl9zmkmhcpk1zm64jmfjiymsjw8axzq5af19jvj"))))
+          (base32 "163jdm4vdydp3zqw37jg0gmiacz1dgyl58kjdd5wsd0y2qix78p4"))))
       (build-system cmake-build-system)
       (arguments
        (list
