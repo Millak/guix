@@ -1907,16 +1907,16 @@ JWT tokens.  Nkeys use Ed25519 to provide authentication of JWT claims.")
 (define-public go-github-com-nats-io-nkeys
   (package
     (name "go-github-com-nats-io-nkeys")
-    (version "0.4.10")
+    (version "0.4.11")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/nats-io/nkeys")
-             (commit (string-append "v" version))))
+              (url "https://github.com/nats-io/nkeys")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1max0dsjj92gfzc9g0dsnmk24y72drfhzkra3c1xnjwnw6lwha5x"))))
+        (base32 "0wrsrccc4sxzlrlngkw644p4n074vd54mkad8vzi9ylnw97hhabm"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/nats-io/nkeys"))
