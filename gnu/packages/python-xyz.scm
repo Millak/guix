@@ -6809,6 +6809,24 @@ server.")
        (sha256
         (base32 "17z6rrvv3q1axy9r13c2hln2pazfn9n5bhkzrbjcjakgbfjl6mss"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: The workbook writer doesn't respect SOURCE_DATE_EPOCH
+      ;; https://foss.heptapod.net/openpyxl/openpyxl/-/issues/2268
+      ;; It makes a few tests fail.
+      #:test-flags
+      #~(list "--ignore=openpyxl/worksheet/tests/test_read_only.py"
+              "-k" (string-join
+                    (list "not test_unsupport_drawing"
+                          "test_broken_sheet_ref"
+                          "test_no_default_style"
+                          "test_ctor"
+                          "test_force_dimension"
+                          "test_get_max_cell"
+                          "test_read_hyperlinks_read_only"
+                          "test_read_with_missing_cells"
+                          "test_read_empty_rows")
+                    " and not "))))
     (native-inputs
      (list python-lxml-4.9
            python-pillow
