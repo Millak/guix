@@ -560,6 +560,28 @@ types (circle, polygon, thin line segments), and quite a few joint
 types (revolute, prismatic, wheel, etc.).")
     (license license:zlib)))
 
+(define-public python-anvil-parser
+  (let ((commit "27544bb41f035617be130a209a84371cbaf837cc")
+        (revision "0"))
+  (package
+    (name "python-anvil-parser")
+    (version (git-version "0.9.0" revision commit))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/0xTiger/anvil-parser")
+             (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "196nli36pz4sllx1m8jlys661hgbxhcxr2c4545fqb4nd27hhwy7"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-frozendict python-nbt))
+    (home-page "https://github.com/0xTiger/anvil-parser")
+    (synopsis "Anvil file format parser")
+    (description "This package provides an Anvil file format parser.")
+    (license license:expat))))
+
 (define-public python-nbt
   (package
     (name "python-nbt")
