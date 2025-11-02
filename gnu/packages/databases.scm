@@ -4627,8 +4627,8 @@ into Python.")
        (sha256
         (base32 "1njzxi130bbix53wl0gcsvryk1b2cazq0s2701jbkf6nvr3ywpyy"))))
     (build-system pyproject-build-system)
-    (arguments (list #:test-backend #~'unittest))
-    (native-inputs (list python-flit-core))
+    (native-inputs (list python-flit-core python-packaging))
+    (propagated-inputs (list python-typing-extensions))
     (home-page "https://github.com/jreese/aiosqlite")
     (synopsis "Asyncio bridge for sqlite3")
     (description
