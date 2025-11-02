@@ -109,6 +109,7 @@
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages shells)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages stb)
@@ -2720,7 +2721,7 @@ VPI Interface, Elaborator, Serialization, Visitor and Listener.")
   ;; TODO: Remove when we have modular Trilinos packages?
   (package
     (name "trilinos-serial-xyce")
-    (version "12.12.1")
+    (version "14.4.0")                  ;version used by xyce, sync updates
     (source
      (origin
        (method git-fetch)
@@ -2735,23 +2736,30 @@ VPI Interface, Elaborator, Serialization, Visitor and Listener.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1smz3wlpfyjn0czmpl8bj4hw33p1zi9nnfygpsx7jl1523nypa1n"))))
+         "19ny75z1x2sfa9jv20prq4wqxznkzqryxj4gv12rzzlz9ihd1dcd"))))
     (build-system cmake-build-system)
     (arguments
      (list
-      #:tests? #f                       ;no tests
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; Delete unneeded tribits(build system) directory which makes
-          ;; validate-runpath phase to fail.
-          (add-before 'validate-runpath 'delete-tribits
-            (lambda _
-              (delete-file-recursively
-               (string-append #$output "/lib/cmake/tribits")))))
       #:configure-flags
       #~(list "-DCMAKE_CXX_FLAGS=-O3 -fPIC"
               "-DCMAKE_C_FLAGS=-O3 -fPIC"
               "-DCMAKE_Fortran_FLAGS=-O3 -fPIC"
+              "-DBUILD_SHARED_LIBS=ON"
+              "-DTrilinos_ENABLE_TESTS=ON"
+              (string-append "-DBLAS_LIBRARY_DIRS="
+                             #$(this-package-input "openblas") "/lib")
+              (string-append "-DLAPACK_LIBRARY_DIRS="
+                             #$(this-package-input "lapack") "/lib")
+              ;; From xyce configure phase:
+              ;; ...
+              ;; -- Looking for Trilinos
+              ;; Required packages:
+              ;; Amesos Epetra EpetraExt Ifpack NOX Teuchos Sacado
+              ;; Triutils AztecOO Belos TrilinosCouplings
+              ;; Optional packages:
+              ;; Isorropia Zoltan ShyLU ShyLU_DDCore Amesos2 Stokhos ROL MKL
+              ;; ...
+              ;; List from TRILINOS_SERIAL_ARGS in XyceSuperBuild.cmake.
               "-DTrilinos_ENABLE_NOX=ON"
               "-DNOX_ENABLE_LOCA=ON"
               "-DTrilinos_ENABLE_EpetraExt=ON"
@@ -2760,30 +2768,38 @@ VPI Interface, Elaborator, Serialization, Visitor and Listener.")
               "-DEpetraExt_BUILD_GRAPH_REORDERINGS=ON"
               "-DTrilinos_ENABLE_TrilinosCouplings=ON"
               "-DTrilinos_ENABLE_Ifpack=ON"
-              "-DTrilinos_ENABLE_Isorropia=ON"
+              ;; "-DTrilinos_ENABLE_Isorropia=OFF"
               "-DTrilinos_ENABLE_AztecOO=ON"
               "-DTrilinos_ENABLE_Belos=ON"
               "-DTrilinos_ENABLE_Teuchos=ON"
               "-DTeuchos_ENABLE_COMPLEX=ON"
               "-DTrilinos_ENABLE_Amesos=ON"
               "-DAmesos_ENABLE_KLU=ON"
-              "-DAmesos_ENABLE_UMFPACK=ON"
               "-DTrilinos_ENABLE_Sacado=ON"
-              "-DTrilinos_ENABLE_Kokkos=OFF"
+              ;; "-DTrilinos_ENABLE_Kokkos=OFF"
               "-DTrilinos_ENABLE_ALL_OPTIONAL_PACKAGES=OFF"
+              "-DTrilinos_ENABLE_CXX11=ON"
               "-DTPL_ENABLE_AMD=ON"
-              "-DTPL_ENABLE_UMFPACK=ON"
               "-DTPL_ENABLE_BLAS=ON"
-              "-DTPL_ENABLE_LAPACK=ON")))
-    (native-inputs (list gfortran swig))
-    (inputs (list boost lapack suitesparse))
-    (home-page "https://trilinos.org")
+              "-DTPL_ENABLE_LAPACK=ON"
+              "-DTPL_ENABLE_DLlib:BOOL=OFF")))
+    (native-inputs (list gfortran perl python-minimal-wrapper swig tcsh))
+    (inputs (list boost lapack openblas suitesparse-amd))
+    (home-page "https://trilinos.github.io/")
     (synopsis "Engineering and scientific problems algorithms")
     (description
      "The Trilinos Project is an effort to develop algorithms and enabling
 technologies within an object-oriented software framework for the solution of
 large-scale, complex multi-physics engineering and scientific problems.  A
 unique design feature of Trilinos is its focus on packages.")
+    ;; The Trilinos project is a collection of open-source packages licensed
+    ;; individually under multiple open-source licenses. Licensing terms are
+    ;; available at the Trilinos website:
+    ;; https://trilinos.github.io/license.html
+    ;; For information about the software license for a particular package,
+    ;; see package-specific documentation (e.g., Trilinos/packages/<package
+    ;; name>/LICENSE).
+    ;; Only found these two licenses:
     (license (list license:lgpl2.1+
                    license:bsd-3))))
 
@@ -2795,10 +2811,19 @@ unique design feature of Trilinos is its focus on packages.")
      (substitute-keyword-arguments
          (package-arguments trilinos-serial-xyce)
        ((#:configure-flags flags)
+        ;; List from TRILINOS_PARALLEL_ARGS in XyceSuperBuild.cmake.
         #~(cons* "-DTrilinos_ENABLE_ShyLU=ON"
                  "-DTrilinos_ENABLE_Zoltan=ON"
+                 "-DTrilinos_ENABLE_Isorropia=ON"
                  "-DTPL_ENABLE_MPI=ON"
-                 #$flags))))
+                 "-DCMAKE_C_COMPILER=mpicc"
+                 "-DCMAKE_CXX_COMPILER=mpicxx"
+                 "-DCMAKE_Fortran_COMPILER=mpifort"
+                 "-DCMAKE_CXX_FLAGS=-O3 -fPIC -lmpi"
+                 "-DCMAKE_C_FLAGS=-O3 -fPIC -lmpi"
+                 (delete "-DCMAKE_C_FLAGS=-O3 -fPIC"
+                         (delete
+                          "-DCMAKE_CXX_FLAGS=-O3 -fPIC" #$flags))))))
     (inputs
      (modify-inputs (package-inputs trilinos-serial-xyce)
        (prepend openmpi)))))
