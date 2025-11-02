@@ -39,6 +39,7 @@
 ;;; Copyright © 2024, 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2025 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2025 Remco van 't Veer <remco@remworks.net>
+;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2533,6 +2534,17 @@ misspelled words in a GtkTextView widget.")
        (sha256
         (base32 "05xi29v2y0rvb33fmvrz7r9j4l858qj7ngwd7dp4pzpkkaybjln0"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'relax-gcc-14-strictness
+                 (lambda _
+                   (setenv "CFLAGS"
+                           (string-join
+                            (list "-Wno-error=incompatible-pointer-types"
+                                  "-Wno-error=implicit-function-declaration"
+                                  "-Wno-error=int-conversion")
+                            " ")))))))
     (native-inputs
      (list autoconf automake intltool pkg-config))
     (inputs
