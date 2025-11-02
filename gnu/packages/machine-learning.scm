@@ -3230,11 +3230,15 @@ Python.")
       #:imported-modules (append %cmake-build-system-modules
                                  %pyproject-build-system-modules)
       #:modules '((ice-9 match)
+                  (srfi srfi-26)
                   (guix build utils)
                   (guix build cmake-build-system)
                   ((guix build pyproject-build-system) #:prefix py:))
       #:configure-flags
       #~(list
+         ;; Access some OpenCL functions in mesa-headers
+         "-DCMAKE_C_FLAGS=-DCL_ENABLE_BETA_EXTENSIONS=1"
+         "-DCMAKE_CXX_FLAGS=-DCL_ENABLE_BETA_EXTENSIONS=1"
          ;; "-DTFLITE_KERNEL_TEST=ON"  ; TODO: build tests
          ;; so cmake can be used to find this from other packages
          "-DTFLITE_ENABLE_INSTALL=ON"
@@ -3355,11 +3359,22 @@ find_library(ML_DTYPES_LIBRARIES
                                            "build_pip_package_with_cmake.sh")))
                 (substitute* script
                   (("\"\\$\\{TENSORFLOW_LITE_DIR\\}\"" all)
-                   (string-append "${CMAKE_ADDITIONAL_CONFIGURE_FLAGS} "
-                                  all)))
+                   (string-append "${ADDITIONAL_CMAKE_FLAGS} " all))
+                  (("-D(CMAKE_C[X]*_FLAGS)=\"\\$\\{BUILD_FLAGS\\}" all flag)
+                   (string-append all " ${ADDITIONAL_" flag "}")))
                 (setenv "BUILD_NUM_JOBS" (number->string (parallel-job-count)))
-                (setenv "CMAKE_ADDITIONAL_CONFIGURE_FLAGS"
-                        (string-join configure-flags " "))
+                (let* ((config (map (cut string-split <> #\=) configure-flags))
+                       (c-flags (assoc-ref config "-DCMAKE_C_FLAGS"))
+                       (config (alist-delete "-DCMAKE_C_FLAGS" config))
+                       (cxx-flags (assoc-ref config "-DCMAKE_CXX_FLAGS"))
+                       (config (alist-delete "-DCMAKE_CXX_FLAGS" config)))
+                  (setenv "ADDITIONAL_CMAKE_C_FLAGS"
+                          (string-join c-flags "="))
+                  (setenv "ADDITIONAL_CMAKE_CXX_FLAGS"
+                          (string-join cxx-flags "="))
+                  (setenv "ADDITIONAL_CMAKE_FLAGS"
+                          (string-join (map (cut string-join <> "=") config)
+                                       " ")))
                 (invoke "sh" script))))
           (add-after 'install 'install-extra
             (lambda _
@@ -3399,11 +3414,9 @@ find_library(ML_DTYPES_LIBRARIES
            mesa-headers
            neon2sse
            nsync
-           opencl-clhpp
-           opencl-headers
            opencl-icd-loader
            pthreadpool
-           python-wrapper
+           python                       ;for its /lib
            python-ml-dtypes
            ruy
            re2
@@ -3416,7 +3429,8 @@ find_library(ML_DTYPES_LIBRARIES
      `(("pkg-config" ,pkg-config)
        ("googletest" ,googletest)
        ("pybind11" ,pybind11)
-       ("python-wheel" ,python-wheel)
+       ("python-setuptools" ,python-setuptools)
+       ("python-wrapper" ,python-wrapper) ;for its /bin
        ("swig" ,swig)
        ("farmhash-src"
         ,(let ((commit "816a4ae622e964763ca0862d9dbd19324a1eaf45"))
