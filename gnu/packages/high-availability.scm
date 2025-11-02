@@ -163,15 +163,16 @@ in threaded or blocking contexts as well.")
 (define-public haproxy
   (package
     (name "haproxy")
-    (version "3.1.1")
+    (version "3.2.7")
     (source
      (origin
        (method url-fetch)
+       ;; TODO: Switch to git-fetch: <https://git.haproxy.org/>.
        (uri (string-append "https://www.haproxy.org/download/"
                            (version-major+minor version)
                            "/src/haproxy-" version ".tar.gz"))
        (sha256
-        (base32 "0wyjyzazlwpi3hm4ri699lhyzbb703i5fp240bk7icm4kd1ms6wc"))))
+        (base32 "0y22ypxhiw7s2v7lc309w24asxq83a9xyk3frgay46dkn3gyj2hz"))))
     (build-system gnu-build-system)
     (arguments
      (list
