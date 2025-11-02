@@ -1,0 +1,86 @@
+From 84ebbd6001d7cde552dd5b9da5c0528e476ab53d Mon Sep 17 00:00:00 2001
+From: AwesomeAdam54321 <adam.faiz@disroot.org>
+Date: Fri, 30 Jun 2023 22:08:46 +0800
+Subject: [PATCH] mc2mt: Add packaging support.
+
+* MANIFEST.in: Add it.
+* mc2mt.py -> mc2mtlib/mc2mt.py: Move mc2mt.py functionality here.
+* mc2mtlib/__init__.py: Import mc2mt.
+* pyproject.toml: Add project specification.
+---
+ MANIFEST.in                   |  1 +
+ mc2mtlib/__init__.py          |  1 +
+ mc2mt.py => mc2mtlib/mc2mt.py | 11 +++++++++--
+ pyproject.toml                | 11 +++++++++++
+ 4 files changed, 22 insertions(+), 2 deletions(-)
+ create mode 100644 MANIFEST.in
+ rename mc2mt.py => mc2mtlib/mc2mt.py (90%)
+ mode change 100755 => 100644
+ create mode 100644 pyproject.toml
+
+diff --git a/MANIFEST.in b/MANIFEST.in
+new file mode 100644
+index 0000000..d5914df
+--- /dev/null
++++ b/MANIFEST.in
+@@ -0,0 +1 @@
++include mc2mtlib/mods/*.json
+diff --git a/mc2mtlib/__init__.py b/mc2mtlib/__init__.py
+index 047fcf2..315b5dc 100644
+--- a/mc2mtlib/__init__.py
++++ b/mc2mtlib/__init__.py
+@@ -1,4 +1,5 @@
+ from . import argument_parser
++from . import mc2mt
+ from . import minetest_world
+ from . import blob_writer
+ from . import block_functions
+diff --git a/mc2mt.py b/mc2mtlib/mc2mt.py
+old mode 100755
+new mode 100644
+similarity index 90%
+rename from mc2mt.py
+rename to mc2mtlib/mc2mt.py
+index 938600b..67affff
+--- a/mc2mt.py
++++ b/mc2mtlib/mc2mt.py
+@@ -4,10 +4,17 @@ import time
+ 
+ import anvil
+ 
+-from mc2mtlib import *
++from mc2mtlib import argument_parser
++from mc2mtlib import minetest_world
++from mc2mtlib import blob_writer
++from mc2mtlib import block_functions
++from mc2mtlib import block_conversion
++from mc2mtlib import section_conversion
++
++parse_args = argument_parser.parser.parse_args
+ 
+ # Main
+-if __name__ == '__main__':
++def mc2mt():
+ 
+     # Args
+     args = parse_args()
+diff --git a/pyproject.toml b/pyproject.toml
+new file mode 100644
+index 0000000..cf9a70d
+--- /dev/null
++++ b/pyproject.toml
+@@ -0,0 +1,11 @@
++[build-system]
++requires = ['setuptools']
++build-backend = 'setuptools.build_meta'
++
++[project]
++name = 'mc2mt'
++version = '0.1'
++dependencies = ['anvil-parser']
++
++[project.scripts]
++mc2mt = 'mc2mtlib:mc2mt.mc2mt'
+-- 
+2.40.1
+
