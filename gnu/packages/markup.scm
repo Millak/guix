@@ -396,7 +396,7 @@ maintained.")
                       "/lib")))
              #t)))))
     (inputs
-     (list discount))
+     (list discount-2))
     (home-page
      "https://metacpan.org/release/Text-Markdown-Discount")
     (synopsis
