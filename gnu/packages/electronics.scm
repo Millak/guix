@@ -2,7 +2,7 @@
 ;;; Copyright © 2016, 2017, 2018 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2021, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2022, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Juliana Sims <juli@incana.org>
@@ -24,6 +24,8 @@
 ;;; Copyright © 2025, Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
+;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -465,6 +467,55 @@ Description Language} Analysis and Standardization Group.")
 hardware designs in Verilog.")
       (home-page "https://github.com/ZipCPU/zipcpu/")
       (license license:lgpl3+))))
+
+(define-public gerbv
+  (package
+    (name "gerbv")
+    (version "2.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gerbv/gerbv")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06bcm5zw7whsnnmfld3gl2j907lxc68gnsbzr2pc4w6qc923rgmj"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "CFLAGS=-O2 -g -fcommon")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-version-generator
+                     (lambda _
+                       (substitute* "utils/git-version-gen.sh"
+                         (("/bin/bash")
+                          (which "bash"))))))))
+    (native-inputs (list autoconf
+                         automake
+                         desktop-file-utils
+                         gettext-minimal
+                         ;; Version generator needs git to work properly:
+                         ;; https://github.com/gerbv/gerbv/issues/244
+                         git-minimal/pinned
+                         `(,glib "bin")
+                         libtool
+                         pkg-config))
+    (inputs (list cairo
+                  ;; As of 2.10.0 gerbv is still GTK+2 only.  GTK 3/4 porting
+                  ;; issue: https://github.com/gerbv/gerbv/issues/71.
+                  gtk+-2))
+    (home-page "https://gerbv.github.io/")
+    (synopsis "Gerber file viewer")
+    (description
+     "Gerbv is a viewer for files in the Gerber format (RS-274X only), which
+is commonly used to represent printed circuit board (PCB) layouts.  Gerbv lets
+you load several files on top of each other, do measurements on the displayed
+image, etc.  Besides viewing Gerbers, you may also view Excellon drill files
+as well as pick-place files.")
+    ;; This CVE has been fixed in version 2.10.0.
+    (properties '((lint-hidden-cve . ("CVE-2023-4508"))))
+    (license license:gpl2+)))
 
 (define-public gtkwave
   ;; The last release is more than 2 years old, and there are improvements in
