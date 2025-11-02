@@ -329,6 +329,18 @@ documents in the ms and man formats, LaTeX, gemini, and terminal output.")
     (home-page "https://www.pell.portland.or.us/~orc/Code/discount/")
     (license license:bsd-3)))
 
+(define-public discount-2
+  (package/inherit discount
+    (version "2.2.7d")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append
+                   "http://www.pell.portland.or.us/~orc/Code/"
+                   "discount/discount-" version ".tar.bz2"))
+             (sha256
+              (base32
+               "0lkvnysnnaw431dam3b8b1f0ln1iscas5wcgw0bxx35fjqg098hj"))))))
+
 (define-public perl-text-markdown
   (package
     (name "perl-text-markdown")
