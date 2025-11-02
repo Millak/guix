@@ -3,7 +3,7 @@ native manifests) with "$ICECAT_SYSTEM_DIR".
 
 --- a/toolkit/xre/nsXREDirProvider.cpp
 +++ b/toolkit/xre/nsXREDirProvider.cpp
-@@ -296,24 +296,12 @@ nsresult nsXREDirProvider::GetBackgroundTasksProfilesRootDir(
+@@ -287,24 +287,11 @@
  static nsresult GetSystemParentDirectory(nsIFile** aFile) {
    nsresult rv;
    nsCOMPtr<nsIFile> localDir;
@@ -23,14 +23,13 @@ native manifests) with "$ICECAT_SYSTEM_DIR".
 -      "/usr/lib/mozilla"_ns
 -#    endif
 -      ;
--  rv = NS_NewNativeLocalFile(dirname, false, getter_AddRefs(localDir));
+-  rv = NS_NewNativeLocalFile(dirname, getter_AddRefs(localDir));
 -#  endif
-+
 +  const char* systemParentDir = getenv("ICECAT_SYSTEM_DIR");
 +  if (!systemParentDir || !*systemParentDir) return NS_ERROR_FAILURE;
 +
-+  rv = NS_NewNativeLocalFile(nsDependentCString(systemParentDir), false,
++  rv = NS_NewNativeLocalFile(nsDependentCString(systemParentDir),
 +                             getter_AddRefs(localDir));
- 
+
    if (NS_SUCCEEDED(rv)) {
      localDir.forget(aFile);

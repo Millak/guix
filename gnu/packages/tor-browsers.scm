@@ -91,8 +91,8 @@
 
 ;; See browser/locales/l10n-changesets.json for the commit.
 (define firefox-locales
-  (let ((commit "fcd0300e8478d1ec4d1c097a073ddb8e1e0351e3")
-        (revision "0"))
+  (let ((commit "64046fdc97c1b1886a479dead61e6dc5428ae6e6")
+        (revision "1"))
     (package
       (name "firefox-locales")
       (version (git-version "0.0.0" revision commit))
@@ -105,7 +105,7 @@
           (file-name (git-file-name name version))
           (sha256
            (base32
-            "1pzw65852ix6a6qb3wwhg5vrkz8337cs6lznk2vj0md5cvf2rrc4"))))
+            "1rvk1m8bjnk9x61663s7bhgax6ig37v9m1d64g89fk1qwsk3djhh"))))
       (build-system copy-build-system)
       (home-page "https://github.com/mozilla-l10n/firefox-l10n")
       (synopsis "Firefox Locales")
@@ -115,16 +115,16 @@ Firefox locales.")
 
 ;; We copy the official build id, which is defined at
 ;; tor-browser-build/rbm.conf (browser_release_date).
-(define %torbrowser-build-date "20250915185538")
+(define %torbrowser-build-date "20251028094500")
 
 ;; To find the last version, look at https://www.torproject.org/download/.
-(define %torbrowser-version "14.5.7")
+(define %torbrowser-version "15.0")
 
 ;; To find the last Firefox version, browse
 ;; https://archive.torproject.org/tor-package-archive/torbrowser/<%torbrowser-version>
 ;; There should be only one archive that starts with
 ;; "src-firefox-tor-browser-".
-(define %torbrowser-firefox-version "128.14.0esr-14.5-1-build5")
+(define %torbrowser-firefox-version "140.4.0esr-15.0-1-build4")
 
 ;; See tor-browser-build/rbm.conf for the list.
 (define %torbrowser-locales (list "ar" "be" "bg" "ca" "cs" "da" "de" "el" "es-ES" "fa"
@@ -139,11 +139,11 @@ Firefox locales.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "0605fd89b582f841ff494213ace40558043593d7")))
+          (commit "cdd3da6308bb3beb916744057af92331025053bb")))
     (file-name "translation-base-browser")
     (sha256
      (base32
-      "1dv1qam0nwxi8by134d744qaq2nipbmb1sg4wjqdmlpnkl1vxhpv"))))
+      "1l3alzgj1bz2xsijd323swiq450dm9s1zyygdwnzsjvcpdbbnm7b"))))
 
 ;; See tor-browser-build/projects/translation/config.
 (define torbrowser-translation-specific
@@ -151,11 +151,11 @@ Firefox locales.")
     (method git-fetch)
     (uri (git-reference
           (url "https://gitlab.torproject.org/tpo/translation.git")
-          (commit "0513af059216580b1e8159af3a808ab4a1b32f84")))
+          (commit "3395fe5bdb7556490e31d3c6804e6240278bc708")))
     (file-name "translation-tor-browser")
     (sha256
      (base32
-      "0xdcdb905bwgqd086a421g52xqpafyccr5qgqfd7za0bbn37wmlq"))))
+      "16jzbjak2r3f8gi13bl1h8lg4cmgifv97qbg2ypjvg77vf4z4dd1"))))
 
 (define torbrowser-assets
   ;; This is a prebuilt Torbrowser from which we take the assets we need.
@@ -171,7 +171,7 @@ Firefox locales.")
          version "/tor-browser-linux-x86_64-" version ".tar.xz"))
        (sha256
         (base32
-         "0g1zf6k3iw4xasjy7qp46qjc9l58m9yamf3wbpbs20b7h2dzh2b5"))))
+         "187yr0y14mbsakxbglr7jxp4x7kkiyc3k6xa6mf1nzhd32i4srr3"))))
     (arguments
      (list
       #:install-plan
@@ -186,8 +186,8 @@ Browser.")
     (license license:silofl1.1)))
 
 ;;; A LLD wrapper that can be used as a (near) drop-in replacement to GNU ld.
-(define lld-as-ld-wrapper-18
-  (make-lld-wrapper lld-18 #:lld-as-ld? #t))
+(define lld-as-ld-wrapper-19
+  (make-lld-wrapper lld-19 #:lld-as-ld? #t))
 
 (define* (make-torbrowser #:key
                           moz-app-name
@@ -212,7 +212,7 @@ Browser.")
          ".tar.xz"))
        (sha256
         (base32
-         "1l6nfawz3dcp5lmrzz7pbn3rvx8r15xi4nzsi572yj809ymvj9ix"))))
+         "18inq4yfs4c3p68qwgx0xf54mk8lzs5pm5m0m9d6q2ikng1lmll1"))))
     (build-system mozilla-build-system)
     (inputs
      (list lyrebird
@@ -231,7 +231,7 @@ Browser.")
            libcanberra
            libgnome
            libjpeg-turbo
-           libpng-apng
+           libpng-apng-next
            libwebp
            libxft
            libevent
@@ -243,7 +243,7 @@ Browser.")
            ;; See <https://bugzilla.mozilla.org/show_bug.cgi?id=1962139>
            ffmpeg-6
            libvpx
-           icu4c
+           icu4c-76
            pixman
            pulseaudio
            mesa
@@ -252,7 +252,7 @@ Browser.")
            hunspell
            libnotify
            nspr
-           nss
+           nss-rapid
            shared-mime-info
            eudev
            unzip
@@ -263,10 +263,10 @@ Browser.")
       (list
        rust
        `(,rust "cargo")
-       rust-cbindgen-0.26
-       lld-as-ld-wrapper-18  ; for cargo rustc
-       llvm-18
-       clang-18
+       rust-cbindgen-0.28
+       lld-as-ld-wrapper-19  ; for cargo rustc
+       llvm-19
+       clang-19
        perl
        node-lts
        python-wrapper
@@ -332,9 +332,6 @@ Browser.")
          (string-append "--with-libclang-path="
                         (dirname (search-input-file %build-inputs
                                                     "lib/libclang.so")))
-
-         ;; Hack to work around missing "unofficial" branding in icecat.
-         "--enable-official-branding"
 
          ;; TODO: Add support for wasm sandboxed libraries.
          "--without-wasm-sandboxed-libraries"
@@ -464,11 +461,6 @@ Browser.")
               ;; $MOZ_APP_NAME is the executable name.  Default is
               ;; "firefox".
               (setenv "MOZ_APP_NAME" #$moz-app-name)
-              ;; Profile location (relative to "~/.").  Default is
-              ;; lower($MOZ_APP_VENDOR/$MOZ_APP_BASENAME), which is:
-              ;; ~/.tor project/firefox.
-              (setenv "MOZ_APP_PROFILE" #$(in-vicinity
-                                           moz-app-name "browser"))
               ;; WM_CLASS (default is "$MOZ_APP_NAME-$MOZ_UPDATE_CHANNEL").
               (setenv "MOZ_APP_REMOTINGNAME" #$moz-app-remotingname)
               ;; Persistent state directory for the build system (default is
