@@ -143,7 +143,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages tree-sitter)
   #:use-module (gnu packages version-control)
-  #:use-module (gnu packages vim)  
+  #:use-module (gnu packages vim)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
