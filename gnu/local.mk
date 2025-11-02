@@ -2089,6 +2089,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/perl-5.14-no-sys-dirs.patch		\
   %D%/packages/patches/perl-autosplit-default-time.patch	\
   %D%/packages/patches/perl-class-methodmaker-reproducible.patch \
+  %D%/packages/patches/perl-crypt-des-implicit-func-decl.patch	\
   %D%/packages/patches/perl-image-exiftool-CVE-2021-22204.patch	\
   %D%/packages/patches/perl-net-amazon-s3-moose-warning.patch	\
   %D%/packages/patches/perl-net-dns-resolver-programmable-fix.patch	\

@@ -2567,7 +2567,8 @@ are compatible with the encryption format used by SSLeay.")
             version ".tar.gz"))
       (sha256
        (base32
-        "1rypxlhpd1jc0c327aghgl9y6ls47drmpvn0a40b4k3vhfsypc9d"))))
+        "1rypxlhpd1jc0c327aghgl9y6ls47drmpvn0a40b4k3vhfsypc9d"))
+      (patches (search-patches "perl-crypt-des-implicit-func-decl.patch"))))
     (build-system perl-build-system)
     (native-inputs
      (list perl-crypt-cbc))
