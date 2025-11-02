@@ -2189,7 +2189,7 @@ cling '#include <stdio.h>' 'printf(\"Hello World!\\n\");'
               "-DLLVM_TARGETS_TO_BUILD=X86;ARM;AArch64;PowerPC;SystemZ;Mips"
               ;; Python llvm.py adds this (not build-script-impl).
               ;; This would also enable dump() by undefining NDEBUG.
-              ; FIXME: "-DLLVM_ENABLE_ASSERTIONS=TRUE"
+              "-DLLVM_ENABLE_ASSERTIONS=TRUE"
               "-DLLVM_LIT_ARGS=-sv -j 16"
               (string-append "-DGCC_INSTALL_PREFIX="
                              (assoc-ref %build-inputs "gcc-lib"))
