@@ -16728,6 +16728,39 @@ circumstances, and leaves the keys untouched outside of those situations,
 allowing unprefixed keys to insert their respective characters as expected.")
       (license license:gpl3+))))
 
+(define-public emacs-claude-code
+  ;; There is no proper release/tag.
+  (let ((commit "becece683bcf60f7b150a87a30ef14885dcf8ce3")
+        (revision "0"))
+    (package
+      (name "emacs-claude-code")
+      (version (git-version "0.4.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/stevemolitor/claude-code.el")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0z77nxazkw08pmqam2z27a56s9nyp72a1vvc0ba3vgcwfkjx0v81"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:include #~(cons "^bin\\/" %default-include)
+        #:tests? #f)) ; There are no tests.
+      (propagated-inputs
+       (list emacs-transient
+             emacs-inheritenv))
+      (home-page "https://github.com/stevemolitor/claude-code.el")
+      (synopsis "Claude Code Emacs integration")
+      (description
+       "This package provides convenient ways to interact with Claude from
+within Emacs, including sending commands, toggling the Claude window, and
+accessing slash commands.")
+      (license license:asl2.0))))
+
 (define-public emacs-claude-code-ide
   ;; Upstream does not make versioned releases.
   (let ((commit "c5e2de1a343bc6c0444789e0a99ad822cd56cfbe"))
