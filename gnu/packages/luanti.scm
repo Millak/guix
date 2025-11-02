@@ -145,7 +145,7 @@
 using its Lua modding API.  It allows playing a wide range of voxel-based
 games, installing mods and texture packs.  This package only provides the base
 platform, users need to install games themselves (for example,
-@code{luanti-game}), either through Guix, the built-in interface or other
+@code{luanti-minetest-game}), either through Guix, the built-in interface or other
 sources.")
     (home-page "https://www.luanti.org/")
     (license license:lgpl2.1+)))
@@ -188,7 +188,7 @@ Luanti games with multiplayer support.  This package provides
   (let ((commit "0351c6691595c6eb88a1bea2383f6fae46a686ce")
         (revision "1"))
     (package
-      (name "luanti-game")
+      (name "luanti-minetest-game")
       (version (git-version "0.0.0" revision commit))
       (source
        (origin

@@ -48,7 +48,7 @@ resolved lazily."
   `(("xvfb-run" ,(@* (gnu packages xorg) xvfb-run))
     ("optipng" ,(@* (gnu packages image) optipng))
     ("luanti" ,(@* (gnu packages luanti) luanti))
-    ("luanti-game" ,(@* (gnu packages luanti) minetest-game))
+    ("luanti-minetest-game" ,(@* (gnu packages luanti) minetest-game))
     ,@(filter (lambda (input)
                 (member (car input)
                         '("libc" "tar" "gzip" "bzip2" "xz" "locales")))
