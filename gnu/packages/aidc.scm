@@ -73,22 +73,24 @@
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-backend #~'unittest
+      #:test-flags
+      ;; This tests if find_library was called once, but we remove
+      ;; the call in the stage below to make the library find libzbar.
+      #~(list "-k" "not test_*_found_non_windows")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-failing-test
-            (lambda _
-              ;; This tests if find_library was called once, but we remove
-              ;; the call in the stage below to make the library find libzbar.
-              (delete-file "pyzbar/tests/test_zbar_library.py")))
           (add-before 'build 'set-library-file-name
-            (lambda _
-              (let ((libzbar #$(this-package-input "zbar")))
-                (substitute* "pyzbar/zbar_library.py"
-                  (("find_library\\('zbar'\\)")
-                   (string-append "'" libzbar "/lib/libzbar.so.0'")))))))))
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "pyzbar/zbar_library.py"
+                (("find_library\\('zbar'\\)")
+                 (format #f "~s"
+                         (search-input-file inputs "/lib/libzbar.so.0")))))))))
     (native-inputs
-     (list pkg-config python-numpy python-pillow python-setuptools))
+     (list pkg-config
+           python-numpy
+           python-pillow
+           python-pytest
+           python-setuptools))
     (inputs
      (list zbar))
     (home-page "https://github.com/NaturalHistoryMuseum/pyzbar/")
