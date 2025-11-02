@@ -2566,76 +2566,78 @@ control to Git repositories.")
 (define-public gitolite (make-gitolite))
 
 (define-public gitile
-  (package
-    (name "gitile")
-    (version "0.1.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://git.lepiller.eu/git/gitile")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1wb1rajcrzdqjncv40s7hjsnvlh1gq4z9pn9gf210g1iy35vimmz"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:imported-modules ((guix build guile-build-system)
-                           ,@%default-gnu-imported-modules)
-       #:make-flags (list "GUILE_AUTO_COMPILE=0")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'bootstrap
-           (lambda _
-             ;; The 'bootstrap' script lacks a shebang, leading to "Exec
-             ;; format error" with glibc 2.35.
-             (invoke "autoreconf" "-vfi")))
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (use-modules (guix build guile-build-system))
-             ;; Wrap the 'gitile' command to refer to the right modules.
-             (let* ((out    (assoc-ref outputs "out"))
-                    (commonmark (assoc-ref inputs "guile-commonmark"))
-                    (git    (assoc-ref inputs "guile-git"))
-                    (bytes  (assoc-ref inputs "guile-bytestructures"))
-                    (fibers (assoc-ref inputs "guile-fibers"))
-                    (gcrypt (assoc-ref inputs "guile-gcrypt"))
-                    (syntax-highlight (assoc-ref inputs "guile-syntax-highlight"))
-                    (deps   (list out commonmark git bytes fibers gcrypt
-                                  syntax-highlight))
-                    (guile  (assoc-ref inputs "guile"))
-                    (effective (target-guile-effective-version))
-                    (mods   (string-drop-right  ;drop trailing colon
-                             (string-join deps
-                                          (string-append "/share/guile/site/"
-                                                         effective ":")
-                                          'suffix)
-                             1))
-                    (objs   (string-drop-right
-                             (string-join deps
-                                          (string-append "/lib/guile/" effective
-                                                         "/site-ccache:")
-                                          'suffix)
-                             1)))
-               (wrap-program (string-append out "/bin/gitile")
-                 `("GUILE_LOAD_PATH" ":" prefix (,mods))
-                 `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,objs)))))))))
-    (native-inputs
-     (list autoconf automake guile-3.0 pkg-config))
-    (inputs
-     (list bash-minimal                 ;for wrap-program
-           guile-3.0
-           guile-commonmark
-           guile-fibers
-           guile-gcrypt
-           guile-git
-           guile-syntax-highlight
-           guile-gnutls))
-    (home-page "https://git.lepiller.eu/gitile")
-    (synopsis "Simple Git forge written in Guile")
-    (description "Gitile is a Git forge written in Guile that lets you
+  ;; Use an unreleased version to fix the gitile system test.
+  (let ((commit "1feb300c0d3069b1180e62c5e989ac0ed353a248"))
+    (package
+      (name "gitile")
+      (version (string-append "0.1.4-" (string-take commit 7)))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://git.lepiller.eu/git/gitile")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1yhqn54hx7p7sc3vc85vsx7315bxs313bv3i9lzx8q0zpzc0x7xh"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:imported-modules ((guix build guile-build-system)
+                             ,@%default-gnu-imported-modules)
+         #:make-flags (list "GUILE_AUTO_COMPILE=0")
+         #:phases
+         (modify-phases %standard-phases
+           (replace 'bootstrap
+             (lambda _
+               ;; The 'bootstrap' script lacks a shebang, leading to "Exec
+               ;; format error" with glibc 2.35.
+               (invoke "autoreconf" "-vfi")))
+           (add-after 'install 'wrap-program
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (use-modules (guix build guile-build-system))
+               ;; Wrap the 'gitile' command to refer to the right modules.
+               (let* ((out    (assoc-ref outputs "out"))
+                      (commonmark (assoc-ref inputs "guile-commonmark"))
+                      (git    (assoc-ref inputs "guile-git"))
+                      (bytes  (assoc-ref inputs "guile-bytestructures"))
+                      (fibers (assoc-ref inputs "guile-fibers"))
+                      (gcrypt (assoc-ref inputs "guile-gcrypt"))
+                      (syntax-highlight (assoc-ref inputs "guile-syntax-highlight"))
+                      (deps   (list out commonmark git bytes fibers gcrypt
+                                    syntax-highlight))
+                      (guile  (assoc-ref inputs "guile"))
+                      (effective (target-guile-effective-version))
+                      (mods   (string-drop-right  ;drop trailing colon
+                               (string-join deps
+                                            (string-append "/share/guile/site/"
+                                                           effective ":")
+                                            'suffix)
+                               1))
+                      (objs   (string-drop-right
+                               (string-join deps
+                                            (string-append "/lib/guile/" effective
+                                                           "/site-ccache:")
+                                            'suffix)
+                               1)))
+                 (wrap-program (string-append out "/bin/gitile")
+                   `("GUILE_LOAD_PATH" ":" prefix (,mods))
+                   `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,objs)))))))))
+      (native-inputs
+       (list autoconf automake guile-3.0 pkg-config))
+      (inputs
+       (list bash-minimal                 ;for wrap-program
+             guile-3.0
+             guile-commonmark
+             guile-fibers
+             guile-gcrypt
+             guile-git
+             guile-syntax-highlight
+             guile-gnutls))
+      (home-page "https://git.lepiller.eu/gitile")
+      (synopsis "Simple Git forge written in Guile")
+      (description "Gitile is a Git forge written in Guile that lets you
 visualize your public Git repositories on a web interface.")
-    (license license:agpl3+)))
+      (license license:agpl3+))))
 
 (define-public pre-commit
   (package
