@@ -16020,16 +16020,16 @@ sunset times from geographical coordinates and a date.")
 (define-public go-github-com-nats-io-nats-go
   (package
     (name "go-github-com-nats-io-nats-go")
-    (version "1.39.1")
+    (version "1.47.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/nats-io/nats.go")
-             (commit (string-append "v" version))))
+              (url "https://github.com/nats-io/nats.go")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "122y7n1xridlpy8048z0p7bv8192pc5yp9js1sspayi9rrn27z6i"))))
+        (base32 "1078dvnv61nck6kr0gjx7f37674v2wd0qxih7v0wldz5lkpdfspc"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -16038,13 +16038,11 @@ sunset times from geographical coordinates and a date.")
       ;; root tests.
       #:test-subdirs #~(list ".")))
     (native-inputs
-     (list go-github-com-nats-io-jwt-v2))
+     (list go-google-golang-org-protobuf)) ; for encoders
     (propagated-inputs
      (list go-github-com-klauspost-compress
            go-github-com-nats-io-nkeys
-           go-github-com-nats-io-nuid
-           go-golang-org-x-text
-           go-google-golang-org-protobuf)) ; for encoders
+           go-github-com-nats-io-nuid))
     (home-page "https://github.com/nats-io/nats.go")
     (synopsis "Go Client for NATS server")
     (description
