@@ -26467,7 +26467,6 @@ user's @file{~/Trash} directory.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-backend #~'unittest
       #:test-flags
       #~(list "-k" (string-join (list
                                  ;; Socket name resolution fails.
@@ -26476,7 +26475,7 @@ user's @file{~/Trash} directory.")
                                  ;; Tuples differ.
                                  "test_largest_icon")
                                 " and not "))))
-    (native-inputs (list python-setuptools))
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-aiohttp python-beautifulsoup4 python-pillow))
     (home-page "https://github.com/bilelmoussaoui/pyfavicon")
