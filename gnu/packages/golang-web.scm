@@ -743,6 +743,52 @@ to the Anthropic REST API.  It includes support for message creation,
 streaming, tool calling, and integration with Amazon Bedrock.")
     (license license:expat)))
 
+(define-public go-github-com-antithesishq-antithesis-sdk-go
+  (package
+    (name "go-github-com-antithesishq-antithesis-sdk-go")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/antithesishq/antithesis-sdk-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ac3p3y9905ryj4j3mfvspbdcj9lkap85l2fa8va3mw2svg0wv8d"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:test-flags
+      #~(list "-vet=off")    ;Go@1.24 forces vet, but tests are not ready yet.
+      #:import-path "github.com/antithesishq/antithesis-sdk-go"))
+    (propagated-inputs
+     (list go-golang-org-x-tools
+           go-golang-org-x-mod))
+    (home-page "https://github.com/antithesishq/antithesis-sdk-go")
+    (synopsis "Antithesis SDK for Golang")
+    (description
+     "This package provides methods for Go programs to configure the
+@url{https://antithesis.com, Antithesis} platform.  Functionality is grouped
+into the Go packages:
+
+@itemize
+@item @code{assert} - to enable defining [test properties] about your program
+or [workload]. It is part of the [Antithesis Go SDK], which enables Go
+applications to integrate with the [Antithesis platform]
+
+@item @code{random} - to request both structured and unstructured randomness
+from the Antithesis environment. is part of the [Antithesis Go SDK], which
+enables Go applications to integrate with the [Antithesis platform]
+
+@item @code{lifecycle} - to lifecycle informs the Antithesis environment that
+particular test phases or milestones have been reached. It is part of the
+[Antithesis Go SDK], which enables Go applications to integrate with the
+[Antithesis platform]
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-apex-log
   (package
     (name "go-github-com-apex-log")
