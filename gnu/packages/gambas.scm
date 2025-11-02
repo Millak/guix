@@ -159,12 +159,8 @@
            poppler
            postgresql
            qtbase
-           qtbase-5
            qtsvg
-           qtsvg-5
            qtwebengine
-           qtwebengine-5
-           qtx11extras
            sdl2
            sdl2-image
            sdl2-mixer
