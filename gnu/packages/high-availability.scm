@@ -210,7 +210,7 @@ realistic with today's hardware.")
 (define-public libqb
   (package
     (name "libqb")
-    (version "2.0.8")
+    (version "2.0.9")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -218,7 +218,7 @@ realistic with today's hardware.")
                     version "/libqb-" version ".tar.xz"))
               (sha256
                (base32
-                "1rifa94zrdr7d5gsy4yvkgqfx8f4yx4xr96hqvs05b5q43y329dl"))))
+                "02r1dc5m0xjf8hq14x87injw0smmh677f5gnd5xa91lw359kga31"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list libxml2))
