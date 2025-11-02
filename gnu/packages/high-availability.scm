@@ -2,7 +2,7 @@
 ;;; Copyright © 2018 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2022, 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2022, 2024, 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 Benjamin <benjamin@uvy.fr>
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
 ;;; Copyright © 2024 Jordan Moore <lockbox@struct.foo>
@@ -297,16 +297,16 @@ applications.")
 (define-public nats-server
   (package
     (name "nats-server")
-    (version "2.10.26")
+    (version "2.12.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/nats-io/nats-server")
-             (commit (string-append "v" version))))
+              (url "https://github.com/nats-io/nats-server")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mpmbsq14l1fbyz9wrfks8acbdikpwi25whlxz5w9wn8w7bd5rwc"))))
+        (base32 "04dza8jqw4lhnqj1ip05jx47g9frb00x9s0yy1863qf88bvszv8z"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -324,7 +324,9 @@ applications.")
       #:test-subdirs
       #~(list "conf/..." "internal/..." "logger/..." "test/...")))
     (inputs
-     (list go-github-com-klauspost-compress
+     (list go-github-com-antithesishq-antithesis-sdk-go
+           go-github-com-google-go-tpm
+           go-github-com-klauspost-compress
            go-github-com-minio-highwayhash
            go-github-com-nats-io-jwt-v2
            go-github-com-nats-io-nats-go
