@@ -341,6 +341,7 @@ nodeArray.push(nodes[\"~a\"]);~%"
     xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
     xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns
      http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd\">
+  <key id=\"d0\" for=\"node\" attr.name=\"label\" attr.type=\"string\"/>
   <graph id=\"G\" edgedefault=\"directed\">~%"))
 
 (define (emit-graphml-epilogue port)
@@ -348,8 +349,11 @@ nodeArray.push(nodes[\"~a\"]);~%"
 </graphml>"))
 
 (define (emit-graphml-node id label port)
-  (format port "    <node id=\"~a\"/>~%"
-          (string-replace-substring (object->string id) "\"" "\\\"")))
+  (format port "    <node id=\"~a\">
+      <data key=\"d0\">~a</data>
+    </node>~%"
+          (string-replace-substring (object->string id) "\"" "\\\"")
+          label))
 
 (define (emit-graphml-edge id1 id2 port)
   (format port "    <edge source=\"~a\" target=\"~a\"/>~%"
