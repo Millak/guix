@@ -455,21 +455,45 @@ inspired by Dash.")
        ;; git-reference because tests are not included in pypi source tarball
        ;; https://issues.guix.gnu.org/issue/36755#2
        (uri (git-reference
-             (url "https://github.com/projectmallard/mallard-ducktype")
-             (commit version)))
+              (url "https://github.com/projectmallard/mallard-ducktype")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
          "1jk9bfz7g04ip78s03b0xak6d54rj4h9zpgadkziy1ji216g6y4c"))))
-    (build-system pyproject-build-system)
+    (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (with-directory-excursion "tests"
-               (invoke "sh" "runtests")))))))
-    (native-inputs (list python-setuptools))
+     (list
+      ;; Essentially a lighter copy of the former python-build-system.
+      ;; Using it rather than pyproject-build-system allows to edit the latter
+      ;; without a texlive + haskell world rebuild.
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'bootstrap)
+          (delete 'configure)
+          (replace 'build
+            (lambda _
+              (invoke "python" "./setup.py" "build")))
+          (replace 'install
+            (lambda _
+              (invoke "python" "./setup.py" "install"
+                      (string-append "--prefix=" #$output) "--no-compile")
+              (invoke "python" "-m" "compileall"
+                      "--invalidation-mode=unchecked-hash" #$output)))
+          (add-after 'install 'wrap
+            (lambda _
+              (let* ((parser (car (find-files #$output "^parser\\.py$")))
+                     (site (dirname (dirname (dirname parser)))))
+                (wrap-program (string-append #$output "/bin/ducktype")
+                  #:sh (which "bash")
+                  `("GUIX_PYTHONPATH" ":" = (,site))))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (with-directory-excursion "tests"
+                    (invoke "sh" "runtests"))
+                  (format #t "test suite not run.~%")))))))
+    (native-inputs (list python-setuptools-bootstrap python-wrapper))
     (home-page "http://projectmallard.org")
     (synopsis "Convert Ducktype to Mallard documentation markup")
     (description
