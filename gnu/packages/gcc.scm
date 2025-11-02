@@ -1531,6 +1531,9 @@ also includes the druntime and phobos libraries."
           "")))
     (home-page "https://www.gdcproject.org/")))
 
+(define-public gdc-9
+  (make-gdc gcc-9 #:frontend-version "2.076.2"))
+
 (define-public gdc-11
   (make-gdc gcc-11 #:frontend-version "2.076.2"))
 
