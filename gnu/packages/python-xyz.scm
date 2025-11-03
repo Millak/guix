@@ -23640,49 +23640,6 @@ numbers, real numbers, mixed types and more, and comes with a shell command
 @command{natsort} that exposes this functionality in the command line.")
     (license license:expat)))
 
-(define-public glances
-  (package
-    (name "glances")
-    (version "4.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/nicolargo/glances")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1v2rsffy99ilarl5vnsz4zwb0wp3s3jnsbcbiqx53qxv88whfz71"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-backend #~'custom
-      #:test-flags #~(list "unittest-core.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-update-checks
-            (lambda _
-              ;; Glances phones PyPI for weekly update checks by default.
-              ;; Disable these.  The user can re-enable them if desired.
-              (substitute* "glances/outdated.py"
-                (("^(.*)self\\.load_config\\(config\\)\n" line indentation)
-                 (string-append indentation
-                                "self.args.disable_check_update = True\n" line))))))))
-    (native-inputs (list python-pytest python-setuptools))
-    (propagated-inputs (list python-defusedxml
-                             python-jinja2
-                             python-orjson
-                             python-packaging
-                             python-psutil
-                             python-shtab))
-    (home-page "https://github.com/nicolargo/glances")
-    (synopsis "Cross-platform curses-based monitoring tool")
-    (description
-     "Glances is a curses-based monitoring tool for a wide variety of platforms.
-     Glances uses the PsUtil library to get information from your system.  It
-     monitors CPU, load, memory, network bandwidth, disk I/O, disk use, and more.")
-    (license license:lgpl3+)))
-
 (define-public python-graphql-core
   (package
     (name "python-graphql-core")
