@@ -27,7 +27,10 @@
   #:use-module (srfi srfi-1)
   #:export (wrap-himitsu-prompter
             home-himitsu-configuration
-            home-himitsu-service-type))
+            home-himitsu-service-type
+
+            home-himitsu-ssh-configuration
+            home-himitsu-ssh-service-type))
 
 ;;
 ;; himitsu
@@ -123,3 +126,64 @@ running 'himitsu-store -i' first?")))))
     (default-value (home-himitsu-configuration))
     (description "Run the Himitsu secret storage manager upon login. You
 should create the Himitsu database in advance.")))
+
+;;
+;; himitsu-ssh
+;;
+
+(define (remember-option? opt)
+  (or (number? opt) (memq opt '(session skip refuse))))
+
+(define list-of-remember-options? (list-of remember-option?))
+
+(define (himitsu-serialize-list-of-remember-options label val)
+  (himitsu-serialize-string label
+    (string-join (map (lambda (x) (cond ((number? x) (number->string x))
+                                        ((symbol? x) (symbol->string x))))
+                      val)
+                 ",")))
+
+(define-configuration home-himitsu-ssh-configuration
+  (package (file-like himitsu-ssh) "himitsu-ssh package to use."
+           empty-serializer)
+  (persist (list-of-remember-options '(session 300 refuse)) "List of options
+given when prompting to allow himitsu-ssh to see your keys. The option chosen
+decides how long himitsu-ssh has this access. Options can be either 'session,
+'refuse, 'skip, or a timeout in seconds. 'session means until the daemon
+closes, 'refuse to decline and never ask again, and 'skip means to ask again
+next use.")
+  (disclose (list-of-remember-options '(skip session 300)) "List of options
+given when prompting to allow himitsu-ssh use of your keys. The format is the
+same has persist.")
+  (prefix himitsu-))
+
+(define (himitsu-ssh-shepherd-service config)
+  (let* ((package (home-himitsu-ssh-configuration-package config))
+         (binary (file-append package "/bin/hissh-agent")))
+    (list (shepherd-service
+            (documentation "Start the Himitsu ssh-agent implementation.")
+            (provision '(himitsu-ssh ssh-agent))
+            (requirement '(himitsud))
+            (start #~(make-forkexec-constructor (list #$binary)))
+            (stop #~(make-kill-destructor))))))
+
+(define (himitsu-ssh-himitsu.ini config)
+  (list "[ssh.remember]"
+        (serialize-configuration config home-himitsu-ssh-configuration-fields)))
+
+(define (himitsu-ssh-environment-variables _)
+  '(("SSH_AUTH_SOCK" . "${XDG_RUNTIME_DIR:-/run/user/$UID}/hissh-agent")))
+
+(define home-himitsu-ssh-service-type
+  (service-type
+    (name 'himitsu-ssh)
+    (extensions (list (service-extension home-shepherd-service-type
+                                         himitsu-ssh-shepherd-service)
+                      (service-extension home-himitsu-service-type
+                                         himitsu-ssh-himitsu.ini)
+                      (service-extension home-environment-variables-service-type
+                                         himitsu-ssh-environment-variables)
+                      (service-extension home-profile-service-type
+                                         (const (list himitsu-ssh)))))
+    (default-value (home-himitsu-ssh-configuration))
+    (description "Add support for ssh to store keys in Himitsu.")))
