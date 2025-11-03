@@ -30,7 +30,10 @@
             home-himitsu-service-type
 
             home-himitsu-ssh-configuration
-            home-himitsu-ssh-service-type))
+            home-himitsu-ssh-service-type
+
+            home-himitsu-secret-service-configuration
+            home-himitsu-secret-service-type))
 
 ;;
 ;; himitsu
@@ -187,3 +190,32 @@ same has persist.")
                                          (const (list himitsu-ssh)))))
     (default-value (home-himitsu-ssh-configuration))
     (description "Add support for ssh to store keys in Himitsu.")))
+
+;;
+;; himitsu-secret-service
+;;
+
+(define-configuration home-himitsu-secret-service-configuration
+  (package (file-like himitsu-secret-service) "himitsu-secret-service package to
+use." empty-serializer)
+  (prefix himitsu-))
+
+(define (himitsu-secret-service-shepherd-service config)
+  (let* ((package (home-himitsu-secret-service-configuration-package config))
+         (binary (file-append package "/bin/hisecrets-agent")))
+    (list (shepherd-service
+            (documentation "Start the Himitsu secret-service implementation.")
+            (provision '(himitsu-secret-service secret-service))
+            (requirement '(himitsud dbus))
+            (start #~(make-forkexec-constructor (list #$binary)))
+            (stop #~(make-kill-destructor))))))
+
+(define home-himitsu-secret-service-type
+  (service-type
+    (name 'himitsu-secret-service)
+    (extensions
+      (list (service-extension home-shepherd-service-type
+                               himitsu-secret-service-shepherd-service)))
+    (default-value (home-himitsu-secret-service-configuration))
+    (description "Add support to Himitsu for the freedesktop.org
+secret-service protocol.")))
