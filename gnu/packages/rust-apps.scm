@@ -47,6 +47,7 @@
 ;;; Copyright © 2025 Ahmad Jarara <ajarara@fastmail.com>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2026 Daniel Khodabakhsh <d@niel.khodabakh.sh>
+;;; Copyright © 2025 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -105,6 +106,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages shells)
@@ -4678,3 +4680,36 @@ $(which espanso)}.  On a Guix system, you can define the following in your
 JSON viewer and jq filter editor.")
     (license license:expat)))
 
+(define-public ncspot
+  (package
+    (name "ncspot")
+    (version "1.3.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hrkfdn/ncspot")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02i5v7jad80zx2ad9a2ppxg4ipd3faisys41gxcwmpy2kisrlssk"))))
+    (build-system cargo-build-system)
+    (inputs (cons* dbus
+                   libxcb
+                   ncurses
+                   openssl
+                   pulseaudio
+                   (cargo-inputs 'ncspot)))
+    (native-inputs (list pkg-config python))
+    (arguments
+     (list
+      #:tests? #f  ;no tests
+      #:install-source? #f))
+    (home-page "https://github.com/hrkfdn/ncspot")
+    (synopsis "Ncurses Spotify client")
+    (description
+     "@command{ncspot} is an ncurses Spotify client written in Rust using
+the Librespot library.  It is heavily inspired by Ncurses MPD clients, such as
+@command{ncmpc}.  It provides a simple and resource friendly alternative to
+the official client.")
+    (license license:bsd-2)))
