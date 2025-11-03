@@ -1412,7 +1412,7 @@ as the Pinebook Pro.")
 (define-public usbguard
   (package
     (name "usbguard")
-    (version "1.1.2")
+    (version "1.1.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1420,10 +1420,11 @@ as the Pinebook Pro.")
                     (commit (string-append "usbguard-" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "10qqjk7hsycc6hk51abwcld7i48038zqi1jzli59cfvc76ikrxj5"))))
+               (base32 "1a38vmnjkwdxk85zq7mbbl41f0aiz9y1kinvwp17pp6xyn1qz2z0"))))
     (build-system gnu-build-system)
     (arguments
      (list
+      #:tests? #f ;XXX: sudo: command not found
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-bootstrap-script
