@@ -870,16 +870,16 @@ noun phrases, verb phrases, etc.).")
 (define-public praat
   (package
     (name "praat")
-    (version "6.4")
+    (version "6.4.46")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/praat/praat")
+                    (url "https://github.com/praat/praat.github.io")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rabv4175r1kbgb6n5xbir4j9ldpfr3wr6xa8jakzgny3dwlmsbg"))))
+                "0p9688wl91kzc9zjbav6v61lqm4wj3vbc4z0psr7jjrv847qs959"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags #~(list (string-append "CC="
@@ -887,10 +887,12 @@ noun phrases, verb phrases, etc.).")
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'delete-failing-tests
                           (lambda _
-                            (delete-file "test/sys/graphicsText.praat")))
+                            (substitute* "test/script/fileReadable.praat"
+                              (("assert folderExists: \"~/?\"")
+                               ""))))
                         (replace 'configure
                           (lambda _
-                            (copy-file "makefiles/makefile.defs.linux.pulse"
+                            (copy-file "makefiles/makefile.defs.linux.pulse-gcc"
                                        "makefile.defs")))
                         (replace 'check
                           (lambda* (#:key tests? #:allow-other-keys)
@@ -906,7 +908,7 @@ noun phrases, verb phrases, etc.).")
                                          (string-append bin "/praat"))))))))
     (inputs (list alsa-lib gtk+ jack-1 pulseaudio))
     (native-inputs (list pkg-config))
-    (home-page "https://www.fon.hum.uva.nl/praat/")
+    (home-page "https://praat.org/")
     (synopsis "Doing phonetics by computer")
     (description
      "Praat is a tool to perform phonetics tasks.  It can do speech
