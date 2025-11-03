@@ -2179,3 +2179,26 @@ cryptographic library, which has not been audited.")
       (description "This package provides a GTK prompter for Himitsu, used to
 request user consent for application access to stored secrets.")
       (license license:gpl3))))
+
+(define-public himitsu-ssh
+  (package
+    (name "himitsu-ssh")
+    (version "0.9.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://git.sr.ht/~sircmpwn/himitsu-ssh")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+                (base32
+                  "07l152rdmp1sn9jvdvad0knkgh2pj77fia4ml9r4jj392gzv30vx"))))
+    (build-system hare-build-system)
+    (inputs (list himitsu hare-ssh))
+    (native-inputs (list scdoc))
+    (supported-systems %hare-supported-systems)
+    (home-page "https://git.sr.ht/~sircmpwn/himitsu-ssh")
+    (synopsis "Himitsu ssh-agent")
+    (description "This package provides an ssh-agent implementation that
+stores and secures keys through Himitsu.")
+    (license license:gpl3)))
