@@ -322,6 +322,45 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
 
+(define-public python-anaconda-cli-base
+  (package
+    (name "python-anaconda-cli-base")
+    (version "0.5.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "anaconda_cli_base" version))
+       (sha256
+        (base32 "01kspqfyqhzlb3hkxrvdlasch5ai87lizn6yz4g25ff4x7k5b4qx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((".*--cov.*") "")))))))
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-pytest
+           python-pytest-mock
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-click
+           python-packaging
+           python-pydantic-settings
+           python-readchar
+           python-rich
+           python-tomli
+           python-typer))
+    (home-page "https://anaconda.github.io/anaconda-cli-base/")
+    (synopsis "Base CLI entrypoint Anaconda CLI plugins")
+    (description
+     "This package provides a base CLI entrypoint supporting Anaconda CLI plugins.")
+    (license license:bsd-3)))
+
 (define-public python-annexremote
   (package
     (name "python-annexremote")
