@@ -1531,37 +1531,26 @@ without actually changing the current python environment).")
 (define-public python-conda-package-handling
   (package
     (name "python-conda-package-handling")
-    (version "1.7.3")
+    (version "2.4.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/conda/conda-package-handling/")
-             (commit version)))
+              (url "https://github.com/conda/conda-package-handling/")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1dq6f5ks3cinb355x712bls9bvv6bli6x3c43sdkqvawdw8xgv9j"))))
+        (base32 "1l2zbbwlxp9azpshixvxnb9354xajxkn88934grpwl70blgb3yq2"))))
     (build-system pyproject-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'use-unmodified-libarchive
-           (lambda _
-             (substitute* "setup.py"
-               (("archive_and_deps") "archive")))))))
-    (propagated-inputs
-     (list python-six python-tqdm))
-    (inputs
-     (list libarchive))
     (native-inputs
-     (list python-cython
+     (list python-bottle
            python-mock
            python-pytest
            python-pytest-cov
            python-pytest-mock
-           python-setuptools
-           python-wheel))
+           python-setuptools))
+    (propagated-inputs
+     (list python-conda-package-streaming))
     (home-page "https://conda.io")
     (synopsis "Create and extract conda packages of various formats")
     (description
