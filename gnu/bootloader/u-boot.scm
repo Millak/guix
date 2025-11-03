@@ -7,6 +7,7 @@
 ;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023-2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,6 +47,7 @@
             u-boot-pine64-lts-bootloader
             u-boot-pinebook-bootloader
             u-boot-pinebook-pro-rk3399-bootloader
+            u-boot-nanopi-r4s-rk3399-bootloader
             u-boot-puma-rk3399-bootloader
             u-boot-rock-4c-plus-rk3399-bootloader
             u-boot-rock64-rk3328-bootloader
@@ -272,6 +274,11 @@ is BLOCK-SIZE * COUNT, or FILE size if COUNT is not given."
   (bootloader
    (inherit u-boot-rockchip-bootloader)
    (package u-boot-pinebook-pro-rk3399)))
+
+(define u-boot-nanopi-r4s-rk3399-bootloader
+  (bootloader
+   (inherit u-boot-rockchip-bootloader)
+   (package u-boot-nanopi-r4s-rk3399)))
 
 (define u-boot-ts7970-q-2g-1000mhz-c-bootloader
   ;; This bootloader doesn't really need to be installed, as it is read from

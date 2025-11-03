@@ -23,6 +23,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Esther Flashner <esther@flashner.co.il>
 ;;; Copyright © 2025 André Batista <nandre@riseup.net>
+;;; Copyright © 2025 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1549,6 +1550,9 @@ Documentation} for more information (for example by running @samp{info
 
 (define-public u-boot-pinebook-pro-rk3399
   (make-u-boot-rockchip-package "pinebook-pro" 'rk3399))
+
+(define-public u-boot-nanopi-r4s-rk3399
+  (make-u-boot-rockchip-package "nanopi-r4s" 'rk3399))
 
 (define*-public (make-u-boot-bin-package u-boot-package
                                          #:key
