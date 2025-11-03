@@ -660,6 +660,34 @@ templates language.")
     (license (list license:zpl2.1
                    license:psfl))))
 
+(define-public python-conda-inject
+  (package
+    (name "python-conda-inject")
+    (version "1.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/koesterlab/conda-inject")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1aig9l676wc2sjb20y7rdqf0hfcfjhh92yfiy82mf7kfnv7rp3rk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; tests require setting up Conda
+    (native-inputs
+     (list python-poetry-core))
+    (propagated-inputs
+     (list python-pyyaml))
+    (home-page "https://github.com/koesterlab/conda-inject")
+    (synopsis "Inject a conda environment into the current python environment")
+    (description
+     "This package provides helper functions for injecting a conda
+environment into the current python environment (by modifying @code{sys.path},
+without actually changing the current python environment).")
+    (license license:expat)))
+
 (define-public python-copydetect
   (package
     (name "python-copydetect")
