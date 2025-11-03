@@ -356,7 +356,7 @@ APNG patch provides APNG support to libpng.")
 (define-public libpng-apng-next
   (package
     (inherit libpng-apng)
-    (version "1.6.46")
+    (version "1.6.50")
     (source
      (origin
        (method url-fetch)
@@ -370,7 +370,7 @@ APNG patch provides APNG support to libpng.")
                    "/libpng16/libpng-" version ".tar.xz")))
        (sha256
         (base32
-         "1cbwf20zlm4gcv8rpjivkngrjgl5366w21lr9qmbk2lr0dq8papk"))))
+         "01r34c31gq136jwshdfira44wbl6nb8qfgj4a4vam9r0hr8rdwsd"))))
     (inputs
      (modify-inputs (package-inputs libpng-apng)
        (replace "apng"
@@ -381,7 +381,7 @@ APNG patch provides APNG support to libpng.")
                            version "/libpng-" version "-apng.patch.gz"))
            (sha256
             (base32
-             "00ykl1bzb79xsjwrq7dl0yz9dz5g3zwj0lry5zam3vs6s3gw5gi9"))))))))
+             "0r811izi40qzy69jmhz0xlkpqlsjj89bang1b3ma6a5igh6dqzb8"))))))))
 
 (define-public pngcrush
   (package
