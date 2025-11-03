@@ -1543,6 +1543,9 @@ also includes the druntime and phobos libraries."
 (define-public gdc-12
   (make-gdc gcc-12 gdc-11 #:frontend-version "2.100.2"))
 
+(define-public gdc-13
+  (make-gdc gcc-13 gdc-11 #:frontend-version "2.103.1"))
+
 (define-public gdc-14
   (make-gdc gcc-14 gdc-11 #:frontend-version "2.108.1"))
 
