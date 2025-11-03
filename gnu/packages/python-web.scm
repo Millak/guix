@@ -2,6 +2,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2015-2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
+;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2020, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016-2023 Marius Bakke <marius@gnu.org>
@@ -214,6 +215,59 @@ Constrained Application Protocol}, http://coap.space/}.  It facilitates
 writing applications that talk to network enabled embedded
 @acronym{IoT,Internet of Things} devices.")
     (license license:expat)))
+
+(define-public python-anaconda-client
+  (package
+    (name "python-anaconda-client")
+    (version "1.13.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Anaconda-Platform/anaconda-client")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06nn3cwhrrajsbn9pils2539lzplfnyhn9java3xrpm3ksxq9g72"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--deselect=tests/utils/test_conda.py::test_find_conda"
+              "--deselect=tests/utils/test_conda.py::test_conda_vars")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "setup.cfg"
+                (("addopts=.*") "addopts=\n")))))))
+    (native-inputs
+     (list python-freezegun
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-anaconda-cli-base
+           python-conda-package-handling
+           python-conda-package-streaming
+           python-dateutil
+           python-defusedxml
+           python-nbformat
+           python-pillow
+           python-platformdirs
+           python-pytz
+           python-pyyaml
+           python-requests
+           python-requests-toolbelt
+           python-setuptools
+           python-tqdm
+           python-urllib3))
+    (home-page "https://github.com/Anaconda-Platform/anaconda-client")
+    (synopsis "Anaconda Cloud command line client library")
+    (description
+     "Anaconda Cloud command line client library provides an interface to
+Anaconda Cloud.  Anaconda Cloud is useful for sharing packages, notebooks and
+environments.")
+    (license license:bsd-3)))
 
 (define-public python-apprise
   (package

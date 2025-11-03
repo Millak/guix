@@ -1429,59 +1429,6 @@ allows you to declare the libraries your project depends on and it will
 manage (install/update) them for you.")
     (license license:expat)))
 
-(define-public python-anaconda-client
-  (package
-    (name "python-anaconda-client")
-    (version "1.13.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/Anaconda-Platform/anaconda-client")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "06nn3cwhrrajsbn9pils2539lzplfnyhn9java3xrpm3ksxq9g72"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--deselect=tests/utils/test_conda.py::test_find_conda"
-              "--deselect=tests/utils/test_conda.py::test_conda_vars")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "setup.cfg"
-                (("addopts=.*") "addopts=\n")))))))
-    (native-inputs
-     (list python-freezegun
-           python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-anaconda-cli-base
-           python-conda-package-handling
-           python-conda-package-streaming
-           python-dateutil
-           python-defusedxml
-           python-nbformat
-           python-pillow
-           python-platformdirs
-           python-pytz
-           python-pyyaml
-           python-requests
-           python-requests-toolbelt
-           python-setuptools
-           python-tqdm
-           python-urllib3))
-    (home-page "https://github.com/Anaconda-Platform/anaconda-client")
-    (synopsis "Anaconda Cloud command line client library")
-    (description
-     "Anaconda Cloud command line client library provides an interface to
-Anaconda Cloud.  Anaconda Cloud is useful for sharing packages, notebooks and
-environments.")
-    (license license:bsd-3)))
-
 (define-public python-conda-inject
   (package
     (name "python-conda-inject")
