@@ -2917,32 +2917,34 @@ support for ESD or COMEDI sources.")
 (define-public xyce-serial
   (package
     (name "xyce-serial")
-    (version "6.8")
+    (version "7.10.0")
     (source
-     (origin (method url-fetch)
-             (uri (string-append "https://archive.org/download/Xyce-"
-                                 version "/Xyce-" version ".tar.gz"))
-             (sha256
-              (base32
-               "09flp1xywbb2laayd9rg8vd0fjsh115y6k1p71jacy0nrbdvvlcg"))))
-    (build-system gnu-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Xyce/Xyce")
+              (commit (string-append "Release-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "05wlrk554ajsl8n1q4608ckxy9df6x8yshvhjd89b4dj22af1jzi"))))
+    (build-system cmake-build-system)
     (arguments
      (list
-      #:tests? #f
       #:configure-flags
       #~(list
-         "CXXFLAGS=-O3"
-         (string-append "CFLAGS="
-                        " -Wno-error=builtin-declaration-mismatch"
-                        " -Wno-error=implicit-function-declaration"
-                        " -Wno-error=implicit-int")
-         (string-append "ARCHDIR=" #$trilinos-serial-xyce))))
+         (string-append
+          "-DTrilinos_ROOT=" #$(this-package-input "trilinos-serial-xyce"))
+         "-DXyce_PLUGIN_SUPPORT=ON"
+         "-DCMAKE_CXX_FLAGS=-O3 -fPIC"
+         "-DCMAKE_C_FLAGS=-O3 -fPIC"
+         "-DCMAKE_Fortran_FLAGS=-O3 -fPIC")))
     (native-inputs
-     (list bison-3.0                    ;'configure' fails with Bison 3.4
+     (list bison
            flex
            gfortran))
     (inputs
-     (list fftw lapack suitesparse trilinos-serial-xyce))
+     (list adms fftw lapack openblas suitesparse-amd trilinos-serial-xyce))
     (home-page "https://xyce.sandia.gov/")
     (synopsis "High-performance analog circuit simulator")
     (description
@@ -2959,21 +2961,18 @@ parallel computing platforms.  It also supports serial execution.")
      (substitute-keyword-arguments
          (package-arguments xyce-serial)
        ((#:configure-flags flags)
-        #~(list "CXXFLAGS=-O3"
-                "CXX=mpiCC"
-                "CC=mpicc"
-                "F77=mpif77"
-                "--enable-mpi"
-                (string-append
-                 "CFLAGS="
-                 " -Wno-error=builtin-declaration-mismatch"
-                 " -Wno-error=implicit-function-declaration"
-                 " -Wno-error=implicit-int")
-                (string-append "ARCHDIR=" #$trilinos-parallel-xyce)))))
-    (propagated-inputs (list openmpi))
+        #~(cons* "-DTPL_ENABLE_MPI=ON"
+                 "-DCMAKE_C_COMPILER=mpicc"
+                 "-DCMAKE_CXX_COMPILER=mpicxx"
+                 "-DCMAKE_Fortran_COMPILER=mpifort"
+                 "-DCMAKE_CXX_FLAGS=-O3 -fPIC -lmpi"
+                 "-DCMAKE_C_FLAGS=-O3 -fPIC -lmpi"
+                 (delete "-DCMAKE_C_FLAGS=-O3 -fPIC"
+                         (delete
+                          "-DCMAKE_CXX_FLAGS=-O3 -fPIC" #$flags))))))
     (inputs
      (modify-inputs (package-inputs xyce-serial)
-       (append zlib)
+       (prepend openmpi)
        (replace "trilinos-serial-xyce" trilinos-parallel-xyce)))))
 
 (define-public yosys
