@@ -1538,22 +1538,22 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 (define-public reform-debian-packages
   (package
     (name "reform-debian-packages")
-    (version "2023-07-10-443-gd7741e1") ;from git describe
+    (version "2023-07-10-475-ge469c2a") ;from git describe
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://source.mnt.re/reform/reform-debian-packages.git")
-             (commit "d7741e1426d53806f7b2d1a3b9e068bdfb9801cd")))
+             (commit "e469c2ad131054c7afe4f9f059eb2eb575545b1a")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01hjpsac08j1ay5kn4k42dzyvg2cl5rfz32l1yqx243v4x2hw0c9"))))
+        (base32 "0pv24b317n4h71rn25v2wa3qhs1i0wjfpys899cpm5lf0irvis7q"))))
     (build-system copy-build-system)
     (arguments
      (list
       #:install-plan
-      #~'(("linux/patches6.15/" "/patches6.15")
-          ("linux/patches6.16/" "/patches6.16")
+      #~'(("linux/patches6.16/" "/patches6.16")
+          ("linux/patches6.17/" "/patches6.17")
           ("linux/" "/dts/amlogic"
            #:include-regexp ("meson.*\\.dts$"))
           ("linux/" "/dts/freescale"
@@ -1795,6 +1795,7 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                              "imx8mp-mnt-pocket-reform/pocket-panel/0002-pocket-panel-fix-sleep-add-orientation.patch"
                              "imx8mp-mnt-reform2/0001-sn65dsi86-use-hs-clock-of-samsung-dsim-host-directly.patch"
                              "imx8mp-mnt-reform2/0002-lcdif-dont-exceed-desired-pixel-clock.patch"
+                             "imx8mq-mnt-reform2/0001-drm-etnaviv-Fix-flush-sequence-logic.patch"
                              "imx8mq-mnt-reform2/0001-imx8mq-mnt-reform2.dts-multiple-fixes-for-display-wi.patch"
                              "imx8mq-mnt-reform2/0001-nwl-dsi-fixup-mode-only-for-LCDIF-input-not-DCSS.patch"
                              "imx8mq-mnt-reform2/0002-Revert-drm-bridge-nwl-dsi-Use-vsync-hsync-polarity-f.patch"
@@ -1826,47 +1827,15 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                              "rk3588-mnt-reform2/0004-MERGED-drm-connector-hdmi-Add-missing-bpc-debug-info.patch"
                              "rk3588-mnt-reform2/0005-MERGED-drm-connector-hdmi-Factor-out-bpc-and-format-.patch"
                              "rk3588-mnt-reform2/0006-MERGED-drm-connector-hdmi-Use-YUV420-output-format-a.patch"
-                             "rk3588-mnt-reform2/0007-MERGED-drm-tests-hdmi-Replace-_-MHz-with-mhz.patch"
-                             "rk3588-mnt-reform2/0008-MERGED-drm-tests-hdmi-Switch-to-void-type-for-EDID-d.patch"
-                             "rk3588-mnt-reform2/0009-MERGED-drm-tests-hdmi-Add-macro-to-simplify-EDID-set.patch"
-                             "rk3588-mnt-reform2/0010-MERGED-drm-tests-hdmi-Replace-open-coded-EDID-setup.patch"
-                             "rk3588-mnt-reform2/0011-MERGED-drm-tests-hdmi-Drop-unused-drm_kunit_helper_c.patch"
-                             "rk3588-mnt-reform2/0012-MERGED-drm-tests-hdmi-Setup-ycbcr_420_allowed-before.patch"
-                             "rk3588-mnt-reform2/0013-MERGED-drm-tests-hdmi-Switch-to-drm_atomic_get_new_c.patch"
-                             "rk3588-mnt-reform2/0014-MERGED-drm-tests-hdmi-Provide-EDID-supporting-4K-30H.patch"
-                             "rk3588-mnt-reform2/0015-MERGED-drm-tests-hdmi-Add-limited-range-tests-for-YU.patch"
-                             "rk3588-mnt-reform2/0016-MERGED-drm-tests-hdmi-Rename-max-TMDS-rate-fallback-.patch"
-                             "rk3588-mnt-reform2/0017-MERGED-drm-tests-hdmi-Provide-EDID-supporting-4K-30H.patch"
-                             "rk3588-mnt-reform2/0018-MERGED-drm-tests-hdmi-Add-max-TMDS-rate-fallback-tes.patch"
-                             "rk3588-mnt-reform2/0019-MERGED-drm-tests-hdmi-Add-test-for-unsuccessful-fall.patch"
                              "rk3588-mnt-reform2/0020-MERGED-thermal-rockchip-rename-rk_tsadcv3_tshut_mode.patch"
-                             "rk3588-mnt-reform2/0021-MERGED-dt-bindings-rockchip-thermal-Add-RK3576-compa.patch"
-                             "rk3588-mnt-reform2/0022-MERGED-thermal-rockchip-Support-RK3576-SoC-in-the-th.patch"
                              "rk3588-mnt-reform2/0023-MERGED-dt-bindings-thermal-rockchip-document-otp-the.patch"
                              "rk3588-mnt-reform2/0024-MERGED-thermal-rockchip-support-reading-trim-values-.patch"
-                             ;; already merged in 6.16.4?
-                             ; "rk3588-mnt-reform2/0025-MERGED-dt-bindings-display-vop2-Add-optional-PLL-clo.patch"
-                             ; "rk3588-mnt-reform2/0026-MERGED-arm64-dts-rockchip-Enable-HDMI-PHY-clk-provid.patch"
-                             ; "rk3588-mnt-reform2/0027-MERGED-arm64-dts-rockchip-Add-HDMI-PHY-PLL-clock-sou.patch"
-                             "rk3588-mnt-reform2/0028-MERGED-arm64-dts-rockchip-Enable-HDMI-receiver-on-RK.patch"
                              "rk3588-mnt-reform2/0029-MERGED-drm-bridge-Pass-down-connector-to-drm-bridge-.patch"
-                             "rk3588-mnt-reform2/0030-MERGED-arm64-dts-rockchip-enable-USB-on-Sige5.patch"
-                             "rk3588-mnt-reform2/0032-MERGED-arm64-dts-rockchip-add-SDIO-controller-on-RK3.patch"
-                             "rk3588-mnt-reform2/0033-MERGED-arm64-dts-rockchip-add-version-independent-Wi.patch"
-                             "rk3588-mnt-reform2/0034-MERGED-arm64-dts-rockchip-add-overlay-for-the-WiFi-B.patch"
-                             "rk3588-mnt-reform2/0035-MERGED-drm-panel-raydium-rm67200-Add-missing-drm_dis.patch"
-                             "rk3588-mnt-reform2/0037-MERGED-arm64-dts-rockchip-enable-PCIe-on-ROCK-4D.patch"
-                             "rk3588-mnt-reform2/0038-MERGED-arm64-dts-rockchip-add-HDMI-audio-on-ROCK-4D.patch"
                              "rk3588-mnt-reform2/0040-MERGED-arm64-defconfig-enable-further-Rockchip-platf.patch"
                              "rk3588-mnt-reform2/0041-MERGED-dt-bindings-pinctrl-rockchip-increase-max-amo.patch"
-                             "rk3588-mnt-reform2/0043-DEBUG-usb-typec-tcpm-also-log-to-dmesg.patch"
-                             "rk3588-mnt-reform2/0044-DEBUG-usb-typec-fusb302-also-log-to-dmesg.patch"
                              "rk3588-mnt-reform2/0045-math.h-add-DIV_ROUND_UP_NO_OVERFLOW.patch"
                              "rk3588-mnt-reform2/0046-clk-divider-Fix-divisor-masking-on-64-bit-platforms.patch"
                              "rk3588-mnt-reform2/0047-clk-composite-replace-open-coded-abs_diff.patch"
-                             "rk3588-mnt-reform2/0048-arm64-dts-rockchip-rk3588-evb1-add-bluetooth-rfkill.patch"
-                             "rk3588-mnt-reform2/0049-arm64-dts-rockchip-rk3588-evb1-improve-PCIe-ethernet.patch"
-                             "rk3588-mnt-reform2/0050-arm64-dts-rockchip-Slow-down-EMMC-a-bit-to-keep-IO-s.patch"
                              "rk3588-mnt-reform2/0051-media-v4l2-ctrls-core-Set-frame_mbs_only_flag-by-def.patch"
                              "rk3588-mnt-reform2/0052-media-rockchip-Move-H264-CABAC-table-to-header-file.patch"
                              "rk3588-mnt-reform2/0053-media-rockchip-Introduce-the-rkvdec2-driver.patch"
@@ -1877,7 +1846,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                              "rk3588-mnt-reform2/0058-dt-bindings-display-vop2-Add-VP-clock-resets.patch"
                              "rk3588-mnt-reform2/0059-drm-rockchip-vop2-Add-clock-resets-support.patch"
                              "rk3588-mnt-reform2/0060-arm64-dts-rockchip-Add-VOP-clock-resets-for-rk3588s.patch"
-                             "rk3588-mnt-reform2/0061-arm64-dts-rockchip-rk3588-evb1-add-DSI-panel.patch"
                              "rk3588-mnt-reform2/0062-drm-rockchip-vop2-Add-core-reset-support.patch"
                              "rk3588-mnt-reform2/0063-WIP-drm-rockchip-dw_hdmi_qp-Make-use-of-phy_configur.patch"
                              "rk3588-mnt-reform2/0064-WIP-drm-bridge-Add-detect_ctx-hook.patch"
@@ -1887,15 +1855,10 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                              "rk3588-mnt-reform2/0068-drm-bridge-synopsys-Add-DW-DPTX-Controller-support-l.patch"
                              "rk3588-mnt-reform2/0069-drm-rockchip-Add-RK3588-DPTX-output-support.patch"
                              "rk3588-mnt-reform2/0070-MAINTAINERS-Add-entry-for-DW-DPTX-Controller-bridge.patch"
-                             "rk3588-mnt-reform2/0071-dt-bindings-display-simple-bridge-Add-ra620-compatib.patch"
                              "rk3588-mnt-reform2/0072-drm-birdge-simple-bridge-Add-support-for-radxa-ra620.patch"
                              "rk3588-mnt-reform2/0073-arm64-dts-rockchip-Add-DP0-for-rk3588.patch"
                              "rk3588-mnt-reform2/0074-arm64-dts-rockchip-Add-DP1-for-rk3588.patch"
-                             "rk3588-mnt-reform2/0075-arm64-dts-rockchip-Enable-DisplayPort-for-rk3588s-Co.patch"
-                             "rk3588-mnt-reform2/0076-arm64-dts-rockchip-Enable-DP2HDMI-for-ROCK-5-ITX.patch"
                              "rk3588-mnt-reform2/0077-arm64-defconfig-Enable-Rockchip-RK3588-DisplayPort-C.patch"
-                             "rk3588-mnt-reform2/0078-arm64-dts-rockchip-add-USB-C-support-for-ROCK-5B.patch"
-                             "rk3588-mnt-reform2/0079-arm64-dts-rockchip-enable-camera-I2C-interfaces-for-.patch"
                              "rk3588-mnt-reform2/0080-accel-rocket-Add-registers-header.patch"
                              "rk3588-mnt-reform2/0081-accel-rocket-Add-a-new-driver-for-Rockchip-s-NPU.patch"
                              "rk3588-mnt-reform2/0082-accel-rocket-Add-IOCTL-for-BO-creation.patch"
@@ -1904,28 +1867,12 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                              "rk3588-mnt-reform2/0085-dt-bindings-npu-rockchip-rknn-Add-bindings.patch"
                              "rk3588-mnt-reform2/0086-arm64-dts-rockchip-add-pd_npu-label-for-RK3588-power.patch"
                              "rk3588-mnt-reform2/0087-arm64-dts-rockchip-Add-nodes-for-NPU-and-its-MMU-to-.patch"
-                             "rk3588-mnt-reform2/0088-arm64-dts-rockchip-Enable-the-NPU-on-quartzpro64.patch"
-                             "rk3588-mnt-reform2/0089-arm64-dts-rockchip-enable-NPU-on-ROCK-5B.patch"
                              "rk3588-mnt-reform2/0091-PM-devfreq-rockchip-dfi-double-count-on-RK3588.patch"
                              "rk3588-mnt-reform2/0092-PM-devfreq-rockchip-dfi-add-support-for-LPDDR5.patch"
-                             "rk3588-mnt-reform2/0093-arm64-dts-rockchip-Add-thermal-nodes-to-RK3576.patch"
-                             "rk3588-mnt-reform2/0094-arm64-dts-rockchip-Add-thermal-trim-OTP-and-tsadc-no.patch"
-                             "rk3588-mnt-reform2/0095-phy-rockchip-inno-usb2-add-soft-vbusvalid-control.patch"
-                             "rk3588-mnt-reform2/0096-phy-rockchip-usbdp-move-orientation-handling-further.patch"
-                             "rk3588-mnt-reform2/0097-phy-rockchip-usbdp-reset-USB3-and-reinit-on-orientat.patch"
                              "rk3588-mnt-reform2/0098-drm-bridge-dw-hdmi-qp-Add-CEC-driver.patch"
-                             "rk3588-mnt-reform2/0100-arm64-dts-rockchip-Enable-RK3576-watchdog.patch"
                              "rk3588-mnt-reform2/0101-defconfig-Enable-watchdog-sysfs-for-testing.patch"
-                             "rk3588-mnt-reform2/0103-dt-bindings-input-adc-keys-allow-linux-input-type-pr.patch"
-                             "rk3588-mnt-reform2/0104-Input-adc-keys-support-types-that-aren-t-just-keyboa.patch"
-                             "rk3588-mnt-reform2/0105-arm64-dts-rockchip-add-analog-audio-to-ROCK-4D.patch"
-                             "rk3588-mnt-reform2/0107-net-phy-realtek-Reset-after-clock-enable.patch"
                              "rk3588-mnt-reform2/0108-arm64-dts-rockchip-use-downstream-PHY-timing-setup.patch"
-                             "rk3588-mnt-reform2/0109-thermal-rockchip-shut-up-GRF-warning.patch"
-                             "rk3588-mnt-reform2/0110-PCI-dw-rockchip-Add-system-PM-support.patch"
                              "rk3588-mnt-reform2/0111-net-stmmac-dwmac-rk-Fix-disabling-set_clock_selectio.patch"
-                             ;; Applied in 6.16.4?
-                             ; "rk3588-mnt-reform2/1002-v2-media_verisilicon_fix_av1_decoder_clock_frequency.patch"
                              "rk3588-mnt-reform2/2001-drm-bridge-dw-hdmi-qp-Return-0-in-audio-prepare-when.patch"
                              "rk3588-mnt-reform2/2003-drm-bridge-synopsys-Do-not-warn-about-audio-params-c.patch"
                              "rk3588-mnt-reform2/5200-drm-rockchip-Set-dma-mask-to-64-bit.patch"))))
