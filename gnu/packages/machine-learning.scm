@@ -3216,8 +3216,8 @@ Python.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/tensorflow/tensorflow")
-             (commit (string-append "v" version))))
+              (url "https://github.com/tensorflow/tensorflow")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
@@ -3289,7 +3289,8 @@ Python.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir
-            (lambda _ (chdir "tensorflow/lite")))
+            (lambda _
+              (chdir "tensorflow/lite")))
           (add-after 'chdir 'unbundle-gemmlowp
             (lambda _
               (call-with-output-file "tools/cmake/modules/gemmlowp.cmake"
@@ -3306,7 +3307,7 @@ find_library(ML_DTYPES_LIBRARIES
   PATHS \"${ML_DTYPES_LIBRARY_DIRS}\"
   NO_DEFAULT_PATH)" port)))))
           (add-after 'chdir 'copy-sources
-            (lambda* (#:key inputs #:allow-other-keys)
+            (lambda _
               ;; Don't fetch source code; we already have everything we need.
               (substitute* '("tools/cmake/modules/fft2d.cmake"
                              "tools/cmake/modules/farmhash.cmake"
@@ -3315,28 +3316,30 @@ find_library(ML_DTYPES_LIBRARIES
 
               (mkdir-p "/tmp/farmhash")
               (with-directory-excursion "/tmp/farmhash"
-                (invoke "tar" "--strip-components=1"
-                        "-xf" (assoc-ref inputs "farmhash-src")))
+                (copy-recursively #$(this-package-native-input "farmhash-src") ".")
+                (for-each make-file-writable (find-files ".")))
 
               (mkdir-p "/tmp/fft2d")
               (with-directory-excursion "/tmp/fft2d"
-                (invoke "tar" "--strip-components=1"
-                        "-xf" (assoc-ref inputs "fft2d-src")))))
+                (copy-recursively #$(this-package-native-input "fft2d-src") ".")
+                (for-each make-file-writable (find-files ".")))))
           (add-after 'copy-sources 'opencl-fix
-            (lambda _ (substitute* "delegates/gpu/cl/opencl_wrapper.h"
-              (("cl_ndrange_kernel_command_properties_khr")
-               "cl_command_properties_khr"))))
+            (lambda _
+              (substitute* "delegates/gpu/cl/opencl_wrapper.h"
+                (("cl_ndrange_kernel_command_properties_khr")
+                 "cl_command_properties_khr"))))
           (add-after 'opencl-fix 'absl-fix
-            (lambda _ (substitute* '(
-                        "delegates/gpu/cl/cl_operation.h"
-                        "delegates/gpu/common/task/qcom_thin_filter_desc.cc"
-                        "delegates/gpu/common/tasks/special/thin_pointwise_fuser.cc")
-              (("#include <vector>")
-               "#include <vector>\n\n#include \"absl/strings/str_cat.h\"\n"))))
+            (lambda _
+              (substitute* '("delegates/gpu/cl/cl_operation.h"
+                             "delegates/gpu/common/task/qcom_thin_filter_desc.cc"
+                             "delegates/gpu/common/tasks/special/thin_pointwise_fuser.cc")
+                (("#include <vector>")
+                 "#include <vector>\n\n#include \"absl/strings/str_cat.h\"\n"))))
           (add-after 'opencl-fix 'stdint-fix
-            (lambda _ (substitute* "kernels/internal/spectrogram.cc"
-              (("#include <math.h>")
-               "#include <math.h>\n#include <cstdint>\n"))))
+            (lambda _
+              (substitute* "kernels/internal/spectrogram.cc"
+                (("#include <math.h>")
+                 "#include <math.h>\n#include <cstdint>\n"))))
           (add-after 'stdint-fix 'gemmlowp-fix
             (lambda _
               (substitute* "kernels/internal/common.h"
@@ -3426,33 +3429,30 @@ find_library(ML_DTYPES_LIBRARIES
     (propagated-inputs
      (list python-numpy))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("googletest" ,googletest)
-       ("pybind11" ,pybind11)
-       ("python-setuptools" ,python-setuptools)
-       ("python-wrapper" ,python-wrapper) ;for its /bin
-       ("swig" ,swig)
-       ("farmhash-src"
-        ,(let ((commit "816a4ae622e964763ca0862d9dbd19324a1eaf45"))
+     (list pkg-config
+           googletest
+           pybind11
+           python-setuptools
+           python-wrapper               ;for its /bin
+           swig
            (origin
-             (method url-fetch)
-             (uri (string-append
-                   "https://mirror.bazel.build/github.com/google/farmhash/archive/"
-                   commit ".tar.gz"))
-             (file-name (git-file-name "farmhash" (string-take commit 8)))
+             (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/google/farmhash")
+                    (commit "816a4ae622e964763ca0862d9dbd19324a1eaf45")))
+             (file-name "farmhash-src")
              (sha256
               (base32
-               "185b2xdxl4d4cnsnv6abg8s22gxvx8673jq2yaq85bz4cdy58q35")))))
-       ("fft2d-src"
-        ,(origin
-           (method url-fetch)
-           (uri (string-append "https://storage.googleapis.com/"
-                               "mirror.tensorflow.org/github.com/petewarden/"
-                               "OouraFFT/archive/v1.0.tar.gz"))
-           (file-name "fft2d.tar.gz")
-           (sha256
-            (base32
-             "1jfflzi74fag9z4qmgwvp90aif4dpbr1657izmxlgvf4hy8fk9xd"))))))
+               "1mqxsljq476n1hb8ilkrpb39yz3ip2hnc7rhzszz4sri8ma7qzp6")))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/petewarden/OouraFFT")
+                    (commit "v1.0")))
+             (file-name "fft2d-src")
+             (sha256
+              (base32
+               "1gla8m477din9k7jnbkzzbvc0wzw2rn97skxwf0k0mwcdf6vlhcs")))))
     (home-page "https://www.tensorflow.org")
     (synopsis "Machine learning framework")
     (description
