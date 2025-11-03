@@ -681,7 +681,7 @@ the name of the library itself, which is written in C++.")
 (define-public plutovg
   (package
     (name "plutovg")
-    (version "0.0.13")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -690,7 +690,7 @@ the name of the library itself, which is written in C++.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y2w0qhs89bnh440z1xj65vg4c71rlwinxgs3p8bvh2fmbi7lqff"))))
+        (base32 "1pkil2g9vvnhn7xycha5lwya0kp9h1ndg0lszgh8nkbilnavwig9"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
