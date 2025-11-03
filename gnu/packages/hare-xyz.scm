@@ -96,3 +96,35 @@ GObject Introspection development files.  This package includes both the
 binding generator binary, as well as bindings for several common libraries,
 including GTK3, GTK4, and GLib.")
     (license license:mpl2.0)))
+
+(define-public hare-adwaita
+  (package
+    (name "hare-adwaita")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://git.sr.ht/~sircmpwn/hare-adwaita")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+                (base32
+                  "07j204v0dml967jz0mfdz9d37dm86qhfgpprn66nagpphq3fay8k"))))
+    (build-system hare-build-system)
+    (arguments
+      (list #:tests? #f ; no tests
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-before 'build 'patch-scripts
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (substitute* "scripts/generate"
+                      (("/usr/(share/gir-1.0/[^ ]*\\.gir)" _ name)
+                       (search-input-file inputs name))))))))
+    (propagated-inputs (list libadwaita))
+    (native-inputs `((,hare-gi "bin")))
+    (supported-systems %hare-supported-systems)
+    (home-page "https://git.sr.ht/~sircmpwn/hare-adwaita")
+    (synopsis "Adwaita bindings for Hare")
+    (description "This package is a set of libadwaita bindings for the Hare
+language.")
+    (license license:mpl2.0)))
