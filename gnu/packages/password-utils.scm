@@ -1225,7 +1225,6 @@ using password-store through rofi interface:
                    (list "addpass" "rofi-pass")))))))))
     (inputs
      (modify-inputs (package-inputs rofi-pass)
-       (replace "rofi" rofi-wayland)
        (replace "xclip" wl-clipboard)
        (replace "xdotool" wtype)
        (delete "xset")))
