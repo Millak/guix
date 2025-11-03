@@ -1343,7 +1343,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.12.11")
+    (version "1.12.13")
     (source
      (origin
        (method git-fetch)
@@ -1352,12 +1352,13 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kvnm75q77g3l8vn6s0zh7ks7vdqs5d9hgc8i6qc367m2panz0mp"))))
+        (base32 "160b0rk2fs3zc3yhvx1wsca4a6xzcyc8rlgimn3qmkvd0b31ngdg"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
            emacs-minimal
            gnupg                        ; for tests
+           tzdata-for-tests             ; for tests
            texinfo))
     (inputs
      (list glib gmime guile-3.0 xapian readline python))
@@ -1387,7 +1388,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
                 (("/bin/mv") (which "mv")))))
           (add-after 'install 'fix-ffi
             (lambda _
-              (substitute* (find-files #$output "mu.scm")
+              (substitute* (find-files #$output "mu\\.scm")
                 (("\"libguile-mu\"")
                  (format #f "\"~a/lib/libguile-mu\"" #$output)))))
           (add-after 'install 'install-emacs-autoloads
