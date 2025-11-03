@@ -796,6 +796,7 @@ preferences/advanced-scripts.dtd"
            ;; UNBUNDLE-ME! libvorbis
            libxft
            libevent
+           libwebp
            libxinerama
            libxscrnsaver
            libxcomposite
@@ -813,8 +814,8 @@ preferences/advanced-scripts.dtd"
            hunspell
            libnotify
            nspr
-           ;; UNBUNDLE-ME! nss
-           ;; (pending resolution of <https://codeberg.org/guix/guix/issues/661>)
+           ;;nss-rapid            ;pending resolution of
+                                  ;<https://codeberg.org/guix/guix/issues/661>
            shared-mime-info
            sqlite
            eudev
@@ -856,6 +857,7 @@ preferences/advanced-scripts.dtd"
 
       #:configure-flags
       #~(list
+         "--disable-bootstrap"     ;do not attempt to fetch toolchain binaries
          "--disable-fhs"
          "--enable-application=browser"
          "--with-distribution-id=org.gnu"
@@ -898,24 +900,26 @@ preferences/advanced-scripts.dtd"
          "--without-wasm-sandboxed-libraries"
 
          ;; Avoid bundled libraries.
+         "--enable-system-pixman"
+         "--with-system-ffi"
+         "--with-system-icu"
          "--with-system-jpeg"           ;must be libjpeg-turbo
+         "--with-system-libevent"
+         "--with-system-libvpx"
+         "--with-system-nspr"
+         ;; "--with-system-nss"
+         ;;   (pending resolution of <https://codeberg.org/guix/guix/issues/661>)
          "--with-system-png"            ;must be libpng-apng
+         "--with-system-webp"
          "--with-system-zlib"
+
+         ;; TODO: To be implemented.
          ;; UNBUNDLE-ME! "--with-system-bz2"
-         ;; UNBUNDLE-ME! "--with-system-libevent"
          ;; UNBUNDLE-ME! "--with-system-ogg"
          ;; UNBUNDLE-ME! "--with-system-vorbis"
          ;; UNBUNDLE-ME! "--with-system-theora" ; wants theora-1.2, not yet released
-         ;; UNBUNDLE-ME! "--with-system-libvpx"
-         "--with-system-icu"
-         "--with-system-nspr"
-         ;; UNBUNDLE-ME! "--with-system-nss"
-         ;;   (pending resolution of <https://codeberg.org/guix/guix/issues/661>)
-
          ;; UNBUNDLE-ME! "--with-system-harfbuzz"
          ;; UNBUNDLE-ME! "--with-system-graphite2"
-         "--enable-system-pixman"
-         "--enable-system-ffi"
          ;; UNBUNDLE-ME! "--enable-system-sqlite"
          )
 
@@ -976,18 +980,19 @@ preferences/advanced-scripts.dtd"
                           ;;   * libopus
                           ;;   * speex
                           ;;
+                          "ipc/chromium/src/third_party/libevent"
+                          "js/src/ctypes/libffi"
+                          "media/libjpeg"
+                          "media/libvpx"
                           "modules/freetype2"
-                          ;; "media/libjpeg"  ; needed for now, because media/libjpeg/moz.build is referenced from config/external/moz.build
+
                           ;; UNBUNDLE-ME! "modules/zlib"
-                          ;; UNBUNDLE-ME! "ipc/chromium/src/third_party/libevent"
-                          ;; UNBUNDLE-ME! "media/libvpx"
                           ;; UNBUNDLE-ME! "media/libogg"
                           ;; UNBUNDLE-ME! "media/libvorbis"
                           ;; UNBUNDLE-ME! "media/libtheora" ; wants theora-1.2, not yet released
                           ;; UNBUNDLE-ME! "media/libtremor"
                           ;; UNBUNDLE-ME! "gfx/harfbuzz"
                           ;; UNBUNDLE-ME! "gfx/graphite2"
-                          "js/src/ctypes/libffi"
                           ;; UNBUNDLE-ME! "db/sqlite3"
                           ))))
           (add-after 'remove-bundled-libraries 'fix-ffmpeg-runtime-linker
