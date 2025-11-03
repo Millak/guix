@@ -23643,16 +23643,16 @@ numbers, real numbers, mixed types and more, and comes with a shell command
 (define-public glances
   (package
     (name "glances")
-    (version "4.1.1")
+    (version "4.3.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-              (url "https://github.com/nicolargo/glances")
-              (commit (string-append "v" version))))
+             (url "https://github.com/nicolargo/glances")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00xyixi3wrajmkmqgd1rlaqypi6c1wskm6q0xbrw2k1zc7wi3kxl"))))
+        (base32 "1v2rsffy99ilarl5vnsz4zwb0wp3s3jnsbcbiqx53qxv88whfz71"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -23663,19 +23663,21 @@ numbers, real numbers, mixed types and more, and comes with a shell command
               ;; Glances phones PyPI for weekly update checks by default.
               ;; Disable these.  The user can re-enable them if desired.
               (substitute* "glances/outdated.py"
-                (("^(.*)self\\.load_config\\(config\\)\n" line
-                  indentation)
+                (("^(.*)self\\.load_config\\(config\\)\n" line indentation)
                  (string-append indentation
-                                "self.args.disable_check_update = True\n"
-                                line)))))
+                                "self.args.disable_check_update = True\n" line)))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 ;; XXX: Taken from tox.ini.
                 (invoke "python" "unittest-core.py")))))))
     (native-inputs (list python-pytest python-setuptools))
-    (propagated-inputs (list python-defusedxml python-orjson python-packaging
-                             python-psutil))
+    (propagated-inputs (list python-defusedxml
+                             python-jinja2
+                             python-orjson
+                             python-packaging
+                             python-psutil
+                             python-shtab))
     (home-page "https://github.com/nicolargo/glances")
     (synopsis "Cross-platform curses-based monitoring tool")
     (description
