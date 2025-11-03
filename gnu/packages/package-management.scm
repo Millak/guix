@@ -1432,7 +1432,7 @@ manage (install/update) them for you.")
 (define-public python-anaconda-client
   (package
     (name "python-anaconda-client")
-    (version "1.8.0")
+    (version "1.13.1")
     (source
      (origin
        (method git-fetch)
@@ -1441,57 +1441,39 @@ manage (install/update) them for you.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1vyk0g0gci4z9psisb8h50zi3j1nwfdg1jw3j76cxv0brln0v3fw"))
-       ;; `iter_fields' is no longer available in python-urllib (propagated from
-       ;; python-requests).
-       (modules '((guix build utils)))
-       (snippet
-        #~(substitute* "binstar_client/requests_ext.py"
-            (("iter_fields") "iter_field_objects")))))
+        (base32 "06nn3cwhrrajsbn9pils2539lzplfnyhn9java3xrpm3ksxq9g72"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      ;; These tests require a network connection
-      '(append (map (lambda (file)
-                      (string-append "--ignore=binstar_client/" file))
-                    (list "tests/test_upload.py"
-                          "tests/test_authorizations.py"
-                          "tests/test_login.py"
-                          "tests/test_whoami.py"
-                          "utils/notebook/tests/test_data_uri.py"
-                          "utils/notebook/tests/test_base.py"
-                          "utils/notebook/tests/test_downloader.py"
-                          "inspect_package/tests/test_conda.py"))
-               ;; get_conda_root returns None
-               (list "-k"
-                     "not test_conda_root \
-and not test_conda_root_outside_root_environment"))
+      #~(list "--deselect=tests/utils/test_conda.py::test_find_conda"
+              "--deselect=tests/utils/test_conda.py::test_conda_vars")
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'python3.10-compatibility
-           (lambda _
-             (substitute* "binstar_client/utils/config.py"
-               (("collections.Mapping") "collections.abc.Mapping"))))
-         ;; This is needed for some tests.
-         (add-before 'check 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp"))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "setup.cfg"
+                (("addopts=.*") "addopts=\n")))))))
+    (native-inputs
+     (list python-freezegun
+           python-pytest
+           python-setuptools))
     (propagated-inputs
-     (list python-clyent
+     (list python-anaconda-cli-base
+           python-conda-package-handling
+           python-conda-package-streaming
+           python-dateutil
+           python-defusedxml
            python-nbformat
+           python-pillow
+           python-platformdirs
+           python-pytz
            python-pyyaml
            python-requests
-           python-setuptools))
-    (native-inputs
-     (list python-coverage
-           python-dateutil
-           python-freezegun
-           python-mock
-           python-pillow
-           python-pytest
-           python-pytz
-           python-wheel))
+           python-requests-toolbelt
+           python-setuptools
+           python-tqdm
+           python-urllib3))
     (home-page "https://github.com/Anaconda-Platform/anaconda-client")
     (synopsis "Anaconda Cloud command line client library")
     (description
