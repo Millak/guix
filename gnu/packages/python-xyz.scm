@@ -23656,6 +23656,8 @@ numbers, real numbers, mixed types and more, and comes with a shell command
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "unittest-core.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-update-checks
@@ -23665,12 +23667,7 @@ numbers, real numbers, mixed types and more, and comes with a shell command
               (substitute* "glances/outdated.py"
                 (("^(.*)self\\.load_config\\(config\\)\n" line indentation)
                  (string-append indentation
-                                "self.args.disable_check_update = True\n" line)))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; XXX: Taken from tox.ini.
-                (invoke "python" "unittest-core.py")))))))
+                                "self.args.disable_check_update = True\n" line))))))))
     (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-defusedxml
                              python-jinja2
