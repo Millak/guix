@@ -1731,7 +1731,7 @@ A plugin for the Xfce panel is also available.")
     (native-inputs
      (list xfce4-dev-tools))
     (inputs
-     (list xfconf libnotify pulseaudio keybinder-3.0 gtk+))
+     (list xfconf libnotify pulseaudio keybinder gtk+))
     (home-page "https://gitlab.xfce.org/apps/xfce4-volumed-pulse")
     (synopsis "XFCE volume keys daemon")
     (description
