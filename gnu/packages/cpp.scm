@@ -700,6 +700,33 @@ the name of the library itself, which is written in C++.")
     (description "PlutoVG is a standalone 2D vector graphics library in C.")
     (license license:expat)))
 
+(define-public plutosvg
+  (package
+    (name "plutosvg")
+    (version "0.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sammycage/plutosvg")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vj21y4sr98mb337sr2yrgzs8ipgrnhd23qk3c1gykdxwgiy94p0"))))
+    (build-system cmake-build-system)
+    (native-inputs (list plutovg))
+    (arguments
+     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
+       #:tests? #f)) ;No tests.
+    (home-page "https://github.com/sammycage/plutovg")
+    (synopsis "Tiny SVG rendering library in C")
+    (description
+     "PlutoSVG is a compact and efficient SVG rendering library written in C.
+It is specifically designed for parsing and rendering SVG documents embedded
+in OpenType fonts, providing an optimal balance between speed and minimal
+memory usage. It is also suitable for rendering scalable icons.")
+    (license license:expat)))
+
 (define-public pystring
   (package
     (name "pystring")
