@@ -371,6 +371,32 @@ and JSON.
 services.")
     (license license:expat)))
 
+(define-public python-conda-package-streaming
+  (package
+    (name "python-conda-package-streaming")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "conda_package_streaming" version))
+       (sha256
+        (base32 "1fcyx83swx1wfndrl0vdk8c2pixshn54gkjy7xchkra13kw2yas2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; TODO: Cycles with python-conda-package-handling, implement bootstrap.
+     (list #:tests? #f))
+    (native-inputs
+     (list python-flit-core))
+    (propagated-inputs
+     (list python-requests
+           python-zstandard))
+    (home-page "https://conda.github.io/conda-package-streaming/")
+    (synopsis "Conda formats (@code{.conda}, @code{.tar.bz2}) reader library")
+    (description
+     "This package provides an efficient library to read from new and old format
+@code{.conda} and @code{.tar.bz2} conda packages.")
+    (license license:bsd-3)))
+
 (define-public python-devpi-common
   (package
     (name "python-devpi-common")
