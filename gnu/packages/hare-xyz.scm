@@ -47,3 +47,52 @@
     (description "This package is an implementation of the SSH client, server,
 and agent protocols in pure Hare.")
     (license license:mpl2.0)))
+
+(define-public hare-gi
+  (package
+    (name "hare-gi")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://git.sr.ht/~yerinalexey/hare-gi")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+                (base32
+                  "1vizzaf81fb5fwggw2jh55nkdj8q0cwvwwssj1hj5rby86smml1g"))))
+    (build-system hare-build-system)
+    (arguments
+      (list #:tests? #f ; no tests
+            #:make-flags ''("hare-gi")
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-before 'build 'patch-scripts
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (map (lambda (file)
+                           (substitute* file
+                             (("/usr/(share/gir-1.0/[^ ]*\\.gir)" _ name)
+                              (search-input-file inputs name))))
+                      '("scripts/generate-gtk3" "scripts/generate-gtk4"))))
+                (add-after 'patch-scripts 'build-scripts
+                  (lambda _
+                    ;; hare-gi is used in generation scripts, so we have to
+                    ;; always build it natively, then later rebuild it.
+                    (invoke "make" ".gen")
+                    (when (file-exists? "hare-gi") (delete-file "hare-gi"))))
+                ;; needed to prevent rebuilds during install
+                (add-after 'build 'touch-build
+                  (lambda _ (close-port (open-output-file ".gen")))))))
+    ;; All possible inputs are needed to generate the bindings from the GObject
+    ;; Introspection files.
+    (propagated-inputs (list at-spi2-core gdk-pixbuf glib gobject-introspection
+                             graphene gtk gtk+ harfbuzz pango))
+    (supported-systems %hare-supported-systems)
+    (outputs '("out" "bin"))
+    (home-page "https://sr.ht/~yerinalexey/hare-gi")
+    (synopsis "GTK library Hare binding generator")
+    (description "hare-gi is a binding generator for GTK libraries, based on
+GObject Introspection development files.  This package includes both the
+binding generator binary, as well as bindings for several common libraries,
+including GTK3, GTK4, and GLib.")
+    (license license:mpl2.0)))
