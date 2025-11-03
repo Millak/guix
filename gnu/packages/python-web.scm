@@ -371,6 +371,36 @@ and JSON.
 services.")
     (license license:expat)))
 
+(define-public python-conda-package-handling
+  (package
+    (name "python-conda-package-handling")
+    (version "2.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/conda/conda-package-handling/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l2zbbwlxp9azpshixvxnb9354xajxkn88934grpwl70blgb3yq2"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-bottle
+           python-mock
+           python-pytest
+           python-pytest-cov
+           python-pytest-mock
+           python-setuptools))
+    (propagated-inputs
+     (list python-conda-package-streaming))
+    (home-page "https://conda.io")
+    (synopsis "Create and extract conda packages of various formats")
+    (description
+     "This library is an abstraction of Conda package handling and a tool for
+extracting, creating, and converting between formats.")
+    (license license:bsd-3)))
+
 (define-public python-conda-package-streaming
   (package
     (name "python-conda-package-streaming")
