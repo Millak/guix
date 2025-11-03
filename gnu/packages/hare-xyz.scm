@@ -128,3 +128,35 @@ including GTK3, GTK4, and GLib.")
     (description "This package is a set of libadwaita bindings for the Hare
 language.")
     (license license:mpl2.0)))
+
+(define-public hare-gtk4-layer-shell
+  (package
+    (name "hare-gtk4-layer-shell")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://git.sr.ht/~sircmpwn/hare-gtk4-layer-shell")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+                (base32
+                  "1y52vjz1j4v615wi6n1yjapw9r3plwh67lcg45sa778rv5316vfz"))))
+    (build-system hare-build-system)
+    (arguments
+      (list #:tests? #f ; no tests
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-before 'build 'patch-scripts
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (substitute* "scripts/generate"
+                      (("/usr/(share/gir-1.0/[^ ]*\\.gir)" _ name)
+                       (search-input-file inputs name))))))))
+    (propagated-inputs (list gtk4-layer-shell))
+    (native-inputs `((,hare-gi "bin")))
+    (supported-systems %hare-supported-systems)
+    (home-page "https://git.sr.ht/~sircmpwn/hare-gtk4-layer-shell")
+    (synopsis "GTK layer-shell bindings for Hare")
+    (description "This package is a set of gtk-layer-shell bindings for the Hare
+language.")
+    (license license:mpl2.0)))
