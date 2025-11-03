@@ -2202,3 +2202,27 @@ request user consent for application access to stored secrets.")
     (description "This package provides an ssh-agent implementation that
 stores and secures keys through Himitsu.")
     (license license:gpl3)))
+
+(define-public himitsu-git
+  (package
+    (name "himitsu-git")
+    (version "0.9.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://git.sr.ht/~sircmpwn/himitsu-git")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+                (base32
+                  "09ww866k4ns9cpyqm9vixlyadwk3q8y24pxhqs0zxc3i4i3168yz"))))
+    (build-system hare-build-system)
+    (arguments (list #:tests? #f)) ; no tests
+    (inputs (list himitsu))
+    (native-inputs (list scdoc))
+    (supported-systems %hare-supported-systems)
+    (home-page "https://git.sr.ht/~sircmpwn/himitsu-git")
+    (synopsis "Himitsu git credential helper")
+    (description "This package provides a git credential helper that queries
+Himitsu for credentials.")
+    (license license:gpl3)))
