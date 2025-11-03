@@ -1572,9 +1572,9 @@ Telemetry Transport (MQTT) publish-subscribe messaging protocol.")
                        ,(string-append "--prefix=" #$output)
                        ,(string-append "--mandir=" #$output "/share/man")
                        ,(string-append "--cores="
-                                       (if parallel-build?
-                                           (number->string (parallel-job-count))
-                                           "1")))))))))
+                                       ;; Tests require parallelism, and set upper limit as test
+                                       ;; runtime scales superliniearly in the number of cores.
+                                       (number->string (max 2 (min 8 (parallel-job-count))))))))))))
     (home-page "https://github.com/concurrencykit/ck")
     (synopsis "C library for concurrent systems")
     (description "Concurrency Kit (@code{ck}) provides concurrency primitives,
