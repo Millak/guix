@@ -272,7 +272,7 @@ hosts by wrapping the @file{rsync} binary.")
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; no tests
-    (propagated-inputs `(("concurrent-ruby" ,ruby-concurrent)))
+    (propagated-inputs (list ruby-concurrent-ruby))
     (synopsis "Internationalization library for Ruby")
     (description "Ruby i18n is an internationalization and localization
 solution for Ruby programs.  It features translation and localization,
@@ -2023,7 +2023,7 @@ web pages.")
            ruby-rspec))
     (propagated-inputs
      (list ruby-asciidoctor
-           ruby-concurrent
+           ruby-concurrent-ruby
            ruby-prawn
            ruby-prawn-icon
            ruby-prawn-svg
@@ -3562,7 +3562,7 @@ engine.")
             (when tests?
               (invoke "ruby" (which "rspec"))))))))
   (propagated-inputs
-   (list ruby-concurrent))
+   (list ruby-concurrent-ruby))
   (native-inputs
    (list ruby-rspec))
   (synopsis "Efficient, immutable, thread-safe collection classes for Ruby")
@@ -6987,7 +6987,7 @@ utilities for Ruby.")
                 (when tests?
                   (invoke "bundler" "exec" "rake" test-target)))))))
       (propagated-inputs
-       (list ruby-concurrent))
+       (list ruby-concurrent-ruby))
       (native-inputs
        (list ruby-simplecov))
       (synopsis "Time zone library for Ruby")
@@ -15488,8 +15488,7 @@ floating-point numbers or complex numbers as arguments.")
      (list
       ruby-pry))
     (propagated-inputs
-     (list
-      ruby-concurrent))
+     (list ruby-concurrent-ruby))
     (home-page "https://github.com/brandonhilkert/sucker_punch")
     (synopsis "Asynchronous processing library for Ruby")
     (description "Sucker Punch is a single-process Ruby asynchronous processing
@@ -16040,7 +16039,7 @@ provides the Ruby bindings of Selenium.")
      ;; No rakefile in gem.
      `(#:tests? #f))
     (propagated-inputs
-      (list ruby-concurrent
+      (list ruby-concurrent-ruby
              ruby-faraday))
     (home-page "https://sentry.io/for/ruby/")
     (synopsis "Client interface for the Sentry error logger")
@@ -16063,7 +16062,7 @@ interface for the Sentry error logger.")
      ;; No rakefile in gem
      `(#:tests? #f))
     (propagated-inputs
-      (list ruby-concurrent
+      (list ruby-concurrent-ruby
              ruby-faraday
              ruby-sentry-core))
     (home-page "https://sentry.io/for/ruby/")
