@@ -2226,3 +2226,54 @@ stores and secures keys through Himitsu.")
     (description "This package provides a git credential helper that queries
 Himitsu for credentials.")
     (license license:gpl3)))
+
+(define-public himitsu-secret-service
+  (package
+    (name "himitsu-secret-service")
+    (version "0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://git.sr.ht/~apreiml/himitsu-secret-service")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+                (base32
+                  "0d77p07l30qshihs5j8wlsi82rfg7y9v83rnjw7qcri7z51irgzg"))))
+    (build-system pyproject-build-system)
+    (arguments
+      (list #:tests? #f
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'build 'build-docs
+                  (lambda _
+                    (invoke "make" "docs")))
+                (add-after 'install 'install-docs
+                  (lambda _
+                    (install-file "hisecrets-agent.1"
+                      (string-append #$output "/share/man/man1"))
+                    (install-file "himitsu-secret-service.5"
+                      (string-append #$output "/share/man/man5"))
+                    (install-file "himitsu-secret-service.7"
+                      (string-append #$output "/share/man/man7"))))
+                (add-after 'wrap 'wrap-agent
+                  (lambda _
+                    (let ((bin (string-append #$output "/bin/hisecrets-agent"))
+                          (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
+                      (wrap-program bin
+                        `("GI_TYPELIB_PATH" prefix (,gi-typelib-path))
+                        '("CRYPTO_BACKEND" = ("cryptodome"))))))
+                (delete 'sanity-check)))) ; we have a slightly too old pygobject
+    (inputs (cons* python-dbus-python
+                   python-pycryptodome
+                   python-pygobject
+                   python-pyhimitsu
+              ;; python-prctl is optional, and is only used on Linux platforms.
+              (if (target-linux?) `(,python-prctl) '())))
+    (native-inputs (list python-hatchling python-setuptools scdoc))
+    (home-page "https://git.sr.ht/~apreiml/himitsu-secret-service")
+    (synopsis "Freedesktop secret-service daemon implementation for Himitsu")
+    (description "This package provides a secret service implementation for
+Himitsu, allowing seamless access for applications storing secrets through the
+protocol.")
+    (license license:expat)))
