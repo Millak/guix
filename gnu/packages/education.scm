@@ -14,6 +14,7 @@
 ;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Luis Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2025 Arun Isaac <arunisaac@systemreboot.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1073,6 +1074,61 @@ learning for programming languages.")
     (description "Mazo is a learning application that helps you memorize
 simple concepts using multimedia flash cards and spaced reviews.")
     (license license:public-domain)))
+
+(define-public hardv
+  (package
+    (name "hardv")
+    (version "5.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/dongyx/hardv")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0l1wb7hlyldl5hq0z9a1a1rrgn33rjyqb08jph3q7mcn5p3qx40i"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags #~(list (string-append "prefix=" #$output)
+                                (string-append "CC=" #$(cc-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* (list "hardv.man1" "learn.c")
+                     (("/bin/sh")
+                      (search-input-file inputs "/bin/sh")))))
+               (delete 'configure)
+               (delete 'check)
+               (add-after 'install 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   ;; Tests can only be run after installation.
+                   (when tests?
+                     (setenv "PATH"
+                             (string-append #$output "/bin:" (getenv "PATH")))
+                     (invoke "make" "test")))))))
+    (home-page "https://github.com/dongyx/hardv")
+    (synopsis "Spaced repetition flash card program")
+    (description "HardV is a powerful spaced repetition flash card program.
+The key features are:
+
+@itemize
+@item HardV runs in the CLI mode by default, but you may configure it
+to be a TUI program, or to view images in a GUI window.
+@item HardV can open the editor, send the content you wrote to an online
+judging system, and determine the next quiz time by the judging result.
+@item It can be used to implement keyboard shortcut practice, cloze deletion,
+text-to-speech review, typing in the answer, and more.
+@item The format of input files are easy to be parsed by both human and other
+Unix utilities like grep, sed, and awk.
+@item Metadata like scheduled time is written back to input files; thus all
+your data is in files created and managed by yourself.
+@item HardV is a Unix filter in the default mode; that makes it easy to be
+called by other programs.  For example, you could pipe HardV to a voice
+synthesizer to make an audio quiz.
+@end itemize")
+    (license license:bsd-2)))
 
 (define-public tagainijisho
   (package
