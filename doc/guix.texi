@@ -15530,10 +15530,34 @@ the updater for @uref{https://www.stackage.org, Stackage} packages.
 the updater for @uref{https://crates.io, Crates} packages.
 @item launchpad
 the updater for @uref{https://launchpad.net, Launchpad} packages.
+
 @item generic-html
-a generic updater that crawls the HTML page where the source tarball of
-the package is hosted, when applicable, or the HTML page specified by
-the @code{release-monitoring-url} property of the package.
+a generic updater that crawls, by default, the HTML page where the
+source tarball of the package is hosted, when applicable.  Behavior can
+be customized with the following package properties:
+
+@table @code
+@item release-monitoring-url
+an alternate URL to crawl;
+
+@item release-file-regexp
+an regular expression matching release file names, whose first
+subexpression must correspond to the version string.
+@end table
+
+Here is an example package with a custom release monitoring URL and a
+regexp matching an unconventional release file name (it's unconventional
+due to the use of upper case letter and the lack of a hyphen before the
+version string):
+
+@lisp
+(package
+  ;; @dots{}
+  (home-page "http://example.org/software/the-package.html")
+  (properties
+    `((release-monitoring-url . ,home-page)
+      (release-file-regexp . "ThePackage([0-9\\.]+)\\.tgz"))))
+@end lisp
 
 @item generic-git
 a generic updater for packages hosted on Git repositories.  It tries to

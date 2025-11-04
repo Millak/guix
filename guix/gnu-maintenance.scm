@@ -288,13 +288,41 @@ network to check in GNU's database."
        (let ((s (tarball-sans-extension file)))
          (regexp-exec %package-name-rx s))))
 
-(define (tarball->version tarball)
+(define (package-release-file? package file)
+  "Return true if FILE, a string like \"NPB2.3.tar.gz\", denotes a release
+file for PACKAGE."
+  (match (assoc-ref (package-properties package) 'release-file-regexp)
+    (#f
+     (release-file? (package-upstream-name package) file))
+    (str
+     (catch #t
+       (lambda ()
+         (string-match str file))
+       (lambda _
+         (warning (package-field-location package 'properties)
+                  (G_ "~a: invalid 'release-file-regexp' property~%")
+                  (package-full-name package))
+         #f)))))
+
+(define* (tarball->version tarball #:optional regexp)
   "Return the version TARBALL corresponds to.  TARBALL is a file name like
 \"coreutils-8.23.tar.xz\"."
-  (let-values (((name version)
-                (gnu-package-name->name+version
-                 (tarball-sans-extension tarball))))
-    version))
+  (if regexp
+      (let ((match (string-match regexp tarball)))
+        (if (= 2 (match:count match))
+            (match:substring match 1)
+            (begin
+              (warning (N_ "release file regexp ~s has ~a subexpression\
+ (expected one for the version string)~%"
+                           "release file regexp ~s has ~a subexpressions\
+ (expected one for the version string)~%"
+                           (- (match:count match) 1))
+                       regexp (- (match:count match) 1))
+              #f)))
+      (let-values (((name version)
+                    (gnu-package-name->name+version
+                     (tarball-sans-extension tarball))))
+        version)))
 
 (define* (releases project
                    #:key
@@ -705,8 +733,11 @@ also updated to the latest version, as explained in the doc of the
       "Return an <upstream-source> object if a release file was found at URL,
 else #f.  URL is assumed to fully specified."
       (let ((base (basename url)))
-        (and (release-file? name base)
-             (let ((version (tarball->version base)))
+        (and (package-release-file? package base)
+             (let ((version (tarball->version
+                             base
+                             (assoc-ref (package-properties package)
+                                        'release-file-regexp))))
                (upstream-source
                 (package name)
                 (version version)

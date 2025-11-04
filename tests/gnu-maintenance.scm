@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2021, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2023-2024 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
@@ -27,7 +27,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-64)
   #:use-module ((web client) #:select (current-http-proxy))
-  #:use-module ((web uri) #:select (uri? uri->string))
+  #:use-module ((web uri) #:select (uri? uri->string string->uri uri-path))
   #:use-module (ice-9 match))
 
 (test-begin "gnu-maintenance")
@@ -90,6 +90,60 @@
       (and (pk 'u update)
            (equal? (upstream-source-version update) "2")
            (equal? (list expected-new-url) (upstream-source-urls update))))))
+
+(test-equal "latest-html-release, 'release-file-regexp' property"
+  '("foo"
+    "1.2.3"
+    ("/dl/FOO1.2.3.tgz"))
+  (with-http-server
+      `((200 "<html xmlns=\"http://www.w3.org/1999/xhtml\">
+<head>
+<title>Releases with unusual file names</title>
+</head>
+<body
+<a href=\"FOO1.2.3.tgz\">version 1.2</a>
+</body>
+</html>"))
+    (let ()
+      (define package
+        (dummy-package "foo"
+                       (source
+                        (dummy-origin
+                         (uri (string-append (%local-url #:path "/dl")
+                                             "/FOO1.0.0.tar.gz"))))
+                       (properties
+                        `((release-monitoring-url . ,(%local-url #:path "/dl/"))
+                          (release-file-regexp . "FOO([0-9\\.]+)\\.tgz")))))
+      (define update
+        ((upstream-updater-import %generic-html-updater) package))
+
+      (list (upstream-source-package update)
+            (upstream-source-version update)
+            (map (compose uri-path string->uri)
+                 (upstream-source-urls update))))))
+
+(test-assert "latest-html-release, invalid 'release-file-regexp' property"
+  (with-http-server
+      `((200 "<html xmlns=\"http://www.w3.org/1999/xhtml\">
+<head>
+<title>Releases with unusual file names</title>
+</head>
+<body
+<a href=\"FOO1.2.3.tgz\">version 1.2</a>
+</body>
+</html>"))
+    (let ()
+      (define package
+        (dummy-package "foo"
+                       (source
+                        (dummy-origin
+                         (uri (string-append (%local-url #:path "/dl")
+                                             "/FOO1.0.0.tar.gz"))))
+                       (properties
+                        `((release-monitoring-url . ,(%local-url #:path "/dl/"))
+                          (release-file-regexp . "FOO[0-9\\.]+\\.tgz")))))
+      (not ((upstream-updater-import %generic-html-updater) package)))))
+
 
 (test-assert "latest-html-release, no signature"
   (with-http-server
