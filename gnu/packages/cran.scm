@@ -22119,7 +22119,7 @@ posterior predictive checking, and quantifying uncertainty.")
     (build-system r-build-system)
     (native-inputs
      (list r-knitr r-rmarkdown r-testthat))
-    (home-page "https://github.com/smbache/import")
+    (home-page "https://rticulate.github.io/import/")
     (synopsis "Import mechanism for R")
     (description
      "This is an alternative mechanism for importing objects from packages.
