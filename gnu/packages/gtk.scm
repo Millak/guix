@@ -2883,6 +2883,37 @@ entire output.  It supports all Layer Shell features including popups and
 popovers.")
     (license license:expat)))
 
+(define-public gtk4-layer-shell
+  (package
+    (name "gtk4-layer-shell")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wmww/gtk4-layer-shell")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xs5w8yvkfw4zp326ddnxcrxrb2fcd0zsn0yl8wmjn9c8lnnrrnq"))))
+    (build-system meson-build-system)
+    (arguments
+     ;; Smoke tests are disabled because they hang.
+     (list #:configure-flags
+           #~(list "-Dtests=true" "-Dsmoke-tests=false")))
+    (native-inputs (list pkg-config gobject-introspection vala))
+    (inputs (list wayland gtk))
+    (home-page "https://github.com/wmww/gtk-layer-shell")
+    (synopsis "Library to create Wayland desktop components using the Layer
+Shell protocol")
+    (description
+     "Layer Shell is a Wayland protocol for desktop shell
+components, such as panels, notifications and wallpapers.  It can be used to
+anchor windows to a corner or edge of the output, or stretch them across the
+entire output.  It supports all Layer Shell features including popups and
+popovers.")
+    (license license:expat)))
+
 (define-public goocanvas
   (package
     (name "goocanvas")
