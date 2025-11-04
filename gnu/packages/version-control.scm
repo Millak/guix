@@ -120,6 +120,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -4397,7 +4398,7 @@ guessing the URL pattern from the @code{origin} remote.")
 
        #:test-target "test"))
     (native-inputs
-     (list which))
+     (list gcc-10 which))
     (synopsis "Historical distributed version-control system")
     (description
      "GNU Arch, aka. @code{tla}, was one of the first free distributed
