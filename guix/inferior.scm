@@ -963,10 +963,11 @@ X.509 host certificate; otherwise, warn about the problem and keep going."
 
 
   (if (file-exists? (cached commits))
-      (let ((now (current-time)))
+      (let ((now (current-time))
+            (cached-directory (cached commits)))
         ;; Update the mtime on CACHED to reflect usage.
-        (utime cached now now 0 0 AT_SYMLINK_NOFOLLOW)
-        cached)
+        (utime cached-directory now now 0 0 AT_SYMLINK_NOFOLLOW)
+        cached-directory)
       (run-with-store store
         (mlet* %store-monad ((instances
                               -> (latest-channel-instances store channels
