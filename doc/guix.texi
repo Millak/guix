@@ -482,6 +482,7 @@ Home Services
 * Media: Media Home Services.   Services for managing media.
 * Sway: Sway window manager.    Setting up the Sway configuration.
 * Networking: Networking Home Services.  Networking services.
+* Secrets: Secrets Home Services.  Services for storing secrets.
 * Miscellaneous: Miscellaneous Home Services.  More services.
 
 Platforms
@@ -50278,6 +50279,7 @@ services)}.
 * Niri: Niri window manager.    Setting up the Niri.
 * Sway: Sway window manager.    Setting up the Sway configuration.
 * Networking: Networking Home Services.  Networking services.
+* Secrets: Secrets Home Services.  Services for storing secrets.
 * Miscellaneous: Miscellaneous Home Services.  More services.
 @end menu
 @c In addition to that Home Services can provide
@@ -53415,6 +53417,96 @@ documentation of the system service (@pxref{Networking Services,
 @code{syncthing-service-type}}).
 @end defvar
 
+@node Secrets Home Services
+@subsection Secrets Home Services
+
+The @code{(gnu home services secrets)} module provides services pertaining to
+storing secrets, notably including password managers.
+
+@subsubheading Himitsu Services
+
+@uref{https://himitsustore.org/, Himitsu} is a daemon for storing arbitrary
+secrets encrypted by a single password.  The daemon operates alongside a
+prompter, which asks the user for permission when an application requests a
+secret, and for the store password on first use in a session.  Neither Himitsu
+nor its underlying cryptography library have been indepednently audited.
+
+@defvar home-himitsu-service-type
+This service provides the main Himitsu store daemon.  It will not launch unless
+you have a store set up - run @code{himitsu-store -i} after the service is added
+to your profile to create it, and then @code{herd start himitsud} to restart the
+service. Configuration is as follows:
+@end defvar
+
+@deftp {Data Type} home-himitsu-configuration
+@table @asis
+@item @code{package} (default: @code{himitsu})
+Package to find @code{himitsud} in.
+
+@item @code{notify-reuse} (optional)
+Interpreted shell command to run on application access to an already-approved
+secret.
+
+@item @code{prompter} (default: @code{(wrap-himitsu-prompter (file-append hiprompt-gtk "/bin/hiprompt-gtk"))})
+Path to a prompter binary.  Defaults to @code{hiprompt-gtk}, the reference
+implementation.  If your prompter is graphical, you should pass it through the
+provided @code{wrap-himitsu-prompter} procedure, which will autodetect a running
+display to prompt on, due to the Himitsu daemon starting before the display
+server is online.
+
+@item @code{extra-options} (optional)
+List of extra strings or G-expressions to insert verbatim into the Himitsu
+configuration file.  Each list element gets its own line.
+
+@end table
+@end deftp
+
+Himitsu can be used through its command-line tool @code{hiq} or through any
+number of supporting services, providing compatability to other applications.
+Git credential support may be provided simply by adding the @code{himitsu-git}
+package to your profile, but other such supporting services are listed below:
+
+@defvar home-himitsu-ssh-service-type
+This service provides an @code{ssh-agent} implementation that stores keys
+through Himitsu.  You may interact with a running daemon through
+@code{hissh-import} and @code{hissh-export}.
+@end defvar
+
+@deftp {Data Type} home-himitsu-ssh-configuration
+@table @asis
+@item @code{package} (default: @code{himitsu-ssh})
+Package to find @code{hissh-agent} in.
+
+@item @code{persist} (default: @code{'(session 300 refuse)})
+List of options given when prompting to allow this service access to your list
+of keys.  The option chosen decides how long @code{himitsu-ssh} has this access.
+Options can be either @code{'session} (access is retained until the daemon
+closes), @code{'refuse} (access is declined and the prompter will not ask
+again), @code{'skip} (ask again next use), or a numerical access timeout in
+seconds.
+
+@item @code{disclose} (default: @code{'(skip session 300)})
+List of options given when prompting to allow this service use of your secret
+keys.  Has the same format as @code{persist}.
+
+@end table
+@end deftp
+
+@defvar home-himitsu-secret-service-type
+This service provides a
+@uref{https://specifications.freedesktop.org/secret-service/latest/, freedesktop
+Secret Service} implementation, allowing Himitsu to replace
+@pxref{Desktop Services, gnome-keyring-service-type} and
+@pxref{Desktop Services, kwallet-service-type}.
+@end defvar
+
+@deftp {Data Type} home-himitsu-secret-service-configuration
+@table @asis
+@item @code{package} (default: @code{himitsu-secret-service})
+Package to find @code{hisecrets-agent} in.
+
+@end table
+@end deftp
 
 @node Miscellaneous Home Services
 @subsection Miscellaneous Home Services
