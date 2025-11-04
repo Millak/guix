@@ -1736,6 +1736,7 @@ with the included @command{xfstests-check} helper.")
       #:substitutable? #f
       ;; Tests cannot run in an unprivileged build environment.
       #:tests? #f
+      #:linux linux-libre-lts
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'configure 'really-configure
