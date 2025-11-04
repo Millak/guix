@@ -819,7 +819,7 @@ format.")
 (define-public cppcheck
   (package
     (name "cppcheck")
-    (version "2.17.1")
+    (version "2.18.0")
     (source (origin
       (method git-fetch)
       (uri (git-reference
@@ -827,11 +827,12 @@ format.")
              (commit version)))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "19ap9ai9s4vsygyqfa215mrmpz4vki63d5b4qdb89zvbldaf3hlf"))
+       (base32 "1551pbbvx43j5jl5jz725km7gd65fizf9y7j66anjmdmqzccpdmn"))
        (patches (search-patches "cppcheck-fix-basedir-test.patch"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags '("-DBUILD_TESTS=ON")))
+     '(#:parallel-tests? #f
+       #:configure-flags '("-DBUILD_TESTS=ON")))
     (home-page "https://cppcheck.sourceforge.io")
     (synopsis "Static C/C++ code analyzer")
     (description "Cppcheck is a static code analyzer for C and C++.  Unlike
