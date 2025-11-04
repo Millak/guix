@@ -4369,34 +4369,31 @@ guessing the URL pattern from the @code{origin} remote.")
                   ;; error, so address that.
                   (substitute* "src/tla/libarch/archive.c"
                     (("\"--preserve\"")
-                     "\"--preserve-permissions\""))
-                  #t))))
+                     "\"--preserve-permissions\""))))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'configure
-                    (lambda* (#:key inputs outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
-                        (chdir "src")
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'configure
+                          (lambda _
+                            (chdir "src")
 
-                        (mkdir "=build")
-                        (chdir "=build")
+                            (mkdir "=build")
+                            (chdir "=build")
 
-                        ;; For libneon's 'configure' script.
-                        ;; XXX: There's a bundled copy of neon.
-                        (setenv "CONFIG_SHELL" (which "sh"))
+                            ;; For libneon's 'configure' script.
+                            ;; XXX: There's a bundled copy of neon.
+                            (setenv "CONFIG_SHELL" (which "sh"))
 
-                        (invoke "../configure" "--prefix" out
-                                "--config-shell" (which "sh")
-                                "--with-posix-shell" (which "sh")
-                                "--with-cc" "gcc")))))
+                            (invoke "../configure" "--prefix" #$output
+                                    "--config-shell" (which "sh")
+                                    "--with-posix-shell" (which "sh")
+                                    "--with-cc" "gcc"))))
 
+           ;; There are build failures when building in parallel.
+           #:parallel-build? #f
+           #:parallel-tests? #f
 
-       ;; There are build failures when building in parallel.
-       #:parallel-build? #f
-       #:parallel-tests? #f
-
-       #:test-target "test"))
+           #:test-target "test"))
     (native-inputs
      (list gcc-10 which))
     (synopsis "Historical distributed version-control system")
