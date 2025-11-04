@@ -424,7 +424,7 @@ COCOMO model or user-provided parameters.")
 (define-public cloc
   (package
     (name "cloc")
-    (version "2.02")
+    (version "2.06")
     (source
      (origin
        (method git-fetch)
@@ -433,7 +433,7 @@ COCOMO model or user-provided parameters.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1syh1gppjr3p2m9mq0zm3n47bhaksxcn5bx1nwqc29xn404c2fm9"))))
+        (base32 "02l56ks3p3344nf6lz9s3aym9f0xslkns8q8d8zm1i3whf98iymv"))))
     (build-system gnu-build-system)
     (inputs
      (list bash-minimal
