@@ -1432,83 +1432,116 @@ manage (install/update) them for you.")
 (define-public conda
   (package
     (name "conda")
-    (version "22.9.0")
+    (version "25.9.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/conda/conda")
-             (commit version)))
+              (url "https://github.com/conda/conda")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "16vz4vx311ry9w35mi5wna8p8n3abd6wdqrpqzjfdlwv7hcr44s4"))))
+        (base32 "1s8xxc8rfayfq6p3iwgp9v3hbanp30ciw7cznppn1qk1l9fy7nxj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1616 passed, 169 skipped, 12 xfailed, 673 warnings
       #:test-flags
-      '(list
-        "--ignore=tests/cli/test_main_clean.py"
-        "--ignore=tests/cli/test_main_rename.py"
-        "-k" (string-append
-              "not "
-              (string-join
-               (list
-                "integration"
-                ;; This one reports a newer version of conda than
-                ;; expected; conda-1.5.2-py27_0 instead of
-                ;; conda-1.3.5-py27_0.
-                "test_auto_update_conda"
-                ;; This fails because the output directory is not a
-                ;; Conda environment.
-                "test_list"
-                ;; This fails because we patched the default root
-                ;; prefix.
-                "test_default_target_is_root_prefix"
-                ;; This fails because of missing features in python-flaky.
-                "test_no_features"
-                ;; These fail because they require network access
-                "test_no_ssl"
-                "test_run_readonly_env"
-                "test_run_returns_int"
-                "test_run_returns_nonzero_errorlevel"
-                "test_run_returns_zero_errorlevel"
-                "test_run_uncaptured"
-
-                ;; TODO: I don't understand what this failure means
-                "test_PrefixData_return_value_contract"
-                ;; TODO: same here
-                "test_install_1"
-                ;; Not sure if this is really wrong.  This fails because
-                ;; /gnu/store/...conda-22.9.0/bin/python
-                ;; is not /gnu/store/...python-wrapper-3.9.9/bin/python
-                "test_make_entry_point"
-                "test_get_python_info" "test__get_python_info"
-                "test_install_conda_csh"
-                "test_install_conda_fish")
-               " and not ")))
+      #~(list "-m" "not integration"
+              "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; Tests try to search for system level packages and fail with
+              ;; error: The following packages are missing from the target
+              ;; environment: patch, ca-certificates, zlib ...
+              "--ignore=tests/cli/test_subcommands.py"
+              ;; ModuleNotFoundError: No module named 'conda_libmamba_solver'
+              "--ignore=tests/test_solvers.py"
+              ;; Network access is required.
+              "--ignore=tests/trust/test_signature_verification.py"
+              "-k" (string-join
+                    ;; XXX: Issues salad: network access, can't detect Conda
+                    ;; environemnt, assertion failed; review if they may be
+                    ;; fixed.
+                    (list "not test_PrefixData_return_value_contract"
+                          "test__get_python_info"
+                          "test_auto_update_conda"
+                          "test_build_version_shows_as_changed "
+                          "test_cannot_rename_base_env_by_name"
+                          "test_cannot_rename_base_env_by_path"
+                          "test_conda_doctor_happy_path"
+                          "test_conda_doctor_happy_path_verbose"
+                          "test_conda_pip_interop_dependency_satisfied_by_pip"
+                          "test_create_env_json"
+                          "test_denylist_channels"
+                          "test_dont_update_packages_with_version_constraints"
+                          "test_environment"
+                          "test_exit_codes"
+                          "test_explicit_missing_cache_entries"
+                          "test_explicit_packages"
+                          "test_export_explicit_format_validation_errors"
+                          "test_export_ignore_channels_flag"
+                          "test_export_no_builds_format"
+                          "test_export_override_channels_and_ignore_channels_"
+                          "test_export_package_alphabetical_ordering"
+                          "test_export_pip_dependencies_handling"
+                          "test_export_preserves_channels_from_installed_"
+                          "test_export_regular_format_consistency"
+                          "test_export_with_pip_dependencies_integration"
+                          "test_extrapolate"
+                          "test_fields_all"
+                          "test_fields_invalid"
+                          "test_file_locking_not_supported"
+                          "test_file_locking_supported"
+                          "test_frozen_env_cep22"
+                          "test_get_packages_behavior_with_interoperability"
+                          "test_get_python_info"
+                          "test_health_check_ran"
+                          "test_info_envs_frozen"
+                          "test_install_1"
+                          "test_install_from_extracted_package"
+                          "test_installer_installs_explicit"
+                          "test_is_active_prefix"
+                          "test_list_all_known_prefixes_with_none_values_error"
+                          "test_list_argument_variations"
+                          "test_list_json"
+                          "test_list_package"
+                          "test_list_revisions"
+                          "test_load_entrypoints_importerror"
+                          "test_multiline_run_command"
+                          "test_post_solve_action_raises_exception"
+                          "test_post_solve_invoked"
+                          "test_post_transaction_raises_exception"
+                          "test_pre_solve_invoked"
+                          "test_pre_transaction_raises_exception"
+                          "test_print_unexpected_error_message_upload_2"
+                          "test_protected_dirs_error_for_rename"
+                          "test_remove_all"
+                          "test_remove_all_keep_env"
+                          "test_run_readonly_env"
+                          "test_run_returns_int"
+                          "test_run_returns_zero_errorlevel"
+                          "test_solve_1"
+                          "test_transaction_hooks_invoked"
+                          "test_update"
+                          "test_validate_subdir_config"
+                          "test_validate_subdir_config_invalid_subdir")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          ;; The default version of pytest does not support these options.
-          (add-after 'unpack 'use-older-pytest
+          (add-after 'unpack 'fix-pytest-config
             (lambda _
-              (substitute* "setup.cfg"
-                (("--xdoctest-.*") ""))))
-          (add-after 'unpack 'fix-ruamel-yaml-dependency
-            (lambda _
-              (substitute* "setup.py"
-                (("ruamel_yaml_conda") "ruamel.yaml"))))
+              (substitute* "pyproject.toml"
+                (("--cov.*") ""))))
           (add-after 'unpack 'correct-python-executable-name
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((python (assoc-ref inputs "python-wrapper")))
+            (lambda _
+              (let ((python #$(this-package-input "python-wrapper")))
                 (substitute* "conda/core/initialize.py"
                   (("python_exe = join")
                    (format #f "python_exe = \"~a/bin/python\" #"
                            python))))))
           (add-after 'unpack 'do-not-use-python-root-as-prefix
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let ((out (assoc-ref outputs "out"))
-                    (python (assoc-ref inputs "python-wrapper")))
+            ;; XXX: Proper wrap CONDA_EXE, CONDA_ENVS_PATH, CONDA_PKGS_DIRS.
+            (lambda _
+              (let ((python #$(this-package-input "python-wrapper")))
                 (substitute* "tests/core/test_initialize.py"
                   (("\"\"\"\\) % conda_prefix")
                    (format #f "\"\"\") % ~s" python))
@@ -1516,57 +1549,95 @@ manage (install/update) them for you.")
                    (format #f "CONDA_PYTHON_EXE \"%s\"' % join(~s"
                            python))
                   (("conda_prefix = abspath\\(sys.prefix\\)")
-                   (format #f "conda_prefix = abspath(~s)" out)))
+                   (format #f "conda_prefix = abspath(~s)" #$output)))
                 (substitute* "conda/base/context.py"
                   (("os.chdir\\(sys.prefix\\)")
-                   (format #f "os.chdir(~s)" out))
+                   (format #f "os.chdir(~s)" #$output))
                   (("sys.prefix, '.condarc'")
-                   (format #f "~s, '.condarc'" out))
+                   (format #f "~s, '.condarc'" #$output))
                   (("return abspath\\(sys.prefix\\)")
-                   (format #f "return abspath(~s)" out))
+                   (format #f "return abspath(~s)" #$output))
                   (("os.path.join\\(sys.prefix, bin_dir, exe\\)")
-                   (format #f "\"~a/bin/conda\"" out))
+                   (format #f "\"~a/bin/conda\"" #$output))
                   (("'CONDA_EXE', sys.executable")
-                   (format #f "'CONDA_EXE', \"~a/bin/conda\"" out))))))
-          (add-before 'build 'create-version-file
-            (lambda _
-              (with-output-to-file "conda/.version"
-                (lambda () (display #$version)))))
+                   (format #f "'CONDA_EXE', \"~a/bin/conda\"" #$output))))))
           (add-after 'create-entrypoints 'init
             ;; This writes a whole bunch of shell initialization files to the
-            ;; prefix directory.  Many features of conda can only be used after
-            ;; running "conda init".
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (add-installed-pythonpath inputs outputs)
+            ;; prefix directory.  Many features of conda can only be used
+            ;; after running "conda init".
+            (lambda _
               (setenv "HOME" "/tmp")
-              (invoke (string-append (assoc-ref outputs "out")
-                                     "/bin/conda")
-                      "init"))))))
+              (invoke (string-append #$output "/bin/conda") "init")))
+          (add-after 'unpack 'set-default-solver-to-classic
+            ;; XXX: Remove when conda-libmamba-solver is packaged.
+            (lambda _
+              (substitute* "conda/base/constants.py"
+                (("DEFAULT_SOLVER: Final = \"libmamba\"")
+                 "DEFAULT_SOLVER: Final = \"classic\""))))
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; TODO: Package libsolv, libmamba, and conda-libmamba-solver:
+              ;; <https://github.com/openSUSE/libsolv>,
+              ;; <https://github.com/conda/conda-libmamba-solver>,
+              ;; <https://github.com/mamba-org/mamba>.
+              (setenv "CONDA_CLASSIC_SOLVER" "classic")
+              (setenv "CONDA_DEFAULT_SOLVER" "classic")
+              (setenv "CONDA_TEST_SOLVERS" "classic")
+              (setenv "HOME" "/tmp")))
+          (add-after 'wrap 'wrap-executable
+            (lambda _
+              (wrap-program (string-append #$output "/bin/conda")
+                `("CONDA_EXE" prefix
+                  (,(string-append #$output "/bin/conda")))
+                `("CONDA_ENVS_PATH" prefix
+                  (,(string-append "$HOME/.conda/envs")))
+                `("CONDA_PKGS_DIRS" prefix
+                  (,(string-append "$HOME/.conda/pkgs")))))))))
+    (native-inputs
+     (list nss-certs-for-test
+           patchelf
+           python-hatch-vcs
+           python-anaconda-client
+           python-flaky
+           python-flask
+           python-hatchling
+           python-importlib-resources
+           python-pexpect
+           python-pytest
+           python-pytest-mock
+           python-pytest-rerunfailures
+           python-pytest-split
+           python-pytest-timeout
+           python-pytest-xdist
+           python-pytest-xprocess
+           python-responses
+           python-werkzeug))
     (inputs
-     (list python-wrapper))
-    (propagated-inputs
-     (list python-anaconda-client
+     (list python-archspec
+           python-boltons
            python-boto3
+           python-charset-normalizer
+           ;; python-conda-libmamba-solver       ;TODO: not packaged yet
            python-conda-package-handling
-           python-cytoolz
-           python-mock
+           python-conda-content-trust
+           python-distro
+           python-frozendict
+           python-jsonpatch
+           python-menuinst
+           python-packaging
+           python-platformdirs
            python-pluggy
            python-pycosat
-           python-pytest
-           python-pyyaml
            python-requests
-           python-responses
-           python-ruamel.yaml-0.16
+           python-ruamel.yaml
+           python-setuptools
            python-tqdm
-           ;; XXX: This is dragged in by libarchive and is needed at runtime.
-           zstd))
-    (native-inputs
-     (list python-coverage
-           python-flaky
-           python-pytest-cov
-           python-pytest-timeout
-           python-pytest-xprocess
-           python-wheel))
+           python-truststore
+           python-wrapper               ;XXX: Check if it's actually required
+           python-zstandard))
     (home-page "https://github.com/conda/conda")
     (synopsis "Cross-platform, OS-agnostic, system-level binary package manager")
     (description
