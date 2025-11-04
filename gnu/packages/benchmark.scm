@@ -266,14 +266,14 @@ tests.")
 (define-public bonnie++
   (package
     (name "bonnie++")
-    (version "1.98")
+    (version "2.00a")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.coker.com.au/bonnie++/bonnie++-"
                                   version ".tgz"))
               (sha256
                (base32
-                "010bmlmi0nrlp3aq7p624sfaj5a65lswnyyxk3cnz1bqig0cn2vf"))))
+                "03lg8rz2a9wgwn9axd6gkjiswgxmp62fbxjvrrcvazmwh6ykplx8"))))
     (build-system gnu-build-system)
     (native-inputs
      (list gcc-10 perl))
