@@ -603,10 +603,19 @@ interface and is based on GNU Guile.")
                                "/bin/zstd")))))
     (native-inputs
      (modify-inputs (package-native-inputs shepherd-0.10)
-       (replace "guile-fibers" guile-fibers))) ;use latest guile-fibers available
+       (replace "guile-fibers"
+         ;; Work around <https://codeberg.org/guile/fibers/issues/89>.
+         ;; This affects any system without a functional real-time
+         ;; clock (RTC), but in practice these are typically
+         ;; single-board computers.
+         (if (or (target-arm?)
+                 (target-riscv64?))
+             guile-fibers-1.1
+             guile-fibers)))) ;use latest guile-fibers available
     (inputs
      (modify-inputs (package-inputs shepherd-0.10)
-       (replace "guile-fibers" guile-fibers) ;use latest guile-fibers available
+       (replace "guile-fibers"
+                (this-package-native-input "guile-fibers"))
        (append gzip zstd)))))
 
 (define-public shepherd shepherd-0.10)
