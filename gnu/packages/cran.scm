@@ -41,6 +41,7 @@
 ;;; Copyright © 2024 Marco Baggio <guix@mawumag.com>
 ;;; Copyright © 2024, 2025 Spencer King <spencer.king@wustl.edu>
 ;;; Copyright © 2024-2025 Tor-björn Claesson <tclaesson@gmail.com>
+;;; Copyright © 2025 Jonas Freimuth <jonas.freimuth@posteo.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22107,14 +22108,14 @@ posterior predictive checking, and quantifying uncertainty.")
 (define-public r-import
   (package
     (name "r-import")
-    (version "1.3.2")
+    (version "1.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "import" version))
        (sha256
         (base32
-         "0ngakg8jqn76c05hrglp4hmmwvm5a9ldc9s1i83a9rc8lni6nb1j"))))
+         "0i87mlhjig7hzk8fgk3yij1shfwbwa4r05jagibqlv7rabls260g"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr r-rmarkdown r-testthat))
