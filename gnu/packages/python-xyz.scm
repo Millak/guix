@@ -660,6 +660,61 @@ templates language.")
     (license (list license:zpl2.1
                    license:psfl))))
 
+(define-public python-conda-content-trust
+  (package
+    (name "python-conda-content-trust")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/conda/conda-content-trust")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yvfwm7i18sfvgdasibdgnghvj5w5p4hr6i37v0cspwmkczgna7z"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; XXX: Not packaged yet:
+      ;; <https://github.com/secure-systems-lab/securesystemslib>.
+      ;;
+      ;; ImportError: The securesystemslib library is required, which appears
+      ;; to be unavailable.
+      #~(list #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/test_root.py::"
+                                                    test))
+                      (list "test_sign_root_metadata_dict_via_gpg"
+                            "test_sign_root_metadata_via_gpg"
+                            "test_gpg_pubkey_in_ssl_format")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "setup.cfg"
+                (("--cov.*") ""))))
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-cryptography))
+    (home-page "https://github.com/conda/conda-content-trust")
+    (synopsis "Signing and verification tools for Conda")
+    (description
+     "This package implements a functionalit of signing and verification tools
+for Conda.  @url{https://theupdateframework.io/, Based on The Update
+Framework (TUF)}, conda-content-trust is intended to ensure that when users in
+the conda ecosystem obtain a package or data about that package, they can know
+whether or not it is trustworthy (e.g. originally comes from a reliable source
+and has not been tampered with).  A basic library and basic CLI are included
+to provide signing, verification, and trust delegation functionality.")
+    (license license:bsd-3)))
+
 (define-public python-conda-inject
   (package
     (name "python-conda-inject")
