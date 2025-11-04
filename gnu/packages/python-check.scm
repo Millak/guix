@@ -3679,6 +3679,39 @@ unexpectedly.")
 through Python's socket interface")
     (license license:expat)))
 
+(define-public python-pytest-split
+  (package
+    (name "python-pytest-split")
+    (version "0.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jerry-git/pytest-split")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "1w42zkw22h0ydfhbjdjp93frbrzi1rlkr17ifb9kavcbv7kfqxfl"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("--cov.*") "")
+                (("--no-cov-on-fail.*") "")))))))
+    (native-inputs
+     (list python-poetry-core
+           python-pytest-bootstrap))
+    (home-page "https://jerry-git.github.io/pytest-split/")
+    (synopsis "Pytest plugin to split the test suite to equally sized sub sutes")
+    (description
+     "This package provides Pytest plugin which splits the test suite to equally
+sized sub suites based on
+test execution time.")
+    (license license:expat)))
+
 (define-public python-pytest-steps
   (package
     (name "python-pytest-steps")
