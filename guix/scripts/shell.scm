@@ -261,10 +261,14 @@ cache) or a 'gc-root' key (to add the profile to cache)."
                               opts)))             ;load right away
         (if (and root (not (assq-ref opts 'gc-root)))
             (begin
-              (if stat
-                  (delete-file root)
-                  (mkdir-p (dirname root)))
-              (alist-cons 'gc-root root opts))
+              (when stat
+                (delete-file root))
+              ;; Note: Delay the creation of ROOT's parent directory: a
+              ;; connection must first be made to the daemon so that it
+              ;; creates /var/guix/profiles/per-user/$USER if needed.
+              (alist-cons 'gc-root root
+                          (alist-cons 'create-gc-root-directory? #t
+                                      opts)))
             opts))))
 
 (define (auto-detect-manifest opts)

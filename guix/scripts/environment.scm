@@ -1235,6 +1235,8 @@ command-line option processing with 'parse-command-line'."
                                       (if prof-drv (list prof-drv) '())
                                       (if (derivation? bash) (list bash) '()))))
                 (mwhen gc-root
+                  (mwhen (assoc-ref opts 'create-gc-root-directory?)
+                    (return (mkdir-p (dirname gc-root))))
                   (register-gc-root profile gc-root))
 
                 (mwhen (assoc-ref opts 'check?)
