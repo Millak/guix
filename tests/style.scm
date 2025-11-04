@@ -655,7 +655,7 @@
                          "https://github.com/foo/bar"))
                       (load file)
                       (and=> (read-package-field
-                              (@ (my-packages-1) my-coreutils-1) 'source 8)
+                              (@ (my-packages-1) my-coreutils-1) 'source 9)
                              (cut string-contains <> "patches")))))))
     "1"))
 
