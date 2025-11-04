@@ -41,6 +41,7 @@
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024, 2025 dan <i@dan.games>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 wvlab <me@wvlab.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65,6 +66,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
@@ -112,6 +114,7 @@
   #:use-module (gnu packages ibus)
   #:use-module (gnu packages image)
   #:use-module (gnu packages language)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages libusb)
@@ -133,6 +136,9 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages rdesktop)
   #:use-module (gnu packages rsync)
+  #:use-module (gnu packages rust)
+  #:use-module (gnu packages rust-apps)
+  #:use-module (gnu packages rust-crates)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
@@ -140,6 +146,7 @@
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages video)
   #:use-module (gnu packages virtualization)
+  #:use-module (gnu packages vulkan)
   #:use-module (gnu packages w3m)
   #:use-module (gnu packages web)
   #:use-module (gnu packages wm)
@@ -3420,7 +3427,7 @@ notifies the user using any notification daemon implementing
 (define-public waypipe
   (package
     (name "waypipe")
-    (version "0.9.1")
+    (version "0.10.5")
     (source
      (origin
        (method git-fetch)
@@ -3429,17 +3436,60 @@ notifies the user using any notification daemon implementing
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0pj7l3ix0pp0sfqxfa2hxql0f30vz6hh01fq5kzhs831b632i3z0"))))
+        (base32 "1rg9qzsi07b65cdf421895dfy4gkb1kwmkwn3sfx6n7sfr8b1z6a"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; Fix the cargo flags:
+                 (substitute* '("compile_wrapper.sh"
+                                "meson.build")
+                   (("--frozen") "--offline"))))))
     (build-system meson-build-system)
     (native-inputs
-     (list pkg-config scdoc
+     (list pkg-config
+           scdoc
+           rust
+           (list rust "cargo")
+           rust-bindgen-cli
+           shaderc
+           clang ; bindgen does not work without it
+           vulkan-headers
            ;; For tests
            python))
-    (inputs (list lz4 libva mesa libdrm ffmpeg))
+    (inputs
+     (cons* ffmpeg
+            lz4
+            libdrm
+            libva
+            mesa
+            vulkan-loader
+            (list zstd "lib")
+            (cargo-inputs 'waypipe)))
     (arguments
-     (list #:configure-flags
-           #~(list "-Dwith_lz4=enabled" "-Dwith_vaapi=enabled"
-                   "-Dwith_dmabuf=enabled" "-Dwith_video=enabled")))
+     (list
+       #:imported-modules
+       (append %cargo-build-system-modules
+               %meson-build-system-modules)
+       #:modules
+       '(((guix build cargo-build-system) #:prefix cargo:)
+         (guix build meson-build-system)
+         (guix build utils))
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'prepare-cargo-build-system
+             (lambda args
+               (for-each
+                 (lambda (phase)
+                   (apply (assoc-ref cargo:%standard-phases phase)
+                          #:cargo-target #$(cargo-triplet) args))
+                   '(unpack-rust-crates
+                     configure
+                     check-for-pregenerated-files
+                     patch-cargo-checksums)))))
+       #:configure-flags
+       #~(list "-Dwith_lz4=enabled"
+               "-Dwith_vaapi=enabled"
+               "-Dwith_dmabuf=enabled"
+               "-Dwith_video=enabled")))
     (home-page "https://gitlab.freedesktop.org/mstoeckl/waypipe")
     (synopsis "Proxy for Wayland protocol applications")
     (description

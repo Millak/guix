@@ -2717,6 +2717,10 @@
   (crate-source "clap" "4.5.50"
                 "08qna2mzl9irqp0p3lbbn06pjiym0dsgwbz3lkd7s0d6z1xzsb0c"))
 
+(define rust-clap-4.5.51
+  (crate-source "clap" "4.5.51"
+                "1xg5fa4lcl2pmdhlns1qzw5dpz1yz6hxk6x6j7qra0hf2whxf9jc"))
+
 (define rust-clap-builder-4.3.21
   (crate-source "clap_builder" "4.3.21"
                 "1am4bavjhp26pv0ymsprmdqdw44sxdi8abi03ywaj0czbsmz3a88"))
@@ -2780,6 +2784,10 @@
 (define rust-clap-builder-4.5.50
   (crate-source "clap_builder" "4.5.50"
                 "1867h9y6fxbh35bv3f45m40grmm7ddxsv07hgqxcsp0cx2whak0a"))
+
+(define rust-clap-builder-4.5.51
+  (crate-source "clap_builder" "4.5.51"
+                "06h10byk8dl8b4nypil6aad9kshgfrjyji5ybb8bz0gngc65z0vm"))
 
 (define rust-clap-cargo-0.15.2
   (crate-source "clap-cargo" "0.15.2"
@@ -57008,6 +57016,44 @@
                                       rust-zvariant-5.5.3
                                       rust-zvariant-derive-5.5.3
                                       rust-zvariant-utils-3.2.0))
+                     (waypipe =>
+                              (list rust-anstream-0.6.21
+                                    rust-anstyle-1.0.13
+                                    rust-anstyle-parse-0.2.7
+                                    rust-anstyle-query-1.1.4
+                                    rust-anstyle-wincon-3.0.10
+                                    rust-ash-0.38.0+1.3.281
+                                    rust-autocfg-1.5.0
+                                    rust-bitflags-2.10.0
+                                    rust-cfg-if-1.0.4
+                                    rust-cfg-aliases-0.2.1
+                                    rust-clap-4.5.51
+                                    rust-clap-builder-4.5.51
+                                    rust-clap-lex-0.7.6
+                                    rust-colorchoice-1.0.4
+                                    rust-getrandom-0.2.16
+                                    rust-is-terminal-polyfill-1.70.2
+                                    rust-libc-0.2.177
+                                    rust-libloading-0.8.9
+                                    rust-log-0.4.28
+                                    rust-memoffset-0.9.1
+                                    rust-nix-0.29.0
+                                    rust-once-cell-polyfill-1.70.2
+                                    rust-pkg-config-0.3.32
+                                    rust-strsim-0.11.1
+                                    rust-utf8parse-0.2.2
+                                    rust-wasi-0.11.1+wasi-snapshot-preview1
+                                    rust-windows-link-0.2.1
+                                    rust-windows-sys-0.60.2
+                                    rust-windows-targets-0.53.5
+                                    rust-windows-aarch64-gnullvm-0.53.1
+                                    rust-windows-aarch64-msvc-0.53.1
+                                    rust-windows-i686-gnu-0.53.1
+                                    rust-windows-i686-gnullvm-0.53.1
+                                    rust-windows-i686-msvc-0.53.1
+                                    rust-windows-x86-64-gnu-0.53.1
+                                    rust-windows-x86-64-gnullvm-0.53.1
+                                    rust-windows-x86-64-msvc-0.53.1))
                      (wlgreet =>
                               (list rust-ab-glyph-rasterizer-0.1.8
                                     rust-android-tzdata-0.1.1
