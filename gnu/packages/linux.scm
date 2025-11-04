@@ -1910,6 +1910,8 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-reform2-dsi.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-reform-next.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-pocket-reform.dtb")))))))))))
 
+(define-public linux-libre-arm64-mnt-reform linux-libre-arm64-mnt-reform-6.17)
+
 (define-public linux-libre-arm64-mnt-reform-6.16
   ;; Kernel for use on the MNT/Reform systems
   ;; https://mntre.com/reform.html
@@ -2207,8 +2209,6 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mq-mnt-reform2-hdmi.dtb"))
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-reform2-dsi.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-reform-next.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3588-mnt-pocket-reform.dtb")))))))))))
-
-(define-public linux-libre-arm64-mnt-reform linux-libre-arm64-mnt-reform-6.16)
 
 (define-public linux-libre-arm64-mnt-reform-6.12
   ;; Kernel for use on the MNT/Reform systems
