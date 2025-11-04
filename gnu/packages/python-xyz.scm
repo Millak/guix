@@ -1520,6 +1520,38 @@ be displayed on the terminal, with color if possible, for logging purposes.")
 for Python.")
     (license license:expat)))
 
+(define-public python-menuinst
+  (package
+    (name "python-menuinst")
+    (version "2.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/conda/menuinst")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0606j3mwpcj4rqj8mifnrdqqhp8dqf802kagqkp7mmi2wffly27w"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ;tests need conda
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pretend-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm))
+    (home-page "https://conda.github.io/menuinst/")
+    (synopsis "Cross platform menu item installation")
+    (description
+     "This package provides cross platform menu item installation for conda
+packages.")
+    (license license:bsd-3)))
+
 (define-public python-multiplex
   (package
     (name "python-multiplex")
