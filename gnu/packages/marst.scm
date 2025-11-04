@@ -26,7 +26,7 @@
 (define-public marst
   (package
     (name "marst")
-    (version "2.7")
+    (version "2.8")
     (source
      (origin
        (method url-fetch)
@@ -34,7 +34,7 @@
              "mirror://gnu/" name "/" name "-" version
              ".tar.gz"))
        (sha256
-        (base32 "0l6swjy8fjrqw89ghc1vvakg21jmpfkpsw92yssrzkg3rg8vkrry"))))
+        (base32 "1fkhh17wibnn94lw8f6njzfvxhz6drarv3whayz50jxln01lfzyp"))))
     (build-system gnu-build-system)
     (home-page "https://www.gnu.org/software/marst/")
     (synopsis "Algol-to-C translator")
