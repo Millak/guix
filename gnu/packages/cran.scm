@@ -29737,7 +29737,15 @@ package provides a minimal R interface by relying on the Rcpp package.")
                   (lambda _
                     (display (string-append
                               "CXXFLAGS=-g -O2"
-                              " -Wno-error=changes-meaning\n"))))))))))
+                              " -Wno-error=changes-meaning\n")))))))
+          ;; This change lets us use GCC 13+.  We need to patch things here so
+          ;; that packages using RcppParallel to generate code can be compiled
+          ;; without errors.
+          (add-after 'install 'gcc-compatibility
+            (lambda _
+              (substitute* (string-append #$output "/site-library/RcppParallel/include/tbb/task.h")
+                (("task\\* next_offloaded")
+                 "tbb::task* next_offloaded")))))))
     (inputs (list tbb-2020))
     (native-inputs (list r-rcpp r-runit))
     (home-page "https://rcppcore.github.io/RcppParallel/")
