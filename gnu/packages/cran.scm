@@ -1823,7 +1823,7 @@ code for possible problems.")
 (define-public r-colorout
   (package
     (name "r-colorout")
-    (version "1.2-2")
+    (version "1.3-3")
     (source
      (origin
        (method git-fetch)
@@ -1832,7 +1832,7 @@ code for possible problems.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rsx69wjpa73c6x2hacvvvbzdzxn7wg06gizf97kasjdlb7azmp3"))))
+        (base32 "101mkdfk8w520vxqb5cl3spi8brgs5nrc6ciqidpxydmynp879fm"))))
     (build-system r-build-system)
     (arguments
      (list
