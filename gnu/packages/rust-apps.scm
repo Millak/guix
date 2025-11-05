@@ -2046,14 +2046,14 @@ decompressing files and directories.")
 (define-public ripgrep
   (package
     (name "ripgrep")
-    (version "15.0.0")
+    (version "15.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "ripgrep" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0iprk4nmxsx373ma1m8jdgisi9zxrmxrmp9bcm43d7xxmblvc8nv"))))
+        (base32 "0wrbv3bd2sz8y0bkbhl3n0a6d824k20mawv6m0l7qiw5byaw927k"))))
     (build-system cargo-build-system)
     (arguments
      (list
