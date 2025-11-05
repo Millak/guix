@@ -1999,7 +1999,7 @@ than 8 bits, and at the end only some significant 8 bits are kept.")
 (define-public dlib
   (package
     (name "dlib")
-    (version "19.24.6")
+    (version "20.0")
     (source
      (origin
       (method git-fetch)
@@ -2008,7 +2008,7 @@ than 8 bits, and at the end only some significant 8 bits are kept.")
             (commit (string-append "v" version))))
       (file-name (git-file-name name version))
       (sha256
-       (base32 "11j86nxkj78v8xdx2s80mfplq4j0rs0y0iidqgma12b2pdk3p486"))
+       (base32 "1k6jwbb7n842snd2znv0ix8zwa4a35y324jb7mpkj0vn9arzndam"))
       (modules '((guix build utils)))
       (snippet
        '(begin
@@ -2057,18 +2057,17 @@ than 8 bits, and at the end only some significant 8 bits are kept.")
                 (invoke "cmake" "--build" "." "--config" "Release")
                 (invoke "./dtest" "--runall")))))))
     (native-inputs
-     (list pkg-config
-           ;; For tests.
-           libnsl))
+     (list pkg-config))
     (inputs
      (list ffmpeg
            giflib
            libjpeg-turbo
-           libjxl-0.10
+           libjxl
            libpng
            libwebp
            libx11
            openblas
+           pybind11
            zlib))
     (synopsis
      "Toolkit for making machine learning and data analysis applications in
