@@ -28451,15 +28451,19 @@ processes may share the same data.")
 (define-public python-croniter
   (package
     (name "python-croniter")
-    (version "1.3.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "croniter" version))
-              (sha256
-               (base32
-                "1whbm26m9kpn0klgr9dqiqpp83ki9nhpxifaq9afcjw32rckcs9i"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-dateutil))
+    (version "5.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kiorky/croniter")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "146v641wicx2ipfdpqg1vysikbbhrhndmrnjj1hnv03fjvhqknq9"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-dateutil python-pytz))
     (home-page "https://github.com/kiorky/croniter")
     (synopsis "Iterate datetime objects with cron-like syntax")
     (description
