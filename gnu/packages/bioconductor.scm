@@ -19955,7 +19955,9 @@ footprints.")
            r-rcpp
            r-vioplot))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr
+           r-homo-sapiens
+           r-testthat))
     (home-page "https://bioconductor.org/packages/GOfuncR/")
     (synopsis "Gene ontology enrichment using FUNC")
     (description
