@@ -26177,22 +26177,27 @@ web frameworks.")
     (version "3.0.4")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "swagger_spec_validator" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Yelp/swagger_spec_validator")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0jzdpzg3zyipv9axikxd76f1s7vfira0aipjgp8gq2r7cpcccyk3"))))
+        (base32 "1vmwg0432s22g48i2ys1ay441wmgkhjann1s165r499wg3pksggi"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-importlib-resources python-jsonschema python-pyyaml
-           python-typing-extensions))
     (native-inputs
-     (list python-setuptools python-wheel))
-    (home-page
-     "https://github.com/Yelp/swagger_spec_validator")
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-importlib-resources
+           python-jsonschema
+           python-pyyaml
+           python-typing-extensions))
+    (home-page "https://github.com/Yelp/swagger_spec_validator")
     (synopsis "Validation of Swagger specifications")
-    (description "@code{swagger_spec_validator} provides a library for
-     validating Swagger API specifications.")
+    (description
+     "@code{swagger_spec_validator} provides a library for validating Swagger
+API specifications.")
     (license license:asl2.0)))
 
 (define-public python-apache-libcloud
