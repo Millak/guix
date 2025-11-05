@@ -2015,68 +2015,69 @@ than 8 bits, and at the end only some significant 8 bits are kept.")
           (delete-file-recursively "dlib/external")))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-asserts
-           (lambda _
-             ;; config.h recommends explicitly enabling or disabling asserts
-             ;; when building as a shared library. By default neither is set.
-             (substitute* "dlib/config.h"
-               (("^//#define DLIB_DISABLE_ASSERTS") "#define DLIB_DISABLE_ASSERTS"))
-             #t))
-         (add-after 'disable-asserts 'disable-failing-tests
-           (lambda _
-             ;; One test times out on MIPS, so we need to disable it.
-             ;; Others are flaky on some platforms.
-             (let* ((system ,(or (%current-target-system)
-                                 (%current-system)))
-                    (disabled-tests (cond
-                                     ((string-prefix? "mips64" system)
-                                      '("object_detector" ; timeout
-                                        "data_io"))
-                                     ((string-prefix? "armhf" system)
-                                      '("learning_to_track"))
-                                     ((string-prefix? "i686" system)
-                                      '("optimization"))
-                                     (else '()))))
-               (for-each
-                (lambda (test)
-                  (substitute* "dlib/test/makefile"
-                    (((string-append "SRC \\+= " test "\\.cpp")) "")))
-                disabled-tests)
-               #t)))
-         (replace 'check
-           (lambda _
-             ;; XXX: This causes a rebuild--however, trying to run the tests
-             ;; without rebuilding causes a lot of errors.
-             ;; Also, the official way is to rebuild.
-             (mkdir "../source/dlib/test/build")
-             (with-directory-excursion "../source/dlib/test/build"
-               (invoke "cmake" "-DBUILD_SHARED_LIBS=ON" "..")
-               (invoke "cmake" "--build" "." "--config" "Release")
-               (invoke "./dtest" "--runall")))))))
+     (list
+      #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-asserts
+            (lambda _
+              ;; config.h recommends explicitly enabling or disabling asserts
+              ;; when building as a shared library. By default neither is set.
+              (substitute* "dlib/config.h"
+                (("^//#define DLIB_DISABLE_ASSERTS") "#define DLIB_DISABLE_ASSERTS"))
+              #t))
+          (add-after 'disable-asserts 'disable-failing-tests
+            (lambda _
+              ;; One test times out on MIPS, so we need to disable it.
+              ;; Others are flaky on some platforms.
+              (let* ((system ,(or (%current-target-system)
+                                  (%current-system)))
+                     (disabled-tests (cond
+                                      ((string-prefix? "mips64" system)
+                                       '("object_detector" ; timeout
+                                         "data_io"))
+                                      ((string-prefix? "armhf" system)
+                                       '("learning_to_track"))
+                                      ((string-prefix? "i686" system)
+                                       '("optimization"))
+                                      (else '()))))
+                (for-each
+                 (lambda (test)
+                   (substitute* "dlib/test/makefile"
+                     (((string-append "SRC \\+= " test "\\.cpp")) "")))
+                 disabled-tests))))
+          (replace 'check
+            (lambda _
+              ;; XXX: This causes a rebuild--however, trying to run the tests
+              ;; without rebuilding causes a lot of errors.
+              ;; Also, the official way is to rebuild.
+              (mkdir "../source/dlib/test/build")
+              (with-directory-excursion "../source/dlib/test/build"
+                (invoke "cmake" "-DBUILD_SHARED_LIBS=ON" "..")
+                (invoke "cmake" "--build" "." "--config" "Release")
+                (invoke "./dtest" "--runall")))))))
     (native-inputs
      (list pkg-config
            ;; For tests.
            libnsl))
     (inputs
-     `(("ffmpeg" ,ffmpeg)
-       ("giflib" ,giflib)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libjxl" ,libjxl-0.10)
-       ("libpng" ,libpng)
-       ("libwebp" ,libwebp)
-       ("libx11" ,libx11)
-       ("openblas" ,openblas)
-       ("zlib" ,zlib)))
+     (list ffmpeg
+           giflib
+           libjpeg-turbo
+           libjxl-0.10
+           libpng
+           libwebp
+           libx11
+           openblas
+           zlib))
     (synopsis
-     "Toolkit for making machine learning and data analysis applications in C++")
+     "Toolkit for making machine learning and data analysis applications in
+C++")
     (description
      "Dlib is a modern C++ toolkit containing machine learning algorithms and
 tools.  It is used in both industry and academia in a wide range of domains
-including robotics, embedded devices, mobile phones, and large high performance
-computing environments.")
+including robotics, embedded devices, mobile phones, and large high
+performance computing environments.")
     (home-page "http://dlib.net")
     (license license:boost1.0)))
 
