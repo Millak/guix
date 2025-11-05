@@ -5,6 +5,7 @@
 ;;; Copyright © 2024 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;; Copyright © 2025 Meredith Oleander <mereditholeander@gmail.com>
+;;; Copyright © 2025 Raven Hallsby <karl@hallsby.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -99,6 +100,32 @@
      "@command{beanbag} is a wallpaper application for Wayland compositors,
 heavily inspired by @code{wbg}.")
     (license license:gpl3+)))
+
+(define-public poop
+  (package
+    (name "poop")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/andrewrk/poop")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m296ly3159gkbf33zziqarx2wxh0lmkydky440inbn46kyr3fnf"))))
+        (build-system zig-build-system)
+    (arguments
+     (list #:install-source? #f ; Not meant to be used by other packages
+           #:tests? #f ; No tests
+           #:zig-release-type "safe"))
+    (home-page "https://github.com/andrewrk/poop")
+    (synopsis "Performance Optimizer Observation Platform")
+    (description
+     "POOP (Performance Optimizer Observation Platform) is a command line tool
+that uses Linux's @code{perf_event_open} functionality to compare the
+performance of multiple commands with a colorful terminal user interface.")
+    (license license:expat)))
 
 (define-public river
   (package
