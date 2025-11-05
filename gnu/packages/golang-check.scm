@@ -128,6 +128,35 @@ correct should be customizeable either by changing some options or by using
 only some sub-packages of correct.")
     (license license:mpl2.0)))
 
+(define-public go-git-sr-ht-nelsam-hel
+  (package
+    (name "go-git-sr-ht-nelsam-hel")
+    (version "0.8.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~nelsam/hel")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fb9j4iycqxrsbv8pjy23df7njrkw93hj0m88b89q88qj4p3hv2w"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "git.sr.ht/~nelsam/hel"))
+    (native-inputs
+     (list go-github-com-spf13-cobra)) ;for CLI
+    (propagated-inputs
+     (list go-git-sr-ht-nelsam-correct
+           go-github-com-poy-onpar))
+    (home-page "https://git.sr.ht/~nelsam/hel")
+    (synopsis "Mock generator for Golang")
+    (description
+     "In Norse mythology, Hel cares for the souls of people who didn't die in
+battle.  This little tool cares for mock implementations of interface types.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-adalogics-go-fuzz-headers
   (package
     (name "go-github-com-adalogics-go-fuzz-headers")
