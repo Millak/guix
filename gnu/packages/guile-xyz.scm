@@ -2309,21 +2309,18 @@ format.")
 (define-public guile-extensible-match
   (package
     (name "guile-extensible-match")
-    (version "0.75.1")
+    (version "0.875")
     (source
      (origin
        (method git-fetch)
        (uri
         (git-reference
           (url "https://codeberg.org/dpk/extensible-match")
-          ;; This commit is 1 commit ahead of tag v0.75.1,
-          ;; includes a patch remove SRFI-151 dependency, which
-          ;; is not packaged in Guix.
-          (commit "d2d32e0e09d37c78dbdd4fedd1af1c6dd3663bb6")))
+          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1b2a7cl2fax6ysb5dj7ssy89w4w8xbn3iwc9ffb0p7948sxw7xgx"))))
+         "1dzg9qgzcm29kmbw1z3sxrbkr4zqi9babbdnspfms40ka86bawkx"))))
     (build-system guile-build-system)
     (arguments
      (list
@@ -2363,7 +2360,6 @@ format.")
               (rename-file "srfi/:262.scm" "srfi/srfi-262.scm")
               (rename-file "srfi/:262" "srfi/srfi-262"))))))
     (native-inputs (list guile-3.0))
-    (propagated-inputs (list guile-srfi-133))
     (home-page "https://codeberg.org/dpk/extensible-match")
     (synopsis "Extensible pattern-matching library")
     (description
