@@ -2205,6 +2205,32 @@ current goroutine's ID.")
 Go application.")
     (license license:bsd-2)))
 
+(define-public go-github-com-poy-onpar
+  (package
+    (name "go-github-com-poy-onpar")
+    (version "0.3.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/poy/onpar")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h4w1p846hw047gjlfqxh3ismdy6nripnkfqlrqvj2fvnakk2yhi"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f       ;cycles with git.sr.ht/~nelsam/hel
+      #:import-path "github.com/poy/onpar"))
+    (propagated-inputs
+     (list go-github-com-fatih-color))
+    (home-page "https://github.com/poy/onpar")
+    (synopsis " Parallel testing framework for Golang")
+    (description
+     "This package implements a parallel testing framework for Go.")
+    (license license:expat)))
+
 (define-public go-github-com-prashantv-gostub
   (package
     (name "go-github-com-prashantv-gostub")
