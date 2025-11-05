@@ -467,6 +467,57 @@ HTTP.  Features:
 @end itemize")
     (license license:gpl2)))
 
+(define-public dgop
+  (package
+    (name "dgop")
+    (version "0.1.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/AvengeMedia/dgop")
+              (commit (string-append "v" version))))
+       (sha256
+        (base32 "1iy9ndvrp7l1hr5ya2xf80j8ywcg8098z8wj2r47wdsqpagx2722"))
+       (file-name (git-file-name name version))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/AvengeMedia/dgop/cmd/cli"
+      #:unpack-path "github.com/AvengeMedia/dgop"
+      #:test-subdirs
+      #~(list "../../...") ;test the whole libary
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'rename-cli
+            (lambda* (#:key output #:allow-other-keys)
+              (let* ((bin (string-append #$output "/bin")))
+                (rename-file (string-append bin "/cli")
+                             (string-append bin "/dgop"))))))))
+    (native-inputs
+     (list go-github-com-caarlos0-env
+           go-github-com-charmbracelet-bubbles
+           go-github-com-charmbracelet-lipgloss
+           go-github-com-charmbracelet-log
+           go-github-com-danielgtaylor-huma-v2
+           go-github-com-fsnotify-fsnotify
+           go-github-com-go-chi-chi-v5
+           go-github-com-gorilla-schema
+           go-github-com-shirou-gopsutil-v4
+           go-github-com-spf13-cobra
+           go-github-com-stretchr-testify))
+    (home-page "https://github.com/AvengeMedia/dgop")
+    (synopsis "Stateless system monitoring CLI + REST API")
+    (description
+     "dgop is a system monitoring tool.  It supports cursor-based sampling of
+CPU/memory/disk/network, plus an optional REST API server.  It supports
+cursor-based sampling for building real-time monitoring tools like
+@command{htop}.  Instead of relying on instantaneous snapshots, it may track
+system state changes over time for more accurate CPU usage calculations and
+network/disk rates.")
+    (license license:expat)))
+
 (define-public python-whisper
   (package
     (name "python-whisper")
