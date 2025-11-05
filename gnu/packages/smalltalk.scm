@@ -94,6 +94,14 @@
               "-DVERSION_UPDATE_FROM_GIT=OFF")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-reproducible
+            (lambda _
+              (substitute* "include/pharovm/config.h.in"
+                ;; Per (info "(cmake) CMAKE_SYSTEM"), CMAKE_SYSTEM includes
+                ;; CMAKE_SYSTEM_VERSION, which is the version of the kernel.
+                ;; Do not capture that, as it introduces non-reproducibilities.
+                (("\\$\\{CMAKE_SYSTEM}")
+                 "${CMAKE_SYSTEM_NAME}"))))
           (add-after 'install 'wrap-ld-library-path
             ;; The following libraries are dlopen'd.
             (lambda* (#:key inputs #:allow-other-keys)
