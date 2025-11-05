@@ -2904,8 +2904,7 @@ popovers.")
     (native-inputs (list pkg-config gobject-introspection vala))
     (inputs (list wayland gtk))
     (home-page "https://github.com/wmww/gtk-layer-shell")
-    (synopsis "Library to create Wayland desktop components using the Layer
-Shell protocol")
+    (synopsis "Wayland protocol for desktop components")
     (description
      "Layer Shell is a Wayland protocol for desktop shell
 components, such as panels, notifications and wallpapers.  It can be used to
