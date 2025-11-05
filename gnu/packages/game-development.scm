@@ -4009,3 +4009,30 @@ simplicity of BASIC with the sophistication of a modern structured language,
 allowing you to write utilities and games, use sound and graphics, perform
 calculations and create complete applications.")
     (license license:zlib)))
+
+(define-public shlomif-cmake-modules
+  (let ((commit "2fa3e9be1a1df74ad0e10f0264bfa60e1e3a755c")
+        (revision "0"))
+    (package
+      (name "shlomif-cmake-modules")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/shlomif/shlomif-cmake-modules")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1755lvg1xxygsxnp6kyjw9m0nddcb19ivm8dy31hfiyr0rxakl9h"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan
+        #~'(("shlomif-cmake-modules/" "share/shlomi-fish/cmake"))))
+      (home-page "https://github.com/shlomif/shlomif-cmake-modules")
+      (synopsis "CMake modules for Shlomi Fish's projects")
+      (description
+       "This repository contains CMake modules which are used across
+@uref{https://www.shlomifish.org/, Shlomi Fish's} projects.")
+      (license license:expat))))
