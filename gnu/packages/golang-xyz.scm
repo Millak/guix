@@ -19906,6 +19906,59 @@ format.  It is used to represent the RDF files in memory and write back in
 possibly different formats like JSON and XML.")
     (license license:expat)))
 
+(define-public go-github-com-spdx-tools-golang
+  (package
+    (name "go-github-com-spdx-tools-golang")
+    (version "0.5.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spdx/tools-golang")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pdcwb6hvv5zr5k844knpcgbhnm0zgpwaacd5cjahb196q6xpgbw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/spdx/tools-golang"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-anchore-go-struct-converter
+           go-github-com-google-go-cmp
+           go-github-com-spdx-gordf
+           go-sigs-k8s-io-yaml))
+    (home-page "https://github.com/spdx/tools-golang")
+    (synopsis "Go source package to work with SPDX files")
+    (description
+     "This source package is a collection of utilities intended to make it
+easier for Go programs to work with @acronym{System Package Data Exchange,
+SPDX} files.  It currently works with files conformant to versions 2.1, 2.2
+and 2.3 of the @url{https://spdx.dev/specifications, SPDX specification} and
+provides the following packages:
+
+@itemize
+@item spdx - in-memory data model for the sections of an SPDX document
+@item tagvalue - tag-value document reader and writer
+@item rdf - RDF document reader
+@item json - JSON document reader and writer
+@item yaml - YAML document reader and writer
+@item builder - builds empty SPDX document (with hashes) for directory
+contents
+@item idsearcher - searches for SPDX short-form IDs and builds an SPDX
+document
+@item licensediff - compares concluded licenses between files in two packages
+@item reporter - generates basic license count report from an SPDX document
+@item spdxlib - various utility functions for manipulating SPDX documents in
+memory
+@item utils - various utility functions that support the other tools-golang
+packages
+@end itemize")
+    (license  license:cc-by4.0)))
+
 (define-public go-github-com-spf13-afero
   (package
     (name "go-github-com-spf13-afero")
