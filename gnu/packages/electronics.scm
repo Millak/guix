@@ -792,6 +792,37 @@ an embedded event driven algorithm.")
       (license (list license:expat      ;libfst and fastlz-derived sources
                      license:bsd-2))))) ;for lz4-derived sources
 
+(define-public libpsf
+  ;; There are no release nor tags.
+  (let ((commit "001dc734e01725e739847c8cde6480a0cf35a082")
+        (revision "0"))
+    (package
+      (name "libpsf")
+      (version (git-version "0.2" revision commit)) ;0.2 from configure.ac
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://gitlab.com/libpsf/libpsf-core")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "19k03hwwz4pkb98hd7vf15x6dnhfd48iqj62n90s7ycx1y5a378r"))
+         (modules '((guix build utils)))
+         ;; remove broken psftest binary using hardcoded paths
+         (snippet '(substitute* "src/Makefile.am"
+                    (("bin_PROGRAMS = psftest") "bin_PROGRAMS =")))))
+      ;; tests are broken due to missing test/data/tran.tran file
+      (arguments (list #:tests? #f))
+      (build-system gnu-build-system)
+      (native-inputs (list autoconf automake libtool))
+      (inputs (list boost))
+      (synopsis "PSF simulation data c++ library")
+      (description "@code{libpsf} is a c++ library that reads Cadence
+@acronym{PSF, Parameter Storage Format} binary waveform files.")
+      (home-page "https://gitlab.com/libpsf/libpsf-core")
+      (license license:lgpl3))))
+
 (define-public libserialport
   (package
     (name "libserialport")
