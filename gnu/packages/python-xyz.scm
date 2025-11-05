@@ -28340,7 +28340,6 @@ class in a @acronym{DRY, Don't Repeat Yourself} way.")
       (version (git-version "2.10.70" revision commit))
       (source
        (origin
-         ;; There are no tests in the PyPI tarball.
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/construct/construct")
@@ -28348,17 +28347,12 @@ class in a @acronym{DRY, Don't Repeat Yourself} way.")
          (file-name (git-file-name name version))
          (sha256
           (base32 "03f6nvyzrq50nhqqwmmws983wwjg78yd9j09pl94vkmyjph33da5"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
       (arguments
-       (list #:phases
-             #~(modify-phases %standard-phases
-                 (replace 'check
-                   (lambda* (#:key tests? #:allow-other-keys)
-                     (when tests?
-                       (invoke "pytest" "-v" "tests/")))))))
+       (list
+        #:test-flags #~(list "--ignore=tests/test_benchmarks.py")))
       (native-inputs
-       (list python-pytest
-             python-pytest-benchmark))
+       (list python-pytest python-setuptools))
       (propagated-inputs
        (list python-arrow
              python-cloudpickle
