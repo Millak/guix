@@ -34444,26 +34444,22 @@ command-line applications.
     (version "24.11.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "glom" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mahmoud/glom")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "09xv44h1sri9fc2sp2h3nqg8rba4p86vvimnyx5084m9b5kzj9a3"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               ;; Make installed executable available for running the tests.
-               (setenv "PATH"
-                       (string-append (assoc-ref outputs "out") "/bin"
-                                      ":" (getenv "PATH")))
-               (invoke "pytest" "-v")))))))
+        (base32 "0vjj6wjxzms947nvbxrlz2cyn0m6483p1laqvcwr8fc117nzary0"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-pyyaml))
+     (list python-pytest
+           python-pyyaml
+           python-setuptools))
     (propagated-inputs
-     (list python-attrs python-boltons python-face))
+     (list python-attrs
+           python-boltons
+           python-face))
     (home-page "https://github.com/mahmoud/glom")
     (synopsis "Declaratively restructure data")
     (description "Real applications have real data, and real data
