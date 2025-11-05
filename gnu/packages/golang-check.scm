@@ -96,6 +96,38 @@ testing package automatically and requires to check the returning boolean
 value and call @code{t.Fatal()} if the assertion fails.")
     (license license:expat)))
 
+(define-public go-git-sr-ht-nelsam-correct
+  (package
+    (name "go-git-sr-ht-nelsam-correct")
+    (version "0.0.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~nelsam/correct")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vzbcc7df22sagq229bvqjw1v1glh9kxfz77jjyxxnjpwik2y5rj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      ;; Cycles with github.com/poy/onpar, and git.sr.ht/~nelsam/hel
+      #:tests? #f
+      #:import-path "git.sr.ht/~nelsam/correct"))
+    (propagated-inputs
+     (list go-github-com-fatih-color
+           go-golang-org-x-exp))
+    (home-page "https://git.sr.ht/~nelsam/correct")
+    (synopsis "Assertions for Golang")
+    (description
+     "Correct is a collection of assertion libraries for Golang, intended to be
+used together.  It tries not to strictly enforce that, though - most of
+correct should be customizeable either by changing some options or by using
+only some sub-packages of correct.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-adalogics-go-fuzz-headers
   (package
     (name "go-github-com-adalogics-go-fuzz-headers")
