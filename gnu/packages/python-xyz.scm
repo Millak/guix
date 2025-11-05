@@ -34481,24 +34481,27 @@ and powerful way to handle real-world data, featuring:
 (define-public python-box
   (package
     (name "python-box")
-    (version "7.1.1")
+    (version "7.3.2")
     (source
-     ;; The PyPI tarball does not contain all test files.
      (origin
        (method git-fetch)
        (uri
         (git-reference
-         (url "https://github.com/cdgriffith/Box")
-         (commit version)))
+          (url "https://github.com/cdgriffith/Box")
+          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1v8s6wji17fh87nvamzysvxi8f51h6szh6h6dxvids56gg5zc553"))))
+        (base32 "0nr8cajrhdwxm3ac5gclajqck7xywlpqnwvff072va5ki0if6lv9"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-msgpack python-ruamel.yaml python-tomli python-tomli-w))
+    (arguments
+     (list #:test-flags #~(list "-k" "not test_to_yaml_ruamel")))
     (native-inputs
-     (list python-cython python-pytest python-setuptools python-wheel))
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-msgpack
+           python-ruamel.yaml
+           python-tomli-w))
     (home-page "https://github.com/cdgriffith/Box")
     (synopsis "Advanced Python dictionaries with dot notation access")
     (description
