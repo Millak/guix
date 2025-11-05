@@ -48059,6 +48059,22 @@ importance measure as introduced in Kursa (2014)
              (base32
               "05x9wgzsmx4vb12lmcspymgmpb2xw8bwryb8ysg7vzg2nkh0ma3g"))))
    (build-system r-build-system)
+   (arguments
+    (list
+     #:phases
+     '(modify-phases %standard-phases
+        (add-before 'install 'fix-r-4.5.0
+          ;; Changes in R 4.5.0: C-Level Facilities.
+          ;; Strict R headers are now the default. This removes the legacy
+          ;; definitions of PI, Calloc, Realloc and Free: use M_PI,
+          ;; R_Calloc, R_Realloc or R_Free instead.
+          ;; https://cran.r-project.org/doc/manuals/r-release/NEWS.html
+          (lambda _
+            (substitute* '("src/featContrib.c"
+                           "src/featContribClass.c"
+                           "src/forest.c")
+              (("Calloc") "R_Calloc")
+              (("Free") "R_Free")))))))
    (propagated-inputs
     (list r-randomforest))
    (home-page "https://r-forge.r-project.org/projects/rffc/")
