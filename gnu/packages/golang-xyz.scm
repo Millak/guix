@@ -14825,6 +14825,48 @@ requests.  Browse requests are not supported yet.")
      "The datacounter package provides counters for Go readers and writers.")
     (license license:expat)))
 
+(define-public go-github-com-mistifyio-go-zfs-v3
+  (package
+    (name "go-github-com-mistifyio-go-zfs-v3")
+    (version "3.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mistifyio/go-zfs")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19vkrfasps8ixkkzxa2kqfqk0gn52zmc2pkx0mfiy6mjq62b4wl1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mistifyio/go-zfs"
+      #:test-flags
+      ;; The following tests need zpool executable
+      #~(list "-skip" (string-join
+                       (list "TestDatasets"
+                             "TestChildren"
+                             "TestClone"
+                             "TestCreateFilesystemWithProperties"
+                             "TestDatasetGetProperty"
+                             "TestDiff"
+                             "TestFilesystems"
+                             "TestListZpool"
+                             "TestRollback"
+                             "TestSendSnapshot"
+                             "TestSnapshot"
+                             "TestSnapshots"
+                             "TestVolumes")
+                       "|"))))
+    (propagated-inputs
+     (list go-github-com-google-uuid))
+    (home-page "https://github.com/mistifyio/go-zfs")
+    (synopsis "ZFS wrapper for Golang")
+    (description
+     "This package provides wrappers around the ZFS command line tools.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-mitchellh-cli
   (package
     (name "go-github-com-mitchellh-cli")
