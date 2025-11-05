@@ -5043,19 +5043,23 @@ Expressions are constructed from parsed strings or directly in Python.")
       #:test-flags #~(list "--pyargs" "pyhdf")
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'build 'relax-gcc-14-strictness
+            (lambda _
+              (setenv "CFLAGS" (string-join
+                                (list "-g" "-O2"
+                                      "-Wno-error=incompatible-pointer-types")
+                                " "))))
           (add-after 'check 'run-example-tests
             (lambda _
               (invoke "python" "examples/runall.py"))))))
     (native-inputs
-     (list python-numpy
-           python-pytest
+     (list python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
-   (inputs
-    (list hdf4
-          libjpeg-turbo
-          zlib))
+           python-setuptools-scm))
+    (inputs
+     (list hdf4
+           libjpeg-turbo
+           zlib))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/fhs/pyhdf")
