@@ -6870,6 +6870,33 @@ program's running, don't expect consistent results between platforms
 @end itemize")
     (license license:bsd-3)))
 
+(define-public go-github-com-edwvee-exiffix
+  (package
+    (name "go-github-com-edwvee-exiffix")
+    (version "0.0.0-20240229113213-0dbb146775be")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/edwvee/exiffix")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i4p1xnbm04ih2735h58n1p1j6cjmr6d3bfx41862ki0qc12lfn4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/edwvee/exiffix"))
+    (propagated-inputs
+     (list go-github-com-disintegration-imaging
+           go-github-com-rwcarlsen-goexif))
+    (home-page "https://github.com/edwvee/exiffix")
+    (synopsis "EXIF orientation altenrnative of Golang's @code{image.Decode}")
+    (description
+     "Exiffix is a one function golang library made to be a replacement for
+@code{image.Decode} to handle orientation stored in EXIF data.")
+    (license license:expat)))
+
 (define-public go-github-com-elastic-gosigar
   (package
     (name "go-github-com-elastic-gosigar")
