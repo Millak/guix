@@ -3784,14 +3784,14 @@ rules is done with the @code{auditctl} utility.")
 (define-public nmap
   (package
     (name "nmap")
-    (version "7.97")
+    (version "7.98")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nmap.org/dist/nmap-" version
                                   ".tar.bz2"))
               (sha256
                (base32
-                "1h252sz1cqr0r440s7pxn9wwn1jffbrdvacnvmbw4w664mwz565g"))
+                "1rlpv238ixcj62d740w8xghcfmkvmg9453kh46gmr7mfx89p716f"))
               (modules '((guix build utils)))
               (snippet
                '(begin
