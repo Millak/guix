@@ -78,6 +78,7 @@
     (inputs (list bash-minimal
                   gspell
                   gtk
+                  python-pycairo
                   python-pygobject
                   libappindicator
                   python-pytaglib))
