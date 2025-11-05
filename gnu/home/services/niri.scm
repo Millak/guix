@@ -23,6 +23,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages xorg)
   #:use-module (gnu packages wm)
   #:use-module (gnu services)
   #:use-module (gnu services shepherd)
@@ -71,7 +72,8 @@ environment variables set for a Wayland desktop session."
                                      niri
                                      xdg-desktop-portal
                                      xdg-desktop-portal-gnome
-                                     xdg-desktop-portal-gtk)))))
+                                     xdg-desktop-portal-gtk
+                                     xwayland-satellite)))))
    (description "Install and configure Niri, a scrollable tiling Wayland
 compositor.  This service starts Niri as a user-level desktop session with
 proper environment variables set for Wayland compatibility.  It ensures Niri
