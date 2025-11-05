@@ -133,15 +133,6 @@ command-line arguments, multiple languages, and so on.")
    (inputs (list pcre2))
    (arguments
     (list #:configure-flags #~(list "--enable-perl-regexp")
-
-          ;; XXX: On 32-bit Hurd platforms, 'time_t' is defined as a 32-bit
-          ;; integer in 'hurd_types.defs', so this Gnulib test always fails.
-          #:make-flags
-          #~#$(if (and (not (%current-target-system))
-                       (target-hurd32?))
-                  #~'("XFAIL_TESTS=test-year2038")
-                  #~'())
-
           #:phases
           #~(modify-phases %standard-phases
               (add-after 'install 'fix-egrep-and-fgrep
@@ -160,6 +151,17 @@ command-line arguments, multiple languages, and so on.")
                             ;; Stack overflow recovery does not compile
                             (substitute* "lib/sigsegv.in.h"
                               (("__GNU__") "__XGNU__")))))
+                     #~())
+              ;; XXX: On 32-bit Hurd platforms, 'time_t' is defined as a 32-bit
+              ;; integer in 'hurd_types.defs', so this Gnulib test always fails.
+              ;; Use a phase instead of XFAIL_TESTS to not override
+              ;; xfailing tests in grep
+              #$@(if (target-hurd32?)
+                     #~((add-after 'unpack 'skip-year2038-test
+                          (lambda _
+                            (substitute* "gnulib-tests/test-year2038.c"
+                              (("(^| )main *\\(.*" all)
+                               (string-append all "{\n  return 77;//"))))))
                      #~())
               #$@(if (system-hurd?)
                      #~((add-before 'check 'skip-test
