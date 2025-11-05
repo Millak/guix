@@ -8646,7 +8646,7 @@ making Yamagi Quake II one of the most solid Quake II implementations available.
 (define-public nudoku
   (package
     (name "nudoku")
-    (version "2.1.0")
+    (version "6.0.0")
     (source
      (origin
        (method git-fetch)
@@ -8655,7 +8655,7 @@ making Yamagi Quake II one of the most solid Quake II implementations available.
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12v00z3p0ymi8f3w4b4bgl4c76irawn3kmd147r0ap6s9ssx2q6m"))))
+        (base32 "0wy4ck79avbhj5nxcngldaflhx0xx28pcrsmx5a1rvx6kinnxm4f"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake gettext-minimal pkg-config))
