@@ -4,6 +4,7 @@
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024, 2025 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,7 +41,7 @@
 (define-public duckdb
   (package
     (name "duckdb")
-    (version "1.3.2")
+    (version "1.4.1")
     (source
      (origin
        (method git-fetch)
@@ -49,10 +50,11 @@
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dg3g66az17z4snxxw7cslqdkrvbx2nnyry73yi77yp0vpri1lz8"))))
+        (base32 "1vywdhn930z4aw2ljxp5mx3cfivpvv1d88kq4rhizq3c4hpq9yf3"))))
     (build-system cmake-build-system)
     (arguments
      (list
+      ;; TODO: Find out how to run tests, see: <.github/workflows>.
       #:tests? #f
       #:configure-flags
       #~(list "-DBUILD_EXTENSIONS=autocomplete;icu;json;parquet;tpch;"
