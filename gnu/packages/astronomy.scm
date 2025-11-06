@@ -18,6 +18,7 @@
 ;;; Copyright © 2025 Vasilii Smirnov <vasilii.smirnov@mailbox.org>
 ;;; Copyright © 2025 Daniel Ziltener <dziltener@lyrion.ch>
 ;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
+;;; Copyright © 2025 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -516,12 +517,15 @@ made to get a better separation of core libraries and applications.
   (package
     (name "ccfits")
     (version "2.7")
+    ;; Updater struggles to determine the version, check for the latest one on
+    ;; <https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/ccfits/> or on the
+    ;; home page.
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/ccfits/"
-             "CCfits-" version ".tar.gz"))
+             "https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/ccfits/v"
+             version "/CCfits-" version ".tar.gz"))
        (sha256
         (base32 "06mhvvdsaqvk3cc309gv6zd4lcxm5q5aialaq0n77gzczv94cdgn"))))
     (build-system cmake-build-system)
