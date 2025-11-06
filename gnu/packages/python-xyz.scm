@@ -30098,18 +30098,27 @@ that take parsers as their arguments and return them as result values.")
 (define-public python-speg
   (package
     (name "python-speg")
-    (version "0.3")
+    ;; 0.3 was released in 2017, the latest change on master HEAD is from 2018.
+    (properties '((commit . "877acddfd5ac5ae8b4a4592d045e74e108477643")
+                  (revision . "0")))
+    (version (git-version "0.3"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "speg" version ".zip"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/avakar/speg")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0w9y4jf4787dzhy6rvhwi0mpl0r8qkqmqmyv2hpwdpv8w53yzjqh"))))
+        (base32 "0lhms1sfvmnplcwq8qwwvkrcz4sgi9yprvrkjz7p84fjhk86n4sb"))))
     (build-system pyproject-build-system)
-    (arguments
-     `(#:tests? #f))                    ;FIXME: tests fail, not sure why
     (native-inputs
-     (list python-setuptools python-wheel unzip))
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-six))
     (home-page "https://github.com/avakar/speg")
     (synopsis "PEG-based parser interpreter with memoization")
     (description "This package is a PEG-based parser and interpreter with
