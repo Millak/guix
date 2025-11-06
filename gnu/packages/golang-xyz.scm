@@ -21284,7 +21284,7 @@ query information regarding the number of CPUs available to the system.")
     (home-page "https://github.com/tkuchiki/go-timezone")
     (synopsis "Timezone utility for Golang")
     (description
-     "This package provides provides an utility for timezone manipulation,
+     "This package provides an utility for timezone manipulation,
 implementing the following features:
 
 @itemize
