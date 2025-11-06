@@ -35247,10 +35247,11 @@ a port of the chalk package for javascript.")
        (method url-fetch)
        (uri (pypi-uri "sre_yield" version))
        (sha256
-        (base32
-         "12kv3mvdr22g2v9wfr5aabh1f58s817dbh8mrlfzxzxs7hm1lkz9"))))
-    (build-system python-build-system)
-    (native-inputs (list python-nose))
+        (base32 "12kv3mvdr22g2v9wfr5aabh1f58s817dbh8mrlfzxzxs7hm1lkz9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/google/sre_yield")
     (synopsis "Expands a regular expression to its possible matches")
     (description
