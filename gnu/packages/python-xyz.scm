@@ -34266,57 +34266,6 @@ statements in OFX files.")
     (description "This package provides a pure Python RFC3339 validator.")
     (license license:expat)))
 
-(define-public python-strict-rfc3339
-  (package
-    (name "python-strict-rfc3339")
-    (version "0.7")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/danielrichman/strict-rfc3339")
-              (commit (string-append "version-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0b12bh9v9gwkm89kxbidxw2z81lg8fx1v5fzgs313v1wgx6qb09p"))))
-    (build-system pyproject-build-system)
-    ;; TODO: Convert to #:test-flags on the next python-team cycle.
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv"
-                        ;; The timestamp to local offset tests fail due to
-                        ;; missing timezone data (see:
-                        ;; https://github.com/danielrichman/strict-rfc3339/issues/9).
-                        "-k"
-                        #$@(if (or (target-x86-32?) (target-arm32?))
-                               ;; On 32-bit platforms the size of time_t is
-                               ;; too small for these tests.
-                               '("not LocalOffset and not TestTimestampToRFC3339UTCOffset")
-                               '("not LocalOffset")))))))))
-    (native-inputs (list python-pytest python-setuptools))
-    (home-page "https://github.com/danielrichman/strict-rfc3339")
-    (synopsis "RFC3339 procedures library")
-    (description
-     "The @code{strict_rfc3339} Python module provides strict, simple, lightweight
-@url{https://www.rfc-editor.org/rfc/rfc3339, RFC3339} (Date and Time on the
-Internet: Timestamps) procedures.
-
-It enables or aims to:
-@itemize
-@item Convert UNIX timestamps to and from RFC3339.
-@item Produce RFC3339 strings with a UTC offset (Z) or with the offset that
-the C time module reports is the local timezone offset.
-@item Be simple with minimal dependencies/libraries.
-@item Avoid timezones as much as possible.
-@item Be very strict and follow RFC3339.
-@end itemize")
-    (license license:gpl3+)))
-
 (define-public python-platformdirs
   (package
     (name "python-platformdirs")

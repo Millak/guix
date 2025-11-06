@@ -20,13 +20,14 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2021 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Pradana AUMARS <paumars@courrier.dev>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
-;;; Copyright © 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -520,6 +521,57 @@ aniso8601.")
     (description "This is a python package for looking up the corresponding
 timezone for given coordinates on earth entirely offline.")
     (license expat)))
+
+(define-public python-strict-rfc3339
+  (package
+    (name "python-strict-rfc3339")
+    (version "0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/danielrichman/strict-rfc3339")
+              (commit (string-append "version-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b12bh9v9gwkm89kxbidxw2z81lg8fx1v5fzgs313v1wgx6qb09p"))))
+    (build-system pyproject-build-system)
+    ;; TODO: Convert to #:test-flags on the next python-team cycle.
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv"
+                        ;; The timestamp to local offset tests fail due to
+                        ;; missing timezone data (see:
+                        ;; https://github.com/danielrichman/strict-rfc3339/issues/9).
+                        "-k"
+                        #$@(if (or (target-x86-32?) (target-arm32?))
+                               ;; On 32-bit platforms the size of time_t is
+                               ;; too small for these tests.
+                               '("not LocalOffset and not TestTimestampToRFC3339UTCOffset")
+                               '("not LocalOffset")))))))))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/danielrichman/strict-rfc3339")
+    (synopsis "RFC3339 procedures library")
+    (description
+     "The @code{strict_rfc3339} Python module provides strict, simple, lightweight
+@url{https://www.rfc-editor.org/rfc/rfc3339, RFC3339} (Date and Time on the
+Internet: Timestamps) procedures.
+
+It enables or aims to:
+@itemize
+@item Convert UNIX timestamps to and from RFC3339.
+@item Produce RFC3339 strings with a UTC offset (Z) or with the offset that
+the C time module reports is the local timezone offset.
+@item Be simple with minimal dependencies/libraries.
+@item Avoid timezones as much as possible.
+@item Be very strict and follow RFC3339.
+@end itemize")
+    (license gpl3+)))
 
 (define-public python-tzlocal
   (package
