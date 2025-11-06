@@ -19792,25 +19792,21 @@ explicit subcommand name.")
 (define-public python-structlog
   (package
     (name "python-structlog")
-    (version "25.4.0")
+    (version "25.5.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "structlog" version))
         (sha256
-         (base32
-          "1r09fhpshvkrnyn6v93045q32shxvx56d5bh84ljwxmfm2qd2v0q"))))
+         (base32 "167wj0hxrsa9kbalh86vvwqs105zi8ld1ikh8lyibndypsij5189"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list ;; For the build
-           python-hatch-fancy-pypi-readme
+     (list python-hatch-fancy-pypi-readme
            python-hatch-vcs
            python-hatchling
-           ;; For the tests
-           python-freezegun
-           python-pretend
            python-pytest
-           python-pytest-asyncio))
+           python-pytest-asyncio
+           python-time-machine))
     (home-page "https://www.structlog.org/")
     (synopsis "Structured Logging for Python")
     (description "@code{structlog} changes logging in Python by adding structure
