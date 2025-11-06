@@ -27022,21 +27022,18 @@ Examples are:
            python-orjson
            python-pygtrie))
     (native-inputs
-     (list python-mypy
-           python-pytest
-           python-pytest-benchmark
-           python-pytest-cov
+     (list python-pytest
            python-pytest-mock
            python-pytest-sugar
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (arguments
      (list
       #:test-flags
-      ;; <https://github.com/pyinstaller/pyinstaller> is not packaged yet in
-      ;; Guix.
-      #~(list "--ignore=src/sqltrie/__pyinstaller")))
+      #~(list "--ignore=tests/benchmarks/"
+              ;; <https://github.com/pyinstaller/pyinstaller> is not packaged
+              ;; yet in Guix.
+              "--ignore=src/sqltrie/__pyinstaller")))
     (synopsis "SQL-based prefix tree for Python")
     (description
      "Sqltrie is a SQL-based prefix tree inspired by pygtrie and
