@@ -78,6 +78,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages duckdb)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages fribidi)
   #:use-module (gnu packages gawk)
@@ -41890,53 +41891,6 @@ floating point chromosomes.")
      "Kernel factory is an ensemble method where each base classifier (random
 forest) is fit on the kernel matrix of a subset of the training data.")
     (license license:gpl2+)))
-
-(define-public r-duckdb
-  (package
-    (name "r-duckdb")
-    (version "1.2.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (cran-uri "duckdb" version))
-       (sha256
-        (base32 "161zxianyssvsrd2345v4bi1m2z7wj614z8343jb73vhlk6s9yyi"))
-       ;; This package bundles the duckdb sources and builds a custom variant
-       ;; of duckdb.  I'd be happy to link it with our duckdb library instead,
-       ;; but it does not seem possible to do that.
-       #;
-       (snippet
-        '(delete-file "src/duckdb.tar.xz"))))
-    (properties
-     '((upstream-name . "duckdb")
-       (updater-extra-native-inputs . ("tzdata-for-tests"))
-       ;; We don't seem to need this and I don't want to package it now.
-       (updater-ignored-native-inputs . ("r-dblog"))))
-    (build-system r-build-system)
-    (arguments (list #:tests? #false)) ;tests can time out on the build farm
-    (propagated-inputs (list r-dbi))
-    (native-inputs (list r-adbcdrivermanager
-                         r-arrow
-                         r-bit64
-                         r-callr
-                         r-clock
-                         r-dbitest
-                         r-dbplyr
-                         r-dplyr
-                         r-remotes
-                         r-rlang
-                         r-testthat
-                         r-tibble
-                         r-vctrs
-                         r-withr
-                         tzdata-for-tests))
-    (home-page "https://r.duckdb.org/")
-    (synopsis "DBI package for the DuckDB database management system")
-    (description
-     "The DuckDB project is an embedded analytical data management system with
-support for the Structured Query Language (SQL).  This package includes all of
-DuckDB and an R Database Interface (DBI) connector.")
-    (license license:expat)))
 
 (define-public r-dummies
   (package
