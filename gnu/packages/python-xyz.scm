@@ -35097,46 +35097,48 @@ async I/O support.")
   (package
     (name "python-stltools")
     (version "2022.01.20")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/rsmith-nl/stltools")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1k6dhszza4lpy46qffaqx5zr70ikfqqysbacy7zabnrvz09fd4rs"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rsmith-nl/stltools")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1k6dhszza4lpy46qffaqx5zr70ikfqqysbacy7zabnrvz09fd4rs"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:use-setuptools? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'build)
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((moddir (string-append (site-packages inputs outputs) "/stltools"))
-                   (bindir (string-append (assoc-ref outputs "out") "/bin")))
-               (copy-recursively "stltools" moddir)
-               (mkdir-p bindir)
-               (for-each
-                (lambda (script)
-                  (let ((source (string-append script ".py"))
-                        (target (string-append bindir "/" script)))
-                    (copy-file source target)
-                    (chmod target #o555)))
-                '("stl2pov" "stl2ps" "stl2pdf" "stlinfo")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "py.test" "-v")))))))
-    (propagated-inputs (list python-pycairo))
-    (native-inputs (list python-pytest))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Project lacks correct setup.py, setup.cfg or pyproject.toml.
+          (delete 'build)
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((moddir (string-append (site-packages inputs outputs)
+                                           "/stltools"))
+                    (bindir (string-append #$output "/bin")))
+                (copy-recursively "stltools" moddir)
+                (mkdir-p bindir)
+                (for-each
+                 (lambda (script)
+                   (let ((source (string-append script ".py"))
+                         (target (string-append bindir "/" script)))
+                     (copy-file source target)
+                     (chmod target #o555)))
+                 '("stl2pov" "stl2ps" "stl2pdf" "stlinfo"))))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-pycairo))
     (home-page "https://github.com/rsmith-nl/stltools")
     (synopsis "Python modules and scripts for handling STL files")
-    (description "This package consists of Python modules and scripts for
-manipulating stereolithography (STL) files.  It can convert STL files into
-POV-ray meshes, PDF and PostScript.  The Python modules allow for reading and
-writing STL files.  It supports both the text and binary forms of STL.")
+    (description
+     "This package consists of Python modules and scripts for manipulating
+stereolithography (STL) files.  It can convert STL files into POV-ray meshes,
+PDF and PostScript.  The Python modules allow for reading and writing STL
+files.  It supports both the text and binary forms of STL.")
     (license license:expat)))
 
 (define-public python-multipart
