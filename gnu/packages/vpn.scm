@@ -59,6 +59,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages authentication)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
@@ -66,6 +67,7 @@
   #:use-module (gnu packages dns)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages flex)
@@ -81,10 +83,13 @@
   #:use-module (gnu packages groff)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages hardware)
+  #:use-module (gnu packages kerberos)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages networking)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -761,32 +766,63 @@ the user specifically asks to proxy, so the @dfn{VPN} interface no longer
     (license license:bsd-3)))
 
 (define-public openconnect
-  (package
-    (name "openconnect")
-    (version "9.12")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "ftp://ftp.infradead.org/pub/openconnect/"
-                                  "openconnect-" version ".tar.gz"))
-              (sha256
-               (base32 "0gj1nba1pygvcjasqdakxxnx94dwx3l4hzj0dvipbzjdmbixrgm2"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:configure-flags
-           #~(list (string-append "--with-vpnc-script="
-                                  (search-input-file %build-inputs
-                                                     "etc/vpnc/vpnc-script")))))
-    (native-inputs (list gettext-minimal pkg-config))
-    (inputs (list lz4 vpnc-scripts))
-    (propagated-inputs (list libxml2 gnutls zlib))
-    (synopsis "Client for Cisco VPN")
-    (description
-     "OpenConnect is a client for Cisco's AnyConnect SSL VPN, which is
+  (let ((commit "0dcdff87db65daf692dc323732831391d595d98d")
+        (revision "0"))
+    (package
+      (name "openconnect")
+      (version (git-version "9.12" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://gitlab.com/openconnect/openconnect.git")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0m8zwnnjkxik3sy67zm3ia6dkmz77fansja889zg8pp481831yh2"))))
+      (outputs '("out" "doc"))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list
+           (string-append
+            "--with-vpnc-script="
+            (search-input-file %build-inputs "etc/vpnc/vpnc-script")))))
+      (native-inputs
+       (list autoconf
+             automake
+             gettext-minimal
+             libtool
+             pkg-config
+             ;; To build documentation.
+             groff
+             python-minimal
+             ;; For unit tests.
+             socket-wrapper
+             uid-wrapper
+             python-flask))
+      (inputs
+       (list mit-krb5                   ;for gssapi
+             tpm2-tss
+             lz4
+             vpnc-scripts))
+      (propagated-inputs
+       (list gnutls
+             libproxy
+             oath-toolkit               ;for libpskc
+             pcsc-lite
+             stoken
+             libxml2
+             zlib))
+      (synopsis "Client for Cisco VPN")
+      (description
+       "OpenConnect is a client for Cisco's AnyConnect SSL VPN, which is
 supported by the ASA5500 Series, by IOS 12.4(9)T or later on Cisco SR500, 870,
 880, 1800, 2800, 3800, 7200 Series and Cisco 7301 Routers, and probably
 others.")
-    (license license:lgpl2.1)
-    (home-page "https://www.infradead.org/openconnect/")))
+      (license license:lgpl2.1)
+      (home-page "https://www.infradead.org/openconnect/"))))
 
 (define-public openfortivpn
   (package
