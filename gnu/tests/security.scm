@@ -97,6 +97,17 @@
 
     (gexp->derivation test-name test)))
 
+;; The /var/log/secure file that is monitored by fail2ban has to be present
+;; before the service starts. This limitation is discussed here:
+;; https://github.com/fail2ban/fail2ban/issues/1593.
+(define %auth-log-activation-service
+  (simple-service 'create-authlog-file
+                  activation-service-type
+                  #~(begin
+                      (call-with-output-file "/var/log/secure"
+                        (lambda (port)
+                          (display "" port))))))
+
 (define run-fail2ban-basic-test
   (fail2ban-test
    "fail2ban-basic-test"
@@ -121,12 +132,14 @@
 
 (define run-fail2ban-simple-test
   (fail2ban-test
-   "fail2ban-basic-test"
+   "fail2ban-simple-test"
 
    (simple-operating-system
-    (service fail2ban-service-type (fail2ban-configuration
-                                    (jails (list (fail2ban-jail-configuration
-                                                  (name "sshd")))))))
+    %auth-log-activation-service
+    (service fail2ban-service-type
+             (fail2ban-configuration
+               (jails (list (fail2ban-jail-configuration
+                              (name "sshd")))))))
 
    (test-equal "fail2ban sshd jail running status output"
      '("Status for the jail: sshd"
@@ -175,8 +188,11 @@
    "fail2ban-extension-test"
 
    (simple-operating-system
-    (service (fail2ban-jail-service openssh-service-type (fail2ban-jail-configuration
-                                                          (name "sshd") (enabled? #t)))
+    %auth-log-activation-service
+    (service (fail2ban-jail-service openssh-service-type
+                                    (fail2ban-jail-configuration
+                                      (name "sshd")
+                                      (enabled? #t)))
              (openssh-configuration))
     (service static-networking-service-type
              (list %qemu-static-networking)))
