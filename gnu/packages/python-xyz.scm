@@ -34316,18 +34316,24 @@ the C time module reports is the local timezone offset.
 (define-public python-stripe
   (package
     (name "python-stripe")
-    (version "2.60.0")
+    (version "13.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "stripe" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/stripe/stripe-python")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0258lzh4qikhinfggnlfh5aklcvg7lrvl8giqrh0yf0l61wvfrl9"))))
-    (build-system python-build-system)
+        (base32 "0f0d1hqias3qylrhk56w055lqrlzjs9s7wxva30v54ykmn9nj6dx"))))
+    (build-system pyproject-build-system)
     (arguments
      '(#:tests? #f))  ;; tests require network
+    (native-inputs
+     (list python-flit-core))
     (propagated-inputs
-     (list python-requests))
+     (list python-httpx
+           python-requests))
     (home-page "https://github.com/stripe/stripe-python")
     (synopsis "Python bindings for the Stripe financial services' API")
     (description "This package provides access to the Stripe financial
