@@ -34272,15 +34272,15 @@ statements in OFX files.")
     (version "0.7")
     (source
      (origin
-       (method git-fetch)               ;no tests in pypi release
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/danielrichman/strict-rfc3339")
-             (commit (string-append "version-" version))))
+              (url "https://github.com/danielrichman/strict-rfc3339")
+              (commit (string-append "version-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0b12bh9v9gwkm89kxbidxw2z81lg8fx1v5fzgs313v1wgx6qb09p"))))
+        (base32 "0b12bh9v9gwkm89kxbidxw2z81lg8fx1v5fzgs313v1wgx6qb09p"))))
     (build-system pyproject-build-system)
+    ;; TODO: Convert to #:test-flags on the next python-team cycle.
     (arguments
      (list
       #:phases
@@ -34301,8 +34301,12 @@ statements in OFX files.")
     (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/danielrichman/strict-rfc3339")
     (synopsis "RFC3339 procedures library")
-    (description "The @code{strict_rfc3339} Python module provides strict,
-simple, lightweight RFC3339 procedures.  It enables or aims to:
+    (description
+     "The @code{strict_rfc3339} Python module provides strict, simple, lightweight
+@url{https://www.rfc-editor.org/rfc/rfc3339, RFC3339} (Date and Time on the
+Internet: Timestamps) procedures.
+
+It enables or aims to:
 @itemize
 @item Convert UNIX timestamps to and from RFC3339.
 @item Produce RFC3339 strings with a UTC offset (Z) or with the offset that
