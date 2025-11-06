@@ -70,6 +70,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages digest)
+  #:use-module (gnu packages duckdb)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages geo)
   #:use-module (gnu packages graphviz)

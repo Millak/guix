@@ -217,6 +217,7 @@
   #:use-module (gnu packages django)
   #:use-module (gnu packages djvu)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages duckdb)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages emulators)
   #:use-module (gnu packages enchant)
@@ -23774,67 +23775,6 @@ runtime (rather than during a preprocessing step).")
     (synopsis "Mustache templating language renderer")
     (description "This package provides a Python implementation of the
 Mustache templating language renderer.")
-    (license license:expat)))
-
-;; XXX: Try to inherit from duckdb and build from source with all extensions.
-(define-public python-duckdb
-  (package
-    (name "python-duckdb")
-    (version "1.3.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "duckdb" version))
-              (sha256
-               (base32
-                "1x8zb47y8lzc4w0g013sim8x9vd1h96ra3dd0bvh91y73f5dyn66"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:tests? #f ;FIXME: See <https://codeberg.org/guix/guix/issues/1436>.
-      #:test-flags
-      #~(list "--ignore=tests/slow/test_h2oai_arrow.py"
-              ;; Do not relay on mypy.
-              "--ignore=tests/stubs/test_stubs.py"
-              "-k" (string-append
-                    ;; Don't install anything, thank you.
-                    "not test_install_non_existent_extension"
-                    ;; _pybind11_conduit_v1_ not found.
-                    " and not test_wrap_coverage"
-                    ;; See <https://github.com/duckdb/duckdb/issues/11961>.
-                    " and not test_fetchmany"
-                    ;; See <https://github.com/duckdb/duckdb/issues/10702>.
-                    " and not test_connection_interrupt"
-                    " and not test_query_interruption"))
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; Tests need this
-          (add-before 'check 'set-HOME
-            (lambda _ (setenv "HOME" "/tmp")))
-          ;; Later versions of pybind replace "_" with "const_name".
-          (add-after 'unpack 'pybind-compatibility
-            (lambda _
-              (with-directory-excursion "src/include/duckdb_python"
-                (substitute* '("python_objects.hpp"
-                               "pyfilesystem.hpp"
-                               "pybind11/conversions/pyconnection_default.hpp")
-                  (("const_name") "_"))))))))
-    (propagated-inputs
-     (list python-adbc-driver-manager))
-    (native-inputs
-     (list pybind11
-           python-fsspec
-           ;; python-google-cloud-storage ;python-grpcio fails (see: guix/guix#1436)
-           python-numpy
-           python-pandas
-           python-psutil
-           ;; python-pytest
-           python-setuptools-scm
-           python-setuptools
-           python-wheel))
-    (home-page "https://www.duckdb.org")
-    (synopsis "DuckDB embedded database")
-    (description "DuckDB is an in-process SQL OLAP database management
-system.")
     (license license:expat)))
 
 (define-public python-dulwich
