@@ -2186,148 +2186,6 @@ three consecutive points in a polyline or polygon
 Snake with a message.")
     (license license:expat)))
 
-(define-public python-spinners
-  (package
-    (name "python-spinners")
-    (version "0.0.24")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "spinners" version))
-       (sha256
-        (base32 "0zz2z6dpdjdq5z8m8w8dfi8by0ih1zrdq0caxm1anwhxg2saxdhy"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))         ;no tests in PyPI archive, tests depend on Nose
-    (native-inputs
-     (list python-setuptools))
-    (home-page "https://github.com/manrajgrover/py-spinners")
-    (synopsis "Python library with graphical spinners for the terminal")
-    (description
-     "Spinners is a Python library that contains graphical spinners that can
-be displayed terminal.")
-    (license license:expat)))
-
-(define-public python-sqlglot
-  (package
-    (name "python-sqlglot")
-    (version "26.33.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sqlglot" version))
-       (sha256
-        (base32 "0wqdpix71bzx61qwk3mi7v42afmrj03dg81sykgdclgsg63jf5r8"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-backend #~'unittest
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda _
-              (setenv "SQLGLOTRS_TOKENIZER" "0"))))))
-    (native-inputs
-     (list python-duckdb
-           python-pytz
-           python-pandas
-           python-setuptools
-           python-setuptools-scm
-           python-tzdata))
-    (home-page "https://sqlglot.com/")
-    (synopsis "Python SQL Parser and Transpiler")
-    (description
-     "SQLGlot is a no-dependency SQL parser, transpiler, optimizer, and
-engine.  It can be used to format SQL or translate between 31 different
-dialects like DuckDB, Presto / Trino, Spark / Databricks, Snowflake, and
-BigQuery.  It aims to read a wide variety of SQL inputs and output
-syntactically and semantically correct SQL in the targeted dialects.")
-    (license license:expat)))
-
-(define-public python-sqlglotrs
-  (package
-    (inherit python-sqlglot)
-    (name "python-sqlglotrs")
-    (version "0.6.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sqlglotrs" version))
-       (sha256
-        (base32 "1q8ii7fbgl2b2smi80bn5ifbs5xfzrkqqb4r1j5xx2k98jjsff7n"))))
-    (build-system cargo-build-system)
-    (arguments
-     (list
-      #:install-source? #false
-      #:tests? #f ;no tests
-      #:imported-modules `(,@%cargo-build-system-modules
-                           ,@%pyproject-build-system-modules)
-      #:modules '((guix build cargo-build-system)
-                  ((guix build pyproject-build-system) #:prefix py:)
-                  (guix build utils))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'build 'build-python-module
-            (assoc-ref py:%standard-phases 'build))
-          (add-after 'build-python-module 'install-python-module
-            (assoc-ref py:%standard-phases 'install))
-          (add-after 'install-python-module 'add-install-to-pythonpath
-            (assoc-ref py:%standard-phases 'add-install-to-pythonpath)))))
-    (native-inputs
-     (list maturin
-           python-wrapper))
-    (inputs
-     (cargo-inputs 'python-sqlglotrs))))
-
-(define-public python-streamtracer
-  (package
-    (name "python-streamtracer")
-    (version "2.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "streamtracer" version))
-       (sha256
-        (base32 "01ncr8q58xkz2dydjdg4a0c3kv4mpd6j1lzj4p0cmpg7jdi24cmr"))))
-    (build-system cargo-build-system)
-    (arguments
-     (list
-      #:imported-modules `(,@%cargo-build-system-modules
-                           ,@%pyproject-build-system-modules)
-      #:modules '((guix build cargo-build-system)
-                  ((guix build pyproject-build-system) #:prefix py:)
-                  (guix build utils))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'build 'build-python-module
-            (assoc-ref py:%standard-phases 'build))
-          (add-after 'build-python-module 'install-python-module
-            (assoc-ref py:%standard-phases 'install))
-          (add-after 'install-python-module 'add-install-to-pythonpath
-            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
-          (add-after 'check 'check-python-module
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion #$output
-                  (invoke "pytest" "-vv"))))))
-      #:install-source? #false))
-    (native-inputs
-     (list maturin
-           python-pytest
-           python-pytest-doctestplus
-           python-wrapper))
-    (propagated-inputs
-     (list python-numpy
-           python-packaging))
-    (inputs (cargo-inputs 'python-streamtracer))
-    (home-page "https://github.com/sunpy/streamtracer")
-    (synopsis "Rapid streamline tracing in Python")
-    (description
-     "streamtracer is a Python package for rapid streamline tracing on
-regularly spaced grids.  The actual streamline tracing is done at a low level
-in Rust, with a nice Python API provided on top.")
-    (license license:gpl3+)))
-
 (define-public python-jaconv
   (package
     (name "python-jaconv")
@@ -9700,43 +9558,6 @@ utility, a static analysis tool (linter) for Robot Framework source files.")
     (description "Pabot is a parallel executor for Robot Framework tests.")
     (license license:asl2.0)))
 
-(define-public python-sshtunnel
-  (let ((commit "dc0732884379a19a21bf7a49650d0708519ec54f")
-        (revision "0"))
-    (package
-      (name "python-sshtunnel")
-      (version (git-version "0.4.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/pahaz/sshtunnel")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0fzq7pbqa6fjamzp61gjpd2hzph2ag7r507dlwpqilp6w8ipz49a"))
-         (patches (search-patches "python-sshtunnel-pep518.patch"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'remove-deprecated-dsskey
-              (lambda _
-                (substitute* "sshtunnel.py"
-                  (("'dsa': paramiko\\.DSSKey,")
-                   "")
-                  (("paramiko\\.DSSKey, ")
-                   "")))))))
-      (propagated-inputs (list python-paramiko))
-      (native-inputs
-       (list openssh python-mock python-pytest python-setuptools))
-      (home-page "https://github.com/pahaz/sshtunnel")
-      (synopsis "Python SSH tunnels library")
-      (description "@code{sshtunnel} is a Python module for easily creating SSH
-tunnels in the background, using Python.")
-      (license license:expat))))
-
 (define-public python-robotframework-stacktrace
   (package
     (name "python-robotframework-stacktrace")
@@ -10039,35 +9860,6 @@ via the SCP1 protocol, as implemented by the OpenSSH @command{scp} program.")
 reference or timestamps.  It's primary purpose is to augment the changelog,
 but it can be used for other documents, too.")
     (license license:expat)))
-
-(define-public python-sshpubkeys
-  (package
-    (name "python-sshpubkeys")
-    (version "3.2.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/ojarva/python-sshpubkeys")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0n7bjq8wifdw09mxkfzdkybij0csqjcifyxz8dbxy2iffjv5mqnq"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f)) ; XXX: All tests fail
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-cryptography
-           python-ecdsa))
-    (home-page "https://github.com/ojarva/python-sshpubkeys")
-    (synopsis "OpenSSH public key parser")
-    (description
-     "This package provides a library for parsing and validating OpenSSH
-public key files.")
-    (license license:bsd-3)))
 
 (define-public python-feedgenerator
   (package
@@ -15225,51 +15017,6 @@ for automated refactoring or highlighting.")
 functions, useful in the context of writing unit tests among other uses.")
     (license license:expat)))
 
-(define-public python-stack-data
-  (package
-    (name "python-stack-data")
-    (version "0.6.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "stack_data" version))
-       (sha256
-        (base32 "1fgh900z6g1amb2f2ql461c1y8lazymxi7nqvk8xri7ywj6pfsl3"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "-k" (string-join
-                    ;; XXX: Tests fail with HTML diff.
-                    (list "not test_executing_style_defs"
-                          "test_pygments_example"
-                          "test_example")
-                    " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-home-env
-            (lambda _
-              (setenv "HOME" "/tmp"))))))
-    (native-inputs
-     (list python-cython
-           python-littleutils
-           python-pygments
-           python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-typeguard
-           python-wheel))
-    (propagated-inputs
-     (list python-asttokens
-           python-executing
-           python-pure-eval))
-    (home-page "https://github.com/alexmojaki/stack_data")
-    (synopsis "Python stack frame and traceback manipulation library")
-    (description "The @code{stack_data} Python library extracts data from
-stack frames and tracebacks.  Is can be used to display more useful tracebacks
-than the default.")
-    (license license:expat)))
-
 (define-public python-ipython
   (package
     (name "python-ipython")
@@ -15981,61 +15728,6 @@ multiprecision arithmetic.")
     (description
      "This package can generate command line parameters from function
 signatures.")
-    (license license:bsd-3)))
-
-(define-public python-syllables
-  (package
-    (name "python-syllables")
-    (version "1.0.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/prosegrinder/python-syllables")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "12yv9d7hmrkw10p2nivk0c9b96rm6040zfif6pj4sm1vg3n8ik6n"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-cmudict python-pytest python-setuptools))
-    (home-page "https://github.com/prosegrinder/python-syllables")
-    (synopsis "Package for estimating the number of syllables in a word")
-    (description
-     "This package provides a Python package for estimating the number of
-syllables in a word.")
-    (license license:gpl3)))
-
-(define-public python-sympy
-  (package
-    (name "python-sympy")
-    (version "1.13.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sympy" version))
-       (sha256
-        (base32 "1nf4zrjjbnv47n6sl6x9blfyarski61vdjaz4ygb62hfag3d4zxj"))))
-    (build-system pyproject-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (if tests?
-                 (invoke "python3" "-c"
-                         "import sympy; sympy.test(\"/core\")")))))))
-    (propagated-inputs (list python-mpmath))
-    (native-inputs
-     (list python-hypothesis
-           python-pytest
-           python-setuptools
-           python-wheel))
-    (home-page "https://www.sympy.org/")
-    (synopsis "Python library for symbolic mathematics")
-    (description
-     "SymPy is a Python library for symbolic mathematics.  It aims to become a
-full-featured computer algebra system (CAS) while keeping the code as simple
-as possible in order to be comprehensible and easily extensible.")
     (license license:bsd-3)))
 
 (define-public python-q
@@ -17093,155 +16785,6 @@ checksums.  It implement more than a hundred checksum routines.")
     (synopsis "Manage Python errors with ease")
     (description
      "Python library that makes exceptions handling and inspection easier.")
-    (license license:expat)))
-
-(define-public python-stdio-mgr
-  (package
-    (name "python-stdio-mgr")
-    (version "1.0.1")
-    (source
-     (origin
-       (method git-fetch) ; no tests data in PyPi package
-       (uri (git-reference
-             (url "https://github.com/bskinn/stdio-mgr")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0xb6779s7j162xhig6vc63f9nn3v406fvjh1zqbqbf8zcl17ific"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; Do not run doctests requiring sphinx.
-      #:test-flags #~(list "--ignore=README.rst")))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-attrs))
-    (home-page "https://github.com/bskinn/stdio-mgr")
-    (synopsis "Context manager for mocking/wrapping stdin/stdout/stderr")
-    (description
-     "This package contains a context manager for mocking/wrapping
-stdin/stdout/stderr.")
-    (license license:expat)))
-
-;; TODO: This package is not necessary in Guix. It should be replaced by a
-;; trivial python package providing the same functionality.
-(define-public python-stdlib-list
-  (package
-    (name "python-stdlib-list")
-    (version "0.11.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/jackmaney/python-stdlib-list")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "14aw5xbqcs0ww9n4659z5dbs89xqpw2s4m3q4gp66br2xr9iybjf"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-flit-core python-pytest python-sphinx))
-    (home-page "https://github.com/jackmaney/python-stdlib-list")
-    (synopsis "Python Standard Libraries")
-    (description
-     "This package contains a list of Python Standard Libraries.")
-    (license license:expat)))
-
-(define-public python-stopit
-  (package
-    (name "python-stopit")
-    (version "1.1.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/glenfant/stopit")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1g3xwd62389643hrz6bljq0ddd1yvwpfk4nrv29naf09pl1m8wmr"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-backend #~'custom
-           #:test-flags #~(list "tests.py")))
-    (native-inputs (list python-setuptools))
-    (home-page "https://pypi.python.org/pypi/stopit")
-    (synopsis "Timeout control decorator and context managers")
-    (description
-     "Raise asynchronous exceptions in other threads, control the timeout of
-blocks or callables with two context managers and two decorators.")
-    (license license:expat)))
-
-(define-public python-straight-plugin
-  (package
-    (name "python-straight-plugin")
-    (properties '((commit . "363b0af4a2560bf9a3cb61160ecf28a1a1b9c91f")
-                  (revision . "0")))
-    (version (git-version "1.4.1"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/ironfroggy/straight.plugin")
-              (commit (assoc-ref properties 'commit))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "03p2apj7i9m38nmccfhvzldmzd61icv145vpmifln3mvh09jm6c2"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-backend #~'custom
-      #:test-flags #~(list "tests.py")))
-    (native-inputs (list python-mock python-setuptools))
-    (home-page "https://github.com/ironfroggy/straight.plugin")
-    (synopsis "Simple namespaced plugin facility")
-    (description
-     "Straight Plugin provides a type of plugin you can create from almost any
-existing Python modules, and an easy way for outside developers to add
-functionality and customization to your projects with their own plugins.")
-    (license license:expat)))
-
-(define-public python-strenum
-  (package
-    (name "python-strenum")
-    (version "0.4.15")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/irgeek/StrEnum")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1bvk7v5f3sr7awcacdmw5lfzsnn6j52q45va9xpc71n5qxydqbfn"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--ignore=doc/")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-version
-            ;; Versioneer is useless when there is no git metadata.
-            (lambda _
-              (substitute* "setup.py"
-                (("version=versioneer.get_version\\(),")
-                 (format #f "version=~s," #$version)))))
-          (add-after 'unpack 'fix-pytest-config
-            (lambda _
-              (substitute* "pytest.ini"
-                (("addopts =.*") "")))))))
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (home-page "https://github.com/irgeek/StrEnum")
-    (synopsis "Enum that inherits from str")
-    (description "StrEnum is a Python @code{enum.Enum} that inherits from
-@code{str} to complement @code{enum.IntEnum} in the standard library.")
     (license license:expat)))
 
 (define-public python-pysendfile
@@ -19813,30 +19356,6 @@ applications.")
 explicit subcommand name.")
     (home-page "https://github.com/click-contrib/click-default-group")
     (license license:bsd-3)))
-
-(define-public python-structlog
-  (package
-    (name "python-structlog")
-    (version "25.5.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "structlog" version))
-        (sha256
-         (base32 "167wj0hxrsa9kbalh86vvwqs105zi8ld1ikh8lyibndypsij5189"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-hatch-fancy-pypi-readme
-           python-hatch-vcs
-           python-hatchling
-           python-pytest
-           python-pytest-asyncio
-           python-time-machine))
-    (home-page "https://www.structlog.org/")
-    (synopsis "Structured Logging for Python")
-    (description "@code{structlog} changes logging in Python by adding structure
-to your log entries.")
-    (license (list license:asl2.0 license:expat))))
 
 (define-public python-apipkg
   (package
@@ -23268,35 +22787,6 @@ etc.")
      "@code{pyvirtualdisplay} is a Python wrapper for Xvfb, Xephyr and Xvnc.")
     (license license:bsd-3)))
 
-(define-public python-stem
-  (package
-    (name "python-stem")
-    (version "1.8.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "stem" version))
-       (sha256
-        (base32
-         "10mm9qw4xv7d18086ivy38iaz04z72018186q03j5y69skzikyw3"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases #~(modify-phases %standard-phases
-                   (replace 'check
-                     (lambda _
-                       (invoke "./run_tests.py" "--unit"))))))
-    (native-inputs
-     (list python-setuptools python-wheel))
-    (home-page "https://stem.torproject.org/")
-    (synopsis
-     "Python controller library that allows applications to interact with Tor")
-    (description
-     "Stem is a Python controller library for Tor.  With it you can use Tor's
-     control protocol to script against the Tor process and read descriptor data
-     relays publish about themselves.")
-    (license license:lgpl3)))
-
 (define-public python-pyserial
   (package
     (name "python-pyserial")
@@ -26192,35 +25682,6 @@ web frameworks.")
      from your Flask project.  It is a fork of Flask-Swagger.")
     (license license:expat)))
 
-(define-public python-swagger-spec-validator
-  (package
-    (name "python-swagger-spec-validator")
-    (version "3.0.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/Yelp/swagger_spec_validator")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1vmwg0432s22g48i2ys1ay441wmgkhjann1s165r499wg3pksggi"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-importlib-resources
-           python-jsonschema
-           python-pyyaml
-           python-typing-extensions))
-    (home-page "https://github.com/Yelp/swagger_spec_validator")
-    (synopsis "Validation of Swagger specifications")
-    (description
-     "@code{swagger_spec_validator} provides a library for validating Swagger
-API specifications.")
-    (license license:asl2.0)))
-
 (define-public python-apache-libcloud
   (package
     (name "python-apache-libcloud")
@@ -27004,41 +26465,6 @@ Examples are:
        (sha256
         (base32 "1chgi60z3c97m9l23vf5cpyp0nidkqlpxc55q5k5pz41ms3d0440"))
        (file-name (git-file-name name version))))))
-
-(define-public python-sqltrie
-  (package
-    (name "python-sqltrie")
-    (version "0.11.2")
-    (home-page "https://github.com/iterative/sqltrie/")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sqltrie" version))
-       (sha256
-        (base32 "1ninmia5ka1nnv4gxqacvbmkfxwc7dilw141rxxk9zmbnf4p1x2d"))))
-    (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-attrs
-           python-orjson
-           python-pygtrie))
-    (native-inputs
-     (list python-pytest
-           python-pytest-mock
-           python-pytest-sugar
-           python-setuptools
-           python-setuptools-scm))
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--ignore=tests/benchmarks/"
-              ;; <https://github.com/pyinstaller/pyinstaller> is not packaged
-              ;; yet in Guix.
-              "--ignore=src/sqltrie/__pyinstaller")))
-    (synopsis "SQL-based prefix tree for Python")
-    (description
-     "Sqltrie is a SQL-based prefix tree inspired by pygtrie and
-python-diskcache.")
-    (license license:asl2.0)))
 
 (define-public python-isoweek
   (package
@@ -27826,34 +27252,6 @@ binding is created using the standard @code{ctypes} library.")
 interface to FUSE on various operating systems.  It's just one file and is
 implemented using @code{ctypes}.")
     (license license:isc)))
-
-(define-public python-stone
-  (package
-    (name "python-stone")
-    (version "3.3.9")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/dropbox/stone")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1x0kj4jygssjn66lbkln95chhf85vzy1wnpziy9jvpf4kbc1bmfy"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-jinja2
-           python-packaging
-           python-ply
-           python-six))         ;hard requirement, still
-    (home-page "https://github.com/dropbox/stone")
-    (synopsis "Official Api Spec Language for Dropbox")
-    (description
-     "Stone is an interface description language (IDL) for APIs.")
-    (license license:expat)))
 
 (define-public pybind11
   (package
@@ -30095,36 +29493,6 @@ functional combinators.  Parser combinators are just higher-order functions
 that take parsers as their arguments and return them as result values.")
     (license license:expat)))
 
-(define-public python-speg
-  (package
-    (name "python-speg")
-    ;; 0.3 was released in 2017, the latest change on master HEAD is from 2018.
-    (properties '((commit . "877acddfd5ac5ae8b4a4592d045e74e108477643")
-                  (revision . "0")))
-    (version (git-version "0.3"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/avakar/speg")
-              (commit (assoc-ref properties 'commit))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0lhms1sfvmnplcwq8qwwvkrcz4sgi9yprvrkjz7p84fjhk86n4sb"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-six))
-    (home-page "https://github.com/avakar/speg")
-    (synopsis "PEG-based parser interpreter with memoization")
-    (description "This package is a PEG-based parser and interpreter with
-memoization.")
-    (license license:expat)))
-
 (define-public python-cson
   (package
     (name "python-cson")
@@ -31320,58 +30688,6 @@ For the most part it's transliterated from C, the major differences are:
     (description
      "Jinxed is an implementation of a subset of the Python curses library.")
     (license license:mpl2.0)))
-
-(define-public python-svgelements
-  (package
-    (name "python-svgelements")
-    (version "1.9.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "svgelements" version))
-       (sha256
-        (base32 "1xrp7yxg65dqdrmghriljf9hh2smq2zhzr2hzmqifgfd0ijas0kw"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-anyio
-           python-pytest
-           python-numpy
-           python-pillow
-           python-scipy
-           python-setuptools
-           python-wheel))
-    (home-page "https://github.com/meerk40t/svgelements")
-    (synopsis "SVG parsing for elements, paths, and other SVG objects")
-    (description
-     "This module does high fidelity SVG parsing and geometric rendering.
-The goal is to successfully and correctly process SVG for use with any scripts
-that may need or want to use SVG files as geometric data.")
-    (license license:expat)))
-
-(define-public python-svgutils
-  (package
-    (name "python-svgutils")
-    (version "0.3.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "svgutils" version))
-       (sha256
-        (base32 "0lz0w2ajdvwd269a7ppnzawmx8px0116j0nx8xvhlihxrd28zx4y"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))         ;no test in PyPI archive, depend on Nose
-    (native-inputs
-     (list python-setuptools))
-    (propagated-inputs
-     (list python-lxml))
-    (home-page "https://svgutils.readthedocs.io")
-    (synopsis "Python SVG editor")
-    (description "This is an utility package that helps with editing and
-concatenating SVG files.  It is especially directed at scientists preparing
-final figures for submission to journals.  So far it supports arbitrary
-placement and scaling of SVG figures and adding markers, such as labels.")
-    (license license:expat)))
 
 (define-public python-blessed
   (package
@@ -35099,54 +34415,6 @@ async I/O support.")
      "This package adds ANSI colors and decorations to your strings.")
     (license license:isc)))
 
-(define-public python-stltools
-  (package
-    (name "python-stltools")
-    (version "2022.01.20")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/rsmith-nl/stltools")
-              (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1k6dhszza4lpy46qffaqx5zr70ikfqqysbacy7zabnrvz09fd4rs"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Project lacks correct setup.py, setup.cfg or pyproject.toml.
-          (delete 'build)
-          (replace 'install
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let ((moddir (string-append (site-packages inputs outputs)
-                                           "/stltools"))
-                    (bindir (string-append #$output "/bin")))
-                (copy-recursively "stltools" moddir)
-                (mkdir-p bindir)
-                (for-each
-                 (lambda (script)
-                   (let ((source (string-append script ".py"))
-                         (target (string-append bindir "/" script)))
-                     (copy-file source target)
-                     (chmod target #o555)))
-                 '("stl2pov" "stl2ps" "stl2pdf" "stlinfo"))))))))
-    (native-inputs
-     (list python-pytest
-           python-setuptools))
-    (propagated-inputs
-     (list python-pycairo))
-    (home-page "https://github.com/rsmith-nl/stltools")
-    (synopsis "Python modules and scripts for handling STL files")
-    (description
-     "This package consists of Python modules and scripts for manipulating
-stereolithography (STL) files.  It can convert STL files into POV-ray meshes,
-PDF and PostScript.  The Python modules allow for reading and writing STL
-files.  It supports both the text and binary forms of STL.")
-    (license license:expat)))
-
 (define-public python-multipart
   (package
     (name "python-multipart")
@@ -35221,88 +34489,6 @@ features of the Psycopg database driver.")
       "This package automatically generates shell tab completion scripts for
 Python CLI apps.")
     (license license:asl2.0)))
-
-(define-public python-style
-  (package
-    (name "python-style")
-    (version "1.1.6")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "style" version))
-        (sha256
-          (base32 "1dcfb578v9mrwh92rgms87gql0gp4vgj6l9hpgyfg0wbd3rh3bfh"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f))        ;no tests in PyPI, package is 6y old
-    (native-inputs
-     (list python-setuptools))
-    (home-page "https://github.com/lmittmann/style")
-    (synopsis "Terminal string styling")
-    (description
-"@code{python-style} is a simple terminal string styling package.  Its API is
-a port of the chalk package for javascript.")
-    (license license:expat)))
-
-(define-public python-sre-yield
-  (package
-    (name "python-sre-yield")
-    (version "1.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sre_yield" version))
-       (sha256
-        (base32 "12kv3mvdr22g2v9wfr5aabh1f58s817dbh8mrlfzxzxs7hm1lkz9"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-backend #~'unittest))
-    (native-inputs (list python-setuptools))
-    (home-page "https://github.com/google/sre_yield")
-    (synopsis "Expands a regular expression to its possible matches")
-    (description
-     "The goal of sre_yield is to efficiently generate all values that can
-match a given regular expression, or count possible matches efficiently.  It
-uses the parsed regular expression, so you get a much more accurate result
-than trying to just split strings.")
-    (license license:asl2.0)))
-
-(define-public python-srsly
-  (package
-    (name "python-srsly")
-    (version "2.5.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "srsly" version))
-              (sha256
-               (base32
-                "0zn74zyb928v898j6l86a83qgdvza78ksjg0v8ixla9yrzv4n6xb"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--pyargs" "srsly"
-              ;; 3 tests fail in
-              ;; tests/cloudpickle/cloudpickle_test.py::CloudPickleTest
-              "-k" (string-append "not test_import"
-                                  " and not test_logger"
-                                  " and not test_multiprocess"))))
-    (native-inputs
-     (list python-cython
-           python-mock
-           python-numpy
-           python-psutil
-           python-pytest
-           python-pytest-timeout
-           python-setuptools))
-    (propagated-inputs
-     (list python-catalogue))
-    (home-page "https://github.com/explosion/srsly")
-    (synopsis "Serialization utilities for Python")
-    (description "This package bundles some of the best Python serialization
-libraries into one standalone package, with a high-level API that makes it
-easy to write code that's correct across platforms and Pythons.")
-    (license license:expat)))
 
 (define-public python-pyperf
   (package
@@ -36007,25 +35193,6 @@ in an identifier name, which the object can use to lookup the function from
 the registry.  This makes the object easy to serialize, because the name is a
 simple string.  If you instead saved the function, you'd have to use Pickle
 for serialization, which has many drawbacks.")
-    (license license:expat)))
-
-(define-public python-srt
-  (package
-    (name "python-srt")
-    (version "3.5.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "srt" version))
-       (sha256
-        (base32 "1h0cxlp66i6wlq3g6dg1f1nw0sipm9nfsy7qs47p9w548d833128"))))
-    (build-system pyproject-build-system)
-    (native-inputs (list python-pytest python-setuptools python-wheel))
-    (home-page "https://github.com/cdown/srt")
-    (synopsis "SRT parsing library")
-    (description
-     "This package provides a Python library for parsing, modifying, and
-composing subtitles in the SRT file format.")
     (license license:expat)))
 
 (define-public python-gatt
@@ -36852,6 +36019,852 @@ bigrams (pairs of two words or tokens), or of trigrams.  Icegrams is useful for
 instance in spelling correction, predictive typing, to help disabled people
 write text fast, and for various text generation, statistics, and modeling tasks.")
     (license license:expat)))
+
+(define-public python-speg
+  (package
+    (name "python-speg")
+    ;; 0.3 was released in 2017, the latest change on master HEAD is from 2018.
+    (properties '((commit . "877acddfd5ac5ae8b4a4592d045e74e108477643")
+                  (revision . "0")))
+    (version (git-version "0.3"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/avakar/speg")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lhms1sfvmnplcwq8qwwvkrcz4sgi9yprvrkjz7p84fjhk86n4sb"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-six))
+    (home-page "https://github.com/avakar/speg")
+    (synopsis "PEG-based parser interpreter with memoization")
+    (description "This package is a PEG-based parser and interpreter with
+memoization.")
+    (license license:expat)))
+
+(define-public python-spinners
+  (package
+    (name "python-spinners")
+    (version "0.0.24")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "spinners" version))
+       (sha256
+        (base32 "0zz2z6dpdjdq5z8m8w8dfi8by0ih1zrdq0caxm1anwhxg2saxdhy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))         ;no tests in PyPI archive, tests depend on Nose
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/manrajgrover/py-spinners")
+    (synopsis "Python library with graphical spinners for the terminal")
+    (description
+     "Spinners is a Python library that contains graphical spinners that can
+be displayed terminal.")
+    (license license:expat)))
+
+(define-public python-sqlglot
+  (package
+    (name "python-sqlglot")
+    (version "26.33.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sqlglot" version))
+       (sha256
+        (base32 "0wqdpix71bzx61qwk3mi7v42afmrj03dg81sykgdclgsg63jf5r8"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "SQLGLOTRS_TOKENIZER" "0"))))))
+    (native-inputs
+     (list python-duckdb
+           python-pytz
+           python-pandas
+           python-setuptools
+           python-setuptools-scm
+           python-tzdata))
+    (home-page "https://sqlglot.com/")
+    (synopsis "Python SQL Parser and Transpiler")
+    (description
+     "SQLGlot is a no-dependency SQL parser, transpiler, optimizer, and
+engine.  It can be used to format SQL or translate between 31 different
+dialects like DuckDB, Presto / Trino, Spark / Databricks, Snowflake, and
+BigQuery.  It aims to read a wide variety of SQL inputs and output
+syntactically and semantically correct SQL in the targeted dialects.")
+    (license license:expat)))
+
+(define-public python-sqlglotrs
+  (package
+    (inherit python-sqlglot)
+    (name "python-sqlglotrs")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sqlglotrs" version))
+       (sha256
+        (base32 "1q8ii7fbgl2b2smi80bn5ifbs5xfzrkqqb4r1j5xx2k98jjsff7n"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #false
+      #:tests? #f ;no tests
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-python-module
+            (assoc-ref py:%standard-phases 'build))
+          (add-after 'build-python-module 'install-python-module
+            (assoc-ref py:%standard-phases 'install))
+          (add-after 'install-python-module 'add-install-to-pythonpath
+            (assoc-ref py:%standard-phases 'add-install-to-pythonpath)))))
+    (native-inputs
+     (list maturin
+           python-wrapper))
+    (inputs
+     (cargo-inputs 'python-sqlglotrs))))
+
+(define-public python-sqltrie
+  (package
+    (name "python-sqltrie")
+    (version "0.11.2")
+    (home-page "https://github.com/iterative/sqltrie/")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sqltrie" version))
+       (sha256
+        (base32 "1ninmia5ka1nnv4gxqacvbmkfxwc7dilw141rxxk9zmbnf4p1x2d"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=tests/benchmarks/"
+              ;; <https://github.com/pyinstaller/pyinstaller> is not packaged
+              ;; yet in Guix.
+              "--ignore=src/sqltrie/__pyinstaller")))
+    (native-inputs
+     (list python-pytest
+           python-pytest-mock
+           python-pytest-sugar
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-attrs
+           python-orjson
+           python-pygtrie))
+    (synopsis "SQL-based prefix tree for Python")
+    (description
+     "Sqltrie is a SQL-based prefix tree inspired by pygtrie and
+python-diskcache.")
+    (license license:asl2.0)))
+
+(define-public python-sre-yield
+  (package
+    (name "python-sre-yield")
+    (version "1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sre_yield" version))
+       (sha256
+        (base32 "12kv3mvdr22g2v9wfr5aabh1f58s817dbh8mrlfzxzxs7hm1lkz9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest))
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/google/sre_yield")
+    (synopsis "Expands a regular expression to its possible matches")
+    (description
+     "The goal of sre_yield is to efficiently generate all values that can
+match a given regular expression, or count possible matches efficiently.  It
+uses the parsed regular expression, so you get a much more accurate result
+than trying to just split strings.")
+    (license license:asl2.0)))
+
+(define-public python-srsly
+  (package
+    (name "python-srsly")
+    (version "2.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "srsly" version))
+       (sha256
+        (base32 "0zn74zyb928v898j6l86a83qgdvza78ksjg0v8ixla9yrzv4n6xb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--pyargs" "srsly"
+              ;; 3 tests fail in
+              ;; tests/cloudpickle/cloudpickle_test.py::CloudPickleTest
+              "-k" (string-append "not test_import"
+                                  " and not test_logger"
+                                  " and not test_multiprocess"))))
+    (native-inputs
+     (list python-cython
+           python-mock
+           python-numpy
+           python-psutil
+           python-pytest
+           python-pytest-timeout
+           python-setuptools))
+    (propagated-inputs
+     (list python-catalogue))
+    (home-page "https://github.com/explosion/srsly")
+    (synopsis "Serialization utilities for Python")
+    (description "This package bundles some of the best Python serialization
+libraries into one standalone package, with a high-level API that makes it
+easy to write code that's correct across platforms and Pythons.")
+    (license license:expat)))
+
+(define-public python-srt
+  (package
+    (name "python-srt")
+    (version "3.5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "srt" version))
+       (sha256
+        (base32 "1h0cxlp66i6wlq3g6dg1f1nw0sipm9nfsy7qs47p9w548d833128"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/cdown/srt")
+    (synopsis "SRT parsing library")
+    (description
+     "This package provides a Python library for parsing, modifying, and
+composing subtitles in the SRT file format.")
+    (license license:expat)))
+
+(define-public python-sshpubkeys
+  (package
+    (name "python-sshpubkeys")
+    (version "3.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ojarva/python-sshpubkeys")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n7bjq8wifdw09mxkfzdkybij0csqjcifyxz8dbxy2iffjv5mqnq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; XXX: All tests fail
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-cryptography
+           python-ecdsa))
+    (home-page "https://github.com/ojarva/python-sshpubkeys")
+    (synopsis "OpenSSH public key parser")
+    (description
+     "This package provides a library for parsing and validating OpenSSH
+public key files.")
+    (license license:bsd-3)))
+
+(define-public python-sshtunnel
+  (let ((commit "dc0732884379a19a21bf7a49650d0708519ec54f")
+        (revision "0"))
+    (package
+      (name "python-sshtunnel")
+      (version (git-version "0.4.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/pahaz/sshtunnel")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0fzq7pbqa6fjamzp61gjpd2hzph2ag7r507dlwpqilp6w8ipz49a"))
+         (patches (search-patches "python-sshtunnel-pep518.patch"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'remove-deprecated-dsskey
+              (lambda _
+                (substitute* "sshtunnel.py"
+                  (("'dsa': paramiko\\.DSSKey,")
+                   "")
+                  (("paramiko\\.DSSKey, ")
+                   "")))))))
+      (propagated-inputs (list python-paramiko))
+      (native-inputs
+       (list openssh python-mock python-pytest python-setuptools))
+      (home-page "https://github.com/pahaz/sshtunnel")
+      (synopsis "Python SSH tunnels library")
+      (description
+       "@code{sshtunnel} is a Python module for easily creating SSH tunnels
+in the background, using Python.")
+      (license license:expat))))
+
+(define-public python-stack-data
+  (package
+    (name "python-stack-data")
+    (version "0.6.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stack_data" version))
+       (sha256
+        (base32 "1fgh900z6g1amb2f2ql461c1y8lazymxi7nqvk8xri7ywj6pfsl3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; XXX: Tests fail with HTML diff.
+                    (list "not test_executing_style_defs"
+                          "test_pygments_example"
+                          "test_example")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-home-env
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-cython
+           python-littleutils
+           python-pygments
+           python-pytest
+           python-setuptools
+           python-setuptools-scm
+           python-typeguard
+           python-wheel))
+    (propagated-inputs
+     (list python-asttokens
+           python-executing
+           python-pure-eval))
+    (home-page "https://github.com/alexmojaki/stack_data")
+    (synopsis "Python stack frame and traceback manipulation library")
+    (description
+     "The @code{stack_data} Python library extracts data from stack frames and
+tracebacks.  Is can be used to display more useful tracebacks
+than the default.")
+    (license license:expat)))
+
+(define-public python-stdio-mgr
+  (package
+    (name "python-stdio-mgr")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bskinn/stdio-mgr")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xb6779s7j162xhig6vc63f9nn3v406fvjh1zqbqbf8zcl17ific"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Do not run doctests requiring sphinx.
+      #:test-flags #~(list "--ignore=README.rst")))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list python-attrs))
+    (home-page "https://github.com/bskinn/stdio-mgr")
+    (synopsis "Context manager for mocking/wrapping stdin/stdout/stderr")
+    (description
+     "This package contains a context manager for mocking/wrapping
+stdin/stdout/stderr.")
+    (license license:expat)))
+
+;; TODO: This package is not necessary in Guix. It should be replaced by a
+;; trivial python package providing the same functionality.
+(define-public python-stdlib-list
+  (package
+    (name "python-stdlib-list")
+    (version "0.11.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jackmaney/python-stdlib-list")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14aw5xbqcs0ww9n4659z5dbs89xqpw2s4m3q4gp66br2xr9iybjf"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-flit-core
+           python-pytest
+           python-sphinx))
+    (home-page "https://github.com/jackmaney/python-stdlib-list")
+    (synopsis "Python Standard Libraries")
+    (description
+     "This package contains a list of Python Standard Libraries.")
+    (license license:expat)))
+
+(define-public python-stem
+  (package
+    (name "python-stem")
+    (version "1.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "stem" version))
+       (sha256
+        (base32
+         "10mm9qw4xv7d18086ivy38iaz04z72018186q03j5y69skzikyw3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (replace 'check
+                     (lambda _
+                       (invoke "./run_tests.py" "--unit"))))))
+    (native-inputs
+     (list python-setuptools
+           python-wheel))
+    (home-page "https://stem.torproject.org/")
+    (synopsis
+     "Python controller library that allows applications to interact with Tor")
+    (description
+     "Stem is a Python controller library for Tor.  With it you can use Tor's
+     control protocol to script against the Tor process and read descriptor data
+     relays publish about themselves.")
+    (license license:lgpl3)))
+
+(define-public python-stltools
+  (package
+    (name "python-stltools")
+    (version "2022.01.20")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rsmith-nl/stltools")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1k6dhszza4lpy46qffaqx5zr70ikfqqysbacy7zabnrvz09fd4rs"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: Project lacks correct setup.py, setup.cfg or pyproject.toml.
+          (delete 'build)
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((moddir (string-append (site-packages inputs outputs)
+                                           "/stltools"))
+                    (bindir (string-append #$output "/bin")))
+                (copy-recursively "stltools" moddir)
+                (mkdir-p bindir)
+                (for-each
+                 (lambda (script)
+                   (let ((source (string-append script ".py"))
+                         (target (string-append bindir "/" script)))
+                     (copy-file source target)
+                     (chmod target #o555)))
+                 '("stl2pov" "stl2ps" "stl2pdf" "stlinfo"))))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-pycairo))
+    (home-page "https://github.com/rsmith-nl/stltools")
+    (synopsis "Python modules and scripts for handling STL files")
+    (description
+     "This package consists of Python modules and scripts for manipulating
+stereolithography (STL) files.  It can convert STL files into POV-ray meshes,
+PDF and PostScript.  The Python modules allow for reading and writing STL
+files.  It supports both the text and binary forms of STL.")
+    (license license:expat)))
+
+(define-public python-stone
+  (package
+    (name "python-stone")
+    (version "3.3.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dropbox/stone")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x0kj4jygssjn66lbkln95chhf85vzy1wnpziy9jvpf4kbc1bmfy"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-jinja2
+           python-packaging
+           python-ply
+           python-six))         ;hard requirement, still
+    (home-page "https://github.com/dropbox/stone")
+    (synopsis "Official Api Spec Language for Dropbox")
+    (description
+     "Stone is an interface description language (IDL) for APIs.")
+    (license license:expat)))
+
+(define-public python-stopit
+  (package
+    (name "python-stopit")
+    (version "1.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/glenfant/stopit")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g3xwd62389643hrz6bljq0ddd1yvwpfk4nrv29naf09pl1m8wmr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "tests.py")))
+    (native-inputs (list python-setuptools))
+    (home-page "https://pypi.python.org/pypi/stopit")
+    (synopsis "Timeout control decorator and context managers")
+    (description
+     "Raise asynchronous exceptions in other threads, control the timeout of
+blocks or callables with two context managers and two decorators.")
+    (license license:expat)))
+
+(define-public python-straight-plugin
+  (package
+    (name "python-straight-plugin")
+    (properties '((commit . "363b0af4a2560bf9a3cb61160ecf28a1a1b9c91f")
+                  (revision . "0")))
+    (version (git-version "1.4.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ironfroggy/straight.plugin")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03p2apj7i9m38nmccfhvzldmzd61icv145vpmifln3mvh09jm6c2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "tests.py")))
+    (native-inputs (list python-mock python-setuptools))
+    (home-page "https://github.com/ironfroggy/straight.plugin")
+    (synopsis "Simple namespaced plugin facility")
+    (description
+     "Straight Plugin provides a type of plugin you can create from almost any
+existing Python modules, and an easy way for outside developers to add
+functionality and customization to your projects with their own plugins.")
+    (license license:expat)))
+
+(define-public python-streamtracer
+  (package
+    (name "python-streamtracer")
+    (version "2.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "streamtracer" version))
+       (sha256
+        (base32 "01ncr8q58xkz2dydjdg4a0c3kv4mpd6j1lzj4p0cmpg7jdi24cmr"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '((guix build cargo-build-system)
+                  ((guix build pyproject-build-system) #:prefix py:)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-python-module
+            (assoc-ref py:%standard-phases 'build))
+          (add-after 'build-python-module 'install-python-module
+            (assoc-ref py:%standard-phases 'install))
+          (add-after 'install-python-module 'add-install-to-pythonpath
+            (assoc-ref py:%standard-phases 'add-install-to-pythonpath))
+          (add-after 'check 'check-python-module
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion #$output
+                  (invoke "pytest" "-vv"))))))
+      #:install-source? #false))
+    (native-inputs
+     (list maturin
+           python-pytest
+           python-pytest-doctestplus
+           python-wrapper))
+    (propagated-inputs
+     (list python-numpy
+           python-packaging))
+    (inputs (cargo-inputs 'python-streamtracer))
+    (home-page "https://github.com/sunpy/streamtracer")
+    (synopsis "Rapid streamline tracing in Python")
+    (description
+     "streamtracer is a Python package for rapid streamline tracing on
+regularly spaced grids.  The actual streamline tracing is done at a low level
+in Rust, with a nice Python API provided on top.")
+    (license license:gpl3+)))
+
+(define-public python-strenum
+  (package
+    (name "python-strenum")
+    (version "0.4.15")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/irgeek/StrEnum")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bvk7v5f3sr7awcacdmw5lfzsnn6j52q45va9xpc71n5qxydqbfn"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=doc/")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-version
+            ;; Versioneer is useless when there is no git metadata.
+            (lambda _
+              (substitute* "setup.py"
+                (("version=versioneer.get_version\\(),")
+                 (format #f "version=~s," #$version)))))
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pytest.ini"
+                (("addopts =.*") "")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://github.com/irgeek/StrEnum")
+    (synopsis "Enum that inherits from str")
+    (description "StrEnum is a Python @code{enum.Enum} that inherits from
+@code{str} to complement @code{enum.IntEnum} in the standard library.")
+    (license license:expat)))
+
+(define-public python-structlog
+  (package
+    (name "python-structlog")
+    (version "25.5.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "structlog" version))
+        (sha256
+         (base32 "167wj0hxrsa9kbalh86vvwqs105zi8ld1ikh8lyibndypsij5189"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-hatch-fancy-pypi-readme
+           python-hatch-vcs
+           python-hatchling
+           python-pytest
+           python-pytest-asyncio
+           python-time-machine))
+    (home-page "https://www.structlog.org/")
+    (synopsis "Structured Logging for Python")
+    (description "@code{structlog} changes logging in Python by adding structure
+to your log entries.")
+    (license (list license:asl2.0 license:expat))))
+
+(define-public python-style
+  (package
+    (name "python-style")
+    (version "1.1.6")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "style" version))
+        (sha256
+          (base32 "1dcfb578v9mrwh92rgms87gql0gp4vgj6l9hpgyfg0wbd3rh3bfh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests in PyPI, package is 6y old
+    (native-inputs
+     (list python-setuptools))
+    (home-page "https://github.com/lmittmann/style")
+    (synopsis "Terminal string styling")
+    (description
+"@code{python-style} is a simple terminal string styling package.  Its API is
+a port of the chalk package for javascript.")
+    (license license:expat)))
+
+(define-public python-svgelements
+  (package
+    (name "python-svgelements")
+    (version "1.9.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "svgelements" version))
+       (sha256
+        (base32 "1xrp7yxg65dqdrmghriljf9hh2smq2zhzr2hzmqifgfd0ijas0kw"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-anyio
+           python-pytest
+           python-numpy
+           python-pillow
+           python-scipy
+           python-setuptools
+           python-wheel))
+    (home-page "https://github.com/meerk40t/svgelements")
+    (synopsis "SVG parsing for elements, paths, and other SVG objects")
+    (description
+     "This module does high fidelity SVG parsing and geometric rendering.
+The goal is to successfully and correctly process SVG for use with any scripts
+that may need or want to use SVG files as geometric data.")
+    (license license:expat)))
+
+(define-public python-svgutils
+  (package
+    (name "python-svgutils")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "svgutils" version))
+       (sha256
+        (base32 "0lz0w2ajdvwd269a7ppnzawmx8px0116j0nx8xvhlihxrd28zx4y"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))         ;no test in PyPI archive, depend on Nose
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-lxml))
+    (home-page "https://svgutils.readthedocs.io")
+    (synopsis "Python SVG editor")
+    (description "This is an utility package that helps with editing and
+concatenating SVG files.  It is especially directed at scientists preparing
+final figures for submission to journals.  So far it supports arbitrary
+placement and scaling of SVG figures and adding markers, such as labels.")
+    (license license:expat)))
+
+(define-public python-swagger-spec-validator
+  (package
+    (name "python-swagger-spec-validator")
+    (version "3.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Yelp/swagger_spec_validator")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vmwg0432s22g48i2ys1ay441wmgkhjann1s165r499wg3pksggi"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-importlib-resources
+           python-jsonschema
+           python-pyyaml
+           python-typing-extensions))
+    (home-page "https://github.com/Yelp/swagger_spec_validator")
+    (synopsis "Validation of Swagger specifications")
+    (description
+     "@code{swagger_spec_validator} provides a library for validating Swagger
+API specifications.")
+    (license license:asl2.0)))
+
+(define-public python-syllables
+  (package
+    (name "python-syllables")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/prosegrinder/python-syllables")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12yv9d7hmrkw10p2nivk0c9b96rm6040zfif6pj4sm1vg3n8ik6n"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-cmudict
+           python-pytest
+           python-setuptools))
+    (home-page "https://github.com/prosegrinder/python-syllables")
+    (synopsis "Package for estimating the number of syllables in a word")
+    (description
+     "This package provides a Python package for estimating the number of
+syllables in a word.")
+    (license license:gpl3)))
+
+(define-public python-sympy
+  (package
+    (name "python-sympy")
+    (version "1.13.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sympy" version))
+       (sha256
+        (base32 "1nf4zrjjbnv47n6sl6x9blfyarski61vdjaz4ygb62hfag3d4zxj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (if tests?
+                 (invoke "python3" "-c"
+                         "import sympy; sympy.test(\"/core\")")))))))
+    (propagated-inputs (list python-mpmath))
+    (native-inputs
+     (list python-hypothesis
+           python-pytest
+           python-setuptools
+           python-wheel))
+    (home-page "https://www.sympy.org/")
+    (synopsis "Python library for symbolic mathematics")
+    (description
+     "SymPy is a Python library for symbolic mathematics.  It aims to become a
+full-featured computer algebra system (CAS) while keeping the code as simple
+as possible in order to be comprehensible and easily extensible.")
+    (license license:bsd-3)))
 
 (define-public python-tables
   (package
