@@ -784,16 +784,22 @@ others.")
 (define-public openconnect-sso
   (package
     (name "openconnect-sso")
-    (version "0.8.0")
+    ;; 0.8.0 was released in 2021, the latest update on master HEAD is from
+    ;; 2023.
+    (properties '((commit . "94128073ef49acb3bad84a2ae19fdef926ab7bdf")
+                  (revision . "0")))
+    (version (git-version "0.8.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
       (origin
         (method git-fetch)
         (uri (git-reference
                (url "https://github.com/vlaci/openconnect-sso")
-               (commit (string-append "v" version))))
+              (commit (assoc-ref properties 'commit))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0l214qxhxx214628mcg6rmbzbzna7mxj5l7rah9q4vvcd88ymp39"))))
+         (base32 "08cqd40p9vld1liyl6qrsdrilzc709scyfghfzmmja3m1m7nym94"))))
     (build-system pyproject-build-system)
     (arguments
      `(#:phases
@@ -818,14 +824,14 @@ others.")
            python-keyring
            python-lxml-4.9
            python-prompt-toolkit
-           python-requests
-           python-pyqt
-           python-pyqtwebengine
+           python-pyotp
+           python-pyqt-6
+           python-pyqtwebengine-6
            python-pysocks
            python-pyxdg
+           python-requests
            python-structlog
-           python-toml
-           qtwebengine-5))
+           python-toml))
     (native-inputs
      (list python-poetry-core
            python-pytest
