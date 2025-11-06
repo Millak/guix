@@ -17206,13 +17206,33 @@ functionality and customization to your projects with their own plugins.")
     (version "0.4.15")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "StrEnum" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/irgeek/StrEnum")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1zrfr1shin5wyfnfxc7jpk013594wasrp4ni9l70fhjlf2mvb3w7"))))
+        (base32 "1bvk7v5f3sr7awcacdmw5lfzsnn6j52q45va9xpc71n5qxydqbfn"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #false)) ;there are none.
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--ignore=doc/")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-version
+            ;; Versioneer is useless when there is no git metadata.
+            (lambda _
+              (substitute* "setup.py"
+                (("version=versioneer.get_version\\(),")
+                 (format #f "version=~s," #$version)))))
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pytest.ini"
+                (("addopts =.*") "")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (home-page "https://github.com/irgeek/StrEnum")
     (synopsis "Enum that inherits from str")
     (description "StrEnum is a Python @code{enum.Enum} that inherits from
