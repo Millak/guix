@@ -116,8 +116,8 @@ heavily inspired by @code{wbg}.")
         (base32 "1m296ly3159gkbf33zziqarx2wxh0lmkydky440inbn46kyr3fnf"))))
         (build-system zig-build-system)
     (arguments
-     (list #:install-source? #f ; Not meant to be used by other packages
-           #:tests? #f ; No tests
+     (list #:install-source? #f
+           #:tests? #f ; There are no tests.
            #:zig-release-type "safe"))
     (home-page "https://github.com/andrewrk/poop")
     (synopsis "Performance Optimizer Observation Platform")
