@@ -587,7 +587,7 @@ operating system functions.")
 (define-public lunasvg
   (package
     (name "lunasvg")
-    (version "3.2.1")
+    (version "3.5.0")
     (source
      (origin
        (method git-fetch)
@@ -596,11 +596,11 @@ operating system functions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14ppk3k6sdbf3lwhv2gjqy32vwa7ck9jcj9xfk0fxwfqbvbp6608"))))
+        (base32 "1scmm1q35j3r87117p401fg3c1bx2nkiyvc2f3svvr2m2y9ihabr"))))
     (build-system cmake-build-system)
     (inputs (list plutovg))
     (arguments
-     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
+     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON -DUSE_SYSTEM_PLUTOVG=ON")
        #:tests? #f)) ;No tests.
     (home-page "https://github.com/sammycage/lunasvg")
     (synopsis "SVG rendering and manipulation library in C++")
