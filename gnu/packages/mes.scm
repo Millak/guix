@@ -2,7 +2,7 @@
 ;;; Copyright © 2017-2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017, 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2020, 2021, 2022, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2025 Felix Lechner <felix.lechner@lease-up.com>
@@ -111,14 +111,14 @@ parsers to allow execution with Guile as extension languages.")
 (define-public nyacc
   (package
     (inherit nyacc-1.00.2)
-    (version "2.02.2")
+    (version "2.02.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://savannah/nyacc/nyacc-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "01829c24v531036rj8grcwx4hmiy3f0jznc9zbfa4wrslmq566k9"))
+                "0wyrq9sc9j0yp34iwzsjfpz40503psbvd982vy8kx8ym99rn5w7r"))
               (modules '((guix build utils)))
               (snippet
                '(substitute* "configure"
