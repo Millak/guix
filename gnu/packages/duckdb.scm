@@ -1,4 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2024 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2024 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2024, 2025 Ekaitz Zarraga <ekaitz@elenq.tech>
+;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +37,40 @@
 ;;;
 ;;; Code:
 
+(define-public duckdb
+  (package
+    (name "duckdb")
+    (version "1.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/duckdb/duckdb")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dg3g66az17z4snxxw7cslqdkrvbx2nnyry73yi77yp0vpri1lz8"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:configure-flags
+      #~(list "-DBUILD_EXTENSIONS=autocomplete;icu;json;parquet;tpch;"
+              ;; There is no git checkout from which to read the version tag.
+              (string-append "-DOVERRIDE_GIT_DESCRIBE="
+                             "v" #$version "-0-g0123456789"))))
+    (home-page "https://duckdb.org")
+    (synopsis "In-process SQL OLAP database management system")
+    (description
+     "CLI and C/C++ source libraries for DuckDB, a relational (table-oriented)
+ @acronym{DBMS, Database Management System} that supports @acronym{SQL,
+Structured Query Language}, contains a columnar-vectorized query execution
+engine, and provides transactional @acronym{ACID, Atomicity Consistency
+Isolation and Durability} guarantees via bulk-optimized @acronym{MVCC,
+Multi-Version Concurrency Control}.  Data can be stored in persistent,
+single-file databases with support for secondary indexes.")
+    (license license:expat)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above in alphabetic order.

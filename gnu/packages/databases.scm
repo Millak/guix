@@ -206,39 +206,6 @@
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match))
 
-(define-public duckdb
-  (package
-    (name "duckdb")
-    (version "1.3.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/duckdb/duckdb")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1dg3g66az17z4snxxw7cslqdkrvbx2nnyry73yi77yp0vpri1lz8"))))
-    (arguments
-     (list
-      #:tests? #f
-      #:configure-flags
-      #~(list "-DBUILD_EXTENSIONS=autocomplete;icu;json;parquet;tpch;"
-              ;; There is no git checkout from which to read the version tag.
-              (string-append "-DOVERRIDE_GIT_DESCRIBE="
-                             "v" #$version "-0-g0123456789"))))
-    (build-system cmake-build-system)
-    (home-page "https://duckdb.org")
-    (synopsis "In-process SQL OLAP database management system")
-    (description "CLI and C/C++ source libraries for DuckDB, a relational
-(table-oriented) @acronym{DBMS, Database Management System} that supports
-@acronym{SQL, Structured Query Language}, contains a columnar-vectorized query
-execution engine, and provides transactional @acronym{ACID, Atomicity
-Consistency Isolation and Durability} guarantees via bulk-optimized
-@acronym{MVCC, Multi-Version Concurrency Control}.  Data can be stored in
-persistent, single-file databases with support for secondary indexes.")
-    (license license:expat)))
-
 (define-public ephemeralpg
   (package
     (name "ephemeralpg")
