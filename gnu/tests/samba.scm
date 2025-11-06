@@ -70,7 +70,8 @@
     (virtual-machine
      (operating-system (marionette-operating-system
                         %samba-os
-                        #:imported-modules '((gnu services herd))))
+                        #:imported-modules '((gnu services herd)
+                                             (gnu build dbus-service))))
      (port-forwardings '((8135 . 135)
                          (8137 . 137)
                          (8138 . 138)
@@ -134,22 +135,14 @@
           (test-assert "samba-smbd is listening for peers"
             (wait-for-tcp-port 445 marionette))
 
-          (test-equal "smbclient connect"
-            0
+          (test-assert "smbclient connect"
             (marionette-eval
              '(begin
-                (sleep 2)
-                (system* #$(file-append samba "/bin/smbclient")
-                         "--list=localhost" "--no-pass"))
-             marionette))
-
-          (test-equal "smbclient connect"
-            0
-            (marionette-eval
-             '(begin
-                (sleep 2)
-                (system* #$(file-append samba "/bin/smbclient")
-                         "--list=localhost" "--no-pass"))
+                (use-modules ((gnu build dbus-service)
+                              #:select (with-retries)))
+                (with-retries 5 5
+                  (zero? (system* #$(file-append samba "/bin/smbclient")
+                                  "--list=localhost" "--no-pass"))))
              marionette))
 
           (test-end))))
@@ -217,3 +210,7 @@
    (name "wsdd")
    (description "Connect to a running wsdd daemon.")
    (value (run-wsdd-test))))
+
+;; Local Variables:
+;; eval: (put 'with-retries 'scheme-indent-function 2)
+;; End:
