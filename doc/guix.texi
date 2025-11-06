@@ -1781,6 +1781,21 @@ user namespaces is missing (@pxref{Build Environment Setup}).  Use at
 your own risk!
 @end quotation
 
+@cindex ASLR (address space layout randomization), for builds
+@cindex address space layout randomization (ASLR), for builds
+@cindex Docker, running @command{guix-daemon}
+@cindex @command{guix-daemon}, running under Docker
+@item --allow-aslr
+Allow builds to start even if @acronym{ASLR, Address Space Layout
+Randomization} cannot be disabled on Linux systems.  This is normally
+done so as to increase reproducibility, but some environments, such as
+those affected by Docker's default seccomp policy, don't permit
+disabling ASLR.  Passing this option will allow builds to start with
+reduced reproducibility regardless.
+
+Note that passing this option doesn't ensure that ASLR is enabled, it
+only allows builds to start even when disabling it is blocked.
+
 @item --isolate-host-loopback
 Prevent fixed-output chroot builds from accessing the host loopback.
 When this is used, fixed-output builds will have their own loopback

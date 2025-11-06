@@ -53,6 +53,7 @@ Settings::Settings()
     showTrace = false;
     useHostLoopback = true;
     slirp4netns = SLIRP4NETNS;
+    allowASLR = false;
 }
 
 

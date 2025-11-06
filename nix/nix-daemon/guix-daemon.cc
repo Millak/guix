@@ -85,6 +85,7 @@ builds derivations on behalf of its clients.");
 #define GUIX_OPT_LOG_COMPRESSION 20
 #define GUIX_OPT_DISCOVER 21
 #define GUIX_OPT_ISOLATE_HOST_LOOPBACK 22
+#define GUIX_OPT_ALLOW_ASLR 23
 
 static const struct argp_option options[] =
   {
@@ -157,6 +158,14 @@ to live outputs") },
       n_("produce debugging output") },
     { "isolate-host-loopback", GUIX_OPT_ISOLATE_HOST_LOOPBACK, 0, 0,
       n_("do not allow fixed-output chroot builds to access the host loopback") },
+    { "allow-aslr", GUIX_OPT_ALLOW_ASLR, 0,
+#ifdef HAVE_SYS_PERSONALITY_H
+      0,
+#else
+      OPTION_HIDDEN,
+#endif
+      n_("allow builds to start even if address space layout \
+randomization (ASLR) cannot be disabled")},
     { 0, 0, 0, 0, 0 }
   };
 
@@ -291,6 +300,9 @@ parse_opt (int key, char *arg, struct argp_state *state)
       break;
     case GUIX_OPT_ISOLATE_HOST_LOOPBACK:
       settings.useHostLoopback = false;
+      break;
+    case GUIX_OPT_ALLOW_ASLR:
+      settings.allowASLR = true;
       break;
     default:
       return (error_t) ARGP_ERR_UNKNOWN;

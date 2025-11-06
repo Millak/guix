@@ -213,6 +213,10 @@ struct Settings {
     /* The filename to use for executing slirp4netns when it is needed. */
     Path slirp4netns;
 
+    /* Whether to proceed without the ADDR_NO_RANDOMIZE personality flag if
+     * its use is blocked. */
+    bool allowASLR;
+
 private:
     SettingsMap settings;
 

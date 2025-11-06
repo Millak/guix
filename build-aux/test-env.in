@@ -120,6 +120,7 @@ running 'guix-daemon $extra_options'" >&2
     "@abs_top_builddir@/pre-inst-env"				\
 	"@abs_top_builddir@/guix-daemon"			\
         $extra_options						\
+        --allow-aslr                                            \
 	--substitute-urls="$GUIX_BINARY_SUBSTITUTE_URL" &
 
     daemon_pid=$!
