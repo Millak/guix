@@ -28562,30 +28562,35 @@ should have run while it was offline.")
 library in Python.")
     (license license:expat)))
 
-(define-public python-bsddb3
+(define-public python-berkeleydb
   (package
-    (name "python-bsddb3")
-    (version "6.2.9")
+    (name "python-berkeleydb")
+    (version "18.1.15")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "bsddb3" version))
+       (uri (pypi-uri "berkeleydb" version))
        (sha256
-        (base32 "00bqdsfx8jgmfz5bgkx10nlw5bfsw11a86f91zkl53snvk45xl3h"))))
-    (build-system python-build-system)
-    (inputs
-     (list bdb))
+        (base32 "13kmvy6viay27khmj6ydryniirdsbqrc2mjnr2r6nk3m7la57yks"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'configure-locations
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "BERKELEYDB_DIR" (assoc-ref inputs "bdb"))
-             (setenv "YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION" "1")
-             #t))
-         (replace 'check
-           (lambda _
-             (invoke "python3" "test3.py" "-v"))))))
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "test.py" "-v")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure-locations
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "BERKELEYDB_DIR"
+                      (assoc-ref inputs "bdb"))
+              (setenv "YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION"
+                      "1")))
+          (add-after 'unpack 'remove-legacy
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((":__legacy__") "")))))))
+    (native-inputs (list python-setuptools))
+    (inputs (list bdb))
     (home-page "https://www.jcea.es/programacion/pybsddb.htm")
     (synopsis "Python bindings for Oracle Berkeley DB")
     (description
@@ -28597,6 +28602,26 @@ hash, recno, and queue.  Complete support of Berkeley DB distributed
 transactions.  Complete support for Berkeley DB Replication Manager.
 Complete support for Berkeley DB Base Replication.  Support for RPC.")
     (license license:bsd-3)))
+
+;; Last version before rename to python-berkeleydb.
+(define-public python-bsddb3
+  (package
+    (inherit python-berkeleydb)
+    (name "python-bsddb3")
+    (version "6.2.9")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "bsddb3" version))
+       (sha256
+        (base32 "00bqdsfx8jgmfz5bgkx10nlw5bfsw11a86f91zkl53snvk45xl3h"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-berkeleydb)
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (delete 'remove-legacy)))
+       ((#:test-flags test-flags #~(list))
+        #~(list "test3.py" "-v"))))))
 
 (define-public python-dbfread
   (package
