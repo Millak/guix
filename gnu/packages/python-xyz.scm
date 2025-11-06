@@ -17155,12 +17155,17 @@ stdin/stdout/stderr.")
     (version "1.1.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "stopit" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/glenfant/stopit")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0vcrcvky249q4rbgmwf18mwmnypfk8jpn4h6knyjf86r7xc9rwzp"))))
+        (base32 "1g3xwd62389643hrz6bljq0ddd1yvwpfk4nrv29naf09pl1m8wmr"))))
     (build-system pyproject-build-system)
-    (arguments (list #:tests? #f))      ;there are none
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "tests.py")))
     (native-inputs (list python-setuptools))
     (home-page "https://pypi.python.org/pypi/stopit")
     (synopsis "Timeout control decorator and context managers")
