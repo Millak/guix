@@ -27838,16 +27838,20 @@ implemented using @code{ctypes}.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/dropbox/stone")
-             (commit (string-append "v" version))))
+              (url "https://github.com/dropbox/stone")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1x0kj4jygssjn66lbkln95chhf85vzy1wnpziy9jvpf4kbc1bmfy"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-jinja2 python-packaging python-ply python-six))
     (native-inputs
-     (list python-pytest python-pytest-runner python-setuptools python-wheel))
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-jinja2
+           python-packaging
+           python-ply
+           python-six))         ;hard requirement, still
     (home-page "https://github.com/dropbox/stone")
     (synopsis "Official Api Spec Language for Dropbox")
     (description
