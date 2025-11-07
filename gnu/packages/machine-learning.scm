@@ -4909,7 +4909,7 @@ in the audio domain.")
            (delete 'disable-avx-dependencies)))))
     (supported-systems '("x86_64-linux"))))
 
-(define %python-pytorch-for-r-torch-version "2.0.1")
+(define %python-pytorch-for-r-torch-version "2.7.1")
 
 (define %python-pytorch-for-r-torch-src
   (origin
@@ -4921,11 +4921,11 @@ in the audio domain.")
                               %python-pytorch-for-r-torch-version))
     (sha256
      (base32
-      "0iirrn687i7sfv0p0i7dn89x3rf13a7l8y1y5h190h51yjxpxqxa"))
+      "0734kfm66hsqdzgs2s4wj5yagvifijbgb0c5wfmp3qcdrraa9x57"))
     (patches (search-patches
               "python-pytorch-for-r-torch-system-libraries.patch"
               "python-pytorch-runpath.patch"
-              "python-pytorch-without-kineto.patch"
+              "python-pytorch-for-r-torch-without-kineto.patch"
               ;; Some autogeneration scripts depend on the
               ;; compile PyTorch library. Therefore, we create
               ;; dummy versions which are regenerated later.
@@ -4952,34 +4952,73 @@ in the audio domain.")
     (name "python-pytorch")
     (version %python-pytorch-for-r-torch-version)
     (source %python-pytorch-for-r-torch-src)
+    (inputs
+     (modify-inputs (package-inputs python-pytorch)
+       (replace "gloo" gloo-for-r-torch)))
     (arguments
      (substitute-keyword-arguments (package-arguments python-pytorch)
        ((#:phases phases)
         #~(modify-phases #$phases
-            ;; See https://github.com/pytorch/pytorch/issues/61244
-            (add-after 'unpack 'fix-aten-vec
+            (replace 'use-system-libraries
               (lambda _
+                (for-each
+                 (lambda (file)
+                   ;; Check whether the files exist for the
+                   ;; python-pytorch-for-r-torch package
+                   (when (file-exists? file)
+                     (substitute* file
+                       (("\"miniz\\.h\"") "<miniz/miniz.h>")
+                       (("<miniz\\.h>") "<miniz/miniz.h>"))))
+                 '("caffe2/serialize/crc.cc"
+                   "caffe2/serialize/inline_container.cc"
+                   "torch/csrc/inductor/aoti_package/model_package_loader.cpp"))
+
+                (substitute* "aten/src/ATen/native/vulkan/api/Allocator.h"
+                  (("<include/vk_mem_alloc.h>")
+                   "<vk_mem_alloc.h>"))
+                ;; Fix missing <algorithm> header for std::for_each in Vulkan API
+                (substitute* "aten/src/ATen/native/vulkan/api/QueryPool.cpp"
+                  (("#include <utility>" all)
+                   (string-append all "\n#include <algorithm>")))
+                ;; For Vulkan
+                (substitute* "CMakeLists.txt"
+                  (("append_cxx_flag.*-Werror=(return-type|range-loop-construct).*") ""))
                 (substitute*
-                    '("aten/src/ATen/cpu/vec/vec512/vec512_bfloat16.h"
-                      "aten/src/ATen/cpu/vec/vec256/vec256_bfloat16.h")
-                  (("map\\(const __") "map(__"))))))))
-    (native-inputs
-     (modify-inputs (package-native-inputs python-pytorch)
-       (replace "ideep-pytorch" ideep-pytorch-for-r-torch)))
-    (inputs
-     (modify-inputs (package-inputs python-pytorch)
-       (prepend foxi)
-       (prepend qnnpack)
-       (replace "qnnpack-pytorch" qnnpack-pytorch-for-r-torch)
-       (replace "oneapi-dnnl" oneapi-dnnl-for-r-torch)
-       (replace "xnnpack" xnnpack-for-r-torch)))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs python-pytorch)
-       (append python-filelock
-               python-jinja2
-               python-networkx
-               python-opt-einsum
-               python-sympy)))))
+                    (cons*
+                     "torch/csrc/Module.cpp"
+                     (map
+                      (lambda (name)
+                        (string-append
+                         "torch/utils/benchmark/utils/valgrind_wrapper/"
+                         name))
+                      '("compat_bindings.cpp" "timer_callgrind_template.cpp")))
+                  (("<callgrind.h>") "<valgrind/callgrind.h>"))
+                (setenv "USE_VULKAN" "1")
+                ;; Tell 'setup.py' to let 'CMakeLists.txt' know that we
+                ;; want to use "system libraries" instead of the bundled
+                ;; ones.
+                (setenv "USE_SYSTEM_LIBS" "1")
+                ;; For oneDNN
+                (setenv "USE_MKLDNN" "1")
+                ;; Only works with CUPTI
+                (setenv "USE_KINETO" "0")
+                ;; Prevent CMake error by disabling explicitely
+                (setenv "USE_ITT" "0")
+                ;; Disable on unsupported systems
+                (if #$(not (member
+                            (or (%current-target-system)
+                                (%current-system))
+                            (package-transitive-supported-systems qnnpack)))
+                    (setenv "USE_QNNPACK" "0"))
+                (substitute* '("requirements.txt" "setup.py")
+                  (("sympy>=1\\.13\\.3")
+                   "sympy>=1.13.1"))))
+            (replace 'skip-nccl-call
+              (lambda _
+                ;; Comment-out `checkout_nccl()` invokation in build_pytorch().
+                (substitute* "tools/build_pytorch_libs.py"
+                  (("^[[:blank:]]*checkout_nccl\\(\\)" all)
+                   (string-append "# " all "\n    pass")))))))))))
 
 (define-public python-pytorch-geometric
     (package

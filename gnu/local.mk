@@ -2176,6 +2176,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-pytorch-fix-codegen.patch		\
   %D%/packages/patches/python-pytorch-for-r-torch-fix-codegen.patch \
   %D%/packages/patches/python-pytorch-for-r-torch-system-libraries.patch \
+  %D%/packages/patches/python-pytorch-for-r-torch-without-kineto.patch \
   %D%/packages/patches/python-pytorch-runpath.patch		\
   %D%/packages/patches/python-pytorch-system-libraries.patch	\
   %D%/packages/patches/python-pytorch-without-kineto.patch	\
