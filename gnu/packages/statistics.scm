@@ -2931,7 +2931,7 @@ regularizations.")
              r-igraph
              r-irlba
              r-jsonlite
-             r-liger
+             r-rliger
              r-mass
              r-matrix
              r-mgcv
