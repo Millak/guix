@@ -31388,27 +31388,74 @@ This library connects to different @code{zotero} translators:
       (license license:gpl3+))))
 
 (define-public emacs-zotxt
-  (package
-    (name "emacs-zotxt")
-    (version "5.0.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/egh/zotxt-emacs")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1zr67h0w49rsi84mgf6jdili28h8782q6vjl8za0iq1hcx9zqxyf"))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-deferred emacs-request))
-    (home-page "https://github.com/egh/zotxt-emacs")
-    (synopsis "Integrate Emacs with Zotero")
-    (description "This package provides two integration features between Emacs
+  ;; The last release, 5.0.5, is from Jan 2020. It doesn't
+  ;; fully work with today's Zotero+zotxt any more. This
+  ;; commit does.
+  (let ((commit "b433f46b518574d5fe25f38c9c3afed542122d8b")
+        (revision "0"))
+    (package
+      (name "emacs-zotxt")
+      (version (git-version "5.0.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/egh/zotxt-emacs")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0lrbf3j5m9k2nb9id9brsvc1wqbl0rja3ny8zmld320ch9g5f49y"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'fix-tests
+              (lambda _
+                (substitute* "test/test-helper.el"
+                  (("\\(setq load-dir ")
+                   "(require 'f)\n(setq load-dir"))))
+            ;; Remove tests that require connection to a server.
+            (add-before 'check 'delete-server-based-tests
+              (lambda _
+                (emacs-batch-edit-file "test/zotxt-test.el"
+                  `(progn
+                    (let ((tests
+                           '("test-get-item-link-text-deferred-with-citekey"
+                             "test-get-item-link-text-deferred"
+                             "make-quick-bib-string"
+                             "test-update-all-reference-links"
+                             "test-update-reference-link-at-point"
+                             "test-deferred-error-handler"
+                             "test-get-item-bibliography-deferred"
+                             "test-get-item-citekey-list-chain"
+                             "test-get-item-deferred"
+                             "test-get-item-uuid-deferred"
+                             "test-search-deferred")))
+                      (dolist (test tests)
+                              (goto-char (point-min))
+                              (search-forward test)
+                              (beginning-of-line)
+                              (kill-sexp)))
+                    (basic-save-buffer)))
+                ;; Don't start the server
+                (substitute* "test/test-helper.el"
+                  (("bundle exec ruby")
+                   "echo SKIPPED: bundle exec ruby")))))
+        #:test-command #~(list "emacs" "--batch"
+                               "-l" "test/test-helper.el"
+                               "-l" "test/zotxt-test.el"
+                               "-f" "ert-run-tests-batch-and-exit")))
+      (native-inputs
+       (list emacs-f emacs-undercover))
+      (propagated-inputs
+       (list emacs-deferred emacs-request emacs-org-noter))
+      (home-page "https://github.com/egh/zotxt-emacs")
+      (synopsis "Integrate Emacs with Zotero")
+      (description "This package provides two integration features between Emacs
 and the Zotero research assistant: Insertion of links to Zotero items into an
 Org-mode file, and citations of Zotero items in Pandoc Markdown files.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-zoxide
   (package
