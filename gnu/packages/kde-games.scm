@@ -1840,6 +1840,63 @@ This package is part of the KDE games module.")
 This package is part of the KDE games module.")
     (license license:gpl2+)))
 
+(define-public kpat
+  (package
+    (name "kpat")
+    (version "25.08.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/release-service/" version
+                           "/src/kpat-" version ".tar.xz"))
+       (sha256
+        (base32 "15hdyqqqmlbfhawwq2vyyl9ywln0317zxnramhnb2p4j1ms0bh3s"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:qtbase qtbase
+           #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'find-cards
+                 (lambda _
+                   (wrap-program (string-append #$output "/bin/kpat")
+                     `("XDG_DATA_DIRS" ":" suffix
+                       ,(list (string-append #$libkdegames "/share")))))))))
+    (native-inputs
+     (list bash-minimal extra-cmake-modules kdoctools))
+    (inputs
+     (list black-hole-solver
+           freecell-solver
+           kcompletion
+           kconfig
+           kconfigwidgets
+           kcoreaddons
+           kcrash
+           kdbusaddons
+           kguiaddons
+           ki18n
+           kio
+           knewstuff
+           kwidgetsaddons
+           kxmlgui
+           libkdegames
+           qtdeclarative
+           qtsvg
+           qtwayland
+           shared-mime-info))
+    (home-page "https://apps.kde.org/kpat/")
+    (synopsis "Patience solitaire game")
+    (description "KPat (aka KPatience) is a relaxing card sorting game.
+To win the game a player has to arrange a single deck of cards in certain order
+amongst each other.
+
+This package is part of the KDE games module.")
+    (license
+     (list license:gpl2+
+           license:fdl1.2+
+           (license:non-copyleft
+            "https://invent.kde.org/games/kpat/-/blob/master/COPYING")))))
+
 (define-public kde-games
   (package
     (name "kde-games")
