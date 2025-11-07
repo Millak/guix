@@ -394,6 +394,14 @@ which will be used as a snippet in origin."
    "1vw7jd3wrb4vnigfllfmqxa8fwcpvgp1invswizz0grxv249piza"
    "0.23.5"))
 
+(define-public tree-sitter-cairo
+  (tree-sitter-grammar
+   "cairo" "Cairo"
+   "08ig80mqs0p00p09rfygrdfarqnn29xsgnlbqvnfdll4jlj5ilid"
+   "1.0.0"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-cairo"))
+
 (define-public tree-sitter-chatito
   (tree-sitter-grammar
    "chatito" "Chatito"
