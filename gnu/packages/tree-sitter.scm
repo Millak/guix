@@ -1327,6 +1327,18 @@ which will be used as a snippet in origin."
    "0.23.0-1"
    #:repository-url "https://github.com/6cdh/tree-sitter-scheme"))
 
+(define-public tree-sitter-sfapex
+  ;; Use a later commit because some tests fail with the v2.3 tag.
+  (let ((commit "3597575a429766dd7ecce9f5bb97f6fec4419d5d")
+        (revision "0"))
+    (tree-sitter-grammar
+     "sfapex" "Sfapex"
+     "1kcv8g7smh76nb46np5yqmjma1c4zna74nkhc11xa1g3gwysvv2c"
+     (git-version "2.3" revision commit)
+     #:commit commit
+     #:repository-url "https://github.com/aheber/tree-sitter-sfapex"
+     #:grammar-directories '("apex" "sflog" "soql" "sosl"))))
+
 (define-public tree-sitter-solidity
   (tree-sitter-grammar
    "solidity" "Solidity"
