@@ -28816,17 +28816,19 @@ for manual interpretation.")
 (define-public python-pyroutelib3
   (package
     (name "python-pyroutelib3")
-    (version "1.3.post1")
+    (version "2.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyroutelib3" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/MKuranowski/pyroutelib3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1hpbydpn2alyswiajfbvhzq4c7f36vdmvxy91hgv8l1lb2g2vfrj"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-dateutil))
+        (base32 "18a86fggs9pjib97x47acqgccrsra1h7dkz21r94vsyrdindchns"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-dateutil python-protobuf-5))
+    (native-inputs (list python-filelock python-flit-core python-pytest))
     (home-page "https://github.com/MKuranowski/pyroutelib3")
     (synopsis "Library for simple routing on OSM data")
     (description "Library for simple routing on OSM data")
