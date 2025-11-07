@@ -4916,20 +4916,6 @@ in the audio domain.")
               ;; dummy versions which are regenerated later.
               "python-pytorch-for-r-torch-fix-codegen.patch"))))
 
-(define-public qnnpack-pytorch-for-r-torch
-  (package
-    (inherit qnnpack-pytorch)
-    (version (string-append "pytorch-" %python-pytorch-for-r-torch-version))
-    (source
-     (origin
-       (inherit %python-pytorch-for-r-torch-src)
-       (patches '())
-       (modules '((guix build utils)
-                  (srfi srfi-26)
-                  (ice-9 ftw)))
-       (snippet
-        (origin-snippet (package-source qnnpack-pytorch)))))))
-
 ;; Keep in sync with r-torch
 (define-public python-pytorch-for-r-torch
   (package
