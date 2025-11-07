@@ -517,6 +517,16 @@ which will be used as a snippet in origin."
    "https://github.com/tree-sitter-grammars/tree-sitter-csv"
    #:grammar-directories '("csv" "psv" "tsv")))
 
+(define-public tree-sitter-cuda
+  (tree-sitter-grammar
+   "cuda" "Cuda"
+   "116fa26bjh6a88kdshqq5hp6fq4ik95dpaiidw8rn90xxwwl0zxi"
+   "0.21.1"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-cuda"
+   #:inputs (list tree-sitter-c
+                  tree-sitter-cpp)))
+
 (define-public tree-sitter-dart
   (let ((version "1.0.0")
         (commit "d4d8f3e337d8be23be27ffc35a0aef972343cd54")
