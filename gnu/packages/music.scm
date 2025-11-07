@@ -3181,37 +3181,6 @@ using a system-independent interface.")
 using a system-independent interface.")
     (license license:expat)))
 
-(define-public python-pyportmidi
-  (let ((commit "d9e5ee00b208b09618fa0d4a5bbce3c9c077b386")
-        (revision "0"))
-    (package
-      (name "python-pyportmidi")
-      (version (git-version "0.0.7" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/PortMidi/pm_python")
-               (commit commit)))
-         (sha256
-          (base32 "1jvp9na8d1hw46w9ybhkimbavfb3ysw7hp30cbk6dj40k5y5vgvz"))
-         (file-name (git-file-name name version))))
-      (build-system python-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'build 'relax-gcc-14-strictness
-              (lambda _
-                (setenv "CFLAGS" "-Wno-error=incompatible-pointer-types"))))))
-      (inputs (list portmidi-2 alsa-lib))
-      (native-inputs (list python-cython))
-      (home-page "https://github.com/PortMidi")
-      (synopsis "Python bindings to PortMidi")
-      (description
-       "This package provides Python bindings to the PortMidi library.")
-      (license license:expat))))
-
 (define-public python-pysmf
   (let ((commit "8a98a557470301f5a471d07d37f334a5b8892602")
         (revision "1"))
