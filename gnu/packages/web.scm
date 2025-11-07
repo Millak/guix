@@ -78,6 +78,7 @@
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2025 Philippe Swartvagher <phil.swart@gmx.fr>
 ;;; Copyright © 2025 pinoaffe <pinoaffe@gmail.com>
+;;; Copyright © 2025 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9864,7 +9865,7 @@ tools:
 (define-public uriparser
   (package
     (name "uriparser")
-    (version "0.9.8")
+    (version "0.9.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9873,7 +9874,7 @@ tools:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qr3rc0iz1zxim1ylwzf7zijgnxpzv4m35fzvv5kf66a8bqhrw2k"))))
+                "1cd7z37ap5s5ipr4vnwzfmwir9n1ir266rnxq9rjisfzy5gq903w"))))
     (build-system cmake-build-system)
     (native-inputs (list googletest doxygen graphviz))
     (arguments (if (%current-target-system)
