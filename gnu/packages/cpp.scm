@@ -625,22 +625,20 @@ Scalable Vector Graphics (SVG) files.")
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     '(;; No check target. Setting test-target to "unit_test" runs it twice.
-       #:tests? #f
-       #:configure-flags
-       '("-DBUILD_DOCUMENTATION=OFF" "-DBUILD_EXAMPLES=OFF"
-         "-DBUILD_UNIT_TESTS=OFF")
+     (list
+      ;; No check target. Setting test-target to "unit_test" runs it twice.
+      #:tests? #f
+      #:configure-flags
+      #~(list "-DBUILD_DOCUMENTATION=OFF"
+              "-DBUILD_EXAMPLES=OFF"
+              "-DBUILD_UNIT_TESTS=OFF")
        #:phases
-       (modify-phases %standard-phases
+       #~(modify-phases %standard-phases
          ;; library_test fails in chroot.
          (add-after 'unpack 'skip-library-test
            (lambda _
              (substitute* "src/unit_tests/unit_tests.cmake"
-               (("misc/library_test.cpp") ""))
-             #t))
-         (add-before 'configure 'relax-gcc-14-strictness
-           (lambda _
-             (setenv "CXXFLAGS" "-Wno-error=pessimizing-move"))))))
+               (("misc/library_test.cpp") "")))))))
     (native-inputs (list pkg-config))
     (home-page "https://github.com/rttrorg/rttr/")
     (synopsis "C++ Reflection Library")
