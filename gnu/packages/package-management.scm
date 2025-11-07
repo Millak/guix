@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2017, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
 ;;; Copyright © 2017, 2018 Oleg Pykhalov <go.wigust@gmail.com>
@@ -792,8 +792,8 @@ which are indicated in the file name.")
 (define-public guix-modules
   (package
     (name "guix-modules")
-    (version "0.2.0")
-    (home-page "https://gitlab.inria.fr/guix-hpc/guix-modules")
+    (version "0.2.1")
+    (home-page "https://codeberg.org/guix-science/guix-modules")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page)
@@ -801,7 +801,7 @@ which are indicated in the file name.")
               (file-name (string-append "guix-modules-" version "-checkout"))
               (sha256
                (base32
-                "0k3mz2d1qjx7nclg7mgk77rwvyjsmz3j0hpzihvmznx5bly8wg92"))))
+                "1krdqnd4s0nz004dvpd5ban2rr3sjiy2620rb5vvi16x9q0pxvqj"))))
     (build-system guile-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
