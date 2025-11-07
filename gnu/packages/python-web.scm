@@ -8544,30 +8544,6 @@ package from WTForms.  The package has been renamed to
 @code{wtforms.ext.sqlalchemy} did.")
     (license license:bsd-3)))
 
-(define-public python-paste
-  (package
-    (name "python-paste")
-    (version "3.10.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "paste" version))
-       (sha256
-        (base32
-         "0jjyl39r5ncx98rwi855x71qrwvwm59idgn7q0c7m2jyb8314g8w"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
-    (home-page "https://pythonpaste.readthedocs.io/")
-    (synopsis "Python web development tools, focusing on WSGI")
-    (description
-     "Paste provides a variety of web development tools and middleware which
-can be nested together to build web applications.  Paste's design closely
-follows ideas flowing from WSGI (Web Standard Gateway Interface).")
-    (license license:expat)))
-
 (define-public python-urlgrabber
   (package
     (name "python-urlgrabber")
