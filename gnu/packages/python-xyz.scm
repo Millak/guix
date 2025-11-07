@@ -28626,16 +28626,31 @@ Complete support for Berkeley DB Base Replication.  Support for RPC.")
 (define-public python-dbfread
   (package
     (name "python-dbfread")
-    (version "2.0.7")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "dbfread" version))
-              (sha256
-               (base32
-                "0gdpwdzf1fngsi6jrdyj4qdf6cr7gnnr3zp80dpkzbgz0spskj07"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest))
+    (properties '((commit . "dce544641065d966c76a97864b4e9908ec922ce8")
+                  (revision . "0")))
+    (version (git-version "2.0.7"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/olemb/dbfread")
+             (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m7dbgyf8yl6qhilzx41vzhcmkqmc36897wfqs2jngp4bnda64vd"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-setup.py
+            (lambda _
+              (substitute* "setup.py"
+                (("python_requires.*")
+                 "")))))))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://dbfread.readthedocs.io")
     (synopsis "Read DBF Files with Python")
     (description
