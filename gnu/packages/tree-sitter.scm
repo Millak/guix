@@ -320,6 +320,24 @@ which will be used as a snippet in origin."
    "0.24.0"
    #:repository-url "https://github.com/RubixDev/tree-sitter-asm"))
 
+(define-public tree-sitter-astro
+  (let ((commit "213f6e6973d9b456c6e50e86f19f66877e7ef0ee")
+        (revision "0"))
+    (tree-sitter-grammar
+     "astro" "Astro"
+     "18asz2dsgkq4zj5frxigpzac00pgs4kvbp8l3x27z7yq6vgfr5af"
+     (git-version "0.0.1" revision commit)
+     #:repository-url "https://github.com/virchau13/tree-sitter-astro"
+     #:commit commit
+     #:inputs (delay (list tree-sitter-html))
+     #:get-cleanup-snippet
+     (lambda (grammar-directories)
+       #~(begin
+           (use-modules (guix build utils))
+           (mkdir-p "test/corpus")
+           (copy-recursively "corpus" "test/corpus")
+           #$(tree-sitter-delete-generated-files grammar-directories))))))
+
 (define-public tree-sitter-awk
   (tree-sitter-grammar
    "awk" "AWK"
