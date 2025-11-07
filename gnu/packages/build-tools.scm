@@ -1117,7 +1117,7 @@ maintenance-related files, for convenience.")
 (define-public maak
   (package
     (name "maak")
-    (version "0.2.3")
+    (version "0.2.9")
     (source
      (origin
        (method git-fetch)
@@ -1126,7 +1126,7 @@ maintenance-related files, for convenience.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15s6khifk7k002hr9mqgl45r3ipmvsc56z9z8skwclxsj6w1cddl"))))
+        (base32 "0108sj9rdqwprcx2ihlsfhbqiig08kah3k2yxc5w0yxzxdh8hzwv"))))
     (build-system guile-build-system)
     (arguments
      (list
