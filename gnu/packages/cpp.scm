@@ -34,7 +34,7 @@
 ;;; Copyright © 2022, 2023, 2024 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2023, 2025 Sughosha <Sughosha@disroot.org>
-;;; Copyright © 2023, 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2023, 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2023 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
@@ -628,7 +628,8 @@ Scalable Vector Graphics (SVG) files.")
      '(;; No check target. Setting test-target to "unit_test" runs it twice.
        #:tests? #f
        #:configure-flags
-       '("-DBUILD_DOCUMENTATION=OFF" "-DBUILD_EXAMPLES=OFF")
+       '("-DBUILD_DOCUMENTATION=OFF" "-DBUILD_EXAMPLES=OFF"
+         "-DBUILD_UNIT_TESTS=OFF")
        #:phases
        (modify-phases %standard-phases
          ;; library_test fails in chroot.
@@ -636,7 +637,10 @@ Scalable Vector Graphics (SVG) files.")
            (lambda _
              (substitute* "src/unit_tests/unit_tests.cmake"
                (("misc/library_test.cpp") ""))
-             #t)))))
+             #t))
+         (add-before 'configure 'relax-gcc-14-strictness
+           (lambda _
+             (setenv "CXXFLAGS" "-Wno-error=pessimizing-move"))))))
     (native-inputs (list pkg-config))
     (home-page "https://github.com/rttrorg/rttr/")
     (synopsis "C++ Reflection Library")
