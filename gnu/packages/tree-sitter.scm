@@ -508,6 +508,15 @@ which will be used as a snippet in origin."
    "0c5j9zyjcykmraix1agbc0gdk85zs2v379q0aykr10fi9w2r9z9c"
    "0.23.2"))
 
+(define-public tree-sitter-csv
+  (tree-sitter-grammar
+   "csv" "CSV"
+   "0a1giyifli78chnshzzw4q6y7gqlfkg6mlmvb7kzbw9ss9hlx2rb"
+   "1.2.0"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-csv"
+   #:grammar-directories '("csv" "psv" "tsv")))
+
 (define-public tree-sitter-dart
   (let ((version "1.0.0")
         (commit "d4d8f3e337d8be23be27ffc35a0aef972343cd54")
