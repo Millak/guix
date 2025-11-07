@@ -429,6 +429,15 @@ which will be used as a snippet in origin."
    #:repository-url
    "https://github.com/xlittlerag/tree-sitter-clarity"))
 
+(define-public tree-sitter-clisp
+  (tree-sitter-grammar
+   "clisp" "Common Lisp"
+   "0xg3ay8l62h7s35abkxi4gjfvndzdvvrpgh1z980q1ib5935sxf0"
+   "0.4.1"
+   #:inputs (delay (list tree-sitter-clojure))
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-commonlisp"))
+
 (define-public tree-sitter-clojure
   (tree-sitter-grammar
    "clojure" "Clojure"
