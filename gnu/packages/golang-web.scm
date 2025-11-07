@@ -5591,6 +5591,57 @@ standard @code{net/http} client library and exposes nearly the same public
 API.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-hashicorp-serf
+  (package
+    (name "go-github-com-hashicorp-serf")
+    (version "0.10.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hashicorp/serf")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q9rismcpd5ci5zg6aq5b3y53x4j90fpdsvfc5jjh6hqfnxi0hzj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; panic: runtime error: invalid memory address or nil pointer
+               ;; dereference
+               (list "TestCommandRun_mDNS"
+                     ;; [ERR] agent: Error invoking script ...  fork/exec
+                     ;; /bin/sh: no such file or directory
+                     "TestScriptEventHandler"
+                     "TestScriptUserEventHandler"
+                     "TestScriptQueryEventHandler"
+                     "TestSnapshotter_forceCompact"
+                     ;; err: Unix syslog delivery error
+                     "TestSyslogFilter")
+               "|"))
+      #:import-path "github.com/hashicorp/serf"))
+    (propagated-inputs
+     (list go-github-com-armon-circbuf
+           go-github-com-hashicorp-go-metrics
+           go-github-com-hashicorp-go-msgpack-v2
+           go-github-com-hashicorp-go-syslog
+           go-github-com-hashicorp-logutils
+           go-github-com-hashicorp-mdns
+           go-github-com-hashicorp-memberlist
+           go-github-com-mitchellh-cli
+           go-github-com-mitchellh-mapstructure
+           go-github-com-ryanuber-columnize))
+    (home-page "https://github.com/hashicorp/serf")
+    (synopsis "Service discovery and orchestration for Golang")
+    (description
+     "Serf is a decentralized solution for service discovery and orchestration
+that is lightweight, highly available, and fault tolerant.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-hashicorp-go-sockaddr
   (package
     (name "go-github-com-hashicorp-go-sockaddr")
