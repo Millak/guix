@@ -121,6 +121,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages pulseaudio)
@@ -4036,3 +4037,34 @@ calculations and create complete applications.")
        "This repository contains CMake modules which are used across
 @uref{https://www.shlomifish.org/, Shlomi Fish's} projects.")
       (license license:expat))))
+
+(define-public rinutils
+  (package
+    (name "rinutils")
+    (version "0.10.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/shlomif/rinutils")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0iziwblw3jnvj31pis86x5lvykywfsx6w7a4019zn34p1i4id8js"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_MODULE_PATH="
+                             #+shlomif-cmake-modules "/share/shlomi-fish/cmake")
+              (string-append "-DSHLOMIF_SYSTEM_INSTALL_DIR="
+                             #+shlomif-cmake-modules "/share/shlomi-fish/cmake"))
+      #:tests? #f)) ;No tests
+    (native-inputs (list shlomif-cmake-modules pkg-config perl))
+    (home-page "https://github.com/shlomif/rinutils")
+    (synopsis "Collection of C headers")
+    (description
+     "Rinutils is a set of C headers containing macros and static
+functions that have been extracted from @uref{https://www.shlomifish.org/,
+Shlomi Fish's} projects.")
+    (license license:expat)))
