@@ -293,6 +293,16 @@ which will be used as a snippet in origin."
      #:repository-url "https://github.com/briot/tree-sitter-ada"
      #:commit commit)))
 
+(define-public tree-sitter-agda
+  ;; Use a later commit because some tests fail with the v1.3.1 tag.
+  (let ((commit "e8d47a6987effe34d5595baf321d82d3519a8527")
+        (revision "0"))
+    (tree-sitter-grammar
+     "agda" "Agda"
+     "1x06a1c7k5lyw4803h514yibmzizszg8dc6r4wj9gjnr1vw7l7p6"
+     (git-version "1.3.1" revision commit)
+     #:commit commit)))
+
 (define-public tree-sitter-arduino
   (tree-sitter-grammar
    "arduino" "Arduino"
