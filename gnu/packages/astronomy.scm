@@ -2872,6 +2872,61 @@ telescopes, and data generation utilities.")
 simulated Astronomical data in Python.")
     (license license:expat)))
 
+(define-public python-astromartini
+  (package
+    (name "python-astromartini")
+    (version "2.1.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kyleaoman/martini")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xbddyxnm8vy60x5d9bs3y09d4w1wm3yvyr89zmkapdn4qsxjjmr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 2527 passed, 11 skipped, 4 xfailed
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-xdist
+           python-setuptools))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy
+           python-scipy
+           python-tqdm
+           ;; [optional]
+           ;; python-eaglesqltools
+           ;; python-gizmo-analysis
+           python-h5py
+           ;; python-halo-analysis
+           ;; python-hdecompose
+           ;; python-pyread-eagle
+           python-requests
+           ;; python-swiftgalaxy
+           ;; python-swiftsimio
+           ;; python-utilities-awetzel
+           #;python-velociraptor))
+    (home-page "https://github.com/kyleaoman/martini")
+    (synopsis "Synthetic datacube creation from simulations")
+    (description
+     "MARTINI is a modular package for the creation of synthetic resolved HI
+line observations (data cubes) of smoothed-particle hydrodynamics simulations
+of galaxies.  The various aspects of the mock-observing process are divided
+logically into sub-modules handling the data cube, source, beam,
+noise,spectral model and SPH kernel.  MARTINI is object-oriented: each
+sub-module provides a class (or classes) which can be configured as desired.
+For most sub-modules, base classes are provided to allow for straightforward
+customization.  Instances of each sub-module class are given as parameters to
+the Martini class; a mock observation is then constructed by calling a handful
+of functions to execute the desired steps in the mock-observing process.")
+    (license license:gpl3)))
+
 (define-public python-astroml
   (package
     (name "python-astroml")
