@@ -386,7 +386,7 @@ comparison and diagnostics.")
     (build-system gnu-build-system)
     (arguments
      (list
-      #:disallowed-references `(,tzdata-for-tests)
+      #:disallowed-references `(,(this-package-native-input "tzdata"))
       #:make-flags
       #~(list (string-append "CFLAGS=-g -O2"
                              " -Wno-error=implicit-function-declaration")
@@ -748,7 +748,7 @@ posteriors and evidences.")
      (substitute-keyword-arguments (package-arguments r-with-tests)
        ((#:tests? #f #f) #f)
        ((#:disallowed-references refs '())
-        (cons perl refs))
+        (cons (this-package-native-input "perl") refs))
        ((#:configure-flags flags)
         ;; Do not build the recommended packages.  The build system creates
         ;; random temporary directories and embeds their names in some

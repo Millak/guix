@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2017, 2019-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2017, 2019-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
@@ -222,9 +222,13 @@ living in the same process.")
      (list #:tests? (not (or (%current-target-system)
                              (target-hurd?)))
            ;; Ensure we don't keep a reference to the tools used for testing.
-           #:disallowed-references (if (target-hurd?)
-                                       '()
-                                       (list net-tools iproute socat))
+           #:disallowed-references
+           (if (target-hurd?)
+               '()
+               (list (this-package-native-input "net-tools")
+                     (this-package-native-input "iproute2")
+                     (this-package-native-input "socat")))
+
            #:configure-flags
            #~(cons*
               ;; GnuTLS doesn't consult any environment variables to specify
@@ -478,7 +482,7 @@ OpenSSL for TARGET."
       #:test-target "test"
       ;; Changes to OpenSSL sometimes cause Perl to "sneak in" to the closure,
       ;; so we explicitly disallow it here.
-      #:disallowed-references (list (canonical-package perl))
+      #:disallowed-references (list (this-package-native-input "perl"))
       #:phases
       #~(modify-phases %standard-phases
           #$@(if (%current-target-system)

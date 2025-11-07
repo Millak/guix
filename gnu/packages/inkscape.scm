@@ -162,7 +162,8 @@ endif()~%~%"
      (build-system cmake-build-system)
      (arguments
       (list
-       #:disallowed-references (list imagemagick/stable)
+       #:disallowed-references (list (this-package-native-input "imagemagick"))
+
        #:imported-modules `(,@%cmake-build-system-modules
                             (guix build glib-or-gtk-build-system))
        #:modules '((guix build cmake-build-system)

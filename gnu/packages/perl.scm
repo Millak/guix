@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2017, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2019, 2020, 2021 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2016, 2017, 2019, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2019, 2020 Eric Bavier <bavier@posteo.net>
@@ -14277,7 +14277,7 @@ prop, vhea, vmtx and the reading and writing of all other table types.")
      `(;; XXX: We'd like to use #:disallowed-references 'perl-build-system'
        ;; doesn't support it yet.
        ;;
-       ;; #:disallowed-references (,tzdata-for-tests)
+       ;; #:disallowed-references (,(this-package-native-input "tzdata"))
 
        #:phases
        (modify-phases %standard-phases

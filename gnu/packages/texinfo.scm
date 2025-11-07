@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2013, 2015-2017, 2019, 2022-2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2013, 2015-2017, 2019, 2022-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017, 2019, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -254,8 +254,7 @@ is on expressing the content semantically, avoiding physical markup commands.")
                                  (fold delete (files)
                                        '("info" "locale"))))
                      #t))))))
-       #:disallowed-references ,(assoc-ref (package-inputs texinfo)
-                                           "perl")
+       #:disallowed-references ,(list (this-package-input "perl"))
        #:modules ((ice-9 ftw) (srfi srfi-1)
                   ,@%default-gnu-modules)))
     (synopsis "Standalone Info documentation reader")

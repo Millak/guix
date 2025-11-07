@@ -124,7 +124,7 @@
     (arguments
      (substitute-keyword-arguments (package-arguments base-rust)
        ((#:disallowed-references _ '())
-        (list base-rust))))
+        (list (this-package-native-input "rustc-bootstrap")))))
     (native-inputs
      (modify-inputs (package-native-inputs base-rust)
        (replace "rustc-bootstrap" base-rust)

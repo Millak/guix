@@ -338,7 +338,8 @@ Python 3.3 and later, rather than on Python 2.")
                   ((guix build gnu-build-system) #:prefix gnu:)
                   ,@%default-gnu-modules)
       ;; Make sure the full bash does not end up in the final closure.
-      #:disallowed-references (list bash perl)
+      #:disallowed-references (list (this-package-native-input "bash")
+                                    (this-package-native-input "perl"))
       #:test-target "test"
       #:configure-flags
       #~(cons "--with-gitconfig=/etc/gitconfig"
@@ -610,7 +611,7 @@ everything from small to very large projects with speed and efficiency.")
     (arguments
      (substitute-keyword-arguments (package-arguments git-minimal)
        ((#:disallowed-references disallowed-refs ''())
-        (delete perl disallowed-refs))
+        (delq (this-package-native-input "perl") disallowed-refs))
        ((#:make-flags flags #~'())
         #~(cons "USE_LIBPCRE2=yes" #$flags))
        ((#:configure-flags flags #~'())
@@ -3972,7 +3973,7 @@ be served with a HTTP file server of your choice.")
                             (assoc-ref %build-inputs "boost")
                             "/lib")
              "--with-tinyxml")
-       #:disallowed-references (,tzdata-for-tests)
+       #:disallowed-references ,(list (this-package-native-input "tzdata"))
        #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'unbundle
                     (lambda _

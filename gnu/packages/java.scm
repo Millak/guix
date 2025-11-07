@@ -738,7 +738,9 @@ IcedTea build harness.")
          ((guix build ant-build-system)
           ,@%default-gnu-imported-modules)
 
-         #:disallowed-references ,(list (gexp-input icedtea-7 "jdk"))
+         #:disallowed-references ,(list (gexp-input
+                                         (this-package-native-input "jdk")
+                                         "jdk"))
 
          ,@(substitute-keyword-arguments (package-arguments icedtea-7)
              ((#:modules modules)
@@ -929,8 +931,9 @@ new Date();"))
         (ice-9 popen))
        #:tests? #f                      ; require jtreg
        #:make-flags '("all")
-       #:disallowed-references ,(list (gexp-input icedtea-8)
-                                      (gexp-input icedtea-8 "jdk"))
+       #:disallowed-references
+       ,(list (this-package-native-input "icedtea")
+              (gexp-input (this-package-native-input "icedtea") "jdk"))
 
        #:phases
        (modify-phases %standard-phases
@@ -1302,8 +1305,8 @@ new Date();"))
                (substitute* "make/autoconf/generated-configure.sh"
                  (("-Werror") ""))))))
        ((#:disallowed-references _ '())
-        `(,(gexp-input openjdk9)
-          ,(gexp-input openjdk9 "jdk")))))
+        `(,(this-package-native-input "openjdk9")
+          ,(gexp-input (this-package-native-input "openjdk9") "jdk")))))
     (native-inputs
      `(("openjdk9" ,openjdk9)
        ("openjdk9:jdk" ,openjdk9 "jdk")
@@ -1348,8 +1351,11 @@ new Date();"))
                   (ice-9 popen)
                   (srfi srfi-1)
                   (srfi srfi-26))
-      #:disallowed-references (list (gexp-input openjdk10)
-                                    (gexp-input openjdk10 "jdk"))
+
+      #:disallowed-references
+      (list (this-package-native-input "openjdk")
+            (gexp-input (this-package-native-input "openjdk")
+                        "jdk"))
 
       #:tests? #f                       ; requires jtreg
       ;; TODO package jtreg

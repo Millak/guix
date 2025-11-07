@@ -4042,7 +4042,7 @@ be used for realtime video capture via Linux-specific APIs.")
         #~(modify-phases #$phases
             (delete 'split)))
        ((#:disallowed-references _ '())
-        (list qtbase qtbase-5))))
+        (list qtbase qtbase-5))))                 ;FIXME: most likely useless
     (outputs '("out"))
     (inputs (modify-inputs (package-inputs v4l-utils)
               (delete "qtbase")))))

@@ -446,7 +446,7 @@ the GStreamer multimedia framework.")
          "1016z0znl2j43n08rl19zdhfvfsgnmg44qh8fk6dr4qj481icrnw"))))
     (build-system meson-build-system)
     (arguments
-     (list #:disallowed-references (list python)
+     (list #:disallowed-references (list (this-package-native-input "python"))
            #:phases
            #~(modify-phases %standard-phases
                #$@%common-gstreamer-phases

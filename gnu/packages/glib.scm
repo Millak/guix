@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2016, 2019-2021, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
@@ -272,7 +272,7 @@ information, refer to the @samp{dbus-daemon(1)} man page.")))
     (arguments
      (list
       #:disallowed-references
-      (cons tzdata-for-tests
+      (cons (this-package-native-input "tzdata")
             ;; Verify glib-mkenums, gtester, ... use the cross-compiled
             ;; python.
             (if (%current-target-system)

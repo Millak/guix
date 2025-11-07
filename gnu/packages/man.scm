@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2014, 2015, 2017, 2018, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012, 2014-2015, 2017-2018, 2021, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 David Thompson <dthompson2@worcester.edu>
 ;;; Copyright © 2015, 2016 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
@@ -174,7 +174,7 @@ a flexible and convenient way.")
                    '("nroff" "eqn" "neqn" "tbl" "refer" "pic")))
            ;; At run time we should refer to GROFF-MINIMAL, not GROFF (the latter
            ;; pulls in Perl.)
-           #:disallowed-references (list groff)))
+           #:disallowed-references (list (this-package-native-input "groff"))))
     (native-inputs
      (list pkg-config flex
            ;; Groff is needed at build time for troff, grops, soelim, etc.

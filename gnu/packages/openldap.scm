@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2015, 2019-2020, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2018, 2019, 2021, 2022, 2023, 2025 Ricardo Wurmus <rekado@elephly.net>
@@ -255,7 +255,7 @@ servers from Python programs.")
                   (guix build utils))
       #:imported-modules `((guix build python-build-system)
                            ,@%default-gnu-imported-modules)
-      #:disallowed-references (list httpd)
+      #:disallowed-references (list (this-package-native-input "httpd"))
       #:configure-flags
       #~(list
          ;; Relax gcc-14's strictness.

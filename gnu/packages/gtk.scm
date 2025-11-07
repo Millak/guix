@@ -1083,7 +1083,7 @@ application suites.")
       #:modules '((guix build utils)
                   (guix build meson-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:))
-      #:disallowed-references (list xorg-server-for-tests)
+      #:disallowed-references (list (this-package-native-input "xorg-server"))
       #:configure-flags
       #~(list "-Dcloudproviders=true"   ;for cloud-providers support
               "-Dcolord=yes"            ;for color printing support

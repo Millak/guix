@@ -6285,7 +6285,7 @@ throughout GNOME for API documentation).")
            pango
            wayland))
     (arguments
-     `(#:disallowed-references (,xorg-server-for-tests)
+     `(#:disallowed-references ,(list (this-package-native-input "xorg-server"))
        #:configure-flags (list ,(string-append
                                  "CFLAGS=-g -O2"
                                  " -Wno-error=implicit-function-declaration")
@@ -9432,10 +9432,10 @@ properties, screen resolution, and other GNOME parameters.")
     (build-system meson-build-system)
     (arguments
      (let ((disallowed-references
-            (list (gexp-input glib "bin")
-                  (gexp-input libxslt)
-                  (gexp-input meson)
-                  (gexp-input ruby-sass))))
+            (list (gexp-input (this-package-native-input "glib") "bin")
+                  (this-package-native-input "libxslt")
+                  meson
+                  (this-package-native-input "ruby-sass"))))
        (list
         #:glib-or-gtk? #t
         #:disallowed-references disallowed-references

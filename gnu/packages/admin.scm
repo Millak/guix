@@ -2718,7 +2718,7 @@ command.")
       #:tests? #f ; no tests
       ;; Make sure the (rarely updated) package 'imagemagick/stable'
       ;; does not end up in the closure.
-      #:disallowed-references (list imagemagick/stable)
+      #:disallowed-references (list (this-package-native-input "imagemagick"))
       #:modules '((guix build qt-build-system)
                   ((guix build gnu-build-system) #:prefix gnu:)
                   (guix build utils))

@@ -467,7 +467,7 @@ one.")
                 "1zf921nd9xxdvvc8awzzfrljr0n29vi28mlam0jdwvsk0xv4gd7a"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:disallowed-references (,httpd)
+     `(#:disallowed-references ,(list (this-package-native-input "httpd"))
        #:tests? #f                 ; TODO: can't figure out if there are tests
        #:make-flags (list
                      (string-append "DESTDIR="

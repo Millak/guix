@@ -7914,7 +7914,7 @@ disks and SD cards.  This package provides the userland utilities.")
           (string-append "libblkid_CFLAGS=-I" libuuid "/include/uuid "
                          "-I" libuuid "/include/blkid")
           (string-append "libblkid_LIBS=-L" libuuid-static "/lib -lblkid")))
-       #:disallowed-references (,util-linux)
+       #:disallowed-references (,(this-package-input "libuuid"))
        #:make-flags '("LDFLAGS=-all-static")
        #:phases
        (modify-phases %standard-phases ; TODO: f2fs phases.
