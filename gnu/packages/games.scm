@@ -187,6 +187,7 @@
   #:use-module (gnu packages lesstif)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages libedit)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages libusb)
@@ -2242,6 +2243,67 @@ kthieves, ktowers, xmille and xreversi.")
     (description
      "Black-hole Solver is a program that automatically solves layouts of Black Hole and
 similar variants of Card Solitaire such as Golf, and All in a Row.")
+    (license license:expat)))
+
+(define-public freecell-solver
+  (package
+    (name "freecell-solver")
+    (version "6.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://fc-solve.shlomifish.org/downloads/fc-solve/freecell-solver-"
+             version ".tar.xz"))
+       (sha256
+        (base32 "1p775imxqycpky3j3pa5whzqcxjbr3kv2z1d20hxbg12akc2a48x"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DFCS_DISABLE_PATSOLVE=1")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-failing-tests
+            (lambda _
+              (delete-file "t/t/tidyall.t")
+              (delete-file "t/t/sh-shabang.t")
+              (delete-file "t/t/py-flake8.t")
+              (delete-file "t/t/style-trailing-space.t"))))))
+    ;; TODO: These inputs wind up propagating both perl-moo and perl-moo-2,
+    ;; which are mutually incompatible
+    (native-inputs
+     (list cmocka
+           `(,glib "bin")
+           gperf
+           perl
+           perl-chi
+           perl-file-find-object
+           perl-file-find-object-rule
+           perl-moo-2
+           perl-number-compare
+           perl-path-tiny-0.150
+           perl-task-freecellsolver-testing
+           perl-task-test-run-allplugins
+           perl-test-runvalgrind
+           perl-template-toolkit
+           perl-code-tidyall-plugin-testcount
+           pkg-config
+           python
+           python-cffi
+           python-freecell-solver
+           python-pycotap
+           python-six
+           the-silver-searcher
+           tidyall))
+    (inputs (list rinutils))
+    (propagated-inputs (list python-pysol-cards))
+    (home-page "https://fc-solve.shlomifish.org/")
+    (synopsis "Solver of various solitaire games")
+    (description
+     "Freecell Solver is a program that automatically solves layouts of Freecell and
+similar variants of Card Solitaire such as Eight Off, Forecell, and Seahaven Towers, as
+well as Simple Simon boards.")
     (license license:expat)))
 
 (define-public knightsgame
