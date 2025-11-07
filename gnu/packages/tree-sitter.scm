@@ -264,6 +264,24 @@ which will be used as a snippet in origin."
 
 ;;; Language grammars (sort alphabetically)
 
+(define-public tree-sitter-actionscript
+  (let ((commit "24919034fc78fdf9bedaac6616b6a60af20ab9b5")
+        (revision "0"))
+    (tree-sitter-grammar
+     "actionscript" "ActionScript"
+     "0gdkb7hi6nc6d3rza247c66nzi04m471b6fv32adxqjw76w5bg1d"
+     (git-version "0.1.0" revision commit)
+     #:repository-url "https://github.com/Rileran/tree-sitter-actionscript"
+     #:commit commit
+     #:get-cleanup-snippet
+     (lambda (grammar-directories)
+       #~(begin
+           (use-modules (guix build utils))
+           (substitute* "grammar.js"
+             (("u\\{\\[0-9a-fA-F\\]\\+\\}")
+              "u\\{[0-9a-fA-F]+\\}"))
+           #$(tree-sitter-delete-generated-files grammar-directories))))))
+
 (define-public tree-sitter-ada
   (let ((version "0.1.0") ; In package.json, but untagged.
         (commit "b23672d313b4c994ab96fd54f1b7ff15eac68a55")
