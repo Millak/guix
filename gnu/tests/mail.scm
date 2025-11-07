@@ -44,9 +44,23 @@
             %test-getmail
             %test-rspamd))
 
+(define %qemu-static-networking-no-nameserver
+  ;; Networking configuration for QEMU without nameserver.
+  (static-networking
+   (addresses (list (network-address
+                     (device "eth0")
+                     (value "10.0.2.15/24"))))
+   (routes (list (network-route
+                  (destination "default")
+                  (gateway "10.0.2.2"))))
+   (requirement '())
+   (provision '(networking))
+   (name-servers '())))
+
 (define %opensmtpd-os
   (simple-operating-system
-   (service dhcpcd-service-type)
+   (service static-networking-service-type
+            (list %qemu-static-networking-no-nameserver))
    (service opensmtpd-service-type
             (opensmtpd-configuration
              (config-file
@@ -99,8 +113,8 @@ match from any for local action inbound
 
           (test-assert "mbox is empty"
             (marionette-eval
-             '(and (file-exists? "/var/spool/mail")
-                   (not (file-exists? "/var/spool/mail/root")))
+             '(and (file-exists? "/var/mail")
+                   (not (file-exists? "/var/mail/root")))
              marionette))
 
           (test-eq "accept an email"
@@ -150,7 +164,7 @@ match from any for local action inbound
 
                 (let wait ((n 20))
                   (cond ((queue-empty?)
-                         (file-exists? "/var/spool/mail/root"))
+                         (file-exists? "/var/mail/root"))
                         ((zero? n)
                          (error "root mailbox didn't show up"))
                         (else
