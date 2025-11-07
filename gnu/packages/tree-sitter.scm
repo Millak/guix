@@ -471,6 +471,24 @@ which will be used as a snippet in origin."
    "0.3.0"
    #:repository-url "https://github.com/stsewd/tree-sitter-comment"))
 
+(define-public tree-sitter-cpon
+  (let ((commit "594289eadfec719198e560f9d7fd243c4db678d5")
+        (revision "0"))
+    (tree-sitter-grammar
+     "cpon" "ChainPack Object Notation (CPON)"
+     "0kzs3i62vrckwadp2z2gdfzj3mjparh1di0zcawy94635brvvgrn"
+     (git-version "1.0.0" revision commit)
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-cpon"
+     #:commit commit
+     #:get-cleanup-snippet
+     (lambda (grammar-directories)
+       #~(begin
+           (use-modules (guix build utils))
+           ;; FIXME: Language not found.
+           (delete-file-recursively "test/highlight")
+           #$(tree-sitter-delete-generated-files grammar-directories))))))
+
 (define-public tree-sitter-cpp
   (tree-sitter-grammar
    "cpp" "C++"
