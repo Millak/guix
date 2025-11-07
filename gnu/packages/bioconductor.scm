@@ -11838,6 +11838,12 @@ specific parser.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'skip-bad-tests
+           (lambda _
+             ;; These tests need Internet access to load XML schemas.
+             (with-directory-excursion "inst/unitTests/"
+               (delete-file "test_isolationWindow.R")
+               (delete-file "test_mzid.R"))))
          (add-after 'unpack 'use-system-boost
            (lambda _
              (substitute* "src/Makevars"
