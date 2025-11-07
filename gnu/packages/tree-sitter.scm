@@ -313,6 +313,13 @@ which will be used as a snippet in origin."
    #:inputs (delay (list tree-sitter-c tree-sitter-cpp))
    #:article "an"))
 
+(define-public tree-sitter-asm
+  (tree-sitter-grammar
+   "asm" "ASM"
+   "0i5wxrwavhxqj04g6ix76q8vsggl9sq8jazasl9k53mag3rnchi5"
+   "0.24.0"
+   #:repository-url "https://github.com/RubixDev/tree-sitter-asm"))
+
 (define-public tree-sitter-awk
   (tree-sitter-grammar
    "awk" "AWK"
