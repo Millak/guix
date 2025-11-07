@@ -218,6 +218,7 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
@@ -2192,6 +2193,56 @@ kcribbage, kdominos, kklondike, kmcarlo, kmontana, kslyfox, kspider, ktabby,
 kthieves, ktowers, xmille and xreversi.")
     ;; Code is under BSD-3 and Expat, card images are under CC0.
     (license (list license:bsd-3 license:expat license:cc0))))
+
+(define-public black-hole-solver
+  (package
+    (name "black-hole-solver")
+    (version "1.14.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://fc-solve.shlomifish.org/downloads/fc-solve/black-hole-solver-"
+             version ".tar.xz"))
+       (sha256
+        (base32 "1h2panbi4jkcijyknyxi74fkgd0jgjmp1mhg155hy5mv7l4vsisw"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-failing-tests
+            (lambda _
+              (delete-file "t/style-trailing-space.t"))))))
+    ;; TODO: These inputs wind up propagating both perl-moo and perl-moo-2,
+    ;; which are mutually incompatible
+    (native-inputs
+     (list `(,glib "bin")
+           perl
+           perl-class-xsaccessor
+           perl-dir-manifest
+           perl-env-path
+           perl-file-find-object
+           perl-file-find-object-rule
+           perl-file-which
+           perl-inline
+           perl-inline-c
+           perl-number-compare
+           perl-path-tiny-0.150
+           perl-test-differences
+           perl-test-runvalgrind
+           perl-test-some
+           perl-test-trailingspace
+           perl-text-glob
+           pkg-config
+           python))
+    (inputs (list rinutils))
+    (home-page "https://fc-solve.shlomifish.org/")
+    (synopsis "Solver of various solitaire games")
+    (description
+     "Black-hole Solver is a program that automatically solves layouts of Black Hole and
+similar variants of Card Solitaire such as Golf, and All in a Row.")
+    (license license:expat)))
 
 (define-public knightsgame
   (package
