@@ -737,6 +737,110 @@ used in the declarative section of design units.")
       (native-inputs
        '()))))
 
+(define-public klayout
+  (package
+    (name "klayout")
+    (version "0.30.5")
+    (source
+     (origin (method git-fetch)
+             (uri (git-reference
+                    (url "https://github.com/KLayout/klayout")
+                    (commit (string-append "v" version))))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32
+               "1ixl8wzpiaw6frb28x9y9jy3fvhjclmn4xl77i72rs37rf4i2a2s"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("output/klayout" "bin/")
+          ("output/" "bin/" #:include-regexp ("strm.*"))
+          ("output/" "lib/" #:include-regexp ("lib.*\\.so.*"))
+          ("output/pymod" "lib/"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'patch-build-script ;; ensure reproducibility
+            (lambda _
+              (substitute* "build.sh"
+                (("KLAYOUT_VERSION_DATE=\"\\$KLAYOUT_VERSION_DATE\"")
+                 "KLAYOUT_VERSION_DATE=1970-01-01"))))
+          (add-after 'patch-build-script 'disable-failing-tests
+            (lambda _
+              (substitute* "src/tl/unit_tests/unit_tests.pro"
+                ;; These need internet connection.
+                (("  tlWebDAVTests\\.cc")
+                 "# tlWebDAVTests.cc \\")
+                (("  tlGitTests\\.cc")
+                 "# tlGitTests.cc \\")
+                (("  tlHttpStreamTests\\.cc")
+                 "# tlHttpStreamTests.cc \\")
+                ;; The threaded tests are reportedly flaky.
+                (("  tlThreadedWorkersTests\\.cc")
+                 "# tlThreadedWorkersTests\\.cc \\"))
+              (substitute* "src/rba/rba.pro"
+                ;; There are issues of non-detereminism involved with Ruby's GC
+                ;; implementation. https://github.com/KLayout/klayout/issues/2251
+                (("SUBDIRS = rba unit_tests")
+                 "SUBDIRS = rba")
+                (("unit_tests.depends += rba")
+                 ""))))
+          (add-after 'disable-failing-tests 'build
+            (lambda _
+              (invoke "bash" "build.sh"
+                      "-prefix" "output"
+                      "-option"
+                      (string-append "-j" (number->string (parallel-job-count))))))
+          (add-after 'install 'patch-elfs
+            (lambda _
+              (let* ((lib (string-append #$output "/lib"))
+                     (layout-lib (string-append lib "/lay_plugins"))
+                     (db-lib (string-append lib "/db_plugins"))
+                     (bin (string-append #$output "/bin"))
+                     (executables (filter executable-file? (find-files #$output)))
+                     (ut-runner "build-release/ut_runner")
+                     (unit-tests (cons* ut-runner
+                                        (find-files "build-release" "\\.ut")))
+                     (patchem (lambda (elf)
+                                (when (not (string-suffix? ".py" elf))
+                                  (invoke "patchelf" "--add-rpath" lib elf)
+                                  (invoke "patchelf" "--add-rpath" layout-lib elf)
+                                  (invoke "patchelf" "--add-rpath" db-lib elf)))))
+                (map patchem executables)
+                (map patchem unit-tests)
+                (patchem ut-runner))))
+          (add-after 'patch-elfs 'check-after-install
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "build-release"
+                  (mkdir "testtmp")
+                  (setenv "TESTTMP" "testtmp")
+                  (setenv "TESTSRC" "..")
+                  (setenv "LD_LIBRARY_PATH" ".")
+                  (setenv "QT_QPA_PLATFORM" "offscreen")
+                  (setenv "HOME" "/tmp/home") ;; Fontconfig needs a writable cache.
+                  (invoke "./ut_runner"))))))))
+    (native-inputs (list perl python qtsvg ruby tcl))
+    (inputs
+     (list bash-minimal
+           libgit2
+           patchelf
+           qt5compat
+           qtbase
+           qtmultimedia
+           qtsvg
+           qttools))
+    (home-page "https://www.klayout.de")
+    (synopsis "Mask layout editor")
+    (description "KLayout is @acronym{EDA, Electronic Design Automation}
+software.  It is a scriptable @acronym{VLSI, Very Large Scale Integration}
+layout editor used for visualizing and editing mask data, transcoding between
+different file formats (GDSII and OASIS), executing @acronym{DRC, Design rule
+checking}, @acronym{LVS, Layout Versus Schematic} verification, and drawing of
+chip cross-sections basked on mask data.")
+    ;; The license version will be clarified with the next version bump.
+    (license license:gpl3+)))
+
 (define-public libngspice
   ;; Note: The ngspice's build system does not allow us to build both the
   ;; library and the executables in one go.  Thus, we have two packages.
