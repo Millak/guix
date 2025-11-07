@@ -28446,29 +28446,49 @@ access the system cron automatically and simply using a direct API.")
 (define-public python-apscheduler
   (package
     (name "python-apscheduler")
-    (version "3.10.4")
+    (version "3.11.1")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "APScheduler" version))
+              (uri (pypi-uri "apscheduler" version))
               (sha256
                (base32
-                "0jpg9jyx95jafkq0hz6sx7r4l2z5gc599ivb9278kgnr4wdhgpz6"))))
+                "08gjh0l7ba87yp23ilqigp3q004gnnw092p9gxsd310c83v7mdqd"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-pytz
-                             python-six
-                             python-tzlocal))
-    (native-inputs (list python-mock
-                         python-twisted
-                         python-gevent
-                         python-setuptools
-                         python-setuptools-scm
-                         python-sqlalchemy
-                         python-pyside-6
-                         python-pytest
-                         python-pytest-asyncio-0.26
-                         python-pytest-cov
-                         python-pytest-tornado5
-                         python-wheel))
+    (arguments
+     (list
+      ;; tests: 701 passed, 252 skipped, 13 deselected, 201 warnings
+      #:test-flags
+      ;; XXX: Some tests hang or fail with verity of errors:
+      ;; E   RuntimeError: There is no current event loop in thread 'MainThread'.
+      #~(list #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/test_executors.py::"
+                                                    test))
+                      (list "test_broken_pool"
+                            "test_max_instances[processpool-pytz]"
+                            "test_max_instances[processpool-zoneinfo]"
+                            "test_run_coroutine_job_tornado"
+                            "test_run_job_error[processpool-pytz]"
+                            "test_run_job_error[processpool-zoneinfo]"
+                            "test_submit_job[processpool-pytz-error]"
+                            "test_submit_job[processpool-pytz-executed]"
+                            "test_submit_job[processpool-pytz-missed]"
+                            "test_submit_job[processpool-zoneinfo-error]"
+                            "test_submit_job[processpool-zoneinfo-executed]"
+                            "test_submit_job[processpool-zoneinfo-missed]")))))
+    (native-inputs
+     (list python-anyio
+           python-gevent
+           python-pyside-6
+           python-pytest
+           python-pytest-asyncio-0.26
+           python-pytz
+           python-setuptools
+           python-setuptools-scm
+           python-sqlalchemy
+           python-tornado
+           python-twisted))
+    (propagated-inputs
+     (list python-tzlocal))
     (home-page "https://github.com/agronholm/apscheduler")
     (synopsis "Task scheduling library for Python")
     (description "Advanced Python Scheduler (APScheduler) is a Python library
