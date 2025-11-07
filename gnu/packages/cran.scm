@@ -43074,13 +43074,13 @@ It also provides a small number of bug fixes to the original code.")
 (define-public r-torch
   (package
     (name "r-torch")
-    (version "0.14.2")
+    (version "0.16.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "torch" version))
        (sha256
-        (base32 "1j0wgxr25h91c7x48svmgd0pbjl2ljn8rv6rsgw5a56vdgr992nb"))))
+        (base32 "0gqjg9qhsrwh5cvdlk6lyqp2j1d3kr49im3m2ja4c3wkjpk9swhv"))))
     (properties
      '((upstream-name . "torch")
        (updater-ignored-native-inputs . ("r-aten"))
@@ -43107,8 +43107,7 @@ It also provides a small number of bug fixes to the original code.")
                     inputs "/lib/liblantern.so")
                    (string-append deps "/liblantern.so")))))))))
     (inputs
-     (list python-pytorch-for-r-torch
-           liblantern))
+     (list liblantern python-pytorch-for-r-torch))
     (propagated-inputs
      (list r-bit64
            r-callr
