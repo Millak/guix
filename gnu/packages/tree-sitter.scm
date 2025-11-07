@@ -402,6 +402,17 @@ which will be used as a snippet in origin."
    #:repository-url
    "https://github.com/tree-sitter-grammars/tree-sitter-cairo"))
 
+(define-public tree-sitter-capnp
+  (let ((commit "7b0883c03e5edd34ef7bcf703194204299d7099f")
+        (revision "0"))
+    (tree-sitter-grammar
+     "capnp" "Cap'n Proto"
+     "0ww98b15n9hr6afbnl0ckxs4q8y0c31cnga2pnjx369iwfwdkajq"
+     (git-version "1.5.0" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-capnp")))
+
 (define-public tree-sitter-chatito
   (tree-sitter-grammar
    "chatito" "Chatito"
