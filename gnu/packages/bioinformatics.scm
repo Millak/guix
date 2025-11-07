@@ -23025,11 +23025,11 @@ patterns.")
       (license license:gpl3))))
 
 (define-public r-voltron
-  (let ((commit "21886d82292dc46521da2a03d978d78f3bd7210b")
-        (revision "5"))
+  (let ((commit "1c0810b6603010af9afc7bb75eaebbe6de5ace30")
+        (revision "1"))
     (package
       (name "r-voltron")
-      (version (git-version "0.2.0" revision commit))
+      (version (git-version "0.2.1" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -23038,7 +23038,7 @@ patterns.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "00d49c1zwd0nbcxc5rzzv6251bcgkcwmzpfr2k6r5l6zg58i6v3m"))))
+          (base32 "0w8lbk74n0pxz4rscl5vnfaw2xpl107y55cc5xff4km37dw901hv"))))
       (properties `((upstream-name . "VoltRon")))
       (build-system r-build-system)
       (arguments
@@ -23084,7 +23084,8 @@ guix_python <- \"~a\";"
              python-zarr
              which       ;tests/testthat/test_conversion.R
              zlib))
-      (propagated-inputs (list r-data-table
+      (propagated-inputs (list r-biocsingular
+                               r-data-table
                                r-dplyr
                                r-ebimage
                                r-ggplot2
