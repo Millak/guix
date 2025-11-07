@@ -8568,35 +8568,6 @@ can be nested together to build web applications.  Paste's design closely
 follows ideas flowing from WSGI (Web Standard Gateway Interface).")
     (license license:expat)))
 
-(define-public python-pastescript
-  (package
-    (name "python-pastescript")
-    (version "3.7.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pastescript" version))
-       (sha256
-        (base32 "08959bmp62pb2rlwr4wpwij15y83jcf9wa9jgg32jlvfzf6h4vsk"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags #~(list "--ignore=tests/appsetup/testfiles")))
-    (native-inputs
-     (list python-pytest
-           python-wheel))
-    (propagated-inputs
-     (list python-paste
-           python-pastedeploy
-           python-setuptools))
-    (home-page "https://github.com/pasteorg/pastescript")
-    (synopsis "Pluggable command line tool for serving web applications and more")
-    (description
-     "PasteScript is a plugin-friendly command line tool which provides a
-variety of features, from launching web applications to bootstrapping project
-layouts.")
-    (license license:expat)))
-
 (define-public python-urlgrabber
   (package
     (name "python-urlgrabber")
