@@ -351,6 +351,13 @@ which will be used as a snippet in origin."
    "1smlcfkxxknhya1b1h72zj3ccg35szbg9mii2xwh7iq9acnlzpgc"
    "0.23.3"))
 
+(define-public tree-sitter-beancount
+  (tree-sitter-grammar
+   "beancount" "Beancount"
+   "0r2ql0n4wkwbcdjpklxhsk91xm8q8dl9n9rdlqk585xagmxf1w4b"
+   "2.4.1"
+   #:repository-url "https://github.com/polarmutex/tree-sitter-beancount"))
+
 (define-public tree-sitter-bibtex
   (let ((commit "ccfd77db0ed799b6c22c214fe9d2937f47bc8b34")
         (revision "0"))
