@@ -967,6 +967,17 @@ which will be used as a snippet in origin."
    "0.8.0"
    #:repository-url "https://github.com/phoenixframework/tree-sitter-heex"))
 
+(define-public tree-sitter-hlsl
+  (tree-sitter-grammar
+   "hlsl" "HLSL"
+   "0d850bxzxmbxgxjdh219ag2k3qvbphly1y0hdbs2zsqdsdgf0s05"
+   "0.2.0"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-hlsl"
+   #:inputs (list tree-sitter-c
+                  tree-sitter-cpp)
+   #:article "an"))
+
 (define-public tree-sitter-html
   (tree-sitter-grammar
    "html" "HTML"
