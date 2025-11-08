@@ -600,6 +600,21 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-doxygen")))
 
+(define-public tree-sitter-elisp
+  (tree-sitter-grammar
+   "elisp" "Emacs Lisp"
+   "0xymhprxa7kamc9cvlprg8s2rm61qcvbfazggny9kw45yj8rqvak"
+   "1.5.0"
+   #:commit "1.5.0"
+   #:repository-url "https://github.com/Wilfred/tree-sitter-elisp"
+   #:get-cleanup-snippet
+   (lambda (grammar-directories)
+     #~(begin
+         (use-modules (guix build utils))
+         ;; FIXME: Language not found.
+         (delete-file-recursively "test/highlight")
+         #$(tree-sitter-delete-generated-files grammar-directories)))))
+
 (define-public tree-sitter-elixir
   (tree-sitter-grammar
    "elixir" "Elixir"
