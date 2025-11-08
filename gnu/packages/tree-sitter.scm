@@ -451,19 +451,7 @@ which will be used as a snippet in origin."
    "clojure" "Clojure"
    "1j41ba48sid6blnfzn6s9vsl829qxd86lr6yyrnl95m42x8q5cx4"
    "0.0.13"
-   #:repository-url "https://github.com/sogaiu/tree-sitter-clojure"
-   #:get-cleanup-snippet
-   (lambda (grammar-directories)
-     #~(begin
-         (use-modules (guix build utils))
-         (for-each
-          (lambda (lang)
-            (with-directory-excursion lang
-              (delete-file "src/grammar.json")
-              (delete-file "src/node-types.json")
-              (delete-file "src/parser.c")
-              (delete-file-recursively "src/tree_sitter")))
-          '#$grammar-directories)))))
+   #:repository-url "https://github.com/sogaiu/tree-sitter-clojure"))
 
 (define-public tree-sitter-cmake
   (tree-sitter-grammar
