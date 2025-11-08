@@ -798,6 +798,15 @@ which will be used as a snippet in origin."
    "https://github.com/gleam-lang/tree-sitter-gleam"
    #:license license:asl2.0))
 
+(define-public tree-sitter-glsl
+  (tree-sitter-grammar
+   "glsl" "OpenGL Shading Language (GLSL)"
+   "0d0ymklms4a91b310f0vwl80yy50sji4qq9sdgly5qh42kyjnijb"
+   "0.2.0"
+   #:inputs (list tree-sitter-c)
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-glsl"))
+
 (define-public tree-sitter-gn
   (let ((version "1.0.0")
         (commit "bc06955bc1e3c9ff8e9b2b2a55b38b94da923c05")
