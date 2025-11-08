@@ -2838,49 +2838,53 @@ mining in astronomy.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 44 passed, 31 deselected, 135 warnings
       #:test-flags
-      #~(list "astroplan/tests"
-              "-k" (string-append
-                    ;; Test requiring newer python-pytz
-                    "not test_timezone"
-                    ;; Disable tests requiring remote data.
-                    " and not test_FixedTarget_from_name"
-                    " and not test_altitude_constraint"
-                    " and not test_at_night_basic"
-                    " and not test_caches_shapes"
-                    " and not test_compare_airmass_constraint_and_observer"
-                    " and not test_compare_altitude_constraint_and_observer"
-                    " and not test_docs_example"
-                    " and not test_eclipses"
-                    " and not test_eq_observer"
-                    " and not test_event_observable"
-                    " and not test_galactic_plane_separation"
-                    " and not test_get_skycoord"
-                    " and not test_hash_observer"
-                    " and not test_is_night"
-                    " and not test_local_time_constraint_hawaii_tz"
-                    " and not test_local_time_constraint_utc"
-                    " and not test_moon_illumination"
-                    " and not test_moon_separation"
-                    " and not test_observability_table"
-                    " and not test_observer_lon_lat_el"
-                    " and not test_regression_airmass_141"
-                    " and not test_regression_shapes"
-                    " and not test_sun_separation"
-                    " and not test_tonight")
-              "--ignore=astroplan/tests/test_scheduling.py")
+      #~(list "--ignore=doc/"
+              "--ignore=astroplan/constraints.py"
+              "--ignore=astroplan/target.py"
+              ;; Network access is required to download test data.
+              "--ignore=astroplan/tests/test_scheduling.py"
+              "--deselect=astroplan/plots/tests/test_sky.py::test_timezone"
+              "-k" (string-join
+                    (list "not test_at_night_basic"
+                          "test_FixedTarget_from_name"
+                          "test_altitude_constraint"
+                          "test_caches_shapes"
+                          "test_compare_airmass_constraint_and_observer"
+                          "test_compare_altitude_constraint_and_observer"
+                          "test_docs_example"
+                          "test_eclipses"
+                          "test_eq_observer"
+                          "test_event_observable"
+                          "test_galactic_plane_separation"
+                          "test_get_skycoord"
+                          "test_hash_observer"
+                          "test_is_night"
+                          "test_local_time_constraint_hawaii_tz"
+                          "test_local_time_constraint_utc"
+                          "test_moon_illumination"
+                          "test_moon_separation"
+                          "test_observability_table"
+                          "test_observer_lon_lat_el"
+                          "test_regression_airmass_141"
+                          "test_regression_shapes"
+                          "test_sun_separation"
+                          "test_tonight")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'prepare-test-environment
+          (add-before 'check 'pre-check
             (lambda _
-              (setenv "HOME" "/tmp")
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-pytest-astropy
+     (list nss-certs-for-test
+           python-ephem
+           python-pytest-astropy
            python-pytest-mpl
            python-setuptools
            python-setuptools-scm
-           python-wheel))
+           tzdata-for-tests))
     (propagated-inputs
      (list python-astropy
            python-astroquery
