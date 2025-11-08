@@ -1354,6 +1354,24 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-pem")))
 
+(define-public tree-sitter-perl
+  (let ((commit "ad74e6db234c35d537de9358799a8e0cc4f5dee0")
+        (revision "0"))
+    (tree-sitter-grammar
+     "perl" "Perl"
+     "0k6p3hij98vqa6b6iyswlyij69cggbnzgwi2zh64mj3faisblgzj"
+     (git-version "1.0.0" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-perl/tree-sitter-perl"
+     #:get-cleanup-snippet
+     (lambda (grammar-directories)
+       #~(begin
+           (use-modules (guix build utils))
+           ;; FIXME
+           (delete-file "test/highlight/literals.pm")
+           #$(tree-sitter-delete-generated-files grammar-directories))))))
+
 (define-public tree-sitter-pgn
   (tree-sitter-grammar
    "pgn" "Chess Portable Game Notation (PGN)"
