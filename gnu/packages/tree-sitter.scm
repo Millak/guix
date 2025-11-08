@@ -1115,9 +1115,9 @@ which will be used as a snippet in origin."
 (define-public tree-sitter-lua
   (tree-sitter-grammar
    "lua" "Lua"
-   "041anx0qirvd4il87whpic8nfdc1nk3kimxdb99m25bfdzm9rn0r"
-   "0.3.0"
-   #:repository-url "https://github.com/MunifTanjim/tree-sitter-lua"
+   "082hc274h96sa98n3vxicjmjvnbdhrpjaimxsh002xl69rdl80jm"
+   "0.4.0"
+   #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-lua"
    #:get-cleanup-snippet
    (lambda (grammar-directories)
      #~(begin
