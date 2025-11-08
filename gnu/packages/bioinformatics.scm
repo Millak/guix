@@ -24581,6 +24581,10 @@ both types of files.")
                   (guix build utils))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-headers
+            (lambda _
+              (substitute* "src/localasm/local_assemble.h"
+                (("#include <string>") "#include <string>\n#include <cstdint>"))))
           (add-after 'unpack 'fix-tests
             (lambda _
               (substitute* "src/megahit"
