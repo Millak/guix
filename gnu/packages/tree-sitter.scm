@@ -1299,6 +1299,16 @@ which will be used as a snippet in origin."
            (delete-file "queries/highlights.scm") ;FIXME
            #$(tree-sitter-delete-generated-files grammar-directories))))))
 
+(define-public tree-sitter-objc
+  (tree-sitter-grammar
+   "objc" "Objective-C"
+   "1fryxjjxjq7lz93vvcm3lswshb4drywf64knbvjxrr3lq5zh5bv8"
+   "3.0.2"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-objc"
+   #:inputs (list tree-sitter-c)
+   #:article "an"))
+
 (define-public tree-sitter-ocaml
   (tree-sitter-grammar
    "ocaml" "OCaml (.ml and .mli)"
