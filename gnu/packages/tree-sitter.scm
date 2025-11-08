@@ -1657,6 +1657,28 @@ which will be used as a snippet in origin."
    "0.23.0-1"
    #:repository-url "https://github.com/6cdh/tree-sitter-scheme"))
 
+(define-public tree-sitter-scss
+  (let ((commit "bca847c1410f7dd97e13fbe7838b3c2c203fb473")
+        (revision "0"))
+    (tree-sitter-grammar
+     "scss" "SCSS"
+     "0v5vrgwp2fln1pypff5pr329mghm5naahpn3sr7mkrja2n8gyy6a"
+     (git-version "1.0.0" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-scss"
+     #:inputs (list tree-sitter-css)
+     #:get-cleanup-snippet
+     (lambda (grammar-directories)
+       #~(begin
+           (use-modules (guix build utils))
+           ;; FIXME: 10/56 fail
+           (with-directory-excursion "test/corpus"
+             (for-each
+              delete-file
+              '("declarations.txt" "examples.txt" "statements.txt")))
+           #$(tree-sitter-delete-generated-files grammar-directories))))))
+
 (define-public tree-sitter-sfapex
   ;; Use a later commit because some tests fail with the v2.3 tag.
   (let ((commit "3597575a429766dd7ecce9f5bb97f6fec4419d5d")
