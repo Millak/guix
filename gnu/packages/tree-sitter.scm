@@ -717,6 +717,17 @@ which will be used as a snippet in origin."
      "https://github.com/stadelmanma/tree-sitter-fortran"
      #:commit commit)))
 
+(define-public tree-sitter-f-sharp
+  (let ((commit "5141851c278a99958469eb1736c7afc4ec738e47")
+        (revision "0"))
+    (tree-sitter-grammar
+     "f-sharp" "F#"
+     "1mk3adn7q6zwrdxpzkvzmvpsqg5a6ijb50qhw5pd46p3scxmp6kh"
+     (git-version "0.1.0" revision commit)
+     #:commit commit
+     #:repository-url "https://github.com/ionide/tree-sitter-fsharp"
+     #:grammar-directories '("fsharp" "fsharp_signature"))))
+
 (define-public tree-sitter-func
   (let ((version "1.0.0")
         (commit "c1d2cc41b39760127a8cd5d4f4923e27114c373b")
