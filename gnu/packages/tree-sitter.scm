@@ -45,7 +45,8 @@
   #:use-module (guix git-download)
   #:use-module (guix i18n)
   #:use-module (guix packages)
-  #:use-module (guix utils))
+  #:use-module (guix utils)
+  #:use-module (ice-9 exceptions))
 
 (define-public tree-sitter
   (package
@@ -204,15 +205,22 @@ This package includes the @command{tree-sitter} command-line tool.")
 (define (tree-sitter-delete-generated-files grammar-directories)
   #~(begin
       (use-modules (guix build utils))
-      (delete-file "binding.gyp")
-      (delete-file-recursively "bindings")
+      (define (delete-file-if-exists file)
+        ;; Not every package has all files that we want to delete.
+        (catch 'system-error
+          (lambda () (delete-file-recursively file))
+          (lambda args
+            (unless (= ENOENT (system-error-errno args))
+              (apply throw args)))))
+      (delete-file-if-exists "binding.gyp")
+      (delete-file-if-exists "bindings")
       (for-each
        (lambda (lang)
          (with-directory-excursion lang
-           (delete-file "src/grammar.json")
-           (delete-file "src/node-types.json")
-           (delete-file "src/parser.c")
-           (delete-file-recursively "src/tree_sitter")))
+           (delete-file-if-exists "src/grammar.json")
+           (delete-file-if-exists "src/node-types.json")
+           (delete-file-if-exists "src/parser.c")
+           (delete-file-if-exists "src/tree_sitter")))
        '#$grammar-directories)))
 
 (define* (tree-sitter-grammar
