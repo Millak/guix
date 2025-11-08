@@ -42,6 +42,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module ((guix build utils) #:select (alist-replace delete-file-recursively))
@@ -1753,29 +1754,45 @@ raw USB commands.")
 (define-public west
   (package
     (name "west")
-    (version "0.13.1")
+    (version "1.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "west" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zephyrproject-rtos/west")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1hw9qas8ry8prn24iqka8kw2nv7ndxr95mvwr5lww53w2sr7p807"))))
+        (base32 "0fa3bbw69khw8la4mi4q18d8brixywwj5yby7dh36hd40wxspzk3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; XXX: This test tries to access the network.
+      #~(list "-k" "not test_init_with_clone_option_depth_one")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'configure-tests
+            (lambda _
+              (setenv "TOXTEMPDIR"
+                      (mkdtemp
+                       (string-append (dirname (getcwd)) "/tmpXXXXXX"))))))))
     (propagated-inputs
      (list python-colorama
            python-packaging
            python-pykwalify
            python-pyyaml))
-    (build-system python-build-system)
+    (native-inputs (list git-minimal python-pytest python-setuptools))
     (home-page "https://github.com/zephyrproject-rtos/west")
     (synopsis "Zephyr RTOS Project meta-tool")
-    (description "West is the swiss-army knife command line tool of the Zephyr
-project.  Its built-in commands provide a multiple repository management
-system with features inspired by Google’s Repo tool and Git submodules.  West
-simplifies configuration and is also pluggable: you can write your own west
-\"extension commands\" which add additional features to west.  Zephyr uses
-this feature to provide conveniences for building applications, flashing and
-debugging them, and more.")
+    (description
+     "West is the swiss-army knife command line tool of the Zephyr project.
+Its built-in commands provide a multiple repository management system with
+features inspired by Google’s Repo tool and Git submodules.  West simplifies
+configuration and is also pluggable: you can write your own west \"extension
+commands\" which add additional features to west.  Zephyr uses this feature to
+provide conveniences for building applications, flashing and debugging them,
+and more.")
     (license license:expat)))
 
 (define-public ebusd
