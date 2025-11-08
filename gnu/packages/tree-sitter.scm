@@ -1087,13 +1087,7 @@ which will be used as a snippet in origin."
    "latex" "LaTeX"
    "18dyda7299imb6i2jnjpr7z2jdrjn804c3958nkkpxzzfhbq39h7"
    "0.4.0"
-   #:repository-url "https://github.com/latex-lsp/tree-sitter-latex"
-   #:get-cleanup-snippet
-   (lambda _
-     #~(begin
-         (use-modules (guix build utils))
-         (delete-file "binding.gyp")
-         (delete-file-recursively "bindings")))))
+   #:repository-url "https://github.com/latex-lsp/tree-sitter-latex"))
 
 (define-public tree-sitter-linkerscript
   (let ((version "1.0.0")
