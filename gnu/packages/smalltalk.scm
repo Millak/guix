@@ -60,7 +60,7 @@
     (name "pharo-vm")
     ;; Use the latest release made available from
     ;; <https://files.pharo.org/vm/pharo-spur64-headless/Linux-x86_64/source/>.
-    (version "10.3.5+19.5c89251")
+    (version "10.3.7+3.af67084")
     (source
      (origin
        (method url-fetch)
@@ -70,7 +70,7 @@
                            "Linux-x86_64/source/PharoVM-v" version
                            "-Linux-x86_64-c-src.tar.gz"))
        (sha256
-        (base32 "1w0m25x52p94zfv9gq2v011s0c260m2prpi4zlcrwyi0yxxbz27j"))
+        (base32 "0h4qqrxgw7kv4al8k6dr6xai6gwrc25vgsamj6czqrvnskfln8fh"))
        (patches (search-patches "pharo-vm-cmake.patch"))))
     (build-system cmake-build-system)
     (arguments
