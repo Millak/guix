@@ -1859,6 +1859,17 @@ which will be used as a snippet in origin."
     (description "This package provides Tree-sitter's grammar for corpus test
 files.")))
 
+(define-public tree-sitter-thrift
+  (let ((commit "68fd0d80943a828d9e6f49c58a74be1e9ca142cf")
+        (revision "0"))
+    (tree-sitter-grammar
+     "thrift" "Thrift"
+     "1ijp9x1vylc8bgplnj9d898qhv04cvrl67qg9kmam33drfrmn1m3"
+     (git-version "0.5.0" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-thrift")))
+
 (define-public tree-sitter-tlaplus
   (tree-sitter-grammar
    "tlaplus" "TLA+"
