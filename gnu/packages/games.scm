@@ -507,7 +507,7 @@ Doom clone shooter game.")
 (define-public antimicrox
   (package
     (name "antimicrox")
-    (version "3.4.1")
+    (version "3.5.1")
     (home-page "https://github.com/AntiMicroX/antimicrox")
     (source
      (origin
@@ -517,7 +517,7 @@ Doom clone shooter game.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04yb5nppn751asbihr90sqk5imamc937886lc24cihhgp0sila8y"))))
+        (base32 "0p350l8d6rx72cjmmagsyvrmvzcgqypqas2nfjjbasd94f1y30b4"))))
     (build-system cmake-build-system)
     (arguments
      (list
