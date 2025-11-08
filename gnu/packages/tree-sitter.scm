@@ -1570,6 +1570,16 @@ which will be used as a snippet in origin."
    #:repository-url
    "https://github.com/JoranHonig/tree-sitter-solidity"))
 
+(define-public tree-sitter-sql
+  (let ((commit "7b51ecda191d36b92f5a90a8d1bc3faef1c7b8b8")
+        (revision "0"))
+    (tree-sitter-grammar
+     "sql" "SQL"
+     "1lvm4x24ac9r4fy4ghpypyz1q771bafwkjvn0ma5zh82900q7xvr"
+     (git-version "0.3.11" revision commit)
+     #:commit commit
+     #:repository-url "https://github.com/DerekStride/tree-sitter-sql")))
+
 (define-public tree-sitter-starlark
   (tree-sitter-grammar
    "starlark" "Starlark"
