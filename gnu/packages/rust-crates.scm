@@ -10549,6 +10549,12 @@
   (crate-source "glutin_wgl_sys" "0.6.1"
                 "0gng2810jb5x133lmy17qifjx6s90lnprm86afg7mfls505y0kic"))
 
+(define rust-glycin-3.0.7 package:rust-glycin-3)
+
+(define rust-glycin-common-1.0.3 package:rust-glycin-3)
+
+(define rust-glycin-utils-4.0.4 package:rust-glycin-3)
+
 (define rust-gobject-sys-0.10.0
   (crate-source "gobject-sys" "0.10.0"
                 "1311d3zbdhl1g7ibj1iy1650513yrhxbjxgfhazn52ii1jv368cm"))

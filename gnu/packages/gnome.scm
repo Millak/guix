@@ -6919,6 +6919,7 @@ side panel;
     ;; ".gresource.eog_postasa_plugin" ELF section.
     (license license:gpl2+)))
 
+;; Also update (@ (gnu packages rust-sources) rust-glycin-3) when updating this.
 (define-public glycin-loaders
   (package
     (name "glycin-loaders")
