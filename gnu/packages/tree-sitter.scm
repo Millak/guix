@@ -2025,6 +2025,18 @@ files.")))
    "https://github.com/neovim/tree-sitter-vimdoc"
    #:license license:expat))
 
+(define-public tree-sitter-vue
+  (let ((commit "22bdfa6c9fc0f5ffa44c6e938ec46869ac8a99ff")
+        (revision "0"))
+    (tree-sitter-grammar
+     "vue" "Vue.js"
+     "1mi18x54g8rxz98jrpzh2gi7ii93sq743aws9i7qc139jas98y9f"
+     (git-version "0.1.0" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-vue"
+     #:inputs (list tree-sitter-html))))
+
 (define-public tree-sitter-xcompose
   (tree-sitter-grammar
    "xcompose" "XCompose"
