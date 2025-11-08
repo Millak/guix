@@ -28837,20 +28837,40 @@ for manual interpretation.")
 (define-public python-bibtexparser
   (package
     (name "python-bibtexparser")
-    (version "1.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "bibtexparser" version))
-              (sha256
-               (base32
-                "1rmc178qqb8814v3pcfv4qgl8rxmkd11d56limkqmi776jyf4z6a"))))
-    (build-system python-build-system)
+    (version "2.0.0b8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sciunto-org/python-bibtexparser")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "065b6267ygphacfc9aawckv0yz9x3pzd4ivdbsr8cla3zs3lqzg7"))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-pyparsing))
-    (native-inputs (list python-future))
+    (native-inputs
+     (list python-pylatexenc python-pytest python-setuptools))
     (home-page "https://github.com/sciunto-org/python-bibtexparser")
     (synopsis "Python library to parse BibTeX files")
     (description "BibtexParser is a Python library to parse BibTeX files.")
     (license (list license:bsd-3 license:lgpl3))))
+
+(define-public python-bibtexparser-for-cobib
+  (hidden-package
+   (package
+     (inherit python-bibtexparser)
+    (name "python-bibtexparser")
+     (version "1.4.0")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/sciunto-org/python-bibtexparser")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0zrgfgmh37m9frq528vy66p2fhlxzrxyhj0inc6qwg0m717w9zbl")))))))
 
 (define-public python-distro
   (package

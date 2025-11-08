@@ -1439,7 +1439,7 @@ OpenDocument presentations (*.odp).")
            python-setuptools))
     (propagated-inputs
      (list python-beautifulsoup4
-           python-bibtexparser
+           python-bibtexparser-for-cobib
            python-lxml
            python-mdit-py-plugins ;XXX: for sanity-check
            python-natsort
