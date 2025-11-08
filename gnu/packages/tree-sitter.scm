@@ -385,6 +385,22 @@ which will be used as a snippet in origin."
    #:repository-url
    "https://github.com/tree-sitter-grammars/tree-sitter-bicep"))
 
+(define-public tree-sitter-bitbake
+  (tree-sitter-grammar
+   "bitbake" "BitBake"
+   "1pfma482nyc88x56v6l6rmhdy44qbwibrqri38wkkh66a1fka8ix"
+   "1.1.0"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-bitbake"
+   #:get-cleanup-snippet
+   (lambda (grammar-directories)
+       #~(begin
+           (use-modules (guix build utils))
+           ;; FIXME: Invalid node type INHERIT.
+           (substitute* "queries/highlights.scm"
+             (("^.*\"INHERIT\".*") ""))
+           #$(tree-sitter-delete-generated-files grammar-directories)))))
+
 (define-public tree-sitter-blueprint
   (let ((commit "329699d55f3e3955091e13756563c3f320a561fc")
         (revision "0"))
