@@ -754,6 +754,17 @@ which will be used as a snippet in origin."
      "https://github.com/PrestonKnopp/tree-sitter-gdscript"
      #:commit commit)))
 
+(define-public tree-sitter-gitattributes
+  (let ((commit "1b7af09d45b579f9f288453b95ad555f1f431645")
+        (revision "0"))
+    (tree-sitter-grammar
+     "gitattributes" "Git .gitattributes"
+     "1mmcxw3aqx7skgihl8mman5spjz4cmc0k06jca7fjng904kdqw3q"
+     (git-version "0.1.6" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-gitattributes")))
+
 (define-public tree-sitter-gitignore
   (let ((version "0.1.0")
         (commit "f4685bf11ac466dd278449bcfe5fd014e94aa504")
