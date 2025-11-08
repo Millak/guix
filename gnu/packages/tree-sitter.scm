@@ -686,6 +686,23 @@ which will be used as a snippet in origin."
      "https://github.com/tree-sitter-grammars/tree-sitter-firrtl"
      #:license license:asl2.0)))
 
+(define-public tree-sitter-fish
+  (tree-sitter-grammar
+   "fish" "Fish"
+   "1l8qmmligfcpf4amqghdv9c4nvs5wbhiifhl7016l7793rfzl235"
+   "3.6.0"
+   #:commit "3.6.0"
+   #:repository-url
+   "https://github.com/ram02z/tree-sitter-fish"
+   #:get-cleanup-snippet
+   (lambda (grammar-directories)
+     #~(begin
+         (use-modules (guix build utils))
+         ;; FIXME: Language not found.
+         (delete-file-recursively "test/highlight")
+         #$(tree-sitter-delete-generated-files grammar-directories)))
+   #:license license:unlicense))
+
 (define-public tree-sitter-fortran
   (let ((version "0.5.1")
         ;; Can't use the tag above directly; the build at that tag is
