@@ -2032,6 +2032,17 @@ files.")))
    "0.7.0"
    #:repository-url "https://github.com/tree-sitter-grammars/tree-sitter-yaml"))
 
+(define-public tree-sitter-yuck
+  (let ((commit "e877f6ade4b77d5ef8787075141053631ba12318")
+        (revision "0"))
+    (tree-sitter-grammar
+     "yuck" "Yuck"
+     "00l009xmjpr2fgrbibhgkymk1kw2al2m8zi93civyjxwpbzkbiwp"
+     (git-version "0.0.2" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-yuck")))
+
 (define-public tree-sitter-zig
   (tree-sitter-grammar
    "zig" "Zig"
