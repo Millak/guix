@@ -2037,6 +2037,37 @@ files.")))
      "https://github.com/tree-sitter-grammars/tree-sitter-vue"
      #:inputs (list tree-sitter-html))))
 
+(define-public tree-sitter-wast
+  (let ((commit "2ca28a9f9d709847bf7a3de0942a84e912f59088")
+        (revision "0"))
+    (tree-sitter-grammar
+     "wast" "WebAssembly"
+     "02v08hs9wirdzfx9a7c3kpn0cpc9i867pw28qka0fid9q537hnbb"
+     (git-version "0.0.0" revision commit)
+     #:commit commit
+     #:repository-url "https://github.com/wasm-lsp/tree-sitter-wasm"
+     #:grammar-directories '("wast" "wat")
+     #:get-cleanup-snippet
+     (lambda (grammar-directories)
+       #~(begin
+           (use-modules (guix build utils))
+           ;; FIXME
+           (substitute* '("wat/grammar.js" "wast/grammar.js")
+             (("u\\{\\[0-9a-fA-F\\]\\+\\}")
+              "u\\{[0-9a-fA-F]+\\}"))
+           (for-each (lambda (lang)
+                       (with-directory-excursion lang
+                         ;; incompatible type of tests
+                         (delete-file-recursively "corpus")
+                         (delete-file "index.js")
+                         (delete-file "src/binding.cc")))
+                     '("wat" "wast"))
+           (for-each delete-file '("wat/tree-sitter-wat.wasm"
+                                   "wast/tree-sitter-wast.wasm"))
+           #$(tree-sitter-delete-generated-files grammar-directories)))
+     ;; Apache-2.0 with LLVM-exception
+     #:license license:asl2.0)))
+
 (define-public tree-sitter-xcompose
   (tree-sitter-grammar
    "xcompose" "XCompose"
