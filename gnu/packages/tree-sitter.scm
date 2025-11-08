@@ -1955,6 +1955,25 @@ files.")))
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-uxntal")))
 
+(define-public tree-sitter-v
+  (let ((commit "532bebd50742ef15949bdd67c36d46697c847628")
+        (revision "0"))
+    (tree-sitter-grammar
+     "v" "V"
+     "1chkirgmbfrjy9p81qm5gi5qdqf9az98zfv9zgmd0q91gvkdf6ll"
+     (git-version "0.0.6" revision commit)
+     #:commit commit
+     #:repository-url "https://github.com/vlang/v-analyzer"
+     #:grammar-directories '("tree_sitter_v")
+     #:get-cleanup-snippet
+     (lambda (grammar-directories)
+       #~(begin
+           (use-modules (guix build utils))
+           (delete-file-recursively "src")
+           (delete-file-recursively "editors")
+           (rename-file "tree_sitter_v/package.json" "package.json")
+           #$(tree-sitter-delete-generated-files grammar-directories))))))
+
 (define-public tree-sitter-verilog
   (tree-sitter-grammar
    "verilog" "Verilog"
