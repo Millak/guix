@@ -1582,6 +1582,26 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-readline")))
 
+(define-public tree-sitter-re2c
+  (let ((commit "c18a3c2f4b6665e35b7e50d6048ea3cff770c572")
+        (revision "0"))
+    (tree-sitter-grammar
+     "re2c" "Regular Expressions to Code (re2c)"
+     "0h6vvbns5xdi47pfgl2xf4hlwzawrsqbm16jv07d0z7lppimf6ys"
+     (git-version "0.1.0" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-re2c"
+     #:get-cleanup-snippet
+     (lambda (grammar-directories)
+       #~(begin
+           (use-modules (guix build utils))
+           ;; FIXME: Invalid node type labelprefix.
+           (substitute* "grammar.js"
+             (("( *)\\$\\.set_condenumprefix,\n" all tabs)
+              (string-append all tabs "$.set_labelprefix,\n")))
+           #$(tree-sitter-delete-generated-files grammar-directories))))))
+
 (define-public tree-sitter-rego
   (let ((version "1.0.0")
         (commit "20b5a5958c837bc9f74b231022a68a594a313f6d")
