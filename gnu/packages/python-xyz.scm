@@ -28994,16 +28994,25 @@ converters and more, those based on the library itself.")
   (package
     (name "python-interlap")
     (version "0.2.7")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "interlap" version))
-              (sha256
-               (base32
-                "1jbfh00bkrf0i5psa6n75rlgmqp5389xixa9j29w8rxhah6g7r1i"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/brentp/interlap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0kmw72ilhsfx7piikl92b1s0rnax49qc7idjxsbwhvpklyjiylfm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "interlap.py")))
+    (native-inputs (list python-setuptools))
     (home-page "https://brentp.github.io/interlap")
     (synopsis "Fast, simple interval overlap testing")
-    (description "InterLap does fast interval overlap testing with a simple Python data
+    (description
+     "InterLap does fast interval overlap testing with a simple Python data
 structure.")
     (license license:expat)))
 
