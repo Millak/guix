@@ -281,15 +281,15 @@ window managers, that don't provide Qt integration by themselves.")
 (define-public qt6ct
   (package
     (name "qt6ct")
-    (version "0.9")
+    (version "0.11")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/trialuser02/qt6ct")
+             (url "https://www.opencode.net/trialuser/qt6ct")
              (commit version)))
        (sha256
-        (base32 "0dknk4qqzqc5wa763nclb1k6jkmvjh8kzz8kfp4iggy9jy0vnzgb"))))
+        (base32 "17hfx90wnc40a1sq0qcdp2hml5mkjhlj5rwm95pc40p03nicpn67"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -312,7 +312,7 @@ window managers, that don't provide Qt integration by themselves.")
     (description "Qt6CT is a program that allows users to configure Qt6
 settings (such as icons, themes, and fonts) in desktop environments or
 window managers, that don't provide Qt integration by themselves.")
-    (home-page "https://github.com/trialuser02/qt6ct")
+    (home-page "https://www.opencode.net/trialuser/qt6ct")
     (license license:bsd-2)))
 
 (define-public kddockwidgets
