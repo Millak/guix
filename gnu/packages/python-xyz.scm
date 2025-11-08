@@ -28942,14 +28942,18 @@ qvarious formats: PDF, PostScript, PNG and even SVG.")
 (define-public python-pyphen
   (package
     (name "python-pyphen")
-    (version "0.10.0")
+    (version "0.17.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "Pyphen" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Kozea/Pyphen")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0a1iwrgs4hzwzz60q4i1813kbzimhm0i4q8grh8vqkxhnkgj36vi"))))
-    (build-system python-build-system)
+        (base32 "1fqxc50vqj884b7f6d8qfvnvw34477lhsdznvpxsljjg9j2v4ipv"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-flit-core python-pytest))
     ;; TODO: Use the Guix system hyphenation packages hyphen-* rather than the
     ;; embedded set provided by upstream - like Debian does.
     (home-page "https://github.com/Kozea/Pyphen")
