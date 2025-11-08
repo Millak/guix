@@ -1418,6 +1418,17 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-po")))
 
+(define-public tree-sitter-pony
+  (let ((commit "73ff874ae4c9e9b45462673cbc0a1e350e2522a7")
+        (revision "0"))
+    (tree-sitter-grammar
+     "pony" "Pony"
+     "0fm47by0z6vzihnk4py7lx1qbiwqbbgpxpi8ibl740bnx9nx7mpz"
+     (git-version "1.0.0" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-pony")))
+
 (define-public tree-sitter-powershell
   (tree-sitter-grammar
    "powershell" "Powershell"
