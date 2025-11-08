@@ -7238,13 +7238,9 @@ Rate} 3600x2250 bit/s vocoder used in various radio systems.")
     (native-inputs
      (list catch-framework
            python ;for running tests
-           portaudio ;for portaudio examples
-           qtbase-5 ;for Qt examples
-           qtdeclarative-5
-           qttools-5))
+           portaudio)) ;for portaudio examples
     (inputs
-     (list jack-1 ;for JACK examples
-           qtquickcontrols-5)) ;for Qt examples
+     (list jack-1)) ;for JACK examples
     (propagated-inputs
      ;; This is because include/ableton/platforms/asio/AsioWrapper.hpp
      ;; contains '#include <asio.hpp>'.
