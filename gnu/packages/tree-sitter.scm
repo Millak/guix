@@ -765,6 +765,18 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-gitattributes")))
 
+(define-public tree-sitter-gitcommit
+  (let ((commit "a716678c0f00645fed1e6f1d0eb221481dbd6f6d")
+        (revision "0"))
+    (tree-sitter-grammar
+     "gitcommit" "Git commit"
+     "0syrmx6icp5n2iyawzwmz7nvpzi5iabrvn138vs7dlv9vyrxr1r9"
+     (git-version "0.3.3" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/gbprod/tree-sitter-gitcommit"
+     #:license license:wtfpl2)))
+
 (define-public tree-sitter-gitignore
   (let ((version "0.1.0")
         (commit "f4685bf11ac466dd278449bcfe5fd014e94aa504")
