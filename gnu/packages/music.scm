@@ -3502,14 +3502,14 @@ improves on support for JACK features, such as JACK MIDI.")
 (define-public libgig
   (package
     (name "libgig")
-    (version "4.2.0")
+    (version "4.5.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.linuxsampler.org/packages/"
                                   "libgig-" version ".tar.bz2"))
               (sha256
                (base32
-                "1zs5yy124bymfyapsnljr6rv2lnn5inwchm0xnwiw44b2d39l8hn"))))
+                "0qcgb2xs0hk541zyqcy8lfrbi38dwgwmk26s79xx1c4f6agk929l"))))
     (build-system gnu-build-system)
     (inputs
      (list `(,util-linux "lib") libsndfile))
