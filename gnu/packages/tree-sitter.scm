@@ -1748,15 +1748,9 @@ files.")))
      #:repository-url "https://github.com/alemuller/tree-sitter-vhdl"
      #:commit commit
      #:get-cleanup-snippet
-     (lambda _
+     (lambda (grammar-directories)
        #~(begin
            (use-modules (guix build utils))
-           (delete-file "binding.gyp")
-           ;; tree-sitter-vhdl does not have bindings/ directory.
-           (delete-file "src/grammar.json")
-           (delete-file "src/node-types.json")
-           (delete-file "src/parser.c")
-           (delete-file-recursively "src/tree_sitter")
            ;; FIXME: Language not found.
            (delete-file-recursively "test/highlight")
            ;; Fix a query error in the highlight.scm query test. This would be
@@ -1769,7 +1763,8 @@ files.")))
            (substitute* "queries/highlights.scm"
              (("\\(integer_decimal\n") "(integer_decimal)\n")
              (("\\(integer\\)") "")
-             (("\"0\")") "\"0\"")))))))
+             (("\"0\")") "\"0\""))
+           #$(tree-sitter-delete-generated-files grammar-directories))))))
 
 (define-public tree-sitter-vim
   (tree-sitter-grammar "vim"
