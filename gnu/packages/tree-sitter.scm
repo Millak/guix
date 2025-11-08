@@ -2068,6 +2068,24 @@ files.")))
      ;; Apache-2.0 with LLVM-exception
      #:license license:asl2.0)))
 
+(define-public tree-sitter-wgsl
+  (let ((commit "809fe422b879021afb65a1899093fa87bc6e02df")
+        (revision "0"))
+    (tree-sitter-grammar
+     "wgsl" "WebGPU Shading Language (WGSL)"
+     "05a7yas33y4jfj1ac1n49xll0kmpsic4y5hffqavhm2zffpwmqbc"
+     (git-version "0.0.9" revision commit)
+     #:commit commit
+     #:repository-url "https://github.com/gpuweb/tree-sitter-wgsl"
+     #:get-cleanup-snippet
+     (lambda (grammar-directories)
+       #~(begin
+           (use-modules (guix build utils))
+           ;; FIXME: Invalid node type const_assert_statement.
+           (delete-file "queries/highlights.scm")
+           #$(tree-sitter-delete-generated-files grammar-directories)))
+     #:license license:w3c)))
+
 (define-public tree-sitter-xcompose
   (tree-sitter-grammar
    "xcompose" "XCompose"
