@@ -16332,8 +16332,7 @@ allowing unprefixed keys to insert their respective characters as expected.")
       (license license:gpl3+))))
 
 (define-public emacs-claude-code-ide
-  ;; XXX: Upstream does not tag version bumps. Commit below matches latest
-  ;; version bump.
+  ;; Upstream does not make versioned releases.
   (let ((commit "c5e2de1a343bc6c0444789e0a99ad822cd56cfbe"))
     (package
       (name "emacs-claude-code-ide")
@@ -16342,8 +16341,8 @@ allowing unprefixed keys to insert their respective characters as expected.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/manzaltu/claude-code-ide.el")
-               (commit commit)))
+                (url "https://github.com/manzaltu/claude-code-ide.el")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32 "17rha7rvv72r75lpa2hz65mphrjrzkfn4pz3xf9lfvivg7fc7n0d"))))
