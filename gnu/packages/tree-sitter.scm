@@ -1528,6 +1528,16 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-qmldir")))
 
+(define-public tree-sitter-qmljs
+  (tree-sitter-grammar
+   "qmljs" "QML"
+   "1a1fxm73ag51qsi0wfg36jzcm6am9n1mwvhjv3f57fyjwcwigqp0"
+   "0.2.0"
+   #:commit "0.2.0"
+   #:repository-url "https://github.com/yuja/tree-sitter-qmljs"
+   #:inputs (delay (list tree-sitter-javascript
+                         tree-sitter-typescript))))
+
 (define-public tree-sitter-query
   (package
     (inherit (tree-sitter-grammar "query"
