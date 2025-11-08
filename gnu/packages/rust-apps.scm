@@ -44,6 +44,7 @@
 ;;; Copyright © 2025 Raven Hallsby <karl@hallsby.com>
 ;;; Copyright © 2025 Samuel Sehnert <mail@buffersquid.com>
 ;;; Copyright © 2025 Julian Flake <julian@flake.de>
+;;; Copyright © 2025 Ahmad Jarara <ajarara@fastmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -117,6 +118,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages ruby-xyz)
   #:use-module (gnu packages rust)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages textutils)
@@ -174,6 +176,29 @@ records.  It can forward other requests to configured resolvers.")
 programming language.  It has very few features, and can only serve static
 files.  It uses async I/O, and should be quite efficient even when running on
 low-end hardware and serving many concurrent requests.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public age-plugin-yubikey
+  (package
+    (name "age-plugin-yubikey")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "age-plugin-yubikey" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0vp85bf39a89pzy88icjsyf9a7gmkasbppm87zww7pvxr65qaj9z"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f))
+    (native-inputs (list pkg-config))
+    (inputs (cons* pcsc-lite openssl
+                   (cargo-inputs 'age-plugin-yubikey)))
+    (home-page "https://github.com/str4d/age-plugin-yubikey")
+    (synopsis "YubiKey plugin for age clients")
+    (description
+     "This package provides @code{YubiKey} plugin for age clients.")
     (license (list license:expat license:asl2.0))))
 
 (define-public alfis
