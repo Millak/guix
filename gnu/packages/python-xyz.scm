@@ -28968,16 +28968,21 @@ existing Hunspell hyphenation dictionaries.")
     (version "2.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "intelhex" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/python-intelhex/intelhex")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "14q04p6qs47ab9w55232ylrdn4wm9rswz36s6x999x0rlxhp6aw9"))))
-    (build-system python-build-system)
-    (home-page "https://pypi.org/project/IntelHex/")
+        (base32 "13p7x4ygfgqn27q3c8lam7a0z09764iymgs7lcvjvxgq52nqwf9c"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/python-intelhex/intelhex")
     (synopsis "Python library for Intel HEX files manipulations")
-    (description "The Intel HEX file format is widely used in microprocessors
-and microcontrollers area (embedded systems etc.) as the de facto standard for
+    (description
+     "The Intel HEX file format is widely used in microprocessors and
+microcontrollers area (embedded systems etc.) as the de facto standard for
 representation of code to be programmed into microelectronic devices.  This
 package provides an intelhex Python library to read, write, create from
 scratch and manipulate data from Intel HEX file format.  It also includes
