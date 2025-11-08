@@ -527,6 +527,24 @@ which will be used as a snippet in origin."
    #:inputs (list tree-sitter-c
                   tree-sitter-cpp)))
 
+(define-public tree-sitter-d
+  (let ((commit "45e5f1e9d6de2c68591bc8e5ec662cf18e950b4a")
+        (revision "0"))
+    (tree-sitter-grammar
+     "d" "D"
+     "1y0kczf4yvk5qbvl5dcc8vf5xjjf2md44v0h3iv8lcmbjn093pmb"
+     (git-version "0.8.2" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/gdamore/tree-sitter-d"
+     #:get-cleanup-snippet
+     (lambda (grammar-directories)
+       #~(begin
+           (use-modules (guix build utils))
+           ;; FIXME: Language not found.
+           (delete-file-recursively "test/highlight")
+           #$(tree-sitter-delete-generated-files grammar-directories))))))
+
 (define-public tree-sitter-dart
   (let ((version "1.0.0")
         (commit "d4d8f3e337d8be23be27ffc35a0aef972343cd54")
