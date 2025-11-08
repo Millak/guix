@@ -52,7 +52,6 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
-  #:use-module (gnu packages gdb)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gnupg)
@@ -86,7 +85,6 @@
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
-  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages package-management) ; flatpak
   #:use-module (gnu packages rdesktop)
   #:use-module (gnu packages sdl)
@@ -427,78 +425,6 @@ Breeze is the default theme for the KDE Plasma desktop.")
 games, and tools.")
     (home-page "https://invent.kde.org/plasma/discover")
     (license (list license:gpl2 license:gpl3))))
-
-(define-public drkonqi
-  (package
-    (name "drkonqi")
-    (version "6.3.6")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/stable/plasma/"
-                                  version "/" name "-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "0pg644f91mdgbvlbjmwman3wdda3ppya90j3j2hx3pq665g3qdzf"))))
-    (build-system qt-build-system)
-    (arguments
-     (list #:qtbase qtbase
-           #:configure-flags
-           #~(list "-DCMAKE_DISABLE_FIND_PACKAGE_Systemd=TRUE"
-                   "-DWITH_GDB12=TRUE"
-                   "-DWITH_PYTHON_VENDORING=FALSE")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'set-gdb-path
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (let ((gdb (search-input-file inputs "/bin/gdb")))
-                     (substitute* "src/debugger.cpp"
-                       (("u\"gdb")
-                        (string-append "u\"" gdb))))))
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "ctest" "-E" "(connectiontest|preambletest)"))))
-               (add-after 'install 'wrap-program
-                 (lambda _
-                   (wrap-program (string-append #$output
-                                                "/libexec/drkonqi")
-                     `("GUIX_PYTHONPATH" ":" prefix
-                       (,(getenv "GUIX_PYTHONPATH")))))))))
-    (native-inputs (list extra-cmake-modules pkg-config))
-    (inputs (list ki18n
-                  kcoreaddons
-                  kconfig
-                  kservice
-                  kdeclarative
-                  kjobwidgets
-                  kstatusnotifieritem
-                  kio
-                  kcrash
-                  kcompletion
-                  kwidgetsaddons
-                  kwallet
-                  knotifications
-                  kidletime
-                  kwindowsystem
-                  qtdeclarative
-                  kuserfeedback
-
-                  python-minimal
-                  python-pygdbmi
-                  python-chai
-                  python-psutil
-                  python-sentry-sdk
-                  gdb
-                  ;; qml module runtime dependency
-                  ksyntaxhighlighting
-                  kcmutils
-                  kitemmodels
-                  kirigami))
-    (synopsis "Crash handler for KDE software")
-    (description "This package provides an automatic handler for crashed apps.")
-    (home-page "https://invent.kde.org/plasma/drkonqi")
-    (license license:gpl2+)))
 
 (define-public flatpak-kcm
   (package
