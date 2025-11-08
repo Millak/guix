@@ -1277,6 +1277,28 @@ which will be used as a snippet in origin."
          (delete-file-recursively "test/highlight")
          #$(tree-sitter-delete-generated-files grammar-directories)))))
 
+(define-public tree-sitter-nqc
+  (let ((commit "14e6da1627aaef21d2b2aa0c37d04269766dcc1d")
+        (revision "0"))
+    (tree-sitter-grammar
+     "nqc" "NQC"
+     "0gpai34vlcdbkyj4a7j2wm36g14p84aj0vldh1146b0n8zbvizhr"
+     (git-version "1.0.0" revision commit)
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-nqc"
+     #:commit commit
+     #:inputs (list tree-sitter-c)
+     #:get-cleanup-snippet
+     (lambda (grammar-directories)
+       #~(begin
+           (use-modules (guix build utils))
+           ;; Adjust to the change in tree-sitter-c
+           (substitute* "grammar.js"
+             (("\\$\\._statement") "$.statement")
+             (("\\$\\._expression") "$.expression"))
+           (delete-file "queries/highlights.scm") ;FIXME
+           #$(tree-sitter-delete-generated-files grammar-directories))))))
+
 (define-public tree-sitter-ocaml
   (tree-sitter-grammar
    "ocaml" "OCaml (.ml and .mli)"
