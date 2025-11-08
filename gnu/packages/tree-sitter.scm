@@ -944,6 +944,25 @@ which will be used as a snippet in origin."
          (delete-file "test/highlight/Basic.hs") ;FIXME: Language not found.
          #$(tree-sitter-delete-generated-files grammar-directories)))))
 
+(define-public tree-sitter-haxe
+  (let ((commit "a55f3e2cf1e4449200fd089a80d3af642bcf5f94")
+        (revision "0"))
+    (tree-sitter-grammar
+     "haxe" "Haxe"
+     "0wyrc7l3xav805xmypfp9clgxacm080is598lr3raa2sb31rwdl3"
+     (git-version "0.13.0" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/vantreeseba/tree-sitter-haxe"
+     #:get-cleanup-snippet
+     (lambda (grammar-directories)
+       #~(begin
+           (use-modules (guix build utils))
+           ;; FIXME: No language found.
+           (delete-file "queries/highlights.scm")
+           (delete-file-recursively "test/highlight")
+           #$(tree-sitter-delete-generated-files grammar-directories))))))
+
 (define-public tree-sitter-hcl
   (let ((commit "de10d494dbd6b71cdf07a678fecbf404dbfe4398")
         (revision "0"))
