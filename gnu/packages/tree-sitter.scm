@@ -1111,6 +1111,17 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-linkerscript")))
 
+(define-public tree-sitter-llvm
+  (let ((commit "2914786ae6774d4c4e25a230f4afe16aa68fe1c1")
+        (revision "0"))
+    (tree-sitter-grammar
+     "llvm" "LLVM"
+     "0k02dak264y57ng0mxdg9z9hcb4b0jgyd1xm88h4f1bcq6sah54c"
+     (git-version "1.1.0" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/benwilliamgraham/tree-sitter-llvm")))
+
 (define-public tree-sitter-lua
   (tree-sitter-grammar
    "lua" "Lua"
