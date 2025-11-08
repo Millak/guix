@@ -277,7 +277,7 @@ may also simplify input method development.")
                        pango
                        python
                        python-dbus
-                       python-pygobject)))
+                       python-pygobject-3.50)))
     (native-search-paths
      (cons (search-path-specification
             (variable "GUIX_GTK3_IM_MODULE_FILE")

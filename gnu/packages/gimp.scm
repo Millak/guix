@@ -450,7 +450,7 @@ that is extensible via a plugin system.")
                        libxmu
                        libxt
                        python
-                       python-pygobject
+                       python-pygobject-3.50
                        gjs
                        libxslt
                        xdg-utils)))

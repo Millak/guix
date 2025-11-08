@@ -1113,6 +1113,20 @@ useful for C++.")
      '((upstream-name . "pygobject")))
     (license license:lgpl2.1+)))
 
+(define-public python-pygobject-3.50
+  (package
+    (inherit python-pygobject)
+    (version "3.50.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnome/sources/pygobject/"
+                           (version-major+minor version)
+                           "/pygobject-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1zx7jz9s1qnn52k3kzbz5ykffr9pm3c8hvpwzm4vcz5pm9hbirpc"))))))
+
 (define-public perl-glib
   (package
     (name "perl-glib")
