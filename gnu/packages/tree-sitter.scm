@@ -1721,6 +1721,17 @@ which will be used as a snippet in origin."
    #:repository-url
    "https://github.com/JoranHonig/tree-sitter-solidity"))
 
+(define-public tree-sitter-sparql
+  (let* ((commit "1ef52d35a73a2a5f2e433ecfd1c751c1360a923b")
+         (revision "0"))
+    (tree-sitter-grammar
+     "sparql" "SPARQL"
+     "19s63n9kbijmbaprffvkxqmdr8a1jc3f371mzrxh2wv4czbradpl"
+     (git-version "0.1.0" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/GordianDziwis/tree-sitter-sparql")))
+
 (define-public tree-sitter-sql
   (let ((commit "7b51ecda191d36b92f5a90a8d1bc3faef1c7b8b8")
         (revision "0"))
