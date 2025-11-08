@@ -1702,6 +1702,17 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-smali")))
 
+(define-public tree-sitter-smithy
+  (let ((commit "ec4fe14586f2b0a1bc65d6db17f8d8acd8a90433")
+        (revision "0"))
+    (tree-sitter-grammar
+     "smithy" "Smithy"
+     "12gs5baabvm6v7js0g0siy98v1w69cmfxc72sikylr6y4wfvhjf0"
+     (git-version "0.2.0" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/indoorvivants/tree-sitter-smithy")))
+
 (define-public tree-sitter-solidity
   (tree-sitter-grammar
    "solidity" "Solidity"
