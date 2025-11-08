@@ -4551,54 +4551,63 @@ standard MIDI file with the csvmidi program.")
     (license license:public-domain)))
 
 (define-public mididings
-  (let ((commit "bc71ea9c86bdc0b02364b11ab7331e8b3a86bb4f")
-        (revision "2"))
-    (package
-      (name "mididings")
-      (version (git-version "0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/mididings/mididings")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1f0f8bpqbc1av0ggv6wjicymc2klliwdl1m5blmjcvy39q3cwd59"))))
-      (build-system meson-build-system)
-      (arguments
-       (list
-        #:phases
-        '(modify-phases %standard-phases
-           (add-after 'unpack 'build-manpages
-             (lambda _
-               (with-directory-excursion "doc/man"
-                 (for-each (lambda (doc)
-                             (system (format #false
-                                             "scdoc < ~a.scd > ~a.1" doc doc)))
-                           '(livedings mididings send_midi))))))))
-      (inputs
-       (list alsa-lib
-             boost
-             jack-2
-             python
-             `(,python "tk")
-             python-dbus
-             python-decorator
-             python-pyinotify
-             python-pyliblo
-             python-pysmf))
-      (native-inputs
-       (list python-pytest
-             python-setuptools
-             python-wheel
-             pkg-config
-             scdoc))
-      (home-page "https://github.com/mididings/mididings")
-      (synopsis "MIDI router and processor")
-      (description
-       "mididings is a MIDI router/processor based on Python, supporting ALSA
-and JACK MIDI.  Features include:
+  (package
+    (name "mididings")
+    (version "20250818")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mididings/mididings")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ardf61zkgh0ikyfjwvhaznlgsdkhh4vzcqvcpvmh0h5mk0b40rg"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+         (add-after 'unpack 'build-manpages
+           (lambda _
+             (with-directory-excursion "doc/man"
+               (for-each (lambda (doc)
+                           (system (format #false
+                                           "scdoc < ~a.scd > ~a.1" doc doc)))
+                         '(livedings mididings send_midi)))))
+         (add-after 'install 'wrap-executables
+           (lambda _
+             (for-each (lambda (file)
+                         (wrap-program file
+                           `("GUIX_PYTHONPATH" ":" prefix
+                             (,(string-append #$output "/lib/python"
+                                              #$(version-major+minor
+                                                 (package-version python))
+                                              "/site-packages")
+                              ,(getenv "GUIX_PYTHONPATH")))))
+                       (find-files (string-append #$output "/bin"))))))))
+    (inputs
+     (list alsa-lib
+           boost
+           jack-2
+           python
+           `(,python "tk")
+           python-dbus
+           python-decorator
+           python-pyinotify
+           python-pyliblo
+           python-pysmf))
+    (native-inputs
+     (list python-pytest
+           python-setuptools
+           python-wheel
+           pkg-config
+           scdoc))
+    (home-page "https://github.com/mididings/mididings")
+    (synopsis "MIDI router and processor")
+    (description
+     "mididings is a MIDI router/processor based on Python, supporting ALSA and
+JACK MIDI.  Features include:
 
 @itemize
 @item MIDI routing and filtering; filter events depending on their event type,
@@ -4617,7 +4626,7 @@ and JACK MIDI.  Features include:
   controllers.  In addition to its MIDI output, mididings can also execute shell
   commands and send OSC or DBUS messages.
 @end itemize")
-      (license license:gpl2+))))
+      (license license:gpl2+)))
 
 (define-public gx-guvnor-lv2
   (package
