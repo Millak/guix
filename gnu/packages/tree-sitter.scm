@@ -1149,6 +1149,22 @@ which will be used as a snippet in origin."
      #:repository-url
      "https://github.com/tree-sitter-grammars/tree-sitter-luap")))
 
+(define-public tree-sitter-luau
+  (tree-sitter-grammar
+   "luau" "Luau"
+   "00j60425gp0pzrfds0wzr0k1wynbp0zq1saagpnglkmid41xk9p6"
+   "1.2.0"
+   #:repository-url
+   "https://github.com/tree-sitter-grammars/tree-sitter-luau"
+   #:inputs (list tree-sitter-lua)
+   #:get-cleanup-snippet
+   (lambda (grammar-directories)
+     #~(begin
+         (use-modules (guix build utils))
+         (substitute* "grammar.js"
+           (("@muniftanjim/") "@tree-sitter-grammars/"))
+         #$(tree-sitter-delete-generated-files grammar-directories)))))
+
 (define-public tree-sitter-magik
   (let ((version "0.0.1")
         (commit "1fd4c5502fd375c157bbe0916834f697c97704bb")
