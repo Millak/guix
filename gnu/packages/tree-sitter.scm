@@ -868,6 +868,28 @@ which will be used as a snippet in origin."
                 (delete-file-recursively "src/tree_sitter")))
             '#$grammar-directories))))))
 
+(define-public tree-sitter-graphql
+  (let ((commit "5e66e961eee421786bdda8495ed1db045e06b5fe")
+        (revision "0"))
+    (tree-sitter-grammar
+     "graphql" "GraphQL"
+     "0xvrd6p9rxdjpqfq575ap6hpl2f7dad5i4d4m05w1qk9jx33vw9n"
+     (git-version "0.0.1" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/bkegley/tree-sitter-graphql"
+     #:get-cleanup-snippet
+     (lambda (grammar-directories)
+       #~(begin
+           (use-modules (guix build utils))
+           (mkdir-p "test/corpus")
+           (copy-recursively "corpus" "test/corpus")
+           ;; FIXME: Impossible pattern.
+           (substitute* "queries/graphql/formatter.scm"
+             (("(\\(input_value_definition(.*@name)?\\))" all value _)
+              (string-append "(input_fields_definition " value ")")))
+           #$(tree-sitter-delete-generated-files grammar-directories))))))
+
 (define-public tree-sitter-groovy
   (let ((version "0.0.1")
         (commit "86911590a8e46d71301c66468e5620d9faa5b6af")
