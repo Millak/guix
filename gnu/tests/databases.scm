@@ -399,10 +399,9 @@
           (test-assert "telemetry is disabled"
             (marionette-eval
              '(begin
-                (string-contains (call-with-input-file "timescaledb.stderr"
-                                   (lambda (port)
-                                     (get-string-all port)))
-                                 "Please enable telemetry"))
+                (let* ((log-file "/var/log/messages")
+                       (log (call-with-input-file log-file get-string-all)))
+                  (string-contains log "functionality not supported")))
              marionette))
 
           (test-assert "create hypertable"
