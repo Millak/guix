@@ -29019,21 +29019,29 @@ structure.")
 (define-public python-pykwalify
   (package
     (name "python-pykwalify")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pykwalify" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/grokzen/pykwalify")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1cnfzkg1b01f825ikpw2fhjclf9c8akxjfrbd1vc22x1lg2kk2vy"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))          ;missing dependencies
+        (base32 "1x46ray74hzqmsicq2qikxhdihyyz9himjmc5gvlvd8vzqr1gi8p"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; XXX: yaml safe_dump() has been removed.
+      #~(list "--ignore=tests/test_unicode.py"
+              "--deselect=tests/test_core.py::TestCore::test_core_files")))
+    (native-inputs
+     (list python-pytest python-setuptools python-testfixtures))
     (propagated-inputs
-     (list python-dateutil python-docopt python-pyyaml))
+     (list python-dateutil python-docopt python-pyyaml python-ruamel.yaml))
     (home-page "https://github.com/grokzen/pykwalify")
-    (synopsis
-     "Python lib/cli for JSON/YAML schema validation")
+    (synopsis "Python lib/cli for JSON/YAML schema validation")
     (description
      "This package provides a parser, schema validator, and data binding tool
 for YAML and JSON.")
