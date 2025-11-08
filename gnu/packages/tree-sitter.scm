@@ -1742,6 +1742,17 @@ which will be used as a snippet in origin."
      #:commit commit
      #:repository-url "https://github.com/DerekStride/tree-sitter-sql")))
 
+(define-public tree-sitter-squirrel
+  (let ((commit "072c969749e66f000dba35a33c387650e203e96e")
+        (revision "0"))
+    (tree-sitter-grammar
+     "squirrel" "Squirrel"
+     "01gwmjgbyq7byxs0hsy4kkinijdszq2vh13kqmrjz1pq632nd45l"
+     (git-version "1.0.0" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-squirrel")))
+
 (define-public tree-sitter-starlark
   (tree-sitter-grammar
    "starlark" "Starlark"
