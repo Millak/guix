@@ -1,0 +1,675 @@
+Retrieved from: https://src.fedoraproject.org/rpms/squeak-vm/raw/rawhide/f/squeak-vm-4.10.2-gcc-14-fix.patch
+
+diff --git a/Cross/vm/sqVirtualMachine.c b/Cross/vm/sqVirtualMachine.c
+index 59b6a6e..d367251 100644
+--- a/Cross/vm/sqVirtualMachine.c
++++ b/Cross/vm/sqVirtualMachine.c
+@@ -4,6 +4,7 @@
+ #include <string.h>
+ #include <time.h>
+ #include <setjmp.h>
++#include <unistd.h>
+ 
+ #include "sqVirtualMachine.h"
+ 
+diff --git a/unix/plugins/AsynchFilePlugin/sqUnixAsynchFile.c b/unix/plugins/AsynchFilePlugin/sqUnixAsynchFile.c
+index 788287f..b916c86 100644
+--- a/unix/plugins/AsynchFilePlugin/sqUnixAsynchFile.c
++++ b/unix/plugins/AsynchFilePlugin/sqUnixAsynchFile.c
+@@ -142,7 +142,7 @@ INLINE static FilePtr newFileRec(int fd, int sema)
+   return fp;
+ }
+ 
+-INLINE static allocateBuffer(struct FileBuf *buf, int size)
++INLINE static int allocateBuffer(struct FileBuf *buf, int size)
+ {
+   if (buf->capacity >= size)
+     return 1;
+diff --git a/unix/plugins/CameraPlugin/sqCamera-linux.c b/unix/plugins/CameraPlugin/sqCamera-linux.c
+index 218322f..c5a6815 100644
+--- a/unix/plugins/CameraPlugin/sqCamera-linux.c
++++ b/unix/plugins/CameraPlugin/sqCamera-linux.c
+@@ -181,7 +181,7 @@ libCon(void)
+ 	vd_dup = dup;
+ 	vd_ioctl = ioctl;
+ 	vd_read = read;
+-	vd_mmap = mmap;
++	vd_mmap = (void * (*)(void *, size_t,  int,  int,  int,  int64_t))mmap;
+ 	vd_munmap = munmap;
+ 
+ 	/* Use libv4l2: use if available... */
+diff --git a/unix/plugins/HostWindowPlugin/sqUnixHostWindowPlugin.c b/unix/plugins/HostWindowPlugin/sqUnixHostWindowPlugin.c
+index c963f53..4788120 100644
+--- a/unix/plugins/HostWindowPlugin/sqUnixHostWindowPlugin.c
++++ b/unix/plugins/HostWindowPlugin/sqUnixHostWindowPlugin.c
+@@ -78,7 +78,7 @@ sqInt ioShowDisplayOnWindow(
+     return 0;
+   else
+     return dpy->hostWindowShowDisplay(
+-      dispBitsIndex, width, height, depth, affectedL, affectedR, affectedT, affectedB, windowIndex);
++      (unsigned int *)dispBitsIndex, width, height, depth, affectedL, affectedR, affectedT, affectedB, windowIndex);
+ }
+ 
+ 
+diff --git a/unix/plugins/MIDIPlugin/sqUnixMIDIALSA.inc b/unix/plugins/MIDIPlugin/sqUnixMIDIALSA.inc
+index cc4bbad..1d451da 100644
+--- a/unix/plugins/MIDIPlugin/sqUnixMIDIALSA.inc
++++ b/unix/plugins/MIDIPlugin/sqUnixMIDIALSA.inc
+@@ -333,7 +333,7 @@ int sqMIDIParameter(int whichParameter, int modify, int newValue)
+ 	  {
+ 	    snd_seq_queue_tempo_t *tempo= 0;
+ 	    snd_seq_queue_tempo_alloca(&tempo);
+-	    snd_seq_get_queue_tempo(seq, queue, &tempo);
++	    snd_seq_get_queue_tempo(seq, queue, (snd_seq_queue_tempo_t *)&tempo);
+ 	    return snd_seq_queue_tempo_get_tempo(tempo) / 1000.0;
+ 	  }
+ 	  break;
+diff --git a/unix/plugins/SerialPlugin/sqUnixSerial.c b/unix/plugins/SerialPlugin/sqUnixSerial.c
+index 2e61099..f3bc6b1 100644
+--- a/unix/plugins/SerialPlugin/sqUnixSerial.c
++++ b/unix/plugins/SerialPlugin/sqUnixSerial.c
+@@ -157,21 +157,6 @@ void make_portname_from_portnum(char *serialPortName, const int portNum)
+ /*** Public Functions ***/
+ 
+ /* return value ignored */
+-int serialPortClose(int portNum)
+-{
+-  char serialPortName[PORT_NAME_SIZE];
+-
+-  if (portNum < 0 || portNum >= MAX_SERIAL_PORTS)
+-    {
+-      success(false);
+-      return 0;
+-    }
+-	
+-  make_portname_from_portnum(serialPortName, portNum);
+-        
+-  return serialPortCloseByName(serialPortName);
+-}
+-
+ int serialPortCloseByName(const char *portName)
+ {
+   serial_port_type * sp= find_stored_serialport(portName);
+@@ -205,16 +190,19 @@ int serialPortCloseByName(const char *portName)
+   return 0;
+ }
+ 
+-/* Open the given serial port using the given port number.
+- * "/dev/ttySxx" port name are assumed. */
+-int serialPortOpen(int portNum, int dataRate, int stopBitsType, int parityType, int dataBits,
+-		   int inFlowCtrl, int outFlowCtrl, int xOnChar, int xOffChar)
+-{	
++int serialPortClose(int portNum)
++{
+   char serialPortName[PORT_NAME_SIZE];
++
++  if (portNum < 0 || portNum >= MAX_SERIAL_PORTS)
++    {
++      success(false);
++      return 0;
++    }
++	
+   make_portname_from_portnum(serialPortName, portNum);
+-      
+-  return serialPortOpenByName(serialPortName, dataRate, stopBitsType, parityType, dataBits,
+-			      inFlowCtrl, outFlowCtrl, xOnChar, xOffChar);
++        
++  return serialPortCloseByName(serialPortName);
+ }
+ 
+ /* If anything goes wrong during opening make sure the file descriptor
+@@ -356,6 +344,18 @@ int serialPortOpenByName(char *portName, int dataRate, int stopBitsType, int par
+   return 0;
+ }
+ 
++/* Open the given serial port using the given port number.
++ * "/dev/ttySxx" port name are assumed. */
++int serialPortOpen(int portNum, int dataRate, int stopBitsType, int parityType, int dataBits,
++		   int inFlowCtrl, int outFlowCtrl, int xOnChar, int xOffChar)
++{	
++  char serialPortName[PORT_NAME_SIZE];
++  make_portname_from_portnum(serialPortName, portNum);
++      
++  return serialPortOpenByName(serialPortName, dataRate, stopBitsType, parityType, dataBits,
++			      inFlowCtrl, outFlowCtrl, xOnChar, xOffChar);
++}
++
+ /* Read up to count bytes from the given serial port into the given
+    byte array.  Read only up to the number of bytes in the port's
+    input buffer; if fewer bytes than count have been received, do not
+diff --git a/unix/plugins/WeDoPlugin/WeDoLinux.c b/unix/plugins/WeDoPlugin/WeDoLinux.c
+index 973c2d3..1dc4de1 100644
+--- a/unix/plugins/WeDoPlugin/WeDoLinux.c
++++ b/unix/plugins/WeDoPlugin/WeDoLinux.c
+@@ -38,6 +38,7 @@
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ #include <linux/hiddev.h>
++#include <unistd.h>
+ 
+ 
+ #define true 1
+diff --git a/unix/src/plugins/ClipboardExtendedPlugin/ClipboardExtendedPlugin.c b/unix/src/plugins/ClipboardExtendedPlugin/ClipboardExtendedPlugin.c
+index 4c71420..7f54955 100644
+--- a/unix/src/plugins/ClipboardExtendedPlugin/ClipboardExtendedPlugin.c
++++ b/unix/src/plugins/ClipboardExtendedPlugin/ClipboardExtendedPlugin.c
+@@ -75,6 +75,8 @@ static sqInt halt(void) {
+ 	;
+ }
+ 
++extern void sqPasteboardPutItemFlavordatalengthformatTypeformatLength(sqInt, char*, int, char*, int);
++
+ EXPORT(sqInt) ioAddClipboardData(void) {
+ 	sqInt clipboardAddress;
+ 	sqInt formatLength;
+@@ -102,6 +104,8 @@ EXPORT(sqInt) ioAddClipboardData(void) {
+ 	return null;
+ }
+ 
++extern void sqPasteboardClear(sqInt);
++
+ EXPORT(sqInt) ioClearClipboard(void) {
+ 	sqInt clipboardAddress;
+ 	sqInt clipboard;
+@@ -119,6 +123,8 @@ EXPORT(sqInt) ioClearClipboard(void) {
+ 	return null;
+ }
+ 
++sqInt sqCreateClipboard(void);
++
+ EXPORT(sqInt) ioCreateClipboard(void) {
+ 	sqInt clipboardAddress;
+ 
+@@ -130,6 +136,10 @@ EXPORT(sqInt) ioCreateClipboard(void) {
+ 	return null;
+ }
+ 
++extern int sqPasteboardGetItemCount(sqInt);
++extern int sqPasteboardCopyItemFlavorsitemNumber (sqInt, int);
++extern int sqPasteboardCopyItemFlavorDataformatformatLength (sqInt, char*, int);
++
+ EXPORT(sqInt) ioGetClipboardFormat(void) {
+ 	sqInt clipboardAddress;
+ 	sqInt itemCount;
+diff --git a/unix/src/plugins/DBusPlugin/DBusPlugin.c b/unix/src/plugins/DBusPlugin/DBusPlugin.c
+index b3b8027..11bc22e 100644
+--- a/unix/src/plugins/DBusPlugin/DBusPlugin.c
++++ b/unix/src/plugins/DBusPlugin/DBusPlugin.c
+@@ -474,7 +474,7 @@ static sqInt halt(void) {
+ }
+ 
+ static sqInt handleflag(int fd, int flag) {
+-	aioHandle(fd, handleReadForFDwithDataandFlag , flag);
++	aioHandle(fd, (void (*)(int,  void *, int)) handleReadForFDwithDataandFlag , flag);
+ }
+ 
+ 
+@@ -1796,8 +1796,8 @@ static dbus_bool_t sqDBusPluginAddWatchwithData(DBusWatch*watch, void*data) {
+ 	fd = dbus_watch_get_fd(watch);
+ 	((sqDBusData*)data)->watch = watch;
+ 	if (flag & DBUS_WATCH_READABLE) {
+-		aioEnable(fd, data, NULL);
+-							aioHandle(fd, handleReadForFDwithDataandFlag , 1<<0 | 1<<1 | 1<<3);
++		aioEnable(fd, data, 0);
++							aioHandle(fd, (void (*)(int,  void *, int)) handleReadForFDwithDataandFlag , 1<<0 | 1<<1 | 1<<3);
+ 	}
+ 	return 1;
+ }
+@@ -1830,7 +1830,7 @@ static void sqDBusPluginToggleWatchwithData(DBusWatch*watch, void*data) {
+ 	fd = dbus_watch_get_fd(watch);
+ 	if (enable) {
+ 		((sqDBusData*)data)->watch = watch;
+-		aioEnable(fd, data, NULL);
++		aioEnable(fd, data, 0);
+ 	} else {
+ 		aioDisable(fd);
+ 	}
+diff --git a/unix/src/plugins/FileCopyPlugin/FileCopyPlugin.c b/unix/src/plugins/FileCopyPlugin/FileCopyPlugin.c
+index e2f1b5a..16a3066 100644
+--- a/unix/src/plugins/FileCopyPlugin/FileCopyPlugin.c
++++ b/unix/src/plugins/FileCopyPlugin/FileCopyPlugin.c
+@@ -18,6 +18,7 @@
+ #include "sqConfig.h"
+ /* Platform specific definitions */
+ #include "sqPlatformSpecific.h"
++#include "FileCopyPlugin.h"
+ 
+ #define true 1
+ #define false 0
+diff --git a/unix/src/plugins/HostWindowPlugin/HostWindowPlugin.c b/unix/src/plugins/HostWindowPlugin/HostWindowPlugin.c
+index ea5c0d7..54bb88b 100644
+--- a/unix/src/plugins/HostWindowPlugin/HostWindowPlugin.c
++++ b/unix/src/plugins/HostWindowPlugin/HostWindowPlugin.c
+@@ -312,7 +312,7 @@ EXPORT(sqInt) primitiveShowHostWindowRect(void) {
+ 	if (interpreterProxy->failed()) {
+ 		return null;
+ 	}
+-	ok = ioShowDisplayOnWindow(dispBits, w, h, d, left, right, top,
++	ok = ioShowDisplayOnWindow((unsigned char *)dispBits, w, h, d, left, right, top,
+ bottom, windowIndex);
+ 	if (!(ok)) {
+ 		interpreterProxy->primitiveFail();
+diff --git a/unix/src/plugins/MIDIPlugin/MIDIPlugin.c b/unix/src/plugins/MIDIPlugin/MIDIPlugin.c
+index a3fae58..8ec2eaa 100644
+--- a/unix/src/plugins/MIDIPlugin/MIDIPlugin.c
++++ b/unix/src/plugins/MIDIPlugin/MIDIPlugin.c
+@@ -161,7 +161,7 @@ EXPORT(sqInt) primitiveMIDIGetPortName(void) {
+ 	if (interpreterProxy->failed()) {
+ 		return null;
+ 	}
+-	sz = sqMIDIGetPortName(portNum, &portName, 255);
++	sz = sqMIDIGetPortName(portNum, (int)&portName, 255);
+ 	nameObj = interpreterProxy->instantiateClassindexableSize(interpreterProxy->classString(), sz);
+ 	if (interpreterProxy->failed()) {
+ 		return null;
+diff --git a/unix/src/plugins/RomePlugin/RomePlugin.c b/unix/src/plugins/RomePlugin/RomePlugin.c
+index aed0e19..f9ff990 100644
+--- a/unix/src/plugins/RomePlugin/RomePlugin.c
++++ b/unix/src/plugins/RomePlugin/RomePlugin.c
+@@ -49,6 +49,7 @@
+ 
+ 
+ #include "sqMemoryAccess.h"
++#include "sq.h"
+ 
+ 
+ /*** Constants ***/
+diff --git a/unix/src/plugins/Squeak3D/Squeak3D.c b/unix/src/plugins/Squeak3D/Squeak3D.c
+index 3732e62..2127bb3 100644
+--- a/unix/src/plugins/Squeak3D/Squeak3D.c
++++ b/unix/src/plugins/Squeak3D/Squeak3D.c
+@@ -1657,8 +1657,8 @@ static sqInt halt(void) {
+ }
+ 
+ EXPORT(sqInt) initialiseModule(void) {
+-	loadBBFn = interpreterProxy->ioLoadFunctionFrom("loadBitBltFrom", bbPluginName);
+-	copyBitsFn = interpreterProxy->ioLoadFunctionFrom("copyBitsFromtoat", bbPluginName);
++	loadBBFn = (sqInt) interpreterProxy->ioLoadFunctionFrom("loadBitBltFrom", bbPluginName);
++	copyBitsFn = (sqInt) interpreterProxy->ioLoadFunctionFrom("copyBitsFromtoat", bbPluginName);
+ 	return (loadBBFn != 0) && (copyBitsFn != 0);
+ }
+ 
+diff --git a/unix/src/plugins/SqueakFFIPrims/SqueakFFIPrims.c b/unix/src/plugins/SqueakFFIPrims/SqueakFFIPrims.c
+index 24601e4..07e4714 100644
+--- a/unix/src/plugins/SqueakFFIPrims/SqueakFFIPrims.c
++++ b/unix/src/plugins/SqueakFFIPrims/SqueakFFIPrims.c
+@@ -1215,6 +1215,8 @@ static sqInt halt(void) {
+ 	;
+ }
+ 
++extern void initSurfacePluginFunctionPointers();
++
+ EXPORT(sqInt) initialiseModule(void) {
+ 	initSurfacePluginFunctionPointers();
+ }
+diff --git a/unix/src/plugins/XDisplayControlPlugin/XDisplayControlPlugin.c b/unix/src/plugins/XDisplayControlPlugin/XDisplayControlPlugin.c
+index 1a53f09..ed3a446 100644
+--- a/unix/src/plugins/XDisplayControlPlugin/XDisplayControlPlugin.c
++++ b/unix/src/plugins/XDisplayControlPlugin/XDisplayControlPlugin.c
+@@ -132,6 +132,10 @@ EXPORT(sqInt) primitiveCanConnectToDisplay(void) {
+ 	}
+ }
+ 
++extern void forgetXDisplay(void);
++extern void synchronizeXDisplay(void);
++extern void openXDisplay(void);
++extern int disconnectXDisplay(void);
+ 
+ /*	Call an internal function which will disconnect the X display session. The actual
+ 	Squeak window on the X server is not effected, but this instance of Squeak will
+diff --git a/unix/src/vm/interp.c b/unix/src/vm/interp.c
+index 85f416d..c179a34 100644
+--- a/unix/src/vm/interp.c
++++ b/unix/src/vm/interp.c
+@@ -15665,6 +15665,9 @@ sqInt primitiveAtPut(void) {
+ }
+ 
+ 
++extern sqInt ioSetCursorARGB(sqInt, sqInt, sqInt, sqInt, sqInt);
++
++
+ /*	Set the cursor to the given shape. The Mac only supports 16x16 pixel cursors. Cursor offsets are handled by Smalltalk. */
+ 
+ sqInt primitiveBeCursor(void) {
+diff --git a/unix/src/vm/intplugins/AsynchFilePlugin/AsynchFilePlugin.c b/unix/src/vm/intplugins/AsynchFilePlugin/AsynchFilePlugin.c
+index f0b72e7..f53d7f3 100644
+--- a/unix/src/vm/intplugins/AsynchFilePlugin/AsynchFilePlugin.c
++++ b/unix/src/vm/intplugins/AsynchFilePlugin/AsynchFilePlugin.c
+@@ -162,7 +162,7 @@ EXPORT(sqInt) primitiveAsyncFileOpen(void) {
+ 	fOop = interpreterProxy->instantiateClassindexableSize(interpreterProxy->classByteArray(), sizeof(AsyncFile));
+ 	f = asyncFileValueOf(fOop);
+ 	if (!(interpreterProxy->failed())) {
+-		asyncFileOpen(f, fileName, fileNameSize, writeFlag, semaIndex);
++		asyncFileOpen(f, (int) fileName, fileNameSize, writeFlag, semaIndex);
+ 	}
+ 	if (interpreterProxy->failed()) {
+ 		return null;
+@@ -209,7 +209,7 @@ EXPORT(sqInt) primitiveAsyncFileReadResult(void) {
+ 	interpreterProxy->success((startIndex >= 1) && (((startIndex + count) - 1) <= bufferSize));
+ 	bufferPtr = (((pointerForOop(buffer)) + (BASE_HEADER_SIZE)) + startIndex) - 1;
+ 	if (!(interpreterProxy->failed())) {
+-		r = asyncFileReadResult(f, bufferPtr, count);
++		r = asyncFileReadResult(f, (int) bufferPtr, count);
+ 	}
+ 	_return_value = interpreterProxy->integerObjectOf(r);
+ 	if (interpreterProxy->failed()) {
+@@ -301,7 +301,7 @@ EXPORT(sqInt) primitiveAsyncFileWriteStart(void) {
+ 	interpreterProxy->success((startIndex >= 1) && (((startIndex + count) - 1) <= bufferSize));
+ 	bufferPtr = (((pointerForOop(buffer)) + (BASE_HEADER_SIZE)) + startIndex) - 1;
+ 	if (!(interpreterProxy->failed())) {
+-		asyncFileWriteStart(f, fPosition, bufferPtr, count);
++		asyncFileWriteStart(f, fPosition, (int) bufferPtr, count);
+ 	}
+ 	if (interpreterProxy->failed()) {
+ 		return null;
+diff --git a/unix/src/vm/intplugins/CroquetPlugin/CroquetPlugin.c b/unix/src/vm/intplugins/CroquetPlugin/CroquetPlugin.c
+index ae84066..c27ac3c 100644
+--- a/unix/src/vm/intplugins/CroquetPlugin/CroquetPlugin.c
++++ b/unix/src/vm/intplugins/CroquetPlugin/CroquetPlugin.c
+@@ -512,6 +512,8 @@ EXPORT(sqInt) primitiveTransposeMatrix(void) {
+ 
+ /*	Primitive. Answer whether an AABB intersects with a given triangle */
+ 
++extern sqInt triBoxOverlap(float*, float*, float*, float*, float*);
++
+ EXPORT(sqInt) primitiveTriBoxIntersects(void) {
+     float*maxCorner;
+     float*minCorner;
+diff --git a/unix/src/vm/intplugins/FilePlugin/FilePlugin.c b/unix/src/vm/intplugins/FilePlugin/FilePlugin.c
+index 0495a0f..baf618c 100644
+--- a/unix/src/vm/intplugins/FilePlugin/FilePlugin.c
++++ b/unix/src/vm/intplugins/FilePlugin/FilePlugin.c
+@@ -734,7 +734,7 @@ EXPORT(sqInt) primitiveFileStdioHandles(void) {
+ 			return interpreterProxy->primitiveFail();
+ 		}
+ 	}
+-	validMask = sqFileStdioHandlesInto((&fileRecords));
++	validMask = sqFileStdioHandlesInto((SQFile*)(&fileRecords));
+ 	if (validMask == 0) {
+ 		return interpreterProxy->primitiveFail();
+ 	}
+diff --git a/unix/src/vm/intplugins/MiscPrimitivePlugin/MiscPrimitivePlugin.c b/unix/src/vm/intplugins/MiscPrimitivePlugin/MiscPrimitivePlugin.c
+index 501077a..53767a4 100644
+--- a/unix/src/vm/intplugins/MiscPrimitivePlugin/MiscPrimitivePlugin.c
++++ b/unix/src/vm/intplugins/MiscPrimitivePlugin/MiscPrimitivePlugin.c
+@@ -101,6 +101,10 @@ static sqInt halt(void) {
+ }
+ 
+ 
++sqInt _isBytes(sqInt oop) {
++	return ((oop & 1) == 0) && (((((usqInt) (longAt(oop))) >> 8) & 15) >= 8);
++}
++
+ /*	Return 1, 2 or 3, if string1 is <, =, or > string2, with the collating order of characters given by the order array. */
+ 
+ EXPORT(sqInt) primitiveCompareString(void) {
+@@ -115,17 +119,17 @@ EXPORT(sqInt) primitiveCompareString(void) {
+     sqInt len2;
+ 
+ 	rcvr = stackValue(3);
+-	if (!(isBytes(stackValue(2)))) {
++	if (!(_isBytes(stackValue(2)))) {
+ 		return primitiveFail();
+ 	}
+ 	string1 = arrayValueOf(stackValue(2));
+ 	string1 -= 1;
+-	if (!(isBytes(stackValue(1)))) {
++	if (!(_isBytes(stackValue(1)))) {
+ 		return primitiveFail();
+ 	}
+ 	string2 = arrayValueOf(stackValue(1));
+ 	string2 -= 1;
+-	if (!(isBytes(stackValue(0)))) {
++	if (!(_isBytes(stackValue(0)))) {
+ 		return primitiveFail();
+ 	}
+ 	order = arrayValueOf(stackValue(0));
+@@ -225,7 +229,7 @@ EXPORT(sqInt) primitiveCompressToByteArray(void) {
+ 	rcvr = stackValue(2);
+ 	bm = arrayValueOf(stackValue(1));
+ 	bm -= 1;
+-	if (!(isBytes(stackValue(0)))) {
++	if (!(_isBytes(stackValue(0)))) {
+ 		return primitiveFail();
+ 	}
+ 	ba = arrayValueOf(stackValue(0));
+@@ -393,7 +397,7 @@ EXPORT(sqInt) primitiveConvert8BitSigned(void) {
+     sqInt s;
+ 
+ 	rcvr = stackValue(2);
+-	if (!(isBytes(stackValue(1)))) {
++	if (!(_isBytes(stackValue(1)))) {
+ 		return primitiveFail();
+ 	}
+ 	aByteArray = arrayValueOf(stackValue(1));
+@@ -453,7 +457,7 @@ EXPORT(sqInt) primitiveDecompressFromByteArray(void) {
+ 	rcvr = stackValue(3);
+ 	bm = arrayValueOf(stackValue(2));
+ 	bm -= 1;
+-	if (!(isBytes(stackValue(1)))) {
++	if (!(_isBytes(stackValue(1)))) {
+ 		return primitiveFail();
+ 	}
+ 	ba = arrayValueOf(stackValue(1));
+@@ -556,12 +560,12 @@ EXPORT(sqInt) primitiveFindFirstInString(void) {
+     sqInt stringSize;
+ 
+ 	rcvr = stackValue(3);
+-	if (!(isBytes(stackValue(2)))) {
++	if (!(_isBytes(stackValue(2)))) {
+ 		return primitiveFail();
+ 	}
+ 	aString = arrayValueOf(stackValue(2));
+ 	aString -= 1;
+-	if (!(isBytes(stackValue(1)))) {
++	if (!(_isBytes(stackValue(1)))) {
+ 		return primitiveFail();
+ 	}
+ 	inclusionMap = arrayValueOf(stackValue(1));
+@@ -614,18 +618,18 @@ EXPORT(sqInt) primitiveFindSubstring(void) {
+     sqInt startIndex;
+ 
+ 	rcvr = stackValue(4);
+-	if (!(isBytes(stackValue(3)))) {
++	if (!(_isBytes(stackValue(3)))) {
+ 		return primitiveFail();
+ 	}
+ 	key = arrayValueOf(stackValue(3));
+ 	key -= 1;
+-	if (!(isBytes(stackValue(2)))) {
++	if (!(_isBytes(stackValue(2)))) {
+ 		return primitiveFail();
+ 	}
+ 	body = arrayValueOf(stackValue(2));
+ 	body -= 1;
+ 	start = stackIntegerValue(1);
+-	if (!(isBytes(stackValue(0)))) {
++	if (!(_isBytes(stackValue(0)))) {
+ 		return primitiveFail();
+ 	}
+ 	matchTable = arrayValueOf(stackValue(0));
+@@ -673,7 +677,7 @@ EXPORT(sqInt) primitiveIndexOfAsciiInString(void) {
+ 
+ 	rcvr = stackValue(3);
+ 	anInteger = stackIntegerValue(2);
+-	if (!(isBytes(stackValue(1)))) {
++	if (!(_isBytes(stackValue(1)))) {
+ 		return primitiveFail();
+ 	}
+ 	aString = arrayValueOf(stackValue(1));
+@@ -719,7 +723,7 @@ EXPORT(sqInt) primitiveStringHash(void) {
+     sqInt pos;
+ 
+ 	rcvr = stackValue(2);
+-	if (!(isBytes(stackValue(1)))) {
++	if (!(_isBytes(stackValue(1)))) {
+ 		return primitiveFail();
+ 	}
+ 	aByteArray = arrayValueOf(stackValue(1));
+@@ -758,14 +762,14 @@ EXPORT(sqInt) primitiveTranslateStringWithTable(void) {
+     sqInt i;
+ 
+ 	rcvr = stackValue(4);
+-	if (!(isBytes(stackValue(3)))) {
++	if (!(_isBytes(stackValue(3)))) {
+ 		return primitiveFail();
+ 	}
+ 	aString = arrayValueOf(stackValue(3));
+ 	aString -= 1;
+ 	start = stackIntegerValue(2);
+ 	stop = stackIntegerValue(1);
+-	if (!(isBytes(stackValue(0)))) {
++	if (!(_isBytes(stackValue(0)))) {
+ 		return primitiveFail();
+ 	}
+ 	table = arrayValueOf(stackValue(0));
+diff --git a/unix/src/vm/intplugins/RePlugin/RePlugin.c b/unix/src/vm/intplugins/RePlugin/RePlugin.c
+index 97a99c9..4f09246 100644
+--- a/unix/src/vm/intplugins/RePlugin/RePlugin.c
++++ b/unix/src/vm/intplugins/RePlugin/RePlugin.c
+@@ -252,7 +252,7 @@ EXPORT(sqInt) primPCREExec(void) {
+ 	/* begin rcvrExtraPtr */
+ 	extraObj = interpreterProxy->fetchPointerofObject(3, rcvr);
+ 	if (extraObj == (interpreterProxy->nilObject())) {
+-		extraPtr =  NULL;
++		extraPtr = 0;
+ 		goto l1;
+ 	}
+ 	extraPtr = ((int) (interpreterProxy->arrayValueOf(extraObj)));
+@@ -317,7 +317,7 @@ EXPORT(sqInt) primPCREExecfromto(void) {
+ 	/* begin rcvrExtraPtr */
+ 	extraObj = interpreterProxy->fetchPointerofObject(3, rcvr);
+ 	if (extraObj == (interpreterProxy->nilObject())) {
+-		extraPtr =  NULL;
++		extraPtr = 0;
+ 		goto l1;
+ 	}
+ 	extraPtr = ((int) (interpreterProxy->arrayValueOf(extraObj)));
+diff --git a/unix/src/vm/intplugins/SerialPlugin/SerialPlugin.c b/unix/src/vm/intplugins/SerialPlugin/SerialPlugin.c
+index a40a64d..ecc29f5 100644
+--- a/unix/src/vm/intplugins/SerialPlugin/SerialPlugin.c
++++ b/unix/src/vm/intplugins/SerialPlugin/SerialPlugin.c
+@@ -100,6 +100,9 @@ EXPORT(sqInt) primitiveSerialPortClose(void) {
+ 	return null;
+ }
+ 
++extern sqInt serialPortCloseByName(const char*);
++extern sqInt serialPortOpenByName(char*, int, int, int, int, int, int, int, int);
++
+ EXPORT(sqInt) primitiveSerialPortCloseByName(void) {
+ 	char * cString;
+ 	char *deviceName;
+diff --git a/unix/src/vm/intplugins/SlangTestSupportPlugin/SlangTestSupportPlugin.c b/unix/src/vm/intplugins/SlangTestSupportPlugin/SlangTestSupportPlugin.c
+index 72f9def..46280d9 100644
+--- a/unix/src/vm/intplugins/SlangTestSupportPlugin/SlangTestSupportPlugin.c
++++ b/unix/src/vm/intplugins/SlangTestSupportPlugin/SlangTestSupportPlugin.c
+@@ -147,7 +147,7 @@ static sqInt inlineByMethod(void) {
+     sqInt bar;
+     sqInt foo;
+ 
+-	foo = "foo";
++	foo = (sqInt) "foo";
+ 	bar = methodThatShouldNotBeInlinedByMethod();
+ }
+ 
+@@ -159,24 +159,24 @@ static sqInt inlineByPragma(void) {
+     sqInt bar;
+     sqInt foo;
+ 
+-	foo = "foo";
++	foo = (sqInt) "foo";
+ 	bar = methodThatShouldNotBeInlinedByPragma();
+ }
+ 
+ static sqInt methodThatShouldBeInlinedByMethod(void) {
+-	return "foo";
++	return (sqInt) "foo";
+ }
+ 
+ static sqInt methodThatShouldBeInlinedByPragma(void) {
+-	return "foo";
++	return (sqInt) "foo";
+ }
+ 
+ static sqInt methodThatShouldNotBeInlinedByMethod(void) {
+-	return "bar";
++	return (sqInt) "bar";
+ }
+ 
+ static sqInt methodThatShouldNotBeInlinedByPragma(void) {
+-	return "bar";
++	return (sqInt) "bar";
+ }
+ 
+ 
+diff --git a/unix/vm-sound-pulse/sqUnixSoundPulseAudio.c b/unix/vm-sound-pulse/sqUnixSoundPulseAudio.c
+index 18d0f7f..8b0f35d 100644
+--- a/unix/vm-sound-pulse/sqUnixSoundPulseAudio.c
++++ b/unix/vm-sound-pulse/sqUnixSoundPulseAudio.c
+@@ -995,10 +995,10 @@ DBGMSG("<sound_StartRecording()");
+ static sqInt sound_StopRecording(void) {
+ DBGMSG(">sound_StopRecording()");
+ 
+-	if (!audioIn.open) return;
++	if (!audioIn.open) return 0;
+ 	audioIn.open = false;
+ 	
+-	if (NULL == audioIn.pa_conn) return;
++	if (NULL == audioIn.pa_conn) return 0;
+ 	
+ 	ioThreadStall(&audioIn);
+ 
+diff --git a/unix/vm/SqSound.h b/unix/vm/SqSound.h
+index bddbf24..973db1b 100644
+--- a/unix/vm/SqSound.h
++++ b/unix/vm/SqSound.h
+@@ -47,7 +47,7 @@ static struct SqSound sound_##NAME##_itf= {	\
+   sound_RecordSamplesIntoAtLength,		\
+   sound_Volume,					\
+   sound_SetVolume,				\
+-  sound_SetRecordLevel,				\
++  (void (*)(sqInt))sound_SetRecordLevel,	\
+   sound_GetSwitch,				\
+   sound_SetSwitch,				\
+   sound_SetDevice				\
+diff --git a/unix/vm/aio.c b/unix/vm/aio.c
+index 57e054e..f133c8e 100644
+--- a/unix/vm/aio.c
++++ b/unix/vm/aio.c
+@@ -31,6 +31,7 @@
+  */
+ 
+ #include "sqaio.h"
++#include "sq.h"
+ 
+ #ifdef HAVE_CONFIG_H
+ 
+diff --git a/unix/vm/sqUnixMain.c b/unix/vm/sqUnixMain.c
+index 98ea3bc..76391f7 100644
+--- a/unix/vm/sqUnixMain.c
++++ b/unix/vm/sqUnixMain.c
+@@ -34,6 +34,7 @@
+ #include "sqMemoryAccess.h"
+ #include "sqaio.h"
+ #include "sqUnixCharConv.h"
++#include "sqUnixGlobals.h"
+ #include "debug.h"
+ 
+ #ifdef ioMSecs
+@@ -42,6 +43,7 @@
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <ctype.h>
+ #include <string.h>
+ #include <time.h>
+ #include <sys/time.h>
+@@ -511,6 +513,8 @@ sqInt ioRelinquishProcessorForMicroseconds(sqInt us)
+ 
+ sqInt ioBeep(void)				 { return dpy->ioBeep(); }
+ 
++extern sqInt printCallStack(void);
++
+ #if defined(IMAGE_DUMP)
+ 
+ static void emergencyDump(int quit)
