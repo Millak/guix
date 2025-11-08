@@ -1338,14 +1338,13 @@ which will be used as a snippet in origin."
      #:repository-url "https://github.com/Decodetalkers/tree_sitter_plantuml"
      #:commit commit
      #:get-cleanup-snippet
-     (lambda _
+     (lambda (grammar-directories)
        #~(begin
            (use-modules (guix build utils))
            (substitute* "grammar.js"
              (("u\\{\\[0-9a-fA-F\\]\\+\\}")
               "u\\{[0-9a-fA-F]+\\}"))
-           (delete-file "binding.gyp")
-           (delete-file-recursively "bindings"))))))
+           #$(tree-sitter-delete-generated-files grammar-directories))))))
 
 (define-public tree-sitter-po
   (let ((version "0.0.1")
