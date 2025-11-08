@@ -1782,6 +1782,18 @@ which will be used as a snippet in origin."
 "))
          #$(tree-sitter-delete-generated-files grammar-directories)))))
 
+(define-public tree-sitter-svelte
+  (let ((commit "ae5199db47757f785e43a14b332118a5474de1a2")
+        (revision "0"))
+    (tree-sitter-grammar
+     "svelte" "Svelte"
+     "0pm5hillspaj4xvqz3j5sxvn78sljw75abjp58xnq8lc5vp62zvh"
+     (git-version "1.0.2" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-svelte"
+     #:inputs (list tree-sitter-html))))
+
 (define-public tree-sitter-sway
   (let ((commit "f9e53e922496dd47208a141fa7ac315625a1874f")
         (revision "0"))
