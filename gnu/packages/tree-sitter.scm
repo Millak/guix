@@ -1781,6 +1781,24 @@ which will be used as a snippet in origin."
      #:repository-url "https://github.com/FuelLabs/tree-sitter-sway"
      #:commit commit)))
 
+(define-public tree-sitter-swift
+  (let ((commit "7c2f26b5dce12e82ef2bd932a883ef514ae566b8")
+        (revision "0"))
+    (tree-sitter-grammar
+     "swift" "Swift"
+     "15rcld2k5h7m4c66msxx7zcmn9bmpqsz907pdr3ikhvcvx3w085g"
+     (git-version "0.7.1" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/alex-pinkus/tree-sitter-swift"
+     #:get-cleanup-snippet
+     (lambda (grammar-directories)
+       #~(begin
+           (use-modules (guix build utils))
+           (delete-file-recursively "test-npm-package")
+           (delete-file-recursively "test/outline")
+           #$(tree-sitter-delete-generated-files grammar-directories))))))
+
 (define-public tree-sitter-tablegen
   (let ((version "1.0.0")
         (commit "3e9c4822ab5cdcccf4f8aa9dcd42117f736d51d9")
