@@ -434,7 +434,7 @@ with different rules and mechanics.")
 (define-public luanti-mineclonia
   (package
     (name "luanti-mineclonia")
-    (version "0.115.0")
+    (version "0.117.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -443,7 +443,7 @@ with different rules and mechanics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0y10rxh7fb6qwny0jpqyz6akw8cwsrdfcyadrqjv774hrr98371a"))))
+                "0iq153dyijbfbvp30fcvbbgvca9c3c6szpw04svwc08ar4h5yvl7"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
