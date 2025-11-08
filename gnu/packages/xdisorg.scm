@@ -564,7 +564,7 @@ with X11 or Wayland, or in a text terminal with ncurses.")
 (define-public cliphist
   (package
     (name "cliphist")
-    (version "0.6.1")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -573,7 +573,7 @@ with X11 or Wayland, or in a text terminal with ncurses.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lhfq67bsmlajxlkz0dhj5hym7w376vqjk05yccd42fqd1nr32dl"))))
+        (base32 "0dffcpqmqd9drgc7l95kbqh199ljhhqw468x17m4bwv3y2bm50fb"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -581,6 +581,7 @@ with X11 or Wayland, or in a text terminal with ncurses.")
       #:import-path "go.senan.xyz/cliphist"))
     (native-inputs
      (list go-github-com-rogpeppe-go-internal
+           go-github-com-rivo-uniseg
            go-go-etcd-io-bbolt
            go-go-senan-xyz-flagconf
            go-golang-org-x-image))
