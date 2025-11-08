@@ -1691,6 +1691,17 @@ which will be used as a snippet in origin."
      #:repository-url "https://github.com/aheber/tree-sitter-sfapex"
      #:grammar-directories '("apex" "sflog" "soql" "sosl"))))
 
+(define-public tree-sitter-smali
+  (let ((commit "fdfa6a1febc43c7467aa7e937b87b607956f2346")
+        (revision "0"))
+    (tree-sitter-grammar
+     "smali" "Smali"
+     "0b7b6vziwj2c3ngrpz439gnsxh5v22illc4nms1mxkzdx5g3liab"
+     (git-version "1.0.0" revision commit)
+     #:commit commit
+     #:repository-url
+     "https://github.com/tree-sitter-grammars/tree-sitter-smali")))
+
 (define-public tree-sitter-solidity
   (tree-sitter-grammar
    "solidity" "Solidity"
