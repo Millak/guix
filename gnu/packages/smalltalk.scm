@@ -229,9 +229,9 @@ such as ones for networking and GUI programming.")
      (origin
        (method url-fetch)
        (uri (string-append "http://squeakvm.org/unix/release/"
-                           "Squeak-" version "-src-no-mp3.tar.gz"))
+                           "Squeak-" version "-src.tar.gz"))
        (sha256
-        (base32 "01miyjpka9x24xsp4j54mm9zjiaci670sss50qvd94y5q2iq9cx7"))
+        (base32 "0bpwbnpy2sb4gylchfx50sha70z36bwgdxraym4vrr93l8pd3dix"))
        (modules '((guix build utils)))
        (snippet
         ;; Make builds bit-reproducible.
@@ -243,29 +243,8 @@ such as ones for networking and GUI programming.")
               "ux_version = \"GNU\";\n"))
            (substitute* "unix/vm/config.cmake"
              (("\\(VM_BUILD_STRING.*")
-              "(VM_BUILD_STRING \\\"Built with GNU Guix\\\")"))))
-       (patches (search-patches "squeak-vm-gcc-14-fix.patch"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list #:tests? #f                  ;no check target
-           #:configure-flags
-           #~(list (string-append "-DVM_HOST=" #$(nix-system->gnu-triplet
-                                                  (or (%current-target-system)
-                                                      (%current-system))))
-                   (string-append "-DVM_VERSION=" #$version)
-                   "-DCMAKE_VERBOSE_MAKEFILE=ON")
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'chdir
-                 (lambda _
-                   (chdir "unix")))
-               (add-after 'chdir 'remove-hardcoded-PATH
-                 (lambda _
-                   ;; Remove hard-coded FHS PATH entries.
-                   (substitute* '("cmake/squeak.in"
-                                  "cmake/squeak.sh.in")
-                     (("^PATH=.*") "")))))))
-    (native-inputs (list pkg-config))
+              "(VM_BUILD_STRING \\\"Built with GNU Guix\\\")"))
+           #t))))
     (inputs
      (list alsa-lib
            dbus
@@ -274,6 +253,32 @@ such as ones for networking and GUI programming.")
            libxrender
            mesa
            pulseaudio))
+    (native-inputs
+     (list pkg-config))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f                      ;no check target
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'remove-hardcoded-PATH
+           (lambda _
+             ;; Remove hard-coded FHS PATH entries.
+             (substitute* '("unix/cmake/squeak.in"
+                            "unix/cmake/squeak.sh.in")
+               (("^PATH=.*") ""))
+             #t))
+         (add-before 'configure 'enter-build-directory
+           (lambda _
+             (mkdir "build")
+             (chdir "build")
+             #t))
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (invoke "../unix/cmake/configure"
+                       (string-append "--prefix=" out)
+                       "--without-quartz")
+               #t))))))
     (synopsis "Smalltalk programming language and environment")
     (description "Squeak is a full-featured implementation of the Smalltalk
 programming language and environment based on (and largely compatible with)

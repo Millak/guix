@@ -2077,7 +2077,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/smalltalk-multiplication-overflow.patch	\
   %D%/packages/patches/soci-mysql-ddl-types.patch		\
   %D%/packages/patches/sqlite-hurd.patch			\
-  %D%/packages/patches/squeak-vm-gcc-14-fix.patch		\
   %D%/packages/patches/stepmania-ffmpeg-compat.patch			\
   %D%/packages/patches/stk-5.0.1-fix-typo.patch			\
   %D%/packages/patches/strace-readlink-tests.patch		\
