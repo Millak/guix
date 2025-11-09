@@ -4932,6 +4932,32 @@ of storage backends available to Perl, such as memory, plain files, memory
 mapped files, memcached, and DBI.")
     (license license:perl-license)))
 
+(define-public perl-dir-manifest
+  (package
+    (name "perl-dir-manifest")
+    (version "0.6.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/S/SH/SHLOMIF/Dir-Manifest-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "01g54wlvp647zvhn0sxl2pqajly17044qd3pxib8cpixhwk75zw4"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (propagated-inputs (list perl-moo-2 perl-path-tiny))
+    (home-page "https://metacpan.org/release/Dir-Manifest")
+    (synopsis "Treat a directory and a manifest file as a dictionary")
+    (description
+     "This package provides an API for dealing where the case where you have several
+long texts (and/or binary blobs) that you wish to load from the code (e.g: for
+the \"want\"/expected values of tests) and you wish to conveniently edit them,
+track them and maintain them.  Using this package, you can put each in a
+separate file in a directory, create a manifest file listing all valid
+filenames/key, and load from there.")
+    (license license:x11)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
