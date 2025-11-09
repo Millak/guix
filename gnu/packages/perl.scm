@@ -5114,6 +5114,28 @@ first failure, instead of going all the way through it.")
 @code{NOT OK}) colorful in test outputs.")
     (license license:x11)))
 
+(define-public perl-test-run-plugin-colorsummary
+  (package
+    (name "perl-test-run-plugin-colorsummary")
+    (version "0.0203")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/S/SH/SHLOMIF/Test-Run-Plugin-ColorSummary-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "1zca7w360m0vf3srf8af1s2k9k8hi85w1cavql7m2sr9kcvpknbv"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-run perl-test-run-cmdline
+                         perl-test-trap))
+    (propagated-inputs (list perl-test-run perl-test-run-cmdline))
+    (home-page "https://metacpan.org/release/Test-Run-Plugin-ColorSummary")
+    (synopsis "Test::Run plugin that colors the summary")
+    (description
+     "This package is a Test::Run plugin that colors the summary of the test output.")
+    (license license:x11)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
