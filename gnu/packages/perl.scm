@@ -4766,6 +4766,33 @@ base class for errors/exceptions that can either be thrown, for subsequent
 catch, or can simply be recorded.")
     (license (package-license perl))))
 
+(define-public perl-test-count
+  (package
+    (name "perl-test-count")
+    (version "0.1105")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/S/SH/SHLOMIF/Test-Count-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0c94qf0cz25ix8mwn018ip8m448b1a1c6lngvq7b3733kkwrx6kk"))))
+    (build-system perl-build-system)
+    (arguments
+     ;; Tests are outdated and fail
+     (list
+      #:tests? #f))
+    (native-inputs (list perl-io-stringy perl-module-build))
+    (propagated-inputs (list perl-parse-recdescent))
+    (home-page "https://metacpan.org/release/Test-Count")
+    (synopsis
+     "Module for keeping track of the number of tests in a test script")
+    (description
+     "Test::Count is a set of perl modules for keeping track of the number of tests
+in a test file.  It includes the ability to use mathematical expressions and
+variables when computing the count.")
+    (license license:x11)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
