@@ -80,14 +80,14 @@ PO template files.")
 (define-public libkomparediff2
   (package
     (name "libkomparediff2")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkomparediff2-" version ".tar.xz"))
        (sha256
-        (base32 "19y1l6sd12rf87k7g1lhkr2yps71vzbs8vwhplkn2axyfiykwlsd"))))
+        (base32 "1v696vkqj9asmdjir836snf4ya7v3mp297pprydcndpkc636z4vf"))))
     (native-inputs
      (list extra-cmake-modules pkg-config))
     (inputs
