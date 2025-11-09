@@ -550,14 +550,14 @@ or Bonjour by other projects).")
 (define-public konversation
   (package
     (name "konversation")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/konversation-" version ".tar.xz"))
        (sha256
-        (base32 "1agknhi6xiba22nvcfx9ssl1rw9arb5m9mqmm5pgyfdx0zbn63ja"))))
+        (base32 "13c0hlvdqs49v7ap8yccxlc3945fqn09f3f5rmf2gxyq6a6bfiay"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools qttools))
