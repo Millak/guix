@@ -338,7 +338,7 @@ This package is part of the KDE networking module.")
 (define-public kdeconnect
   (package
     (name "kdeconnect")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
@@ -347,7 +347,7 @@ This package is part of the KDE networking module.")
                            version ".tar.xz"))
        (sha256
         (base32
-         "02bbj45lhpjrlv6qk59l3gi98jf2ymjw0rzx4ghz0v9x0rm5n974"))))
+         "0asy7vq9k9fdnyp5vzkswdnqjr43jvka6v6xj85fgxc55vrg2hbf"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
