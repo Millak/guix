@@ -77,6 +77,7 @@
   #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages prometheus)
   #:use-module (gnu packages specifications)
   #:use-module (gnu packages tls)
@@ -8905,6 +8906,47 @@ multistream-select protocol.  The protocol is defined at
      "Package swift provides an easy to use interface to Swift / Openstack
 Object Storage / Rackspace Cloud Files.")
     (license license:expat)))
+
+(define-public go-github-com-networkplumbing-go-nft
+  (package
+    (name "go-github-com-networkplumbing-go-nft")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/networkplumbing/go-nft")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gx0xh9llgi600v6qacnaxwk3j0kmmwk7d2hm9j5jpmcm8whvp2w"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/networkplumbing/go-nft"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Root access is required to pass these tests.
+                       (list "TestConfig/#00"
+                             "TestConfig/#01"
+                             "TestConfig/#02"
+                             "TestConfig/#03"
+                             "TestNATExamples/#00"
+                             "TestNftlib/#00"
+                             "TestNoMacSpoofingExample/#00")
+                       "|"))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list nftables))
+    (home-page "https://github.com/networkplumbing/go-nft")
+    (synopsis "NFT utility bindings for Golang")
+    (description
+     "This package provides Go bindings for @command{nft} utility.
+go-nft wraps invocation of the @command{nft} utility with functions to append
+and delete rules; create, clear and delete tables and chains.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-nrdcg-goinwx
   (package
