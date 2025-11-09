@@ -10470,6 +10470,28 @@ file names.")
 with file paths.")
     (license license:asl2.0)))
 
+(define-public perl-path-tiny-0.150
+  (package
+    (name "perl-path-tiny")
+    (version "0.150")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/D/DA/DAGOLDEN/"
+                                  "Path-Tiny-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1is6g5bnswnqrcan2jfip7j7gh8dyh0r083qkjpmglhl38yp287z"))))
+    (build-system perl-build-system)
+    (native-inputs
+     (list perl-test-failwarnings perl-test-mockrandom))
+    (inputs
+     (list perl-unicode-utf8))
+    (home-page "https://metacpan.org/release/Path-Tiny")
+    (synopsis "File path utility")
+    (description "This module provides a small, fast utility for working
+with file paths.")
+    (license license:asl2.0)))
+
 (define-public perl-pdf-api2
   (package
     (name "perl-pdf-api2")
