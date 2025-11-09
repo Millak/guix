@@ -448,8 +448,8 @@ lookup, particularly suited for games.")
   (sbcl-package->ecl-package sbcl-3d-spaces))
 
 (define-public sbcl-3d-transforms
-  (let ((commit "1d44509387d0747cd0351e95a533eca609058632")
-        (revision "0"))
+  (let ((commit "86e7e99fa9027c1d230adc83f3a2a74a2b83eb08")
+        (revision "1"))
     (package
       (name "sbcl-3d-transforms")
       (version (git-version "1.0.0" revision commit))
@@ -457,11 +457,11 @@ lookup, particularly suited for games.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/3d-transforms")
+               (url "https://codeberg.org/shinmera/3d-transforms")
                (commit commit)))
          (file-name (git-file-name "cl-3d-transforms" version))
          (sha256
-          (base32 "03pmv7dh1j6kl16ch6lnvxzjrld4jbr3jx8slzkiipgzdxg74pcx"))))
+          (base32 "04z532aq5rwfg3z7nijxzxikmcv504d6xx7gwmc7blk7z3mjk7dd"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-parachute))
@@ -470,7 +470,7 @@ lookup, particularly suited for games.")
              sbcl-3d-quaternions
              sbcl-3d-vectors
              sbcl-documentation-utils))
-      (home-page "https://shinmera.github.io/3d-transforms/")
+      (home-page "https://shinmera.com/docs/3d-transforms")
       (synopsis
        "Common structure to encapsulate spatial transformations in Common Lisp")
       (description
