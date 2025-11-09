@@ -484,7 +484,7 @@ alternative 4x4 matrix representation.")
   (sbcl-package->cl-source-package sbcl-3d-transforms))
 
 ;; TODO: Build failure:
-;; https://github.com/Shinmera/3d-quaternions/issues/2
+;; https://codeberg.org/shinmera/3d-quaternions/issues/1
 ;;
 ;; (define-public ecl-3d-transforms
 ;;   (sbcl-package->ecl-package sbcl-3d-transforms))
