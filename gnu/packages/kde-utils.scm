@@ -1274,14 +1274,14 @@ great on your desktop.")
 (define-public ktimer
   (package
     (name "ktimer")
-    (version "25.08.2")
+    (version "25.08.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/ktimer-" version ".tar.xz"))
               (sha256
                (base32
-                "1bwbzpyh4nx7fwy7imk5slrs2bscy3z6nwcgnakl0p1vl4ys9l5j"))))
+                "0672hpwmvj0378hmf4rqqw1ncynsr8c29dl3r6sdh4qw6kb2dd54"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules
