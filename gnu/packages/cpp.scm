@@ -1016,7 +1016,7 @@ language used in Hyprland.")
 (define-public hyprutils
   (package
     (name "hyprutils")
-    (version "0.10.0")
+    (version "0.10.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1025,10 +1025,11 @@ language used in Hyprland.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0l4gdingspjv3fh7zkmdin37bjjxgxnxycn8agv4cr3n0kn9smxg"))))
+                "08b65pssaci780rgb5qgqc61zvbxmb9qda4gb58j8nh9yi3ya0jx"))))
     (build-system cmake-build-system)
     (arguments
      (list
+      #:tests? #f ; No tests in Release build type
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-cross-compilation
