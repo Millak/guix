@@ -889,14 +889,14 @@ It's features include:
 (define-public kongress
   (package
     (name "kongress")
-    (version "25.08.2")
+    (version "25.08.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/kongress-" version ".tar.xz"))
               (sha256
                (base32
-                "1mxn6m0r1yglvv34xahbvnyid79gfcwbrx3nc8hmgqiq7s838ahw"))))
+                "1nsmapfc4fizy9a7cg0pvj32c673qsqfgph331zsclrmjmw5wzwx"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules python-minimal))
     ;; NOTE: Reporting bugs is linked to web browser, better not link it and let
