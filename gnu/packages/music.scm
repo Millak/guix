@@ -3792,7 +3792,7 @@ and hold, etc.")
 (define-public gxtuner
   (package
     (name "gxtuner")
-    (version "2.4")
+    (version "3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3801,7 +3801,7 @@ and hold, etc.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fxd2akan2njlr7fpkh84830783qhh1gg7yakswqk5dd466dcn96"))))
+                "09hh1y7ng7w42ijzk4v8ln7d48mdp5cs0vnfv96adbxv75k3g8if"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
