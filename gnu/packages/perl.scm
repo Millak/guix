@@ -5213,6 +5213,29 @@ Test::Run plugins.")
 file per (key+value) for easy parallelisation.")
     (license license:x11)))
 
+(define-public perl-test-run-cmdline
+  (package
+    (name "perl-test-run-cmdline")
+    (version "0.0132")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/S/SH/SHLOMIF/Test-Run-CmdLine-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "01x7rzscj3f06kpv0bd9dwx4wg9bmn7b5gyqfvy7wmv3ak6r3hxj"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-trap))
+    (propagated-inputs (list perl-moose perl-moosex-getopt perl-test-run
+                             perl-universal-require perl-yaml-libyaml))
+    (home-page "https://metacpan.org/release/Test-Run-CmdLine")
+    (synopsis "Analyze tests from the command line using Test::Run")
+    (description
+     "This package allows you to analyze tests from the command line using
+Test::Run.")
+    (license license:x11)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
