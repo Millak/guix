@@ -386,14 +386,14 @@ This package is part of the KDE multimedia module.")
 (define-public elisa
   (package
     (name "elisa")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/elisa-" version ".tar.xz"))
        (sha256
-        (base32 "1h8i3dfphf7gm4sm8vqzq06wjlwab9qcln57rqdxzxd4hjq0hxg0"))))
+        (base32 "04yx8y22830c3z609f9zqdpq2smgm5jhv26r1ds8slca0nylnrv3"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config dbus kdoctools
