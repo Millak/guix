@@ -2829,14 +2829,14 @@ is subjective.")
 (define-public tuner
   (package
     (name "tuner")
-    (version "1.5.6")
+    (version "2.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url "https://github.com/louis77/tuner")
                      (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (sha256 (base32 "0zz91n56vdwhjwqscl21016i4l4lx3m6ja0fnrapmf16bdl0rrai"))))
+              (sha256 (base32 "1fl82xsr13pjf57lbg2rsjisdjsixysnx1wnp54w2jr25hskk8lb"))))
     (build-system meson-build-system)
     (native-inputs
      (list desktop-file-utils ; update-desktop-database
