@@ -4838,6 +4838,27 @@ input a message of arbitrary length and produces as output a 32-bit \"message
 digest\" of the input in the form of an unsigned long integer.")
     (license license:artistic2.0)))
 
+(define-public perl-hash-moreutils
+  (package
+    (name "perl-hash-moreutils")
+    (version "0.06")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/R/RE/REHSACK/Hash-MoreUtils-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "1s3xaj1hh312nwf74fwvikhbalan0xa5x6l8h31m61ymcyw8z6nv"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Hash-MoreUtils")
+    (synopsis "Provide the stuff missing in Hash::Util")
+    (description
+     "Similar to List::MoreUtils, Hash::MoreUtils contains trivial but commonly-used
+functionality for hashes.  The primary focus for the moment is providing a
+common API - speeding up by XS is far away at the moment.")
+    (license license:perl-license)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
