@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-10-20 03:18+0000\n"
-"PO-Revision-Date: 2025-10-30 11:10+0000\n"
+"PO-Revision-Date: 2025-11-09 09:38+0000\n"
 "Last-Translator: Umeaman <umeaman@noreply.codeberg.org>\n"
 "Language-Team: Swedish <https://translate.codeberg.org/projects/guix/packages/sv/>\n"
 "Language: sv\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13.3\n"
+"X-Generator: Weblate 5.14\n"
 
 msgid "Word processing program"
 msgstr "Ordbehandlingsprogram"
@@ -234,6 +234,9 @@ msgstr "Aster-modeller"
 msgid "R package providing subset of Boost headers"
 msgstr "R-paket som tillhandahåller en delmängd av Boost-rubriker"
 
+msgid "Miscellaneous functions for probability theory"
+msgstr "Diverse funktioner för sannolikhetsteori"
+
 msgid "Signal processing"
 msgstr "Signalbehandling"
 
@@ -242,6 +245,9 @@ msgstr "Klimatverktyg"
 
 msgid "Survival analysis"
 msgstr "Överlevnadsanalys"
+
+msgid "Miscellaneous functions for SciViews"
+msgstr "Diverse funktioner för SciViews"
 
 msgid "Clustering"
 msgstr "Klusterbildning"
@@ -255,11 +261,40 @@ msgstr "Ordinär databas"
 msgid "Memory scanner"
 msgstr "Minneskannare"
 
+msgid "Faker is a pure Elixir library for generating fake data."
+msgstr "Faker är ett rent Elixir-bibliotek för att generera falsk data."
+
+msgid ""
+"This package provides an Emacs interface to the online service\n"
+"@uref{https://inspirehep.net/, Inspirehep}"
+msgstr ""
+"Det här paketet tillhandahåller ett Emacs-gränssnitt till onlinetjänsten \n"
+"@uref{https://inspirehep.net/, Inspirehep}"
+
 msgid "emacs-doctest"
 msgstr "emacs-doctest"
 
+msgid "Find callers of elisp functions or macros"
+msgstr "Hitta anropare av elisp-funktioner eller makron"
+
+msgid "This package provides an Emacs major-mode for easy buffer-navigation"
+msgstr "Detta paket tillhandahåller ett Emacs major mode för enkel navigering mellan buffrar"
+
+msgid ""
+"This package provides a lobsters client for Emacs to browse stories\n"
+"and comments"
+msgstr ""
+"Det här paketet tillhandahåller en lobsters-klient till Emacs för att bläddra i historier \n"
+"och i kommentarer"
+
 msgid "emacs-treemacs-nerd-icons"
 msgstr "emacs-treemacs-nerd-icons"
+
+msgid "Library to read and write MED files"
+msgstr "Bibliotek för att läsa och skriva MED-filer"
+
+msgid "Python bindings for orocos-kinematics-dynamics."
+msgstr "Python-bindningar för orocos-kinematics-dynamics."
 
 msgid ""
 "Abe's Amazing Adventure is a scrolling,\n"
@@ -597,8 +632,40 @@ msgstr "Miniräknare för skrivbordet"
 msgid "File manager"
 msgstr "Filhanterare"
 
+msgid "Multihash implementation in Go."
+msgstr "Multihash-implementering i Go."
+
 msgid "sha1cd"
 msgstr "sha1cd"
+
+msgid "Implementation of an R-Way Trie data structure."
+msgstr "Implementering av en R-Way Trie-datastruktur."
+
+msgid "Package for building command line apps in Golang"
+msgstr "Paket för att bygga Golang-appar till kommandoraden"
+
+msgid "gopdf is a Go library for generating PDF documents."
+msgstr "gopdf är ett Go-bibliotek för att generera PDF-dokument."
+
+msgid ""
+"Package kyaml contains libraries for reading and writing Kubernetes Resource\n"
+"configuration as YAML."
+msgstr ""
+"Paketet kyaml innehåller bibliotek för att läsa och att skriva resurs- \n"
+"konfiguration som YAML till Kubernetes."
+
+msgid "An implementation of the git-lfs protocol."
+msgstr "En implementering av git-lfs-protokollet."
+
+msgid "Theme scheduling for the KDE Plasma Desktop"
+msgstr "Schemaläggning av tema för KDE Plasma-skrivbordet"
+
+msgid ""
+"This package provides support components for porting from\n"
+"KF5/Qt5 to KF6/Qt6"
+msgstr ""
+"Det här paketet tillhandahåller stöd-komponenter för portering \n"
+"från KF5/Qt5 till KF6/Qt6"
 
 msgid "Hyphenation library"
 msgstr "Orddelningsbibliotek"
@@ -611,6 +678,16 @@ msgstr "Kontorsprogram"
 
 msgid "Container platform"
 msgstr "Container-plattform"
+
+msgid "Simple API to read and write INI-style files"
+msgstr "Enkelt API för att läsa och skriva filer i INI-stil"
+
+msgid ""
+"This package provides a distributed monitoring\n"
+"solution (server-side)"
+msgstr ""
+"Det här paketet tillhandahåller en distribuerad lösning \n"
+"för övervakning (på server-sidan)"
 
 msgid "Numeric comparisons"
 msgstr "Numeriska jämförelser"
@@ -632,6 +709,29 @@ msgstr "omimplementering av UNIVERSAL::can()"
 
 msgid "UNIVERSAL::isa() reimplementation"
 msgstr "omimplementering av UNIVERSAL::isa()"
+
+msgid "This package provides tooling to build Prometheus exporters"
+msgstr "Det här paketet tillhandahåller hjälpmedel för att bygga Prometheus-exportörer"
+
+msgid "Pure-Python implementation of the blurhash algorithm."
+msgstr "Ren Python-implementering av blurbash-algoritmen."
+
+msgid ""
+"This package provides a class to deal with collections of unordered,\n"
+"unique values"
+msgstr ""
+"Det här paketet tillhandahåller en klass för att hantera samlingar av o-sorterade \n"
+"unika värden"
+
+msgid ""
+"This package provides a tool for writing manuals for Prawn and Prawn\n"
+"accessories"
+msgstr ""
+"Det här paketet tillhandahåller ett verktyg för att skriva manualer till Prawn och Prawn \n"
+"-tillbehör"
+
+msgid "Python package and project manager written in Rust"
+msgstr "Python-paket och projekthanterare skriven i Rust"
 
 msgid "Session management in a clean and simple way"
 msgstr "Sessionshantering på ett rent och enkelt sätt"
