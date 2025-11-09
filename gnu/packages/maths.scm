@@ -4305,27 +4305,31 @@ optimized implementations of the combinatorial prime counting algorithms.")
   (package
     (name "primesieve")
     (version "12.9")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/kimwalisch/primesieve")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0y81k9ql0mcd43vsli2a5z0d76p9mkz0dlddksvvrid41qqsjhf4"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kimwalisch/primesieve")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0y81k9ql0mcd43vsli2a5z0d76p9mkz0dlddksvvrid41qqsjhf4"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:configure-flags #~(list "-DBUILD_STATIC_LIBS=off"
-                                     "-DBUILD_TESTS=ON")))
-    (home-page "https://github.com/kimwalisch/primesieve")
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_STATIC_LIBS=OFF"
+              "-DBUILD_TESTS=ON")))
     (synopsis "Prime number generator")
-    (description "@code{primesieve} is a command-line program and C/C++
- library for quickly generating prime numbers.  It is very cache efficient,
- it detects your CPU's L1 & L2 cache sizes and allocates its main data
- structures accordingly.  It is also multi-threaded by default, it uses all
- available CPU cores whenever possible i.e. if sequential ordering is not
- required. primesieve can generate primes and prime k-tuplets up to 264.")
+    (description
+     "@code{primesieve} is a command-line program and C/C++ library for
+quickly generating prime numbers.  It is very cache efficient, it detects your
+CPU's L1 & L2 cache sizes and allocates its main data structures accordingly.
+It is also multi-threaded by default, it uses all available CPU cores whenever
+possible i.e. if sequential ordering is not required. primesieve can generate
+primes and prime k-tuplets up to 264.")
+    (home-page "https://github.com/kimwalisch/primesieve")
     (license license:bsd-2)))
 
 (define-public python-accupy
