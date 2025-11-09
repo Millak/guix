@@ -121,10 +121,14 @@ parsers to allow execution with Guile as extension languages.")
                 "0wyrq9sc9j0yp34iwzsjfpz40503psbvd982vy8kx8ym99rn5w7r"))
               (modules '((guix build utils)))
               (snippet
-               '(substitute* "configure"
-                  (("GUILE_GLOBAL_SITE=\\$prefix.*")
-                   "GUILE_GLOBAL_SITE=\
-$prefix/share/guile/site/$GUILE_EFFECTIVE_VERSION\n")))))))
+               '(begin
+                  (substitute* "configure"
+                    (("GUILE_GLOBAL_SITE=\\$prefix.*")
+                     "GUILE_GLOBAL_SITE=\
+$prefix/share/guile/site/$GUILE_EFFECTIVE_VERSION\n"))
+                  (substitute* "module/Makefile.in"
+                    (("@NYACC_FH_BS_BINS@") "$(NYACC_FH_BS_BINS)"))))))
+    (propagated-inputs (list guile-bytestructures))))
 
 (define-public mes
   (package
