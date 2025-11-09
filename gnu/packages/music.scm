@@ -6680,7 +6680,7 @@ and reverb.")
 (define-public lsp-plugins
   (package
     (name "lsp-plugins")
-    (version "1.2.24")
+    (version "1.2.25")
     (source
       (origin
         (method url-fetch)
@@ -6688,7 +6688,7 @@ and reverb.")
                             "/releases/download/" version
                             "/lsp-plugins-src-" version ".tar.gz"))
         (sha256
-         (base32 "0qxlvdzryf494qyx2d8c36g1qs84aza41in1cm5yjswizbf9ycmc"))))
+         (base32 "0wr6wfq8qix39kcvlqivjbch0qnlxcpv8lsfq9xb9v25yh6vfad8"))))
     (build-system gnu-build-system)
     (arguments
      (list
