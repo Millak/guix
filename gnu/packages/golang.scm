@@ -1011,6 +1011,15 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                            (("package plugin_test")
                             (string-append "// +build !linux linux,!arm64\n\n"
                                            "package plugin_test")))))
+                     ((target-arm32?)
+                      ;; This test fails when run on aarch64-linux.
+                      #~((substitute* "src/cmd/link/internal/ld/elf_test.go"
+                           (("TestElfBindNow.*" all)
+                            (string-append
+                              all
+                              "        if runtime.GOARCH == \"arm\" {\n"
+                              "                t.Skipf(\"skipping; flaky on armhf\")\n"
+                              "        }\n")))))
                      (else (list #t)))))))))
     (properties
      `((compiler-cpu-architectures
