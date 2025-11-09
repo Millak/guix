@@ -2707,6 +2707,42 @@ third-party predecessor @code{git-tbdiff}), a Git subcommand for comparing two
 versions of a topic branch.")
     (license license:gpl3+)))
 
+(define-public emacs-magit-delta
+  ;; No releases or tags.
+  (let ((commit "5fc7dbddcfacfe46d3fd876172ad02a9ab6ac616")
+        (revision "0"))
+    (package
+      (name "emacs-magit-delta")
+      (version (git-version "0.1" revision commit))
+      (home-page "https://github.com/dandavison/magit-delta")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url home-page)
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1kph5r9dy21pgfknpcdzzqfn6rqig5nvp8ksh16y13k3axlzvkiw"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f ;no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-delta-executable
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-variables "magit-delta.el"
+                  ("magit-delta-delta-executable"
+                   (search-input-file inputs "/bin/delta"))))))))
+      (propagated-inputs (list emacs-dash emacs-magit emacs-xterm-color))
+      (inputs (list git-delta))
+      (synopsis "Integration of @code{delta} with @code{emacs-magit}")
+      (description "Magit-delta provides a minor mode which configures
+@code{emacs-magit} to use @code{delta} for syntax highlighting when displaying
+diffs.")
+      (license license:expat))))
+
 (define-public emacs-malyon
   (package
     (name "emacs-malyon")
