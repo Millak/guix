@@ -2837,6 +2837,35 @@ to append and delete rules; create, clear and delete chains.")
            go-golang-org-x-net
            go-golang-org-x-oauth2))))
 
+(define-public go-github-com-coreos-stream-metadata-go
+  (package
+    (name "go-github-com-coreos-stream-metadata-go")
+    (version "0.4.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/coreos/stream-metadata-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03kslxzjqk4q9bvazrilaif91p58q0zm2wymd9rlpd0zfn73v99y"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/coreos/stream-metadata-go"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/coreos/stream-metadata-go")
+    (synopsis "Parsing Fedora CoreOS streams for Golang")
+    (description
+     "This package implements a functionality to exposes API to decode
+@url{https://docs.fedoraproject.org/en-US/fedora-coreos/getting-started/,
+Fedora CoreOS streams} into Go structs, as well as a convenience API to find
+the URL for a given stream.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-cretz-bine
   (package
     ;; This package can be used with CGO to statically compile Tor.  This
