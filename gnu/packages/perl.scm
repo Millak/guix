@@ -5136,6 +5136,32 @@ first failure, instead of going all the way through it.")
      "This package is a Test::Run plugin that colors the summary of the test output.")
     (license license:x11)))
 
+(define-public perl-test-run-plugin-trimdisplayedfilenames
+  (package
+    (name "perl-test-run-plugin-trimdisplayedfilenames")
+    (version "0.0127")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/S/SH/SHLOMIF/"
+             "Test-Run-Plugin-TrimDisplayedFilenames-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "1j6hxanzhgyr2zwpzs56y4f5wrvqbg994vi7g6pidamkrzi92qfn"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-run-cmdline
+                         perl-test-trap perl-yaml-libyaml))
+    (propagated-inputs (list perl-list-someutils perl-moose perl-mro-compat
+                             perl-test-run perl-test-run-cmdline))
+    (home-page
+     "https://metacpan.org/release/Test-Run-Plugin-TrimDisplayedFilenames")
+    (synopsis "Trim long filenames")
+    (description
+     "This package trims the first components of the displayed filename to deal with
+excessively long ones.")
+    (license license:x11)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
