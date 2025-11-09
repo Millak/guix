@@ -712,14 +712,14 @@ KDE Frameworks 5 to better interact with the system.")
 (define-public kdeplasma-addons
   (package
     (name "kdeplasma-addons")
-    (version "6.5.0")
+    (version "6.5.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "02xrjdkanwgc8smy9j3hqdk9zfmahb1jx2y02g010lbx6145s2nc"))))
+                "112np6ikkcksz5h4nza8i2k4y156nn7wrjphkgph7aqci6i1qnwk"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
