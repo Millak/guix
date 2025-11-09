@@ -4,7 +4,7 @@
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015, 2016 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021, 2022, 2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021, 2022, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2017, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2015 Jeff Mickey <j@codemac.net>
 ;;; Copyright © 2015-2024 Efraim Flashner <efraim@flashner.co.il>
@@ -531,7 +531,14 @@ compressed with pbzip2 can be decompressed with bzip2).")
      (list
       #:configure-flags
       '(list "-DSHRINKWRAP_PREFER_STATIC=OFF"
-             "-DBUILD_TESTS=ON")))
+             "-DBUILD_TESTS=ON")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'add-missing-header
+           (lambda _
+             (substitute* "include/shrinkwrap/xz.hpp"
+               (("#include <cstring>")
+                "#include <cstring>\n#include <cstdint>")))))))
     (propagated-inputs (list bzip2 xz zlib `(,zstd "lib")))
     (native-inputs (list pkg-config))
     (home-page "https://github.com/jonathonl/shrinkwrap")
