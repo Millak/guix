@@ -1,0 +1,104 @@
+From c1a97c03832deb62ca4d30342e00031eda5227eb Mon Sep 17 00:00:00 2001
+From: Federico Di Pierro <nierro92@gmail.com>
+Date: Fri, 11 Apr 2025 09:03:21 +0200
+Subject: [PATCH] fix(driver): fixed build of old bpf probe against linux
+ 6.15-rc1.
+
+Also, fixed modern_ebpf running against the new kernel version.
+
+Signed-off-by: Federico Di Pierro <nierro92@gmail.com>
+---
+ .../bpf/configure/KERNFS_NODE_PARENT/test.c   | 32 +++++++++++++++++++
+ driver/bpf/fillers.h                          |  4 +++
+ .../modern_bpf/definitions/struct_flavors.h   |  4 +++
+ .../helpers/store/auxmap_store_params.h       |  7 +++-
+ 4 files changed, 46 insertions(+), 1 deletion(-)
+ create mode 100644 driver/bpf/configure/KERNFS_NODE_PARENT/test.c
+
+diff --git a/driver/bpf/configure/KERNFS_NODE_PARENT/test.c b/driver/bpf/configure/KERNFS_NODE_PARENT/test.c
+new file mode 100644
+index 0000000000..4887380769
+--- /dev/null
++++ b/driver/bpf/configure/KERNFS_NODE_PARENT/test.c
+@@ -0,0 +1,32 @@
++// SPDX-License-Identifier: GPL-2.0-only OR MIT
++/*
++
++Copyright (C) 2025 The Falco Authors.
++
++This file is dual licensed under either the MIT or GPL 2. See MIT.txt
++or GPL2.txt for full copies of the license.
++
++*/
++
++/*
++ * Check that kernfs_node's field `parent` exists.
++ * See 6.15 kernel commit it is named __parent:
++ * https://github.com/torvalds/linux/commit/633488947ef66b194377411322dc9e12aab79b65
++ */
++
++#include "../../quirks.h"
++#include "../../ppm_events_public.h"
++#include "../../types.h"
++
++// struct kernfs_node declaration
++#include <linux/kernfs.h>
++
++BPF_PROBE("signal/", signal_deliver, signal_deliver_args) {
++	struct kernfs_node *parent;
++	struct kernfs_node node;
++
++	parent = node.parent;
++	return 0;
++}
++
++char __license[] __bpf_section("license") = "Dual MIT/GPL";
+diff --git a/driver/bpf/fillers.h b/driver/bpf/fillers.h
+index 5ce78747fb..fcc57f1531 100644
+--- a/driver/bpf/fillers.h
++++ b/driver/bpf/fillers.h
+@@ -1819,7 +1819,11 @@ static __always_inline int __bpf_append_cgroup(struct css_set *cgroups,
+ 	for(int k = 0; k < MAX_CGROUP_PATHS; ++k) {
+ 		if(kn) {
+ 			cgroup_path[k] = (char *)_READ(kn->name);
++#ifdef HAS_KERNFS_NODE_PARENT
+ 			kn = _READ(kn->parent);
++#else
++			kn = _READ(kn->__parent);
++#endif
+ 		} else {
+ 			cgroup_path[k] = NULL;
+ 		}
+diff --git a/driver/modern_bpf/definitions/struct_flavors.h b/driver/modern_bpf/definitions/struct_flavors.h
+index 4e76281ed9..05f5201be4 100644
+--- a/driver/modern_bpf/definitions/struct_flavors.h
++++ b/driver/modern_bpf/definitions/struct_flavors.h
+@@ -59,6 +59,10 @@ struct inode___v6_11 {
+ 	uint32_t i_ctime_nsec;
+ };
+ 
++struct kernfs_node___v6_15 {
++	struct kernfs_node *__parent;
++};
++
+ #ifndef BPF_NO_PRESERVE_ACCESS_INDEX
+ #pragma clang attribute pop
+ #endif
+diff --git a/driver/modern_bpf/helpers/store/auxmap_store_params.h b/driver/modern_bpf/helpers/store/auxmap_store_params.h
+index d6cbe663e0..ab54e2db51 100644
+--- a/driver/modern_bpf/helpers/store/auxmap_store_params.h
++++ b/driver/modern_bpf/helpers/store/auxmap_store_params.h
+@@ -1296,7 +1296,12 @@ static __always_inline uint16_t store_cgroup_subsys(struct auxiliary_map *auxmap
+ 		}
+ 		path_components++;
+ 		BPF_CORE_READ_INTO(&cgroup_path_pointers[k], kn, name);
+-		BPF_CORE_READ_INTO(&kn, kn, parent);
++		if(bpf_core_field_exists(kn->parent)) {
++			BPF_CORE_READ_INTO(&kn, kn, parent);
++		} else {
++			struct kernfs_node___v6_15 *kn_v6_15 = (void *)kn;
++			BPF_CORE_READ_INTO(&kn, kn_v6_15, __parent);
++		}
+ 	}
+ 
+ 	/* Reconstruct the path in reverse, using previously collected pointers.

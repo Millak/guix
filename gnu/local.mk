@@ -1252,6 +1252,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/fail2ban-fix-sshd-filter.patch           \
   %D%/packages/patches/fail2ban-paths-guix-conf.patch		\
   %D%/packages/patches/faiss-tests-CMakeLists-find-googletest.patch	\
+  %D%/packages/patches/falcosecurity-libs-bpf-probes-fix.patch  \
   %D%/packages/patches/falcosecurity-libs-shared-build.patch	\
   %D%/packages/patches/farstream-gupnp.patch                         \
   %D%/packages/patches/farstream-make.patch                          \

@@ -11209,6 +11209,7 @@ set as @code{LD_PRELOAD} to override the C library file system functions.")
                 "041ir9wk44v7isidwl7fzxrjvs85j637wcr7xirasd8ysxa0r4qv"))
               (patches
                (search-patches
+                "falcosecurity-libs-bpf-probes-fix.patch"
                 "falcosecurity-libs-shared-build.patch"))))
     (build-system cmake-build-system)
     (arguments
