@@ -585,14 +585,14 @@ drive, USB stick, etc
 (define-public kcalc
   (package
     (name "kcalc")
-    (version "25.08.2")
+    (version "25.08.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kcalc-" version ".tar.xz"))
               (sha256
                (base32
-                "1087pxc7qgv4y56mjf1bl0c64zx82zxqd605g0a2ycbyssrmqzcj"))))
+                "12l3l7n08kyqf58dngnp3nz8iwkcbhghiihypmd7zr4n0ja2r10f"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs (list extra-cmake-modules kdoctools))
