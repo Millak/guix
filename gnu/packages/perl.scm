@@ -4859,6 +4859,31 @@ functionality for hashes.  The primary focus for the moment is providing a
 common API - speeding up by XS is far away at the moment.")
     (license license:perl-license)))
 
+(define-public perl-module-mask
+  (package
+    (name "perl-module-mask")
+    (version "0.06")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/M/MA/MATTLAW/Module-Mask-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "0xvy3rybhgr2r122b0zp4lq4n5jpy9pm87kr0a0s57qwy8gzhwrd"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (propagated-inputs (list perl-module-util perl-test-pod
+                             perl-test-pod-coverage))
+    (home-page "https://metacpan.org/release/Module-Mask")
+    (synopsis "Pretend certain modules are not installed")
+    (description
+     "Sometimes you need to test what happens when a given module is not
+installed.  This module provides a way of temporarily hiding installed
+modules from perl's require mechanism.  The Module::Mask object adds itself
+to @@INC and blocks require calls to restricted modules.")
+    (license license:perl-license)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
