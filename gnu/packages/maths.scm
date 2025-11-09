@@ -4270,31 +4270,35 @@ functions.")
   (package
     (name "primecount")
     (version "7.19")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/kimwalisch/primecount")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1yjqk0q04d8kqkal5vahyfgwas1sz8h3scmk27sr128jcc1cvcx6"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kimwalisch/primecount")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1yjqk0q04d8kqkal5vahyfgwas1sz8h3scmk27sr128jcc1cvcx6"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:configure-flags #~(list "-DBUILD_LIBPRIMESIEVE=OFF"
-                                     "-DBUILD_MANPAGE=ON"
-                                     "-DBUILD_SHARED_LIBS=ON"
-                                     "-DBUILD_STATIC_LIBS=OFF"
-                                     "-DBUILD_TESTS=ON")))
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_LIBPRIMESIEVE=OFF"
+              "-DBUILD_MANPAGE=ON"
+              "-DBUILD_SHARED_LIBS=ON"
+              "-DBUILD_STATIC_LIBS=OFF"
+              "-DBUILD_TESTS=ON")))
     (native-inputs
      (list asciidoc))
     (inputs
      (list primesieve))
-    (home-page "https://github.com/kimwalisch/primecount")
     (synopsis "Fast prime counting function implementations")
-    (description "@code{primecount} is a command-line program and C/C++
-library that counts the number of primes ≤ x (maximum 1031) using highly
+    (description
+     "@code{primecount} is a command-line program and C/C++ library that
+counts the number of primes no greater than x (maximum 1031) using highly
 optimized implementations of the combinatorial prime counting algorithms.")
+    (home-page "https://github.com/kimwalisch/primecount")
     (license license:bsd-2)))
 
 (define-public primesieve
