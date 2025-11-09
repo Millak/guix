@@ -780,7 +780,7 @@ independently to be able to run a LLaMA model.")
 (define-public whisper-cpp
   (package
     (name "whisper-cpp")
-    (version "1.7.6")
+    (version "1.8.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -789,7 +789,7 @@ independently to be able to run a LLaMA model.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gn64jw4pr4vfnn2hll7yd98r8yhaqg97hhg5z22vq4j423436kn"))))
+                "1x8m43myi1npgwwyw24dpza3vi95695vnya391fnn7nrf876ckir"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -797,7 +797,7 @@ independently to be able to run a LLaMA model.")
       #~(list "-DWHISPER_STANDALONE=TRUE"
               "-DWHISPER_SDL2=TRUE"
               "-DWHISPER_BUILD_TESTS=TRUE"
-              ;; "-DWHISPER_FFMPEG=TRUE"  ; TODO
+              "-DWHISPER_FFMPEG=TRUE"
               "-DBUILD_SHARED_LIBS=ON"
               "-DGGML_BLAS=ON"
               "-DGGML_BLAS_VENDOR=OpenBLAS"
@@ -840,12 +840,12 @@ independently to be able to run a LLaMA model.")
                 (("\\$\\{VAD_TEST\\} PROPERTIES LABELS \"unit\"")
                  "${VAD_TEST} PROPERTIES DISABLED true")
                 ;; error: failed to read audio data as wav (Unknown error)
-                (("\\$\\{VAD_TARGET\\} PROPERTIES LABELS \"base;en\"")
+                (("\\$\\{VAD_TEST\\} PROPERTIES LABELS \"base;en\"")
                  "${VAD_TEST} PROPERTIES DISABLED true")))))))
     (native-inputs
-     (list pkg-config shaderc))
+     (list git pkg-config shaderc))
     (inputs
-     (list git
+     (list ffmpeg
            openblas
            sdl2
            spirv-headers
