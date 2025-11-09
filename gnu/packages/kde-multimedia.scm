@@ -135,14 +135,14 @@ Phonon-VLC is a backend based on the VLC multimedia library.")
 (define-public audiocd-kio
   (package
     (name "audiocd-kio")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/audiocd-kio-" version ".tar.xz"))
        (sha256
-        (base32 "1gwh5wb8flabg6sy7sxf62sz1lhsifwp32sagy02vsmbdzfqsxdf"))))
+        (base32 "1b7fawpribq9csyj8ixqdsg288cjx82l5q83vd3m0qbvxm383qvf"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
