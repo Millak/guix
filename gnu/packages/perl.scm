@@ -5064,6 +5064,31 @@ Task::Test::Run::AllPlugins for more detailed instructions.")
 scripts with Test::Run.")
     (license license:x11)))
 
+(define-public perl-test-run-plugin-breakonfailure
+  (package
+    (name "perl-test-run-plugin-breakonfailure")
+    (version "0.0.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/S/SH/SHLOMIF/"
+             "Test-Run-Plugin-BreakOnFailure-v"
+             version ".tar.gz"))
+       (sha256
+        (base32 "1a8k9p89s31wrax0yk8p0zsvj40mjgi0bnjmj0949hghwbihw650"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-run-cmdline
+                         perl-test-trap perl-yaml-libyaml))
+    (propagated-inputs (list perl-moose perl-mro-compat perl-test-run
+                             perl-test-run-cmdline))
+    (home-page "https://metacpan.org/release/Test-Run-Plugin-BreakOnFailure")
+    (synopsis "Stop processing the entire test suite on first failure")
+    (description
+     "This package allows you to stop processing the entire test suite after the
+first failure, instead of going all the way through it.")
+    (license license:x11)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
