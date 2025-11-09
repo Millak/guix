@@ -2715,6 +2715,37 @@ configure network interfaces in Linux containers, along with a number of
 supported plugins.")
     (license license:asl2.0)))
 
+(define-public go-github-com-coreos-go-iptables
+  (package
+    (name "go-github-com-coreos-go-iptables")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/coreos/go-iptables")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xxzqz9np93d8iig5dwjjpb78pqdj74zr91qb11r7g30nkcak5sw"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f ;tests need access to iptables
+      #:import-path "github.com/coreos/go-iptables"))
+    (home-page "https://github.com/coreos/go-iptables")
+    (synopsis "Wrapper around iptables utility for Golang")
+    (description
+     "This package provides Go bindings for iptables utility.  In-kernel
+netfilter does not have a good userspace API. The tables are manipulated via
+setsockopt that sets/replaces the entire table.  Changes to existing table
+need to be resolved by userspace code which is difficult and error-prone.
+Netfilter developers heavily advocate using iptables utlity for programmatic
+manipulation.  go-iptables wraps invocation of iptables utility with functions
+to append and delete rules; create, clear and delete chains.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-coreos-go-oidc
   (package
     (name "go-github-com-coreos-go-oidc")
