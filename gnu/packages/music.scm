@@ -8228,7 +8228,7 @@ tries to match each block with one in its brain to play in realtime.")
 (define-public le-biniou-data
   (package
     (name "le-biniou-data")
-    (version "3.66.0")
+    (version "3.67.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8237,7 +8237,7 @@ tries to match each block with one in its brain to play in realtime.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1s8dax6ryfqz7aqq8rj5ipxddshp5mjdvj0mn9kk1zzr55hvkfb7"))))
+                "1kgwxy2kcjv4x32smp5108cn5qvlixjcxi23hqd3g6diws3s45v5"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake libtool))
     (home-page "https://biniou.net/")
