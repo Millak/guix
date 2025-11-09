@@ -8249,7 +8249,7 @@ tries to match each block with one in its brain to play in realtime.")
 (define-public le-biniou
   (package
     (name "le-biniou")
-    (version "3.66.0")
+    (version "3.67.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8258,7 +8258,7 @@ tries to match each block with one in its brain to play in realtime.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fvf944i703yd17kkxgja2xyyznb30p006piclz1rmgkhijp0lcp"))))
+                "1p3g2m16fr52xi4rwkpm7j278yaml9443szji4s5l3f78m9aiwcm"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~(list (string-append "LDFLAGS=-Wl,-rpath="
