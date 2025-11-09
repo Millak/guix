@@ -2723,7 +2723,7 @@ Paul), and specifically the PaulXStretch version from Xenakios.")
 (define-public setbfree
   (package
     (name "setbfree")
-    (version "0.8.12")
+    (version "0.8.13")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2732,7 +2732,7 @@ Paul), and specifically the PaulXStretch version from Xenakios.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lzrrpm57pilvwxpr1qhnx6273md2k96ygxjlhi5gqjdl0nl3z95"))))
+                "1w6p74168hbyrprk6lk18xrmli65kp9i87li6rmxhbvgk5ck3lv3"))))
     (build-system gnu-build-system)
     (arguments
      (list
