@@ -21620,6 +21620,39 @@ into aligned columns.")
 objects, patterned after the Mocha library for Ruby.")
     (license license:bsd-3)))
 
+(define-public python-pysol-cards
+  (package
+    (name "python-pysol-cards")
+    (version "0.24.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pysol_cards" version))
+       (sha256
+        (base32 "0jsd7mqp0ak8zidg540b9hjncgx8diy9lv85zj6mi88sm0nlk1d9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key test-flags tests? #:allow-other-keys)
+              (when tests?
+                (apply invoke
+                       "python"
+                       "-m"
+                       "unittest"
+                       "discover"
+                       "tests"
+                       test-flags)))))))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://github.com/shlomif/pysol_cards")
+    (synopsis "Deal PySol FC Cards")
+    (description
+     "The pysol-cards python modules provide code to generate the initial deals of
+some PySol games.")
+    (license license:expat)))
+
 (define-public python-inflect
   (package
     (name "python-inflect")
