@@ -931,14 +931,14 @@ the schedule and venue information.")
 (define-public kontrast
   (package
     (name "kontrast")
-    (version "25.08.2")
+    (version "25.08.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kontrast-" version ".tar.xz"))
               (sha256
                (base32
-                "1b859rbghp41z4ggqh4ngwzy11mbw3iajifrqzh5ng72xzk9vv5n"))))
+                "0slwflwafaw0n8zq2qnc3qxnyy4badp6wwl437w2snadza4f02sj"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase
                      #:tests? #f))
