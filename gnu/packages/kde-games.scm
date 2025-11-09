@@ -837,14 +837,14 @@ This package is part of the KDE games module.")
 (define-public kgoldrunner
   (package
     (name "kgoldrunner")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kgoldrunner-" version ".tar.xz"))
        (sha256
-        (base32 "05hi1c3qs8bwbn34x2f1wkzv7rxvhh3x3qgj97ypwya73338gyvq"))))
+        (base32 "1k5mi6zq0ypmkgzq54n0y10g62ipg9v2xin4d7vddjlfxz0sspzf"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
