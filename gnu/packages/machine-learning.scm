@@ -797,7 +797,7 @@ independently to be able to run a LLaMA model.")
       #~(list "-DWHISPER_STANDALONE=TRUE"
               "-DWHISPER_SDL2=TRUE"
               "-DWHISPER_BUILD_TESTS=TRUE"
-                                        ; "-DWHISPER_FFMPEG=TRUE"  ; TODO
+              ;; "-DWHISPER_FFMPEG=TRUE"  ; TODO
               "-DBUILD_SHARED_LIBS=ON"
               "-DGGML_BLAS=ON"
               "-DGGML_BLAS_VENDOR=OpenBLAS"
@@ -807,7 +807,6 @@ independently to be able to run a LLaMA model.")
               (string-append "-DBLAS_LIBRARIES="
                              #$(this-package-input "openblas")
                              "/lib/libopenblas.so")
-
               "-DGGML_NATIVE=OFF" ;no '-march=native'
               "-DGGML_FMA=OFF"    ;and no '-mfma', etc.
               "-DGGML_AVX2=OFF"
@@ -819,9 +818,11 @@ independently to be able to run a LLaMA model.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
             (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp"
+              (substitute*
+                  "ggml/src/ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp"
                 (("\"/bin/sh\"")
-                 (string-append "\"" (search-input-file inputs "/bin/sh") "\"")))))
+                 (string-append
+                  "\"" (search-input-file inputs "/bin/sh") "\"")))))
           #$@(if (not (target-64bit?))
                  '((add-after 'unpack 'skip-failing-tests
                      (lambda _
@@ -844,8 +845,13 @@ independently to be able to run a LLaMA model.")
     (native-inputs
      (list pkg-config shaderc))
     (inputs
-     (list openblas sdl2 git spirv-headers spirv-tools
-           vulkan-headers vulkan-loader))
+     (list git
+           openblas
+           sdl2
+           spirv-headers
+           spirv-tools
+           vulkan-headers
+           vulkan-loader))
     (synopsis "OpenAI's Whisper model in C/C++")
     (description
      "This package is a high-performance inference of OpenAI's
