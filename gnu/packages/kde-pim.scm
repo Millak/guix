@@ -1119,14 +1119,14 @@ as KMail, KAddressBook etc.")
 (define-public kdepim-runtime
   (package
     (name "kdepim-runtime")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kdepim-runtime-" version ".tar.xz"))
        (sha256
-        (base32 "1jhj4mhb0pfpdjm4iidsxx62sycp5ny4njydf5q947g3aj4gjc60"))))
+        (base32 "11azlr7vbbih8vxv2p1znxchdghkcmki39b9j4yqsrbifbqardwq"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules dbus kdoctools libxslt shared-mime-info))
