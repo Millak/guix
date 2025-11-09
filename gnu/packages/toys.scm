@@ -62,22 +62,18 @@
 ;;; Code:
 
 (define-public cbonsai
-  ;; XXX: The latest release (1.3.1) was placed on <2021-08-14> but the
-  ;; project has more updates since that time, use the latest commit instead.
-  (let ((commit "4682ec7ca7f74eca0b05b2fad8a8301d16e6978f")
-        (revision "1"))
     (package
       (name "cbonsai")
-      (version (git-version "1.3.1" revision commit))
+      (version "1.4.2")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://gitlab.com/jallbrit/cbonsai.git")
-               (commit commit)))
+               (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "01slgw872nwpbaa8h2q5s7dfrq3xan0mh6wh8waz88xhy8vp7z1n"))))
+          (base32 "0iccmmp0ndz0n18655mrg9svv365yqf5y6baw1wwjnax63jgz5jd"))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -101,7 +97,7 @@
       (synopsis "Grow bonsai trees in a terminal")
       (description "Cbonsai is a bonsai tree generator using ASCII art.  It
 creates, colors, and positions a bonsai tree, and is configurable.")
-      (license license:gpl3+))))
+      (license license:gpl3+)))
 
 (define-public cxxmatrix
   (let ((commit "c8d4ecfb8b6c22bb93f3e10a9d203209ba193591")
