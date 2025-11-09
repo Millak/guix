@@ -1809,9 +1809,9 @@ Architecture Processors\" by J. Guilford et al.")
 ;; XXX: Deprecated in upstream: This repository has been archived by the owner
 ;; on Jul 22, 2024. It is now read-only.
 ;; Consider to remove when nothing is depend on it.
-(define-public go-github-com-mitchellh-hashstructure
+(define-public go-github-com-mitchellh-hashstructure-v2
   (package
-    (name "go-github-com-mitchellh-hashstructure")
+    (name "go-github-com-mitchellh-hashstructure-v2")
     (version "2.0.2")
     (source
      (origin
