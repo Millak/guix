@@ -1349,14 +1349,14 @@ This package is part of the KDE games module.")
 (define-public kubrick
   (package
     (name "kubrick")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kubrick-" version ".tar.xz"))
        (sha256
-        (base32 "0il59p81hshkv84vlc1zvzjyw2gkpylbrdjplif4rxp5ms630qsa"))))
+        (base32 "04lrxkr1j4md757zk7cdq0rrswdh4y84739kxnss451v8wbp9zy2"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
