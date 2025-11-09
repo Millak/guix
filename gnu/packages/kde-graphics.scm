@@ -337,7 +337,7 @@ annotating features.")
 (define-public kcolorchooser
   (package
     (name "kcolorchooser")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
@@ -345,7 +345,7 @@ annotating features.")
                            "/src/kcolorchooser-" version ".tar.xz"))
        (sha256
         (base32
-         "05bk8cwmd3zrwdan155c4ajvkq07rb68fam40c7c5xpd2ykcsgxn"))))
+         "0rxy61lm4sfksvzbza56mphkzv5brnxznn6h48462jl0nc1wxkka"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
