@@ -20091,6 +20091,31 @@ GNU/Linux, this is a proxy for the @command{xdg-open} command.")
 @url{https://github.com/tree-sitter/tree-sitter, tree-sitter} in Golang.")
     (license license:expat)))
 
+(define-public go-github-com-songgao-packets
+  (package
+    (name "go-github-com-songgao-packets")
+    (version "0.0.0-20160404182456-549a10cd4091")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/songgao/packets")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wf8vslmdh6aj70d3w7h8bibjslgrlyalsccqx0ax5xq7fzqmsjr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/songgao/packets"))
+    (home-page "https://github.com/songgao/packets")
+    (synopsis "Parsing and constructing common network packets for Golang")
+    (description
+     "This package implements a functionality to parse and construct common
+ network packets.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-songgao-water
   (package
     (name "go-github-com-songgao-water")
