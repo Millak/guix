@@ -1342,14 +1342,14 @@ cryptography to the contents of the clipboard.")
 (define-public khealthcertificate
   (package
     (name "khealthcertificate")
-    (version "25.08.2")
+    (version "25.08.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/khealthcertificate-" version ".tar.xz"))
               (sha256
                (base32
-                "19971zah752hhsggcsp14szd203ka7gi3crnzqfrgnhif8m2jy3f"))))
+                "1nkd4pxj6cpcqpmiv0ylcvrkqj2z3k3y5kj0kzhw3g6yanhigvbc"))))
     (build-system qt-build-system)
     (arguments
      (list
