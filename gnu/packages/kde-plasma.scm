@@ -429,14 +429,14 @@ games, and tools.")
 (define-public flatpak-kcm
   (package
     (name "flatpak-kcm")
-    (version "6.5.0")
+    (version "6.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/plasma/" version
                            "/flatpak-kcm-" version ".tar.xz"))
        (sha256
-        (base32 "0i8qlmvf33c48khyw50dfgkbj9c5idzbqf7n2bxzv9jvrx8snfnk"))))
+        (base32 "11dc1iichc2ba150h930ilqani5sg1vccdqvzam503r4klaiy2qz"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase))
