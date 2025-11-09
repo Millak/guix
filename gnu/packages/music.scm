@@ -3831,26 +3831,27 @@ analogue-like user interface.")
 (define-public mod-host
   ;; The last release was in 2014 but since then hundreds of commits have
   ;; been made.
-  (let ((commit "cdd30ddbd2cc916be8a0364275071c3d8335b3a7")
-        (revision "4"))
+  (let ((commit "bd00c4d7ae604d75bf8dc89cea4b8e4b485ce930")
+        (revision "5"))
     (package
       (name "mod-host")
       (version (git-version "0.10.6" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://github.com/moddevices/mod-host")
+                      (url "https://github.com/mod-audio/mod-host")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1xnflvcyj071gn9nhv5dynd0v85nq99sz1wn3adlj43l5m4fbx3a"))
+                  "0rsl38lsinhdv4pwhs4xfhwsf32a19klr9iiiiwqsiq2x4mwbc9z"))
                 (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
        (list
         #:tests? #f                     ; no tests included
         #:make-flags
-        #~(list (string-append "PREFIX=" #$output) "CC=gcc")
+        #~(list (string-append "PREFIX=" #$output)
+                (string-append "CC=" #$(cc-for-target)))
         #:phases
         #~(modify-phases %standard-phases
             (delete 'configure)
@@ -3870,7 +3871,7 @@ analogue-like user interface.")
       (native-inputs
        (list pkg-config
              python-wrapper))
-      (home-page "https://github.com/moddevices/mod-host")
+      (home-page "https://github.com/mod-audio/mod-host")
       (synopsis "LV2 host for Jack controllable via socket or command line")
       (description "mod-host is an LV2 plugin host for JACK, controllable via
 socket or command line.")
