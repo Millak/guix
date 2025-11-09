@@ -123,14 +123,14 @@ image editing capabilities.")
 (define-public ksanecore
   (package
     (name "ksanecore")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                              "/src/ksanecore-" version ".tar.xz"))
        (sha256
-        (base32 "1ccq1bxdh4rlj2cn73h0hbric2pvyjqnxi4v4alndm6mlk4b7bcb"))))
+        (base32 "15x9mfg8mb3wll48ibwz8hpc6gs55ryy42dfkz961vlk86cmjmp1"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
