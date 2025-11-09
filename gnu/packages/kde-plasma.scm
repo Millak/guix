@@ -1425,7 +1425,7 @@ with a ksysguardd daemon, which may also run on a remote system.")
 (define-public kwallet-pam
   (package
     (name "kwallet-pam")
-    (version "6.5.0")
+    (version "6.5.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1433,7 +1433,7 @@ with a ksysguardd daemon, which may also run on a remote system.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "1k6ypynrg6irg5g0fsk4kvw4zc0sqwj46hwrs951phnpkv39fqrk"))))
+                "0xp8i8kgdzb2mr8p1388nfifdixzvv159annhd1dgvhijjjzmhsz"))))
     (build-system qt-build-system)
     (arguments
      (list
