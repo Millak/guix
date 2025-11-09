@@ -4793,6 +4793,29 @@ in a test file.  It includes the ability to use mathematical expressions and
 variables when computing the count.")
     (license license:x11)))
 
+(define-public perl-code-tidyall-plugin-testcount
+  (package
+    (name "perl-code-tidyall-plugin-testcount")
+    (version "0.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/S/SH/SHLOMIF/Code-TidyAll-Plugin-TestCount-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0rs9na55gwbalrxbprv0gkvfv72y6aa3w5ayqhsymvdpxvq5zk6m"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (propagated-inputs (list tidyall perl-moo-2 perl-test-count))
+    (home-page "https://metacpan.org/release/Code-TidyAll-Plugin-TestCount")
+    (synopsis
+     "Ascertain that the test plan agrees with the Test::Count annotations")
+    (description
+     "This package is a plugin to tidyall allowing integration with the Test::Count
+module, to keep track of the number of tests in a test file.")
+    (license license:x11)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
