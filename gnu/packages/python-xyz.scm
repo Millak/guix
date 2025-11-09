@@ -21653,6 +21653,42 @@ objects, patterned after the Mocha library for Ruby.")
 some PySol games.")
     (license license:expat)))
 
+(define-public python-freecell-solver
+  (package
+    (name "python-freecell-solver")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "freecell_solver" version))
+       (sha256
+        (base32 "0cq77dmq21laqk8fhl61m33lbckymzk312r263x2mv93mccf8jrm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key test-flags tests? #:allow-other-keys)
+              (when tests?
+                (apply invoke
+                       "python"
+                       "-m"
+                       "unittest"
+                       "discover"
+                       "tests"
+                       test-flags)))))))
+    (propagated-inputs (list python-cffi))
+    (native-inputs (list python-setuptools python-wheel))
+    (home-page "https://pypi.org/project/freecell-solver/")
+    (synopsis "Freecell Solver bindings")
+    (description
+     "This package provides Python bindings for the freecell-solver
+package.  Freecell Solver is a program that automatically solves layouts of
+Freecell and similar variants of Card Solitaire such as Eight Off, Forecell,
+and Seahaven Towers, as well as Simple Simon boards.")
+    (license license:expat)))
+
 (define-public python-inflect
   (package
     (name "python-inflect")
