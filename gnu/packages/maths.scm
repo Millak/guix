@@ -4304,7 +4304,7 @@ optimized implementations of the combinatorial prime counting algorithms.")
 (define-public primesieve
   (package
     (name "primesieve")
-    (version "12.9")
+    (version "12.10")
     (source
      (origin
        (method git-fetch)
@@ -4314,7 +4314,7 @@ optimized implementations of the combinatorial prime counting algorithms.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0y81k9ql0mcd43vsli2a5z0d76p9mkz0dlddksvvrid41qqsjhf4"))))
+         "0vlhhrylv63dmcf9kgsg15596pj06iflfnvjph3w8zlfaajwv9gd"))))
     (build-system cmake-build-system)
     (arguments
      (list
