@@ -352,14 +352,14 @@ submoduletest|cachetest|switchtest)")))))))
 (define-public kompare
   (package
     (name "kompare")
-    (version "25.08.2")
+    (version "25.08.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/kompare-" version ".tar.xz"))
               (sha256
                (base32
-                "1clkaqwr3j1gx2345jqgfxmv3fz0d0sa2bwmq74jfawc3wmq93h7"))))
+                "1qjg876mjjahlw52lfpxqhw7savh2nc4jzl8xcghs8cgxvihchyf"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
