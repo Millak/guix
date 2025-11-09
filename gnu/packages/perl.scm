@@ -5190,6 +5190,29 @@ excessively long ones.")
 Test::Run plugins.")
     (license license:x11)))
 
+(define-public perl-test-data-split
+  (package
+    (name "perl-test-data-split")
+    (version "0.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/S/SH/SHLOMIF/Test-Data-Split-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "08l0h9xkikj6ggm24dark2hp9wffypanjdbha3gdfc5dmn83h275"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-differences))
+    (propagated-inputs (list perl-io-all perl-list-moreutils perl-moox
+                             perl-moox-late))
+    (home-page "https://metacpan.org/release/Test-Data-Split")
+    (synopsis "Split data-driven tests into several test scripts")
+    (description
+     "This module splits a set of data with IDs and arbitrary values into one test
+file per (key+value) for easy parallelisation.")
+    (license license:x11)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
