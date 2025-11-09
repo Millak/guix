@@ -4959,6 +4959,43 @@ specifying container platforms.")
 repositories.")
     (license license:asl2.0)))
 
+(define-public go-github-com-containers-winquit
+  ;; As it's seen in description, it's a Windows specific package but
+  ;; gvisor-tap-vsock can't be build if it's absent.
+  (hidden-package
+   (package
+     (name "go-github-com-containers-winquit")
+     (version "1.1.0")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/containers/winquit")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "00kvrjq0jcjvhpdxgcz99r9azm3n0ds43smwc0ss1rxx7jszpjpv"))))
+     (build-system go-build-system)
+     (arguments
+      (list
+       #:skip-build? #t
+       #:import-path "github.com/containers/winquit"))
+     (native-inputs
+      (list go-github-com-onsi-ginkgo-v2
+            go-github-com-onsi-gomega))
+     (propagated-inputs
+      (list go-github-com-sirupsen-logrus))
+     (home-page "https://github.com/containers/winquit")
+     (synopsis "Graceful shutdown of Windows applications support for Golang")
+     (description
+      "winquit is a golang module that supports graceful shutdown of Windows
+applications through the sending and receiving of Windows quit events on Win32
+message queues.  This allows golang applications to implement behavior
+comparable to SIGTERM signal handling on UNIX derived systems.  Additionally,
+it supports the graceful shutdown mechanism employed by Windows system tools,
+such as @code{taskkill.exe}.")
+     (license license:asl2.0))))
+
 (define-public go-github-com-coocood-freecache
   (package
     (name "go-github-com-coocood-freecache")
