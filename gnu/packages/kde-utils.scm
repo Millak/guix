@@ -437,14 +437,14 @@ to camera devices supported by @code{libgphoto2} using
 (define-public kate
   (package
     (name "kate")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kate-" version ".tar.xz"))
        (sha256
-        (base32 "0w27cd99m0f1lm8xin95yb4wh7yfzbm31k785gwkx64hjr8zmvmm"))))
+        (base32 "02x9zhrk459gz7c9yxql260vgq1s9w5x4ijw3g4mv6qwp2svhbn9"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
