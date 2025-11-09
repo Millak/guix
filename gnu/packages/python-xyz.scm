@@ -28545,7 +28545,7 @@ access the system cron automatically and simply using a direct API.")
                          python-sqlalchemy
                          python-pyside-6
                          python-pytest
-                         python-pytest-asyncio
+                         python-pytest-asyncio-0.26
                          python-pytest-cov
                          python-pytest-tornado5
                          python-wheel))
