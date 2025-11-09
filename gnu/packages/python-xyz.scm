@@ -29157,17 +29157,32 @@ services to what you expect in your tests.")
 (define-public python-jsonplus
   (package
     (name "python-jsonplus")
-    (version "0.8.0")
     (home-page "https://github.com/randomir/jsonplus")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "jsonplus" version))
-              (sha256
-               (base32
-                "05yv3dw813zwas9snz124k2hki49y268b3mx0gj9w7v1nrjmglq1"))))
-    (build-system python-build-system)
-    ;; XXX: No tests on PyPI, and the repository has no tags.
-    (arguments '(#:tests? #f))
+    (properties '((commit . "a4450ce73a4464fcee9b08d96be3e13152b0cb3b")
+                  (revision . "0")))
+    (version (git-version "0.8.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n7rr7fgy2g972si6zhindia362w34d696xjdicx25f39n88jcvk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Tests require the additional package moneyed.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "python"))))))
+    (native-inputs (list python-setuptools))
     (propagated-inputs
      (list python-dateutil python-simplejson python-sortedcontainers))
     (synopsis "Serialize Python types to/from JSON")
