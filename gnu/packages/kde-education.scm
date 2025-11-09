@@ -362,7 +362,7 @@ to perform data analysis.")
 (define-public marble-qt
   (package
     (name "marble-qt")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method git-fetch)
@@ -371,7 +371,7 @@ to perform data analysis.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c2aa9f7v2z3nssc0m1lw37lja2iq11qw8jcf9vm09ilr3rzn2c7"))))
+        (base32 "0ggb9cjbmv0aykih1qg1gyac4zrh8qydxfkrcdjrv916jmh8skx6"))))
     (build-system qt-build-system)
     (arguments
      ;; FIXME: libmarblewidget-qt5.so.28 not found.  Also enable the
