@@ -73,6 +73,7 @@
   #:use-module (guix search-paths)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages file)
@@ -5261,6 +5262,52 @@ card Solitaire.  It does not aim to try to be a solver for them, because this
 is too CPU intensive to be adequately done using perl5 (as of
 perl-5.10.0).  Instead, what Games-Solitaire-Verify does is verify the
 solutions and makes sure they are correct.")
+    (license license:x11)))
+
+(define-public perl-task-freecellsolver-testing
+  (package
+    (name "perl-task-freecellsolver-testing")
+    (version "0.0.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/S/SH/SHLOMIF/Task-FreecellSolver-Testing-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "19wkz5ii8h90i9gmh692kvw9rz7k9bmpi53pw331fm0jmsvi069x"))))
+    (build-system perl-build-system)
+    (arguments
+     ;; The only test looks for VERSION, but this package doesn't have a VERSION
+     ;; variable defined.
+     (list
+      #:tests? #f))
+    (native-inputs (list perl-module-build))
+    (propagated-inputs (list tidyall
+                             perl-env-path
+                             perl-file-which
+                             perl-games-solitaire-verify
+                             perl-inline
+                             perl-inline-c
+                             perl-list-moreutils
+                             perl-moo-2
+                             perl-moox
+                             perl-path-tiny
+                             perl-string-shellquote
+                             perl-template-toolkit
+                             perl-test-data-split
+                             perl-test-differences
+                             perl-test-perltidy
+                             perl-test-run
+                             perl-test-run-plugin-trimdisplayedfilenames
+                             perl-test-runvalgrind
+                             perl-test-trailingspace
+                             perl-yaml-libyaml))
+    (home-page "https://metacpan.org/release/Task-FreecellSolver-Testing")
+    (synopsis "CPAN dependencies of the Freecell Solver test suite")
+    (description
+     "This is a meta-package that installs the CPAN dependencies of the Freecell
+Solver test suite.")
     (license license:x11)))
 
 (define-public perl-eval-closure
