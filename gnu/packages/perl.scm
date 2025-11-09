@@ -4816,6 +4816,28 @@ variables when computing the count.")
 module, to keep track of the number of tests in a test file.")
     (license license:x11)))
 
+(define-public perl-digest-jhash
+  (package
+    (name "perl-digest-jhash")
+    (version "0.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/S/SH/SHLOMIF/Digest-JHash-" version
+             ".tar.gz"))
+       (sha256
+        (base32 "0qq07gp9dcq9hkyvn37r1id5kiyh51vlvm9w4s84000shq5cyin7"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Digest-JHash")
+    (synopsis "Perl extension for 32 bit Jenkins Hashing Algorithm")
+    (description
+     "The Digest::JHash module allows you to use the fast JHash hashing algorithm
+developed by Bob Jenkins from within Perl programs.  The algorithm takes as
+input a message of arbitrary length and produces as output a 32-bit \"message
+digest\" of the input in the form of an unsigned long integer.")
+    (license license:artistic2.0)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
