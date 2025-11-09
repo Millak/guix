@@ -9579,6 +9579,28 @@ own set of Moose-like types.  These custom types can then be used to describe
 fields in Moo-based classes.")
     (license (package-license perl))))
 
+(define-public perl-moox-types-mooselike-numeric
+  (package
+    (name "perl-moox-types-mooselike-numeric")
+    (version "1.03")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/M/MA/MATEU/MooX-Types-MooseLike-Numeric-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0jy4f14qr1jrnhh77q9jab3pgpv2hx72wb4jg40h2gcngdhypb8n"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-moo perl-test-fatal))
+    (propagated-inputs (list perl-moox-types-mooselike))
+    (home-page "https://metacpan.org/release/MooX-Types-MooseLike-Numeric")
+    (synopsis "Moo types for numbers")
+    (description
+     "This package provides a set of numeric types to be used in Moo-based
+classes, adapted from MooseX::Types::Common::Numeric.")
+    (license license:perl-license)))
+
 (define-public perl-mouse
   (package
   (name "perl-mouse")
