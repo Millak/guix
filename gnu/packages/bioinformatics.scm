@@ -1662,8 +1662,8 @@ accessibility and gene expression across individual single cells.")
       (license license:expat))))
 
 (define-public r-saige
-  (let ((commit "c6717ba9c5a967bcf612e97566d845397b1b7167")
-        (revision "1"))
+  (let ((commit "44c8dd4d7641fcb4b591a49e10e7ecf501943202")
+        (revision "2"))
     (package
       (name "r-saige")
       (version (git-version "1.3.4" revision commit))
@@ -1675,7 +1675,7 @@ accessibility and gene expression across individual single cells.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0c3211whqazycs9ivwdz23imj45j4na2xzcfq5l989ykkgmqnjzs"))))
+          (base32 "0n5gaah0fdhd6affmaml3kfmk7knxkr26knyg6hjmwx836fbbyif"))))
       (properties `((upstream-name . "SAIGE")))
       (build-system r-build-system)
       (arguments
@@ -1687,16 +1687,27 @@ accessibility and gene expression across individual single cells.")
                ;; Pretend to be a Conda build to avoid having to install
                ;; things with pip and cget.
                (setenv "CONDA_BUILD" "1")))
+           (add-after 'unpack 'add-missing-include
+             (lambda _
+               (substitute* "src/SAIGE_fitGLMM_fast.cpp"
+                 (("#include <omp.h>")
+                  "#include <omp.h>\n#include <tbb/concurrent_vector.h>"))))
            (add-after 'unpack 'link-with-openblas
              (lambda* (#:key inputs #:allow-other-keys)
                (substitute* "src/Makevars"
                  (("-llapack")
                   (search-input-file inputs
-                                     "/lib/libopenblas.so"))))))))
-      (inputs (list openblas savvy superlu zlib zstd))
+                                     "/lib/libopenblas.so")))))
+           (add-after 'unpack 'link-with-plink2
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "src/Makevars"
+                 (("-l:plink2_includes.a")
+                  (search-input-file inputs "/lib/libplink2.so"))))))))
+      (inputs (list openblas plink-ng savvy superlu zlib zstd))
       (propagated-inputs (list r-bh
                                r-data-table
                                r-dplyr
+                               r-lintools
                                r-matrix
                                r-metaskat
                                r-optparse
@@ -1708,7 +1719,8 @@ accessibility and gene expression across individual single cells.")
                                r-rhpcblasctl
                                r-rsqlite
                                r-skat
-                               r-spatest))
+                               r-spatest
+                               r-survival))
       (home-page "https://github.com/saigegit/SAIGE")
       (synopsis "Genome-wide association tests in large-scale data sets")
       (description "SAIGE is a package for efficiently controlling for
