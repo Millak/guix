@@ -5089,6 +5089,31 @@ scripts with Test::Run.")
 first failure, instead of going all the way through it.")
     (license license:x11)))
 
+(define-public perl-test-run-plugin-colorfileverdicts
+  (package
+    (name "perl-test-run-plugin-colorfileverdicts")
+    (version "0.0125")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/S/SH/SHLOMIF/Test-Run-Plugin-ColorFileVerdicts-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0ihy5rzhc7472kh8931i7fbqf36nixl6yjrf8x5ndzd62hn1l90w"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-run perl-test-run-cmdline
+                         perl-test-trap))
+    (propagated-inputs (list perl-moose perl-mro-compat perl-test-run
+                             perl-test-run-cmdline))
+    (home-page
+     "https://metacpan.org/release/Test-Run-Plugin-ColorFileVerdicts")
+    (synopsis "Make the file verdict colorful")
+    (description
+     "This package allows you to make the file verdict (i.e., @code{ok},
+@code{NOT OK}) colorful in test outputs.")
+    (license license:x11)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
