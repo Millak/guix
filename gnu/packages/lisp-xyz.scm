@@ -14444,23 +14444,24 @@ with a complex event filtering system.")
   (sbcl-package->ecl-package sbcl-deeds))
 
 (define-public sbcl-definitions
-  (let ((commit "1f4bd7a634a2299aea19cefb5da8041bbb27f2ec"))
+  (let ((commit "869796051d97bf67779f192733d52714929b48f1")
+        (revision "2"))
     (package
       (name "sbcl-definitions")
-      (version (git-version "1.0.0" "1" commit))
+      (version (git-version "1.0.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/Shinmera/definitions/")
+               (url "https://codeberg.org/shinmera/definitions")
                (commit commit)))
          (file-name (git-file-name "cl-definitions" version))
          (sha256
-          (base32 "16dh9iy3v344xj4qllsp47007px3yx26fxxh9gh2cvs8dqgk3kch"))))
+          (base32 "0vd32rj87f8icqglpkylgr0bs2m4qjsii3wd5i5ixiy5dz3918md"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-documentation-utils))
-      (home-page "https://shinmera.github.io/definitions")
+      (home-page "https://shinmera.com/docs/definitions")
       (synopsis "General definitions reflection library")
       (description
        "This system implements a general definitions introspection library.
