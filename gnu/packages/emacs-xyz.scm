@@ -38241,6 +38241,37 @@ outline-enabled table of contents, additional metadata association for Info
 nodes, and more.")
       (license license:gpl2+))))
 
+(define-public emacs-info-rename-buffer
+  ;; This commit is the one where the latest version number was set in the
+  ;; source.  For some reason, MELPA refers to this same commit by a later
+  ;; version number.
+  (let ((commit "87fb263b18717538fd04878e3358e1e720415db8")
+        (revision "0"))
+   (package
+    (name "emacs-info-rename-buffer")
+    (version (git-version "20200328.1147" revision commit))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/oitofelix/info-rename-buffer")
+              (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07ylrbl9i2d09nspj481hkgcq9vs4ikvl86sfj7594zzdyy6b8qx"))))
+    (build-system emacs-build-system)
+    (arguments (list #:tests? #f))      ; There are no tests.
+    (home-page "https://github.com/oitofelix/info-rename-buffer")
+    (synopsis "Rename Info buffers to match manuals")
+    (description
+     "@code{info-rename-buffer-mode} is a global minor-mode that automatically
+renames Info buffers to match their visiting manual.  That's a useful feature
+when consulting several Info manuals simultaneously, because it frees the user
+from the burden of renaming Info buffers to descriptive names manually before
+visiting another manual, thus avoiding accidentally overriding the currently
+visited node in case the user tries to open a new Info buffer.")
+    (license license:gpl3))))
+
 (define-public emacs-eval-in-repl
   (package
     (name "emacs-eval-in-repl")
