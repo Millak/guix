@@ -5162,6 +5162,34 @@ first failure, instead of going all the way through it.")
 excessively long ones.")
     (license license:x11)))
 
+(define-public perl-task-test-run-allplugins
+  (package
+    (name "perl-task-test-run-allplugins")
+    (version "0.0106")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/S/SH/SHLOMIF/Task-Test-Run-AllPlugins-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0y6fgldb59mc96lkghmd8n0gdbqaal6hz0cqqadna1jqi3q0p38v"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (propagated-inputs (list perl-test-run
+                             perl-test-run-cmdline
+                             perl-test-run-plugin-alternateinterpreters
+                             perl-test-run-plugin-breakonfailure
+                             perl-test-run-plugin-colorfileverdicts
+                             perl-test-run-plugin-colorsummary
+                             perl-test-run-plugin-trimdisplayedfilenames))
+    (home-page "https://metacpan.org/release/Task-Test-Run-AllPlugins")
+    (synopsis "Specifications for installing all the Test::Run plugins")
+    (description
+     "This is a meta-package containing specifications for installing all the
+Test::Run plugins.")
+    (license license:x11)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
