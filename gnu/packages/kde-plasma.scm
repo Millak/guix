@@ -173,14 +173,14 @@ script engines.")
 (define-public aurorae
   (package
     (name "aurorae")
-    (version "6.5.0")
+    (version "6.5.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0nzvn21fx0d6mj6sci40cgpw338m7rdbb52f7cjhfg2dvzrfclcf"))))
+                "1lwqknvn9s13y9aknxzg8dr899n8lyxk8fc0z8lpm7gsrxami3gk"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
