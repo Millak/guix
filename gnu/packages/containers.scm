@@ -395,54 +395,46 @@ Layer-4 sockets.")
   (package
     (name "cni-plugins")
     (version "1.8.0")
-    ;; TODO: Unvendor.
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/containernetworking/plugins")
-             (commit (string-append "v" version))))
+              (url "https://github.com/containernetworking/plugins")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "0bwczkf4kbrx47sa6mnp5kyn65dbg52qnlfyjyydrwshal8rz3gw"))
-       (file-name (git-file-name name version))))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
     (build-system go-build-system)
     (arguments
-     `(#:unpack-path "github.com/containernetworking/plugins"
-       #:tests? #f ; XXX: see stat /var/run below
-       #:phases (modify-phases %standard-phases
-                  (replace 'build
-                    (lambda _
-                      (with-directory-excursion
-                          "src/github.com/containernetworking/plugins"
-                        (invoke "./build_linux.sh"))))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      ;; Only pkg/ns tests run without root.
-                      (when tests?
-                        (with-directory-excursion
-                            "src/github.com/containernetworking/plugins/pkg/ns"
-                          (invoke "stat" "/var/run") ; XXX: test tries to stat this directory
-                          (invoke "unshare" "-rmn" "go" "test")))))
-                  (add-before 'check 'set-test-environment
-                    (lambda _
-                      (setenv "XDG_RUNTIME_DIR" "/tmp/cni-rootless")))
-                  (replace 'install
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (copy-recursively
-                       "src/github.com/containernetworking/plugins/bin"
-                       (string-append (assoc-ref outputs "out") "/bin")))))))
-    ;; XXX: Prepare for unvendor.
+     (list
+      #:install-source? #f
+      #:tests? #f ; TODO: Figure out how to run tests.
+      #:import-path "github.com/containernetworking/plugins"
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'build
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                ;; XXX: Migrate to go-build-system logic.
+                (invoke "./build_linux.sh"))))
+          (replace 'install
+            (lambda* (#:key import-path #:allow-other-keys)
+              (copy-recursively (string-append "src/"import-path "/bin")
+                                (string-append #$output "/bin")))))))
     (native-inputs
-     (list ;; go-github-com-alexflint-go-filemutex
-           ;; go-github-com-buger-jsonparser
-           ;; go-github-com-containernetworking-cni
-           ;; go-github-com-coreos-go-iptables
+     (list go-github-com-alexflint-go-filemutex
+           go-github-com-buger-jsonparser
+           go-github-com-containernetworking-cni
+           go-github-com-coreos-go-iptables
            go-github-com-coreos-go-systemd-v22
            go-github-com-godbus-dbus-v5
            go-github-com-insomniacslk-dhcp
-           ;; o-github-com-mattn-go-shellwords
+           go-github-com-mattn-go-shellwords
            ;; go-github-com-microsoft-hcsshim
-           ;; go-github-com-networkplumbing-go-nft
+           go-github-com-networkplumbing-go-nft
            go-github-com-onsi-ginkgo-v2
            go-github-com-onsi-gomega
            go-github-com-opencontainers-selinux
@@ -451,7 +443,7 @@ Layer-4 sockets.")
            go-github-com-vishvananda-netlink
            go-github-com-vishvananda-netns
            go-golang-org-x-sys
-           ;; go-sigs-k8s-io-knftables
+           go-sigs-k8s-io-knftables
            util-linux))
     (home-page "https://github.com/containernetworking/plugins")
     (synopsis "Container Network Interface (CNI) network plugins")
