@@ -685,6 +685,10 @@ pictures) for email addresses using the Libravatar specification.")
                                "/include/bash/include")
                 ;; The '.a' file is useless.
                 "--disable-static"
+
+                ;; Relax GCC 14 strictness.
+                "CFLAGS=-Wno-error=implicit-function-declaration"
+
                 ;; Install 'lib/bash' as Bash 4.4 expects.
                 (string-append "--libdir=" #$output "/lib/bash"))))
       (native-inputs
