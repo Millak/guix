@@ -123,7 +123,11 @@
                                 #$@(if (target-arm32?)
                                        (list "CFLAGS=-g -O2 -fno-tree-slp-vectorize")
                                        '()))
-      #:disallowed-references (list (this-package-native-input "pkg-config"))
+      #:disallowed-references (list (this-package-native-input
+                                     (if (%current-target-system)
+                                         (string-append "pkg-config-"
+                                                        (%current-target-system))
+                                         "pkg-config")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'remove-reference-to-pkg-config
