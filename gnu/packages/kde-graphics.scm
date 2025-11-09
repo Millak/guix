@@ -496,14 +496,14 @@ replace the other outdated Graphviz tools.")
 (define-public kolourpaint
   (package
     (name "kolourpaint")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kolourpaint-" version ".tar.xz"))
        (sha256
-        (base32 "1ka9yrng1k0r13kspxfmc16cvjif4wccdr9l9zslafdsvnazmnif"))))
+        (base32 "035ln578r2gdb2aa0h59b65k0lirr77i7ns9asahvib14fdw3xzd"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
