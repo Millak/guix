@@ -4884,6 +4884,54 @@ modules from perl's require mechanism.  The Module::Mask object adds itself
 to @@INC and blocks require calls to restricted modules.")
     (license license:perl-license)))
 
+(define-public perl-chi
+  (package
+    (name "perl-chi")
+    (version "0.61")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/A/AS/ASB/CHI-" version
+                           ".tar.gz"))
+       (sha256
+        (base32 "0nwbcza23c1cvplcwa6ivskv9x7qbzsyjvdi78cv8ariwp4ladaq"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-cache-cache
+                         perl-module-mask
+                         perl-mro-compat
+                         perl-test-class
+                         perl-test-deep
+                         perl-test-exception
+                         perl-test-warn
+                         perl-timedate))
+    (propagated-inputs (list perl-carp-assert
+                             perl-class-load
+                             perl-data-uuid
+                             perl-digest-jhash
+                             perl-hash-moreutils
+                             perl-json-maybexs
+                             perl-list-moreutils
+                             perl-log-any
+                             perl-moo-2
+                             perl-moox-types-mooselike
+                             perl-moox-types-mooselike-numeric
+                             perl-string-rewriteprefix
+                             perl-task-weaken
+                             perl-time-duration
+                             perl-time-duration-parse
+                             perl-try-tiny))
+    (home-page "https://metacpan.org/release/CHI")
+    (synopsis "Unified cache handling interface")
+    (description
+     "CHI provides a unified caching API, designed to assist a developer in
+persisting data for a specified period of time.
+
+The CHI interface is implemented by driver classes that support fetching,
+storing and clearing of data.  Driver classes exist or will exist for the gamut
+of storage backends available to Perl, such as memory, plain files, memory
+mapped files, memcached, and DBI.")
+    (license license:perl-license)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
