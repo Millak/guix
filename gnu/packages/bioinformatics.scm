@@ -11828,7 +11828,7 @@ subsequent visualization, annotation and storage of results.")
 (define-public plink-ng
   (package (inherit plink)
     (name "plink-ng")
-    (version "2.00a3.3")
+    (version "2.0.0-a.6.16")
     (source
      (origin
        (method git-fetch)
@@ -11837,7 +11837,7 @@ subsequent visualization, annotation and storage of results.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m8wkyvbgvcr5kzc284w8fbhpxwglh2c1xq0yc3yv00a53gs7rv0"))))
+        (base32 "1v020l8b5njc458silaqfwl8jg7vn46wg8hh4iiq3ip6p31g2dm7"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -11851,28 +11851,43 @@ subsequent visualization, annotation and storage of results.")
               (string-append "PREFIX=" #$output)
               "DESTDIR=")
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _ (chdir "2.0/build_dynamic")))
-         (delete 'configure)            ; no "configure" script
-         (replace 'check
-           (lambda* (#:key tests? inputs #:allow-other-keys)
-             (when tests?
-               (setenv "PATH" (string-append (getcwd) ":" (getenv "PATH")))
-               (with-directory-excursion "../Tests"
-                 (substitute* "run_tests.sh"
-                   (("^./run_tests" m)
-                    (string-append (which "bash") " " m)))
-                 (invoke "bash" "run_tests.sh")))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (install-file "plink2"
-                           (string-append
-                            (assoc-ref outputs "out") "/bin")))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _ (chdir "2.0/build_dynamic")))
+          (add-after 'chdir 'patch-headers
+            (lambda _
+              (substitute* '("../include/pvar_ffi_support.h"
+                             "../include/pgenlib_ffi_support.h")
+                (("#include \"include/pgenlib_misc.h\"")
+                 "#include <pgenlib_misc.h>"))))
+          (delete 'configure)           ; no "configure" script
+          (replace 'check
+            (lambda* (#:key tests? inputs #:allow-other-keys)
+              (when tests?
+                (setenv "PATH" (string-append (getcwd) ":" (getenv "PATH")))
+                (with-directory-excursion "../Tests"
+                  (substitute* "run_tests.sh"
+                    (("^./run_tests" m)
+                     (string-append (which "bash") " " m)))
+                  (invoke "bash" "run_tests.sh")))))
+          (add-after 'build 'build-library
+            (lambda _
+              ;; Inspired by what r-saige does to the plink2 sources.
+              (apply invoke "gcc" "-std=c++14" "-fPIC" "-O3" "-o" "libplink2.so"
+                     (append (find-files "../include" "\\.cc$")
+                             (list "-shared" "-lz" "-lzstd" "-lpthread" "-lm" "-ldeflate")))))
+          (replace 'install
+            (lambda _
+              (install-file "plink2" (string-append #$output "/bin"))
+              (install-file "libplink2.so" (string-append #$output "/lib"))
+              (copy-recursively "../include" (string-append #$output "/include"))
+              (for-each (lambda (header)
+                          (install-file header (string-append #$output "/include")))
+                        (find-files "." "\\.h$")))))))
     (inputs
-     (list openblas zlib `(,zstd "lib")))
+     (list libdeflate openblas zlib `(,zstd "lib")))
     (native-inputs
-     (list diffutils plink python simde)) ; for tests
+     (list diffutils python simde)) ; for tests
     (home-page "https://www.cog-genomics.org/plink/")
     (license license:gpl3+)))
 
