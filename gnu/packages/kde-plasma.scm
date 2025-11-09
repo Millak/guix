@@ -1971,7 +1971,7 @@ for xdg-desktop-portal that is using Qt/KF5.")
 (define-public plasma-activities
   (package
     (name "plasma-activities")
-    (version "6.5.0")
+    (version "6.5.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1979,7 +1979,7 @@ for xdg-desktop-portal that is using Qt/KF5.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0gw8p027m8ldpypsl7j0815g856ccjrwa6avwqpx515aasy75f0d"))))
+                "16j4lyzgi2drlivn3m7aph06sx9m879n94ml452l00rw9wr3sy1r"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
