@@ -211,14 +211,14 @@ for some KDevelop language plugins (Ruby, PHP, CSS...).")
 (define-public kdevelop
   (package
     (name "kdevelop")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kdevelop-" version ".tar.xz"))
        (sha256
-        (base32 "0aav8spzcs33z7xs17xz4psbk5mhw5kaxsf26s7kirbxsgb26ydq"))))
+        (base32 "14nfp9wxxz442jm20d37ibc7n12jyp2paw0kv56k58x96z7r4asd"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config shared-mime-info qttools))
