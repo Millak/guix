@@ -1775,14 +1775,14 @@ This package is part of the KDE games module.")
 (define-public ksquares
   (package
     (name "ksquares")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/ksquares-" version ".tar.xz"))
        (sha256
-        (base32 "1lcdm2yr9r5jrzr342096fwd1bj11anbsx4dm06mdas44xm4amcp"))))
+        (base32 "1kxmvl5775r2gf9jhy6j5c66qbg8br8bxpwcbp6a53si7f63qxss"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
