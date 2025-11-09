@@ -5831,10 +5831,10 @@ OSC connections.")
     (license license:artistic2.0)))
 
 (define-public luppp
-  (let ((revision "1")
+  (let ((revision "2")
         ;; The last release was in 2019.  Since then some build fixes have
         ;; been added.
-        (commit "23da1497f80dbace48b7807afd3570c57a4d5994"))
+        (commit "78fb003df542e752d43f8ea3e734a83de4e4f8a1"))
     (package
       (name "luppp")
       (version (git-version "1.2.1" revision commit))
@@ -5846,7 +5846,7 @@ OSC connections.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1rjl7fwnqq1gxa3haw1z0p1mld23i194sc43m03h9isagkwxrx9d"))))
+                  "1nc4xjm74assjzjghkbh25ahlkiiy7pkfaj72zagzfa9p64s6xdl"))))
       (build-system meson-build-system)
       (inputs
        (list cairo
