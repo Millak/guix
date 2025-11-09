@@ -920,7 +920,6 @@ KAccounts system.")
     (inputs
      (list akonadi
            akonadi-mime
-           akonadi-notes
            boost
            kcalendarcore
            kcalutils
