@@ -967,14 +967,14 @@ This package is part of the KDE games module.")
 (define-public kblackbox
   (package
     (name "kblackbox")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kblackbox-" version ".tar.xz"))
        (sha256
-        (base32 "091nb4l18ab0igpkz1jbnki3vnflazy0x8km2fjr69ikm17qc7vy"))))
+        (base32 "0px1pzny7v9y3prdc1a499d1zg47sagbwysiw146c394m9jra07g"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
