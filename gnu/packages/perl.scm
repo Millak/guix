@@ -5007,6 +5007,36 @@ subtest that doesn't match any of the whitelist items will be skipped (or
 potentially bypassed).")
     (license license:perl-license)))
 
+(define-public perl-test-run
+  (package
+    (name "perl-test-run")
+    (version "0.0306")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/S/SH/SHLOMIF/Test-Run-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1z4i23wq4k0kr4dkc0v6rhll36ygi8h977an5xy6jarpk59a0q5b"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-trap))
+    (propagated-inputs (list perl-ipc-system-simple
+                             perl-list-moreutils
+                             perl-moose
+                             perl-moosex-strictconstructor
+                             perl-mro-compat
+                             perl-text-sprintf-named
+                             perl-universal-require))
+    (home-page "https://metacpan.org/release/Test-Run")
+    (synopsis "New and improved test harness for TAP scripts")
+    (description
+     "Test::Run is an improved test harness, originally based on Test::Harness
+version 2.xx by Michael G. Schwern, Andy Lester and others.
+
+The top-level \"Test::Run\" by itself does not do much.  You should refer to
+Task::Test::Run::AllPlugins for more detailed instructions.")
+    (license license:x11)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
