@@ -87,14 +87,14 @@ This package contains GUI widgets for baloo.")
 (define-public dolphin
   (package
     (name "dolphin")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/dolphin-" version ".tar.xz"))
        (sha256
-        (base32 "14b7lrp768ryl9gvp1bl8svcl752j4yi1cn9p0sgs1v4ixlz3x06"))))
+        (base32 "02gfm3m7aci048j5114zbwb40qlzrb1njvr12rbdydrqpqp67g8s"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools ruby ruby-test-unit))
