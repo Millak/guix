@@ -5236,6 +5236,33 @@ file per (key+value) for easy parallelisation.")
 Test::Run.")
     (license license:x11)))
 
+(define-public perl-games-solitaire-verify
+  (package
+    (name "perl-games-solitaire-verify")
+    (version "0.2601")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/S/SH/SHLOMIF/Games-Solitaire-Verify-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0wzmir4qazk861b89r0hxgwnswpjhz0zazk9l6cwhy2b1ib0xcij"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-dir-manifest perl-module-build
+                         perl-test-differences))
+    (propagated-inputs (list perl-class-xsaccessor perl-exception-class
+                             perl-path-tiny))
+    (home-page "https://metacpan.org/release/Games-Solitaire-Verify")
+    (synopsis "Verify solutions for solitaire games")
+    (description
+     "This is a CPAN Perl module that verifies the solutions of various variants of
+card Solitaire.  It does not aim to try to be a solver for them, because this
+is too CPU intensive to be adequately done using perl5 (as of
+perl-5.10.0).  Instead, what Games-Solitaire-Verify does is verify the
+solutions and makes sure they are correct.")
+    (license license:x11)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
