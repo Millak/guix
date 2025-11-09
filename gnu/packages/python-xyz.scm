@@ -9185,24 +9185,6 @@ software by updating all version strings in your source code by the correct
 increment.  It also creates commits and tags.")
     (license license:expat)))
 
-(define-public python-bumpversion
-  (package
-    (name "python-bumpversion")
-    (version "0.5.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "bumpversion" version))
-       (sha256
-        (base32
-         "0zn7694yfipxg35ikkfh7kvgl2fissha3dnqad2c5bvsvmrwhi37"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/peritus/bumpversion")
-    (synopsis "Tool to bump software version")
-    (description "This tool provides a command-line interface (CLI) to bump a
-software version simply.")
-    (license license:expat)))
-
 (define-public python-deprecated
   (package
     (name "python-deprecated")
