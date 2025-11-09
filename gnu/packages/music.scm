@@ -7750,49 +7750,51 @@ plugin and a standalone JACK application.")
 (define-public wolf-shaper
   (package
     (name "wolf-shaper")
-    (version "0.1.8")
+    (version "1.0.2")
     (source
       (origin
         (method git-fetch)
         (uri (git-reference
-               (url "https://github.com/pdesaulniers/wolf-shaper")
+               (url "https://github.com/wolf-plugins/wolf-shaper")
                (commit (string-append "v" version))
                ;; Bundles a specific commit of the DISTRHO plugin framework.
                (recursive? #t)))
         (file-name (git-file-name name version))
         (sha256
           (base32
-            "1j9xmh1nkf45ay1c5dz2g165qvrwlanzcq6mvb3nfxar265drd9q"))))
+            "03m6vq83lbj61xmg5f45yziajsmfxxwn95s53m8y7sdifz1bb272"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:make-flags (list "CC=gcc"
-                          "NOOPT=true")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ;no configure target
-         (replace 'install              ;no install target
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (lv2 (string-append out "/lib/lv2")))
-               ;; Install LV2.
-               (for-each
-                (lambda (file)
-                  (copy-recursively file
-                                    (string-append lv2 "/" (basename file))))
-                (find-files "bin" "\\.lv2$" #:directories? #t))
-               ;; Install executables.
-               (for-each
-                 (lambda (file)
-                   (install-file file bin))
-                 (find-files "bin"
-                             (lambda (name stat)
-                               (and
-                                 (equal? (dirname name) "bin")
-                                 (not (string-suffix? ".so" name))
-                                 (not (string-suffix? ".lv2" name))))))
-               #t))))))
+     (list #:tests? #f                      ; no check target
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   "NOOPT=true")
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)            ;no configure target
+               (replace 'install              ;no install target
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out"))
+                          (bin (string-append out "/bin"))
+                          (lv2 (string-append out "/lib/lv2")))
+                     ;; Install LV2.
+                     (for-each
+                      (lambda (file)
+                        (copy-recursively file
+                                          (string-append lv2 "/"
+                                                         (basename file))))
+                      (find-files "bin" "\\.lv2$" #:directories? #t))
+                     ;; Install executables.
+                     (for-each
+                       (lambda (file)
+                         (install-file file bin))
+                       (find-files "bin"
+                                   (lambda (name stat)
+                                     (and
+                                       (equal? (dirname name) "bin")
+                                       (not (string-suffix? ".so" name))
+                                       (not
+                                        (string-suffix? ".lv2" name))))))))))))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -7800,7 +7802,7 @@ plugin and a standalone JACK application.")
     (synopsis "Waveshaper plugin")
     (description "Wolf Shaper is a waveshaper plugin with a graph editor.
 It is provided as an LV2 plugin and as a standalone Jack application.")
-    (home-page "https://pdesaulniers.github.io/wolf-shaper/")
+    (home-page "https://wolf-plugins.github.io/wolf-shaper/")
     (properties `((tunable? . #t)))
     (license license:gpl3)))
 
