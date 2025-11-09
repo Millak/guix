@@ -1011,14 +1011,14 @@ This package is part of the KDE games module.")
 (define-public knetwalk
   (package
     (name "knetwalk")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/knetwalk-" version ".tar.xz"))
        (sha256
-        (base32 "1wq4842m56ib1rbbq5iifskl159pnbdlp2ay1g7lqm4bpb0q1hdz"))))
+        (base32 "0vx1lca2x6idd41dixpx0r4wagjyciqj5dli7v7a4rpi8yiv5bfg"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs
