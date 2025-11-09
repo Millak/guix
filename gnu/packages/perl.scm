@@ -5037,6 +5037,33 @@ The top-level \"Test::Run\" by itself does not do much.  You should refer to
 Task::Test::Run::AllPlugins for more detailed instructions.")
     (license license:x11)))
 
+(define-public perl-test-run-plugin-alternateinterpreters
+  (package
+    (name "perl-test-run-plugin-alternateinterpreters")
+    (version "0.0125")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/S/SH/SHLOMIF/"
+             "Test-Run-Plugin-AlternateInterpreters-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "1fwr687h05fg6xn6vsfx9ll2ha8c7brmqbiz18biz0jx2jdnihsj"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-run-cmdline
+                         perl-test-trap perl-yaml-libyaml))
+    (propagated-inputs (list perl-moose perl-mro-compat perl-test-run
+                             perl-test-run-cmdline))
+    (home-page
+     "https://metacpan.org/release/Test-Run-Plugin-AlternateInterpreters")
+    (synopsis
+     "Define different interpreters for different test scripts with Test::Run")
+    (description
+     "This package allows you to define different interpreters for different test
+scripts with Test::Run.")
+    (license license:x11)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
