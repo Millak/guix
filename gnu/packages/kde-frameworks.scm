@@ -1618,7 +1618,7 @@ protocols used in KDE Plasma.")
 (define-public kwayland
   (package
     (name "kwayland")
-    (version "6.5.0")
+    (version "6.5.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1626,7 +1626,7 @@ protocols used in KDE Plasma.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1h979cyaa1m26gq262md2iam4g9c3ihj3g40dp8w97kdcfayrdv0"))))
+                "0yjmrdjrn49h4f52n7vkxi13x5pky4dfjsl0xdakj7r47rsy6qxa"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config
