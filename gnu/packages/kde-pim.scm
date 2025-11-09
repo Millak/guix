@@ -1228,14 +1228,14 @@ package.")
 (define-public keventviews
   (package
     (name "keventviews")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/eventviews-" version ".tar.xz"))
        (sha256
-        (base32 "0db2sz2465vb7iymsym3vghyiaw4i1z3jnz13dnvanpy4j43ihbd"))))
+        (base32 "0giq1v8jsy55yrqcc8nzq8k2z2ryfs9yzfdgkmdlyzcwjccws5pa"))))
     (properties `((upstream-name . "eventviews")))
     (build-system qt-build-system)
     (native-inputs
