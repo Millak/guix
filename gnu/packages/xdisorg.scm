@@ -933,7 +933,7 @@ typing tool (@code{wtype}, @code{xdotool}, etc.), or via standard output.")
       #~(list "-Dtimers=true"
               "-Dgnuplot=true"
               #$@(if (target-arm32?)
-                     '("-Darm-simd=false")
+                     '("-Darm-simd=disabled")
                      '()))))
     (synopsis "Low-level pixel manipulation library")
     (description "Pixman is a low-level software library for pixel
