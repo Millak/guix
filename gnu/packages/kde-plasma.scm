@@ -1123,7 +1123,7 @@ PipeWire in Qt projects.")
 (define-public kscreen
   (package
     (name "kscreen")
-    (version "6.5.0")
+    (version "6.5.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/"
@@ -1131,7 +1131,7 @@ PipeWire in Qt projects.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "17hxfgg95jga655g12m0dgy3mqk8s0sw5dkj76m5a5h1yzq35swi"))))
+                "0s64p7bv8pfkg54b0cjp1r601j5zhl527rn9q1pijc4p5za4z0cw"))))
     (build-system cmake-build-system)
     (arguments
      ;; TODO: All tests fail
