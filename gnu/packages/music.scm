@@ -6933,7 +6933,7 @@ file is added, which you could load per drag 'n drop into XUiDesigner.")
 (define-public zam-plugins
   (package
     (name "zam-plugins")
-    (version "4.1")
+    (version "4.4")
     (source
      (origin
        (method git-fetch)
@@ -6947,19 +6947,17 @@ file is added, which you could load per drag 'n drop into XUiDesigner.")
          (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0p3y3r2nrhzr0xlcy5rz4c2jsvc10l1n8cwc642r0zppwfabm9il"))))
+        (base32 "0mfcz3308wqfyhc8689j1yvr17yllgpm09sy7hij97yamc6y2fd6"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:tests? #f                      ;no "check" target
       #:make-flags
-      #~(list (string-append "PREFIX=" #$output)
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "PREFIX=" #$output)
               "HAVE_ZITA_CONVOLVER=true")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'set-CC-variable
-            (lambda _
-              (setenv "CC" "gcc")))
           (delete 'configure))))
     (inputs
      (list fftwf
