@@ -1134,7 +1134,6 @@ as KMail, KAddressBook etc.")
            akonadi-calendar
            akonadi-contacts
            akonadi-mime
-           akonadi-notes
            boost
            cyrus-sasl
            grantleetheme
