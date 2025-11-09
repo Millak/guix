@@ -872,6 +872,34 @@ supporting @acronym{GELF, Graylog Extended Log Format} specified in
 @url{Graylog Documentation, https://go2docs.graylog.org/current/home.html}.")
     (license license:expat)))
 
+(define-public go-github-com-apparentlymart-go-cidr
+  (package
+    (name "go-github-com-apparentlymart-go-cidr")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/apparentlymart/go-cidr")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12b8qhazgdqr9p3sw5vma7va5j1fvm454cyd0ccc0wi96df3wk4i"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/apparentlymart/go-cidr"))
+    (home-page "https://github.com/apparentlymart/go-cidr")
+    (synopsis "CIDR netmasks manipulation library for Golang")
+    (description
+     "Package cidr is a collection of assorted utilities for computing network
+and host addresses within network ranges.  It expects a CIDR-type address
+structure where addresses are divided into some number of prefix bits
+representing the network and then the remaining suffix bits represent the
+host.")
+    (license license:expat)))
+
 (define-public go-github-com-arceliar-ironwood
   (package
     (name "go-github-com-arceliar-ironwood")
