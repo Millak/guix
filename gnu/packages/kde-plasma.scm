@@ -3222,14 +3222,14 @@ of a Plasma shell.")
 (define-public system-settings
   (package
     (name "system-settings")
-    (version "6.5.0")
+    (version "6.5.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/plasma/" version
                                   "/systemsettings-" version ".tar.xz"))
               (sha256
                (base32
-                "17157plapd012hfc9202pbhf400vwyhh14wwpa40pap86g6d0rdv"))))
+                "1kjbi8yyh48y2j3z5nn4sj465h7r2l1lrzh0kj18rw3044cv5wzn"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
     (inputs (list kaccounts-integration
