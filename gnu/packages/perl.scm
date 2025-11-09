@@ -4983,6 +4983,30 @@ as a string, and @code{%(num)4d} will emit the @var{num} parameter as a variable
 with a width of 4.")
     (license license:x11)))
 
+(define-public perl-test-some
+  (package
+    (name "perl-test-some")
+    (version "0.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://cpan/authors/id/Y/YA/YANICK/Test-Some-"
+                           version ".tar.gz"))
+       (sha256
+        (base32 "1qhhp7i76pw2k4xa1f9lwiscif2kf6m3f2gxpprif5pd05w5lay9"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-list-moreutils perl-package-stash))
+    (home-page "https://metacpan.org/release/Test-Some")
+    (synopsis "Test a subset of tests")
+    (description
+     "This module allows one to run a subset of the @code{subtest} tests given in a
+test file.
+
+The module declaration takes a whitelist of the subtests we want to run.  Any
+subtest that doesn't match any of the whitelist items will be skipped (or
+potentially bypassed).")
+    (license license:perl-license)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
