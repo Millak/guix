@@ -80,10 +80,10 @@
                   (put-bytevector port #vu8(#x41 #x49 #x02))
                   (close-port port)))))
         #:disallowed-references
-        (list squashfuse-for-appimage
-              fuse-for-appimage
-              (gexp-input zstd "static")
-              (gexp-input zlib "static"))))
+        (list (this-package-input "squashfuse-for-appimage")
+              (this-package-input "fuse")
+              (gexp-input (this-package-input "zstd") "static")
+              (gexp-input (this-package-input "zlib") "static"))))
       ;; Only needed at build time.
       (inputs (list squashfuse-for-appimage
                     fuse-for-appimage
