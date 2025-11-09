@@ -4958,6 +4958,31 @@ separate file in a directory, create a manifest file listing all valid
 filenames/key, and load from there.")
     (license license:x11)))
 
+(define-public perl-text-sprintf-named
+  (package
+    (name "perl-text-sprintf-named")
+    (version "0.0405")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/S/SH/SHLOMIF/Text-Sprintf-Named-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "1z0glxrmbc6pgjs5bkmp1wiifd4xdcrin8wqz6rhmi6gzxw0siwv"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-warn))
+    (home-page "https://metacpan.org/release/Text-Sprintf-Named")
+    (synopsis "Sprintf-like function with named conversions")
+    (description
+     "Text::Sprintf::Named provides a sprintf equivalent with named
+conversions.  Named conversions are sprintf field specifiers (like @code{%s} or
+@code{%4d}) only they are associated with the key of an associative array of
+parameters.  So for example @code{%(name)s} will emit the @var{name} parameter
+as a string, and @code{%(num)4d} will emit the @var{num} parameter as a variable
+with a width of 4.")
+    (license license:x11)))
+
 (define-public perl-eval-closure
   (package
     (name "perl-eval-closure")
