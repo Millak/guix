@@ -2767,14 +2767,14 @@ part.")
 (define-public zanshin
   (package
     (name "zanshin")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/zanshin-" version ".tar.xz"))
        (sha256
-        (base32 "140km4ma9lzyky8c2ywj4bgf83pjj33zmxx0n36lys1irivjg4jb"))))
+        (base32 "10bd545qr0qj6l552rb1bx7fri5fzn75wnrrybz5f4ra5wc103fw"))))
     (build-system qt-build-system)
     (arguments
      (list ;; TODO: Do not exclude this test when
