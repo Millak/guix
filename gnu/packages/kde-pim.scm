@@ -2734,14 +2734,14 @@ NOTE: plsase add akonadi and kdepim-runtime to system package.")
 (define-public mimetreeparser
   (package
     (name "mimetreeparser")
-    (version "25.08.2")
+    (version "25.08.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/mimetreeparser-" version ".tar.xz"))
        (sha256
-        (base32 "1cpddcaabgm911vdcvbrha81spay6945qmjgabjc0x444qfd8cps"))))
+        (base32 "0xxr6p44764pi5d58nxmc405sw50xwbbv50lli8aj73yr0zwy5pa"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
