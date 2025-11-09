@@ -3055,7 +3055,7 @@ projects.")
 (define-public libpd
   (package
     (name "libpd")
-    (version "0.14.1")
+    (version "0.15.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3065,23 +3065,24 @@ projects.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1bc1bqwviqddhh44cp2y2v2i6dnj92hwx8ld7bwcxgyp2zmlhiaz"))))
+                "0r7dic18csr9651lzrvmdvx4wvzhbzqc5x8six7v78cnla5pfnng"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f                      ; no tests
-       #:make-flags '("CC=gcc")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (invoke "make" "install"
-                       (string-append "prefix=" out)
-                       ;; XXX: Fix the last 2 lines of 'install' target.
-                       "LIBPD_IMPLIB=NO"
-                       "LIBPD_DEF=NO")))))))
-    (home-page "http://libpd.cc/")
+     (list #:tests? #f                      ; no tests
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)            ; no configure script
+               (replace 'install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((out (assoc-ref outputs "out")))
+                     (invoke "make" "install"
+                             (string-append "prefix=" out)
+                             ;; XXX: Fix the last 2 lines of 'install' target.
+                             "LIBPD_IMPLIB=NO"
+                             "LIBPD_DEF=NO")))))))
+    (home-page "https://libpd.cc/")
     (synopsis "Pure Data as an embeddable audio synthesis library")
     (description
      "Libpd provides Pure Data as an embeddable audio synthesis library.  Its
