@@ -80,8 +80,10 @@
 (define-module (gnu packages music)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system ant)
+  #:use-module (gnu packages base)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system emacs)
+  #:use-module (gnu packages gawk)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
@@ -2293,20 +2295,41 @@ Editor.  It is compatible with Power Tab Editor 1.7 and Guitar Pro.")
                 "15yanq1wra0hyh6x72ji7pk562iddg476g3vksj495x91zhnl6vm"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'unpack 'ignore-PATH
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "jalv.select.cpp"
-               (("echo \\$PATH.*tr ':'.*xargs ls")
-                (string-append "ls -1 " (assoc-ref inputs "jalv") "/bin"))))))))
+     (list #:make-flags
+           #~(list (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'unpack 'ignore-PATH
+                 (lambda _
+                   (substitute* "jalv.select.cpp"
+                     (("echo \\$PATH.*tr ':'.*xargs ls")
+                      (string-append "ls -1 "
+                                     #$(this-package-input "jalv") "/bin")))))
+               (add-after 'install 'wrap
+                 (lambda _
+                   (wrap-program (string-append #$output "/bin/jalv.select")
+                     `("PATH" ":" prefix
+                       (,(string-append #$(this-package-input "coreutils")
+                                        "/bin")
+                        ,(string-append #$(this-package-input "gawk") "/bin")
+                        ,(string-append #$(this-package-input "grep") "/bin")
+                        ,(string-append #$(this-package-input "jalv")
+                                        "/bin")))))))))
     (inputs
-     (list lilv lv2 jalv gtkmm-2))
+     (list bash-minimal
+           lilv
+           lv2
+           jalv
+           gtkmm-2
+           ;; For finding jalv executables
+           coreutils gawk grep))
     (native-inputs
      (list pkg-config))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "LV2_PATH")
+            (files '("lib/lv2")))))
     (home-page "https://github.com/brummer10/jalv_select")
     (synopsis "GUI to select LV2 plugins and run them with jalv")
     (description
