@@ -6082,6 +6082,34 @@ customized and extended using either the s7 Scheme implementation (included in
 the Snd sources), Ruby, or Forth.")
     (license (license:non-copyleft "file://COPYING"))))
 
+(define-public libspecbleach
+  (package
+    (name "libspecbleach")
+    (version "0.1.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/lucianodato/libspecbleach")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0czmzhggg5gl833karfrl2c0pr2k3jf7q7jd3y68hyj0cnn6f3jg"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list fftwf))
+    (home-page "https://github.com/lucianodato/libspecbleach")
+    (synopsis "C library for audio noise reduction and other spectral effects")
+    (description
+     "This package provides a C library for audio noise reduction and other
+spectral effects.  It is based on the algorithms that were used in
+@code{noise-repellent}.  These were extracted into a this standalone library to
+remove the lv2 dependency.  It uses the concept of a spectral processor which
+itself uses a @acronym{STFT, short time Fourier transform} to process the audio.")
+    (license license:lgpl2.1+)))
+
 (define-public noise-repellent
   (package
     (name "noise-repellent")
