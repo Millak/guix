@@ -30960,14 +30960,17 @@ and have a maximum lifetime built-in.")
     (name "python-flufl-testing")
     (version "0.8")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "flufl.testing" version))
-        (sha256
-         (base32
-          "1nkm95mhcfhl4x5jgs6y97ikszaxsfh07nyawsih6cxxm6l62641"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))          ;no tests
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/warsaw/flufl.testing")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dl2dl4wdrqklkhqcdbwchpqrpm6lwic4qk961zi6b2f8agis35i"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests
+    (native-inputs (list python-setuptools))
     (home-page "https://gitlab.com/warsaw/flufl.testing")
     (synopsis "Collection of test tool plugins")
     (description
