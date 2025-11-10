@@ -4,7 +4,7 @@
 ;;; Copyright © 2022 Pavel Shlyak <p.shlyak@pantherx.org>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Oleg Pykhalov <go.wigust@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -497,8 +497,15 @@ used in the image."
                               #:copy-closures? (not
                                                 #$(image-shared-store? image))
                               #:system-directory #$os
-                              #:grub-efi #+grub-efi
-                              #:grub-efi32 #+grub-efi32
+                              ;; These two shouldn't be needed unconditionally.
+                              #:grub-efi
+                              #+(if (bootloader-uses-grub-efi? bootloader)
+                                    grub-efi
+                                    #f)
+                              #:grub-efi32
+                              #+(if (bootloader-uses-grub-efi? bootloader)
+                                    grub-efi32
+                                    #f)
                               #:bootloader-package
                               #+(bootloader-package bootloader)
                               #:bootloader-installer
