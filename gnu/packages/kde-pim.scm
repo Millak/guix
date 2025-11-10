@@ -1973,7 +1973,6 @@ using a Qt/KMime C++ API.")
      (list extra-cmake-modules gnupg libxml2))
     (inputs
      (list akonadi-contacts
-           akonadi-notes
            akonadi-search
            boost
            gpgme
