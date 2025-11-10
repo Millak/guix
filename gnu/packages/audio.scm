@@ -3715,13 +3715,13 @@ CFFI and NumPy.")
 (define-public python-soxr
   (package
     (name "python-soxr")
-    (version "0.5.0.post1")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "soxr" version))
        (sha256
-        (base32 "0wzz7j0z814mm99xr19vfrwp2x904lbwhf513x7085m4x3rvk4kh"))))
+        (base32 "02a5balcm8dvlb938gl2k3kqvfdq1k300j2g0dbnkg2rsv0yczp0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3749,7 +3749,6 @@ CFFI and NumPy.")
                          python-scikit-build-core
                          python-setuptools
                          python-setuptools-scm
-                         python-sphinx
                          python-typing-extensions
                          python-wheel))
     (home-page "https://github.com/dofuuz/python-soxr")
