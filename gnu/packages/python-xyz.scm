@@ -30607,25 +30607,29 @@ in Python.")
     (version "0.18")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "bashlex" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/idank/bashlex")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1vln4zszzdqkypiir2hxsvkhgbf816005lbgqcw66rymqq0kmc2v"))))
-    (build-system python-build-system)
+        (base32 "00idgf9153jvp0g5ajbcfgpb6ffl2a8rcy3w5n9iirgxa7vlvmkm"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'pregenerate-yacc-tables
-           (lambda _
-             ;; parser.py caches tables, which attempts to write to site lib
-             ;; see https://github.com/idank/bashlex/issues/51
-             (invoke "python" "-c" "import bashlex"))))))
-    (home-page
-     "https://github.com/idank/bashlex")
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'pregenerate-yacc-tables
+            (lambda _
+              ;; parser.py caches tables, which attempts to write to site lib
+              ;; see https://github.com/idank/bashlex/issues/51
+              (invoke "python" "-c" "import bashlex"))))))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/idank/bashlex")
     (synopsis "Python parser for bash")
-    (description "@code{bashlex} is a Python port of the parser used
-internally by GNU bash.
+    (description
+     "@code{bashlex} is a Python port of the parser used internally by GNU
+bash.
 
 For the most part it's transliterated from C, the major differences are:
 
