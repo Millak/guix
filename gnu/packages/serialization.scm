@@ -637,7 +637,7 @@ object, without whitespace.")
 (define-public ckdl
   (package
     (name "ckdl")
-    (version "0.1.2")
+    (version "1.0")
     (source
      (origin
        (method git-fetch)
@@ -646,7 +646,7 @@ object, without whitespace.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zdpil61lm141lcxmfrg7jvfjp2n98v5q2rfqzm4wiqcdprgmasv"))))
+        (base32 "0dj6kjc7shs3sq6xj3mhpc2wzj4sg3iwg86mk4p9yh8l79kx2ix8"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
