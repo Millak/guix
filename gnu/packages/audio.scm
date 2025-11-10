@@ -1596,7 +1596,7 @@ plugins are provided.")
 (define-public cable
   (package
     (name "cable")
-    (version "0.9.8.1")
+    (version "0.9.21")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1605,10 +1605,7 @@ plugins are provided.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pzafiim1cnxrngk6nzmpx9sx1lc6qrqjrrcxg1qpigcrjvrfjs2"))
-              (modules '((guix build utils)))
-              (snippet
-               '(delete-file-recursively "Arch packages"))))
+                "1c7fy92nwp2m96asls460s83xapzcc6pqvplmg5rqds1rddiva2h"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1629,21 +1626,7 @@ plugins are provided.")
               (install-file "jack-plug.svg"
                             (string-append #$output "/share/icons/hicolor/scalable/apps/"))
               (install-file "com.github.magillos.cable.desktop"
-                            (string-append #$output "/share/applications/"))))
-          (add-after 'install-more 'wrap-executables
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let* ((pyversion
-                      #$(version-major+minor (package-version
-                                              (this-package-input "python"))))
-                     (lib (string-append #$output "/lib/python" pyversion
-                                         "/site-packages"))
-                     (file
-                      (string-append lib "/cables/launch-connection-manager.py")))
-                (chmod file #o555)
-                (wrap-script file
-                  #:guile (search-input-file inputs "bin/guile")
-                  `("GUIX_PYTHONPATH" ":" prefix
-                    (,lib  ,(getenv "GUIX_PYTHONPATH"))))))))))
+                            (string-append #$output "/share/applications/")))))))
     (inputs
      (list python
            python-dbus
