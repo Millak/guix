@@ -1812,7 +1812,7 @@ reel-to-reel tape machines.")
 (define-public iir
   (package
     (name "iir")
-    (version "1.9.4")
+    (version "1.10.0")
     (source
      (origin
        (method git-fetch)
@@ -1821,7 +1821,7 @@ reel-to-reel tape machines.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fqxn0qlvykpk9hiliivmkjjcz3g1bp83yd0zfm82r14abkjbj2g"))))
+        (base32 "0p64l0fmr7mfjhfxg6yc4f06aacbr6bb8kjmb5ffm95sq12rzdss"))))
     (build-system cmake-build-system)
     (arguments
      (list
