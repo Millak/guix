@@ -11838,12 +11838,13 @@ specific parser.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'skip-bad-tests
+         ;; For unknown reasons, the libxml2 features are misreported without
+         ;; this call prior to running BiocGenerics:::testPackage("mzR").
+         (add-after 'unpack 'ensure-libxml2-works
            (lambda _
-             ;; These tests need Internet access to load XML schemas.
-             (with-directory-excursion "inst/unitTests/"
-               (delete-file "test_isolationWindow.R")
-               (delete-file "test_mzid.R"))))
+             (substitute* "tests/runTests.R"
+               (("library\\(\"mzR\"\\)" m)
+                (string-append "XML::libxmlFeatures()\n" m)))))
          (add-after 'unpack 'use-system-boost
            (lambda _
              (substitute* "src/Makevars"
