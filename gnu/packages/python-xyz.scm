@@ -29400,19 +29400,30 @@ package are included automatically.")
 (define-public python-fastentrypoints
   (package
     (name "python-fastentrypoints")
-    (version "0.12")
+    (home-page "https://github.com/ninjaaron/fast-entry_points")
+    (properties '((commit . "a3a26f320c7ae2191fde71b79d4f4bf325d162f3")
+                  (revision . "0")))
+    (version (git-version "0.12"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "fastentrypoints" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "02s1j8i2dzbpbwgq2a3fiqwm3cnmhii2qzc0k42l0rdxd4a4ya7z"))))
-    (build-system python-build-system)
-    (home-page
-     "https://github.com/ninjaaron/fast-entry_points")
-    (synopsis
-     "Makes entry_points specified in setup.py load more quickly")
+        (base32 "0d4xx9zz2xrdxgap8lbrc1mvslvdvddxk3s27zqv918iykkm70d0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Testing is non-standard and hardly configurable.
+      #:tests? #f
+      #:test-backend #~'custom
+      #:test-flags #~(list "test/runtest.py")))
+    (native-inputs (list python-setuptools))
+    (synopsis "Makes entry_points specified in setup.py load more quickly")
     (description
      "Using entry_points in your setup.py makes scripts that start really
 slowly because it imports pkg_resources.  This package allows such setup
