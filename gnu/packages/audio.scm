@@ -3541,6 +3541,7 @@ compensation, (de)interleaving, and byte-swapping
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #f ;no test target
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'find-library
