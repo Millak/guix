@@ -3269,10 +3269,15 @@ from being able to mix multiple JACK audio streams.")
            lilv
            suil
            gtk+
+           jack-1
            qtbase-5
-           jack-1))
+           qtwayland-5))
     (native-inputs
      (list pkg-config))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "LV2_PATH")
+            (files '("lib/lv2")))))
     (home-page "https://drobilla.net/software/jalv.html")
     (synopsis "Simple LV2 host for JACK")
     (description
