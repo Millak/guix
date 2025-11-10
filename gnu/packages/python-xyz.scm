@@ -30644,27 +30644,28 @@ For the most part it's transliterated from C, the major differences are:
 (define-public python-jinxed
   (package
     (name "python-jinxed")
-    (version "1.0.0")
+    (version "1.3.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "jinxed" version))
-        (sha256
-         (base32
-          "1n7vl03rhjd0xhjgbjlh8x9f8yfbhamcwkgvs4jg7g5qj8f0wk89"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Rockhopper-Technologies/jinxed")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cssqc5fvy3nx0q94ia79vhldfi0r2pq5nkagdvnkhmlnz26a3n8"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-environment-variables
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((ncurses (assoc-ref inputs "ncurses")))
-               (setenv "TERM" "LINUX")
-               (setenv "TERMINFO" (string-append ncurses "/share/terminfo"))
-               #t))))
-       #:tests? #f)) ; _curses.error: setupterm: could not find terminal
-    (native-inputs
-     (list ncurses))
+     (list
+      #:tests? #f ;_curses.error: setupterm: could not find terminal
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-environment-variables
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "TERM" "LINUX")
+              (setenv "TERMINFO"
+                      (search-input-directory inputs "share/terminfo")))))))
+    (native-inputs (list ncurses python-setuptools))
     (home-page "https://github.com/Rockhopper-Technologies/jinxed")
     (synopsis "Jinxed Terminal Library")
     (description
