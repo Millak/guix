@@ -886,11 +886,11 @@ format compatible with dicod and similar programs.")
     (license license:unlicense)))
 
 (define-public goldendict-ng
-  (let ((commit "2cfc27361d061103a164705e7f85dbdf6cd6056f")
+  (let ((commit "673d1b905e4844375125d6e0dda99342636662ac")
         (revision "0"))
     (package
       (name "goldendict-ng")
-      (version (git-version "25.10.0" revision commit))
+      (version (git-version "25.10.2" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -899,7 +899,7 @@ format compatible with dicod and similar programs.")
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0r3aykiwg1jxam72mn1yrgmndnbf0r6nz5l1brqyqbr4wq3ir0p2"))
+          (base32 "0g6l4652q6v208fqa2h4yi9db1wdzj3b5fpv8akg3xil999crz39"))
          (modules '((guix build utils)))
          (snippet #~(for-each delete-file-recursively
                               (list "thirdparty/eb"
@@ -941,11 +941,11 @@ format compatible with dicod and similar programs.")
       (synopsis "Advanced dictionary lookup program")
       (description "GoldenDict-ng is an advanced dictionary lookup program
 that supports many dictionary formats, such as MDX, DSL, StarDict, Zim, etc.,
-as well as special types of \"dictionaries\", such as external program,
-website, audio files.  Among ather features are full text search,
+as well as special types of \"dictionaries\", such as external programs,
+websites and audio files.  Among other features are full text search,
 Anki integration, transliteration for some languages, word stemming and
 spelling correction via Hunspell's morphology analysis, unicode case,
 diacritics, punctuation and whitespace folding.  It is forked from the
-original GoldenDict which was developed at http://goldendict.org/.")
+original GoldenDict which was developed at @url{http://goldendict.org/}.")
       (home-page "https://xiaoyifang.github.io/goldendict-ng/")
       (license license:gpl3+))))
