@@ -3086,7 +3086,7 @@ to download videos from Austria's national television broadcaster.")
 (define-public yle-dl
   (package
     (name "yle-dl")
-    (version "20230611")
+    (version "20250126")
     (source (origin
               ;; PyPI release doesn't include tests.
               (method git-fetch)
@@ -3096,7 +3096,7 @@ to download videos from Austria's national television broadcaster.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04smlq6cswfp08sjif0cxnall0xbxl3bgly849nm5kg1m33ybmqk"))))
+                "0dinny2amqnln5dgp83x32p54mq7j0x4jy6d48wf26c8d4gkkqbh"))))
     (build-system pyproject-build-system)
     (arguments
      (list
