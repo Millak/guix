@@ -30543,29 +30543,33 @@ be necessary when using @code{cmd}.")
   (package
     (name "python-pytidylib")
     (version "0.3.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pytidylib" version))
-              (sha256
-               (base32
-                "1wqa9dv5d7swka14rnky862hc7dgk2g3dhlrz57hdn3hb7bwic92"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/countergram/pytidylib")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0h5kx99ka47yan9xsh2pyi19mhhbixqpbqn6rgciskfr5m1csji0"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-queue-import
-           (lambda _
-             ;; Adjust Queue import for Python 3.  Remove for versions >=0.4.0.
-             (substitute* "tests/threadsafety.py"
-               (("from Queue import Queue")
-                "from queue import Queue"))))
-         (add-before 'build 'qualify-libtidy
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libtidy (search-input-file inputs "/lib/libtidy.so")))
-               (substitute* "tidylib/tidy.py"
-                 (("ctypes\\.util\\.find_library\\('tidy'\\)")
-                  (format #f "'~a'" libtidy)))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-queue-import
+            (lambda _
+              ;; Adjust Queue import for Python 3.  Remove for versions >=0.4.0.
+              (substitute* "tests/threadsafety.py"
+                (("from Queue import Queue")
+                 "from queue import Queue"))))
+          (add-before 'build 'qualify-libtidy
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((libtidy (search-input-file inputs "/lib/libtidy.so")))
+                (substitute* "tidylib/tidy.py"
+                  (("ctypes\\.util\\.find_library\\('tidy'\\)")
+                   (format #f "'~a'" libtidy)))))))))
+    (native-inputs (list python-pytest python-setuptools))
     (inputs (list tidy-html))
     (home-page "https://github.com/countergram/pytidylib")
     (synopsis "Python wrapper for HTML Tidy library")
