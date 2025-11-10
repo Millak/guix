@@ -3254,16 +3254,22 @@ from being able to mix multiple JACK audio streams.")
                 "1q8mzjv577vdi64s47gd4pg0ydzxvs32cwrb1d64v90f52qpgbpd"))))
     (build-system meson-build-system)
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'build-PIC
-           ;; The default -fPIE #errors when combined with our Qt packages.
-           ;; Work around the broken meson.build script clobbering c_args.
-           (lambda _
-             (substitute* "meson.build"
-               (("'-DZIX_STATIC'" match)
-                (string-append match ", '-fPIC'"))))))))
+     (list #:tests? #f                      ; no check target
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'build-PIC
+                 ;; The default -fPIE #errors when combined with our Qt
+                 ;; packages.  Work around the broken meson.build script
+                 ;; clobbering c_args.
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("'-DZIX_STATIC'" match)
+                      (string-append match ", '-fPIC'")))))
+               (add-after 'install 'wrap
+                 (lambda _
+                   (wrap-program (string-append #$output "/bin/jalv.qt5")
+                     `("QT_PLUGIN_PATH" prefix
+                       (,(getenv "QT_PLUGIN_PATH")))))))))
     (inputs
      (list lv2
            lilv
