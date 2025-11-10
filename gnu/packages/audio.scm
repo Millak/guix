@@ -7320,14 +7320,14 @@ while still staying in time.")
 (define-public butt
   (package
     (name "butt")
-    (version "0.1.38")
+    (version "1.45.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://sourceforge/butt/butt/butt-"
+              (uri (string-append "https://danielnoethen.de/butt/release/"
                                   version "/butt-" version ".tar.gz"))
               (sha256
                (base32
-                "10i3xpxzccdl4pidiyymw9cfavhy50yhn7xi5bd77y91f2903kp9"))
+                "0r43xph6xf02c9zldhyj82mvy82xv0f9wbv653gg2kkcjh88ajc8"))
               (modules '((guix build utils)))
               (snippet
                '(substitute* "src/butt.cpp"
@@ -7338,16 +7338,18 @@ while still staying in time.")
            #~(modify-phases %standard-phases
                (add-after 'install 'install-documentation
                  (lambda _
-                   (let ((doc (string-append #$output "/share/doc/" #$name)))
+                   (let ((doc (string-append #$output:doc "/share/doc/" #$name)))
                      (install-file "README" doc)
                      (copy-file #$(this-package-native-input "manual")
                                 (string-append doc "/butt-manual.pdf"))))))))
+    (outputs '("out" "doc"))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("manual"
         ,(origin
            (method url-fetch)
-           (uri (string-append "https://danielnoethen.de/butt/butt-"
+           (uri (string-append "https://danielnoethen.de/butt/release/" version
+                               "/butt-"
                                version "_manual.pdf"))
            (sha256
             (base32 "04aixxqshfj11ja3ifh0zvywl2mqzmymppcd0xj8sv0j7whjibaq"))))))
@@ -7368,7 +7370,8 @@ while still staying in time.")
            libogg
            openssl
            opus
-           portaudio))
+           portaudio
+           portmidi-2))
     (home-page "https://danielnoethen.de/butt/")
     (synopsis "Audio streaming tool")
     (description "Butt is a tool to stream audio to a ShoutCast or
