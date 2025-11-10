@@ -1664,7 +1664,7 @@ connections manager, pw-top wrapper, simple ALSA mixer and jack_delay GUI.")
 (define-public calf
   (package
     (name "calf")
-    (version "0.90.6")
+    (version "0.90.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1673,7 +1673,7 @@ connections manager, pw-top wrapper, simple ALSA mixer and jack_delay GUI.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0p4zqzr7spy3jjsmy6h7n5lsyqqyh23bswk1r3kims50b102xhxd"))))
+                "0wzkshqazw26w73h1lva5wr8v2bq0a20kjd6lfvbi1pj3ql3azk5"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #false)) ;there is no test target
     (inputs
