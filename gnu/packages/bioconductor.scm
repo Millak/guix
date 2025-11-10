@@ -11666,6 +11666,15 @@ containers.")
                 (string-append "XML::libxmlFeatures()\n" m)))))
          (add-after 'unpack 'delete-bad-tests
            (lambda _
+             ;; These tests fail since the upgrade to libxml2 2.14, which
+             ;; removed transparent decompression.
+             (with-directory-excursion "tests/testthat/"
+               (substitute* "test_centroided.R"
+                 ((".*isCentroidedFromFile.*" m)
+                  (string-append m "skip('guix')\n")))
+               (substitute* "test_MSnExp.R"
+                 ((".*isolation window.*" m)
+                  (string-append m "skip('guix')\n"))))
              ;; Needs r-prolocdata
              (for-each delete-file
                        '("tests/testthat/test_average.R"
