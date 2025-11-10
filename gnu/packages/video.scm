@@ -2893,7 +2893,7 @@ Jellyfin.  It has support for various media files without transcoding.")
 (define-public gallery-dl
   (package
     (name "gallery-dl")
-    (version "1.30.8")
+    (version "1.30.10")
     (source
      (origin
        (method git-fetch)
@@ -2902,7 +2902,7 @@ Jellyfin.  It has support for various media files without transcoding.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hl1nyaah4l03kg4q382jqdznmlywzwnb4dj71qd40mh6895zswd"))))
+        (base32 "1rgzgmw11b0ay1cf42cshn35gvll9iypw7phi389r5ahf56am6h4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
