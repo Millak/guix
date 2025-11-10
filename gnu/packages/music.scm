@@ -225,7 +225,7 @@
 (define-public alsa-scarlett-gui
   (package
     (name "alsa-scarlett-gui")
-    (version "0.5.0")
+    (version "0.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -234,7 +234,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "14c5yk6gp2bqkcyl78r9hnnlxidpdpmrwpf05dcq6zyca8l0mkr9"))))
+                "161x5kqwkca46wmwv5jxywhpl772vw4qmqksk9wb1sqkmlqfjiqf"))))
     (build-system gnu-build-system)
     (arguments
      (list
