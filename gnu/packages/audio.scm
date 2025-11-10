@@ -3264,20 +3264,14 @@ from being able to mix multiple JACK audio streams.")
                  (lambda _
                    (substitute* "meson.build"
                      (("'-DZIX_STATIC'" match)
-                      (string-append match ", '-fPIC'")))))
-               (add-after 'install 'wrap
-                 (lambda _
-                   (wrap-program (string-append #$output "/bin/jalv.qt5")
-                     `("QT_PLUGIN_PATH" prefix
-                       (,(getenv "QT_PLUGIN_PATH")))))))))
+                      (string-append match ", '-fPIC'"))))))))
     (inputs
      (list lv2
            lilv
            suil
            gtk+
            jack-1
-           qtbase-5
-           qtwayland-5))
+           qtbase-5))
     (native-inputs
      (list pkg-config))
     (native-search-paths
