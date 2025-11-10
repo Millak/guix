@@ -2352,7 +2352,7 @@ the non-linear circuit elements of their original analog counterparts.")
 (define-public rev-plugins
   (package
     (name "rev-plugins")
-    (version "0.7.1")
+    (version "0.8.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2361,23 +2361,24 @@ the non-linear circuit elements of their original analog counterparts.")
                     version ".tar.bz2"))
               (sha256
                (base32
-                "1ikpinxm00pkfi259bnkzhsy3miagrjgdihaaf5x4v7zac29j3g7"))))
+                "1yhnvjgr14qr0ni0n2x8dhlzbx1qfgyrnffbaaq0d5xbzfgrq543"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; no "check" target
-       #:phases
-       (modify-phases %standard-phases
-         ;; no configure script
-         (delete 'configure)
-         (add-before 'install 'prepare-target-directory
-           (lambda* (#:key outputs #:allow-other-keys)
-             (mkdir-p (string-append (assoc-ref outputs "out") "/lib/ladspa"))
-             #t))
-         (add-after 'unpack 'override-target-directory
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "Makefile"
-               (("/usr") (assoc-ref outputs "out")))
-             #t)))))
+     (list #:tests? #f ; no "check" target
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; no configure script
+               (delete 'configure)
+               (add-after 'unpack 'change-directory
+                 (lambda _
+                   (chdir "source")))
+               (add-after 'change-directory 'override-target-directory
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("/usr") #$output))))
+               (add-before 'install 'prepare-target-directory
+                 (lambda _
+                   (mkdir-p (string-append #$output "/lib/ladspa")))))))
     (home-page "https://kokkinizita.linuxaudio.org")
     (synopsis "LADSPA reverb plugin")
     (description
