@@ -6113,23 +6113,19 @@ itself uses a @acronym{STFT, short time Fourier transform} to process the audio.
 (define-public noise-repellent
   (package
     (name "noise-repellent")
-    (version "0.1.5")
+    (version "0.2.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/lucianodato/noise-repellent")
-                    (commit version)))
-              (file-name (string-append name "-" version "-checkout"))
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hb89x9i2knzan46q4nwscf5zmnb2nwf4w13xl2c0y1mx1ls1mwl"))))
+                "0dq0rv7mndw0lqacl2nf9dmj4zzq19hfminzk3fzbppk5mh2rivp"))))
     (build-system meson-build-system)
-    (arguments
-     `(#:configure-flags
-       (list (string-append "--prefix=" (assoc-ref %outputs "out")
-                            "/lib/lv2"))))
     (inputs
-     (list lv2 fftwf))
+     (list fftwf libspecbleach lv2))
     (native-inputs
      (list pkg-config))
     (home-page "https://github.com/lucianodato/noise-repellent")
