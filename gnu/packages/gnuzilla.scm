@@ -603,9 +603,9 @@ in the case of Firefox, it is browser/locales/all-locales."
     "zh-CN"
     "zh-TW"))
 
-(define %icecat-base-version "140.4.0")
+(define %icecat-base-version "140.5.0")
 (define %icecat-version (string-append %icecat-base-version "-gnu1"))
-(define %icecat-build-id "20251014000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-build-id "20251111000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -625,9 +625,9 @@ in the case of Firefox, it is browser/locales/all-locales."
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "1xx4rsdkfkx9nxlfzw07j5di07kfqi0a7jplcixvqihh2xrhdwj9"))))
+              "1qhhsgk1dvdrxvvvry6gpijqzpbgmc6h1fd01c7478ppwprpwaw3"))))
 
-         (gnuzilla-commit "579bc2897077119e38a7e1493bca6ec97a06a36a")
+         (gnuzilla-commit "5897aee761cc6d179bd8632f085c3c14ccf7db6c")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -638,7 +638,7 @@ in the case of Firefox, it is browser/locales/all-locales."
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "094sci1mvvmb6xrpfjw0r482lspkmkfdln78mrkcqq7a5x3gwp83"))))
+              "1yk3bpsa01gy5s5dwavsr089qp5dznzb8za5k3ab3fs79i9vdg6z"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
