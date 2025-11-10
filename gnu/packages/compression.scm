@@ -3171,3 +3171,39 @@ exported by the zlib library.")
         ;; The changes break the examples.
         `(cons "-DBUILD_EXAMPLES=OFF" ,flags))))
     (properties '((hidden? . #t)))))
+
+(define-public cmix
+  (package
+    (name "cmix")
+    (version "21")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/byronknoll/cmix")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1alivia1hnhxa7z8vkqammacyhj8zfqwk7hjahj5nkfq28v2ddb4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'check) ;No tests
+          (replace 'install
+            (lambda _
+              (install-file "cmix"
+                            (string-append #$output "/bin")))))
+      #:make-flags
+      #~(list (string-append "CXX=" #$(cxx-for-target))
+              ;; Linker fails when you use CC=cc-for-target
+              (string-append "CC=" #$(cxx-for-target)))))
+    (native-inputs (list clang))
+    (synopsis "Lossless data-compression program optimized for file size")
+    (description
+     "Cmix is a lossless data compression program aimed at optimizing compression
+ratio at the cost of high CPU/memory usage.")
+    (home-page "https://github.com/byronknoll/cmix")
+    (license license:gpl3)))
