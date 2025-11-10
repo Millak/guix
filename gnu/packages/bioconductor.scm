@@ -11657,6 +11657,13 @@ containers.")
       '(modify-phases %standard-phases
          (add-after 'unpack 'set-HOME
            (lambda _ (setenv "HOME" "/tmp")))
+         ;; For unknown reasons, the libxml2 features are misreported without
+         ;; this call prior to running BiocGenerics:::testPackage("mzR").
+         (add-after 'unpack 'ensure-libxml2-works
+           (lambda _
+             (substitute* "tests/testthat.R"
+               (("library\\(\"MSnbase\"\\)" m)
+                (string-append "XML::libxmlFeatures()\n" m)))))
          (add-after 'unpack 'delete-bad-tests
            (lambda _
              ;; Needs r-prolocdata
