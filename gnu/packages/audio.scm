@@ -7505,7 +7505,7 @@ Home Page}.")
 (define-public python-librosa
   (package
     (name "python-librosa")
-    (version "0.10.2.post1")
+    (version "0.11.0")
     (source
      (origin
        (method git-fetch)
@@ -7515,7 +7515,7 @@ Home Page}.")
              ;; For test files.
              (recursive? #true)))
        (sha256
-        (base32 "1x37148y1rh4sq2nc59iw9jlza3zwawxnlb7bd9w36an05aclmnh"))))
+        (base32 "065x43hx670rjrclxi4hiqxscllb16v9s7myjvg7rd5pd3y0k7sg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
