@@ -5636,7 +5636,7 @@ tools for styling them, including a built-in real-time video preview.")
 (define-public pitivi
   (package
     (name "pitivi")
-    (version "2022.06.0")
+    (version "2023.03.0")
     (source
      (origin
        (method git-fetch)
@@ -5645,7 +5645,7 @@ tools for styling them, including a built-in real-time video preview.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wgfi8srblqzd2y6528cyvn56rbdxpwlq0wmwqhabshdk28zyx8d"))))
+        (base32 "12sbl9dlw9rh44mbyfx6pzan4jkhcxidrcbfqih10cyyv50cqjkb"))))
     (build-system meson-build-system)
     (native-inputs
      (list gettext-minimal
