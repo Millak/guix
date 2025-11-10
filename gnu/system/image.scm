@@ -355,6 +355,11 @@ set to the given OS."
   "Return the index of the root partition of the given IMAGE."
   (1+ (srfi-1:list-index root-partition? (image-partitions image))))
 
+(define (bootloader-uses-grub-efi? bootloader)
+  "Return true if the bootloader-name contains grub-efi."
+  (memq (bootloader-name bootloader)
+        (list grub-efi grub-efi32 grub-efi-removable-bootloader)))
+
 
 ;;
 ;; Disk image.
@@ -547,8 +552,7 @@ used in the image."
                 (image-partition-table-type image)))
        (else "")))
 
-    (when (and (memq (bootloader-name bootloader)
-                     '(grub-efi grub-efi32 grub-efi-removable-bootloader))
+    (when (and (bootloader-uses-grub-efi? bootloader)
                (not
                 (gpt-image? image)))
       (raise
