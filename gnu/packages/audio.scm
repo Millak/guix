@@ -6498,7 +6498,7 @@ other Gnaural instances, allowing synchronous sessions between many users.")
 (define-public darkice
   (package
     (name "darkice")
-    (version "1.4")
+    (version "1.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/rafael2k/darkice/releases/"
@@ -6506,7 +6506,7 @@ other Gnaural instances, allowing synchronous sessions between many users.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "05yq7lggxygrkd76yiqby3msrgdn082p0qlvmzzv9xbw8hmyra76"))))
+                "13h58skz5xik75sjv9kf2299haly2nc5gswl22ff1kvw79bw9d0q"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list lame
