@@ -2691,7 +2691,7 @@ also play midifiles using a Soundfont.")
 (define-public faust-2
   (package
     (inherit faust)
-    (version "2.75.7")
+    (version "2.81.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/grame-cncm/faust/"
@@ -2699,7 +2699,7 @@ also play midifiles using a Soundfont.")
                                   "/faust-" version ".tar.gz"))
               (sha256
                (base32
-                "11ww02zmj3vnva1w52hs9wkxvhwwf53agklyzm2c7gysw0jfvkw9"))))
+                "0mj7gn7xp6mzr94nqcyrrkcmzm81chq6qb1n76wspah71lw7g6f6"))))
     (build-system cmake-build-system)
     (arguments
      (list
