@@ -30583,17 +30583,22 @@ allows you, from Python code, to “fix” invalid (X)HTML markup.")
     (name "python-mujson")
     (version "1.4")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "mujson" version))
-        (sha256
-         (base32
-          "0wbj6r8yzsdx2b0kbldlkznr1a9nn33za2q9x3g0hbg420dwzn97"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mattgiles/mujson")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1j0pcqyxpivk8nn7xx5d0pj40g22psd6v2r7l4m8b6h4hrdn9cij"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f)) ;No tests.
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/mattgiles/mujson")
     (synopsis "Use the fastest JSON functions available at import time")
-    (description "This package selects the fastest JSON functions available
-at import time.")
+    (description
+     "This module selects the fastest JSON functions available at import time
+in Python.")
     (license license:expat)))
 
 (define-public python-bashlex
