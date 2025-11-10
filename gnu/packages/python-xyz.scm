@@ -30483,23 +30483,22 @@ dictionaries.")
 (define-public python-osc
   (package
     (name "python-osc")
-    (version "1.7.4")
+    (version "1.9.3")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "python-osc" version))
-        (sha256
-         (base32 "0cnh0z5lnng7fh48nmfaqqn8j25k13gkd4rhxd3m6sjqiix9s3vn"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 (substitute* "pythonosc/udp_client.py"
-                   (("from collections import Iterable")
-                    "from collections.abc import Iterable"))))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/attwad/python-osc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d99q9ww278cjqbfdzahg17rhbkgk2rw6ixxm5z5iwnxnsrhfdwa"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/attwad/python-osc")
     (synopsis "Open Sound Control server and client implementations")
     (description
-      "@code{python-osc} is a pure Python library with no external
+     "@code{python-osc} is a pure Python library with no external
 dependencies.  It implements the @uref{http://opensoundcontrol.org/spec-1_0,
 Open Sound Control 1.0} specification.")
     (license license:unlicense)))
