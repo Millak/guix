@@ -6640,7 +6640,7 @@ package does not rely on the @code{YouTube} Data API v3.")
 (define-public wf-recorder
   (package
     (name "wf-recorder")
-    (version "0.5.0")
+    (version "0.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6649,7 +6649,7 @@ package does not rely on the @code{YouTube} Data API v3.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0a805kfbgpg7898gbb218n7krbvn9r96xydhibvrphy08wxd1xzg"))))
+                "14lzx6bz72j0ljw7jjqzqvflsyyvfwp137iwl8if8dcb5mr2k389"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config))
