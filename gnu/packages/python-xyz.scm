@@ -31233,22 +31233,23 @@ By default it uses the open Python vulnerability database Safety DB.")
 (define-public python-rnc2rng
   (package
     (name "python-rnc2rng")
-    (version "2.6.6")
+    (version "2.7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "rnc2rng" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/djc/rnc2rng")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1wbqvz2bhq2f5kqi7q2q3m9y5vs9rj970zhnjh502pvvhmbx20as"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-rply))
+        (base32 "1wbd8936vs4rinjfmjd8dav6sdz6wrsc0jppqidzzcnzwfp146pf"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "python" "test.py"))))))
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "test.py")))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-rply))
     (home-page "https://github.com/djc/rnc2rng")
     (synopsis "Convert RELAX NG Compact to regular syntax")
     (description
