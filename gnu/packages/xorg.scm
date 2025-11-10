@@ -6697,6 +6697,24 @@ without losing any state.  It can also be used to forward full desktops from
 X11 servers, Windows, or macOS.")
     (license license:gpl2+)))
 
+(define-public xpra-5
+  (package
+    (inherit xpra)
+    (name "xpra")
+    (version "5.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Xpra-org/xpra.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "150as385jvhz9isc6a9876hrs8700axd700d2m1wagd628xx8yh0"))
+       (patches (search-patches "xpra-5.0-systemd-run.patch"
+                                "xpra-5.0-install_libs.patch"))))))
+
+
 (define-public uim
   (package
     (name "uim")
