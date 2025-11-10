@@ -3126,7 +3126,7 @@ and testing or configuring the JACK session.  Tools include @code{jack_lsp},
 (define-public jacktrip
   (package
     (name "jacktrip")
-    (version "1.6.8")
+    (version "2.7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3134,7 +3134,7 @@ and testing or configuring the JACK session.  Tools include @code{jack_lsp},
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0719ng799kingv0y9yk07bvnmprk25c09ph3yaia5dhapg0jz17m"))))
+               (base32 "1d9cn4nny3kbf3f9x0bcsrqb0ir1h789nv7s72xmhf7r5rfd9xm4"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3153,10 +3153,11 @@ and testing or configuring the JACK session.  Tools include @code{jack_lsp},
            python
            python-jinja2
            python-pyyaml
-           qtbase-5
+           qtbase
+           qtwayland
            rtaudio))
     (native-inputs
-     (list pkg-config qtbase-5)) ;for qmake
+     (list pkg-config))
     (home-page "https://jacktrip.github.io/jacktrip/")
     (synopsis "Multi-machine audio system for network music performance")
     (description
