@@ -5955,7 +5955,7 @@ kbps at 24 bit/96 kHz.")
 (define-public bluez-alsa
   (package
     (name "bluez-alsa")
-    (version "3.0.0")
+    (version "4.3.1")
     (source (origin
               ;; The tarballs are mere snapshots and don't contain a
               ;; bootstrapped build system.
@@ -5966,7 +5966,7 @@ kbps at 24 bit/96 kHz.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jlsgxyqfhncfhx1sy3ry0dp6p95kd4agh7g2b7g51h0c4cv74h8"))))
+                "05qzmcsihhd92vpjd45qr0gdzfqiw4jfcdjdg78mzimv9g5g3rjm"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -5978,7 +5978,12 @@ kbps at 24 bit/96 kHz.")
                             (assoc-ref %outputs "out")
                             "/etc/dbus-1/system.d"))))
     (native-inputs
-     (list autoconf automake libtool pkg-config))
+     (list autoconf
+           automake
+           `(,glib "bin")
+           libtool
+           pkg-config
+           python-minimal))
     (inputs
      (list alsa-lib
            bluez
