@@ -391,6 +391,11 @@
               ((target-arm32?)
                #~((add-after 'unpack 'disable-some-tests
                     (lambda _
+                      ;; Extend the test timeout for this test:
+                      (substitute* "tests/unit/meson.build"
+                        (("test-crypto-tlssession': 90")
+                         "test-crypto-tlssession': 180"))
+
                       ;; failed to allocate memory for stack: Cannot allocate memory
                       (substitute* "tests/qtest/meson.build"
                         ((".*qtests_aspeed :.*") ""))))))
