@@ -55,6 +55,7 @@
   #:use-module (gnu packages less)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages text-editors)
+  #:use-module (gnu packages time)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages package-management)
@@ -432,13 +433,20 @@ application = get_wsgi_application()\n") port)))))
                 (delete-file-recursively (string-append out-site-packages
                                                         "/patchwork/tests"))
 
+                (call-with-output-file
+                    (string-append out-site-packages "/version.txt")
+                  (lambda (port)
+                    (display #$version port)
+                    (newline port)))
+
                 ;; Install patchwork related tools
-                (for-each (lambda (file)
-                            (install-file file
-                                          (string-append out "/bin")))
-                          (list (string-append out-site-packages
-                                               "/patchwork/bin/parsemail.sh")
-                                (string-append out-site-packages
+                (for-each
+                 (lambda (file)
+                   (install-file file (string-append out "/bin")))
+                 (list
+                  (string-append out-site-packages
+                                 "/patchwork/bin/parsemail.sh")
+                  (string-append out-site-packages
                                  "/patchwork/bin/parsemail-batch.sh")))
 
                 ;; Collect the static assets, this includes JavaScript, CSS and
@@ -449,8 +457,15 @@ application = get_wsgi_application()\n") port)))))
                 ;; The intent here is that you can serve files from this
                 ;; directory through a webserver, which is recommended when
                 ;; running Django applications.
-                (let ((static-root (string-append out
-                                                  "/share/patchwork/htdocs")))
+                (let ((static-root
+                       (string-append out "/share/patchwork/htdocs")))
+                  ;; Patch the STATICFILES_DIRS entry
+                  (substitute* (string-append
+                                out-site-packages
+                                "/patchwork/settings/base.py")
+                    (("os\\.path\\.join\\(ROOT\\_DIR, 'htdocs'\\)")
+                     (string-append "'" static-root "'")))
+
                   (mkdir-p static-root)
                   (copy-file "patchwork/settings/production.example.py"
                              "patchwork/settings/assets.py")
@@ -496,6 +511,7 @@ if __name__ == \"__main__\":
     (inputs (list python-wrapper))
     (propagated-inputs
      (list python-django
+           python-tzdata
            ;; TODO: Make this configurable
            python-psycopg2
            python-mysqlclient

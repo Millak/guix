@@ -1771,11 +1771,9 @@ DATABASES = {
     },
 }
 
-" #$(if debug?
-        #~(string-append "STATIC_ROOT = '"
-                         #$(file-append patchwork "/share/patchwork/htdocs")
-                         "'")
-        #~(string-append "STATIC_URL = '" #$static-url "'")) "
+" #$(if static-url
+        #~(string-append "STATIC_URL = '" #$static-url "'")
+        "") "
 
 STATICFILES_STORAGE = (
   'django.contrib.staticfiles.storage.StaticFilesStorage'
@@ -1840,7 +1838,7 @@ WSGIPassAuthorization On
   #~(lambda command
       (zero? (spawn-command
               `(#$(file-append patchwork "/bin/patchwork-admin")
-                ,command)
+                ,@command)
               #:user "httpd"
               #:group "httpd"
               #:environment-variables
@@ -1864,10 +1862,9 @@ WSGIPassAuthorization On
            (with-extensions (list guile-gcrypt)
              #~(let ((secret-key-file
                       #$(patchwork-settings-module-secret-key-file
-                         settings-module)))
-                 (use-modules (guix build utils)
-                              (gcrypt random))
-
+                         settings-module))
+                     (random-token
+                      (@ (gcrypt random) random-token)))
                  (unless (file-exists? secret-key-file)
                    (mkdir-p (dirname secret-key-file))
                    (call-with-output-file secret-key-file

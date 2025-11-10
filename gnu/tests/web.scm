@@ -609,40 +609,32 @@ HTTP-PORT, along with php-fpm."
 
 (define (patchwork-initial-database-setup-service configuration)
   (define start-gexp
-    #~(lambda ()
-        (let ((pid (primitive-fork))
-              (postgres (getpwnam "postgres")))
-          (if (eq? pid 0)
-              (dynamic-wind
-                (const #t)
-                (lambda ()
-                  (setgid (passwd:gid postgres))
-                  (setuid (passwd:uid postgres))
-                  (primitive-exit
-                   (if (and
-                        (zero?
-                         (system* #$(file-append postgresql "/bin/createuser")
-                                  #$(patchwork-database-configuration-user
-                                      configuration)))
-                        (zero?
-                         (system* #$(file-append postgresql "/bin/createdb")
-                                  "-O"
-                                  #$(patchwork-database-configuration-user
-                                      configuration)
-                                  #$(patchwork-database-configuration-name
-                                      configuration))))
-                       0
-                       1)))
-                (lambda ()
-                  (primitive-exit 1)))
-              (zero? (cdr (waitpid pid)))))))
+    #~(primitive-exit
+       (if (and
+            (zero?
+             (system* #$(file-append postgresql "/bin/createuser")
+                      #$(patchwork-database-configuration-user
+                         configuration)))
+            (zero?
+             (system* #$(file-append postgresql "/bin/createdb")
+                      "-O"
+                      #$(patchwork-database-configuration-user
+                         configuration)
+                      #$(patchwork-database-configuration-name
+                         configuration))))
+           0
+           1)))
 
   (shepherd-service
    (requirement '(postgres))
    (provision '(patchwork-postgresql-user-and-database))
-   (start start-gexp)
+   (start #~(lambda _
+              (zero? (spawn-command
+                      '(#$(program-file "patchwork-initial-database-setup"
+                                        start-gexp))
+                      #:user "postgres"
+                      #:group "postgres"))))
    (stop #~(const #f))
-   (respawn? #f)
    (documentation "Setup patchwork database.")))
 
 (define (patchwork-os patchwork)
@@ -717,6 +709,18 @@ HTTP-PORT."
              '(begin
                 (use-modules (gnu services herd))
                 (match (start-service 'patchwork-postgresql-user-and-database)
+                  (#f #f)
+                  (('service response-parts ...)
+                   (match (assq-ref response-parts 'running)
+                     ((#t) #t)
+                     ((pid) pid)))))
+             marionette))
+
+          (test-assert "patchwork-setup started"
+            (marionette-eval
+             '(begin
+                (use-modules (gnu services herd))
+                (match (start-service 'patchwork-setup)
                   (#f #f)
                   (('service response-parts ...)
                    (match (assq-ref response-parts 'running)
