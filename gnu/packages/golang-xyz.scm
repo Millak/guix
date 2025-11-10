@@ -18249,6 +18249,34 @@ queue.")
 NSQ protocol @url{https://nsq.io/}.")
     (license license:expat)))
 
+(define-public go-github-com-nu7hatch-gouuid
+  (package
+    (name "go-github-com-nu7hatch-gouuid")
+    (version "0.0.0-20131221200532-179d4d0c4d8d")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nu7hatch/gouuid")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1isyfix5w1wm26y3a15ha3nnpsxqaxz5ngq06hnh6c6y0inl2fwj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/nu7hatch/gouuid"
+      #:test-flags
+      #~(list "-vet=off")))    ;Go@1.24 forces vet, but tests are not ready yet.
+    (home-page "https://github.com/nu7hatch/gouuid")
+    (synopsis "UUID implementation for Golang")
+    (description
+     "This package provides immutable UUID structs and the functions
+@code{NewV3}, @code{NewV4}, @code{NewV5} and @code{Parse()} for generating
+versions 3, 4 and 5 UUIDs as specified in
+@url{https://rfc-editor.org/rfc/rfc4122.html, RFC 4122}.")
+    (license license:expat)))
+
 (define-public go-github-com-nvveen-gotty
   (package
     (name "go-github-com-nvveen-gotty")
