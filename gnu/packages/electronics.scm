@@ -2335,7 +2335,7 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
 (define-public symbiyosys
   (package
     (name "symbiyosys")
-    (version "0.58")
+    (version "0.59")
     (source
      (origin
        (method git-fetch)
@@ -2344,7 +2344,7 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fja71y1wkqdwc3cwwk9ifaf33hhnxr8khlj9fhadbcc66rg1s56"))))
+        (base32 "1viah5rm22d0c2v1fsm04brhavl4522h36gv80d7647alkvdfqb9"))))
     (build-system gnu-build-system)
     (arguments
      (list
