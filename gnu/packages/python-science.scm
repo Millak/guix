@@ -4625,30 +4625,22 @@ docs dependency in support of other libraries.")
 (define-public python-unyt
   (package
     (name "python-unyt")
-    (version "3.0.3")
+    (version "3.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "unyt" version))
        (sha256
-        (base32 "0jrq2vhan2h280h6cw1sm5hys2nzmf19w4py64k3nrkc320z9mni"))))
+        (base32 "04qjjv5zga7dh355ygsvkckfqi86nf03w6ckw5zm0120xw9p1shp"))))
     (build-system pyproject-build-system)
-    (arguments
-     ;; This is a Numpy DeprecationWarning, remove it on next update.
-     (list #:test-flags ''("-k" "not test_h5_io")))
-    ;; Pint is optional, but we do not propagate it due to its size.
+    ;; tests: 647 passed, 56 skipped, 2 xfailed
     (native-inputs
-     (list python-pint
-           python-pytest
+     (list python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    ;; Astropy is an optional import, but we do not include it as it creates a
-    ;; module cycle: astronomy->python-science->astronomy.
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-h5py        ; optional import
-           python-matplotlib  ; optional import
-           python-numpy
+     (list python-numpy
+           python-packaging
            python-sympy))
     (home-page "https://unyt.readthedocs.io")
     (synopsis "Library for working with data that has physical units")
