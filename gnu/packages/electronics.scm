@@ -241,7 +241,7 @@ formal verification.")
   (package
     (inherit abc)
     (name "abc-yosyshq")
-    (version "0.58")
+    (version "0.59")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -250,7 +250,7 @@ formal verification.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "191hsznsmsjn8100n50qsh3ng8wgrnyfhr7qcnb8yskiwqp37pjh"))))
+                "110hvmwspp7bprwwilcwb8kw6wcqrj9z214269fa75j9027k5l0c"))))
     (home-page "https://github.com/YosysHQ/abc/")
     (description "ABC is a program for sequential logic synthesis and
 formal verification.  This is the Yosyshq fork of ABC.")
