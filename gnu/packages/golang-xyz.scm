@@ -22806,6 +22806,59 @@ calendar dates.  It offers a complete implementation of the
 @url{https://www.ietf.org/rfc/rfc2445.txt,RFC 2445} specification.")
     (license license:expat)))
 
+(define-public go-github-com-tedsuo-ifrit
+  (package
+    (name "go-github-com-tedsuo-ifrit")
+    (version "0.0.0-20230516164442-7862c310ad26")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tedsuo/ifrit")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0d16zj6vvz0p8i2b0m2f7vlqp8jj7mi0irmn9dgr3s5jasa5amqv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tedsuo/ifrit"
+      #:test-flags
+      #~(list "-vet=off" ;Go@1.24 forces vet, but tests are not ready yet.
+              ;; [Fail] HttpServer Invoke when the server is started with
+              ;; a different net Protocol. [It] serves requests with the
+              ;; given handler
+              ;; [Fail] HttpServer Invoke when the TLS server is started
+              ;; with a different net Protocol. [It] serves tls-secured
+              ;; http requests with the given handler
+              "-skip" "TestHttpServer")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This test depends on go-github-com-grpc-grpc-go-examples,
+          ;; which is not packaged and has a big dependency tree
+          (add-after 'unpack 'remove-test
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file "grpc_server/server_test.go")))))))
+    (native-inputs
+     (list ;; go-github-com-grpc-grpc-go-examples
+           go-github-com-onsi-ginkgo
+           go-github-com-onsi-ginkgo-v2
+           go-github-com-onsi-gomega))
+    (propagated-inputs
+     (list go-github-com-nu7hatch-gouuid
+           go-golang-org-x-net
+           go-google-golang-org-grpc))
+    (home-page "https://github.com/tedsuo/ifrit")
+    (synopsis "Process model for Golang")
+    (description
+     "This package is a small set of interfaces for composing single-purpose
+units of work into larger programs, forming a process model for Golang.  Each
+unit of work implements the @code{Runner} interface and each @code{Runner} can
+be invoked to create a @code{Process} which can be monitored and signaled to
+stop.")
+    (license license:expat)))
+
 ;; XXX: Maybe split it into dedicated packages per module to easy importer.
 (define-public go-github-com-tekwizely-go-parsing
   (package
