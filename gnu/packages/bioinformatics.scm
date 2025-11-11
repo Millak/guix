@@ -13174,8 +13174,8 @@ GenomicRanges operations.")
       (license license:gpl2))))
 
 (define-public r-skitools
-  (let ((commit "22d107d32f063eb891eb5e7fb36996d1c0b0d2bc")
-        (revision "1"))
+  (let ((commit "ba322dcc2c0ca24a7f3dabecfb37f95e0e2186d1")
+        (revision "2"))
     (package
       (name "r-skitools")
       (version (git-version "0.0.0.9000" revision commit))
@@ -13187,7 +13187,7 @@ GenomicRanges operations.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1977d9bkdk9l2n6niahfj9vksh9l1ga4g7c3b3x27lj1gc0qgr4z"))))
+                  "1za371x1cmkmlmicbhzxwycg7g1z9q3d5j7ia2rzayf30s9rcc47"))))
       (properties `((upstream-name . "skitools")))
       (build-system r-build-system)
       (arguments
