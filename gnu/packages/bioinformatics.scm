@@ -13190,6 +13190,16 @@ GenomicRanges operations.")
                   "1977d9bkdk9l2n6niahfj9vksh9l1ga4g7c3b3x27lj1gc0qgr4z"))))
       (properties `((upstream-name . "skitools")))
       (build-system r-build-system)
+      (arguments
+       (list
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'disable-bad-test
+             (lambda _
+               ;; See https://github.com/mskilab-org/skitools/issues/11
+               (substitute* "tests/testthat/test_skitools.R"
+                 ((".*test ra.merge.*" m)
+                  (string-append m "skip('guix')\n"))))))))
       (propagated-inputs
        (list r-biostrings
              r-complexheatmap
