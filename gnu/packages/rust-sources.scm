@@ -458,6 +458,33 @@ UTF-32 support.")
 @code{rustc-demangle} crate.")
      (license (list license:expat license:asl2.0)))))
 
+(define-public rust-salsa-0.23.0.3713cd7
+  (let ((commit "3713cd7eb30821c0c086591832dd6f59f2af7fe7")
+        (revision "0"))
+    (package
+      (name "rust-salsa")
+      (version (git-version "0.23.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/salsa-rs/salsa.git")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1c90zkhy9hvwqlk5is0nrs4wlpj9qzaga1z4jcdlyrdl343n7qlz"))))
+      (build-system cargo-build-system)
+      (arguments
+       (list #:skip-build? #t
+             #:cargo-package-crates
+             ''("salsa-macro-rules" "salsa-macros" "salsa")))
+      (inputs (cargo-inputs 'rust-salsa-0.23.0.3713cd7))
+      (home-page "https://github.com/salsa-rs/salsa")
+      (synopsis "Framework for incrementalized computation")
+      (description "This package provides a generic framework for on-demand,
+incrementalized computation (experimental).")
+      (license (list license:asl2.0 license:expat)))))
+
 (define-public rust-smithay-0.6.0.ede2707
   (let ((commit "ede27079f45eeb7c21796e22f3bc25b741b024ea")
         (revision "2"))
