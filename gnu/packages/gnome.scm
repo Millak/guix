@@ -8221,9 +8221,14 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
                    (strip-keyword-arguments
                     '(#:glib-or-gtk?)
                     (package-arguments gnome-online-accounts))
-                 ((#:phases phases)
-                  #~(modify-phases #$phases
-                      (delete 'disable-gtk-update-icon-cache)))))
+      ;; Fix build.
+      ((#:make-flags _ '())
+       #~(list (string-append "CFLAGS="
+                              "-Wno-error=implicit-function-declaration "
+                              "-Wno-error=int-conversion")))
+      ((#:phases phases)
+       #~(modify-phases #$phases
+           (delete 'disable-gtk-update-icon-cache)))))
     (inputs (modify-inputs (package-inputs gnome-online-accounts)
               (replace "rest" rest)
               (replace "webkitgtk" webkitgtk-with-libsoup2)))))
