@@ -2713,7 +2713,7 @@ parallel computing platforms.  It also supports serial execution.")
 (define-public yosys
   (package
     (name "yosys")
-    (version "0.58")
+    (version "0.59")
     (source
      (origin
        (method git-fetch)
@@ -2721,7 +2721,7 @@ parallel computing platforms.  It also supports serial execution.")
               (url "https://github.com/YosysHQ/yosys")
               (commit (string-append "v" version))))
        (sha256
-        (base32 "13095d587dvnj6n1fhw5whda7qhafmmng0qz6qa52cdxriz63kka"))
+        (base32 "0bgijlivkhq338rbd056pjhdbjgwbd8l10afzp2dzlhn03j4l140"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -2759,9 +2759,11 @@ parallel computing platforms.  It also supports serial execution.")
           (replace 'configure
             (lambda* (#:key make-flags #:allow-other-keys)
               (apply invoke "make" "config-gcc" make-flags)))
-          (add-after 'configure 'use-external-abc
+          (add-after 'configure 'configure-makefile
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* '("Makefile")
+                (("ENABLE_EDITLINE \\:= 0")
+                 "ENABLE_EDITLINE := 1")
                 (("ABCEXTERNAL \\?=")
                  (string-append "ABCEXTERNAL = "
                                 (search-input-file inputs "/bin/abc"))))))
@@ -2790,6 +2792,7 @@ parallel computing platforms.  It also supports serial execution.")
                          gawk ;for the tests and "make" progress pretty-printing
                          iverilog ;for the tests
                          pkg-config
+                         perl
                          python
                          tcl)) ;tclsh for the tests
     (inputs (list abc-yosyshq
