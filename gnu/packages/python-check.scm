@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2017 Cyril Roelandt <tipecaml@gmail.com>
-;;; Copyright © 2015, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2019-2021, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016 宋文武 <iyzsong@envs.net>
 ;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
@@ -5172,6 +5172,10 @@ unused.")
      (list
       #:cargo-install-paths ''("crates/ruff")
       #:install-source? #f
+      #:modules
+      '((guix build cargo-build-system)
+        (guix build utils)
+        (ice-9 match))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'use-guix-vendored-dependencies
@@ -5198,8 +5202,29 @@ unused.")
                 (setenv
                  "CARGO_FEATURE_UNPREFIXED_MALLOC_ON_SUPPORTED_PLATFORMS" "1")
                 (setenv "JEMALLOC_OVERRIDE"
-                        (string-append jemalloc "/lib/libjemalloc.so"))))))))
-    (native-inputs (list pkg-config))
+                        (string-append jemalloc "/lib/libjemalloc.so")))))
+          (add-after 'install 'install-completions
+            (lambda* (#:key native-inputs #:allow-other-keys)
+              (for-each
+               (match-lambda
+                 ((shell . path)
+                  (mkdir-p (in-vicinity #$output (dirname path)))
+                  (let ((binary
+                         (if #$(%current-target-system)
+                             (search-input-file native-inputs "bin/ruff")
+                             (in-vicinity #$output "bin/ruff"))))
+                    (with-output-to-file (in-vicinity #$output path)
+                      (lambda _
+                        (invoke binary "generate-shell-completion" shell))))))
+               '(("bash"   . "share/bash-completion/completions/ruff")
+                 ("elvish" . "share/elvish/lib/ruff")
+                 ("fish"   . "share/fish/vendor_completions.d/ruff.fish")
+                 ("zsh"    . "share/zsh/site-functions/_ruff"))))))))
+    (native-inputs
+     (append (if (%current-target-system)
+                 (list this-package)
+                 '())
+             (list pkg-config)))
     (inputs
      (cons* jemalloc
             `(,zstd "lib")
