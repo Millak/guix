@@ -1646,9 +1646,7 @@ ca495991b7852b855"))
                       "ac_add_options --with-libclang-path="
                       #$(this-package-native-input "clang") "/lib\n"
                       "ac_add_options --with-system-bz2\n"
-                      ;; FIXME: Causes breakage (see:
-                      ;; <https://codeberg.org/guix/guix/issues/3166>)
-                      ;; "ac_add_options --with-system-icu\n"
+                      "ac_add_options --with-system-icu\n"
                       "ac_add_options --with-system-jpeg\n"
                       "ac_add_options --with-system-libevent\n"
                       "ac_add_options --with-system-nspr\n"
@@ -1746,9 +1744,7 @@ ca495991b7852b855"))
            gpgme
            gtk+
            hunspell
-           ;; FIXME: Causes breakage (see:
-           ;; <https://codeberg.org/guix/guix/issues/3166>).
-           ;;icu4c-77
+           icu4c-77
            libcanberra
            libevent
            libffi
