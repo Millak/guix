@@ -19674,6 +19674,22 @@ normalizations, minimum variance matching, and so on.")
          "1xvcd97ikqsfdpk2fddy3k0z1ajqga7nv9bgac9c1wnjk1gqrpgh"))))
     (properties `((upstream-name . "SDMTools")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-constants
+           (lambda _
+             ;; Older versions of R used to define PI.  As of R 4.5.0 the
+             ;; definition from the default math headers is supposed to be
+             ;; used instead.
+             (substitute* "src/pointinpolygon.c"
+               (("double TWOPI = " m)
+                (string-append "#define PI M_PI\n" m)))
+             (with-fluids ((%default-port-encoding "ISO-8859-1"))
+               (substitute* "src/vincenty.geodesics.c"
+                 (("#include <math.h>" m)
+                  (string-append m "\n#define PI M_PI")))))))))
     (propagated-inputs (list r-r-utils))
     (home-page "https://www.rforge.net/SDMTools/")
     (synopsis "Species distribution modelling tools")
