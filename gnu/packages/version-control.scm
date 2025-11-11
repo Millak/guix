@@ -349,10 +349,7 @@ Python 3.3 and later, rather than on Python 2.")
               ;; By default 'make install' creates hard links for
               ;; things in 'libexec/git-core', which leads to huge
               ;; nars; see <https://bugs.gnu.org/21949>.
-              "NO_INSTALL_HARDLINKS=indeed"
-              #$@(if (or (target-hurd64?) (%current-target-system))
-                     #~("-Wno-error=implicit-function-declaration")
-                     #~()))
+              "NO_INSTALL_HARDLINKS=indeed")
       #:phases
       #~(modify-phases %standard-phases
           #$@(if (%current-target-system)
