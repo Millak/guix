@@ -25598,7 +25598,8 @@
 
 (define rust-windows-aarch64-gnullvm-0.48.0
   (crate-source "windows_aarch64_gnullvm" "0.48.0"
-                "1g71yxi61c410pwzq05ld7si4p9hyx6lf5fkw21sinvr3cp5gbli"))
+                "1g71yxi61c410pwzq05ld7si4p9hyx6lf5fkw21sinvr3cp5gbli"
+                #:snippet '(delete-file-recursively "lib")))
 
 (define rust-windows-aarch64-gnullvm-0.48.5
   (crate-source "windows_aarch64_gnullvm" "0.48.5"
@@ -25637,7 +25638,8 @@
 
 (define rust-windows-aarch64-msvc-0.48.0
   (crate-source "windows_aarch64_msvc" "0.48.0"
-                "1wvwipchhywcjaw73h998vzachf668fpqccbhrxzrz5xszh2gvxj"))
+                "1wvwipchhywcjaw73h998vzachf668fpqccbhrxzrz5xszh2gvxj"
+                #:snippet '(delete-file-recursively "lib")))
 
 (define rust-windows-aarch64-msvc-0.48.5
   (crate-source "windows_aarch64_msvc" "0.48.5"
@@ -25745,7 +25747,8 @@
 
 (define rust-windows-i686-gnu-0.48.0
   (crate-source "windows_i686_gnu" "0.48.0"
-                "0hd2v9kp8fss0rzl83wzhw0s5z8q1b4875m6s1phv0yvlxi1jak2"))
+                "0hd2v9kp8fss0rzl83wzhw0s5z8q1b4875m6s1phv0yvlxi1jak2"
+                #:snippet '(delete-file-recursively "lib")))
 
 (define rust-windows-i686-gnu-0.48.5
   (crate-source "windows_i686_gnu" "0.48.5"
@@ -25799,7 +25802,8 @@
 
 (define rust-windows-i686-msvc-0.48.0
   (crate-source "windows_i686_msvc" "0.48.0"
-                "004fkyqv3if178xx9ksqc4qqv8sz8n72mpczsr2vy8ffckiwchj5"))
+                "004fkyqv3if178xx9ksqc4qqv8sz8n72mpczsr2vy8ffckiwchj5"
+                #:snippet '(delete-file-recursively "lib")))
 
 (define rust-windows-i686-msvc-0.48.5
   (crate-source "windows_i686_msvc" "0.48.5"
@@ -26094,7 +26098,8 @@
 
 (define rust-windows-x86-64-gnu-0.48.0
   (crate-source "windows_x86_64_gnu" "0.48.0"
-                "1cblz5m6a8q6ha09bz4lz233dnq5sw2hpra06k9cna3n3xk8laya"))
+                "1cblz5m6a8q6ha09bz4lz233dnq5sw2hpra06k9cna3n3xk8laya"
+                #:snippet '(delete-file-recursively "lib")))
 
 (define rust-windows-x86-64-gnu-0.48.5
   (crate-source "windows_x86_64_gnu" "0.48.5"
@@ -26123,7 +26128,8 @@
 
 (define rust-windows-x86-64-gnullvm-0.48.0
   (crate-source "windows_x86_64_gnullvm" "0.48.0"
-                "0lxryz3ysx0145bf3i38jkr7f9nxiym8p3syklp8f20yyk0xp5kq"))
+                "0lxryz3ysx0145bf3i38jkr7f9nxiym8p3syklp8f20yyk0xp5kq"
+                #:snippet '(delete-file-recursively "lib")))
 
 (define rust-windows-x86-64-gnullvm-0.48.5
   (crate-source "windows_x86_64_gnullvm" "0.48.5"
@@ -26162,7 +26168,8 @@
 
 (define rust-windows-x86-64-msvc-0.48.0
   (crate-source "windows_x86_64_msvc" "0.48.0"
-                "12ipr1knzj2rwjygyllfi5mkd0ihnbi3r61gag5n2jgyk5bmyl8s"))
+                "12ipr1knzj2rwjygyllfi5mkd0ihnbi3r61gag5n2jgyk5bmyl8s"
+                #:snippet '(delete-file-recursively "lib")))
 
 (define rust-windows-x86-64-msvc-0.48.5
   (crate-source "windows_x86_64_msvc" "0.48.5"
