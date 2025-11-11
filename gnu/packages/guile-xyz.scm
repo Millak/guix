@@ -7130,7 +7130,7 @@ The resulting QR codes can be rendered to ASCII art strings or to PNG images (us
 (define-public guile-hygguile
   (package
     (name "guile-hygguile")
-    (version "1.0.5")
+    (version "2.0.21")
     (source
      (origin
        (method git-fetch)
@@ -7139,7 +7139,7 @@ The resulting QR codes can be rendered to ASCII art strings or to PNG images (us
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0iwgbb2ym15l0iz91ycd7ikf42jnhdnzs786d9dc1p2d0fr2l962"))))
+        (base32 "04fpf46ibjb4x2qpzgwdhnjh7cjvzvn5fry0j4macdijhbwd59yf"))))
     (build-system guile-build-system)
     (native-inputs (list guile-3.0))
     (arguments
@@ -7150,7 +7150,7 @@ The resulting QR codes can be rendered to ASCII art strings or to PNG images (us
     (description
      "Hygguile is a library that allows you to create cozy web user-interfaces
 using Guile Scheme, by defining an expressive @acronym{DSL, domain-specific
-language}, and by leveraging the power of S-expressions, SXML and TailwindCSS.
+language}, and by leveraging the power of S-expressions, SXML and OliveCSS.
 
 The project aims to provide reusable, professional-looking and accessible
 web components, whose names resemble the HTML counterparts, thus
