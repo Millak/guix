@@ -74,6 +74,7 @@
   #:use-module (gnu packages cups)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages messaging)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python-web)
@@ -1722,12 +1723,14 @@ ca495991b7852b855"))
                      (pciutils #$(this-package-input "pciutils"))
                      (pciutils-lib (string-append pciutils "/lib"))
                      (libva #$(this-package-input "libva"))
-                     (libva-lib (string-append libva "/lib")))
+                     (libva-lib (string-append libva "/lib"))
+                     (libotr #$(this-package-input "libotr"))
+                     (libotr-lib (string-append libotr "/lib")))
                 (wrap-program (car (find-files lib "^icedove$"))
                   `("XDG_DATA_DIRS" prefix (,gtk-share))
                   `("LD_LIBRARY_PATH" prefix
-                    (,pulseaudio-lib ,eudev-lib ,libnotify-lib ,gpgme-lib
-                     ,mesa-lib ,libva-lib ,pciutils-lib)))))))))
+                    ( ,pulseaudio-lib ,eudev-lib ,libnotify-lib ,gpgme-lib
+                      ,mesa-lib ,libva-lib ,libotr-lib ,pciutils-lib)))))))))
     (inputs
      (list alsa-lib
            bash-minimal
@@ -1752,6 +1755,7 @@ ca495991b7852b855"))
            libgnome
            libjpeg-turbo
            libnotify
+           libotr
            libpng-apng
            libva
            libvpx
