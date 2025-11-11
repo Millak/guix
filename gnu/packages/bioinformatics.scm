@@ -1744,6 +1744,17 @@ tests in large cohorts and biobanks (SAIGE-GENE+).")
         (base32 "16r6m8p90rnb4hxl86fz3kbals3626232i8fj0zhhd23p89z3w4v"))))
     (properties `((upstream-name . "sigfit")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'gcc-14-compatibility
+            (lambda _
+              (substitute* "configure"
+                ;; Modifying src/Makevars directly is overruled.
+                (("config\\(\\)\"")
+                 "config()\"
+echo \"PKG_CXXFLAGS+=-g -O2 -Wno-error=changes-meaning\" >> src/Makevars")))))))
     (native-inputs (list r-codetools))
     (propagated-inputs (list r-rcpp
                              r-rstan
