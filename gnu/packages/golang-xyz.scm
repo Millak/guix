@@ -400,6 +400,35 @@ use the C library from the project called FUSE.")
 a human-readable byte format.")
     (license license:asl2.0)))
 
+(define-public go-code-cloudfoundry-org-clock
+  (package
+    (name "go-code-cloudfoundry-org-clock")
+    (version "1.54.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cloudfoundry/clock")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11a1107nhv6mq6pqy7idrph07lbgjyj6qbwqgrzg49cxclb40zda"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "code.cloudfoundry.org/clock"))
+    (native-inputs
+     (list go-github-com-onsi-ginkgo-v2
+           go-github-com-onsi-gomega))
+    (propagated-inputs
+     (list go-github-com-tedsuo-ifrit))
+    (home-page "https://code.cloudfoundry.org/clock")
+    (synopsis "Time provider and rich fake for Golang")
+    (description
+     "This package provides a @code{Clock} interface, useful for injecting
+time dependencies in tests.")
+    (license license:asl2.0)))
+
 (define-public go-codeberg-org-anaseto-gruid
   (package
     (name "go-codeberg-org-anaseto-gruid")
