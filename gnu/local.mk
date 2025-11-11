@@ -1609,7 +1609,14 @@ dist_patch_DATA =						\
   %D%/packages/patches/icedtea-7-hotspot-aarch64-use-c++98.patch	\
   %D%/packages/patches/icedtea-7-hotspot-pointer-comparison.patch	\
   %D%/packages/patches/icu4c-icu-22132-fix-vtimezone.patch	\
+  %D%/packages/patches/icu4c-20548-dateinterval-timezone.patch  \
+  %D%/packages/patches/icu4c-22132-standardize-vtzone-output.patch      \
+  %D%/packages/patches/icu4c-23069-rosh-hashanah-postponement.patch     \
+  %D%/packages/patches/icu4c-dayperiod-fractional-seconds.patch \
+  %D%/packages/patches/icu4c-double-conversion.patch            \
+  %D%/packages/patches/icu4c-dtitvfmt-adopt-calendar.patch      \
   %D%/packages/patches/icu4c-fix-TestHebrewCalendarInTemporalLeapYear.patch	\
+  %D%/packages/patches/icu4c-wasi-workaround.patch              \
   %D%/packages/patches/id3lib-CVE-2007-4460.patch			\
   %D%/packages/patches/id3lib-UTF16-writing-bug.patch			\
   %D%/packages/patches/ilmbase-fix-tests.patch			\

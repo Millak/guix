@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2023 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -179,12 +180,26 @@ C/C++ part.")
     (inherit icu4c)
     (name "icu4c")
     (version "77.1")
-    (source (origin
-              (method url-fetch)
-              (uri (icu4c-uri version))
-              (sha256
-               (base32
-                "0qa0yapkypywhzx8ai1p27125h9v1qy89f7v3w1kjz1jfwgl73jq"))))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (icu4c-uri version))
+       (sha256
+        (base32
+         "0qa0yapkypywhzx8ai1p27125h9v1qy89f7v3w1kjz1jfwgl73jq"))
+       (patches
+        (search-patches
+         ;; These are the relevant patches Firefox applies (see
+         ;; <https://github.com/mozilla-firefox/firefox/tree/main/intl/icu-patches>).
+         ;; The 'intl/icu' prefix in the file names must be stripped.  These
+         ;; are necessary to ensure applications like Icedove run correctly.
+         "icu4c-22132-standardize-vtzone-output.patch"
+         "icu4c-20548-dateinterval-timezone.patch"
+         "icu4c-23069-rosh-hashanah-postponement.patch"
+         "icu4c-dayperiod-fractional-seconds.patch"
+         "icu4c-double-conversion.patch"
+         "icu4c-dtitvfmt-adopt-calendar.patch"
+         "icu4c-wasi-workaround.patch"))))))
 
 (define-public icu4c-build-root
   (package

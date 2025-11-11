@@ -1,0 +1,25 @@
+Retrieved from: <https://raw.githubusercontent.com/mozilla-firefox/firefox/refs/heads/main/intl/icu-patches/bug-1636984-append-item-dayperiod-fractional-seconds.diff>
+
+# Add <appendItem> entries for "DayPeriod" and "FractionalSeconds" to avoid the
+# "├ ┤" parentheses from ICU and instead use the normal "( )" parentheses.
+#
+# CLDR bug: https://unicode-org.atlassian.net/browse/CLDR-13184
+
+diff --git a/source/i18n/dtptngen.cpp b/source/i18n/dtptngen.cpp
+--- a/source/i18n/dtptngen.cpp
++++ b/source/i18n/dtptngen.cpp
+@@ -259,12 +259,12 @@ static const dtTypeElem dtTypes[] = {
+     {0, UDATPG_FIELD_COUNT, 0, 0, 0} , // last row of dtTypes[]
+  };
+ 
+ static const char* const CLDR_FIELD_APPEND[] = {
+     "Era", "Year", "Quarter", "Month", "Week", "*", "Day-Of-Week",
+-    "*", "*", "Day", "*", // The UDATPG_x_FIELD constants and these fields have a different order than in ICU4J
+-    "Hour", "Minute", "Second", "*", "Timezone"
++    "*", "*", "Day", "DayPeriod", // The UDATPG_x_FIELD constants and these fields have a different order than in ICU4J
++    "Hour", "Minute", "Second", "FractionalSecond", "Timezone"
+ };
+ 
+ static const char* const CLDR_FIELD_NAME[UDATPG_FIELD_COUNT] = {
+     "era", "year", "quarter", "month", "week", "weekOfMonth", "weekday",
+     "dayOfYear", "weekdayOfMonth", "day", "dayperiod", // The UDATPG_x_FIELD constants and these fields have a different order than in ICU4J
