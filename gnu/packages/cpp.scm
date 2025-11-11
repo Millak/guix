@@ -49,6 +49,7 @@
 ;;; Copyright © 2025 Romain Garbage <romain.garbage@inria.fr>
 ;;; Copyright © 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2025 Philippe Swartvagher <phil.swart@gmx.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4764,6 +4765,58 @@ written in C99.")
     (properties `((tunable? . #t)))
     (home-page "https://github.com/aklomp/base64")
     (license license:bsd-2)))
+
+(define-public unordered-dense
+  (package
+    (name "unordered-dense")
+    (version "4.8.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/martinus/unordered_dense")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02a86p2abrjkjw6kxd2gcxhknn50mcb1shrch8fhg72n534yblr5"))))
+    ;; This library uses CMake as build system to distribute the package, but
+    ;; uses Meson to build and launch tests. Hence, the phase 'check is replaced
+    ;; to mimic what is defined for meson-build-system.
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (substitute* "../source/test/app/doctest.h"
+                  (("#include <doctest\\.h>")
+                   "#include <doctest/doctest.h>"))
+                (setenv "FUZZ_CORPUS_BASE_DIR"
+                        (string-append (getcwd) "/../source/data/fuzz/"))
+                (invoke "meson" "setup" "../source/")
+                (invoke "ninja" "--verbose" "-j"
+                        (number->string (parallel-job-count)))
+                (setenv "MESON_TESTTHREADS"
+                        (number->string (parallel-job-count)))
+                (invoke "meson" "test")))))))
+    (native-inputs (list meson pkg-config))
+    (inputs (list doctest fmt boost))
+    (home-page "https://github.com/martinus/unordered_dense")
+    (synopsis "C++17 fast and densely stored hashmap and hashset library")
+    (description
+     "A fast & densely stored hashmap and hashset based on robin-hood backward
+shift deletion for C++17 and later.
+
+The classes @code{ankerl::unordered_dense::map} and
+@code{ankerl::unordered_dense::set} are (almost) drop-in replacements of
+@code{std::unordered_map} and @code{std::unordered_set.} While they don't have
+as strong iterator / reference stability guarantees, they are typically much
+faster.  Additionally, there are @code{ankerl::unordered_dense::segmented_map}
+and @code{ankerl::unordered_dense::segmented_set} with lower peak memory usage,
+and stable references (iterators are NOT stable) on insert.")
+    (license license:expat)))
 
 (define-public zpp-serializer
   (package
