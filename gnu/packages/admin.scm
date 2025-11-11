@@ -4668,7 +4668,7 @@ information tool.")
 (define-public fastfetch-minimal
   (package
     (name "fastfetch-minimal")
-    (version "2.54.0")
+    (version "2.55.0")
     (source
      (origin
        (method git-fetch)
@@ -4677,7 +4677,7 @@ information tool.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0iw58idc45x505rhix3mqymnfbk1r7jc10alyry9qypflalqwkqx"))
+        (base32 "1vqw0r0h8clb302bzbmfxpkz54kx6sd661nm50vvhijham8x7mlb"))
        (modules '((guix build utils)))
        (snippet '(begin
                    (delete-file-recursively "src/3rdparty")))))
