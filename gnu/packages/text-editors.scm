@@ -1127,11 +1127,11 @@ scripts/input/X11/C/Shell/HTML/Dired): 49KB.
                    #:exec (string-append #$output "/bin/manuskript %f")
                    #:comment '((#f "Tool for writers")
                                ("es" "Herramienta para escritores/as"))
-                   #:keywords "manuskript;office;write;edit;novel;text;msk"
+                   #:keywords '("office" "write" "edit" "novel" "text" "msk")
                    #:terminal #f
                    #:type "Application"
                    #:icon "manuskript"
-                   #:categories "Office;WordProcessor;"))))))))
+                   #:categories '("Office" "WordProcessor")))))))))
     (inputs
      (list bash-minimal
            pandoc
