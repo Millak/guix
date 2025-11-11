@@ -1160,11 +1160,14 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
            unzip))
     (native-search-paths
      (list (search-path-specification
+            (variable "LADSPA_PATH")
+            (files '("lib/ladspa")))
+           (search-path-specification
             (variable "LV2_PATH")
             (files '("lib/lv2")))
            (search-path-specification
-            (variable "LADSPA_PATH")
-            (files '("lib/ladspa")))))
+            (variable "LXVST_PATH")
+            (files '("lib/lxvst")))))
     (home-page "https://ardour.org")
     (synopsis "Digital audio workstation")
     (description
