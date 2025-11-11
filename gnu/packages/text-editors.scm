@@ -41,6 +41,7 @@
 ;;; Copyright © 2025 Marc Coquand <marc@coquand.email>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
+;;; Copyright © 2025 benjamin wil <hey@benjaminwil.info>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -488,6 +489,32 @@ competitive (as in keystroke count) with Vim.")
      "kak-lsp is a Language Server Protocol client for Kakoune implemented in
 Rust.")
     (license license:unlicense)))
+
+(define-public kak-tree-sitter
+  (package
+    (name "kak-tree-sitter")
+    (version "3.1.3")
+    (source
+     (origin
+       (file-name (git-file-name name version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~hadronized/kak-tree-sitter")
+             (commit (string-append name "-v" version))))
+       (sha256
+        (base32 "1bjq94damzfmc0i8as7fvgjavwh5snz45031b0v12rgfn4pjar1w"))))
+    (build-system cargo-build-system)
+    (inputs (cargo-inputs 'kak-tree-sitter))
+    (arguments
+     (list
+      #:install-source? #f
+      #:cargo-install-paths ''("kak-tree-sitter")))
+    (home-page "https://sr.ht/~hadronized/kak-tree-sitter/")
+    (synopsis "Server between Kakoune and Tree-sitter")
+    (description
+     "Kak-tree-sitter provides a server between Kakoune and Tree-sitter.  It
+provides semantic syntax highlighting and selections in the Kakoune text editor.")
+    (license license:bsd-3)))
 
 (define-public parinfer-rust
   (package
