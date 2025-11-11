@@ -7182,13 +7182,6 @@ ones.")
              libxext
              libxrender
              mesa))
-      (native-search-paths
-       (list (search-path-specification
-              (variable "VST2_PATH")
-              (files '("lib/vst")))
-             (search-path-specification
-              (variable "VST3_PATH")
-              (files '("lib/vst3")))))
       (home-page "https://github.com/DISTRHO/DISTRHO-Ports")
       (synopsis "Audio plugins and LV2 ports")
       (description
