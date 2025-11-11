@@ -2724,6 +2724,126 @@ a path (for moving targets) and combining cutouts
 @end itemize")
     (license license:bsd-3)))
 
+(define-public python-astrodata
+  (package
+    (name "python-astrodata")
+    (version "2.10.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/GeminiDRSoftware/astrodata")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "141qymnirjlrbjzl26wx2dvrr0glva8q74cwxi575a29aa0byrhv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 985 passed, 7 skipped, 58 deselected
+      #:test-flags
+      ;; Tests depend on unpackaged DRAGON's module "gemini_instruments".
+      #~(list "--ignore=tests/integration/"
+              ;; Access to https://archive.gemini.edu/file is required to
+              ;; download test data.
+              "--deselect=tests/unit/test_provenance.py::test_convert_provhistory"
+              #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/unit/"
+                                                    "test_fits.py::"
+                                                    test))
+                      (list "test_attributes"
+                            "test_can_add_and_del_extension"
+                            "test_copy"
+                            "test_crop"
+                            "test_crop_ext"
+                            "test_do_arith_and_retain_features"
+                            "test_extver3"
+                            "test_from_hdulist"
+                            "test_header"
+                            "test_header_collection"
+                            "test_paths"
+                            "test_phu"
+                            "test_read_no_extensions"
+                            "test_set_a_keyword_on_phu_deprecated"
+                            "test_slice"
+                            "test_slice_data"
+                            "test_slice_multiple"
+                            "test_slice_single_element"))
+              #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/unit/"
+                                                    "test_object_construction.py::"
+                                                    test))
+                      (list "test_append_array_to_extension_with_arbitrary_name"
+                            "test_append_array_to_extension_with_name_sci"
+                            "test_append_array_to_root_no_name"
+                            "test_append_array_to_root_with_arbitrary_name"
+                            "test_append_array_to_root_with_name_sci"
+                            "test_append_dq_var"
+                            "test_append_nddata_to_root_no_name"
+                            "test_append_nddata_to_root_with_arbitrary_name"
+                            "test_append_non_single_slice"
+                            "test_append_single_slice"
+                            "test_append_slice_to_extension"
+                            "test_append_whole_instance"
+                            "test_can_read_data"
+                            "test_delete_arbitrary_attribute_from_ad"
+                            "test_delete_named_associated_extension"))
+              #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/unit/"
+                                                    "test_testing.py::"
+                                                    test))
+                      (list "test_ADCompare_header_matching"
+                            "test_ADCompare_header_matching_flip"
+                            "test_ADCompare_init"
+                            "test_ADCompare_missing_refcat"
+                            "test_ADCompare_numext"
+                            "test_ADCompare_run_comparison"
+                            "test_ADCompare_wcs"
+                            "test_ad_compare"
+                            "test_download_file_path_subpath"
+                            "test_download_from_archive_None_sub_path"
+                            "test_download_memory_leaks"
+                            "test_warning_if_no_cache_path"))
+
+              #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/unit/"
+                                                    "test_wcs.py::"
+                                                    test))
+                      (list "test_gwcs_creation"
+                            "test_loglinear_axis"
+                            "test_reading_and_writing_sliced_image"
+                            "test_remove_unused_world_axis"))
+              ;; assert 1 == 0
+              "-k" (string-append "not test_script_executes[script0-]"
+                                  " and not test_script_executes[script1-]"))))
+    (native-inputs
+     (list python-poetry-core
+           python-objgraph
+           python-pytest
+           python-pytest-doctestplus))
+    (propagated-inputs
+     (list python-asdf-3
+           python-astropy-6
+           python-gwcs-0.21
+           python-jsonschema
+           python-numpy))
+    (home-page "https://github.com/GeminiDRSoftware/astrodata")
+    (synopsis "Managing astronomical data through a uniform interface")
+    (description
+     "@code{astrodata} is a package for managing astronomical data through a
+uniform interface.  It is designed to be used with the
+@url{https://www.astropy.org/, Astropy package}.  @code{astrodata} was created
+for use as part of the @url{https://github.com/GeminiDRSoftware/DRAGONS,
+DRAGONS} data reduction pipeline, but it is now implemented to be useful for
+any astronomical data reduction or analysis project.
+
+Unlike managing files using the @code{astropy.io.fits} package alone,
+@code{astrodata} is designed to be extendible to any data format, and to
+parse, respond to, and store metadata in a consistent, intentional way.  This
+makes it especially useful for managing data from multiple instruments,
+telescopes, and data generation utilities.")
+    (license license:bsd-3)))
+
 (define-public python-astrodendro
   (package
     (name "python-astrodendro")
