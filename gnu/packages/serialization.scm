@@ -657,6 +657,19 @@ object, without whitespace.")
 This package also provides @samp{kdlpp}, a C++20 wrapper around @samp{ckdl}.")
     (license license:expat)))
 
+(define-public python-ckdl
+  (package/inherit ckdl
+    (name "python-ckdl")
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'custom
+           #:test-flags #~(list "bindings/python/tests/ckdl_test.py")))
+    (native-inputs
+     (list python-cython
+           python-scikit-build
+           python-setuptools))
+    (synopsis "Python library for parsing and emitting KDL")))
+
 (define-public capnproto
   (package
     (name "capnproto")
