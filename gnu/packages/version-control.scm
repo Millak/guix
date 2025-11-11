@@ -611,7 +611,7 @@ everything from small to very large projects with speed and efficiency.")
     (arguments
      (substitute-keyword-arguments (package-arguments git-minimal)
        ((#:disallowed-references disallowed-refs ''())
-        (delq (this-package-native-input "perl") disallowed-refs))
+        (list (this-package-native-input "bash")))
        ((#:make-flags flags #~'())
         #~(cons "USE_LIBPCRE2=yes" #$flags))
        ((#:configure-flags flags #~'())
