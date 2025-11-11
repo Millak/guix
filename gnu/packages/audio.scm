@@ -7353,7 +7353,7 @@ while still staying in time.")
                                "/butt-"
                                version "_manual.pdf"))
            (sha256
-            (base32 "04aixxqshfj11ja3ifh0zvywl2mqzmymppcd0xj8sv0j7whjibaq"))))))
+            (base32 "07mr25k26xrpns3s7ci27jmp71c49a23r0mi662ir5v35rz4bf4q"))))))
     (inputs
      (list curl
            dbus
