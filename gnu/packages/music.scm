@@ -3912,6 +3912,10 @@ analogue-like user interface.")
       (native-inputs
        (list pkg-config
              python-wrapper))
+      (native-search-paths
+     (list (search-path-specification
+            (variable "LV2_PATH")
+            (files '("lib/lv2")))))
       (home-page "https://github.com/mod-audio/mod-host")
       (synopsis "LV2 host for Jack controllable via socket or command line")
       (description "mod-host is an LV2 plugin host for JACK, controllable via
