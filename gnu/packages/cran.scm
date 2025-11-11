@@ -38104,7 +38104,7 @@ provided.")
      `((upstream-name . "XML")))
     (build-system r-build-system)
     (inputs
-     (list libxml2 zlib))
+     (list libxml2-with-zlib zlib))
     (native-inputs
      (list pkg-config))
     (home-page "https://www.omegahat.net/RSXML")
