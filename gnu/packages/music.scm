@@ -3759,6 +3759,22 @@ from the command line.")
            zlib))
     (native-inputs
      (list pkg-config qttools))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "CLAP_PATH")
+            (files '("lib/clap")))
+           (search-path-specification
+            (variable "LADSPA_PATH")
+            (files '("lib/ladspa")))
+           (search-path-specification
+            (variable "LV2_PATH")
+            (files '("lib/lv2")))
+           (search-path-specification
+            (variable "LXVST_PATH")
+            (files '("lib/lxvst")))
+           (search-path-specification
+            (variable "VST2_PATH")
+            (files '("lib/vst2")))))
     (home-page "https://qtractor.org/")
     (synopsis "Audio/MIDI multi-track sequencer")
     (description
