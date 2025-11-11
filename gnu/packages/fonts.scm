@@ -68,6 +68,7 @@
 ;;; Copyright © 2025 Gabriel Santos <gabrielsantosdesouza@disroot.org>
 ;;; Copyright © 2025 Liam Hupfer <liam@hpfr.net>
 ;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2025 Lee Thompson <lee.p.thomp@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4991,4 +4992,26 @@ from the Ricty generator are converted and adjusted.")
 typeface.  It is inspired by many 5×7 pixel grid typefaces, especially Gilles
 Boccon-Gibod’s MonteCarlo.  Unlike traditional bitmap fonts, it is distributed
 in typical scalable font formats.")
+    (license license:silofl1.1)))
+
+(define-public font-kawkab-mono
+  (package
+    (name "font-kawkab-mono")
+    (version "0.501")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/aiaf/kawkab-mono/releases/download/"
+             "v" version "/kawkab-mono-" version ".zip"))
+       (sha256
+        (base32 "0rjn2kdfs81cbpnffxj0sgw6zav5503smjkldlbg1ynyvmbnzh0i"))))
+    (build-system font-build-system)
+    (outputs '("out" "ttf" "woff"))
+    (home-page "https://makkuk.com/kawkab-mono/")
+    (synopsis "Monospaced Arabic typeface")
+    (description
+     "Kawkab Mono (كوكب مونو) is a monospaced Arabic typeface.  It is designed
+for code and text-editing in particular, and whenever having a fixed-pitch font
+is necessary, such as when composing tabular data using text.")
     (license license:silofl1.1)))
