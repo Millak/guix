@@ -1304,13 +1304,13 @@ is not available for Guile 2.0.")
 
 (define-public guile2.2-fibers
   (package
-    (inherit guile-fibers-1.1)
+    (inherit guile-fibers)
     (name "guile2.2-fibers")
     (inputs
-     (modify-inputs (package-inputs guile-fibers-1.1)
+     (modify-inputs (package-inputs guile-fibers)
        (replace "guile" guile-2.2)))
     (native-inputs
-     (modify-inputs (package-native-inputs guile-fibers-1.1)
+     (modify-inputs (package-native-inputs guile-fibers)
        (replace "guile" guile-2.2)))))
 
 (define-public guile-fibers-next
