@@ -191,7 +191,15 @@ low-end hardware and serving many concurrent requests.")
         (base32 "0vp85bf39a89pzy88icjsyf9a7gmkasbppm87zww7pvxr65qaj9z"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:install-source? #f))
+     `(#:install-source? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-extras
+           (lambda* (#:key outputs #:allow-other-keys)
+             (invoke "cargo" "run" "--example" "generate-docs")
+             (install-file "target/manpages/age-plugin-yubikey.1.gz"
+                           (string-append (assoc-ref outputs "out")
+                                          "/share/man/man1")))))))
     (native-inputs (list pkg-config))
     (inputs (cons* pcsc-lite openssl
                    (cargo-inputs 'age-plugin-yubikey)))
