@@ -1184,7 +1184,7 @@ is not available for Guile 2.0.")
   (package
     (inherit guile-fibers-1.3)
     (name "guile-fibers")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin (inherit (package-source guile-fibers-1.3))
              (file-name (git-file-name name version))
@@ -1193,7 +1193,7 @@ is not available for Guile 2.0.")
                     (commit (string-append "v" version))))
              (sha256
               (base32
-               "15ynxr3pfjscd6mz641zagv6i84jh9y65i5dnbb3j3q72j6bbvnb"))
+               "0qh0czz5qvk5mmrc8x2gmvl5psdfd22q2rhzj4jrpan6k3d55bl8"))
              (patches '())))
     (arguments
      (if (target-aarch64?)
