@@ -12922,6 +12922,19 @@ Markdown documents.  More generally, icons can be inserted in any
                            (guix build minify-build-system))
       #:phases
       #~(modify-phases (@ (guix build r-build-system) %standard-phases)
+          ;; When using themes, bslib copies theme dependencies, such as
+          ;; bootstrap.bundle.min.js or selectize.min.js, into a temporary
+          ;; directory.  Since these files are copied from the read-only
+          ;; store, they end up with read-only permissions.  As a result,
+          ;; bslib cannot overwrite these files as needed, because it has no
+          ;; permission to write to the files.
+          (add-after 'unpack 'fix-file-permissions
+            (lambda _
+              (substitute* "R/bs-dependencies.R"
+                (("overwrite = TRUE")
+                 (string-append "overwrite = TRUE, copy.mode = FALSE"))
+                (("file.copy\\(precompiled_css, out_file\\)")
+                 "file.copy(precompiled_css, out_file, copy.mode = FALSE)"))))
           (add-after 'unpack 'process-javascript
             (lambda* (#:key inputs #:allow-other-keys)
               (with-directory-excursion "inst/"
