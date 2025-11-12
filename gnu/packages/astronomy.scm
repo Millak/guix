@@ -8921,6 +8921,50 @@ Computing Cluster, HPCC}
 @end itemize")
     (license license:bsd-3)))
 
+(define-public python-spacetrack
+  (package
+    (name "python-spacetrack")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "spacetrack" version))
+       (sha256
+        (base32 "0x2c8gag0h8435a5xzqfpm7sw98s908r40y4xjh9c16yvv1m8jzy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 75 passed, 1 deselected, 19 warnings
+      #:test-flags
+      #~(list "--asyncio-mode=auto"
+              ;; One test fails with assertion not equal.
+              "--deselect=tests/test_aio.py::test_modeldef_not_used_trio")))
+    (native-inputs
+     (list nss-certs-for-test
+           python-pytest
+           python-pytest-asyncio
+           python-respx
+           python-setuptools))
+    (propagated-inputs
+     (list python-filelock-next
+           python-httpx
+           python-logbook
+           python-outcome
+           python-platformdirs
+           python-dateutil
+           python-represent
+           python-rush
+           python-sniffio))
+    (home-page "https://github.com/python-astrodynamics/spacetrack")
+    (synopsis "Python client for space-track.org")
+    (description
+     "@code{spacetrack} is a python module for @url{https://www.space-track.org/,
+Space-Track} which promotes space flight safety, protection of the space
+environment and the peaceful use of space worldwide by sharing space
+situational awareness services and information with international satellite
+owners/operators, academia and other entities.")
+    (license license:expat)))
+
 (define-public python-specreduce
   (package
     (name "python-specreduce")
