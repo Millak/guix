@@ -32,6 +32,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
+  #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix deprecation)
   #:use-module (guix download)
@@ -333,3 +334,40 @@ display bibles, commentaries, dictionaries, and other texts and images.
 Xiphos includes features such as searching, biblesync, bookmarks,
 parallel study, and original language study.")
     (license license:gpl2+)))
+
+(define-public book-emacs-lisp-elements
+  (package
+    (name "book-emacs-lisp-elements")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/protesilaos/emacs-lisp-elements")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fwbj2hrb33blknxd3qrm7jjs2ixrbyc77788i37qvn6v1y741ry"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f ;No code —no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'makeinfo
+            (lambda _
+              (emacs-makeinfo "elispelem.org"))))))
+    (native-inputs (list texinfo))
+    (home-page "https://protesilaos.com/emacs/emacs-lisp-elements")
+    (synopsis "Overview of the Emacs Lisp programming language")
+    (description
+     "Emacs Lisp Elements is a book written by Protesilaos Stavrou, providing a big
+picture view of the @acronym{Elisp, Emacs Lisp} programming language by
+combining prose with code.  This book aims to provide an idea of how Elisp
+works by showing some of the main concepts and patterns encountered in
+everyday Elisp code.
+
+This book is not intended as a replacement for the built-in Emacs Lisp
+Reference Manual, but instead to give readers enough information to reason
+about Elisp code.")
+    (license license:fdl1.3+)))
