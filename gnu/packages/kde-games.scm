@@ -1835,7 +1835,9 @@ This package is part of the KDE games module.")
 @item support for saving and loading Portable game notation (PGN) files
 @item use of Jovie, the KDE text-to-speak program, to speak opponent’s moves
 @item ability to control the program via a D-Bus interface
-@end itemize")
+@end itemize
+
+This package is part of the KDE games module.")
     (license license:gpl2+)))
 
 (define-public kde-games
