@@ -12802,6 +12802,18 @@ weights.")
      (list
       #:phases
       '(modify-phases %standard-phases
+         ;; write_file_attachments copies files from the store but does not
+         ;; check their permissions. The files end up with read-only
+         ;; permissions.  As a result, they cannot be overwritten in
+         ;; subsequent passes.  This is especially problematic in downstream
+         ;; packages like r-bslib.
+         (add-after 'unpack 'fix-file-permissions
+           (lambda _
+             (substitute* "R/layers.R"
+               (("recursive = TRUE")
+                "recursive = TRUE, copy.mode = FALSE")
+               (("fs::file_copy\\(src, dest, overwrite = TRUE\\)")
+                "file.copy(src, dest, overwrite = TRUE, copy.mode = FALSE)"))))
          ;; One test fails when the current locale is the C locale.
          (add-before 'check 'set-test-locale
            (lambda _ (setenv "LC_ALL" "en_US.UTF-8"))))))
