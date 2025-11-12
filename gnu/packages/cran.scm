@@ -12897,12 +12897,11 @@ Markdown documents.  More generally, icons can be inserted in any
                      "inst/lib/bs5/dist/js/bootstrap.bundle.min.js")))))
     (properties
      `((upstream-name . "bslib")
-       (updater-ignored-native-inputs . ("r-rmarkdown" "r-shiny"))))
+       (updater-ignored-native-inputs . ("r-rmarkdown" "r-shiny"))
+       (updater-extra-native-inputs . ("r-testthat" "r-yaml"))))
     (build-system r-build-system)
     (arguments
      (list
-      ;; Some tests require shiny, leading to a dependency cycle.
-      #:tests? #false
       #:modules '((guix build r-build-system)
                   (guix build minify-build-system)
                   (guix build utils)
@@ -12928,7 +12927,37 @@ Markdown documents.  More generally, icons can be inserted in any
                             (,(assoc-ref inputs "js-bootstrap4-bundle")
                              . "lib/bs4/dist/js/bootstrap.bundle.min.js")
                             (,(assoc-ref inputs "js-bootstrap5-bundle")
-                             . "lib/bs5/dist/js/bootstrap.bundle.min.js")))))))))
+                             . "lib/bs5/dist/js/bootstrap.bundle.min.js"))))))
+          ;; Some tests require shiny, leading to a dependency cycle.
+          (add-after 'unpack 'disable-bad-tests
+            (lambda _
+              (with-directory-excursion "tests/testthat/"
+                (substitute* "test-layout.R"
+                  ((".*layout_columns\\(\\) with col_widths.*" m)
+                   (string-append m "skip('skip');\n")))
+                (substitute* "test-navs-legacy.R"
+                  ((".*navset_bar\\(\\) warns if using deprecated args.*" m)
+                   (string-append m "skip('skip');\n"))
+                  ((".*navset_bar\\(\\) warns if `navbar_options\\(\\)` collide with direct deprecated options.*" m)
+                   (string-append m "skip('skip');\n"))
+                  ((".*shiny:navbarPage\\(\\) is unaffected.*" m)
+                   (string-append m "skip('skip');\n"))
+                  ((".*navbar markup snapshots.*" m)
+                   (string-append m "skip('skip');\n")))
+                (substitute* "test-page.R"
+                  ((".*page_sidebar\\(\\).*" m)
+                   (string-append m "skip('skip');\n"))
+                  ((".*save_html\\(\\) works on components and pages with a custom theme.*" m)
+                   (string-append m "skip('skip');\n"))
+                  ((".*functions can handle trailing commas.*" m)
+                   (string-append m "skip('skip');\n")))
+                (substitute* "test-sidebar.R"
+                  ((".*sidebar\\(\\) - assigns a random `id` if collapsible and `id` not provided.*" m)
+                   (string-append m "skip('skip');\n"))
+                  ((".*sidebar\\(\\) - sets `aria-expanded` correctly on collapse toggle.*" m)
+                   (string-append m "skip('skip');\n"))
+                  ((".*sidebar\\(\\) - warns if `max_height_mobile` used with `open != 'always'.*" m)
+                   (string-append m "skip('skip');\n")))))))))
     (propagated-inputs
      (list r-base64enc
            r-cachem
@@ -12956,7 +12985,9 @@ Markdown documents.  More generally, icons can be inserted in any
            (uri "https://raw.githubusercontent.com/twbs/bootstrap/v5.3.1/dist/js/bootstrap.bundle.js")
            (sha256
             (base32
-             "1bp0a2fin80hwxvd260r1jk57snsgz74vahid64yb2sgj0rlmj8a"))))))
+             "1bp0a2fin80hwxvd260r1jk57snsgz74vahid64yb2sgj0rlmj8a"))))
+       ("r-testthat" ,r-testthat)
+       ("r-yaml" ,r-yaml)))
     (home-page "https://rstudio.github.io/bslib/")
     (synopsis "Custom Bootstrap Sass themes for shiny and rmarkdown")
     (description
