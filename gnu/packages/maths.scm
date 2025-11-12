@@ -7693,14 +7693,14 @@ A unique design feature of Trilinos is its focus on packages.")
 (define-public dealii
   (package
     (name "dealii")
-    (version "9.6.0")
+    (version "9.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/dealii/dealii/releases/"
                            "download/v" version "/dealii-" version ".tar.gz"))
        (sha256
-        (base32 "1vbvw76xv8h1diwfgybgarm7qwn51rxd1kp2jgy2rvcfxgq26lv7"))
+        (base32 "0hyyly71ljnb7fsl2yan7wf3zxhkly7i8gczpv7gsm6vhgprc80g"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled boost, Kokkos, muparser, TBB and UMFPACK.
@@ -7715,6 +7715,7 @@ A unique design feature of Trilinos is its focus on packages.")
            openblas
            gfortran
            muparser
+           taskflow
            zlib))
     (propagated-inputs
      ;; Some scripts are installed into share/deal.II/scripts that require
