@@ -1909,7 +1909,7 @@ development of concurrent and multithreaded applications in C++.")
 (define-public taskflow
   (package
     (name "taskflow")
-    (version "3.6.0")
+    (version "3.10.0")
     (source
      (origin
        (method git-fetch)
@@ -1918,7 +1918,7 @@ development of concurrent and multithreaded applications in C++.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cv74l181137lchc1rxygcg401cnq216ymq5qz2njsw99j342br3"))))
+        (base32 "08z7vif8lk4jri9m77j9gqyyv7nwza5qfgab0bk5gl9akb63qh5k"))))
     (build-system cmake-build-system)
     (home-page "https://taskflow.github.io/")
     (synopsis
