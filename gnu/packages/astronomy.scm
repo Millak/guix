@@ -6438,6 +6438,42 @@ translations.")
 Astronomy.")
     (license license:expat)))
 
+(define-public python-orbitalpy
+  (package
+    (name "python-orbitalpy")
+    ;; 0.7.0 was placed in 2015, project does not tag new releases any
+    ;; longer. It's not the latest commit, which needs SciPy 1.13+.
+    (properties '((commit . "d6d3fa4f0b372a1d0ed64c52765c22b74fbefca6")
+                  (revision . "0")))
+    (version (git-version "0.7.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/RazerM/orbital")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dpahlqy7xmdqbzs9hbz1x5sm8sv7g2krccaj3r4ykfarv8lbah7"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-represent
+           python-scipy
+           python-sgp4))
+    (home-page "https://github.com/RazerM/orbital")
+    (synopsis "High level orbital mechanics")
+    (description
+     "Orbital is a high level orbital mechanics package for Python.")
+    (license license:expat)))
+
 (define-public python-petrofit
   (package
     (name "python-petrofit")
