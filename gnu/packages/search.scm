@@ -486,6 +486,23 @@ files, archive members, email attachments, transparently handling
 decompression.")
     (license license:gpl2+)))
 
+(define-public recoll-cli
+  (package/inherit recoll
+    (name "recoll-cli")
+    (arguments
+     (substitute-keyword-arguments (package-arguments recoll)
+       ((#:configure-flags flags #~(list))
+        #~(cons* "-Dqtgui=false"  "-Dx11mon=false" #$flags))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (delete 'patchelf)))))
+    (inputs
+     (modify-inputs (package-inputs recoll)
+       (delete "qtbase")))
+    (native-inputs
+     (modify-inputs (package-native-inputs recoll)
+       (delete "patchelf" "qttools")))))
+
 (define-public hyperestraier
   (package
     (name "hyperestraier")
