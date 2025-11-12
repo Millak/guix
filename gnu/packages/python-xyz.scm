@@ -2057,6 +2057,42 @@ edit distance algorithm for Python in Cython for high performance.")
 requiring minimal changes to the code.")
     (license license:expat)))
 
+(define-public python-rush
+  (package
+    (name "python-rush")
+    (version "2021.04.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sigmavirus24/rush")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0brqjw34n14rij58giwyqlagjnp11npvsrlwrqj5pbn7rmgd2mhx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; E ValueError: Redis URL must specify one of the following schemes
+      ;; (redis://, rediss://, unix://)
+      #~(list "-k" (string-append "not test_valid_url[redis://]"
+                                  " and not test_valid_url[rediss://]"))))
+    (native-inputs
+     (list python-mock
+           python-redis
+           python-rfc3986
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-attrs))
+    (home-page "https://github.com/sigmavirus24/rush")
+    (synopsis "Throttling and rate-limiting algorithms for Python")
+    (description
+     "This package provides is a small collection of algorithms that can be
+reused when throttling user interactions with a resource (e.g., an API).")
+    (license license:expat)))
+
 (define-public python-safety-schemas
   (package
     (name "python-safety-schemas")
