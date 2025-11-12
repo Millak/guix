@@ -310,6 +310,7 @@
   #:use-module (gnu packages finance)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages erlang)
+  #:use-module (gnu packages search)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages telegram)
@@ -45305,6 +45306,44 @@ and directories associated with a project.  When no project is open in the
 current buffer, it displays a list of known projects.  One can then pick
 a file from the selected project.")
       (license license:gpl3+))))
+
+(define-public emacs-consult-recoll
+  (package
+    (name "emacs-consult-recoll")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/jao/consult-recoll")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w7c41fz6mm0i8annxr68icrcdmindafkvd3fnnnyw3ncm8vsygb"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; No tests upstream.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'inject-recollq
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "consult-recoll.el"
+                ("consult-recoll-program"
+                 `(or (executable-find "recollq")
+                      ,(search-input-file inputs "bin/recollq")))))))))
+    (inputs (list recoll-cli))
+    (propagated-inputs (list emacs-consult))
+    (home-page "https://codeberg.org/jao/consult-recoll")
+    (synopsis "Recoll queries using consult")
+    (description
+     "Recoll is a local search engine that knows how to index a wide variety
+of file formats, including PDFs, org and other text files and emails.  It also
+offers a sophisticated query language, and, for some document kinds, snippets
+in the found documents actually matching the query at hand.  This package
+provides an emacs interface to perform recoll queries, and display its
+results, via @code{emacs-consult}.")
+    (license license:gpl3+)))
 
 (define-public emacs-context-transient
   (package
