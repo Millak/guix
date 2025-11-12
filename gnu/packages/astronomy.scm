@@ -3656,23 +3656,14 @@ attempting to maintain ISTP compliance
     (version "2.0.2")
     (source
      (origin
-       (method git-fetch) ; no tests in the PyPI tarball
+       (method git-fetch) 
        (uri (git-reference
-             (url "https://github.com/yt-project/cmyt")
-             (commit (string-append "v" version))))
+              (url "https://github.com/yt-project/cmyt")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "1d257xlgxc06x47k07xn5ml2kjqzc7dgjal4bl9x2w6b90xn0pm1"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; numpy>=1.26
-                ((">=1.26") ">=1.23")))))))
     (native-inputs
      (list python-colorspacious
            python-pytest
