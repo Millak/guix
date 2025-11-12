@@ -2030,6 +2030,31 @@ of VT100 terminal.")
 edit distance algorithm for Python in Cython for high performance.")
     (license license:bsd-3)))
 
+(define-public python-represent
+  (package
+    (name "python-represent")
+    (version "2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Represent" version))
+       (sha256
+        (base32 "1b5wbnkjirscfqwcb6ik8klky0ajm4qs2yvabqxnpfp72if02b8b"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     ;; XXX This might be too much for testing, maybe switch them off as it's
+     ;; a simple middleware library.
+     (list python-ipython
+           python-pytest
+           python-rich
+           python-setuptools))
+    (home-page "https://github.com/RazerM/represent")
+    (synopsis "Create @code{__repr__} automatically or declaratively for Python")
+    (description
+     "This package implements a functionality to generate Python
+@code{__repr__} methods automatically or declaratively.")
+    (license license:expat)))
+
 (define-public python-rich-argparse
   (package
     (name "python-rich-argparse")
