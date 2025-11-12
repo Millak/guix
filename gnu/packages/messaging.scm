@@ -2489,54 +2489,6 @@ implementation.")
     (license (list license:gpl3+        ; all source code
                    license:lgpl3+))))   ; icons/breeze
 
-(define-public hangups
-  (package
-    (name "hangups")
-    (version "0.4.18")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "hangups" version))
-       (sha256
-        (base32 "12mq22lygh6vz2h5dpvyjk18hx3jphb4kkavqsy298c7hw60hn7l"))))
-    (build-system pyproject-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'relax-dependencies
-           ;; Relax overly strict package version specifications.
-           (lambda _
-             (substitute* "setup.py"
-               (("==") ">=")
-               ((",<.*'") "'")))))))
-    (native-inputs
-     (list nss-certs-for-test
-           python-httpretty
-           python-pytest
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-aiohttp
-           python-appdirs
-           python-async-timeout
-           python-configargparse
-           python-mechanicalsoup
-           python-protobuf
-           python-readlike
-           python-reparser
-           python-requests
-           python-urwid))
-    (home-page "https://hangups.readthedocs.io/")
-    (synopsis "Instant messaging client for Google Hangouts")
-    (description
-     "Hangups is an instant messaging client for Google Hangouts.  It includes
-both a Python library and a reference client with a text-based user interface.
-
-Hangups is implements a reverse-engineered version of Hangouts' proprietary,
-non-interoperable protocol, which allows it to support features like group
-messaging that aren’t available to clients that connect over XMPP.")
-    (license license:expat)))
-
 (define-public telegram-purple
   (package
     (name "telegram-purple")
