@@ -1880,8 +1880,8 @@ R. Seaman's protocol}
 (define-public phd2
   ;; The tag 2.6.13 was placed in 2023, but there are a lot of changes, fixes
   ;; and compatability with indi@2, use the latest commit from master branch.
-  (let ((commit "4353f6b2a1438caea44a9c2fb4d639a96478e697")
-        (revision "1"))
+  (let ((commit "7ed00ec3e05fddb81b2026a07db9431e551f150e")
+        (revision "2"))
     (package
       (name "phd2")
       (version (git-version "2.6.13" revision commit))
@@ -1893,7 +1893,7 @@ R. Seaman's protocol}
                 (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1bb8bmclgkpcqdx5jqag1raa4jviczkwyckbhph3xlg7zjbckik2"))
+          (base32 "1x9068w6x7hghkval5dq8c33zhyvfh5bsrb3g3lq6bxz0abw6s2l"))
          (modules '((guix build utils)
                     (ice-9 ftw)
                     (srfi srfi-26)))
