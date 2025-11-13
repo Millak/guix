@@ -2656,6 +2656,32 @@ advanced doctest support and enables the testing of reStructuredText files.")
 variables in the @file{pytest.ini} file.")
     (license license:expat)))
 
+(define-public python-pytest-fail-slow
+  (package
+    (name "python-pytest-fail-slow")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jwodder/pytest-fail-slow")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xabggi5s6p87dji1f8gg08fxp74g9h2nbj9x9n5vkzmf3hy5l7i"))))
+    (build-system pyproject-build-system)
+    ;; Each test waits 2-5s which delays completion.
+    ;; tests: 317 passed
+    (native-inputs
+     (list python-hatchling
+           python-pytest-bootstrap))
+    (propagated-inputs
+     (list python-pluggy))
+    (home-page "https://github.com/jwodder/pytest-fail-slow")
+    (synopsis "Fail tests that take too long to run")
+    (description "Pytest plugin for failing tests that take too long to run.")
+    (license license:expat)))
+
 (define-public python-pytest-filter-subpackage
   (package
     (name "python-pytest-filter-subpackage")
