@@ -11068,7 +11068,7 @@ any arbitrary astrometric projection defined in the WCS standard.")
 (define-public tangos
   (package
     (name "tangos")
-    (version "1.9.1")   ;1.10.0+ requires python-pynbody 2+
+    (version "1.10.0")
     (source
      (origin
        (method git-fetch)
@@ -11077,19 +11077,15 @@ any arbitrary astrometric projection defined in the WCS standard.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vmjkhmqnr6abg7mybib1gllqbimv4ylgzvwxnsw0kk6cvv4qgl9"))))
+        (base32 "1dbjpmhbz6hqq9r7hpxqsw2pcqfr2g4x35pb0j01w0m902w823s3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: Full integration tests require running database, see projects
-      ;; CI, unit tests are quite compute-intensive.
-      ;;
-      ;; tests: 279 passed, 1 deselected, 105 warnings
+      ;; tests: 320 passed, 1 skipped, 1 deselected, 120 warnings
       #:test-flags
-      #~(list "--ignore=mpi_tests"
-              ;; OSError: File 'test_simulations/test_tipsy/tiny.000640':
-              ;; format not understood or does not exist
-              "--deselect=tests/test_bh_reader.py::test_bhlog")
+      ;; OSError: File PosixPath('test_simulations/test_tipsy/tiny.000640'):
+      ;; format not understood or does not exist
+      #~(list "--deselect=tests/test_bh_reader.py::test_bhlog" )
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'remove-broken-scripts
@@ -11106,13 +11102,16 @@ any arbitrary astrometric projection defined in the WCS standard.")
                 ((".*tangos_bh_timelink =.*") "")
                 ;; It looks this script uses not a publicly available module:
                 ;; import Simpy.BlackHoles.orbit.
-                ((".*tangos_preprocess_bh =.*") "")))))))
+                ((".*tangos_preprocess_bh =.*") ""))))
+         (add-before 'check 'pre-check
+           (lambda _
+             (setenv "HOME" "/tmp")
+             (setenv "TANGOS_TESTING_DB_BACKEND" "sqlite"))))))
     (native-inputs
      (list python-pymysql
-           python-pynbody-1
+           python-pynbody
            python-pyquery
            python-pytest
-           python-setuptools
            python-webtest
            python-yt))
     (inputs
@@ -11124,6 +11123,8 @@ any arbitrary astrometric projection defined in the WCS standard.")
            python-pastedeploy
            python-plaster
            python-plaster-pastedeploy
+           python-psycopg2
+           python-pymysql
            python-pyparsing
            python-pyramid
            python-pyramid-debugtoolbar
@@ -11133,7 +11134,7 @@ any arbitrary astrometric projection defined in the WCS standard.")
            python-repoze-lru
            python-scipy
            python-setuptools
-           python-sqlalchemy
+           python-sqlalchemy-2
            python-tblib
            python-tqdm
            python-translationstring
