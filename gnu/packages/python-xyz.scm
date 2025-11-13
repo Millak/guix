@@ -34009,13 +34009,13 @@ development, testing, production]};
   ;; TODO: Rename to pudb as it's a final program.
   (package
     (name "python-pudb")
-    (version "2025.1.1")
+    (version "2025.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pudb" version))
        (sha256
-        (base32 "0wjbvj94cww49pg7prnh5yi81v4m5f0sl816c51jcy8wag3lbhmp"))))
+        (base32 "1x210l6wxpn7k8jbca7ahzgsld938cnb6jlg3nrq8vr6xza75zb9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -34033,6 +34033,7 @@ development, testing, production]};
      (list python-jedi
            python-packaging
            python-pygments
+           python-typing-extensions
            python-urwid
            python-urwid-readline))
     (home-page "https://documen.tician.de/pudb/")
