@@ -6343,27 +6343,14 @@ and the use of a modern programming language, techniques, and libraries
 (define-public python-pixell
   (package
     (name "python-pixell")
-    (version "0.30.1")
+    (version "0.31.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pixell" version))
        (sha256
-        (base32 "1xcrwjh20rlaw3wqv2clq4d6mwh5lrr1c6vddfxdm64yrzis6fwn"))))
+        (base32 "0ff9vk6lv3rvv6kgh0pnk9zrca81q4wx12c6dwlqh4l61bqsb8ch"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'relax-requirements
-                 ;; XXX: To prevent sanity check faileur in dependent
-                 ;; packages, Cython, Coveralls and Pytests are not required
-                 ;; during runtime.
-                 ;; See: <https://github.com/simonsobs/pixell/pull/313>.
-                 (lambda _
-                   (substitute* "pyproject.toml"
-                     (("    'cython',") "")
-                     (("    'coveralls>=1.5',") "")
-                     (("    'pytest>=4.6',") "")))))))
     (native-inputs
      (list gfortran
            meson-python
