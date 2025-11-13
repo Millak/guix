@@ -1,0 +1,126 @@
+Upstream-status: https://github.com/rails/rails/pull/53546
+From df6585664d3dc2b1314a1a3a3933e128ef3653c8 Mon Sep 17 00:00:00 2001
+From: John Hawthorn <john@hawthorn.email>
+Date: Tue, 5 Nov 2024 19:36:51 -0800
+Subject: [PATCH] Fix deprecation warning caused by DST
+
+Co-authored-by: Matthew Draper <matthew@trebex.net>
+---
+ .../core_ext/time/compatibility.rb            | 10 +++-
+ .../date_and_time_compatibility_test.rb       | 58 ++++++++++++++++++-
+ 2 files changed, 66 insertions(+), 2 deletions(-)
+
+diff --git a/activesupport/lib/active_support/core_ext/time/compatibility.rb b/activesupport/lib/active_support/core_ext/time/compatibility.rb
+index 76c346f949176..4e6c8ca3ca4dd 100644
+--- a/activesupport/lib/active_support/core_ext/time/compatibility.rb
++++ b/activesupport/lib/active_support/core_ext/time/compatibility.rb
+@@ -15,10 +15,18 @@ def to_time
+   end
+ 
+   def preserve_timezone # :nodoc:
+-    active_support_local_zone == zone || super
++    system_local_time? || super
+   end
+ 
+   private
++    def system_local_time?
++      if ::Time.equal?(self.class)
++        zone = self.zone
++        String === zone &&
++          (zone != "UTC" || active_support_local_zone == "UTC")
++      end
++    end
++
+     @@active_support_local_tz = nil
+ 
+     def active_support_local_zone
+diff --git a/activesupport/test/core_ext/date_and_time_compatibility_test.rb b/activesupport/test/core_ext/date_and_time_compatibility_test.rb
+index 0bde69d0ba9bf..d00f3ea34ec19 100644
+--- a/activesupport/test/core_ext/date_and_time_compatibility_test.rb
++++ b/activesupport/test/core_ext/date_and_time_compatibility_test.rb
+@@ -12,6 +12,7 @@ def setup
+     @date_time = DateTime.new(2016, 4, 23, 14, 11, 12, 0)
+     @utc_offset = 3600
+     @system_offset = -14400
++    @system_dst_offset = -18000
+     @zone = ActiveSupport::TimeZone["London"]
+   end
+ 
+@@ -43,7 +44,7 @@ def test_time_to_time_does_not_preserve_time_zone
+     end
+   end
+ 
+-  def test_time_to_time_without_preserve_configured
++  def test_time_to_time_on_utc_value_without_preserve_configured
+     with_preserve_timezone(nil) do
+       with_env_tz "US/Eastern" do
+         source = Time.new(2016, 4, 23, 15, 11, 12)
+@@ -60,6 +61,24 @@ def test_time_to_time_without_preserve_configured
+       end
+     end
+ 
++    with_preserve_timezone(nil) do
++      with_env_tz "US/Eastern" do
++        source = Time.new(2016, 11, 23, 15, 11, 12)
++        # No warning because it's already local
++        base_time = source.to_time
++
++        utc_time = base_time.getutc
++        converted_time = assert_deprecated(ActiveSupport.deprecator) { utc_time.to_time }
++
++        assert_equal source, base_time
++        assert_equal source, converted_time
++        assert_equal @system_dst_offset, base_time.utc_offset
++        assert_equal @system_dst_offset, converted_time.utc_offset
++      end
++    end
++  end
++
++  def test_time_to_time_on_offset_value_without_preserve_configured
+     with_preserve_timezone(nil) do
+       with_env_tz "US/Eastern" do
+         foreign_time = Time.new(2016, 4, 23, 15, 11, 12, in: "-0700")
+@@ -70,6 +89,43 @@ def test_time_to_time_without_preserve_configured
+         assert_not_equal foreign_time.utc_offset, converted_time.utc_offset
+       end
+     end
++
++    with_preserve_timezone(nil) do
++      with_env_tz "US/Eastern" do
++        foreign_time = Time.new(2016, 11, 23, 15, 11, 12, in: "-0700")
++        converted_time = assert_deprecated(ActiveSupport.deprecator) { foreign_time.to_time }
++
++        assert_equal foreign_time, converted_time
++        assert_equal @system_dst_offset, converted_time.utc_offset
++        assert_not_equal foreign_time.utc_offset, converted_time.utc_offset
++      end
++    end
++  end
++
++  def test_time_to_time_on_tzinfo_value_without_preserve_configured
++    foreign_zone = ActiveSupport::TimeZone["America/Phoenix"]
++
++    with_preserve_timezone(nil) do
++      with_env_tz "US/Eastern" do
++        foreign_time = foreign_zone.tzinfo.utc_to_local(Time.new(2016, 4, 23, 15, 11, 12, in: "-0700"))
++        converted_time = assert_deprecated(ActiveSupport.deprecator) { foreign_time.to_time }
++
++        assert_equal foreign_time, converted_time
++        assert_equal @system_offset, converted_time.utc_offset
++        assert_not_equal foreign_time.utc_offset, converted_time.utc_offset
++      end
++    end
++
++    with_preserve_timezone(nil) do
++      with_env_tz "US/Eastern" do
++        foreign_time = foreign_zone.tzinfo.utc_to_local(Time.new(2016, 11, 23, 15, 11, 12, in: "-0700"))
++        converted_time = assert_deprecated(ActiveSupport.deprecator) { foreign_time.to_time }
++
++        assert_equal foreign_time, converted_time
++        assert_equal @system_dst_offset, converted_time.utc_offset
++        assert_not_equal foreign_time.utc_offset, converted_time.utc_offset
++      end
++    end
+   end
+ 
+   def test_time_to_time_frozen_preserves_timezone

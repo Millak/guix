@@ -4,6 +4,7 @@
 ;;; Copyright © 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2025 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -57,7 +58,11 @@
   (package
     (name "ruby-activesupport")
     (version %ruby-rails-version)
-    (source ruby-rails-monorepo)
+    (source
+     (origin
+       (inherit ruby-rails-monorepo)
+       ;; Remove this patch when upgrading rails to 7.2.3+.
+       (patches (search-patches "ruby-activesupport-fix-deprecation-warning.patch"))))
     (build-system ruby-build-system)
     (arguments
      (list

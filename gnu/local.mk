@@ -2247,6 +2247,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rocm-opencl-runtime-4.3-noclinfo.patch 	\
   %D%/packages/patches/rottlog-direntry.patch 			\
   %D%/packages/patches/ruby-actionpack-remove-browser-tests.patch	\
+  %D%/packages/patches/ruby-activesupport-fix-deprecation-warning.patch	\
   %D%/packages/patches/ruby-asciidoctor-pdf-support-prawn-svg-0_36.patch	\
   %D%/packages/patches/ruby-chunky-png-ruby-3-2-support.patch	\
   %D%/packages/patches/ruby-hiredis-use-system-hiredis.patch	\
