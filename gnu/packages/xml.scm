@@ -283,8 +283,8 @@ project (but it is usable outside of the Gnome platform).")
                 (base32
                  "17w0a622466k2hi5nln276la6rzfr9xaip3lqj71hmyvxyhmf0bq")))))))
 
-(define-public python-libxml2
-  (deprecated-package "python-libxml2" libxml2))
+(define-deprecated-package python-libxml2
+  libxml2)
 
 (define-public libxlsxwriter
   (package
