@@ -2296,21 +2296,18 @@ Astropy objects.")
            python-semantic-version)))))
 
 (define-public python-asdf-compression
-  ;; TODO: No release, change to tag when it's ready.
-  (let ((commit "18d462518b513d5901c737f30b315a3cb1b12a31")
-        (revision "4"))
     (package
       (name "python-asdf-compression")
-      (version (git-version "0.0.1" revision commit))
+      (version "0.1.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/asdf-format/asdf-compression")
-               (commit commit)))
+               (commit version)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0g9jayswx3pxnjm3y4lk9kk5ynm1g6f3wmw40wivsfbssq67mgfw"))))
+          (base32 "0fd2d5raglp1nwjy0hr3kckk518xrph451zymlw58jgwg5l1vq3m"))))
       (build-system pyproject-build-system)
       (arguments
        (list
@@ -2318,7 +2315,7 @@ Astropy objects.")
         #~(modify-phases %standard-phases
             (add-before 'build 'set-version
               (lambda _
-                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "0.0.1"))))))
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
       (native-inputs
        (list python-numpy
              python-pytest
@@ -2337,7 +2334,7 @@ support for reading and writing various compression algorithms including:
 @url{https://www.blosc.org/python-blosc/reference.html,Blosc},
 @url{https://python-lz4.readthedocs.io/en/stable/lz4.frame.html,LZ4 Frame},
 @url{http://facebook.github.io/zstd/,Zstandard}.")
-      (license license:bsd-3))))
+      (license license:bsd-3)))
 
 (define-public python-asdf-coordinates-schemas
   (hidden-package
