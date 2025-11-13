@@ -1037,7 +1037,7 @@ document}.")
            git-minimal/pinned
            highfive
            pkg-config
-           python-pynbody
+           python-pynbody-1
            python-wrapper))
     (inputs
      (list fftw
@@ -6867,16 +6867,16 @@ and Sensitivities.")
 (define-public python-pynbody
   (package
     (name "python-pynbody")
-    (version "1.6.0.post0")
+    (version "2.3.3")
     (source
      (origin
-       (method git-fetch) ;PyPi doesn't have not prebuit version.
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pynbody/pynbody")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pynbody/pynbody")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0rl9ais4yc6kdijq1il4vi3mplp7z6bcih4x55axhan5n3n7riwi"))
+        (base32 "004aq98f65qk7wy0nvm0a71mgvlcn06r6khiblpi2j249zvicqgf"))
        (modules '((guix build utils)))
        (snippet
         ;; Symlink goes to not existing directory.
@@ -6884,73 +6884,103 @@ and Sensitivities.")
                                   "docs/tutorials/example_code/testdata")))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags #~(list
-                           ;; Disable tests which need to download additional
-                           ;; 1.0GiB+ of test data archive from
-                           ;; http://star.ucl.ac.uk/~app/testdata.tar.gz
-                           ;;    https://github.com/pynbody/pynbody/blob/ \
-                           ;;    f4bd482dc47532831b3ec115c7cb07149d61bfc5/ \
-                           ;;    .github/workflows/build-test.yaml#L41
-                           ;; See <https://github.com/pynbody/pynbody/issues/778>
-                           "--ignore=tests/copy_on_access_test.py"
-                           "--ignore=tests/gravity_test.py"
-                           "--ignore=tests/adaptahop_test.py"
-                           "--ignore=tests/ahf_halos_test.py"
-                           "--ignore=tests/array_test.py"
-                           "--ignore=tests/bridge_test.py"
-                           "--ignore=tests/family_test.py"
-                           "--ignore=tests/partial_tipsy_test.py"
-                           "--ignore=tests/snapshot_test.py"
-                           "--ignore=tests/test_profile.py"
-                           "--ignore=tests/gadget_test.py"
-                           "--ignore=tests/gadgethdf_test.py"
-                           "--ignore=tests/grafic_test.py"
-                           "--ignore=tests/halotools_test.py"
-                           "--ignore=tests/nchilada_test.py"
-                           "--ignore=tests/ramses_new_ptcl_format_test.py"
-                           "--ignore=tests/ramses_test.py"
-                           "--ignore=tests/rockstar_test.py"
-                           "--ignore=tests/sph_image_test.py"
-                           "--ignore=tests/sph_smooth_test.py"
-                           "--ignore=tests/subfind_test.py"
-                           "--ignore=tests/subfindhdf_gadget4_test.py"
-                           "--ignore=tests/tipsy_test.py"
-                           "-k"
-                           (string-append
-                            "not test_div_curl_smoothing"
-                            " and not test_float_kd"
-                            " and not test_kd_delete"
-                            " and not test_kd_issue_88"
-                            " and not test_kdtree_from_existing_kdtree"
-                            " and not test_kdtree_shared_mem"
-                            " and not test_neighbour_list"
-                            " and not test_particles_in_sphere"
-                            " and not test_periodic_smoothing"
-                            " and not test_smooth"
-                            " and not test_smooth_WendlandC2"))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'build 'set-compiler
-                 (lambda _
-                   (setenv "CC" #$(cc-for-target)))))))
+     (list
+      ;; tests: 91 passed, 6 skipped, 12 deselected
+      #:test-flags
+      ;; XXX: testdata is distributed via Zenodo
+      ;; <https://zenodo.org/records/17084976> with total size more than 2GiB,
+      ;; refer to the helper script obtaining it
+      ;; <pynbody/test_utils/__init__.py>.
+      #~(list #$@(map (lambda (file) (string-append "--ignore=tests/" file))
+                      (list "adaptahop_test.py"
+                            "ahf_halos_test.py"
+                            "array_test.py"
+                            "bridge_test.py"
+                            "copy_on_access_test.py"
+                            "family_test.py"
+                            "gadget_test.py"
+                            "gadgethdf_test.py"
+                            "gizmo_test.py"
+                            "grafic_test.py"
+                            "gravity_test.py"
+                            "halos_test.py"
+                            "halotools_test.py"
+                            "hbtplus_test.py"
+                            "hmf_test.py"
+                            "hop_test.py"
+                            "ionfrac_test.py"
+                            "kdtree_test.py"
+                            "luminosity_test.py"
+                            "morphology_test.py"
+                            "nchilada_test.py"
+                            "partial_tipsy_test.py"
+                            "pkdgravhdf_test.py"
+                            "plot_stars_test.py"
+                            "profile_test.py"
+                            "ramses_new_ptcl_format_test.py"
+                            "ramses_test.py"
+                            "rockstar_test.py"
+                            "snapshot_test.py"
+                            "sph_image_test.py"
+                            "subfind_test.py"
+                            "subfindhdf_gadget4_test.py"
+                            "subfindhdf_test.py"
+                            "swift_test.py"
+                            "tipsy_test.py"
+                            "velociraptor_test.py"))
+              "--deselect=tests/shape_test.py::test_2D_shape"
+              "--deselect=tests/shape_test.py::test_3D_shape"
+              "--deselect=tests/shape_test.py::test_halo_shape_wrapper"
+              "--deselect=tests/test_profile.py::test_unique_hash_generation"
+              "--deselect=tests/test_profile.py::test_write_profile"
+              ;; DeprecationWarning: backend2gui is deprecated since IPython
+              ;; 8.24, backends are managed in matplotlib and can be
+              ;; externally registered.
+              "--deselect=tests/plot_hist2d_test.py::test_hist2d"
+              "--deselect=tests/plot_hist2d_test.py::test_hist2d_massweight"
+              "--deselect=tests/schmidtlaw_test.py::test_full_disc"
+              "--deselect=tests/schmidtlaw_test.py::test_truncated_disc")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (mkdir-p "testdata/empty_folder_0001")
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-cython
+           python-ipython
            python-pandas
            python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
-     (list python-h5py
+     (list python-certifi
+           python-h5py
            python-matplotlib
            python-numpy
-           python-posix-ipc
            python-scipy))
     (home-page "https://pynbody.github.io/pynbody/index.html")
     (synopsis "Light-weight astronomical N-body/SPH analysis for python")
-    (description "@code{Pynbody} is an analysis framework for N-body and hydrodynamic
+    (description
+     "@code{Pynbody} is an analysis framework for N-body and hydrodynamic
 astrophysical simulations supporting PKDGRAV/Gasoline, Gadget, Gadget4/Arepo,
 N-Chilada and RAMSES AMR outputs.")
     (license license:gpl3+)))
+
+(define-public python-pynbody-1
+  (package
+    (inherit python-pynbody)
+    (name "python-pynbody")
+    (version "1.6.0.post0")
+    (source
+     (origin
+       (inherit (package-source python-pynbody))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pynbody/pynbody")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rl9ais4yc6kdijq1il4vi3mplp7z6bcih4x55axhan5n3n7riwi"))))))
 
 (define-public python-pyregion
   (package
@@ -10719,7 +10749,7 @@ any arbitrary astrometric projection defined in the WCS standard.")
     (arguments
      (list
       ;; XXX: Full integration tests require running database, see projects
-      ;; CI, unit tests are quite compute instance.
+      ;; CI, unit tests are quite compute-intensive.
       ;;
       ;; tests: 279 passed, 1 deselected, 105 warnings
       #:test-flags
@@ -10746,7 +10776,7 @@ any arbitrary astrometric projection defined in the WCS standard.")
                 ((".*tangos_preprocess_bh =.*") "")))))))
     (native-inputs
      (list python-pymysql
-           python-pynbody
+           python-pynbody-1
            python-pyquery
            python-pytest
            python-setuptools
