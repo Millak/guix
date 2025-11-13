@@ -841,6 +841,50 @@ Guix package is installed.")
 Pronouncing Dictionary data files.")
     (license license:gpl3+)))
 
+(define-public dict-jargon
+  (package
+    (name "dict-jargon")
+    (version "4.4.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://www.catb.org/~esr/jargon/oldversions/jarg"
+                           (string-delete #\. version) ".txt"))
+       (sha256
+        (base32 "098319mp4mjagx9bvr94jns16qcdh82xiyw7ipqx1blkn77w0xjm"))))
+    (build-system copy-build-system)
+    (native-inputs (list dictd libfaketime))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'unpack
+            (lambda* (#:key source #:allow-other-keys)
+              (with-input-from-file source
+                (lambda _
+                  (invoke "faketime"
+                          "1970-01-01 00:00:00"
+                          "dictfmt"
+                          "-j"
+                          "-s"
+                          (string-append "The Jargon File (version "
+                                         #$(package-version this-package) ")")
+                          "jargon")))
+              ;; dictzip includes the compressed file's mtime as part of the
+              ;; compressed file (also see freedict-tools-fix-determinism.patch)
+              (set-file-time "jargon.dict"
+                             (stat source))
+              (invoke "dictzip" "jargon.dict"))))
+      #:install-plan ''(("./jargon.dict.dz" "share/jargon/")
+                        ("./jargon.index" "share/jargon/"))))
+    (home-page "http://www.catb.org/jargon/")
+    (synopsis "Compendium of hacker slang")
+    (description
+     "The Jargon File is a comprehensive compendium of hacker slang, originating in
+the early days of computing history.  This package puts the Jargon File in a
+format compatible with dicod and similar programs.")
+    (license license:unlicense)))
+
 (define-public goldendict-ng
   (let ((commit "2cfc27361d061103a164705e7f85dbdf6cd6056f")
         (revision "0"))
