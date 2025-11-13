@@ -11,6 +11,7 @@
 ;;; Copyright © 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2024 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -278,6 +279,17 @@ they already exist."
 
   (for-each ensure-user-home users))
 
+(define* (canonicalize-path* file)
+  "A safe version of `canonicalize-path' that warns rather than raises on errors.
+`canonicalize-path' uses `realpath(2)', which can return various errors like
+EINVAL, ELOOP, etc."
+  (or (false-if-exception (canonicalize-path file))
+      (begin
+        (format (warning-error-port)
+                "warning: could not canonicalize file `~a'; using as-is~%"
+                file)
+        file)))
+
 (define (activate-etc etc)
   "Install ETC, a directory in the store, as the source of static files for
 /etc."
@@ -300,26 +312,23 @@ they already exist."
   (rm-f "/etc/ssl")
   (symlink "/run/current-system/profile/etc/ssl" "/etc/ssl")
 
-  (rm-f "/etc/static")
-  (symlink etc "/etc/static")
   (for-each (lambda (file)
               (let ((target (string-append "/etc/" file))
-                    (source (string-append "/etc/static/" file)))
+                    ;; Canonicalize the file names to resolve any symlinks, to
+                    ;; ensure /etc/localtime points to a timezone data file in
+                    ;; the store containing the timezone name.  This is done
+                    ;; for compatibility with software expecting this systemd
+                    ;; convention to be followed.
+                    (source (canonicalize-path* (string-append etc "/" file))))
                 (rm-f target)
-
-                ;; Things such as /etc/sudoers must be regular files, not
-                ;; symlinks; furthermore, they could be modified behind our
-                ;; back---e.g., with 'visudo'.  Thus, make a copy instead of
-                ;; symlinking them.
-                (if (file-is-directory? source)
-                    (symlink source target)
-                    (copy-file source target))
-
-                ;; XXX: Dirty hack to meet sudo's expectations.
-                (when (string=? (basename target) "sudoers")
-                  (chmod target #o440))))
+                (if (string=? (basename target) "sudoers")
+                    (begin
+                      ;; /etc/sudoers must be a regular file.
+                      (copy-file source target)
+                      ;; XXX: dirty hack to meet sudo's expectations
+                      (chmod target #o440))
+                    (symlink source target)))) ;usual case
             (scandir etc (negate dot-or-dot-dot?)
-
                      ;; The default is 'string-locale<?', but we don't have
                      ;; it when run from the initrd's statically-linked
                      ;; Guile.
