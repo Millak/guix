@@ -11077,7 +11077,7 @@ traveling to a star 100 light years away looks like.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://www.atnf.csiro.au/people/mcalabre/WCS/WCS/"
+       (uri (string-append "https://www.atnf.csiro.au/computing/software/wcs/"
                            "wcslib-" version ".tar.bz2"))
        (sha256
         (base32 "1p1606jscky6cw32qwx7k7nwv24jm9c85mzfrm9qnjni4r2882wn"))
@@ -11122,7 +11122,7 @@ header.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://www.atnf.csiro.au/people/mcalabre/WCS/"
+       (uri (string-append "https://www.atnf.csiro.au/computing/software/wcs/"
                            "wcslib-" version ".tar.bz2"))
        (sha256
         (base32 "1m3bx6gh5w3c7vvsqcki0x20mg8lilg13m0i8nh7za89w58dxy4w"))
