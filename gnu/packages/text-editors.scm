@@ -934,13 +934,13 @@ OpenBSD team.")
 (define-public nano
   (package
     (name "nano")
-    (version "8.6")
+    (version "8.7")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://gnu/nano/nano-" version ".tar.xz"))
       (sha256
-       (base32 "06d66wagx5lxh6gnisamkj2zk0idydca8xxxa6mp7xfmxvqgpazp"))))
+       (base32 "1sc6v7q3aa3zd0mq4rnr21sm4ga5i1jnrnrzm7hvhj1ccym8glmg"))))
     (build-system gnu-build-system)
     (arguments
      (if (%current-target-system)
