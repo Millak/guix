@@ -1226,16 +1226,16 @@ over.")
 (define-public jetring
   (package
     (name "jetring")
-    (version "0.31")
+    (version "0.32")
     (source
       (origin
         (method git-fetch)
         (uri (git-reference
                (url "https://salsa.debian.org/debian/jetring")
-               (commit "535380166eb1b222ba34864af07f3e36f4fb52c9")))
+               (commit (string-append "debian/" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "19m7rj446pr4nql44khwq0cfxfrm8cslj5v9jll08p7nk6glq5px"))))
+         (base32 "0drw04iw0bp6xsb40wdbji6xkxgiyzix1mikpkc61ljfy35mg9m1"))))
     (build-system gnu-build-system)
     (arguments
      (list
