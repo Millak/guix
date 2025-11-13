@@ -1238,27 +1238,31 @@ over.")
          (base32 "19m7rj446pr4nql44khwq0cfxfrm8cslj5v9jll08p7nk6glq5px"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (add-before 'install 'hardlink-gnupg
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((gpg (search-input-file inputs "/bin/gpg")))
-               (substitute* (find-files "." "jetring-[[:alpha:]]+$")
-                 (("gpg -") (string-append gpg " -"))
-                 (("\\\"gpg\\\"") (string-append "\"" gpg "\""))))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man (string-append out "/share/man")))
-               (for-each (lambda (file)
-                           (install-file file (string-append out "/bin/")))
-                         (find-files "." "jetring-[[:alpha:]]+$"))
-               (for-each (lambda (file)
-                           (install-file file (string-append man "/man1/")))
-                         (find-files "." ".*\\.1$"))
-               (install-file "jetring.7" (string-append man "/man7/"))))))
-       #:tests? #f))                    ; no tests
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)            ; no configure script
+          (add-before 'install 'hardlink-gnupg
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((gpg (search-input-file inputs "/bin/gpg")))
+                (substitute* (find-files "." "jetring-[[:alpha:]]+$")
+                  (("gpg -") (string-append gpg " -"))
+                  (("\\\"gpg\\\"") (string-append "\"" gpg "\""))))))
+          (replace 'install
+            (lambda _
+              (for-each
+               (lambda (file)
+                 (install-file file
+                               (string-append #$output "/bin/")))
+               (find-files "." "jetring-[[:alpha:]]+$"))
+              (for-each
+               (lambda (file)
+                 (install-file file
+                               (string-append #$output "/share/man/man1/")))
+               (find-files "." ".*\\.1$"))
+              (install-file "jetring.7"
+                            (string-append #$output "/share/man/man7/")))))
+      #:tests? #f))                    ; no tests
     (inputs
      (list gnupg perl))
     (home-page "https://joeyh.name/code/jetring/")
