@@ -232,6 +232,18 @@ info --version")
                `(tm:gmtoff (localtime ,sept-2021))
                marionette)))
 
+          (test-equal "/etc/localtime is a symlink to the timezone data file"
+            ;; This is a systemd-ism that most distributions follow; we do to,
+            ;; for compatibility with software that assumes this is convention
+            ;; is followed (see:
+            ;; <https://www.freedesktop.org/software/systemd/man/latest/localtime.html#>)
+            #$(operating-system-timezone os)
+            (marionette-eval
+             `(string-join
+               (take-right (string-split (readlink "/etc/localtime") #\/) 2)
+               "/")
+             marionette))
+
           (test-equal "/var/log/messages is not world-readable"
             #o640                       ;<https://bugs.gnu.org/40405>
             (begin
