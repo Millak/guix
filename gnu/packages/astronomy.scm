@@ -2296,45 +2296,45 @@ Astropy objects.")
            python-semantic-version)))))
 
 (define-public python-asdf-compression
-    (package
-      (name "python-asdf-compression")
-      (version "0.1.0")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/asdf-format/asdf-compression")
-               (commit version)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0fd2d5raglp1nwjy0hr3kckk518xrph451zymlw58jgwg5l1vq3m"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-before 'build 'set-version
-              (lambda _
-                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
-      (native-inputs
-       (list python-numpy
-             python-pytest
-             python-setuptools
-             python-setuptools-scm))
-      (propagated-inputs
-       (list python-asdf
-             python-blosc
-             python-lz4
-             python-zstandard))
-      (home-page "https://github.com/asdf-format/asdf-compression")
-      (synopsis "ASDF extension to support various compression algorithms")
-      (description
-       "This package includes a plugin for the Python library ASDF to add
-support for reading and writing various compression algorithms including:
-@url{https://www.blosc.org/python-blosc/reference.html,Blosc},
-@url{https://python-lz4.readthedocs.io/en/stable/lz4.frame.html,LZ4 Frame},
-@url{http://facebook.github.io/zstd/,Zstandard}.")
-      (license license:bsd-3)))
+  (package
+    (name "python-asdf-compression")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/asdf-format/asdf-compression")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fd2d5raglp1nwjy0hr3kckk518xrph451zymlw58jgwg5l1vq3m"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-numpy
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-asdf
+           python-blosc
+           python-lz4
+           python-zstandard))
+    (home-page "https://github.com/asdf-format/asdf-compression")
+    (synopsis "ASDF extension to support various compression algorithms")
+    (description
+     "This package includes a plugin for the Python library ASDF to add support for
+reading and writing various compression algorithms including:
+@url{https://www.blosc.org/python-blosc/reference.html,
+Blosc},@url{https://python-lz4.readthedocs.io/en/stable/lz4.frame.html, LZ4
+Frame},@url{http://facebook.github.io/zstd/, Zstandard}.")
+    (license license:bsd-3)))
 
 (define-public python-asdf-coordinates-schemas
   (hidden-package
