@@ -40911,6 +40911,10 @@ The image type name.  Use @code{'hurd-qcow2} for a 32-bit image or
 The image object representing the disk image of this virtual machine
 (@pxref{System Images}).
 
+Alternatively, this can be the file name (a string) of an image, which
+is useful if you want the image to persist across service restarts---see
+example below.
+
 @item @code{disk-size} (default: @code{'guess})
 The size of the disk image.
 
@@ -41009,15 +41013,16 @@ with the following non-volatile secrets, unless they already exist:
 @end table
 @end deftp
 
-Note that by default the VM image is volatile, i.e., once stopped the
-contents are lost.  If you want a stateful image instead, override the
-configuration's @code{image} and @code{options} without
-the @code{--snapshot} flag using something along these lines:
+Note that by default the VM image is volatile---i.e., once the service
+is stopped, the contents are lost.  If you want a persistent image
+instead, override the configuration's @code{image} and @code{options}
+without the @option{--snapshot} flag using something along these lines:
 
 @lisp
 (service hurd-vm-service-type
          (hurd-vm-configuration
-          (image   (const "/out/of/store/writable/hurd.img"))
+          ;; Specify an out-of-store, persistent image.
+          (image "/out/of/store/writable/hurd.img")
           (options '())))
 @end lisp
 
