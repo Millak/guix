@@ -426,55 +426,51 @@ resembles Python.")
     (license license:expat)))
 
 (define-public muon
-  ;; Use the latest commit, as there hasn't yet been a new release including
-  ;; recent changes (see: https://github.com/muon-build/muon/issues/146).
-  (let ((commit "55b7285a92779bd8b8870482e5535ce878f3e09f")
-        (revision "0"))
-    (package
-      (name "muon")
-      (version (git-version "0.4.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/muon-build/muon")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0kpk1h82djb0brxkwy5ylpvdpp2l1489bq822dmryhmsd573ii48"))))
-      (build-system meson-build-system)
-      (arguments
-       (list #:meson (computed-file "null-package" #~(mkdir #$output))
-             #:ninja samu-as-ninja-wrapper
-             #:configure-flags #~(list "-Dsamurai=disabled")
-             #:tests? #f                  ;to avoid extra dependencies
-             #:phases
-             #~(modify-phases %standard-phases
-                 (add-after 'unpack 'patch-/bin/sh
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (substitute* "tools/generate_test_check_script.py"
-                       (("#!/bin/sh")
-                        (string-append "#!" (search-input-file inputs
-                                                               "bin/sh"))))))
-                 (add-after 'patch-source-shebangs 'build-muon-bootstrap
-                   (lambda _
-                     (setenv "CC" #$(cc-for-target))
-                     (setenv "CFLAGS" "-DBOOTSTRAP_NO_SAMU")
-                     (invoke "./bootstrap.sh" "build")))
-                 (add-after 'build-muon-bootstrap 'setup-muon-bootstrap-as-meson
-                   (lambda _
-                     (mkdir "bin")
-                     (symlink "../build/muon-bootstrap" "bin/meson")
-                     (setenv  "PATH" (string-append (getcwd) "/bin:"
-                                                    (getenv "PATH"))))))))
-      (native-inputs (list samurai))
-      (inputs (list bash-minimal pkgconf))
-      (native-search-paths (list $PKG_CONFIG_PATH))
-      (home-page "https://muon.build/")
-      (synopsis "Meson build system alternative implementation in C99")
-      (description "Muon is an implementation of the meson build system in c99
+  (package
+    (name "muon")
+    (version "0.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/muon-build/muon")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1w0vkishj7r3swzg4m1fl3hacs8mycwhsrr5vw8sy67y81cihqbd"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:meson (computed-file "null-package" #~(mkdir #$output))
+           #:ninja samu-as-ninja-wrapper
+           #:configure-flags #~(list "-Dsamurai=disabled")
+           #:tests? #f                  ;to avoid extra dependencies
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-/bin/sh
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "tools/generate_test_check_script.py"
+                     (("#!/bin/sh")
+                      (string-append "#!" (search-input-file inputs
+                                                             "bin/sh"))))))
+               (add-after 'patch-source-shebangs 'build-muon-bootstrap
+                 (lambda _
+                   (setenv "CC" #$(cc-for-target))
+                   (setenv "CFLAGS" "-DBOOTSTRAP_NO_SAMU")
+                   (invoke "./bootstrap.sh" "build")))
+               (add-after 'build-muon-bootstrap 'setup-muon-bootstrap-as-meson
+                 (lambda _
+                   (mkdir "bin")
+                   (symlink "../build/muon-bootstrap" "bin/meson")
+                   (setenv  "PATH" (string-append (getcwd) "/bin:"
+                                                  (getenv "PATH"))))))))
+    (native-inputs (list samurai))
+    (inputs (list bash-minimal pkgconf))
+    (native-search-paths (list $PKG_CONFIG_PATH))
+    (home-page "https://muon.build/")
+    (synopsis "Meson build system alternative implementation in C99")
+    (description "Muon is an implementation of the meson build system in c99
 with minimal dependencies.")
-      (license license:gpl3))))            ;for the combined work
+    (license license:gpl3)))            ;for the combined work
 
 (define-public muon-as-meson-wrapper
   (package/inherit muon
