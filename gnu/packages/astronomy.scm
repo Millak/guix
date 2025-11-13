@@ -6967,32 +6967,25 @@ N-Chilada and RAMSES AMR outputs.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          ;; setup.py was removed in b26ec4fe88e29447dc8391fcdef7082a4f7876ce
-          ;; TODO: Check how to implement it in python-build-system.
-          (add-after 'unpack 'create-setup.py
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (with-directory-excursion #$output
+                (apply invoke "pytest" "-vv" test-flags))))
+          (add-before 'check 'post-check
             (lambda _
-              (call-with-output-file "setup.py"
-                (lambda (port)
-                  (format port "from setuptools import setup
-from extension_helpers import get_extensions
-setup(ext_modules=get_extensions())")))))
-          (add-before 'check 'build-extensions
-            (lambda _
-              ;; Cython extensions have to be built before running the tests.
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
-    (propagated-inputs
-     (list python-astropy
-           python-numpy
-           python-pyparsing))
+              (for-each delete-file-recursively
+                        (find-files #$output "__pycache__" #:directories? #t)))))))
     (native-inputs
      (list python-cython
            python-extension-helpers
            python-pytest
            python-pytest-astropy
-           python-pytest-astropy-header
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy
+           python-pyparsing))
     (home-page "https://github.com/astropy/pyregion")
     (synopsis "Python parser for ds9 region files")
     (description
