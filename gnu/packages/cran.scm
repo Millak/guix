@@ -1639,6 +1639,29 @@ additions (tooltips, bipartite diagram type).")
 times.")
     (license license:gpl2)))
 
+(define-public r-cleanrmd
+  (package
+    (name "r-cleanrmd")
+    (version "0.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "cleanrmd" version))
+       (sha256
+        (base32 "120jg8kp6m6pka5nvgvwjyl4ljybv193sqvyjr8p19w3q7665nm6"))))
+    (properties `((upstream-name . "cleanrmd")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-htmltools r-jsonlite r-rmarkdown))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://pkg.garrickadenbuie.com/cleanrmd/")
+    (synopsis "Classless R Markdown HTML documents")
+    (description
+     "This package provides a collection of clean R Markdown HTML document
+templates using classless CSS styles.  These documents use a minimal set of
+dependencies but still look great, making them suitable for use a package
+vignettes or for sharing results via email.")
+    (license license:expat)))
+
 (define-public r-clubsandwich
   (package
     (name "r-clubsandwich")
