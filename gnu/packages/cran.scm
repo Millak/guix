@@ -3530,6 +3530,25 @@ package.")
 hierarchical clustering dendrograms.")
     (license license:gpl2+)))
 
+(define-public r-dynlm
+  (package
+    (name "r-dynlm")
+    (version "0.3-6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "dynlm" version))
+       (sha256
+        (base32 "1g8qsb5m69yn35sm0shd97vbnbpqfkjkd7lbkwch1gpfxkld53zq"))))
+    (properties `((upstream-name . "dynlm")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-car r-lmtest r-zoo))
+    (home-page "https://cran.r-project.org/package=dynlm")
+    (synopsis "Dynamic linear regression")
+    (description "This package provides an interface to @code{lm.wfit} for
+fitting dynamic linear models and time series regression relationships.")
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-e1071
   (package
     (name "r-e1071")
