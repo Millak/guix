@@ -543,6 +543,47 @@ table-level bloom filters, and updates to the MANIFEST format.")
        (append go-github-com-cockroachdb-crlib
                go-github-com-cockroachdb-swiss)))))
 
+;; XXX: This repository has been archived by the owner on Sep 21, 2022. It is
+;; now read-only.  It's only used by go-github-com-golang-gddo, consider to
+;; remove it when it does no longer require it.
+(define-public go-github-com-garyburd-redigo
+  (package
+    (name "go-github-com-garyburd-redigo")
+    (version "1.6.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/DeprecatedGoModules/redigo")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xq1r7149z358g1dra2dwgmdlk8ynk89bkdgf9y4xx9vyddlaw08"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/garyburd/redigo"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; pubsub_test.go:28: Punsubscribe(p1) =
+                       ;; {punsubscribe p2 3}, want {punsubscribe p1 3}
+                       ;; pubsub_test.go:28: Punsubscribe() =
+                       ;; {punsubscribe p1 2}, want {punsubscribe p2 2}
+                       (list "TestPushed"
+                             ;; error connection to database, dial tcp
+                             ;; :6379: connect: connection refused
+                             "TestConnMux"
+                             "TestConnMuxClose")
+                       "|"))))
+    (native-inputs (list redis))
+    (home-page "https://github.com/garyburd/redigo")
+    (synopsis "Deprecated Redis client for Golang")
+    (description
+     "This package provides a Redis client for Golang.  It is deprecated,
+consider using go-github-com-gomodule-redigo instead.")
+    (license license:asl2.0)))
+
 (define-public pebble
   (package/inherit go-github-com-cockroachdb-pebble
     (name "pebble")
