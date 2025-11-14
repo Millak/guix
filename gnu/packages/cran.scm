@@ -8751,6 +8751,36 @@ or biological mass spectrometry data analysis.  Mass spectral libraries are
 available as companion packages.")
     (license license:bsd-2)))
 
+(define-public r-otel
+  (package
+    (name "r-otel")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "otel" version))
+       (sha256
+        (base32 "05yxv2yafgp4bsigp7v2mkwa2j7kkrlk8hd8p2z4n1y83ddgx2pg"))))
+    (properties `((upstream-name . "otel")))
+    (build-system r-build-system)
+    (native-inputs (list r-callr
+                         r-cli
+                         r-jsonlite
+                         r-processx
+                         r-spelling
+                         r-testthat
+                         r-withr))
+    (home-page "https://otel.r-lib.org")
+    (synopsis "OpenTelemetry R API")
+    (description
+     "@code{OpenTelemetry} is a collection of tools, APIs, and SDKs used to
+instrument, generate, collect, and export telemetry data (metrics, logs, and
+traces) for analysis in order to understand your software's performance and
+behavior.  This package implements the @code{OpenTelemetry} API.  Use this
+package as a dependency if you want to instrument your R package for
+@code{OpenTelemetry}.")
+    (license license:expat)))
+
 (define-public r-scales
   (package
     (name "r-scales")
