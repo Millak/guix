@@ -5247,7 +5247,7 @@ with integrated support for finding required rows quickly.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "21.0.0")
+    (version "22.0.0")
     (source
      (origin
        (method git-fetch)
@@ -5257,7 +5257,7 @@ with integrated support for finding required rows quickly.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0lxywrjfwhiznsldpv5bd6g357za5ng64jvy943kp0ndckh5l4g9"))))
+         "09ra9p2majsczjq6ygcz2jqafdryvrzahxsbflfqp2z8invsd14b"))))
     (build-system cmake-build-system)
     (arguments
      (list
