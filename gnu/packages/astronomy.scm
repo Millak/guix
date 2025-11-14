@@ -5628,7 +5628,7 @@ astronomical tables
     (version "1.13.2")
     (source
      (origin
-       (method git-fetch)       ;no tests data in the PyPI tarball
+       (method git-fetch)
        (uri (git-reference
               (url "https://github.com/lenstronomy/lenstronomy")
               (commit (string-append "v" version))))
@@ -5638,64 +5638,55 @@ astronomical tables
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1338 passed, 350 warnings
+      ;; tests: 1452 passed, 2163 warnings
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
-              ;; TypeError: SparseSolverBase.__init__() got an
-              ;; unexpected keyword argument 'num_iter_lens'
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; TypeError: SparseSolverBase.__init__() got an unexpected
+              ;; keyword argument 'num_iter_lens'
               "--ignore=test/test_ImSim/test_image_model_pixelbased.py"
               "-k" (string-join
-                    ;; AttributeError: 'FlatLambdaCDM' object has no attribute '_Ok0'
-                    (list "not test_angular_diameter_distance"
-                          "test_angular_diameter_distance_array"
-                          "test_angular_diameter_distance_z1z2"
-                          "test_geo_shapiro_delay"
-                          "test_interpol"
-                          "test_set_T_ij_stop"
-                          "test_update_source_redshift"
-                          ;; FileNotFoundError: [Errno 2] No such file or
-                          ;; directory: '/tmp/.../coolest_template.json'
-                          "test_full"
-                          "test_load"
-                          "test_pemd"
-                          "test_pemd_via_epl"
-                          "test_raise"
-                          "test_update"
-                          ;; _flapack.error: (liwork>=max(1,10*n)||liwork==-1)
-                          ;; failed for 10th keyword liwork: dsyevr:liwork=1
-                          "test_sampler"
+                    ;; _flapack.error: (liwork>=max(1,10*n)||liwork==-1)
+                    ;; failed for 10th keyword liwork: dsyevr:liwork=1
+                    (list "not test_sampler"
                           ;; TypeError: SLIT_Starlets.function_2d() got an
                           ;; unexpected keyword argument 'n_pix_x'
-                          "test_pixelbased_modelling"
-                          ;; XXX: These are precision errors in tests which
-                          ;; need to be checked properly: AssertionError:
-                          ;; Arrays are not almost equal ...
-                          "test_run_fit"
-                          "test_multiplane"
-                          ;; ModuleNotFoundError: No module named
-                          ;; 'astropy.cosmology._utils'
-                          "test_short_and_laconic")
-                    " and not "))))
+                          "test_pixelbased_modelling")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests try to search for JSON in "path = os.getcwd()" and fail
+              ;; with error:
+              ;;
+              ;; FileNotFoundError: [Errno 2] No such file or directory:
+              ;; '/tmp/<...>/source/coolest_template.json'
+              (for-each (lambda (file) (copy-file file (basename file)))
+                        (find-files "test/test_Util/test_COOLEST"
+                                    "(\\.json|\\.fits)$")))))))
     (native-inputs
-     (list python-colossus
-           ;; python-nestcheck
-           ;; python-pymultinest
-           ;; python-starred-astro
+     (list python-cobaya
+           python-colossus
            python-coolest
+           python-emcee
+           python-nestcheck
+           ;; python-pymultinest   ;depends on MultiNest
            python-pytest
-           python-pytest-xdist))
+           ;; python-starred-astro ;depends on python-jax
+           python-nautilus-sampler
+           python-dynesty
+           python-pytest-xdist
+           python-setuptools
+           python-slitronomy
+           python-zeus-mcmc))
     (propagated-inputs
-     (list python-astropy
-           python-cobaya
+     (list python-astropy-6
            python-configparser
            python-corner
-           python-dynesty
-           python-emcee
            python-h5py
            python-matplotlib
            python-mpmath
            python-multiprocess
-           python-nautilus-sampler
            python-numba
            python-numpy
            python-pyxdg
@@ -5703,9 +5694,7 @@ astronomical tables
            python-schwimmbad
            python-scikit-image
            python-scikit-learn
-           python-scipy
-           python-slitronomy
-           python-zeus-mcmc))
+           python-scipy))
     (home-page "https://github.com/lenstronomy/lenstronomy")
     (synopsis "Multi-purpose lens modeling software")
     (description
