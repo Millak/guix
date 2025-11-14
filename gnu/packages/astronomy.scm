@@ -7605,26 +7605,29 @@ Virtual observatory (VO) using Python.")
 (define-public python-pyxsim
   (package
     (name "python-pyxsim")
-    (version "4.4.2")
+    (version "4.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyxsim" version))
        (sha256
-        (base32 "1zryblpcc2yfhk1ybhv35p4zkp04hqwdrslrwm6my0pichb30py6"))))
+        (base32 "04wpy3gvwcw09grdqad4w4pziqhfczizcdmgsqdd52xfalb92765"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: Tests require additional data, check if it may be packed
+      ;; XXX: Tests require additional data, check if it may be packaged
       ;; separately, see tests/ci_install.sh.
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'set-home
-            (lambda _
-              ;; To address sanity check warning: UserWarning: unable to write
-              ;; new config file.
-              (setenv "HOME" "/tmp"))))))
+      ;; - http://yt-project.org/data
+      ;;   - enzo_tiny_cosmology 419MiB
+      ;;   - GasSloshingLowRes 1GiB
+      ;;   - FIRE_M12i_ref11 209MiB
+      ;; - http://hea-www.cfa.harvard.edu/~jzuhone/
+      ;;   - pyxsim22.tar.gz 12MiB
+      #:tests? #f))
+    (native-inputs
+     (list python-cython
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-h5py
@@ -7634,11 +7637,6 @@ Virtual observatory (VO) using Python.")
            python-tqdm
            python-unyt
            python-yt))
-    (native-inputs
-     (list python-cython
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
     (home-page "https://hea-www.cfa.harvard.edu/~jzuhone/pyxsim/")
     (synopsis "Simulating X-ray observations from astrophysical sources")
     (description
