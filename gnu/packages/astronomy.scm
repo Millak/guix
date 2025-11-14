@@ -8277,31 +8277,25 @@ will be provided to supplement published projections and simulations.")
 (define-public python-soxs
   (package
     (name "python-soxs")
-    (version "5.0.0")
+    (version "5.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "soxs" version))
        (sha256
-        (base32 "1pckpyg8b34ql79zr0bzxrl41nynd522skdjmk2cs23k7ps32nwm"))))
+        (base32 "1q485ygalnnmx2imzm5qlfvblki63bhgmwzxv8gqfqraxk0midv5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; XXX: Tests require additional data, check if it may be packed
       ;; separately, see tests/ci_install.sh.
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'set-home
-            (lambda _
-              ;; To address sanity check warning: UserWarning: unable to write
-              ;; new config file.
-              (setenv "HOME" "/tmp"))))))
+      ;; - http://hea-www.cfa.harvard.edu/~jzuhone
+      ;;   - soxs_test_data_16.tar.gz 235MiB
+      #:tests? #f))
     (native-inputs
      (list python-cython
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-appdirs
            python-astropy
