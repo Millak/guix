@@ -9043,6 +9043,38 @@ intends to be compatible with Avahi.")
 Block Storage for container, cloud and virtualisation.")
     (license license:asl2.0)))
 
+(define-public go-github-com-linuxkit-virtsock
+  (package
+    (name "go-github-com-linuxkit-virtsock")
+    (version "0.0.0-20241009230534-cb6a20cc0422")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/linuxkit/virtsock")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08f8m6jnq76p1996wbf5kw8s1p9g3ix373rb4f46n9qg1qang4bl"))
+       (modules '((guix build utils)))
+       (snippet '(delete-file-recursively "vendor"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:test-flags
+      #~(list "-vet=off")   ;Go@1.24 forces vet, but tests are not ready yet.
+      #:import-path "github.com/linuxkit/virtsock"))
+    (propagated-inputs (list go-golang-org-x-sys))
+    (home-page "https://github.com/linuxkit/virtsock")
+    (synopsis "Virtio and Hyper-V sockets bindings for Golang")
+    (description
+     "This package contains Go bindings and sample code for
+@url{https://msdn.microsoft.com/en-us/virtualization/hyperv_on_windows/develop/make_mgmt_service,
+Hyper-V sockets} and @url{http://stefanha.github.io/virtio/, virtio
+sockets}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-lum8rjack-go-ja4h
   (package
     (name "go-github-com-lum8rjack-go-ja4h")
