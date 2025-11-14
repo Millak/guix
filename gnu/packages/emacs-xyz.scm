@@ -35224,6 +35224,41 @@ inserting a new line with the same indentation level as the current line.")
     (home-page "https://github.com/jamescherti/outline-indent.el")
     (license license:gpl3+)))
 
+(define-public emacs-bray
+  ;; No tagged releases. Version taken from bray.el.
+  (let ((commit "59574fc07bcfaa67fbd096aa12b32aa088b16fef")
+        (revision "0"))
+    (package
+      (name "emacs-bray")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://codeberg.org/ideasman42/emacs-bray/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1y6js77l7b34fd3345g4pv8b9wzqvrbq4pdhxdy8m3k54s79glz2"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:tests? #f))              ; No tests.
+      (synopsis "Lightweight modal editing framework")
+      (description
+       "This package provides a blank-slate for users to define their own
+modal editing workflow.  It has the following features, among others:
+
+@itemize
+@item The user can define custom states (like, say, @emph{normal},
+@emph{insert} etc.) in any number at will;
+@item States may be buffer-local, allowing context-dependent configuration and
+behavior;
+@item States can hold settings such as cursor, keymaps and enter/exit hooks;
+@end itemize")
+      (home-page "https://codeberg.org/ideasman42/emacs-bray/")
+      (license license:gpl3+))))
+
 (define-public emacs-repeat-fu
   ;; Upstream has no tags; release extracted from source code
   (let ((commit "b91d55001cca71e5df7a9f665c7da73ab9f55efd")
