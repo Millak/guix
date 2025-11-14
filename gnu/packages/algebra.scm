@@ -1901,14 +1901,14 @@ no more than about 20 bits long).")
 (define-public r-dtt
   (package
     (name "r-dtt")
-    (version "0.1-2")
+    (version "0.1-2.1")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "dtt" version))
         (sha256
           (base32
-            "0n8gj5iylfagdbaqirpykb01a9difsy4zl6qq55f0ghvazxqdvmn"))))
+            "113qb6fjp08gcmv4cgq3cm2fk6k3r3j1wfsrygq8889i2bq4a073"))))
     (properties `((upstream-name . "dtt")))
     (build-system r-build-system)
     (home-page "https://www.r-project.org")
