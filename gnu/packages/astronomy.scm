@@ -8951,13 +8951,13 @@ Telescope Science Institute} image array manipulation functions.")
 (define-public python-stsci-imagestats
   (package
     (name "python-stsci-imagestats")
-    (version "1.8.3")
+    (version "1.8.4")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "stsci.imagestats" version))
+       (uri (pypi-uri "stsci_imagestats" version))
        (sha256
-        (base32 "1nmya85bf2747c9ggya6my5b1slk6g2a7bk16rdv8r5a4ah9hda5"))))
+        (base32 "0gn0qqpv2qwl4c9sf8783xkwawk1xjhv3dk28gx82fp0bqalz4kg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
