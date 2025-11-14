@@ -65,6 +65,7 @@
             grub-efi-bootloader
             grub-efi-removable-bootloader
             grub-efi32-bootloader
+            grub-efi32-removable-bootloader
             grub-efi-netboot-bootloader
             grub-efi-netboot-removable-bootloader
             grub-mkrescue-bootloader
@@ -843,6 +844,13 @@ symlink to the store is not needed in this case."
    (installer (make-grub-efi-installer #:efi32? #t))
    (name 'grub-efi32)
    (package grub-efi32)))
+
+(define grub-efi32-removable-bootloader
+  (bootloader
+   (inherit grub-efi32-bootloader)
+   (name 'grub-efi32-removable-bootloader)
+   (installer (make-grub-efi-installer #:removable? #t
+                                       #:efi32? #t))))
 
 (define (make-grub-efi-netboot-bootloader name subdir)
   (bootloader
