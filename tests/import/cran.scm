@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -20,6 +20,7 @@
 (define-module (test-cran)
   #:use-module (gnu packages statistics)
   #:use-module (guix import cran)
+  #:use-module (guix sets)
   #:use-module (guix tests)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-64)
@@ -88,7 +89,21 @@ Date/Publication: 2015-07-14 14:15:16
   '()
   ((@@ (guix import cran) listify) simple-alist "BadList"))
 
-(test-equal "r-mininal is not a cran package"
+(test-equal "extract-imports: finds data.table"
+  (list "data.table")
+  (set->list ((@ (guix import cran) extract-imports) "abc + data.table::some_procedure()")))
+
+(test-equal "extract-imports: ignores text inside strings"
+  (list)
+  (set->list ((@ (guix import cran) extract-imports)
+              "\"hello::world\", \"this is not data.table::some_procedure(), actually\"")))
+
+(test-equal "extract-imports: ignores other colon separated things"
+  (list)
+  (set->list ((@ (guix import cran) extract-imports)
+              "this:is:not::a:procedure")))
+
+(test-equal "r-minimal is not a cran package"
   #f
   ((@@ (guix import cran) cran-package?) r-minimal))
 
