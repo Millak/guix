@@ -685,6 +685,18 @@ which will be used as a snippet in origin."
      #:commit commit
      #:repository-url "https://github.com/slackhq/tree-sitter-hack")))
 
+(define-public tree-sitter-hare
+  (let ((version "0.0.1")
+        (commit "fb6ea01461441ec7c312e64e326649f5e9011a64")
+        (revision "0"))
+    (tree-sitter-grammar
+     "hare" "Hare"
+     "0c1zswqig2x0qxg5svd5r17vrwi282x6is9irll2vadkfpfm83r9"
+     (git-version version revision commit)
+     #:commit commit
+     #:repository-url "https://git.sr.ht/~ecs/tree-sitter-hare"
+     #:license license:expat)))
+
 (define-public tree-sitter-haskell
   (tree-sitter-grammar
    "haskell" "Haskell"
