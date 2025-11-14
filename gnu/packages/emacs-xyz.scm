@@ -35259,6 +35259,36 @@ behavior;
       (home-page "https://codeberg.org/ideasman42/emacs-bray/")
       (license license:gpl3+))))
 
+(define-public emacs-meep
+  ;; No tagged releases. Version taken from meep.el.
+  (let ((commit "de7f3c51bcfcb54417f3c59ae9db2ce24d9ec7bd")
+        (revision "0"))
+    (package
+      (name "emacs-meep")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://codeberg.org/ideasman42/emacs-meep/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0hbi4jd6h35a12l1y0gs52898lvw3cs9mcxbqwdvazmzz8wzwia7"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:tests? #f))              ; No tests.
+      (propagated-inputs
+       (list emacs-bray))
+      (synopsis "Lightweight modal editing functionalities")
+      (description
+       "This package provides utility functions to bind to keys, intended to
+be used along with @code{emacs-bray} although most of them can be used in
+vanilla Emacs.")
+      (home-page "https://codeberg.org/ideasman42/emacs-meep/")
+      (license license:gpl3+))))
+
 (define-public emacs-repeat-fu
   ;; Upstream has no tags; release extracted from source code
   (let ((commit "b91d55001cca71e5df7a9f665c7da73ab9f55efd")
