@@ -6596,7 +6596,7 @@ position-frequency slice.")
 (define-public python-pyavm
   (package
     (name "python-pyavm")
-    (version "0.9.6")
+    (version "0.9.8")
     (source
      (origin
        (method url-fetch)
@@ -6608,8 +6608,7 @@ position-frequency slice.")
      (list python-pillow
            python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-numpy))
