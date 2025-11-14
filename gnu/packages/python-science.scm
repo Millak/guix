@@ -1421,6 +1421,50 @@ clustering schemes efficiently.  The package is made with two interfaces to
 standard software: R and Python.")
     (license license:bsd-2)))
 
+(define-public python-fgivenx
+  (package
+    (name "python-fgivenx")
+    (version "2.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fgivenx" version))
+       (sha256
+        (base32 "1ji6fqxsxmp58yvc16r41wjakgnw710gwhwviyi6q42bfj9lag6z"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 24 passed, 1 deselected, 167578 warnings
+      #:test-flags
+      ;; AttributeError: 'GrouperView' object has no attribute 'join'
+      #~(list "--deselect=fgivenx/test/test_drivers.py::test_plotting")))
+    (native-inputs
+     (list python-pytest
+           python-pytest-mpl
+           python-setuptools))
+    (propagated-inputs
+     (list python-getdist
+           python-matplotlib
+           python-joblib
+           python-numpy
+           python-scipy
+           python-tqdm))
+    (home-page "https://github.com/fgivenx/fgivenx")
+    (synopsis "Functional Posterior Plotter")
+    (description
+     "@code{fgivenx} is a Python package for plotting posteriors of functions.
+It is currently used in astronomy, but will be of use to any scientists
+performing Bayesian analyses which have predictive posteriors that are
+functions.
+
+This package allows one to plot a predictive posterior of a function,
+dependent on sampled parameters.  It assumes one has a Bayesian posterior
+@code{Post(theta|D,M)} described by a set of posterior samples
+@code{{theta_i}~Post}. If there is a function parameterised by theta
+@code{y=f(x;theta)}, then this script will produce a contour plot of the
+conditional posterior @code{P(y|x,D,M)} in the @code{(x,y)} plane.")
+    (license license:expat)))
+
 (define-public python-formulaic
   (package
     (name "python-formulaic")
