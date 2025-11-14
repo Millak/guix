@@ -5705,6 +5705,16 @@ lensing substructure to infer dark matter properties, morphological
 quantification of galaxies, quasar-host galaxy decomposition and much more.")
     (license license:bsd-3)))
 
+;; A bare minimal package, mainly to use in tests and reduce closure
+;; size. Tests are left out in the main package to slim down native-inputs.
+(define-public python-lenstronomy-minimal
+  (package/inherit python-lenstronomy
+    (name "python-lenstronomy-minimal")
+    (arguments
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools))))
+
 (define-public python-libstempo
   (package
     (name "python-libstempo")
