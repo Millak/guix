@@ -3167,6 +3167,7 @@ of reading and writing XML.")
        (sha256
         (base32 "1ddz14699v5lqx3dh0mb7hfffr6fk5zhmzn3z8yxkqqvriqnciim"))
        (modules '((guix build utils)))
+       (patches (search-patches "jsonnet-include-cstdint-for-gcc-13-builds.patch"))
        (snippet
         #~(begin
             (rename-file "third_party/md5" ".md5")

@@ -1,0 +1,28 @@
+From e43ca8e958d129094bec58fe06a87be1358aaf42 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?W=C3=81NG=20Xu=C4=9Bru=C3=AC?=
+ <1175567+xen0n@users.noreply.github.com>
+Date: Wed, 19 Oct 2022 11:15:43 +0800
+Subject: [PATCH] Add #include <cstdint> for gcc-13 builds (#1020)
+
+See https://gcc.gnu.org/gcc-13/porting_to.html#header-dep-changes.
+
+This fixes Gentoo bug https://bugs.gentoo.org/875569.
+---
+ include/libjsonnet++.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/libjsonnet++.h b/include/libjsonnet++.h
+index b744b31..ed14f31 100644
+--- a/include/libjsonnet++.h
++++ b/include/libjsonnet++.h
+@@ -17,6 +17,7 @@ limitations under the License.
+ #ifndef CPP_JSONNET_H_
+ #define CPP_JSONNET_H_
+ 
++#include <cstdint>
+ #include <cstring>
+ #include <functional>
+ #include <map>
+-- 
+2.51.0
+
