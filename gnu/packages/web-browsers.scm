@@ -25,6 +25,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2025 Sergey Trofimov <sarg@sarg.org.ru>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -112,6 +113,7 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
   #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE)))
@@ -953,7 +955,7 @@ http, and https via third-party applications.")
 (define-public tinmop
   (package
     (name "tinmop")
-    (version "0.9.9.1414213562373")
+    (version "0.9.9.14142135623730951")
     (source
      (origin
        (method git-fetch)
@@ -962,7 +964,7 @@ http, and https via third-party applications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1grcngb6rnyzkdkf52m62m1kmd8nxm9m85bpg2py5mp3ghf5y5gp"))))
+        (base32 "0dgx0p1g9xq2kq71ycq5mfjj5h5sw8xs26nk648w3lc8a6764mji"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -981,7 +983,8 @@ http, and https via third-party applications.")
            which
            xdg-utils))
     (inputs
-     (list ncurses
+     (list xsel
+           ncurses
            sbcl-access
            sbcl-alexandria
            sbcl-babel
@@ -996,6 +999,7 @@ http, and https via third-party applications.")
            sbcl-cl-sqlite
            sbcl-clunit2
            sbcl-croatoan
+           sbcl-chronicity
            sbcl-crypto-shortcuts
            sbcl-drakma
            sbcl-esrap
