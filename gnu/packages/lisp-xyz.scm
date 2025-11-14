@@ -24361,61 +24361,60 @@ instead of #'FOO.
   (sbcl-package->ecl-package sbcl-nkeymaps))
 
 (define-public sbcl-nodgui
-  (let ((commit "9a1b2c6419adce2ba317497328276f8d63843279")
-        (revision "2"))
-    (package
-      (name "sbcl-nodgui")
-      (version (git-version "0.7.2.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://codeberg.org/cage/nodgui.git")
-               (commit commit)))
-         (file-name (git-file-name "cl-nodgui" version))
-         (sha256
-          (base32 "1qanhxn46bwq8a10v61n46q4j8avp7n1m2687bi2wdylz1pgakyq"))))
-      (build-system asdf-build-system/sbcl)
-      (native-inputs
-       (list sbcl-clunit2))
-      (inputs
-       (list sbcl-alexandria
-             sbcl-bordeaux-threads
-             sbcl-cl-colors2
-             sbcl-cl-ppcre-unicode
-             sbcl-cl-unicode
-             sbcl-esrap
-             sbcl-flexi-streams
-             sbcl-jpeg-turbo
-             sbcl-named-readtables
-             sbcl-cl-opengl
-             sbcl-parse-number
-             sbcl-pngload
-             sbcl-sdl2
-             sbcl-sdl2-ttf
-             sbcl-static-vectors
-             sbcl-trivial-garbage
-             sbcl-zpng
-             tk
-             tklib
-             tcllib))
-      (arguments
-       (list #:phases
-             #~(modify-phases %standard-phases
-                 (add-after 'unpack 'fix-paths
-                   (lambda* (#:key inputs #:allow-other-keys)
-                     (substitute* "src/wish-communication.lisp"
-                       (("\\(guess-wish-interpreter-path\\)")
-                        (string-append "\""
-                                       (search-input-file inputs "/bin/wish")
-                                       "\""))))))))
-      (synopsis "Common Lisp bindings for the Tk GUI toolkit")
-      (description
-       "Nodgui (@emph{No Drama GUI}) is a Common Lisp binding for the Tk GUI
+  (package
+    (name "sbcl-nodgui")
+    (version "0.7.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/cage/nodgui.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-nodgui" version))
+       (sha256
+        (base32 "0c2f7g6swd9fkzjnmlkm22cds4v2y67g09w7s66ak3zcxaxppdbj"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs
+     (list sbcl-clunit2))
+    (inputs
+     (list sbcl-alexandria
+           sbcl-bordeaux-threads
+           sbcl-cl-colors2
+           sbcl-cl-ppcre-unicode
+           sbcl-cl-unicode
+           sbcl-esrap
+           sbcl-flexi-streams
+           sbcl-jpeg-turbo
+           sbcl-named-readtables
+           sbcl-cl-opengl
+           sbcl-parse-number
+           sbcl-pngload
+           sbcl-sdl2
+           sbcl-sdl2-ttf
+           sbcl-static-vectors
+           sbcl-trivial-garbage
+           sbcl-zpng
+           tk
+           tklib
+           tcllib))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/wish-communication.lisp"
+                (("\\(guess-wish-interpreter-path\\)")
+                 (string-append "\""
+                                (search-input-file inputs "/bin/wish")
+                                "\""))))))))
+    (synopsis "Common Lisp bindings for the Tk GUI toolkit")
+    (description
+     "Nodgui (@emph{No Drama GUI}) is a Common Lisp binding for the Tk GUI
 toolkit.  It also provides a few additional widgets more than the standard Tk
 ones.")
-      (home-page "https://www.autistici.org/interzona/nodgui.html")
-      (license license:llgpl))))
+    (home-page "https://www.autistici.org/interzona/nodgui.html")
+    (license license:llgpl)))
 
 (define-public cl-nodgui
   (sbcl-package->cl-source-package sbcl-nodgui))
