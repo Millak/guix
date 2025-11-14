@@ -2160,18 +2160,19 @@ Main features:
 (define-public python-asdf
   (package
     (name "python-asdf")
-    (version "5.0.0")
+    (version "5.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf" version))
        (sha256
-        (base32 "1405fmv0f8dxr949njfw368bkm7w8cnqr5w6nqlxr68vvc1pghx7"))))
+        (base32 "1m0j8lbyhblpj8sjnc6ffb8lplffnj17pwyw8i08kp2rfbaarg10"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1986 passed, 13 skipped, 2 xfailed
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count)))))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count))))))
     (native-inputs
      (list python-psutil
            python-pytest
