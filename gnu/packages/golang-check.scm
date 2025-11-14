@@ -1133,6 +1133,39 @@ reflect.DeepEqual but returns a list of differences.  This is helpful
 when comparing complex types like structures and maps.")
     (license license:expat)))
 
+;; XXX: This repository has been archived by the owner
+;; on May 9, 2021. It is now read-only. It's only used
+;; by go-github-com-golang-gddo. Consider to remove when nothing
+;; depends on it.
+(define-public go-github-com-golang-lint
+  (package
+    (name "go-github-com-golang-lint")
+    (version "0.0.0-20210508222113-6edffad5e616")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/golang/lint")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n7lrr3282q3li4f06afms444qy13rfd316za0drqihakwyki2jk"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (substitute* (find-files "." "\\.go$")
+              ;; Module name has not been changed after been mirrored upstream.
+              (("golang.org/x/lint") "github.com/golang/lint"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/golang/lint"))
+    (propagated-inputs (list go-golang-org-x-tools))
+    (home-page "https://github.com/golang/lint")
+    (synopsis "Source code of a linter for Golang")
+    (description "This package provides the source code of a linter for Golang.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-golang-mock
   (package
     (name "go-github-com-golang-mock")
