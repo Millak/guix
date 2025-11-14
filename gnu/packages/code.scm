@@ -1057,17 +1057,17 @@ in a project.")
 (define-public universal-ctags
   (package
     (name "universal-ctags")
-    (version "6.1.20250525.0")
+    (version "6.2.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/universal-ctags/ctags")
-             (commit (string-append "p" version))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0nxhmpzkxixb303bsihd5j7n0d29ak2lgnqff920q3dm33y965sy"))
+         "04i9fhhifs82d39z2dskscp7v2885g7isjn9r9zm4wsl6dcnb5n7"))
        (modules '((guix build utils)))
        (snippet
         '(begin
