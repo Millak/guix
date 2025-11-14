@@ -7643,7 +7643,7 @@ PSF} describing how the optical system spreads light from sources.")
 (define-public python-reproject
   (package
     (name "python-reproject")
-    (version "0.14.1") ;XXX: Newer versions need to be build with NumPy 2+
+    (version "0.14.1") ;XXX: Newer versions need to be built with NumPy 2+
     (source
      (origin
        (method url-fetch)
@@ -7658,19 +7658,21 @@ PSF} describing how the optical system spreads light from sources.")
       #~(list "--arraydiff"
               "--arraydiff-default-format=fits"
               "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              "--pyargs" "reproject"
               ;; ValueError: Could not determine celestial frame corresponding
               ;; to the specified WCS object
               "-k" "not test_solar_wcs")
       #:phases
       #~(modify-phases %standard-phases
-          ;; Use built library for tests.
           (replace 'check
             (lambda* (#:key tests? test-flags #:allow-other-keys)
               (when tests?
                 (with-directory-excursion #$output
                   (setenv "HOME" "/tmp")
-                  (apply invoke "pytest" "-vv" test-flags))))))))
+                  (apply invoke "pytest" "-vv" test-flags)))))
+          (add-before 'check 'post-check
+            (lambda _
+              (for-each delete-file-recursively
+                        (find-files #$output "__pycache__" #:directories? #t)))))))
     (native-inputs
      (list python-cython
            python-extension-helpers
