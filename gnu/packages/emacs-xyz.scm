@@ -312,6 +312,7 @@
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages erlang)
   #:use-module (gnu packages search)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages telegram)
@@ -38875,6 +38876,44 @@ programs, such as @command{ssh} and @command{scp}.")
 global minor mode whose purpose is to automatically feed TRAMP sub-processes
 with passwords for paths matching regexps.")
       (license license:gpl3+))))
+
+(define-public emacs-ssh-tunnels
+  ;; There are no tags or releases upstream.
+  (let ((commit "5010d779edef33f869065231b99d74723c9c7eaf")
+        (revision "0"))
+    (package
+      (name "emacs-ssh-tunnels")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/death/ssh-tunnels")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "15pwgc9s7f5fjmx2savjrpwr6qcpp0s9iy0y10abpy63np4krc62"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-ssh-location
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-variables "ssh-tunnels.el"
+                  ("ssh-tunnels-program"
+                   (search-input-file inputs "/bin/ssh"))))))))
+      (inputs (list openssh))
+      (propagated-inputs (list emacs-helm))
+      (home-page "https://github.com/death/ssh-tunnels")
+      (synopsis "Manipulate @code{ssh} tunnels from Emacs")
+      (description "This package provides an Emacs interface to modify,
+run and kill @code{ssh} tunnels.  It lets customise descriptions of the
+tunnels configurations, and includes an @code{emacs-helm} interface to modify
+and act on tunnels.")
+      (license license:expat))))
 
 (define-public emacs-eacl
   (package
