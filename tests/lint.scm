@@ -119,7 +119,7 @@
   "Texinfo markup in description is invalid"
   (single-lint-warning-message
    (check-description-style
-    (dummy-package "x" (description (identity "f{oo}b@r"))))))
+    (dummy-package "x" (description (identity "f{oo}b@r."))))))
 
 (test-equal "description: does not start with an upper-case letter"
   "description should start with an upper-case letter or digit"
@@ -131,7 +131,7 @@
 (test-equal "description: may start with texinfo markup"
   '()
   (check-description-style
-   (dummy-package "x" (description "@emph{Maxwell Equations of Software}"))))
+   (dummy-package "x" (description "@emph{Maxwell Equations of Software}."))))
 
 (test-equal "description: may start with a digit"
   '()
@@ -187,14 +187,14 @@
   "description should not contain trademark sign '™' at 20"
   (single-lint-warning-message
    (let ((pkg (dummy-package "x"
-                             (description "Does The Right Thing™"))))
+                             (description "Does The Right Thing™."))))
      (check-description-style pkg))))
 
 (test-equal "description: may not contain trademark signs: ®"
   "description should not contain trademark sign '®' at 17"
   (single-lint-warning-message
    (let ((pkg (dummy-package "x"
-                             (description "Works with Format®"))))
+                             (description "Works with Format®."))))
      (check-description-style pkg))))
 
 (test-equal "description: suggest ornament instead of quotes"

@@ -398,7 +398,9 @@ superfluous when building natively and incorrect when cross-compiling."
 
   (define (check-ends-with-period description)
     "Checks that a description field ends with a period."
-    (if (not (string-suffix? "." description))
+    (if (not (or (string-null? description)       ;check-not-empty
+                 (string-suffix? " " description) ;check-no-trailing-whitespace
+                 (string-suffix? "." description)))
         (list
          (make-warning package
                        (G_ "description should end with a period")
