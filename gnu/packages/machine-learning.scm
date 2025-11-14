@@ -3249,7 +3249,7 @@ Python.")
 (define-public tensorflow-lite
   (package
     (name "tensorflow-lite")
-    (version "2.15.1")
+    (version "2.16.2")
     (source
      (origin
        (method git-fetch)
@@ -3259,7 +3259,7 @@ Python.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "01cjdilxxr2h0q3sbjwhy0p5b82sbyvi224s5vx5gn2gix3nhdyx"))))
+         "082qqv7987qb559skkh8199v8knigylbxgxvz49v4m3467sd4468"))))
     (build-system cmake-build-system)
     (outputs (list "out" "python"))
     (arguments
@@ -3384,6 +3384,12 @@ find_library(ML_DTYPES_LIBRARIES
               (substitute* "kernels/internal/common.h"
                 (("#include \"fixedpoint/fixedpoint\\.h\"")
                  "#include <fixedpoint/fixedpoint.h>"))))
+          (add-after 'gemmlowp-fix 'xnn-delegate-fix
+              ;; undefined function, remove call to it
+            (lambda _
+              (substitute* "delegates/xnnpack/xnnpack_delegate.cc"
+                (("xnn_experiment_enable_adaptive_avx_optimization\\(\\);")
+                 ""))))
           (add-after 'build 'build-shared-library
             (lambda* (#:key configure-flags #:allow-other-keys)
               (mkdir-p "c")
