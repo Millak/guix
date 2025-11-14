@@ -36981,12 +36981,11 @@ output.")
 (define-public emacs-vdiff-magit
   ;; Need to use a more recent commit than the latest release version because
   ;; of Magit and Transient
-  (let ((commit "b100d126c69e5c26a61ae05aa1778bcc4302b597")
-        (version "0.3.2")
-        (revision "8"))
+  (let ((commit "cc9e2dbd81d7f717381981501472808b7a4c6d79")
+        (revision "0"))
     (package
       (name "emacs-vdiff-magit")
-      (version (git-version version revision commit))
+      (version (git-version "0.3.3" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -36996,9 +36995,11 @@ output.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "16cjmrzflf2i1w01973sl944xrfanakba8sb4dpwi79d92xp03xy"))))
+           "0jybs0ddgvl1xfa750prw3phvilqxq3a4gpjpcljyjbjdqhdfrym"))))
       (build-system emacs-build-system)
-      (propagated-inputs (list emacs-vdiff emacs-magit))
+      (propagated-inputs
+       (list emacs-magit
+             emacs-vdiff))
       (home-page "https://github.com/justbur/emacs-vdiff-magit/")
       (synopsis "Frontend for diffing based on vimdiff")
       (description "This package permits comparisons of two or three buffers
