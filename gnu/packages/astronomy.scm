@@ -9120,16 +9120,17 @@ packages for HST.")
 (define-public python-stwcs
   (package
     (name "python-stwcs")
-    (version "1.7.3") ; any newer version requires NumPy 2+
+    (version "1.7.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "stwcs" version))
        (sha256
-        (base32 "12114hx27mgwcwcyz7lghm78g6pbg8j40189lcfi22zsk47fxv11"))))
+        (base32 "04s5wlw1yvgyrz9ax0akfvikkpfyvfy598rap37jqjy35lgpqmlb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 18 passed, 34 deselected, 1 warning
       #:test-flags
       #~(list "-k" (string-join
                     ;; XXX: Test requiring network access to download data
@@ -9167,13 +9168,21 @@ packages for HST.")
                           "test_update_legacy_file"
                           "test_update_stis_asn"
                           "test_update_waiver_wfpc2")
-                    " and not "))))
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; XXX: Build and check phases passed just fine, it looks like
+                ;; a blind pin to 2+ version, see:
+                ;; <https://github.com/spacetelescope/stwcs/releases/tag/1.7.4>.
+                (("numpy>=2.0") "numpy")))))))
     (native-inputs
      (list nss-certs-for-test
            python-pytest
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-lxml
