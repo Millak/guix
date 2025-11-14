@@ -9361,37 +9361,26 @@ SunPy.")
 (define-public python-sunpy
   (package
     (name "python-sunpy")
-    (version "7.0.2")
+    (version "7.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunpy" version))
        (sha256
-        (base32 "1frd7cw18cxmkrflzkwda4nxxbidn64n9q45ldn6jvk6nn8bwy6q"))))
+        (base32 "03qpg64a5gb82fv8w0j7ba5xsf6g3x8gzmiiqh0qhv1npwh8c2c7"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 2448 passed, 3 xfailed, 35 warnings
+      ;; tests: 2465 passed, 1 skipped, 3 xfailed, 36 warnings
       #:test-flags
-      #~(list "--pyargs" "sunpy"
+      #~(list "-m" "not remote_data"
               "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              "-m" "not remote_data"
-              ;; [1] Test introduces a time bomb and fails with error: ValueError:
+              ;; Test introduces a time bomb and fails with error: ValueError:
               ;; interpolating from IERS_Auto using predictive values that are
               ;; more than 30.0 days old.
-              ;; [2,3] Failed: DID NOT RAISE <class 'ModuleNotFoundError'>
-              "-k" (string-join
-                    (list "not test_print_params"        ;1
-                          "test_main_nonexisting_module" ;2
-                          "test_main_stdlib_module")     ;3
-                    " and not "))
+              "-k" "not test_print_params")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-test-files
-            ;; Requires SpicePy wich is not packed in Guix yet and can't be
-            ;; ignored with Pytet options for some reason.
-            (lambda _
-              (delete-file "sunpy/coordinates/tests/test_spice.py")))
           (add-before 'check 'pre-check
             ;; It requires during sanity check as well to prevent error like:
             ;; PermissionError: [Errno 13] Permission denied:
@@ -9401,8 +9390,12 @@ SunPy.")
           (replace 'check
             (lambda* (#:key tests? test-flags #:allow-other-keys)
               (when tests?
-                (with-directory-excursion "/tmp"
-                  (apply invoke "pytest" "-vv" test-flags))))))))
+                (with-directory-excursion #$output
+                  (apply invoke "pytest" "-vv" test-flags)))))
+          (add-before 'check 'post-check
+            (lambda _
+              (for-each delete-file-recursively
+                        (find-files #$output "__pycache__" #:directories? #t)))))))
     (native-inputs
      (list nss-certs-for-test
            python-aiohttp
@@ -9453,7 +9446,13 @@ SunPy.")
     (synopsis "Python library for Solar Physics")
     (description
      "SunPy is package for solar physics and is meant to be a free alternative
-to the SolarSoft data analysis environment.")
+to the @url{https://sohowww.nascom.nasa.gov/solarsoft/, SolarSoft} data
+analysis environment.
+
+It includes an interface for searching and downloading data from multiple data
+providers, data containers for image and time series data, commonly used solar
+coordinate frames and associated transformations, as well as other
+functionality needed for solar data analysis.")
     (license license:bsd-2)))
 
 ;; A bare minimal package, mainly to use in tests and reduce closure
