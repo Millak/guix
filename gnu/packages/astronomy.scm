@@ -8944,46 +8944,47 @@ spherical polygons that represent arbitrary regions of the sky.")
 (define-public python-spisea
   (package
     (name "python-spisea")
-    (version "2.1.13")
+    (version "2.1.15")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/astropy/SPISEA")
-             (commit (string-append "v" version))))
+              (url "https://github.com/astropy/SPISEA")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i25csfcism3b5v74kqp0a3i44qkhwkh61ag65l69krm5w3yvygv"))))
+        (base32 "18zzyply7mxf3ahlfy33i7hbwrz4abq676gjq66w7wbh7g3b6yy6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Tests require additional data, see
+      ;; XXX: Tests require additional data, see
       ;; <https://spisea.readthedocs.io/en/latest/getting_started.html>.
+      ;; - https://archive.stsci.edu/hlsps/reference-atlases/
+      ;;   - hlsp_reference-atlases_hst_multi_everything_multi_v10_sed.tar 741MiB
+      ;; - https://archive.stsci.edu/hlsps/reference-atlases/
+      ;;   - hlsp_reference-atlases_hst_multi_star-galaxy-models_multi_v3_synphot2.tar 84MiB
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'preparations
+          (add-after 'unpack 'fix-setup.cfg
             (lambda _
-              ;; Tests and sanity check are failed with ImportError: cannot
-              ;; import name 'update_default_config' from
-              ;; 'astropy.config.configuration'.
-              (delete-file "spisea/_astropy_init.py")
+              (substitute* "setup.cfg"
+                ;; XXX: Report upstream, the template was not adjusted.
+                (("astropy-package-template-example = .*") ""))))
+          (add-after 'unpack 'set-version
+            (lambda _
               (with-output-to-file "spisea/__init__.py"
                 (lambda _
                   (display
                    (string-append "__version__ = \""
                                   #$(package-version this-package)
                                   "\""))))
-              (substitute* "setup.cfg"
-                (("astropy-package-template-example = .*") ""))
-              ;; The version could not be determined from git checkout.
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-cython
            python-extension-helpers
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-matplotlib
