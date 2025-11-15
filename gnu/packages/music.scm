@@ -1753,9 +1753,9 @@ This package also provides its demo project, examples, ElectricGuitar,
 RagaMatic and Effects.")
     (license (license:non-copyleft "file:///LICENSE"))))
 
-(define-public abjad
+(define-public python-abjad
   (package
-    (name "abjad")
+    (name "python-abjad")
     (version "3.19")
     (source
      (origin
@@ -1788,6 +1788,7 @@ typographic detail of symbols on the page.")
     (license license:expat)))
 
 (define-public abjad-ext-rmakers
+(define-deprecated-package abjad python-abjad)
   (package
     (name "abjad-ext-rmakers")
     (version "3.19")
