@@ -1883,7 +1883,7 @@ files as specified in IEEE 1364-2005.")
 (define-public python-cocotb
   (package
     (name "python-cocotb")
-    (version "2.0.0")
+    (version "2.0.1")
     (source
      (origin
        (method git-fetch)
@@ -1892,7 +1892,7 @@ files as specified in IEEE 1364-2005.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0b9wc14df11wkwa20wkij4iip07841qsr0yir9g7dww069rj36q6"))))
+        (base32 "0lyv0q1zqldrzfpyy3k1cxdnsw05gv73x5iid20yagvgb6l0sx1d"))))
     (build-system pyproject-build-system)
     (arguments
      (list
