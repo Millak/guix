@@ -25,7 +25,7 @@
 ;;; Copyright © 2023, 2024 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2024 Skylar Hill <stellarskylark@posteo.net>
-;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2024, 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Adam Faiz <adam.faiz@disroot.org>
 ;;; Copyright © 2024, 2025 Zhu Zihao <all_but_last@163.com>
@@ -1063,6 +1063,9 @@ comprehensible public-domain interpreter for R4RS Scheme offering:
          (modify-phases %standard-phases
            (delete 'bootstrap)
            (delete 'configure) ; No configure script
+           (add-before 'build 'relax-gcc-14-strictness
+             (lambda _
+               (setenv "CFLAGS" "-Wno-error=implicit-function-declaration")))
            (replace 'install ; Makefile has no 'install phase
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
