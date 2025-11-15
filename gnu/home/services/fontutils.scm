@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
-;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2023 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2023 Andrew Patterson <andrewpatt7@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.

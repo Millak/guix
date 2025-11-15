@@ -11,7 +11,7 @@
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@member.fsf.org>
-;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2020 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2022 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;;
 ;;; This file is part of GNU Guix.

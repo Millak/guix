@@ -50,7 +50,7 @@
 ;;; Copyright © 2019 Todor Kondić <tk.code@protonmail.com>15669
 ;;; Copyright © 2019 Amar Singh <nly@disroot.org>
 ;;; Copyright © 2019, 2022, 2023 Baptiste Strazzulla <bstrazzull@hotmail.fr>
-;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2019 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2019 Jens Mølgaard <jens@zete.tk>
 ;;; Copyright © 2019, 2020 Amin Bandali <bandali@gnu.org>
 ;;; Copyright © 2019 Jelle Licht <jlicht@fsfe.org>

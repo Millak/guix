@@ -2,7 +2,7 @@
 ;;; Copyright © 2020 Alex ter Weele <alex.ter.weele@gmail.com>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2020 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2023 Miguel Ángel Moreno <mail@migalmoreno.com>

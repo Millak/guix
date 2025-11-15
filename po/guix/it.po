@@ -7,7 +7,7 @@
 # Julien Lepiller <fedora-account@lepiller.eu>, 2022, 2023.
 # Tobias Geerinckx-Rice <fedora@tobias.gr>, 2023.
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2023, 2024, 2025.
-# Giacomo Leidi <goodoldpaul@autistici.org>, 2023.
+# Giacomo Leidi <therewasa@fishinthecalculator.me>, 2023.
 # mm mmmm <rimarko@libero.it>, 2023.
 # Marco Rimoldi <marco.rimoldi@pm.me>, 2024, 2025.
 # Alessandro Bugliazzini <yattatux@posteo.net>, 2024.

@@ -17,7 +17,7 @@
 ;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
 ;;; Copyright © 2024 Ada Stevenson <adanskana@gmail.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
-;;; Copyright © 2025 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2025 Christian Birk Sørensen <chrbirks@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.

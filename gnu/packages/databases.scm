@@ -61,7 +61,7 @@
 ;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023, 2024 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2023 Munyoki Kilyungi <me@bonfacemunyoki.com>
-;;; Copyright © 2023, 2025 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2023, 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 gemmaro <gemmaro.dev@gmail.com>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>

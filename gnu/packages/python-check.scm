@@ -17,7 +17,7 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2021-2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2021 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2021 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2021 Sebastian Gibb <mail@sebastiangibb.de>

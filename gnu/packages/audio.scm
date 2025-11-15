@@ -31,7 +31,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020, 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Jonathan Frederickson <jonathan@terracrypt.net>
-;;; Copyright © 2020, 2024 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2020, 2024 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2020, 2021, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>

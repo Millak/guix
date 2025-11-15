@@ -23,7 +23,7 @@
 ;;; Copyright © 2018 Pierre-Antoine Rouby <contact@parouby.fr>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2018 Rutger Helling <rhelling@mykolab.com>
-;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2020 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2020 R Veera Kumar <vkor@vkten.in>
 ;;; Copyright © 2020, 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>

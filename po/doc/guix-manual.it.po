@@ -4,7 +4,7 @@
 # Nicolo Balzarotti <nicolo@nixo.xyz>, 2021.
 # Nathan <nathan95@live.it>, 2021, 2022.
 # Fernandez Alonso Alberto Mario <albialonso7@icloud.com>, 2022.
-# Giacomo Leidi <goodoldpaul@autistici.org>, 2023.
+# Giacomo Leidi <therewasa@fishinthecalculator.me>, 2023.
 # Marco Rimoldi <marco.rimoldi@pm.me>, 2024.
 # francesco p lovergine <frankie@fsfe.org>, 2024.
 # Florian Pelz <pelzflorian@pelzflorian.de>, 2024, 2025.

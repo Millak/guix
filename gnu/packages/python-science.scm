@@ -8,7 +8,7 @@
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2022 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019-2025 Maxim Cournoyer <maxim@guixotic.coop>
-;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2019 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2020-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020-2025 Vinicius Monego <monego@posteo.net>

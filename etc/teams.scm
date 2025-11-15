@@ -1356,7 +1356,7 @@ the \"texlive\" importer."
   hurd)
 
 (define-member (person "Giacomo Leidi"
-                       "goodoldpaul@autistici.org"
+                       "therewasa@fishinthecalculator.me"
                        "fishinthecalculator")
   audio beam)
 

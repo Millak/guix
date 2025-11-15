@@ -5,7 +5,7 @@
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jesse Dowell <jessedowell@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
-;;; Copyright © 2023, 2024, 2025 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2023, 2024, 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

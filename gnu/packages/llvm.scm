@@ -14,7 +14,7 @@
 ;;; Copyright © 2019 Arm Ltd <David.Truby@arm.com>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
-;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2020 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2020-2022, 2024-2025 Maxim Cournoyer <maxim@guixotic.coop>

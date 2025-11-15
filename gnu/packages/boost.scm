@@ -11,7 +11,7 @@
 ;;; Copyright © 2018, 2020, 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2019, 2020 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2019, 2020 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>

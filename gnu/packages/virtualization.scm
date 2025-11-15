@@ -38,7 +38,7 @@
 ;;; Copyright © 2024 jgart <jgart@dismail.de>
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
-;;; Copyright © 2024, 2025 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2024, 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Karl Hallsby <karl@hallsby.com>
 ;;; Copyright © 2025 Douglas Deslauriers <Douglas.Deslauriers@vector.com>

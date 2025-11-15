@@ -27,7 +27,7 @@
 ;;; Copyright © 2024 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2024 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2024 Luís Henriques <henrix@camandro.org>
-;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2024 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;

@@ -19,7 +19,7 @@
 ;;; Copyright © 2020, 2023 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2021 EuAndreh <eu@euandre.org>
-;;; Copyright © 2021 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2021 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022, 2024 Danny Milosavljevic <dannym@scratchpost.org>

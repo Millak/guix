@@ -56,7 +56,7 @@
 ;;; Copyright © 2025 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;; Copyright © 2025 Libre en Communs <contact@a-lec.org>
 ;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>
-;;; Copyright © 2025 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2025 Andy Tai <atai@atai.org>
 ;;; Copyright © 2025 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;;

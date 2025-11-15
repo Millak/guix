@@ -27,7 +27,7 @@
 ;;; Copyright © 2019, 2020, 2021 Alexandros Theodotou <alex@zrythm.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Lars-Dominik Braun <lars@6xq.net>
-;;; Copyright © 2020, 2024 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2020, 2024 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2020, 2022, 2023 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>

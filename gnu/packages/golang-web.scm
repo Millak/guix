@@ -19,7 +19,7 @@
 ;;; Copyright © 2022 (unmatched-parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Adam Kandur <kefironpremise@gmail.com>
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
-;;; Copyright © 2022 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2022 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;; Copyright © 2022, 2025 jgart via Guix-patches via <guix-patches@gnu.org>
 ;;; Copyright © 2022 muradm <mail@muradm.net>

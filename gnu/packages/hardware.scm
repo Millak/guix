@@ -17,7 +17,7 @@
 ;;; Copyright © 2022, 2025 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2023 Spencer Skylar Chan <schan12@umd.edu>
 ;;; Copyright © 2023 Foundation Devices, Inc. <hello@foundationdevices.com>
-;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2024 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2025 Eric Bavier <bavier@posteo.net>

@@ -3,7 +3,7 @@
 ;;; Copyright © 2016-2021, 2024 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020-2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2020 Giacomo Leidi <therewasa@fishinthecalculator.me>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
