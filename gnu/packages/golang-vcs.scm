@@ -4,6 +4,7 @@
 ;;; Copyright © 2025 David Thompson <davet@gnu.org>
 ;;; Copyright © 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2025 Aleksandr Lebedev <alex.lebedev2003@icloud.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +27,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages golang-build)
@@ -233,6 +235,35 @@ using the Git pkt-line format used in various Git operations.")
     (synopsis "Git implementation library")
     (description "This package provides a Git implementation library.")
     (license license:asl2.0)))
+
+(define-public go-github-com-go-git-go-git-v6
+  ;; v6.0.0 is not a release tag as of 14.11.2025
+  (let ((commit "47b1ed2930c96d34c09a3e31abf9673fe361ec63")
+        (revision "0"))
+    (package
+      (inherit go-github-com-go-git-go-git-v5)
+      (name "go-github-com-go-git-go-git-v6")
+      (version (git-version "6.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/go-git/go-git")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1vzj9vs0wqsjpwsi7mvkfs7n8gnk3qg5vhl040c5a5k8h7rlhdz4"))))
+      (arguments
+       (substitute-keyword-arguments
+           (package-arguments go-github-com-go-git-go-git-v5)
+         ((#:import-path _) "github.com/go-git/go-git/v6")))
+      (propagated-inputs
+       (modify-inputs (package-propagated-inputs
+                       go-github-com-go-git-go-git-v5)
+         (replace "go-github-com-go-git-go-billy-v5"
+           go-github-com-go-git-go-billy-v6)
+         (replace "go-github-com-go-git-gcfg"
+           go-github-com-go-git-gcfg-v2))))))
 
 (define-public go-github-com-jiangxin-goconfig
   (package
