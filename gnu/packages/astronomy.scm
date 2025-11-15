@@ -8526,16 +8526,16 @@ about the underlying principles, see
 (define-public python-spherical-geometry
   (package
     (name "python-spherical-geometry")
-    (version "1.3.3")
+    (version "1.3.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/spacetelescope/spherical_geometry")
-             (commit version)))
+              (url "https://github.com/spacetelescope/spherical_geometry")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0r11wkwblpm5mljx26kwkipb40f5p7hhrbks6vc71ckhdhfy248h"))
+        (base32 "09f5j8xapvb88bcn48qc4438zb1k0c3lbkb8immfzkwwkvx0jpi7"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -8557,8 +8557,7 @@ about the underlying principles, see
      (list python-pytest
            python-pytest-astropy-header
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (inputs
      (list qd))
     (propagated-inputs
