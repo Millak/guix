@@ -3616,7 +3616,7 @@ memory contents between them.")
 (define-public qdmr
   (package
     (name "qdmr")
-    (version "0.12.1")
+    (version "0.13.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3625,7 +3625,7 @@ memory contents between them.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08g00xwdqchc21nmacw45s65k8hnk8450yavjb1dx8kmd31kds79"))))
+                "18c76axcvjnqkx4xkgyifyj3sk08a8maddz6159gpbkhsn5xsgjp"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f ;no tests
@@ -3636,8 +3636,8 @@ memory contents between them.")
                    (substitute* "lib/CMakeLists.txt"
                      (("(DESTINATION \")/etc/udev/" _ directive)
                       (string-append directive #$output "/lib/udev/"))))))))
-    (inputs (list libusb qtbase-5 qtlocation-5 qtserialport-5 yaml-cpp))
-    (native-inputs (list qttools-5))
+    (inputs (list libusb qtbase qtpositioning qtserialport yaml-cpp))
+    (native-inputs (list qttools librsvg))
     (home-page "https://dm3mat.darc.de/qdmr/")
     (synopsis "GUI application and command line tool to program DMR radios")
     (description
@@ -3647,5 +3647,5 @@ Programming Software (CPS) bundled with these radios but aims to be a more
 universal tool.
 
 To install the qdmr udev rules, you must extend @code{udev-service-type} with this
-package.  E.g.: @code{(udev-rules-service 'qdmr qdmr)}")
+package.  E.g.: @code{(udev-rules-service 'qdmr qdmr)}.")
     (license license:gpl3+)))
