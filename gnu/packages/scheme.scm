@@ -1057,30 +1057,26 @@ comprehensible public-domain interpreter for R4RS Scheme offering:
              '("armhf-linux" "mips64el-linux" "aarch64-linux")))
       (build-system gnu-build-system)
       (arguments
-       `(#:make-flags '("CC=gcc" "release")
-         #:test-target "test"
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'bootstrap)
-           (delete 'configure) ; No configure script
-           (add-before 'build 'relax-gcc-14-strictness
-             (lambda _
-               (setenv "CFLAGS" "-Wno-error=implicit-function-declaration")))
-           (replace 'install ; Makefile has no 'install phase
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (bin (string-append out "/bin")))
-                (install-file "flisp" bin)
-                #t)))
-           ;; The flisp binary is now available, run bootstrap to
-           ;; generate flisp.boot and afterwards runs make test.
-           (add-after 'install 'bootstrap-gen-and-test
-             (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (bin (string-append out "/bin")))
-                (invoke "./bootstrap.sh")
-                (install-file "flisp.boot" bin)
-                #t))))))
+       (list #:make-flags #~(list "CC=gcc" "release")
+             #:test-target "test"
+             #:phases
+             #~(modify-phases %standard-phases
+                 (delete 'bootstrap)
+                 (delete 'configure) ; No configure script
+                 (add-before 'build 'relax-gcc-14-strictness
+                   (lambda _
+                     (setenv "CFLAGS" "-Wno-error=implicit-function-declaration")))
+                 (replace 'install ; Makefile has no 'install phase
+                   (lambda _
+                     (let ((bin (string-append #$output "/bin")))
+                       (install-file "flisp" bin))))
+                 ;; The flisp binary is now available, run bootstrap to
+                 ;; generate flisp.boot and afterwards runs make test.
+                 (add-after 'install 'bootstrap-gen-and-test
+                   (lambda _
+                     (let ((bin (string-append #$output "/bin")))
+                       (invoke "./bootstrap.sh")
+                       (install-file "flisp.boot" bin)))))))
       (synopsis "Scheme-like lisp implementation")
       (description
        "@code{femtolisp} is a scheme-like lisp implementation with a
