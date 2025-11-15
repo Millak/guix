@@ -1818,10 +1818,11 @@ typographic detail of symbols on the page.")
 and manipulating rhythms such as accelerandi, taleas, and more.")
     (license license:expat)))
 
-(define-public abjad-ext-nauert
 (define-deprecated-package abjad-ext-rmakers python-abjad-ext-rmakers)
+
+(define-public python-abjad-ext-nauert
   (package
-    (name "abjad-ext-nauert")
+    (name "python-abjad-ext-nauert")
     (version "3.19")
     (source
      (origin
@@ -1843,6 +1844,8 @@ and manipulating rhythms such as accelerandi, taleas, and more.")
      "@code{abjad-ext-nauert} provides classes for dealing with composer and
 music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
     (license license:expat)))
+
+(define-deprecated-package abjad-ext-nauert python-abjad-ext-nauert)
 
 (define-public non-sequencer
   ;; The latest tagged release is three years old and uses a custom build
