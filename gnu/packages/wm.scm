@@ -84,6 +84,7 @@
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 Aleksandr Lebedev <alex.lebedev2003@icloud.com>
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -112,6 +113,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system haskell)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
@@ -120,6 +122,7 @@
   #:use-module (guix build-system trivial)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages audio)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
@@ -145,6 +148,10 @@
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages golang-build)
+  #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-vcs)
+  #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages gnome)
@@ -165,6 +172,7 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages monitoring)
   #:use-module (gnu packages mpd)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages music)
@@ -255,6 +263,86 @@ the leaves of a full binary tree.")
     (description "This package provides a Wayland @dfn{kiosk}, which runs a
 single, maximized application.")
     (license license:expat)))
+
+(define-public dank-material-shell-minimal
+  (package
+    (name "dank-material-shell-minimal")
+    (version "0.5.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/AvengeMedia/DankMaterialShell")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "186n0pcibjk9va967vnwnq8gfb5p3zah96sv4gkgsp0k6931vs1w"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/AvengeMedia/DankMaterialShell/core/cmd/dms"
+      #:unpack-path "github.com/AvengeMedia/DankMaterialShell"
+      #:test-subdirs #~(list "../../...")
+      #:test-flags
+      ;; Network access is required to pass these tests:
+      #~(list "-skip" (string-join
+                       (list "TestHandleList"
+                             "TestDetectNetworkStack_Integration"
+                             "TestHandle"
+                             "TestRespondError_Loginctl"
+                             "TestUpdate"
+                             "TestGetCacheDir")
+                       "|"))
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-config
+            (lambda _
+              (let* ((src (string-append #$source "/quickshell"))
+                     (tgt (string-append #$output "/share/quickshell")))
+                (mkdir-p tgt)
+                (copy-recursively src tgt)))))))
+    (native-inputs
+     (list go-github-com-charmbracelet-bubbles
+	   go-github-com-charmbracelet-bubbletea
+	   go-github-com-charmbracelet-lipgloss
+	   go-github-com-charmbracelet-log
+	   go-github-com-godbus-dbus-v5
+	   go-github-com-spf13-cobra
+	   go-github-com-stretchr-testify
+	   go-github-com-wifx-gonetworkmanager-v2
+	   go-github-com-yaslama-go-wayland-wayland
+	   go-golang-org-x-exp
+           go-github-com-go-git-go-git-v6
+           go-github-com-spf13-afero))
+    (propagated-inputs
+     (list quickshell
+           qtwayland))
+    (home-page "https://github.com/AvengeMedia/DankMaterialShell")
+    (synopsis "Desktop shell for wayland compositors")
+    (description
+     "This package provides a DankMaterialShell,a Quickshell-based modern
+desktop suite for Wayland compositors (such as Niri, Hyprland, MangoWC and
+Sway).  This program is meant to be used in system/home modules.  To launch it
+manually, use the @code{dms} CLI program, followed by @code{-c} and path to
+the @code{.../share/quickshell} path in the package.")
+    (license license:expat)))
+
+(define-public dank-material-shell
+  (package
+    (inherit dank-material-shell-minimal)
+    (name "dank-material-shell")
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs dank-material-shell-minimal)
+       (append dbus
+               brightnessctl
+               cava
+               cliphist
+               dgop
+               `(,glib "bin")
+               matugen
+               qtmultimedia
+               wl-clipboard)))))
 
 (define-public herbstluftwm
   (package
