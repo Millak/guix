@@ -18,6 +18,7 @@
 ;;; Copyright © 2024 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 cage <cage-dev@twistfold.it>
+;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -43,6 +44,7 @@
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gawk)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
@@ -1455,7 +1457,7 @@ generator.")))
                                   "/bin/yacc\n")))))
             (delete 'chdir)
             (delete 'install-yaccpar)))))
-    (native-inputs (list 9yacc))
+    (native-inputs (list 9yacc gcc-13))
     (inputs (list lib9))
     (propagated-inputs (list rc))
     (synopsis "Port of various Plan 9 tools for Unix")
