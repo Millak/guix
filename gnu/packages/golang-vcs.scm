@@ -155,6 +155,24 @@ using the Git pkt-line format used in various Git operations.")
     (description "Gcfg reads INI-style configuration files into Go structs.")
     (license license:bsd-3)))
 
+(define-public go-github-com-go-git-gcfg-v2
+  (package
+    (inherit go-github-com-go-git-gcfg)
+    (name "go-github-com-go-git-gcfg-v2")
+    (version "2.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-git/gcfg")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08mdrcifml8bvl8hs36xm3j2bczb1phi5zfyvwzlid5zw06qrjl9"))))
+    (arguments
+     (list
+      #:import-path "github.com/go-git/gcfg/v2"))))
+
 (define-public go-github-com-go-git-go-git-v5
   (package
     (name "go-github-com-go-git-go-git-v5")
