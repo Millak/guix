@@ -1787,10 +1787,11 @@ Because Abjad wraps the LilyPond music notation package, you can use Abjad to co
 typographic detail of symbols on the page.")
     (license license:expat)))
 
-(define-public abjad-ext-rmakers
 (define-deprecated-package abjad python-abjad)
+
+(define-public python-abjad-ext-rmakers
   (package
-    (name "abjad-ext-rmakers")
+    (name "python-abjad-ext-rmakers")
     (version "3.19")
     (source
      (origin
@@ -1818,6 +1819,7 @@ and manipulating rhythms such as accelerandi, taleas, and more.")
     (license license:expat)))
 
 (define-public abjad-ext-nauert
+(define-deprecated-package abjad-ext-rmakers python-abjad-ext-rmakers)
   (package
     (name "abjad-ext-nauert")
     (version "3.19")
