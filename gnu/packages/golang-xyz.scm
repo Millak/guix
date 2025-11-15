@@ -8752,6 +8752,28 @@ it virtually free to implement mocks and testing over file system
 operations.")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-git-go-billy-v6
+  ;; v6.0.0 is not a release tag as of 14.11.2025
+  (let ((commit "ae9e5d5b5b37f377236a1ec4fbff6cecc8e4c0d2")
+        (revision "0"))
+    (package
+      (inherit go-github-com-go-git-go-billy-v5)
+      (name "go-github-com-go-git-go-billy-v6")
+      (version "6.0.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/go-git/go-billy")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1pa4r00x98c0y5n2p22n5gnqdzziwfv0jw9ynnsg08l6grbynsyz"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:import-path "github.com/go-git/go-billy/v6")))))
+
 (define-public go-github-com-go-git-go-git-fixtures-v4
   (package
     (name "go-github-com-go-git-go-git-fixtures-v4")
