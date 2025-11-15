@@ -129,7 +129,25 @@ that handle none of the event types.")
      (list
       #:install-source? #f
       #:import-path "github.com/google/go-jsonnet/cmd/jsonnet"
-      #:unpack-path "github.com/google/go-jsonnet"))
+      #:unpack-path "github.com/google/go-jsonnet"
+      #:phases
+      #~(let ((all-import-paths
+               (list "github.com/google/go-jsonnet/cmd/jsonnet"
+                     "github.com/google/go-jsonnet/cmd/jsonnetfmt"
+                     "github.com/google/go-jsonnet/cmd/jsonnet-deps")))
+          (modify-phases %standard-phases
+            (replace 'build
+              (lambda arguments
+                (for-each (lambda (cmd)
+                            (apply (assoc-ref %standard-phases 'build)
+                                   `(,@arguments #:import-path ,cmd)))
+                          all-import-paths)))
+            (replace 'install
+              (lambda arguments
+                (for-each (lambda (cmd)
+                            (apply (assoc-ref %standard-phases 'install)
+                                   `(,@arguments #:import-path ,cmd)))
+                          all-import-paths)))))))
     (native-inputs
      (list go-github-com-fatih-color
            go-github-com-sergi-go-diff
