@@ -5075,6 +5075,32 @@ astronomy-specific functionality")
 across many files.")
     (license license:bsd-3)))
 
+(define-public python-glue-geospatial
+  (package
+    (name "python-glue-geospatial")
+    (version "0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "glue-geospatial" version))
+       (sha256
+        (base32 "1mn71zqsrxlg9gp5czmvw5k523ddvwp42mlx6fqvm5ahw42yhqaj"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-mock
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-affine
+           python-glue-core
+           python-pyproj
+           python-rasterio))
+    (home-page "https://github.com/glue-viz/glue-geospatial")
+    (synopsis "Glue plugin to support satellite imagery")
+    (description
+     "This package provides a Glue plugin for geospatial imagery.")
+    (license license:bsd-3)))
+
 (define-public python-glue-qt
   (package
     (name "python-glue-qt")
