@@ -71,6 +71,7 @@
 ;;; Copyright © 2025 Allan Adair <allan@adair.no>
 ;;; Copyright © 2025 Patrick Norton <patrick.147.norton@gmail.com>
 ;;; Copyright © 2025 jgart <jgart@dismail.de>
+;;; Copyright © 2025 Aleksandr Lebedev <alex.lebedev2003@icloud.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23720,6 +23721,32 @@ XOR, as in kademlia.")
     (description
      "This package provides a basic system stats like @code{DiskUsage} and
 @code{MemoryInfo}.")
+    (license license:expat)))
+
+(define-public go-github-com-wifx-gonetworkmanager-v2
+  (package
+    (name "go-github-com-wifx-gonetworkmanager-v2")
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Wifx/gonetworkmanager")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07alvhlldhpp97nynmyqsxishs0bj3z0yv4nrxsp7dv81v4brjrz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Wifx/gonetworkmanager/v2"))
+    (propagated-inputs
+     (list go-github-com-godbus-dbus-v5
+           go-github-com-google-uuid))
+    (home-page "https://github.com/Wifx/gonetworkmanager")
+    (synopsis "Networkmanager bindings in Go")
+    (description
+     "Go D-Bus bindings for @url{https://networkmanager.dev/, NetworkManager}.")
     (license license:expat)))
 
 (define-public go-github-com-winfsp-cgofuse
