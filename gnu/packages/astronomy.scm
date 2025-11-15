@@ -5402,13 +5402,13 @@ milliarcsecond).")
 (define-public python-jwst
   (package
     (name "python-jwst")
-    (version "1.20.0")
+    (version "1.20.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "jwst" version))
        (sha256
-        (base32 "0p5f1rng1hm3291j6a5bjbkvwzhxb40anjavc38ngz3iiy0rmxq6"))
+        (base32 "1kpv46fl3x3ygq3vzprv0c30x6m95ka4fp5c9cd9p0rhydm6apm3"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -5434,25 +5434,17 @@ milliarcsecond).")
             (lambda _
               (substitute* "pyproject.toml"
                 ;; scipy>=1.14.1
-                (("1.14.1") "1.12.0")
-                ;; XXX: Can't detect opencv-python version. The input opencv
-                ;; might not set the version correctly.
-                ((".*opencv-python-headless.*") "")))))))
+                (("1.14.1") "1.12.0")))))))
     (native-inputs
      (list python-ci-watson
            python-pysiaf
            python-pytest
-           python-pytest-cov
            python-pytest-doctestplus
            python-requests-mock
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
-     ;; opencv provides OpenCV-Python which is Listed as install requirement.
-     (list opencv
-           python-asdf
-           python-asdf-astropy
+     (list python-asdf
            python-astropy
            python-bayesicfitting
            python-crds-minimal
@@ -5463,7 +5455,6 @@ milliarcsecond).")
            python-numpy
            python-packaging
            python-photutils
-           python-poppy
            python-pyparsing
            python-requests
            python-scikit-image
@@ -5475,7 +5466,10 @@ milliarcsecond).")
            python-stsci-imagestats
            python-synphot
            python-tweakwcs
-           python-wiimatch))
+           python-wiimatch
+           ;; [optional]
+           python-jplephem
+           python-pysiaf))
     (home-page "https://jwst-pipeline.readthedocs.io/en/latest/")
     (synopsis "Science observations from the James Webb Space Telescope")
     (description
