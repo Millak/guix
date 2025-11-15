@@ -24154,6 +24154,41 @@ globs from things like your .gitignore file, and zsh.  The \"**\" glob
 represents a recursive wildcard matching zero-or-more directory levels deep.")
     (license license:expat)))
 
+(define-public go-github-com-yaslama-go-wayland-wayland
+  (let ((commit "2874f32d9c34a7a3f099043a6ca44dda9898a2c9")
+        (revision "0"))
+    (package
+      (name "go-github-com-yaslama-go-wayland-wayland")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/yaslama/go-wayland")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "02akinr154n6jdcw7mpjnlj2cgz0q47qmp7sf5bbnpza7b2y4x6m"))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:skip-build? #t
+        #:tests? #f             ;no tests
+        #:import-path "github.com/yaslama/go-wayland/wayland"
+        #:unpack-path "github.com/yaslama/go-wayland"))
+      (propagated-inputs
+       (list go-golang-org-x-sys))
+      (home-page "https://github.com/yaslama/go-wayland")
+      (synopsis "Go bindings for Wayland")
+      (description
+       "This module contains pure Go implementation of the Wayland
+protocol.  Currently only wayland-client functionality is supported.  It's an
+alternative chain of forks @url{https://github.com/micaplush/go-wayland} ->
+@url{https://github.com/MatthiasKunnen/go-wayland} ->
+@url{https://github.com/rajveermalviya/go-wayland} the original is
+unmaintained project.")
+      (license license:bsd-2))))
+
 (define-public go-github-com-yookoala-realpath
   (let ((commit "d19ef9c409d9817c1e685775e53d361b03eabbc8")
         (revision "0"))
