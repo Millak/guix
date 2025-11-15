@@ -359,7 +359,7 @@ to it atomically and set the appropriate permissions."
   (left    unused-subid-range-left   ;previous unused subuid range or #f
            (default #f))
   (min     unused-subid-range-min    ;lower bound of this unused subuid range
-           (default %subordinate-id-min))
+           (default 0))
   (max     unused-subid-range-max    ;upper bound
            (default %subordinate-id-max))
   (right   unused-subid-range-right  ;next unused subuid range or #f
@@ -555,7 +555,10 @@ will be marked as used in it."
   (define actual-range
     (subid-range
      (inherit range)
-     (start allocation-start)))
+     ;; New IDs are only allocated between %subordinate-id-min and
+     ;; %subordinate-id-max.
+     (start
+      (max allocation-start %subordinate-id-min))))
 
   (if (within-interval? allocation actual-range)
       (values
@@ -602,13 +605,6 @@ is visited to find the best unused range that can hold RANGE."
     (subid-range-start range))
   (define range-end
     (subid-range-end range))
-
-  (unless (and (subordinate-id? range-start)
-               (subordinate-id? range-end))
-    (raise
-     (condition
-      (&invalid-subid-range-error
-       (range range)))))
 
   (define less?
     (< range-end allocation-start))
@@ -802,12 +798,23 @@ new UIDs."
 (define* (allocate-subids ranges #:optional (current-ranges '()))
   "Return a list of subids entries for RANGES, a list of <subid-range>.  IDs
 found in CURRENT-RANGES, a list of subid entries, are reused."
+  ;; Ranges from disk must always have a start.
   (let ((generic (any (compose not subid-range-has-start?) current-ranges)))
     (when generic
       (raise
        (condition
         (&specific-subid-range-expected-error
          (range generic))))))
+  (for-each
+   (lambda (range)
+     ;; New ranges must always be included in the current supported set.
+     (unless (or (not (subid-range-has-start? range))
+                 (and (subordinate-id? (subid-range-start range))
+                      (subordinate-id? (subid-range-end range))))
+       (raise
+        (condition (&invalid-subid-range-error (range range))))))
+   ranges)
+
   (define sorted-ranges
     (stable-sort ranges
                  subid-range-less))

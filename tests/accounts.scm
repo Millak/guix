@@ -271,6 +271,23 @@ ada:100600:300\n")
                                       (start %subordinate-id-min)
                                       (count 100)))))
 
+(test-equal "allocate-subids with externally managed state"
+  (list (subid-entry (name "guix-daemon") (start 904) (count 1))
+        (subid-entry (name "alice") (start 1085) (count 100))
+        (subid-entry (name "t") (start %subordinate-id-min) (count 899))
+        (subid-entry (name "x") (start 100899) (count 200)))
+  (allocate-subids (list
+                    (subid-range (name "x") (count 200))
+                    (subid-range (name "t") (count 899)))
+                   ;; Test use case from
+                   ;; https://codeberg.org/guix/guix/issues/3925
+                   (list (subid-range (name "guix-daemon")
+                                      (start 904)
+                                      (count 1))
+                         (subid-range (name "alice")
+                                      (start 1085)
+                                      (count 100)))))
+
 (test-equal "allocate-subids with requested IDs ranges"
   ;; Make sure the requested sub ID for "k" and "root" are honored.
   (list (subid-entry (name "x") (start %subordinate-id-min) (count 200))
