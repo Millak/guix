@@ -1466,7 +1466,7 @@ unsupervised text tokenizer.")))
 (define-public python-sentence-transformers
   (package
     (name "python-sentence-transformers")
-    (version "5.1.0")
+    (version "5.1.2")
     (source
      (origin
        (method git-fetch)
@@ -1476,7 +1476,7 @@ unsupervised text tokenizer.")))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1jkj77q25b21nxrdszvlw127jnx1m7x8czldiq2mfyj76yjk0ymj"))))
+         "0n873pw0c9mkn3z1i9par6y6c0q6mvgiwvcjy74jv0swc2cpilhl"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f))        ;network access is required
