@@ -685,30 +685,22 @@ and signature functionality from Python programs.")
 (define-public perl-gnupg-interface
   (package
     (name "perl-gnupg-interface")
-    (version "0.52")
+    (version "1.05")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://cpan/authors/id/A/AL/ALEXMV/"
+              (uri (string-append "mirror://cpan/authors/id/B/BP/BPS/"
                                   "GnuPG-Interface-" version ".tar.gz"))
               (sha256
                (base32
-                "0dgx8yhdsmhkazcrz14n4flrk1afv7azgl003hl4arxvi1d9yyi4"))))
+                "0ig0ra2s1v2rw2ikm1hd0iwf2phhcr8kbc90jhr8kdpvlkymshsl"))))
     (build-system perl-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; FIXME: This test fails for unknown reasons
-         (add-after 'unpack 'delete-broken-test
-           (lambda _
-             (delete-file "t/encrypt_symmetrically.t")
-             #t)))))
     (inputs
-     (list gnupg-1))
+     (list gnupg))
     (propagated-inputs
      (list perl-moo perl-moox-handlesvia perl-moox-late))
     (native-inputs
      (list which perl-module-install))
-    (home-page "https://metacpan.org/release/GnuPG-Interface")
+    (home-page "https://metacpan.org/dist/GnuPG-Interface")
     (synopsis "Perl interface to GnuPG")
     (description "@code{GnuPG::Interface} and its associated modules are
 designed to provide an object-oriented method for interacting with GnuPG,
