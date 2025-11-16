@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17,8 +17,11 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (guix serialization)
+  #:autoload   (guix base16) (base16-string->bytevector
+                              bytevector->base16-string)
   #:use-module (rnrs bytevectors)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
@@ -27,16 +30,23 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 ftw)
   #:use-module (system foreign)
-  #:export (write-int read-int
+  #:export (write-value
+            read-value
+            write-bytevector
+            read-maybe-utf8-string
+            (dump . dump-port*)
+
+            ;; The following bindings are exported for backward compatibility
+            ;; but one should use 'read-value' and 'write-value' instead.
+            write-int read-int
             write-long-long read-long-long
             write-padding
-            write-bytevector write-string
-            read-string read-latin1-string read-maybe-utf8-string
+            write-string
+            read-string read-latin1-string
             write-string-list read-string-list
             write-string-pairs read-string-pairs
             write-store-path read-store-path
             write-store-path-list read-store-path-list
-            (dump . dump-port*)
 
             &nar-error
             nar-error?
@@ -49,6 +59,21 @@
 
             write-file
             write-file-tree
+
+            substitutable?
+            substitutable-path
+            substitutable-deriver
+            substitutable-references
+            substitutable-download-size
+            substitutable-nar-size
+
+            path-info?
+            path-info-deriver
+            path-info-hash
+            path-info-references
+            path-info-registration-time
+            path-info-nar-size
+
             fold-archive
             restore-file
             dump-file))
@@ -100,6 +125,12 @@
 (define (read-int p)
   (let ((b (get-bytevector-n* p 8)))
     (bytevector-u32-ref b 0 (endianness little))))
+
+(define (write-boolean b p)
+  (write-int (if b 1 0) p))
+
+(define (read-boolean p)
+  (not (zero? (read-int p))))
 
 (define (write-long-long n p)
   (let ((b (make-bytevector 8 0)))
@@ -160,6 +191,12 @@ substitute invalid byte sequences with question marks.  This is a
     (set-port-encoding! port "UTF-8")
     (set-port-conversion-strategy! port 'substitute)
     (rdelim:read-string port)))
+
+(define (read-base16 p)
+  (base16-string->bytevector (read-string p)))
+
+(define (write-base16 bv p)
+  (write-string (bytevector->base16-string bv) p))
 
 (define (write-string-list l p)
   (write-int (length l) p)
@@ -228,6 +265,111 @@ any run-time allocations or computations."
                0
                bytes)
          #`(put-bytevector port #,bv))))))
+
+;; Information about a substitutable store path.
+(define-record-type <substitutable>
+  (substitutable path deriver refs dl-size nar-size)
+  substitutable?
+  (path      substitutable-path)
+  (deriver   substitutable-deriver)
+  (refs      substitutable-references)
+  (dl-size   substitutable-download-size)
+  (nar-size  substitutable-nar-size))
+
+(define (read-substitutable-path-list p)
+  (let loop ((len    (read-int p))
+             (result '()))
+    (if (zero? len)
+        (reverse result)
+        (let ((path     (read-store-path p))
+              (deriver  (read-store-path p))
+              (refs     (read-store-path-list p))
+              (dl-size  (read-long-long p))
+              (nar-size (read-long-long p)))
+          (loop (- len 1)
+                (cons (substitutable path deriver refs dl-size nar-size)
+                      result))))))
+
+;; Information about a store path.
+(define-record-type <path-info>
+  (make-path-info deriver hash references registration-time nar-size)
+  path-info?
+  (deriver path-info-deriver)                     ;string | #f
+  (hash path-info-hash)
+  (references path-info-references)
+  (registration-time path-info-registration-time)
+  (nar-size path-info-nar-size))
+
+(define (read-path-info p)
+  (let ((deriver  (match (read-store-path p)
+                    ("" #f)
+                    (x  x)))
+        (hash     (base16-string->bytevector (read-string p)))
+        (refs     (read-store-path-list p))
+        (registration-time (read-int p))
+        (nar-size (read-long-long p)))
+    (make-path-info deriver hash refs registration-time nar-size)))
+
+(define-syntax define-serializable-types
+  (syntax-rules ()
+    "Define READ-ANY and WRITE-ANY as macros that dispatch serialization and
+deserialization of known data types.  These two macros can then be used like so:
+
+  (READ-ANY integer PORT)
+
+and:
+
+  (WRITE-ANY store-path VALUE PORT)
+
+The former returns the value it read; the latter returns the unspecified
+value."
+    ((_ read-any write-any (type read write) ...)
+     (begin
+       ;; Define syntactic keywords.
+       (define-syntax type
+         (lambda (s)
+           #`(syntax-error "invalid use of serializable type name" #,s)))
+       ...
+       (export type ...)
+
+       (define-syntax write-any
+         (syntax-rules (type ...)
+           "Write the following TYPE value to the given port."
+           ((_ type arg port)
+            (write arg port))
+           ...))
+       (define-syntax read-any
+         (syntax-rules (type ...)
+           "Read from the given port a value of TYPE."
+           ((_ type port)
+            (read port))
+           ...))))))
+
+(define no-op (const #t))
+
+;; Serializable types known to the client/daemon protocol.
+(define-serializable-types read-value write-value
+  (integer         read-int write-int)
+  (long-long       read-long-long write-long-long)
+  (boolean         read-boolean write-boolean)
+  (bytevector      read-byte-string write-bytevector)
+  (string          read-string write-string)
+  (string-list     read-string-list write-string-list)
+  (string-pairs    read-string-pairs write-string-pairs)
+  (store-path      read-store-path write-store-path)
+  (store-path-list read-store-path-list write-store-path-list)
+  (base16          read-base16 write-base16)
+  (path-info       read-path-info write-path-info/not-implemented)
+  (substitutable-path-list read-substitutable-path-list
+                           write-substitutable-path-list/not-implemented)
+
+  ;; When reading a file, just return the input port and let the caller (a
+  ;; server) call 'restore-file' or whatever is relevant for the operation.
+  (file            identity write-file)
+
+  ;; User-provided as used in the 'export-path' and 'import-paths' remote
+  ;; procedures.
+  (stream          no-op no-op))
 
 
 (define-condition-type &nar-read-error &nar-error

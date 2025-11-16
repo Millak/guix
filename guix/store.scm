@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2024 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Jan Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Florian Pelz <pelzflorian@pelzflorian.de>
@@ -55,6 +55,22 @@
                           uri-host
                           uri-port
                           uri-path)
+
+  ;; Bindings re-exported for backward compatibility.
+  #:re-export (substitutable?
+               substitutable-path
+               substitutable-deriver
+               substitutable-references
+               substitutable-download-size
+               substitutable-nar-size
+
+               path-info?
+               path-info-deriver
+               path-info-hash
+               path-info-references
+               path-info-registration-time
+               path-info-nar-size)
+
   #:export (%daemon-socket-uri
             %gc-roots-directory
             %default-substitute-urls
@@ -133,22 +149,9 @@
             add-permanent-root
             remove-permanent-root
 
-            substitutable?
-            substitutable-path
-            substitutable-deriver
-            substitutable-references
-            substitutable-download-size
-            substitutable-nar-size
             has-substitutes?
             substitutable-paths
             substitutable-path-info
-
-            path-info?
-            path-info-deriver
-            path-info-hash
-            path-info-references
-            path-info-registration-time
-            path-info-nar-size
 
             built-in-builders
             substitute-urls
@@ -194,7 +197,7 @@
             grafting?
 
             %store-prefix
-            store-path
+            (make-store-path . store-path)
             output-path
             fixed-output-path
             store-path?
@@ -290,100 +293,6 @@
   ;; URI or file name of the socket the daemon listens too.
   (make-parameter (or (getenv "GUIX_DAEMON_SOCKET")
                       %default-socket-path)))
-
-
-
-;; Information about a substitutable store path.
-(define-record-type <substitutable>
-  (substitutable path deriver refs dl-size nar-size)
-  substitutable?
-  (path      substitutable-path)
-  (deriver   substitutable-deriver)
-  (refs      substitutable-references)
-  (dl-size   substitutable-download-size)
-  (nar-size  substitutable-nar-size))
-
-(define (read-substitutable-path-list p)
-  (let loop ((len    (read-int p))
-             (result '()))
-    (if (zero? len)
-        (reverse result)
-        (let ((path     (read-store-path p))
-              (deriver  (read-store-path p))
-              (refs     (read-store-path-list p))
-              (dl-size  (read-long-long p))
-              (nar-size (read-long-long p)))
-          (loop (- len 1)
-                (cons (substitutable path deriver refs dl-size nar-size)
-                      result))))))
-
-;; Information about a store path.
-(define-record-type <path-info>
-  (path-info deriver hash references registration-time nar-size)
-  path-info?
-  (deriver path-info-deriver)                     ;string | #f
-  (hash path-info-hash)
-  (references path-info-references)
-  (registration-time path-info-registration-time)
-  (nar-size path-info-nar-size))
-
-(define (read-path-info p)
-  (let ((deriver  (match (read-store-path p)
-                    ("" #f)
-                    (x  x)))
-        (hash     (base16-string->bytevector (read-string p)))
-        (refs     (read-store-path-list p))
-        (registration-time (read-int p))
-        (nar-size (read-long-long p)))
-    (path-info deriver hash refs registration-time nar-size)))
-
-(define-syntax write-arg
-  (syntax-rules (integer boolean bytevector
-                 string string-list string-pairs
-                 store-path store-path-list base16)
-    ((_ integer arg p)
-     (write-int arg p))
-    ((_ boolean arg p)
-     (write-int (if arg 1 0) p))
-    ((_ bytevector arg p)
-     (write-bytevector arg p))
-    ((_ string arg p)
-     (write-string arg p))
-    ((_ string-list arg p)
-     (write-string-list arg p))
-    ((_ string-pairs arg p)
-     (write-string-pairs arg p))
-    ((_ store-path arg p)
-     (write-store-path arg p))
-    ((_ store-path-list arg p)
-     (write-store-path-list arg p))
-    ((_ base16 arg p)
-     (write-string (bytevector->base16-string arg) p))))
-
-(define-syntax read-arg
-  (syntax-rules (integer boolean string store-path
-                 store-path-list string-list string-pairs
-                 substitutable-path-list path-info base16)
-    ((_ integer p)
-     (read-int p))
-    ((_ boolean p)
-     (not (zero? (read-int p))))
-    ((_ string p)
-     (read-string p))
-    ((_ store-path p)
-     (read-store-path p))
-    ((_ store-path-list p)
-     (read-store-path-list p))
-    ((_ string-list p)
-     (read-string-list p))
-    ((_ string-pairs p)
-     (read-string-pairs p))
-    ((_ substitutable-path-list p)
-     (read-substitutable-path-list p))
-    ((_ path-info p)
-     (read-path-info p))
-    ((_ base16 p)
-     (base16-string->bytevector (read-string p)))))
 
 
 ;; remote-store.cc
@@ -596,23 +505,23 @@ daemon.  Return a server object."
                   ((output flush)
                    (buffering-output-port port
                                           (make-bytevector 8192))))
-      (write-int %worker-magic-1 port)
-      (let ((r (read-int port)))
+      (write-value integer %worker-magic-1 port)
+      (let ((r (read-value integer port)))
         (unless (= r %worker-magic-2)
           (handshake-error))
 
-        (let ((v (read-int port)))
+        (let ((v (read-value integer port)))
           (unless (= (protocol-major %protocol-version)
                      (protocol-major v))
             (handshake-error))
 
-          (write-int %protocol-version port)
+          (write-value integer %protocol-version port)
           (when (>= (protocol-minor v) 14)
-            (write-int (if cpu-affinity 1 0) port)
+            (write-value integer (if cpu-affinity 1 0) port)
             (when cpu-affinity
-              (write-int cpu-affinity port)))
+              (write-value integer cpu-affinity port)))
           (when (>= (protocol-minor v) 11)
-            (write-int (if reserve-space? 1 0) port))
+            (write-value integer (if reserve-space? 1 0) port))
           (letrec* ((actual-built-in-builders
                      (if built-in-builders
                          (delay built-in-builders)
@@ -744,10 +653,10 @@ encoding conversion errors."
   (define %stderr-last  #x616c7473)          ; "alts", we're done
   (define %stderr-error #x63787470)          ; "cxtp", error reporting
 
-  (let ((k (read-int p)))
+  (let ((k (read-value integer p)))
     (cond ((= k %stderr-write)
            ;; Write a byte stream to USER-PORT.
-           (let* ((len (read-int p))
+           (let* ((len (read-value integer p))
                   (m   (modulo len 8)))
              (dump-port p user-port len
                         #:buffer-size (if (<= len 16384) 16384 65536))
@@ -759,7 +668,7 @@ encoding conversion errors."
            ;; Read a byte stream from USER-PORT.
            ;; Note: Avoid 'get-bytevector-n' to work around
            ;; <http://bugs.gnu.org/17591> in Guile up to 2.0.11.
-           (let* ((max-len (read-int p))
+           (let* ((max-len (read-value integer p))
                   (data    (make-bytevector max-len))
                   (len     (get-bytevector-n! user-port data 0 max-len)))
              (write-bytevector data p len)
@@ -781,7 +690,7 @@ encoding conversion errors."
                  ;; errors like DB schema version mismatches, so check for EOF.
                  (status (if (and (>= (store-connection-minor-version server) 8)
                                   (not (eof-object? (lookahead-u8 p))))
-                             (read-int p)
+                             (read-value integer p)
                              1)))
              (raise (condition (&store-protocol-error
                                 (message error)
@@ -864,9 +773,9 @@ encoding conversion errors."
   (let-syntax ((send (syntax-rules ()
                        ((_ (type option) ...)
                         (begin
-                          (write-arg type option buffered)
+                          (write-value type option buffered)
                           ...)))))
-    (write-int (operation-id set-options) buffered)
+    (write-value integer (operation-id set-options) buffered)
     (send (boolean keep-failed?) (boolean keep-going?)
           (boolean fallback?) (integer verbosity))
     (when (< (store-connection-minor-version server) #x61)
@@ -1018,15 +927,15 @@ bytevector) as its internal buffer, and a thunk to flush this output port."
        (let* ((s (store-connection-socket server))
               (buffered (store-connection-output-port server)))
          (record-operation 'name)
-         (write-int (operation-id name) buffered)
-         (write-arg type arg buffered)
+         (write-value integer (operation-id name) buffered)
+         (write-value type arg buffered)
          ...
          (write-buffered-output server)
 
          ;; Loop until the server is done sending error output.
          (let loop ((done? (process-stderr server)))
            (or done? (loop (process-stderr server))))
-         (values (read-arg return s) ...))))))
+         (values (read-value return s) ...))))))
 
 (define-syntax-rule (define-operation (name args ...)
                       docstring return ...)
@@ -1144,16 +1053,16 @@ path."
            (record-operation 'add-to-store)
            (let ((port (store-connection-socket server))
                  (buffered (store-connection-output-port server)))
-             (write-int (operation-id add-to-store) buffered)
-             (write-string basename buffered)
-             (write-int 1 buffered)                   ;obsolete, must be #t
-             (write-int (if recursive? 1 0) buffered)
-             (write-string hash-algo buffered)
+             (write-value integer (operation-id add-to-store) buffered)
+             (write-value string basename buffered)
+             (write-value integer 1 buffered)                   ;obsolete, must be #t
+             (write-value boolean recursive? buffered)
+             (write-value string hash-algo buffered)
              (write-file file-name buffered #:select? select?)
              (write-buffered-output server)
              (let loop ((done? (process-stderr server)))
                (or done? (loop (process-stderr server))))
-             (read-store-path port)))))
+             (read-value store-path port)))))
     (lambda* (server basename recursive? hash-algo file-name
                      #:key (select? true))
       "Add the contents of FILE-NAME under BASENAME to the store
@@ -1258,11 +1167,11 @@ an arbitrary directory layout in the store without creating a derivation."
         (record-operation 'add-to-store/tree)
         (let ((port (store-connection-socket server))
               (buffered (store-connection-output-port server)))
-          (write-int (operation-id add-to-store) buffered)
-          (write-string basename buffered)
-          (write-int 1 buffered)                      ;obsolete, must be #t
-          (write-int (if recursive? 1 0) buffered)
-          (write-string hash-algo buffered)
+          (write-value integer (operation-id add-to-store) buffered)
+          (write-value string basename buffered)
+          (write-value integer 1 buffered)                      ;obsolete, must be #t
+          (write-value integer (if recursive? 1 0) buffered)
+          (write-value string hash-algo buffered)
           (write-file-tree basename buffered
                            #:file-type+size file-type+size
                            #:file-port file-port
@@ -1271,7 +1180,7 @@ an arbitrary directory layout in the store without creating a derivation."
           (write-buffered-output server)
           (let loop ((done? (process-stderr server)))
             (or done? (loop (process-stderr server))))
-          (let ((result (read-store-path port)))
+          (let ((result (read-value store-path port)))
             (hash-set! cache tree result)
             result)))))
 
@@ -1688,25 +1597,25 @@ bytes, before the GC can stop.  Return the list of store paths delete,
 and the number of bytes freed."
   (let ((s (store-connection-socket server))
         (buffered (store-connection-output-port server)))
-    (write-int (operation-id collect-garbage) buffered)
-    (write-int action buffered)
-    (write-store-path-list to-delete buffered)
-    (write-arg boolean #f buffered)                      ; ignore-liveness?
-    (write-long-long min-freed buffered)
-    (write-int 0 buffered)                               ; obsolete
+    (write-value integer (operation-id collect-garbage) buffered)
+    (write-value integer action buffered)
+    (write-value store-path-list to-delete buffered)
+    (write-value boolean #f buffered)             ;ignore-liveness?
+    (write-value long-long min-freed buffered)
+    (write-value integer 0 buffered)              ;obsolete
     (when (>= (store-connection-minor-version server) 5)
       ;; Obsolete `use-atime' and `max-atime' parameters.
-      (write-int 0 buffered)
-      (write-int 0 buffered))
+      (write-value integer 0 buffered)
+      (write-value integer 0 buffered))
     (write-buffered-output server)
 
     ;; Loop until the server is done sending error output.
     (let loop ((done? (process-stderr server)))
       (or done? (loop (process-stderr server))))
 
-    (let ((paths    (read-store-path-list s))
-          (freed    (read-long-long s))
-          (obsolete (read-long-long s)))
+    (let ((paths    (read-value store-path-list s))
+          (freed    (read-value long-long s))
+          (obsolete (read-value long-long s)))
       (unless (null? paths)
         ;; To be on the safe side, completely invalidate both caches.
         ;; Otherwise we could end up returning store paths that are no longer
@@ -1748,22 +1657,22 @@ collected, and the number of bytes freed."
 is raised if the set of paths read from PORT is not signed (as per
 'export-path #:sign? #t'.)  Return the list of store paths imported."
   (let ((s (store-connection-socket server)))
-    (write-int (operation-id import-paths) s)
+    (write-value integer (operation-id import-paths) s)
     (let loop ((done? (process-stderr server port)))
       (or done? (loop (process-stderr server port))))
-    (read-store-path-list s)))
+    (read-value store-path-list s)))
 
 (define* (export-path server path port #:key (sign? #t))
   "Export PATH to PORT.  When SIGN? is true, sign it."
   (let ((s (store-connection-socket server))
         (buffered (store-connection-output-port server)))
-    (write-int (operation-id export-path) buffered)
-    (write-store-path path buffered)
-    (write-arg boolean sign? buffered)
+    (write-value integer (operation-id export-path) buffered)
+    (write-value store-path path buffered)
+    (write-value boolean sign? buffered)
     (write-buffered-output server)
     (let loop ((done? (process-stderr server port)))
       (or done? (loop (process-stderr server port))))
-    (= 1 (read-int s))))
+    (= 1 (read-value integer s))))
 
 (define* (export-paths server paths port #:key (sign? #t) recursive?
                        (start (const #f))
@@ -1792,9 +1701,9 @@ itself.  FINISH is called when the last store item has been called."
     (match paths
       (()
        (apply finish state)
-       (write-int 0 port))
+       (write-value integer 0 port))
       ((head tail ...)
-       (write-int 1 port)
+       (write-value integer 1 port)
        (and (export-path server head port #:sign? sign?)
             (loop tail
                   (call-with-values
@@ -2273,7 +2182,7 @@ in SIZE bytes."
                               (logxor o (bytevector-u8-ref bv i)))
           (loop (+ 1 i))))))
 
-(define (store-path type hash name)               ; makeStorePath
+(define (make-store-path type hash name)          ; makeStorePath
   "Return the store path for NAME/HASH/TYPE."
   (let* ((s (string-append type ":sha256:"
                            (bytevector->base16-string hash) ":"
@@ -2287,10 +2196,10 @@ in SIZE bytes."
 (define (output-path output hash name)            ; makeOutputPath
   "Return an output path for OUTPUT (the name of the output as a string) of
 the derivation called NAME with hash HASH."
-  (store-path (string-append "output:" output) hash
-              (if (string=? output "out")
-                  name
-                  (string-append name "-" output))))
+  (make-store-path (string-append "output:" output) hash
+                   (if (string=? output "out")
+                       name
+                       (string-append name "-" output))))
 
 (define* (fixed-output-path name hash
                             #:key
@@ -2301,14 +2210,14 @@ the derivation called NAME with hash HASH."
 HASH-ALGO, of the derivation NAME.  RECURSIVE? has the same meaning as for
 'add-to-store'."
   (if (and recursive? (eq? hash-algo 'sha256))
-      (store-path "source" hash name)
+      (make-store-path "source" hash name)
       (let ((tag (string-append "fixed:" output ":"
                                 (if recursive? "r:" "")
                                 (symbol->string hash-algo) ":"
                                 (bytevector->base16-string hash) ":")))
-        (store-path (string-append "output:" output)
-                    (sha256 (string->utf8 tag))
-                    name))))
+        (make-store-path (string-append "output:" output)
+                         (sha256 (string->utf8 tag))
+                         name))))
 
 (define (store-path? path)
   "Return #t if PATH is a store path."
