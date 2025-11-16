@@ -1360,7 +1360,7 @@ Encryption to Gajim.")
 (define-public dino
   (package
     (name "dino")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
@@ -1368,7 +1368,7 @@ Encryption to Gajim.")
         (string-append "https://github.com/dino/dino/releases/download/v"
                        version "/dino-" version ".tar.gz"))
        (sha256
-        (base32 "1hghyldh95i6sx778nkbmfn5qbi2h7qpv59vzi7zz9anmxgjckli"))))
+        (base32 "0rfn7rmib2jin83j3rx7ssh63frcmgf8n61fnvaxmk8xapimw9hb"))))
     (build-system meson-build-system)
     (outputs '("out" "debug"))
     (arguments
