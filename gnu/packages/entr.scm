@@ -36,14 +36,14 @@
 (define-public entr
   (package
     (name "entr")
-    (version "5.6")
+    (version "5.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://eradman.com/entrproject/code/entr-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0kniklgnqv4j9carm78d3423wlwqw1ykxmlla4xmlfwdjbgvh8h2"))))
+        (base32 "0ryhylhd682m5cxz3zjyv5zxvxd4dqm3h6mlgvrwww0ch91xkich"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
