@@ -232,11 +232,11 @@ were a single file.")
       #:modules '(((guix build cargo-build-system) #:prefix cargo:)
                   (guix build pyproject-build-system)
                   (guix build utils))
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'prepare-cargo-build-system
-                     (lambda args
-                       (for-each
-                        (lambda (phase)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each (lambda (phase)
                           (format #t "Running cargo phase: ~a~%" phase)
                           (apply (assoc-ref cargo:%standard-phases phase)
                                  #:cargo-target #$(cargo-triplet)
@@ -244,7 +244,12 @@ were a single file.")
                         '(unpack-rust-crates
                           configure
                           check-for-pregenerated-files
-                          patch-cargo-checksums)))))))
+                          patch-cargo-checksums))))
+          (add-before 'check 'configure-tests
+            (lambda _
+              ;; XXX: Otherwise some flaky tests seem to fail with
+              ;; SyntaxError: could not convert string to float
+              (setenv "CI" "1"))))))
     (native-inputs
      (append
       (list maturin
