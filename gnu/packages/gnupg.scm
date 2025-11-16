@@ -1187,31 +1187,31 @@ files, to verify signatures, and to manage the private and public keys.")
            perl-test-trap
            xorg-server-for-tests))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; Needed for using gpg-connect-agent during tests.
-         (add-before 'check 'prepare-for-tests
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((Xvfb (search-input-file inputs "/bin/Xvfb")))
-               (system (string-append Xvfb " :1 &"))
-               (setenv "DISPLAY" ":1")
-               (setenv "HOME" "/tmp")
-               ;; These tests expect usable gnupg configurations.
-               (delete-file "t/32-keyserver_defined_on_command_line.t")
-               (delete-file "t/33-checkGpgHasDefinedKeyserver.t"))))
-         (add-before 'install 'fix-references
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "lib/App/Parcimonie/GnuPG/Interface.pm"
-               ;; Skip check whether dependencies are in the PATH
-               (("defined which.*") ""))))
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (perllib (string-append out "/lib/perl5/site_perl/"
-                                            ,(package-version perl))))
-               (wrap-program (string-append out "/bin/parcimonie")
-                 `("PERL5LIB" ":"
-                   prefix (,(string-append perllib ":" (getenv "PERL5LIB")))))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Needed for using gpg-connect-agent during tests.
+          (add-before 'check 'prepare-for-tests
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((Xvfb (search-input-file inputs "/bin/Xvfb")))
+                (system (string-append Xvfb " :1 &"))
+                (setenv "DISPLAY" ":1")
+                (setenv "HOME" "/tmp")
+                ;; These tests expect usable gnupg configurations.
+                (delete-file "t/32-keyserver_defined_on_command_line.t")
+                (delete-file "t/33-checkGpgHasDefinedKeyserver.t"))))
+          (add-before 'install 'fix-references
+            (lambda _
+              (substitute* "lib/App/Parcimonie/GnuPG/Interface.pm"
+                ;; Skip check whether dependencies are in the PATH
+                (("defined which.*") ""))))
+          (add-after 'install 'wrap-program
+            (lambda _
+              (let* ((perllib (string-append #$output "/lib/perl5/site_perl/"
+                                             #$(package-version perl))))
+                (wrap-program (string-append #$output "/bin/parcimonie")
+                  `("PERL5LIB" ":" prefix
+                    (,(string-append perllib ":" (getenv "PERL5LIB")))))))))))
     (home-page "https://salsa.debian.org/intrigeri/parcimonie")
     (synopsis "Incrementally refreshes a GnuPG keyring")
     (description "Parcimonie incrementally refreshes a GnuPG keyring in a way
