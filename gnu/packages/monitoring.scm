@@ -841,14 +841,15 @@ devices.")
               (patches (search-patches "collectd-5.11.0-noinstallvar.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags (list "--localstatedir=/var" "--sysconfdir=/etc")
+     `(#:configure-flags (list "--localstatedir=/var" "--sysconfdir=/etc"
+                               "CFLAGS=-Wno-error=deprecated-declarations")
        #:phases (modify-phases %standard-phases
                   (add-before 'configure 'autoreconf
                     (lambda _
                       ;; Required because of patched sources.
                       (invoke "autoreconf" "-vfi"))))))
     (inputs
-     (list rrdtool curl yajl))
+     (list rrdtool curl yajl zlib))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (home-page "https://collectd.org/")
