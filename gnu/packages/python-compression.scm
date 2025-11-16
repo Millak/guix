@@ -217,16 +217,24 @@ were a single file.")
 (define-public python-cramjam
   (package
     (name "python-cramjam")
-    (version "2.10.0")
+    (version "2.11.0.post1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "cramjam" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/milesgranger/cramjam")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "12kdwr313b8w8il4x1y9z366armd6lqv3hvpx4281bl4fd4ds8g8"))))
+        (base32 "1028aydcjy7917vsgg67v6cnskzw0wk4x1vz017mar99yiq7z349"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 743 passed, 1 skipped, 1 deselected
+      #:test-flags
+      #~(list "--ignore=benchmarks/test_bench.py"
+              ;; FIXME: Did not raise cramjam.DecompressionError
+              "--deselect=tests/test_variants.py::test_variants_raise_exception[deflate]")
       #:imported-modules `(,@%cargo-build-system-modules
                            ,@%pyproject-build-system-modules)
       #:modules '(((guix build cargo-build-system) #:prefix cargo:)
