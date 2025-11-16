@@ -589,21 +589,21 @@ interface (FFI) of Guile.")
                 "1ji3ynhp36m1ccx7bmaq75dhij9frpn19v9mpi4aajn8csl194il"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-environment
-           (lambda _
-             ;; GPGME is built with large file support, so we need to set
-             ;; _FILE_OFFSET_BITS to 64 in all users of the GPGME library.
-             ,@(if (or (target-x86-32?) (target-arm32?))
-                   `((substitute* "setup.py"
-                       (("extra_macros = dict\\(\\)")
-                        "extra_macros = { \"_FILE_OFFSET_BITS\": 64 }")))
-                   '())
-             (substitute* "setup.py"
-               (("cc") (which "gcc")))
-             #t)))
-       #:tests? #f)) ; No test suite.
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-environment
+            (lambda _
+              ;; GPGME is built with large file support, so we need to set
+              ;; _FILE_OFFSET_BITS to 64 in all users of the GPGME library.
+              #$@(if (or (target-x86-32?) (target-arm32?))
+                     #~((substitute* "setup.py"
+                          (("extra_macros = dict\\(\\)")
+                           "extra_macros = { \"_FILE_OFFSET_BITS\": 64 }")))
+                     #~())
+              (substitute* "setup.py"
+                (("cc") (which "gcc"))))))
+      #:tests? #f)) ; No test suite.
     (inputs
      (list gpgme))
     (native-inputs
