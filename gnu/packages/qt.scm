@@ -4640,8 +4640,8 @@ PyQt6 package.")))
       (list
        #:tests? #f ; No tests.
        #:configure-flags
-       #~`(@ ("--verbose" . "") ; Print commands run.
-             ("--jobs" . ,(number->string (parallel-job-count))))
+       #~`(("--verbose" . "") ; Print commands run.
+           ("--jobs" . ,(number->string (parallel-job-count))))
        #:phases
        #~(modify-phases %standard-phases
            (add-after 'unpack 'set-include-dirs
