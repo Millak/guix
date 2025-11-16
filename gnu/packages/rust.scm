@@ -1987,17 +1987,7 @@ exec -a \"$0\" \"~a\" \"$@\""
                                        (delete
                                          (string-append mingw "/include")
                                          (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
-                                       ":")))
-                           ;; When building a rust-sysroot this crate is only used for
-                           ;; the rust-installer.
-                           (substitute* '("vendor/num_cpus-1.13.0/src/linux.rs"
-                                          "vendor/num_cpus-1.13.1/src/linux.rs"
-                                          "vendor/num_cpus-1.16.0/src/linux.rs")
-                             (("\\.ceil\\(\\)") ""))
-                           ;; gcc doesn't recognize this flag.
-                           (substitute*
-                               "compiler/rustc_target/src/spec/base/windows_gnullvm.rs"
-                             ((", \"--unwindlib=none\"") "")))))
+                                       ":"))))))
                      `())
               (replace 'set-env
                 (lambda* (#:key inputs #:allow-other-keys)
