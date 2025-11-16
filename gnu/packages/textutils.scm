@@ -1498,7 +1498,7 @@ formats (e.g. Bibtex, RIS, etc.) using a common XML intermediate.")
 (define-public goawk
   (package
     (name "goawk")
-    (version "1.30.0")
+    (version "1.30.1")
     (source
      (origin
        (method git-fetch)
@@ -1507,7 +1507,7 @@ formats (e.g. Bibtex, RIS, etc.) using a common XML intermediate.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0riimisq3y6pahl1yld5yjxywh39i0v0kd4vmybf5j09klqynbn3"))))
+        (base32 "18kbcmbxxl9yniz69hwnh2jyw93g3zws8ba02vvhjfwr4xqcm3fp"))))
     (build-system go-build-system)
     (arguments
      (list
