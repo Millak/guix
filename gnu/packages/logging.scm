@@ -229,42 +229,25 @@ provides some unique features such as CSV log format and wide string support.")
 (define-public multitail
   (package
     (name "multitail")
-    (version "6.5.2")
+    (version "7.1.5")
     (source
      (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/halturin/multitail")
-            (commit (string-append "v" version))))
-      (file-name (git-file-name name version))
-      (sha256
-       (base32 "17hg5qpangyx4m7hp2x4h56mp6w3wsaslg1il39qcpwsffh1rihc"))))
-    (build-system gnu-build-system)
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/folkertvanheusden/multitail")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11kkd2rg3qc7ck5iyha0f8l5lqc1bvwypn80di0h77h7p106blvk"))))
+    (build-system cmake-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             "SYSCONFDIR=$(PREFIX)/etc")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-broken-build
-           ;; With some luck, you might be able to remove this when updating…
-           (lambda _
-             (substitute* "Makefile"
-               ((" \\*\\.txt") "")
-               ((".*CONFIG_DIR.*") "")
-               (("^install: .*" match)
-                (string-append match
-                               "\t$(INSTALL_DIR) $(DESTDIR)$(SYSCONFDIR)\n")))
-             (substitute* "version"
-               (("(VERSION=).*" _ assign)
-                (string-append assign ,version)))))
-         (add-after 'unpack 'patch-curses-headers
-           (lambda _
-             (substitute* "mt.h"
-               (("ncursesw/") ""))))
-         (delete 'configure))           ; no configure script
-       #:tests? #f)) ; no test suite (make check just runs cppcheck)
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'patch-curses-headers
+                     (lambda _
+                       (substitute* "mt.h"
+                         (("ncursesw/") "")))))))
     (inputs (list ncurses))
     (home-page "https://vanheusden.com/multitail/")
     (synopsis "Monitor multiple log files")
