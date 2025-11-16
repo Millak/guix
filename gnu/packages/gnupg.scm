@@ -278,12 +278,13 @@ provided.")
     (propagated-inputs
      (list libgpg-error))
     (arguments
-     `(#:configure-flags
-       (list ,@(if (%current-target-system)
-                   '("CC_FOR_BUILD=gcc")
-                   '())
-             (string-append "--with-gpg-error-prefix="
-                            (assoc-ref %build-inputs "libgpg-error")))))
+     (list
+      #:configure-flags
+      #~(list #$@(if (%current-target-system)
+                     #~("CC_FOR_BUILD=gcc")
+                     #~())
+              (string-append "--with-gpg-error-prefix="
+                             (assoc-ref %build-inputs "libgpg-error")))))
     (home-page "https://www.gnupg.org")
     (synopsis "CMS and X.509 access library")
     (description
