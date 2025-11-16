@@ -1042,27 +1042,34 @@ provided.")
 (define-public python-pyzstd
   (package
     (name "python-pyzstd")
-    (version "0.15.9")
+    (version "0.18.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyzstd" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Rogdham/pyzstd")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1iycfmif15v1jhv0gsza1hyd1hn3sz0vn9s1y79abzv8axndxzfb"))
+        (base32 "08ih7vr3rzwrzpzwhk1k94z5nm9mmvls7c6w8wsqncf0kyl8d7yp"))
        (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Remove a bundled copy of the zstd sources.
-           (delete-file-recursively "zstd")))))
+       (snippet '(begin
+                   ;; Remove a bundled copy of the zstd sources.
+                   (delete-file-recursively "zstd")
+                   (mkdir "zstd")
+                   (call-with-output-file "zstd/LICENSE"
+                     (const #t))))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:configure-flags
       #~'(("--build-option" . "--dynamic-link-zstd"))))
     (inputs (list `(,zstd "lib")))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-typing-extensions))
     (home-page "https://github.com/Rogdham/pyzstd")
     (synopsis "Zstandard bindings for Python")
-    (description "This package provides Python bindings to the Zstandard (zstd)
+    (description
+     "This package provides Python bindings to the Zstandard (zstd)
 compression library.  The API is similar to Python's bz2/lzma/zlib module.")
     (license license:bsd-3)))
