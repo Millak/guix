@@ -1248,7 +1248,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/esmtp-add-lesmtp.patch		\
   %D%/packages/patches/esound-c99.patch         		\
   %D%/packages/patches/exercism-disable-self-update.patch	\
-  %D%/packages/patches/extempore-unbundle-external-dependencies.patch	\
   %D%/packages/patches/extundelete-e2fsprogs-1.44.patch		\
   %D%/packages/patches/fail2ban-fix-sshd-filter.patch           \
   %D%/packages/patches/fail2ban-paths-guix-conf.patch		\
