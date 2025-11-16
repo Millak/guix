@@ -3295,7 +3295,7 @@ aim of simplifying and streamlining data conversion and standardization.")
 (define-public python-bayesicfitting
   (package
     (name "python-bayesicfitting")
-    (version "3.2.4")
+    (version "3.2.5")
     (source
      (origin
        (method git-fetch)
@@ -3304,7 +3304,7 @@ aim of simplifying and streamlining data conversion and standardization.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fdxrmcbjfpvz1czmvq4kz2scdiw77kyzsgv6c0isijk1hckgcik"))))
+        (base32 "1l4yq907a61js7pmi4zi2gg3nq479n0f21ycmjgk3rkc4ixrislz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3322,8 +3322,7 @@ aim of simplifying and streamlining data conversion and standardization.")
                 (with-directory-excursion "BayesicFitting/test"
                   (apply invoke "python" test-flags))))))))
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (propagated-inputs
      (list python-astropy
            python-future
@@ -3331,12 +3330,12 @@ aim of simplifying and streamlining data conversion and standardization.")
            python-numpy
            python-scipy))
     (home-page "https://dokester.github.io/BayesicFitting/")
-    (synopsis "Python Toolbox for Astronimical Bayesian fitting")
+    (synopsis "Astronimical Bayesian fitting")
     (description
-     "The BayesicFitting package is a python version of the the fitter classes
-in @acronym{HCSS, Herschel Common Science System}.  HCSS was the all
-encompassing software system for the operations and analysis of the ESA satellite
-Herschel.")
+     "@code{BayesicFitting} is a package for model fitting and Bayesian
+evidence calculation, it is a Python version of the the fitter classes in
+@acronym{HCSS, Herschel Common Science System}.  HCSS was the all encompassing
+software system for the operations and analysis of the ESA satelite Herschel.")
     (license license:gpl3+)))
 
 (define-public python-calcos
