@@ -200,16 +200,16 @@
        (sha256
         (base32
          "0fxv7ca6qbrj6bvrbfgjrd9ldppa8zq8hc461rikh85c5xg9rjqi"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:modules
       '(((guix build cargo-build-system) #:prefix cargo:)
-        (guix build python-build-system)
+        (guix build pyproject-build-system)
         (guix build utils))
       #:imported-modules
       `(,@%cargo-build-system-modules
-        ,@%python-build-system-modules)
+        ,@%pyproject-build-system-modules)
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'prepare-cargo-build-system
@@ -234,13 +234,6 @@
             (lambda _
               (setenv "CFLAGS"
                       (string-append "-g -O2 -Wno-error=implicit-function-declaration"))))
-          (add-before 'build 'adjust-for-python-3.10
-            (lambda _
-              (substitute* '("breezy/doc_generate/__init__.py"
-                             "breezy/tests/test_selftest.py")
-                ;; AttributeError: module 'datetime' has no attribute 'UTC'
-                ;; This only works for python >= 3.11
-                (("datetime.UTC") "datetime.timezone.utc"))))
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
@@ -301,7 +294,7 @@
      "Breezy (@command{brz}) is a decentralized revision control system.  By
 default, Breezy provides support for both the
 @uref{https://bazaar.canonical.com/, Bazaar} and @uref{https://www.git-scm.com,
-Git} file formats.  Breezy is backwabrds compatible with Bazaar's disk format
+Git} file formats.  Breezy is backwards compatible with Bazaar's disk format
 and protocols.  One of the key differences with Bazaar is that Breezy runs on
 Python 3.3 and later, rather than on Python 2.")
     (license license:gpl2+)))
