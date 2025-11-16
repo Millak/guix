@@ -68,6 +68,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages fortran-xyz)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages geo)
@@ -3373,26 +3374,35 @@ Origins Spectrograph}.")
 (define-public python-camb
   (package
     (name "python-camb")
-    (version "1.6.4")
+    (version "1.6.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "camb" version))
+       (method git-fetch)       ;XXX: PyPI archive bundles forutils.
+       (uri (git-reference
+              (url "https://github.com/cmbant/CAMB")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1l9c8s263i3zgs50sn000yw0vyhrk56rvfcv18pwxs1zbq8bw0si"))))
+        (base32 "1axqgxvp6id9d600zn6529ypi0ygf6qvd2p0z99dr90prcrr3qva"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      #~(list "-m" "unittest" "camb.tests.camb_test")
+      #:test-backend #~'unittest
+      #:test-flags #~(list "camb.tests.camb_test")
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (apply invoke "python" test-flags)))))))
+          ;; XXX: It may be set via FORUTILSPATH environemnt variable but
+          ;; build fails with error:
+          ;; mkdir: cannot create directory ‘Releaselib’: Read-only file system
+          (add-after 'unpack 'copy-forutils
+            (lambda _
+              ;; It's a git sumbodule to <https://github.com/cmbant/forutils>.
+              (copy-recursively
+               #+(package-source (this-package-native-input "fortran-forutils"))
+               "forutils"))))))
     (native-inputs
-     (list gfortran
+     (list fortran-forutils
+           gfortran
            python-packaging
            python-setuptools
            which)) ; for fortran/Makefile
