@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-11-08 03:18+0000\n"
-"PO-Revision-Date: 2025-11-03 11:15+0000\n"
+"POT-Creation-Date: 2025-11-15 03:18+0000\n"
+"PO-Revision-Date: 2025-11-15 23:55+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/guix/de/>\n"
 "Language: de\n"
@@ -1897,7 +1897,7 @@ msgstr "~a: Nicht unterstütztes Abbild-Format"
 msgid "~a: no such image type"
 msgstr "~a: Abbildtyp gibt es nicht"
 
-#: gnu/system/linux-container.scm:89
+#: gnu/system/linux-container.scm:90
 msgid ""
 "Provide loopback and networking without actually doing\n"
 "anything.  This service is used by guest systems running in containers, where\n"
@@ -1908,7 +1908,7 @@ msgstr ""
 "Container-Umgebungen benutzt, wo das Wirtssystem\n"
 "die Netzwerkunterstützung bereitstellt."
 
-#: gnu/system/linux-container.scm:241
+#: gnu/system/linux-container.scm:242
 msgid ""
 "Usage: run-container [OPTION ...]\n"
 "Run the container with the given options."
@@ -1916,7 +1916,7 @@ msgstr ""
 "Aufruf: run-container [OPTION …]\n"
 "Starte den Container mit den angegebenen Optionen."
 
-#: gnu/system/linux-container.scm:244
+#: gnu/system/linux-container.scm:245
 msgid ""
 "\n"
 "      --share=SPEC       share host file system with read/write access\n"
@@ -1926,7 +1926,7 @@ msgstr ""
 "      --share=SPEZIFIKATION       Wirtssystem mit Lese-und-Schreibzugriff\n"
 "                         entsprechend SPEZIFIKATION teilen"
 
-#: gnu/system/linux-container.scm:247
+#: gnu/system/linux-container.scm:248
 msgid ""
 "\n"
 "      --expose=SPEC      expose host file system directory as read-only\n"
@@ -1936,7 +1936,22 @@ msgstr ""
 "      --expose=SPEZIFIKATION      Wirtsdateisystem entsprechend der\n"
 "                         SPEZIFIKATION nur mit Lesezugriff zugänglich machen"
 
-#: gnu/system/linux-container.scm:251 guix/scripts/build.scm:479
+#: gnu/system/linux-container.scm:251
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "  -m, --manifest=FILE    create a new profile generation with the manifest\n"
+#| "                         from FILE"
+msgid ""
+"\n"
+"      --pid-file=FILE    write the process ID of the container's PID 1\n"
+"                         process to FILE"
+msgstr ""
+"\n"
+"  -m, --manifest=DATEI   eine neue Profilgeneration mit dem Manifest\n"
+"                           aus DATEI erzeugen"
+
+#: gnu/system/linux-container.scm:255 guix/scripts/build.scm:479
 #: guix/scripts/download.scm:204 guix/scripts/package.scm:496
 #: guix/scripts/install.scm:44 guix/scripts/remove.scm:41
 #: guix/scripts/upgrade.scm:48 guix/scripts/search.scm:36
@@ -1969,22 +1984,22 @@ msgstr ""
 "\n"
 "  -h, --help             diese Hilfe anzeigen und beenden"
 
-#: gnu/system/linux-container.scm:275 guix/scripts.scm:167
+#: gnu/system/linux-container.scm:284 guix/scripts.scm:167
 #, scheme-format
 msgid "~A: unrecognized option~%"
 msgstr "~A: Nicht erkannte Option~%"
 
-#: gnu/system/linux-container.scm:286
+#: gnu/system/linux-container.scm:295
 #, scheme-format
 msgid "system container is running as PID ~a~%"
 msgstr "System-Container läuft mit PID ~a~%"
 
-#: gnu/system/linux-container.scm:287
+#: gnu/system/linux-container.scm:296
 #, scheme-format
 msgid "Run 'sudo guix container exec ~a /run/current-system/profile/bin/bash --login'\n"
 msgstr "Mit „sudo guix container exec ~a /run/current-system/profile/bin/bash --login“\n"
 
-#: gnu/system/linux-container.scm:289
+#: gnu/system/linux-container.scm:298
 #, scheme-format
 msgid "or run 'sudo nsenter -a -t ~a' to get a shell into it.~%"
 msgstr "oder „sudo nsenter -a -t ~a“ bekommen Sie eine Shell in seiner Umgebung.~%"
@@ -2488,29 +2503,27 @@ msgstr "Auf Herstellung des Internetzugangs wird gewartet …"
 
 #: gnu/installer/newt/network.scm:161 gnu/installer/newt/network.scm:193
 msgid "Try again?"
-msgstr ""
+msgstr "Nochmal versuchen?"
 
 #: gnu/installer/newt/network.scm:162
-#, fuzzy
-#| msgid "The selected network does not provide access to the Internet and the Guix substitute server, please try again."
 msgid ""
 "\n"
 "The selected network does not seem to provide access to the Internet. The install process requires Internet access. Do you want to continue anyway?"
-msgstr "Das ausgewählte Netzwerk stellt keinen Zugang zum Internet und Guix’ Substitutserver bereit; bitte versuchen Sie es erneut."
+msgstr ""
+"\n"
+"Das ausgewählte Netzwerk stellt offenbar keinen Zugang zum Internet bereit. Der Installationsvorgang benötigt Internetzugang. Wollen Sie trotzdem weitermachen?"
 
 #: gnu/installer/newt/network.scm:180
-#, fuzzy
-#| msgid "do not use substitutes"
 msgid "Checking substitutes"
-msgstr "keine Substitute benutzen"
+msgstr "Substitute werden geprüft"
 
 #: gnu/installer/newt/network.scm:181
 msgid "Checking if Guix substitutes are available..."
-msgstr ""
+msgstr "Es wird geprüft, ob Substitute für Guix verfügbar sind..."
 
 #: gnu/installer/newt/network.scm:191
 msgid "Substitute availability"
-msgstr ""
+msgstr "Verfügbarkeit von Substituten"
 
 #: gnu/installer/newt/network.scm:194
 msgid ""
@@ -2519,6 +2532,10 @@ msgid ""
 "You can proceed with the install, but you will\n"
 "have to build most of the packages you install locally."
 msgstr ""
+"\n"
+"Keiner der Substitutserver ist verfügbar.\n"
+"Sie können trotzdem mit der Installation fortfahren, aber Sie\n"
+"müssten die meisten Pakete erstellen, die Sie lokal installieren."
 
 #: gnu/installer/newt/page.scm:205
 #, scheme-format
@@ -4241,7 +4258,7 @@ msgstr "Unzulässige Zusammenfassung: ~s"
 msgid "Would you like to add this key to keyring '~a'?~%"
 msgstr "Möchten Sie diesen Schlüssel zum Schlüsselbund „~a“ hinzufügen?~%"
 
-#: guix/graph.scm:381
+#: guix/graph.scm:456
 #, scheme-format
 msgid "~a: unknown graph backend"
 msgstr "~a: Unbekanntes Graph-Backend"
@@ -4280,17 +4297,17 @@ msgstr "„~0@*~a“ sollte auf „~1@*~a“ statt „~2@*~a“ gesetzt werden"
 msgid "description should not be empty"
 msgstr "Die Beschreibung sollte nicht leer sein"
 
-#: guix/lint.scm:404
+#: guix/lint.scm:406
 #, fuzzy
 #| msgid "description should not be empty"
 msgid "description should end with a period"
 msgstr "Die Beschreibung sollte nicht leer sein"
 
-#: guix/lint.scm:415
+#: guix/lint.scm:417
 msgid "Texinfo markup in description is invalid"
 msgstr "Das Texinfo-Markup in der Beschreibung ist ungültig"
 
-#: guix/lint.scm:440
+#: guix/lint.scm:442
 #, scheme-format
 msgid ""
 "description should not contain ~\n"
@@ -4299,15 +4316,15 @@ msgstr "Die Beschreibung sollte kein „Trademark“-Zeichen „~a“ bei ~d ent
 
 #. TRANSLATORS: '@code' is Texinfo markup and must be kept
 #. as is.
-#: guix/lint.scm:453
+#: guix/lint.scm:455
 msgid "use @code or similar ornament instead of quotes"
 msgstr "Benutzen Sie @code oder ähnliche Verzierungen statt Anführungszeichen"
 
-#: guix/lint.scm:474
+#: guix/lint.scm:476
 msgid "description should start with an upper-case letter or digit"
 msgstr "Die Beschreibung sollte mit einem Großbuchstaben oder einer Ziffer beginnen."
 
-#: guix/lint.scm:497
+#: guix/lint.scm:499
 #, scheme-format
 msgid ""
 "sentences in description should be followed ~\n"
@@ -4316,198 +4333,198 @@ msgstr ""
 "Auf Sätze in der Beschreibung sollten zwei Leerzeichen folgen;\n"
 "mögliche Verletzung~p bei ~{~a~^, ~}"
 
-#: guix/lint.scm:508
+#: guix/lint.scm:510
 msgid "description contains leading whitespace"
 msgstr "Die Beschreibung beginnt mit Leerraumzeichen"
 
-#: guix/lint.scm:517
+#: guix/lint.scm:519
 msgid "description contains trailing whitespace"
 msgstr "Die Beschreibung endet mit Leerraumzeichen"
 
-#: guix/lint.scm:552
+#: guix/lint.scm:554
 #, scheme-format
 msgid "invalid description: ~s"
 msgstr "Ungültige Beschreibung: ~s"
 
-#: guix/lint.scm:624
+#: guix/lint.scm:626
 #, scheme-format
 msgid "'~a' should probably be a native input"
 msgstr "„~a“ sollte wahrscheinlich als native Eingabe deklariert werden"
 
-#: guix/lint.scm:639
+#: guix/lint.scm:641
 #, scheme-format
 msgid "'~a' should probably not be an input at all"
 msgstr "„~a“ sollte wahrscheinlich gar keine Eingabe sein"
 
-#: guix/lint.scm:654
+#: guix/lint.scm:656
 #, fuzzy, scheme-format
 #| msgid "'~a' should probably be a native input"
 msgid "'~a' should probably be switched for its minimal variant"
 msgstr "„~a“ sollte wahrscheinlich als native Eingabe deklariert werden"
 
-#: guix/lint.scm:665
+#: guix/lint.scm:667
 #, scheme-format
 msgid "label '~a' does not match package name '~a'"
 msgstr "Bezeichnung „~a“ passt nicht zum Paketnamen „~a“"
 
-#: guix/lint.scm:695
+#: guix/lint.scm:697
 #, scheme-format
 msgid "\"bash-minimal\" should be in 'inputs' when '~a' is used"
 msgstr "\"bash-minimal\" fehlt in „inputs“, aber „~a“ setzt es voraus"
 
-#: guix/lint.scm:746
+#: guix/lint.scm:748
 msgid "no period allowed at the end of the synopsis"
 msgstr "Am Ende der Zusammenfassung darf kein Punkt gesetzt werden"
 
-#: guix/lint.scm:760
+#: guix/lint.scm:762
 msgid "no article allowed at the beginning of the synopsis"
 msgstr "Am Beginn der Zusammenfassung darf kein Artikel stehen"
 
-#: guix/lint.scm:769
+#: guix/lint.scm:771
 msgid "synopsis should be less than 80 characters long"
 msgstr "Die Zusammenfassung sollte nicht länger als 80 Zeichen sein"
 
-#: guix/lint.scm:779
+#: guix/lint.scm:781
 msgid "synopsis should start with an upper-case letter or digit"
 msgstr "Die Zusammenfassung sollte mit einem Großbuchstaben oder einer Zahl beginnen"
 
-#: guix/lint.scm:787
+#: guix/lint.scm:789
 msgid "synopsis should not start with the package name"
 msgstr "Die Zusammenfassung sollte nicht mit dem Paketnamen beginnen"
 
-#: guix/lint.scm:801
+#: guix/lint.scm:803
 msgid "Texinfo markup in synopsis is invalid"
 msgstr "Das Texinfo-Markup in der Zusammenfassung ist ungültig"
 
-#: guix/lint.scm:809
+#: guix/lint.scm:811
 msgid "synopsis contains trailing whitespace"
 msgstr "Die Zusammenfassung endet auf Leerraumzeichen"
 
-#: guix/lint.scm:826
+#: guix/lint.scm:828
 msgid "synopsis should not be empty"
 msgstr "Die Zusammenfassung sollte nicht leer sein"
 
-#: guix/lint.scm:836
+#: guix/lint.scm:838
 #, scheme-format
 msgid "invalid synopsis: ~s"
 msgstr "Unzulässige Zusammenfassung: ~s"
 
-#: guix/lint.scm:942
+#: guix/lint.scm:944
 #, scheme-format
 msgid "~a: HTTP GET error for ~a: ~a (~s)~%"
 msgstr "~a: HTTP-GET-Fehler für ~a: ~a (~s)~%"
 
-#: guix/lint.scm:952
+#: guix/lint.scm:954
 #, scheme-format
 msgid "~a: host lookup failure: ~a~%"
 msgstr "~a: Nachschlagen des Rechners fehlgeschlagen: ~a~%"
 
-#: guix/lint.scm:957
+#: guix/lint.scm:959
 #, scheme-format
 msgid "~a: TLS certificate error: ~a"
 msgstr "~a: TLS-Zertifikatsfehler: ~a"
 
-#: guix/lint.scm:962
+#: guix/lint.scm:964
 #, scheme-format
 msgid "~a: TLS error in '~a': ~a~%"
 msgstr "~a: TLS-Fehler in Prozedur „~a“: ~a~%"
 
-#: guix/lint.scm:973 guix/ui.scm:918 guix/scripts/offload.scm:194
+#: guix/lint.scm:975 guix/ui.scm:918 guix/scripts/offload.scm:194
 #, scheme-format
 msgid "~a: ~a~%"
 msgstr "~a: ~a~%"
 
-#: guix/lint.scm:1004
+#: guix/lint.scm:1006
 #, scheme-format
 msgid "URI ~a returned suspiciously small file (~a bytes)"
 msgstr "URI ~a hat eine verdächtig kleine Datei geliefert (~a Bytes)"
 
-#: guix/lint.scm:1013
+#: guix/lint.scm:1015
 #, scheme-format
 msgid "permanent redirect from ~a to ~a"
 msgstr "Permanente Weiterleitung von ~a auf ~a"
 
-#: guix/lint.scm:1019
+#: guix/lint.scm:1021
 #, scheme-format
 msgid "invalid permanent redirect from ~a"
 msgstr "Ungültige permanente Weiterleitung von ~a"
 
-#: guix/lint.scm:1025 guix/lint.scm:1035
+#: guix/lint.scm:1027 guix/lint.scm:1037
 #, scheme-format
 msgid "URI ~a not reachable: ~a (~s)"
 msgstr "URI ~a nicht erreichbar: ~a (~s)"
 
-#: guix/lint.scm:1041
+#: guix/lint.scm:1043
 #, scheme-format
 msgid "URI ~a domain not found: ~a"
 msgstr "Domain der URI ~a nicht gefunden: ~a"
 
-#: guix/lint.scm:1047
+#: guix/lint.scm:1049
 #, scheme-format
 msgid "URI ~a unreachable: ~a"
 msgstr "URI ~a ist nicht erreichbar: ~a"
 
-#: guix/lint.scm:1055
+#: guix/lint.scm:1057
 #, scheme-format
 msgid "TLS certificate error: ~a"
 msgstr "TLS-Zertifikatsfehler: ~a"
 
-#: guix/lint.scm:1082
+#: guix/lint.scm:1084
 msgid "invalid value for home page"
 msgstr "Ungültiger Wert für Homepage"
 
-#: guix/lint.scm:1087
+#: guix/lint.scm:1089
 #, scheme-format
 msgid "invalid home page URL: ~s"
 msgstr "Ungültige URL für Homepage: ~s"
 
-#: guix/lint.scm:1124
+#: guix/lint.scm:1126
 msgid "file names of patches should start with the package name"
 msgstr "Dateinamen von Patches sollten mit dem Paketnamen beginnen"
 
-#: guix/lint.scm:1144
+#: guix/lint.scm:1146
 #, scheme-format
 msgid "~a: file name is too long, which may break 'make dist'"
 msgstr "~a: Der Dateiname ist zu lang, was 'make dist' stören kann"
 
-#: guix/lint.scm:1165
+#: guix/lint.scm:1167
 #, scheme-format
 msgid "~a: empty patch"
 msgstr "~a: Leerer Patch"
 
-#: guix/lint.scm:1174
+#: guix/lint.scm:1176
 #, scheme-format
 msgid "~a: patch lacks comment and upstream status"
 msgstr "~a: Beim Patch fehlt ein Kommentar und sein Status beim Anbieter der Software"
 
-#: guix/lint.scm:1235
+#: guix/lint.scm:1237
 #, scheme-format
 msgid "proposed synopsis: ~s~%"
 msgstr "Vorgeschlagene Zusammenfassung: ~s~%"
 
-#: guix/lint.scm:1249
+#: guix/lint.scm:1251
 #, scheme-format
 msgid "proposed description:~%     \"~a\"~%"
 msgstr "Vorgeschlagene Beschreibung:~%     \"~a\"~%"
 
-#: guix/lint.scm:1334
+#: guix/lint.scm:1336
 msgid "all the source URIs are unreachable:"
 msgstr "Alle Quell-URIs sind nicht erreichbar:"
 
-#: guix/lint.scm:1369
+#: guix/lint.scm:1371
 msgid "the source file name should contain the package name"
 msgstr "Der Name der Quelldatei sollte den Paketnamen enthalten"
 
-#: guix/lint.scm:1381
+#: guix/lint.scm:1383
 msgid "the source URI should not be an autogenerated tarball"
 msgstr "Als Quell-URI sollte kein automatisch erzeugter Tarball verwendet werden"
 
-#: guix/lint.scm:1399 guix/lint.scm:1444
+#: guix/lint.scm:1401 guix/lint.scm:1446
 #, scheme-format
 msgid "URL should be '~a'"
 msgstr "URL sollte „~a“ lauten"
 
-#: guix/lint.scm:1437
+#: guix/lint.scm:1439
 #, scheme-format
 msgid "while accessing '~a'"
 msgstr "Beim Zugriff auf „~a“"
@@ -4515,80 +4532,80 @@ msgstr "Beim Zugriff auf „~a“"
 #. TRANSLATORS: check and #:tests? are a
 #. Scheme symbol and keyword respectively
 #. and should not be translated.
-#: guix/lint.scm:1472
+#: guix/lint.scm:1474
 msgid "the 'check' phase should respect #:tests?"
 msgstr "Die „check“-Phase sollte #:tests? berücksichtigen"
 
-#: guix/lint.scm:1494 guix/lint.scm:1505 guix/lint.scm:1513 guix/lint.scm:1517
+#: guix/lint.scm:1496 guix/lint.scm:1507 guix/lint.scm:1515 guix/lint.scm:1519
 #, scheme-format
 msgid "failed to create ~a derivation: ~a"
 msgstr "Ableitung für ~a konnte nicht erstellt werden: ~a"
 
-#: guix/lint.scm:1499
+#: guix/lint.scm:1501
 #, scheme-format
 msgid "failed to create ~a derivation: ~s"
 msgstr "Ableitung für ~a konnte nicht erstellt werden: ~s"
 
-#: guix/lint.scm:1555
+#: guix/lint.scm:1557
 #, scheme-format
 msgid "propagated inputs ~a and ~a collide"
 msgstr "propagierte Eingabgen ~a und ~a stehen im Konflikt"
 
-#: guix/lint.scm:1579
+#: guix/lint.scm:1581
 msgid "invalid license field"
 msgstr "Ungültiges Lizenz-Feld"
 
-#: guix/lint.scm:1586
+#: guix/lint.scm:1588
 msgid "while retrieving CVE vulnerabilities"
 msgstr "Beim Laden der CVE-Sicherheitslücken"
 
-#: guix/lint.scm:1589
+#: guix/lint.scm:1591
 #, fuzzy, scheme-format
 #| msgid "failed to retrieve list of packages from ~a: ~a (~a)~%"
 msgid "failed to get list of CVE vulnerabilities from '~a': ~a (~a)~%"
 msgstr "Paketliste konnte nicht von ~a heruntergeladen werden: ~a (~a)~%"
 
-#: guix/lint.scm:1646
+#: guix/lint.scm:1648
 #, scheme-format
 msgid "probably vulnerable to ~a"
 msgstr "Wahrscheinlich angreifbar durch ~a"
 
-#: guix/lint.scm:1665
+#: guix/lint.scm:1667
 #, fuzzy, scheme-format
 #| msgid "'~0@*~a' should be set to '~1@*~a' instead of '~2@*~a'"
 msgid "'~a' should be set with the '~a' flag"
 msgstr "„~0@*~a“ sollte auf „~1@*~a“ statt „~2@*~a“ gesetzt werden"
 
-#: guix/lint.scm:1711
+#: guix/lint.scm:1713
 #, scheme-format
 msgid "no updater for ~a"
 msgstr "Kein Aktualisierungsprogramm für ~a"
 
-#: guix/lint.scm:1716 guix/lint.scm:1938
+#: guix/lint.scm:1718 guix/lint.scm:1940
 #, scheme-format
 msgid "while retrieving upstream info for '~a'"
 msgstr "Beim Laden der Informationen vom Ursprung für „~a“"
 
-#: guix/lint.scm:1725
+#: guix/lint.scm:1727
 #, scheme-format
 msgid "can be upgraded to ~a"
 msgstr "Kann aktualisiert werden auf „~a“"
 
-#: guix/lint.scm:1731
+#: guix/lint.scm:1733
 #, scheme-format
 msgid "updater '~a' failed to find upstream releases"
 msgstr "Aktualisierungsprogramm „~a“ konnte keine Veröffentlichungen beim Anbieter finden"
 
-#: guix/lint.scm:1758
+#: guix/lint.scm:1760
 #, scheme-format
 msgid "failed to access Disarchive database at ~a"
 msgstr "Auf Disarchive-Datenbank unter „~a“ kann nicht zugegriffen werden"
 
-#: guix/lint.scm:1779
+#: guix/lint.scm:1781
 msgid "Software Heritage rate limit reached; try again later"
 msgstr "Software Heritage wurde zu oft angefragt; versuchen Sie es später"
 
-#: guix/lint.scm:1783
+#: guix/lint.scm:1785
 #, scheme-format
 msgid "'~a' returned ~a"
 msgstr "„~a“ lieferte ~a"
@@ -4596,186 +4613,186 @@ msgstr "„~a“ lieferte ~a"
 #. TRANSLATORS: "Software Heritage" is a proper noun that
 #. must remain untranslated.  See
 #. <https://www.softwareheritage.org>.
-#: guix/lint.scm:1818
+#: guix/lint.scm:1820
 msgid "scheduled Software Heritage archival"
 msgstr "geplante Software-Heritage-Archivierung"
 
-#: guix/lint.scm:1824
+#: guix/lint.scm:1826
 msgid "archival rate limit exceeded; try again later"
 msgstr "Archivierung wurde zu oft angefragt; versuchen Sie es später"
 
-#: guix/lint.scm:1834
+#: guix/lint.scm:1836
 #, fuzzy
 #| msgid "source is not an origin, it cannot be archived"
 msgid "source code cannot be archived"
 msgstr "Quelle ist kein origin-Objekt; kann nicht archiviert werden"
 
-#: guix/lint.scm:1897
+#: guix/lint.scm:1899
 msgid "source not archived on Software Heritage and missing from the Disarchive database"
 msgstr "Quelle nicht archiviert auf Software Heritage und nicht in Disarchive-Datenbank"
 
-#: guix/lint.scm:1907
+#: guix/lint.scm:1909
 #, scheme-format
 msgid "Disarchive entry refers to non-existent SWH directory '~a'"
 msgstr "Disarchive-Eintrag verweist auf nicht existierendes SWH-Verzeichnis „~a“"
 
-#: guix/lint.scm:1920
+#: guix/lint.scm:1922
 msgid "source is not an origin, it cannot be archived"
 msgstr "Quelle ist kein origin-Objekt; kann nicht archiviert werden"
 
-#: guix/lint.scm:1930
+#: guix/lint.scm:1932
 msgid "while connecting to Software Heritage"
 msgstr "beim Verbinden mit Software Heritage"
 
-#: guix/lint.scm:1947
+#: guix/lint.scm:1949
 #, scheme-format
 msgid "ahead of Stackage LTS version ~a"
 msgstr "neuer als Stackage-LTS-Version ~a"
 
-#: guix/lint.scm:1964
+#: guix/lint.scm:1966
 #, scheme-format
 msgid "tabulation on line ~a, column ~a"
 msgstr "Tabulator in Zeile ~a, Spalte ~a"
 
-#: guix/lint.scm:1976
+#: guix/lint.scm:1978
 #, scheme-format
 msgid "trailing white space on line ~a"
 msgstr "Leerzeichen am Ende der Zeile ~a"
 
-#: guix/lint.scm:1990
+#: guix/lint.scm:1992
 #, scheme-format
 msgid "line ~a is way too long (~a characters)"
 msgstr "Zeile ~a ist viel zu lang (~a Zeichen)"
 
-#: guix/lint.scm:2004
+#: guix/lint.scm:2006
 msgid "parentheses feel lonely, move to the previous or next line"
 msgstr "Hier stehen einsame Klammern, setzen Sie sie auf die vorige oder nächste Zeile"
 
-#: guix/lint.scm:2082
+#: guix/lint.scm:2084
 msgid "source file not found"
 msgstr "Quelldatei nicht gefunden"
 
-#: guix/lint.scm:2094
+#: guix/lint.scm:2096
 msgid "Validate package names"
 msgstr "Paketnamen überprüfen"
 
-#: guix/lint.scm:2098
+#: guix/lint.scm:2100
 msgid "Check if tests are explicitly enabled"
 msgstr "Prüfen gegen voreingestelltes Aktivieren der Tests"
 
-#: guix/lint.scm:2102
+#: guix/lint.scm:2104
 msgid "Check that cross-compilers are used when cross-compiling"
 msgstr "Prüfen, dass zum Cross-Kompilieren Cross-Compiler benutzt werden"
 
-#: guix/lint.scm:2106
+#: guix/lint.scm:2108
 msgid "Validate package descriptions"
 msgstr "Paketbeschreibungen überprüfen"
 
-#: guix/lint.scm:2110
+#: guix/lint.scm:2112
 msgid "Identify inputs that should be native inputs"
 msgstr "Eingaben suchen, die native Eingaben sein sollten"
 
-#: guix/lint.scm:2114
+#: guix/lint.scm:2116
 msgid "Identify inputs that shouldn't be inputs at all"
 msgstr ""
 "Eingaben suchen, die gar keine Eingaben\n"
 "    sein sollten"
 
-#: guix/lint.scm:2118
+#: guix/lint.scm:2120
 #, fuzzy
 #| msgid "Identify inputs that should be native inputs"
 msgid "Identify inputs that should use their minimal variant"
 msgstr "Eingaben suchen, die native Eingaben sein sollten"
 
-#: guix/lint.scm:2122
+#: guix/lint.scm:2124
 msgid "Identify input labels that do not match package names"
 msgstr "Eingabenbezeichnungen suchen, die nicht zu den Paketnamen passen"
 
-#: guix/lint.scm:2126
+#: guix/lint.scm:2128
 msgid "Make sure 'wrap-program' can find its interpreter."
 msgstr "Sicherstellen, dass der Interpretierer für „wrap-program“ verfügbar ist"
 
 #. TRANSLATORS: <license> is the name of a data type and must not be
 #. translated.
-#: guix/lint.scm:2132
+#: guix/lint.scm:2134
 msgid "Make sure the 'license' field is a <license> or a list thereof"
 msgstr ""
 "Sicherstellen, dass das „license“-Feld eine <license> oder\n"
 "    eine Liste davon ist"
 
-#: guix/lint.scm:2137
+#: guix/lint.scm:2139
 msgid "Make sure tests are only run when requested"
 msgstr "Sicherstellen, dass Tests nur laufen, wenn sie aktiviert sind"
 
-#: guix/lint.scm:2141
+#: guix/lint.scm:2143
 msgid "Suggest 'mirror://' URLs"
 msgstr "„mirror://“-URLs vorschlagen"
 
-#: guix/lint.scm:2145
+#: guix/lint.scm:2147
 msgid "Validate file names of sources"
 msgstr "Dateinamen der Quellorte überprüfen"
 
-#: guix/lint.scm:2149
+#: guix/lint.scm:2151
 msgid "Check for autogenerated tarballs"
 msgstr "Auf automatisch erzeugte Tarballs prüfen"
 
-#: guix/lint.scm:2153
+#: guix/lint.scm:2155
 msgid "Check for misplaced flags"
 msgstr ""
 
-#: guix/lint.scm:2157
+#: guix/lint.scm:2159
 msgid "Report failure to compile a package to a derivation"
 msgstr "Fehler dabei melden, ein Paket zu einer Ableitung zu kompilieren"
 
-#: guix/lint.scm:2162
+#: guix/lint.scm:2164
 msgid "Report collisions that would occur due to propagated inputs"
 msgstr "Konflikte melden, die sich aus propagierten Eingaben ergeben würden"
 
-#: guix/lint.scm:2167
+#: guix/lint.scm:2169
 msgid "Validate file names and availability of patches"
 msgstr "Dateinamen und Verfügbarkeit der Patches überprüfen"
 
-#: guix/lint.scm:2171
+#: guix/lint.scm:2173
 msgid "Validate patch headers"
 msgstr "Kopfzeilen der Patches überprüfen"
 
-#: guix/lint.scm:2175
+#: guix/lint.scm:2177
 msgid "Look for formatting issues in the source"
 msgstr "Nach Formatierungsfehlern im Quellort schauen"
 
-#: guix/lint.scm:2182
+#: guix/lint.scm:2184
 msgid "Validate package synopses"
 msgstr "Paketzusammenfassungen überprüfen"
 
-#: guix/lint.scm:2186
+#: guix/lint.scm:2188
 msgid "Validate synopsis & description of GNU packages"
 msgstr "GNU-Paketzusammenfassung und -beschreibung überprüfen"
 
-#: guix/lint.scm:2190
+#: guix/lint.scm:2192
 msgid "Validate home-page URLs"
 msgstr "Homepage-URLs überprüfen"
 
-#: guix/lint.scm:2194
+#: guix/lint.scm:2196
 msgid "Validate source URLs"
 msgstr "Quell-URLs überprüfen"
 
-#: guix/lint.scm:2198
+#: guix/lint.scm:2200
 msgid "Suggest GitHub URLs"
 msgstr "GitHub-URLs vorschlagen"
 
-#: guix/lint.scm:2202
+#: guix/lint.scm:2204
 msgid "Check the Common Vulnerabilities and Exposures (CVE) database"
 msgstr "Die Datenbank der Common Vulnerabilities and Exposures (CVE) überprüfen"
 
-#: guix/lint.scm:2207
+#: guix/lint.scm:2209
 msgid "Check the package for new upstream releases"
 msgstr "Den Ursprung des Pakets auf neue Veröffentlichungen hin prüfen"
 
-#: guix/lint.scm:2211
+#: guix/lint.scm:2213
 msgid "Ensure source code archival on Software Heritage"
 msgstr "Sicherstellen, dass Quellcode bei Software Heritage archiviert wird"
 
-#: guix/lint.scm:2215
+#: guix/lint.scm:2217
 msgid "Ensure Haskell packages use Stackage LTS versions"
 msgstr "Sicherstellen, dass Haskell-Pakete Versionen aus Stackage LTS ausliefern"
 
@@ -12857,139 +12874,139 @@ msgstr "eine REPL (Lese-Auswerten-Schreiben-Schleife) zur interaktiven Programmi
 msgid "~a: unknown type of REPL~%"
 msgstr "~a: Unbekannter REPL-Typ~%"
 
-#: nix/nix-daemon/guix-daemon.cc:67
+#: nix/nix-daemon/guix-daemon.cc:60
 msgid "guix-daemon -- perform derivation builds and store accesses"
 msgstr "guix-daemon — Ableitungserstellungen und Store-Zugriffe durchführen"
 
-#: nix/nix-daemon/guix-daemon.cc:69
+#: nix/nix-daemon/guix-daemon.cc:62
 msgid "This program is a daemon meant to run in the background.  It serves requests sent over a Unix-domain socket.  It accesses the store, and builds derivations on behalf of its clients."
 msgstr "Dieses Programm ist ein Dienst, der im Hintergrund laufen soll. Es führt über einen Unix-Socket gesendete Anfragen aus. Es greift auf den Store zu und erstellt von seinen Clients angeforderte Ableitungen."
 
-#: nix/nix-daemon/guix-daemon.cc:98
+#: nix/nix-daemon/guix-daemon.cc:91
 msgid "SYSTEM"
 msgstr "SYSTEM"
 
-#: nix/nix-daemon/guix-daemon.cc:99
+#: nix/nix-daemon/guix-daemon.cc:92
 msgid "assume SYSTEM as the current system type"
 msgstr "SYSTEM als aktuellen Systemtyp annehmen"
 
-#: nix/nix-daemon/guix-daemon.cc:100 nix/nix-daemon/guix-daemon.cc:103
+#: nix/nix-daemon/guix-daemon.cc:93 nix/nix-daemon/guix-daemon.cc:96
 msgid "N"
 msgstr "N"
 
-#: nix/nix-daemon/guix-daemon.cc:101
+#: nix/nix-daemon/guix-daemon.cc:94
 msgid "use N CPU cores to build each derivation; 0 means as many as available"
 msgstr "N CPU-Kerne zum Erstellen jeder Ableitung benutzen; 0 heißt alle verfügbaren Kerne"
 
-#: nix/nix-daemon/guix-daemon.cc:104
+#: nix/nix-daemon/guix-daemon.cc:97
 msgid "allow at most N build jobs"
 msgstr "höchstens N Erstellungs-Jobs zulassen"
 
-#: nix/nix-daemon/guix-daemon.cc:105 nix/nix-daemon/guix-daemon.cc:107
+#: nix/nix-daemon/guix-daemon.cc:98 nix/nix-daemon/guix-daemon.cc:100
 msgid "SECONDS"
 msgstr "SEKUNDEN"
 
-#: nix/nix-daemon/guix-daemon.cc:106
+#: nix/nix-daemon/guix-daemon.cc:99
 msgid "mark builds as failed after SECONDS of activity"
 msgstr "Erstellungen als Fehler markieren nach SEKUNDEN-langer Aktivität"
 
-#: nix/nix-daemon/guix-daemon.cc:108
+#: nix/nix-daemon/guix-daemon.cc:101
 msgid "mark builds as failed after SECONDS of silence"
 msgstr "Erstellungen als Fehler markieren nach SEKUNDEN-langer Stille"
 
-#: nix/nix-daemon/guix-daemon.cc:110
+#: nix/nix-daemon/guix-daemon.cc:103
 msgid "disable chroot builds"
 msgstr "chroot-Erstellungen deaktivieren"
 
-#: nix/nix-daemon/guix-daemon.cc:111
+#: nix/nix-daemon/guix-daemon.cc:104
 msgid "DIR"
 msgstr "VERZEICHNIS"
 
-#: nix/nix-daemon/guix-daemon.cc:112
+#: nix/nix-daemon/guix-daemon.cc:105
 msgid "add DIR to the build chroot"
 msgstr "VERZEICHNIS zum Erstellungs-chroot hinzufügen"
 
-#: nix/nix-daemon/guix-daemon.cc:113
+#: nix/nix-daemon/guix-daemon.cc:106
 msgid "GROUP"
 msgstr "GRUPPE"
 
-#: nix/nix-daemon/guix-daemon.cc:114
+#: nix/nix-daemon/guix-daemon.cc:107
 msgid "perform builds as a user of GROUP"
 msgstr "Erstellungen als ein Nutzer der GRUPPE durchführen"
 
-#: nix/nix-daemon/guix-daemon.cc:116
+#: nix/nix-daemon/guix-daemon.cc:109
 msgid "do not use substitutes"
 msgstr "keine Substitute benutzen"
 
-#: nix/nix-daemon/guix-daemon.cc:117
+#: nix/nix-daemon/guix-daemon.cc:110
 msgid "URLS"
 msgstr "URLS"
 
-#: nix/nix-daemon/guix-daemon.cc:118
+#: nix/nix-daemon/guix-daemon.cc:111
 msgid "use URLS as the default list of substitute providers"
 msgstr "URLS als die vorgegebene Liste von Substitutsanbietern nutzen"
 
-#: nix/nix-daemon/guix-daemon.cc:120 nix/nix-daemon/guix-daemon.cc:123
+#: nix/nix-daemon/guix-daemon.cc:113 nix/nix-daemon/guix-daemon.cc:116
 msgid "do not attempt to offload builds"
 msgstr "nicht versuchen, Erstellungen auszulagern"
 
-#: nix/nix-daemon/guix-daemon.cc:125
+#: nix/nix-daemon/guix-daemon.cc:118
 msgid "cache build failures"
 msgstr "Erstellungsfehler zwischenspeichern"
 
-#: nix/nix-daemon/guix-daemon.cc:127
+#: nix/nix-daemon/guix-daemon.cc:120
 msgid "build each derivation N times in a row"
 msgstr "jede Ableitung N-mal hintereinander erstellen"
 
-#: nix/nix-daemon/guix-daemon.cc:129
+#: nix/nix-daemon/guix-daemon.cc:122
 msgid "do not keep build logs"
 msgstr "Erstellungsprotokolle nicht behalten"
 
-#: nix/nix-daemon/guix-daemon.cc:132
+#: nix/nix-daemon/guix-daemon.cc:125
 msgid "disable compression of the build logs"
 msgstr "Erstellungsprotokolle nicht komprimieren"
 
-#: nix/nix-daemon/guix-daemon.cc:134
+#: nix/nix-daemon/guix-daemon.cc:127
 msgid "use the specified compression type for build logs"
 msgstr "die angegebene Kompressionsmethode für Erstellungsprotokolle verwenden"
 
-#: nix/nix-daemon/guix-daemon.cc:136
+#: nix/nix-daemon/guix-daemon.cc:129
 msgid "use substitute servers discovered on the local network"
 msgstr "im lokalen Netzwerk angebotene Substitutserver benutzen"
 
-#: nix/nix-daemon/guix-daemon.cc:141
+#: nix/nix-daemon/guix-daemon.cc:134
 msgid "disable automatic file \"deduplication\" in the store"
 msgstr "automatische Dateien-„Deduplizierung“ im Store deaktivieren"
 
-#: nix/nix-daemon/guix-daemon.cc:151
+#: nix/nix-daemon/guix-daemon.cc:144
 msgid "impersonate Linux 2.6"
 msgstr "vorgeben, Linux 2.6 zu benutzen"
 
-#: nix/nix-daemon/guix-daemon.cc:155
+#: nix/nix-daemon/guix-daemon.cc:148
 msgid "tell whether the GC must keep outputs of live derivations"
 msgstr "ausgeben, ob der Müllsammler die Ausgaben lebendiger Ableitungen behalten muss"
 
-#: nix/nix-daemon/guix-daemon.cc:158
+#: nix/nix-daemon/guix-daemon.cc:151
 msgid "tell whether the GC must keep derivations corresponding to live outputs"
 msgstr "ausgeben, ob der Müllsammler die Ableitungen lebendiger Ausgaben behalten muss"
 
-#: nix/nix-daemon/guix-daemon.cc:161
+#: nix/nix-daemon/guix-daemon.cc:154
 msgid "SOCKET"
 msgstr "SOCKET"
 
-#: nix/nix-daemon/guix-daemon.cc:162
+#: nix/nix-daemon/guix-daemon.cc:155
 msgid "listen for connections on SOCKET"
 msgstr "auf Verbindungen an SOCKET lauschen"
 
-#: nix/nix-daemon/guix-daemon.cc:164
+#: nix/nix-daemon/guix-daemon.cc:157
 msgid "produce debugging output"
 msgstr "Debug-Ausgabe zur Fehlersuche erzeugen"
 
-#: nix/nix-daemon/guix-daemon.cc:166
+#: nix/nix-daemon/guix-daemon.cc:159
 msgid "do not allow fixed-output chroot builds to access the host loopback"
 msgstr "für Erstellungen mit fester Ausgabe keinen Zugriff auf das Loopback-Gerät des Wirtssystems zulassen"
 
-#: nix/nix-daemon/guix-daemon.cc:536
+#: nix/nix-daemon/guix-daemon.cc:529
 msgid "socket-activated with %1% socket"
 msgid_plural "socket-activated with %1% sockets"
 msgstr[0] "Lauscht über Socket-Aktivierung auf %1% Socket"

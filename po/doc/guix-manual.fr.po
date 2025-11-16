@@ -54,7 +54,7 @@ msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-10-24 03:18+0000\n"
-"PO-Revision-Date: 2025-10-29 13:36+0000\n"
+"PO-Revision-Date: 2025-11-12 23:49+0100\n"
 "Last-Translator: roptat <roptat@noreply.codeberg.org>\n"
 "Language-Team: French <https://translate.codeberg.org/projects/guix/documentation-manual/fr/>\n"
 "Language: fr\n"
@@ -16289,7 +16289,7 @@ msgid "Sort lines according to @var{key}, one of the following options:"
 msgstr "Trie les lignes en fonction de la @var{clef}, l'une des options suivantes :"
 
 msgid "self"
-msgstr "lui-même"
+msgstr "self"
 
 msgid "the size of each item (the default);"
 msgstr "la taille de chaque élément (par défaut) ;"
@@ -18151,9 +18151,6 @@ msgstr "Lorsque la source d'un système de fichiers est un périphérique mappé
 
 msgid "@code{flags} (default: @code{'()})"
 msgstr "@code{flags} (par défaut : @code{'()})"
-
-msgid "This is a list of symbols denoting mount flags.  Recognized flags include @code{read-only}, @code{bind-mount}, @code{no-dev} (disallow access to special files), @code{no-suid} (ignore setuid and setgid bits), @code{no-atime} (do not update file access times), @code{no-diratime} (likewise for directories only), @code{strict-atime} (update file access time), @code{lazy-time} (only update time on the in-memory version of the file inode), @code{no-exec} (disallow program execution), and @code{shared} (make the mount shared).  @xref{Mount-Unmount-Remount,,, libc, The GNU C Library Reference Manual}, for more information on these flags."
-msgstr "C'est une liste de symboles qui désignent des drapeaux de montage.  Les drapeaux reconnus sont @code{read-only}, @code{bind-mount}, @code{no-dev} (interdit l'accès aux fichiers spéciaux), @code{no-suid} (ignore les bits setuid et setgid), @code{no-atime} (ne met pas à jour les heures d'accès aux fichiers), @code{no-diratime} (pareil mais pour les répertoires uniquement), @code{strict-atime} (met à jour les heures d'accès aux fichiers), @code{lazy-time} (ne met à jour les heures que dans la version mémoire des inœuds de fichiers), @code{no-exec} (interdit l'exécution de programmes), et @code{shared} (partage le montage).  @xref{Mount-Unmount-Remount,,, libc, The GNU C Library Reference Manual}, pour plus d'informations sur ces drapeaux."
 
 msgid "@code{options} (default: @code{#f})"
 msgstr "@code{options} (par défaut : @code{#f})"
@@ -23292,9 +23289,6 @@ msgstr "Pour vous assurer que les mises à jour sont bien effectuées, vous pouv
 
 msgid "unattended-upgrade-service-type"
 msgstr "unattended-upgrade-service-type"
-
-msgid "This is the service type for unattended upgrades.  It sets up an mcron job (@pxref{Scheduled Job Execution}) that runs @command{guix system reconfigure} from the latest version of the specified channels."
-msgstr "C'est le type de service pour les mises à jour sans surveillance.  Il met en place un job mcron (@pxref{Scheduled Job Execution}) qui exécute @command{guix system reconfigure} à partir de la dernière version des canaux spécifiés."
 
 msgid "Its value must be a @code{unattended-upgrade-configuration} record (see below)."
 msgstr "Sa valeur doit être un enregistrement @code{unattended-upgrade-configuration} (voir ci-dessous)."
@@ -41112,9 +41106,6 @@ msgstr ""
 
 msgid "The @option{--share} and @option{--expose} options can also be passed to the generated script to bind-mount additional directories into the container."
 msgstr "Les options @option{--share} et @option{--expose} peuvent aussi être passées au script généré pour effectuer un montage lié de répertoires supplémentaires dans le conteneur."
-
-msgid "This option requires Linux-libre 3.19 or newer."
-msgstr "Cette option requiert Linux-libre ou supérieur."
 
 msgid "@var{options} can contain any of the common build options (@pxref{Common Build Options}).  In addition, @var{options} can contain one of the following:"
 msgstr "@var{options} peut contenir n'importe quelle option commune de construction (@pxref{Common Build Options}).  En plus, @var{options} peut contenir l'une de ces options :"
