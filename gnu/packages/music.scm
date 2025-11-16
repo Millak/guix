@@ -3155,8 +3155,7 @@ using a system-independent interface.")
 (define-public python-abjad
   (package
     (name "python-abjad")
-    ;; 3.19 is the last version that supports Python 3.11; newer require 3.12.
-    (version "3.19")
+    (version "3.31")
     (source
      (origin
        (method git-fetch)
@@ -3165,25 +3164,21 @@ using a system-independent interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cgcnmwzxx2hr21pqm1hbsknpad748yw3gf7jncsb3w1azhjypzm"))))
+        (base32 "1vly4n0rvji372l4kskwx3xppzw22wb2q9jrpj3i3cjhsgy2mp6q"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; XXX: Tests are not compatible with current Sphinx version, enable
-      ;; after Python 3.12 is default and the package is updated.
-      #:tests? #f
+      ;; tests: 5382 passed
       #:phases
       #~(modify-phases %standard-phases
-          ;; Error message changed in latest python-roman; fixed in abjad 3.21.
-          (add-after 'unpack 'fix-docstring
+          (add-before 'check 'remove-local-source
             (lambda _
-              (substitute* "abjad/string.py"
-                (("roman.InvalidRomanNumeralError: Invalid Roman numeral: Allegro")
-                 "roman.InvalidRomanNumeralError...")))))))
+              (delete-file-recursively "source/abjad"))))))
     (inputs
      (list lilypond))
     (native-inputs
-     (list python-setuptools))
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-quicktions
            python-ply
@@ -3192,12 +3187,13 @@ using a system-independent interface.")
     (home-page "https://abjad.github.io")
     (synopsis "Python API for building LilyPond files")
     (description
-     "Abjad helps composers build up complex pieces of music notation in iterative
-and incremental ways.  Use Abjad to create a symbolic representation of all the notes,
-rests, chords, tuplets, beams and slurs in any score.  Because Abjad extends the Python
-programming language, you can use Abjad to make systematic changes to music as you work.
-Because Abjad wraps the LilyPond music notation package, you can use Abjad to control the
-typographic detail of symbols on the page.")
+     "Abjad helps composers build up complex pieces of music notation in
+iterative and incremental ways.  Use Abjad to create a symbolic representation
+of all the notes, rests, chords, tuplets, beams and slurs in any score.
+Because Abjad extends the Python programming language, you can use Abjad to
+make systematic changes to music as you work.  Because Abjad wraps the
+LilyPond music notation package, you can use Abjad to control the typographic
+detail of symbols on the page.")
     (license license:expat)))
 
 (define-deprecated-package abjad python-abjad)
