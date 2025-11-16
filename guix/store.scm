@@ -514,14 +514,14 @@ daemon.  Return a server object."
           (unless (= (protocol-major %protocol-version)
                      (protocol-major v))
             (handshake-error))
+          (unless (>= (protocol-minor v) 14) ;minor version < 14 never existed
+            (handshake-error))
 
           (write-value integer %protocol-version port)
-          (when (>= (protocol-minor v) 14)
-            (write-value integer (if cpu-affinity 1 0) port)
-            (when cpu-affinity
-              (write-value integer cpu-affinity port)))
-          (when (>= (protocol-minor v) 11)
-            (write-value integer (if reserve-space? 1 0) port))
+          (write-value integer (if cpu-affinity 1 0) port)
+          (when cpu-affinity
+            (write-value integer cpu-affinity port))
+          (write-value integer (if reserve-space? 1 0) port)
           (letrec* ((actual-built-in-builders
                      (if built-in-builders
                          (delay built-in-builders)
@@ -782,62 +782,57 @@ encoding conversion errors."
       (let ((max-build-jobs (or max-build-jobs 1))
             (max-silent-time (or max-silent-time 3600)))
         (send (integer max-build-jobs) (integer max-silent-time))))
-    (when (>= (store-connection-minor-version server) 2)
-      (send (boolean (if (unspecified? use-build-hook?)
-                         offload?
-                         use-build-hook?))))
-    (when (>= (store-connection-minor-version server) 4)
-      (send (integer build-verbosity) (integer log-type)
-            (boolean print-build-trace)))
-    (when (and (>= (store-connection-minor-version server) 6)
-               (< (store-connection-minor-version server) #x61))
+    (send (boolean (if (unspecified? use-build-hook?)
+                       offload?
+                       use-build-hook?)))
+    (send (integer build-verbosity) (integer log-type)
+          (boolean print-build-trace))
+    (when (< (store-connection-minor-version server) #x61)
       (let ((build-cores (or build-cores (current-processor-count))))
         (send (integer build-cores))))
-    (when (>= (store-connection-minor-version server) 10)
-      (send (boolean use-substitutes?)))
-    (when (>= (store-connection-minor-version server) 12)
-      (let ((pairs `(;; This option is honored by 'guix substitute' et al.
-                     ,@(if print-build-trace
-                           `(("print-extended-build-trace"
-                              . ,(if print-extended-build-trace? "1" "0")))
-                           '())
-                     ,@(if multiplexed-build-output?
-                           `(("multiplexed-build-output"
-                              . ,(if multiplexed-build-output? "true" "false")))
-                           '())
-                     ,@(if timeout
-                           `(("build-timeout" . ,(number->string timeout)))
-                           '())
-                     ,@(if max-silent-time
-                           `(("build-max-silent-time"
-                              . ,(number->string max-silent-time)))
-                           '())
-                     ,@(if max-build-jobs
-                           `(("build-max-jobs"
-                              . ,(number->string max-build-jobs)))
-                           '())
-                     ,@(if build-cores
-                           `(("build-cores" . ,(number->string build-cores)))
-                           '())
-                     ,@(if substitute-urls
-                           `(("substitute-urls"
-                              . ,(string-join substitute-urls)))
-                           '())
-                     ,@(if rounds
-                           `(("build-repeat"
-                              . ,(number->string (max 0 (1- rounds)))))
-                           '())
-                     ,@(if user-name
-                           `(("user-name" . ,user-name))
-                           '())
-                     ,@(if terminal-columns
-                           `(("terminal-columns"
-                              . ,(number->string terminal-columns)))
-                           '())
-                     ,@(if locale
-                           `(("locale" . ,locale))
-                           '()))))
-        (send (string-pairs pairs))))
+    (send (boolean use-substitutes?))
+    (let ((pairs `(;; This option is honored by 'guix substitute' et al.
+                   ,@(if print-build-trace
+                         `(("print-extended-build-trace"
+                            . ,(if print-extended-build-trace? "1" "0")))
+                         '())
+                   ,@(if multiplexed-build-output?
+                         `(("multiplexed-build-output"
+                            . ,(if multiplexed-build-output? "true" "false")))
+                         '())
+                   ,@(if timeout
+                         `(("build-timeout" . ,(number->string timeout)))
+                         '())
+                   ,@(if max-silent-time
+                         `(("build-max-silent-time"
+                            . ,(number->string max-silent-time)))
+                         '())
+                   ,@(if max-build-jobs
+                         `(("build-max-jobs"
+                            . ,(number->string max-build-jobs)))
+                         '())
+                   ,@(if build-cores
+                         `(("build-cores" . ,(number->string build-cores)))
+                         '())
+                   ,@(if substitute-urls
+                         `(("substitute-urls"
+                            . ,(string-join substitute-urls)))
+                         '())
+                   ,@(if rounds
+                         `(("build-repeat"
+                            . ,(number->string (max 0 (1- rounds)))))
+                         '())
+                   ,@(if user-name
+                         `(("user-name" . ,user-name))
+                         '())
+                   ,@(if terminal-columns
+                         `(("terminal-columns"
+                            . ,(number->string terminal-columns)))
+                         '())
+                   ,@(if locale
+                         `(("locale" . ,locale))
+                         '()))))
+      (send (string-pairs pairs)))
     (write-buffered-output server)
     (let loop ((done? (process-stderr server)))
       (or done? (process-stderr server)))))
@@ -1603,10 +1598,9 @@ and the number of bytes freed."
     (write-value boolean #f buffered)             ;ignore-liveness?
     (write-value long-long min-freed buffered)
     (write-value integer 0 buffered)              ;obsolete
-    (when (>= (store-connection-minor-version server) 5)
-      ;; Obsolete `use-atime' and `max-atime' parameters.
-      (write-value integer 0 buffered)
-      (write-value integer 0 buffered))
+    ;; Obsolete `use-atime' and `max-atime' parameters.
+    (write-value integer 0 buffered)
+    (write-value integer 0 buffered)
     (write-buffered-output server)
 
     ;; Loop until the server is done sending error output.
