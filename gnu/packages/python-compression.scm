@@ -559,23 +559,29 @@ several possible methods.")
 (define-public python-py7zr
   (package
     (name "python-py7zr")
-    (version "0.20.2")
+    (version "1.0.0rc3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "py7zr" version))
        (sha256
         (base32
-         "0lwniinfr3rb10n0c203a09vz06vxnnj637yqn8ipdlml89gj7kr"))))
+         "04ff0jc0d0b4r2r5yidcfnx30qabi41k5s04v4h4y7rfb6yd40ac"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:test-flags
-      #~(list "--ignore=tests/test_benchmark.py")))
+      #~(list "--ignore=tests/test_benchmark.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("(brotli|brotlicffi)>=.*;" _ name)
+                 (string-append name ";"))))))))
     (propagated-inputs
      (list python-brotli
            python-brotlicffi
-           python-importlib-metadata
            python-inflate64
            python-multivolumefile
            python-psutil
@@ -585,16 +591,16 @@ several possible methods.")
            python-pyzstd
            python-texttable))
     (native-inputs
-     (list python-setuptools
-           python-libarchive-c
+     (list python-libarchive-c
            python-py-cpuinfo
-           python-pyannotate
+           python-pypa-build
            python-pytest
            python-pytest-benchmark
+           python-pytest-httpserver
            python-pytest-remotedata
            python-pytest-timeout
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools
+           python-setuptools-scm))
     (home-page "https://github.com/miurahr/py7zr")
     (synopsis "7-zip in Python")
     (description "This package provides py7zr, which implements 7-zip
