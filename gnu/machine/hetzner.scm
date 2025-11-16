@@ -651,7 +651,7 @@ fdisk -l /dev/sda"
      (format #f "#!/usr/bin/env bash
 set -eo pipefail
 apt-get update
-apt-get install cloud-initramfs-growroot --assume-yes"))
+apt-get install cloud-initramfs-growroot uidmap --assume-yes"))
     (format #t "successfully installed rescue system packages on '~a'\n" name)))
 
 (define (hetzner-machine-delete machine server)
