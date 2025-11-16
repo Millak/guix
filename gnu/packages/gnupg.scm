@@ -729,13 +729,14 @@ signing, decryption, verification, and key-listing parsing.")
                 "11fhmfvr0avxl222rv43wjd2xjbpxrsmcl8xwmn0nvf1rw95v9fn"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-gpg-file-name
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "libpius/constants.py"
-               (("/usr/bin/gpg2")
-                (search-input-file inputs "bin/gpg"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-gpg-file-name
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "libpius/constants.py"
+                (("/usr/bin/gpg2")
+                 (search-input-file inputs "bin/gpg"))))))))
     (inputs (list perl                  ;for 'pius-party-worksheet'
                   gnupg))
     (synopsis "Programs to simplify GnuPG key signing")
