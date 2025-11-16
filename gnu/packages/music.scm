@@ -1753,100 +1753,6 @@ This package also provides its demo project, examples, ElectricGuitar,
 RagaMatic and Effects.")
     (license (license:non-copyleft "file:///LICENSE"))))
 
-(define-public python-abjad
-  (package
-    (name "python-abjad")
-    (version "3.19")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Abjad/abjad")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1cgcnmwzxx2hr21pqm1hbsknpad748yw3gf7jncsb3w1azhjypzm"))))
-    (build-system pyproject-build-system)
-    (inputs
-     (list lilypond))
-    (native-inputs
-     (list python-pytest python-setuptools python-wheel))
-    (propagated-inputs
-     (list python-quicktions
-           python-ply
-           python-roman
-           python-uqbar))
-    (home-page "https://abjad.github.io")
-    (synopsis "Python API for building LilyPond files")
-    (description
-     "Abjad helps composers build up complex pieces of music notation in iterative
-and incremental ways.  Use Abjad to create a symbolic representation of all the notes,
-rests, chords, tuplets, beams and slurs in any score.  Because Abjad extends the Python
-programming language, you can use Abjad to make systematic changes to music as you work.
-Because Abjad wraps the LilyPond music notation package, you can use Abjad to control the
-typographic detail of symbols on the page.")
-    (license license:expat)))
-
-(define-deprecated-package abjad python-abjad)
-
-(define-public python-abjad-ext-rmakers
-  (package
-    (name "python-abjad-ext-rmakers")
-    (version "3.19")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-         (url "https://github.com/Abjad/abjad-ext-rmakers")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1y8s55b4mlsigm0xkk6qjpp08c75rv0swvjp0lj3cs6lgqdjxdjl"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list lilypond
-           python-pytest
-           python-pytest-cov
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list abjad))
-    (home-page "https://abjad.github.io")
-    (synopsis "Abjad rhythm-maker extension package")
-    (description
-     "@code{abjad-ext-rmakers} includes a collection of classes for creating and
-and manipulating rhythms such as accelerandi, taleas, and more.")
-    (license license:expat)))
-
-(define-deprecated-package abjad-ext-rmakers python-abjad-ext-rmakers)
-
-(define-public python-abjad-ext-nauert
-  (package
-    (name "python-abjad-ext-nauert")
-    (version "3.19")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-         (url "https://github.com/Abjad/abjad-ext-nauert")
-         (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0j4pf4h27jm3df0dn2rwkdx6zqcxvr7pqchbaa9rffz7q4hbakmf"))))
-    (build-system pyproject-build-system)
-    (native-inputs
-     (list lilypond python-pytest python-setuptools python-wheel))
-    (propagated-inputs
-     (list abjad))
-    (home-page "https://abjad.github.io")
-    (synopsis "Abjad quantization extension, based on Paul Nauert's Q-Grids")
-    (description
-     "@code{abjad-ext-nauert} provides classes for dealing with composer and
-music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
-    (license license:expat)))
-
-(define-deprecated-package abjad-ext-nauert python-abjad-ext-nauert)
-
 (define-public non-sequencer
   ;; The latest tagged release is three years old and uses a custom build
   ;; system, so we take the last commit.
@@ -3226,6 +3132,100 @@ using a system-independent interface.")
      "PortMidi is a library supporting real-time input and output of MIDI data
 using a system-independent interface.")
     (license license:expat)))
+
+(define-public python-abjad
+  (package
+    (name "python-abjad")
+    (version "3.19")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Abjad/abjad")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cgcnmwzxx2hr21pqm1hbsknpad748yw3gf7jncsb3w1azhjypzm"))))
+    (build-system pyproject-build-system)
+    (inputs
+     (list lilypond))
+    (native-inputs
+     (list python-pytest python-setuptools python-wheel))
+    (propagated-inputs
+     (list python-quicktions
+           python-ply
+           python-roman
+           python-uqbar))
+    (home-page "https://abjad.github.io")
+    (synopsis "Python API for building LilyPond files")
+    (description
+     "Abjad helps composers build up complex pieces of music notation in iterative
+and incremental ways.  Use Abjad to create a symbolic representation of all the notes,
+rests, chords, tuplets, beams and slurs in any score.  Because Abjad extends the Python
+programming language, you can use Abjad to make systematic changes to music as you work.
+Because Abjad wraps the LilyPond music notation package, you can use Abjad to control the
+typographic detail of symbols on the page.")
+    (license license:expat)))
+
+(define-deprecated-package abjad python-abjad)
+
+(define-public python-abjad-ext-nauert
+  (package
+    (name "python-abjad-ext-nauert")
+    (version "3.19")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+         (url "https://github.com/Abjad/abjad-ext-nauert")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j4pf4h27jm3df0dn2rwkdx6zqcxvr7pqchbaa9rffz7q4hbakmf"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list lilypond python-pytest python-setuptools python-wheel))
+    (propagated-inputs
+     (list abjad))
+    (home-page "https://abjad.github.io")
+    (synopsis "Abjad quantization extension, based on Paul Nauert's Q-Grids")
+    (description
+     "@code{abjad-ext-nauert} provides classes for dealing with composer and
+music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
+    (license license:expat)))
+
+(define-deprecated-package abjad-ext-nauert python-abjad-ext-nauert)
+
+(define-public python-abjad-ext-rmakers
+  (package
+    (name "python-abjad-ext-rmakers")
+    (version "3.19")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+         (url "https://github.com/Abjad/abjad-ext-rmakers")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1y8s55b4mlsigm0xkk6qjpp08c75rv0swvjp0lj3cs6lgqdjxdjl"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list lilypond
+           python-pytest
+           python-pytest-cov
+           python-setuptools
+           python-wheel))
+    (propagated-inputs
+     (list abjad))
+    (home-page "https://abjad.github.io")
+    (synopsis "Abjad rhythm-maker extension package")
+    (description
+     "@code{abjad-ext-rmakers} includes a collection of classes for creating and
+and manipulating rhythms such as accelerandi, taleas, and more.")
+    (license license:expat)))
+
+(define-deprecated-package abjad-ext-rmakers python-abjad-ext-rmakers)
 
 (define-public python-pysmf
   (let ((commit "8a98a557470301f5a471d07d37f334a5b8892602")
