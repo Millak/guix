@@ -426,20 +426,16 @@ Jump conversion filter by CFFI for Python.")
 (define-public python-inflate64
   (package
     (name "python-inflate64")
-    (version "0.3.1")
+    (version "1.0.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "inflate64" version))
               (sha256
                (base32
-                "0767j35gkwaykl1iq9qn8rc25j1ggv56x3d1vzjpk89bzpzdhbdm"))))
+                "1vhj7qhghyc6bvwqval471d2rnsm2pzk2byklp1s1v9ndi0xv7m8"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-importlib-metadata))
     (native-inputs
-     (list python-pytest
-           python-setuptools-scm
-           python-setuptools
-           python-wheel))
+     (list python-pytest python-setuptools python-setuptools-scm))
     (home-page "https://pypi.org/project/inflate64/")
     (synopsis "Compression/decompression library")
     (description "The @code{inflate64} package provides @code{Deflater} and
