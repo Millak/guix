@@ -18,6 +18,7 @@
 
 (define-module (gnu packages fortran-xyz)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -67,6 +68,78 @@
      "This library provides an implementation of the DFT-D4 dispersion
 correction with both a Fortran and a C interface.")
     (license license:lgpl3+)))
+
+(define-public fortran-forutils
+  (package
+    (name "fortran-forutils")
+    ;; XXX: 1.0 tag was placed in 2019, and since that time tagging was
+    ;; abandoned, use the latest commit from master's HEAD.
+    (properties '((commit . "841f06d5356877e90437f94b2d976dd98f7f923c")
+                  (revision . "0")))
+    (version (git-version "1.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cmbant/forutils")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0y69y9dpd7by8jqrxhdg6xycxs1m38d4cw19v2jmsd4470syf79g"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)   ;not provided
+          (replace 'build
+            (lambda _
+              (invoke "make" "Release")))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "tests"
+                  ;; It's taken from .github/workflows/ci.yml.
+                  (invoke "make")
+                  (chmod "run_tests.sh" #o755)
+                  (invoke "sh" "run_tests.sh")))))
+          (replace 'install
+            (lambda _
+              (install-file "Release/libforutils.a"
+                            (string-append #$output "/lib")))))))
+    (native-inputs
+     (list gfortran))
+    (home-page "https://github.com/cmbant/forutils")
+    (synopsis "Fortran 2008 utility functions and reusable classes")
+    (description
+     "ForUtils is a modern Fortran utility library that provides essential
+tools for scientific computing and data processing.  It offers Python-like
+convenience functions and object-oriented interfaces for common programming
+tasks in Fortran 2003/2008 programs.
+
+Key Features:
+
+@itemize
+@item ArrayUtils - find (minimal/maximal) index of an element in an array
+@item FileUtils - classes for handling file access, python-like
+loadtxt/savetxt functions
+@item IniObjects - read/write name=value configuration files with inheritance,
+array and default value support
+@item MatrixUtils - read/write matrices and interface to some BLAS/LAPACK
+routines
+@item MiscUtils - utility functions for optional arguments
+@item MpiUtils - wrappers for MPI-routines to compile with(out) MPI library
+@item ObjectLists - lists of arbitrary objects including specializations for
+vectors
+@item RandUtils - some functions to generate random numbers
+@item RangeUtils - maintain sets of equally spaced intervals, e.g. for
+integration ranges
+@item StringUtils - utilities for strings, like concat of distinct types
+a.s.o.
+@end itemize")
+    (license license:expat)))
 
 (define-public fortran-mctc-lib
   (package
