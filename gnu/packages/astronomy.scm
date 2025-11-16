@@ -3222,34 +3222,33 @@ online Astronomical data.  Each web service has its own sub-package.")
 (define-public python-astroscrappy
   (package
     (name "python-astroscrappy")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astroscrappy" version))
        (sha256
-        (base32 "0r2alg8imr201ykjsvr6y43bzw8mwbc4ddprn8f6qfw9k4hsx8ff"))))
+        (base32 "1jpj7df26w31brbkhc1xrqaz2ayz9w3s88ia5vq86als7sfhfs5q"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags #~(list "--pyargs" "astroscrappy")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'preparations
-            (lambda _ (setenv "HOME" "/tmp")))
-          (add-before 'install 'writable-compiler
-            (lambda _ (make-file-writable "astroscrappy/_compiler.c")))
-          (add-before 'check 'tests-preparation
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (with-directory-excursion #$output
+                (apply invoke "pytest" "-vv" test-flags))))
+          (add-before 'check 'post-check
             (lambda _
-              (make-file-writable "astroscrappy/_compiler.c")
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+              (for-each delete-file-recursively
+                        (find-files #$output "__pycache__" #:directories? #t)))))))
     (native-inputs
      (list python-cython
            python-extension-helpers
            python-pytest-astropy
            python-scipy
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-numpy))
