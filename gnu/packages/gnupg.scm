@@ -1009,7 +1009,7 @@ with @code{rofi-pass} a good front end for @code{password-store}.")
 (define-public pinentry-bemenu
   (package
     (name "pinentry-bemenu")
-    (version "0.7.1")
+    (version "0.14.0")
     (source
      (origin
        (method git-fetch)
@@ -1018,7 +1018,7 @@ with @code{rofi-pass} a good front end for @code{password-store}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09nw49pyfs65m35a40kpzh6h0mf5yyjzmzq3jxp660885m0b29g8"))))
+        (base32 "0sh2182p5674m50vphir53jpq4p2i8ld6asfihbryjq8qh4r88cj"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config))
