@@ -53755,19 +53755,24 @@ package vignettes.")
 (define-public r-elliptic
   (package
     (name "r-elliptic")
-    (version "1.4-0")
+    (version "1.5-1")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "elliptic" version))
         (sha256
           (base32
-            "1dhba0yfxjd5rlqsxp5a7s2hclfkla9wigsr39dlma67l6qjjmxn"))))
-    (properties `((upstream-name . "elliptic")))
+            "00f97gwjpsywdzd0s6cx6ncklsg5wakzahlyi106wb0sgbgzvv76"))))
+    (properties
+     '((upstream-name . "elliptic")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-hypergeo"))))
     (build-system r-build-system)
+    ;; Vignettes need r-hypergeo.
+    (arguments (list #:test-types '(list "tests")))
     (inputs (list pari-gp))
     (propagated-inputs (list r-mass))
-    (native-inputs (list r-calibrator r-emulator))
+    (native-inputs (list r-calibrator r-emulator r-testthat))
     (home-page "https://github.com/RobinHankin/elliptic")
     (synopsis "Weierstrass and Jacobi elliptic functions")
     (description
