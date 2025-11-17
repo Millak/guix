@@ -829,24 +829,22 @@ posteriors and evidences.")
 (define-public r-testthat
   (package
     (name "r-testthat")
-    (version "3.2.3")
+    (version "3.3.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "testthat" version))
               (sha256
                (base32
-                "1by17pjy05xjc0clbp8kam2lrzy5w00fd0nqqp76l0dwbd57j2qq"))))
+                "082nd13fj2f7miz0ny4n2vv6924gcavndmdans1gw6p4inal4qnb"))))
     (properties
-     '((updater-ignored-native-inputs . ("r-testthat"))))
+     '((updater-ignored-native-inputs . ("r-testthat"))
+       (updater-extra-native-inputs . ("r-digest"))))
     (build-system r-build-system)
-    ;; Some tests require r-xml2, which uses r-testthat.
-    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-brio
            r-callr
            r-cli
            r-desc
-           r-digest
            r-evaluate
            r-jsonlite
            r-lifecycle
@@ -859,7 +857,7 @@ posteriors and evidences.")
            r-rlang
            r-waldo
            r-withr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-digest r-knitr))
     (home-page "https://github.com/hadley/testthat")
     (synopsis "Unit testing for R")
     (description
