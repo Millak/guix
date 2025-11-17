@@ -55750,19 +55750,25 @@ Monte Carlo approach implemented in JAGS.")
 (define-public r-logger
   (package
     (name "r-logger")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "logger" version))
        (sha256
-        (base32 "1ph4al2ish2c3zpznr2zn7wg4hjn1bslywc1vv6smrxfcch3n90g"))))
+        (base32 "18yss0qh1pvkd052jvba48z6bhhk8x8q8x2xdrx8x21hkrka469l"))))
     (properties
      '((upstream-name . "logger")
        (updater-extra-native-inputs
         . ("r-devtools" "r-pander" "r-r-utils"))))
     (build-system r-build-system)
-    (native-inputs (list r-devtools r-knitr r-pander r-r-utils r-testthat))
+    (native-inputs (list r-devtools
+                         r-jsonlite
+                         r-knitr
+                         r-pander
+                         r-r-utils
+                         r-testthat
+                         r-withr))
     (home-page "https://daroczig.github.io/logger/")
     (synopsis "Lightweight and flexible logging utility")
     (description
