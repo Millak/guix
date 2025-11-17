@@ -5867,6 +5867,33 @@ run SRFI 64 test suites.  It gives Automake insight into the individual
 tests being run, resulting clearer and more specific output.")
     (license license:gpl3+)))
 
+(define-public guile-run64
+  (package
+    (name "guile-run64")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://forge.systemreboot.net/run64/releases/run64-"
+                                  version ".tar.lz"))
+              (sha256
+               (base32
+                "0xwydln0i430i6c99waycsyhfy3i8cd1hkiv2xlchnqgwwi4il1a"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags #~(list (string-append "prefix=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
+    (native-inputs
+     (list lzip))
+    (home-page "https://forge.systemreboot.net/run64/")
+    (synopsis "SRFI-64 test runner for Scheme")
+    (description "run64 is a SRFI-64 runner.  It generates pretty, readable,
+colorful output featuring clear diffs between expected and actual values.
+run64 is meant to work with an SRFI-64 implementation, and is not an SRFI-64
+implementation in itself.")
+    (license license:gpl3+)))
+
 (define-public guile-uuid
   (package
     (name "guile-uuid")
