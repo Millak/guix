@@ -48959,7 +48959,7 @@ using @code{ggplot2}.")
 (define-public r-visnetwork
   (package
     (name "r-visnetwork")
-    (version "2.1.2")
+    (version "2.1.4")
     (source
       (origin
         (method url-fetch)
@@ -48976,14 +48976,18 @@ using @code{ggplot2}.")
     (build-system r-build-system)
     (arguments
      (list
-      ;; FIXME Test break because %>% is undefined, yet it is defined by
-      ;; r-magrittr.
-      #:tests? #false
       #:modules '((guix build utils)
                   (guix build r-build-system)
                   (srfi srfi-1))
       #:phases
       '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-tests
+           (lambda _
+             (substitute* "inst/tests/highlight_combinaison.R"
+               (("# simple nodes")
+                "library(magrittr); library(visNetwork) #"))
+             ;; This is interactive.
+             (delete-file "inst/tests/understand_coordinates.R")))
          (add-after 'unpack 'process-javascript
            (lambda* (#:key inputs #:allow-other-keys)
              ;; The inst directory contains some minified JavaScript
@@ -49012,6 +49016,7 @@ using @code{ggplot2}.")
            r-magrittr))
     (native-inputs
      `(("r-knitr" ,r-knitr)
+       ("r-rmarkdown" ,r-rmarkdown)
        ("esbuild" ,esbuild)
        ;; The included file has no version information but was created
        ;; at around the same time as version 9.1.0.
