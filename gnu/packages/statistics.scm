@@ -1612,13 +1612,13 @@ previous R versions and their release dates.")
 (define-public r-roxygen2
   (package
     (name "r-roxygen2")
-    (version "7.3.2")
+    (version "7.3.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "roxygen2" version))
               (sha256
                (base32
-                "0701v8dglv0mdsjs1mijpylpciiijb2schplavkf5drjj6gqg25p"))))
+                "0jk1b71j7r61kmfa7028yybfyw3wjjka2hidlh6n3vdbw8z6whfs"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-brew
@@ -1636,7 +1636,13 @@ previous R versions and their release dates.")
            r-withr
            r-xml2))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-digest
+           r-knitr
+           r-magrittr
+           r-r-methodss3
+           r-r-oo
+           r-rmarkdown
+           r-testthat))
     (home-page "https://github.com/klutometis/roxygen")
     (synopsis "In-source documentation system for R")
     (description
