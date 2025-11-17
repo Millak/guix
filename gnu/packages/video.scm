@@ -2786,6 +2786,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
            libbluray
            libcaca
            libcdio-paranoia
+           libdisplay-info
            libdrm
            libdvdnav
            libdvdread
