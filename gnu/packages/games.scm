@@ -11785,10 +11785,11 @@ etc.  You can also play games on FICS or against an engine.")
     (license license:gpl2+)))
 
 (define-public stockfish
-  (let ((neural-network-revision "ad9b42354671")) ; also update hash below
+  (let ((big-network-revision "1c0000000000")
+        (small-network-revision "37f18f62d772")) ; also update hashes below
     (package
       (name "stockfish")
-      (version "15.1")
+      (version "17.1")
       (source
        (origin
          (method git-fetch)
@@ -11797,17 +11798,25 @@ etc.  You can also play games on FICS or against an engine.")
                (commit (string-append "sf_" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0zmnv8vbhhid73pjyxg56r4ckm887znv4d55br370plm3p5b56xa"))))
+          (base32 "0f03iki7xmpfr8qd5nmddapi1rk2ng2grk4f29vp2gpjpxvkbjkk"))))
       (build-system gnu-build-system)
       (inputs
-       `(("neural-network"
+       `(("neural-network-big"
           ,(origin
              (method url-fetch)
              (uri (string-append "https://tests.stockfishchess.org/api/nn/nn-"
-                                 neural-network-revision ".nnue"))
+                                 big-network-revision ".nnue"))
              (sha256
               (base32
-               "11mpdhnsfggldgvmzwmya64pp3fndyppi2fkdf8kfhbi8qsl56xd"))))))
+               "1bg2kaplx3w6c82jvl9wwh64bxvkqg835ncrk5i7v9h00000000w"))))
+         ("neural-network-small"
+          ,(origin
+             (method url-fetch)
+             (uri (string-append "https://tests.stockfishchess.org/api/nn/nn-"
+                                 small-network-revision ".nnue"))
+             (sha256
+              (base32
+               "17c9b9ij1jmvbxaycqxbya33q30kij4s7b3a3mz11wvjsxi8zw9p"))))))
       (arguments
        `(#:tests? #f
          #:make-flags (list "-C" "src"
@@ -11830,13 +11839,16 @@ etc.  You can also play games on FICS or against an engine.")
                                               (_ "general-32"))))
          #:phases (modify-phases %standard-phases
                     (delete 'configure)
-                    ;; The official neural network file is needed for building
-                    ;; and is embedded in the resulting binary.
+                    ;; The official neural network files are needed for building
+                    ;; and are embedded in the resulting binary.
                     (add-after 'unpack 'copy-net
                       (lambda* (#:key inputs #:allow-other-keys)
-                        (copy-file (assoc-ref inputs "neural-network")
+                        (copy-file (assoc-ref inputs "neural-network-big")
                                    (format #f "src/nn-~a.nnue"
-                                           ,neural-network-revision))))
+                                           ,big-network-revision))
+                        (copy-file (assoc-ref inputs "neural-network-small")
+                                   (format #f "src/nn-~a.nnue"
+                                           ,small-network-revision))))
                     (add-after 'unpack 'remove-m-flag-and-net-target
                       (lambda _
                         (substitute* "src/Makefile"
