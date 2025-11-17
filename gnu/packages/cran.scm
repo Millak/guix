@@ -201,13 +201,13 @@ and environmental data in the framework of Euclidean exploratory methods.")
 (define-public r-aer
   (package
     (name "r-aer")
-    (version "1.2-14")
+    (version "1.2-15")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "AER" version))
               (sha256
                (base32
-                "06l7h1gdyc007hx5xavkb879mgqnskcq2zrbr0xbm88rv1b63a26"))))
+                "0i8zr3nsdiyhcs055y7k6hr6ir2lkcvymnrhkmgk2hx4xsrqlk5h"))))
     (properties `((upstream-name . "AER")))
     (build-system r-build-system)
     (propagated-inputs
@@ -217,7 +217,20 @@ and environmental data in the framework of Euclidean exploratory methods.")
            r-sandwich
            r-survival
            r-zoo))
-    (native-inputs (list r-foreign))
+    (native-inputs (list r-boot
+                         r-dynlm
+                         r-foreign
+                         r-kernsmooth
+                         r-lattice
+                         r-mass
+                         r-nnet
+                         r-plm
+                         r-pscl
+                         r-quantreg
+                         r-rocr
+                         r-strucchange
+                         r-tseries
+                         r-urca))
     (home-page "https://cran.r-project.org/package=AER")
     (synopsis "Applied econometrics with R")
     (description
