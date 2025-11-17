@@ -175,6 +175,7 @@
 ;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
 ;;; Copyright © 2025 Allan Adair <allan@adair.no>
 ;;; Copyright © 2025 Hennadii Stepanov <hebasto@gmail.com>
+;;; Copyright © 2025 Luca Kredel <luca.kredel@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20823,6 +20824,23 @@ into 22 character URL-safe base64 slug representation.")
      "This is a Python package for rendering rich text, tables, progress bars,
 syntax highlighting, markdown and more to the terminal.")
     (license license:expat)))
+
+(define-public python-rich-next
+  (package
+    (inherit python-rich)
+    (name "python-rich")
+    (version "14.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/willmcgugan/rich")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zwjry4ylqncqvxrywp0km96jng4f288dgz8kz5vymk7nr2z21m1"))))
+    (native-inputs (modify-inputs (package-native-inputs python-rich)
+                     (append which)))))
 
 (define-public python-rich-click
   (package
