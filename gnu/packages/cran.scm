@@ -16337,19 +16337,19 @@ Zero-inflated CMP regression (Sellers & Raim, 2016)
 (define-public r-dendextend
   (package
     (name "r-dendextend")
-    (version "1.19.0")
+    (version "1.19.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dendextend" version))
        (sha256
         (base32
-         "17nvk2gqyzgiwd62z2jw56rvlc14m1m5wx41xhc2p1wbl60s5njq"))))
+         "0097bmdv960khjkf3gvbdrazx4ns8i9221m9h68vnq541h61ag5y"))))
     (properties
      ;; Ignore packages that have been removed from CRAN, or that would cause
      ;; a dependency cycle.
      '((updater-ignored-native-inputs
-        . ("r-dendextendrcpp" "r-seriation" "r-table"))
+        . ("r-dendextendrcpp" "r-seriation"))
        (updater-extra-native-inputs
         . ("r-circlize" "r-data-table"))))
     (build-system r-build-system)
