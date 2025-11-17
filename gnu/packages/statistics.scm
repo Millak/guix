@@ -1587,17 +1587,16 @@ Features:
 (define-public r-rversions
   (package
     (name "r-rversions")
-    (version "2.1.2")
+    (version "3.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rversions" version))
               (sha256
                (base32
-                "0q5ip3rkhcxz7472fbqddrw3a2wm31b18w7ax0pi6wc27qiihn6y"))))
+                "1q9k169vd31pvigf8q5lwc0zvacbycv7nl584kdh2mzbbyfjb06s"))))
     (build-system r-build-system)
-    (propagated-inputs
-     (list r-curl r-xml2))
-    (native-inputs (list r-testthat))
+    (propagated-inputs (list r-curl))
+    (native-inputs (list r-testthat r-webfakes r-withr))
     (home-page "https://github.com/metacran/rversions")
     (synopsis "Query R versions, including 'r-release' and 'r-oldrel'")
     (description
