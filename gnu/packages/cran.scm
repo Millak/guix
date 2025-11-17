@@ -30112,14 +30112,14 @@ using C++ code and of the OpenMP API.")
 (define-public r-afex
   (package
     (name "r-afex")
-    (version "1.4-1")
+    (version "1.5-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "afex" version))
        (sha256
         (base32
-         "17i8am28l937vd2v6z17bfngslpskjx301pk050zvz3hf7ckayms"))))
+         "1ikpnz87yc9gja94wdhh582bldbny0wrg6mnrzwlfzwfpanak2mp"))))
     (build-system r-build-system)
     ;; This is needed for the vignette builder
     (arguments
@@ -30128,8 +30128,15 @@ using C++ code and of the OpenMP API.")
          (add-after 'unpack 'set-HOME
            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list r-car r-lme4 r-lmertest r-pbkrtest r-reshape2))
+     (list r-car
+           r-lme4
+           r-lmertest
+           r-pbkrtest
+           r-reformulas
+           r-reshape2
+           r-rlang))
     (native-inputs
+     ;; The importer adds way more packages than needed.
      (list r-knitr r-r-rsp r-testthat)) ;vignette builder
     (home-page "https://afex.singmann.science/")
     (synopsis "Analysis of factorial experiments")
