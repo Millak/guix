@@ -48648,6 +48648,31 @@ described in @url{https://doi.org/10.1093/molbev/msu121,Didelot et al. (2014)}
 and @url{https://doi.org/10.1093/molbev/msw275,Didelot et al. (2017)}.")
     (license license:gpl2+)))
 
+(define-public r-transport
+  (package
+    (name "r-transport")
+    (version "0.15-4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "transport" version))
+       (sha256
+        (base32 "1kr03iqyfv2icxdalj06rfwrjj6k281wn87dvz4kkp35zpv454sf"))))
+    (properties `((upstream-name . "transport")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-data-table r-rcpp r-rcppeigen))
+    (native-inputs (list r-testthat))
+    (home-page "https://dschuhm1.pages.gwdg.de/software")
+    (synopsis
+     "Computation of optimal transport plans and Wasserstein distances")
+    (description
+     "Solve optimal transport problems.  Compute Wasserstein distances (a.k.a.
+Kantorovitch, Fortet--Mourier, Mallows, Earth Mover's, or minimal L_p
+distances), return the corresponding transference plans, and display them
+graphically.  Objects that can be compared include grey-scale
+images, (weighted) point patterns, and mass vectors.")
+    (license license:gpl2+)))
+
 (define-public r-km-ci
   (package
     (name "r-km-ci")
