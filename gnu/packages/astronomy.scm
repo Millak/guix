@@ -7915,36 +7915,6 @@ well as ephemerides services
      (list python-numpy))
     (synopsis "Python library for Source Extraction and Photometry")))
 
-(define-public python-sep-pjw
-  (package
-    (name "python-sep-pjw")
-    (version "1.3.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sep_pjw" version))
-       (sha256
-        (base32 "0lhxfq1acc6qc8nszfdrpwq6dizaypz3b6frknfv5qm59mb488r0"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags #~(list "test.py")))
-    (native-inputs
-     (list python-cython
-           python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-wheel))
-    (propagated-inputs
-     (list python-numpy
-           python-sep))
-    (home-page "https://github.com/PJ-Watson/sep-pjw")
-    (synopsis "Alternative fork of SEP library")
-    (description
-     "This package provides an alternative maintained fork of SEP python
-library with bug fixtures.")
-    (license (list license:expat license:lgpl3+ license:bsd-3))))
-
 (define-public python-sgp4
   (package
     (name "python-sgp4")
