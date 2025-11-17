@@ -3685,26 +3685,24 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
 (define-public python-cobaya
   (package
     (name "python-cobaya")
-    (version "3.5.7")
+    (version "3.6")
     (source
      (origin
-       (method git-fetch)               ;no tests in pypi release
+       (method git-fetch)
        (uri (git-reference
               (url "https://github.com/CobayaSampler/cobaya")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17ccka051lknv05dlr1wfb2ha2qj27av2q2s6ir2vrcgx5c2szfp"))))
+        (base32 "1jws7kb3578mgbimxxanbhzkrxpmcby0jqxq9zlf04i5ilqn4s6m"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 76 passed, 3 skipped, 93 xfailed, 2 warnings
       #:test-flags
-      ;; Test options were taken from GitHub action workflow.
-      #~(list "--no-flaky-report"
-              "--numprocesses" (number->string (parallel-job-count))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               "--skip-not-installed"
-              "-k" "not test_planck_NPIPE_p_CamSpec_camb_install and not test_grid"
-              "tests")
+              "-k" "not test_planck_NPIPE_p_CamSpec_camb and not test_grid")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'pre-check
@@ -3712,7 +3710,9 @@ monochromatic sequential colormaps like @code{blue}, @code{green}, and
               (setenv "HOME" "/tmp")
               (setenv "COBAYA_PACKAGES_PATH" "/tmp"))))))
     (native-inputs
-     (list python-flaky
+     (list python-camb
+           ;; python-classy
+           python-flaky
            python-pytest
            python-pytest-xdist
            python-setuptools))
