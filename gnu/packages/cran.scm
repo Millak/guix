@@ -51439,13 +51439,13 @@ well as email and push notifications.")
 (define-public r-mlr
   (package
     (name "r-mlr")
-    (version "2.19.2")
+    (version "2.19.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr" version))
               (sha256
                (base32
-                "1icpa3xa0f7l40i52l3pl43m98j69r75qnqf1yp7wyh6y54p1rl5"))))
+                "0i2w93xmpci6n1vqgxcik73ivpr6g65v4gjp2zikpnd01wb8bms9"))))
     (properties `((upstream-name . "mlr")))
     (build-system r-build-system)
     (inputs (list gdal
@@ -51468,7 +51468,10 @@ well as email and push notifications.")
                              r-stringi
                              r-survival
                              r-xml))
-    (native-inputs (list r-knitr r-testthat))
+    ;; For unknown reasons, the updater adds dozens of unnecessary packages
+    ;; here.  These two are fine.
+    (native-inputs
+     (list r-knitr r-testthat))
     (home-page "https://mlr.mlr-org.com")
     (synopsis "Machine learning in R")
     (description
