@@ -4598,6 +4598,32 @@ multidimensional conditioning system and a consistent interface to map data to
 aesthetic attributes.")
     (license license:gpl2+)))
 
+(define-public r-ggpol
+  (package
+    (name "r-ggpol")
+    (version "0.0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ggpol" version))
+       (sha256
+        (base32 "11xr26kwmkjjb51wm44ydv0vcinc6k6faqwx4s2faj4iwidlys1m"))))
+    (properties `((upstream-name . "ggpol")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr
+                             r-ggplot2
+                             r-glue
+                             r-gtable
+                             r-plyr
+                             r-rlang
+                             r-tibble))
+    (home-page "https://github.com/erocoar/ggpol")
+    (synopsis "Visualizing social science data with ggplot2")
+    (description
+     "This package provides a ggplot2 extension for implementing parliament
+charts and several other useful visualizations.")
+    (license license:expat)))
+
 (define-public r-ggstats
   (package
     (name "r-ggstats")
