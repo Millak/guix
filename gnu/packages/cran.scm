@@ -21700,13 +21700,13 @@ information between package updates.")
 (define-public r-leaflet
   (package
     (name "r-leaflet")
-    (version "2.2.2")
+    (version "2.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "leaflet" version))
        (sha256
-        (base32 "1sxq38dcjhn1bkav7fxglzk8nwi5p32jia2nhijcq5j1766pp1yj"))
+        (base32 "1l0slppa61hmzkqj9wmplb9ldsyvg61igsd9dlv5yx06k2by77xg"))
        (snippet
         '(for-each
           delete-file
@@ -21840,7 +21840,10 @@ information between package updates.")
            (sha256
             (base32
              "0vyrbf6gv2lyh4c2bzp5349ivwvvg28gpn87y52a7jdb13rlkpab"))))
+       ("r-r6" ,r-r6)
        ("r-shiny" ,r-shiny)
+       ("r-sp" ,r-sp)
+       ("r-terra" ,r-terra)
        ("r-testthat" ,r-testthat)))
     (propagated-inputs
      (list r-crosstalk
@@ -21852,8 +21855,9 @@ information between package updates.")
            r-png
            r-raster
            r-rcolorbrewer
+           r-rlang
            r-scales
-           r-sp
+           r-sf
            r-viridislite
            r-xfun))
     (home-page "https://rstudio.github.io/leaflet/")
