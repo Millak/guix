@@ -5794,13 +5794,13 @@ options and registries, vignette, unit test and bibtex related utilities.")
 (define-public r-plotly
   (package
     (name "r-plotly")
-    (version "4.10.4")
+    (version "4.11.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "plotly" version))
               (sha256
                (base32
-                "0ryqcs9y7zan36zs6n1hxxy91pajldpax8q7cwcimlsmxnvrbafg"))
+                "1cyf9c29jp6k3dizh96dx37dzr0rwwxv2lx15a3r0dcigv6hk45s"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "inst/htmlwidgets/lib/"
@@ -5812,13 +5812,19 @@ options and registries, vignette, unit test and bibtex related utilities.")
     (build-system r-build-system)
     (arguments
      (list
-      ;; Tests require internet access.
-      #:tests? #false
       #:modules '((guix build utils)
                   (guix build r-build-system)
                   (srfi srfi-1))
       #:phases
       '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-tests
+           (lambda _
+             ;; Fetching the R releases requires internet access.
+             (substitute* "tests/testthat/helper-skip.R"
+               (("^r_release.*") "")
+               (("^is_release.*") "is_release <- TRUE"))
+             ;; These tests try to fetch files from raw.githubusercontent.com.
+             (delete-file "tests/testthat/test-icicle.R")))
          (add-after 'unpack 'process-javascript
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "inst/htmlwidgets/lib/"
@@ -5866,7 +5872,21 @@ options and registries, vignette, unit test and bibtex related utilities.")
            r-vctrs
            r-viridislite))
     (native-inputs
-     `(("esbuild" ,esbuild)
+     `(("r-ggalluvial" ,r-ggalluvial)
+       ("r-ggally" ,r-ggally)
+       ("r-ggridges" ,r-ggridges)
+       ("r-ggthemes" ,r-ggthemes)
+       ("r-maps" ,r-maps)
+       ("r-mass" ,r-mass)
+       ("r-palmerpenguins" ,r-palmerpenguins)
+       ("r-reticulate" ,r-reticulate)
+       ("r-rsvg" ,r-rsvg)
+       ("r-rversions" ,r-rversions)
+       ("r-sf" ,r-sf)
+       ("r-shiny" ,r-shiny)
+       ("r-testthat" ,r-testthat)
+       ("r-withr" ,r-withr)
+       ("esbuild" ,esbuild)
        ("js-colourpicker"
         ,(let ((commit "27c2a266d51e18a9fe6d7542264152b27c7d34e0")
                (version "1.1")
@@ -5874,8 +5894,8 @@ options and registries, vignette, unit test and bibtex related utilities.")
            (origin
              (method git-fetch)
              (uri (git-reference
-                   (url "https://github.com/daattali/jquery-colourpicker")
-                   (commit commit)))
+                    (url "https://github.com/daattali/jquery-colourpicker")
+                    (commit commit)))
              (file-name (git-file-name "jquery-colourpicker"
                                        (git-version version revision commit)))
              (sha256
@@ -5900,8 +5920,8 @@ options and registries, vignette, unit test and bibtex related utilities.")
            (origin
              (method git-fetch)
              (uri (git-reference
-                   (url "https://github.com/inexorabletash/polyfill/")
-                   (commit commit)))
+                    (url "https://github.com/inexorabletash/polyfill/")
+                    (commit commit)))
              (file-name (git-file-name "typedarray-polyfill"
                                        (git-version version revision commit)))
              (sha256
