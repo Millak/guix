@@ -13467,17 +13467,17 @@ previewing themes in real time.")
 (define-public r-shiny
   (package
     (name "r-shiny")
-    (version "1.10.0")
+    (version "1.11.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/rstudio/shiny")
-             (commit (string-append "v" version))))
+              (url "https://github.com/rstudio/shiny")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "07b4i1qcpfhyflaxxvwllnz0qw9iphnnsrr5rwa65aw7d9r2wszz"))
+         "1rvn6lqy5ga2p4c3s33lm92kl6pmi99b43nw1cfjprrhf5s0439q"))
        (snippet
         '(for-each delete-file
                    '("inst/www/shared/bootstrap/js/bootstrap.min.js"
