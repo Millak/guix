@@ -55910,7 +55910,7 @@ within a category based on their density using quasirandom noise.")
     (propagated-inputs
      (list r-ggplot2 r-gridextra r-viridislite))
     (native-inputs
-     (list r-knitr r-testthat)) ; for vignettes
+     (list r-knitr r-mass r-testthat)) ;for vignettes
     (home-page "https://github.com/sjmgarnier/viridis")
     (synopsis "Matplotlib default color map")
     (description
