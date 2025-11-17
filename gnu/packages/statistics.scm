@@ -920,25 +920,31 @@ like tidy evaluation.")
 (define-public r-tibble
   (package
     (name "r-tibble")
-    (version "3.2.1")
+    (version "3.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tibble" version))
        (sha256
         (base32
-         "0c916wl19wbhncv05hjzs2vmvvbcxlswjl6i232ygmkzal62v9v5"))))
+         "14p1zqi7yflcqg87mfphmh0lxazvj1pxgn13b6ja9b5i26gl6k3z"))))
+    ;; r-diagrammer contains massive amounts of minified JavaScript.
+    (properties
+     '((updater-ignored-native-inputs . ("r-diagrammer"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-fansi
+     (list r-cli
            r-lifecycle
            r-magrittr
            r-pillar
            r-pkgconfig
            r-rlang
            r-vctrs))
+    ;; The importer adds a lot more packages, but we don't need any of them.
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr
+           r-testthat
+           r-withr))
     (home-page "https://github.com/hadley/tibble")
     (synopsis "Simple data frames")
     (description
