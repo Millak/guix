@@ -4617,24 +4617,25 @@ all the input image headers.")
 (define-public python-fitsio
   (package
     (name "python-fitsio")
-    (version "1.2.8")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fitsio" version))
        (sha256
-        (base32 "1cbynx6lyf38863njqyg1gnpcdp69bxywmi0ckhzgf9wicxf31nk"))
+        (base32 "0q4j9c49ladlpy7ag5jsi91d5mpsi6nlh6pnmbz4cbx6vjq4yfg2"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove the bundled cfitsio. When update the package check the
         ;; current bundled version.
         #~(begin
-            (delete-file-recursively "cfitsio-4.4.1-20240617")
+            (delete-file-recursively "cfitsio-4.6.3.tar.gz")
             (substitute* "MANIFEST.in"
-              (("recursive-include cfitsio-4.4.0.*$\n") ""))))))
+              (("recursive-include cfitsio-4.6.3.*$\n") ""))))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1860 passed, 904 skipped, 113 xfailed
       #:test-flags
       #~(list "--pyargs" "fitsio")
       #:phases
@@ -4658,8 +4659,7 @@ all the input image headers.")
     (propagated-inputs
      (list python-numpy))
     (home-page "https://github.com/esheldon/fitsio")
-    (synopsis
-     "Python library to read from and write to FITS files")
+    (synopsis "Python library to read from and write to FITS files")
     (description
      "This package provides a Python library for reading from and writing
 to @acronym{FITS, Flexible Image Transport System} files using the
