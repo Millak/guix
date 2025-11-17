@@ -149,6 +149,7 @@ Copyright @copyright{} 2025 Rodion Goritskov@*
 Copyright @copyright{} 2025 dan@*
 Copyright @copyright{} 2025 Noé Lopez@*
 Copyright @copyright{} 2026 David Elsing@*
+Copyright @copyright{} 2026 Nguyễn Gia Phong@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -43773,6 +43774,155 @@ like to serve.
 @end table
 @end deftp
 
+@anchor{fossil-service-type}
+@subsubheading Fossil Service
+
+@cindex Fossil service
+@cindex Fossil, forge
+@uref{https://fossil-scm.org, Fossil} is a distributed
+software configuration management system.  In addition to version control
+like Git, Fossil also supports bug tracking, wiki, forum, chat, etc.,
+all accessible via its built-in web interface.
+
+Fossil is highly reliable thanks to its robust file format based on SQLite
+with atomic transactions.  Its server is CPU, memory and bandwidth efficient
+enough run comfortably on a cheap VPS or single board computer,
+and be accessed over suboptimal connections.
+
+The following example will configure Fossil to listen on a unix socket
+behind a reverse proxy and serve repositories from a custom location.
+
+@lisp
+(service fossil-service-type
+         (fossil-configuration
+          (repository "/srv/museum")
+          (repo-list? #t)
+          (base-url "https://museum.example")
+          (socket-file "/var/run/fossil.sock")
+          (compress? #f)))
+@end lisp
+
+@deftp {Data Type} fossil-configuration
+Available @code{fossil-configuration} fields are:
+
+@table @asis
+@item @code{package} (default: @code{fossil}) (type: package)
+The Fossil package to use.
+
+@item @code{user} (default: @code{"fossil"}) (type: string)
+The user running the Fossil server.
+
+@item @code{group} (default: @code{"fossil"}) (type: string)
+The user group running the Fossil server.
+
+@item @code{log-file} (default: @code{"/var/log/fossil.log"}) (type: string)
+The path to the server's log.
+
+@item @code{repository} (default: @code{"/var/lib/fossil"}) (type: string)
+The name of the Fossil repository to be served, or a directory
+containing one or more repositories with names ending in @code{.fossil}.
+In the latter case, a prefix of the URL pathname is used to search the
+directory for an appropriate repository.  Files not matching the pattern
+@code{*.fossil*} will be served as static content.  Invoke
+@command{fossil server --help} for more information.
+
+@item @code{acme?} (default: @code{#f}) (type: boolean)
+Deliver files from the @code{.well-known} subdirectory.
+
+@item @code{base-url} (type: maybe-string)
+The URL used as the base (useful for reverse proxies)
+
+@item @code{chroot} (type: maybe-string)
+The directory to use for chroot instead of @code{repository}.
+
+@item @code{ckout-alias} (type: maybe-string)
+The @var{name} for @code{/doc/@var{name}/...} to be treated as
+@code{/doc/ckout/...}.
+
+@item @code{compress?} (default: @code{#t}) (type: boolean)
+Compress HTTP response.
+
+@item @code{create?} (default: @code{#f}) (type: boolean)
+Create a new @code{repository} if it does not already exist.
+
+@item @code{error-log-file} (type: maybe-string)
+The path for HTTP error log.
+
+@item @code{ext-root} (type: maybe-string)
+The document root for the /ext extension mechanism.
+
+@item @code{files} (type: maybe-list-of-strings)
+The glob patterns for static files.
+
+@item @code{from} (type: maybe-string)
+The path to be used as the diff baseline for the /ckout page.
+
+@item @code{jail?} (default: @code{#t}) (type: boolean)
+Whether to enter the chroot jail after dropping root privileges.
+
+@item @code{js-mode} (type: maybe-fossil-js-mode)
+How JavaScript is delivered with pages, either @code{'inline} at the end
+of the HTML file, as @code{'separate} HTTP requests, or one single HTTP
+request for all JavaScript @code{'bundled} together.  Depending on the
+needs of any given page, @code{'inline} and @code{'bundled} modes might
+result in a single amalgamated script or several, but both approaches
+result in fewer HTTP requests than the @code{'separate} mode.
+
+@item @code{https?} (default: @code{#f}) (type: boolean)
+Indicate that the requests are coming through a reverse proxy that has
+already translated HTTPS into HTTP.
+
+@item @code{ip} (type: maybe-string)
+The IP for the server to listen on.
+
+@item @code{local-authentication?} (default: @code{#f}) (type: boolean)
+Enable automatic login for requests from localhost.
+
+@item @code{localhost?} (default: @code{#f}) (type: boolean)
+Listen on @code{127.0.0.1} only.
+
+@item @code{main-menu} (type: maybe-string)
+The file whose contents is to override the repository's @code{mainmenu}
+setting.
+
+@item @code{max-latency} (type: maybe-number)
+The maximum latency in seconds for a single HTTP request.
+
+@item @code{port} (default: @code{8080}) (type: port-number)
+The port number for the server to listen on.
+
+@item @code{list-repositories?} (default: @code{#f}) (type: boolean)
+If @code{repository} is dir, URL @code{/} lists repos.
+
+@item @code{redirect-to-https?} (default: @code{#t}) (type: boolean)
+If set to @code{#f}, do not force redirects to HTTPS regardless of the
+repository setting @code{redirect-to-https}.
+
+@item @code{scgi?} (default: @code{#f}) (type: boolean)
+Accept SCGI rather than HTTP.
+
+@item @code{skin} (type: maybe-string)
+The skin label to use, overriding repository settings.
+
+@item @code{socket-file} (type: maybe-string)
+The unix-domain socket to use instead of TCP/IP.
+
+@item @code{socket-mode} (default: @code{0o640}) (type: mode-number)
+The file permissions to set for the unix socket.
+
+@item @code{th-trace?} (default: @code{#f}) (type: boolean)
+Trace TH1 execution (for debugging purposes).
+
+@item @code{tls-certificate} (type: maybe-string)
+The certicate file (@file{fullchain.pem}) with which to enable TLS
+(HTTPS) encryption.
+
+@item @code{tls-private-key} (type: maybe-string)
+The file storing the TLS private key.
+
+@end table
+
+@end deftp
 
 @node Game Services
 @subsection Game Services

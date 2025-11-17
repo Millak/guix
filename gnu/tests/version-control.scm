@@ -3,6 +3,7 @@
 ;;; Copyright © 2017-2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Christopher Baines <mail@cbaines.net>
+;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,7 +40,8 @@
   #:export (%test-cgit
             %test-git-http
             %test-gitolite
-            %test-gitile))
+            %test-gitile
+            %test-fossil))
 
 (define README-contents
   "Hello!  This is what goes inside the 'README' file.")
@@ -519,3 +521,74 @@ HTTP-PORT."
    (name "gitile")
    (description "Connect to a running Gitile server.")
    (value (run-gitile-test))))
+
+
+;;;
+;;; Fossil server.
+;;;
+
+(define %test-fossil
+  (system-test
+   (name "fossil")
+   (description "Connect to a running Fossil server.")
+   (value
+    (gexp->derivation
+     (string-append name "-test")
+     (let* ((port 8080)
+            (base-url (simple-format #f "http://localhost:~a" port))
+            (index-url (string-append base-url "/index"))
+            (os (marionette-operating-system
+                 (simple-operating-system
+                  (service dhcpcd-service-type)
+                  (service fossil-service-type
+                           (fossil-configuration
+                            (repository "/tmp/test.fossil")
+                            (base-url base-url)
+                            (create? #t)
+                            (port port))))))
+            (vm (virtual-machine (operating-system os)
+                                 (port-forwardings (list (cons port port))))))
+       (with-imported-modules '((gnu build marionette)
+                                (guix build utils))
+         #~(begin
+             (use-modules (gnu build marionette)
+                          (guix build utils)
+                          (srfi srfi-64)
+                          (srfi srfi-71)
+                          (web client)
+                          (web response))
+             (define marionette (make-marionette (list #$vm)))
+             (test-runner-current (system-test-runner #$output))
+             (test-begin #$name)
+
+             (test-assert "server running"
+               (wait-for-tcp-port #$port marionette))
+
+             (test-assert "server log file"
+               (wait-for-file "/var/log/fossil.log" marionette))
+
+             (test-assert "cloning"
+               (begin
+                 (setenv "HOME" #$output) ; fossil writes to $HOME
+                 (invoke/quiet #$(file-append fossil "/bin/fossil") "clone"
+                               "--admin-user" "alice"
+                               "--httptrace"
+                               "--verbose"
+                               #$base-url
+                               (string-append #$output "/test.fossil"))))
+
+             (test-assert "index redirect"
+               (let ((response text
+                      (http-get #$base-url #:decode-body? #t)))
+                 (and (= 302 (response-code response))
+                      (string-contains text #$index-url))))
+
+             (test-equal "index page"
+               200 (response-code (http-get #$index-url)))
+
+             (test-equal "tarball download"
+               200 (response-code
+                    (http-get (string-append #$base-url
+                                             "/tarball/test.tar.gz"))))
+
+             (test-end))))))))

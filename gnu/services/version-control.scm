@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,12 +27,14 @@
 (define-module (gnu services version-control)
   #:use-module (gnu services)
   #:use-module (gnu services base)
+  #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services web)
   #:use-module (gnu system shadow)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages admin)
   #:use-module (guix deprecation)
+  #:use-module (guix packages)
   #:use-module (guix records)
   #:use-module (guix gexp)
   #:use-module (guix store)
@@ -93,7 +96,44 @@
             gitile-configuration-footer
             gitile-configuration-nginx
 
-            gitile-service-type))
+            gitile-service-type
+
+            fossil-configuration
+            fossil-configuration-fields
+            fossil-configuration?
+            fossil-configuration-package
+            fossil-configuration-user
+            fossil-configuration-group
+            fossil-configuration-log-file
+            fossil-configuration-repository
+            fossil-configuration-acme?
+            fossil-configuration-base-url
+            fossil-configuration-chroot
+            fossil-configuration-ckout-alias
+            fossil-configuration-compress?
+            fossil-configuration-create?
+            fossil-configuration-error-log-file
+            fossil-configuration-ext-root
+            fossil-configuration-files
+            fossil-configuration-from
+            fossil-configuration-jail?
+            fossil-configuration-js-mode
+            fossil-configuration-https?
+            fossil-configuration-ip
+            fossil-configuration-local-authentication?
+            fossil-configuration-main-menu
+            fossil-configuration-max-latency
+            fossil-configuration-port
+            fossil-configuration-list-repositories?
+            fossil-configuration-redirect-to-https?
+            fossil-configuration-skin
+            fossil-configuration-socket-file
+            fossil-configuration-socket-mode
+            fossil-configuration-th-trace?
+            fossil-configuration-tls-certificate
+            fossil-configuration-tls-private-key
+
+            fossil-service-type))
 
 ;;; Commentary:
 ;;;
@@ -603,3 +643,218 @@ on the web.")
                                gitile-shepherd-service)
             (service-extension nginx-service-type
                                gitile-nginx-server-block)))))
+
+
+;;;
+;;; Fossil HTTP server.
+;;;
+
+(define (port-number? n)
+  (and (integer? n)
+       (> n 0)
+       (< n (expt 2 16))))
+
+(define (mode-number? n)
+  (and (integer? n)
+       (>= n 0)
+       (<= n #o777)))
+
+(define (fossil-js-mode? x)
+  (and (memq x '(inline separate bundled))
+       #t))
+
+(define-maybe/no-serialization number)
+(define-maybe/no-serialization string)
+(define-maybe/no-serialization list-of-strings)
+(define-maybe/no-serialization fossil-js-mode)
+
+(define-configuration/no-serialization fossil-configuration
+  (package (package fossil)
+           "The Fossil package to use.")
+  (user (string "fossil")
+        "The user running the Fossil server.")
+  (group (string "fossil")
+         "The user group running the Fossil server.")
+  (log-file (string "/var/log/fossil.log")
+            "The path to the server's log.")
+  (repository (string "/var/lib/fossil")
+              "The name of the Fossil repository to be served, or a directory
+containing one or more repositories with names ending in @code{.fossil}.
+
+In the latter case, a prefix of the URL pathname is used
+to search the directory for an appropriate repository.
+Files not matching the pattern @code{*.fossil*}
+will be served as static content.  Invoke @command{fossil server --help}
+for more information.")
+  (acme? (boolean #f)
+         "Deliver files from the @code{.well-known} subdirectory.")
+  (base-url maybe-string
+            "The URL used as the base (useful for reverse proxies)")
+  (chroot maybe-string
+          "The directory to use for chroot instead of @code{repository}.")
+  (ckout-alias maybe-string
+               "The @var{name} for @code{/doc/@var{name}/...}
+to be treated as @code{/doc/ckout/...}.")
+  (compress? (boolean #t) "Compress HTTP response.")
+  (create? (boolean #f)
+           "Create a new @code{repository} if it does not already exist.")
+  (error-log-file maybe-string "The path for HTTP error log.")
+  (ext-root maybe-string "The document root for the /ext extension mechanism.")
+  (files maybe-list-of-strings "The glob patterns for static files.")
+  (from maybe-string
+        "The path to be used as the diff baseline for the /ckout page.")
+  (jail? (boolean #t)
+         "Whether to enter the chroot jail after dropping root privileges.")
+  (js-mode maybe-fossil-js-mode
+           "How JavaScript is delivered with pages, either @code{'inline}
+at the end of the HTML file, as @code{'separate} HTTP requests,
+or one single HTTP request for all JavaScript @code{'bundled} together.
+
+Depending on the needs of any given page, @code{'inline}
+and @code{'bundled} modes might result in a single amalgamated script
+or several, but both approaches result in fewer HTTP requests
+than the @code{'separate} mode.")
+  (https? (boolean #f)
+          "Indicate that the requests are coming through a reverse proxy
+that has already translated HTTPS into HTTP.")
+  (ip maybe-string "The IP for the server to listen on.")
+  (local-authentication? (boolean #f)
+                         "Enable automatic login for requests from localhost.")
+  (localhost? (boolean #f) "Listen on @code{127.0.0.1} only.")
+  (main-menu maybe-string               ;TODO: structure
+             "The file whose contents is to override
+the repository's @code{mainmenu} setting.")
+  (max-latency maybe-number
+               "The maximum latency in seconds for a single HTTP request.")
+  (port (port-number 8080) "The port number for the server to listen on.")
+  (list-repositories? (boolean #f)
+                      "If @code{repository} is dir, URL @code{/} lists repos.")
+  (redirect-to-https? (boolean #t)
+                      "If set to @code{#f}, do not force redirects to HTTPS
+regardless of the repository setting @code{redirect-to-https}.")
+  (scgi? (boolean #f) "Accept SCGI rather than HTTP.")
+  (skin maybe-string "The skin label to use, overriding repository settings.")
+  (socket-file maybe-string
+               "The unix-domain socket to use instead of TCP/IP.")
+  (socket-mode (mode-number #o640)
+               "The file permissions to set for the unix socket.")
+  (th-trace? (boolean #f)
+             "Trace TH1 execution (for debugging purposes).")
+  (tls-certificate maybe-string
+                   "The certicate file (@file{fullchain.pem})
+with which to enable TLS (HTTPS) encryption.")
+  (tls-private-key maybe-string "The file storing the TLS private key."))
+
+(define (fossil-accounts config)
+  (match-record config <fossil-configuration> (user group)
+    (list (user-group (name group)
+                      (system? #t))
+          (user-account (name user)
+                        (group group)
+                        (system? #t)
+                        (comment "Fossil server user")
+                        (home-directory "/var/empty")
+                        (shell (file-append shadow "/sbin/nologin"))))))
+
+(define (fossil-activation config)
+  (match-record config <fossil-configuration> (user create? repository)
+    (with-imported-modules '((guix build utils))
+      #~(begin
+          (use-modules (guix build utils))
+          (let* ((pw (getpwnam #$user))
+                 (uid (passwd:uid pw))
+                 (gid (passwd:gid pw)))
+            (unless #$create? (chown #$repository uid gid)))))))
+
+(define (fossil-shepherd-service config)
+  (match-record config <fossil-configuration>
+                (package user group log-file repository acme? base-url
+                 chroot ckout-alias compress? create? error-log-file ext-root
+                 files from https? ip jail? js-mode list-repositories?
+                 local-authentication? localhost? main-menu max-latency port
+                 redirect-to-https? scgi? skin socket-file socket-mode
+                 th-trace? tls-certificate tls-private-key)
+    (shepherd-service
+     (provision '(fossil))
+     (requirement '(user-processes networking))
+     (start #~(make-forkexec-constructor
+               (list #$(file-append package "/bin/fossil")
+                     "server"
+                     #$@(if acme? '("--acme") '())
+                     #$@(if (maybe-value-set? base-url)
+                            (list "--baseurl" base-url)
+                            '())
+                     #$@(if (maybe-value-set? chroot)
+                            (list "--chroot" chroot)
+                            '())
+                     #$@(if (maybe-value-set? ckout-alias)
+                            (list "--ckout-alias" ckout-alias)
+                            '())
+                     #$@(if compress? '() '("--nocompress"))
+                     #$@(if create? '("--create") '())
+                     #$@(if (maybe-value-set? error-log-file)
+                            (list "--errorlog" error-log-file)
+                            '())
+                     #$@(if (maybe-value-set? ext-root)
+                            (list "--extroot" ext-root)
+                            '())
+                     #$@(if (maybe-value-set? files)
+                            (list  "--files" (string-join files ","))
+                            '())
+                     #$@(if (maybe-value-set? from) (list "--from" from) '())
+                     #$@(if https? '("--https") '())
+                     #$@(if jail? '() '("--nojail"))
+                     #$@(if (maybe-value-set? js-mode)
+                            (list "--jsmode" (symbol->string js-mode))
+                            '())
+                     #$@(if local-authentication? '("--localauth") '())
+                     #$@(if localhost? '("--localhost") '())
+                     #$@(if (maybe-value-set? main-menu)
+                            (list "--mainmenu" main-menu)
+                            '())
+                     #$@(if (maybe-value-set? max-latency)
+                            (list "--max-latency"
+                                  (number->string max-latency))
+                            '())
+                     #$@(if redirect-to-https? '() '("--nossl"))
+                     #$@(if scgi? '("--scgi") '())
+                     #$@(if list-repositories? '("--repolist") '())
+                     #$@(if (maybe-value-set? skin) (list "--skin" skin) '())
+                     #$@(if (maybe-value-set? socket-file)
+                            (list "--socket-name" socket-file
+                                  "--socket-mode" socket-mode
+                                  "--socket-owner"
+                                  (simple-format #f "~a:~a" user group))
+                            (list "--port"
+                                  (if (maybe-value-set? ip)
+                                      (simple-format #f "~a:~a" ip port)
+                                      (number->string port))))
+                     #$@(if th-trace? '("--th-trace") '())
+                     #$@(if (maybe-value-set? tls-certificate)
+                            (list "--cert" tls-certificate)
+                            '())
+                     #$@(if (maybe-value-set? tls-private-key)
+                            (list "--pkey" tls-private-key)
+                            '())
+                     "--user" #$user
+                     #$repository)
+               #:user #$user
+               #:group #$group
+               #:log-file #$log-file))
+     (stop #~(make-kill-destructor))
+     (documentation
+      "Run the HTTP server
+for the Fossil software configuration management system."))))
+
+(define fossil-service-type
+  (service-type
+    (name 'fossil)
+    (extensions
+     (list (service-extension account-service-type fossil-accounts)
+           (service-extension activation-service-type fossil-activation)
+           (service-extension shepherd-root-service-type
+                              (compose list fossil-shepherd-service))))
+    (description
+     "Run the HTTP server for the Fossil software configuration management
+system.  In addition to distributed version control, Fossil also supports
+bug tracking, wiki, forum, email alerts, chat, and technotes.")))
