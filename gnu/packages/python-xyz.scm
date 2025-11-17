@@ -13821,28 +13821,6 @@ functions like pickle, json or PyYAML module.")
 access resources on demand with separate accessor layer.")
     (license license:asl2.0)))
 
-(define-public python-pathlib2
-  (package
-    (name "python-pathlib2")
-    (version "2.3.7.post1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pathlib2" version))
-       (sha256
-        (base32
-         "0hf62d0lsf37vnr5fxqp5rfn85njgsr45j4rw71w10wbi6nyvq4z"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-scandir python-six))
-    (home-page "https://pypi.org/project/pathlib2/")
-    (synopsis "Object-oriented file system paths")
-    (description "The goal of pathlib2 is to provide a backport of the
-standard @code{pathlib} module which tracks the standard library module, so
-all the newest features of the standard @code{pathlib} can be used also on
-older Python versions.")
-    (license license:expat)))
-
 (define-public python-importlib-resources
   (package
     (name "python-importlib-resources")
