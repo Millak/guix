@@ -6247,19 +6247,25 @@ Wicherts, 2020).")
 (define-public r-purrr
   (package
     (name "r-purrr")
-    (version "1.0.4")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "purrr" version))
        (sha256
         (base32
-         "0m4fkd047z0p7pd0vp819h6x6n7rmrmi53kvdbjslp8wclj3f0bc"))))
+         "1crvfxqwiaiin1y5kzr2qcsd2wiaqx3hwj3mvaprygdqv7z5jgxv"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-lifecycle r-magrittr r-rlang r-vctrs))
     (native-inputs
-     (list r-knitr r-lubridate r-testthat r-tibble r-tidyselect))
+     (list r-carrier
+           r-knitr
+           r-lubridate
+           r-mirai
+           r-testthat
+           r-tibble
+           r-tidyselect))
     (home-page "https://github.com/hadley/purrr")
     (synopsis "Functional programming tools")
     (description
