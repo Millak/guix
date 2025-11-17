@@ -12403,27 +12403,6 @@ the OleFileIO module from PIL, the Python Image Library.")
 classes.  It is forked from @code{cached-property}.")
     (license license:bsd-3)))
 
-(define-public python-pypdf3
-  (package
-    (name "python-pypdf3")
-    (version "1.0.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "PyPDF3" version))
-       (sha256
-        (base32 "018hlq9q2qa96vw4j7ppq352znykldwy98h2w9qcpkvpi93sjqhc"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-tqdm))
-    (home-page "https://github.com/sfneal/PyPDF3")
-    (synopsis "Utility to read and write PDFs with Python")
-    (description "PyPDF3 is a pure-python PDF library capable of splitting,
-merging together, cropping, and transforming the pages of PDF files.  It can
-also add custom data, viewing options, and passwords to PDF files.  It can
-retrieve text and metadata from PDFs as well as merge entire files together.")
-    (license license:bsd-3)))
-
 (define-public python-pdf2image
   (package
     (name "python-pdf2image")
