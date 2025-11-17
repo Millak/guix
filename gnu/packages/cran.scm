@@ -16217,6 +16217,45 @@ quantities.")
 curve to a data matrix in arbitrary dimensions.")
    (license license:gpl2)))
 
+(define-public r-priorsense
+  (package
+    (name "r-priorsense")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "priorsense" version))
+       (sha256
+        (base32 "0rih35068kdaj68b4pg0xrl6r6gr9jiabh57kqbaja5id586rpi4"))))
+    (properties
+     '((upstream-name . "priorsense")
+       (updater-extra-native-inputs . ("r-philentropy" "r-transport"))))
+    (build-system r-build-system)
+    (propagated-inputs (list r-checkmate
+                             r-ggdist
+                             r-ggh4x
+                             r-ggplot2
+                             r-matrixstats
+                             r-posterior
+                             r-rlang
+                             r-tibble))
+    (native-inputs
+     (list r-cmdstanr
+           r-philentropy
+           r-quarto
+           r-rstan
+           r-testthat
+           r-transport
+           r-vdiffr))
+    (home-page "https://github.com/n-kall/priorsense")
+    (synopsis "Prior diagnostics and sensitivity analysis")
+    (description
+     "This package provides functions for prior and likelihood sensitivity
+analysis in Bayesian models.  It implements methods to determine the
+sensitivity of the posterior to power-scaling perturbations of the prior and
+likelihood.")
+    (license license:gpl3+)))
+
 (define-public r-prismatic
   (package
     (name "r-prismatic")
