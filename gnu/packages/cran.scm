@@ -10759,6 +10759,28 @@ interrupts and timeouts.  This provides the basis for a sandboxing
 mechanism.")
     (license license:expat)))
 
+(define-public r-sym-arma
+  (package
+    (name "r-sym-arma")
+    (version "1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "sym.arma" version))
+       (sha256
+        (base32 "13fhmgzd50mwlnz9m6nnn4arr4jdqf5h7dgli5lk08da9wx6cy69"))))
+    (properties `((upstream-name . "sym.arma")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=sym.arma")
+    (synopsis "Autoregressive and moving average symmetric models")
+    (description
+     "This package provides functions for fitting the Autoregressive and
+Moving Average Symmetric Model for univariate time series introduced by Maior
+and Cysneiros (2018), <doi:10.1007/s00362-016-0753-z>.  Fitting method:
+conditional maximum likelihood estimation.  For details see: Wei (2006), Time
+Series Analysis: Univariate and Multivariate Methods, Section 7.2.")
+    (license license:gpl2)))
+
 (define-public r-ashr
   (package
    (name "r-ashr")
