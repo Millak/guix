@@ -39137,17 +39137,19 @@ extends the lme4 package.")
 (define-public r-batchtools
   (package
     (name "r-batchtools")
-    (version "0.9.17")
+    (version "0.9.18")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "batchtools" version))
        (sha256
         (base32
-         "1rlvfk0279saf930z48g230p9z30dd7qil9aiprjn35px1advqdn"))))
+         "1kzhwz08ycx2gi23kdbqanpy4hwkykysg2pm0y9dh1jfiyzdgzs7"))))
     (build-system r-build-system)
     (properties
-     '((updater-extra-native-inputs . ("r-ranger"))))
+     '((updater-extra-native-inputs . ("r-ranger"))
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-parallelmap"))))
     (propagated-inputs
      (list r-backports
            r-base64url
@@ -39162,7 +39164,11 @@ extends the lme4 package.")
            r-stringi
            r-withr))
     (native-inputs
-     (list r-knitr r-ranger r-testthat))
+     (list r-future
+           r-knitr
+           r-profvis
+           r-ranger
+           r-testthat))
     (home-page "https://github.com/mllg/batchtools")
     (synopsis "Tools for computation on batch systems")
     (description
