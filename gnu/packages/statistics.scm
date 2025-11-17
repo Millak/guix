@@ -2536,21 +2536,38 @@ forest of trees using random inputs, for classification and regression.")
 (define-public r-robustbase
   (package
     (name "r-robustbase")
-    (version "0.99-4-1")
+    (version "0.99-6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "robustbase" version))
        (sha256
         (base32
-         "14gz260amdy60shm3bfsw214471by27yac6r66fs6rjgc7kxw7j8"))))
+         "078syd64mqlbwgzrqmm77n7ddkjnsk8ppmazf8814lms5hnc827s"))))
     (build-system r-build-system)
-    ;; FIXME: test failure
-    ;; Error in if (grepl("^Fedora", osVersion) && !is32) identical(i.a4Out,  :
-    ;; missing value where TRUE/FALSE needed
-    (arguments (list #:tests? #false))
+    (properties
+     '((updater-extra-native-inputs . ("r-cluster" "r-matrix" "r-ggplot2"))
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-ggally"))))
+    (arguments
+     (list
+      ;; Vignettes require r-ggally.
+      #:test-types '(list "tests")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; These tests require r-rrcov, leading to a dependency cycle.
+             (delete-file "tests/tmcd.R"))))))
     (native-inputs
-     (list gfortran))
+     (list gfortran
+           r-cluster
+           r-lattice
+           r-mass
+           r-matrix
+           r-reshape2
+           r-sfsmisc
+           r-xtable))
     (propagated-inputs
      (list r-deoptimr))
     (home-page "https://robustbase.r-forge.r-project.org/")
