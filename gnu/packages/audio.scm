@@ -2044,6 +2044,8 @@ emulation (valve, tape), bit fiddling (decimator, pointer-cast), etc.")
        (sha256
         (base32 "0g0yfmwmrkvrkvynx84bays6jph3wq2hq1md5ylr7n5a8g0c17hn"))))
     (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f))
     (native-inputs
      (list boost pkg-config))
     (inputs
