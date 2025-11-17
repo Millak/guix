@@ -4074,23 +4074,22 @@ Observatory}.")
 (define-public python-czml3
   (package
     (name "python-czml3")
-    (version "2.3.6")
+    (version "3.0.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             ;; Maintainer of the project has been changed, see
-             ;; <https://github.com/poliastro/czml3/issues/112>.
-             (url "https://github.com/Stoops-ML/czml3")
-             (commit (string-append "v" version))))
+              ;; Maintainer of the project has been changed, see
+              ;; <https://github.com/poliastro/czml3/issues/112>.
+              (url "https://github.com/Stoops-ML/czml3")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b8zsbixa0n1zqjs497i0f3v7fr0vgj7jxqdsiqg0g5l66gq0c4f"))))
+        (base32 "0jqzhhw51q8cbgcwxdc9a5dfkxz5xs7f3x95darvslh9fdd09xgc"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-dateutil
            python-numpy
