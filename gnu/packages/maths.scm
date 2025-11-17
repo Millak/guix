@@ -3696,7 +3696,13 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
     (version "7.6.1")
     (source
       (origin
-        (inherit (package-source opencascade-occt))
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://git.dev.opencascade.org/repos/occt.git")
+              (commit
+               (string-append "V"
+                              (string-map (lambda (x) (if (eq? x #\.) #\_ x))
+                                          version)))))
         (file-name (git-file-name name version))
         (sha256
          (base32 "1cc7n4rs26lm1awwn2bijvjq9b3kz204ffnks02lrpgs7pf8yk8b")))))))
