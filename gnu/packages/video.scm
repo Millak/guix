@@ -3052,7 +3052,7 @@ To load this plugin, specify the following option when starting mpv:
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
      (inputs
-      (list mpv libdisplay-info))
+      (list mesa mpv wayland wayland-protocols))
      (native-inputs
       (list pkg-config cmake-minimal))
      (home-page "https://github.com/GhostNaN/mpvpaper")
