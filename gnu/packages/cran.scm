@@ -32827,14 +32827,17 @@ preparing, executing, and processing HTTP requests.")
 (define-public r-gmisc
   (package
     (name "r-gmisc")
-    (version "3.0.3")
+    (version "3.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Gmisc" version))
        (sha256
-        (base32 "1s8gkqg54622xhsmhl7n5pff2b6xfij111m7h3i4inzfjfmziq43"))))
-    (properties `((upstream-name . "Gmisc")))
+        (base32 "0z3hzh03vqcxrvqlg7xwcrbq7kiy1wk9pyclb1gv9waj12klq11f"))))
+    (properties
+     '((upstream-name . "Gmisc")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-greg"))))
     (build-system r-build-system)
     (propagated-inputs (list r-abind
                              r-checkmate
@@ -32852,7 +32855,11 @@ preparing, executing, and processing HTTP requests.")
                              r-stringr
                              r-xml
                              r-yaml))
-    (native-inputs (list r-dplyr r-knitr r-testthat))
+    (native-inputs (list r-boot
+                         r-dplyr
+                         r-knitr
+                         r-rms
+                         r-testthat))
     (home-page "https://gforge.se")
     (synopsis "Descriptive statistics, transition plots, and more")
     (description
