@@ -1339,7 +1339,7 @@ workspaces.
 (define-public vv
   (package
     (name "vv")
-    (version "3.1")
+    (version "3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1348,7 +1348,7 @@ workspaces.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0swx5pnv8f58p7721a02jnrvi0w84cbp6p484vvqd3yryrc1k05v"))))
+                "06vdckkczfp9yzyk6zi4jmq7q8mzs1nvyx2j13b1f1mx7sr63mii"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f ; no tests.
@@ -1375,19 +1375,33 @@ workspaces.
                                      "/lib/libpoppler-glib.so"
                                      "\"")))))
                (replace 'install
-                 (lambda* (#:key outputs #:allow-other-keys)
+                 (lambda _
                    ;; The provided installer doesn't have:
                    ;; install(TARGETS vv DESTINATION bin)
                    ;; So nothing would have been installed.
-                   (install-file "vv"
-                                 (string-append (assoc-ref outputs "out")
-                                                "/bin")))))))
+                   (install-file "vv" (string-append #$output "/bin")))))))
     (native-inputs
-     (list pkg-config gcc-14))
+     (list pkg-config))
     (inputs
-     (list cairo openexr libheif libjpeg-turbo libjxl-0.10 lcms libpng libraw
-           librsvg libsixel libtiff libwebp zlib
-           aklomp-base64 stb-image poppler))
+     (list aklomp-base64
+           cairo
+           lcms
+           libexif
+           libheif
+           libjpeg-turbo
+           libjxl
+           libpng
+           libraw
+           librsvg
+           libsixel
+           libtiff
+           libwebp
+           lz4
+           openexr
+           poppler
+           pugixml
+           stb-image
+           zlib))
     (synopsis "Image viewer for the terminal")
     (description "This package provides a color-correct image viewer for the
 terminal.  Your terminal should support the Kitty Graphics protocol.  If it
