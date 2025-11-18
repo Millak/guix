@@ -22207,43 +22207,6 @@ datasets to ascertain that it achieves high sensitivity and specificity in
 multiple experimental contexts.")
     (license license:expat)))
 
-(define-public vbz-compression
-  (package
-    (name "vbz-compression")
-    (version "1.0.13")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/nanoporetech/vbz_compression/")
-             (commit version)
-             ;; We include the streamvbyte sources
-             (recursive? #true)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1jf5i5v0h58s7w6rhgi4w1vvxnk9jzbgmiic14d48ngr204m0w5c"))))
-    (build-system cmake-build-system)
-    (arguments
-     `(#:configure-flags
-       '("-DENABLE_CONAN=OFF"
-         ;; Python things aren't even installed, so we might as well
-         ;; disable building them.
-         "-DENABLE_PYTHON=OFF")))
-    (inputs
-     (list ;("hdf5" ,hdf5-1.10)
-           `(,zstd "lib")))
-    (native-inputs
-     (list googlebenchmark))
-    (home-page "https://github.com/nanoporetech/vbz_compression/")
-    (synopsis "VBZ compression plugin for nanopore signal data")
-    (description
-     "VBZ Compression uses variable byte integer encoding to compress
-nanopore signal data.  The performance of VBZ is achieved by taking
-advantage of the properties of the raw signal and therefore is most
-effective when applied to the signal dataset.")
-    (license license:mpl2.0)))
-
 (define-public tbsp
   (let ((commit "dc30c03868233c5504299c9cb0d7b2064ba9cb41")
         (revision "2"))
