@@ -32748,14 +32748,19 @@ and manipulating sets of ontological terms.")
 (define-public r-gargle
   (package
     (name "r-gargle")
-    (version "1.5.2")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gargle" version))
        (sha256
         (base32
-         "00ch0ddysva3dbs6wsybgy76j3f2ib6iypdg9f5ic2mmdq2fnnsa"))))
+         "1rpndbdpsmshhgz6p7rqqqrw7im4y8ijx47izy17g4ddq8ikz8z4"))))
+    (properties
+     ;; Avoid dependency cycles.
+     '((updater-ignored-native-inputs
+        . ("r-googledrive" "r-googlesheets4"))
+       (updater-extra-native-inputs . ("r-sodium"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -32769,7 +32774,11 @@ and manipulating sets of ontological terms.")
            r-rlang
            r-withr))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-devtools
+           r-knitr
+           r-sodium
+           r-spelling
+           r-testthat))
     (home-page "https://gargle.r-lib.org")
     (synopsis "Utilities for working with Google APIs")
     (description
