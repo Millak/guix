@@ -29080,28 +29080,29 @@ data, fixed and random effects with bootstrapping.")
 (define-public r-glmmtmb
   (package
     (name "r-glmmtmb")
-    (version "1.1.11")
+    (version "1.1.13")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "glmmTMB" version))
        (sha256
         (base32
-         "0qkwskjb5ciwj1pcfgrpxhna1f7l9mbzgls72kvcd8i7y11mpl1c"))))
+         "02yy3krqz96hbfprxi1c7hz55f1qjdfg53mpg0ckfnr3yig0k51a"))))
     (properties `((upstream-name . "glmmTMB")))
     (build-system r-build-system)
-    ;; TODO: tests take forever and eventually the build times out.
-    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-lme4
            r-matrix
            r-mgcv
            r-nlme
            r-numderiv
+           r-pbkrtest
            r-rcppeigen
            r-reformulas
+           r-sandwich
            r-tmb))
     (native-inputs
+     ;; The importer adds too many packages here.
      (list r-knitr r-rmarkdown r-testthat)) ; for vignettes
     (home-page "https://github.com/glmmTMB")
     (synopsis "Generalized linear mixed models")
