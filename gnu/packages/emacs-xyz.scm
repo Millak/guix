@@ -11516,14 +11516,14 @@ by a query, so both a link can refer to several mails.")
 (define-public emacs-debbugs
   (package
     (name "emacs-debbugs")
-    (version "0.45")
+    (version "0.46")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/debbugs-"
                            version ".tar"))
        (sha256
-        (base32 "1rbj3ms2hkg0ra30y0bwzmdlcq58p15vzhin28a1rw2rmbwx5irc"))))
+        (base32 "100yshwnbk70yxah1hy0cqhva8qqh5i2pbqxi5a5j6cja2awdi38"))))
     (build-system emacs-build-system)
     (arguments
      (list
