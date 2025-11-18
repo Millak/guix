@@ -72,7 +72,7 @@
 (define-public cuirass
   (package
     (name "cuirass")
-    (version "1.3.2")
+    (version "1.3.3")
     (source
      (origin
        (method git-fetch)
@@ -82,7 +82,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0d6ngj51q3pixi2qakc6asvaigqg0cw1qvbwvpkx285zm9csx1vd"))))
+         "0zq56wdjyxnmhr93358db95cc9i7qkffk98vscjr26pb4ab3ym21"))))
     (build-system gnu-build-system)
     (arguments
      (list #:modules `((guix build utils)
