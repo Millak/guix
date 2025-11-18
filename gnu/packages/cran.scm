@@ -41638,14 +41638,14 @@ experienced.")
 (define-public r-tcltk2
   (package
     (name "r-tcltk2")
-    (version "1.2-11")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tcltk2" version))
        (sha256
         (base32
-         "1ibxld379600xx7kiqq3fck083s8psry12859980218rnzikl65d"))))
+         "0sjwhkk8i9p8d2iyj74ni6fi2mg4k04sf2l3iglirpvkx46c076w"))))
     (properties `((upstream-name . "tcltk2")))
     (build-system r-build-system)
     (inputs
