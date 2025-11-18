@@ -24344,15 +24344,17 @@ JavaScript library) and interact with the igraph package.")
 (define-public r-data-tree
   (package
     (name "r-data-tree")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "data.tree" version))
        (sha256
         (base32
-         "0qxd1g159phc6f18iddjljdg96sh09w63xqawjwbwyhg4blm9ddh"))))
-    (properties `((upstream-name . "data.tree")))
+         "08jgan7a9zaix2r0fn53qwdvm2b326bda21x4i5xdl4ahzskkfzy"))))
+    (properties
+     '((upstream-name . "data.tree")
+       (updater-ignored-native-inputs . ("r-diagrammer"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -24368,7 +24370,18 @@ JavaScript library) and interact with the igraph package.")
     (propagated-inputs
      (list r-r6 r-stringi))
     (native-inputs
-     (list r-knitr r-rmarkdown r-testthat))
+     (list r-ape
+           r-devtools
+           r-igraph
+           r-knitr
+           r-mockery
+           r-party
+           r-partykit
+           r-rmarkdown
+           r-rpart
+           r-testthat
+           r-tree
+           r-yaml))
     (home-page "https://github.com/gluc/data.tree")
     (synopsis "General purpose hierarchical data structure")
     (description
