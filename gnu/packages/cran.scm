@@ -23990,22 +23990,22 @@ and classification and regression trees.")
 (define-public r-later
   (package
     (name "r-later")
-    (version "1.4.2")
+    (version "1.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "later" version))
        (sha256
         (base32
-         "1lrllkh60hn8857hdyscmi0qj9jrsyjaz4w4ls0ykqbx4awj3yay"))))
+         "105alwfnbs2qishyir1i2bcrrfyarzshm88z96d5wgmwrn1w1khq"))))
     (properties
-     ;; Not packaged and not needed.
-     '((updater-extra-native-inputs . ("r-nanonext"))))
+     ;; Avoid a dependency cycle.
+     '((updater-ignored-native-inputs . ("r-nanonext"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-rlang))
     (native-inputs
-     (list r-knitr r-r6 r-testthat))
+     (list r-knitr r-testthat))
     (home-page "https://github.com/r-lib/later")
     (synopsis "Utilities for delaying function execution")
     (description
