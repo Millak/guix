@@ -64,40 +64,6 @@ LibTMCG provides the first practical implementation of such protocols.")
     (home-page "https://www.nongnu.org/libtmcg/")
     (license license:gpl2+)))
 
-(define-public dkgpg
-  (package
-    (name "dkgpg")
-    (version "1.1.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://savannah/dkgpg/dkgpg-" version
-                                  ".tar.gz"))
-              (sha256
-               (base32
-                "1hpfg7akd5icj49i03z74hp9zj0xwl90bndn0hnw0hpb8lk7qcxg"))))
-    (build-system gnu-build-system)
-    (arguments '(#:configure-flags
-                 '("--enable-silent-rules")
-                 ;; https://savannah.nongnu.org/bugs/?58772
-                 #:parallel-tests? #f))
-    (inputs (list bzip2 gmp libgcrypt libtmcg zlib))
-    (synopsis
-     "Distributed Key Generation and Threshold Cryptography for OpenPGP")
-    (description
-     "The Distributed Privacy Guard (DKGPG) implements Distributed Key
-Generation (DKG) and Threshold Cryptography for OpenPGP.  The generated public
-keys are compatible with the standard and thus can be used by any
-RFC4880-compliant application (e.g. GnuPG).  The main purposes of this
-software are distributing power among multiple parties, eliminating single
-points of failure, and increasing the difficulty of side-channel attacks on
-private key material.
-
-DKGPG consists of a bunch of simple command-line programs.  The current
-implementation is in experimental state and should NOT be used in production
-environments.")
-    (home-page "https://www.nongnu.org/dkgpg/")
-    (license license:gpl2+)))
-
 (define-public rnp
   (let ((day-of-release "2024-05-14"))
     (package
