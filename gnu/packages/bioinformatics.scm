@@ -698,49 +698,6 @@ UMIs, produce gene count or transcript compatibility count matrices, and is usef
 for many other tasks.")
     (license license:bsd-2)))
 
-(define-public cellsnp-lite
-  ;; Last release is from November 2021 and does not contain fixes.
-  (let ((commit "0885d746b0b1ea65c8ef92f8943ca7669ca9734a")
-        (revision "0"))
-    (package
-      (name "cellsnp-lite")
-      (version (git-version "1.2.2" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/single-cell-genetics/cellsnp-lite")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1qrvqgbvw6mbhpyqvqbmvv8dmyc67bsk1041cn7ib6zmd47qm444"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:configure-flags
-        #~(list (string-append "--with-htslib="
-                               #$(this-package-input "htslib")))))
-      (inputs
-       (list curl
-             htslib
-             openssl
-             zlib))
-      (native-inputs
-       (list autoconf))
-      (home-page "https://cellsnp-lite.readthedocs.io")
-      (synopsis "Pileup expresses alleles in single-cell or bulk RNA-seq data")
-      (description
-       "This package is designed to pileup the expressed alleles in
-single-cell or bulk RNA-seq data, which can be directly used for donor
-deconvolution in multiplexed single-cell RNA-seq data, particularly with other
-packages, which assigns cells to donors and detects doublets as vireo, even
-without genotyping reference.
-
-This package is the C version of the deprecated cellSNP implemented in Python.
-Compared to cellSNP, this package is more efficient with higher speed and less
-memory usage.")
-      (license license:asl2.0))))
-
 (define-public cpat
   (package
     (name "cpat")
