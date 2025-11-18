@@ -23495,7 +23495,7 @@ conflicts.")
 (define-public emacs-xelb
   (package
     (name "emacs-xelb")
-    (version "0.21")
+    (version "0.22")
     (source
      (origin
        (method git-fetch)
@@ -23505,7 +23505,7 @@ conflicts.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1xzjpbzfyb32xhsjbibv4rb4kd3rwrms6xaiag3irdralkkcvyca"))))
+         "0q6jlz9yb1ijw4pqqw9ksy1pb6qhsvslh47n9i97489qzhvms6nd"))))
     (build-system emacs-build-system)
     ;; The following functions and variables needed by emacs-xelb are
     ;; not included in emacs-minimal:
