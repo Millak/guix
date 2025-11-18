@@ -8724,18 +8724,17 @@ working with dates easy and fun.")
 (define-public r-ggpmisc
   (package
     (name "r-ggpmisc")
-    (version "0.6.1")
+    (version "0.6.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggpmisc" version))
               (sha256
                (base32
-                "1ipi8dsxql94gk9h020shbvy26arpwjqlmkplyy746vmhkc03ma8"))))
-    (properties
-     '((updater-extra-native-inputs . ("r-vdiffr"))))
+                "10mc1k72j1hnnjldigf1cb3wg3d0f21kw25zy0i3ddfdq0fxylg0"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-confintr
+     (list r-catools
+           r-confintr
            r-dplyr
            r-generics
            r-ggplot2
@@ -8745,6 +8744,7 @@ working with dates easy and fun.")
            r-mass
            r-multcomp
            r-multcompview
+           r-nlme
            r-plyr
            r-polynom
            r-quantreg
@@ -8753,7 +8753,12 @@ working with dates easy and fun.")
            r-splus2r
            r-tibble))
     (native-inputs
-     (list r-knitr r-testthat r-vdiffr))
+     (list r-broom
+           r-ggtext
+           r-knitr
+           r-robustbase
+           r-testthat
+           r-vdiffr))
     (home-page "https://www.r4photobiology.info/")
     (synopsis "Miscellaneous Extensions to @code{ggplot2}")
     (description "This package provides extensions to @code{ggplot2},
