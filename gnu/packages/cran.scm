@@ -8958,6 +8958,28 @@ analysis.")
     ;; Either version may be picked.
     (license (list license:gpl2 license:gpl3))))
 
+(define-public r-splancs
+  (package
+    (name "r-splancs")
+    (version "2.01-45")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "splancs" version))
+       (sha256
+        (base32 "1lvn9gm2n7ic4cxz255jls33kkbblrdcka87v99apskz3pbg3k4b"))))
+    (properties `((upstream-name . "splancs")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-sp))
+    (native-inputs (list gfortran))
+    (home-page "https://www.maths.lancs.ac.uk/~rowlings/Splancs/")
+    (synopsis "Spatial and space-time point pattern analysis")
+    (description
+     "The Splancs package was written as an enhancement to S-Plus for display
+and analysis of spatial point pattern data; it has been ported to R and is in
+\"maintenance mode\".")
+    (license license:gpl2+)))
+
 (define-public r-stringi
   (package
     (name "r-stringi")
