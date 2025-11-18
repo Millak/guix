@@ -55,7 +55,6 @@ gnu/packages/calcurse.scm
 gnu/packages/calendar.scm
 gnu/packages/ccache.scm
 gnu/packages/cdrom.scm
-gnu/packages/cedille.scm
 gnu/packages/certs.scm
 gnu/packages/check.scm
 gnu/packages/chemistry.scm

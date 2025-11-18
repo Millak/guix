@@ -187,7 +187,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/calcurse.scm			\
   %D%/packages/ccache.scm			\
   %D%/packages/cdrom.scm			\
-  %D%/packages/cedille.scm			\
   %D%/packages/certs.scm			\
   %D%/packages/check.scm			\
   %D%/packages/chemistry.scm			\
