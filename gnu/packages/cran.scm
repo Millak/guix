@@ -31008,17 +31008,17 @@ parametrizations of Nolan.")
 (define-public r-gsl
   (package
     (name "r-gsl")
-    (version "2.1-8")
+    (version "2.1-9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gsl" version))
        (sha256
         (base32
-         "159d782nz7fqhgcj3fa79hlmkdrqnkd0ypgzcl71kgas92zhjdpk"))))
+         "107daq63kg1p7r5f6x61f41nyhrbhg87kf35cybpsb48b88cdpjn"))))
+    (properties '((updater-extra-inputs . ("gsl"))))
     (build-system r-build-system)
-    (inputs
-     (list gsl))
+    (inputs (list gsl))
     (home-page "https://cran.r-project.org/web/packages/gsl")
     (synopsis "Wrapper for the GNU Scientific Library")
     (description
