@@ -23,6 +23,7 @@
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2024, 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -720,7 +721,7 @@ struct protoent *getprotobyname(const char *name) {
     p->p_name = \"udp\";
     p->p_proto = 17;
     p->p_aliases[0] = \"UDP\";
-  } else 
+  } else
     p = NULL;
   return p;
 }
@@ -756,7 +757,7 @@ struct servent *getservbyname(const char *name, const char *proto) {
     s->s_name = \"domain\";
     s->s_port = htons(53);
     s->s_proto = buf;
-  } else 
+  } else
     s = NULL;
   return s;
 }
