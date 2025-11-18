@@ -610,7 +610,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/rust-sources.scm			\
   %D%/packages/samba.scm			\
   %D%/packages/sagemath.scm			\
-  %D%/packages/sawfish.scm			\
   %D%/packages/scanner.scm			\
   %D%/packages/scheme.scm			\
   %D%/packages/spreadsheet.scm			\
