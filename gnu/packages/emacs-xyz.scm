@@ -9641,23 +9641,35 @@ configuration, cache, and other data.")
 (define-public emacs-standard-themes
   (package
     (name "emacs-standard-themes")
-    (version "2.2.0")
+    (version "3.0.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://elpa.gnu.org/packages/standard-themes-"
-                           version ".tar"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/protesilaos/standard-themes")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0qdld75vcfhsn2l0xips52vrlp5q7ss3973hd722h2gp1wddn5f7"))))
+        (base32 "1fv8vh67c7lpipcpmcnr0skilj29cjlc86s8m4bfwmycjzikc332"))))
     (build-system emacs-build-system)
-    (home-page "https://github.com/protesilaos/standard-themes")
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'makeinfo
+            (lambda _ (emacs-makeinfo))))))
+    (propagated-inputs
+     (list emacs-modus-themes))
+    (native-inputs (list texinfo))
+    (home-page "https://protesilaos.com/emacs/standard-themes")
     (synopsis "Like the default Emacs theme but more consistent")
     (description
      "The standard-themes are a pair of light and dark themes for GNU Emacs.
 They emulate the out-of-the-box looks of Emacs (which technically do
 @emph{not} constitute a theme) while bringing to them thematic consistency,
 customizability, and extensibility.")
-    (license license:gpl3+)))
+    (license (list license:gpl3+
+                   license:fdl1.3+))))  ;GFDLv1.3+ for the manual
 
 (define-public emacs-string-inflection
   (package
