@@ -25898,14 +25898,14 @@ functions.")
 (define-public r-flextable
   (package
     (name "r-flextable")
-    (version "0.9.8")
+    (version "0.9.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "flextable" version))
        (sha256
         (base32
-         "0pvka77jg97w0fk309mpdb7qv9k3dbrzg08rq21p624c217y2wln"))))
+         "0l7qx0pgvj33hp43n1d1zqxg7p8wkxq47fzrfqm8jd968b7dmfhl"))))
     (properties
      '((updater-extra-native-inputs . ("r-broom"))))
     (build-system r-build-system)
@@ -25947,6 +25947,7 @@ functions.")
            r-uuid
            r-xml2))
     (native-inputs
+     ;; The updater adds too many packages that we don't need.
      (list r-broom r-knitr r-testthat))
     (home-page "https://davidgohel.github.io/flextable")
     (synopsis "Functions for tabular reporting")
