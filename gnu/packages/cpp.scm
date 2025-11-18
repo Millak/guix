@@ -3288,7 +3288,8 @@ validation.")
                                         "bslh_hash.t"
                                         "bslstl_deque.0[1345].t"
                                         "bslstl_queue.t"
-                                        "bslstl_stack.t")
+                                        "bslstl_stack.t"
+                                        "bslstl_string_test.t")
                                   "|")
       #:modules '((guix build cmake-build-system)
                   ((guix build gnu-build-system) #:prefix gnu:)
