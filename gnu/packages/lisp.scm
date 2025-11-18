@@ -609,50 +609,6 @@ high-level, object-oriented functional programming language.  CLISP includes
 an interpreter, a compiler, a debugger, and much more.")
     (license license:gpl2+)))
 
-(define-public confusion-mdl
-  (let* ((commit "12a055581fc262225272df43287dae48281900f5"))
-    (package
-      (name "confusion-mdl")
-      (version "0.2")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url (string-append "https://gitlab.com/emacsomancer/" name))
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "1zi8kflzvwqg97ha1sa5xjisbjs5z1mvbpa772vfxiv5ksnpxp0d"))
-                (file-name (git-file-name name version))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:tests? #f                    ; there are no tests
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (replace 'build
-             (lambda* (#:key (make-flags '()) #:allow-other-keys)
-               (apply invoke "make" "CC=gcc" make-flags)))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin")))
-                 (install-file "mdli" bin)
-                 #t))))))
-      (native-inputs
-       (list perl))
-      (inputs
-       (list libgc))
-      (synopsis "Interpreter for the MIT Design Language (MDL)")
-      (description "MDL (the MIT Design Language) is a descendant of Lisp.  It
-was originally developed in 1971 on the PDP-10 computer under the Incompatible
-Timesharing System (ITS) to provide high level language support for the
-Dynamic Modeling Group at MIT's Project MAC.  Infocom built the original
-PDP-10 Zork in MDL and their later ZIL (Zork Implementation Language) was
-based on a subset of MDL.  Confusion is a MDL interpreter that works just well
-enough to play the original mainframe Zork all the way through.")
-      (home-page "http://www.russotto.net/git/mrussotto/confusion/src/master/src/README")
-      (license license:gpl3+))))
-
 (define-public ecl
   (package
     (name "ecl")
