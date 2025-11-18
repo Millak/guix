@@ -35,35 +35,6 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages web))
 
-(define-public libtmcg
-  (package
-    (name "libtmcg")
-    (version "1.3.18")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://savannah/libtmcg/libTMCG-" version
-                                  ".tar.gz"))
-              (sha256
-               (base32
-                "179b5jx3mqs9hgsj8cfwk6x8qib60kw9szk9fkz6s1gl3v83mnyx"))))
-    (build-system gnu-build-system)
-    (arguments '(#:configure-flags '("--enable-silent-rules")))
-    (inputs (list gmp libgcrypt))
-    (synopsis
-     "C++ library for creating secure and fair online card games")
-    (description
-     "The library provides a sort of useful classes, algorithms, and
-high-level protocols to support an application programmer in writing such
-software.  The most remarkable feature is the absence of a trusted third
-party (TTP), i.e. neither a central game server nor trusted hardware
-components are necessary.
-
-The corresponding cryptographic problem, actually called Mental Poker, has
-been studied since 1979 (Shamir, Rivest, and Adleman) by many authors.
-LibTMCG provides the first practical implementation of such protocols.")
-    (home-page "https://www.nongnu.org/libtmcg/")
-    (license license:gpl2+)))
-
 (define-public rnp
   (let ((day-of-release "2024-05-14"))
     (package
