@@ -20832,6 +20832,37 @@ when asynchronous operations complete, and synchronisation primitives allow R
 to wait upon events signalled by concurrent threads.")
     (license license:gpl3+)))
 
+(define-public r-nanoparquet
+  (package
+    (name "r-nanoparquet")
+    (version "0.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "nanoparquet" version))
+       (sha256
+        (base32 "01jk8h7xkki53lyb8ja5vn5ipbaf4r0h35n14i7gm28al5hipvkq"))))
+    (properties `((upstream-name . "nanoparquet")))
+    (build-system r-build-system)
+    (native-inputs (list r-arrow
+                         r-bit64
+                         r-dbi
+                         r-duckdb
+                         r-hms
+                         r-mockery
+                         r-pillar
+                         r-processx
+                         r-spelling
+                         r-testthat
+                         r-withr))
+    (home-page "https://github.com/r-lib/nanoparquet")
+    (synopsis "Read and write Parquet files")
+    (description
+     "This package implements a self-sufficient reader and writer for flat
+Parquet files.  It can read most Parquet data types.  It can write many R data
+types, including factors and temporal types.")
+    (license license:expat)))
+
 (define-public r-nestedcv
   (package
     (name "r-nestedcv")
