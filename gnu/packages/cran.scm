@@ -53946,15 +53946,17 @@ time zone manipulations.")
 (define-public r-vroom
   (package
     (name "r-vroom")
-    (version "1.6.5")
+    (version "1.6.6")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "vroom" version))
         (sha256
           (base32
-            "0qapkgn5k9g07l48scgln8y1k6fkkzsq5la5fjfh9if9b0ga5p3v"))))
-    (properties `((upstream-name . "vroom")))
+            "1pl016hj90nk14d81i5r9w104smxnhkh6ysd0qj1dd583gqpwnw5"))))
+    (properties
+     '((upstream-name . "vroom")
+       (updater-extra-native-inputs . ("tzdata-for-tests"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -53987,7 +53989,7 @@ time zone manipulations.")
            r-tzdb
            r-vctrs
            r-withr))
-    (native-inputs (list r-knitr r-testthat tzdata-for-tests))
+    (native-inputs (list r-knitr r-spelling r-testthat tzdata-for-tests))
     (home-page "https://vroom.r-lib.org")
     (synopsis
       "Read and Write Rectangular Text Data")
