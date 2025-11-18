@@ -17553,6 +17553,35 @@ hypergeometric distributions.  In addition two random number generators of
 George Marsaglia are included.")
     (license license:gpl2+)))
 
+(define-public r-kernelshap
+  (package
+    (name "r-kernelshap")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "kernelshap" version))
+       (sha256
+        (base32 "171mick8z1rry9n1i1si3ca5ax1pasm3p1a14lg7f44xz3d2ggs0"))))
+    (properties `((upstream-name . "kernelshap")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dofuture r-foreach))
+    (native-inputs (list r-mass r-testthat))
+    (home-page "https://github.com/ModelOriented/kernelshap")
+    (synopsis "Kernel SHAP")
+    (description
+     "This package provides an efficient implementation of Kernel
+SHAP (Lundberg and Lee, 2017, <doi:10.48550/@code{arXiv.1705.07874>})
+permutation SHAP, and additive SHAP for model interpretability.  For Kernel
+SHAP and permutation SHAP, if the number of features is too large for exact
+calculations, the algorithms iterate until the SHAP values are sufficiently
+precise in terms of their standard errors.  The package integrates smoothly
+with meta-learning packages such as @code{tidymodels}, @code{caret} or
+@code{mlr3}.  It supports multi-output models, case weights, and parallel
+computations.  Visualizations can be done using the R package
+@code{shapviz}.")
+    (license license:gpl2+)))
+
 (define-public r-kknn
   (package
     (name "r-kknn")
