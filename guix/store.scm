@@ -1583,41 +1583,33 @@ is not an atomic operation.)  When CHECK-CONTENTS? is true, check the contents
 of store items; this can take a lot of time."
       (not (verify store check-contents? repair?)))))
 
-(define (run-gc server action to-delete min-freed)
-  "Perform the garbage-collector operation ACTION, one of the
-`gc-action' values.  When ACTION is `delete-specific', the TO-DELETE is
-the list of store paths to delete.  IGNORE-LIVENESS? should always be
-#f.  MIN-FREED is the minimum amount of disk space to be freed, in
-bytes, before the GC can stop.  Return the list of store paths delete,
-and the number of bytes freed."
-  (let ((s (store-connection-socket server))
-        (buffered (store-connection-output-port server)))
-    (write-value integer (operation-id collect-garbage) buffered)
-    (write-value integer action buffered)
-    (write-value store-path-list to-delete buffered)
-    (write-value boolean #f buffered)             ;ignore-liveness?
-    (write-value long-long min-freed buffered)
-    (write-value integer 0 buffered)              ;obsolete
-    ;; Obsolete `use-atime' and `max-atime' parameters.
-    (write-value integer 0 buffered)
-    (write-value integer 0 buffered)
-    (write-buffered-output server)
+(define run-gc
+  (let ((gc (operation (collect-garbage (integer action)
+                                        (store-path-list to-delete)
+                                        (boolean obsolete1)
+                                        (long-long min-freed)
+                                        (integer obsolete2)
+                                        (integer obsolete3)
+                                        (integer obsolete4))
+                       "Run the garbage collector."
+                       store-path-list long-long long-long)))
+    (lambda (server action to-delete min-freed)
+      "Perform the garbage-collector operation ACTION, one of the
+`gc-action' values.  When ACTION is `delete-specific', the TO-DELETE is the
+list of store paths to delete.  MIN-FREED is the minimum amount of disk space
+to be freed, in bytes, before the GC can stop.  Return the list of store paths
+delete, and the number of bytes freed."
+      (let-values (((paths freed obsolete5)
+                    (gc server action to-delete #f min-freed
+                        0 0 0)))
+        (unless (null? paths)
+          ;; To be on the safe side, completely invalidate both caches.
+          ;; Otherwise we could end up returning store paths that are no longer
+          ;; valid.
+          (hash-clear! (store-connection-add-to-store-cache server))
+          (hash-clear! (store-connection-add-text-to-store-cache server)))
 
-    ;; Loop until the server is done sending error output.
-    (let loop ((done? (process-stderr server)))
-      (or done? (loop (process-stderr server))))
-
-    (let ((paths    (read-value store-path-list s))
-          (freed    (read-value long-long s))
-          (obsolete (read-value long-long s)))
-      (unless (null? paths)
-        ;; To be on the safe side, completely invalidate both caches.
-        ;; Otherwise we could end up returning store paths that are no longer
-        ;; valid.
-        (hash-clear! (store-connection-add-to-store-cache server))
-        (hash-clear! (store-connection-add-text-to-store-cache server)))
-
-     (values paths freed))))
+        (values paths freed)))))
 
 (define-syntax-rule (%long-long-max)
   ;; Maximum unsigned 64-bit integer.
