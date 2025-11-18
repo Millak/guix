@@ -15652,27 +15652,6 @@ tie-resolvement is accelerated by numba.")
 2.6-3.3.")
     (license license:expat)))
 
-(define-public python-backports-csv
-  (package
-    (name "python-backports-csv")
-    (version "1.0.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "backports.csv" version))
-       (sha256
-        (base32 "0vdx5jlhs91iizc8j8l8811nqprwvdx39pgkdc82w2qkfgzxyxqj"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/ryanhiebert/backports.csv")
-    (synopsis "Backport of Python 3's csv module for Python 2")
-    (description
-     "Provides a  backport of Python 3's @code{csv} module for parsing
-comma separated values.  The API of the @code{csv} module in Python 2
-is drastically different from the @code{csv} module in Python 3.
-This is due, for the most part, to the difference between str in
-Python 2 and Python 3.")
-    (license license:psfl)))
-
 (define-public python-pyzmq
   (package
     (name "python-pyzmq")
