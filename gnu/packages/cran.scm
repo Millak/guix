@@ -55523,14 +55523,14 @@ configuration of status code, short description, and verbose message.")
 (define-public r-webmockr
   (package
     (name "r-webmockr")
-    (version "2.0.0")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "webmockr" version))
        (sha256
         (base32
-         "048skbz57f7xzg1c88j6hhpgyg4nnrx41w5wrh7lm0r71k2kaq2f"))))
+         "0l20vxiysgbmhd9jqz6fkzi1pqjypfc41r9rr80rsx8491g490vy"))))
     (properties
      '((upstream-name . "webmockr")
        (updater-extra-native-inputs . ("r-xml2"))
@@ -55539,7 +55539,6 @@ configuration of status code, short description, and verbose message.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
-           r-crul
            r-curl
            r-fauxpas
            r-jsonlite
@@ -55547,7 +55546,12 @@ configuration of status code, short description, and verbose message.")
            r-r6
            r-rlang
            r-urltools))
-    (native-inputs (list r-httr r-httr2 r-testthat r-xml2))
+    (native-inputs (list r-crul
+                         r-httr
+                         r-httr2
+                         r-testthat
+                         r-withr
+                         r-xml2))
     (home-page "https://github.com/ropensci/webmockr")
     (synopsis "Stubbing and setting expectations on HTTP Requests")
     (description
