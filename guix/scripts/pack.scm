@@ -11,7 +11,7 @@
 ;;; Copyright © 2023 Graham James Addis <graham@addis.org.uk>
 ;;; Copyright © 2023 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2024 Sebastian Dümcke <code@sam-d.com>
-;;; Copyright © 2024 Noé Lopez <noelopez@free.fr>
+;;; Copyright © 2024-2025 Noé Lopez <noelopez@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -81,7 +81,9 @@
             self-contained-appimage
 
             %formats
-            guix-pack))
+            guix-pack
+
+            wrapped-manifest))
 
 ;;; Commentary:
 
@@ -1397,6 +1399,13 @@ libfakechroot.so and related ld.so machinery as a fallback."
                          (apply wrapped-manifest-entry entry args))
                        (manifest-entry-dependencies entry)))))
 
+(define* (wrapped-manifest manifest #:rest args)
+  "Return the MANIFEST with its entries wrapped such that they are
+relocatable. Extra arguments are passed to wrapped-package."
+  (map-manifest-entries
+   (lambda (entry) (apply wrapped-manifest-entry entry args))
+   manifest))
+
 
 ;;;
 ;;; Command-line options.
@@ -1795,9 +1804,7 @@ Create a bundle of PACKAGE.\n"))
                                   ;; Note: We cannot honor '--bootstrap' here because
                                   ;; 'glibc-bootstrap' lacks 'libc.a'.
                                   (if relocatable?
-                                      (map-manifest-entries
-                                       (cut wrapped-manifest-entry <> #:proot? proot?)
-                                       manifest)
+                                      (wrapped-manifest manifest #:proot? proot?)
                                       manifest)))
                    (pack-format (assoc-ref opts 'format))
                    (extra-options (match pack-format

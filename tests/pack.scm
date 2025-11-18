@@ -3,7 +3,7 @@
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021, 2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2023 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2024 Noé Lopez <noelopez@free.fr>
+;;; Copyright © 2024-2025 Noé Lopez <noelopez@free.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -337,11 +337,13 @@
     (mlet* %store-monad
         ((guile   (set-guile-for-build (default-guile)))
          (profile -> (profile
-                      ;; When using '--appimage-extract-and-run', the dynamic
-                      ;; linker is necessary, hence glibc below.
-                      (content (packages->manifest (list hello glibc)))
-                      (hooks '())
-                      (locales? #f)))
+                       ;; When using '--appimage-extract-and-run', the dynamic
+                       ;; linker is necessary, hence glibc below.
+                       (content (wrapped-manifest
+                                 (packages->manifest (list hello glibc))))
+                       (relative-symlinks? #t)
+                       (hooks '())
+                       (locales? #f)))
          (image   (self-contained-appimage "hello-appimage" profile
                                            #:entry-point "bin/hello"
                                            #:extra-options
@@ -369,11 +371,13 @@
     (mlet* %store-monad
         ((guile   (set-guile-for-build (default-guile)))
          (profile -> (profile
-                      ;; When using '--appimage-extract-and-run', the dynamic
-                      ;; linker is necessary, hence glibc below.
-                      (content (packages->manifest (list guile-3.0 glibc)))
-                      (hooks '())
-                      (locales? #f)))
+                       ;; When using '--appimage-extract-and-run', the dynamic
+                       ;; linker is necessary, hence glibc below.
+                       (content (wrapped-manifest
+                                 (packages->manifest (list guile-3.0 glibc))))
+                       (relative-symlinks? #t)
+                       (hooks '())
+                       (locales? #f)))
          (image   (self-contained-appimage "guile-appimage" profile
                                            #:entry-point "bin/guile"
                                            #:localstatedir? #t
