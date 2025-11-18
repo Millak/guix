@@ -18,6 +18,7 @@
 ;;; Copyright © 2024 hapster <o.rojon@posteo.net>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
+;;; Copyright © 2025 James Smith <jsubuntuxp@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -699,7 +700,7 @@ devices.")
 (define-public hidapi
   (package
     (name "hidapi")
-    (version "0.14.0")
+    (version "0.15.0")
     (source
      (origin
        (method git-fetch)
@@ -708,7 +709,7 @@ devices.")
              (commit (string-append "hidapi-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "121laqsml0104d1h4hp115gp21qiqi0r9dgcaqdi9ismmq3b6yx7"))))
+        (base32 "0jzzwq2cj7zgjfdjcy50l66v4wfljpkgb6q826xkd49ndr21k8m3"))))
     (build-system gnu-build-system)
     (inputs
      (list libusb eudev))
