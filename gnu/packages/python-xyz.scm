@@ -21469,30 +21469,6 @@ application service.  It is designed to be easy to use and to avoid common
 programming errors.")
     (license license:asl2.0)))
 
-(define-public python-pykafka
-  (package
-    (name "python-pykafka")
-    (version "2.4.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pykafka" version))
-              (sha256
-               (base32
-                "1id6sr159p6aa13bxcqyr9gln8sqg1l0ddzns5iws8kk5q1p5cfv"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f)) ; XXX: needs zookeeper, kafka, etc.
-    (propagated-inputs
-     (list python-gevent python-kazoo python-tabulate))
-    (inputs
-     (list librdkafka))
-    (home-page "https://pykafka.readthedocs.io/")
-    (synopsis "Apache Kafka client for Python")
-    (description
-     "PyKafka is a client for the Apache Kafka distributed messaging system.
-It includes Python implementations of Kafka producers and consumers, which
-are optionally backed by a C extension built on librdkafka.")
-    (license license:asl2.0)))
-
 (define-public python-columnize
   (package
     (name "python-columnize")
