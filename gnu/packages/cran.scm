@@ -2652,14 +2652,16 @@ to the interface.")
 (define-public r-dbplyr
   (package
     (name "r-dbplyr")
-    (version "2.5.0")
+    (version "2.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dbplyr" version))
        (sha256
         (base32
-         "1zxw4ignzm2fzixsf6n80f44b9q7434vamy2xj4v31wlx3dmnixv"))))
+         "0g9xzc65xd68rk9f558c55s3l20vh9mvk89r74gb2zmi55m4rmcm"))))
+    (properties
+     '((updater-extra-native-inputs . ("tzdata-for-tests"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -2690,7 +2692,12 @@ to the interface.")
            r-vctrs
            r-withr))
     (native-inputs
-     (list r-knitr r-rsqlite r-testthat tzdata-for-tests))
+     (list r-bit64
+           r-knitr
+           r-rsqlite
+           r-stringr
+           r-testthat
+           tzdata-for-tests))
     (home-page "https://github.com/tidyverse/dbplyr")
     (synopsis "Dplyr back end for databases")
     (description
