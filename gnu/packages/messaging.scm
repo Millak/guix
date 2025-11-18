@@ -1934,40 +1934,6 @@ for @uref{https://torproject.org,tor} router) and many more.")
                    ;; bin/psycplay states AGPL with no version:
                    license:agpl3+))))
 
-(define-public libpsyc
-  (package
-    (name "libpsyc")
-    (version "20160913")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://www.psyced.org/files/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "14q89fxap05ajkfn20rnhc6b1h4i3i2adyr7y6hs5zqwb2lcmc1p"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list perl netcat procps))
-    (arguments
-     `(#:make-flags
-       (list "CC=gcc"
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         ;; The rust bindings are the only ones in use, the lpc bindings
-         ;; are in psyclpc.  The other bindings are not used by anything,
-         ;; the chances are high that the bindings do not even work,
-         ;; therefore we do not include them.
-         ;; TODO: Get a cargo build system in Guix.
-         (delete 'configure)))) ; no configure script
-    (home-page "https://about.psyc.eu/libpsyc")
-    (description
-     "@code{libpsyc} is a PSYC library in C which implements
-core aspects of PSYC, useful for all kinds of clients and servers
-including psyced.")
-    (synopsis "PSYC library in C")
-    (license license:agpl3+)))
-
 (define-public loudmouth
   (package
     (name "loudmouth")
