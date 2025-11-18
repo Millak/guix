@@ -324,7 +324,6 @@ gnu/packages/rrdtool.scm
 gnu/packages/ruby-xyz.scm
 gnu/packages/rust-apps.scm
 gnu/packages/sagemath.scm
-gnu/packages/sawfish.scm
 gnu/packages/scanner.scm
 gnu/packages/scheme.scm
 gnu/packages/screen.scm
