@@ -39,34 +39,3 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages base)
   #:use-module (gnu packages xorg))
-
-(define-public librep
-  (package
-    (name "librep")
-    (version "0.92.7")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://download.tuxfamily.org/librep/"
-                                  "librep_" version ".tar.xz"))
-              (sha256
-               (base32
-                "1bmcjl1x1rdh514q9z3hzyjmjmwwwkziipjpjsl301bwmiwrd8a8"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list texinfo pkg-config autoconf automake libtool))
-    (inputs
-     (list gdbm gmp libffi readline))
-    (native-search-paths
-     (list (search-path-specification
-            (variable "REP_DL_LOAD_PATH")
-            (files '("lib/rep")))))
-    (home-page "https://sawfish.fandom.com/wiki/Librep")
-    (synopsis "Lisp system for sawfish")
-    (description
-     "Librep is a dialect of Lisp, designed to be used both as an extension
-language for applications and as a general purpose programming language.  It
-was originally written to be mostly-compatible with Emacs Lisp, but has
-subsequently diverged markedly.  Its aim is to combine the best features of
-Scheme and Common Lisp and provide an environment that is comfortable for
-implementing both small and large scale systems.")
-    (license gpl2+)))
