@@ -1029,69 +1029,6 @@ and make for REPLs that start blazing fast.
 @end itemize\n")
     (license license:gpl3+)))
 
-(define-public lush2
-  (package
-    (name "lush2")
-    (version "2.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/lush/lush2/lush-"
-                           version ".tar.gz"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (substitute* "src/unix.c"
-             (("\\{ \"LUSH_DATE\", __DATE__ \\},") "")
-             (("\\{ \"LUSH_TIME\", __TIME__ \\},") ""))
-           (substitute* "src/main.c"
-             (("\" \\(built \" __DATE__ \"\\)\"") ""))
-           #t))
-       (sha256
-        (base32
-         "02pkfn3nqdkm9fm44911dbcz0v3r0l53vygj8xigl6id5g3iwi4k"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(;; We have to add these LIBS so that they are found.
-       #:configure-flags (list "LIBS=-lz"
-                               "X_EXTRA_LIBS=-lfontconfig"
-                               "--with-x")
-       #:tests? #f)) ; No make check.
-    (native-inputs (list intltool))
-    (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("sdl" ,sdl)
-       ("sdl-image" ,sdl-image)
-       ("sdl-mixer" ,sdl-mixer)
-       ("sdl-net" ,sdl-net)
-       ("sdl-ttf" ,sdl-ttf)
-       ("libxft" ,libxft)
-       ("fontconfig" ,fontconfig)
-       ("gsl" ,gsl)
-       ("openblas" ,openblas)
-       ("glu" ,glu)
-       ("mesa" ,mesa)
-       ("mesa-utils" ,mesa-utils)
-       ("binutils" ,binutils)
-       ("libiberty" ,libiberty)
-       ("readline" ,readline)
-       ("zlib" ,zlib)
-       ("gettext-minimal" ,gettext-minimal)))
-    (synopsis "Lisp Universal Shell")
-    (description
-     "Lush is an object-oriented Lisp interpreter/compiler with features
-designed to please people who want to prototype large numerical
-applications.  Lush includes an extensive library of
-vector/matrix/tensor manipulation, numerous numerical libraries
-(including GSL, LAPACK, and BLAS), a set of graphic functions, a
-simple GUI toolkit, and interfaces to various graphic and multimedia
-libraries such as OpenGL, SDL, Video4Linux, and ALSA (video/audio
-grabbing), and others.  Lush is an ideal frontend script language for
-programming projects written in C or other languages.  Lush also has
-libraries for Machine Learning, Neural Nets and statistical estimation.")
-    (home-page "https://lush.sourceforge.net/")
-    (license license:lgpl2.1+)))
-
 (define-public picolisp
   (package
     (name "picolisp")
