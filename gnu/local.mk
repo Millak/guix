@@ -1808,7 +1808,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/lirc-reproducible-build.patch		\
   %D%/packages/patches/llvm-13-gcc-14.patch			\
   %D%/packages/patches/lm-sensors-hwmon-attrs.patch		\
-  %D%/packages/patches/lsh-fix-x11-forwarding.patch		\
   %D%/packages/patches/lsof-compat-linux-6.9.patch		\
   %D%/packages/patches/lsof-fatal-test-failures.patch		\
   %D%/packages/patches/lua-CVE-2014-5461.patch                      \

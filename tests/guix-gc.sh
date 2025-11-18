@@ -65,7 +65,7 @@ guix gc --delete "$drv"
 test ! -f "$drv"
 
 # Add a .drv, register it as a root.
-drv="`guix build --root=guix-gc-root lsh -d`"
+drv="`guix build --root=guix-gc-root hello -d`"
 test -f "$drv" && test -L guix-gc-root
 
 guix gc --list-roots | grep "$PWD/guix-gc-root"
