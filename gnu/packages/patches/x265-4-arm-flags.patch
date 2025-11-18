@@ -1,0 +1,37 @@
+Fix build flags for ARMv7.
+
+Taken from Debian:
+https://salsa.debian.org/multimedia-team/x265/-/blob/master/debian/patches/0001-Fix-arm-flags.patch
+
+and adapted for x265_4.1.
+
+From: Sebastian Ramacher <sramacher@debian.org>
+Date: Wed, 26 Apr 2017 22:05:06 +0200
+Subject: Fix arm* flags
+
+---
+ source/CMakeLists.txt | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+--- x265_4.1/source/CMakeLists.txt
++++ x265_4.1/source/CMakeLists.txt
+@@ -80,7 +80,7 @@
+     endif()
+ 	message(STATUS "Detected ARM target processor")
+     set(ARM 1)
+-    add_definitions(-DX265_ARCH_ARM=1 -DHAVE_ARMV6=1)
++    add_definitions(-DX265_ARCH_ARM=1)
+ elseif(ARM64MATCH GREATER "-1")
+     message(STATUS "Detected ARM64 target processor")
+     set(ARM64 1)
+@@ -274,10 +274,7 @@
+     elseif(ARM)
+         find_package(Neon)
+         if(CPU_HAS_NEON)
+-            set(ARM_ARGS -mcpu=native -mfloat-abi=hard -mfpu=neon -marm -fPIC)
+             add_definitions(-DHAVE_NEON)
+-        else()
+-            set(ARM_ARGS -mcpu=native -mfloat-abi=hard -mfpu=vfp -marm)
+         endif()
+     endif()
+     if(ARM64)

@@ -1281,6 +1281,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ffmpeg-jami-remove-mjpeg-log.patch	\
   %D%/packages/patches/ffmpeg-jami-screen-sharing-x11-fix.patch	\
   %D%/packages/patches/ffmpeg-4-binutils-2.41.patch	\
+  %D%/packages/patches/ffmpeg-svt-av1-v3.patch			\
   %D%/packages/patches/fgallery-also-look-for-7z.patch		\
   %D%/packages/patches/fifengine-boost-compat.patch		\
   %D%/packages/patches/fifengine-python-3.9-compat.patch	\
@@ -2470,6 +2471,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/wordnet-CVE-2008-3908-pt2.patch			\
   %D%/packages/patches/wpa-supplicant-dbus-group-policy.patch		\
   %D%/packages/patches/x265-arm-flags.patch			\
+  %D%/packages/patches/x265-4-arm-flags.patch			\
   %D%/packages/patches/xdg-desktop-portal-disable-portal-tests.patch\
   %D%/packages/patches/xdg-desktop-portal-disable-configuration-search-exit.patch\
   %D%/packages/patches/xdg-desktop-portal-wlr-harcoded-length.patch\

@@ -11,7 +11,7 @@
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2016 Dmitry Nikolaev <cameltheman@gmail.com>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2016, 2018, 2019, 2020, 2021 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2016, 2018-2021, 2025 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2016, 2024, 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2017 Feng Shu <tumashu@163.com>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -134,6 +134,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages bittorrent)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages check)
@@ -191,6 +192,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages ninja)
   #:use-module (gnu packages ocr)
   #:use-module (gnu packages openkinect)
   #:use-module (gnu packages pcre)
@@ -1427,6 +1429,21 @@ on the Invidious instances only as a fallback method.")
     (description "x265 is a H.265 / HEVC video encoder application library,
 designed to encode video or images into an H.265 / HEVC encoded bitstream.")
     (license license:gpl2+)))
+
+(define-public x265-4
+  (package/inherit x265
+    (version "4.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://bitbucket.org/multicoreware/x265_git"
+                            "/downloads/x265_" version ".tar.gz"))
+        (sha256
+         (base32 "0acgmzbpjhwapxggx0h40m4lppk5vykydrai055vf1lqm339j5m3"))
+        (patches (search-patches "x265-4-arm-flags.patch"))
+        (modules '((guix build utils)))
+        (snippet '(begin
+                    (delete-file-recursively "source/compat/getopt")))))))
 
 (define-public libass
   (package
@@ -5028,10 +5045,89 @@ specifications.")
 Content System specification.")
     (license license:lgpl2.1+)))
 
+;;; Custom ffmpeg package used by Handbrake, which incorporates custom
+;;; patches.  Modification include APIs that have not been upstreamed.
+(define ffmpeg-handbrake
+  (let ((ffmpeg ffmpeg))
+    (hidden-package
+     (package
+       (inherit ffmpeg)
+       (version "7.1.1")
+       (source
+        (origin
+          (method url-fetch)
+          (uri (string-append "https://ffmpeg.org/releases/ffmpeg-"
+                              version ".tar.bz2"))
+          (sha256
+           (base32
+            "1fj3y70cfzh9z33l62zxdb8a2kdvynncn1y09w0ix83r2pqs538c"))
+          (patches (search-patches "ffmpeg-svt-av1-v3.patch"))))
+       (inputs (modify-inputs (package-inputs ffmpeg)
+                 (append zimg)
+                 (replace "svt-av1" svt-av1-3)))
+       (arguments
+        (substitute-keyword-arguments (package-arguments ffmpeg)
+          ((#:configure-flags flags)
+           #~(append #$flags
+                     (list "--enable-gpl"
+                           "--disable-doc"
+                           "--disable-programs"
+                           "--disable-avdevice"
+                           "--disable-network"
+                           "--disable-postproc"
+                           "--enable-libzimg")))
+          ((#:phases phases)
+           #~(modify-phases #$phases
+               (add-after 'unpack 'apply-handbrake-patches
+                 (lambda _
+                   (mkdir-p "/tmp/handbrake")
+                   (with-directory-excursion "/tmp/handbrake"
+                     (invoke "tar" "xf" #$(package-source handbrake)
+                             (string-append "HandBrake-"
+                                            #$(package-version handbrake)
+                                            "/contrib/ffmpeg")))
+                   (for-each
+                    (lambda (patch)
+                      (invoke "patch" "--force" "--no-backup-if-mismatch"
+                              "-p1" "--input" patch))
+                    (find-files "/tmp/handbrake" "\\.patch$"))))))))))))
+
+;;; Custom x265 package used by Handbrake, which incorporates custom patches.
+;;; Modification include APIs that have not been upstreamed.
+(define x265-handbrake
+  (let ((x265 x265-4))
+    (hidden-package
+     (package
+       (inherit x265)
+       (arguments
+        (substitute-keyword-arguments (package-arguments x265)
+          ((#:phases phases)
+           #~(modify-phases #$phases
+               (add-after 'unpack 'apply-handbrake-patches
+                 (lambda _
+                   (let ((patchdir "/tmp/hanbrake"))
+                     (mkdir-p patchdir)
+                     (with-directory-excursion patchdir
+                       (invoke "tar" "xf" #$(package-source handbrake)
+                               (string-append "HandBrake-"
+                                              #$(package-version handbrake)
+                                              "/contrib/x265")))
+                     (for-each
+                      (lambda (patch)
+                        (unless (or (string-suffix?
+                                     "A06-Update-version-strings.patch"
+                                     patch)
+                                    (string-suffix?
+                                     "A08-Fix-inconsistent-bitrate-in-second-pass.patch"
+                                     patch))
+                          (invoke "patch" "--force" "--no-backup-if-mismatch"
+                                  "-p1" "--input" patch)))
+                      (find-files patchdir "\\.patch$")))))))))))))
+
 (define-public handbrake
   (package
     (name "handbrake")
-    (version "1.5.1")
+    (version "1.10.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/HandBrake/HandBrake/"
@@ -5039,86 +5135,69 @@ Content System specification.")
                                   "HandBrake-" version "-source.tar.bz2"))
               (sha256
                (base32
-                "1w1hjj6gvdydypw4mdn281w0x163is59cfm7k6bq371hsl3gx69r"))
+                "1nzqlpzgmkzs85c9lglqxj2z27p7c26w54kv20j6rhygz321qpn6"))
               (modules '((guix build utils)))
               (snippet
-               ;; Remove "contrib" and source not necessary for
-               ;; building/running under a GNU environment.
                '(begin
                   (for-each delete-file-recursively
-                            '("contrib" "macosx" "win")) ; 540KiB, 11MiB, 5.9MiB resp.
-                  (substitute* "make/include/main.defs"
-                    ;; Disable unconditional inclusion of "contrib" libraries
-                    ;; (ffmpeg, libvpx, libdvdread, libdvdnav, and libbluray),
-                    ;; which would lead to fetching and building of these
-                    ;; libraries.  Use our own instead.
-                    (("MODULES \\+= contrib") "# MODULES += contrib"))))))
-    (build-system  glib-or-gtk-build-system)
+                            ;; Remove source not needed for building/running
+                            ;; under a GNU environment.
+                            '("macosx" "win")))))) ; 11MiB, 5.9MiB resp.
+    (build-system glib-or-gtk-build-system)
     (native-inputs
-     `(("automake" ,automake)           ; GUI subpackage must be bootstrapped
-       ("autoconf" ,autoconf)
-       ("intltool" ,intltool)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-2)))           ; For configuration
+     (list autoconf
+           automake
+           intltool
+           libtool
+           meson
+           ninja
+           pkg-config
+           python))                     ; For configuration
     (inputs
-     `(("bzip2" ,bzip2)
-       ("dbus-glib" ,dbus-glib)
-       ("ffmpeg" ,ffmpeg-4)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("glib" ,glib)
-       ("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("gtk+" ,gtk+)
-       ("jansson" ,jansson)
-       ("lame" ,lame)
-       ("libass" ,libass)
-       ("libbluray" ,libbluray)
-       ("libdav1d" ,dav1d)
-       ("libdvdnav" ,libdvdnav)
-       ("libdvdread" ,libdvdread)
-       ("libgudev" ,libgudev)
-       ("libjpeg-turbo" ,libjpeg-turbo)
-       ("libmpeg2" ,libmpeg2)
-       ("libnotify" ,libnotify)
-       ("libnuma" ,numactl)
-       ("libogg" ,libogg)
-       ("libopus" ,opus)
-       ("libsamplerate" ,libsamplerate)
-       ("libtheora" ,libtheora)
-       ("libvorbis" ,libvorbis)
-       ("libvpx" ,libvpx)
-       ("libxml2" ,libxml2)
-       ("libx264" ,libx264)
-       ("speex" ,speex)
-       ("x265" ,x265)
-       ("zimg" ,zimg)
-       ("zlib" ,zlib)))
+     (list bzip2
+           dav1d
+           dbus-glib
+           ffmpeg-handbrake
+           fontconfig
+           freetype
+           glib
+           gstreamer
+           gst-plugins-base
+           gtk
+           jansson
+           lame
+           libass
+           libbluray
+           libdvdnav
+           libdvdread
+           libgudev
+           libjpeg-turbo
+           libmpeg2
+           libnotify
+           libogg
+           libsamplerate
+           libtheora
+           libvorbis
+           libvpx
+           libxml2
+           libx264
+           numactl
+           opus
+           speex
+           svt-av1-3
+           x265-handbrake
+           zimg
+           zlib))
     (arguments
      `(#:tests? #f             ;tests require Ruby and claim to be unsupported
        #:configure-flags
-       (list "--disable-gtk-update-checks"
-             "--disable-nvenc"
+       (list "--disable-nvenc"
              (string-append "CPPFLAGS=-I"
                             (assoc-ref %build-inputs "libxml2")
                             "/include/libxml2")
              "LDFLAGS=-lx265")
        #:phases
        (modify-phases %standard-phases
-         (replace 'bootstrap
-           ;; Run bootstrap ahead of time so that shebangs get patched.
-           (lambda _
-             (setenv "CONFIG_SHELL" (which "sh"))
-             ;; Patch the Makefile so that it doesn't bootstrap again.
-             (substitute* "gtk/module.rules"
-               ((".*autoreconf.*") ""))
-             (with-directory-excursion "gtk"
-               (invoke "autoreconf" "-fiv"))))
-         (add-before 'configure 'patch-SHELL
-           (lambda _
-             (substitute* "gtk/po/Makefile.in.in"
-               (("SHELL = /bin/sh") "SHELL = @SHELL@"))))
          (add-before 'configure 'relax-reqs
            (lambda _
              (substitute* "make/configure.py"
@@ -5138,7 +5217,20 @@ Content System specification.")
                (apply invoke "./configure"
                       (string-append "--prefix=" out)
                       (or configure-flags '())))))
-         (add-after 'configure 'chdir-build
+         (add-after 'configure 'disable-contrib
+           (lambda _
+             (begin
+               (substitute* "make/include/main.defs"
+                 ;; Disable unconditional inclusion of "contrib" libraries
+                 ;; (ffmpeg, libvpx, libdvdread, libdvdnav, and libbluray),
+                 ;; which would lead to fetching and building of these
+                 ;; libraries.  Use our own instead.
+                 (("MODULES \\+= contrib" &) (string-append "# " &)))
+               (substitute* "gtk/meson.build"
+                 ;; Disable unconditional inclusion of "contrib" headers
+                 (("^(hb_incdirs = .*),[^,]+'contrib/include'(.*)" _ < >)
+                  (string-append < >))))))
+         (add-before 'build 'chdir-build
            (lambda _ (chdir "./build"))))))
     (home-page "https://handbrake.fr")
     (synopsis "Video transcoder")
@@ -6424,6 +6516,19 @@ applications with high performance requirements.  It mainly targets
 Intel-compatible CPUs (x86), but has limited support for other architectures.")
     (home-page "https://gitlab.com/AOMediaCodec/SVT-AV1")
     (license license:bsd-2)))
+
+(define-public svt-av1-3
+  (package/inherit svt-av1
+    (version "3.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/AOMediaCodec/SVT-AV1.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "svt-av1" version))
+       (sha256
+        (base32 "1ifvf4lmv92w87zc8si96rpcapn330iwkwywq7ysgql2vk2mqapw"))))))
 
 (define-public svt-vp9
   (package
