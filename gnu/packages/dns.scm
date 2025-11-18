@@ -1080,7 +1080,7 @@ LuaJIT, both a resolver library and a daemon.")
 (define-public hnsd
    (package
      (name "hnsd")
-     (version "1.0.0")
+     (version "2.0.0")
      (source (origin
                (method git-fetch)
                (uri (git-reference
@@ -1088,28 +1088,22 @@ LuaJIT, both a resolver library and a daemon.")
                      (commit (string-append "v" version))))
                (sha256
                 (base32
-                 "1kdgff8rf8gmvwz2p758ilbjxpvz4xm6z41pa5353asg6xb853bb"))
+                 "1pqpf9vz1d01873wvkdnmsj9y2qrk8fka4c636qipsjv6ar2ply0"))
                (file-name (git-file-name name version))
                (modules '((guix build utils)))
                (snippet
                 '(begin
                    ;; Delete the bundled copy of libuv.
                    (delete-file-recursively "uv")
-                   (substitute* "configure.ac"
-                     (("AC_CONFIG_SUBDIRS\\(\\[uv\\]\\)") ""))
                    (substitute* "Makefile.am"
                      (("SUBDIRS = uv") "\n")
                      (("\\$\\(top_builddir\\)/uv/libuv.la") "-luv")
-
-                     ;; Make sure the 'hnsd' binary is installed and
-                     ;; dynamically-linked.
-                     (("noinst_PROGRAMS") "bin_PROGRAMS")
-                     (("hnsd_LDFLAGS = -static") ""))
+                     ;; Make sure the 'hnsd' binary is dynamically-linked.
+                     (("^hnsd_LDFLAGS = -static") "\n"))
 
                    ;; This script tries to chdir to "uv" and doesn't do more
                    ;; than "autoreconf" so remove it.
-                   (delete-file "autogen.sh")
-                   #t))))
+                   (delete-file "autogen.sh")))))
      (build-system gnu-build-system)
      (arguments
       '(#:configure-flags '("--disable-static"))) ;no need for libhsk.a
@@ -1117,7 +1111,7 @@ LuaJIT, both a resolver library and a daemon.")
       (list autoconf automake libtool))
      (inputs
       (list unbound libuv))
-     (home-page "https://www.handshake.org/")
+     (home-page "https://handshake.org/")
      (synopsis "Resolver daemon for the Handshake naming protocol")
      (description
       "@command{hnsd} is a @dfn{host name resolver} for the Handshake Naming
