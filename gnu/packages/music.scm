@@ -4314,14 +4314,14 @@ websites such as Libre.fm.")
 (define-public beets
   (package
     (name "beets")
-    (version "2.3.1")
+    (version "2.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "beets" version))
        (sha256
         (base32
-         "04jp9mwfsh5qj0d9h6i720ji3b7q720rwgddsl39my2al4hqfnc7"))))
+         "18p93p4sy6zxaa957v10irzagiilmhmlg7q82rjz5g2gh1qgvvkz"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4330,6 +4330,11 @@ websites such as Libre.fm.")
           (add-after 'unpack 'set-HOME
             (lambda _
               (setenv "HOME" (string-append (getcwd) "/tmp"))))
+          (add-after 'unpack 'skip-tests-that-need-internet
+            (lambda _
+              (substitute* "test/test_importer.py"
+                (("^([ \t]+)(def test_merge_duplicate_album\\(self\\):)" _ indentation rest)
+                  (string-append indentation "@pytest.mark.skip()\n" indentation rest)))))
           ;; Wrap the executable, so it can find python-gi (aka
           ;; pygobject) and gstreamer plugins.
           (add-after 'wrap 'wrap-typelib
