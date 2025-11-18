@@ -80,10 +80,12 @@ themselves.")
     (license gpl2+)))
 
 (define-public nettle
-  ;; This version is not API-compatible with version 2.  In particular, lsh
-  ;; cannot use it yet.  So keep it separate.
+  ;; FIXME: The "cons" in #:configure-flags is a left-over from uninheriting
+  ;; to avoid changing the derivation; it should be removed and the package
+  ;; be modernized to use gexps the next time the package definition is
+  ;; modified.
   (package
-    (inherit nettle-2)
+    (name "nettle")
     (version "3.10.1")
     (source (origin
               (method url-fetch)
@@ -92,9 +94,43 @@ themselves.")
               (sha256
                (base32
                 "0cli5lkr7h9vxrz3j9kylnsdbw2ag6x8bpgivj06xsndq1zxvz5h"))))
+    (build-system gnu-build-system)
     (arguments
-     (substitute-keyword-arguments (package-arguments nettle-2)
-       ((#:configure-flags flags)
-        ;; Build "fat" binaries where the right implementation is chosen
-        ;; at run time based on CPU features (starting from 3.1.)
-        `(cons "--enable-fat" ,flags))))))
+     `(#:configure-flags
+       (cons "--enable-fat"
+       ;; 'sexp-conv' and other programs need to have their RUNPATH point to
+       ;; $libdir, which is not the case by default.  Work around it.
+             (list (string-append "LDFLAGS=-Wl,-rpath="
+                                  (assoc-ref %outputs "out")
+                                  "/lib")))
+       #:phases (modify-phases %standard-phases
+                  (add-after 'install 'move-static-libraries
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let ((out (assoc-ref outputs "out"))
+                            (slib (string-append (assoc-ref outputs "static")
+                                                 "/lib")))
+                        (mkdir-p slib)
+                        (with-directory-excursion (string-append out "/lib")
+                          (for-each (lambda (ar)
+                                      (rename-file ar (string-append
+                                                       slib "/"
+                                                       (basename ar))))
+                                    (find-files
+                                     "."
+                                     ,(if (target-mingw?)
+                                          '(lambda (filename _)
+                                             (and (string-suffix? ".a" filename)
+                                                  (not (string-suffix? ".dll.a" filename))))
+                                          "\\.a$"))))
+                        #t))))))
+    (outputs '("out" "debug" "static"))
+    (native-inputs (list m4))
+    (propagated-inputs (list gmp))
+    (home-page "https://www.lysator.liu.se/~nisse/nettle/")
+    (synopsis "C library for low-level cryptographic functionality")
+    (description
+     "GNU Nettle is a low-level cryptographic library.  It is designed to
+fit in easily in almost any context.  It can be easily included in
+cryptographic toolkits for object-oriented languages or in applications
+themselves.")
+    (license gpl2+)))
