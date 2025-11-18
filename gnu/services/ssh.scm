@@ -42,7 +42,6 @@
   #:use-module (ice-9 vlist)
   #:export (lsh-configuration
             lsh-configuration?
-            lsh-service  ; deprecated
             lsh-service-type
 
             openssh-configuration
@@ -253,68 +252,6 @@
    (description "Run the GNU@tie{}lsh secure shell (SSH) daemon,
 @command{lshd}.")
    (default-value (lsh-configuration))))
-
-(define-deprecated (lsh-service #:key
-                      (lsh lsh)
-                      (daemonic? #t)
-                      (host-key "/etc/lsh/host-key")
-                      (interfaces '())
-                      (port-number 22)
-                      (allow-empty-passwords? #f)
-                      (root-login? #f)
-                      (syslog-output? #t)
-                      (pid-file? #f)
-                      (pid-file "/var/run/lshd.pid")
-                      (x11-forwarding? #t)
-                      (tcp/ip-forwarding? #t)
-                      (password-authentication? #t)
-                      (public-key-authentication? #t)
-                      (initialize? #t))
-  lsh-service-type
-  "Run the @command{lshd} program from @var{lsh} to listen on port @var{port-number}.
-@var{host-key} must designate a file containing the host key, and readable
-only by root.
-
-When @var{daemonic?} is true, @command{lshd} will detach from the
-controlling terminal and log its output to syslogd, unless one sets
-@var{syslog-output?} to false.  Obviously, it also makes lsh-service
-depend on existence of syslogd service.  When @var{pid-file?} is true,
-@command{lshd} writes its PID to the file called @var{pid-file}.
-
-When @var{initialize?} is true, automatically create the seed and host key
-upon service activation if they do not exist yet.  This may take long and
-require interaction.
-
-When @var{initialize?} is false, it is up to the user to initialize the
-randomness generator (@pxref{lsh-make-seed,,, lsh, LSH Manual}), and to create
-a key pair with the private key stored in file @var{host-key} (@pxref{lshd
-basics,,, lsh, LSH Manual}).
-
-When @var{interfaces} is empty, lshd listens for connections on all the
-network interfaces; otherwise, @var{interfaces} must be a list of host names
-or addresses.
-
-@var{allow-empty-passwords?} specifies whether to accept log-ins with empty
-passwords, and @var{root-login?} specifies whether to accept log-ins as
-root.
-
-The other options should be self-descriptive."
-  (service lsh-service-type
-           (lsh-configuration (lsh lsh) (daemonic? daemonic?)
-                              (host-key host-key) (interfaces interfaces)
-                              (port-number port-number)
-                              (allow-empty-passwords? allow-empty-passwords?)
-                              (root-login? root-login?)
-                              (syslog-output? syslog-output?)
-                              (pid-file? pid-file?) (pid-file pid-file)
-                              (x11-forwarding? x11-forwarding?)
-                              (tcp/ip-forwarding? tcp/ip-forwarding?)
-                              (password-authentication?
-                               password-authentication?)
-                              (public-key-authentication?
-                               public-key-authentication?)
-                              (initialize? initialize?))))
-
 
 ;;;
 ;;; OpenSSH.
