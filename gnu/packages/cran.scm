@@ -32790,14 +32790,14 @@ preparing, executing, and processing HTTP requests.")
 (define-public r-bigrquery
   (package
     (name "r-bigrquery")
-    (version "1.5.1")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bigrquery" version))
        (sha256
         (base32
-         "0wkm9xka83skq1cnv830q4jnqvwm8rlmns2mj8n692h2y5qxlmna"))))
+         "0zmny13b2g1pbrw090hqwk9xyzlakjvq07n2sby9r2xgvw8x89kb"))))
     (properties
      '((updater-extra-native-inputs . ("r-blob" "r-dbplyr"))))
     (build-system r-build-system)
@@ -32813,11 +32813,18 @@ preparing, executing, and processing HTTP requests.")
            r-httr
            r-jsonlite
            r-lifecycle
+           r-nanoparquet
            r-prettyunits
            r-rapidjsonr
            r-rlang
            r-tibble))
-    (native-inputs (list r-blob r-dbplyr r-testthat))
+    (native-inputs (list r-blob
+                         r-dbplyr
+                         r-dplyr
+                         r-hms
+                         r-testthat
+                         r-withr
+                         r-wk))
     (home-page "https://github.com/r-dbi/bigrquery")
     (synopsis "R interface to Google's BigQuery API")
     (description
