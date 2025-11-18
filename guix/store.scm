@@ -514,7 +514,7 @@ daemon.  Return a server object."
           (unless (= (protocol-major %protocol-version)
                      (protocol-major v))
             (handshake-error))
-          (unless (>= (protocol-minor v) 14) ;minor version < 14 never existed
+          (unless (>= (protocol-minor v) #x61)    ;61 was added in Jan. 2017
             (handshake-error))
 
           (write-value integer %protocol-version port)
@@ -778,18 +778,11 @@ encoding conversion errors."
     (write-value integer (operation-id set-options) buffered)
     (send (boolean keep-failed?) (boolean keep-going?)
           (boolean fallback?) (integer verbosity))
-    (when (< (store-connection-minor-version server) #x61)
-      (let ((max-build-jobs (or max-build-jobs 1))
-            (max-silent-time (or max-silent-time 3600)))
-        (send (integer max-build-jobs) (integer max-silent-time))))
     (send (boolean (if (unspecified? use-build-hook?)
                        offload?
                        use-build-hook?)))
     (send (integer build-verbosity) (integer log-type)
           (boolean print-build-trace))
-    (when (< (store-connection-minor-version server) #x61)
-      (let ((build-cores (or build-cores (current-processor-count))))
-        (send (integer build-cores))))
     (send (boolean use-substitutes?))
     (let ((pairs `(;; This option is honored by 'guix substitute' et al.
                    ,@(if print-build-trace
@@ -1355,10 +1348,7 @@ CUTOFF is the threshold above which we stop accumulating unresolved nodes."
   (let ((build (operation (build-things (string-list things)
                                         (integer mode))
                           "Do it!"
-                          boolean))
-        (build/old (operation (build-things (string-list things))
-                              "Do it!"
-                              boolean)))
+                          boolean)))
     (lambda* (store things #:optional (mode (build-mode normal)))
       "Build THINGS, a list of store items which may be either '.drv' files or
 outputs, and return when the worker is done building them.  Elements of THINGS
@@ -1382,13 +1372,8 @@ When a handler is installed with 'with-build-handler', it is called any time
                 ;; version change happened with commit 6ef61cc4c30 on the
                 ;; 2018/10/15).
                 (warn-about-old-daemon))
-              (if (>= (store-connection-minor-version store) 15)
-                  (build store things mode)
-                  (if (= mode (build-mode normal))
-                      (build/old store things)
-                      (raise (condition (&store-protocol-error
-                                         (message "unsupported build mode")
-                                         (status  1))))))))))))
+
+              (build store things mode)))))))
 
 (define-operation (ensure-path (store-path path))
   "Ensure that a path is valid.  If it is not valid, it may be made valid by
