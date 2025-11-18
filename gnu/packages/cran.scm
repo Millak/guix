@@ -10025,6 +10025,29 @@ information, see package vignette.  To quote Rene Magritte, \"Ceci n'est pas
 un pipe.\"")
     (license license:expat)))
 
+(define-public r-manipulate
+  (package
+    (name "r-manipulate")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "manipulate" version))
+       (sha256
+        (base32 "1klknqdfppi5lf6zbda3r2aqzsghabcsaxmvd3vw3cy3aa984zky"))))
+    (properties `((upstream-name . "manipulate")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=manipulate")
+    (synopsis "Interactive plots for RStudio")
+    (description
+     "This package provides interactive plotting functions for use within
+RStudio.  The @code{manipulate} function accepts a plotting expression and a
+set of controls (e.g. slider, picker, checkbox, or button) which are used to
+dynamically change values within the expression.  When a value is changed
+using its corresponding control the expression is automatically re-executed
+and the plot is redrawn.")
+    (license license:gpl2)))
+
 (define-public r-marginaleffects
   (package
     (name "r-marginaleffects")
