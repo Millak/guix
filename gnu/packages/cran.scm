@@ -39070,14 +39070,14 @@ batch correction, and data correction.")
 (define-public r-styler
   (package
     (name "r-styler")
-    (version "1.10.3")
+    (version "1.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "styler" version))
        (sha256
         (base32
-         "0hfspw1q40jqla238dw86iyf0lyk1agc19flwvf9nrm824hw5fdd"))))
+         "067yzc8gd4yic6zi4xq82gbyib01bv6sfrpiv1yh9b9f5dw611zh"))))
     (properties
      '((updater-extra-native-inputs . ("r-roxygen2"))))
     (build-system r-build-system)
@@ -39096,6 +39096,7 @@ batch correction, and data correction.")
            r-rprojroot
            r-vctrs
            r-withr))
+    ;; The importer adds dozens of packages, but these three are enough.
     (native-inputs
      (list r-knitr r-roxygen2 r-testthat))
     (home-page "https://github.com/r-lib/styler")
