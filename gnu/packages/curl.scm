@@ -433,7 +433,7 @@ sugar and output formatting inspired from @code{httpie}.")
 (define-public trurl
   (package
     (name "trurl")
-    (version "0.9")
+    (version "0.16.1")
     (source
      (origin
        (method git-fetch)
@@ -442,7 +442,7 @@ sugar and output formatting inspired from @code{httpie}.")
              (commit (string-append name "-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10gsl0fdpybfcffmgf3qww7cpw3ifczl601042a2mqmwwrlx5zj7"))))
+        (base32 "1zdq81smm9ddqcmvwpcm01nf812fr8p4g6i2raxv3s0rd3hi68sl"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -452,7 +452,7 @@ sugar and output formatting inspired from @code{httpie}.")
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure))))
-    (native-inputs (list python))
+    (native-inputs (list python-minimal perl))
     (inputs (list curl))
     (home-page "https://curl.se/trurl/")
     (synopsis "Command line tool for URL parsing and manipulation")
