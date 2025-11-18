@@ -15652,26 +15652,6 @@ tie-resolvement is accelerated by numba.")
 2.6-3.3.")
     (license license:expat)))
 
-;; the python- version can be removed with python-3.5
-(define-public python-backports-abc
-  (package
-    (name "python-backports-abc")
-      (version "0.5")
-      (source
-        (origin
-          (method url-fetch)
-          (uri (pypi-uri "backports_abc" version))
-          (sha256
-           (base32
-            "1pkv8d1zxj5f9i227dxbjczncbv7ks7ywnjwyxfjagm02i2yafq3"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/cython/backports_abc")
-    (synopsis "Backport of additions to the 'collections.abc' module")
-    (description
-     "Python-backports-abc provides a backport of additions to the
-@code{collections.abc} module in Python-3.5.")
-    (license license:psfl)))
-
 (define-public python-backports-csv
   (package
     (name "python-backports-csv")
