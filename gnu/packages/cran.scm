@@ -55354,24 +55354,29 @@ neighborhood graphs, and relatives.")
 (define-public r-crul
   (package
     (name "r-crul")
-    (version "1.5.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "crul" version))
        (sha256
         (base32
-         "17dx3qhdssk0zanp73g0d7h3imhwh9ydzs009fbrspw1s9w3fwyv"))))
-    (properties `((upstream-name . "crul")))
+         "02awbi4a5b71h2dfxqccsz99d596n588sn8dq797mbjs3gm7g3y5"))))
+    (properties
+     '((upstream-name . "crul")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-webmock"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-curl
            r-httpcode
            r-jsonlite
+           r-lifecycle
            r-mime
            r-r6
+           r-rlang
            r-urltools))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-testthat r-withr))
     (home-page "https://github.com/ropensci/crul")
     (synopsis "HTTP client")
     (description
