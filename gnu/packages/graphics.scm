@@ -41,6 +41,7 @@
 ;;; Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 James Smith <jsubuntuxp@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2946,7 +2947,7 @@ and enables interoperable use of content across the industry.")
 (define-public monado
   (package
     (name "monado")
-    (version "24.0.0")
+    (version "25.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2955,7 +2956,7 @@ and enables interoperable use of content across the industry.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ix52kr4av259g4n06338qjrlfssi1v2dnb4pfr863wbyrbb8p4l"))))
+                "0h4ivjqdj1qisgp1b49h3aqqjlrbd5najyd1vrhskdlz1yzz252p"))))
     (build-system cmake-build-system)
     (inputs
      (list ffmpeg
