@@ -53916,6 +53916,33 @@ package.")
 object to and from disk.")
     (license license:gpl3)))
 
+(define-public r-qs2
+  (package
+    (name "r-qs2")
+    (version "0.1.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "qs2" version))
+       (sha256
+        (base32 "06h3dm9hkr7g276vir955c0ynlzr82qnj0a1iy6gw8d0wqkis35d"))))
+    (properties `((upstream-name . "qs2")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp r-rcppparallel r-stringfish))
+    (native-inputs (list r-data-table r-dplyr r-knitr pkg-config r-stringi))
+    (home-page "https://github.com/qsbase/qs2")
+    (synopsis "Efficient serialization of R objects")
+    (description
+     "This package aims to streamline and accelerate the process of saving and
+loading R objects, improving speed and compression compared to other methods.
+The package provides two compression formats: the @code{qs2} format, which
+uses R serialization via the C API while optimizing compression and disk I/O,
+and the @code{qdata} format, featuring custom serialization for slightly
+faster performance and better compression.  Additionally, the @code{qs2}
+format can be directly converted to the standard RDS format, ensuring
+long-term compatibility with future versions of R.")
+    (license license:gpl3)))
+
 (define-public r-tfruns
   (package
     (name "r-tfruns")
