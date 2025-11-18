@@ -1942,7 +1942,10 @@ message bus.")
            (lambda* (#:key outputs #:allow-other-keys)
              (wrap-program (search-input-file outputs "libexec/accounts-daemon")
                '("XDG_DATA_DIRS" prefix
-                 ("/run/current-system/profile/share"))))))))
+                 ("/run/current-system/profile/share")))))
+         (delete 'check)
+         (add-after 'install 'check
+           (assoc-ref %standard-phases 'check)))))
     (native-inputs
      (list docbook-xml-4.1.2
            docbook-xsl
