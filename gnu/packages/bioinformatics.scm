@@ -22244,52 +22244,6 @@ advantage of the properties of the raw signal and therefore is most
 effective when applied to the signal dataset.")
     (license license:mpl2.0)))
 
-(define-public python-ont-fast5-api
-  (package
-    (name "python-ont-fast5-api")
-    (version "4.1.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/nanoporetech/ont_fast5_api")
-              (commit (string-append "release_" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "05zwjgdnzdrqfifhgw9rp4s22g8ysvjfhlaq9nb6p68q6mijy098"))
-       (modules '((guix build utils)))
-       (snippet
-        '(delete-file-recursively "ont_fast5_api/vbz_plugin"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-backend #~'unittest
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'copy-plugin
-            (lambda* (#:key inputs #:allow-other-keys)
-              (mkdir-p "ont_fast5_api/vbz_plugin/")
-              (install-file (string-append
-                             #$(this-package-input "vbz-compression")
-                             "/hdf5/lib/plugin/libvbz_hdf_plugin.so")
-                            "ont_fast5_api/vbz_plugin/"))))))
-    (inputs
-     (list vbz-compression))
-    (propagated-inputs
-     (list python-numpy python-h5py python-packaging python-progressbar33))
-    (native-inputs
-     (list python-setuptools
-           python-wheel))
-    (home-page "https://github.com/nanoporetech/ont_fast5_api")
-    (synopsis "Interface to HDF5 files of the Oxford Nanopore fast5 file format")
-    (description
-     "This package provides a concrete implementation of the fast5 file schema
-using the generic @code{h5py} library, plain-named methods to interact with
-and reflect the fast5 file schema, and tools to convert between
-@code{multi_read} and @code{single_read} formats.")
-    (license license:mpl2.0)))
-
 (define-public tbsp
   (let ((commit "dc30c03868233c5504299c9cb0d7b2064ba9cb41")
         (revision "2"))
