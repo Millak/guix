@@ -1284,16 +1284,6 @@ If the machine is running the OpenSSH daemon, @command{sshd}, the host
 key can be found in a file such as
 @file{/etc/ssh/ssh_host_ed25519_key.pub}.
 
-If the machine is running the SSH daemon of GNU@tie{}lsh,
-@command{lshd}, the host key is in @file{/etc/lsh/host-key.pub} or a
-similar file.  It can be converted to the OpenSSH format using
-@command{lsh-export-key} (@pxref{Converting keys,,, lsh, LSH Manual}):
-
-@example
-$ lsh-export-key --openssh < /etc/lsh/host-key.pub
-ssh-rsa AAAAB3NzaC1yc2EAAAAEOp8FoQAAAQEAs1eB46LV@dots{}
-@end example
-
 @end table
 
 A number of optional fields may be specified:
@@ -23972,75 +23962,6 @@ Here is a more complex example configuration for illustrative purposes:
 
 
 Furthermore, @code{(gnu services ssh)} provides the following services.
-@cindex SSH
-@cindex SSH server
-
-@defvar lsh-service-type
-Type of the service that runs the GNU@tie{}lsh secure shell (SSH)
-daemon, @command{lshd}.  The value for this service is a
-@code{<lsh-configuration>} object.
-@end defvar
-
-@deftp {Data Type} lsh-configuration
-Data type representing the configuration of @command{lshd}.
-
-@table @asis
-@item @code{lsh} (default: @code{lsh}) (type: file-like)
-The package object of the GNU@tie{}lsh secure shell (SSH) daemon.
-
-@item @code{daemonic?} (default: @code{#t}) (type: boolean)
-Whether to detach from the controlling terminal.
-
-@item @code{host-key} (default: @code{"/etc/lsh/host-key"}) (type: string)
-File containing the @dfn{host key}.  This file must be readable by
-root only.
-
-@item @code{interfaces} (default: @code{'()}) (type: list)
-List of host names or addresses that @command{lshd} will listen on.
-If empty, @command{lshd} listens for connections on all the network
-interfaces.
-
-@item @code{port-number} (default: @code{22}) (type: integer)
-Port to listen on.
-
-@item @code{allow-empty-passwords?} (default: @code{#f}) (type: boolean)
-Whether to accept log-ins with empty passwords.
-
-@item @code{root-login?} (default: @code{#f}) (type: boolean)
-Whether to accept log-ins as root.
-
-@item @code{syslog-output?} (default: @code{#t}) (type: boolean)
-Whether to log @command{lshd} standard output to syslogd.
-This will make the service depend on the existence of a syslogd service.
-
-@item @code{pid-file?} (default: @code{#f}) (type: boolean)
-When @code{#t}, @command{lshd} writes its PID to the file specified in
-@var{pid-file}.
-
-@item @code{pid-file} (default: @code{"/var/run/lshd.pid"}) (type: string)
-File that @command{lshd} will write its PID to.
-
-@item @code{x11-forwarding?} (default: @code{#t}) (type: boolean)
-Whether to enable X11 forwarding.
-
-@item @code{tcp/ip-forwarding?} (default: @code{#t}) (type: boolean)
-Whether to enable TCP/IP forwarding.
-
-@item @code{password-authentication?} (default: @code{#t}) (type: boolean)
-Whether to accept log-ins using password authentication.
-
-@item @code{public-key-authentication?} (default: @code{#t}) (type: boolean)
-Whether to accept log-ins using public key authentication.
-
-@item @code{initialize?} (default: @code{#t}) (type: boolean)
-When @code{#f}, it is up to the user to initialize the randomness
-generator (@pxref{lsh-make-seed,,, lsh, LSH Manual}), and to create
-a key pair with the private key stored in file @var{host-key}
-(@pxref{lshd basics,,, lsh, LSH Manual}).
-
-@end table
-@end deftp
-
 @cindex SSH
 @cindex SSH server
 @defvar openssh-service-type
@@ -48723,9 +48644,7 @@ particular operating system definition.
 @cindex service types
 Technically, developers can define @dfn{service types} to express these
 relations.  There can be any number of services of a given type on the
-system---for instance, a system running two instances of the GNU secure
-shell server (lsh) has two instances of @code{lsh-service-type}, with
-different parameters.
+system, for instance when running two instances with different parameters.
 
 The following section describes the programming interface for service
 types and services.
