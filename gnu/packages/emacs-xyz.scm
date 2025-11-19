@@ -8775,7 +8775,7 @@ and code formatting.")
 (define-public emacs-ef-themes
   (package
     (name "emacs-ef-themes")
-    (version "1.11.0")
+    (version "2.0.1")
     (source
      (origin
        (method git-fetch)
@@ -8785,15 +8785,25 @@ and code formatting.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "049wfnvw4x81k2r34znj4w4fw5xrg376y63x87gkf28vlcmdkkrs"))))
+         "0qfq9p1dvny7abx0q7gcjd1zhzvwr0w37rwphn307wcg1dqc4nzq"))))
     (build-system emacs-build-system)
-    (home-page "https://git.sr.ht/~protesilaos/ef-themes")
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'makeinfo
+            (lambda _ (emacs-makeinfo))))))
+    (propagated-inputs
+     (list emacs-modus-themes))
+    (native-inputs (list texinfo))
+    (home-page "https://protesilaos.com/emacs/ef-themes")
     (synopsis "Colorful and legible themes")
     (description
      "The Ef themes are a collection of light and dark themes for GNU Emacs
 whose goal is to provide colorful yet legible options for users who want
 something with a bit more flair than the Modus themes.")
-    (license license:gpl3+)))
+    (license (list license:gpl3+
+                   license:fdl1.3+))))
 
 (define-public emacs-doric-themes
   (package
