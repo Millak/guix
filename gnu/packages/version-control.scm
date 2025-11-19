@@ -2179,7 +2179,7 @@ subcommands helps automate some parts of the flow to make working with it a
 lot easier.")
     (license license:bsd-2)))
 
-(define-public stgit-2
+(define-public stgit
   (package
     (name "stgit")
     (version "2.5.3")
@@ -2245,7 +2245,7 @@ Features include:
 
 (define-public emacs-stgit
   (package
-    (inherit stgit-2)
+    (inherit stgit)
     (name "emacs-stgit")
     (version "0.17.1")                  ;from stgit.el
     (build-system emacs-build-system)
@@ -2264,63 +2264,11 @@ Features include:
           (add-before 'install-license-files 'leave-lisp-directory
             (lambda _
               (chdir ".."))))))
-    (inputs (list stgit-2 git))
+    (inputs (list stgit git))
     (synopsis "Emacs major mode for StGit interaction")
     (description "This package a interactive tool to interact with git
 branches using StGit.")
     (license license:gpl2+)))
-
-(define-public stgit
-  (package
-    (name "stgit")
-    (version "1.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ctmarinas/stgit")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1igljjpdgl4na1a5hi0nmg36ph0hw6hw8hhq5436fgcl8yjimyz3"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list perl))
-    (inputs
-     (list git))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'hard-code-version
-           (lambda _
-             ;; setup.py tries to cleverly extract the version number from the
-             ;; git history, which the source checkout lacks.  Hard-code one.
-             (substitute* "setup.py"
-               (("get_ver\\(\\)")
-                (format #f "'~a'" ,version)))
-             #t))
-         (add-before 'check 'patch-tests
-           (lambda _
-             (substitute* (list "t/t1900-mail.sh"
-                                "t/t7504-commit-msg-hook.sh")
-               (("/bin/sh")
-                (which "bash")))
-             #t))
-         (replace 'check
-           (lambda _
-             (invoke "make"
-                     "PERL_PATH=perl"
-                     (string-append "SHELL_PATH=" (which "bash"))
-                     "test"))))))
-    (home-page "https://stacked-git.github.io/")
-    (synopsis "Stacked Git")
-    (description
-     "StGit is a command-line application that provides functionality similar
-to Quilt (i.e., pushing/popping patches to/from a stack), but using Git
-instead of @command{diff} and @command{patch}.  StGit stores its patches in a
-Git repository as normal Git commits, and provides a number of commands to
-manipulate them in various ways.")
-    (license license:gpl2)))
 
 (define-public vcsh
   (package
