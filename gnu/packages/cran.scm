@@ -7475,29 +7475,37 @@ WebAssembly engine.")
 (define-public r-vcr
   (package
     (name "r-vcr")
-    (version "1.7.0")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "vcr" version))
        (sha256
-        (base32 "0spz4wfglj7gd3fh1cv4bc1lf98m1ialay3vzyhzb1n2fq6812k7"))))
+        (base32 "03c2pjf9za7brvbjyxl8bkmi3l6ky7z155apgqk4liwvvc8flirq"))))
     (properties '((upstream-name . "vcr")))
     (build-system r-build-system)
-    ;; Some tests require Internet access.
-    (arguments (list #:tests? #false))
-    (propagated-inputs (list r-base64enc
-                             r-crul
-                             r-httr
-                             r-httr2
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'skip-bad-tests
+           (lambda _
+             ;; These tests need Internet access.
+             (delete-file "tests/testthat/test-request_handler-crul.R"))))))
+    (propagated-inputs (list r-cli
+                             r-curl
+                             r-jsonlite
+                             r-lifecycle
                              r-r6
+                             r-rlang
                              r-rprojroot
-                             r-urltools
-                             r-webmockr
+                             r-waldo
                              r-yaml))
-    (native-inputs (list r-curl
-                         r-jsonlite
+    (native-inputs (list r-crul
+                         r-httr
+                         r-httr2
                          r-knitr
+                         r-qs2
                          r-testthat
                          r-webfakes
                          r-withr))
