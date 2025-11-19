@@ -29268,16 +29268,14 @@ ROPE percentage and pd).")
 (define-public r-performance
   (package
     (name "r-performance")
-    (version "0.14.0")
+    (version "0.15.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "performance" version))
        (sha256
         (base32
-         "1sibccf0kswv8gv8mk91593ikzkqigsj6n1bjflacihhjrpxyn1a"))))
-    (properties
-     '((updater-extra-native-inputs . ("r-dharma"))))
+         "0m9inm0yn3v46iq3iy573hf47rjbxgpqbhs9m2pb2lhf61hnj1v2"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bayestestr r-datawizard r-insight))
@@ -29285,11 +29283,16 @@ ROPE percentage and pd).")
                          r-afex
                          r-bayesfactor
                          r-betareg
+                         r-brms
+                         r-car
+                         r-correlation
                          r-dharma
                          r-dirichletreg
                          r-fixest
                          r-gamm4
+                         r-ggdag
                          r-glmmtmb
+                         r-lavaan
                          r-lme4
                          r-lmtest
                          r-mass
@@ -29297,10 +29300,12 @@ ROPE percentage and pd).")
                          r-metafor
                          r-mgcv
                          r-nlme
+                         r-nnet
                          r-nonnest2
                          r-ordinal
                          r-parameters
                          r-pscl
+                         r-psych
                          r-quantreg
                          r-rstanarm
                          r-survival
