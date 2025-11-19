@@ -8014,14 +8014,16 @@ stock assessment methods.")
 (define-public r-fixest
   (package
     (name "r-fixest")
-    (version "0.12.1")
+    (version "0.13.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fixest" version))
        (sha256
-        (base32 "1pqkwzcv8mjh00k0cl0na7izwhwsp6qpimbxmq5005vbhnwimrvw"))))
-    (properties `((upstream-name . "fixest")))
+        (base32 "08gcr8y3kqrrcylz3rc23ccaqdfxiab05k03qnc2vksxvxgy42fl"))))
+    (properties
+     '((upstream-name . "fixest")
+       (updater-extra-native-inputs . ("r-matrix"))))
     (build-system r-build-system)
     (propagated-inputs (list r-dreamerr
                              r-nlme
@@ -8031,7 +8033,8 @@ stock assessment methods.")
                              r-stringmagic))
     (native-inputs (list r-data-table
                          r-knitr
-                         r-mass))
+                         r-mass
+                         r-matrix))
     (home-page "https://lrberge.github.io/fixest/")
     (synopsis "Fast fixed-effects estimations")
     (description
