@@ -6755,29 +6755,6 @@ terms and recording programmes automatically.  It can also stream or record live
 BBC iPlayer output.")
     (license license:gpl3+)))
 
-(define-public ogmtools
-  (package
-    (name "ogmtools")
-    (version "1.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://www.bunkus.org/videotools/ogmtools/ogmtools-"
-                                  version
-                                  ".tar.bz2"))
-              (sha256
-               (base32
-                "1spx81p5wf59ksl3r3gvf78d77sh7gj8a6lw773iv67bphfivmn8"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list libvorbis libdvdread))
-    (synopsis "Information, extraction or creation for OGG media streams")
-    (description
-     "These tools allow information about (@code{ogminfo}) or extraction from
-\(@code{ogmdemux}) or creation of (@code{ogmmerge}) OGG media streams.  It
-includes @code{dvdxchap} tool for extracting chapter information from DVD.")
-    (license license:gpl2)
-    (home-page "https://www.bunkus.org/videotools/ogmtools/")))
-
 (define-public libcaption
   ;; This is the latest commit of the 'develop' branch, which corresponds to
   ;; the de facto, never-released v0.8 version that most applications using
