@@ -1384,26 +1384,20 @@ dynamic library for the C language implementation of HEALPix.")
 (define-public imppg
   (package
     (name "imppg")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/GreatAttractor/imppg")
-             (commit (string-append "v" version))))
+              (url "https://github.com/GreatAttractor/imppg")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cq7syrcclf1ykaxpjv73a30g4m8fbnqdphfs13932i0a7vgkaid"))))
+        (base32 "1fcssjpavjyvjwwbbcs2i0b0sk409hl7x8il88d7xviggfiyh1hm"))))
     (build-system cmake-build-system)
-    (arguments
-     (list
-      ;; Tests fail on i686 see:
-      ;; <https://github.com/GreatAttractor/imppg/issues/28>;
-      ;; Tests hang on any architectures see:
-      ;; <https://github.com/GreatAttractor/imppg/issues/34>.
-      #:tests? #f))
     (native-inputs
-     (list boost pkg-config))
+     (list boost
+           pkg-config))
     (inputs
      (list cfitsio
            freeimage
