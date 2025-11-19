@@ -91,6 +91,7 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages hardware)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
@@ -2962,13 +2963,18 @@ and enables interoperable use of content across the industry.")
      (list ffmpeg
            glslang
            eudev
+           hidapi
            libusb
            libxcb
            libxrandr
            mesa
+           openhmd
+           openvr
            python
            v4l-utils
-           vulkan-loader))
+           vulkan-loader
+           wayland
+           wayland-protocols))
     (native-inputs
      (list eigen pkg-config vulkan-headers))
     (home-page "https://monado.freedesktop.org/")
