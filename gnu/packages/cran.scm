@@ -21163,14 +21163,16 @@ explored with minimal deviation from the common work patterns of
 (define-public r-nanonext
   (package
     (name "r-nanonext")
-    (version "1.6.0")
+    (version "1.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "nanonext" version))
        (sha256
-        (base32 "0n2lq6czshp4r5jsrabz6al36s3d9dai8dkf80h9bskga36bfkp3"))))
-    (properties `((upstream-name . "nanonext")))
+        (base32 "1l9iagy89g5r8c1wyvm3x5al0m83nhij5490r7lnh6cphswixjvf"))))
+    (properties
+     '((upstream-name . "nanonext")
+       (updater-extra-inputs . ("mbedtls-lts" "nng"))))
     (build-system r-build-system)
     (arguments
      (list
