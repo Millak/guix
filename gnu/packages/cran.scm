@@ -6022,6 +6022,54 @@ data for species delimitation, nearest neighbor based noise detection.")
 R packages that praise their users.")
     (license license:expat)))
 
+(define-public r-probably
+  (package
+    (name "r-probably")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "probably" version))
+       (sha256
+        (base32 "1xccmyapha9vil0fqy8wxpayr1f7hwacdip9ff5v1a8lar4qgk53"))))
+    (properties `((upstream-name . "probably")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-butcher
+                             r-cli
+                             r-dplyr
+                             r-furrr
+                             r-generics
+                             r-ggplot2
+                             r-hardhat
+                             r-pillar
+                             r-purrr
+                             r-rlang
+                             r-tidyr
+                             r-tidyselect
+                             r-tune
+                             r-vctrs
+                             r-withr
+                             r-workflows
+                             r-yardstick))
+    (native-inputs (list r-knitr
+                         r-mgcv
+                         r-modeldata
+                         r-parsnip
+                         r-quantregforest
+                         r-randomforest
+                         r-recipes
+                         r-rsample
+                         r-testthat))
+    (home-page "https://github.com/tidymodels/probably")
+    (synopsis "Tools for post-processing predicted values")
+    (description
+     "Models can be improved by post-processing class probabilities, by:
+recalibration, conversion to hard probabilities, assessment of equivocal
+zones, and other activities.  The probably package contains tools for
+conducting these operations as well as calibration tools and conformal
+inference techniques for regression models.")
+    (license license:expat)))
+
 (define-public r-propcis
   (package
     (name "r-propcis")
