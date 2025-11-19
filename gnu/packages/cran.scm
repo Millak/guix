@@ -27421,13 +27421,16 @@ haven package.")
 (define-public r-ggformula
   (package
     (name "r-ggformula")
-    (version "0.12.0")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggformula" version))
        (sha256
-        (base32 "0vbpivyxms46px3wqkbl1wq199mqdxq94gsiplv4i7lz0lzghsfm"))))
+        (base32 "0q971c9zsv21dr9zwll6l0g737689xil9y9cyq4gpzadi4c850yb"))))
+    (properties
+     ;; Avoid dependency cycle.
+     '((updater-ignored-native-inputs . ("r-mosaic" "r-mosaicdata"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -27439,7 +27442,8 @@ haven package.")
              ;; dependency cycle.
              (delete-file "tests/testthat/test-layer-factory.R"))))))
     (propagated-inputs
-     (list r-ggplot2
+     (list r-ggiraph
+           r-ggplot2
            r-ggridges
            r-labelled
            r-mosaiccore
@@ -27448,7 +27452,10 @@ haven package.")
            r-stringr
            r-tibble))
     (native-inputs
-     (list r-knitr r-palmerpenguins r-testthat))
+     (list r-dplyr
+           r-palmerpenguins
+           r-quarto
+           r-testthat))
     (home-page "https://github.com/ProjectMOSAIC/ggformula/")
     (synopsis "Formula interface for the @code{r-ggplot2}")
     (description
