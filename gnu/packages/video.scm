@@ -6756,19 +6756,14 @@ BBC iPlayer output.")
     (license license:gpl3+)))
 
 (define-public libcaption
-  ;; This is the latest commit of the 'develop' branch, which corresponds to
-  ;; the de facto, never-released v0.8 version that most applications using
-  ;; libcaption rely on.
-  (let ((commit "e8b6261090eb3f2012427cc6b151c923f82453db")
-        (revision "0"))
     (package
       (name "libcaption")
-      (version (git-version "0.7" revision commit))
+      (version "0.8")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                        (url "https://github.com/szatmary/libcaption")
-                       (commit commit)))
+                       (commit (string-append "v" version))))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
@@ -6795,7 +6790,7 @@ In addition, utility functions to create h.264 SEI (Supplementary enhancement
 information) NALUs (Network Abstraction Layer Unit) for inclusion into an h.264
 elementary stream are provided.")
       (home-page "https://github.com/szatmary/libcaption")
-      (license license:expat))))
+      (license license:expat)))
 
 (define-public video-contact-sheet
   (package
