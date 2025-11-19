@@ -6975,6 +6975,122 @@ N-Chilada and RAMSES AMR outputs.")
        (sha256
         (base32 "0rl9ais4yc6kdijq1il4vi3mplp7z6bcih4x55axhan5n3n7riwi"))))))
 
+(define-public python-pypeit
+  (package
+    (name "python-pypeit")
+    (version "1.17.4") ;XXX: Newer versions need to be built with NumPy 2+
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pypeit/PypeIt")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16y4vkjmd29zrjhhv2fyv9rksjblri3zf6m81mhmhys5sy09xmfz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 242 passed, 10 skipped, 5 deselected, 120 warnings
+      #:test-flags
+      ;; Tests still try to download test data even it's available in
+      ;; "pypeit/data".
+      #~(list "--deselect=pypeit/tests/test_install.py::test_install_telluric"
+              #$@(map (lambda (test) (string-append "--deselect=pypeit/"
+                                                    "tests/test_pkgdata.py::"
+                                                    test))
+                      (list "test_cloud_url"
+                            "test_fetch_github_files"
+                            "test_github_contents"
+                            "test_cache_to_pkg")))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; XXX: See: <https://github.com/pypeit/PypeIt/issues/1786>.
+          (add-after 'unpack 'remove-missing-scripts-entry-points
+            (lambda _
+              (substitute* "setup.cfg"
+                ((".*pypeit_install_ql_calibs.*") "")
+                ((".*pypeit_ql_multislit.*") ""))))
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (add-after 'install 'include-package-data
+            ;; XXX: PyPI archive provides pypeit/data but during build from
+            ;; Git it's ignored for some reason, add it manually.
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (copy-recursively "pypeit/data"
+                                (string-append (site-packages inputs outputs)
+                                               "/pypeit/data"))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (system "Xvfb &")
+              (setenv "DISPLAY" ":0")
+              (setenv "HOME" "/tmp")
+              (setenv "MPLBACKEND" "agg")))
+          (add-before 'check 'post-check
+            (lambda _
+              (for-each delete-file-recursively
+                        (find-files #$output "__pycache__" #:directories? #t)))))))
+    (native-inputs
+     (list nss-certs-for-test
+           python-cython
+           python-pygit2
+           python-pytest
+           python-scikit-image
+           python-setuptools
+           python-setuptools-scm
+           python-shapely
+           python-specutils
+           xorg-server-for-tests))
+    (propagated-inputs
+     (list python-astropy-6
+           python-bottleneck
+           python-configobj
+           python-extension-helpers
+           python-fast-histogram
+           python-ginga
+           python-ipython
+           python-linetools
+           python-matplotlib
+           python-numpy
+           python-packaging
+           python-pyerfa
+           python-pygithub
+           python-pyqt-6
+           python-pyyaml
+           python-qtpy
+           python-scikit-learn
+           python-scipy))
+    (home-page "https://github.com/pypeit/PypeIt")
+    (synopsis "Spectroscopic Data Reduction Pipeline")
+    (description
+     "PypeIt is a Python package for semi-automated reduction of astronomical
+spectroscopic data.  Its algorithms build on decades-long development of
+previous data reduction pipelines by the developers.
+
+It is designed to be used by both advanced spectroscopists with prior data
+reduction expertise and astronomers with no prior experience of data
+reduction.  It is highly configurable and designed to be applied to any
+standard slit-imaging spectrograph, including long-slit, multi-slit, as well
+as cross-dispersed echelle spectra.")
+    (license license:bsd-3)))
+
+;; A bare minimal package, mainly to use in tests and reduce closure
+;; size. Tests are left out in the main package to slim down native-inputs.
+(define-public python-pypeit-minimal
+  (package/inherit python-pypeit
+    (name "python-pypeit-minimal")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments python-pypeit)
+       ((#:tests? _ #t) #f)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (delete 'pre-check)))))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm))))
+
 (define-public python-pyregion
   (package
     (name "python-pyregion")
