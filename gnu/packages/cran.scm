@@ -8615,6 +8615,30 @@ an improved interface).  The recommended routine @code{logspline()} uses an
 algorithm from @url{doi:10.1214/aos/1031594728,Stone et al (1997)}.")
     (license license:asl2.0)))
 
+(define-public r-lsoda
+  (package
+    (name "r-lsoda")
+    (version "1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "lsoda" version))
+       (sha256
+        (base32 "1rbw66xs5xa8b2pgkdhy5acv7g250hanqhwkvxmc15al3nyjmdc5"))))
+    (properties `((upstream-name . "lsoda")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (home-page "https://github.com/mclements/lsoda")
+    (synopsis "C++ header library for ordinary differential equations")
+    (description
+     "This package provides a C++ header library for using the libsoda-cxx
+library with R.  The C++ header reimplements the lsoda function from the
+ODEPACK library for solving initial value problems for first order ordinary
+differential equations.  The C++ header can be used by other R packages by
+linking against this package.  The C++ functions can be called inline using
+Rcpp.  Finally, the package provides an @code{ode} function to call from R.")
+    (license license:expat)))
+
 (define-public r-lubridate
   (package
     (name "r-lubridate")
