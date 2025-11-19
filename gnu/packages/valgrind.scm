@@ -96,7 +96,7 @@ also use Valgrind to build new tools.")
 (define-public valgrind
   (package
     (inherit valgrind/pinned)
-    (version "3.25.0")
+    (version "3.26.0")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://sourceware.org/pub/valgrind"
@@ -105,7 +105,7 @@ also use Valgrind to build new tools.")
                                         "/valgrind-" version ".tar.bz2")))
               (sha256
                (base32
-                "1k3fb1vyx1b3vvwyql0ckg9n2lyw9dilbrhw1kcw0r3b3lln0pr9"))))))
+                "1mvbc6x0w6blkv8wn5fh7pcm6bk9p4m81bxd99jg21li08bwfm4d"))))))
 
 (define-public valgrind/interactive
   (package/inherit valgrind
