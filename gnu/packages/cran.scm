@@ -11041,6 +11041,60 @@ dissimilarity analysis.  Most of its multivariate tools can be used for other
 data types as well.")
     (license license:gpl2+)))
 
+(define-public r-tailor
+  (package
+    (name "r-tailor")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "tailor" version))
+       (sha256
+        (base32 "1sh1kibw28m803f1z7wy1bz6rwyshqli89gm2jni927v3agw281s"))))
+    (properties
+     '((upstream-name . "tailor")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-probably"))))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'skip-bad-tests
+           (lambda _
+             ;; These tests require the r-probably package, which we can't add
+             ;; to avoid a depedency cycle.
+             (substitute* "tests/testthat/test-utils.R"
+               ((".*tailor_fully_trained works.*" m)
+                (string-append m "skip('skip');\n")))
+             (substitute* "tests/testthat/test-extract.R"
+               ((".*extract single parameter from tailor.*" m)
+                (string-append m "skip('skip');\n"))
+               ((".*extract parameter set from tailor.*" m)
+                (string-append m "skip('skip');\n"))))))))
+    (propagated-inputs (list r-cli
+                             r-dplyr
+                             r-generics
+                             r-hardhat
+                             r-purrr
+                             r-rlang
+                             r-tibble
+                             r-tidyselect
+                             r-vctrs))
+    (native-inputs (list r-dials r-modeldata r-testthat))
+    (home-page "https://github.com/tidymodels/tailor")
+    (synopsis "Iterative Steps for Postprocessing Model Predictions")
+    (description
+     "Postprocessors refine predictions outputted from machine learning models
+to improve predictive performance or better satisfy distributional
+limitations.  This package introduces tailor objects, which compose iterative
+adjustments to model predictions.  A number of pre-written adjustments are
+provided with the package, such as calibration.  See Lichtenstein, Fischhoff,
+and Phillips (1977) <doi:10.1007/978-94-010-1276-8_19>.  Other methods and
+utilities to compose new adjustments are also included.  Tailors are tightly
+integrated with the tidymodels framework.")
+    (license license:expat)))
+
 (define-public r-tglkmeans
   (package
     (name "r-tglkmeans")
