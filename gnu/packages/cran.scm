@@ -4266,6 +4266,17 @@ the separation of groupings.")
                 "1r3nayk0z9n1svbf8640vw90dal5q07nkn0gv4bnva3pbzb352sy"))))
     (properties `((upstream-name . "futile.logger")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; These deprecated procedures have been removed in testthat.
+         (add-after 'unpack 'testthat-compatibility
+           (lambda _
+             (substitute* '("tests/testthat/test_layout.R"
+                            "tests/testthat/test_logger.R")
+               (("is_true\\(\\)") "expect_true")
+               (("is_false\\(\\)") "expect_false")))))))
     (propagated-inputs
      (list r-futile-options r-lambda-r))
     (native-inputs (list r-testthat))
