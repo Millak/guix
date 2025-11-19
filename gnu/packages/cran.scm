@@ -4695,28 +4695,26 @@ samples) are easily visualized.")
 (define-public r-ggplot2
   (package
     (name "r-ggplot2")
-    (version "3.5.2")
+    (version "4.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggplot2" version))
        (sha256
-        (base32 "1gq63zz76pqv5pj07pji10z4yl7dcd2z3j13490nkrgk5x504c0a"))))
+        (base32 "0z8shwizdvfc5rsi7b86fx537cm30ykzjyj2acrf5hnrnn4f57qg"))))
     (properties
      '((updater-extra-native-inputs . ("r-mapproj"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
-           r-glue
            r-gtable
            r-isoband
            r-lifecycle
-           r-mass
-           r-mgcv
+           r-mass                       ;for computing 2d density
            r-rlang
+           r-s7
            r-scales
-           r-svglite ; Needed for 'ggsave'
-           r-tibble
+           r-svglite                    ; Needed for 'ggsave'
            r-vctrs
            r-withr))
     (native-inputs
