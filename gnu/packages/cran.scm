@@ -5552,14 +5552,16 @@ required to use it.")
 (define-public r-gwidgets2tcltk
   (package
     (name "r-gwidgets2tcltk")
-    (version "1.0-8")
+    (version "1.0-9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "gWidgets2tcltk" version))
               (sha256
                (base32
-                "02ic4avpa33dnqsnm1mzg7ci1psngk1p169pqf259szf6v39qf8h"))))
-    (properties `((upstream-name . "gWidgets2tcltk")))
+                "1jjn013lw03qrn84y7j1va5xdldhyl38f3qrbzapvyj01dmsnfar"))))
+    (properties
+     '((upstream-name . "gWidgets2tcltk")
+       (updater-extra-native-inputs . ("xorg-server-for-tests"))))
     (build-system r-build-system)
     (arguments
      (list
