@@ -27,6 +27,88 @@
   #:use-module (guix packages)
   #:use-module (guix build-system copy))
 
+(define-public specification-astropy-data
+  (package
+    (name "specification-astropy-data")
+    ;; XXX: There are no release or tags, total size is about 403MiB, where we
+    ;; need some portion of it e.g. coordinates/sites.json.
+    (properties '((commit . "bac8d4aff048c0b6bce8cb384849339199a522e7")
+                  (revision . "0")))
+    (version (git-version "0.0.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/astropy/astropy-data")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0iwd2q4v7qi4fc2b2dhxxkp6bpbhgdd4s5q3jx0vq52p1fh9y0ni"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        ;; XXX: Keep just some portion with valulable data and no license
+        ;; issues.
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "."
+                            "allsky"
+                            "coordinates"
+                            "galactic_center"
+                            "l1448")))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("allsky" "share/allsky")
+          ("coordinates" "share/coordinates")
+          ("galactic_center" "share/galactic_center")
+          ("l1448" "share/l1448"))))
+    (home-page "https://github.com/astropy/astropy-data")
+    (synopsis "Astropy Data Source")
+    (description
+     "This package provides the source for the @url{http://data.astropy.org/,
+Astropy Data Server}.
+
+@itemize
+@item coordinates/sietes.json - stores the online site registry used by
+@code{astropy.coordinates.EarthLocation}
+
+@item allsky/allsky_rosat.fits -
+@url{http://heasarc.gsfc.nasa.gov/docs/rosat/rass.html, ROSAT} Soft X-ray
+Diffuse Background in the 3/4 keV band, in an Aitoff projection
+
+@item allsky/ligo_simulated.fits.gz -
+@url{http://www.ligo.org/scientists/first2years/, All-sky posterior map} in
+HEALPIX format for a simulated event observed by the Advanced Laser
+Interferometer Gravitational-wave Observatory (aLIGO).
+
+@item galactic_center/gc_2mass_k.fits -
+@url{http://irsa.ipac.caltech.edu/Missions/2mass.html, 2MASS} K-band image
+towards the Galactic Center
+
+@item galactic_center/gc_msx_e.fits -
+@url{http://irsa.ipac.caltech.edu/Missions/msx.html, MSX} E-band (21.34
+microns) image towards the Galactic Center
+
+@item galactic_center/gc_bolocam_gps.fits -
+@url{http://milkyway.colorado.edu/bgps/, Bolocam} 1.1mm image towards the
+Galactic Center
+
+@item l1448/l1448_13co.fits - 13CO spectral cube of the L1448 star-formation
+region
+@end itemize")
+    ;; XXX: No licenses are provided, use the same as Astropy.
+    (license license:bsd-3)))
+
 (define-public specification-ip2asn-v6
   (package
     (name "specification-ip2asn-v6")
