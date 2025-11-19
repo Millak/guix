@@ -4408,6 +4408,15 @@ and to generate base64 encoded string from raster matrix.")
                 "19ja087k767bq71v2w4jcpynd62ysrqmjf6rpfnmmd40aanyxqkj"))))
     (properties `((upstream-name . "gfonts")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; These tests require Internet access
+             (for-each delete-file '("tests/testthat/test-api.R"
+                                     "tests/testthat/test-css.R")))))))
     (propagated-inputs
      (list r-crayon
            r-crul
