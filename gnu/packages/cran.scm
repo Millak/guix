@@ -17561,18 +17561,17 @@ classes in the @code{stats4} package.")
 (define-public r-emdbook
   (package
     (name "r-emdbook")
-    (version "1.3.13")
+    (version "1.3.14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "emdbook" version))
        (sha256
         (base32
-         "069w10i1590bcyzv4kfsg7wsr1yl9nlsyj6yvys088xll5z4n116"))))
+         "18m0n0nfi0khmd9fxqjlhrd669vnrnri5v9ch69rvkpngxl3gjmg"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bbmle r-coda r-lattice r-mass r-plyr))
-    (native-inputs (list r-testthat))
     (home-page "https://www.math.mcmaster.ca/bolker/emdbook")
     (synopsis "Support functions and data for \"Ecological Models and Data\"")
     (description
