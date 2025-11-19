@@ -3855,18 +3855,19 @@ handle non-estimable cases correctly.")
 (define-public r-evaluate
   (package
     (name "r-evaluate")
-    (version "1.0.3")
+    (version "1.0.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "evaluate" version))
               (sha256
                (base32
-                "1qm2vz8a1hjgqyidaf3favzbp7fjka3m6qdq9yxjjmhf2gdfvzxv"))))
+                "15074xrrlf6j9dxf3fjck2xncabw5nbwnmj7idgqm0lsi2gwgaj7"))))
     (properties
      ;; We can't have r-testthat among the inputs here to avoid a dependency
      ;; cycle.
      '((updater-ignored-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
+    (arguments (list #:tests? #false))
     (home-page "https://github.com/hadley/evaluate")
     (synopsis "Parsing and evaluation tools for R")
     (description
