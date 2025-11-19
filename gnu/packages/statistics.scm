@@ -1747,19 +1747,22 @@ the header files from the templated Armadillo library.")
 (define-public r-rprojroot
   (package
     (name "r-rprojroot")
-    (version "2.0.4")
+    (version "2.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rprojroot" version))
        (sha256
         (base32
-         "16bf6ga5fgm83j3m67plw5i54az2vdbvw5m99ixaqkd24pxn7x5m"))))
+         "1s8p0mgg44chpbb5zdd4rvjjvx692ixk3p38izb9rza5xyxqjfa7"))))
+    (properties
+     '(;; Avoid a dependency cycles.
+       (updater-ignored-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
     ;; Tests require r-testthat, which uses this package.
     (arguments (list #:tests? #false))
     (native-inputs
-     (list r-knitr))
+     (list r-knitr r-rlang r-withr))
     (home-page "https://github.com/krlmlr/rprojroot")
     (synopsis "Finding files in project subdirectories")
     (description
