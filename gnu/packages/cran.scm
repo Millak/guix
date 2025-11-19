@@ -4620,6 +4620,38 @@ samples) are easily visualized.")
      "Ggfittext is a ggplot2 extension for fitting text into boxes.")
     (license license:gpl2)))
 
+(define-public r-ggiraph
+  (package
+    (name "r-ggiraph")
+    (version "0.9.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ggiraph" version))
+       (sha256
+        (base32 "18mla18am3p2mpqac5zml2rz8pdns671x3jy1fr42ya0s6ck3zzg"))))
+    (properties `((upstream-name . "ggiraph")))
+    (build-system r-build-system)
+    (inputs (list libpng zlib))
+    (propagated-inputs (list r-cli
+                             r-dplyr
+                             r-gdtools
+                             r-ggplot2
+                             r-htmltools
+                             r-htmlwidgets
+                             r-purrr
+                             r-rcpp
+                             r-rlang
+                             r-s7
+                             r-systemfonts
+                             r-vctrs
+                             r-xml2))
+    (native-inputs (list r-knitr pkg-config r-tinytest))
+    (home-page "https://davidgohel.github.io/ggiraph/")
+    (synopsis "Make ggplot2 graphics interactive")
+    (description "Create interactive ggplot2 graphics using htmlwidgets.")
+    (license license:gpl3)))
+
 (define-public r-ggplot2
   (package
     (name "r-ggplot2")
