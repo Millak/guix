@@ -2946,6 +2946,13 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
                     " and not test_ephemeris_local_file_not_ephemeris"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'install-coordinates/sites.json
+            (lambda _
+              (copy-file
+               (string-append #$(this-package-native-input
+                                 "specification-astropy-data")
+                              "/share/coordinates/sites.json")
+               "astropy/coordinates/data/sites.json")))
           (add-after 'unpack 'preparations
             (lambda _
               ;; Use our own libraries in place of bundles.
@@ -2986,7 +2993,8 @@ constraints (i.e., altitude, airmass, moon separation/illumination, etc.)
            python-setuptools-scm
            python-sgp4
            python-skyfield
-           python-threadpoolctl))
+           python-threadpoolctl
+           specification-astropy-data))
     (inputs
      (list expat
            wcslib))
