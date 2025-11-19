@@ -2691,7 +2691,7 @@ code{yosys}-based formal hardware verification flows.")
 (define-public systemc
   (package
     (name "systemc")
-    (version "3.0.1")
+    (version "3.0.2")
     (source
      (origin
        (method git-fetch)
@@ -2700,7 +2700,7 @@ code{yosys}-based formal hardware verification flows.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1c8brlv3702p2ivifai9929bg20y30jb301ap0gdmz305q8mcb33"))))
+        (base32 "0gbk8ma0nhaf02alcxk808isvk74b5wadaazdvzwbmj0ybx06ml1"))))
     (native-inputs (list perl))
     (build-system cmake-build-system)
     (arguments
