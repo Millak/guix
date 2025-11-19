@@ -2411,6 +2411,32 @@ values per cutpoint using Generalized Additive Models.  Various plotting
 functions are included.")
     (license license:gpl3)))
 
+(define-public r-dagitty
+  (package
+    (name "r-dagitty")
+    (version "0.3-4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "dagitty" version))
+       (sha256
+        (base32 "10iw5ldra7ih3jpp1iaac6cbfgpl62bq09zl30c0z03mzhj18vvr"))))
+    (properties `((upstream-name . "dagitty")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-boot r-jsonlite r-mass r-v8))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://www.dagitty.net")
+    (synopsis "Graphical analysis of structural causal models")
+    (description
+     "This package provides a port of the web-based software
+@url{https://dagitty.net,DAGitty} for analyzing structural causal models (also
+known as directed acyclic graphs or DAGs).  This package computes covariate
+adjustment sets for estimating causal effects, enumerates instrumental
+variables, derives testable implications (d-separation and vanishing tetrads),
+generates equivalent models, and includes a simple facility for data
+simulation.")
+    (license license:gpl2)))
+
 (define-public r-datapasta
   (package
     (name "r-datapasta")
