@@ -103,6 +103,11 @@ Date/Publication: 2015-07-14 14:15:16
   (set->list ((@ (guix import cran) extract-imports)
               "this:is:not::a:procedure")))
 
+(test-equal "extract-imports: matches things before a comma"
+  (list "MASS")
+  (set->list ((@ (guix import cran) extract-imports)
+              "check_installed(\"MASS\",")))
+
 (test-equal "r-minimal is not a cran package"
   #f
   ((@@ (guix import cran) cran-package?) r-minimal))

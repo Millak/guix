@@ -570,7 +570,7 @@ referenced in build system files."
     ;; Quiet imports
     "(suppressPackageStartupMessages\\()?"
     ;; the actual import statement.
-    "(require|library)\\(\"?([^, \")]+)"
+    "(require|library|check_installed)\\(\"?([^, \")]+)"
     ;; Or perhaps...
     "|"
     ;; ...direct namespace access.
