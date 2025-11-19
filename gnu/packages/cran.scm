@@ -23930,14 +23930,16 @@ dependency on Java.")
 (define-public r-rio
   (package
     (name "r-rio")
-    (version "1.2.3")
+    (version "1.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rio" version))
        (sha256
         (base32
-         "1annh9zsfskizr2idylgvqm41cfzldn56bh9vkzxqqvznka7k123"))))
+         "1qj3vm3lka2asa36w6mrczgn63a6mdaxvd4kbrw1wh539wh6xi5v"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-xml2" "zip"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -23958,7 +23960,14 @@ dependency on Java.")
            r-tibble
            r-writexl))
     (native-inputs
-     (list r-knitr r-stringi r-testthat r-xml2 zip))
+     (list r-arrow
+           r-jpeg
+           r-knitr
+           r-readods
+           r-testthat
+           r-withr
+           r-xml2
+           zip))
     (home-page "https://github.com/leeper/rio")
     (synopsis "Swiss-army knife for data I/O")
     (description
