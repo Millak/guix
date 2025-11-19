@@ -49690,18 +49690,35 @@ more.")
 (define-public r-workflows
   (package
     (name "r-workflows")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "workflows" version))
        (sha256
         (base32
-         "0bf1qx3xdpf5bvdjc4zz2ybb42jz2dzwvidb8b5gjrybkaqdrs67"))))
+         "1v336pc1ag8v3rya2i9vacgprl06c66x0993p0qnspdc40vnw6g3"))))
     (properties
      '((upstream-name . "workflows")
-       (updater-extra-native-inputs . ("r-dials"))))
+       (updater-extra-native-inputs . ("r-dials"))
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-probably"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'skip-bad-tests
+           (lambda _
+             ;; These tests require the r-probably package, which we can't add
+             ;; to avoid a depedency cycle.
+             (substitute* "tests/testthat/test-generics.R"
+               ((".*can compute required packages of a workflow - tailor.*" m)
+                (string-append m "skip('skip');\n"))
+               ((".*extract tuning from workflow with tunable postprocessor.*" m)
+                (string-append m "skip('skip');\n"))
+               ((".*extract tuning from workflow with tunable recipe, model, and tailor.*" m)
+                (string-append m "skip('skip');\n"))))))))
     (propagated-inputs
      (list r-cli
            r-generics
@@ -49719,10 +49736,10 @@ more.")
     (native-inputs
      (list r-butcher
            r-dials
-           r-dials
            r-knitr
            r-matrix
            r-modeldata
+           r-tailor
            r-testthat))
     (home-page "https://github.com/tidymodels/workflows")
     (synopsis "Modeling workflows")
