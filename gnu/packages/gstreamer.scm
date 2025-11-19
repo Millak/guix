@@ -179,7 +179,7 @@ module for the DMA capture of the video flow.")
                                 ;; to validate there are no obvious problems.
                                 (invoke "./ccextractor" "--help")))))))
       (native-inputs (list autoconf-2.72 automake pkg-config))
-      (inputs (list ffmpeg gpac leptonica tesseract-ocr))
+      (inputs (list ffmpeg-6 gpac leptonica tesseract-ocr))
       (synopsis "Closed Caption Extractor")
       (description "CCExtractor is a tool that analyzes video files and produces
 independent subtitle files from the closed captions data.  It is portable, small,
