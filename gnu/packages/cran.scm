@@ -9001,6 +9001,34 @@ individual SNP score statistics in a SNP set and efficiently compute SNP-set
 level p-values.")
     (license license:gpl2+)))
 
+(define-public r-snowflakeauth
+  (package
+    (name "r-snowflakeauth")
+    (version "0.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "snowflakeauth" version))
+       (sha256
+        (base32 "023bw3a91hj5irfv8b4209890j1pp4j6ccd500w8yqy2vyk903c8"))))
+    (properties `((upstream-name . "snowflakeauth")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cli
+                             r-curl
+                             r-jose
+                             r-jsonlite
+                             r-openssl
+                             r-rcpptoml
+                             r-rlang))
+    (native-inputs (list r-testthat r-withr))
+    (home-page "https://posit-dev.github.io/snowflakeauth/")
+    (synopsis "Authentication helpers for Snowflake'")
+    (description
+     "This package provides authentication helpers for Snowflake.  It provides
+compatibility with authentication approaches supported by the Snowflake
+Connector for Python and the Snowflake CLI.")
+    (license license:expat)))
+
 (define-public r-spatial
   (package
     (name "r-spatial")
