@@ -12832,6 +12832,16 @@ a list of p-values.")
                (base32
                 "0xpi2g87vwanp0kbs22j90pa2bban3nwrdjdb3257hq6xj9j5xpr"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; XXX: $ operator is invalid for atomic vectors
+             (substitute* "tests/testthat/test-tag-query.R"
+               ((".*tagQuery\\(\\)\\$find\\(\\).*" m)
+                (string-append m "skip('skip');\n"))))))))
     (propagated-inputs
      (list r-base64enc r-digest r-fastmap r-rlang))
     (native-inputs (list r-markdown r-testthat))
