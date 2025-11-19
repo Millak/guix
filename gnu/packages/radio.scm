@@ -3637,7 +3637,7 @@ memory contents between them.")
                      (("(DESTINATION \")/etc/udev/" _ directive)
                       (string-append directive #$output "/lib/udev/"))))))))
     (inputs (list libusb qtbase qtpositioning qtserialport yaml-cpp))
-    (native-inputs (list qttools librsvg))
+    (native-inputs (list qttools (librsvg-for-system)))
     (home-page "https://dm3mat.darc.de/qdmr/")
     (synopsis "GUI application and command line tool to program DMR radios")
     (description
