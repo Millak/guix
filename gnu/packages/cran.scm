@@ -3342,13 +3342,13 @@ it is stored, whether in a data frame, a data table or database.")
              "datatables-extensions/Buttons"))))
     (package
       (name "r-dt")
-      (version "0.33")
+      (version "0.34.0")
       (source (origin
                 (method url-fetch)
                 (uri (cran-uri "DT" version))
                 (sha256
                  (base32
-                  "1f17gdqjk1aj7vwjvv3363k8lnsvc6ssh4s3gy1prnz33kdxlig1"))
+                  "1wpi949agfi2m05axrqjm2b5yp626g8v3bbjy19mpxkay9g04ql8"))
                 (modules '((guix build utils)
                            (ice-9 match)))
                 (snippet
@@ -3380,7 +3380,8 @@ it is stored, whether in a data frame, a data table or database.")
                                 '("scrollResize/source.min.js"
                                   "searchHighlight/source.min.js")))))))
       (properties
-       `((upstream-name . "DT")))
+       '((upstream-name . "DT")
+         (updater-extra-propagated-inputs . ("r-httpuv"))))
       (build-system r-build-system)
       (arguments
        `(#:modules
@@ -3497,6 +3498,7 @@ it is stored, whether in a data frame, a data table or database.")
       (native-inputs
        `(("r-knitr" ,r-knitr)
          ("r-testit" ,r-testit)
+         ("r-tibble" ,r-tibble)
          ("esbuild" ,esbuild)
          ("datatables-plugins"
           ,(let ((version "1.13.6"))
