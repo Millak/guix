@@ -21905,6 +21905,28 @@ for handling censored survival data.  Portfolio selection methods based on
 expected shortfall risk are also included.")
     (license license:gpl2+)))
 
+(define-public r-quantregforest
+  (package
+    (name "r-quantregforest")
+    (version "1.3-7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "quantregForest" version))
+       (sha256
+        (base32 "0b1xmjcv0wrad7il1gg1gaggq19v37akp8zh31dvsnnpmrk05zsp"))))
+    (properties `((upstream-name . "quantregForest")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-randomforest r-rcolorbrewer))
+    (native-inputs (list gfortran))
+    (home-page "https://github.com/lorismichel/quantregForest")
+    (synopsis "Quantile regression forests")
+    (description
+     "Quantile Regression Forests is a tree-based ensemble method for
+estimation of conditional quantiles.  It is particularly well suited for
+high-dimensional data.  Predictor variables of mixed classes can be handled.")
+    (license license:gpl2+)))
+
 (define-public r-quarto
   (package
     (name "r-quarto")
