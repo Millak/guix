@@ -8488,45 +8488,57 @@ Computing Cluster, HPCC}
 (define-public python-specreduce
   (package
     (name "python-specreduce")
-    (version "1.6.0")
+    (version "1.7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "specreduce" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/astropy/specreduce")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "096hkb94laqnaz5jl4ggw0w75lhp3dz1562pdr26kk510ridv744"))))
+        (base32 "0ldl8g182jdjbb8inah2h7f5i8n2frh4sllqd9l6zp09ylq4s9rs"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; 21 failed, 55 passed, 24 skipped, 4 errors
-      ;;
-      ;; FIXME: More than a half tests are skipped or failed, check why.
-      #:tests? #f
+      ;; tests: 104 passed, 24 skipped, 1 deselected
       #:test-flags
-      ;; TODO: Try to link some test data availale in
-      ;; specification-specreduce-data package.
-      #~(list "-k" (string-append
-                    "not specreduce.calibration_data.get_pypeit_data_path"
-                    " and not specreduce.calibration_data.get_reference_file_path"))
+      #~(list "--pyargs" "specreduce"
+              ;; See: <https://github.com/astropy/specreduce/issues/292>
+              "-k" "not test_init_line_list")
       #:phases
       #~(modify-phases %standard-phases
-         (add-before 'check 'set-home
-           (lambda _
-             ;; Relax matplotlib warning: ... because the default path
-             ;; (/homeless-shelter/.config/matplotlib) is not a writable
-             ;; directory ...
-             (setenv "HOME" "/tmp"))))))
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; XXX: The most of the tests passed, Matplotlib may be
+                ;; upgraded only when we have NumPy 2 as a default.
+                (("matplotlib>=3.10") "matplotlib>=3.8"))))
+          (add-before 'check 'set-home
+            (lambda _
+              ;; Relax matplotlib warning: ... because the default path
+              ;; (/homeless-shelter/.config/matplotlib) is not a writable
+              ;; directory ...
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-photutils
+     (list nss-certs-for-test
+           python-photutils
+           python-pypeit-minimal
+           python-pytest
            python-pytest-astropy
-           python-setuptools-scm
-           python-wheel))
+           python-pytest-mock
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-gwcs
+           python-matplotlib
            python-numpy
            python-scipy
-           python-specutils))
+           python-specutils-1.9))
     (home-page "https://specreduce.readthedocs.io/")
     (synopsis "Spectroscopic Reductions")
     (description
@@ -8656,6 +8668,24 @@ community can use to build more domain-specific packages.  For more details
 about the underlying principles, see
 @url{https://github.com/astropy/astropy-APEs/blob/main/APE13.rst, APE13}.")
     (license license:bsd-3)))
+
+;; For python-specreduce@1.7.0, remove when no longer required.
+(define-public python-specutils-1.9
+  (hidden-package
+   (package
+     (inherit python-specutils)
+     (name "python-specutils")
+     (version "1.9.1")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "specutils" version))
+        (sha256
+         (base32 "0ar4h7pwm1zygcpfjz78878wd8bjgrzsbcnkpwqy26kvqzn928ih"))))
+     (arguments
+      (substitute-keyword-arguments
+          (package-arguments python-specutils)
+        ((#:tests? _ #t) #f))))))
 
 (define-public python-spherical-geometry
   (package
