@@ -383,7 +383,7 @@ and dynamically with report tools based on filtering and graphical charts.")
 (define-public ledger
   (package
     (name "ledger")
-    (version "3.3.2")
+    (version "3.4.1")
     (source
      (origin
        (method git-fetch)
@@ -392,7 +392,7 @@ and dynamically with report tools based on filtering and graphical charts.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vchc97952w3fkkdn3v0nzjlgzg83cblwsi647jp3k9jq6rvhaak"))))
+        (base32 "023265i1hd009jwsb8qpjgz8jjqn601rkk7fy1c0dklli7hbykna"))))
     (build-system cmake-build-system)
     (arguments
      `(#:modules (,@%cmake-build-system-modules
@@ -416,16 +416,14 @@ and dynamically with report tools based on filtering and graphical charts.")
                (substitute* "src/CMakeLists.txt"
                  (("DESTINATION \\$\\{Python_SITEARCH\\}")
                   (string-append "DESTINATION " out "/lib/python"
-                                 python-version "/site-packages")))
-               #t)))
+                                 python-version "/site-packages"))))))
          (add-before 'configure 'install-examples
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((examples (string-append (assoc-ref outputs "out")
                                             "/share/doc/ledger/examples")))
                (install-file "test/input/sample.dat" examples)
                (install-file "test/input/demo.ledger" examples)
-               (install-file "contrib/report" examples))
-             #t))
+               (install-file "contrib/report" examples))))
          (add-after 'build 'build-doc
            (lambda _ (invoke "make" "doc")))
          (add-before 'check 'check-setup
@@ -433,8 +431,7 @@ and dynamically with report tools based on filtering and graphical charts.")
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "TZDIR"
                      (search-input-directory inputs
-                                             "share/zoneinfo"))
-             #t)))))
+                                             "share/zoneinfo")))))))
     (inputs
      (list boost
            gmp
