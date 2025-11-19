@@ -4493,6 +4493,43 @@ data at that region, and avoids over-plotting.")
 axis breaks of a ggplot.")
     (license license:artistic2.0)))
 
+(define-public r-ggdag
+  (package
+    (name "r-ggdag")
+    (version "0.2.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "ggdag" version))
+       (sha256
+        (base32 "074n9w1vgzmx677nppjfp4k3wf7rp0yfh9fbyhb3man4gl2w17df"))))
+    (properties `((upstream-name . "ggdag")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dagitty
+                             r-dplyr
+                             r-forcats
+                             r-ggplot2
+                             r-ggraph
+                             r-ggrepel
+                             r-igraph
+                             r-magrittr
+                             r-pillar
+                             r-purrr
+                             r-rlang
+                             r-stringr
+                             r-tibble
+                             r-tidygraph))
+    (native-inputs (list r-knitr r-spelling r-testthat r-vdiffr r-withr))
+    (home-page "https://github.com/r-causal/ggdag")
+    (synopsis "Analyze and create elegant directed acyclic graphs")
+    (description
+     "Ggdag is built on top of dagitty, an R package that uses the
+@url{https://dagitty.net,DAGitty web tool} for creating and analyzing DAGs.
+ggdag makes it easy to tidy and plot dagitty objects using @code{ggplot2} and
+@code{ggraph}, as well as common analytic and graphical functions, such as
+determining adjustment sets and node relationships.")
+    (license license:expat)))
+
 (define-public r-ggdendro
   (package
     (name "r-ggdendro")
