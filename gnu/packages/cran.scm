@@ -14564,14 +14564,14 @@ analyses.")
 (define-public r-crosstalk
   (package
     (name "r-crosstalk")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "crosstalk" version))
        (sha256
         (base32
-         "1w8lc3hcd1nlw541880vs3agk2i6bilyapnq9lcs3mfn2s2g0338"))
+         "1z1n3rlkdhpz9yixqf4yixxb2za8bg9scypc1vdcl23mx9qyykc0"))
        (snippet
         '(for-each delete-file
                    (list "inst/lib/jquery/jquery.min.js"
@@ -14579,8 +14579,6 @@ analyses.")
                          "inst/lib/selectize/js/selectize.min.js"
                          "inst/www/js/crosstalk.min.js")))))
     (build-system r-build-system)
-    (properties
-     '((updater-extra-native-inputs . ("r-sass" "r-shiny"))))
     (arguments
      (list
       #:modules '((guix build r-build-system)
