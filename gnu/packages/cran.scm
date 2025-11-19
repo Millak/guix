@@ -18370,15 +18370,17 @@ included in this package.")
 (define-public r-timedate
   (package
     (name "r-timedate")
-    (version "4041.110")
+    (version "4051.111")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "timeDate" version))
        (sha256
         (base32
-         "1rvi1h7jm02vnsrk9mm0fldymf7zyjkv1id6xvn1iwgb5psz2syf"))))
-    (properties `((upstream-name . "timeDate")))
+         "1m91j2n2mgv8kndbb2zw6mlqmlr7dzlh8y79x53yvzwy0kv175gv"))))
+    (properties
+     '((upstream-name . "timeDate")
+       (updater-extra-native-inputs . ("r-runit" "tzdata-for-tests"))))
     (build-system r-build-system)
     (arguments
      (list
