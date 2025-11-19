@@ -263,7 +263,7 @@ formal verification.  This is the Yosyshq fork of ABC.")
 (define-public apycula
   (package
     (name "apycula")
-    (version "0.27")
+    (version "0.28")
     ;; The pypi tar.gz file includes the necessary .pickle files, not available
     ;; in the home-page repository.
     (source
@@ -271,11 +271,11 @@ formal verification.  This is the Yosyshq fork of ABC.")
        (method url-fetch)
        (uri (pypi-uri "apycula" version))
        (sha256
-        (base32 "15ndyjfpikn1hhgwp2l43pzlnjg3jg7zc86zr6vk5qr6jxpzm6j1"))))
+        (base32 "0llwcz4fji4sbdajlr43spf3mgdaw42rm15va1l9zb8314fn7wq1"))))
     (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ;requires Gowin EDA tools
     (inputs (list python-crc))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/YosysHQ/apicula/")
     (synopsis "Gowin FPGA bitstream format")
     (description
