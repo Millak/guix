@@ -1085,7 +1085,8 @@ for \"genetic modifications\" as described by e.g.
            python-pytest-doctestplus
            python-pytest-astropy
            python-pytest-astropy-header
-           python-setuptools))
+           python-setuptools
+           python-setuptools-scm))
     (inputs
      (list python-astropy
            python-numpy
