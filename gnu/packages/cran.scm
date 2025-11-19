@@ -52619,14 +52619,14 @@ in output to the equivalent HTML.")
 (define-public r-pkgdown
   (package
     (name "r-pkgdown")
-    (version "2.1.3")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pkgdown" version))
        (sha256
         (base32
-         "13mcy41a1pfj2my2jb4kv8dvjbkx00rli0v1a45cr1zalf54raks"))))
+         "07hrk9npx4fxmx22gdq1kxwyy70nvr73qzz85df4bygd1qr6x5bi"))))
     (properties
      '((upstream-name . "pkgdown")
        (updater-ignored-native-inputs . ("r-diffviewer"))))
@@ -52646,6 +52646,7 @@ in output to the equivalent HTML.")
            r-fs
            r-httr2
            r-jsonlite
+           r-lifecycle
            r-openssl
            r-purrr
            r-ragg
@@ -52662,7 +52663,6 @@ in output to the equivalent HTML.")
            r-htmlwidgets
            r-knitr
            r-learnr
-           r-lifecycle
            r-magick
            r-pkgload
            r-quarto
