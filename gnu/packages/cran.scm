@@ -26390,14 +26390,14 @@ Group (Non-)Overlap considerations.")
 (define-public r-deriv
   (package
     (name "r-deriv")
-    (version "4.1.6")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Deriv" version))
        (sha256
         (base32
-         "0wmslhggdhamvzfa0nvj6j5bc8jhiy3n5q0p5ha9bcsyvi92mf01"))))
+         "0qqz588rvak0fsnbpidxdz4i0g2s7jav3s1p7nagvrhgz7kr80r1"))))
     (properties `((upstream-name . "Deriv")))
     (build-system r-build-system)
     (native-inputs (list r-testthat))
