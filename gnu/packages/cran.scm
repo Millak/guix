@@ -2711,13 +2711,13 @@ features require SQL translation to be provided by the package author.")
 (define-public r-dbscan
   (package
     (name "r-dbscan")
-    (version "1.2.2")
+    (version "1.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dbscan" version))
        (sha256
-        (base32 "0hz31yp2p4zx82qzv4q4s2iiivqq3alqjdfvrgl9n7aj4b8vsfhc"))))
+        (base32 "1bx672c9v7rhka65llwg36y5z3gp4m21im0h2qyp9vb30z68b6k2"))))
     (properties `((upstream-name . "dbscan")))
     (build-system r-build-system)
     (propagated-inputs (list r-generics r-rcpp))
