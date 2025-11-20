@@ -28971,17 +28971,17 @@ the differences were not significantly different.")
 (define-public r-emmeans
   (package
     (name "r-emmeans")
-    (version "1.11.1")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "emmeans" version))
        (sha256
         (base32
-         "1iw4rf24al6bcg818b38iag0k947f32y2ipwrrzpaykxd68nyfv8"))))
+         "0mk68j7yqi5i6gmmqyj91iwzrvlrsp1d4jblqysqhvrazpbdqr4h"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-estimability r-mvtnorm r-numderiv))
+     (list r-estimability r-mvtnorm r-numderiv r-rlang))
     (native-inputs
      (list r-knitr r-testthat))
     (home-page "https://github.com/rvlenth/emmeans")
