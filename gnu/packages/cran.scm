@@ -11087,17 +11087,22 @@ t-probabilities, quantiles, random deviates and densities.")
 (define-public r-shadowtext
   (package
     (name "r-shadowtext")
-    (version "0.1.4")
+    (version "0.1.6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "shadowtext" version))
               (sha256
                (base32
-                "1s3fsh6cmblyhlqrswialc9437as306ki36dyx0dv4001slvxl47"))))
+                "0w6qx83pbn076yzciajvpyk8kfw02yk8yybb8xbwvxhi9qyrp6xa"))))
     (properties `((upstream-name . "shadowtext")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggplot2 r-scales))
+     (list r-ggiraph
+           r-ggplot2
+           r-purrr
+           r-rlang
+           r-s7
+           r-scales))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/GuangchuangYu/shadowtext/")
