@@ -40816,14 +40816,14 @@ emphasize hidden group structures in networks or focus on specific nodes.")
 (define-public r-terra
   (package
     (name "r-terra")
-    (version "1.8-50")
+    (version "1.8-80")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "terra" version))
        (sha256
         (base32
-         "1vsl8v2n57i4rpq4v29g2g5k0nba348qhiszdr9knqm9il9pq82y"))))
+         "1r6166fr92yfzwafkszfhi1a0w3qdv4vg8cliqqywmjhywzbgzdx"))))
     (properties
      '((upstream-name . "terra")
        (updater-ignored-inputs . ("openssh" "openssl"))))
@@ -40832,7 +40832,6 @@ emphasize hidden group structures in networks or focus on specific nodes.")
      (list curl
            gdal
            geos
-           netcdf
            pcre2
            proj
            sqlite
