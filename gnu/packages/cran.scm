@@ -1365,13 +1365,13 @@ and creating new Analysis Results Data objects.")
 (define-public r-cardx
   (package
     (name "r-cardx")
-    (version "0.2.4")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cardx" version))
        (sha256
-        (base32 "1qbfa2kbxbc7lnrajj79dgz2nkjf4616ngha1yk9fl6f10qmsk24"))))
+        (base32 "1nl7g7x4vbq0g3rwf8nclmb4zzii2vfhif6kphh005q5df4xih3q"))))
     (properties
      '((upstream-name . "cardx")
        (updater-ignored-native-inputs . ("r-mixed"))))
