@@ -999,14 +999,14 @@ regression).")
 (define-public r-boot
   (package
     (name "r-boot")
-    (version "1.3-31")
+    (version "1.3-32")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "boot" version))
        (sha256
         (base32
-         "1ln8079g7l6yxdh7bmcn2acjlln0hvrhhjbp5r0wl0xms662wm6q"))))
+         "15vc2d3pg5w326bc8xsygxsrzxhr41xapin5231sahpadznsq19s"))))
     (build-system r-build-system)
     (native-inputs (list r-survival))
     (home-page "https://cran.r-project.org/web/packages/boot")
