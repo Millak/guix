@@ -50612,14 +50612,14 @@ vignettes in all common formats.")
 (define-public r-tidytext
   (package
     (name "r-tidytext")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidytext" version))
        (sha256
         (base32
-         "0m1dxlrmkany4pjbr2p2m9hzn59gldmznyvs6dcb3zdr5861ix0c"))))
+         "1ncpwpqjaz6nk1i82g061llr4vkm1fjn56v6ckini9n9v41f6fwr"))))
     (properties `((upstream-name . "tidytext")))
     (build-system r-build-system)
     (propagated-inputs
@@ -50636,7 +50636,13 @@ vignettes in all common formats.")
            r-tokenizers
            r-vctrs))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-ggplot2
+           r-knitr
+           r-quanteda
+           r-stm
+           r-testthat
+           r-tm
+           r-vdiffr))
     (home-page "https://github.com/juliasilge/tidytext")
     (synopsis "Text mining using dplyr, ggplot2, and other Tidy tools")
     (description
