@@ -9502,13 +9502,13 @@ palettes, color maps, and tools to evaluate them.")
 (define-public r-papaja
   (package
     (name "r-papaja")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "papaja" version))
        (sha256
-        (base32 "0lknj3r4kd8i4jlfi8q7p7fi2s009q8rryf0r44zxfxvr9nkmyxv"))))
+        (base32 "1r2dirqrf2ca3bwwld2rms72045yrg7rk6f5fvnl2knlqhz7gpah"))))
     (properties `((upstream-name . "papaja")))
     (build-system r-build-system)
     (arguments
@@ -9566,12 +9566,19 @@ palettes, color maps, and tools to evaluate them.")
     (native-inputs
      (list r-afex
            r-bayesfactor
-           r-beeswarm
+           r-car
+           r-dplyr
            r-effectsize
            r-emmeans
-           r-multcomp
            r-knitr
+           r-lme4
+           r-lmertest
+           r-mass
+           r-multcomp
+           r-nlme
+           r-nnet
            r-r-rsp
+           r-spelling
            r-testthat
            r-vgam))
     (home-page "https://github.com/crsh/papaja")
