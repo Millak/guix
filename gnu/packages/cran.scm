@@ -51725,13 +51725,13 @@ Services (AWS) Simple Storage Service (S3) REST API.")
 (define-public r-lgr
   (package
     (name "r-lgr")
-    (version "0.4.4")
+    (version "0.5.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "lgr" version))
               (sha256
                (base32
-                "09x1vw6cnc1c0p0ylcz1q1vcxyaf1kljhh7ni3gl5jm19zii2h4c"))))
+                "1h0bg3f7hmf9ichv5dsy16ncb1z8nihzhvg5bfz1001ix9csb1f2"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -51744,7 +51744,16 @@ Services (AWS) Simple Storage Service (S3) REST API.")
     (propagated-inputs
      (list r-r6))
     (native-inputs
-     (list r-data-table r-future r-knitr r-rotor r-testthat r-tibble))
+     (list r-crayon
+           r-data-table
+           r-future
+           r-glue
+           r-jsonlite
+           r-knitr
+           r-rprojroot
+           r-rpushbullet
+           r-testthat
+           r-whoami))
     (home-page "https://s-fleck.github.io/lgr/")
     (synopsis "Fully featured logging framework")
     (description "This package offers a flexible, feature-rich yet
