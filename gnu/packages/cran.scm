@@ -24732,22 +24732,29 @@ reproducible.")
 (define-public r-learnr
   (package
     (name "r-learnr")
-    (version "0.11.5")
+    (version "0.11.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "learnr" version))
        (sha256
         (base32
-         "01xig6ijsjnkwdjh03zdp86mqm5pjlqp9br34pn644rf98qg8k2y"))))
+         "0hn70bp6w3cailjca3iwi1g3dpriqvi2m5j015w76iw1sy7rp5j1"))))
     (build-system r-build-system)
     ;; Tests need shinytest2.
     (arguments (list #:tests? #false))
-    (native-inputs (list esbuild r-knitr r-testthat))
+    (native-inputs (list esbuild
+                         r-curl
+                         r-dbi
+                         r-httpuv
+                         r-knitr
+                         r-later
+                         r-reticulate
+                         r-rsqlite
+                         r-testthat))
     (propagated-inputs
      (list r-checkmate
            r-digest
-           r-ellipsis
            r-evaluate
            r-htmltools
            r-htmlwidgets
