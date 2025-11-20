@@ -46225,14 +46225,14 @@ plots and fluctuation diagrams.")
 (define-public r-packrat
   (package
     (name "r-packrat")
-    (version "0.9.2")
+    (version "0.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "packrat" version))
        (sha256
         (base32
-         "1mvj2s78n2r66nlqq5bjrvgdwlwbcqdj81yryc34sv3y4m1mkpv9"))))
+         "1ml11wiy5gakvr96q8y69bwz9vq9s46iv9j9cmmx2vskbhmfcwyv"))))
     (properties
      '((upstream-name . "packrat")
        (updater-extra-native-inputs . ("r-mockery"))))
