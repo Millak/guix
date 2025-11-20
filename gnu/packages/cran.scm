@@ -47139,14 +47139,14 @@ evaluated interactively.")
 (define-public r-bridgesampling
   (package
     (name "r-bridgesampling")
-    (version "1.1-2")
+    (version "1.2-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bridgesampling" version))
        (sha256
         (base32
-         "0sry1xwiv4y52k44hq6z8y2kysp5kxgl4dix3m94svg3ladd7v2l"))))
+         "167955wwif96wprmlyc321m7s3fqqs1ipdzznn2y89n2s6hlypz8"))))
     (properties
      `((upstream-name . "bridgesampling")))
     (build-system r-build-system)
@@ -47166,7 +47166,13 @@ evaluated interactively.")
            r-scales
            r-stringr))
     (native-inputs
-     (list r-knitr r-r-rsp r-testthat))
+     (list r-cmdstanr
+           r-knitr
+           r-mcmcpack
+           r-r-rsp
+           r-rcpp
+           r-rstan
+           r-testthat))
     (home-page "https://github.com/quentingronau/bridgesampling")
     (synopsis "Bridge sampling for marginal likelihoods and Bayes factors")
     (description
