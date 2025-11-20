@@ -51094,14 +51094,14 @@ covariate (usually group indicator) and the scores.")
 (define-public r-qtl
   (package
     (name "r-qtl")
-    (version "1.70")
+    (version "1.72")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "qtl" version))
        (sha256
         (base32
-         "06zlp6m0w3gxxa04q7jhfh29r0d8xa0lgn9jaz80axn94css243m"))))
+         "0byhk6wn7sv7wqq5fng49plw9kpypm4bybppwf4h46lykx3yfz7v"))))
     (build-system r-build-system)
     (native-inputs (list r-testthat))
     (home-page "https://rqtl.org/")
