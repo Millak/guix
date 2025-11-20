@@ -38999,13 +38999,13 @@ provided.")
 (define-public r-xml
   (package
     (name "r-xml")
-    (version "3.99-0.18")
+    (version "3.99-0.20")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "XML" version))
               (sha256
                (base32
-                "0jskpmx300bimf835v00bsabz8nxrkr2y63wzrdwbn1cpnlaj398"))))
+                "0z3ha5njawrzlz0w1ipr7xqykpj6lgmwn9qjawsipj33lwlviyzm"))))
     (properties
      `((upstream-name . "XML")))
     (build-system r-build-system)
