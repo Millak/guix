@@ -5146,14 +5146,14 @@ belong to the Generalized Empirical Likelihood family of estimators (Smith
 (define-public r-googledrive
   (package
     (name "r-googledrive")
-    (version "2.1.1")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "googledrive" version))
        (sha256
         (base32
-         "10pv70nvsqh1yc12g5fj7avfihjzpj02m8s9f8sb0c1np9s4z2qb"))))
+         "1alliln7gdmfcddcjkngqchmpxhlh0chyy2frbk81srkhd6yl29q"))))
     (properties
      '((upstream-name . "googledrive")
        (updater-extra-native-inputs . ("r-mockr"))))
@@ -5174,7 +5174,14 @@ belong to the Generalized Empirical Likelihood family of estimators (Smith
            r-vctrs
            r-withr))
     (native-inputs
-     (list r-knitr r-mockr r-testthat))
+     (list r-curl
+           r-dplyr
+           r-here
+           r-knitr
+           r-mockr
+           r-pkgload
+           r-spelling
+           r-testthat))
     (home-page "https://googledrive.tidyverse.org")
     (synopsis "Interface to Google Drive")
     (description "This package lets you manage Google Drive files from R.")
