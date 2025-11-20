@@ -9700,14 +9700,14 @@ on parallel execution for exactly this operation.")
 (define-public r-pheatmap
   (package
     (name "r-pheatmap")
-    (version "1.0.12")
+    (version "1.0.13")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pheatmap" version))
        (sha256
         (base32
-         "1hdh74az3vyzz6dqa311rhxdm74n46lyr03p862kn80p0kp9d7ap"))))
+         "1xs265c5lb15ahsm5l9mnrzcb5c2qaw9g2n9bks28xkqbx64vhsa"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-gtable r-rcolorbrewer r-scales))
