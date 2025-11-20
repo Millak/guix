@@ -15766,13 +15766,13 @@ rectangular layout tree built by ggtree with the grammar of ggplot2.")
 (define-public r-ggpicrust2
   (package
     (name "r-ggpicrust2")
-    (version "2.1.2")
+    (version "2.5.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggpicrust2" version))
               (sha256
                (base32
-                "15l3hryw3jz9d7pxvwnsl2h0xms63kyw5fcw2bw8b22w956xj2v9"))))
+                "09cvv2ipxycq983rh9p2gdbahbgxknd7hxcxb6psvqcfx0paj0jg"))))
     (properties `((upstream-name . "ggpicrust2")))
     (build-system r-build-system)
     (propagated-inputs (list r-aplot
@@ -15789,9 +15789,9 @@ rectangular layout tree built by ggtree with the grammar of ggplot2.")
                              r-tibble
                              r-tidygraph
                              r-tidyr))
-    (native-inputs (list r-fgsea
+    (native-inputs (list r-devtools
+                         r-fgsea
                          r-ggvenndiagram
-                         r-knitr
                          r-mockery
                          r-testthat
                          r-upsetr))
