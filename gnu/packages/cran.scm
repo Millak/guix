@@ -11734,18 +11734,18 @@ Subject, Predicate, and Object Nodes.")
 (define-public r-redux
   (package
     (name "r-redux")
-    (version "1.1.4")
+    (version "1.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "redux" version))
        (sha256
-        (base32 "1cbgc39avvjx1lqfrrwyq6fjm751i10gxhsfx67njg8ghj4pq790"))))
+        (base32 "0s2yihk626x295xzi3v8lcg62dm01gm1hs4xjkya2wg9knbn8y58"))))
     (properties `((upstream-name . "redux")))
     (build-system r-build-system)
     (inputs (list hiredis))
     (propagated-inputs (list r-r6 r-storr))
-    (native-inputs (list r-knitr pkg-config r-sys r-testthat))
+    (native-inputs (list pkg-config r-knitr r-sys r-testthat))
     (home-page "https://github.com/richfitz/redux")
     (synopsis "R bindings to hiredis")
     (description
