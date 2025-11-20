@@ -31738,13 +31738,13 @@ giving it a description in the specific format.")
 (define-public r-spamm
   (package
     (name "r-spamm")
-    (version "4.5.0")
+    (version "4.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spaMM" version))
        (sha256
-        (base32 "1nr44jg73gnbc3q1ip7zmzl1n5bggbcgjrdlh6fg81zp41ba3ydv"))))
+        (base32 "1ng4l3izsj4qzl61zyhmqqkp008d6r9xvl4i8w65cgn1riyh3x5b"))))
     (properties
      '((upstream-name . "spaMM")
        (updater-extra-inputs . ("gsl"))
@@ -31756,7 +31756,7 @@ giving it a description in the specific format.")
     (inputs (list gsl))
     (propagated-inputs (list r-backports
                              r-boot
-                             r-crayon
+                             r-cli
                              r-geometry
                              r-gmp
                              r-mass
@@ -31769,11 +31769,13 @@ giving it a description in the specific format.")
                              r-proxy
                              r-rcpp
                              r-rcppeigen
+                             r-reformulas
                              r-roi))
     (native-inputs (list r-aster
                          r-caic4
                          r-compoissonreg
                          r-devtools
+                         r-fmesher
                          r-lme4
                          r-lmertest
                          r-mgcv
