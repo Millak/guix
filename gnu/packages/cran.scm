@@ -44225,13 +44225,13 @@ Edition), John Wiley and Sons.")
 (define-public r-shapviz
   (package
     (name "r-shapviz")
-    (version "0.9.7")
+    (version "0.10.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "shapviz" version))
        (sha256
-        (base32 "0x5kzw465688ibdpl97bddakscsza1mjrvkvg4w3rp01ssrln3dw"))))
+        (base32 "1iqnlfxl4521bl3zwkdy92nl9z33a12fya7skyj12ww24z40ij09"))))
     (properties `((upstream-name . "shapviz")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggfittext
