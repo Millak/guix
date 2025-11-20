@@ -9305,13 +9305,13 @@ transliteration, concatenation, date-time formatting and parsing, etc.")
 (define-public r-stringr
   (package
     (name "r-stringr")
-    (version "1.5.1")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "stringr" version))
        (sha256
-        (base32 "1pj5xwg8kq2jllmszgkw96qj37wlb0x0vx4f3m5j211zpd8yrbd4"))))
+        (base32 "0r006wzcxhyqgix5q094hranqcfj8jbjpqjrhs4fp9w0z5fzrwi4"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-glue r-lifecycle r-magrittr r-rlang r-stringi r-vctrs))
