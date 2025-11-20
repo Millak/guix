@@ -43613,18 +43613,18 @@ API; see the package vignette for details.")
 (define-public r-actuar
   (package
     (name "r-actuar")
-    (version "3.3-5")
+    (version "3.3-6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "actuar" version))
        (sha256
         (base32
-         "0ymh4gx8nplw7acx9pg1gxwfjcnjx0zzpd9x4pf4hlzqwddaynqm"))))
+         "1rlg5xz41d04r9gab14mv4s61q68wmg00p71pqy60iw6r91j9811"))))
     (properties `((upstream-name . "actuar")))
     (build-system r-build-system)
     (propagated-inputs (list r-expint))
-    (native-inputs (list r-mass))
+    (native-inputs (list r-mass r-statmod))
     (home-page "https://gitlab.com/vigou3/actuar")
     (synopsis "Actuarial functions and heavy tailed distributions")
     (description
