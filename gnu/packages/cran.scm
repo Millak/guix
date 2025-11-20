@@ -37397,17 +37397,17 @@ The extrafont package makes both of these things easier.")
 (define-public r-xkcd
   (package
     (name "r-xkcd")
-    (version "0.0.6")
+    (version "0.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "xkcd" version))
        (sha256
         (base32
-         "1z2y0ihn68ppay7xkglhw7djki5654g6z4bbpyy41if57z9q554f"))))
+         "0kqpl75r8g87jzn0q897s3i5apcqkqwgfdqbk74y06f58wj421fh"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-extrafont r-ggplot2 r-hmisc))
+     (list r-extrafont r-ggplot2 r-hmisc r-rlang))
     (home-page "https://cran.r-project.org/web/packages/xkcd/")
     (synopsis "Plot ggplot2 graphics in the XKCD style")
     (description
