@@ -16310,23 +16310,20 @@ trials.")
 (define-public r-ctrialsgov
   (package
     (name "r-ctrialsgov")
-    (version "0.2.5")
+    (version "0.2.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ctrialsgov" version))
               (sha256
                (base32
-                "0hdh1fdfaja8amf7fkvk1c6yif703132bvacq0j9pk5jr97czgpw"))))
+                "01y2b21wjybh5ljyzd8a9mw8r7367awf0vj5w7zwygjbjwajc7xi"))))
     (properties `((upstream-name . "ctrialsgov")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-dbi
            r-dplyr
-           r-ggplot2
-           r-htmlwidgets
            r-lubridate
            r-matrix
-           r-plotly
            r-purrr
            r-rlang
            r-stringi
