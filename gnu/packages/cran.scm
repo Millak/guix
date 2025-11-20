@@ -40106,13 +40106,13 @@ graphical LASSO.")
 (define-public r-gldex
   (package
     (name "r-gldex")
-    (version "2.0.0.9.3")
+    (version "2.0.0.9.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "GLDEX" version))
               (sha256
                (base32
-                "0xv9w4kmivmmcnn19a6s6d1ilhi1misdgrp07ks7rbd177zjy5vs"))))
+                "1idably9qnx2v63bawb03c802zy0fzf6qyrirb9kc9mskhbqsq4k"))))
     (properties `((upstream-name . "GLDEX")))
     (build-system r-build-system)
     (propagated-inputs (list r-cluster r-spacefillr))
