@@ -17190,14 +17190,14 @@ SCOTCH.")
 (define-public r-lmoments
   (package
     (name "r-lmoments")
-    (version "1.3-1")
+    (version "1.3-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Lmoments" version))
        (sha256
         (base32
-         "0pc63bj9a8hzr5m3yssrc4kin39fffwkl8rggs3sagzr12d4i7bw"))))
+         "19053ms1208p69fk77k6a6xijrl4p0m1ir64g459v5mwz5y7rc6c"))))
     (properties `((upstream-name . "Lmoments")))
     (build-system r-build-system)
     (propagated-inputs
