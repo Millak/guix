@@ -25045,14 +25045,14 @@ and adds the annotation to the plot.")
 (define-public r-rstatix
   (package
     (name "r-rstatix")
-    (version "0.7.2")
+    (version "0.7.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rstatix" version))
        (sha256
         (base32
-         "1891a976k2qjrh1vkzfg8icxblxa978wbazg7mqq8pcw3nmzbip0"))))
+         "03qfr2ggk284g1iz3vdzd621fdyzjy7lzsd9mwzdnbjqg1j91a5w"))))
     (properties
      '((upstream-name . "rstatix")
        (updater-extra-native-inputs . ("r-emmeans"))))
@@ -25069,7 +25069,7 @@ and adds the annotation to the plot.")
            r-tibble
            r-tidyr
            r-tidyselect))
-    (native-inputs (list r-emmeans r-testthat))
+    (native-inputs (list r-emmeans r-spelling r-testthat))
     (home-page "https://rpkgs.datanovia.com/rstatix/")
     (synopsis "Pipe-friendly framework for basic statistical tests")
     (description
