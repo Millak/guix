@@ -15040,14 +15040,14 @@ files and in-memory raw vectors.")
 (define-public r-ggmap
   (package
     (name "r-ggmap")
-    (version "4.0.1")
+    (version "4.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggmap" version))
        (sha256
         (base32
-         "0ryl8zglgkq0kpkfyi9xq6kc7alv0zjaaqw21iqj7f5jj1x0l9df"))))
+         "0ckp9v5vc98m0xm3bw1cj7ggvcgrr113rnnfd5sfqr9kvgprfnjb"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bitops
