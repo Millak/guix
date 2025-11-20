@@ -42932,14 +42932,14 @@ and regression trees.")
 (define-public r-treeclust
   (package
     (name "r-treeclust")
-    (version "1.1-7")
+    (version "1.1-7.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "treeClust" version))
        (sha256
         (base32
-         "1s7kh6q0bkixsygrip95zf1bi10ihddsa5lq9dfxd68yh8rsby6z"))))
+         "1ls36crqkckvh8qvyxwm8gzs7f1i5vm73r5ciz4p45ll0yx8250h"))))
     (properties `((upstream-name . "treeClust")))
     (build-system r-build-system)
     (propagated-inputs
