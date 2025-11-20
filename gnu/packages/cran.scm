@@ -17719,18 +17719,19 @@ linear (in)equalities.")
 (define-public r-litedown
   (package
     (name "r-litedown")
-    (version "0.7")
+    (version "0.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "litedown" version))
        (sha256
-        (base32 "0wdlplwiww0fb343ckmhikbk469fdwz8dj9vx0hx4sgjkmrb8b77"))))
+        (base32 "0f5ibaijwm0498qqjwzp1dph1xlgyyq350hz2l616sgfdmah9l0k"))))
     (properties `((upstream-name . "litedown")))
     (build-system r-build-system)
     ;; Building the vignettes requires internet access.
     (arguments (list #:test-types '(list "tests")))
     (propagated-inputs (list r-commonmark r-xfun))
+    (native-inputs (list r-codetools))
     (home-page "https://github.com/yihui/litedown")
     (synopsis "Lightweight version of R Markdown")
     (description
