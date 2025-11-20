@@ -47301,13 +47301,13 @@ Inferred Spatio-Temporal Modelling.")
 (define-public r-dcurver
   (package
     (name "r-dcurver")
-    (version "0.9.2")
+    (version "0.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dcurver" version))
        (sha256
-        (base32 "1v4h480lff1cyjjwb80dksiffh0y4b3s07lq2l2r21rn1l4mav6c"))))
+        (base32 "1z2mfglik0q5z06w71m6j5y4cg3r5p626s1q7vjafl62y6d0wfln"))))
     (properties `((upstream-name . "dcurver")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp r-rcpparmadillo))
