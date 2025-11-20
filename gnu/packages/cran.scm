@@ -3049,14 +3049,14 @@ formatting and converting to and from standard R date types.")
 (define-public r-diptest
   (package
     (name "r-diptest")
-    (version "0.77-1")
+    (version "0.77-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "diptest" version))
        (sha256
         (base32
-         "04r8c6xy5vympxaxmgnjib4pqh97f9k6b43i66qhzkl3yh0awki2"))))
+         "0gybxg9i18cki1qifmyvwx0355a9xp4ci59chwymm1p99fbgdarv"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/diptest")
     (synopsis "Hartigan's dip test statistic for unimodality")
