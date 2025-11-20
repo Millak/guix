@@ -36078,13 +36078,13 @@ classes.")
 (define-public r-clarabel
   (package
     (name "r-clarabel")
-    (version "0.10.1")
+    (version "0.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "clarabel" version))
        (sha256
-        (base32 "075xzmalrfihrc8sd8clvym9skf2m694ki9d0cn8sf5ly44dim14"))))
+        (base32 "0079xqz8n1q7gspym36j7m3v54mhbpz2imy9xlbj7373dknb5w60"))))
     (properties
      '((upstream-name . "clarabel")
        (updater-extra-native-inputs . ("r-matrix" "rust"))))
