@@ -10354,13 +10354,13 @@ and the plot is redrawn.")
 (define-public r-marginaleffects
   (package
     (name "r-marginaleffects")
-    (version "0.30.0")
+    (version "0.31.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "marginaleffects" version))
        (sha256
-        (base32 "1fi947yq6ivn5db7lp66l44ljr01sljv7s6fzgdw2a7l0x8q432r"))))
+        (base32 "195216wpnaj8f8jz6jkg148y0rs9q3vngiqwxzzff8ygj3h548ip"))))
     (properties `((upstream-name . "marginaleffects")))
     (build-system r-build-system)
     (propagated-inputs (list r-backports
