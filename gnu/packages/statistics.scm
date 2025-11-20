@@ -1673,13 +1673,13 @@ informative error messages when it's not available.")
 (define-public r-readr
   (package
     (name "r-readr")
-    (version "2.1.5")
+    (version "2.1.6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "readr" version))
               (sha256
                (base32
-                "02p1jjal73j39r49ba4jlvbx8bdqmm96nsdp47igyv54w1gmm9hg"))))
+                "1na60ma6aa37yz7h939hi42fz8p5szaq41gabnp4hd25n2iknx4x"))))
     (build-system r-build-system)
     (properties
      '((updater-extra-native-inputs . ("r-stringi"))))
@@ -1707,7 +1707,13 @@ informative error messages when it's not available.")
            r-tzdb
            r-vroom))
     (native-inputs
-     (list r-knitr r-stringi r-testthat tzdata-for-tests))
+     (list r-dplyr
+           r-knitr
+           r-spelling
+           r-stringi
+           r-testthat
+           r-withr
+           tzdata-for-tests))
     (home-page "https://github.com/hadley/readr")
     (synopsis "Read tabular data")
     (description
