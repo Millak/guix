@@ -6240,14 +6240,14 @@ understand the language at a deeper level.")
 (define-public r-puniform
   (package
     (name "r-puniform")
-    (version "0.2.7")
+    (version "0.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "puniform" version))
        (sha256
         (base32
-         "15q5wlcps7387rjz7p1f5kifg1fl5yxxy7gjx6fvspvqwjkjbs4z"))))
+         "19vq6cs30y4ncsl39vkwg37qdmkmhhmddzs9grgkn7m54v0s1lgy"))))
     (properties `((upstream-name . "puniform")))
     (build-system r-build-system)
     (propagated-inputs
