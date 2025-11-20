@@ -26642,16 +26642,22 @@ containing one or more SNPs that evolved under directional selection.")
 (define-public r-brglm2
   (package
     (name "r-brglm2")
-    (version "0.9.2")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "brglm2" version))
        (sha256
-        (base32 "0islmx4kdy22qn2cq7lpzqq6lc6mci5qly645nfdhad9001jmhsa"))))
+        (base32 "0d5nviz5pc4s4xw00icfxlw9dvbklr16lfss46cr6ql57gm8p3m9"))))
     (properties `((upstream-name . "brglm2")))
     (build-system r-build-system)
-    (propagated-inputs (list r-enrichwith r-mass r-matrix r-nnet r-numderiv))
+    (propagated-inputs (list r-enrichwith
+                             r-mass
+                             r-matrix
+                             r-nleqslv
+                             r-nnet
+                             r-numderiv
+                             r-statmod))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/ikosmidis/brglm2")
     (synopsis "Bias reduction in generalized linear models")
