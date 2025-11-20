@@ -30798,13 +30798,13 @@ to colexicographical order.")
 (define-public r-multidplyr
   (package
     (name "r-multidplyr")
-    (version "0.1.3")
+    (version "0.1.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "multidplyr" version))
               (sha256
                (base32
-                "18yl24s1g8wf3xi6f0k7jhs99ka4dslxf5p9ax9m5l1rbva5xdwj"))))
+                "1wqx7szj5znh35vw7hi239whb6bakic3ffg4k2zrlf4lxhg44lbs"))))
     (properties
      '((upstream-name . "multidplyr")
        (updater-extra-native-inputs . ("r-covr"))))
@@ -30815,13 +30815,13 @@ to colexicographical order.")
            r-crayon
            r-dplyr
            r-magrittr
-           r-qs
+           r-qs2
            r-r6
            r-rlang
            r-tibble
            r-tidyselect
            r-vctrs))
-    (native-inputs (list r-covr r-knitr r-testthat))
+    (native-inputs (list r-covr r-knitr r-testthat r-withr))
     (home-page "https://multidplyr.tidyverse.org")
     (synopsis "Multi-process dplyr backend")
     (description
