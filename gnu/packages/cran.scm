@@ -35044,14 +35044,14 @@ select colors to use in your R code.")
 (define-public r-ggextra
   (package
     (name "r-ggextra")
-    (version "0.10.1")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggExtra" version))
        (sha256
         (base32
-         "0b78bnkhjlfa2h3f5iib0hqas8r289vqglfbk71a419rivzfsyb8"))))
+         "188cpvajwj00wfv292fbihf3xqj6w1v5raz17gkabapl7mv0n304"))))
     (properties `((upstream-name . "ggExtra")))
     (build-system r-build-system)
     (propagated-inputs
@@ -35064,7 +35064,13 @@ select colors to use in your R code.")
            r-shiny
            r-shinyjs))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-devtools
+           r-fontquiver
+           r-knitr
+           r-svglite
+           r-testthat
+           r-vdiffr
+           r-withr))
     (home-page "https://github.com/daattali/ggExtra")
     (synopsis "Marginal histograms for ggplot2 and other enhancements")
     (description
