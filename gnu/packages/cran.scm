@@ -5664,14 +5664,14 @@ data.")
 (define-public r-googlesheets4
   (package
     (name "r-googlesheets4")
-    (version "1.1.1")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "googlesheets4" version))
        (sha256
         (base32
-         "1kzwhs9zrx1i4kqhdqrkzyhnwx25j8j2pcg7ja2dxfalihs67k65"))))
+         "1ndd9y8sd6mp5vrjwj5ikx7lgj6y5g0my7flyrx5lh0s0pfxbabv"))))
     (properties `((upstream-name . "googlesheets4")))
     (build-system r-build-system)
     (propagated-inputs
@@ -5691,7 +5691,7 @@ data.")
            r-tibble
            r-vctrs
            r-withr))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-readr r-spelling r-testthat r-tidyr))
     (home-page "https://github.com/tidyverse/googlesheets4")
     (synopsis "Access Google Sheets using the Sheets API V4")
     (description
