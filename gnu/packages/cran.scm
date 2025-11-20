@@ -47847,14 +47847,14 @@ amounts of memory.")
 (define-public r-boruta
   (package
     (name "r-boruta")
-    (version "8.0.0")
+    (version "9.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Boruta" version))
        (sha256
         (base32
-         "1irx7qg1sw69ggsk4jgxfd3pp741kd944fipnda1qbcbphg5prrq"))))
+         "1rdzcncmpbbkmifayscagf73m5k61nf3fxxra4xcp5kawxxfxvkx"))))
     (properties
      '((upstream-name . "Boruta")
        (updater-extra-native-inputs
