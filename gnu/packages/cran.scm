@@ -24678,14 +24678,14 @@ provides methods to display spatiotemporal rasters, and vector fields.")
 (define-public r-rentrez
   (package
     (name "r-rentrez")
-    (version "1.2.3")
+    (version "1.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rentrez" version))
        (sha256
         (base32
-         "0x1g2f6hvkqqlb39z8m5qxhcvsizddic5i7rpqw0wy77xfbna9gv"))))
+         "10716g98qb1718q5bb01pjdlh7m1lplxc3mahrg8n4k4y9lsbp92"))))
     (properties `((upstream-name . "rentrez")))
     (build-system r-build-system)
     (propagated-inputs
