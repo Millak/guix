@@ -12424,18 +12424,18 @@ conversion of R objects to LaTeX code, and recoding variables.")
 (define-public r-hms
   (package
     (name "r-hms")
-    (version "1.1.3")
+    (version "1.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "hms" version))
        (sha256
         (base32
-         "10h2k5j97fggq3hc0qzxv1q9821y21m326v3x99zsvpl1b3g89p6"))))
+         "153vx24vxfbfdfvyzphyzjj5mawk4lhahvvcs103faxnjzvjbigg"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-lifecycle r-pkgconfig r-rlang r-vctrs))
-    (native-inputs (list r-testthat))
+     (list r-cli r-lifecycle r-pkgconfig r-rlang r-vctrs))
+    (native-inputs (list r-lubridate r-testthat))
     (home-page "https://github.com/rstats-db/hms")
     (synopsis "Pretty time of day")
     (description
