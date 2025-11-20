@@ -33081,14 +33081,14 @@ limitations\" using the GNU Multiple Precision library.")
 (define-public r-rmpfr
   (package
     (name "r-rmpfr")
-    (version "1.1-0")
+    (version "1.1-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Rmpfr" version))
        (sha256
         (base32
-         "07qlmyqj1jnzg4kzqd1zpr8vky68hn12nkzxh459c0zhqy6i8gmf"))))
+         "1d6mbvjj5qd7w7vdkawx4abf8sb8wlmdsppfbx3g3yqsa6jcmxnr"))))
     (properties
      `((upstream-name . "Rmpfr")
        ;; Avoid dependency cycle.
