@@ -44352,13 +44352,13 @@ statistical shape analysis and archetypal analysis.")
 (define-public r-anytime
   (package
     (name "r-anytime")
-    (version "0.3.11")
+    (version "0.3.12")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "anytime" version))
               (sha256
                (base32
-                "1qvb568x99cy68855zsv28llhky1badz34gnp6mdkvz1998qsl7z"))))
+                "1sqmwsn32dy9qykk90ksl3447pdfgwanlfmpi7pwk26jj6d00hax"))))
     (properties `((upstream-name . "anytime")))
     (build-system r-build-system)
     (propagated-inputs
