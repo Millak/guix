@@ -14620,13 +14620,13 @@ punctuation.")
 (define-public r-caper
   (package
     (name "r-caper")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "caper" version))
        (sha256
-        (base32 "1f1mw54gv1r40wrrsznhgffdj8ggrwihiwdd8wyqccyvqm49fxjg"))))
+        (base32 "193970mnsshj5bqyym7bbfxag96mv0jd1q3yqk9wdsv9iqbcw981"))))
     (properties `((upstream-name . "caper")))
     (build-system r-build-system)
     (propagated-inputs (list r-ape r-mass r-mvtnorm))
