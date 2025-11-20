@@ -47684,14 +47684,14 @@ inference diagnostics.
 (define-public r-brms
   (package
     (name "r-brms")
-    (version "2.22.0")
+    (version "2.23.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "brms" version))
        (sha256
         (base32
-         "1gl1pdna356mfrf9816rqx8q7a3h3xzkn75bjd2zylgqw49ss88p"))))
+         "199p5jcl04qpb7japs11h94cbn1pd97dmw4rmnrqfgzc0ibbpxdm"))))
     (properties
      '((upstream-name . "brms")
        (updater-extra-native-inputs
@@ -47726,13 +47726,18 @@ inference diagnostics.
            r-rlang
            r-rstan
            r-rstantools))
-    (native-inputs (list r-extradistr
+    (native-inputs (list r-cmdstanr
+                         r-emmeans
+                         r-extradistr
                          r-knitr
                          r-mnormt
+                         r-mnormt
+                         r-priorsense
                          r-r-rsp
                          r-rtdists
                          r-rwiener
                          r-splines2
+                         r-statmod
                          r-testthat))
     (home-page "https://github.com/paul-buerkner/brms")
     (synopsis "Bayesian regression models using Stan")
