@@ -15588,14 +15588,14 @@ is configured appropriately so R can use them.")
 (define-public r-pkgload
   (package
     (name "r-pkgload")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pkgload" version))
        (sha256
         (base32
-         "0jbmlvii40q6ymdhislmgby6dpf9585xl9d5cf8g4nn2kig8ir09"))))
+         "0xlrf0la6r8ms7fmr0wkbbgy535qj80nz3z70ywh8j8jbhb71wsi"))))
     (properties
      ;; Avoid dependency cycle.
      '((updater-ignored-native-inputs . ("r-testthat"))))
@@ -15612,8 +15612,7 @@ is configured appropriately so R can use them.")
            r-pkgbuild
            r-processx
            r-rlang
-           r-rprojroot
-           r-withr))
+           r-rprojroot))
     (home-page "https://github.com/r-lib/pkgload")
     (synopsis "Simulate package installation and attach")
     (description
