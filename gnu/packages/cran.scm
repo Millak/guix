@@ -51944,13 +51944,13 @@ mlr3 is loaded.")
 (define-public r-mlr3filters
   (package
     (name "r-mlr3filters")
-    (version "0.8.1")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3filters" version))
        (sha256
-        (base32 "12gbvp99hai6cnqa8nxlc4x24ig2andnwhhhfkxdkbxjm89dnfaa"))))
+        (base32 "1bqaxl3g6vyjbjgx545rf8y4mdkscpxrgqacqp3001fhn15iakg5"))))
     (properties
      '((upstream-name . "mlr3filters")
        (updater-extra-native-inputs . ("r-boruta" "r-rpart"))))
@@ -51969,12 +51969,18 @@ mlr3 is loaded.")
                 (string-append m "skip('skip');\n"))))))))
     (propagated-inputs (list r-backports
                              r-checkmate
+                             r-cli
                              r-data-table
                              r-mlr3
                              r-mlr3misc
                              r-paradox
                              r-r6))
-    (native-inputs (list r-boruta r-rpart r-testthat))
+    (native-inputs (list r-boruta
+                         r-caret
+                         r-lgr
+                         r-rpart
+                         r-testthat
+                         r-withr))
     (home-page "https://mlr3filters.mlr-org.com")
     (synopsis "Filter based feature selection for mlr3")
     (description
