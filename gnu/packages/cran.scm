@@ -34461,14 +34461,14 @@ using @code{S3}.")
 (define-public r-capushe
   (package
     (name "r-capushe")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "capushe" version))
        (sha256
         (base32
-         "1mazsfdiqmhy0ywahqw49qql899ph0l6jllriz2spyp1bs98q9b7"))))
+         "1qs9fc3ypigk8pz3bq5ri1jxw6pivqj1h80kzypxff4p1l9hv91s"))))
     (build-system r-build-system)
     (propagated-inputs (list r-mass))
     (home-page "https://cran.r-project.org/web/packages/capushe/index.html")
