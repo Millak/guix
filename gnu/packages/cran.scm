@@ -37720,14 +37720,14 @@ much faster than the serial versions.")
 (define-public r-urltools
   (package
     (name "r-urltools")
-    (version "1.7.3")
+    (version "1.7.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "urltools" version))
        (sha256
         (base32
-         "04x3my655dd287cbsszbnf75q0swmjlxxrblcsay7a8n3df3a830"))))
+         "0wl7dikv0kwmnmcikg7y9k173fw9nlq01vscsfcfzgl5pdhvfnzq"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-triebeard))
