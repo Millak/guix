@@ -8252,16 +8252,16 @@ scale-sensitive information.")
 (define-public r-ggvenn
   (package
     (name "r-ggvenn")
-    (version "0.1.10")
+    (version "0.1.19")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggvenn" version))
               (sha256
                (base32
-                "0gl7z8hrn2wmmb59fvfv2hsw40p629aj086dv0kwlv162zqidqfd"))))
+                "1hpfb868v588vxg58qhi1l1d735dvgh9wy4y1dmzlj24f1zcsn2j"))))
     (properties `((upstream-name . "ggvenn")))
     (build-system r-build-system)
-    (propagated-inputs (list r-dplyr r-ggplot2))
+    (propagated-inputs (list r-dplyr r-ggplot2 r-rlang r-scales))
     (home-page "https://cran.r-project.org/package=ggvenn")
     (synopsis "Draw Venn diagram with ggplot2")
     (description
