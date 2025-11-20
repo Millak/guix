@@ -50211,13 +50211,13 @@ Design} (SFD) and to test their quality.")
 (define-public r-dicekriging
   (package
     (name "r-dicekriging")
-    (version "1.6.0")
+    (version "1.6.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "DiceKriging" version))
               (sha256
                (base32
-                "0jfb2li6b93fkwgjkr4jwxnvv7zb0aqk9lkf2mnv2awzh0r16pdb"))))
+                "1lhs3ijw1jczfq7f1k2f9qpq5zvicpzg95vzw39w6vq0plmdqrac"))))
     (properties `((upstream-name . "DiceKriging")))
     (build-system r-build-system)
     (native-inputs (list r-numderiv r-testthat))
