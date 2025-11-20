@@ -23353,13 +23353,13 @@ also be used as an engine for writing package vignettes.")
 (define-public r-sitar
   (package
     (name "r-sitar")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sitar" version))
        (sha256
-        (base32 "14qc5qy21qyj4gml0gwfn8izbsmzwy30ddc7mazhszi487jrcrp0"))))
+        (base32 "1icp1g201nq2rnffyamrbx17pzlxqs8iyndwsjjgwf0sdswnc91i"))))
     (properties `((upstream-name . "sitar")))
     (build-system r-build-system)
     (propagated-inputs
@@ -23372,6 +23372,7 @@ also be used as an engine for writing package vignettes.")
            r-purrr
            r-rlang
            r-rsample
+           r-splines2
            r-tibble
            r-tidyr))
     (native-inputs (list r-knitr))
