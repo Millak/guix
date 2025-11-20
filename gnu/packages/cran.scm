@@ -50115,14 +50115,14 @@ different palettes and includes both diverging and sequential types.")
 (define-public r-slider
   (package
     (name "r-slider")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "slider" version))
        (sha256
         (base32
-         "069nvjcmhsk8y7nfgx0ln5rab3r73q61cpvrqm9m0iv4z6rlsc69"))))
+         "1b7hqv50x2y36sksb9zq6b9f0y8qy749ynjsypy75i2nzz3sglvs"))))
     (properties
      '((upstream-name . "slider")
        (updater-extra-native-inputs . ("r-lubridate" "tzdata-for-tests"))))
