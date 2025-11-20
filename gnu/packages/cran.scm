@@ -25736,18 +25736,25 @@ or missing responses.")
 (define-public r-acdm
   (package
     (name "r-acdm")
-    (version "1.0.4.3")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ACDm" version))
        (sha256
         (base32
-         "0g89827az5mnllp6l71znbvwxzygb8nvnmsv6x052w2ajhd16v7v"))))
+         "1ia863y3mazvzvhxdfcm4r11g0l3s0xam5691hl2mcfn4pa7y4k3"))))
     (properties `((upstream-name . "ACDm")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-dplyr r-ggplot2 r-plyr r-rsolnp r-zoo))
+     (list r-broom
+           r-dplyr
+           r-ggplot2
+           r-numderiv
+           r-plyr
+           r-rcpp
+           r-rsolnp
+           r-zoo))
     (home-page "https://cran.r-project.org/web/packages/ACDm/")
     (synopsis "Tools for Autoregressive Conditional Duration Models")
     (description
