@@ -18251,14 +18251,14 @@ these progress updates.")
 (define-public r-lava
   (package
     (name "r-lava")
-    (version "1.8.1")
+    (version "1.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lava" version))
        (sha256
         (base32
-         "10hkh96ms0c3jcwcdkqgficy2cx1qgz1kvq24b0ihgfhv946d7qq"))))
+         "0knm47wwvw2a09i8pmssz311ks4mkdwc2xn1nd0ibq8qdlym0xhl"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
