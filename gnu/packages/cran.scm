@@ -53655,26 +53655,18 @@ spatiotemporal arrays (raster and vector data cubes) in @code{R}, using
 (define-public r-tmaptools
   (package
     (name "r-tmaptools")
-    (version "3.2")
+    (version "3.3")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "tmaptools" version))
         (sha256
           (base32
-            "1fjhknc03nz66pvwvg3ifjsfgkqfc1il274zmm5fs3rqz74zhxya"))))
+            "0mjch2f60pxylb39xpaniaakcm72zpwn9y8k9m7pxjk3lhc9knya"))))
     (properties `((upstream-name . "tmaptools")))
     (build-system r-build-system)
     (propagated-inputs
-      (list r-dichromat
-            r-lwgeom
-            r-magrittr
-            r-rcolorbrewer
-            r-sf
-            r-stars
-            r-units
-            r-viridislite
-            r-xml))
+      (list r-lwgeom r-sf r-stars r-units r-xml))
     (home-page
       "https://github.com/mtennekes/tmaptools")
     (synopsis "Thematic Map Tools")
