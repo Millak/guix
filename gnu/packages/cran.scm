@@ -22428,13 +22428,13 @@ chaotic time series analysis.")
 (define-public r-fresh
   (package
     (name "r-fresh")
-    (version "0.2.1")
+    (version "0.2.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "fresh" version))
               (sha256
                (base32
-                "19ki4hxlqzshdmy981gcvbn8wxqa893p5rs55l0q7iipkcmhf9jq"))))
+                "0wv9675nb3vvbdk82nrk3x0fp3f6gvrf2rcw64ri8r9pdzn87l45"))))
     (properties `((upstream-name . "fresh")))
     (build-system r-build-system)
     (propagated-inputs (list r-bslib r-htmltools r-rstudioapi r-sass r-shiny))
