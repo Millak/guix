@@ -30693,19 +30693,19 @@ simulation of correlated data, and more.")
 (define-public r-biocmanager
   (package
     (name "r-biocmanager")
-    (version "1.30.25")
+    (version "1.30.26")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "BiocManager" version))
        (sha256
-        (base32 "058ym2j400xj8v4k02b6r3wy3lrs1nk909f6x3hhydf7vibqpvw3"))))
+        (base32 "0gm28pmlcsc96a0v98fl6zswsm6k34nbnanwhqdg8ilgdxang6nv"))))
     (properties `((upstream-name . "BiocManager")))
     (build-system r-build-system)
     ;; One test requires Internet access.
     (arguments (list #:tests? #false))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-testthat r-withr))
     (home-page "https://cran.r-project.org/web/packages/BiocManager/")
     (synopsis "Access the Bioconductor project package repository")
     (description
