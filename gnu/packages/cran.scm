@@ -28025,13 +28025,13 @@ data;
 (define-public r-accelmissing
   (package
     (name "r-accelmissing")
-    (version "1.4")
+    (version "2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "accelmissing" version))
        (sha256
-        (base32 "1nql9inx6azdzi3z4sfm2vdml2mms6krl8wzlf1dn1c97ahn57fy"))))
+        (base32 "1h3fyz3a10q911qjbdc8f599baf59lmv5hx61178ms247k2zrnnd"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-mice r-pscl))
