@@ -30480,14 +30480,14 @@ messages follow the tidyverse style guide.")
 (define-public r-weights
   (package
     (name "r-weights")
-    (version "1.0.4")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "weights" version))
        (sha256
         (base32
-         "1fnchf7f0hyl514bk8sc3l884kg25kb5xm4mc2l28n6hm7l6bgpg"))))
+         "1slr2nz89hqh27w4n3jywgrz4842jl3ssp76736qd7dd181cbhbc"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-gdata r-hmisc r-lme4 r-mice))
