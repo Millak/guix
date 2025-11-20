@@ -3399,13 +3399,13 @@ the presence of variance components/nonparametric terms for models fit with
 (define-public r-simr
   (package
     (name "r-simr")
-    (version "1.0.7")
+    (version "1.0.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "simr" version))
        (sha256
-        (base32 "1rfnhyqvdazvar7r1ml71lskh1hdk3yfzv5jlcz18wzffscgkgmb"))))
+        (base32 "14vzyncs9p10n0n9bqx1p4bxr0l3zanmvf6dppi4rjpfl1q22kzy"))))
     (properties `((upstream-name . "simr")))
     (build-system r-build-system)
     (propagated-inputs
@@ -3419,7 +3419,7 @@ the presence of variance components/nonparametric terms for models fit with
            r-plyr
            r-rlrsim
            r-stringr))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr))
     (home-page "https://github.com/pitakakariki/simr")
     (synopsis
      "Power analysis for generalized linear mixed models by simulation")
