@@ -20723,13 +20723,13 @@ of merit, ordering functions, and enhanced versions of @code{pairs} and
 (define-public r-webchem
   (package
     (name "r-webchem")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "webchem" version))
        (sha256
-        (base32 "06b9i9jipg564zyw4gkgiidz7501rlp40hxm4z3k5mzy148lr5vq"))))
+        (base32 "1xbqzppiz5sgxqbzcqihnk5yjbvdw5shvx9z4c6p39fkw7xj68wd"))))
     (properties `((upstream-name . "webchem")))
     (build-system r-build-system)
     (propagated-inputs (list r-base64enc
@@ -20743,7 +20743,7 @@ of merit, ordering functions, and enhanced versions of @code{pairs} and
                              r-stringr
                              r-tibble
                              r-xml2))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-testthat r-vcr))
     (home-page "https://docs.ropensci.org/webchem/")
     (synopsis "Chemical information from the web")
     (description
