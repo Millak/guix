@@ -1928,20 +1928,21 @@ or a given luminosity.")
 (define-public r-commonmark
   (package
     (name "r-commonmark")
-    (version "1.9.5")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "commonmark" version))
        (sha256
         (base32
-         "0radgpdvpzhw3615jmjac7vhqnq0j6dfi9avhw4q4zz12vwrdgzs"))))
+         "0139jfaal03099kdykcljypaznrd7linx7x6fcm1wpgzykwxfivz"))))
     (properties
      ;; We can't have r-testthat among the inputs here to avoid a dependency
      ;; cycle.
      '((updater-ignored-native-inputs . ("r-testthat"))))
     (build-system r-build-system)
     (arguments (list #:tests? #false))
+    (native-inputs (list r-xml2))
     (home-page "https://cran.r-project.org/web/packages/commonmark")
     (synopsis "CommonMark and Github Markdown rendering in R")
     (description
