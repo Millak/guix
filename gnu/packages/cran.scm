@@ -4508,13 +4508,13 @@ data at that region, and avoids over-plotting.")
 (define-public r-ggbreak
   (package
     (name "r-ggbreak")
-    (version "0.1.4")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggbreak" version))
        (sha256
-        (base32 "0paqjx3jlnnwgy7iaaqlslcmngcdprwf1pxknazcj2v91yal40v8"))))
+        (base32 "1a2hk9mq830wmhdnyw2swc9mjry3s2q8nldfiknynf7vplp1b1kh"))))
     (properties `((upstream-name . "ggbreak")))
     (build-system r-build-system)
     (propagated-inputs (list r-aplot
