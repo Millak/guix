@@ -53905,14 +53905,14 @@ minimal hassle.")
 (define-public r-qpcr
   (package
     (name "r-qpcr")
-    (version "1.4-1")
+    (version "1.4-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "qpcR" version))
        (sha256
         (base32
-         "1r01q7jv3w59yx1gc0qw91rq7rvdhqsi8y57sqqkmwyqfw2x2vsv"))))
+         "04q4j249xajp6b3nwg6gzrvyc3jffs14xfzg3nwms12hg4c3fvcz"))))
     (properties `((upstream-name . "qpcR")))
     (build-system r-build-system)
     (propagated-inputs
