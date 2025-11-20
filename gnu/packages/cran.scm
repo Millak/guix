@@ -27228,14 +27228,14 @@ and coverage methods to tune the choice of threshold.")
 (define-public r-ggnetwork
   (package
     (name "r-ggnetwork")
-    (version "0.5.13")
+    (version "0.5.14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggnetwork" version))
        (sha256
         (base32
-         "0ipxw6j36n0hfn0nsimw8jbjszvm1d0hadwg4zirvn6v36npwabc"))))
+         "1w1zkyhpb4b9d43c5s4x5czzr4vk2lzph9yqm7lhhxl1bbc7kaya"))))
     (properties `((upstream-name . "ggnetwork")))
     (build-system r-build-system)
     (propagated-inputs
