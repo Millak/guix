@@ -1957,14 +1957,14 @@ including tables, autolinks and strikethrough text.")
 (define-public r-compquadform
   (package
     (name "r-compquadform")
-    (version "1.4.3")
+    (version "1.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "CompQuadForm" version))
        (sha256
         (base32
-         "1i30hrqdk64q17vsn918c3q79brchgx2wzh1gbsgbn0dh1ncabq4"))))
+         "0hx15zs180q1kpm7pp608sgmarwjjf4gss4lmavxzmkwpy3j1bw4"))))
     (properties `((upstream-name . "CompQuadForm")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/CompQuadForm")
