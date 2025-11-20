@@ -598,13 +598,13 @@ closely-packed, non-overlapping points.")
 (define-public r-betareg
   (package
     (name "r-betareg")
-    (version "3.2-3")
+    (version "3.2-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "betareg" version))
        (sha256
-        (base32 "0iizgzlsk4gm6pjb4i4qwcig2c4crngxkrmdasnr0qzc0piq5dnw"))))
+        (base32 "1zdblsvc003ykfm9j6p6fxm5fn35b4xw04yajfyvbcsyshq4v92v"))))
     (properties
      '((upstream-name . "betareg")
        (updater-extra-native-inputs . ("r-partykit"))))
