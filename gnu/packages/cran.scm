@@ -39596,19 +39596,26 @@ been used in the call to @code{aov}.")
 (define-public r-dalex
   (package
     (name "r-dalex")
-    (version "2.4.3")
+    (version "2.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "DALEX" version))
        (sha256
         (base32
-         "08cd5nhgd6vaazcqq985kwivg99v6ily4idhgkpz8l9ffl3lavm0"))))
+         "09i7jfhdmy3nyi8y26iy1p1zzhki61pfd2967p5n8a9hk4klishy"))))
     (properties `((upstream-name . "DALEX")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggplot2 r-ibreakdown r-ingredients))
-    (native-inputs (list r-gower r-ranger r-testthat))
+     (list r-ggplot2 r-ibreakdown r-ingredients r-kernelshap))
+    (native-inputs (list r-caret
+                         r-e1071
+                         r-gbm
+                         r-glmnet
+                         r-parsnip
+                         r-ranger
+                         r-rpart
+                         r-testthat))
     (home-page "https://pbiecek.github.io/DALEX/")
     (synopsis "Descriptive machine learning explanations")
     (description
