@@ -3069,13 +3069,13 @@ original public code has been corrected.")
 (define-public r-dirichletreg
   (package
     (name "r-dirichletreg")
-    (version "0.7-1")
+    (version "0.7-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "DirichletReg" version))
        (sha256
-        (base32 "1ql5mwb7zb06y9j6inrlngq7c15as4j17wd8kc71fxs0a2jdj7xi"))))
+        (base32 "16rdg1vgxrr4gc5fvm3nblbmbgmvicgpk1qsfhf6czn8yj64r2q8"))))
     (properties `((upstream-name . "DirichletReg")))
     (build-system r-build-system)
     (propagated-inputs (list r-formula r-maxlik))
