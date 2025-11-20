@@ -28740,13 +28740,13 @@ series.")
 (define-public r-acceptancesampling
   (package
     (name "r-acceptancesampling")
-    (version "1.0-10")
+    (version "1.0.11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "AcceptanceSampling" version))
        (sha256
-        (base32 "1sbv2yrvnn0zgdmqvjlmz2vllsg6r9nlmxdgadhymhm9s51gfx65"))))
+        (base32 "0r0b25njagb3ng38rv85psbi2w95bajjapbs1p1779zi7z8nr17v"))))
     (properties
      `((upstream-name . "AcceptanceSampling")))
     (build-system r-build-system)
