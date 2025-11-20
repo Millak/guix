@@ -31950,14 +31950,14 @@ large datasets (> 100,000 samples) very efficiently.")
 (define-public r-qlcmatrix
   (package
     (name "r-qlcmatrix")
-    (version "0.9.8")
+    (version "0.9.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "qlcMatrix" version))
        (sha256
         (base32
-         "0d38jb653787s05g8syc9wgaljaifmkviijwz5rzcd881glgs8sv"))))
+         "12ay5vxa2862ga5p5ilncjx9av8662hxfbc4j96zn31m5pjc508a"))))
     (properties `((upstream-name . "qlcMatrix")))
     (build-system r-build-system)
     (propagated-inputs
