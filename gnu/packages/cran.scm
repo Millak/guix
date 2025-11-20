@@ -9426,13 +9426,13 @@ functions which can speed up workflow.")
 (define-public r-pagoda2
   (package
     (name "r-pagoda2")
-    (version "1.0.12")
+    (version "1.0.13")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pagoda2" version))
        (sha256
-        (base32 "1kck12ri52nwsrxhjs8ghjji3rv1dxxjy8bxn1kk1hbg30265fsw"))))
+        (base32 "0c55wzq8i7lrq2s5h2vjvza8iryfk872kymbsisqkfy0k90275fg"))))
     (properties `((upstream-name . "pagoda2")))
     (build-system r-build-system)
     (propagated-inputs
@@ -9460,7 +9460,7 @@ functions which can speed up workflow.")
            r-rtsne
            r-sccore
            r-urltools))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-dplyr r-testthat))
     (home-page "https://github.com/kharchenkolab/pagoda2")
     (synopsis "Single cell analysis and differential expression")
     (description
