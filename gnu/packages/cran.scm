@@ -29520,13 +29520,13 @@ efficient computation even with very large data sets.")
 (define-public r-sjplot
   (package
     (name "r-sjplot")
-    (version "2.8.17")
+    (version "2.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sjPlot" version))
        (sha256
-        (base32 "0rai02bnqj5q829f35vw1z779cyw4rx84w6ngv7mpiagw3nb6agj"))))
+        (base32 "0a7i9klzhjlc5bgwsrm7vqnrrzkkw92pn0s7dhaphwh4zhfc39jd"))))
     (properties `((upstream-name . "sjPlot")))
     (build-system r-build-system)
     (propagated-inputs
@@ -29537,7 +29537,6 @@ efficient computation even with very large data sets.")
            r-ggplot2
            r-insight
            r-knitr
-           r-mass
            r-parameters
            r-performance
            r-purrr
