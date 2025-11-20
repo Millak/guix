@@ -25270,17 +25270,17 @@ statistic, and one based on variance estimators.")
 (define-public r-fansi
   (package
     (name "r-fansi")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fansi" version))
        (sha256
         (base32
-         "0qqq8gz6sfr5yib4qmvk458qa0ypaz0n7f2ygjnpy2p5vy8cd7ga"))))
+         "14mp9vmbff1q67mgq6912fs4nr6bqaaln084r0qisp7b783kz91j"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr)) ; for vignettes
+     (list r-knitr r-unitizer)) ; for vignettes
     (home-page "https://github.com/brodieG/fansi")
     (synopsis "ANSI control sequence aware string functions")
     (description
