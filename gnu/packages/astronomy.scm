@@ -7289,26 +7289,41 @@ spectra, and data.")
 (define-public python-pyvo
   (package
     (name "python-pyvo")
-    (version "1.7.1")
+    (version "1.8")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyvo" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/astropy/pyvo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1zr1vwcpypr6hr9h02gprchrhcah1vffcxjvqg9xl2yxj48qzpa1"))))
+        (base32 "0ks1542i85y042yny3ka6gsrgy7pyv0xdaclirmvqrkakikhv70b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 430 passed, 56 skipped, 1 xfailed
       #:test-flags
-      #~(list "--pyargs" "pyvo"
-              ;; XXX: Some data file was not copied in install phase:
-              ;; urllib.error.URLError: <urlopen error [Errno 2] No such file
-              ;; or directory
-              ;; <.../lib/python3.11/site-packages/pyvo/mivot/writer/mivot-v1.xsd>.
-              "-k" (string-join
-                    (list "not test_all_properties"
-                          "test_extraction_from_votable_header")
-                    " and not "))))
+      #~(list "--pyargs" "pyvo")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (add-after 'install 'include-package-data
+            ;; FIXME: Check why pyproject-build-system ignores coping some
+            ;; package data files during build/install phases.
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (for-each
+               (lambda (file)
+                 (install-file file
+                            (string-append (site-packages inputs outputs)
+                                           "/pyvo/mivot/writer/")))
+               (find-files "pyvo/mivot/writer" "\\.xsd$"))))
+          (add-before 'check 'post-check
+            (lambda _
+              (for-each delete-file-recursively
+                        (find-files #$output "__pycache__" #:directories? #t)))))))
     (native-inputs
      (list python-pytest-astropy
            python-pytest-doctestplus
