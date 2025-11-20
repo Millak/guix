@@ -2001,13 +2001,13 @@ labels on the node can also be achieved.")
 (define-public r-collapse
   (package
     (name "r-collapse")
-    (version "2.1.4")
+    (version "2.1.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "collapse" version))
        (sha256
-        (base32 "1p2zqzj4ghkkwn8fs5pwy0w8flgldvkkbx0ql703cdlp22nyiihn"))))
+        (base32 "0cyv0cj314dj5bnxdwqlzl6p97d1rnqbximyshkhc147hzsylx2n"))))
     (properties `((upstream-name . "collapse")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
