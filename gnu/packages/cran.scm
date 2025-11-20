@@ -16906,13 +16906,13 @@ print, summary, etc.")
 (define-public r-lambertw
   (package
     (name "r-lambertw")
-    (version "0.6.9-1")
+    (version "0.6.9-2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "LambertW" version))
               (sha256
                (base32
-                "19j6vjhywyzmrf7rsrx5kf0hg8cpk1gn8al24q813jzp0vsv9ljj"))))
+                "0ahixw858mzl4fvf77lk51dgq9wg0v5az2327ic7ng63wrzkmcx7"))))
     (properties `((upstream-name . "LambertW")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2
@@ -16921,7 +16921,7 @@ print, summary, etc.")
                              r-rcolorbrewer
                              r-rcpp
                              r-reshape2))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-boot r-knitr r-testthat))
     (home-page "https://cran.r-project.org/package=LambertW")
     (synopsis
      "Probabilistic models to analyze and Gaussianize heavy-tailed, skewed data")
