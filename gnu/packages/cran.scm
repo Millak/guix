@@ -49159,13 +49159,13 @@ to speed up repeated queries of the same set of target points.")
 (define-public r-nada
   (package
     (name "r-nada")
-    (version "1.6-1.1")
+    (version "1.6-1.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "NADA" version))
               (sha256
                (base32
-                "0jp4mqr77cx7q5lff84s6wb0dwjy9mi0jyhbjc5fsx50bdczc3v7"))))
+                "1d72mjjg9flzhzqc6sgcsvx0fwj3gy4sj38wrs2mja40r1mwczc3"))))
     (properties `((upstream-name . "NADA")))
     (build-system r-build-system)
     (propagated-inputs (list r-survival))
