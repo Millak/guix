@@ -7308,13 +7308,13 @@ pseudo-cells, and downsampling of the count matrix.")
 (define-public r-dsb
   (package
     (name "r-dsb")
-    (version "2.0.0")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dsb" version))
        (sha256
-        (base32 "1c4734q7xh772hy1wmyifp9mzd4d13laf79zf1s650zn364apqvz"))))
+        (base32 "1s02jigpv9ycf43y3l9qzrdbhwbjq75zdqv7glrq409nnlq5qp9h"))))
     (properties `((upstream-name . "dsb")))
     (build-system r-build-system)
     (propagated-inputs (list r-limma r-magrittr r-mclust))
