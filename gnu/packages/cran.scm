@@ -44199,18 +44199,18 @@ different conceptual parts of the algorithm.")
 (define-public r-shapes
   (package
     (name "r-shapes")
-    (version "1.2.7")
+    (version "1.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "shapes" version))
        (sha256
         (base32
-         "155q6asc9202f85snyjaxhm8qpj7swgzhg95sisjy506gvcb6c8z"))))
+         "0crk8rrdjmfdx7xwk7wvl1y3zjwapvx48f5j1gi3cj4gpsmz279b"))))
     (properties `((upstream-name . "shapes")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-mass r-minpack-lm r-rgl r-scatterplot3d))
+     (list r-fitdistrplus r-mass r-minpack-lm r-rgl r-scatterplot3d))
     (home-page "https://www.maths.nottingham.ac.uk/~ild/shapes")
     (synopsis "Statistical shape analysis")
     (description
