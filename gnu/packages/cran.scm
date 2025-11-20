@@ -40467,14 +40467,14 @@ leidenalg distribution and functions from the R igraph package.")
 (define-public r-patchwork
   (package
     (name "r-patchwork")
-    (version "1.3.0")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "patchwork" version))
        (sha256
         (base32
-         "05ifwnrvlxk95nafvba09i7gq35i5xyxja51bfdvvkmalk26xbvp"))))
+         "1sr7zsddy4v7xlx7w16mq9lgf07hdcg8cz1ilvqs9lb9znn6ki0f"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-farver r-ggplot2 r-gtable r-rlang))
