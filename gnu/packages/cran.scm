@@ -17662,19 +17662,19 @@ integer/binary, semi-continuous and @acronym{SOS, special ordered sets} models."
 (define-public r-limsolve
   (package
     (name "r-limsolve")
-    (version "1.5.7.2")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "limSolve" version))
        (sha256
         (base32
-         "1pdsvynqvx43dc0zlw9k2np3wdlr5pva8gl5b387wzglh5dyarx2"))))
+         "0f7r5bkshgwjsyiwazyqxf0bg703f6q3j80318l3964c4vw51519"))))
     (properties `((upstream-name . "limSolve")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lpsolve r-mass r-quadprog))
-    (native-inputs (list gfortran))
+    (native-inputs (list gfortran r-knitr))
     (home-page "https://cran.r-project.org/web/packages/limSolve")
     (synopsis "Solving linear inverse models")
     (description
