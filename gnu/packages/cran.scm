@@ -23822,13 +23822,13 @@ and @code{format_iso_8601} formats a date in ISO 8601 format.")
 (define-public r-adbcdrivermanager
   (package
     (name "r-adbcdrivermanager")
-    (version "0.20.0")
+    (version "0.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "adbcdrivermanager" version))
        (sha256
-        (base32 "11ss7k6b54vabsm4854xr1lkrpw9pb0g6m71428xcxlz3pylzc0k"))))
+        (base32 "15iwwlrs5xc3fil4bi57pf919hwdaphgk9y6xh3ibjh5rjqa69p9"))))
     (properties `((upstream-name . "adbcdrivermanager")))
     (build-system r-build-system)
     (propagated-inputs (list r-nanoarrow))
