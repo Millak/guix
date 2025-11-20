@@ -2996,13 +2996,13 @@ visualization of their differences.")
 (define-public r-digest
   (package
     (name "r-digest")
-    (version "0.6.38")
+    (version "0.6.39")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "digest" version))
        (sha256
-        (base32 "05a2ggzlrpp2sfiyyqrih5y46853smsi42j0867nndk5s2rm0v1y"))))
+        (base32 "1j8k1b4pkygdxbyz4dwlilkm7gbblnymirzs71qhf5rdkfs4iw4b"))))
     (build-system r-build-system)
     ;; Vignettes require r-knitr, which requires r-digest, so we have to
     ;; disable them and the tests.
