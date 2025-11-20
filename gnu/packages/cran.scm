@@ -37344,14 +37344,14 @@ interaction search in high-dimensional data.")
 (define-public r-extrafontdb
   (package
     (name "r-extrafontdb")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "extrafontdb" version))
        (sha256
         (base32
-         "115n42hfvv5h4nn4cfkfmkmn968py4lpy8zd0d6w5yylwpzbm8gs"))))
+         "1vy3mfns4pcirngg3p93jh7yqlhd92y4n4n6vpiy33lpf90kkn41"))))
     (build-system r-build-system)
     (home-page "https://github.com/wch/extrafontdb")
     (synopsis "Database for the extrafont package")
