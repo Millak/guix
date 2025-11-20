@@ -27716,16 +27716,16 @@ interactive elements is also provided as a fallback solution.")
 (define-public r-svunit
   (package
     (name "r-svunit")
-    (version "1.0.6")
+    (version "1.0.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "svUnit" version))
        (sha256
-        (base32 "08nmlbdrmmz04ira30721l99i74w07w2avdr4pypswf2sq1nqgi6"))))
+        (base32 "1lkgaz3f0sa93mx56ybbgjwg98w6nxvlvby42v5z9ffwyjhcpbra"))))
     (properties `((upstream-name . "svUnit")))
     (build-system r-build-system)
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-devtools r-knitr r-spelling))
     (home-page "https://github.com/SciViews/svUnit")
     (synopsis "Unit, integration and system testing")
     (description
