@@ -51695,14 +51695,14 @@ use on EC2 instances, the package 'aws.ec2metadata' is suggested.")
 (define-public r-aws-s3
   (package
     (name "r-aws-s3")
-    (version "0.3.21")
+    (version "0.3.22")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "aws.s3" version))
        (sha256
         (base32
-         "132cczq0ml7lpp2yl6l4p99dn1zihrncnpa6wyad4m9mnr50a8dx"))))
+         "1s3gjq7jk1bbbb4acjlkbm7kfd1i79m1x9adkgpwsinvmi63my0l"))))
     (properties `((upstream-name . "aws.s3")))
     (build-system r-build-system)
     ;; 3/5 tests require Internet access.
