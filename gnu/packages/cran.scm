@@ -40622,13 +40622,13 @@ dataset-specific factors.")
 (define-public r-harmony
   (package
     (name "r-harmony")
-    (version "1.2.3")
+    (version "1.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "harmony" version))
        (sha256
-        (base32 "1pdxdfk6xcaza66ibilspsn3db9w9kxf73dl5dmp59k00amibf4s"))))
+        (base32 "0ipkj6wqgxvgrk2617gfwf5p9wnvj7zlq6pdgim73rihd0avgp4s"))))
     (properties `((upstream-name . "harmony")))
     (build-system r-build-system)
     (propagated-inputs (list r-cowplot
