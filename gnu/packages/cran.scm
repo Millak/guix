@@ -6351,13 +6351,13 @@ designed by Cynthia Brewer as described at http://colorbrewer2.org")
 (define-public r-reshape2
   (package
     (name "r-reshape2")
-    (version "1.4.4")
+    (version "1.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "reshape2" version))
        (sha256
-        (base32 "1n0jrajpvc8hjkh9z4g8bwq63qy5vy5cgl2pzjardyih4ngcz3fq"))))
+        (base32 "1vwcnq9zp5np01vs32vnm8xankiak21fgs147hxhgrak076mmb8f"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-plyr r-rcpp r-stringr))
