@@ -15713,14 +15713,14 @@ expressed genes in DNA microarray experiments.")
 (define-public r-ggm
   (package
     (name "r-ggm")
-    (version "2.5.1")
+    (version "2.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggm" version))
        (sha256
         (base32
-         "1bp00m93mrx33gpd36qnrxx60y17aimlh6bd36cqyh6vpf0vpfvg"))))
+         "0nv5m7f2kbjr0abfpcb18g1291ghphpzx0ixf7fpk23ia6xqwvyy"))))
     (properties `((upstream-name . "ggm")))
     (build-system r-build-system)
     (propagated-inputs
