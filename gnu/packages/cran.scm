@@ -16806,14 +16806,14 @@ package also provides a C++ API, that works with or without Rcpp.")
 (define-public r-ggally
   (package
     (name "r-ggally")
-    (version "2.2.1")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "GGally" version))
        (sha256
         (base32
-         "1il6yphqxcyj1039imi8pn6ygyni24daz8ljxxp3z9inb5k2dcwb"))))
+         "10kkiym7k368fkczqpg7wynsjd15fvbsrkj9mvz0n8hc1qb5im68"))))
     (properties
      '((upstream-name . "GGally")
        (updater-extra-native-inputs
@@ -16822,20 +16822,29 @@ package also provides a C++ API, that works with or without Rcpp.")
     (inputs
      (list openssl))
     (propagated-inputs
-     (list r-dplyr
+     (list r-cli
+           r-dplyr
            r-ggplot2
            r-ggstats
            r-gtable
            r-lifecycle
            r-magrittr
-           r-plyr
            r-progress
            r-rcolorbrewer
            r-rlang
+           r-s7
            r-scales
            r-tidyr))
     (native-inputs
-     (list r-broom r-network r-scales r-sna r-survival r-testthat r-vdiffr))
+     (list r-broom
+           r-crosstalk
+           r-network
+           r-scales
+           r-sna
+           r-spelling
+           r-survival
+           r-testthat
+           r-vdiffr))
     (home-page "https://ggobi.github.io/ggally")
     (synopsis "Extension to ggplot2")
     (description
