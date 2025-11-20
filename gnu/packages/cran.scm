@@ -15763,13 +15763,13 @@ performs global optimization by differential evolution.")
 (define-public r-rcppdist
   (package
     (name "r-rcppdist")
-    (version "0.1.1")
+    (version "0.1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RcppDist" version))
        (sha256
-        (base32 "02g57xwfipdcljv06krhm02dbqn9kfyj2km6rdg0a7vq9prwdz1x"))))
+        (base32 "1bh93c9wfjcq9qrg6qwh0i8vmx6pknxph007yrf596vv43frkzdf"))))
     (properties `((upstream-name . "RcppDist")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp r-rcpparmadillo))
