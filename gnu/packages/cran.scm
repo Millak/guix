@@ -21556,13 +21556,13 @@ and second order derivatives.")
 (define-public r-numero
   (package
     (name "r-numero")
-    (version "1.9.8")
+    (version "1.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Numero" version))
        (sha256
-        (base32 "038nyc1chis326kgdbwzl0w24v7pk3cdwb5x94q2g6lvf5ffh5y3"))))
+        (base32 "1f04xn3gajhm4kykjdvxshi13yzq8qvn0y3x4imvwn4jaa1p3zsn"))))
     (properties `((upstream-name . "Numero")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
