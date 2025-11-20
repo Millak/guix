@@ -2334,13 +2334,13 @@ dplyr for backward compatibility.")
 (define-public r-cubist
   (package
     (name "r-cubist")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Cubist" version))
        (sha256
-        (base32 "0m3jwhpa6kmaiqknms49rh0mjsrmh1cimy06gfdyjx5kcv1an4kw"))))
+        (base32 "12nbag4ixdl6p4ssv434pkkx1pwiia11w4lzbl6ccgn1fl0ss20c"))))
     (properties `((upstream-name . "Cubist")))
     (build-system r-build-system)
     (propagated-inputs (list r-lattice r-reshape2))
