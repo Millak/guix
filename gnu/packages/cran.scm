@@ -30901,13 +30901,13 @@ isosurfaces.")
 (define-public r-missforest
   (package
     (name "r-missforest")
-    (version "1.5")
+    (version "1.6.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "missForest" version))
               (sha256
                (base32
-                "13c38hpl60ca1kwyv61cxsla6ccmsj4qzp0vrxcq7b827fh5aw21"))))
+                "17vkw2fkca7ixf1jzzswwlkybav9ij6rhmkx6kikskv91k0i6nl9"))))
     (properties `((upstream-name . "missForest")))
     (build-system r-build-system)
     (propagated-inputs
@@ -30915,7 +30915,9 @@ isosurfaces.")
            r-foreach
            r-iterators
            r-itertools
-           r-randomforest))
+           r-randomforest
+           r-ranger
+           r-rdpack))
     (home-page "https://github.com/stekhoven/missForest")
     (synopsis "Nonparametric missing value imputation using Random Forest")
     (description
