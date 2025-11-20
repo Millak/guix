@@ -5724,14 +5724,14 @@ showing the progress is useful e.g. bootstrap.")
 (define-public r-pbkrtest
   (package
     (name "r-pbkrtest")
-    (version "0.5.4")
+    (version "0.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pbkrtest" version))
        (sha256
         (base32
-         "08nq4fjgh4156cpw1y9x10bk13j98ix5xr36cdbhyd3cfvskyind"))))
+         "06y5kcq0y2j8bc5hmvrsv4wjbmir8i1y7s5xhjhvnwzxlvq8wv6j"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-broom
