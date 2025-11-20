@@ -52027,13 +52027,13 @@ the performance of optimized feature sets with nested resampling.")
 (define-public r-mlr3hyperband
   (package
     (name "r-mlr3hyperband")
-    (version "0.6.0")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3hyperband" version))
        (sha256
-        (base32 "1sr9bccy1zmbj83i6nlwkfmi98b40bl1l9q4lzl8n0knnavnzcj7"))))
+        (base32 "0nlapgpr4vqh4q7sbi9dwcwpa5hj7wlg5q7fa1dalhlk1ikrigqm"))))
     (properties
      '((upstream-name . "mlr3hyperband")
        (updater-extra-native-inputs . ("r-emoa"))))
@@ -52046,8 +52046,15 @@ the performance of optimized feature sets with nested resampling.")
                              r-mlr3misc
                              r-mlr3tuning
                              r-paradox
-                             r-r6))
-    (native-inputs (list r-emoa r-mlr3pipelines r-testthat))
+                             r-r6
+                             r-uuid))
+    (native-inputs (list r-emoa
+                         r-mirai
+                         r-mlr3learners
+                         r-mlr3pipelines
+                         r-redux
+                         r-rush
+                         r-testthat))
     (home-page "https://mlr3hyperband.mlr-org.com")
     (synopsis "Hyperband for mlr3")
     (description
