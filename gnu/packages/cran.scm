@@ -51258,13 +51258,13 @@ other R users.")
 (define-public r-seurat
   (package
     (name "r-seurat")
-    (version "5.3.0")
+    (version "5.3.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "Seurat" version))
               (sha256
                (base32
-                "19q8k4bz6r7748sx8574pan1fns0rd7fg1w309rhz8sax9nazaqj"))))
+                "08xj5nwadbxj6jl2jwly6yq3q2gl48qlxlc00ygxiwnf7jlwnjim"))))
     (properties
      '((upstream-name . "Seurat")
        (updater-ignored-native-inputs . ("r-singlecellexperiment"))))
