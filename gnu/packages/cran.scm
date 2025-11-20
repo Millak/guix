@@ -50154,14 +50154,14 @@ pipeline friendly so that data processing with lists can be chained.")
 (define-public r-rsample
   (package
     (name "r-rsample")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rsample" version))
        (sha256
         (base32
-         "14f9m82c0j3r3z0wdk4jialfi4khnpznhfxca4cj64qgj5wxzx7k"))))
+         "0c34y1qi25q5idp19iba8p5vw86p35p40gb7xv3hka2h0gczncbb"))))
     (properties `((upstream-name . "rsample")))
     (build-system r-build-system)
     (propagated-inputs
