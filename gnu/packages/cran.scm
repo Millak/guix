@@ -10237,13 +10237,13 @@ expression analysis and visualization of such data.")
 (define-public r-greg
   (package
     (name "r-greg")
-    (version "2.0.2")
+    (version "2.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Greg" version))
        (sha256
-        (base32 "13rsah8vf9s8wpkr5hlayyqa8v728cz80bvpg8vmlvnam8isb30s"))))
+        (base32 "08ffl84j4qn5g8mm6gyv6l5y648wx8n35m8acxyac8j1z56iankw"))))
     (properties `((upstream-name . "Greg")))
     (build-system r-build-system)
     (propagated-inputs (list r-broom
@@ -10264,7 +10264,7 @@ expression analysis and visualization of such data.")
                              r-tibble
                              r-tidyr
                              r-tidyselect))
-    (native-inputs (list r-boot r-knitr r-testthat r-tidyverse))
+    (native-inputs (list r-boot r-knitr r-survival r-testthat r-tidyverse))
     (home-page "http://gforge.se")
     (synopsis "Regression helper functions")
     (description
