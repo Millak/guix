@@ -34131,14 +34131,14 @@ number of epidemiological data sets.")
 (define-public r-ppls
   (package
     (name "r-ppls")
-    (version "1.6-1.1")
+    (version "2.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ppls" version))
        (sha256
         (base32
-         "1zyrisy3c4cz896j1bjh61sf57wdl9p8ywdq268cl819szfq78mx"))))
+         "0yabadgrpx2cwk2nj0f858h8cnsm0k7crk4n7r13khpkwxfkmkg9"))))
     (build-system r-build-system)
     (propagated-inputs (list r-mass))
     (home-page "https://cran.r-project.org/web/packages/ppls")
