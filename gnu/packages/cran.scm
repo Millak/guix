@@ -15624,18 +15624,18 @@ you to rapidly iterate while developing a package.")
 (define-public r-pki
   (package
     (name "r-pki")
-    (version "0.1-14")
+    (version "0.1-15")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "PKI" version))
        (sha256
-        (base32 "0rkr3gf5aqkrxi134kwggsyj151nwcwndy8d8q2vfy5rfwcyh960"))))
+        (base32 "1c77y7pplnxiy7q6w1ic5k0fdgd427qqx6f99rp0m4s59q2jf3cd"))))
     (properties `((upstream-name . "PKI")))
     (build-system r-build-system)
     (inputs (list openssl zlib))
     (propagated-inputs (list r-base64enc))
-    (native-inputs (list pkg-config))
+    (native-inputs (list pkg-config r-gmp))
     (home-page "http://www.rforge.net/PKI")
     (synopsis "Public Key Infrastructure for R based on the X.509 standard")
     (description
