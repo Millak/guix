@@ -2996,20 +2996,20 @@ visualization of their differences.")
 (define-public r-digest
   (package
     (name "r-digest")
-    (version "0.6.37")
+    (version "0.6.38")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "digest" version))
        (sha256
-        (base32 "0883iyjbd50f0gwz6hgdmcsrk0i0fkjaix9hz6d4m2jbk54x3i42"))))
+        (base32 "05a2ggzlrpp2sfiyyqrih5y46853smsi42j0867nndk5s2rm0v1y"))))
     (build-system r-build-system)
     ;; Vignettes require r-knitr, which requires r-digest, so we have to
     ;; disable them and the tests.
     (arguments
      `(#:tests? #f
        #:configure-flags (list "--no-build-vignettes")))
-    (native-inputs (list r-simplermarkdown))
+    (native-inputs (list r-simplermarkdown r-tinytest))
     (home-page "https://dirk.eddelbuettel.com/code/digest.html")
     (synopsis "Create cryptographic hash digests of R objects")
     (description
