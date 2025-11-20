@@ -942,7 +942,7 @@ bytevector) as its internal buffer, and a thunk to flush this output port."
   (define name
     (operation (name args ...) docstring return ...)))
 
-(define-operation (valid-path? (string path))
+(define-operation (valid-path? (utf8-string path))
   "Return #t when PATH designates a valid store item and #f otherwise (an
 invalid item may exist on disk but still be invalid, for instance because it
 is the result of an aborted or failed build.)
@@ -957,7 +957,7 @@ store directory (/gnu/store)."
 
 (define hash-part->path
   (let ((query-path-from-hash-part
-         (operation (query-path-from-hash-part (string hash))
+         (operation (query-path-from-hash-part (utf8-string hash))
                     #f
                     store-path)))
    (lambda (server hash-part)
@@ -975,7 +975,7 @@ string).  Return the empty string if no such path exists."
   ;; A memoizing version of `add-to-store', to avoid repeated RPCs with
   ;; the very same arguments during a given session.
   (let ((add-text-to-store
-         (operation (add-text-to-store (string name) (bytevector text)
+         (operation (add-text-to-store (utf8-string name) (bytevector text)
                                        (string-list references))
                     #f
                     store-path))
@@ -1054,10 +1054,10 @@ path."
            (let ((port (store-connection-socket server))
                  (buffered (store-connection-output-port server)))
              (write-value integer (operation-id add-to-store) buffered)
-             (write-value string basename buffered)
+             (write-value utf8-string basename buffered)
              (write-value integer 1 buffered)                   ;obsolete, must be #t
              (write-value boolean recursive? buffered)
-             (write-value string hash-algo buffered)
+             (write-value utf8-string hash-algo buffered)
              (write-file file-name buffered #:select? select?)
              (write-buffered-output server)
              (let loop ((done? (process-stderr server)))
@@ -1168,10 +1168,10 @@ an arbitrary directory layout in the store without creating a derivation."
         (let ((port (store-connection-socket server))
               (buffered (store-connection-output-port server)))
           (write-value integer (operation-id add-to-store) buffered)
-          (write-value string basename buffered)
+          (write-value utf8-string basename buffered)
           (write-value integer 1 buffered)                      ;obsolete, must be #t
           (write-value integer (if recursive? 1 0) buffered)
-          (write-value string hash-algo buffered)
+          (write-value utf8-string hash-algo buffered)
           (write-file-tree basename buffered
                            #:file-type+size file-type+size
                            #:file-port file-port
@@ -1415,7 +1415,7 @@ potential roots that do not point to store items."
 Return #t."
   boolean)
 
-(define-operation (add-indirect-root (string file-name))
+(define-operation (add-indirect-root (utf8-string file-name))
   "Make the symlink FILE-NAME an indirect root for the garbage collector:
 whatever store item FILE-NAME points to will not be collected.  Return #t on
 success.

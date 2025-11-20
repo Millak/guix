@@ -353,7 +353,7 @@ value."
   (long-long       read-long-long write-long-long)
   (boolean         read-boolean write-boolean)
   (bytevector      read-byte-string write-bytevector)
-  (string          read-string write-string)
+  (utf8-string     read-string write-string)   ;avoid name clash with 'string'
   (string-list     read-string-list write-string-list)
   (string-pairs    read-string-pairs write-string-pairs)
   (store-path      read-store-path write-store-path)
