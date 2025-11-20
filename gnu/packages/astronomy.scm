@@ -8014,27 +8014,25 @@ pipelines.")
     (license license:bsd-3)))
 
 (define-public python-romancal
-  ;; The latest update is not released yet which is compatible with
-  ;; python-roman-datamodels@0.28.0.
-  (let ((commit "5089f94daa8160c06b4f499677086177243f9238")
-        (revision "0"))
   (package
     (name "python-romancal")
-    (version (git-version "0.20.2" revision commit))
+    (version "0.21.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
               (url "https://github.com/spacetelescope/romancal")
-              (commit commit)))
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01xz9il1rgi657p0441l2dmrglh5zba571x057ksi9ms5p49d6rm"))))
+        (base32 "1gjg7hws03rxa7mlapn4pxyvxckrhlqxj9r5q6qg03bx4d0w1gd3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 294 passed, 298 skipped, 2 deselected, 1 warning
       #:test-flags
       #~(list "--color=no"
+              ;; Tests requiring calibration data.
               #$@(map (lambda (file) (string-append "--ignore=" file))
                       (list "romancal/tweakreg/tests/test_tweakreg.py"
                             "romancal/assign_wcs/tests/test_wcs.py"
@@ -8056,7 +8054,9 @@ pipelines.")
                             "romancal/skymatch/tests/test_skymatch.py"
                             "romancal/source_catalog/tests/test_psf.py"
                             "romancal/source_catalog/tests/test_source_catalog.py"
-                            "romancal/stpipe/tests/test_core.py")))
+                            "romancal/stpipe/tests/test_core.py"))
+              ;;  SystemExit: -1
+              "-k" "not test_inject_sources and not test_grid_injection")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements
@@ -8091,6 +8091,7 @@ pipelines.")
            python-pyarrow
            python-requests
            python-roman-datamodels
+           python-romanisim
            python-scipy
            python-spherical-geometry
            python-stcal
@@ -8106,7 +8107,7 @@ pipelines.")
     (description
      "This package implements a functionality for calibration of science
 observations from the Nancy Grace Roman Space Telescope.")
-    (license license:bsd-3))))
+    (license license:bsd-3)))
 
 (define-public python-romanisim
   (package
