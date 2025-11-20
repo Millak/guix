@@ -12633,13 +12633,13 @@ functions make it easy to control additional request components.")
 (define-public r-httr2
   (package
     (name "r-httr2")
-    (version "1.1.2")
+    (version "1.2.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "httr2" version))
               (sha256
                (base32
-                "17bzggypradnfgrmswjlj5fd0vcvi2nhx28frfy8cr17fj15102r"))))
+                "07l3zlj45bykia7abc92s4d91z379zvh6iz9pm0hyx07amzw6a17"))))
     (properties
      `((upstream-name . "httr2")
        ;; r-common doesn't exist, and r-nanonext isn't needed.
