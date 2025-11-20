@@ -11888,13 +11888,13 @@ previously been used in XCMS.")
 (define-public r-numbat
   (package
     (name "r-numbat")
-    (version "1.4.2")
+    (version "1.5.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "numbat" version))
               (sha256
                (base32
-                "0a78iwr23nandzq6jk8lnh6qdaq99060j41klf8bzl7rmn43h4d6"))))
+                "1p93jd009y0pymh08s8903pldh7c142icz7jvjbmmn5ayg9ayz39"))))
     (properties `((upstream-name . "numbat")))
     (build-system r-build-system)
     (propagated-inputs (list r-ape
