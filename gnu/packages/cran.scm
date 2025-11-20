@@ -27689,13 +27689,13 @@ calls to the particular toolkits in use in function of the context.")
 (define-public r-svdialogs
   (package
     (name "r-svdialogs")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "svDialogs" version))
        (sha256
-        (base32 "0z3a5glsi0ab43mdk2yvslxyzg12nbqqqc35jvgzj475mpkbgjif"))))
+        (base32 "07b7rmvkbc0g7vhxzc387qgxnny33r2jxbxmad4wg92ip0sfg447"))))
     (properties `((upstream-name . "svDialogs")))
     (build-system r-build-system)
     (inputs
@@ -27703,7 +27703,7 @@ calls to the particular toolkits in use in function of the context.")
     (propagated-inputs
      (list r-rstudioapi r-svgui))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-spelling r-testthat))
     (home-page "https://github.com/SciViews/svDialogs/")
     (synopsis "Portable dialog boxes")
     (description
