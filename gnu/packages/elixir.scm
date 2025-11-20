@@ -9,7 +9,7 @@
 ;;; Copyright © 2021 Cees de Groot <cg@evrl.com>
 ;;; Copyright © 2024 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2024, 2025 Ivan Sokolov <ivan-p-sokolov@ya.ru>
-;;; Copyright © 2024, 2025 Igor Goryachev <igor@goryachev.org>
+;;; Copyright © 2024, 2025 Igorj Gorjaĉev <igor@goryachev.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,7 +41,7 @@
 (define-public elixir
   (package
     (name "elixir")
-    (version "1.18.4")
+    (version "1.19.3")
     (source
      (origin
        (method git-fetch)
@@ -50,7 +50,7 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0861h06x1594jsqq21lkmd96yvlfhfngrrxm6fwpqifzw4ij02iz"))
+        (base32 "1y5h1vn0r735g64xszz96l2cfs2c5lspglhh8syhpabx1a15vvw4"))
        (patches (search-patches "elixir-path-length.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -89,7 +89,14 @@
                     "; fi\n")))
                 (substitute* "bin/mix"
                   (("#!/usr/bin/env elixir")
-                   (string-append "#!" #$output "/bin/elixir")))))
+                   (string-append "#!" #$output "/bin/elixir")))
+                ;; We should not break the formatting, so we need to patch
+                ;; the following more accurately.
+                (substitute* "lib/mix/test/mix/tasks/cmd_test.exs"
+                 (("File\\.mkdir_p!\\(\"priv\"\\)" all)
+                   (string-append all "\n      sh = \""
+                                  (search-input-file inputs "/bin/sh") "\""))
+                 (("#!/bin/sh") "#!#{sh}"))))
             (add-after 'replace-paths 'pre-install-source
               (lambda* (#:key outputs #:allow-other-keys)
                 (copy-recursively
