@@ -36020,14 +36020,14 @@ interface for asynchronous rendering of R graphics.")
 (define-public r-units
   (package
     (name "r-units")
-    (version "0.8-7")
+    (version "1.0-0")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "units" version))
         (sha256
           (base32
-            "0r3vja9f031ij3k0rjp5j4zw1zmkfnh0s9mhi4amwfjr1dnxpg9q"))))
+            "1fjrpcd7jjb14ichda22fwbcayhbh7i4p4qlsf3ldgjyb5h3arzw"))))
     (build-system r-build-system)
     (inputs
      (list udunits))
