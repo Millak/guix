@@ -14593,14 +14593,14 @@ also @code{std::format()} in C++20 or later).")
 (define-public r-spelling
   (package
     (name "r-spelling")
-    (version "2.3.1")
+    (version "2.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spelling" version))
        (sha256
         (base32
-         "1mww2czkfrb1xvjbks7g1xhr8nx1v9mikb2lc3ynn6j2rp9zgwgp"))))
+         "0jq2xgj0lvnc3ran4f3nymwv756ymdlp8vwfjj1kzs6mgx6yawbm"))))
     (properties `((upstream-name . "spelling")))
     (build-system r-build-system)
     (propagated-inputs
