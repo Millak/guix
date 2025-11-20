@@ -18934,13 +18934,13 @@ common building block for fitting psychometric mixture models in package
 (define-public r-psychotree
   (package
     (name "r-psychotree")
-    (version "0.16-1")
+    (version "0.16-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "psychotree" version))
        (sha256
-        (base32 "04ipl6kadfvyl28wx8jbpisb4pcswrwq1qiqm90h47ldbnmha932"))))
+        (base32 "0v3hcrvscdd6m6g37ihacr33bfs6vmbvfb1yd17hyj4a77xzdnzb"))))
     (properties `((upstream-name . "psychotree")))
     (build-system r-build-system)
     (propagated-inputs (list r-formula r-partykit r-psychotools))
