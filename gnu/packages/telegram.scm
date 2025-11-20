@@ -882,54 +882,6 @@ formerly a part of telegram-cli, but now being maintained separately.")
       (home-page "https://github.com/vysheng/tg")
       (license license:gpl2+))))
 
-(define-public tgcli
-  (package
-    (name "tgcli")
-    (version "0.3.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/erayerdin/tgcli")
-         (commit (string-append "v" version))))
-       (file-name
-        (git-file-name name version))
-       (sha256
-        (base32 "082zim7rh4r8qyscqimjh2sz7998vv9j1i2y2wwz2rgrlhkhly5r"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; Test requirements referes to specific versions of packages,
-         ;; which are too old. So we patch them to refer to any later versions.
-         (add-after 'unpack 'patch-test-requirements
-           (lambda _
-             (substitute* "dev.requirements.txt"
-               (("==") ">="))))
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "tests")))))))
-    (native-inputs
-     `(("coveralls" ,python-coveralls)
-       ("pytest" ,python-pytest)
-       ("pytest-click" ,python-pytest-click)
-       ("pytest-cov" ,python-pytest-cov)
-       ("mkdocs" ,python-mkdocs)
-       ("mkdocs-material" ,python-mkdocs-material)
-       ("requests-mock" ,python-requests-mock)))
-    (propagated-inputs
-     `(("click" ,python-click)
-       ("colorful" ,python-colorful)
-       ("requests" ,python-requests)
-       ("yaspin" ,python-yaspin)))
-    (home-page "https://tgcli.readthedocs.io")
-    (synopsis "Telegram Terminal Application")
-    (description "TgCli is a telegram client to automate repetitive tasks.")
-    (license license:asl2.0)))
-
 (define-public tgs2png
   (let ((commit "25c15b7c2ca3b1a580a383d9d3cb13bf8531d04a")
         (revision "0"))
