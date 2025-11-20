@@ -5361,7 +5361,7 @@ milliarcsecond).")
     (arguments
      (list
       ;; FIXME: OSError: [Errno 30] Read-only file system:
-      ;; '/gnu/store/4az2pl6mslrdh9wcxd5r3dmr4spr5y94-python-3.11.11/lib/python3.11/@test_43_tmpæ.pyc'
+      ;; '/gnu/store/<hash>-python-3.11.11/lib/python3.11/@test_43_tmpæ.pyc'
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases

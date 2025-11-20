@@ -766,7 +766,7 @@ language.")
                 ;; modules disabled by GO111MODULE=off; see 'go help modules'
                 "TestRelease_gitRepo_uncommittedChanges"
                 ;; constraints_test.go:104:
-                ;; /gnu/store/vr0097qq0kl1ansn6iv5smysjh9v7ycd-go-1.24.3/lib/go/bin/go
+                ;; /gnu/store/<hash>-go-1.24.3/lib/go/bin/go
                 ;; mod tidy: exit status 1 go: modules disabled by
                 ;; GO111MODULE=off; see 'go help modules'
                 "TestFailure")

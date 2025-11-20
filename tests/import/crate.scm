@@ -293,8 +293,9 @@ version = \"25.2.0\"\n" port)))
     (mock
      ((guix scripts download) guix-download
       (lambda _
-        (format #t "~a~%~a~%"
-                "/gnu/store/in056fyrz6nvy3jpxrxglgj30g0lwniv-smithay-0cd3345"
+        (format #t "~a/~a~%~a~%"
+                "/gnu/store"
+                "in056fyrz6nvy3jpxrxglgj30g0lwniv-smithay-0cd3345"
                 "191h87bpzg0l1ihfb4hmx00b86pfb5mwwc6s8i49al0vigc14l37")))
      (let-values
          (((source-expressions cargo-inputs-entry)
