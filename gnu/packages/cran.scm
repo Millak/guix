@@ -26569,13 +26569,13 @@ cross-validation.")
 (define-public r-blavaan
   (package
     (name "r-blavaan")
-    (version "0.5-8")
+    (version "0.5-9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "blavaan" version))
        (sha256
-        (base32 "00pxi5zj68796b3qkil3w66z446ib61xl2l5v1qia1mc9fznlzri"))))
+        (base32 "0knpd7r7bmi2yl9wkd2fssvv7kiflmxff37cd7qm9kqm1m0izrcn"))))
     (properties `((upstream-name . "blavaan")))
     (build-system r-build-system)
     (arguments
@@ -26593,6 +26593,7 @@ echo \"PKG_CXXFLAGS+=-g -O2 -Wno-error=changes-meaning\" >> src/Makevars")))))))
                              r-bh
                              r-coda
                              r-future-apply
+                             r-igraph
                              r-lavaan
                              r-loo
                              r-matrix
