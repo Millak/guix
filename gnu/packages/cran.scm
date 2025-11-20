@@ -43843,14 +43843,14 @@ model.")
 (define-public r-adabag
   (package
     (name "r-adabag")
-    (version "5.0")
+    (version "5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "adabag" version))
        (sha256
         (base32
-         "03nnqgia61pavic9l6av0hh81wilxlkrx3g244ypar1fv9ppan7c"))))
+         "0a5vam2gi5gc917s2akipn2s30wn1a2w3d25g9an5cj0d326xmb8"))))
     (properties `((upstream-name . "adabag")))
     (build-system r-build-system)
     (propagated-inputs
