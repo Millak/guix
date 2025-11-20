@@ -54698,14 +54698,14 @@ long-term compatibility with future versions of R.")
 (define-public r-tfruns
   (package
     (name "r-tfruns")
-    (version "1.5.3")
+    (version "1.5.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tfruns" version))
        (sha256
         (base32
-         "0z0cbw4fr374s82ds0vdxmd37bbd6yrixwgby26qzkjr7dvzsbmy"))))
+         "1lii59py4m9cwxjc8gfplcwkdy72j4nkgfizpbi45bzim84ay8nx"))))
     (properties `((upstream-name . "tfruns")))
     (build-system r-build-system)
     (propagated-inputs
@@ -54719,7 +54719,7 @@ long-term compatibility with future versions of R.")
            r-tidyselect
            r-whisker
            r-yaml))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-testthat r-withr))
     (home-page "https://github.com/rstudio/tfruns")
     (synopsis "Training run tools for TensorFlow")
     (description
