@@ -12528,17 +12528,31 @@ that can be distributed without access to a live server.")
 (define-public r-httptest2
   (package
     (name "r-httptest2")
-    (version "1.1.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "httptest2" version))
        (sha256
-        (base32 "0vj6ynxc2xdq4xhl6df8aa3582s7jf5m71hxqxhjsjfqdzm72dv8"))))
+        (base32 "1mjpx70fi643yr7wljn4gpbn4rwdgdxzd8zx0hk3vbcnn8pigjvl"))))
     (properties `((upstream-name . "httptest2")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'delete-bad-tests
+           (lambda _
+             ;; These tests need Internet access.
+             (with-directory-excursion "tests/testthat/"
+               (for-each delete-file '("test-expect-request-header.R"
+                                       "test-expect-request.R"))))))))
     (propagated-inputs (list r-digest r-httr2 r-jsonlite r-rlang r-testthat))
-    (native-inputs (list r-knitr r-spelling r-webfakes))
+    (native-inputs (list r-curl
+                         r-knitr
+                         r-pkgload
+                         r-spelling
+                         r-webfakes))
     (home-page "https://enpiar.com/httptest2/")
     (synopsis "Test Helpers for 'httr2'")
     (description
