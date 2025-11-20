@@ -44514,18 +44514,25 @@ from PLINK results.")
 (define-public r-gghighlight
   (package
     (name "r-gghighlight")
-    (version "0.4.1")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gghighlight" version))
        (sha256
-        (base32 "1lsvy9ha4d8zs927h8jbdj5r39xqcy1n6g5prw4awiihdvcv9v66"))))
+        (base32 "0ii9skafbh5zlh2y45y2d09163bbqw63nvxlrwlp640pxqbcigy1"))))
     (properties `((upstream-name . "gghighlight")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-dplyr r-ggplot2 r-ggrepel r-lifecycle r-purrr r-rlang r-tibble))
-    (native-inputs (list r-knitr r-testthat))
+     (list r-dplyr
+           r-ggplot2
+           r-ggrepel
+           r-lifecycle
+           r-purrr
+           r-rlang
+           r-scales
+           r-tibble))
+    (native-inputs (list r-knitr r-testthat r-vdiffr))
     (home-page "https://github.com/yutannihilation/gghighlight/")
     (synopsis "Highlight lines and points in ggplot2")
     (description "Suppose we have data that has so many series that it is hard
