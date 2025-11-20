@@ -2384,13 +2384,13 @@ etc.")
 (define-public r-cutpointr
   (package
     (name "r-cutpointr")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cutpointr" version))
        (sha256
-        (base32 "14zvdq5p1hhd6y0xzf761q2kh217rra25ihl17jipakf61zbf88m"))))
+        (base32 "02pjzz6bn52cvw4plajynyj38r8abaflp9q2spx1bgwfdwnyxn7k"))))
     (properties `((upstream-name . "cutpointr")))
     (build-system r-build-system)
     (arguments
@@ -2413,7 +2413,7 @@ etc.")
                              r-tibble
                              r-tidyr
                              r-tidyselect))
-    (native-inputs (list r-knitr r-rocr r-testthat))
+    (native-inputs (list r-knitr r-mgcv r-rocr r-testthat))
     (home-page "https://github.com/thie1e/cutpointr")
     (synopsis "Determine optimal cutpoints for binary classification")
     (description
