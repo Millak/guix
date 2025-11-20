@@ -56045,20 +56045,20 @@ R-squared values.")
 (define-public r-mockery
   (package
     (name "r-mockery")
-    (version "0.4.4")
+    (version "0.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mockery" version))
        (sha256
         (base32
-         "1hs550i2nqnn1yyx2sd7babamkq3sm7cxiwzcj8wlps5yah208h7"))))
+         "1m34pjz1ahnni3k9x5cy07m2a0lp3117bh94l8lpxv08x4j8959s"))))
     (properties `((upstream-name . "mockery")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-testthat))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-r6))
     (home-page "https://github.com/jfiksel/mockery")
     (synopsis "Mocking library for R")
     (description
