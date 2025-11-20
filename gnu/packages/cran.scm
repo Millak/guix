@@ -32865,14 +32865,14 @@ Emphasis is always given to methods for visualizing the data.")
 (define-public r-pixmap
   (package
     (name "r-pixmap")
-    (version "0.4-13")
+    (version "0.4-14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pixmap" version))
        (sha256
         (base32
-         "04g74v8g9r0f3czzk4r3n0wxyg7ldgfdlh21bas7axa9l10wdnz3"))))
+         "17psp66dbw72glyhpy37h0xkifp1nv2f2ghfnmk9pf4m3y9hqw96"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/pixmap")
     (synopsis "Tools for bitmap images")
