@@ -10004,13 +10004,13 @@ political science.")
 (define-public r-ecfun
   (package
     (name "r-ecfun")
-    (version "0.3-6")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Ecfun" version))
        (sha256
-        (base32 "0651vbb040y17sizh927vq4jfidpxilmwdgkhmr7z8p24yb588rc"))))
+        (base32 "1ci6m5hsnm09ds6l7xrmffwjkn56m8p7y1m8738ys8f8799wiwkg"))))
     (properties `((upstream-name . "Ecfun")))
     (build-system r-build-system)
     (propagated-inputs (list r-bma
