@@ -13317,13 +13317,13 @@ conditionals and comparisons, and more.")
 (define-public r-safetensors
   (package
     (name "r-safetensors")
-    (version "0.1.2")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "safetensors" version))
        (sha256
-        (base32 "0xvg5y2sd7gzcal0qqgxbx8vcvmy50jm0j2ajr8iw3wyy5qpyvkp"))))
+        (base32 "01jhmzar8gaqlw2n97jj963s909l18vjbw86f9ixm87zsdgm5z9c"))))
     (properties `((upstream-name . "safetensors")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli r-jsonlite r-r6 r-rlang))
