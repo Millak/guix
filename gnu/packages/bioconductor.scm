@@ -26811,14 +26811,14 @@ on the plot.")
 (define-public r-abn
   (package
     (name "r-abn")
-    (version "3.1.1")
+    (version "3.1.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "abn" version))
        (sha256
         (base32
-         "1sixgahjcy82yiiixgxiqbm8jcajqz0m3h0hwwm202iwzi3vyhiv"))))
+         "153xv0gry77283ymbfr99z5p0wv2pnjg3k9b67xcj9ysal3dx4qi"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -26829,7 +26829,7 @@ on the plot.")
              ;; Seven tests need INLA, which bundles mystery binaries.
              (delete-file "tests/testthat/test-build_score_cache.R"))))))
     (inputs
-     (list gsl))
+     (list gsl jags))
     (propagated-inputs
      (list r-doparallel
            r-foreach
@@ -26843,7 +26843,14 @@ on the plot.")
            r-rjags
            r-stringi))
     (native-inputs
-     (list r-entropy r-knitr r-moments r-rhpcblasctl r-testthat))
+     (list r-biocmanager
+           r-boot
+           r-brglm
+           r-entropy
+           r-knitr
+           r-moments
+           r-rhpcblasctl
+           r-testthat))
     (home-page "https://r-bayesian-networks.org/")
     (synopsis "Modelling multivariate data with additive bayesian networks")
     (description
