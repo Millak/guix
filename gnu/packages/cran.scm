@@ -52800,14 +52800,14 @@ clusterings as resolution increases.")
 (define-public r-textshaping
   (package
     (name "r-textshaping")
-    (version "1.0.1")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "textshaping" version))
        (sha256
         (base32
-         "0bx8zf62xk9shgh3anxl2rlwgp4x2q1q9saqg6awqj3sdj951gvv"))))
+         "1yxqw5s7534mc8sydaz5z8vndlpasp8wwvgch1p0z142xkv3n29l"))))
     (properties `((upstream-name . "textshaping")))
     (build-system r-build-system)
     (inputs
