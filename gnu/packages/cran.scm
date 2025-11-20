@@ -27666,17 +27666,17 @@ biological data by Michael Whitlock and Dolph Schluter.")
 (define-public r-svgui
   (package
     (name "r-svgui")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "svGUI" version))
        (sha256
-        (base32 "0ch5gdfk834xj9w3vxpm3x4770fz3nnlyn8b0jsw9f3n2as7g979"))))
+        (base32 "0hri32nld2jcywvc87753kmdghj455pkqbhqjbibhi1lh8rb36n7"))))
     (properties `((upstream-name . "svGUI")))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-spelling r-testthat))
     (home-page "https://github.com/SciViews/svGUI/")
     (synopsis "Functions for managing GUI clients in R")
     (description
