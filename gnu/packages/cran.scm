@@ -34717,13 +34717,13 @@ identifying outliers.")
 (define-public r-bayesm
   (package
     (name "r-bayesm")
-    (version "3.1-6")
+    (version "3.1-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bayesm" version))
        (sha256
-        (base32 "1d9wp7yr5hadyv48f51xqa5yzfnhh01n813sivwla209vjf2pmqp"))))
+        (base32 "16a9f2l2p2na3d7d542d44x4yibf2pgkclxls9zf7966nyxxw1yj"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-rcpp r-rcpparmadillo))
