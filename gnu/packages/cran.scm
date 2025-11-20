@@ -5471,13 +5471,13 @@ repositories, replacing the need for installation via @code{devtools}.")
 (define-public r-gunifrac
   (package
     (name "r-gunifrac")
-    (version "1.8")
+    (version "1.9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "GUniFrac" version))
               (sha256
                (base32
-                "1yw0d8hb7s662xy0dny9ygvx9gwh7yj8dxw4897zy7zyjhzim95f"))))
+                "0wahkf68w3ai460dgj8xqsxp4mkis5hnlm9yq0qshz6zzmb48zim"))))
     (properties `((upstream-name . "GUniFrac")))
     (build-system r-build-system)
     (propagated-inputs
