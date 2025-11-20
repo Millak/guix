@@ -43508,14 +43508,14 @@ al. (2016) @url{doi:10.1371/journal.pone.0160644}.")
 (define-public r-activpal
   (package
     (name "r-activpal")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "activPAL" version))
        (sha256
         (base32
-         "1h6hp5z89ji73gdzxy1dgbfwjysiy5lvcqh90xagpb7sa7ahs3na"))))
+         "013nqmqs6qdlicwgddf12snzis9b59sasbfrnhxjwah4j8y3301l"))))
     (properties `((upstream-name . "activPAL")))
     (build-system r-build-system)
     (propagated-inputs
