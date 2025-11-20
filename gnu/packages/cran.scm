@@ -10354,13 +10354,13 @@ and the plot is redrawn.")
 (define-public r-marginaleffects
   (package
     (name "r-marginaleffects")
-    (version "0.26.0")
+    (version "0.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "marginaleffects" version))
        (sha256
-        (base32 "1l78j10y1fv59wijwahb1hz919g5b0w1mi8snvb8mcrgdbwrd60j"))))
+        (base32 "1fi947yq6ivn5db7lp66l44ljr01sljv7s6fzgdw2a7l0x8q432r"))))
     (properties `((upstream-name . "marginaleffects")))
     (build-system r-build-system)
     (propagated-inputs (list r-backports
@@ -10369,8 +10369,6 @@ and the plot is redrawn.")
                              r-formula
                              r-generics
                              r-insight
-                             r-rcpp
-                             r-rcppeigen
                              r-rlang))
     (native-inputs (list r-knitr r-quarto r-spelling r-tinytest))
     (home-page "https://marginaleffects.com/")
