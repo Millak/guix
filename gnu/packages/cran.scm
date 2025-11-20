@@ -53456,14 +53456,14 @@ parallel programming style, which is intended for batch parallel execution.")
 (define-public r-pdftools
   (package
     (name "r-pdftools")
-    (version "3.5.0")
+    (version "3.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pdftools" version))
        (sha256
         (base32
-         "03k3l016hvzmzp4aknsn4j95kw818jhwr1yyhdk3wl0pyiz09gvc"))))
+         "1i11yhrzdn7dkkzla687np552vy86ifwgj18nfxvzbdakdkafaa5"))))
     (properties
      '((upstream-name . "pdftools")
        (updater-extra-inputs . ("poppler"))))
