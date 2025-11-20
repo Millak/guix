@@ -16202,13 +16202,13 @@ graphics packages that comes with the base installation.")
 (define-public r-circstats
   (package
     (name "r-circstats")
-    (version "0.2-6")
+    (version "0.2-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "CircStats" version))
        (sha256
-        (base32 "07bg4zrs2iqh0pmi44pybi8hlvnxwcaa5zpg85rmf55kflxxkzlf"))))
+        (base32 "0mp463w7myizvidhjnljzhyb1vrc1ajyay876g2w7k919klsnvcz"))))
     (properties `((upstream-name . "CircStats")))
     (build-system r-build-system)
     (arguments
