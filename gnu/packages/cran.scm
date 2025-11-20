@@ -23044,13 +23044,13 @@ optimization problems in R.")
 (define-public r-roptim
   (package
     (name "r-roptim")
-    (version "0.1.6")
+    (version "0.1.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "roptim" version))
               (sha256
                (base32
-                "11h6qdi0rsv0bpps6nxkzzapan284q0gldzkmgx3ww5kvnic5w3y"))))
+                "0ddskgbmg685ainsd50wcxi0wavbwj429ngmv9iw5ikf0skx7j9x"))))
     (properties `((upstream-name . "roptim")))
     (build-system r-build-system)
     (arguments
