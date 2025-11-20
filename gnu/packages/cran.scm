@@ -5703,16 +5703,16 @@ can read and write both the metadata and the cell data in a Sheet.")
 (define-public r-pbapply
   (package
     (name "r-pbapply")
-    (version "1.7-2")
+    (version "1.7-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pbapply" version))
        (sha256
         (base32
-         "04xf1p7c0066cwnxfmzaikbc322bxnw022ziv8kkhzlc6268rvdf"))))
+         "0b9hy4zva0n8s8lfk5ddfq10y3pc69dygcnkfi9p64xzlq872p3a"))))
     (build-system r-build-system)
-    (native-inputs (list r-future))
+    (native-inputs (list r-devtools r-future r-knitr))
     (home-page "https://github.com/psolymos/pbapply")
     (synopsis "Adding progress bar to apply functions")
     (description
