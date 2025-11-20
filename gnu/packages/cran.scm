@@ -2740,14 +2740,14 @@ also provided.")
 (define-public r-deoptimr
   (package
     (name "r-deoptimr")
-    (version "1.1-3-1")
+    (version "1.1-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "DEoptimR" version))
        (sha256
         (base32
-         "18kjq2gcqnicmbdpg5pkzsa4wvy20fprqdkh115k34l6pm176ssq"))))
+         "18h2wqk1d9w07hmwmcm0jqlxs24zpvknh1gd3glpfpppsq8ds6ss"))))
     (properties `((upstream-name . "DEoptimR")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/DEoptimR")
