@@ -20451,13 +20451,13 @@ plots in @code{ggplot2}.")
 (define-public r-gss
   (package
     (name "r-gss")
-    (version "2.2-9")
+    (version "2.2-10")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "gss" version))
               (sha256
                (base32
-                "0iqfx02q8rkv8s0xcc6jylbj123wnvjh0hnwjsj12xahq5cnb8bf"))))
+                "01vx5sm9171lnzf3hi4zcypgxg3zzpniqqf2n9vl0ahnmwfcki0i"))))
     (properties `((upstream-name . "gss")))
     (build-system r-build-system)
     (native-inputs (list gfortran))
