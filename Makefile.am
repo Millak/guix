@@ -116,6 +116,7 @@ MODULES =					\
   guix/narinfo.scm				\
   guix/derivations.scm				\
   guix/grafts.scm				\
+  guix/remote-procedures.scm			\
   guix/repl.scm					\
   guix/rpm.scm					\
   guix/transformations.scm			\
