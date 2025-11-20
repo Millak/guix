@@ -39688,14 +39688,14 @@ arbitrary objects.")
 (define-public r-plot3d
   (package
     (name "r-plot3d")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "plot3D" version))
        (sha256
         (base32
-         "1x6ian6hfkaih2aa11z92qlihqqf5wmpc9705dzigafx8i4gfvfv"))))
+         "0xgxlpqvjf23wmwyn061mhs5hgw4xc0chy4knq56xcgfn3w7mcc8"))))
     (properties `((upstream-name . "plot3D")))
     (build-system r-build-system)
     (propagated-inputs (list r-misc3d))
