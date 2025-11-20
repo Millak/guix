@@ -25411,20 +25411,19 @@ univariate polynomial manipulations.")
 (define-public r-pupillometryr
   (package
     (name "r-pupillometryr")
-    (version "0.0.5")
+    (version "0.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "PupillometryR" version))
        (sha256
-        (base32 "0jqpx5g0fjdxxp7wlgv4jm5vrhchm6r21qd7i825fi5552c46awv"))))
+        (base32 "0xhd4id0akgvj5zrfi3sd4nqzxyfq4s4jbrfl60wn154ajhdadxw"))))
     (properties `((upstream-name . "PupillometryR")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr
            r-fda
            r-ggplot2
-           r-itsadug
            r-mgcv
            r-rlang
            r-signal
