@@ -16730,14 +16730,14 @@ way.")
 (define-public r-reshape
   (package
     (name "r-reshape")
-    (version "0.8.9")
+    (version "0.8.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "reshape" version))
        (sha256
         (base32
-         "0j203qmc076x5lp6q2xi4dq4xdb73jmsa42rpxp1c37knnrph4br"))))
+         "0r3bzhl7i4v11lh36qflzsacanv0z4zn332k9ps7j0jjas4nxvrm"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-plyr))
