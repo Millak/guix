@@ -4703,13 +4703,13 @@ samples) are easily visualized.")
 (define-public r-ggplot2
   (package
     (name "r-ggplot2")
-    (version "4.0.0")
+    (version "4.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggplot2" version))
        (sha256
-        (base32 "0z8shwizdvfc5rsi7b86fx537cm30ykzjyj2acrf5hnrnn4f57qg"))))
+        (base32 "1i0fbrxwm0s5187pi4r4b650mqz4f8bl51967c2alzm1x0ji05bp"))))
     (properties
      '((updater-extra-native-inputs . ("r-mapproj"))))
     (build-system r-build-system)
@@ -4727,7 +4727,7 @@ samples) are easily visualized.")
            r-withr))
     (native-inputs
      ;; We don't need any of the other inputs that the importer adds.
-     (list r-knitr r-mapproj r-testthat))
+     (list r-knitr r-mapproj r-quarto r-testthat))
     (home-page "https://ggplot2.tidyverse.org")
     (synopsis "Implementation of the grammar of graphics")
     (description
