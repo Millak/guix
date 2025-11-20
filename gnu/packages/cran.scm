@@ -8426,14 +8426,14 @@ also flexible enough to handle most nonstandard requirements.")
 (define-public r-latticeextra
   (package
     (name "r-latticeextra")
-    (version "0.6-30")
+    (version "0.6-31")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "latticeExtra" version))
        (sha256
         (base32
-         "1vcy4xr6c53nbvnxikjnlf5kd3n5hf4d8dzj5d41hj322dlsfl65"))))
+         "0vp6nv2r5w3n9ps0ww674mdsdnsza65pmz0s1nqgl8pp9c0xhsdy"))))
     (properties `((upstream-name . "latticeExtra")))
     (build-system r-build-system)
     (propagated-inputs
