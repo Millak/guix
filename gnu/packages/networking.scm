@@ -3298,34 +3298,6 @@ The server is socket activated by default but supports being started from
 @command{inetd} as well as in daemon mode.")
     (license license:gpl2+)))
 
-(define-public tftp-hpa
-  (package
-    (name "tftp-hpa")
-    (version "5.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kernel.org/software/"
-                                  "network/tftp/tftp-hpa/tftp-hpa-" version
-                                  ".tar.xz"))
-              (sha256
-               (base32
-                "12vidchglhyc20znq5wdsbhi9mqg90jnl7qr9qs8hbvaz4fkdvmg"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:tests? #f                  ; no test target
-           #:configure-flags
-           #~(list "CFLAGS=-fcommon")))   ; XXX fix 5.2 build with GCC 10
-    (synopsis "HPA's tftp client")
-    (description
-     "This is a tftp client derived from OpenBSD tftp with some extra options
-added and bugs fixed.  The source includes readline support but it is not
-enabled due to license conflicts between the BSD advertising clause and the GPL.")
-    (home-page "https://git.kernel.org/cgit/network/tftp/tftp-hpa.git/about/")
-    ;; Some source files are distributed under a 3-clause BSD license, and
-    ;; others under a 4-clause BSD license. Refer to the files in the source
-    ;; distribution for clarification.
-    (license (list license:bsd-3 license:bsd-4))))
-
 (define-public spiped
   (package
     (name "spiped")
