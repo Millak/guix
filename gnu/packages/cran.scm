@@ -796,13 +796,13 @@ also provides some convenient wrappers around @code{fread()} and
 (define-public r-bigstatsr
   (package
     (name "r-bigstatsr")
-    (version "1.6.1")
+    (version "1.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bigstatsr" version))
        (sha256
-        (base32 "1c445mm11gsvs2sqmrblig1d3456vwb1n3rz08mhkpxghjaf4dci"))))
+        (base32 "0nr99132jf3w773z8j47n4m2j4v4aijj143cf051qrmfrx7a8fgy"))))
     (properties `((upstream-name . "bigstatsr")))
     (build-system r-build-system)
     (propagated-inputs (list r-bigassertr
