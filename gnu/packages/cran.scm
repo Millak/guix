@@ -9770,13 +9770,13 @@ Chroma.js Color Palette Helper.  See @url{https://gka.github.io/palettes}.")
 (define-public r-plm
   (package
     (name "r-plm")
-    (version "2.6-6")
+    (version "2.6-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "plm" version))
        (sha256
-        (base32 "1cq0hj6csfxsrm6k4qw5rds018div26mw6m34wjj45gj34l87a9m"))))
+        (base32 "1qfy545hwni167h7b6k060va6macmnappn68vv9ki1s7gp1glcvf"))))
     (properties `((upstream-name . "plm")))
     (build-system r-build-system)
     (propagated-inputs (list r-bdsmatrix
