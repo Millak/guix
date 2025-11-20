@@ -20849,14 +20849,14 @@ packages maintained by Yihui Xie.")
 (define-public r-utf8
   (package
     (name "r-utf8")
-    (version "1.2.5")
+    (version "1.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "utf8" version))
        (sha256
         (base32
-         "091xj6vhikxadqbvswx6zhnvh5yvzgpqk2kn1dcp9v8rq5iq5gig"))))
+         "1sbcd3kyx8y9dfbydlmsxrj7fkpb5w7w5a7knxq9wcli4avzi2a5"))))
     (build-system r-build-system)
     (native-inputs
      (list r-cli
