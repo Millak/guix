@@ -2851,13 +2851,13 @@ functions borrowed from contributed R packages as well.")
 (define-public r-devtools
   (package
     (name "r-devtools")
-    (version "2.4.5")
+    (version "2.4.6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "devtools" version))
               (sha256
                (base32
-                "0jwh14clyj5flygpmifk01avs7mbnj2s1686pxzfrkcshfyhw5iq"))))
+                "16hbp07y3i4wr6gh2bx2zf1czad7z9c7kfpw5dm6l3hin2ha296l"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -2882,7 +2882,7 @@ functions borrowed from contributed R packages as well.")
            r-usethis
            r-withr))
     (native-inputs
-     (list r-knitr r-mockery r-testthat))
+     (list r-knitr r-spelling))
     (home-page "https://github.com/hadley/devtools")
     (synopsis "Tools to make developing R packages easier")
     (description "The devtools package is a collection of package development
