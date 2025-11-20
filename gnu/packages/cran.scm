@@ -32488,14 +32488,14 @@ conditional reporting based on the current \"output level\".")
 (define-public r-tractor-base
   (package
     (name "r-tractor-base")
-    (version "3.4.2")
+    (version "3.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tractor.base" version))
        (sha256
         (base32
-         "12mp5x6c7c82a4z7p39cb478kwwf6lkrgbis6ak00yibsd3n6na3"))))
+         "0w2jphj0yhwqr37rrvzjzz0q12vvfxq5qmylh6q9kbb6d48q1aq4"))))
     (properties `((upstream-name . "tractor.base")))
     (build-system r-build-system)
     (propagated-inputs
