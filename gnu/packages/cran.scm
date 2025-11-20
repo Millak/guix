@@ -1482,13 +1482,13 @@ encoder/decoder, round-off-error-free sum and cumsum, etc.")
 (define-public r-cftime
   (package
     (name "r-cftime")
-    (version "1.6.2")
+    (version "1.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "CFtime" version))
        (sha256
-        (base32 "1kb8q2g0685f4gyjn0bjay9zirkxwn8via4bdqdaiyph0qshc8hh"))))
+        (base32 "0r5jf2zwr8z62q38p4jhc0n42bbbvh59kjiawi006847n9g0wk5c"))))
     (properties
      '((upstream-name . "CFtime")
        ;; Avoid dependency cycle.
@@ -1496,7 +1496,7 @@ encoder/decoder, round-off-error-free sum and cumsum, etc.")
        (updater-extra-native-inputs . ("r-stringr"))))
     (build-system r-build-system)
     (propagated-inputs (list r-r6))
-    (native-inputs (list r-knitr r-stringr r-testthat))
+    (native-inputs (list r-stringr r-testthat))
     (home-page "https://github.com/pvanlaake/CFtime")
     (synopsis "Using CF-compliant calendars with climate projection data")
     (description
