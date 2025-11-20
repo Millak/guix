@@ -51900,13 +51900,13 @@ customization by the user.")
 (define-public r-mlr3cluster
   (package
     (name "r-mlr3cluster")
-    (version "0.1.11")
+    (version "0.1.12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3cluster" version))
        (sha256
-        (base32 "1z5rk9l9yw98szjh9d68y8h6ghw1bgr7600iss35j2y6yxhlcq1b"))))
+        (base32 "0fcjzzywzqsfcc5khcwjcb042cpbr9057f0y97schsip4xh9xakm"))))
     (properties
      '((upstream-name . "mlr3cluster")
        (updater-extra-native-inputs . ("r-vctrs"))))
