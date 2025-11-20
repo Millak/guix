@@ -10753,7 +10753,7 @@ found in the manual pages @code{mcr-package} and @code{mcreg}.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-cachem r-rlang))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-digest r-testthat))
     (home-page "https://github.com/hadley/memoise")
     (synopsis "Memoise functions for R")
     (description
