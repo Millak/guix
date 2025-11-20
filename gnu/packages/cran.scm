@@ -27476,14 +27476,14 @@ subsequence} (LCS) using a dynamic programming algorithm.")
 (define-public r-labelled
   (package
     (name "r-labelled")
-    (version "2.14.1")
+    (version "2.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "labelled" version))
        (sha256
         (base32
-         "01mi9vly79p5mir6wwfak0mbxnagaw01rd2fa539lfiwr49bllwc"))))
+         "1b0zwkrpwf4bcy5qiibpyqnywg2cwif659rqyhdq23lr2fslydxs"))))
     (properties `((upstream-name . "labelled")))
     (build-system r-build-system)
     (propagated-inputs
@@ -27497,7 +27497,7 @@ subsequence} (LCS) using a dynamic programming algorithm.")
            r-tidyselect
            r-vctrs))
     (native-inputs
-     (list r-knitr r-spelling r-testthat))
+     (list r-knitr r-spelling r-survey r-testthat))
     (home-page "https://larmarange.github.io/labelled/")
     (synopsis "Manipulating labelled data")
     (description
