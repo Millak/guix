@@ -4861,13 +4861,13 @@ contingency table analysis, meta-analysis, and regression analyses.")
 (define-public r-ggsurvfit
   (package
     (name "r-ggsurvfit")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggsurvfit" version))
        (sha256
-        (base32 "0c3qv9gii3ndqip3nxs08bx7lvh6sm46mxz8nyi627zbgqmhwrr5"))))
+        (base32 "0difkl6qsnrprrcbprmlhyxq3x9krqsf2bzysr898sbmmcg3illr"))))
     (properties
      '((upstream-name . "ggsurvfit")
        (updater-ignored-native-inputs . ("r-tidycmprsk"))))
