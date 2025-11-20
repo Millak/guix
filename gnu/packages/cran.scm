@@ -36881,13 +36881,13 @@ SELECT or UPDATE queries to an end-point.")
 (define-public r-bookdown
   (package
     (name "r-bookdown")
-    (version "0.43")
+    (version "0.45")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "bookdown" version))
               (sha256
                (base32
-                "1q0bzwzn9diqa511c58dlz2ipw5j898z8ig28n9d5k5hg9y206li"))
+                "0sk8jrvqwn17pl68q2klqfl12y0zczc0wms4h3mlnlvpq37wf35q"))
               ;; TODO: there is one more file to replace:
               ;; inst/resources/gitbook/js/app.min.js
               (snippet
@@ -36932,8 +36932,7 @@ SELECT or UPDATE queries to an end-point.")
            r-rmarkdown
            r-tinytex
            r-xfun
-           r-yaml
-           pandoc))
+           r-yaml))
     (native-inputs
      `(("esbuild" ,esbuild)
        ("js-clipboard"
@@ -36966,6 +36965,7 @@ releases/download/v0.10.1/mathquill-0.10.1.tgz")
            (sha256
             (base32
              "1159l2fi7k3wyclp0pksc0qng291glb8qpa67bvcxwyb9dfiwav7"))))
+       ("r-curl" ,r-curl)
        ("r-jsonlite" ,r-jsonlite)
        ("r-testit" ,r-testit)
        ("r-testthat" ,r-testthat)
