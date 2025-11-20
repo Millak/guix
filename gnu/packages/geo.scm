@@ -944,7 +944,7 @@ OpenGeoSys")
            exprtk
            hdf5
            iphreeqc
-           json-modern-cxx
+           nlohmann-json
            libxml2
            mgis
            netcdf
