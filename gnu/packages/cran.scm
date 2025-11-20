@@ -24082,13 +24082,13 @@ exchanging spatial objects with other R packages.")
 (define-public r-maptree
   (package
     (name "r-maptree")
-    (version "1.4-8")
+    (version "1.4-9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "maptree" version))
               (sha256
                (base32
-                "1x35nk4fi2b62krcvcv187n5sbqrgvw4pbm7r19ps3jlanpi5ksm"))))
+                "1mm6jd7mswhvl8vaapbqwypz8k8xi42s2j239xi8jy0kda61ip6x"))))
     (properties `((upstream-name . "maptree")))
     (build-system r-build-system)
     (propagated-inputs (list r-cluster r-rpart))
