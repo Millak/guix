@@ -10665,14 +10665,14 @@ the group sizes are small.")
 (define-public r-mclust
   (package
     (name "r-mclust")
-    (version "6.1.1")
+    (version "6.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mclust" version))
        (sha256
         (base32
-         "0xb726ssy224mzfg37nq5hffkdwi2hwjp1y9gwngk9vfbs703myx"))))
+         "1k2942qpj7yhqddk049x2ixrlf0cpgrsmzy0qr5lmbymlpmb87av"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran r-knitr))
