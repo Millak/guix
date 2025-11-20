@@ -30696,13 +30696,13 @@ simulation of correlated data, and more.")
 (define-public r-biocmanager
   (package
     (name "r-biocmanager")
-    (version "1.30.26")
+    (version "1.30.27")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "BiocManager" version))
        (sha256
-        (base32 "0gm28pmlcsc96a0v98fl6zswsm6k34nbnanwhqdg8ilgdxang6nv"))))
+        (base32 "1dgv0gfa7ff3w96dax8p7jna1bf2652sav2mhn82gj02jvqdrgxc"))))
     (properties `((upstream-name . "BiocManager")))
     (build-system r-build-system)
     ;; One test requires Internet access.
