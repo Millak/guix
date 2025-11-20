@@ -14267,13 +14267,13 @@ in R and Shiny via the D3 visualization library.")
 (define-public r-webfakes
   (package
     (name "r-webfakes")
-    (version "1.3.2")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "webfakes" version))
        (sha256
-        (base32 "18hcr63ci5cfdd9299va4gckabwx7mypw1jv5vydn2w8x4da2s68"))))
+        (base32 "1132i5wz1y9wpkgqx3d3mkkixv74q28krfw054hgsfpzi5mj8b24"))))
     (properties `((upstream-name . "webfakes")))
     (build-system r-build-system)
     (arguments
@@ -14283,7 +14283,8 @@ in R and Shiny via the D3 visualization library.")
          (add-after 'unpack 'disable-bad-tests
            ;; This test requires Internet access.
            (lambda _ (delete-file "tests/testthat/test-httpbin.R"))))))
-    (native-inputs (list r-curl
+    (native-inputs (list r-callr
+                         r-curl
                          r-digest
                          r-httpuv
                          r-httr
