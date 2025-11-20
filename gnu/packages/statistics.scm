@@ -2477,13 +2477,13 @@ representation of R code.")
 (define-public r-statmod
   (package
     (name "r-statmod")
-    (version "1.5.0")
+    (version "1.5.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "statmod" version))
               (sha256
                (base32
-                "1jbf07h0mnncn2qp4wcw5bnbvsw3lizpd3cg0cpb8mcxn3wkw76n"))))
+                "15qk57r8sdzzbs41c0k49m4clay32b521wvjbpjpaaim2y0kh14g"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/statmod")
     (native-inputs
