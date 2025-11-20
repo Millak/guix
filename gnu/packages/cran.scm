@@ -12381,13 +12381,13 @@ models.")
 (define-public r-hmisc
   (package
     (name "r-hmisc")
-    (version "5.2-3")
+    (version "5.2-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Hmisc" version))
        (sha256
-        (base32 "0whivay0d3p00y5z7mpz14n68i1yvcfkmr6lfbvw854022yqxi0y"))))
+        (base32 "04z260cj7lkmg3zahis42cbdz4z5fkwfskb8msam28xa8s8z6pag"))))
     (properties `((upstream-name . "Hmisc")))
     (build-system r-build-system)
     ;; Tests need r-rms, which needs this package.
@@ -12410,7 +12410,7 @@ models.")
            r-nnet
            r-rmarkdown
            r-rpart
-           r-viridis))
+           r-viridislite))
     (home-page "http://biostat.mc.vanderbilt.edu/Hmisc")
     (synopsis "Miscellaneous data analysis and graphics functions")
     (description
