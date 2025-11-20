@@ -47950,13 +47950,13 @@ across a wide array of bioinformatic R packages.")
 (define-public r-phytools
   (package
     (name "r-phytools")
-    (version "2.4-4")
+    (version "2.5-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "phytools" version))
        (sha256
-        (base32 "1i25dlikdx9av5653ra2709sjm9fc3fsis1yfsb7zagivi408ph9"))))
+        (base32 "00bzw9xra4b8py1jpg4nb25yvawqsgvc7fjkjixykzrzbpssqkrw"))))
     (properties `((upstream-name . "phytools")))
     (build-system r-build-system)
     (propagated-inputs (list r-ape
