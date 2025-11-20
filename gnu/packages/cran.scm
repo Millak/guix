@@ -29737,14 +29737,14 @@ terminals that do not support Unicode.")
 (define-public r-credentials
   (package
     (name "r-credentials")
-    (version "2.0.2")
+    (version "2.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "credentials" version))
        (sha256
         (base32
-         "02jxbd6nwii243r88h57h9z37knl7jm1jdzg9bpd6g5r6a4dfss9"))))
+         "0g017v3zc8fssjxpgdxfyvvif7ndwj61hfmgfkhvbz2c9f04600l"))))
     (properties `((upstream-name . "credentials")))
     (build-system r-build-system)
     (arguments
@@ -29759,7 +29759,7 @@ terminals that do not support Unicode.")
     (propagated-inputs
      (list r-askpass r-curl r-jsonlite r-openssl r-sys))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr))
     (home-page "https://docs.ropensci.org/credentials/")
     (synopsis "Tools for managing SSH and Git credentials")
     (description
