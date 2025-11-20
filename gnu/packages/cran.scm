@@ -7341,13 +7341,13 @@ degree elevation and curve fitting.")
 (define-public r-bife
   (package
     (name "r-bife")
-    (version "0.7.2")
+    (version "0.7.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bife" version))
        (sha256
-        (base32 "0xikxniwzcv6jc64rgx39hddqchxk6c43h45algssbz2vaxvc4zg"))))
+        (base32 "1a559q1hrg8gr0kgps72nfz4z8w0fmps5s1hliwgy61ii4m8yf71"))))
     (properties `((upstream-name . "bife")))
     (build-system r-build-system)
     (propagated-inputs (list r-data-table r-formula r-rcpp r-rcpparmadillo))
