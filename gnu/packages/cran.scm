@@ -27447,13 +27447,13 @@ subsequence} (LCS) using a dynamic programming algorithm.")
 (define-public r-mosaiccore
   (package
     (name "r-mosaiccore")
-    (version "0.9.4.0")
+    (version "0.9.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mosaicCore" version))
        (sha256
-        (base32 "0v3xhv6yfk1hc6a40jjgp6vvq102qa1l4n787pfywx6jhzbhamp2"))))
+        (base32 "0j0a5i3578rgwcscs9w6pgy692ddnz5x7836bnh0b844zwxm0jzz"))))
     (properties `((upstream-name . "mosaicCore")))
     (build-system r-build-system)
     (arguments
@@ -27466,7 +27466,7 @@ subsequence} (LCS) using a dynamic programming algorithm.")
              (delete-file "tests/testthat/test-interval-calculations.R"))))))
     (propagated-inputs
      (list r-dplyr r-mass r-rlang r-tidyr))
-    (native-inputs (list r-mosaicdata r-testthat))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/ProjectMOSAIC/mosaicCore/")
     (synopsis "Common utilities for mosaic family packages")
     (description
