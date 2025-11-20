@@ -4111,14 +4111,14 @@ generalized linear models and model-based clustering.")
 (define-public r-forcats
   (package
     (name "r-forcats")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "forcats" version))
        (sha256
         (base32
-         "0ki5c84n7xm4iw4aj629l51hm84f6p5wa3bw88d1wbnr15wibfy5"))))
+         "019npldig62yqskmlf6jkh3vsizygxxijx97c4z2k2h3ny1npr0x"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
@@ -4128,7 +4128,7 @@ generalized linear models and model-based clustering.")
            r-rlang
            r-tibble))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-testthat r-withr))
     (home-page "https://forcats.tidyverse.org")
     (synopsis "Tools for working with factors")
     (description "This package provides helpers for reordering factor
