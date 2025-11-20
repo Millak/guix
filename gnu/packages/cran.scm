@@ -39762,14 +39762,14 @@ versions.  A Shiny application implementing the functions is also included.")
 (define-public r-ggfortify
   (package
     (name "r-ggfortify")
-    (version "0.4.17")
+    (version "0.4.19")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggfortify" version))
        (sha256
         (base32
-         "1ygbvk3b99mabwqc9hh5lz3adj1i05ym7i8b6kbgid8cgrbaaxag"))))
+         "1gbacgrxd7dj62i2k2xv005k4q23iljcrczp5a9yxrg4bgw8qmic"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr
@@ -39780,7 +39780,27 @@ versions.  A Shiny application implementing the functions is also included.")
            r-tibble
            r-tidyr))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-testthat)
+     #;
+     (list r-changepoint
+           r-cluster
+           r-fgarch
+           r-forecast
+           r-glmnet
+           r-kfas
+           r-lfda
+           r-mapdata
+           r-mass
+           r-mswm
+           r-raster
+           r-rocr
+           r-sp
+           r-strucchange
+           r-survival
+           r-testthat
+           r-timeseries
+           r-vars
+           r-zoo))
     (home-page "https://github.com/sinhrks/ggfortify")
     (synopsis "Data visualization tools for statistical analysis results")
     (description
