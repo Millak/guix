@@ -46642,14 +46642,14 @@ trend test.")
 (define-public r-keyring
   (package
     (name "r-keyring")
-    (version "1.4.0")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "keyring" version))
        (sha256
         (base32
-         "1s1msy82f76wkbchhrfxr072dzg93qnmcg017ymhdksmrjw7zxwk"))))
+         "116fad7zhhrcbmfmxih11q18x9a9prkln9i503y98i6dr0glb8pv"))))
     (properties
      '((upstream-name . "keyring")
        (updater-extra-native-inputs . ("r-mockery"))))
