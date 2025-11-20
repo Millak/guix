@@ -140,7 +140,6 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
-  #:use-module (gnu packages ninja)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages package-management)

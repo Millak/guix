@@ -148,7 +148,7 @@ TRIPLET."
 
 (define (default-ninja)
   "Return the default ninja package, resolved lazily."
-  (@* (gnu packages ninja) ninja/pinned))
+  (@* (gnu packages build-tools) ninja/pinned))
 
 (define (default-meson)
   "Return the default meson package, resolved lazily."

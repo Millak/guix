@@ -55,7 +55,6 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
-  #:use-module (gnu packages ninja)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pkg-config)

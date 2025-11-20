@@ -201,7 +201,6 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages netpbm)
   #:use-module (gnu packages networking)
-  #:use-module (gnu packages ninja)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages oneapi)
   #:use-module (gnu packages opencl)

@@ -109,7 +109,6 @@
   #:use-module (gnu packages markup)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
-  #:use-module (gnu packages ninja)
   #:use-module (gnu packages node)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages patchutils)

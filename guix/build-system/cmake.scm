@@ -110,8 +110,7 @@
 (define (default-ninja)
   "Return the default ninja package."
   ;; Lazily resolve the binding to avoid a circular dependency.
-  (let ((module (resolve-interface '(gnu packages ninja))))
-    (module-ref module 'ninja/pinned)))
+  (@* (gnu packages build-tools) ninja/pinned))
 
 (define* (lower name
                 #:key source inputs native-inputs outputs system target

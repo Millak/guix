@@ -53,7 +53,6 @@
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages maths)
-  #:use-module (gnu packages ninja)
   #:use-module (gnu packages node)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages pciutils)

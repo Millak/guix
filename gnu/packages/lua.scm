@@ -74,7 +74,6 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages ncurses)
-  #:use-module (gnu packages ninja)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages rdf)

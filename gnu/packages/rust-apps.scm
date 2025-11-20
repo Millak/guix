@@ -116,7 +116,6 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
-  #:use-module (gnu packages ninja)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages pcre)

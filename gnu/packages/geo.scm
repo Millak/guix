@@ -128,7 +128,6 @@
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
-  #:use-module (gnu packages ninja)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages perl)

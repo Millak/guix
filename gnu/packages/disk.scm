@@ -105,7 +105,6 @@
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages ncurses)
-  #:use-module (gnu packages ninja)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-web)

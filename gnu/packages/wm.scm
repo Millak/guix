@@ -186,7 +186,6 @@
   #:use-module (gnu packages mpd)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages music)
-  #:use-module (gnu packages ninja)
   #:use-module (gnu packages pantheon)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)

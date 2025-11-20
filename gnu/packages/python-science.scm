@@ -88,7 +88,6 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages networking)
-  #:use-module (gnu packages ninja)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)

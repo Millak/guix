@@ -96,7 +96,6 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages monitoring)
   #:use-module (gnu packages mpi)
-  #:use-module (gnu packages ninja)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages oneapi)

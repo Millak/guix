@@ -98,7 +98,6 @@
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
-  #:use-module (gnu packages ninja)
   #:use-module (gnu packages nss)
   #:use-module (gnu packages ocaml)
   #:use-module (gnu packages ocr)
