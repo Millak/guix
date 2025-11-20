@@ -50371,14 +50371,14 @@ results.")
 (define-public r-tidyposterior
   (package
     (name "r-tidyposterior")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidyposterior" version))
        (sha256
         (base32
-         "1yi0pihglp683dmfg0bn9lnb0qsl2xprj3al65v642rcfzrr7h4h"))))
+         "1qdjffw0q8sradkk2n8ai76dpzyq3v9r5w8331z54bcxjc4v0004"))))
     (properties `((upstream-name . "tidyposterior")))
     (build-system r-build-system)
     (propagated-inputs
@@ -50395,7 +50395,7 @@ results.")
            r-vctrs
            r-workflowsets))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-caret r-knitr r-parsnip r-testthat r-yardstick))
     (home-page "https://tidyposterior.tidymodels.org")
     (synopsis "Bayesian analysis to compare models using resampling statistics")
     (description
