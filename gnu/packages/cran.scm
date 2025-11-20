@@ -36394,13 +36394,13 @@ available at both the R level, and through Rcpp.")
 (define-public r-sftime
   (package
     (name "r-sftime")
-    (version "0.3.0")
+    (version "0.3.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "sftime" version))
               (sha256
                (base32
-                "1dypvq8pc86n02hqd7dfbr3h7b90q3y9cf6q8mqqnf7gyvax9bdd"))))
+                "0x48qvaz95wi6spzgp498b57q3iiqmggfbivkaaf2n8hc4pnmpyi"))))
     (properties `((upstream-name . "sftime")))
     (build-system r-build-system)
     (propagated-inputs (list r-sf))
