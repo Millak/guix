@@ -52872,14 +52872,14 @@ AGG to use as alternative to the raster devices provided through the
 (define-public r-downlit
   (package
     (name "r-downlit")
-    (version "0.4.4")
+    (version "0.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "downlit" version))
        (sha256
         (base32
-         "0a7q90623ahcadqg0b3a0qylachq7nghf50f0v0lip2axvf7ghsm"))))
+         "12v53da66g5l1h5g820lm6g306sky3iv1kmi9ss3hiw0i8wcx5mn"))))
     (properties `((upstream-name . "downlit")))
     (build-system r-build-system)
     ;; 5 tests require Internet access.
@@ -52895,7 +52895,12 @@ AGG to use as alternative to the raster devices provided through the
            r-vctrs
            r-withr
            r-yaml))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-htmltools
+                         r-knitr
+                         r-mass
+                         r-rmarkdown
+                         r-testthat
+                         r-xml2))
     (home-page "https://downlit.r-lib.org/")
     (synopsis "Syntax highlighting and automatic linking")
     (description
