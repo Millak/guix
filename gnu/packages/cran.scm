@@ -21354,17 +21354,17 @@ of prediction methods available in @code{caret}.")
 (define-public r-ncdfcf
   (package
     (name "r-ncdfcf")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ncdfCF" version))
        (sha256
-        (base32 "00hys99h9znyx3xbzkllramaraaib6fn5rjswn2x9xy926b8q9q8"))))
+        (base32 "0ynl6lsxhk7rwd9hplahl2lx4ysvgpdl1mikh3vrjm4i4jmdalym"))))
     (properties `((upstream-name . "ncdfCF")))
     (build-system r-build-system)
     (propagated-inputs (list r-abind r-cftime r-r6 r-rnetcdf r-stringr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/pvanlaake/ncdfCF")
     (synopsis "Easy access to NetCDF files with CF Metadata Conventions")
     (description
