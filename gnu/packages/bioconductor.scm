@@ -6331,13 +6331,13 @@ how the coverage distributed across the genome.")
 (define-public r-cpp11bigwig
   (package
     (name "r-cpp11bigwig")
-    (version "0.1.1")
+    (version "0.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cpp11bigwig" version))
        (sha256
-        (base32 "0i9rbjj2f8m5x2z594fg7rqqiajf2sjlxj6g66fpl65gr9n7hch8"))))
+        (base32 "0r8z8d1vsll2sdczcc982iqzilc2cph56jkm1va72mq8yds5pc5a"))))
     (properties
      '((upstream-name . "cpp11bigwig")
        (updater-extra-inputs . ("curl"))))
