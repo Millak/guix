@@ -1818,13 +1818,13 @@ variety of formats.")
 (define-public r-rsqlite
   (package
     (name "r-rsqlite")
-    (version "2.3.11")
+    (version "2.4.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RSQLite" version))
               (sha256
                (base32
-                "0n87p111wqkwc0hck8z9rcq8194pglrc3cb2s8y0h41bfsdj2siz"))))
+                "0aph8iicg8wx44y6k6g6kivq1myl5sgd7cv843dz3m2bss4dca9j"))))
     (properties
      '((upstream-name . "RSQLite")
        ;; These are not strictly necessary for running tests and adding them
