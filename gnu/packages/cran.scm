@@ -155,14 +155,14 @@ characters, such that the strings remain unique (if they originally were).")
 (define-public r-acepack
   (package
     (name "r-acepack")
-    (version "1.6.1")
+    (version "1.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "acepack" version))
        (sha256
         (base32
-         "00z5pv28liyrxwhaizsp5g6kn7qd6qghmmyaka43i7jsh8fy06xw"))))
+         "1pxsbvs2nqrlkcizbcvla1wxa07pmw0mm60r4znabpph13ir6c35"))))
     (properties
      `((upstream-name . "acepack")
        (updater-extra-inputs . ("gfortran"))))
