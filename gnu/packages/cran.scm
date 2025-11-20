@@ -16226,13 +16226,13 @@ Jammalamadaka and A. @code{SenGupta}, World Scientific.")
 (define-public r-ctrdata
   (package
     (name "r-ctrdata")
-    (version "1.22.2")
+    (version "1.25.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ctrdata" version))
               (sha256
                (base32
-                "1hd83s3il732yfhizw0jdbiv2vqxk5famb86372giaw0q1fm75rz"))
+                "0giingzzvx72pa0xcczx6dmk2ssqq4sd20m5m4v8dyxfyrkgq1lv"))
               ;; TODO: we should also replace these other files:
               ;; inst/htmlwidgets/lib/jstree/dist/jstree.min.js
               ;; inst/js/bundle.js (generated from inst/js/euctr2ndjson.js)
@@ -16265,22 +16265,18 @@ Jammalamadaka and A. @code{SenGupta}, World Scientific.")
           (add-after 'unpack 'set-HOME
             (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list r-clipr
-           r-countrycode
-           r-curl
-           r-digest
-           r-dplyr
+     (list r-dplyr
            r-htmlwidgets
-           r-httr
+           r-httr2
            r-jqr
            r-jsonlite
            r-lubridate
            r-nodbi
            r-readr
            r-rlang
+           r-rvest
            r-stringdist
            r-stringi
-           r-tibble
            r-tidyr
            r-v8
            r-xml2
