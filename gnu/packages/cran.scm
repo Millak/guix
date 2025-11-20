@@ -29173,19 +29173,19 @@ detection, parallelism through BLAS and parallel user templates.")
 (define-public r-sjstats
   (package
     (name "r-sjstats")
-    (version "0.19.0")
+    (version "0.19.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sjstats" version))
        (sha256
-        (base32 "07qv32gnrhrl21zgj1xp1gqdqjn6ax1nf40s11nmpag8r0xgvqnk"))))
+        (base32 "0j0r9g55p0zch6dhxzzvflz78ib67p2j2kh08bbm6fj0qvy4idc1"))))
     (properties
      '((updater-extra-native-inputs . ("r-mass"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-datawizard r-effectsize r-insight r-parameters r-performance))
-    (native-inputs (list r-mass r-testthat))
+    (native-inputs (list r-brms r-mass r-testthat))
     (home-page "https://github.com/strengejacke/sjstats")
     (synopsis "Functions for common statistical computations")
     (description
