@@ -30719,14 +30719,14 @@ Bioconductor packages.")
 (define-public r-rgl
   (package
     (name "r-rgl")
-    (version "1.3.18")
+    (version "1.3.24")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rgl" version))
        (sha256
         (base32
-         "0qv226nm5iaq09jifm96v4xx6ki4735xnm9mgm22absrl6w43fia"))
+         "0jgf0gf9ny64v4ja61xsfzx6bmjwwc4j6fm89ls2ibvfqnbhln4z"))
        (snippet
         '(delete-file "inst/htmlwidgets/lib/CanvasMatrix/CanvasMatrix.min.js"))))
     ;; For OpenGL and X11 support
@@ -30745,13 +30745,13 @@ Bioconductor packages.")
                  (invoke "esbuild" source "--minify"
                          (string-append "--outfile=" target)))))))))
     (native-inputs
-     (list esbuild pkg-config r-knitr))
+     (list esbuild pkg-config r-knitr r-rmarkdown))
     (inputs
      (list freetype
            glu
            libpng
            libx11
-           zlib
+           pandoc
            zlib))
     (propagated-inputs
      (list r-base64enc
