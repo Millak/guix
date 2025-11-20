@@ -2261,13 +2261,13 @@ New styles can also be created easily.  This package was inspired by the
 (define-public r-crew
   (package
     (name "r-crew")
-    (version "1.1.2")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "crew" version))
        (sha256
-        (base32 "03ygyvwh418mp0vx98vdavyr6xdwi9qcb7pyj56xxba06cymdgch"))))
+        (base32 "0jff352yidgabw2p5qn2bqqvbinnanxz5b4450xxqda53mfw2afj"))))
     (properties `((upstream-name . "crew")))
     (build-system r-build-system)
     (arguments
@@ -2280,8 +2280,8 @@ New styles can also be created easily.  This package was inspired by the
              ;; container.
              (delete-file "tests/testthat/test-crew_controller_sequential.R"))))))
     (propagated-inputs (list r-cli
+                             r-collections
                              r-data-table
-                             r-getip
                              r-later
                              r-mirai
                              r-nanonext
