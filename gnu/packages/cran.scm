@@ -37568,18 +37568,18 @@ emitter (@url{http://pyyaml.org/wiki/LibYAML}) for R.")
 (define-public r-yulab-utils
   (package
     (name "r-yulab-utils")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "yulab.utils" version))
        (sha256
         (base32
-         "0sjx22vpzm8xhfr955v5i8xssc22slykqqcy5y7dd7j3n7pyp777"))))
+         "0661gxs0d4nphvaxa1ijcf0kzhja785lkr3qjbzkkhih3mg9kil7"))))
     (properties `((upstream-name . "yulab.utils")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-cli r-digest r-fs r-rlang))
+     (list r-cli r-digest r-fs r-rappdirs r-rlang))
     (home-page "https://cran.r-project.org/package=yulab.utils")
     (synopsis "Supporting functions for packages maintained by YuLab-SMU")
     (description
