@@ -5009,13 +5009,13 @@ needed.")
 (define-public r-gld
   (package
     (name "r-gld")
-    (version "2.6.7")
+    (version "2.6.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gld" version))
        (sha256
-        (base32 "0w50nn1cp8mzjxp8403ymqh7f3iz0nk5wa8ms97d02lqp2jgfvyc"))))
+        (base32 "13kni5kz3fjcnm1blblrnfbyi7rr7jz93ly8jx9l4bgc89rvpcmf"))))
     (properties `((upstream-name . "gld")))
     (build-system r-build-system)
     (propagated-inputs (list r-e1071 r-lmom))
