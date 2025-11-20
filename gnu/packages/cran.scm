@@ -38293,18 +38293,23 @@ function for computing a matrix of correlation p-values.")
 (define-public r-ggfun
   (package
     (name "r-ggfun")
-    (version "0.1.8")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggfun" version))
        (sha256
         (base32
-         "0p1znrc6k7lh1i3q65v8i48z5d48fag8pz213a8297cdiik9wgq8"))))
+         "048p3922sd3fhssf042xnx30jrs2nkn1kn7xq4m88w972p9ngln5"))))
     (properties `((upstream-name . "ggfun")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-cli r-dplyr r-ggplot2 r-rlang r-yulab-utils))
+     (list r-cli
+           r-dplyr
+           r-ggplot2
+           r-rlang
+           r-scales
+           r-yulab-utils))
     (native-inputs (list r-knitr))
     (home-page "https://cran.r-project.org/package=ggfun")
     (synopsis "Miscellaneous functions for ggplot2")
