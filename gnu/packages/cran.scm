@@ -56635,13 +56635,13 @@ to tune the detection algorithms and obtain the best possible results.")
 (define-public r-gstat
   (package
     (name "r-gstat")
-    (version "2.1-3")
+    (version "2.1-4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "gstat" version))
               (sha256
                (base32
-                "1lia3vxkv8s9q5svmlg1grhz45ab0ppln69rwcn55vzm6307gp7f"))))
+                "0c66313dm2h5drq0zv7jzvcgmwjalvpvhm2gj1m9jkhg91nbvz7s"))))
     (properties `((upstream-name . "gstat")))
     (build-system r-build-system)
     (propagated-inputs
