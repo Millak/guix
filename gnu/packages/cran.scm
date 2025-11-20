@@ -23821,17 +23821,17 @@ and @code{format_iso_8601} formats a date in ISO 8601 format.")
 (define-public r-adbcdrivermanager
   (package
     (name "r-adbcdrivermanager")
-    (version "0.18.0")
+    (version "0.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "adbcdrivermanager" version))
        (sha256
-        (base32 "16zfwk1cl76ah80q62xbrri96d4dhmi9z6674478dsnnfpqvxqh2"))))
+        (base32 "11ss7k6b54vabsm4854xr1lkrpw9pb0g6m71428xcxlz3pylzc0k"))))
     (properties `((upstream-name . "adbcdrivermanager")))
     (build-system r-build-system)
     (propagated-inputs (list r-nanoarrow))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-testthat r-withr))
     (home-page "https://arrow.apache.org/adbc/current/r/adbcdrivermanager/")
     (synopsis "Arrow Database Connectivity (ADBC) driver manager")
     (description
