@@ -1718,16 +1718,16 @@ distribution.  Methods are provided for a variety of fitted models, including
 (define-public r-celestial
   (package
     (name "r-celestial")
-    (version "1.4.6")
+    (version "1.5.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "celestial" version))
        (sha256
-        (base32 "1gls0qvr8mxz79lsmk76v253f747g0cqys8p8wjmpijs8r0pyr4z"))))
+        (base32 "1x6jjqlwl1gk4x5hn4lf0c2w5g8ids262d47f2lmhdiiw01c0vrc"))))
     (properties `((upstream-name . "celestial")))
     (build-system r-build-system)
-    (propagated-inputs (list r-nistunits r-pracma r-rann))
+    (propagated-inputs (list r-nistunits r-pracma r-rann r-rcpp))
     (home-page "https://cran.r-project.org/package=celestial")
     (synopsis
      "Collection of common astronomical conversion routines and functions")
