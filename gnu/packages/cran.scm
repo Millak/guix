@@ -12498,17 +12498,17 @@ asynchronously serves graphics via HTTP and @code{WebSockets}'.")
 (define-public r-httptest
   (package
     (name "r-httptest")
-    (version "4.2.2")
+    (version "4.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "httptest" version))
        (sha256
-        (base32 "0c370jxkd9dzqg5pdf2mcv2kjzr9zp9qai9riivjgygj6jhlcjav"))))
+        (base32 "0zac0bhpcri0j7lxqrimr29g3bq3c2vhfc9na7s73pbj8pyja1ga"))))
     (properties `((upstream-name . "httptest")))
     (build-system r-build-system)
     (propagated-inputs (list r-curl r-digest r-httr r-jsonlite r-testthat))
-    (native-inputs (list r-knitr r-spelling r-testthat))
+    (native-inputs (list r-knitr r-pkgload r-spelling))
     (home-page "https://enpiar.com/r/httptest/")
     (synopsis "Test environment for HTTP requests")
     (description
