@@ -46568,14 +46568,14 @@ need to derive the partial derivatives.")
 (define-public r-rstanarm
   (package
     (name "r-rstanarm")
-    (version "2.32.1")
+    (version "2.32.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rstanarm" version))
        (sha256
         (base32
-         "1pj3s8yy8dwxfnxsd5rzd1hc7997bh5mg66zs83ljpbl0xi6qvaw"))))
+         "1z6ikhhl2b9jnr8nl2kf2hdf1s52ixyisfpv56i07hxxnsp4f5li"))))
     (properties `((upstream-name . "rstanarm")))
     (build-system r-build-system)
     (inputs
@@ -46592,13 +46592,20 @@ need to derive the partial derivatives.")
            r-rcpp
            r-rcppeigen
            r-rcppparallel
+           r-reformulas
            r-rstan
            r-rstantools
            r-shinystan
            r-stanheaders
            r-survival))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-betareg
+           r-biglm
+           r-knitr
+           r-mass
+           r-mcmcpack
+           r-mgcv
+           r-testthat))
     (home-page "https://mc-stan.org/rstanarm/")
     (synopsis "Bayesian applied regression modeling via Stan")
     (description
