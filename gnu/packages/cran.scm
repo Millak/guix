@@ -5117,13 +5117,13 @@ such as counts or binary matrices.")
 (define-public r-gmm
   (package
     (name "r-gmm")
-    (version "1.8")
+    (version "1.9-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gmm" version))
        (sha256
-        (base32 "1n45dls7632b11bg6pipamp2zmp8j1hp4nlrj91r4schd9fgr6bh"))))
+        (base32 "07rwp1d9z2pnsac6dkcxgdrabnr5lhqj376x30bl0gs0156ng44j"))))
     (properties `((upstream-name . "gmm")))
     (build-system r-build-system)
     (propagated-inputs (list r-sandwich))
