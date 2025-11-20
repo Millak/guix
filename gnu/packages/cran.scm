@@ -4375,14 +4375,14 @@ including:
 (define-public r-gdtools
   (package
     (name "r-gdtools")
-    (version "0.4.2")
+    (version "0.4.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gdtools" version))
        (sha256
         (base32
-         "0dj7xzvmkl82c8ghm4p7km1f13a34zm4nlhx4yj4ipmjqxalkrzd"))))
+         "1lhy82lh8fr346pbxva4jhrzs5cqxxfm0j5fzsdqg9rvm8n064vd"))))
     (build-system r-build-system)
     (arguments
      (list
