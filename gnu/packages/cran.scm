@@ -31849,13 +31849,13 @@ sparse vectors.")
 (define-public r-spatialreg
   (package
     (name "r-spatialreg")
-    (version "1.3-6")
+    (version "1.4-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spatialreg" version))
        (sha256
-        (base32 "020jr120lapsrgyfsmfls4229spy1rn83096ipnhfp7pzdnfsib4"))))
+        (base32 "17ykmajpls6ri9wkw195nqamqpykaavh6dp2as1288bnnrgnv39n"))))
     (properties `((upstream-name . "spatialreg")))
     (build-system r-build-system)
     (propagated-inputs (list r-boot
