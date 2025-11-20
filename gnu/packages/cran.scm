@@ -47878,14 +47878,14 @@ permuted copies (shadows).")
 (define-public r-directlabels
   (package
     (name "r-directlabels")
-    (version "2025.5.20")
+    (version "2025.6.24")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "directlabels" version))
        (sha256
         (base32
-         "0rxydqyfqkqhk9m9f5vldspss5kc6cljpglpq18skrcrylv9z4zd"))))
+         "1a0l31jhcin40bk8002pmh7bb6jrr50bdknl6h8n9j8jmd6hkzgy"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-quadprog))
