@@ -971,7 +971,7 @@ your own layouts, widgets, and built-in commands.")
 (define-public quickshell
   (package
     (name "quickshell")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -980,7 +980,7 @@ your own layouts, widgets, and built-in commands.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12ggnrvnbxqyms05vjm3zl5d59p0sm08rk6qpi7ni1bvz0715ady"))))
+        (base32 "19g978h0rmfy0839wncg97ywfdh7bak047dk33hgwjkm5y1qxvvv"))))
     (build-system cmake-build-system)
     (arguments
      (list
