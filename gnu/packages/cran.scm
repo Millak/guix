@@ -26678,21 +26678,21 @@ McCullagh (1991) <https://www.jstor.org/stable/2345592>.")
 (define-public r-proc
   (package
     (name "r-proc")
-    (version "1.18.5")
+    (version "1.19.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pROC" version))
        (sha256
         (base32
-         "129cnh3kh9sr42nc7n9f14kr9svi3501834x40njynnzlr0wi4sm"))))
+         "06g6f260g65s87hfam796j9ysazi6xrb6jmg1wpiji9w383ysqgi"))))
     (properties
      '((upstream-name . "pROC")
        (updater-extra-native-inputs . ("r-ggplot2" "r-mass"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-plyr r-rcpp))
-    (native-inputs (list r-ggplot2 r-mass r-testthat))
+     (list r-rcpp))
+    (native-inputs (list r-ggplot2 r-ggplot2 r-mass r-testthat r-vdiffr))
     (home-page "https://web.expasy.org/pROC/")
     (synopsis "Display and analyze ROC curves")
     (description
