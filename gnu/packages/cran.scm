@@ -55967,13 +55967,13 @@ were originally a part of the r-devtools package.")
 (define-public r-wordspace
   (package
     (name "r-wordspace")
-    (version "0.2-8")
+    (version "0.2-9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "wordspace" version))
        (sha256
-        (base32 "17fqd4zrsklv2ik3lg00x66yasfh1kyhs3k9ri6lrk56wwv6hzb2"))))
+        (base32 "0nwghkwhd2fav4yi99ix9pbkpwm1wc33am926hpqvj6fxk9zw7hj"))))
     (properties `((upstream-name . "wordspace")))
     (build-system r-build-system)
     (propagated-inputs
