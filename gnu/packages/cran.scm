@@ -24190,13 +24190,13 @@ using the @code{snow} package.")
 (define-public r-flexparamcurve
   (package
     (name "r-flexparamcurve")
-    (version "1.5-6")
+    (version "1.5-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "FlexParamCurve" version))
        (sha256
-        (base32 "0p0c949cdb05r6xnjc7k1i47z809g4mda1l94q7f4dikpnl1h2zd"))))
+        (base32 "0mkf9n08ff2mjzdx5kv2rn1c96ffv9b27nccvqxgcc56svnwxxn2"))))
     (properties `((upstream-name . "FlexParamCurve")))
     (build-system r-build-system)
     (propagated-inputs (list r-nlme))
