@@ -51635,14 +51635,14 @@ and Yu (2020), arXiv:2009.06182.")
 (define-public r-locpol
   (package
     (name "r-locpol")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "locpol" version))
         (sha256
           (base32
-            "1bip9x45kdnwc14rvk3ckzfbs32yc2wiid1ypmbbin4mk7364zxk"))))
+            "00s3vfk3nl0xby9fdadicxgna1fdivlhs164gxdrssj434j94159"))))
     (properties `((upstream-name . "locpol")))
     (build-system r-build-system)
     (home-page
