@@ -38719,19 +38719,19 @@ matched.")
 (define-public r-ggpointdensity
   (package
     (name "r-ggpointdensity")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggpointdensity" version))
        (sha256
         (base32
-         "07pjk20arsw50y3dnjbvpdffpwdqvgr7sahvng6bikxpz3jcq7k1"))))
+         "0ncspyxla9piy3cznx4hjn31jrwbdzlg86x2mxhdn5ggql3mvh8x"))))
     (properties
      `((upstream-name . "ggpointdensity")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggplot2))
+     (list r-ggplot2 r-mass))
     (native-inputs (list r-testthat))
     (home-page "https://github.com/LKremer/ggpointdensity")
     (synopsis "Cross between a 2D density plot and a scatter plot")
