@@ -5934,6 +5934,37 @@ arbitrary Lisp data.")
 (define-public ecl-cl-dot
   (sbcl-package->ecl-package sbcl-cl-dot))
 
+(define-public sbcl-cl-dotenv
+  (let ((commit "a093f5b330269f6e6f72f51ef638cca186aee44e")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-dotenv")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ollelauribostrom/cl-dotenv/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0cdbk886aizsnqqs3z4jfn8nyrnxj4yb3y00av49xc4h83h6xn53"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-prove))
+      (inputs (list sbcl-alexandria sbcl-serapeum))
+      (home-page "https://github.com/ollelauribostrom/cl-dotenv/")
+      (synopsis "Load environment variables from .env files in Common Lisp")
+      (description
+       "@code{cl-dotenv} is a utility library for loading @file{.env} files in
+Common Lisp.")
+      (license license:expat))))
+
+(define-public cl-dotenv
+  (sbcl-package->cl-source-package sbcl-cl-dotenv))
+
+(define-public ecl-cl-dotenv
+  (sbcl-package->ecl-package sbcl-cl-dotenv))
+
 (define-public sbcl-cl-emb
   (let ((commit "fd8652174d048d4525a81f38cdf42f4fa519f840")
         (revision "1"))
