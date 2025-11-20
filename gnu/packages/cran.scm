@@ -1250,14 +1250,14 @@ evaluation.")
 (define-public r-cairo
   (package
     (name "r-cairo")
-    (version "1.6-2")
+    (version "1.7-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Cairo" version))
        (sha256
         (base32
-         "0qjdsj6mpbwvnp8cimc4yrqfq3z68pfcd78ahsai52hpjdplqvvb"))))
+         "0lhxlscq1n0r129rxb6347xg9lkz5xzc3lagvmvbk1dv9dhlmf7w"))))
     (properties `((upstream-name . "Cairo")))
     (build-system r-build-system)
     (inputs
