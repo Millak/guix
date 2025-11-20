@@ -21174,13 +21174,13 @@ implementation of an approximate nearest neighbor search using hierarchical
 (define-public r-name
   (package
     (name "r-name")
-    (version "0.0.1")
+    (version "0.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "name" version))
        (sha256
-        (base32 "1va2qqcxgvc4nzkylxyyzz8yx6ndgb1hx7af3qjzf8m4mzg8qnvm"))))
+        (base32 "11i155jm6cx86g3pdicmmyc208gzkxamqvv47xyjkqhmk4yry43z"))))
     (properties `((upstream-name . "name")))
     (build-system r-build-system)
     (propagated-inputs (list r-cli
