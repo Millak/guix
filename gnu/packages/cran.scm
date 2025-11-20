@@ -52456,20 +52456,21 @@ vector machines, and gradient boosting.")
 (define-public r-bbotk
   (package
     (name "r-bbotk")
-    (version "1.5.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bbotk" version))
        (sha256
         (base32
-         "1mm8bvnlinwbrxrmjw16nmqkgxcixcwa7i4lh3s49g5i82yk7xmb"))))
+         "1qfpfs21vqqh48zs62z0a6aywfmjzp5zw1n102r82f2yv22ljb77"))))
     (properties
      '((upstream-name . "bbotk")
        (updater-extra-native-inputs . ("r-gensa"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-checkmate
+           r-cli
            r-data-table
            r-lgr
            r-mlr3misc
@@ -52477,7 +52478,7 @@ vector machines, and gradient boosting.")
            r-r6))
     (native-inputs (list r-gensa
                          r-irace
-                         r-processx
+                         r-mirai
                          r-progressr
                          r-redux
                          r-rush
