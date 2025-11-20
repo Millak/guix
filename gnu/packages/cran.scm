@@ -48534,14 +48534,14 @@ algorithms.")
 (define-public r-tensor
   (package
     (name "r-tensor")
-    (version "1.5")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tensor" version))
        (sha256
         (base32
-         "19mfsgr6vz4lgwidm80i4yw0y1dr3n8i6qz7g4n2xa0k74zc5pp1"))))
+         "0n4b2q1my6q2b73c7hl9wp9wwnimq8950kv9hcgyrbda9q10gnvf"))))
     (properties `((upstream-name . "tensor")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/tensor/")
