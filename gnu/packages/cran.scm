@@ -48363,13 +48363,13 @@ doi.org/10.1007/s10115-013-0679-x} for details.")
 (define-public r-mediation
   (package
     (name "r-mediation")
-    (version "4.5.0")
+    (version "4.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mediation" version))
        (sha256
-        (base32 "0i88wvqqw8cmxmh9i78rqzp4s16zhf12dgl9fsk9bhw7hxhhc0i1"))))
+        (base32 "0p1s0v8lwbpdny5s1bxn59zv8h2ww1lx9gkahy67jh8kxc5dx3d1"))))
     (properties `((upstream-name . "mediation")))
     (build-system r-build-system)
     ;; One vignette overwrites the output of another vignette
