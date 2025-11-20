@@ -44261,13 +44261,13 @@ numerical features.  The plots are inspired by those provided by the
 (define-public r-animation
   (package
     (name "r-animation")
-    (version "2.7")
+    (version "2.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "animation" version))
               (sha256
                (base32
-                "0sg4sz5lkn85yzpcg22xkr7921cbnh7g74nlp9imjy7c0hdqyhc8"))
+                "1njq0a8dpz4mmq9xblx1803xai4f7q6wqc25q77gxbl18kfnykyb"))
               (snippet
                '(for-each delete-file
                           '("inst/misc/scianimator/js/jquery.scianimator.min.js"
