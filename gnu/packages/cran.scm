@@ -28379,13 +28379,13 @@ analysis.")
 (define-public r-geepack
   (package
     (name "r-geepack")
-    (version "1.3.12")
+    (version "1.3.13")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "geepack" version))
        (sha256
-        (base32 "0k856hw7zh553yrqp9g3s19hjviadh36drg2vvaddv2ma5ayj6z0"))))
+        (base32 "1mp138vq3qv0b36pl2snhg5ryw1q5nnm0qawrwgd1gpvfrlfxw3f"))))
     (properties `((upstream-name . "geepack")))
     (build-system r-build-system)
     (propagated-inputs (list r-broom r-magrittr r-mass))
