@@ -25085,14 +25085,14 @@ matrix.")
 (define-public r-ggpubr
   (package
     (name "r-ggpubr")
-    (version "0.6.0")
+    (version "0.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggpubr" version))
        (sha256
         (base32
-         "0x7p3lbh0xv5qk0shsrj1fjx382zak7mj8l3z1zd348r2pccavif"))))
+         "0xagn1kk2zm3zp1kln05kwvvarg6ja2q7i53978br893acmpgs69"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cowplot
@@ -25111,7 +25111,7 @@ matrix.")
            r-scales
            r-tibble
            r-tidyr))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-datapasta r-testthat))
     (home-page "http://www.sthda.com/english/rpkgs/ggpubr")
     (synopsis "ggplot2-based publication-ready plots")
     (description
