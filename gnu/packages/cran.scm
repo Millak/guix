@@ -48788,13 +48788,13 @@ for spatial data on a linear network.")
 (define-public r-spatstat-random
   (package
     (name "r-spatstat-random")
-    (version "3.4-1")
+    (version "3.4-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spatstat.random" version))
        (sha256
-        (base32 "0jswr6hvqv9k631xy37mf0ffizi9dv8f4p1g7favx8n2vliab9dz"))))
+        (base32 "1r4z8lvdirrw40n02wchcb36rl3p5sr32dncqvam26iz0dn0ak5x"))))
     (properties `((upstream-name . "spatstat.random")))
     (build-system r-build-system)
     (propagated-inputs (list r-spatstat-data r-spatstat-geom r-spatstat-univar
