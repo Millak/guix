@@ -35586,6 +35586,30 @@ extract matched substrings in a more intuitive and compact way than by using
 standard regular expressions.")
     (license license:gpl3)))
 
+(define-public r-unitizer
+  (package
+    (name "r-unitizer")
+    (version "1.4.23")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "unitizer" version))
+       (sha256
+        (base32 "0ivbp4k6g8d7iir5lh4kphr7a1hsxppwdh6fapvhivq0gk461y38"))))
+    (properties `((upstream-name . "unitizer")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-crayon r-diffobj))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/brodieG/unitizer")
+    (synopsis "Interactive R unit tests")
+    (description
+     "This package simplifies regression tests by comparing objects produced
+by test code with earlier versions of those same objects.  If objects are
+unchanged the tests pass, otherwise execution stops with error details.  If in
+interactive mode, tests can be reviewed through the provided interactive
+environment.")
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-untb
   (package
     (name "r-untb")
