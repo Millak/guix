@@ -52375,13 +52375,13 @@ implemented as @code{R6} classes.")
 (define-public r-mlr3
   (package
     (name "r-mlr3")
-    (version "0.23.0")
+    (version "1.2.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3" version))
               (sha256
                (base32
-                "1av2v4kdn5klbgr2wmqd671ggzaspyw5pgsjcq2aq9cbpr407dv3"))))
+                "122zjfr7w9mdghxnqh0w0gqh84ybk1pq6kkqw4p84c6ip8aq9bah"))))
     (properties
      '((updater-ignored-native-inputs . ("r-distr6"))))
     (build-system r-build-system)
@@ -52395,11 +52395,13 @@ implemented as @code{R6} classes.")
     (propagated-inputs
      (list r-backports
            r-checkmate
+           r-cli
            r-data-table
            r-evaluate
            r-future
            r-future-apply
            r-lgr
+           r-mirai
            r-mlbench
            r-mlr3measures
            r-mlr3misc
@@ -52410,7 +52412,6 @@ implemented as @code{R6} classes.")
            r-uuid))
     (native-inputs (list r-callr
                          r-codetools
-                         r-matrix
                          r-progressr
                          r-rpart
                          r-testthat))
