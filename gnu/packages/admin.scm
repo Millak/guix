@@ -77,6 +77,7 @@
 ;;; Copyright © 2025 Dariqq <dariqq@posteo.net>
 ;;; Copyright © 2024 nik gaffney <nik@fo.am>
 ;;; Copyright © 2025 Simon Streit <simon@netpanic.org>
+;;; Copyright © 2025 Luca Kredel <luca.kredel@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3141,29 +3142,34 @@ various ways that may be running with too much privilege.")
 (define-public smartmontools
   (package
     (name "smartmontools")
-    (version "7.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://sourceforge/smartmontools/smartmontools/"
-                    version "/smartmontools-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0gcrzcb4g7f994n6nws26g6x15yjija1gyzd359sjv7r3xj1z9p9"))))
+    (version "7.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/smartmontools/smartmontools")
+             (commit (string-append "RELEASE_"
+                                    (string-replace-substring version "." "_")))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00c58xcqv73lzxf0baly2q0sqkyd2vncv93iabjj7jkvbzf7nqpz"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:make-flags
       #~(list "BUILD_INFO=\"(Guix)\"")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "smartmontools"))))
       #:configure-flags
       #~(list (format #f "--with-scriptpath=~{~a:~}$PATH"
                       (map (lambda (pkg)
                              (in-vicinity pkg "bin"))
                            '#$(list (this-package-input "coreutils-minimal")
                                     (this-package-input "sed")))))))
-    (inputs (list coreutils-minimal
-                  libcap-ng
-                  sed))
+    (inputs (list automake autoconf coreutils-minimal libcap-ng sed))
     (home-page "https://www.smartmontools.org/")
     (synopsis "S.M.A.R.T. harddisk control and monitoring tools")
     (description
