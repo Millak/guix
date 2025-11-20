@@ -38193,13 +38193,13 @@ ranking performance.")
 (define-public r-mlogit
   (package
     (name "r-mlogit")
-    (version "1.1-2")
+    (version "1.1-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlogit" version))
        (sha256
-        (base32 "1i8wiz4gkq369mk8scz5c8b1nsnxyrzpk89v7aj56rmw3x53k6l9"))))
+        (base32 "1zaqq181qcpgysn88wvxpm7ch1y1sgnm9mvzwl3asaff6f2z63gl"))))
     (properties
      '((upstream-name . "mlogit")
        (updater-extra-native-inputs . ("r-aer"))))
@@ -38211,7 +38211,7 @@ ranking performance.")
                              r-rdpack
                              r-statmod
                              r-zoo))
-    (native-inputs (list r-aer r-knitr r-lattice r-nnet))
+    (native-inputs (list r-aer r-knitr))
     (home-page "https://cran.r-project.org/package=mlogit")
     (synopsis "Multinomial logit models")
     (description
