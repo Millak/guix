@@ -40,7 +40,7 @@
   (hidden-package
    (package
      (name "ninja")
-     (version "1.13.1")
+     (version "1.13.2")
      (source (origin
                (method git-fetch)
                (uri (git-reference
@@ -49,7 +49,7 @@
                (file-name (git-file-name name version))
                (sha256
                 (base32
-                 "0vil4mz0h1z39d2airzdi8cia8xhn3n5p94pv4sd3mqk0pkha40s"))))
+                 "0lp9dmxbjyjwv089i8mgq3nvnhpbnsn01ifm05m9s47w7cifrl8g"))))
      (build-system gnu-build-system)
      (inputs (list python-wrapper re2c))
      (arguments
