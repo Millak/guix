@@ -44126,14 +44126,14 @@ validation of bicluster solutions.")
 (define-public r-icge
   (package
     (name "r-icge")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ICGE" version))
        (sha256
         (base32
-         "13p9v0g5qda8bpj3sj9p277l7idv4jscrsszg2kn080dapp3cppp"))))
+         "01ri8yymf1ganwh5ic2flm26hz9789ymxz2g7xx3s0vzmyhw9d6x"))))
     (properties `((upstream-name . "ICGE")))
     (build-system r-build-system)
     (propagated-inputs
