@@ -11445,7 +11445,7 @@ of Linux application development.")
 (define-public wireplumber
   (package
     (name "wireplumber")
-    (version "0.5.10")
+    (version "0.5.12")
     (source
      (origin
        (method git-fetch)
@@ -11455,14 +11455,14 @@ of Linux application development.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z4k6vn1zcqa5878mrcsin79b74ckvrzlprfxi730aa55w5xb609"))))
+        (base32 "1dljz669ywy1lvvn0jh14ymynmbii45q5vay71zajpcg31249dyw"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dsystemd=disabled"
                            "-Dsystem-lua=true")))
     (native-inputs
      (list `(,glib "bin")
-           pkg-config))
+           pkg-config python-minimal))
     (inputs (list dbus elogind glib lua pipewire))
     (home-page "https://gitlab.freedesktop.org/pipewire/wireplumber")
     (synopsis "Session / policy manager implementation for PipeWire")
