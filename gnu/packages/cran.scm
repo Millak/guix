@@ -17460,13 +17460,13 @@ R/Shiny without needing to write custom CSS.")
 (define-public r-inext
   (package
     (name "r-inext")
-    (version "3.0.1")
+    (version "3.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "iNEXT" version))
        (sha256
-        (base32 "1nf4jhwqx5im966qzq7si78c5q4jgsa73d74ya8q8aj02n49jcyy"))))
+        (base32 "1mfjdwhmcnwyhi9gy63vz18rsh61y6fgbib51ni6f5ikfi7h28i0"))))
     (properties `((upstream-name . "iNEXT")))
     (build-system r-build-system)
     (propagated-inputs (list r-ggplot2 r-rcpp r-reshape2))
