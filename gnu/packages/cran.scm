@@ -5778,14 +5778,14 @@ analysis} (PCA) by projection pursuit.")
 (define-public r-permute
   (package
    (name "r-permute")
-   (version "0.9-7")
+   (version "0.9-8")
    (source
     (origin
      (method url-fetch)
      (uri (cran-uri "permute" version))
      (sha256
       (base32
-       "1h4dyhcsv8p3h3qxsy98pib9v79dddvrnq7qx6abkblsazxqzy7g"))))
+       "0jz357f7794na0rz1aqjcyng1dlv2d34hy4mfip5r4j6c193ij7j"))))
    (build-system r-build-system)
    (native-inputs (list r-knitr r-testthat))
    ;; Tests do not run correctly, but running them properly would entail a
