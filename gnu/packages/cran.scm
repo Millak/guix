@@ -24816,17 +24816,17 @@ obtain a better initial configuration in non-metric MDS.")
 (define-public r-here
   (package
     (name "r-here")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "here" version))
        (sha256
-        (base32 "0srlr8h8qmr0wrmp7gs4g2ry5dni2hx8n947bik3s3a26f091v88"))))
+        (base32 "0g8c34cki0if7zhcq56lz2vcm4ppb4mgs3b85q1nwk9ijji0m63i"))))
     (properties `((upstream-name . "here")))
     (build-system r-build-system)
     (propagated-inputs (list r-rprojroot))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-rlang r-testthat r-withr))
     (home-page "https://here.r-lib.org/")
     (synopsis "Simpler way to find files")
     (description
