@@ -32,6 +32,7 @@
 ;;; Copyright © 2025 Lapearldot <lapearldot@disroot.org>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Romain Garbage <romain.garbage@inria.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2031,14 +2032,13 @@ than 8 bits, and at the end only some significant 8 bits are kept.")
               ;; config.h recommends explicitly enabling or disabling asserts
               ;; when building as a shared library. By default neither is set.
               (substitute* "dlib/config.h"
-                (("^//#define DLIB_DISABLE_ASSERTS") "#define DLIB_DISABLE_ASSERTS"))
-              #t))
+                (("^//#define DLIB_DISABLE_ASSERTS") "#define DLIB_DISABLE_ASSERTS"))))
           (add-after 'disable-asserts 'disable-failing-tests
             (lambda _
               ;; One test times out on MIPS, so we need to disable it.
               ;; Others are flaky on some platforms.
-              (let* ((system ,(or (%current-target-system)
-                                  (%current-system)))
+              (let* ((system #$(or (%current-target-system)
+                                   (%current-system)))
                      (disabled-tests (cond
                                       ((string-prefix? "mips64" system)
                                        '("object_detector" ; timeout
@@ -2053,6 +2053,17 @@ than 8 bits, and at the end only some significant 8 bits are kept.")
                    (substitute* "dlib/test/makefile"
                      (((string-append "SRC \\+= " test "\\.cpp")) "")))
                  disabled-tests))))
+          (add-before 'configure 'fix-test-build-error-with-gcc-14.3
+            (lambda _
+              (substitute* "dlib/test/CMakeLists.txt"
+                ;; Some flags are activated specifically for GCC 14.0 but they
+                ;; are needed for current GCC version (14.3.0). Let's assume
+                ;; they are needed for the 14.x branch.
+                (("14\\.0\\.1")
+                 "14.99")
+                ;; Tests use deprecated functions from ffmpeg.
+                (("-Werror\\)")
+                 "-Werror -Wno-error=deprecated-declarations)"))))
           (replace 'check
             (lambda _
               ;; XXX: This causes a rebuild--however, trying to run the tests
