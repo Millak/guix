@@ -43642,14 +43642,14 @@ used to compute ruin probabilities.")
 (define-public r-bmp
   (package
     (name "r-bmp")
-    (version "0.3")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bmp" version))
        (sha256
         (base32
-         "0jd67r11bn98hjwgyr6gas423787xy7ji2hq7ay80blkkcj91xxx"))))
+         "0r5kqbhiimdjfsnmk354zgdw08y3whys338a73m1dxgr3c766v4y"))))
     (properties
      '((upstream-name . "bmp")
        (updater-extra-native-inputs . ("r-pixmap"))))
