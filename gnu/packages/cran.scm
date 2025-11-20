@@ -9595,13 +9595,13 @@ statistical analyses or create publication-ready tables and plots.")
 (define-public r-paralleldist
   (package
     (name "r-paralleldist")
-    (version "0.2.6")
+    (version "0.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "parallelDist" version))
        (sha256
-        (base32 "01ly4hxwa64a0ya5gla8rvv72s9mcknsfznivjkh937pbjwb7iih"))))
+        (base32 "0vqrhmsf4nn9mm411awssc9817s3mbjgvndql635c0mdpgsbi2xk"))))
     (properties `((upstream-name . "parallelDist")))
     (build-system r-build-system)
     (arguments
