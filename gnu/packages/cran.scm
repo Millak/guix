@@ -24995,17 +24995,17 @@ Sequence logos can easily be combined with other ggplot2 plots.")
 (define-public r-ggsci
   (package
     (name "r-ggsci")
-    (version "3.2.0")
+    (version "4.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggsci" version))
        (sha256
         (base32
-         "0jiwkk2ij1qnsaqr6354wihj057ia1arrfpjpll00x63056fvn21"))))
+         "0m9qcmj2jaw6ham42rmd0xlajc6i57xm0wwlfjjl5cqif2lkliqr"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggplot2 r-scales))
+     (list r-ggplot2 r-rlang r-scales))
     (native-inputs (list r-knitr))
     (home-page "https://nanx.me/ggsci/")
     (synopsis "Scientific journal and sci-fi themed color palettes for ggplot2")
