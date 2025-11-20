@@ -2226,13 +2226,13 @@ implementation of the ASDF Standard.")
 (define-public python-asdf-astropy
   (package
     (name "python-asdf-astropy")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf_astropy" version))
        (sha256
-        (base32 "15wyxh9afqdzmr90d5hmbkamrz3jfwcx8qhkpbbjikyby8biy26f"))))
+        (base32 "0hsm9brcq92x0mhayc067skzxm0gvkl9m04af98fac3jhn08favv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
