@@ -22239,26 +22239,35 @@ high-dimensional data.  Predictor variables of mixed classes can be handled.")
 (define-public r-quarto
   (package
     (name "r-quarto")
-    (version "1.4.4")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "quarto" version))
        (sha256
-        (base32 "18403v03hh57fm09csg6jmxh6biih7dgq9sakn0hg6x3kn8vnnaf"))))
+        (base32 "081rcz4karprmi8l9qgcmrcwqfz6l5dvbb65r5hcd1hpzk7xnyac"))))
     (properties `((upstream-name . "quarto")))
     (build-system r-build-system)
     ;; Vignettes require the quarto binary.
     (arguments (list #:test-types '(list "tests")))
     (propagated-inputs (list r-cli
+                             r-fs
+                             r-htmltools
                              r-jsonlite
                              r-later
+                             r-lifecycle
                              r-processx
                              r-rlang
                              r-rmarkdown
                              r-rstudioapi
+                             r-xfun
                              r-yaml))
-    (native-inputs (list r-knitr r-testthat r-withr r-xfun))
+    (native-inputs (list r-callr
+                         r-ggplot2
+                         r-knitr
+                         r-pkgload
+                         r-testthat
+                         r-withr))
     (home-page "https://github.com/quarto-dev/quarto-r")
     (synopsis "R Interface to Quarto markdown publishing system")
     (description
