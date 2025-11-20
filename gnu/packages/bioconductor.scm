@@ -7892,13 +7892,13 @@ objects can be used within Nebulosa.")
 (define-public r-netgsa
   (package
     (name "r-netgsa")
-    (version "4.0.5")
+    (version "4.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "netgsa" version))
        (sha256
-        (base32 "1m9myxsbvbljr038azxzakpbh20a21qhiy20d0ipvjc5asq3kfla"))))
+        (base32 "0zdj464mlhm71cwgn6jhzb6nrpnwy6php7gifgzag7pin9zh0l5y"))))
     (properties `((upstream-name . "netgsa")))
     (build-system r-build-system)
     (propagated-inputs (list r-annotationdbi
