@@ -10845,17 +10845,19 @@ M. J. D. Powell.")
 (define-public r-mirai
   (package
     (name "r-mirai")
-    (version "2.3.0")
+    (version "2.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mirai" version))
        (sha256
-        (base32 "0cczacjlwrr5m2drpa62sp9bixw39qbjp5n1cihkfj1jj9jal5wz"))))
+        (base32 "0zsr9baidl6c5d4fj50w9xsyf7sns8mh4f116gxx4hi92pab0vbr"))))
     (properties `((upstream-name . "mirai")))
     (build-system r-build-system)
     (propagated-inputs (list r-nanonext))
-    (native-inputs (list r-litedown r-promises))
+    (native-inputs (list r-litedown ;r-otelsdk
+                         r-promises
+                         ))
     (home-page "https://shikokuchuo.net/mirai/")
     (synopsis "Minimalist async evaluation framework for R")
     (description
