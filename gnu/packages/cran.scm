@@ -6539,13 +6539,13 @@ gigabytes to petabytes.")
 (define-public r-rpushbullet
   (package
     (name "r-rpushbullet")
-    (version "0.3.4")
+    (version "0.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RPushbullet" version))
        (sha256
-        (base32 "1mx433hvx660a63s5dzn655zmqv1c1qij0hzddl9z38032brc4ii"))))
+        (base32 "0xp6i08zh5x144iirzbi9czz4xmx9r1y001g32ibrnxwlsd92zxh"))))
     (properties `((upstream-name . "RPushbullet")))
     (build-system r-build-system)
     (propagated-inputs (list r-curl r-jsonlite))
