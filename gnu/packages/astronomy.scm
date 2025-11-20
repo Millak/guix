@@ -3790,26 +3790,28 @@ structure of the universe, and the properties of dark matter halos.")
 (define-public python-coolest
   (package
     (name "python-coolest")
-    (version "0.1.9")
+    (version "0.1.11")
     (source
      (origin
-       (method git-fetch) ; no tests in the PyPI tarball
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/aymgal/COOLEST")
-             (commit (string-append "v" version))))
+              (url "https://github.com/aymgal/COOLEST")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mfkgfp6f0ay6kndh7vk8l0g2ijr32k55x3pmj15lp9kd8k3ln4r"))))
+        (base32 "1mdj5c91w1p2ch1y80y0x1y3ky30b95lzlscz2b6hl7jcf3n6jfb"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 120 passed, 81 warnings
       #:test-flags
       ;; Cycle with python-lenstronomy.
       #~(list "--ignore=test/api/profiles/light_test.py"
               "--ignore=test/api/profiles/mass_test.py")))
     (native-inputs
      (list python-pytest
-           python-scikit-image))
+           python-scikit-image
+           python-setuptools))
     (propagated-inputs
      (list python-astropy
            python-getdist
