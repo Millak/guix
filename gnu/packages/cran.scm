@@ -53831,17 +53831,17 @@ BTM-WWW13.pdf}.")
 (define-public r-delaporte
   (package
     (name "r-delaporte")
-    (version "8.4.1")
+    (version "8.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Delaporte" version))
        (sha256
         (base32
-         "1gv0js21x5sh54vjkvyh41ph1ixk1nw7ajm111fwz95prd9wx04v"))))
+         "19ncmmjrzxw87blmj11xigk9qza7q68r5yqj187895r3415ani4g"))))
     (properties `((upstream-name . "Delaporte")))
     (build-system r-build-system)
-    (native-inputs (list gfortran))
+    (native-inputs (list gfortran r-tinytest))
     (home-page "https://github.com/aadler/Delaporte")
     (synopsis "Statistical functions for the Delaporte distribution")
     (description
