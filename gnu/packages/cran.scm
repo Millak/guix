@@ -2545,14 +2545,14 @@ and fast file reading.")
 (define-public r-datawizard
   (package
     (name "r-datawizard")
-    (version "1.1.0")
+    (version "1.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "datawizard" version))
        (sha256
         (base32
-         "1zwl59852fi89nn696a1awf84qxcn1zjmmkcfp3rzpl0zm8mszg3"))))
+         "1mnp2cb20bckhj4makpv93lwx12bdpya8qaa5y1v2an0zqg0wrxp"))))
     (properties
      `((upstream-name . "datawizard")
        (updater-ignored-native-inputs
