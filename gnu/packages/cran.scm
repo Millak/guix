@@ -19911,13 +19911,13 @@ functions to generate, plot and work with objective functions.")
 (define-public r-smurf
   (package
     (name "r-smurf")
-    (version "1.1.7")
+    (version "1.1.8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "smurf" version))
               (sha256
                (base32
-                "19b24ibx32jmrsjn47xkz3qanpx7a6kmkws1yyj8aj193mi5s0q0"))))
+                "1fxky7ahrwnj2rvq4s5ad0phgadw1if0p9kv005wswg49l80zfa6"))))
     (properties `((upstream-name . "smurf")))
     (build-system r-build-system)
     (propagated-inputs
