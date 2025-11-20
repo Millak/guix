@@ -31802,14 +31802,14 @@ quasi-likelihood and other variants discussed in the h-likelihood literature
 (define-public r-sparsesvd
   (package
     (name "r-sparsesvd")
-    (version "0.2-2")
+    (version "0.2-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sparsesvd" version))
        (sha256
         (base32
-         "0dnqjqypjwac8aqdqsqdgcd70lyrfv6idz8q2kzjiv1sxrlwqh5v"))))
+         "0qr355n2jpch18bzdhgfa4pdfyy5i3zxfqjy8b0spjii7gxk9wj9"))))
     (build-system r-build-system)
     (propagated-inputs (list r-matrix))
     (home-page "http://tedlab.mit.edu/~dr/SVDLIBC/")
