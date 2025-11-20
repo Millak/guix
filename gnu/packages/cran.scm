@@ -40653,13 +40653,13 @@ and interfaces to external frameworks.")
 (define-public r-covr
   (package
     (name "r-covr")
-    (version "3.6.4")
+    (version "3.6.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "covr" version))
        (sha256
-        (base32 "0al6n4gnnvgxk968skqnajpqpqyl6kpam3fmn782kihhcl1h8qib"))
+        (base32 "11l9gvpaywlngkd4c7yzp8mi2fnq8sndkb0dbq8nh73m3n6aklr0"))
        (modules '((guix build utils)))
        ;; TODO: still need to replace highlight.js/highlight.pack.js
        (snippet
@@ -40697,7 +40697,7 @@ and interfaces to external frameworks.")
                                         (string-append "--outfile=" target)))
                               sources targets)))))))))
     (propagated-inputs
-     (list r-crayon
+     (list r-cli
            r-digest
            r-httr
            r-jsonlite
@@ -40706,14 +40706,17 @@ and interfaces to external frameworks.")
            r-yaml))
     (native-inputs
      (list esbuild
+           r-box
            r-dt
            r-htmltools
-           r-knitr  ;for vignettes
+           r-htmlwidgets
+           r-knitr
            r-memoise
-           r-mockery
-           r-rstudioapi
+           r-r6
+           r-rlang
+           r-s7
+           ;r-shiny
            r-testthat
-           r-xml2
            (let ((version "3.3.5"))
              (origin
                (method git-fetch)
