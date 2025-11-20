@@ -23278,19 +23278,21 @@ It also includes interpolation functions.")
 (define-public r-simdesign
   (package
     (name "r-simdesign")
-    (version "2.19.2")
+    (version "2.21")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "SimDesign" version))
        (sha256
-        (base32 "1pcmkkvlg4qabl06s0k2bmpi2andqf4wfpr3vnb9fmcy9dfdf7dw"))))
+        (base32 "1z07wks39lsd4jbbkcyk37wqih9qqzdbzvqrzy4hs1jncffcm8gv"))))
     (properties
      '((upstream-name . "SimDesign")
        ;; Not packaged, but also not required.
        (updater-ignored-native-inputs . ("r-dompi"))))
     (build-system r-build-system)
     (propagated-inputs (list r-beepr
+                             r-clipr
+                             r-codetools
                              r-dplyr
                              r-future
                              r-future-apply
