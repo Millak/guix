@@ -462,14 +462,14 @@ flexible than the orphaned \"base64\" package.")
 (define-public r-batchjobs
   (package
     (name "r-batchjobs")
-    (version "1.9")
+    (version "1.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "BatchJobs" version))
        (sha256
         (base32
-         "0xsw25j2ks9bqgz189qdcyj8hzz93snknlik83nj04s6vy0w7aax"))))
+         "1xgylb8bfp0rl4sif16ai1hy018kfmx9lmwrlqixk4ynal4kxjqy"))))
     (properties
      '((upstream-name . "BatchJobs")
        (updater-extra-native-inputs . ("r-mass"))))
