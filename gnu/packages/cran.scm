@@ -9721,16 +9721,16 @@ control over dimensions and appearance.")
 (define-public r-philentropy
   (package
     (name "r-philentropy")
-    (version "0.9.0")
+    (version "0.10.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "philentropy" version))
               (sha256
                (base32
-                "04rmhfslim3vwxi14qllp9kzjcl7fwyzczar0lb72j5vd07mmns0"))))
+                "0jcaagdb35mfff17ri6zbnlms4vj2k6yilg7ffgkglvpy3vm7p1f"))))
     (properties `((upstream-name . "philentropy")))
     (build-system r-build-system)
-    (propagated-inputs (list r-kernsmooth r-poorman r-rcpp))
+    (propagated-inputs (list r-kernsmooth r-poorman r-rcpp r-rcppparallel))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/drostlab/philentropy")
     (synopsis
