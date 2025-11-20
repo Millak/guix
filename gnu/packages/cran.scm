@@ -33579,16 +33579,16 @@ Differences with other sparse matrix packages are:
 (define-public r-fields
   (package
     (name "r-fields")
-    (version "16.3.1")
+    (version "17.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fields" version))
        (sha256
-        (base32 "0y7idq065sbqibs1d92rk3lq7pdqkh470f5wcz27fja4l0k05zaz"))))
+        (base32 "0zmib9bzpja7j6d9kxa7a523zdx5p9m4qfljh803hwbswk1d1i9n"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-maps r-spam r-viridislite))
+     (list r-maps r-rcolorbrewer r-spam r-viridislite))
     (native-inputs
      (list gfortran))
     (home-page "https://www.image.ucar.edu/fields")
