@@ -50063,17 +50063,19 @@ and regression metrics (e.g., RMSE).")
 (define-public r-warp
   (package
     (name "r-warp")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "warp" version))
        (sha256
         (base32
-         "1gj65kgs7x63f6y2vnv13k293b52k4afbmdlcam635h9vs8da2h2"))))
-    (properties `((upstream-name . "warp")))
+         "0h3q359dkxzx8kpl090rz0bwkkswhgaz0pws2ix4b8p3fm658yzm"))))
+    (properties
+     '((upstream-name . "warp")
+       (updater-extra-native-inputs . ("tzdata-for-tests"))))
     (build-system r-build-system)
-    (native-inputs (list r-knitr r-testthat tzdata-for-tests))
+    (native-inputs (list r-knitr r-testthat r-withr tzdata-for-tests))
     (home-page "https://github.com/DavisVaughan/warp")
     (synopsis "Group dates")
     (description
