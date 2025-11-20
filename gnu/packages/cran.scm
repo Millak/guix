@@ -18906,13 +18906,13 @@ created using basic graphics.")
 (define-public r-psychotools
   (package
     (name "r-psychotools")
-    (version "0.7-4")
+    (version "0.7-5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "psychotools" version))
        (sha256
-        (base32 "197hym0fxfsyg6kf0pf9g5wbsa1kkicd4lqrxfy2g3c7aczad9zy"))))
+        (base32 "0cja8irxr1yk4daan7v4hgkfmx6azl6lf7kkqslh5pv4xizkrc3v"))))
     (properties `((upstream-name . "psychotools")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=psychotools")
