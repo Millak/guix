@@ -46437,21 +46437,28 @@ using the @code{rstan} and @code{rstanarm} packages).")
 (define-public r-rstantools
   (package
     (name "r-rstantools")
-    (version "2.4.0")
+    (version "2.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rstantools" version))
        (sha256
         (base32
-         "1ajg7g425cmw9h9a8225szmacwyvdwl3x0k851fnqb1my2i2rxxz"))))
+         "1gkjqgfg6c36fislmjf021qv02ncg9fcfp206kmxphjqp62vf09q"))))
     (properties `((upstream-name . "rstantools")))
     (build-system r-build-system)
     (inputs (list pandoc))
     (propagated-inputs
      (list r-desc r-rcpp r-rcppparallel))
     (native-inputs
-     (list r-knitr r-rstan r-testthat r-usethis))
+     (list r-devtools
+           r-knitr
+           r-pkgbuild
+           r-pkgload
+           r-roxygen2
+           r-rstan
+           r-testthat
+           r-usethis))
     (home-page "https://mc-stan.org/rstantools/")
     (synopsis "Tools for developing R packages interfacing with Stan")
     (description
