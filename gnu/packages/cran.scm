@@ -49056,14 +49056,14 @@ model.")
 (define-public r-clusterr
   (package
     (name "r-clusterr")
-    (version "1.3.3")
+    (version "1.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ClusterR" version))
        (sha256
         (base32
-         "0vmj0q6sjh8adr22mhm6hyfnzsw09dk1qn75rz5i3mmhrd7y7mr6"))))
+         "05kzfwgg10k7qxj6j7l3rlmh13v9di35dr9h1pb16gfpdiraigy8"))))
     (properties `((upstream-name . "ClusterR")))
     (build-system r-build-system)
     (propagated-inputs
@@ -49072,7 +49072,7 @@ model.")
            r-lifecycle
            r-rcpp
            r-rcpparmadillo))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-testthat r-tibble))
     (home-page "https://github.com/mlampros/ClusterR")
     (synopsis "Clustering")
     (description
