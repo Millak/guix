@@ -32543,13 +32543,13 @@ for custom user-defined patterns.")
 (define-public r-gridsvg
   (package
     (name "r-gridsvg")
-    (version "1.7-5")
+    (version "1.7-7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "gridSVG" version))
               (sha256
                (base32
-                "1p8qnx9q96bni39x44l40rgcdi9r440zbipdfvkbs2paysx6mkr5"))))
+                "0yj5vmiapz2gz5f30iv491hv2cq5bbgnqkwc5xsns5m0pnyijjw4"))))
     (properties `((upstream-name . "gridSVG")))
     (build-system r-build-system)
     (propagated-inputs
