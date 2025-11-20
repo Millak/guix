@@ -6225,7 +6225,7 @@ compact disc (CDDA) identifiers.")
     (native-inputs
      (list perl-module-build))
     (propagated-inputs
-     (list perl-mojolicious))
+     (list perl-mojolicious perl-io-socket-ssl))
     (home-page "https://metacpan.org/release/WebService-MusicBrainz")
     (synopsis "Web service API to the MusicBrainz database")
     (description
