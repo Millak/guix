@@ -35523,14 +35523,14 @@ network.")
 (define-public r-apcluster
   (package
     (name "r-apcluster")
-    (version "1.4.13")
+    (version "1.4.14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "apcluster" version))
        (sha256
         (base32
-         "19x1sma5pli5jl0v92c6x7jbqkigz7waaghaxi29kvvx8am5p5sy"))))
+         "0hir0v2cmyy05aykml86sis38mh4n0n0im0lgd9nblfjnnrlvhfs"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-matrix r-rcpp))
