@@ -29810,14 +29810,14 @@ User credentials are shared with command line git through the
 (define-public r-usethis
   (package
     (name "r-usethis")
-    (version "3.1.0")
+    (version "3.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "usethis" version))
        (sha256
         (base32
-         "1n0nd6z8scwx8scl1y2i80d1h1h3c29kqcbipzdy36xi3lffibv3"))))
+         "0xrbfyx4yzkmbds6zld3k2s65b0bbjh8ii03zryyzhhcbg9kkg25"))))
     (properties
      `((upstream-name . "usethis")
        (updater-extra-native-inputs . ("r-roxygen2"))
@@ -29860,6 +29860,7 @@ User credentials are shared with command line git through the
            r-yaml))
     (native-inputs (list r-knitr
                          r-magick
+                         r-quarto
                          r-rmarkdown
                          r-roxygen2
                          r-spelling
