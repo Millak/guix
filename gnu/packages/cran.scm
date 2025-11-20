@@ -36596,13 +36596,13 @@ lspec, polyclass, and polymars.")
 (define-public r-rms
   (package
     (name "r-rms")
-    (version "8.0-0")
+    (version "8.1-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rms" version))
        (sha256
-        (base32 "0jk6gjih3n5xk5x94p8fwhphb7zyajf4y8sakfaw0vq0ig94d097"))))
+        (base32 "00dr0hil94j0rji87yhhh9qpilsvwd59532h3vipg170fbmiyyzb"))))
     (build-system r-build-system)
     ;; One test fails with: "duplicated column name in design matrix:X21"
     (arguments (list #:tests? #false))
