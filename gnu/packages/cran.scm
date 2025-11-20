@@ -23678,13 +23678,13 @@ dynamic cellular processes at single-cell resolution.")
 (define-public r-dynutils
   (package
     (name "r-dynutils")
-    (version "1.0.11")
+    (version "1.0.12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dynutils" version))
        (sha256
-        (base32 "06an2bm1d131v28m240vii2wisbz3zs32wbamm2w7r8rl3yrxkh9"))))
+        (base32 "056hz2j2680kpybizk8b61byfq3xkhirkpqhv0rim4vn69qdshvs"))))
     (properties `((upstream-name . "dynutils")))
     (build-system r-build-system)
     (propagated-inputs
@@ -23700,7 +23700,7 @@ dynamic cellular processes at single-cell resolution.")
            r-remotes
            r-stringr
            r-tibble))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-hdf5r r-knitr r-testthat))
     (home-page "https://github.com/dynverse/dynutils")
     (synopsis "Common functionality for the dynverse packages")
     (description
