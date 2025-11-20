@@ -23101,19 +23101,17 @@ systems.")
 (define-public r-baseline
   (package
     (name "r-baseline")
-    (version "1.3-5")
+    (version "1.3-7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "baseline" version))
               (sha256
                (base32
-                "0l0llb3pi89ixkpvfg5vbvwwv3gzldf0g98rrd3vkm7q26rqmmd2"))))
+                "1v5w93vkdjyj6nj6jahppn0zpbsvvxkqq35k3fh58q354177kd6a"))))
     (properties `((upstream-name . "baseline")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-gwidgets2tcltk ;for GUI
-           r-limsolve
-           r-sparsem))
+     (list r-sparsem))
     (home-page "https://github.com/khliland/baseline/")
     (synopsis "Baseline correction of spectra")
     (description
