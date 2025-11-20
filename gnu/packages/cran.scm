@@ -52150,13 +52150,13 @@ is straightforward via mlr3tuning.")
 (define-public r-mlr3measures
   (package
     (name "r-mlr3measures")
-    (version "1.0.0")
+    (version "1.1.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3measures" version))
               (sha256
                (base32
-                "02jsg40bpzgic34jidv20yspnl12c9bmjmim22d307nzrpkqp4gh"))))
+                "0yh9wbvvpxyk9jag0d98z4vqd4vhh34hcamabh4jmvhj6hfkqk3s"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-checkmate r-mlr3misc r-prroc))
