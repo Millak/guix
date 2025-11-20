@@ -27598,13 +27598,13 @@ Processing of very large files is supported.")
 (define-public r-mosaic
   (package
     (name "r-mosaic")
-    (version "1.9.1")
+    (version "1.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mosaic" version))
        (sha256
-        (base32 "0l7h3zg5izr5xxqy1sngz6fzbwdffzljnjmfbshzzbl4x80f5lwl"))))
+        (base32 "07jynw6kg3bfsmnisx7nf6fydximdkryk6m08cljmfriyfkvqmhy"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -27631,7 +27631,7 @@ Processing of very large files is supported.")
            r-tibble
            r-tidyr))
     (native-inputs
-     (list r-broom r-ggdendro r-ggrepel r-knitr r-latticeextra r-testthat))
+     (list r-knitr r-manipulate r-testthat))
     (home-page "https://github.com/ProjectMOSAIC/mosaic/")
     (synopsis "Mathematics, statistics, and computation teaching utilities")
     (description
