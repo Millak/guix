@@ -335,17 +335,17 @@ wrong.")
 (define-public r-aster
   (package
     (name "r-aster")
-    (version "1.3-4")
+    (version "1.3-6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "aster" version))
        (sha256
-        (base32 "0inj8gn29z6apjh9h2ps26j7077k91l9m637rsdav2b8a87anw5h"))))
+        (base32 "036anmajy2hqyb2h29j3h5hmh6105dk5v58mzs1843qhgx2s0p85"))))
     (properties `((upstream-name . "aster")))
     (build-system r-build-system)
     (propagated-inputs (list r-trust))
-    (native-inputs (list r-numderiv))
+    (native-inputs (list r-knitr r-numderiv))
     (home-page "http://www.stat.umn.edu/geyer/aster/")
     (synopsis "Aster Models")
     (description
