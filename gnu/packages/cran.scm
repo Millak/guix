@@ -7617,13 +7617,13 @@ programming packages such as @code{knitr} and @code{rmarkdown}.")
 (define-public r-carrier
   (package
     (name "r-carrier")
-    (version "0.1.1")
+    (version "0.3.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "carrier" version))
        (sha256
-        (base32 "155zna5bv6ybb6hr3lsv8dn67lkbbvn3dbihfw2s6ajkzvms9x13"))))
+        (base32 "0lc33470b66pkx7468bs9ny11zn7ngvylmsj93lh1qiqsf69gvxb"))))
     (properties `((upstream-name . "carrier")))
     (build-system r-build-system)
     (propagated-inputs
