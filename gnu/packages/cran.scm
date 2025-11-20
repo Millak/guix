@@ -8907,18 +8907,19 @@ organisms via the @code{g:Profiler} toolkit.")
 (define-public r-gprofiler2
   (package
     (name "r-gprofiler2")
-    (version "0.2.3")
+    (version "0.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gprofiler2" version))
        (sha256
         (base32
-         "1klmg0zj5kr663dzgfzpy1yn161znmjcjq8pl3rahjh2lwaahbmh"))))
+         "0hmhdglka8w5ihdc7ww8268n66p1a7373m62pnlmx5qrpwixblgi"))))
     (properties `((upstream-name . "gprofiler2")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-crosstalk
+           r-curl
            r-dplyr
            r-ggplot2
            r-gridextra
