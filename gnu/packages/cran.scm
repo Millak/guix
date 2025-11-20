@@ -11782,13 +11782,13 @@ fitters for consensus relations.")
 (define-public r-repmis
   (package
     (name "r-repmis")
-    (version "0.5")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "repmis" version))
        (sha256
-        (base32 "0z5mjbsl24yjbl0aawr35grcal44rf2xbwv1hy7bdkms94ix79b5"))))
+        (base32 "079z5179igxi0bdqsckclqg2pfgq6l2ifbsqn7872bqsyq48w7rp"))))
     (properties `((upstream-name . "repmis")))
     (build-system r-build-system)
     (arguments
