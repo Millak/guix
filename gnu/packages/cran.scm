@@ -4811,13 +4811,13 @@ plots.")
 (define-public r-ggstatsplot
   (package
     (name "r-ggstatsplot")
-    (version "0.13.1")
+    (version "0.13.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggstatsplot" version))
               (sha256
                (base32
-                "0qqlfq6w3z1qb09laibf9c4w7cgnz063i8kr3yrqnr5076ww3kqf"))))
+                "0c31zi0pkvp8prj2i9h48wpq1n05vssrhg4ijnnm6xl6w1jr8dl7"))))
     (properties `((upstream-name . "ggstatsplot")))
     (build-system r-build-system)
     (propagated-inputs (list r-correlation
@@ -4830,6 +4830,7 @@ plots.")
                              r-ggsignif
                              r-glue
                              r-insight
+                             r-magrittr
                              r-paletteer
                              r-parameters
                              r-patchwork
