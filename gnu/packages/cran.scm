@@ -25588,14 +25588,14 @@ references and Rd files.")
 (define-public r-officer
   (package
     (name "r-officer")
-    (version "0.6.10")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "officer" version))
        (sha256
         (base32
-         "0xqcgb7jzxggrvmh4zab67lhg938c46j0rlxhy7k66ldkkxs03l8"))))
+         "19n8ssga3cbyxk84iqfrf7l7wxzcacx02ghvkdvgk7nph2wagxxs"))))
     (properties
      '((updater-extra-native-inputs . ("r-magick"))))
     (build-system r-build-system)
