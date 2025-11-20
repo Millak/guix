@@ -10520,13 +10520,13 @@ memory usage.")
 (define-public r-matrixtests
   (package
     (name "r-matrixtests")
-    (version "0.2.3")
+    (version "0.2.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "matrixTests" version))
        (sha256
-        (base32 "0d7i00cxzszfdnjm8q5b72ildic8nig6fbw7rba6acdnllpp7sza"))))
+        (base32 "0ri63i0x1l2xm8187fsj3iqprh7ic6f7q73g2pq2w6ikax2h5gyc"))))
     (properties `((upstream-name . "matrixTests")))
     (build-system r-build-system)
     (propagated-inputs (list r-matrixstats))
