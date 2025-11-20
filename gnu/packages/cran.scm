@@ -38374,13 +38374,13 @@ wrap.")
 (define-public r-ggghost
   (package
     (name "r-ggghost")
-    (version "0.2.2")
+    (version "0.2.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggghost" version))
               (sha256
                (base32
-                "08ik4zbkglff6byqdym2ipg3ar2p273p014n3lf4dkvrys7asvk6"))))
+                "0r14b75d8xc4srn300zfjnwdcqck34c1hkyms7rlmwbchyfl477z"))))
     (properties `((upstream-name . "ggghost")))
     (build-system r-build-system)
     (propagated-inputs (list r-animation r-ggplot2))
