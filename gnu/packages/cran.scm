@@ -53622,7 +53622,7 @@ light-weight geometry library used by @url{http://postgis.net/,PostGIS}.")
     (properties
      '((upstream-name . "stars")
        (updater-extra-native-inputs
-        . ("r-cubelyr" "r-exactextractr" "r-ncmeta"))
+        . ("r-cubelyr" "r-digest" "r-exactextractr" "r-ncmeta"))
        ;; These haven't been packaged yet, but they also don't seem necessary.
        (updater-ignored-native-inputs
         . ("r-cubble" "r-ncdfgeom" "r-openstreetmap"))))
@@ -53630,6 +53630,7 @@ light-weight geometry library used by @url{http://postgis.net/,PostGIS}.")
     (propagated-inputs
       (list r-abind r-classint r-rlang r-sf r-units))
     (native-inputs (list r-cubelyr
+                         r-digest
                          r-dplyr
                          r-exactextractr
                          r-ggplot2
