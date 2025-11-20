@@ -12183,29 +12183,30 @@ as of close of business.  Perform date arithmetic in units of \"months\" and
 (define-public r-morpho
   (package
     (name "r-morpho")
-    (version "2.12")
+    (version "2.13")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "Morpho" version))
               (sha256
                (base32
-                "1hg1jr0y11v93mqg2kn8n841nbsiffhyyr2kswj7kk664vlpril0"))))
+                "12mmjdmijs9dlj9v7f39bfzjx73m6ifzckw2vmp9d6w3inb6xbdl"))))
     (properties
      '((upstream-name . "Morpho")
        (updater-extra-native-inputs . ("r-shapes"))))
     (build-system r-build-system)
     (propagated-inputs (list r-bezier
                              r-colorramps
+                             r-crayon
                              r-doparallel
                              r-foreach
                              r-jsonlite
                              r-mass
                              r-matrix
+                             r-mclust
                              r-rcpp
                              r-rcpparmadillo
                              r-rgl
-                             r-rvcg
-                             r-sf))
+                             r-rvcg))
     (native-inputs (list r-shapes r-testthat))
     (home-page "https://github.com/zarquon42b/Morpho")
     (synopsis
