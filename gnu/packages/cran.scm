@@ -36293,14 +36293,14 @@ information about geometries.")
 (define-public r-sf
   (package
     (name "r-sf")
-    (version "1.0-21")
+    (version "1.0-22")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sf" version))
        (sha256
         (base32
-         "16bf43hdn87r9p488s8fxiczpxlr56scnj0d4xgnp9c7cf18mhkh"))))
+         "0hsbwhrxqfh36arcdz43yrj0nb1kv9sk4rr3liw08972v70yx97w"))))
     (properties
      ;; We don't have this package
      '((updater-ignored-native-inputs . ("r-geom"))))
