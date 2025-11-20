@@ -9985,16 +9985,16 @@ excellent candidate for labeling of a polygon.")
 (define-public r-ecdat
   (package
     (name "r-ecdat")
-    (version "0.4-2")
+    (version "0.4.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Ecdat" version))
        (sha256
-        (base32 "1vyc4ynkd65mng2x8wvzn47crsvaqfz97n89jxn12xv13bpsbs7c"))))
+        (base32 "1k0b449mj35awf3adhz4g595344syakbks1cqkq4zdwnc7gg8qfd"))))
     (properties `((upstream-name . "Ecdat")))
     (build-system r-build-system)
-    (propagated-inputs (list r-ecfun))
+    (propagated-inputs (list))
     (home-page "https://www.r-project.org")
     (synopsis "Data sets for econometrics")
     (description "This package provides data sets for econometrics, including
