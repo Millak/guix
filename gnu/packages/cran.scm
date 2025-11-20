@@ -25589,14 +25589,14 @@ references and Rd files.")
 (define-public r-officer
   (package
     (name "r-officer")
-    (version "0.7.0")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "officer" version))
        (sha256
         (base32
-         "19n8ssga3cbyxk84iqfrf7l7wxzcacx02ghvkdvgk7nph2wagxxs"))))
+         "0x92pyrl0wsicsv81x58pcilaw8437ch28iddi9zngh6m014sln4"))))
     (properties
      '((updater-extra-native-inputs . ("r-magick"))))
     (build-system r-build-system)
@@ -25609,9 +25609,11 @@ references and Rd files.")
            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-cli
+           r-dplyr
            r-openssl
            r-r6
            r-ragg
+           r-tidyr
            r-uuid
            r-xml2
            r-zip))
