@@ -50831,14 +50831,14 @@ use.")
 (define-public r-tidymodels
   (package
     (name "r-tidymodels")
-    (version "1.3.0")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidymodels" version))
        (sha256
         (base32
-         "1h3x9pk0a7yr2fdv7k87cgg0lq269d1569lfpn0rbhzw809k7zgk"))))
+         "1xjpfsjx67dl96s97fapn72xrfbgw5zwhaf5fsbxf7dk68ydz9mf"))))
     (properties `((upstream-name . "tidymodels")))
     (build-system r-build-system)
     (propagated-inputs
@@ -50857,7 +50857,7 @@ use.")
            r-rlang
            r-rsample
            r-rstudioapi
-           r-tibble
+           r-tailor
            r-tidyr
            r-tune
            r-workflows
