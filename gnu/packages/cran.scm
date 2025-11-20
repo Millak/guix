@@ -54203,14 +54203,14 @@ manipulating and visualizing complex functions.")
 (define-public r-gganimate
   (package
     (name "r-gganimate")
-    (version "1.0.9")
+    (version "1.0.11")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "gganimate" version))
         (sha256
           (base32
-            "016nky797h4093qrpynq5rr1p7h4chpv1hyngpcs2csr1064rjmz"))))
+            "1jpamap57bij0gks24hfya25nczfc4bfhwfy1vis17aa5f3qqj4j"))))
     (properties `((upstream-name . "gganimate")))
     (build-system r-build-system)
     (arguments
