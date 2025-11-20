@@ -42912,13 +42912,13 @@ management} (aCRM).")
 (define-public r-tree
   (package
    (name "r-tree")
-   (version "1.0-44")
+   (version "1.0-45")
    (source (origin
             (method url-fetch)
             (uri (cran-uri "tree" version))
             (sha256
              (base32
-              "03zp9g2cwf6099l8xkvs9ab11i8a4iflh8afblqihcl4yrglnsfv"))))
+              "15q63ijd7ybgxbc5p1ix8iyjj0cd100nc6ya2yy67h6pzf9zb5xk"))))
    (build-system r-build-system)
    (properties
     '((updater-extra-native-inputs . ("r-mass"))))
