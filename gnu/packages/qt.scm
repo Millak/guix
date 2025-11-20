@@ -4685,9 +4685,9 @@ itself.")
     (arguments
      (list
       #:tests? #f ;No tests.
-      #:configure-flags #~`(@ ("--verbose" . "") ;Print commands run.
-                              ("--jobs" unquote
-                               (number->string (parallel-job-count))))
+      #:configure-flags #~`(("--verbose" . "") ;Print commands run.
+                            ("--jobs" unquote
+                             (number->string (parallel-job-count))))
       #:phases #~(modify-phases %standard-phases
                    (add-after 'unpack 'set-include-dirs
                      (lambda* (#:key inputs outputs #:allow-other-keys)
