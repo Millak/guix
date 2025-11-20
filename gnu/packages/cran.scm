@@ -23127,14 +23127,14 @@ local smoothers and many more.")
 (define-public r-radiant-data
   (package
     (name "r-radiant-data")
-    (version "1.6.7")
+    (version "1.6.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "radiant.data" version))
        (sha256
         (base32
-         "0p55nppclr5dzlslwrhzrg8cc4i0k3ck3076sh2fiay0qi2fh9cm"))
+         "031wgck6xxx8i21sn8n412vshba75wd0cjs3bs79x21hmmx96f6y"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file "inst/assets/html2canvas/html2canvas.min.js"))))
