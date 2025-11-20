@@ -17894,13 +17894,13 @@ for Environmental Statistics\" (Millard, 2013, Springer, ISBN
 (define-public r-suntools
   (package
     (name "r-suntools")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "suntools" version))
        (sha256
-        (base32 "1j7xz3yxg1azvcshb6sp88diipjiq37895cbipxm0s22dhhx1bqv"))))
+        (base32 "1lcwkin5iixlh4g5b8v3knpcwigqnn65jn8plw1gx97vc1fqfp58"))))
     (properties
      `((upstream-name . "suntools")
        (updater-extra-native-inputs . ("tzdata-for-tests"))))
