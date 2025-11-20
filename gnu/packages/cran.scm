@@ -52068,13 +52068,13 @@ black-box optimization in bbotk.")
 (define-public r-mlr3inferr
   (package
     (name "r-mlr3inferr")
-    (version "0.1.0")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mlr3inferr" version))
        (sha256
-        (base32 "0cw0a194hcairl7va6lvx62k0bn25x15ylczbgcaxjj54bagqslm"))))
+        (base32 "0ryv6mvprkamzf5xkvdg266y2s7q3rdfr56kp2iq1dmnkxyyb6xq"))))
     (properties `((upstream-name . "mlr3inferr")))
     (build-system r-build-system)
     (propagated-inputs (list r-checkmate
