@@ -53522,14 +53522,14 @@ to read the latter.")
 (define-public r-readtext
   (package
     (name "r-readtext")
-    (version "0.91")
+    (version "0.92.1")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "readtext" version))
         (sha256
           (base32
-            "0bzaq0vx6c83i4xf7p9zwka7h7jbv1qfy6w4v3kljx30hl048dpn"))))
+            "10v8wgqfcax0b0v256j93z51mlslcrrp0ymq0schlcnr0kpbx9cv"))))
     (properties `((upstream-name . "readtext")))
     (build-system r-build-system)
     ;; Tests require Internet access.
@@ -53548,7 +53548,7 @@ to read the latter.")
            r-stringi
            r-striprtf
            r-xml2))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-devtools r-knitr r-spelling r-testthat))
     (home-page "https://github.com/quanteda/readtext")
     (synopsis "Import and handling for plain and formatted text files")
     (description
