@@ -6859,14 +6859,14 @@ RUV-I, and RUV-III, along with various supporting algorithms.")
 (define-public r-waldo
   (package
     (name "r-waldo")
-    (version "0.6.1")
+    (version "0.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "waldo" version))
        (sha256
         (base32
-         "1jbn3vfykyv8czwqs6wbb8m172cl2fqgggy86n3h1rrg59rz7hy9"))))
+         "1yh79qcz6h073b42pr1hgvci8p64js6s386j6sbw9vi5wrmp8amj"))))
     (properties
      ;; We can't add testthat here because of a dependency cycle.
      '((updater-ignored-native-inputs . ("r-testthat"))
