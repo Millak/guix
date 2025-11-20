@@ -46721,14 +46721,14 @@ random number generator in parallel R applications.")
 (define-public r-rlinsolve
   (package
     (name "r-rlinsolve")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Rlinsolve" version))
        (sha256
         (base32
-         "1xv500n1480qyakw0isanw1s5ywykhc207hqja4804s5s2m8zfjw"))))
+         "0mrhhgraa4r31mrng5wamv5ad4hyci7nax9a9x9p65iaw7silz4z"))))
     (properties `((upstream-name . "Rlinsolve")))
     (build-system r-build-system)
     (propagated-inputs
