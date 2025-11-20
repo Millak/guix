@@ -32224,16 +32224,16 @@ Touzet and Varre (2007).")
 (define-public r-rnaturalearth
   (package
     (name "r-rnaturalearth")
-    (version "1.0.1")
+    (version "1.1.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "rnaturalearth" version))
               (sha256
                (base32
-                "1vfkn4bf77mr2n7dhmnl55ma4cvwy2nazhizmdqd98w2ydl13z3p"))))
+                "0ql6f3w5wyychxfx9vff0nsl76d9l1rapa28in70fsij3qkvjj8a"))))
     (properties `((upstream-name . "rnaturalearth")))
     (build-system r-build-system)
-    (propagated-inputs (list r-httr r-jsonlite r-sf r-terra))
+    (propagated-inputs (list r-cli r-httr r-jsonlite r-sf r-terra))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://cran.r-project.org/package=rnaturalearth")
     (synopsis "World map data from Natural Earth")
