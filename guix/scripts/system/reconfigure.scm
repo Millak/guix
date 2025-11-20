@@ -407,15 +407,19 @@ to commits of channels in NEW."
                                         (channel-name old)))
                                  new)))
                   (and new
-                       (let ((checkout commit relation
-                                       (update-cached-checkout
-                                        (channel-url new)
-                                        #:ref `(commit . ,(channel-commit new))
-                                        #:starting-commit (channel-commit old)
-                                        #:check-out? #f)))
-                         (list new
-                               (channel-commit old) (channel-commit new)
-                               relation)))))
+                       (if (string=? (channel-commit old) (channel-commit new))
+                           (list new
+                                 (channel-commit old) (channel-commit new)
+                                 'self)
+                           (let ((checkout commit relation
+                                           (update-cached-checkout
+                                            (channel-url new)
+                                            #:ref `(commit . ,(channel-commit new))
+                                            #:starting-commit (channel-commit old)
+                                            #:check-out? #f)))
+                             (list new
+                                   (channel-commit old) (channel-commit new)
+                                   relation))))))
               old))
 
 (define* (check-forward-update #:optional
