@@ -37590,17 +37590,17 @@ emitter (@url{http://pyyaml.org/wiki/LibYAML}) for R.")
 (define-public r-ggplotify
   (package
     (name "r-ggplotify")
-    (version "0.1.2")
+    (version "0.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggplotify" version))
        (sha256
         (base32
-         "11qfk4pj0bb013m9964q2fsrj4x39c4kwh84vfyi3qhlkrsybfh1"))))
+         "0zqbq5sf8qa10zz95zg2i7jp1wz0wq2rspgp9p71njy3ziniq4c7"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggplot2 r-gridgraphics r-yulab-utils))
+     (list r-ggplot2 r-gridgraphics r-rlang r-yulab-utils))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/GuangchuangYu/ggplotify")
