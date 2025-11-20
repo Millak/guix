@@ -12528,13 +12528,13 @@ that can be distributed without access to a live server.")
 (define-public r-httptest2
   (package
     (name "r-httptest2")
-    (version "1.2.1")
+    (version "1.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "httptest2" version))
        (sha256
-        (base32 "1mjpx70fi643yr7wljn4gpbn4rwdgdxzd8zx0hk3vbcnn8pigjvl"))))
+        (base32 "10xvm5axc3mij66cs4rvwd37zivgns4793xwazxq1pbqqnwg492n"))))
     (properties `((upstream-name . "httptest2")))
     (build-system r-build-system)
     (arguments
