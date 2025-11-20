@@ -149,6 +149,12 @@ This Guix package is built to use the nettle cryptographic library.")
          (add-after 'unpack 'set-asset-out-dir
            (lambda _
              (setenv "ASSET_OUT_DIR" "target/assets")))
+          ;; The 'install phase doesn't currently work with multiple features.
+          (replace 'install
+            (lambda* (#:key outputs features #:allow-other-keys)
+              (invoke "cargo" "install" "--offline" "--no-track"
+                      "--path" "." "--root" (assoc-ref outputs "out")
+                      "--features" (string-join features))))
          (add-after 'install 'install-more
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
