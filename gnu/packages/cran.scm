@@ -48019,14 +48019,14 @@ counting and recursive k-means partitioning.")
 (define-public r-hardhat
   (package
     (name "r-hardhat")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "hardhat" version))
        (sha256
         (base32
-         "0hyymp5kbvkmns2ikv66xbyb962sz6lcbdxqwm009lggkvdzngcr"))))
+         "083032myx2ai9kasxcf5d12xkpl9gzr8wa9q8j8y0zm8hblgkxb2"))))
     (properties
      '((upstream-name . "hardhat")
        (updater-ignored-native-inputs
@@ -48041,7 +48041,12 @@ counting and recursive k-means partitioning.")
            r-tibble
            r-vctrs))
     (native-inputs
-     (list r-fs r-matrix r-modeldata r-knitr r-testthat r-withr))
+     (list r-fs
+           r-knitr
+           r-matrix
+           r-modeldata
+           r-testthat
+           r-withr))
     (home-page "https://github.com/tidymodels/hardhat")
     (synopsis "Construct modeling packages")
     (description
