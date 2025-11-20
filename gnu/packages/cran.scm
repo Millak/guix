@@ -2164,19 +2164,19 @@ region descriptors.")
 (define-public r-cowplot
   (package
     (name "r-cowplot")
-    (version "1.1.3")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cowplot" version))
        (sha256
         (base32
-         "0wxjynpbamyimpms7psbac7xgwswzlidczpc037q20y5yld9fml7"))))
+         "188s4dpyys71byq2kd3ljcl2dn5akp0n7ng08mgh13xn9wm5h7a3"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-gtable r-rlang r-scales))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-testthat r-vdiffr))
     (home-page "https://github.com/wilkelab/cowplot")
     (synopsis "Streamlined plot theme and plot annotations for ggplot2")
     (description
