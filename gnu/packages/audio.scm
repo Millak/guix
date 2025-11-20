@@ -7869,7 +7869,7 @@ verifies checksums.")
            fmt
            gsl
            gtk
-           json-modern-cxx ;nlohmann_json
+           nlohmann-json
            libadwaita
            libbs2b
            libebur128
