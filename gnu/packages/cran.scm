@@ -34774,13 +34774,13 @@ tensors.")
 (define-public r-tester
   (package
     (name "r-tester")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tester" version))
        (sha256
-        (base32 "02q2l0c38ddzlh2jwbzkcyhh2k5a4gnfm8khl8cqvjkjhldi9j5y"))))
+        (base32 "1vpr0341j97l7sb6k2z9wpk9wp5jyxarmhwimq1d9pyasacsyj5n"))))
     (properties `((upstream-name . "tester")))
     (build-system r-build-system)
     ;; FIXME Tests fail with: could not find function "context"
