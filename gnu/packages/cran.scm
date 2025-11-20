@@ -19785,18 +19785,18 @@ and support for post-mortem analysis via dump files).")
 (define-public r-rsolnp
   (package
     (name "r-rsolnp")
-    (version "1.16")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Rsolnp" version))
        (sha256
         (base32
-         "0w7nkj6igr0gi7r7jg950lsx7dj6aipgxi6vbjsf5f5yc9h7fhii"))))
+         "14k7qcqz611zr2a9a1nmdcmavci89v62b4yzsawda7fxmc0128iv"))))
     (properties `((upstream-name . "Rsolnp")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-truncnorm))
+     (list r-future-apply r-numderiv r-rcpp r-rcpparmadillo r-truncnorm))
     (home-page "https://cran.r-project.org/web/packages/Rsolnp/")
     (synopsis "General non-linear optimization")
     (description "The Rsolnp package implements a general non-linear augmented
