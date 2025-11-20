@@ -9766,19 +9766,19 @@ using (multivariate) polynomials.")
 (define-public python-yt
   (package
     (name "python-yt")
-    (version "4.4.1")
+    (version "4.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "yt" version))
        (sha256
-        (base32 "099w4n38c13vk98wsj698wxmskw3pr7zcf56dqiwl8c3nhjn9wrd"))))
+        (base32 "02rvs1555y482vf54ivl5wjiziskybnmbxbq6xn46fslqa4km270"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:build-backend "setuptools.build_meta"
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; Failed: 'yield' keyword is allowed in fixtures, but not in
               ;; tests (test_recipe)
               "--ignore=doc/source/cookbook/tests/test_cookbook.py"
@@ -9810,8 +9810,7 @@ using (multivariate) polynomials.")
            python-pytest-mpl
            python-pytest-xdist
            python-setuptools
-           python-sympy
-           python-wheel))
+           python-sympy))
     (propagated-inputs
      (list python-cmyt
            python-ewah-bool-utils
@@ -9824,7 +9823,7 @@ using (multivariate) polynomials.")
            python-tomli-w
            python-tqdm
            python-unyt
-           ;; Optional
+           ;; [optional]
            ;; python-arm-pyart ; not packed yet
            ;; python-f90nml
            ;; python-firefly
