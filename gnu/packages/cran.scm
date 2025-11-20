@@ -22246,7 +22246,10 @@ high-dimensional data.  Predictor variables of mixed classes can be handled.")
        (uri (cran-uri "quarto" version))
        (sha256
         (base32 "081rcz4karprmi8l9qgcmrcwqfz6l5dvbb65r5hcd1hpzk7xnyac"))))
-    (properties `((upstream-name . "quarto")))
+    (properties
+     '((upstream-name . "quarto")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-ggplot2"))))
     (build-system r-build-system)
     ;; Vignettes require the quarto binary.
     (arguments (list #:test-types '(list "tests")))
@@ -22263,7 +22266,6 @@ high-dimensional data.  Predictor variables of mixed classes can be handled.")
                              r-xfun
                              r-yaml))
     (native-inputs (list r-callr
-                         r-ggplot2
                          r-knitr
                          r-pkgload
                          r-testthat
