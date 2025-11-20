@@ -34371,13 +34371,13 @@ machine or distributed on a compute cluster.")
 (define-public r-future-callr
   (package
     (name "r-future-callr")
-    (version "0.8.2")
+    (version "0.10.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "future.callr" version))
               (sha256
                (base32
-                "14hq53cam65ff25l6y17zv37448ls90sa0w51f13199m1kffaaqb"))))
+                "1y2jdsykkc1kdk61v4jlbxmq232cljshihdc6mhrl9p76cr09frw"))))
     (properties
      '((upstream-name . "future.callr")
        (updater-extra-native-inputs . ("r-markdown"))))
@@ -34389,7 +34389,7 @@ machine or distributed on a compute cluster.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'set-HOME
             (lambda _ (setenv "HOME" "/tmp"))))))
-    (propagated-inputs (list r-callr r-future))
+    (propagated-inputs (list r-callr r-future r-parallelly))
     (native-inputs (list r-markdown r-r-rsp))
     (home-page "https://future.callr.futureverse.org")
     (synopsis "Future API for Parallel Processing using 'callr'")
