@@ -4677,6 +4677,104 @@ CFITSIO library.  Among other things, it can
 @end itemize")
     (license license:gpl2+)))
 
+(define-public python-galsim
+  (package
+    (name "python-galsim")
+    (version "2.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/GalSim-developers/GalSim")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1phrxmxwwr72hs4yq6c5yjf3gcpqz8psah74vij5l8zlv4d71qc3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 232 passed
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              "--ignore=devel/"
+              ;; XXX: Tests need data from
+              ;; <http://www.sas.upenn.edu/~mjarvis/des_data.tar.gz> 637MiB,
+              ;; see how it's implemented in CI
+              ;; (.github/workflows/ci.yml). Try to activate more tests: 141
+              ;; failed, 608 passed, 1 skipped, 1 warning
+              #$@(map (lambda (file) (string-append "--ignore="
+                                                    "tests/"
+                                                    file))
+                      (list "test_bandpass.py"
+                            "test_catalog.py"
+                            "test_cdmodel.py"
+                            "test_chromatic.py"
+                            "test_config_gsobject.py"
+                            "test_config_image.py"
+                            "test_config_input.py"
+                            "test_config_noise.py"
+                            "test_config_output.py"
+                            "test_config_value.py"
+                            "test_convolve.py"
+                            "test_correlatednoise.py"
+                            "test_deprecated.py"
+                            "test_des.py"
+                            "test_download.py"
+                            "test_draw.py"
+                            "test_fitsheader.py"
+                            "test_galaxy_sample.py"
+                            "test_hsm.py"
+                            "test_image.py"
+                            "test_inclined.py"
+                            "test_interpolatedimage.py"
+                            "test_knots.py"
+                            "test_lensing.py"
+                            "test_main.py"
+                            "test_optics.py"
+                            "test_phase_psf.py"
+                            "test_photon_array.py"
+                            "test_random.py"
+                            "test_real.py"
+                            "test_roman.py"
+                            "test_sensor.py"
+                            "test_sum.py"
+                            "test_table.py"
+                            "test_transforms.py"
+                            "test_wcs.py")))
+      #:phases
+      #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* (list "conda_requirements.txt"
+                                "pyproject.toml"
+                                "requirements.txt"
+                                "setup.py")
+               (("setuptools>=38,<72") "setuptools")
+               (("pybind11>=2.2") "pybind11"))))
+          (add-before 'check 'remove-local-galsim
+            (lambda _
+              ;; This would otherwise interfere with finding the installed
+              ;; galsim when running tests.
+              (delete-file-recursively "galsim"))))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-xdist
+           python-setuptools))
+    (inputs
+     (list eigen
+           fftw))
+    (propagated-inputs
+     (list pybind11     ;XXX: Double check if it needs be here.
+           python-astropy
+           python-lsstdesc-coord
+           python-numpy))
+    (home-page "https://github.com/GalSim-developers/GalSim")
+    (synopsis "Modular galaxy image simulation toolkit")
+    (description
+     "GalSim is software for simulating images of astronomical objects (stars,
+ galaxies) in a variety of ways.")
+    (license license:bsd-3)))
+
 (define-public python-gatspy
   (package
     (name "python-gatspy")
