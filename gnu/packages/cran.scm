@@ -39656,13 +39656,13 @@ annotated biological functions.")
 (define-public r-enrichwith
   (package
     (name "r-enrichwith")
-    (version "0.3.1")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "enrichwith" version))
        (sha256
-        (base32 "05fhx323ani86wdxbjp8dgw4d1iq4kr1887646w072a6iq93bwhm"))))
+        (base32 "11ay1hxap7f0ssrqqj8806i74h05n8zw36hwh1fgjy6ss179zfsz"))))
     (properties `((upstream-name . "enrichwith")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
