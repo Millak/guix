@@ -45385,14 +45385,14 @@ Gibbs sampling by Xuan-Hieu Phan and co-authors.")
 (define-public r-stm
   (package
     (name "r-stm")
-    (version "1.3.7")
+    (version "1.3.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "stm" version))
        (sha256
         (base32
-         "0cvv6q5r55iqk327rav25dymvnn77rj8chmgkbkwd0c1dpqf4x5q"))))
+         "0vs67ic9xsxrvqa0lr574hg4hgfwwpdlq0l73wmgvnkzb3mppdjf"))))
     (properties `((upstream-name . "stm")))
     (build-system r-build-system)
     ;; Disable vignettes because they need internet access.
@@ -45409,7 +45409,7 @@ Gibbs sampling by Xuan-Hieu Phan and co-authors.")
            r-rcpparmadillo
            r-slam
            r-stringr))
-    (native-inputs (list r-testthat r-tm))
+    (native-inputs (list r-spelling r-testthat r-tm))
     (home-page "https://www.structuraltopicmodel.com/")
     (synopsis "Estimation of the Structural Topic Model")
     (description
