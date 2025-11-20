@@ -27025,14 +27025,14 @@ of precision-recall and ROC (Receiver Operator Characteristics) curves.")
 (define-public r-netrep
   (package
     (name "r-netrep")
-    (version "1.2.7")
+    (version "1.2.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "NetRep" version))
        (sha256
         (base32
-         "02ss45giv30pi31b5rysa36bn5c4fs5x58g4vb0arz9cnicznv97"))))
+         "1w9vf10knlbvw0flaxfy0npspf6xwsf9wr5ivd5n8xgpyi4xmnws"))))
     (properties `((upstream-name . "NetRep")))
     (build-system r-build-system)
     (propagated-inputs
