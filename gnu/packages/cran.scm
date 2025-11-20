@@ -37782,13 +37782,13 @@ that fills this gap.")
 (define-public r-eulerr
   (package
     (name "r-eulerr")
-    (version "7.0.2")
+    (version "7.0.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "eulerr" version))
               (sha256
                (base32
-                "0aw4l338nymrmna7q01vxn2cc7wyzz3lhf1bwazy55qa4hmww3af"))))
+                "0wnashv3hjrfg4mzzm31wsp8730j2bl00jpkmnwbdj022j646ghy"))))
     (properties `((upstream-name . "eulerr")))
     (build-system r-build-system)
     (propagated-inputs
@@ -37797,7 +37797,7 @@ that fills this gap.")
            r-polylabelr
            r-rcpp
            r-rcpparmadillo))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-spelling r-testthat))
     (home-page "https://github.com/jolars/eulerr")
     (synopsis "Area-proportional Euler and Venn diagrams with ellipses")
     (description
