@@ -7664,13 +7664,13 @@ k-nearest neighbour, Learning Vector Quantization and Self-Organizing Maps.")
 (define-public r-climaemet
   (package
     (name "r-climaemet")
-    (version "1.4.1")
+    (version "1.4.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "climaemet" version))
               (sha256
                (base32
-                "0pf4xck985hin5qsvg3yyh4sqainjm47ml19fla6z08l3q1qvyx7"))))
+                "099sw68yqizlk94f0j62is554jn2ihnp0k82nnmi9ag7qm2bad5i"))))
     (properties
      '((upstream-name . "climaemet")
        (updater-ignored-native-inputs . ("r-mapspain"))))
