@@ -18212,13 +18212,13 @@ available in a vignette.")
 (define-public r-progressr
   (package
     (name "r-progressr")
-    (version "0.15.1")
+    (version "0.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "progressr" version))
        (sha256
-        (base32 "09m4a21rwkm2g0z6m9di8vmammzzs391cn5ya00whps011wggn9h"))))
+        (base32 "1rx5kk4p9k4r1ndhxr2620yn5j0z7jahdlbbwx47dwa8ms66ia5a"))))
     (properties
      `((upstream-name . "progressr")
        ;; FIXME: these packages don't exist (yet?), but we also don't need
