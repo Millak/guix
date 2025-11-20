@@ -2892,23 +2892,17 @@ tools to simplify the devolpment of R packages.")
 (define-public r-dfidx
   (package
     (name "r-dfidx")
-    (version "0.1-0")
+    (version "0.2-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dfidx" version))
        (sha256
-        (base32 "0ygbw1z0v2s2w7d45b09x54xycfglpd1ipgkgxq8w2q004rkdp9d"))))
+        (base32 "1q2sch77s72140mwy6nj29l71fs1wzvqhmxn21safm2ia5a5xfk5"))))
     (properties `((upstream-name . "dfidx")))
     (build-system r-build-system)
-    (propagated-inputs (list r-dplyr
-                             r-formula
-                             r-glue
-                             r-pillar
-                             r-rdpack
-                             r-tidyselect
-                             r-vctrs))
-    (native-inputs (list r-quarto))
+    (propagated-inputs (list r-formula r-rdpack))
+    (native-inputs (list r-quarto r-tinytest))
     (home-page "https://cran.r-project.org/package=dfidx")
     (synopsis "Indexed data frames")
     (description
