@@ -10764,13 +10764,13 @@ you call it again with the same arguments it returns the pre-computed value.")
 (define-public r-mgcv
   (package
     (name "r-mgcv")
-    (version "1.9-3")
+    (version "1.9-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mgcv" version))
        (sha256
-        (base32 "079gv1gm8gvsmpkccr3hr6y1ybi2b440m6mygcfhm2bnl7dwrw23"))))
+        (base32 "0wlk128dwznnxzrcd1ym5mx45czjbfa1zb3clh39w9pvi9lmk0d9"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-matrix r-nlme))
