@@ -11591,13 +11591,13 @@ cross-platform graphical user interface toolkit} widget.")
 (define-public r-tmvtnorm
   (package
     (name "r-tmvtnorm")
-    (version "1.6")
+    (version "1.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tmvtnorm" version))
        (sha256
-        (base32 "1fhvisddn3x4li2q12c3hss0cj735c0iq32c9cw646ni619jr6rd"))))
+        (base32 "1n0vac7xc9ri2417bwhy6j4pjdyxyavq6zaxkw0bakmwwcqhn62b"))))
     (properties `((upstream-name . "tmvtnorm")))
     (build-system r-build-system)
     (propagated-inputs (list r-gmm r-matrix r-mvtnorm))
