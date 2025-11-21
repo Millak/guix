@@ -31634,14 +31634,20 @@ discover file changes.")
 (define-public python-roundrobin
   (package
     (name "python-roundrobin")
-    (version "0.0.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "roundrobin" version))
-              (sha256
-               (base32 "1akwhvfyi0120zg2xkhfc6jwfkirz5x90yyvw06bndhaaxwcnc5c"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))          ;no tests on PyPI and no tags in repo
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/linnik/roundrobin")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hdgwavrfj23c61142mnlxz5sd9ayp6svbgj2g4wdpiqy7h49rvr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/linnik/roundrobin")
     (synopsis "Collection of roundrobin utilities")
     (description
