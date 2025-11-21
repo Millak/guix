@@ -39426,11 +39426,13 @@ or regions to a REPL from ~a buffers.") language))))
     (version "1.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://stable.melpa.org/packages/"
-                           "org-babel-eval-in-repl-" version ".tar"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/diadochos/org-babel-eval-in-repl")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0bdnps6m3kcvsagz8cfm3kf2rvxzl2p252pfggwbdbl43kzvl35h"))
+        (base32 "1fjifl69qja3ab0g72f1hkfns992qq0v9pw8p4hgvjycx7fpzk0a"))
        (modules '((guix build utils)))
        (snippet
         #~(begin (delete-file "eval-in-repl-matlab.el")))))
