@@ -7914,62 +7914,6 @@ data and settings.")
 of nucleic acid binding proteins.")
     (license license:gpl3+)))
 
-(define-public eigensoft
-  (package
-    (name "eigensoft")
-    (version "8.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/DReichLab/EIG")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1zb62sahci407s02c8xx94v55ynfr9mc1zapqjmgwmc0p9ykq1z8"))
-       (modules '((guix build utils)))
-       ;; Remove pre-built binaries.
-       (snippet '(begin
-                   (delete-file-recursively "bin")
-                   (mkdir "bin")
-                   #t))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f                    ; There are no tests.
-       #:make-flags '("CC=gcc")
-       #:phases
-       (modify-phases %standard-phases
-         ;; There is no configure phase, but the Makefile is in a
-         ;; sub-directory.
-         (replace 'configure
-           (lambda _ (chdir "src") #t))
-         ;; The provided install target only copies executables to
-         ;; the "bin" directory in the build root.
-         (add-after 'install 'actually-install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin  (string-append out "/bin")))
-               (for-each (lambda (file)
-                           (install-file file bin))
-                         (find-files "../bin" ".*"))
-               #t))))))
-    (inputs
-     (list gsl openblas perl
-           `(,gfortran "lib")))
-    (home-page "https://github.com/DReichLab/EIG")
-    (synopsis "Tools for population genetics")
-    (description "The EIGENSOFT package provides tools for population
-genetics and stratification correction.  EIGENSOFT implements methods commonly
-used in population genetics analyses such as PCA, computation of Tracy-Widom
-statistics, and finding related individuals in structured populations.  It
-comes with a built-in plotting script and supports multiple file formats and
-quantitative phenotypes.")
-    ;; The license of the eigensoft tools is Expat, but since it's
-    ;; linking with the GNU Scientific Library (GSL) the effective
-    ;; license is the GPL.
-    (license license:gpl3+)))
-
 (define-public eddylab-squid
   (package
     (name "eddylab-squid")
