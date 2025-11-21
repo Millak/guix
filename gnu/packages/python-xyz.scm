@@ -32992,7 +32992,8 @@ supports x86_64 instructions up to AVX-512 and SHA.")
           (base32
            "0bzf6pv85dzfxfysm6zbj8m40hp0xzr9h8qlk4hp3nmy88rznqvr"))
          (patches (search-patches "python-sgmllib3k-assertions.patch"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
+      (native-inputs (list python-pytest python-setuptools))
       (home-page "https://github.com/hsoft/sgmllib")
       (synopsis "Python 3 port of sgmllib")
       (description "This package provides an unmaintained port of sgmllib to
