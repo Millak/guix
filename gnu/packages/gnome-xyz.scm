@@ -1303,36 +1303,43 @@ GNOME Shell, including the top panel, dash and overview.")
     (license license:gpl3)))
 
 (define-public gnome-shell-extension-radio
-  (package
-    (name "gnome-shell-extension-radio")
-    (version "22")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url
-                     "https://github.com/hslbck/gnome-shell-extension-radio")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1f1cjch60yv39lsngj9xrlyzc4f1gcaydm5xc5kc0rqi48f83d1f"))))
-    (build-system copy-build-system)
-    (arguments
-     (list
-      #:install-plan #~'(("radio@hslbck.gmail.com"
-                          "/share/gnome-shell/extensions/"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'install 'glib-compile-schemas
-            (lambda _
-              (invoke "glib-compile-schemas"
-                      "radio@hslbck.gmail.com/schemas"))))))
-    (native-inputs (list `(,glib "bin")))
-    (home-page "https://github.com/hslbck/gnome-shell-extension-radio")
-    (synopsis "Internet radio for GNOME Shell")
-    (description "This extension implements an internet radio player
+  (let ((commit "860e55b9e704eb3dde43e6bbeccec5748242498e")
+        (revision "0"))
+    (package
+      (name "gnome-shell-extension-radio")
+      (version (git-version "24" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url
+                        "https://github.com/hslbck/gnome-shell-extension-radio")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "196lgy4jkxyqbbpd8iz1d6ldvpabdmz34c0bxb5rmwrrmjhnn1w3"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan #~'(("radio@hslbck.gmail.com"
+                            "/share/gnome-shell/extensions/"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-metadata
+              (lambda _
+                (substitute* "radio@hslbck.gmail.com/metadata.json"
+                  (("shell-version.*47\"" all)
+                   (string-append all ", \"48\"")))))
+            (add-before 'install 'glib-compile-schemas
+              (lambda _
+                (invoke "glib-compile-schemas"
+                        "radio@hslbck.gmail.com/schemas"))))))
+      (native-inputs (list `(,glib "bin")))
+      (home-page "https://github.com/hslbck/gnome-shell-extension-radio")
+      (synopsis "Internet radio for GNOME Shell")
+      (description "This extension implements an internet radio player
 directly inside GNOME Shell.  It can manage stations and play streams.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 
 (define-public gnome-shell-extension-vitals
