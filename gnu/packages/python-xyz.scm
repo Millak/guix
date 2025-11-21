@@ -32359,18 +32359,16 @@ is the cythonized version of @code{fractions.Fraction}.")
     (version "2.4.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pathvalidate" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/thombashi/pathvalidate")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0s14ycjgb44lxr2wg8lrq3b7kybmmrbf7yqz47xrqgn2gr6dk6rw"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:tests? #f))
-    ;; Tests disabled because of circular dependencies.
-    ;; pathvalidate tests depend on pytest-md-report, which
-    ;; depends on pathvalidate.
-    (native-inputs
-     (list python-allpairspy python-click python-faker python-pytest))
+        (base32 "17s9vqmws4sfji4bw6qd4rn7ahzkpj6yp2ia5p6vd8kva8n05h37"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-allpairspy python-click python-faker
+                         python-pytest python-setuptools))
     (home-page "https://github.com/thombashi/pathvalidate")
     (synopsis "Sanitize strings representing paths")
     (description
