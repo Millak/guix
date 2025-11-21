@@ -33407,19 +33407,23 @@ Gateway.  Braintree is a US-based payments service provider.")
 (define-public python-markuppy
   (package
     (name "python-markuppy")
-    (version "1.14")
+    (version "1.18")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "MarkupPy" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tylerbakke/MarkupPy")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0pqdmpxbr8iq22b4css2gz5z6s01ddpzyj25x27kgbs2lp0f5phs"))))
-    (build-system python-build-system)
+        (base32 "0rbxh7dzrqd1xrxbxxbyjslqfaxxyv17ppr9zcjig8yw631k0a51"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/tylerbakke/MarkupPy")
     (synopsis "Pythonic HTML/XML generator")
-    (description "This Python module attempts to make it easier to generate
-HTML/XML from a Python program in an intuitive, lightweight, customizable and
-pythonic way.")
+    (description
+     "This Python module attempts to make it easier to generate HTML/XML from
+a Python program in an customizable and pythonic way.")
     (license license:expat)))
 
 (define-public python-csb43
