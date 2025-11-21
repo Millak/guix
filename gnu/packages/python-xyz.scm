@@ -33538,18 +33538,9 @@ spreadsheet), CSV, TSV, XLS, XLSX (Microsoft Excel spreadsheet), and YAML.")
        (uri (pypi-uri "ofxparse" version))
        (sha256
         (base32 "19y4sp5l9jqiqzzlbqdfiab42qx7d84n4xm4s7jfq397666vcyh5"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "nosetests" "-v")))))))
-    (native-inputs
-     (list python-nose))
-    (propagated-inputs
-     (list python-beautifulsoup4 python-lxml python-six))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pynose python-setuptools))
+    (propagated-inputs (list python-beautifulsoup4 python-lxml python-six))
     (home-page "http://sites.google.com/site/ofxparse")
     (synopsis "Tools for working with the OFX (Open Financial Exchange) file
 format")
