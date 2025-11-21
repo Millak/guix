@@ -32382,13 +32382,16 @@ representing paths or filenames.")
     (version "1.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "escapism" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jupyterhub/escapism")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1v74243wifcwhj5zkdiispxc9kb1xvnfzilg8bq308pjnkgnn9bk"))))
-    (build-system python-build-system)
-    (home-page "https://github.com/minrk/escapism")
+        (base32 "1447mamrdbyv9v47f9wrc4fyvbwz5qrwl8qrdzqdq3q62q4xrawj"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://github.com/jupyterhub/escapism")
     (synopsis "Simple, generic library for escaping strings")
     (description
      "This Python library provides a programming interface to, given a set of
