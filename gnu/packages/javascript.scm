@@ -937,9 +937,9 @@ wrappers.")
   (origin
     (method git-fetch)
     (uri (git-reference (url "https://github.com/tc39/test262")
-                        (commit "e7a84b0a090ca86cc05f2e90116115c8c2a7c059")))
+                        (commit "a5e69a1534de88d1eb29b76657d84c8541b72df7")))
     (file-name "test262")
-    (sha256 (base32 "0y1w6ypjpam6dal75cwvwwmrrhh7glx9pp812yxvy8rc8w9sfwyw"))
+    (sha256 (base32 "078a7nim0n9x36q7q8yvjwhk4ig29p25b03rr4l7g2b545cky66l"))
     (modules '((guix build utils)))
     (snippet #~(begin
                  (for-each delete-file
@@ -949,7 +949,7 @@ wrappers.")
 (define-public quickjs-ng
   (package
     (name "quickjs-ng")
-    (version "0.9.0")
+    (version "0.11.0")
     (source
      (origin
        (method git-fetch)
@@ -958,7 +958,7 @@ wrappers.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lbjayp6x5784dxa7ll67isjjiqajg4hx3ls6fyzzfk6hd44jkzw"))))
+        (base32 "0mfk32zvvh6c9a9plp6ad07888g795lhdmal3jyaclyn2k5iig9i"))))
     (arguments
      (list
       ;; Data model is ILP32 in 32bit, LP64 in 64bit
