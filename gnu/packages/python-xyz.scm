@@ -33820,15 +33820,8 @@ interfaces.")
        (uri (pypi-uri "ordered-set" version))
        (sha256
         (base32 "1a34fg3r3480nfm6652kyqql3lwixf8jirzdja9camvnr128wjk9"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-cython python-pytest))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-cython python-flit-core python-pytest))
     (home-page "https://github.com/simonpercivall/orderedset")
     (synopsis "Ordered Set implementation in Cython")
     (description "This library provides an @code{OrderedSet} data type that
