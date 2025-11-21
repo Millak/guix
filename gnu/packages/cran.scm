@@ -37333,6 +37333,7 @@ interaction search in high-dimensional data.")
          "1mqa1y33vi003sm8f9jf9kw99dh063n3a9wv8phhjsippsikazdb"))))
     (properties `((upstream-name . "Rttf2pt1")))
     (build-system r-build-system)
+    (native-inputs (list r-testthat r-withr))
     (home-page "https://github.com/wch/Rttf2pt1")
     (synopsis "Font conversion utility")
     (description
