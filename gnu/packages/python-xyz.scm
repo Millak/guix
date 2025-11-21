@@ -5857,19 +5857,23 @@ tasks rather than a standard compliant master implementation.")
       #~(list
          ;; Ignore flaky tests.
          ;; AssertionError: assert None == 100
-         "--deselect=tests/test_core.py::test_incr_update_keyerror")))
+         "--deselect=tests/test_core.py::test_incr_update_keyerror")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fix-pytest-config
+            (lambda _
+              (substitute* "tox.ini"
+                ;; no python-pytest-xdist
+                ((".*-n auto.*")
+                 "")
+                ;; no python-pytest-cov
+                ((".*--cov.*")
+                 "")))))))
     (native-inputs
      (list python-django
-           python-ipython
            python-matplotlib
            python-pytest
-           python-pytest-cov
-           python-pytest-django
-           python-pytest-env
-           python-pytest-xdist
-           python-sphinx
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (home-page "https://www.grantjenks.com/docs/diskcache/")
     (synopsis "Disk and file backed cache library")
     (description "DiskCache is a disk and file backed persistent cache.")
