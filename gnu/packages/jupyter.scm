@@ -1125,6 +1125,34 @@ version to the original file.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list
+         ;; XXX: Require external tools.
+         "--ignore-glob=tests/base/node/*"
+         "--ignore-glob=tests/conda/*"
+         "--ignore-glob=tests/dockerfile/*"
+         "--ignore-glob=tests/external/*"
+         "--ignore=tests/unit/test_external_scripts.py"
+         "--ignore-glob=tests/julia/*"
+         "--ignore-glob=tests/nix/*"
+         "--ignore-glob=tests/pipfile/*"
+         "--ignore-glob=tests/r/*"
+         "--ignore=tests/unit/test_r.py"
+         "--ignore=tests/unit/test_app.py"
+         "--ignore=tests/unit/test_clone_depth.py"
+         "--ignore=tests/unit/test_labels.py"
+         ;; XXX: Require network.
+         "--ignore=tests/unit/test_connect_url.py"
+         "--ignore-glob=tests/unit/contentproviders/*"
+         ;; XXX: Require root.
+         "--ignore=tests/unit/test_editable.py"
+         "--ignore=tests/unit/test_ports.py"
+         "--ignore=tests/unit/test_subdir.py"
+         ;; XXX: Require a running docker service.
+         "--deselect=tests/unit/test_env.py::test_env"
+         "--deselect=tests/unit/test_users.py::test_user"
+         "--deselect=tests/unit/test_volumes.py::test_volume_abspath"
+         "--deselect=tests/unit/test_volumes.py::test_volume_relpath")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'patch-shebangs 'fix-install-miniforge
@@ -1151,7 +1179,12 @@ nix-shell-wrapper|repo2docker-entrypoint)")
                 (with-directory-excursion "docs"
                   (invoke  "make" "html")
                   (copy-recursively "build/html"
-                                    (string-append doc "/html")))))))))
+                                    (string-append doc "/html"))))))
+          (add-before 'check 'patch-bash-for-tests
+            (lambda _
+              (substitute* (find-files "tests/unit" "\\.py$")
+                (("/bin/bash")
+                 (which "bash"))))))))
     (inputs
      (list python-traitlets
            python-toml
@@ -1168,6 +1201,8 @@ nix-shell-wrapper|repo2docker-entrypoint)")
      (list python-entrypoints
            python-myst-parser
            python-pydata-sphinx-theme
+           python-pytest
+           python-requests-mock
            python-recommonmark
            python-setuptools
            python-sphinx
