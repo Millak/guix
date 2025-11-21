@@ -33429,28 +33429,71 @@ a Python program in an customizable and pythonic way.")
 (define-public python-csb43
   (package
     (name "python-csb43")
-    (version "0.9.1")
+    (version "1.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "csb43" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://bitbucket.org/wmj/csb43")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0r0csl9npncnkfafg3rg6xr38d1qr0sxvq7wn7mg9bq41hvvh1si"))))
-    (build-system python-build-system)
+        (base32 "030lncdmrcvzgp8v1jw04snnplqxlwf3vikzd0a3jbk5sgrp2cih"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 15102 passed, 36 skipped, 5489 warnings
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
-     (list python-lxml))
+     (list python-lxml
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-pycountry python-pyyaml python-tablib))
+     (list python-deprecated
+           python-pycountry
+           python-pyyaml
+           python-tablib))
     (home-page "https://bitbucket.org/wmj/csb43")
     (synopsis "Tools for converting from the Spanish banks' format CSB norm
 43 (CSB43)")
-    (description "This package provides tools to convert files in the format
-used by multiple Spanish banks (standard 43 of the Spanish Banking Council
-[CSB43] / Spanish Banking Association [AEB43]) to other formats.
+    (description
+     "This package provides tools to convert files in the format used by
+multiple Spanish banks (standard 43 of the Spanish Banking Council [CSB43] /
+Spanish Banking Association [AEB43]) to other formats.
 
 Supported output formats are: OFX, HomeBank CSV, HTML, JSON, ODS (OpenDocument
 spreadsheet), CSV, TSV, XLS, XLSX (Microsoft Excel spreadsheet), and YAML.")
     (license license:lgpl3)))
+
+(define-public python-csb43-0.10
+  ;; XXX: 1.0.0 doesn't provide csb43 module where 0.10.1 contains: aeb43, csb43,
+  ;; homebank, i18n, ofx, and utils.
+  (package
+    (inherit python-csb43)
+    (name "python-csb43")
+    (version "0.10.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://bitbucket.org/wmj/csb43")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0frxcclz7scpndrr7ygqy6k41bcwgwam26yk7n1cnwyim2wkaykd"))))
+    (arguments
+     (list
+      ;; tests: 15493 passed, 37 skipped, 7447 warnings
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))))
 
 (define-public python-febelfin-coda
   (package

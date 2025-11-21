@@ -1232,7 +1232,7 @@ statements.  Statement can be used for bank statement, cash daybook etc.")
     (arguments (tryton-arguments "account_statement_aeb43"))
     (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
-     (list python-csb43 trytond trytond-account-statement trytond-bank))
+     (list python-csb43-0.10 trytond trytond-account-statement trytond-bank))
     (home-page
      "https://docs.tryton.org/projects/modules-account-statement-aeb43")
     (synopsis "Tryton module to import AEB43 statements")
