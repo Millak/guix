@@ -37357,6 +37357,7 @@ interaction search in high-dimensional data.")
         (base32
          "1vy3mfns4pcirngg3p93jh7yqlhd92y4n4n6vpiy33lpf90kkn41"))))
     (build-system r-build-system)
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/wch/extrafontdb")
     (synopsis "Database for the extrafont package")
     (description
