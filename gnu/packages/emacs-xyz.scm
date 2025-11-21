@@ -17977,12 +17977,16 @@ strings, and code folding.")
     (version "1.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://stable.melpa.org/packages/"
-                           "js-comint-" version ".el"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/redguardtoo/js-comint")
+              (commit version)))
        (sha256
-        (base32 "1qin0hclm3ly62nl5ddiim64bcd2k74b1yqsqqc61cf9k2q8k287"))))
+        (base32 "09wfafrklkybfg44skn1lg2hvcj4gfdv908dq87w1r4wv6ibkvka"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #f))                     ; Tests depend on Eask
     (home-page "https://github.com/redguardtoo/js-comint")
     (synopsis "Interacting with a JavaScript interpreter")
     (description
