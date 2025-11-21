@@ -778,7 +778,7 @@ behavior, system tray and input source indicator for IBus.")
 (define-public gnome-shell-extension-dash-to-dock
   (package
     (name "gnome-shell-extension-dash-to-dock")
-    (version "99")
+    (version "102")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -787,7 +787,7 @@ behavior, system tray and input source indicator for IBus.")
                                            version))))
               (sha256
                (base32
-                "0hjmqd2xd33chxq7b7753m87by7z2mvr5njvs5wvshhg70kwwmxj"))
+                "0gzqmbalybyivhnlhhwvqd33x47f73368gnd85qiql7x4x0lfl98"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
