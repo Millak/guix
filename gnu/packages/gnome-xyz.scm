@@ -743,7 +743,7 @@ that caches clipboard history.")
 (define-public gnome-shell-extension-customize-ibus
   (package
     (name "gnome-shell-extension-customize-ibus")
-    (version "90")
+    (version "92")
     (source
      (origin
        (method git-fetch)
@@ -752,7 +752,7 @@ that caches clipboard history.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1i7cw9kgp99b9awb2vfpxkwqdln4bfbf3qya19xnmzw16f5igbmn"))))
+        (base32 "0ijl4vvmc91bczyzh7sdix5732aw5a07k62hsy4z62lrjnpw7jb1"))))
     (build-system gnu-build-system)
     (arguments
      (list
