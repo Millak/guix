@@ -11994,17 +11994,38 @@ protect you.")
     (version "2.15.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "mirror://sourceforge/skfans/"
-                           "7KAA%20" version "/7kaa-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.code.sf.net/p/skfans/7kaa")
+              (commit (string-append "v" version))))
        (sha256
-        (base32 "15a0cl55bg479gw880yz48myg336q5lwp2zpyxyyhyadq26vjy9c"))))
+        (base32 "02knhrk19pz2qiy2n48spipm0qa5rkh3vmfswk963d1yaj83whwj"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-configure-ac
+            ;; gettext version mismatch forces us to patch configure.ac
+            (lambda _
+              (let ((gettext-version
+                     #$(package-version (this-package-native-input "gettext-minimal"))))
+                (substitute* "configure.ac"
+                (("AM_GNU_GETTEXT_VERSION.*")
+                 (string-append
+                  "AM_GNU_GETTEXT_VERSION([" gettext-version "])\n"
+                  "AM_GNU_GETTEXT_REQUIRE_VERSION([" gettext-version "])\n")))))))))
     (native-inputs
-     (list gettext-minimal pkg-config))
+     (list autoconf
+           autoconf-archive
+           automake
+           gettext-minimal
+           pkg-config))
     (inputs
-     (list curl enet openal sdl2))
-    (home-page "https://7kfans.com/")
+     (list curl
+           enet
+           openal
+           sdl2))
     (synopsis "Seven Kingdoms Ancient Adversaries: real-time strategy game")
     (description
      "Seven Kingdoms, designed by Trevor Chan, brings a blend of Real-Time
@@ -12013,6 +12034,7 @@ enables players to compete against up to six other kingdoms allowing players
 to conquer opponents by defeating them in war (with troops or machines),
 capturing their buildings with spies, or offering opponents money for their
 kingdom.")
+    (home-page "https://7kfans.com/index.html")
     (license license:gpl2+)))
 
 (define-public neverball
