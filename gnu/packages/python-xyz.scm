@@ -33501,15 +33501,31 @@ spreadsheet), CSV, TSV, XLS, XLSX (Microsoft Excel spreadsheet), and YAML.")
     (version "0.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "febelfin-coda" version))
+       (method hg-fetch)
+       (uri (hg-reference
+              (url "https://foss.heptapod.net/tryton/coda")
+              (changeset version)))
+       (file-name (string-append name "-" version "-checkout"))
        (sha256
-        (base32 "0qzv0irmpay2n46an0sa37c9kwy8108phij5ix6rkllrfjmqdpfw"))))
-    (build-system python-build-system)
+        (base32 "0rnr2xvwr174dbjixaw5h8bjw5ay5knfbry5qhk7wj8vkh538c13"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'remove-installed-tests
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (with-directory-excursion (site-packages inputs outputs)
+                (for-each delete-file
+                          (list "coda/test.py"
+                                "coda/test_readme.py"))))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://coda.b2ck.com/")
     (synopsis "Module to parse Belgian CODA files")
-    (description "This package provides a module to parse Coded statement of
-account (CODA) files as defined be the Belgian Febelfin bank standard.")
+    (description
+     "This package provides a module to parse Coded statement of account
+(CODA) files as defined be the Belgian Febelfin bank standard.")
     (license license:bsd-3)))
 
 (define-public python-ofxparse
