@@ -4329,25 +4329,39 @@ perform static analysis of Perl code.")
     (license license:gpl3+)))
 
 (define-public emacs-flymake-flycheck
-  (package
-    (name "emacs-flymake-flycheck")
-    (version "20210404.2128")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://melpa.org/packages/flymake-flycheck-"
-                           version ".el"))
-       (sha256
-        (base32 "1m59ahd5gjlfwf328labwdlpcxh8ywywkwgfrlsy5jyxfc9ss4nv"))))
-    (build-system emacs-build-system)
-    (propagated-inputs (list emacs-flycheck))
-    (home-page "https://github.com/purcell/flymake-flycheck")
-    (synopsis "Use Flycheck checkers as Flymake backends")
-    (description
-     "This package provides support for running any Flycheck checker as a
+  (let ((commit "cbc0fc81bf369b36fe29a49d9e24708027f6da38")
+        (revision "0"))
+    (package
+      (name "emacs-flymake-flycheck")
+      (version (git-version "0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/purcell/flymake-flycheck")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0fda1n8hhklbq6p1s2dlvgc9xd0qy7qzb8yvxq89idx1irjx0785"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f))                   ; There is only a lint-check
+      (propagated-inputs
+       (list emacs-flycheck))
+      (home-page "https://github.com/purcell/flymake-flycheck")
+      (synopsis "Use Flycheck checkers as Flymake backends")
+      (description
+       "This package provides support for running any Flycheck checker as a
 Flymake diagnostic backend.  The effect is that Flymake will control when the
 checker runs, and Flymake will receive its errors.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
+
+(define-public emacs-flymake-flycheck-superseded-version
+  (package
+    (inherit emacs-flymake-flycheck)
+    (version "20210404.2128")
+    (properties (list (cons 'superseded emacs-flymake-flycheck)))))
 
 (define-public emacs-flymake-quickdef
   ;; This particular commit includes bug fixes on top of 1.0.0 release.
