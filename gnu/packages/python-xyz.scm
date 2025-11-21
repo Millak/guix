@@ -31611,22 +31611,24 @@ asyncio applications.")
 (define-public python-pywatchman
   (package
     (name "python-pywatchman")
-    (version "1.4.1")
+    (version "3.0.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pywatchman" version))
-        (sha256
-          (base32
-            "1yf2gm20wc3djpb5larxii3l55xxby0il2ns3q0v1byyfnr7w16h"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pywatchman" version))
+       (sha256
+        (base32 "07lix9z2ib7g4h648wsbp930x5i03akis12mih8p4n0s74bjmlzg"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f)) ;there are none
-    (home-page
-      "https://facebook.github.io/watchman/")
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "tests/tests.py")))
+    (native-inputs (list python-setuptools))
+    (home-page "https://facebook.github.io/watchman/")
     (synopsis "Watchman client for python")
-    (description "@code{python-pywatchman} is a library to connect and
-query Watchman to discover file changes.")
+    (description
+     "@code{python-pywatchman} is a library to connect and query Watchman to
+discover file changes.")
     (license license:bsd-3)))
 
 (define-public python-roundrobin
