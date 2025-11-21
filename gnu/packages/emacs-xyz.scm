@@ -35200,21 +35200,36 @@ customisation options to control its behaviour.")
     (license license:gpl3+)))
 
 (define-public emacs-dired-launch
+  (let ((commit "97eb002a2090518df86182e9f1db703850534fb7")
+        (revision "0"))
+    (package
+      (name "emacs-dired-launch")
+      (version (git-version "0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://codeberg.org/thomp/dired-launch")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1rnjp0fb0rakaky7pa6vdpz8cpf2dg5k9zsvxl8h6lcc9b7qa61c"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f))                   ; No tests
+      (home-page "https://codeberg.org/thomp/dired-launch")
+      (synopsis "Extra command to launch external programs")
+      (description
+       "This package provides a method to open entries in external programs from dired.")
+      (license license:gpl3+))))
+
+(define-public emacs-dired-launch-superseded-version
   (package
-    (name "emacs-dired-launch")
+    (inherit emacs-dired-launch)
     (version "20240809.1910")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://melpa.org/packages/dired-launch-"
-                                  version ".tar"))
-              (sha256
-               (base32
-                "1zgs1hzy04pywpcgn5r8s7aah2bv1p5x5lmlcqg9yranxj8a9k6d"))))
-    (build-system emacs-build-system)
-    (synopsis "Extra command to launch external programs")
-    (description "This package provides a method to open entries in external programs from dired.")
-    (home-page "https://codeberg.org/thomp/dired-launch")
-    (license license:gpl3+)))
+    (properties (list (cons 'superseded emacs-dired-launch)))))
 
 (define-public emacs-dired-rsync
   (package
