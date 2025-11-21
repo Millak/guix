@@ -33989,13 +33989,23 @@ keyboard-friendly package.")
     (version "1.7.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "iwlib" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nhoad/python-iwlib")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "18bd35wn7zclalpqbry42pf7bjrdggxkkw58mc0k1vkhg9czc1d8"))))
-    (build-system python-build-system)
-    (inputs
-     (list wireless-tools))
+        (base32 "0z6bgmzxf849irayzshiw3bvvhrr8j0il6113937x7fdam122gmr"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'cleanup
+            (lambda _
+              (delete-file-recursively "iwlib"))))))
+    (native-inputs (list python-pytest python-setuptools))
+    (inputs (list wireless-tools))
     (propagated-inputs (list python-cffi))
     (home-page "https://github.com/nhoad/python-iwlib")
     (synopsis "Python module to interface with iwlib")
