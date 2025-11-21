@@ -1107,7 +1107,7 @@ notebooks and tiling window managers.")
 (define-public gnome-shell-extension-night-theme-switcher
   (package
     (name "gnome-shell-extension-night-theme-switcher")
-    (version "78")
+    (version "79")
     (source
      (origin
        (method git-fetch)
@@ -1116,7 +1116,7 @@ notebooks and tiling window managers.")
               "https://gitlab.com/rmnvgr/nightthemeswitcher-gnome-shell-extension")
              (commit version)))
        (sha256
-        (base32 "13rqql22q3pv6dp3lmms7xbqna6h6x13gmd337fcqzc0k952xckc"))
+        (base32 "1xjg9pg1rlrmnfpf64y1g1cx0i7032zn08z9khlam40587rd6rp0"))
        (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (native-inputs (list pkg-config (list glib "bin")))
