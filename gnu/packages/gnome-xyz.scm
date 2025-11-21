@@ -818,7 +818,7 @@ faster window switching.")
 (define-public gnome-shell-extension-gsconnect
   (package
     (name "gnome-shell-extension-gsconnect")
-    (version "58")
+    (version "71")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -828,7 +828,7 @@ faster window switching.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jzpik0i03wpnxxmmhmn86vimpzvjmdkx76casi9sd7pwwdvi73f"))))
+                "0i6zrvb40h0af96md7jb4y3f2c1g37h5qp649xk68gp6gwn1401s"))))
     (build-system meson-build-system)
     (arguments
      (list
