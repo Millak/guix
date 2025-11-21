@@ -503,6 +503,36 @@ states–that is, any major mode that supports the bookmark system is
 compatible.")
     (license license:gpl3+)))
 
+(define-public emacs-helix
+  (package
+    (name "emacs-helix")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mgmarlow/helix-mode")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12frkqmv0qbs4rqxdazki6xvhdb6ykr4xsrzk8ljlj19dniawhd8"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:test-command
+      #~(list "emacs"
+              "-Q"
+              "--batch"
+              "-l"
+              "helix-test.el"
+              "-f"
+              "ert-run-tests-batch-and-exit")))
+    (home-page "https://github.com/mgmarlow/helix-mode")
+    (synopsis "Helix keybindings in Emacs")
+    (description
+     "This package provides a minor mode emulating Helix keybindings.")
+    (license license:gpl3+)))
+
 (define-public emacs-sops
   (package
     (name "emacs-sops")
