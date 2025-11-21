@@ -2798,13 +2798,13 @@ discrete, and conditional dimensions.")
 (define-public python-deepxde
   (package
     (name "python-deepxde")
-    (version "1.13.2")
+    (version "1.14.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "deepxde" version))
               (sha256
                (base32
-                "11fm9c717pf2j5kb7skvy1nshdqz76m783ndxsd3q3lr5lkqg087"))))
+                "1dzh0q772fv192znjxshd616kqfwyp3b5iz2833d9n1m98wpxgbw"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f                  ; there are no tests
@@ -2817,7 +2817,7 @@ discrete, and conditional dimensions.")
     ;; DeepXDE supported backends are TensorFlow (v1 and v2), PyTorch, JAX and
     ;; PaddlePaddle.  We test with PyTorch because we have it up to date.
     (native-inputs (list python-pytorch python-setuptools
-                         python-setuptools-scm python-wheel))
+                         python-setuptools-scm))
     (propagated-inputs (list python-matplotlib python-numpy
                              python-scikit-learn python-scikit-optimize
                              python-scipy))
