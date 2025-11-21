@@ -6244,6 +6244,25 @@ enables efficient recovery of the @code{DelayedArray's} contents in other
 languages and analysis frameworks.")
     (license license:gpl3)))
 
+(define-public r-convert
+  (package
+    (name "r-convert")
+    (version "1.86.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "convert" version))
+       (sha256
+        (base32 "0y3932nyp4fdp4yjnzskg1cg4rsg0yc36cl5qqrj2svxh5d4s7b8"))))
+    (properties `((upstream-name . "convert")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-limma r-marray))
+    (home-page "http://bioinf.wehi.edu.au/limma/convert.html")
+    (synopsis "Convert microarray data objects")
+    (description "This package defines coerce methods for microarray data
+objects.")
+    (license license:lgpl2.0+)))
+
 (define-public r-coregx
   (package
     (name "r-coregx")
