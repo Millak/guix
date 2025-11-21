@@ -32454,14 +32454,15 @@ retry to any Python callable.")
       (name "python-opcodes")
       (version "0.3.14")                          ;from 'opcodes/__init__.py'
       (home-page "https://github.com/Maratyszcza/Opcodes")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference (url home-page) (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1fvxkr83gfl9f0ikd2wl2lzazzya2qz1hk4yn2a0pq742brbwpys"))))
-      (build-system python-build-system)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference (url home-page) (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1fvxkr83gfl9f0ikd2wl2lzazzya2qz1hk4yn2a0pq742brbwpys"))))
+      (build-system pyproject-build-system)
+      (native-inputs (list python-pytest python-setuptools))
       (synopsis "Database of processor instructions and opcodes")
       (description
        "This project documents instruction sets in a format convenient for
