@@ -15253,25 +15253,39 @@ markdown features.")
     (license license:gpl3)))
 
 (define-public emacs-2048-game
-  (package
-    (name "emacs-2048-game")
-    (version "20151026.1233")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://melpa.org/packages/2048-game-"
-                           version ".el"))
-       (sha256
-        (base32
-         "0gy2pvz79whpavp4jmz8h9krzn7brmvv3diixi1d4w51pcdvaldd"))))
-    (build-system emacs-build-system)
-    (home-page "https://hg.sr.ht/~zck/game-2048")
-    (synopsis "Implementation of the game 2048 in Emacs Lisp")
-    (description
-     "This program is an implementation of 2048 for Emacs.
+  ;; No tagged releases. Version comes from 2048-game.el
+  (let ((changeset "0e7210d05e6faf53c7bdc8be2381dc0d4c8b19f3")
+        (revision "0"))
+    (package
+      (name "emacs-2048-game")
+      (version (hg-version "2023.8.8.1" revision changeset))
+      (source
+       (origin
+         (method hg-fetch)
+         (uri (hg-reference
+                (url "https://hg.sr.ht/~zck/game-2048")
+                (changeset changeset)))
+         (file-name (hg-file-name name version))
+         (sha256
+          (base32
+           "01xzmi2613d4zwnrh9iywipxx8ml76yqik90mx4mpyar19a6ypi8"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f))                   ; No tests
+      (home-page "https://hg.sr.ht/~zck/game-2048")
+      (synopsis "Implementation of the game 2048 in Emacs Lisp")
+      (description
+       "This program is an implementation of 2048 for Emacs.
 The goal of this game is to create a tile with value 2048.  The size of the
 board and goal value can be customized.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
+
+(define-public emacs-2048-game-superseded-version
+  (package
+    (inherit emacs-2048-game)
+    (version "20151026.1233")
+    (properties (list (cons 'superseded emacs-2048-game)))))
 
 (define-public emacs-chess
   (package
