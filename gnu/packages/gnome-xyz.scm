@@ -933,7 +933,7 @@ control.")
 (define-public gnome-shell-extension-just-perfection
   (package
     (name "gnome-shell-extension-just-perfection")
-    (version "30.0")
+    (version "35.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -942,14 +942,15 @@ control.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1y7m4y8zx7l6vl2f8w9nxac21x48ajcs5gf07r1k34adnf7wh8p2"))))
+                "0cphqwlg2vgnd0qkm6d5ihnlrnrckby5aakfvwi3bqk3fy9q65np"))))
     (build-system copy-build-system)
     (arguments
      (list
       #:install-plan
       #~'(("src"
            "share/gnome-shell/extensions/just-perfection-desktop@just-perfection"
-           #:include-regexp ("\\.css$" "\\.compiled$" "\\.js(on)?$" "\\.ui$"))
+           #:include-regexp ("stylesheet\\.css$"
+                             "\\.js(on)?$" "\\.compiled$" "\\.gresource$"))
           ("locale"
            "share/gnome-shell/extensions/just-perfection-desktop@just-perfection/"))
       #:phases
@@ -964,6 +965,9 @@ control.")
           (add-before 'install 'build
             (lambda _
               (invoke "glib-compile-schemas" "src/schemas")
+              (invoke "glib-compile-resources" "src/data/resources.gresource.xml"
+                      "--sourcedir=src/data"
+                      "--target=src/resources.gresource")
               (for-each
                (lambda (file)
                  (let* ((base (basename file))
