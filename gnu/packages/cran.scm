@@ -37378,6 +37378,7 @@ interaction search in high-dimensional data.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-extrafontdb r-rttf2pt1))
+    (native-inputs (list r-testthat))
     (home-page "https://github.com/wch/extrafont")
     (synopsis "Tools for using fonts in R")
     (description
