@@ -31971,20 +31971,27 @@ used to retry a function a given number of times.")
     (name "python-crayons")
     (version "0.4.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "crayons" version))
-        (sha256
-         (base32
-          "0gw106k4b6y8mw7pp52awxyplj2bwvwk315k4sywzwh0g1abfcxx"))))
-    (build-system python-build-system)
-    (propagated-inputs
-      (list python-colorama))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/MasterOdin/crayons")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zmls5c67mxyxzlwvagiidlrxy1f6f8kwm5afjsydhn19h4rd7za"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "test_crayons.py")))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-colorama))
     (home-page "https://github.com/MasterOdin/crayons")
     (synopsis "TextUI colors for Python")
-    (description "This package gives you colored strings for the terminal.
-Crayons automatically wraps a given string in the foreground color and
-restores the original state after the string is printed.")
+    (description
+     "This package gives you colored strings for the terminal.  Crayons
+automatically wraps a given string in the foreground color and restores the
+original state after the string is printed.")
     (license license:expat)))
 
 (define-public python-sane
