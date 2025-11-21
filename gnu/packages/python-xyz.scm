@@ -31212,19 +31212,33 @@ equivalent schemata in the XML-based default RELAX NG syntax.")
 (define-public python-citeproc-py
   (package
     (name "python-citeproc-py")
-    (version "0.5.1")
+    (version "0.9.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "citeproc-py" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/brechtm/citeproc-py")
+             (commit (string-append "v" version))
+             (recursive? #t)))          ; TODO Unbundle.
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "00aaff50jy4j0nakdzq9258z1gzrac9baarli2ymgspj88jg5968"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-lxml python-rnc2rng))
-    (home-page
-     "https://github.com/brechtm/citeproc-py")
+        (base32 "0wn1mfn7r4ffbmh529baqa4a798xwa34z0ij1jkmzal9i1na1i61"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (delete-file "citeproc/_version.py")
+              (substitute* "citeproc/__init__.py"
+                (("from \\. import version")
+                 "")
+                (("__version__ =.*")
+                 (format #f "__version__ = ~s" #$version))))))))
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-lxml python-rnc2rng))
+    (home-page "https://github.com/brechtm/citeproc-py")
     (synopsis "Citations and bibliography formatter")
     (description
      "Citeproc-py is a CSL processor for Python.  It aims to implement the
