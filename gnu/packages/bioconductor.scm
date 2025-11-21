@@ -6244,6 +6244,35 @@ enables efficient recovery of the @code{DelayedArray's} contents in other
 languages and analysis frameworks.")
     (license license:gpl3)))
 
+(define-public r-cigarillo
+  (package
+    (name "r-cigarillo")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "cigarillo" version))
+       (sha256
+        (base32 "07ayin3ydibhbv5qxi1bapdw2yf759k3azj57kqvmdpqsdwz1nm9"))))
+    (properties `((upstream-name . "cigarillo")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biocgenerics r-biostrings r-iranges r-s4vectors))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://bioconductor.org/packages/cigarillo")
+    (synopsis "Efficient manipulation of CIGAR strings")
+    (description
+     "CIGAR stands for Concise Idiosyncratic Gapped Alignment Report.  CIGAR
+strings are found in the BAM files produced by most aligners and in the
+AIRR-formatted output produced by @code{IgBLAST}.  The cigarillo package
+provides functions to parse and inspect CIGAR strings, trim them, turn them
+into ranges of positions relative to the \"query space\" or \"reference
+space\", and project positions or sequences from one space to the other.  Note
+that these operations are low-level operations that the user rarely needs to
+perform directly.  More typically, they are performed behind the scene by
+higher-level functionality implemented in other packages like Bioconductor
+packages @code{GenomicAlignments} and igblastr.")
+    (license license:artistic2.0)))
+
 (define-public r-convert
   (package
     (name "r-convert")
