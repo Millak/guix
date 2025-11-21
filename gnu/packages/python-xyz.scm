@@ -31830,7 +31830,7 @@ Qt applications.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1vj6c8s7rbc7xc4bi5brx5629ls1ri9prcw9290v85hagilmp609"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       ;; The test suite requires user interaction, there are no automated
@@ -31842,7 +31842,7 @@ Qt applications.")
                        ;; Without setting this, pystray tries to connect to
                        ;; X11 on import.
                        (setenv "PYSTRAY_BACKEND" "dummy"))))))
-    (native-inputs (list python-sphinx))
+    (native-inputs (list python-sphinx python-setuptools))
     (propagated-inputs (list python-pillow python-six python-xlib))
     (home-page "https://github.com/moses-palmer/pystray")
     (synopsis "Create a system tray icon")
