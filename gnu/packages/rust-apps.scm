@@ -1959,7 +1959,6 @@ specified image or color, easing the process of theme creation.")
                   (guix build utils))
       #:imported-modules `((guix build cargo-build-system)
                            (guix build cargo-utils)
-                           (guix build json)
                            ,@%pyproject-build-system-modules)
       #:install-source? #f
       #:cargo-test-flags
