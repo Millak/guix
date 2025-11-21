@@ -31940,18 +31940,23 @@ implementations.")
   (package
     (name "python-retry")
     (version "0.9.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "retry" version))
-              (sha256
-               (base32 "197v6qrh6858bhzzrjgk2zdqrybppymb1lsvdxnm1i39kfwsigzq"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/invl/retry")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a35ihsn082626592bkjc41fywylzp603j0cxpkbm2f7l1k332xv"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests? (invoke "pytest" "-vv")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "PBR_VERSION" #$version))))))
     (native-inputs (list python-pbr python-pytest))
     (propagated-inputs (list python-decorator python-py))
     (home-page "https://github.com/invl/retry")
