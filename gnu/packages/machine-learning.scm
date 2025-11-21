@@ -683,7 +683,7 @@ training, HMM clustering, HMM mixtures.")
       (license license:lgpl2.0+))))
 
 (define-public llama-cpp
-  (let ((tag "b6101"))
+  (let ((tag "b7126"))
     (package
       (name "llama-cpp")
       (version (string-append "0.0.0-" tag))
@@ -695,7 +695,7 @@ training, HMM clustering, HMM mixtures.")
                (commit tag)))
          (file-name (git-file-name name tag))
          (sha256
-          (base32 "0yz97dk19pxqck9l83wvlwzf1i78wrc55hrk9ynraqybdz7yqjdc"))))
+          (base32 "00fpp0gi3790yxxn5p22z0vxk93a04zslnkanmxbgi3k537ph8f6"))))
       (build-system cmake-build-system)
       (arguments
        (list
