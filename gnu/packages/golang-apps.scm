@@ -3,6 +3,7 @@
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -395,3 +396,29 @@ editing and auto-completion.  Some of its features include:
 @item Auto-importing (gore -autoimport)
 @end itemize")
     (license license:expat)))
+
+(define-public mnc
+  (package
+    (name "mnc")
+    (version "0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~anjan/mnc")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04vcv8540s07rsdfzmxg63cpckacgfiiqchyvfimsg7ic71gna3q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ; There are no tests.
+      #:install-source? #f
+      #:import-path "git.sr.ht/~anjan/mnc"))
+    (inputs (list go-github-com-influxdata-cron))
+    (home-page "https://git.sr.ht/~anjan/mnc")
+    (synopsis "Find seconds to next cron job")
+    (description "mnc (my next cron) opens the user's crontab and echos the
+time when the next cronjob will be ran.")
+    (license license:unlicense)))
