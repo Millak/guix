@@ -31741,17 +31741,19 @@ older versions of Python and so are packaged here.")
   (package
     (name "python-helper")
     (version "2.5.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "helper" version))
-              (sha256
-               (base32
-                "1d2j64wgbggzv5rhvil10zndp2w78wa5np5w0psj122ws9qr9wsa"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-mock))
-    (propagated-inputs
-     (list python-logutils python-pyyaml))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gmr/helper")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zypjv8rncvrsgl200v7d3bn08gs48dwqvgamfqv71h07cj6zngp"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-mock python-setuptools))
+    (propagated-inputs (list python-logutils python-pyyaml))
     (home-page "https://github.com/gmr/helper")
     (synopsis "Library for writing configurable applications and daemons")
     (description
