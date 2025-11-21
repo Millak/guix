@@ -31534,46 +31534,27 @@ EDU SDK.  This library has the following features:
     (version "4.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://gamera.informatik.hsnr.de/download/"
-                           "gamera-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/hsnr-gamera/gamera-4")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1n3cwc97dq4sz244ybs9na8a73s9f8wa4cjswxz54sx6a7xcafps"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Remove bundled libraries.
-           (for-each delete-file-recursively
-                     '("src/libpng-1.2.5"
-                       "src/libtiff"
-                       "src/zlib-1.2.8"))))))
-    (build-system python-build-system)
+        (base32 "0l3w3wvi1ina6r3adc4wikz47wai8cjci0i5k8dxqv8p629dihrn"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-build
-           (lambda _
-             ;; The script to make daily build artifacts fails to compile,
-             ;; but users don't need that, so ignore it.
-             (delete-file "misc/daily_build.py")
-             ;; Prepare tests
-             (mkdir-p "tests/tmp")))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; Some tests require a writable HOME directory and test
-               ;; directory.
-               (setenv "HOME" "/tmp")
-               (with-directory-excursion "tests"
-                 (invoke "pytest" "-vv"
-                         ;; This test causes gamera/gendoc.py to be loaded,
-                         ;; which fails due to the missing docutils, pygments
-                         ;; and silvercity (very old, unpackaged) libraries.
-                         "--ignore" "test_plugins.py"
-                         ;; This test triggers a segfault (see:
-                         ;; https://github.com/hsnr-gamera/gamera-4/issues/47).
-                         "--ignore" "test_rle.py"))))))))
-    (native-inputs (list python-pytest))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build
+            (lambda _
+              ;; The script to make daily build artifacts fails to compile,
+              ;; but users don't need that, so ignore it.
+              (delete-file "misc/daily_build.py")
+              ;; Prepare tests
+              (mkdir-p "tmp")
+              (setenv "HOME" (string-append (getcwd) "/tmp")))))))
+    (native-inputs (list python-docutils python-pytest python-setuptools))
     (inputs (list libpng libtiff zlib))
     (synopsis "Framework for building document analysis applications")
     (description
