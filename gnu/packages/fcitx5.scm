@@ -383,7 +383,7 @@ the Anthy input method.")
 (define-public fcitx5-skk
   (package
     (name "fcitx5-skk")
-    (version "5.1.7")
+    (version "5.1.8")
     (source
      (origin
        (method git-fetch)
@@ -392,7 +392,7 @@ the Anthy input method.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xvsbsc9ybq6j0xnvq3wiidw9f6kh5n8jr3z69b7hshw59jirjaq"))))
+        (base32 "11h6y7rv6yppp7iy8csy7r2pi2mlnjgl8h4h8ghfwab1gm7v32fn"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f      ; no tests
