@@ -70,6 +70,7 @@
 ;;; Copyright © 2025 Tomás Ortín Fernández <quanrong@mailbox.org>
 ;;; Copyright © 2025 Allan Adair <allan@adair.no>
 ;;; Copyright © 2025 Patrick Norton <patrick.147.norton@gmail.com>
+;;; Copyright © 2025 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -11234,6 +11235,29 @@ ABI}.")
                (with-directory-excursion (string-append "src/" import-path)
                  (substitute* (find-files "." "\\.go$")
                    (("dario.cat/mergo") import-path)))))))))))
+
+(define-public go-github-com-influxdata-cron
+  (package
+    (name "go-github-com-influxdata-cron")
+    (version "0.0.0-20201006132531-4bb0a200dcbe")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/influxdata/cron")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1awwqmm265gd9pl3khfxzyn0mwsvk2jfm84w465qsj94l1h8irs9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/influxdata/cron"))
+    (home-page "https://github.com/influxdata/cron")
+    (synopsis "Cron parser in Ragel and Go")
+    (description
+     "This package provides a fast non-allocating cron parser in Ragel and Go.")
+    (license license:expat)))
 
 (define-public go-github-com-invopop-yaml
   (package
