@@ -1266,7 +1266,7 @@ animation of closing windowed applications.")
 (define-public gnome-shell-extension-blur-my-shell
   (package
     (name "gnome-shell-extension-blur-my-shell")
-    (version "67")
+    (version "70")
     (source
      (origin
        (method git-fetch)
@@ -1276,7 +1276,7 @@ animation of closing windowed applications.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0zxz71iq8wzv7swfp4an8vwf8r4sswb6gi85cwh5afyc4mj5fn2r"))))
+         "11qd3z57w0fkhlhbqm2rpmwwg9bl4dvdbs2v7xp3psjfi5z9gsmq"))))
     (build-system copy-build-system)
     (arguments
      '(#:install-plan
