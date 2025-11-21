@@ -1181,6 +1181,7 @@ translate and to apply translation to Sphinx generated document.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:tests? #f                       ; No tests.
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-version
@@ -1189,7 +1190,7 @@ translate and to apply translation to Sphinx generated document.")
                 (("version = \"main\"")
                  (string-append "version = \"" #$version "\""))))))))
     (propagated-inputs (list python-sphinx))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/wpilibsuite/sphinxext-rediraffe")
     (synopsis
      "Sphinx Extension that redirects non-existent pages to working pages")
