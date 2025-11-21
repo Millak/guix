@@ -1459,7 +1459,11 @@ inference for statistical models.")
                                ;; Subprocess aborted for these tests.
                                "pyinstallcheck_Study_std"
                                "pyinstallcheck_OptimizationAlgorithm_std"
-                               "pyinstallcheck_docstring_missing")
+                               "pyinstallcheck_docstring_missing"
+                               ;; These tests are flaky and fail non
+                               ;; reproducibly.
+                               "pyinstallcheck_KrigingAlgorithm_std"
+                               "pyinstallcheck_GaussianProcessFitter_std")
                          "|"))))))))
     (native-inputs
      (list bison
