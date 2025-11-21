@@ -845,81 +845,6 @@ patterns.")
 tomorrow, the rest of the week and for special occasions.")
     (license license:gpl3+)))
 
-(define-public gnome-photos
-  (package
-    (name "gnome-photos")
-    (version "44.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (string-append "mirror://gnome/sources/" name "/"
-                       (version-major version) "/"
-                       name "-" version ".tar.xz"))
-       (sha256
-        (base32
-         "17l2bkdg8iracgw2mgx5vqfs3d6cdvd22mfdqq4jiinkjw1j33p7"))))
-    (build-system meson-build-system)
-    (arguments
-     (list
-      #:disallowed-references (list (this-package-native-input "git-minimal"))
-      #:glib-or-gtk? #t
-      #:configure-flags
-      #~(list "-Ddogtail=false"         ; Not available
-              ;; Required for RUNPATH validation.
-              (string-append "-Dc_link_args=-Wl,-rpath="
-                             #$output "/lib/gnome-photos"))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'disable-gtk-update-icon-cache
-            (lambda _
-              (setenv "DESTDIR" "/")))
-          (add-after 'install 'wrap-gnome-photos
-            (lambda* (#:key outputs #:allow-other-keys)
-              (wrap-program (search-input-file outputs "bin/gnome-photos")
-                `("GRL_PLUGIN_PATH" =
-                  (,(getenv "GRL_PLUGIN_PATH")))))))))
-    (native-inputs
-     (list dbus
-           desktop-file-utils
-           gettext-minimal
-           git-minimal/pinned
-           `(,glib "bin")
-           gobject-introspection
-           gsettings-desktop-schemas
-           itstool
-           pkg-config))
-    (inputs
-     (list babl
-           bash-minimal
-           cairo
-           gegl-0.4.44
-           geocode-glib
-           gexiv2
-           gfbgraph
-           gnome-online-accounts
-           gnome-online-miners
-           grilo
-           grilo-plugins
-           gtk+
-           libdazzle
-           libgdata
-           libhandy
-           libjpeg-turbo
-           libportal
-           libpng
-           (librsvg-for-system)
-           python-pygobject
-           rest
-           tracker
-           tracker-miners))
-    (synopsis "Access, organize and share your photos on GNOME desktop")
-    (description "GNOME Photos is a simple and elegant replacement for using a
-file manager to deal with photos.  Enhance, crop and edit in a snap.  Seamless
-cloud integration is offered through GNOME Online Accounts.")
-    (home-page "https://wiki.gnome.org/Apps/Photos")
-    (license license:gpl3+)))
-
 (define-public gnome-music
   (package
     (name "gnome-music")
@@ -10436,7 +10361,6 @@ playing media, scanning, and much more.")
            gnome-font-viewer
            gnome-maps
            gnome-music
-           gnome-photos
            gnome-screenshot
            gnome-system-monitor
            gnome-text-editor
