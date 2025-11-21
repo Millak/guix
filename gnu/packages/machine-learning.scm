@@ -2712,28 +2712,26 @@ the following advantages:
                (base32
                 "04bwzk6ifgnz3fmzid8b7avxf9n5pnx9xcjm61nkjng1vv0bpj8x"))
               (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-boost=" #$(this-package-input "boost")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-files-writable
+            (lambda _
+              (for-each make-file-writable (find-files "." ".*"))))
+          (add-after 'install 'install-more-headers
+            (lambda _
+              (for-each
+               (lambda (file)
+                 (install-file
+                  file (string-append #$output "/include/vowpalwabbit")))
+               (find-files "vowpalwabbit" "\\.h$")))))))
     (inputs
      (list boost zlib))
-    (arguments
-     `(#:configure-flags
-       (list (string-append "--with-boost="
-                            (assoc-ref %build-inputs "boost")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-files-writable
-           (lambda _
-             (for-each make-file-writable (find-files "." ".*")) #t))
-         (add-after 'install 'install-more-headers
-           (lambda* (#:key outputs #:allow-other-keys)
-             (for-each
-               (lambda (file)
-                 (install-file file (string-append
-                                      (assoc-ref outputs "out")
-                                      "/include/vowpalwabbit")))
-               (find-files "vowpalwabbit" "\\.h$"))
-             #t)))))
-    (build-system gnu-build-system)
-    (home-page "https://github.com/JohnLangford/vowpal_wabbit")
+    (home-page "https://vowpalwabbit.org")
     (synopsis "Fast machine learning library for online learning")
     (description "Vowpal Wabbit is a machine learning system with techniques
 such as online, hashing, allreduce, reductions, learning2search, active, and
