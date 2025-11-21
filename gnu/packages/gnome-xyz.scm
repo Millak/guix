@@ -1223,9 +1223,6 @@ copies you now want to paste.")
 shell, including panels, corners, workspaces.")
     (license license:gpl3)))
 
-(define-deprecated-package gnome-shell-extension-vertical-overview
-  gnome-shell-extension-v-shell)
-
 (define-public gnome-shell-extension-burn-my-windows
   (package
     (name "gnome-shell-extension-burn-my-windows")
