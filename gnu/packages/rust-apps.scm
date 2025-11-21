@@ -1664,6 +1664,30 @@ bar.  It is also compatible with sway.")
 Interface}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public jnv
+  (package
+    (name "jnv")
+    (version "0.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ynqa/jnv")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1pv7mnysh7bc1885xym8vlkywjsqqi7zqhhl4g1p8zmpk75z0vdi"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f))
+    (inputs (cargo-inputs 'jnv))
+    (home-page "https://github.com/ynqa/jnv")
+    (synopsis "JSON navigator and interactive jq filter editor")
+    (description "Jnv is designed for navigating JSON, offering an interactive
+JSON viewer and jq filter editor.")
+    (license license:expat)))
+
 (define-public jujutsu
   (package
     (name "jujutsu")
