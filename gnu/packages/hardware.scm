@@ -22,6 +22,7 @@
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;; Copyright © 2025 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2025 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2025 James Smith <jsubuntuxp@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,6 +71,7 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages high-availability)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
@@ -96,6 +98,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages scanner)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages security-token)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages tls)
@@ -1217,30 +1220,36 @@ be dangerous and may void your CPU or system board's warranty.")
     (license license:gpl2)))     ; cpuid.c is gpl2, {rd,wr}msr.c are gpl2+
 
 (define-public openhmd
-  (package
-    (name "openhmd")
-    (version "0.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/OpenHMD/OpenHMD")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1hkpdl4zgycag5k8njvqpx01apxmm8m8pvhlsxgxpqiqy9a38ccg"))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:tests? #f)) ; no test target although there is a test folder
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list hidapi))
-    (home-page "http://www.openhmd.net/")
-    (synopsis "API and drivers for immersive technology")
-    (description "OpenHMD aims to provide an API and drivers for immersive
+  (let* ((commit                        ; Track rift-kalman-filter branch
+          "04f5276bfc679968ceea62e4d1df6cbe6376941c")
+         (revision "0")
+         (version "0.3.0"))
+    (package
+      (name "openhmd")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                ;; Latest official release was in 2019, and development has
+                ;; largely moved to Monado. However, the Oculus Rift CV1
+                ;; requires an unofficial fork of OpenHMD to (mostly) work on
+                ;; Linux, even with Monado.
+                (url "https://github.com/thaytan/OpenHMD")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1bbqwf3682nf14jb76c7qv6h5qxpr1fjj7f308ndivdqss10kzq2"))))
+      (build-system meson-build-system)
+      (arguments
+       (list #:tests? #f))    ; no test target although there is a test folder
+      (native-inputs (list pkg-config))
+      (inputs (list glew hidapi libusb opencv))
+      (home-page "http://www.openhmd.net/")
+      (synopsis "API and drivers for immersive technology")
+      (description "OpenHMD aims to provide an API and drivers for immersive
 technology, such as head mounted displays with built in head tracking.")
-    (license license:boost1.0)))
+      (license license:boost1.0))))
 
 (define-public openrgb
   (package
