@@ -33604,7 +33604,6 @@ platform-specific directories, e.g. the ``user data dir''.")
     (name "python-json2html")
     (version "1.3.0")
     (source
-     ;; There are no tests in the PyPI tarball.
      (origin
        (method git-fetch)
        (uri (git-reference
@@ -33613,19 +33612,17 @@ platform-specific directories, e.g. the ``user data dir''.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1ncypljnl5y8lsxy6ibcqy412kx3mzxl4ajg67568hvq98kv1sb3"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "test/run_tests.py")))))))
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "test/run_tests.py")))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/softvar/json2html")
     (synopsis "Convert JSON to HTML table")
-    (description "@code{python-json2html} is a python module to convert JSON
-into a human readable HTML table representation.")
+    (description
+     "@code{python-json2html} is a python module to convert JSON into a human
+readable HTML table representation.")
     (license license:expat)))
 
 (define-public python-face
