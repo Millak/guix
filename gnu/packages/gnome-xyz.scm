@@ -1400,15 +1400,15 @@ bar of the GNOME Shell.")
 (define-public gnome-shell-extension-weather-oclock
   (package
     (name "gnome-shell-extension-weather-oclock")
-    (version "46.2")
+    (version "49.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                      (url "https://github.com/CleoMenezesJr/weather-oclock")
-                     (commit version)))
+                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "0misr6cs17636yak82fx6gx48qqsj8glccsxxkh96adrihbhni48"))
+                "0p8wv3gsz2398ddk7c3v0rsafx86q7m5lhg0vj4knrml7nl1mshp"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -1421,6 +1421,7 @@ bar of the GNOME Shell.")
       #~(modify-phases %standard-phases
           (delete 'bootstrap)
           (delete 'configure))))
+    (native-inputs (list `(,glib "bin")))
     (synopsis "GNOME Shell extension to show the weather next the clock")
     (description "Weather O'Clock is an extension that adds the current weather
  next to the clock on the top bar of the GNOME Shell.")
