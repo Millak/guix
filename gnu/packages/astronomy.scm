@@ -8108,6 +8108,84 @@ pipelines.")
 observations from the Nancy Grace Roman Space Telescope.")
     (license license:bsd-3))))
 
+(define-public python-romanisim
+  (package
+    (name "python-romanisim")
+    (version "0.11.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "romanisim" version))
+       (sha256
+        (base32 "10rrr4mkpxz9wrhxlzxhn5mrswnlz7fqln7zkfims22a95kl4ldz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 87 passed, 2 skipped, 8 deselected
+      #:test-flags
+      #~(list "--pyargs" "romanisim"
+              ;; TODO: python-stpsf needs to be packaged with test data:
+              ;; OSError: Couldn't read the version number from
+              ;; /tmp/data/stpsf-data/version.txt. (Do you need to update the
+              ;; STPSF data? See
+              ;; https://stpsf.readthedocs.io/en/stable/installation.html#data-install
+              ;; for a link to the latest version.)
+              "--ignore-glob=*/tests/test_psf.py"
+              "--ignore-glob=*/tests/test_image.py"
+              ;; Network access is required.
+              "-k" (string-join
+                    (list "not test_exptime_array"
+                          "test_inverse_then_linearity"
+                          "test_make_dummy_catalog"
+                          "test_make_gaia_stars"
+                          "test_scaling"
+                          "test_simulate_cps"
+                          "test_simulate_vs_cps"
+                          "test_wcs_crds_match")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; See: <https://github.com/spacetelescope/romanisim/pull/279>.
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((".*Cython >=0.29.21.*") ""))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-cython
+           python-ci-watson
+           python-pytest
+           python-pytest-doctestplus
+           python-pytest-openfiles
+           python-setuptools
+           python-setuptools-scm
+           python-stpsf))
+    (propagated-inputs
+     (list python-asdf
+           python-astropy
+           python-astropy-healpix
+           python-astroquery
+           python-crds
+           python-defusedxml
+           python-galsim
+           python-gwcs
+           python-numpy
+           python-photutils
+           python-roman-datamodels))
+    (home-page "https://github.com/spacetelescope/romanisim")
+    (synopsis "Nancy Grace Roman Space Telescope WFI Simulator")
+    (description
+     "@code{romanisim} is a Galsim-based simulator of imaging data from the
+@acronym{WFI,Wide Field Instrument} on the @url{https://roman.gsfc.nasa.gov/,
+Nancy Grace Roman Space Telescope} (pronounced roman-eye-sim, stylized Roman
+I-Sim).  It uses Galsim to render astronomical scenes, WebbPSF to model the
+point spread function, and CRDS to access the calibration information needed
+to produce realistic WFI images.")
+    ;; LICENSE.rst Association of Universities for Research in Astronomy (AURA)
+    (license license:bsd-3)))
+
 (define-public python-sbpy
   (package
     (name "python-sbpy")
