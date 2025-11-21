@@ -12813,6 +12813,43 @@ sequence.")
     (supported-systems '("i686-linux" "x86_64-linux"))
     (license license:bsd-3)))
 
+(define-public r-genenmf
+  (let ((commit "7ac475261123232d3e691ef851936e05055becd4")
+        (revision "1"))
+    (package
+      (name "r-genenmf")
+      (version (git-version "0.9.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/carmonalab/GeneNMF")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0kv419nyyddpj2j2dvhxhwk5m26p39f3jc2r7rz98j86x6hgwgpl"))))
+      (properties `((upstream-name . "GeneNMF")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-cluster
+                               r-colorspace
+                               r-dendextend
+                               r-irlba
+                               r-lsa
+                               r-matrix
+                               r-pheatmap
+                               r-rcppml
+                               r-seurat
+                               r-viridis))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/carmonalab/GeneNMF")
+      (synopsis "Non-Negative matrix factorization for single-cell omics")
+      (description
+       "This package provides a collection of methods to extract gene programs
+from single-cell gene expression data using @dfn{non-negative matrix
+factorization} (NMF).  @code{GeneNMF} contains functions to directly interact
+with the Seurat toolkit and derive interpretable gene program signatures.")
+      (license license:gpl3))))
+
 (define-public r-ggexpress
   (let ((commit "82f169385f87af328ff971195c2f64ff3c573a8a")
         (revision "1"))
