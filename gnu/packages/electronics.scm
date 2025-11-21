@@ -2977,18 +2977,10 @@ parallel computing platforms.  It also supports serial execution.")
                 (("\\['z3")
                  (string-append "['"
                                 (search-input-file inputs "bin/z3"))))
-              (substitute* "kernel/fstdata.cc"
-                (("vcd2fst")
-                 (search-input-file inputs "bin/vcd2fst")))
               (substitute* "kernel/driver.cc"
                 (("^#include \"libs/cxxopts/include/cxxopts.hpp\"")
                  "#include <cxxopts.hpp>"))
               (substitute* '("passes/cmds/show.cc" "passes/cmds/viz.cc")
-                (("exec xdot")
-                 (string-append "exec "
-                                (search-input-file inputs "bin/xdot")))
-                (("dot -")
-                 (string-append (search-input-file inputs "bin/dot") " -"))
                 (("fuser")
                  (search-input-file inputs "bin/fuser")))))
           (replace 'configure
@@ -3034,23 +3026,24 @@ parallel computing platforms.  It also supports serial execution.")
                          cxxopts ;header-only library
                          flex
                          gawk ;for the tests and "make" progress pretty-printing
+                         gtkwave        ;for the tests
                          iverilog ;for the tests
                          pkg-config
                          perl
                          python
                          tcl)) ;tclsh for the tests
+    ;; Optional dependencies increase considerably package closure.
+    ;; - gtkwave: required only for vcd2fst binary, used by ???sim??? command.
+    ;; - graphviz, xdot: used by ???show??? command to display schematics.
     (inputs (list abc-yosyshq
                   bash-minimal
                   clang
-                  graphviz
-                  gtkwave
                   libffi
                   psmisc
                   python
                   python-click
                   readline
                   tcl
-                  xdot
                   z3
                   zlib))
     (home-page "https://yosyshq.net/yosys/")
