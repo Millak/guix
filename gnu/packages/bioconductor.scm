@@ -24597,14 +24597,14 @@ gene selection, testing relationships, and so on.")
 (define-public r-biocpkgtools
   (package
     (name "r-biocpkgtools")
-    (version "1.26.2")
+    (version "1.26.4")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocPkgTools" version))
        (sha256
         (base32
-         "1zk3sw5vwgx1rl16s52cs8a3zmn1x95wsda1djiw8l4g45vnbjyz"))
+         "1akpiashl3rswizyk7x1c03b37wz07djr6hk7v51fg140994bf0g"))
        (snippet
         '(for-each delete-file
                    '("inst/htmlwidgets/lib/bioc_explore/bootstrap.min.js"
@@ -24656,6 +24656,7 @@ gene selection, testing relationships, and so on.")
            r-htmltools
            r-htmlwidgets
            r-httr
+           r-httr2
            r-igraph
            r-jsonlite
            r-lubridate
@@ -24663,7 +24664,6 @@ gene selection, testing relationships, and so on.")
            r-rbgl
            r-readr
            r-rlang
-           r-rorcid
            r-rvest
            r-stringr
            r-tibble
