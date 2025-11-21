@@ -13550,6 +13550,41 @@ files are stored in an array-oriented and compressed manner, with efficient
 data access using the R programming language.")
     (license license:gpl3)))
 
+(define-public r-seqinfo
+  (package
+    (name "r-seqinfo")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "Seqinfo" version))
+       (sha256
+        (base32 "10jd4f4qvk4f2z4x9x6663fanh1mb0sxk9xs8giwbw1yb6jrab6p"))))
+    (properties
+     '((upstream-name . "Seqinfo")
+       (updater-extra-native-inputs . ("r-runit"))
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-genomicranges"))))
+    (build-system r-build-system)
+    ;; Tests require r-genomicranges.
+    (arguments (list #:tests? #false))
+    (propagated-inputs (list r-biocgenerics r-iranges r-s4vectors))
+    (native-inputs (list r-knitr r-runit))
+    (home-page "https://bioconductor.org/packages/Seqinfo")
+    (synopsis
+     "S4 class for storing basic information about a collection of genomic sequences")
+    (description
+     "The @code{Seqinfo} class stores the names, lengths, circularity flags,
+and genomes for a particular collection of sequences.  These sequences are
+typically the chromosomes and/or scaffolds of a specific genome assembly of a
+given organism.  @code{Seqinfo} objects are rarely used as standalone objects.
+Instead, they are used as part of higher-level objects to represent their
+@code{seqinfo()} component.  Examples of such higher-level objects are
+@code{GRanges}, @code{RangedSummarizedExperiment}, @code{VCF},
+@code{GAlignments}, etc@dots{} defined in other Bioconductor infrastructure
+packages.")
+    (license license:artistic2.0)))
+
 (define-public r-seqlogo
   (package
     (name "r-seqlogo")
