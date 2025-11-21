@@ -31955,21 +31955,21 @@ implementation of JSON reference resolution.")
 (define-public python-reflink
   (package
     (name "python-reflink")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "reflink" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/rubdos/pyreflink")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0fkf3sd958g9hvr3jwlhnhqqzrwxljrc3grsf3yknh94vf13a9f9"))))
-    (build-system python-build-system)
+        (base32 "1ch3n7m1f5nvx9i0jv1fj1i5w1jsl1ga8dxzixg71m34gf4kg3s6"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #false)) ; almost all tests want to run mkfs.btrfs
-    (propagated-inputs
-     (list python-cffi))
-    (native-inputs
-     (list python-pytest python-pytest-runner))
+     (list #:tests? #f)) ;almost all tests want to run mkfs.btrfs
+    (propagated-inputs (list python-cffi))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://gitlab.com/rubdos/pyreflink")
     (synopsis "Python wrapper around reflink system call")
     (description
