@@ -635,7 +635,7 @@ copy, move, delete, or edit your files.")
 (define-public gnome-shell-extension-unite-shell
   (package
     (name "gnome-shell-extension-unite-shell")
-    (version "82")
+    (version "84")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -644,7 +644,7 @@ copy, move, delete, or edit your files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0kghsaq8p38r7ya0kd2ggcwjpq4f3gszrfk5x11ji2m91cfk9sh9"))))
+                "190ssviniqfqy1852lk0kvh57nv6066bgkz817gw3h57zbw6r9k5"))))
     (build-system copy-build-system)
     (native-inputs (list `(,glib "bin") gettext-minimal))
     (inputs (list xprop))
