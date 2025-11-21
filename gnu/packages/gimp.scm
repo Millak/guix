@@ -298,25 +298,6 @@ buffers.")
     ;; application and GUI binary gegl is licensed under GPL.
     (license (list license:lgpl3+ license:gpl3+))))
 
-(define-public babl-0.1.96
-  (package
-    (inherit babl)
-    (version "0.1.96")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (list (string-append "https://download.gimp.org/pub/babl/"
-                                 (version-major+minor version)
-                                 "/babl-" version ".tar.xz")
-                  (string-append "https://ftp.gtk.org/pub/babl/"
-                                 (version-major+minor version)
-                                 "/babl-" version ".tar.xz")
-                  (string-append "ftp://ftp.gtk.org/pub/babl/"
-                                 (version-major+minor version)
-                                 "/babl-" version ".tar.xz")))
-       (sha256
-        (base32 "1xj5hlmm834lb84rpjlfxbqnm5piswgzhjas4h8z90x9b7j3yrrk"))))))
-
 (define-public gimp-2
   (package
     (name "gimp")
