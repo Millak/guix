@@ -1186,7 +1186,7 @@ saved to a file for further viewing in another window.")
 (define-public edbrowse
   (package
     (name "edbrowse")
-    (version "3.8.12")
+    (version "3.8.15")
     (source
      (origin
        (method git-fetch)
@@ -1195,28 +1195,20 @@ saved to a file for further viewing in another window.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19wpsil3927qchky5frczlp75fiqir9l2wzfqq95gbpssiafwkpy"))))
+        (base32 "0fgd2kdpkzrv9db059zm8sbnscxf489p65wq36s88n2y5xqnclr9"))))
     (build-system gnu-build-system)
-    (inputs (list curl-ssh pcre2 quickjs openssl readline-7 unixodbc))
+    (inputs (list curl-ssh pcre2 quickjs-ng openssl readline-7 unixodbc))
     (native-inputs (list perl pkg-config))
     (arguments
      (list
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
-              (string-append "QUICKJS_LIB="
-                             (assoc-ref %build-inputs "quickjs")
-                             "/lib/quickjs"))
+              "CPPFLAGS=-DQ_NG=1"
+              "QUICKJS_LIB_NAME=qjs")
       #:tests? #f ; Edbrowse doesn't have tests
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)
-          (add-after 'unpack 'patch
-            (lambda _
-              (for-each
-               (lambda (file)
-                 (substitute* file
-                   (("\"quickjs-libc.h\"") "<quickjs/quickjs-libc.h>")))
-               '("src/js_hello_quick.c" "src/jseng-quick.c"))))
           (replace 'install
             (lambda* (#:key outputs #:allow-other-keys)
               (let* ((out (assoc-ref outputs "out"))
