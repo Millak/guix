@@ -31379,24 +31379,21 @@ module patches @code{asyncio} to allow nested use of @code{asyncio.run} and
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://www.parallelpython.com/downloads/pp/pp-"
-             version ".zip"))
+       (uri (string-append "https://www.parallelpython.com/downloads/pp/pp-"
+                           version ".zip"))
        (sha256
-        (base32
-         "1mzk4yabxj6r149fswhis18hd8dnag5sj8i4wb06450zq3pi8dh7"))))
-    (native-inputs
-     (list unzip))
-    (propagated-inputs
-     (list python-six))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))  ; No test suite.
+        (base32 "1mzk4yabxj6r149fswhis18hd8dnag5sj8i4wb06450zq3pi8dh7"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;No test suite.
+    (native-inputs (list python-setuptools unzip))
+    (propagated-inputs (list python-six))
     (home-page "https://www.parallelpython.com")
     (synopsis "Parallel and distributed programming for Python")
-    (description "Parallel Python module (PP) provides an easy and efficient
-way to create parallel-enabled applications for SMP computers and clusters.
-PP module features cross-platform portability and dynamic load balancing.
-Thus applications written with PP will parallelize efficiently even on
+    (description
+     "Parallel Python module (PP) provides an easy and efficient way to create
+parallel-enabled applications for SMP computers and clusters.  PP module
+features cross-platform portability and dynamic load balancing.  Thus
+applications written with PP will parallelize efficiently even on
 heterogeneous and multi-platform clusters (including clusters running other
 applications with variable CPU loads).")
     (license license:bsd-3)))
