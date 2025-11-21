@@ -33628,29 +33628,19 @@ readable HTML table representation.")
 (define-public python-face
   (package
     (name "python-face")
-    (version "20.1.1")
+    (version "24.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "face" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mahmoud/face")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0gpd9f0rmbv3rd2szi2na37l29fabkwazikjrxc6wca1lddwlnbx"))))
+        (base32 "1ps34r3w93rrviwj8xq7ji9l2z301zzny2gx6nrwvgxr8h6bv0kp"))))
     (build-system pyproject-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               ;; Make installed package available for running the tests.
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "-v")))))))
-    (native-inputs
-     (list python-pytest
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-boltons))
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-boltons))
     (home-page "https://github.com/mahmoud/face")
     (synopsis "CLI parsing and dispatching microframework")
     (description "@code{python-face} is a Pythonic microframework for building
