@@ -33385,21 +33385,23 @@ the beginning of the file or directory name.")
 (define-public python-braintree
   (package
     (name "python-braintree")
-    (version "4.12.0")
+    (version "4.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "braintree" version))
        (sha256
-        (base32 "19kli85q18p80nsn8fm4ql6axpr7bllfqg5chv2ywhr8zr8bssll"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-requests))
+        (base32 "0pjllhyx9ymad9nspaviysda4pb5cbl83c6fq4bhwl6khzyh0bkr"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))  ; No tests.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-requests))
     (home-page
      "https://developers.braintreepayments.com/python/sdk/server/overview")
     (synopsis "Braintree Python Library")
-    (description "The Braintree Python SDK provides integration access to the
-Braintree Gateway.  Braintree is a US-based payments service provider.")
+    (description
+     "The Braintree Python SDK provides integration access to the Braintree
+Gateway.  Braintree is a US-based payments service provider.")
     (license license:expat)))
 
 (define-public python-markuppy
