@@ -31660,29 +31660,18 @@ distribution in Python.")
     (name "python-helpdev")
     (version "0.7.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "helpdev" version))
-        (sha256
-         (base32
-          "0gfvj28i82va7c264jl2p4cdsl3lpf9fpb9cyjnis55crfdafqmv"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "tests"))
-             #t)))))
-    (propagated-inputs
-     (list python-importlib-metadata))
-    (native-inputs
-     (list python-pytest))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/dpizetta/helpdev")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mzf0sdgxzn3x56qxgi6kbsx3cydl8h0bdpyn4xyfkw6pyi9g2bd"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pip python-pytest python-setuptools))
     (home-page "https://gitlab.com/dpizetta/helpdev")
-    (synopsis
-     "Extract information about the Python environment easily")
+    (synopsis "Extract information about the Python environment easily")
     (description
      "Helpdev is a library to easily extract information about the Python
 environment.")
