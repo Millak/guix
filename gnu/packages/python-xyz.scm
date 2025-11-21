@@ -5851,6 +5851,13 @@ tasks rather than a standard compliant master implementation.")
         (base32
          "0mird2yj3xbh71g325admxpif9h20w0xgp9hw6ss2bdbzxsykh6m"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; Ignore flaky tests.
+         ;; AssertionError: assert None == 100
+         "--deselect=tests/test_core.py::test_incr_update_keyerror")))
     (native-inputs
      (list python-django
            python-ipython
