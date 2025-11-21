@@ -2968,13 +2968,7 @@ parallel computing platforms.  It also supports serial execution.")
     (arguments
      (list
       #:test-target "test"
-      #:make-flags
-      #~(list (string-append "CC="
-                             #$(cc-for-target))
-              (string-append "CXX="
-                             #$(cxx-for-target))
-              (string-append "PREFIX="
-                             #$output))
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'configure 'fix-paths
@@ -2998,8 +2992,17 @@ parallel computing platforms.  It also supports serial execution.")
                 (("fuser")
                  (search-input-file inputs "bin/fuser")))))
           (replace 'configure
-            (lambda* (#:key make-flags #:allow-other-keys)
-              (apply invoke "make" "config-gcc" make-flags)))
+            (lambda* (#:key (configure-flags '()) #:allow-other-keys)
+              ;; Default to clang-toolchain.
+              ;; Fall back to gcc-toolchain with:
+              ;;     "--with-configure-flag=yosys=config-gcc"
+              (let* ((flags (if (null? configure-flags)
+                                (list "config-clang" "CC=clang" "CXX=clang++")
+                                `(,@configure-flags
+                                  ,(string-append "CC="#$(cc-for-target))
+                                  ,(string-append "CXX="#$(cxx-for-target))))))
+                (format #t "CONFIGURE FLAGS: ~s~%" flags)
+                (apply invoke "make" flags))))
           (add-after 'configure 'configure-makefile
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* '("Makefile")
@@ -3038,6 +3041,7 @@ parallel computing platforms.  It also supports serial execution.")
                          tcl)) ;tclsh for the tests
     (inputs (list abc-yosyshq
                   bash-minimal
+                  clang
                   graphviz
                   gtkwave
                   libffi
@@ -3054,22 +3058,4 @@ parallel computing platforms.  It also supports serial execution.")
     (description "Yosys synthesizes Verilog-2005.")
     (license license:isc)))
 
-(define-public yosys-clang
-  (package
-    (inherit yosys)
-    (name "yosys-clang")
-    (arguments
-     (substitute-keyword-arguments (package-arguments yosys)
-       ((#:make-flags _ #f)
-        #~(list "CC=clang"
-                "CXX=clang++"
-                (string-append "PREFIX=" #$output)))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (replace 'configure
-              (lambda* (#:key make-flags #:allow-other-keys)
-                (apply invoke "make" "config-clang" make-flags)))))))
-    (inputs
-     (modify-inputs (package-inputs yosys)
-       (append clang)))
-    (synopsis "FPGA Verilog RTL synthesizer (Clang variant)")))
+(define-deprecated-package yosys-clang yosys)
