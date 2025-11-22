@@ -8655,13 +8655,13 @@ only one command.")
 (define-public r-biocparallel
   (package
     (name "r-biocparallel")
-    (version "1.42.0")
+    (version "1.44.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BiocParallel" version))
               (sha256
                (base32
-                "0f9jvx1z1qxa3z17x1a3jgf8rfcslqqk24absw9iw9hfs3b84z5d"))))
+                "1hi3k85ywc8r0sw6fys4987j8mr5vhkha4bcb3hc5fdfnpk6j81v"))))
     (properties
      '((upstream-name . "BiocParallel")
        (updater-extra-native-inputs . ("r-batchtools"))))
@@ -8674,19 +8674,21 @@ only one command.")
            (lambda _
              ;; Remove generated documentation.
              (for-each delete-file
-                       '("inst/doc/BiocParallel_BatchtoolsParam.pdf"
-                         "inst/doc/Errors_Logs_And_Debugging.pdf"
-                         "inst/doc/BiocParallel_BatchtoolsParam.R"
+                       '("inst/doc/BiocParallel_BatchtoolsParam.R"
                          "inst/doc/Introduction_To_BiocParallel.R"
                          "inst/doc/Errors_Logs_And_Debugging.R"
                          "inst/doc/Random_Numbers.R"))
 
-             ;; Remove time-dependent macro
-             (substitute* '("inst/doc/BiocParallel_BatchtoolsParam.Rnw"
-                            "inst/doc/Errors_Logs_And_Debugging.Rnw"
-                            "vignettes/BiocParallel_BatchtoolsParam.Rnw"
-                            "vignettes/Errors_Logs_And_Debugging.Rnw")
-               (("\\today") "later"))
+             ;; Remove timestamp
+             (substitute* '("vignettes/Random_Numbers.Rmd"
+                            "vignettes/Introduction_To_BiocParallel.Rmd"
+                            "vignettes/Errors_Logs_And_Debugging.Rmd"
+                            "vignettes/BiocParallel_BatchtoolsParam.Rmd"
+                            "inst/doc/Random_Numbers.Rmd"
+                            "inst/doc/Introduction_To_BiocParallel.Rmd"
+                            "inst/doc/Errors_Logs_And_Debugging.Rmd"
+                            "inst/doc/BiocParallel_BatchtoolsParam.Rmd")
+               (("Compiled: `r format\\(Sys.time.*`") ""))
 
              ;; Initialize the random number generator seed when building.
              (substitute* "R/rng.R"
