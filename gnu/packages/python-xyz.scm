@@ -34075,21 +34075,24 @@ already existing modules and objects docstrings.")
     (name "python-piexif")
     (version "1.1.3")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "piexif" version ".zip"))
-        (sha256
-         (base32 "06sz58q4mrw472p8fbnq7wsj8zpi5js5r8phm2hiwfmz0v33bjw3"))
-        (patches
-         (search-patches "python-piexif-fix-tests-with-pillow-7.2.patch"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list unzip python-pillow))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hMatoba/Piexif")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1akmaxq1cjr8wghwaaql1bd3sajl8psshl58lprgfsigrvnklp8b"))
+       (patches
+        (search-patches "python-piexif-fix-tests-with-pillow-7.2.patch"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list unzip python-pillow python-pytest python-setuptools))
     (home-page "https://github.com/hMatoba/Piexif")
     (synopsis "Simplify exif manipulations with Python")
-    (description "Piexif simplifies interacting with EXIF data in
-Python.  It includes the tools necessary for extracting, creating,
-manipulating, converting and writing EXIF data to JPEG, WebP and TIFF files.")
+    (description
+     "Piexif simplifies interacting with EXIF data in Python.  It includes the
+tools necessary for extracting, creating, manipulating, converting and writing
+EXIF data to JPEG, WebP and TIFF files.")
     (license license:expat)))
 
 (define-public python-pyrss2gen
