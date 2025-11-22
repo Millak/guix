@@ -154,18 +154,17 @@
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (arguments
-     `(#:configure-flags (list "-DCMAKE_CXX_FLAGS=-Wno-error=array-bounds=")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'install 'move-doc
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let* ((name ,(package-name argagg)) (out (assoc-ref
-                                                                 outputs
-                                                                 "out"))
+     (list
+      #:configure-flags #~(list "-DCMAKE_CXX_FLAGS=-Wno-error=array-bounds=")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'install 'move-doc
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let ((name #$(package-name argagg))
                              (doc (assoc-ref outputs "doc")))
-                        (mkdir-p (string-append doc "/share/doc"))
-                        (rename-file
-                         (string-append out "/share/doc/" name)
-                         (string-append doc "/share/doc/" name))))))))
+                         (mkdir-p (string-append doc "/share/doc"))
+                         (rename-file
+                          (string-append #$output "/share/doc/" name)
+                          (string-append doc "/share/doc/" name))))))))
     (native-inputs (list doxygen))
     (home-page "https://github.com/vietjtnguyen/argagg")
     (synopsis "C++11 command line argument parser")
