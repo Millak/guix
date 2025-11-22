@@ -24,6 +24,7 @@
 ;;; Copyright © 2025 Esther Flashner <esther@flashner.co.il>
 ;;; Copyright © 2025 André Batista <nandre@riseup.net>
 ;;; Copyright © 2025 dan <i@dan.games>
+;;; Copyright © 2025 Jiyu Software <info@jiyu.dev>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -863,7 +864,17 @@ tree binary files.  These are board description files used by Linux and BSD.")
        (sha256
         (base32 "1i1v86bnixh8hyqbwwr5iwdnnadmg2fqxw9g526fvclsbvl8lz0v"))
        (patches (search-patches "u-boot-allow-disabling-openssl.patch"
-                                "u-boot-rockchip-inno-usb.patch"))))
+                                "u-boot-rockchip-inno-usb.patch"))
+       (snippet
+        ;; Remove non-free binary licenses, blobs and microcode.
+        #~(begin
+           (use-modules (guix build utils))
+           (for-each delete-file
+                   '("Licenses/r8a779x_usb3.txt"
+                     "drivers/usb/host/xhci-rcar-r8a779x_usb3_v3.h"
+                     "arch/mips/mach-octeon/include/mach/cvmx-pki-cluster.h"))
+           (for-each delete-file
+                   (find-files "arch/x86/dts/microcode/" "\\.dtsi$"))))))
     (build-system gnu-build-system)
     (native-inputs
      (list bison
