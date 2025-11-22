@@ -230,7 +230,7 @@ to docs.openstack.org and developer.openstack.org.")
     (native-inputs
      (list python-keystoneauth1
            python-oslotest
-           python-pbr-next
+           python-pbr
            python-requests-mock
            python-setuptools
            python-stestr
@@ -257,7 +257,7 @@ is for some reason not possible and local caching of the fetched data.")
          #~(modify-phases #$phases
              (delete 'sanity-check)))))
      (native-inputs
-      (list python-pbr-next python-setuptools python-wheel)))))
+      (list python-pbr python-setuptools python-wheel)))))
 
 (define-public python-os-testr
   (let ((commit "0ba674d8c5d34890698e4e8ff9f71b24c389e109")
@@ -723,7 +723,7 @@ in an application or library.")
          python-eventlet
          python-fixtures
          python-oslotest-bootstrap
-         python-pbr-next
+         python-pbr
          python-setuptools
          python-stestr
          python-testtools

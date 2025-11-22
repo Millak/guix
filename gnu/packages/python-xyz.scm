@@ -7539,16 +7539,8 @@ versions, process requirements files and generate AUTHORS and ChangeLog file
 from git information.")
     (license license:asl2.0)))
 
-(define-public python-pbr-next
-  (hidden-package
-   (package/inherit python-pbr
-     (version "6.1.1")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pbr" version))
-        (sha256
-         (base32 "0szp9dy7ksvpqddfzzca2a4assag8whmgxyhk7njxsw9d7775slk")))))))
+;; It may be removed after 2025-12-22.
+(define-deprecated/public-alias python-pbr-next python-pbr)
 
 (define-public python-pyrsistent
   (package
