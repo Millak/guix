@@ -6992,37 +6992,38 @@ programmers may also add their own favorite language.")
     (name "bambam")
     (version "1.2.1")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/porridge/bambam")
-              (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "148cqahklqd4m88j5z1xf3fh4vha41f31wian11hkas106mbsya9"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/porridge/bambam")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "148cqahklqd4m88j5z1xf3fh4vha41f31wian11hkas106mbsya9"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'build)                ; nothing to build
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out   (assoc-ref outputs "out"))
-                    (bin   (string-append out "/bin"))
-                    (share (string-append out "/share")))
-               (mkdir-p bin)
-               (copy-file "bambam.py" (string-append bin "/bambam"))
-               (install-file "bambam.6" (string-append share "/man/man6"))
-               (copy-recursively "data" (string-append share "/bambam/data")))
-             #t)))))
-    (inputs
-     (list python-pygame))
+     (list
+      #:tests? #f ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'build) ;nothing to build
+          (replace 'install
+            (lambda _
+              (let* ((bin (string-append #$output "/bin"))
+                     (share (string-append #$output "/share")))
+                (mkdir-p bin)
+                (copy-file "bambam.py" (string-append bin "/bambam"))
+                (install-file "bambam.6" (string-append share "/man/man6"))
+                (copy-recursively "data"
+                                  (string-append share "/bambam/data"))))))))
+    (native-inputs (list python-setuptools))
+    (inputs (list python-pygame))
     (home-page "https://github.com/porridge/bambam")
     (synopsis "Keyboard mashing and doodling game for babies")
-    (description "Bambam is a simple baby keyboard (and gamepad) masher
-application that locks the keyboard and mouse and instead displays bright
-colors, pictures, and sounds.")
+    (description
+     "Bambam is a simple baby keyboard (and gamepad) masher application that
+locks the keyboard and mouse and instead displays bright colors, pictures, and
+sounds.")
     (license license:gpl3+)))
 
 (define-public moonlight-qt
