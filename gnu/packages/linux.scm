@@ -5484,7 +5484,7 @@ UnionFS-FUSE additionally supports copy-on-write.")
 (define-public sshfs
   (package
     (name "sshfs")
-    (version "3.7.3")
+    (version "3.7.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/libfuse/sshfs/releases/"
@@ -5492,7 +5492,7 @@ UnionFS-FUSE additionally supports copy-on-write.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "169fkilv060afgp9h7hvsbkg02bd1y77kmx06x0s7q1cvmxww62j"))))
+                "1fx8c4fkvmfi29iw8wz5dwnniq666ji4y4vl67dij2fhq9ixni8f"))))
     (build-system meson-build-system)
     (arguments
      ;; XXX: tests are skipped: FUSE kernel module does not seem to be loaded
