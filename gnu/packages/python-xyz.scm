@@ -34537,22 +34537,32 @@ and to reference instance methods using weak-references.")
 (define-public python-pyee
   (package
     (name "python-pyee")
-    (version "9.0.4")
+    (version "13.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyee" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jfhbrook/pyee")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0cjbxbqr9f8bn2h3ra69d550qj2r1hmsgrh5nx31ywmwia9c8w17"))))
-    (build-system python-build-system)
+        (base32 "10xfkf5yvkfyf9ccm0k88gjhqv00hcsal33p937a1lijmxqbx398"))))
+    (build-system pyproject-build-system)
     (propagated-inputs (list python-typing-extensions))
-    (native-inputs (list python-twisted python-trio))
+    (native-inputs
+     (list python-mock
+           python-pytest
+           python-pytest-asyncio-0.26
+           python-pytest-trio
+           python-setuptools
+           python-trio
+           python-twisted))
     (home-page "https://github.com/jfhbrook/pyee")
     (synopsis "Emit events with Python")
     (description
-     "This package provides a port of node.js's EventEmitter to python.
-Additionally, it includes a number of subclasses useful for implementing async
-and threaded programming in python, such as async/await.")
+     "This package provides a port of node.js's EventEmitter to
+python.  Additionally, it includes a number of subclasses useful for
+implementing async and threaded programming in python, such as async/await.")
     (license license:expat)))
 
 (define-public python-pypubsub
