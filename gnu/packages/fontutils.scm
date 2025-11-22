@@ -845,27 +845,28 @@ to UFOs and DesignSpace files via @code{defcon} and @code{designspaceLib}.")
  (package
   (name "python-glyphsets")
   (version "0.5.2")
-  (source (origin
-            (method url-fetch)
-            (uri (pypi-uri "glyphsets" version))
-            (sha256
-             (base32
-              "1dc24i0hkd85gkkg3bqjhagjyw3xsqxazd86yh2l60c1wr5n9y6g"))))
-  (build-system python-build-system)
+  (source
+   (origin
+     (method url-fetch)
+     (uri (pypi-uri "glyphsets" version))
+     (sha256
+      (base32 "1dc24i0hkd85gkkg3bqjhagjyw3xsqxazd86yh2l60c1wr5n9y6g"))))
+  (build-system pyproject-build-system)
   (arguments
-   (list #:phases
-         #~(modify-phases %standard-phases
-             (add-after 'unpack 'loosen-version-constraints
-               (lambda _
-                 (substitute* "setup.py"
-                   (("setuptools_scm>=4,<6\\.1")
-                    "setuptools_scm>=4"))))
-             (replace 'check
-               (lambda* (#:key tests? #:allow-other-keys)
-                 (when tests?
-                   (invoke "pytest" "-vv" "tests/testglyphdata.py")
-                   (invoke "pytest" "-vv" "tests/testusage.py")))))))
-  (native-inputs (list python-pytest python-setuptools-scm))
+   (list
+    #:phases
+    #~(modify-phases %standard-phases
+        (add-after 'unpack 'loosen-version-constraints
+          (lambda _
+            (substitute* "setup.py"
+              (("setuptools_scm>=4,<6\\.1")
+               "setuptools_scm>=4"))))
+        (replace 'check
+          (lambda* (#:key tests? #:allow-other-keys)
+            (when tests?
+              (invoke "pytest" "-vv" "tests/testglyphdata.py")
+              (invoke "pytest" "-vv" "tests/testusage.py")))))))
+  (native-inputs (list python-pytest python-setuptools-scm python-setuptools))
   (propagated-inputs
    (list python-defcon python-fonttools-minimal python-glyphslib))
   (home-page "https://github.com/googlefonts/glyphsets/")
