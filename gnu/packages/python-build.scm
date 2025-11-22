@@ -1,18 +1,26 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2015 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2015, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2020, 2023, 2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2017 Danny Milosavljevic <dannym@scratchpost.org>
+;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
+;;; Copyright © 2017, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
+;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018, 2021-2023, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@debian.org>
-;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2024 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2024 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Antero Mejr <mail@antr.me>
+;;; Copyright © 2024, 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Nguyễn Gia Phong <mcsinyx@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -245,6 +253,39 @@ Included are implementations of:
 ;;;
 ;;; Python builder packages.
 ;;;
+(define-public python-pbr
+  (package
+    (name "python-pbr")
+    (version "7.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pbr" version))
+       (sha256
+        (base32 "0mvy1z1dyl28w0brns1vdhc98hzbn5b3fsw1xj41amdqs88wpjry"))))
+    (build-system pyproject-build-system)
+    (arguments
+     `(#:tests? #f)) ;; Most tests seem to use the Internet.
+    ;; Message from upstream:
+    ;;
+    ;; DO NOT add any other dependencies as PBR is meant to be minimalist to
+    ;; avoid problems with bootstrapping build environments.
+    ;;
+    ;; See: <https://opendev.org/openstack/pbr/src/tag/7.0.1/requirements.txt>.
+    (propagated-inputs
+     (list python-setuptools))
+    (home-page "https://docs.openstack.org/pbr/latest/")
+    (synopsis "Enhance the default behavior of Python’s setuptools")
+    (description
+     "Python Build Reasonableness (PBR) is a library that injects some useful
+and sensible default behaviors into your setuptools run.  It will set
+versions, process requirements files and generate AUTHORS and ChangeLog file
+from git information.")
+    (license license:asl2.0)))
+
+;; It may be removed after 2025-12-22.
+(define-deprecated/public-alias python-pbr-next python-pbr)
+
 (define-public python-pip
   (package
     (name "python-pip")

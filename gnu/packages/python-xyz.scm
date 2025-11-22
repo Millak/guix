@@ -7509,39 +7509,6 @@ port forwards using @acronym{UPnP, Universal Plug and Play}.")
 code introspection, and logging.")
     (license license:expat)))
 
-(define-public python-pbr
-  (package
-    (name "python-pbr")
-    (version "7.0.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pbr" version))
-       (sha256
-        (base32 "0mvy1z1dyl28w0brns1vdhc98hzbn5b3fsw1xj41amdqs88wpjry"))))
-    (build-system pyproject-build-system)
-    (arguments
-     `(#:tests? #f)) ;; Most tests seem to use the Internet.
-    ;; Message from upstream:
-    ;;
-    ;; DO NOT add any other dependencies as PBR is meant to be minimalist to
-    ;; avoid problems with bootstrapping build environments.
-    ;;
-    ;; See: <https://opendev.org/openstack/pbr/src/tag/7.0.1/requirements.txt>.
-    (propagated-inputs
-     (list python-setuptools))
-    (home-page "https://docs.openstack.org/pbr/latest/")
-    (synopsis "Enhance the default behavior of Python’s setuptools")
-    (description
-     "Python Build Reasonableness (PBR) is a library that injects some useful
-and sensible default behaviors into your setuptools run.  It will set
-versions, process requirements files and generate AUTHORS and ChangeLog file
-from git information.")
-    (license license:asl2.0)))
-
-;; It may be removed after 2025-12-22.
-(define-deprecated/public-alias python-pbr-next python-pbr)
-
 (define-public python-pyrsistent
   (package
     (name "python-pyrsistent")
