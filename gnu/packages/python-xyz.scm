@@ -35594,7 +35594,9 @@ as the lua interface does.")
          (sha256
           (base32 "1ym1gwxys9gl5a7fjs6xh5z9w50pnq4z3rs6fx7kpv78hlrbjlip"))
          (file-name (git-file-name name version))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
+      (arguments (list #:tests? #f))    ; No tests upstream.
+      (native-inputs (list python-setuptools))
       (home-page "https://github.com/aclements/biblib")
       (synopsis "BibTeX parsing and transformation library")
       (description
