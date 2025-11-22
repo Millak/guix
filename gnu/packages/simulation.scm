@@ -1315,15 +1315,17 @@ track models to multi-body models.")
               (sha256
                (base32
                 "1cj9zj567mca8xb8sx9h3nnl2cccv6vh8h73imgpq61cimk9mvas"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-setup.py
-                 (lambda _
-                   (substitute* "setup.py"
-                     (("protobuf==3.20.1") "protobuf >= 3.20.1"))
-                   #$%commonroad-dont-install-license-at-root)))))
+     (list
+      #:tests? #f                       ; No tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-setup.py
+            (lambda _
+              (substitute* "setup.py"
+                (("protobuf==3.20.1") "protobuf >= 3.20.1"))
+              #$%commonroad-dont-install-license-at-root)))))
     (propagated-inputs (list python-commonroad-vehicle-models
                              python-iso3166
                              python-lxml
@@ -1337,7 +1339,7 @@ track models to multi-body models.")
                              python-scipy
                              python-shapely
                              python-tqdm))
-    (native-inputs (list python-lxml python-pytest))
+    (native-inputs (list python-lxml python-setuptools))
     (home-page "https://commonroad.in.tum.de/")
     (synopsis "Read, write, and visualize CommonRoad scenarios")
     (description "This package provides methods to read, write, and visualize
