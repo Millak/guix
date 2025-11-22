@@ -35618,20 +35618,20 @@ compatible with BibTeX's own parser.")
   (package
     (name "python-cyclic")
     (version "1.0.0")
-    (source (origin
-              ;; Use git, as there are some test files missing from the PyPI
-              ;; release, see https://github.com/neurobin/cyclic/issues/1
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/neurobin/cyclic")
-                    ;; Release is not tagged on github, see
-                    ;; https://github.com/neurobin/cyclic/issues/2
-                    (commit "bf616c47ea49a43500ea55a1e6f4890323be0679")))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0r8zzjdv70fpxssxps62rlgpii8fr9gh8gykdygqn6mkdnfjwgjc"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/neurobin/cyclic")
+              ;; Release is not tagged on github, see
+              ;; https://github.com/neurobin/cyclic/issues/2
+              (commit "bf616c47ea49a43500ea55a1e6f4890323be0679")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0r8zzjdv70fpxssxps62rlgpii8fr9gh8gykdygqn6mkdnfjwgjc"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/neurobin/cyclic")
     (synopsis "Handle cyclic relations")
     (description "This package handles cyclic relations compared by value.")
