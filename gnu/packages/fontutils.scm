@@ -680,10 +680,10 @@ font, glyph, etc. mathematical operations on font data.")
        (uri (pypi-uri "fontPens" version ".zip"))
        (sha256
         (base32 "1za15dzsnymq6d9x7xdfqwgw4a3003wj75fn2crhyidkfd2s3nd6"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments (list #:tests? #f))
     (propagated-inputs (list python-fonttools-minimal))
-    (native-inputs (list unzip))
+    (native-inputs (list python-setuptools unzip))
     (home-page "https://github.com/robofab-developers/fontPens")
     (synopsis "Python classes implementing the pen protocol")
     (description "This package provides a collection of Python classes
