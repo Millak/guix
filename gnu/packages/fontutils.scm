@@ -915,20 +915,28 @@ different scripts and languages.")
     (version "3.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "MutatorMath" version ".zip"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/LettError/MutatorMath")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0r1qq45np49x14zz1zwkaayqrn7m8dn2jlipjldg2ihnmpzw29w1"))))
-    (build-system python-build-system)
+        (base32 "1pvkhvafy2zzk8rr2dld866jq000vl2srzh0dw9x5lb6rhxi2f9b"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "Lib/mutatorMath/test/run.py")))
     (propagated-inputs (list python-defcon python-fontmath
                              python-fonttools-minimal))
-    (native-inputs (list unzip))
+    (native-inputs (list python-setuptools unzip))
     (home-page "https://github.com/LettError/MutatorMath")
     (synopsis "Piecewise linear interpolation Python library")
-    (description "MutatorMath is a Python library for the calculation of
-piecewise linear interpolations in n-dimensions with any number of masters. It
-was developed for interpolating data related to fonts, but if can handle any
-arithmetic object.")
+    (description
+     "MutatorMath is a Python library for the calculation of piecewise linear
+interpolations in n-dimensions with any number of masters. It was developed
+for interpolating data related to fonts, but if can handle any arithmetic
+object.")
     (license license:bsd-3)))
 
 (define-public psautohint-font-data
