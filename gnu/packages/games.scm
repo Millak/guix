@@ -2989,40 +2989,37 @@ dummy solver, it can even solve the hands it has generated for you.")
                    release
                    (string-append release "-"
                                   (number->string revision))))
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "https://github.com/retux-game/retux/"
-                                    "releases/download/v"
-                                    version "/retux-"
-                                    release "-src.zip"))
-                (sha256
-                 (base32
-                  "1fzsjg4k25mxjjc28ykz8n3dx5xzwxnp772fwzz5jy1wrxmjkl4x"))))
-      (build-system python-build-system)
+      (source
+       (origin
+         (method url-fetch)
+         (uri (string-append "https://github.com/retux-game/retux/"
+                             "releases/download/v" version
+                             "/retux-" release "-src.zip"))
+         (sha256
+          (base32 "1fzsjg4k25mxjjc28ykz8n3dx5xzwxnp772fwzz5jy1wrxmjkl4x"))))
+      (build-system pyproject-build-system)
       (arguments
-       `(#:tests? #f                    ; no check target
-         #:phases
-         (modify-phases %standard-phases
-           ;; no setup.py script
-           (delete 'build)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out    (assoc-ref outputs "out"))
-                      (bin    (string-append out "/bin"))
-                      (data   (string-append out "/share/retux")))
-                 (mkdir-p bin)
+       (list
+        #:tests? #f ;no check target
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; no setup.py script
+            (delete 'build)
+            (replace 'install
+              (lambda _
+                (let* ((bin (string-append #$output "/bin"))
+                       (data (string-append #$output "/share/retux")))
+                  (mkdir-p bin)
 
-                 (substitute* "retux.py"
-                   ;; Use the correct data directory.
-                   (("os\\.path\\.join\\(os\\.path\\.dirname\\(__file__\\), \"data\"\\),")
-                    (string-append "\"" data "\",")))
+                  (substitute* "retux.py"
+                    ;; Use the correct data directory.
+                    (("os\\.path\\.join\\(os\\.path\\.dirname\\(__file__\\), \"data\"\\),")
+                     (string-append "\"" data "\",")))
 
-                 (copy-file "retux.py" (string-append bin "/retux"))
-                 (copy-recursively "data" data)))))))
-      (native-inputs
-       (list unzip))
-      (inputs
-       (list python-sge python-xsge))
+                  (copy-file "retux.py" (string-append bin "/retux"))
+                  (copy-recursively "data" data)))))))
+      (native-inputs (list unzip python-setuptools))
+      (inputs (list python-sge python-xsge))
       (home-page "https://retux-game.github.io/")
       (synopsis "Action platformer game")
       (description
