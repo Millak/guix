@@ -139,43 +139,43 @@
   #:use-module (ice-9 match))
 
 (define-public argagg
-  (let ((commit "79e4adfa2c6e2bfbe63da05cc668eb9ad5596748") (revision "0"))
-    (package
-      (name "argagg")
-      (version (git-version "0.4.6" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/vietjtnguyen/argagg")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1flkgh524lq3024p7ld5lg743s1v7qnbmgv77578rzmn2rjzr77n"))))
-      (build-system cmake-build-system)
-      (outputs '("out" "doc"))
-      (arguments
-       `(#:phases (modify-phases %standard-phases
-                    (add-after 'install 'move-doc
-                      (lambda* (#:key outputs #:allow-other-keys)
-                        (let* ((name ,(package-name argagg)) (out (assoc-ref
-                                                                   outputs
-                                                                   "out"))
-                               (doc (assoc-ref outputs "doc")))
-                          (mkdir-p (string-append doc "/share/doc"))
-                          (rename-file
-                           (string-append out "/share/doc/" name)
-                           (string-append doc "/share/doc/" name))))))))
-      (native-inputs (list doxygen))
-      (home-page "https://github.com/vietjtnguyen/argagg")
-      (synopsis "C++11 command line argument parser")
-      (description
-       "ArgAgg is yet another C++ command line argument/option
+  (package
+    (name "argagg")
+    (version "0.4.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/vietjtnguyen/argagg")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1pr0xqcc3wpwh02fwll3yf67rbxj39wbr2rqdd6bvjalmahg6hqv"))))
+    (build-system cmake-build-system)
+    (outputs '("out" "doc"))
+    (arguments
+     `(#:configure-flags (list "-DCMAKE_CXX_FLAGS=-Wno-error=array-bounds=")
+       #:phases (modify-phases %standard-phases
+                  (add-after 'install 'move-doc
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((name ,(package-name argagg)) (out (assoc-ref
+                                                                 outputs
+                                                                 "out"))
+                             (doc (assoc-ref outputs "doc")))
+                        (mkdir-p (string-append doc "/share/doc"))
+                        (rename-file
+                         (string-append out "/share/doc/" name)
+                         (string-append doc "/share/doc/" name))))))))
+    (native-inputs (list doxygen))
+    (home-page "https://github.com/vietjtnguyen/argagg")
+    (synopsis "C++11 command line argument parser")
+    (description
+     "ArgAgg is yet another C++ command line argument/option
 parser.  It was written as a simple and idiomatic alternative to other
 frameworks like getopt, Boost program options, TCLAP, and others.  The goal is
 to achieve the majority of argument parsing needs in a simple manner with an
 easy to use API.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public argpp
   ;; XXX: Does not release anymore.
