@@ -3364,6 +3364,29 @@ another, allowing you to mix and match them for a more expressive
 typographical palette.")
     (license license:silofl1.1)))
 
+(define-public font-mona-sans
+  (package
+    (name "font-mona-sans")
+    (version "2.0.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/github/mona-sans")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1gdblparf0v5mdbp891wnsc5x4dxr433fg0dmz0mhzrdw9vaalig"))))
+    (build-system font-build-system)
+    (outputs '("out" "ttf" "woff"))
+    (home-page "https://github.com/mona-sans")
+    (synopsis "Variable font from Github")
+    (description
+     "Mona Sans is a strong and versatile typeface, designed with Degarism and
+inspired by industrial-era grotesques.")
+    (license license:silofl1.1)))
+
 (define-public font-mononoki
   (package
     (name "font-mononoki")
