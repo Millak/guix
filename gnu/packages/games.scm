@@ -11991,7 +11991,7 @@ protect you.")
 (define-public 7kaa
   (package
     (name "7kaa")
-    (version "2.15.6")
+    (version "2.15.7")
     (source
      (origin
        (method git-fetch)
@@ -11999,7 +11999,7 @@ protect you.")
               (url "https://git.code.sf.net/p/skfans/7kaa")
               (commit (string-append "v" version))))
        (sha256
-        (base32 "02knhrk19pz2qiy2n48spipm0qa5rkh3vmfswk963d1yaj83whwj"))))
+        (base32 "1gfmgqdmqfaxj4hlz8x7zh3s36inns1gqqb8dq0r58b26xk42x2y"))))
     (build-system gnu-build-system)
     (arguments
      (list
