@@ -3190,7 +3190,7 @@ can be explored and changed freely.")
        (snippet
         #~(begin
             (for-each delete-file (find-files "data/fonts" "."))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f                       ;no test
@@ -3265,6 +3265,7 @@ can be explored and changed freely.")
                 (symlink vera (string-append data "/data/fonts/04B_20__.TTF"))
                 (substitute* (string-append data "/lib/main.py")
                   (("f_scale = 0.35") "f_scale = 0.47"))))))))
+    (native-inputs (list python-setuptools))
     (inputs
      (list font-bitstream-vera python-pygame))
     (home-page "http://www.imitationpickles.org/barbie/")
