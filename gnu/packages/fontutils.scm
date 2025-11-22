@@ -879,30 +879,35 @@ different scripts and languages.")
 (define-public python-opentype-sanitizer
   (package
     (name "python-opentype-sanitizer")
-    (version "8.2.1")
+    (version "9.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "opentype-sanitizer" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googlefonts/ots-python")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1wjy6chbnj9ic5yjxal6spln5jfzr8cigqs6ab0gj7q60dndrl5k"))))
+        (base32 "0ffk99vcwmwpy2wzky1b0vj5j0i9xw67mwk81dzj696f6sws1dkm"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
           (add-after 'unpack 'unbundle-opentype-sanitizer
             (lambda* (#:key inputs #:allow-other-keys)
-              (delete-file-recursively "src/c")
               (substitute* "setup.py"
-                (("^cmdclass\\[\"download\"].*") "")
-                (("^cmdclass\\[\"build_ext\"].*") "")
-                (("^cmdclass\\[\"egg_info\"].*") ""))
+                (("^cmdclass\\[\"(download|build_ext|egg_info)\"].*")
+                 ""))
               (substitute* "src/python/ots/__init__.py"
                 (("^OTS_SANITIZE = .*")
                  (format #f "OTS_SANITIZE = ~s~%"
                          (search-input-file inputs "bin/ots-sanitize")))))))))
-    (native-inputs (list python-pytest python-setuptools-scm python-setuptools))
+    (native-inputs
+     (list python-pytest python-setuptools python-setuptools-scm))
     (inputs (list opentype-sanitizer))
     (home-page "https://github.com/googlefonts/ots-python")
     (synopsis "Python wrapper for OpenType Sanitizer")
