@@ -34513,27 +34513,21 @@ analyzing benchmarks.  It features a simple API that can:
 (define-public python-pydispatcher
   (package
     (name "python-pydispatcher")
-    (version "2.0.5")
+    (version "2.0.7")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "PyDispatcher" version))
         (sha256
-          (base32 "1bswbmhlbqdxlgbxlb6xrlm4k253sg8nvpl1whgsys8p3fg0cw2m"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-        (modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest")))))))
-    (native-inputs (list python-pytest))
+          (base32 "0cdyymidxkzvcq6lpybhmh0ngyhld6jdcaac9bbvmh8d12nwcxxp"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://pydispatcher.sourceforge.net")
     (synopsis "Multi-producer-multi-consumer signal dispatching mechanism")
-    (description "PyDispatcher is an enhanced version of Patrick K. O’Brien’s
-original @code{dispatcher.py} module.  It provides the Python programmer with
-a robust mechanism for event routing within various application contexts.
+    (description
+     "PyDispatcher is an enhanced version of Patrick K. O’Brien’s original
+@code{dispatcher.py} module.  It provides the Python programmer with a robust
+mechanism for event routing within various application contexts.
 
 Included in the package are the robustapply and saferef modules, which
 provide the ability to selectively apply arguments to callable objects
