@@ -34772,14 +34772,16 @@ Python iterables (lists, tuples, dicts).")
 (define-public python-hypy-utils
   (package
     (name "python-hypy-utils")
-    (version "1.0.6")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "hypy_utils" version))
-              (sha256
-               (base32
-                "05csk0x8ivavq88x457cq5hwjcdirfbkzj7bbg5qgnpnf2dxxhiw"))))
-    (build-system python-build-system)
+    (version "1.0.29")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hypy_utils" version))
+       (sha256
+        (base32 "1gf4v4gv9kr4r3prjwvcii153vwjrp7gir2mz6d1qbz6jggif8n7"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))  ; No tests upstream.
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/hykilpikonna/HyPyUtils")
     (synopsis "Python utility functions for HyDEV")
     (description "This module provides Python utility functions for modifying
