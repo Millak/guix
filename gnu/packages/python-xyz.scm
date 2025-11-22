@@ -34630,26 +34630,28 @@ by priority and queues that are emptied in a round-robin fashion.")
 (define-public python-posix-ipc
   (package
     (name "python-posix-ipc")
-    (version "1.0.5")
+    (version "1.3.2")
     (source
      (origin
-       ;; The source distributed on PyPI is prebuild.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/osvenskan/posix_ipc")
              (commit (string-append "rel" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17y4d0pmvp199c5hbs602ailhlh9f9zv89kmpbd8jhyl6rgaxsvs"))))
-    (build-system python-build-system)
+        (base32 "0g9zhadssq01q4xcf25lq2qmn7q02p877bx0nyx3b09phgw6860j"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-cc-path
-                 (lambda _
-                   (substitute* "prober.py"
-                     (("cmd = .cc")
-                      (string-append "cmd = \"" #$(cc-for-target)))))))))
+     (list
+      #:test-flags
+      ;; XXX: Collection fails due to stdin configuration.
+      #~(list "--ignore=tests/test_memory.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-cc-path
+            (lambda _
+              (setenv "CC" #$(cc-for-target)))))))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://semanchuk.com/philip/posix_ipc/")
     (synopsis "POSIX IPC primitives for Python")
     (description
