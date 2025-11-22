@@ -1535,9 +1535,7 @@ very simple example of encoding CSV data:
 
 @verbatim
 >>> Data.Csv.encode [(\"John\",27),(\"Jane\",28)]
-\"John,27
-Jane,28
-\"
+\"John,27\\r\\nJane,28\\r\\n\"
 @end verbatim
 ")
     (license license:bsd-3)))
