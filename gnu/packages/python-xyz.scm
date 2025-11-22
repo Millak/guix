@@ -35814,24 +35814,25 @@ Storage}.")
   (package
     (name "python-pymonad")
     (version "2.4.0")
-    ;; The tests are incomplete in the PyPI archive.
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/jasondelaat/pymonad")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0ci1mpydldiyg9qv6d19ljhfh7wxlrl2k4mlvqd9bm7dqvpdjsx7"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jasondelaat/pymonad")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ci1mpydldiyg9qv6d19ljhfh7wxlrl2k4mlvqd9bm7dqvpdjsx7"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "./run_tests.sh")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./run_tests.sh")))))))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/jasondelaat/pymonad")
     (synopsis "Monadic style functional programming for Python")
     (description "@code{python-pymonad} implements data structures typically
