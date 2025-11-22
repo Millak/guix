@@ -1281,13 +1281,22 @@ implemented in @code{fenics} or
               (sha256
                (base32
                 "13jg0cys7y4n7rg548w6mxk9g10gd5qxmj4ynrlriczpffqy6kc7"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-setup.py
-                 (lambda _
-                   #$%commonroad-dont-install-license-at-root)))))
+     (list
+      #:test-flags
+      #~(list "--ignore=scripts/test_vehicle.py" ; import error
+              "-k" "not test_std")               ; flaky
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-setup.py
+            (lambda _
+              #$%commonroad-dont-install-license-at-root)))))
+    (native-inputs
+     (list python-matplotlib
+           python-pytest
+           python-scipy
+           python-setuptools))
     (propagated-inputs (list python-numpy python-omegaconf))
     (home-page "https://commonroad.in.tum.de/")
     (synopsis "CommonRoad vehicle models")
