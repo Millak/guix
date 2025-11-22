@@ -10775,8 +10775,8 @@ Orcus Dome from evil.")
        (sha256
         (base32
          "0wcidpcka0xbqcnfi62bfq2yrhyh83z4dwz1mjnnjvp9v5l74x2y"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest python-polib))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-polib python-setuptools))
     (inputs (list python-minimal-wrapper python-pygame python-numpy))
     (home-page "https://github.com/singularity/singularity")
     (synopsis "Strategy game about an AI")
