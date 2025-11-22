@@ -35098,36 +35098,18 @@ Scooby has no required dependencies, and only few optional dependencies.")
   (package
     (name "python-cymem")
     (version "2.0.6")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "cymem" version))
-              (sha256
-               (base32
-                "0pkyy60zk9654sj991w111p1l0m8wvz36nslw96x6nb9h6sjb5qn"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-cython
-           python-pytest))
-    (inputs
-     (list python))
-    (arguments
-     (list
-      #:modules '((ice-9 ftw)
-                  (ice-9 match)
-                  (guix build utils)
-                  (guix build python-build-system))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'set-source-file-times-to-1980
-            ;; XXX One of the tests uses a ZIP library to pack up some of the
-            ;; source tree, and fails with "ZIP does not support timestamps
-            ;; before 1980".  Work around this by setting the file times in the
-            ;; source tree to sometime in early 1980.
-            (lambda _
-              (let ((circa-1980 (* 10 366 24 60 60)))
-                (ftw "." (lambda (file stat flag)
-                           (utime file circa-1980 circa-1980)
-                           #t))))))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/explosion/cymem")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f0wjm6g2n09b9plddp3bvaz6bl27q6hv0q6g7qx24rgmjzkivm3"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-cython python-pytest python-setuptools))
+    (inputs (list python))
     (home-page "https://github.com/explosion/cymem")
     (synopsis "Cython memory pool for RAII-style memory management")
     (description
