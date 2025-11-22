@@ -8555,13 +8555,13 @@ on Bioconductor or which replace R functions.")
 (define-public r-biomart
   (package
     (name "r-biomart")
-    (version "2.64.0")
+    (version "2.66.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "biomaRt" version))
               (sha256
                (base32
-                "1yyzl573jyv61q6q3h36k7as6nkgh7cpxz5i4f28q6yfcz2imjsz"))))
+                "0xvwn4s7lxd2g98x6bng4w2vvxp26s57wzq2pij4f117xscad42f"))))
     (properties
      `((upstream-name . "biomaRt")))
     (build-system r-build-system)
@@ -8576,6 +8576,7 @@ on Bioconductor or which replace R functions.")
                        '("tests/testthat/test_ensemblFunctions.R"
                          "tests/testthat/test_ensemblGenomes.R"
                          "tests/testthat/test_getBM.R"
+                         "tests/testthat/test-getGene.R"
                          "tests/testthat/test_utilityFunctions.R"
                          "tests/testthat/test_z_cache.R"
                          ;; This produces unexpected warnings.
@@ -8584,10 +8585,8 @@ on Bioconductor or which replace R functions.")
      (list r-annotationdbi
            r-biocfilecache
            r-curl
-           r-digest
            r-httr2
            r-progress
-           r-rappdirs
            r-stringr
            r-xml2))
     (native-inputs
