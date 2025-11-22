@@ -3942,16 +3942,16 @@ editors and the command line, which is enough to create a mini retro game.")
 (define-public bbcsdl
   (package
     (name "bbcsdl")
-    (version "1.39a")
+    (version "1.42a")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/rtrussell/BBCSDL/")
-                    (commit "93b0ffae960f4c4f45fdc2202bc6e83ee5ca277c")))
+                    (commit "e3d6e1582dc5a9f9b77b7fc2985f63d24702c7d3")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03ga14k2hbhflnaynbyx9lwlbxlzx3rv6zqq21yhl183s6d4c0wa"))))
+                "0hwyd2iv255nci9v3p86cg5i7190cslzrdpq187m8a3vc3c4pmmq"))))
     (build-system gnu-build-system)
     (arguments
      (list
