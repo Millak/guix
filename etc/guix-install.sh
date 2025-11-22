@@ -105,10 +105,11 @@ DEBUG=0
 GNU_URL="https://ftpmirror.gnu.org/gnu/guix/"
 
 # The following associative array holds set of GPG keys used to sign the
-# releases, keyed by their corresponding Savannah user ID.
+# releases, keyed by their corresponding Codeberg user name.
 declare -A GPG_SIGNING_KEYS
-GPG_SIGNING_KEYS[15145]=3CE464558A84FDC69DB40CFB090B11993D9AEBB5  # ludo
-GPG_SIGNING_KEYS[127547]=27D586A4F8900854329FF09F1260E46482E63562 # maxim
+GPG_SIGNING_KEYS["civodul"]=3CE464558A84FDC69DB40CFB090B11993D9AEBB5  # ludo
+GPG_SIGNING_KEYS["apteryx"]=27D586A4F8900854329FF09F1260E46482E63562 # maxim
+PUBLIC_KEYSERVERS="keys.openpgp.org pgpkeys.eu keyserver.ubuntu.com"
 
 # ------------------------------------------------------------------------------
 #+UTILITIES
@@ -203,6 +204,7 @@ chk_gpg_keyring()
 
     for user_id in "${!GPG_SIGNING_KEYS[@]}"; do
         gpg_key_id=${GPG_SIGNING_KEYS[$user_id]}
+        codeberg_username=$user_id
         # Without --dry-run this command will create a ~/.gnupg owned by root on
         # systems where gpg has never been used, causing errors and confusion.
         if gpg --dry-run --list-keys "$gpg_key_id" >/dev/null 2>&1; then
@@ -211,20 +213,39 @@ chk_gpg_keyring()
         if prompt_yes_no "${INF}The following OpenPGP public key is \
 required to verify the Guix binary signature: $gpg_key_id.
 Would you like me to fetch it for you?"; then
-            # Use a reasonable time-out here so users don't report silent
-            # ‘freezes’ when Savannah goes out to lunch, as has happened.
-            if wget "https://sv.gnu.org/people/viewgpg.php?user_id=$user_id" \
-                    --timeout=30 --no-verbose -O- | gpg --import -; then
+            if wget "https://codeberg.org/$codeberg_username.gpg" \
+                   --tries=1 --timeout=30 --no-verbose -O- | gpg --import -; then
+                continue
+            fi
+            
+            key_obtained=false
+            # Try to fetch keys from an available keyserver
+            for key_server in $PUBLIC_KEYSERVERS; do
+                if gpg --keyserver $key_server --recv-key $gpg_key_id; then
+                    key_obtained=true
+                    break
+                fi
+            done
+            
+            if $key_obtained; then
                 continue
             fi
         fi
 	# If we reach this point, the key is (still) missing.  Report further
 	# missing keys, if any, but then abort the installation.
         _err "Missing OpenPGP public key ($gpg_key_id).
-Fetch it with this command:
+Fetch it with codeberg username:
 
-  wget \"https://sv.gnu.org/people/viewgpg.php?user_id=$user_id\" -O - | \
-sudo -i gpg --import -"
+  wget \"https://codeberg.org/$codeberg_username.gpg\" -O - | \
+sudo -i gpg --import -
+
+If this fails, try to fetch it via a keyserver:
+
+  for key_server in $PUBLIC_KEYSERVERS; do
+      if sudo -i gpg --keyserver $key_server --recv-key $gpg_key_id; then
+          break
+      fi
+  done"
         exit_flag=yes
     done
     if [ "$exit_flag" = yes ]; then
