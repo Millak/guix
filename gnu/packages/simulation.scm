@@ -697,42 +697,40 @@ FIAT is part of the FEniCS Project.")
     (name "python-fenics-ffc")
     (version "2019.1.0.post0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "fenics-ffc" version))
-        (sha256
-          (base32
-            "1f2a44ha65fg3a1prrbrsz4dgvibsv0j5c3pi2m52zi93bhwwgg9"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-pytest))
-    (propagated-inputs
-     (list python-fenics-dijitso python-fenics-fiat python-fenics-ufl))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fenics-ffc" version))
+       (sha256
+        (base32 "1f2a44ha65fg3a1prrbrsz4dgvibsv0j5c3pi2m52zi93bhwwgg9"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (setenv "HOME" (getcwd))
-             (with-directory-excursion "test"
-               ;; FIXME: the tests in subdirectory
-               ;; 'unit/ufc/finite_element' require the ffc_factory
-               ;; extension module.  This module, located in the 'libs'
-               ;; subdirectory, needs to be built and made accessible
-               ;; prior to running the tests.
-               (invoke "py.test" "unit/" "--ignore=unit/ufc/")
-               (with-directory-excursion "uflacs"
-                 (invoke "py.test" "unit/")))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda _
+              (setenv "HOME" (getcwd))
+              (with-directory-excursion "test"
+                ;; FIXME: the tests in subdirectory
+                ;; 'unit/ufc/finite_element' require the ffc_factory
+                ;; extension module.  This module, located in the 'libs'
+                ;; subdirectory, needs to be built and made accessible
+                ;; prior to running the tests.
+                (invoke "pytest" "unit/" "--ignore=unit/ufc/")
+                (with-directory-excursion "uflacs"
+                  (invoke "pytest" "unit/"))))))))
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-fenics-dijitso python-fenics-fiat
+                             python-fenics-ufl-2019))
     (home-page "https://bitbucket.org/fenics-project/ffc/")
     (synopsis "Compiler for finite element variational forms")
-    (description "The FEniCS Form Compiler (FFC) is a compiler for
-finite element variational forms.  From a high-level description of
-the form, it generates efficient low-level C++ code that can be used
-to assemble the corresponding discrete operator (tensor).  In
-particular, a bilinear form may be assembled into a matrix and a
-linear form may be assembled into a vector.  FFC may be used either
-from the command line (by invoking the @code{ffc} command) or as a
+    (description
+     "The FEniCS Form Compiler (FFC) is a compiler for finite element
+variational forms.  From a high-level description of the form, it generates
+efficient low-level C++ code that can be used to assemble the corresponding
+discrete operator (tensor).  In particular, a bilinear form may be assembled
+into a matrix and a linear form may be assembled into a vector.  FFC may be
+used either from the command line (by invoking the @code{ffc} command) or as a
 Python module (@code{import ffc}).
 
 FFC is part of the FEniCS Project.")
