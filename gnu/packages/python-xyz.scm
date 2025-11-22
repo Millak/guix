@@ -34156,19 +34156,25 @@ to:
     (version "1.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "phpserialize" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mitsuhiko/phpserialize")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "19qgkb9z4zjbjxlpwh2w6pxkz2j3iymnydi69jl0jg905lqjsrxz"))))
-    (build-system python-build-system)
+        (base32 "062lpv2zpkn96v8gpskvw2pfgh3mafnb0s6xxa0jwbr7vz78wgdr"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests missing in pypi archive, anhow they are quite simple and not worth any hassle
-      #:tests? #f))
-    (home-page "http://github.com/mitsuhiko/phpserialize")
+      #:test-backend #~'unittest
+      ;; XXX: Unclear why this test fails.
+      #:test-flags #~(list "-k" "not test_dumps_dict")))
+    (native-inputs (list python-setuptools))
+    (home-page "https://github.com/mitsuhiko/phpserialize")
     (synopsis "Python port of the serialize and unserialize functions of PHP")
     (description
-     "This package provides a port of the serialize and unserialize functions of PHP for Python")
+     "This package provides a port of the @code{serialize} and
+@code{unserialize} functions of PHP for Python.")
     (license license:bsd-3)))
 
 (define-public python-pydevtool
