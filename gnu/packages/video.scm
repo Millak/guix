@@ -1603,7 +1603,7 @@ carefully implemented filters designed for predictable real-time performance
 and visually accurate results, supporting OpenGL 3.0 or GLES 3.0.
 
 Included filters provide blur, diffusion, FFT-based convolution, glow,
-color correction (lift/gamma/gain), mirror, luma-based transitions, Porter–Duff
+color correction (lift/gamma/gain), mirror, luma-based transitions, Porter-Duff
 overlay composition, bilinear and Lanczos scaling, sharpening (unsharp mask
 and Wiener), saturation, vignette, white balance and YADIF deinterlacing.")
     (license license:gpl2+)))
@@ -3945,7 +3945,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
 (define-public mlt
   (package
     (name "mlt")
-    (version "7.32.0")
+    (version "7.34.1")
     (source
      (origin
        (method git-fetch)
@@ -3954,12 +3954,13 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v7xlm526b0kjm3jfmd0yc6yr7rnggn4b61gzdx9b41zlnyfhslf"))))
+        (base32 "0rwbbcpfr0y3h9p9q596968rx1ynxy50qms1jhsanmyjpw9k82mw"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:tests? #f                       ;requires "Kwalify"
-      #:configure-flags #~(list "-DSWIG_PYTHON=On")
+      #:configure-flags #~(list "-DSWIG_PYTHON=On"
+                                "-DMOD_QT6=ON")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'wrap-executable
@@ -3982,23 +3983,27 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
      (list alsa-lib
            `(,alsa-plugins "pulseaudio")
            bash-minimal
-           ffmpeg-6
+           eigen ; movit requires.private
+           ffmpeg
            fftw
            frei0r-plugins
            gdk-pixbuf
            gtk+
-           libxml2
            jack-1
            ladspa
            libebur128
            libexif
-           libvorbis
-           rubberband
            libsamplerate
+           libvorbis
+           libxml2
+           lilv
+           movit
            pulseaudio
-           qtbase-5
-           qtsvg-5
+           qt5compat
+           qtbase
+           qtsvg
            rtaudio
+           rubberband
            sdl2
            sdl2-image
            sox
