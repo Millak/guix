@@ -5,6 +5,7 @@
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,7 +49,7 @@
 (define-public blacksmith
   (package
     (name "blacksmith")
-    (version "0.0.1")
+    (version "0.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -57,7 +58,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0kyp71wndf527dgza5iks5m5vj543mvxp5w7cjd8x0pilmd1xrls"))
+                "15ib0lal2sdjb4j2a4r3645w5axbd1a6j8w9f0pxr8v3ra9cjp5m"))
               (modules '((guix build utils)))
               (snippet `(begin
                           (delete-file-recursively "external")
