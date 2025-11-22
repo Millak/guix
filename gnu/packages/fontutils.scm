@@ -2033,9 +2033,8 @@ UFO3 as described by the UFO font format.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1sfsmfxcp4kdkra58z274w9cjgyim4by50nxdq60q3z1r5hv9iyj"))))
-    (build-system python-build-system)
+        (base32 "1sfsmfxcp4kdkra58z274w9cjgyim4by50nxdq60q3z1r5hv9iyj"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -2047,8 +2046,8 @@ UFO3 as described by the UFO font format.")
             (lambda* (#:key tests? #:allow-other-keys)
               (with-directory-excursion "tests"
                 (invoke "./run_tests")))))))
-    (native-inputs (list python-pillow python-setuptools-scm))
-    (propagated-inputs (list python-afdko))
+    (native-inputs (list python-setuptools-scm python-setuptools))
+    (propagated-inputs (list python-afdko python-pillow))
     (home-page "https://github.com/googlei18n/nototools")
     (synopsis "Noto fonts support tools and scripts")
     (description
