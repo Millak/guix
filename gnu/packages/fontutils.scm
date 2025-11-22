@@ -1084,29 +1084,25 @@ paths (intersection, union, difference, xor).")
 (define-public python-ufoprocessor
   (package
     (name "python-ufoprocessor")
-    (version "1.14.0")
+    (version "1.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ufoprocessor" version ".tar.gz"))
        (sha256
-        (base32 "08bkci1fwpx2jfgh3rw48qangs84ngn8lqpqk5fhrgs43hjwpki1"))))
-    (build-system python-build-system)
+        (base32 "009vq25bn0w5nispvyglrrm21qpxvvjc3zfkm0dig54v6p6d6f7x"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              ;; Most of the tests appear to be a work in
-                              ;; progress; run only a subset.
-                              (invoke "python" "Tests/tests.py")))))))
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "Tests/tests.py")))
     (propagated-inputs
      (list python-defcon
            python-fontmath
            python-fontparts
            python-fonttools-minimal
            python-mutatormath))
-    (native-inputs (list python-setuptools-scm))
+    (native-inputs (list python-setuptools python-setuptools-scm))
     (home-page "https://github.com/LettError/ufoProcessor")
     (synopsis "Process and generate @acronym{UFO, Unified Font Object} files")
     (description "This Python package processes and generates instances for
