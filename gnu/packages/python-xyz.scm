@@ -35122,28 +35122,36 @@ when the object is garbage collected.")
   (package
     (name "python-preshed")
     (version "3.0.6")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "preshed" version))
-              (sha256
-               (base32
-                "0akpydd23xqxx9d04drsnw9140rb3cv07r1zpzqz5wm0lf47afzv"))))
-    (build-system python-build-system)
-    (native-inputs (list python-cython python-cymem python-pytest))
-    (inputs (list python python-cymem python-murmurhash))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/explosion/preshed")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01xwczc4cb9q3iah1gb9lxfh9s8ix695y3s95j7nhbiws6c9b5k5"))))
+    (build-system pyproject-build-system)
     (arguments
-     (list #:modules
-           '((ice-9 ftw) (ice-9 match)
-             (guix build utils)
-             (guix build python-build-system))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'set-source-file-times-to-1980
-                 (lambda _
-                   (let ((circa-1980 (* 10 366 24 60 60)))
-                     (ftw "."
-                          (lambda (file stat flag)
-                            (utime file circa-1980 circa-1980) #t))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-msvccompiler
+            (lambda _
+              (substitute* "setup.py"
+                (("from distutils import ccompiler, msvccompiler")
+                 "from distutils import ccompiler")
+                (("and msvccompiler.*")
+                 ""))))
+          (replace 'check
+            (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
+              (with-directory-excursion (site-packages inputs outputs)
+                (for-each delete-file (find-files "." "\\.pyx$"))
+                (apply (assoc-ref %standard-phases 'check) args)
+                (delete-file-recursively "preshed/tests")))))))
+    (native-inputs
+     (list python-cython python-cymem python-pytest python-setuptools))
+    (inputs (list python python-cymem python-murmurhash))
     (home-page "https://github.com/explosion/preshed")
     (synopsis "Cython hash tables that assume keys are pre-hashed")
     (description
