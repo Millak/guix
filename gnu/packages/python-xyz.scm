@@ -34105,7 +34105,9 @@ EXIF data to JPEG, WebP and TIFF files.")
         (uri (pypi-uri "PyRSS2Gen" version))
         (sha256
           (base32 "1rvf5jw9hknqz02rp1vg8abgb1lpa0bc65l7ylmlillqx7bswq3r"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests.
+    (native-inputs (list python-setuptools))
     (home-page "http://dalkescientific.com/Python/PyRSS2Gen.html")
     (synopsis "Generate RSS 2.0 feeds using a Python data structure")
     (description "PyRSS2Gen is the interface to generate RSS 2.0 feeds.
