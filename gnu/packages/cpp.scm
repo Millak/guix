@@ -155,7 +155,11 @@
     (outputs '("out" "doc"))
     (arguments
      (list
-      #:configure-flags #~(list "-DCMAKE_CXX_FLAGS=-Wno-error=array-bounds=")
+      #:configure-flags #~(list
+                           (format #f "-DCMAKE_CXX_FLAGS=~a"
+                                   (string-join
+                                    (list "-Wno-error=array-bounds="
+                                          "-Wno-error=sign-conversion"))))
       #:phases #~(modify-phases %standard-phases
                    (add-after 'install 'move-doc
                      (lambda* (#:key outputs #:allow-other-keys)
