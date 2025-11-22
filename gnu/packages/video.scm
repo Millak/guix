@@ -25,7 +25,7 @@
 ;;; Copyright © 2018-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2019, 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2018, 2019, 2020, 2022 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2018 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2018, 2025 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2018 Mark Meyer <mark@ofosos.org>
@@ -1562,6 +1562,51 @@ advantages in terms of future format extensibility, without breaking file
 support in old parsers.
 libebml is a C++ library to read and write EBML files.")
     (license license:lgpl2.1)))
+
+(define-public movit
+  (package
+    (name "movit")
+    (version "1.7.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://movit.sesse.net/movit-" version ".tar.gz"))
+       (sha256
+        (base32 "1mg8rxgbd51h0mqcn4f6b30m2mv11aps3dybfn6f7ly28s71zb00"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      ;; Rendering tests fail due to differing results, but they fail on other
+      ;; other distros too and still requires the test suite to compile.
+      ;; Failed tests: deinterlace_effect_test ycbcr_conversion_effect_test
+      ;; resample_effect_test colorspace_conversion_effect_test
+      ;; effect_chain_test
+      #:make-flags
+      #~(list (string-append
+               "GTEST_DIR="
+               #$(this-package-native-input "googletest-source")
+               "/googletest"))))
+    (native-inputs
+     `(("pkg-config"  ,pkg-config)
+       ("googletest-source" ,(package-source googletest))))
+    (inputs (list eigen
+                  fftw
+                  libepoxy ;; for tests
+                  sdl2)) ;; for tests
+    (home-page "https://movit.sesse.net")
+    (synopsis "High-performance GPU-accelerated video filtering library")
+    (description
+     "Movit is a high-quality, high-performance library for GPU-accelerated
+video filtering built on modern OpenGL.  It provides a compact set of
+carefully implemented filters designed for predictable real-time performance
+and visually accurate results, supporting OpenGL 3.0 or GLES 3.0.
+
+Included filters provide blur, diffusion, FFT-based convolution, glow,
+color correction (lift/gamma/gain), mirror, luma-based transitions, Porter–Duff
+overlay composition, bilinear and Lanczos scaling, sharpening (unsharp mask
+and Wiener), saturation, vignette, white balance and YADIF deinterlacing.")
+    (license license:gpl2+)))
 
 (define-public libplacebo
   (package
