@@ -483,8 +483,11 @@ functions in virtual scenarios.")
 (define-public python-open-simulation-interface
   (package/inherit open-simulation-interface
     (name "python-open-simulation-interface")
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments '())
+    (native-inputs
+     (modify-inputs (package-native-inputs open-simulation-interface)
+       (append python-pytest python-setuptools)))
     (propagated-inputs
      (list python-pyyaml
            python-protobuf))))
