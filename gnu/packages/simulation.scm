@@ -1362,12 +1362,15 @@ and is the basis for other tools of the CommonRoad Framework.")
                (base32
                 "0xn0l7bzmj56d4mlqacvbl8mdvsffkg2fn2lzfmis5jl4vp99ipf"))))
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-setup.py
-                 (lambda _
-                   #$%commonroad-dont-install-license-at-root)))))
-    (build-system python-build-system)
+     (list
+      #:tests? #f                       ; No tests.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-setup.py
+            (lambda _
+              #$%commonroad-dont-install-license-at-root)))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-commonroad-io
                              python-matplotlib
                              python-networkx
@@ -1376,9 +1379,9 @@ and is the basis for other tools of the CommonRoad Framework.")
                              python-shapely))
     (home-page "https://gitlab.lrz.de/tum-cps/commonroad-route-planner")
     (synopsis "Route planner for CommonRoad scenarios")
-    (description "This package provides functions for route planning, that is
-finding sequences that lead from a given start lanelet to some goal
-lanelet(s).")
+    (description
+     "This package provides functions for route planning, that is finding
+sequences that lead from a given start lanelet to some goal lanelet(s).")
     (license license:bsd-3)))
 
 (define-public sumo
