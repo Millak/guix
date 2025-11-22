@@ -34605,25 +34605,26 @@ process.")
 (define-public python-queuelib
   (package
     (name "python-queuelib")
-    (version "1.6.2")
+    (version "1.8.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "queuelib" version))
-        (sha256
-          (base32 "1lpwq8wx3025i14y5h0hbald2ypbarf081pql6cqcak4y9kp482b"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/scrapy/queuelib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rnyk200rd9vvifsx70z2d6h6gkmjmf6384d5bmnslhqircb430b"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-hatchling python-pytest))
     (home-page "https://github.com/scrapy/queuelib")
-    (synopsis
-      "Collection of persistent (disk-based) and non-persistent (memory-based) queues")
-    (description "Queuelib is a Python library that implements object
-collections which are stored in memory or persisted to disk, provide a
-simple API, and run fast.
+    (synopsis "Collection of queues for Python")
+    (description
+     "Queuelib is a Python library that implements object collections which
+are stored in memory or persisted to disk, provide a simple API, and run fast.
 
-Queuelib provides collections for queues (FIFO), stacks (LIFO), queues
-sorted by priority and queues that are emptied in a round-robin
-fashion.")
+Queuelib provides collections for queues (FIFO), stacks (LIFO), queues sorted
+by priority and queues that are emptied in a round-robin fashion.")
     (license license:bsd-3)))
 
 (define-public python-posix-ipc
