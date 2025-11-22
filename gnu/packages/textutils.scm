@@ -1976,15 +1976,27 @@ Expressions, and being faster to type than grep.")
 (define-public pandoc-include
   (package
     (name "pandoc-include")
-    (version "1.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "pandoc-include" version))
-              (sha256
-               (base32
-                "01nrbzs85mrd7jcflicsz0bmfnzi6wsy0ii262xl01zsabqd7n91"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-natsort python-panflute))
+    (version "1.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/DCsunset/pandoc-include")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1db7fhdvhl3jnzwbi5s76jnlgkf0ifw9ngfv63dij4y21g5lhmzj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; XXX: Test can be run with "test/run.py" but fail with error:
+     ;; json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools))
+    (inputs
+     (list python-lxml
+           python-natsort
+           python-panflute))
     (home-page "https://github.com/DCsunset/pandoc-include")
     (synopsis "Pandoc filter to allow file and header includes")
     (description "@code{pandoc-include} extends Pandoc to support:
