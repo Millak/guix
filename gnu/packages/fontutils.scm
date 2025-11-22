@@ -485,7 +485,7 @@ other operations on paths.")
        (snippet '(delete-file-recursively "external")) ;unbundle ADFKO
        (sha256
         (base32 "1yrfjn3mdi48pg78yzlmskdz9i4nf2wg7h8ivnn9yrw1vc5iaibp"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -509,12 +509,9 @@ other operations on paths.")
                 (("with path\\(__name__, TX_EXE) as tx_cli:")
                  "")
                 (("    (return subprocess.run\\(\\[)str\\(tx_cli)(].*)" _ h t)
-                 (format #f "~a~s~a" h tx t)))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-pytest python-setuptools-scm python-wheel))
+                 (format #f "~a~s~a" h tx t))))))))
+    (native-inputs
+     (list python-pytest python-setuptools-scm python-setuptools))
 
     ;; Use version 3.6.1, which matches the bundled version and does not
     ;; depend on Java.
