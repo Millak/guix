@@ -6637,7 +6637,20 @@ safety of the Chromium vessel.")
               (("==") ">="))
             (substitute* "tuxemon/constants/paths.py"
               (("LIBDIR, ....,") "LIBDIR,"))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f ; Tests won't be updated until the API stabilises
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-mods
+            (lambda _
+              (let ((site (string-append #$output "/lib/python"
+                                         #$(version-major+minor
+                                            (package-version python))
+                                         "/site-packages/tuxemon/mods")))
+                (mkdir-p site)
+                (copy-recursively "mods" site)))))))
     (native-inputs (list python-flit-core python-setuptools))
     (propagated-inputs
      (list python-babel
@@ -6653,18 +6666,6 @@ safety of the Chromium vessel.")
            python-pygame-menu
            python-pyyaml
            python-requests))
-    (arguments
-     (list #:tests? #f ; Tests won't be updated until the API stabilises
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'install 'install-mods
-                 (lambda _
-                   (let ((site (string-append #$output "/lib/python"
-                                              #$(version-major+minor
-                                                 (package-version python))
-                                              "/site-packages/tuxemon/mods")))
-                     (mkdir-p site)
-                     (copy-recursively "mods" site)))))))
     (home-page "https://www.tuxemon.org/")
     (synopsis "Monster-fighting RPG")
     (description
