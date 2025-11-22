@@ -34322,17 +34322,43 @@ supports any Galois field higher than 2^3, but not binary streams.")
     (name "python-esprima")
     (version "4.0.1")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "esprima" version))
-        (sha256
-          (base32 "1vi32g991lxcxzmncfiszh8m9bwkh4887szskkdi0a9wdn3imnq8"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Kronuz/esprima-python")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yk80j63mds4qvdjk79yp6a831vl5kc17cwkxamir1wp2w4hznas"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: pytest fails to collect tests, and a few tests are failing
+      ;; using unittest backend.  In particular, offsets with math characters
+      ;; and uncompiled regexps.
+      #:tests? #f
+      #:test-backend #~'unittest
+      #:test-flags
+      #~(list "-k"
+              (string-join (list
+                            ;; XXX: Character offsets with maths.
+                            "not test_math_alef"
+                            "test_math_dal_part"
+                            "test_math_kaf_lam"
+                            "test_math_zain_start"
+                            ;; XXX: Uncompiled regexps.
+                            "test_yield_arg_regexp1"
+                            "test_yield_arg_regexp2"
+                            "test_migrated_0005_source"
+                            "test_u_flag_valid_range"
+                            "test_migrated_0049"
+                            "test_migrated_0050_source")
+                           " and not "))))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/Kronuz/esprima-python")
-    (synopsis
-      "ECMAScript parsing infrastructure for analysis in Python")
+    (synopsis "ECMAScript parsing infrastructure for analysis in Python")
     (description
-      "This package provides ECMAScript parsing infrastructure for
+     "This package provides ECMAScript parsing infrastructure for
 multipurpose analysis in Python.")
     (license license:bsd-3)))
 
