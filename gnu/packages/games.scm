@@ -3079,89 +3079,84 @@ documentation.")
              (string-join (string-split version #\.) "_") "_Source.zip"))
        (file-name (string-append name "-" version ".zip"))
        (sha256
-        (base32
-         "05zd03s5w9kcpklfgcggbaa6rwf59nm0q9vcj6gh9v2lh402k067"))))
-    (build-system python-build-system)
+        (base32 "05zd03s5w9kcpklfgcggbaa6rwf59nm0q9vcj6gh9v2lh402k067"))))
+    (build-system copy-build-system)
     (arguments
-     `(#:tests? #f ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'unpack
-           (lambda* (#:key source #:allow-other-keys)
-             (and (invoke "unzip" source)
-                  ;; The actual source is buried a few directories deep.
-                  (chdir (string-append "RogueBoxAdventures_v"
-                                        (string-join
-                                         (string-split ,version #\.) "_")
-                                        "_Source")))))
-         ;; no setup.py script
-         (replace 'build
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (data (string-append
-                           out "/share/games/roguebox-adventures")))
-               ;; Use the correct data directory.
-               (substitute* '("main.py" "LIB/getch.py" "LIB/getch_gcwz.py")
-                 (("basic_path + os\\.sep + 'DATA'")
-                  (string-append "'" data "'"))
-                 (("^basic_path.*$")
-                  (string-append "basic_path ='" data "'\n")))
-               (substitute* "LIB/dialog.py"
-                 (("d_path = os\\.path\\.dirname\\(.*\\)\\)")
-                  (string-append "d_path = '" data "'")))
-               (substitute* "LIB/gra_files.py"
-                 (("basic_path = b_path\\.replace\\('/LIB',''\\)")
-                  (string-append "basic_path ='" data "'\n")))
+     (list
+      #:install-plan
+      #~(let ((share "share/games/roguebox-adventures/"))
+          `(("AUDIO" ,share)
+            ("FONT" ,share)
+            ("GRAPHIC" ,share)
+            ("LIB" ,share)
+            ("LICENSE" ,share)
+            ("." ,share #:include ("icon_big.png" "icon_small.png"))
+            ("DOC" "share/doc/roguebox-adventures")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'unpack
+            (lambda* (#:key source #:allow-other-keys)
+              (and (invoke "unzip" source)
+                   ;; The actual source is buried a few directories deep.
+                   (chdir (string-append "RogueBoxAdventures_v"
+                                         (string-join
+                                          (string-split #$version #\.) "_")
+                                         "_Source")))))
+          (add-after 'unpack 'patch
+            (lambda _
+              (let ((data (string-append #$output
+                                         "/share/games/roguebox-adventures")))
+                ;; Use the correct data directory.
+                (substitute* '("main.py" "LIB/getch.py" "LIB/getch_gcwz.py")
+                  (("basic_path + os\\.sep + 'DATA'")
+                   (string-append "'" data "'"))
+                  (("^basic_path.*$")
+                   (string-append "basic_path ='" data "'\n")))
+                (substitute* "LIB/dialog.py"
+                  (("d_path = os\\.path\\.dirname\\(.*\\)\\)")
+                   (string-append "d_path = '" data "'")))
+                (substitute* "LIB/gra_files.py"
+                  (("basic_path = b_path\\.replace\\('/LIB',''\\)")
+                   (string-append "basic_path ='" data "'\n")))
 
-               ;; The game must save in the user's home directory because
-               ;; the store is read-only.
-               (substitute* "main.py"
-                 (("home_save = False") "home_save = True")
-                 (("'icon_small.png'")
-                  (string-append "'" data "/icon_small.png'"))))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (roguebox-adventures
-                     (string-append bin "/roguebox-adventures"))
-                    (data (string-append
-                           out "/share/games/roguebox-adventures"))
-                    (lib (string-append data "/LIB"))
-                    (doc (string-append
-                          out "/share/doc/roguebox-adventures")))
-               (mkdir-p bin)
-               (mkdir-p doc)
+                ;; The game must save in the user's home directory because
+                ;; the store is read-only.
+                (substitute* "main.py"
+                  (("home_save = False")
+                   "home_save = True")
+                  (("'icon_small.png'")
+                   (string-append "'" data "/icon_small.png'")))
+                ;; Use the right python.
+                (substitute* '("LIB/text.py" "main.py")
+                  (("#! /usr/bin/python")
+                   (format #f "#!~a" (which "python3")))))))
+          (add-after 'install 'wrap
+            (lambda _
+              (let* ((bin (string-append #$output "/bin/roguebox-adventures"))
+                     (share (string-append #$output
+                                           "/share/games/roguebox-adventures"))
+                     (lib (string-append share "/LIB")))
+                (for-each
+                 (lambda (file)
+                   (chmod file #o555)
+                   (install-file file lib))
+                 (list "main.py" "run.py"))
 
-               (for-each (lambda (file)
-                           (copy-recursively file
-                                             (string-append data "/" file)))
-                         '("AUDIO" "FONT" "GRAPHIC" "LIB" "LICENSE"
-                           "icon_big.png" "icon_small.png"))
-               (for-each (lambda (file)
-                           (chmod file #o555)
-                           (install-file file lib))
-                         '("main.py" "run.py"))
-
-               (copy-recursively "DOC" doc)
-
-               (call-with-output-file
-                   roguebox-adventures
-                 (lambda (p)
-                   (format p "\
-#!~a
+                (mkdir-p (dirname bin))
+                (call-with-output-file bin
+                  (lambda (p)
+                    (format p "#!~a
 export GUIX_PYTHONPATH=~a/LIB:~a
-exec -a \"~a\" ~a \"$@\"\n"
-                           (which "bash") data (getenv "GUIX_PYTHONPATH")
-                           (which "python3")
-                           (string-append lib "/main.py"))))
-               (chmod roguebox-adventures #o555))
-             #t)))))
-    (native-inputs
-     (list unzip))
-    (inputs
-     (list python-pygame python-tmx))
+exec -a ~s ~s \"$@\"
+"
+                            (which "bash")
+                            share
+                            (getenv "GUIX_PYTHONPATH")
+                            (which "python3")
+                            (string-append lib "/main.py"))))
+                (chmod bin #o555)))))))
+    (native-inputs (list unzip python-setuptools))
+    (inputs (list python python-pygame python-tmx))
     (home-page "https://rogueboxadventures.tuxfamily.org")
     (synopsis "Classical roguelike/sandbox game")
     (description
