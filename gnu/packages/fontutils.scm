@@ -886,7 +886,7 @@ different scripts and languages.")
        (uri (pypi-uri "opentype-sanitizer" version))
        (sha256
         (base32 "1wjy6chbnj9ic5yjxal6spln5jfzr8cigqs6ab0gj7q60dndrl5k"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -901,12 +901,8 @@ different scripts and languages.")
               (substitute* "src/python/ots/__init__.py"
                 (("^OTS_SANITIZE = .*")
                  (format #f "OTS_SANITIZE = ~s~%"
-                         (search-input-file inputs "bin/ots-sanitize"))))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-pytest python-setuptools-scm))
+                         (search-input-file inputs "bin/ots-sanitize")))))))))
+    (native-inputs (list python-pytest python-setuptools-scm python-setuptools))
     (inputs (list opentype-sanitizer))
     (home-page "https://github.com/googlefonts/ots-python")
     (synopsis "Python wrapper for OpenType Sanitizer")
