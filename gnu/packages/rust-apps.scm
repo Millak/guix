@@ -4154,6 +4154,10 @@ and users are in full control of their data and workflow.")
         (ice-9 match))
       #:phases
       #~(modify-phases %standard-phases
+         (replace 'install
+           (lambda _
+             (let ((bin (string-append #$output "/bin")))
+               (install-file "target/release/zola" bin))))
           (add-after 'install 'install-completions
             (lambda* (#:key native-inputs #:allow-other-keys)
               (for-each
