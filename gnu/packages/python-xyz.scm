@@ -35197,14 +35197,16 @@ for serialization, which has many drawbacks.")
               (sha256
                (base32
                 "0fjf066jixk30fr8xwfalwfnhqpr56yv0cccyypnx2qp9bi9svb2"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests upstream.
     (propagated-inputs (list python-dbus python-pygobject))
-    (build-system python-build-system)
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/getsenic/gatt-python")
     (synopsis "Bluetooth GATT SDK for Python")
-    (description "The Bluetooth @acronym{GATT, Generic ATTribute Profile}
-@acronym{SDK, Software Development Kit} for Python helps you implement and
-communicate with any Bluetooth Low Energy device that has a GATT
-profile.  It supports:
+    (description
+     "The Bluetooth @acronym{GATT, Generic ATTribute Profile} @acronym{SDK,
+Software Development Kit} for Python helps you implement and communicate with
+any Bluetooth Low Energy device that has a GATT profile.  It supports:
 
 @itemize @bullet
 @item Discovering nearby Bluetooth Low Energy devices
