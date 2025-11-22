@@ -35614,29 +35614,6 @@ compatible with BibTeX's own parser.")
       ;; package does not contain any generated files.
       (license license:expat))))
 
-(define-public python-i3ipc
-  (package
-    (name "python-i3ipc")
-    (version "2.2.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/altdesktop/i3ipc-python")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "13bzs9dcv27czpnnbgz7a037lm8h991c8gk0qzzk5mq5yak24715"))))
-    (build-system python-build-system)
-    (arguments (list #:tests? #f))      ;FIXME: some tests are unable to run
-    (propagated-inputs (list python-xlib))
-    (home-page "https://github.com/altdesktop/i3ipc-python")
-    (synopsis "Python library for controlling i3 and Sway")
-    (description
-     "This package provides a Python library for controlling the i3 and Sway
-window managers.")
-    (license license:bsd-3)))
-
 (define-public i3-autotiling
   (package
     (name "i3-autotiling")

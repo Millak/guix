@@ -881,6 +881,64 @@ You can then subscribe to events or send messages and receive their replies.")
     ;; Can be used with either license.
     (license (list license:gpl3+ license:perl-license))))
 
+(define-public python-i3ipc
+  (package
+    (name "python-i3ipc")
+    (properties '((commit . "a670f24e7e04f509de8161cf760afe929c22ae93")
+                  (revision . "0")))
+    (version (git-version "2.2.1"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/altdesktop/i3ipc-python")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mp1471vc9rwf9d045snasxyqrx80yiy57dkjsqamnrxix4npksa"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list
+         ;; XXX: Asyncio incompatibility, the API laggs behind.
+         "--ignore-glob=test/aio/*.py"
+         "-k" (string-append
+               ;; Negligible pixel differences.
+               "not test_resize"
+               ;; Broken pipe, most likely wrong socket permissions/port.
+               " and not test_shutdown_event_reconnect"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fix-configuration
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "test/i3.config"
+                (("/bin/true")
+                 (which "true")))
+              (setenv "HOME" (getcwd))))
+          (add-before 'check 'start-xserver
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Some tests require an X server, but does not start one.
+              (let ((Xvfb (search-input-file inputs "bin/Xvfb"))
+                    (display ":1"))
+                (setenv "DISPLAY" display)
+                (zero? (system (string-append Xvfb " " display " &")))))))))
+    (native-inputs (list i3-wm
+                         python-pytest
+                         python-pytest-asyncio
+                         python-pytest-timeout
+                         python-setuptools
+                         xorg-server-for-tests))
+    (propagated-inputs (list python-xlib))
+    (home-page "https://github.com/altdesktop/i3ipc-python")
+    (synopsis "Python library for controlling i3 and Sway")
+    (description
+     "This package provides a Python library for controlling the i3 and Sway
+window managers.")
+    (license license:bsd-3)))
+
 (define-public python-i3-py
   (package
     (name "python-i3-py")
