@@ -35738,8 +35738,9 @@ generator for Python.")
               (sha256
                (base32
                 "0rma8pdsjsy00cg76q6q4qki4xpldykmz1m6dl3w2bjjxfhlbaz5"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments (list #:tests? #f))      ;needs network
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-requests))
     (home-page "https://misskeypy.readthedocs.io")
     (synopsis "Python bindings for Misskey's API")
