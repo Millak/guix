@@ -606,32 +606,24 @@ the complexity of that interface.  Parallel support depends on the
 (define-public python-fenics-ufl
   (package
     (name "python-fenics-ufl")
-    (version "2019.1.0")
+    (version "2025.2.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "fenics-ufl" version))
-        (sha256
-          (base32
-            "10dz8x3lm68x2w3kkqcjask38h0zkhhak26jdbkppr8g9y8wny7p"))))
-    (build-system python-build-system)
-    (inputs
-     (list python-numpy))
-    (native-inputs
-     (list python-pytest))
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "py.test" "test"))))))
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fenics_ufl" version))
+       (sha256
+        (base32 "1k2r7s1c7dqlgkah4jr08lqy4z17h49r94yxjm7ca16vgvqvq1xg"))))
+    (build-system pyproject-build-system)
+    (inputs (list python-numpy))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://bitbucket.org/fenics-project/ufl/")
     (synopsis "Unified language for form-compilers")
-    (description "The Unified Form Language (UFL) is a domain specific
-language for declaration of finite element discretizations of
-variational forms.  More precisely, it defines a flexible interface
-for choosing finite element spaces and defining expressions for weak
-forms in a notation close to mathematical notation.
+    (description
+     "The Unified Form Language (UFL) is a domain specific language for
+declaration of finite element discretizations of variational forms.  More
+precisely, it defines a flexible interface for choosing finite element spaces
+and defining expressions for weak forms in a notation close to mathematical
+notation.
 
 UFL is part of the FEniCS Project.")
     (license license:lgpl3+)))
