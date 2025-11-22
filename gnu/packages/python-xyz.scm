@@ -34297,20 +34297,24 @@ notebooksharing.space instance.")
 (define-public python-reedsolo
   (package
     (name "python-reedsolo")
-    (version "1.5.4")
+    (version "1.7.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "reedsolo" version))
-        (sha256
-          (base32 "09q15ji9iac3nmmxrcdvz8ynldvvqanqy3hs6q3cp327hgf5rcmq"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tomerfiliba/reedsolomon")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "078f02cal1nn53v10spx141hd5hi22a3xxrz1j32f7cph7b46dwz"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/tomerfiliba/reedsolomon")
     (synopsis "Pure-Python Reed Solomon encoder/decoder")
-    (description "A pure-python universal errors-and-erasures Reed-Solomon
-Codec, based on the tutorial at Wikiversity.  This is a burst-type
-implementation, so that it supports any Galois field higher than 2^3,
-but not binary streams.")
+    (description
+     "A pure-python universal errors-and-erasures Reed-Solomon Codec, based on
+the tutorial at Wikiversity.  This is a burst-type implementation, so that it
+supports any Galois field higher than 2^3, but not binary streams.")
     (license license:public-domain)))
 
 (define-public python-esprima
