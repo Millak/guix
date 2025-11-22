@@ -34662,19 +34662,25 @@ message queues for Python.")
 (define-public python-itemadapter
   (package
     (name "python-itemadapter")
-    (version "0.8.0")
+    (version "0.12.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "itemadapter" version))
-        (sha256
-          (base32 "1aa898gjgwy3axxfrgsh4kdvhp6n6wz3ccdishq0gh8azf2q8xbp"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/scrapy/itemadapter")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d7v5x1v8v62rs1xay2m4djdnhsydfb0lzgh8c0c1lipinrqzkfz"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))     ; Circular dependency on python-scrapy.
+    (native-inputs (list python-hatchling))
     (home-page "https://github.com/scrapy/itemadapter")
     (synopsis "Common interface for data container classes")
-    (description "The ItemAdapter class is a wrapper for data container
-objects, providing a common interface to handle objects of different
-types in an uniform manner, regardless of their underlying implementation.
+    (description
+     "The ItemAdapter class is a wrapper for data container objects, providing
+a common interface to handle objects of different types in an uniform manner,
+regardless of their underlying implementation.
 
 Currently supported types are:
 @itemize
