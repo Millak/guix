@@ -5015,3 +5015,27 @@ in typical scalable font formats.")
 for code and text-editing in particular, and whenever having a fixed-pitch font
 is necessary, such as when composing tabular data using text.")
     (license license:silofl1.1)))
+
+(define-public font-hubot-sans
+  (package
+    (name "font-hubot-sans")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/github/hubot-sans")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "147srdhc0h9165f03kwlpsvm72qrsv0br31lspg9fy4jdjb7dxkp"))))
+    (build-system font-build-system)
+    (outputs '("out" "ttf" "woff"))
+    (home-page "https://github.com/mona-sans")
+    (synopsis "Variable font from Github")
+    (description
+     "Hubot Sans is designed with more geometric accents to lend a
+technical and idiosyncratic feel—perfect for headers and pull-quotes.  Made to
+work well together with Mona Sans.")
+    (license license:silofl1.1)))
