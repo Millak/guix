@@ -9161,6 +9161,39 @@ provides methods for automatically determining breaks and labels for axes and
 legends.")
     (license license:expat)))
 
+(define-public r-sched
+  (package
+    (name "r-sched")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "sched" version))
+       (sha256
+        (base32 "1n6r8g5cd3y6yiplhf0jlb8zm8z37cz1ds66qqpipiva4vx26xr3"))))
+    (properties `((upstream-name . "sched")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-chk
+                             r-fscache
+                             r-lgr
+                             r-openssl
+                             r-r6
+                             r-rcurl))
+    (native-inputs (list r-knitr r-testthat))
+    (home-page "https://gitlab.com/cnrgh/databases/r-sched")
+    (synopsis "Request scheduler")
+    (description
+     "This package offers classes and functions to contact web servers while
+enforcing scheduling rules required by the sites.  The @code{URL} class makes
+it easy to construct a URL by providing parameters as a vector.  The
+@code{Request} class allows to describe @dfn{Simple Object Access
+Protocol} (SOAP) or standard requests: URL, method (POST or GET), header,
+body.  The @code{Scheduler} class controls the request frequency for each
+server address by means of rules (@code{Rule} class).  The
+@code{RequestResult} class permits to get the request status to handle error
+cases and the content.")
+    (license license:agpl3)))
+
 (define-public r-sendmailr
   (package
     (name "r-sendmailr")
