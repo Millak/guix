@@ -1242,16 +1242,25 @@ are redirected.")
 (define-public python-sphinx-autobuild
   (package
     (name "python-sphinx-autobuild")
-    (version "2021.3.14")
+    (version "2025.08.25")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sphinx-autobuild" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/GaretJax/sphinx-autobuild")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "019z8kvnaw11r41b6pfdy9iz4iwyr0s51hs0a5djn797dsva676y"))))
+        (base32 "1mnhqjvr9ikr938hgy2jm32p2rqldq4n7s1ba4svbqbnbw5lpy15"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-colorama python-livereload python-sphinx))
-    (native-inputs (list python-flit-core python-pytest))
+    (propagated-inputs
+     (list python-colorama
+           python-sphinx
+           python-starlette
+           python-uvicorn
+           python-watchfiles
+           python-websockets))
+    (native-inputs (list python-flit-core python-httpx python-pytest))
     (home-page "https://github.com/GaretJax/sphinx-autobuild")
     (synopsis "Rebuild Sphinx documentation when a change is detected")
     (description
