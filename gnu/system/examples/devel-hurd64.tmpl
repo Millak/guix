@@ -11,7 +11,7 @@
 ;; You may run it like so:
 ;;
 ;;     cp /gnu/store/.../disk-image devel-hurd.img
-;;     guix shell qemu -- qemu-system-x86_64 -m 4096              \
+;;     guix shell qemu -- qemu-system-x86_64 -m 4096 -M q35       \
 ;;       --enable-kvm                                             \
 ;;       --device e1000,netdev=net0                               \
 ;;       --netdev user,id=net0,hostfwd=tcp:127.0.0.1:10022-:2222  \
