@@ -1206,7 +1206,6 @@ nix-shell-wrapper|repo2docker-entrypoint)")
            python-recommonmark
            python-setuptools
            python-sphinx
-           python-sphinx-autobuild
            python-sphinx-copybutton
            python-sphinxcontrib-autoprogram
            python-sphinxext-opengraph
