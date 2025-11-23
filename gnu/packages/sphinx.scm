@@ -957,18 +957,22 @@ Sphinx documentation system.  It's the default theme of Sphinx.")
 (define-public python-sphinx-argparse
   (package
     (name "python-sphinx-argparse")
-    (version "0.3.1")
+    (version "0.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sphinx-argparse" version))
        (sha256
-        (base32 "07nw68nrbpzsswb5bz8gdb5allgj6jnz8m81afhr9v6c8fyiq5c2"))))
-    (build-system python-build-system)
+        (base32 "0cph8iv4whf6r6kc3fzl3sbkbm7qm4lbm604v9pzpdllm27jydg5"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-sphinx))
+     (list python-docutils python-sphinx))
     (native-inputs
-     (list python-commonmark python-pytest python-sphinx-rtd-theme))
+     (list python-flit-core
+           python-lxml
+           python-pytest
+           python-setuptools
+           python-typing-extensions))
     (home-page "https://github.com/ribozz/sphinx-argparse")
     (synopsis "Sphinx extension for documenting argparse commands and options")
     (description
