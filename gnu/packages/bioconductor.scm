@@ -8415,14 +8415,14 @@ databases.  Packages produced are intended to be used with AnnotationDbi.")
 (define-public r-annotationhub
   (package
     (name "r-annotationhub")
-    (version "3.16.0")
+    (version "4.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "AnnotationHub" version))
        (sha256
         (base32
-         "02cbx21lnbayyi282f71z2rdcarcxghfmvy7hjw4jm7kyybxzzxd"))))
+         "1im0k4ajrpvmvlyi0v76x93mzwq77nq9mx1rwq3x7xfr5hz6r21f"))))
     (properties
      '((upstream-name . "AnnotationHub")
        ;; Avoid dependency cycles.
@@ -8430,19 +8430,21 @@ databases.  Packages produced are intended to be used with AnnotationDbi.")
         . ("r-dbi"
            "r-genomeinfodb"
            "r-genomicranges"
-           "r-iranges"))))
+           "r-iranges"
+           "r-seqinfo"))))
     (build-system r-build-system)
     ;; Many tests try to download files.
     (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-annotationdbi
+           r-biocbaseutils
            r-biocfilecache
            r-biocgenerics
            r-biocmanager
            r-biocversion
            r-curl
            r-dplyr
-           r-httr
+           r-httr2
            r-rappdirs
            r-rsqlite
            r-s4vectors
