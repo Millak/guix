@@ -9309,6 +9309,33 @@ and analysis of spatial point pattern data; it has been ported to R and is in
 \"maintenance mode\".")
     (license license:gpl2+)))
 
+(define-public r-sqlq
+  (package
+    (name "r-sqlq")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "sqlq" version))
+       (sha256
+        (base32 "117dryppyvshj8bb2jgp55fhgksky09wvzs573vv7jygblnwj8zh"))))
+    (properties `((upstream-name . "sqlq")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-chk r-dbi r-r6))
+    (native-inputs (list r-knitr r-lgr r-rsqlite r-testthat))
+    (home-page "https://gitlab.com/cnrgh/databases/r-sqlq")
+    (synopsis "SQL query builder")
+    (description
+     "This package lets you build complex @dfn{Structured Query
+Language} (SQL) queries dynamically.  Classes and/or factory functions are
+used to produce a syntax tree from which the final character string is
+generated.  Strings and identifiers are automatically quoted using the right
+quotes, using either @dfn{American National Standards Institute} (ANSI)
+quoting or the quoting style of an existing database connector.  Style can be
+configured to set uppercase/lowercase for keywords, remove unnecessary spaces,
+or omit optional keywords.")
+    (license license:agpl3)))
+
 (define-public r-stringi
   (package
     (name "r-stringi")
