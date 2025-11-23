@@ -377,11 +377,11 @@ source code editors and IDEs.")
           (add-after 'install 'install-man
             (lambda* (#:key import-path #:allow-other-keys)
               (with-directory-excursion (string-append "src/" import-path)
-                (let ((man-dir (string-append #$output "/share/man")))
+                (let ((man-dir (string-append #$output "/share/man/man1")))
                   (mkdir-p man-dir)
                   (invoke "go-md2man"
                           "-in" "man/man1/checkmake.1.md"
-                          "-out" (string-append man-dir "/man1")))))))))
+                          "-out" (string-append man-dir "/checkmake.1")))))))))
     (native-inputs
      (list go-github-com-docopt-docopt-go
            go-github-com-go-ini-ini
