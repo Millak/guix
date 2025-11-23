@@ -1153,13 +1153,22 @@ to be able to read and render the Doxygen xml output.")
     (version "2.0.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sphinx-intl" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sphinx-doc/sphinx-intl")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1d1q0sanjp4nkfvhsxi75zf3xjyyi8nzxvl3v7l0jy9ld70nwnmj"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-sphinx python-click))
+        (base32 "0sla69l477qrr5jb3aw76qg4qg4gw7y5w557xbmbzm6jsv18ck86"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These tests require the transifex_client library.
+      #~(list "--ignore=tests/test_cmd_transifex.py"
+              "--ignore=tests/test_transifex.py")))
+    (native-inputs (list python-mock python-pytest python-setuptools))
+    (propagated-inputs (list python-sphinx python-click))
     (home-page "https://github.com/sphinx-doc/sphinx-intl")
     (synopsis
      "Sphinx utility that makes it easy to translate and to apply translation")
