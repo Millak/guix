@@ -868,9 +868,10 @@ from any set of Python scripts and puts it into an examples gallery.")
        (method url-fetch)
        (uri (pypi-uri "sphinx-me" version))
        (sha256
-        (base32
-         "06jzgp213zihnvpcy2y5jy3ykid3apc2ncp2pg6a2g05lhiziglq"))))
-    (build-system python-build-system)
+        (base32 "06jzgp213zihnvpcy2y5jy3ykid3apc2ncp2pg6a2g05lhiziglq"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests.
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/stephenmcd/sphinx-me")
     (synopsis "Create a Sphinx documentation shell")
     (description
