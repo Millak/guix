@@ -1009,20 +1009,25 @@ some related extensions.")
     (name "python-guzzle-sphinx-theme")
     (version "0.7.11")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "guzzle_sphinx_theme" version))
-        (sha256
-         (base32
-          "1rnkzrrsbnifn3vsb4pfaia3nlvgvw6ndpxp7lzjrh23qcwid34v"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-sphinx))
+     (origin
+       ;; TODO Unbundle.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/guzzle/guzzle_sphinx_theme")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18mgk1rl1345zf9i7nihfw2mr609ylxcksrklyz6m2xbh19bbrja"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests upstream.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-sphinx))
     (home-page "https://github.com/guzzle/guzzle_sphinx_theme")
     (synopsis "Sphinx theme used by Guzzle")
-    (description "This package provides guzzle_sphinx_theme, a theme for the
-Sphinx documentation system, used by @uref{http://docs.guzzlephp.org, Guzzle}
-and several other projects.")
+    (description
+     "This package provides guzzle_sphinx_theme, a theme for the Sphinx
+documentation system, used by @uref{http://docs.guzzlephp.org, Guzzle} and
+several other projects.")
     (license license:expat)))
 
 (define-public python-mpl-sphinx-theme
