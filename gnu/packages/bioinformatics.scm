@@ -3725,7 +3725,6 @@ the managed genomes, STAR indexing and mapping and more.")
            python-pytest-mock
            python-setuptools
            python-sphinx
-           python-sphinx-autobuild
            python-sphinx-rtd-theme))
     (home-page "https://github.com/jrderuiter/pybiomart")
     (synopsis "A simple pythonic interface to biomart")
