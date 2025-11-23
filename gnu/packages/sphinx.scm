@@ -1190,15 +1190,17 @@ translate and to apply translation to Sphinx generated document.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1wrgpan9z65fv4hbvisz4sypc4w5ammnxkyn5lhr43wdr6b967k1"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-beautifulsoup4 python-pytest python-sphinx))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (substitute* "setup.py"
+               (("main") #$version)))))))
+    (native-inputs (list python-beautifulsoup4 python-pytest python-sphinx
+                         python-setuptools))
     (home-page "https://github.com/wpilibsuite/sphinxext-opengraph")
     (synopsis "Sphinx Extension to enable OpenGraph support")
     (description
