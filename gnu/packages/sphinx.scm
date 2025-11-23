@@ -565,20 +565,25 @@ Sphinx documentation.")
   (package
     (name "python-sphinxcontrib-newsfeed")
     (version "0.1.4")
-    (source (origin
-             (method url-fetch)
-             (uri (pypi-uri "sphinxcontrib-newsfeed" version))
-             (sha256
-              (base32
-               "1d7gam3mn8v4in4p16yn3v10vps7nnaz6ilw99j4klij39dqd37p"))))
-    (arguments '(#:tests? #f)) ; No tests.
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-sphinx))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url
+              "https://github.com/prometheusresearch/sphinxcontrib-newsfeed")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09hdafir3ba5p8bmwny8r8fvgv0sgvzvw43zq85hb57lwd4prbxg"))))
+    (build-system pyproject-build-system)
+    ;; TODO: demo directory, but no standard test system.
+    (arguments (list #:tests? #f))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-sphinx))
     (synopsis "News Feed extension for Sphinx")
     (description "Sphinxcontrib-newsfeed is an extension for adding a simple
 Blog, News or Announcements section to a Sphinx website.")
-    (home-page "https://bitbucket.org/prometheus/sphinxcontrib-newsfeed")
+    (home-page "https://github.com/prometheusresearch/sphinxcontrib-newsfeed")
     (license license:bsd-2)))
 
 (define-public python-sphinx-inline-tabs
