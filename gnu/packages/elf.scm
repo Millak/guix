@@ -47,6 +47,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gawk)
@@ -203,14 +204,14 @@ object or archive file), @command{eu-strip} (for discarding symbols),
   (package
     (name "libabigail")
     (home-page "https://sourceware.org/libabigail/")
-    (version "2.0")
+    (version "2.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://sourceware.org/pub/libabigail/"
-                                  "libabigail-" version ".tar.gz"))
+                                  "libabigail-" version ".tar.xz"))
               (sha256
                (base32
-                "1nkg7fsqvdr453hrskscy6xqz6fv45mylpgv1357dw3blnbsw11p"))))
+                "0f6p86ispkiaxsqlqp9xdmhn0yjyagq1w7q94pd8m8h566m6pf5l"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags #~(list "--disable-static"
@@ -247,7 +248,8 @@ object or archive file), @command{eu-strip} (for discarding symbols),
      (list pkg-config texinfo python-sphinx python))
     (propagated-inputs
      (list elfutils ;libabigail.la says -lelf
-           libxml2))           ;in Requires.private of libabigail.pc
+           libxml2  ;in Requires.private of libabigail.pc
+           xxhash))
     (synopsis "Analyze application binary interfaces (ABIs)")
     (description
      "@dfn{ABIGAIL} stands for the Application Binary Interface Generic
