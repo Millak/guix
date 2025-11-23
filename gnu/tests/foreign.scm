@@ -285,13 +285,16 @@ of DEB-FILES with 'dpkg -i'."
 (define debian-13-qcow2
   ;; Image taken from <https://www.debian.org/distrib/>.
   ;; XXX: Those images are periodically removed from debian.org.
-  (origin
-    (uri
-     "https://cloud.debian.org/images/cloud/trixie/latest/debian-13-nocloud-amd64.qcow2")
-    (method url-fetch)
-    (sha256
-     (base32
-      "0g7kcvz2yzr0xchlv5kc8d2rd2lzk4akh02i43i92cmys7q3r05c"))))
+  (let ((image-date "20251006-2257"))
+    (origin
+      (uri (string-append "https://cloud.debian.org/images/cloud/trixie/"
+                          image-date "/debian-13-nocloud-amd64-"
+                          image-date ".qcow2"))
+      (method url-fetch)
+      (file-name "debian-13-nocloud-amd64.qcow2")
+      (sha256
+       (base32
+        "0g7kcvz2yzr0xchlv5kc8d2rd2lzk4akh02i43i92cmys7q3r05c")))))
 
 (define debian-uidmap-deb-file
   ;; This package provides 'newgidmap' & co., used by the unprivileged daemon.
