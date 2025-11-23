@@ -1469,34 +1469,14 @@ automated way to document command-line programs.  It scans
     (version "0.2.0b1")
     (source
      (origin
-       (method git-fetch)               ;no tests in pypi archive
+       (method git-fetch)
        (uri (git-reference
              (url "https://github.com/pradyunsg/sphinx-theme-builder")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "15gvwzd4l3wcmd6fns8xvv44yzxmamr1nfn28mp12sdw2y10v2ba"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: PEP 517 manual build copied from python-isort.
-          (replace 'build
-            (lambda _
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv"))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+        (base32 "15gvwzd4l3wcmd6fns8xvv44yzxmamr1nfn28mp12sdw2y10v2ba"))))
+    (build-system pyproject-build-system)
     (native-inputs (list python-flit-core python-pytest))
     (propagated-inputs
      (list python-pypa-build
