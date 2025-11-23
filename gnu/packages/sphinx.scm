@@ -1440,17 +1440,20 @@ widgets, and supports thebelab for live code execution with minimal effort.")
 (define-public python-sphinxcontrib-autoprogram
   (package
     (name "python-sphinxcontrib-autoprogram")
-    (version "0.1.8")
+    (version "0.1.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sphinxcontrib-autoprogram" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sphinx-contrib/autoprogram")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "02pi450qml429disph075jyqwjrawrhbsjfkqvjf10yjp6fp4sas"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-six python-sphinx))
+        (base32 "1nyc5qk01z7kp48iablz059kxvkpm6m5q9wrnj9v3zsphpx3lxgj"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests despite tox.ini.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-six python-sphinx))
     (home-page "https://github.com/sphinx-contrib/autoprogram")
     (synopsis "Documenting CLI programs")
     (description
