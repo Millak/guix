@@ -2237,6 +2237,9 @@ authentication plugin that extracts the username from the certificate.")
          (shell (file-append shadow "/sbin/nologin")))))
 
 (define (radicale-shepherd-service cfg)
+  (define config-file
+    (serialize-radicale-configuration cfg))
+
   (list (shepherd-service
          (provision '(radicale))
          (documentation "Run the radicale daemon.")
@@ -2244,10 +2247,13 @@ authentication plugin that extracts the username from the certificate.")
          (start #~(make-forkexec-constructor
                    (list #$(file-append (radicale-configuration-package cfg)
                                         "/bin/radicale")
-                         "-C" #$(serialize-radicale-configuration cfg))
+                         "-C" #$config-file)
                    #:user "radicale"
                    #:group "radicale"))
-         (stop #~(make-kill-destructor)))))
+         (stop #~(make-kill-destructor))
+         (actions
+           (list
+             (shepherd-configuration-action config-file))))))
 
 (define radicale-activation
   (match-lambda
