@@ -716,12 +716,12 @@ listen and respond to these events.")
        (sha256
         (base32
          "1b7ssc627vgrdl21c09w9sxk5fc1ps3g7f70laxag4yw1bb5ax5j"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
+          (add-before 'check 'configure-tests
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests?
                 ;; Disable isolation so that the package environment can be
@@ -729,14 +729,15 @@ listen and respond to these events.")
                 (setenv "SOURCE_DATE_EPOCH" "315532800")
                 (substitute* "tests/test_build_api.py"
                   (("\"-m\", \"build\"" all)
-                   (string-append all ", \"--no-isolation\"")))
-                (invoke "python" "-m" "pytest" "-vv")))))))
+                   (string-append all ", \"--no-isolation\"")))))))))
     (propagated-inputs
      (list python-deprecation python-packaging python-setuptools
            python-tomlkit python-wheel))
     (native-inputs
-     (list python-pypa-build python-coverage python-pytest
-           python-pytest-cov python-pytest-mock))
+     (list python-pypa-build
+           python-pytest
+           python-pytest-mock
+           python-setuptools))
     (home-page "https://jupyter.org")
     (synopsis "Jupyter packaging utilities")
     (description "This package provides tools to help build and install
