@@ -300,7 +300,7 @@ of DEB-FILES with 'dpkg -i'."
   ;; This package provides 'newgidmap' & co., used by the unprivileged daemon.
   (origin
     (uri
-     "http://ftp.debian.org/debian/pool/main/s/shadow/uidmap_4.13+dfsg1-1+deb12u1_amd64.deb")
+     "mirror://debian/pool/main/s/shadow/uidmap_4.13+dfsg1-1+deb12u1_amd64.deb")
     (method url-fetch)
     (sha256
      (base32
