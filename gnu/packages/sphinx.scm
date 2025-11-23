@@ -1499,17 +1499,23 @@ with a simple (opinionated) workflow.")
     (version "2.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sphinx-sitemap" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jdillard/sphinx-sitemap")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0dvpryrz7vn8rvayzy5nrmqy4wyzlaxcx88bl46prc9w4cwxmbb5"))))
-    (build-system python-build-system)
+        (base32 "1sxapxcfvdh7vl54ja7wh5rxb4rsfpd2gsfiysyd4qnbfmiz4prm"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;No tests despite tox.ini.
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-sphinx))
     (home-page "https://github.com/jdillard/sphinx-sitemap")
     (synopsis "Sitemap generator for Sphinx")
-    (description "A Sphinx extension to generate multiversion and
-multilanguage sitemaps.org compliant sitemaps for the HTML version of your
-Sphinx documentation.")
+    (description
+     "A Sphinx extension to generate multiversion and multilanguage
+sitemaps.org compliant sitemaps for the HTML version of your Sphinx
+documentation.")
     (license license:expat)))
 
 (define-public python-pydata-sphinx-theme
