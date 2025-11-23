@@ -368,8 +368,8 @@ arguments."
        (#f
         (display-hint (G_ "Did you forget a @code{use-modules} form?")))
        ((? module? module)
-        (display-hint (G_ "Did you forget @code{(use-modules ~a)}?")
-                      (module-name module)))))))
+        (display-hint (G_ "Did you forget @code{(use-modules ~a)} or @code{#:use-module ~a}?")
+                      (module-name module) (module-name module)))))))
 
 (define (check-module-matches-file module file)
   "Check whether FILE starts with 'define-module MODULE' and print a hint if
