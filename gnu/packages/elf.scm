@@ -16,6 +16,7 @@
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2025 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -400,7 +401,7 @@ changed.")
 (define-public pax-utils
   (package
     (name "pax-utils")
-    (version "1.3.8")
+    (version "1.3.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -409,7 +410,7 @@ changed.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1vxklqnabhy15idrg5s2m07lk1hqyf9fnvsfy66n2rdmqijn5rvw"))))
+                "1ds0bjlivvqpm3kr8y9blawrkhn134zwng2zq6cdbh5xw87vqwg4"))))
     (build-system meson-build-system)
     (arguments
      (list
