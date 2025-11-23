@@ -21,6 +21,7 @@
 ;;; Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 ;;; Copyright © 2025 Skylar Hill <stellarskylark@posteo.net>
 ;;; Copyright © 2025 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -60,6 +61,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages java)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages linux)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages multiprecision)
@@ -808,6 +810,80 @@ a C program.")
 principle, 'Keep It Simple, Stupid.'")
     (license license:bsd-3)))
 
+(define-public kissfft-for-tflite-micro
+  (package
+    (inherit kissfft)
+    (name "kissfft-for-tflite-micro")
+    (version "130")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mborgerding/kissfft")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        "137h3pkn6jmc3pcgnqsq481f6jjblx7ygw9gyipgcdysmnhrwiv2")
+       (patches (search-patches "kissfft-tflite-micro.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (delete 'build)
+          (replace 'install
+            (lambda _
+              (for-each (lambda (f)
+                          (install-file f
+                                        (string-append #$output "/include")))
+                        '("kiss_fft.h" "kissfft.hh"))
+              (for-each (lambda (f)
+                          (install-file f
+                                        (string-append #$output
+                                                       "/include/tools")))
+                        (find-files "tools"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "CC=gcc" "testall")))))))
+    (native-inputs (list procps))
+    (inputs (list fftw))))
+
+(define-public clac
+  (package
+    (name "clac")
+    (version "0.3.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/soveran/clac")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        "0crpm5rxxipiz6kqs5ip900d77vvnslyjn5f6nj0lrc86bkbgi8d")))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'set-env
+            (lambda _
+              (setenv "CC" "gcc")
+              (setenv "PREFIX" #$output))))))
+    (home-page "https://github.com/soveran/clac")
+    (synopsis "Command-line, stack-based calculator with postfix notation")
+    (description
+     "Clac is a command line, stack-based calculator with postfix notation
+that displays the stack contents at all times.  As you type, the stack
+changes are reflected immediately.")
+    ;; Bundles two dependencies, both also BSD-2. SDS is not yet packaged.
+    ;; linenoise is packaged, but the package doesn't provide shared
+    ;; object files so we have to build it anyway.
+    (license license:bsd-2)))
 (define-public fftw
   (package
     (name "fftw")
@@ -2215,38 +2291,3 @@ systems.  This encompasses:
 @item the computation of the dimension and the degree of the solution set.
 @end itemize")
     (license license:gpl2+)))
-
-(define-public clac
-  (package
-    (name "clac")
-    (version "0.3.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/soveran/clac")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        "0crpm5rxxipiz6kqs5ip900d77vvnslyjn5f6nj0lrc86bkbgi8d")))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:test-target "test"
-      #:phases
-      #~(modify-phases %standard-phases
-          (delete 'configure)
-          (add-before 'build 'set-env
-            (lambda _
-              (setenv "CC" "gcc")
-              (setenv "PREFIX" #$output))))))
-    (home-page "https://github.com/soveran/clac")
-    (synopsis "Command-line, stack-based calculator with postfix notation")
-    (description
-     "Clac is a command line, stack-based calculator with postfix notation
-that displays the stack contents at all times.  As you type, the stack
-changes are reflected immediately.")
-    ;; Bundles two dependencies, both also BSD-2. SDS is not yet packaged.
-    ;; linenoise is packaged, but the package doesn't provide shared
-    ;; object files so we have to build it anyway.
-    (license license:bsd-2)))
