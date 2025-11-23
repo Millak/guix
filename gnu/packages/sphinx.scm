@@ -1248,20 +1248,10 @@ are redirected.")
        (method url-fetch)
        (uri (pypi-uri "sphinx-autobuild" version))
        (sha256
-        (base32
-         "019z8kvnaw11r41b6pfdy9iz4iwyr0s51hs0a5djn797dsva676y"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv")))))))
-    (propagated-inputs
-     (list python-colorama python-livereload python-sphinx))
-    (native-inputs
-     (list python-pytest))
+        (base32 "019z8kvnaw11r41b6pfdy9iz4iwyr0s51hs0a5djn797dsva676y"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-colorama python-livereload python-sphinx))
+    (native-inputs (list python-flit-core python-pytest))
     (home-page "https://github.com/GaretJax/sphinx-autobuild")
     (synopsis "Rebuild Sphinx documentation when a change is detected")
     (description
