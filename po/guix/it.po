@@ -18,9 +18,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-11-15 03:18+0000\n"
-"PO-Revision-Date: 2025-11-13 00:15+0100\n"
-"Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
+"POT-Creation-Date: 2025-11-22 03:18+0000\n"
+"PO-Revision-Date: 2025-11-22 19:42+0000\n"
+"Last-Translator: fmixolydian <fmixolydian@noreply.codeberg.org>\n"
 "Language-Team: Italian <https://translate.codeberg.org/projects/guix/guix/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -750,16 +750,12 @@ msgstr ""
 "database di localizzazione online."
 
 #: gnu/services/desktop.scm:529
-#, fuzzy
-#| msgid ""
-#| "Run the @command{bluetoothd} daemon, which manages all the\n"
-#| "Bluetooth devices and provides a number of D-Bus interfaces."
 msgid ""
 "Run the @command{iio-sensor-proxy} daemon, which provides IIO sensors data\n"
 "through a D-Bus interface."
 msgstr ""
-"Esegui il demone @command{bluetoothd}, che gestisce tutti i\n"
-"dispositivi Bluetooth e fornisce una serie di interfacce D-Bus."
+"Esegui il demone @command{iio-sensor-proxy}, che fornisce dati dei sensori IIO\n"
+"attraverso un'interfaccia D-Bus."
 
 #: gnu/services/desktop.scm:952
 msgid ""
@@ -1517,31 +1513,23 @@ msgstr ""
 "implementa un analogo del modello di protezione degli altoparlanti Smart Amp di Texas\n"
 "Instruments.  Può essere utilizzato per proteggere gli altoparlanti sui dispositivi Apple Silicon."
 
-#: gnu/services/ssh.scm:253
-msgid ""
-"Run the GNU@tie{}lsh secure shell (SSH) daemon,\n"
-"@command{lshd}."
-msgstr ""
-"Esegui il demone GNU@tie{}lsh secure shell (SSH),\n"
-"@command{lshd}."
-
-#: gnu/services/ssh.scm:650
+#: gnu/services/ssh.scm:416
 msgid "Run the OpenSSH secure shell (SSH) server, @command{sshd}."
 msgstr "Lancia il server secure shell OpenSSH, @command{sshd}."
 
-#: gnu/services/ssh.scm:744
+#: gnu/services/ssh.scm:510
 msgid "Run the Dropbear secure shell (SSH) server."
 msgstr "Lancia il server secure shell (SSH) Dropbear."
 
-#: gnu/services/ssh.scm:852
+#: gnu/services/ssh.scm:618
 msgid "Automatically set up ssh connections (and keep them alive)."
 msgstr "Imposta automaticamente le connessioni ssh (e mantienile attive)."
 
-#: gnu/services/ssh.scm:934
+#: gnu/services/ssh.scm:700
 msgid "webssh: reject policy requires `known-hosts'."
 msgstr "webssh: la policy di rifiuto richiede l'impostazione dei `known-hosts'."
 
-#: gnu/services/ssh.scm:980
+#: gnu/services/ssh.scm:746
 msgid "Run the webssh."
 msgstr "Lancia la webssh."
 
@@ -2766,29 +2754,27 @@ msgstr "Attendo che l'accesso ad Internet sia stabilito..."
 
 #: gnu/installer/newt/network.scm:161 gnu/installer/newt/network.scm:193
 msgid "Try again?"
-msgstr ""
+msgstr "Riprovare?"
 
 #: gnu/installer/newt/network.scm:162
-#, fuzzy
-#| msgid "The selected network does not provide access to the Internet and the Guix substitute server, please try again."
 msgid ""
 "\n"
 "The selected network does not seem to provide access to the Internet. The install process requires Internet access. Do you want to continue anyway?"
-msgstr "La rete selezionata non fornisce un accesso ad Internet e nemmeno al server dei sostituti di Guix, prova di nuovo per favore."
+msgstr ""
+"\n"
+"La rete selezionata non fornisce accesso ad Internet. Il processo d'installazione richede accesso ad Internet. Vorresti continuare comunque?"
 
 #: gnu/installer/newt/network.scm:180
-#, fuzzy
-#| msgid "do not use substitutes"
 msgid "Checking substitutes"
-msgstr "non usare sostituti"
+msgstr "Verificando sostituti"
 
 #: gnu/installer/newt/network.scm:181
 msgid "Checking if Guix substitutes are available..."
-msgstr ""
+msgstr "Verificando se sostituti Guix sono disponibili..."
 
 #: gnu/installer/newt/network.scm:191
 msgid "Substitute availability"
-msgstr ""
+msgstr "Disponibilità sostituti"
 
 #: gnu/installer/newt/network.scm:194
 msgid ""
@@ -2797,6 +2783,10 @@ msgid ""
 "You can proceed with the install, but you will\n"
 "have to build most of the packages you install locally."
 msgstr ""
+"\n"
+"Nessuno dei server Guix sostituti sono disponibili.\n"
+"Puoi procedere con l'installazione, ma dovrai compilare\n"
+"la maggior parte dei pacchetti che vuoi installare."
 
 #: gnu/installer/newt/page.scm:205
 #, scheme-format
@@ -4542,10 +4532,8 @@ msgid "description should not be empty"
 msgstr "la descrizione non deve essere vuota"
 
 #: guix/lint.scm:406
-#, fuzzy
-#| msgid "description should not be empty"
 msgid "description should end with a period"
-msgstr "la descrizione non deve essere vuota"
+msgstr "la descrizione dovrebbe terminare con un punto"
 
 #: guix/lint.scm:417
 msgid "Texinfo markup in description is invalid"
@@ -8731,44 +8719,56 @@ msgid_plural "importing modules~{ ~a~} from the host~%"
 msgstr[0] "importo il modulo~{ ~a~} dall'host~%"
 msgstr[1] "importo i moduli~{ ~a~} dall'host~%"
 
-#: guix/gnu-maintenance.scm:527
+#: guix/gnu-maintenance.scm:303
+#, scheme-format
+msgid "~a: invalid 'release-file-regexp' property~%"
+msgstr "~a: opzione ‘release-file-regexp’ non valida~%"
+
+#: guix/gnu-maintenance.scm:315
+#, scheme-format
+msgid "release file regexp ~s has ~a subexpression (expected one for the version string)~%"
+msgid_plural "release file regexp ~s has ~a subexpressions (expected one for the version string)~%"
+msgstr[0] "file di rilascio regexp ~s ha ~a subespressione (richiesta una per la versione)~%"
+msgstr[1] "file di rilascio regexp ~s ha ~a subespressioni (richiesta una per la versione)~%"
+
+#: guix/gnu-maintenance.scm:555
 #, scheme-format
 msgid "failed to download '~a': ~a (~a)~%"
 msgstr "impossibile scaricare '~a': ~a (~a)~%"
 
-#: guix/gnu-maintenance.scm:910
+#: guix/gnu-maintenance.scm:941
 msgid "Updating to a specific version is not yet implemented for SourceForge."
 msgstr "L'aggiornamento a una versione specifica non è ancora implementato per SourceForge."
 
-#: guix/gnu-maintenance.scm:914
+#: guix/gnu-maintenance.scm:945
 msgid "Updating to a partial version is not yet implemented for SourceForge."
 msgstr "L'aggiornamento a una versione parziale non è ancora implementato per SourceForge."
 
-#: guix/gnu-maintenance.scm:1068
+#: guix/gnu-maintenance.scm:1099
 msgid "Updater for GNU packages"
 msgstr "Aggiornatore dei pacchetti GNU"
 
-#: guix/gnu-maintenance.scm:1081
+#: guix/gnu-maintenance.scm:1112
 msgid "Updater for GNU packages only available via FTP"
 msgstr "Aggiornatore dei pacchetti disponibili solo via FTP"
 
-#: guix/gnu-maintenance.scm:1092
+#: guix/gnu-maintenance.scm:1123
 msgid "Updater for packages hosted on savannah.gnu.org"
 msgstr "Aggiornatore dei pacchetti ospitati su savannah.gnu.org"
 
-#: guix/gnu-maintenance.scm:1099
+#: guix/gnu-maintenance.scm:1130
 msgid "Updater for packages hosted on sourceforge.net"
 msgstr "Aggiornatore dei pacchetti ospitati su sourceforge.net"
 
-#: guix/gnu-maintenance.scm:1106
+#: guix/gnu-maintenance.scm:1137
 msgid "Updater for X.org packages"
 msgstr "Aggiornatore dei pacchetti X.org"
 
-#: guix/gnu-maintenance.scm:1113
+#: guix/gnu-maintenance.scm:1144
 msgid "Updater for packages hosted on kernel.org"
 msgstr "Aggiornatore dei pacchetti ospitati su kernel.org"
 
-#: guix/gnu-maintenance.scm:1120
+#: guix/gnu-maintenance.scm:1151
 msgid "Updater that crawls HTML pages."
 msgstr "Aggiornatore che perlustra pagine HTML."
 
@@ -11156,7 +11156,7 @@ msgstr "nessuna posizione della definizione per il pacchetto ~a~%"
 #: guix/scripts/style.scm:606
 #, scheme-format
 msgid "transforming source from url-fetch to git-fetch~%"
-msgstr ""
+msgstr "trasformazione della sorgente da url-fetch a git-fetch~%"
 
 #: guix/scripts/style.scm:654
 #, scheme-format
@@ -11186,7 +11186,7 @@ msgstr "- arguments: Riscrive gli argomenti del pacchetto usando espressioni-G\n
 
 #: guix/scripts/style.scm:683
 msgid "- git-source: Rewrite source fetch method to Git.\n"
-msgstr ""
+msgstr "- git-source: Riscrivi il metodo di recupero per Git.\n"
 
 #: guix/scripts/style.scm:686
 msgid ""
@@ -12499,12 +12499,12 @@ msgstr "~S non è nello store~%"
 #: guix/scripts/perform-download.scm:116
 #, scheme-format
 msgid "URL ~S can't be decoded~%"
-msgstr ""
+msgstr "L'URL ~S è indecifrabile~%"
 
 #: guix/scripts/perform-download.scm:118
 #, scheme-format
 msgid "URL ~S is for a local file~%"
-msgstr ""
+msgstr "L'URL ~S corrisponde a un file locale~%"
 
 #: guix/scripts/perform-download.scm:137
 #, scheme-format
@@ -13026,6 +13026,13 @@ msgid "socket-activated with %1% socket"
 msgid_plural "socket-activated with %1% sockets"
 msgstr[0] "socket-attivato con %1% socket"
 msgstr[1] "socket-attivato con %1% socket"
+
+#~ msgid ""
+#~ "Run the GNU@tie{}lsh secure shell (SSH) daemon,\n"
+#~ "@command{lshd}."
+#~ msgstr ""
+#~ "Esegui il demone GNU@tie{}lsh secure shell (SSH),\n"
+#~ "@command{lshd}."
 
 #, scheme-format
 #~ msgid "Migrating profile generations to '~a'...~%"

@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-10-24 03:18+0000\n"
-"PO-Revision-Date: 2025-10-30 11:09+0000\n"
+"PO-Revision-Date: 2025-11-23 01:17+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/documentation-manual/de/>\n"
 "Language: de\n"
@@ -23,7 +23,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13.3\n"
+"X-Generator: Weblate 5.14\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -396,6 +396,9 @@ msgstr ""
 "  9edb3f66fd807b096b48283debdcddccfea34bad \\\n"
 "  \"BBB0 2DDF 2CEA F6A8 0D1D  E643 A2A0 6DF2 A33A 54FA\"\n"
 
+msgid "The first run takes a couple of minutes, but subsequent runs are faster.  On subsequent runs, you can run the command without any arguments since the @dfn{introduction} (the commit ID and OpenPGP fingerprints above)  will have been recorded@footnote{This requires a recent version of Guix, from May 2024 or more recent.}:"
+msgstr "Der erste Durchlauf dauert einige Minuten, aber spätere Durchläufe gehen schneller. Bei späteren Durchläufen brauchen Sie keine Argumente anzugeben, denn die @dfn{Einführung} (die Commit-ID und OpenPGP-Fingerabdrücke oben) sind gespeichert worden@footnote{Das gilt für neue Versionen von Guix ab Mai 2024 oder neuer.}:"
+
 msgid "guix git authenticate\n"
 msgstr "guix git authenticate\n"
 
@@ -418,6 +421,9 @@ msgstr "Siehe @ref{Invoking guix git authenticate} für weitere Informationen zu
 
 msgid "Note"
 msgstr "Anmerkung"
+
+msgid "By default, hooks are installed such that @command{guix git authenticate} is invoked anytime you run @command{git pull} or @command{git push}."
+msgstr "Es ist vorgegeben, dass Hooks installiert werden, damit @command{guix git authenticate} aufgerufen wird, wann immer Sie @command{git pull} oder @command{git push} ausführen."
 
 msgid "After updating the repository, @command{make} might fail with an error similar to the following example:"
 msgstr "Wenn Sie das Repository einmal aktualisieren, kann es passieren, dass @command{make} mit einer Fehlermeldung ähnlich wie dieser fehlschlägt:"
@@ -2679,6 +2685,9 @@ msgstr "Aushelfen"
 
 msgid "One last thing: the project keeps moving forward because committers not only push their own awesome changes, but also offer some of their time @emph{reviewing} and pushing other people's changes.  As a committer, you're welcome to use your expertise and commit rights to help other contributors, too!"
 msgstr "Eine Sache noch: Das Projekt entwickelt sich nicht nur deswegen schnell, weil Committer ihre eigenen tollen Änderungen pushen, sondern auch, weil sie sich Zeit nehmen, die Änderungen anderer Leute in „Reviews“ zu @emph{überprüfen} und zu pushen. Wir begrüßen es, wenn Sie als Committer Ihre Expertise und Commit-Rechte dafür einsetzen, auch anderen Mitwirkenden zu helfen!"
+
+msgid "Perhaps the biggest action you can do to help GNU Guix grow as a project is to review the work contributed by others.  You do not need to be a committer to do so; applying, reading the source, building, linting and running other people's series and sharing your comments about your experience will give some confidence to committers.  You must ensure the check list found in the @ref{Submitting Patches} section has been correctly followed.  A reviewed patch series should give the best chances for the proposed change to be merged faster, so if a change you would like to see merged hasn't yet been reviewed, this is the most appropriate thing to do! If you would like to review changes in a specific area and to receive notifications for incoming patches relevant to that domain, consider joining the relevant team(s) (@pxref{Teams})."
+msgstr "Den wohl größten Nutzen, damit GNU Guix als Projekt wächst, steuern Sie bei, wenn Sie die Beiträge von anderen gegenlesen und überprüfen. Dazu müssen Sie kein Committer sein; Sie wenden den Patch an (@command{git am} bzw.@: @command{git apply}), lesen den Quellcode, erstellen ihn und setzen ihn Linting aus, außerdem können Sie die Patchreihen anderer Leute auf Ihrem Rechner ausprobieren und kommentieren, wie Sie zurechtkommen, was anderen Committern Sicherheit gibt. Sie stellen sicher, dass der Prüfliste aus dem Abschnitt @ref{Submitting Patches} korrekt Folge geleistet wurde. Wenn eine Patchserie bereits überprüft worden ist, dann hat sie die besten Chancen, schneller ins Repository gemerget zu werden. Wenn Sie also gerne eine Änderung angenommen sehen würden und diese noch niemand überprüft hat, dann übernehmen am besten Sie die Aufgabe! Wenn Sie Änderungen in einem bestimmten Tätigkeitsbereich überprüfen und Benachrichtigungen über dort relevante eingehende Patches erhalten möchten, dann begrüßen wir es, wenn Sie dem/den entsprechenden Team(s) beitreten (siehe @ref{Teams})."
 
 msgid "reviewing, guidelines"
 msgstr "Überprüfen, Richtlinien"
@@ -5098,16 +5107,6 @@ msgstr "ssh-ed25519 AAAAC3NzaC…mde+UhL hint@@example.org\n"
 
 msgid "If the machine is running the OpenSSH daemon, @command{sshd}, the host key can be found in a file such as @file{/etc/ssh/ssh_host_ed25519_key.pub}."
 msgstr "Wenn auf der Maschine der OpenSSH-Daemon, @command{sshd}, läuft, ist der Rechnerschlüssel in einer Datei wie @file{/etc/ssh/ssh_host_ed25519_key.pub} zu finden."
-
-msgid "If the machine is running the SSH daemon of GNU@tie{}lsh, @command{lshd}, the host key is in @file{/etc/lsh/host-key.pub} or a similar file.  It can be converted to the OpenSSH format using @command{lsh-export-key} (@pxref{Converting keys,,, lsh, LSH Manual}):"
-msgstr "Wenn auf der Maschine der SSH-Daemon von GNU@tie{}lsh, nämlich @command{lshd}, läuft, befindet sich der Rechnerschlüssel in @file{/etc/lsh/host-key.pub} oder einer ähnlichen Datei. Er kann ins OpenSSH-Format umgewandelt werden durch @command{lsh-export-key} (siehe @ref{Converting keys,,, lsh, LSH Manual}):"
-
-msgid ""
-"$ lsh-export-key --openssh < /etc/lsh/host-key.pub\n"
-"ssh-rsa AAAAB3NzaC1yc2EAAAAEOp8FoQAAAQEAs1eB46LV@dots{}\n"
-msgstr ""
-"$ lsh-export-key --openssh < /etc/lsh/host-key.pub\n"
-"ssh-rsa AAAAB3NzaC1yc2EAAAAEOp8FoQAAAQEAs1eB46LV…\n"
 
 msgid "A number of optional fields may be specified:"
 msgstr "Eine Reihe optionaler Felder kann festgelegt werden:"
@@ -17715,9 +17714,6 @@ msgstr "Aktualisierungsprogramm für @uref{https://launchpad.net, Launchpad}."
 msgid "generic-html"
 msgstr "generic-html"
 
-msgid "a generic updater that crawls the HTML page where the source tarball of the package is hosted, when applicable, or the HTML page specified by the @code{release-monitoring-url} property of the package."
-msgstr "allgemeines Aktualisierungsprogramm, das mit einem Webcrawler die HTML-Seite, auf der der Quell-Tarball des Pakets angeboten wird, falls vorhanden, durchsucht. Wenn das Paket über die Eigenschaft @code{release-monitoring-url} verfügt, wird stattdessen diese URL durchsucht."
-
 msgid "generic-git"
 msgstr "generic-git"
 
@@ -20533,8 +20529,8 @@ msgstr "Wenn die Quelle eines Dateisystems ein zugeordnetes Gerät ist (siehe @r
 msgid "@code{flags} (default: @code{'()})"
 msgstr "@code{flags} (Vorgabe: @code{'()})"
 
-msgid "This is a list of symbols denoting mount flags.  Recognized flags include @code{read-only}, @code{bind-mount}, @code{no-dev} (disallow access to special files), @code{no-suid} (ignore setuid and setgid bits), @code{no-atime} (do not update file access times), @code{no-diratime} (likewise for directories only), @code{strict-atime} (update file access time), @code{lazy-time} (only update time on the in-memory version of the file inode), @code{no-exec} (disallow program execution), and @code{shared} (make the mount shared).  @xref{Mount-Unmount-Remount,,, libc, The GNU C Library Reference Manual}, for more information on these flags."
-msgstr "Eine Liste von Symbolen, die Einbinde-Schalter („mount flags“) bezeichnen. Erkannt werden unter anderem @code{read-only} (nur lesbar), @code{bind-mount} (Verzeichniseinbindung), @code{no-dev} (Zugang zu besonderen Dateien verweigern), @code{no-suid} (setuid- und setgid-Bits ignorieren), @code{no-atime} (Dateizugriffs-Zeitstempel @emph{nicht} aktualisieren), @code{no-diratime} (das Gleiche ausschließlich für Verzeichnisse), @code{strict-atime} (Dateizugriffs-Zeitstempel immer aktualisieren), @code{lazy-time} (Zeitstempel nur auf zwischengespeicherten Datei-Inodes im Arbeitsspeicher aktualisieren), @code{no-exec} (Programmausführungen verweigern) und @code{shared} (für Mehrfacheinhängungen). Siehe @ref{Mount-Unmount-Remount,,, libc, Referenzhandbuch der GNU-C-Bibliothek} für mehr Informationen zu diesen Einbinde-Schaltern."
+msgid "This is a list of symbols denoting mount flags.  Recognized flags include @code{read-only}, @code{bind-mount}, @code{no-dev} (disallow access to special files), @code{no-suid} (ignore setuid and setgid bits), @code{no-atime} (do not update file access times), @code{no-diratime} (likewise for directories only), @code{strict-atime} (update file access time), @code{lazy-time} (only update time on the in-memory version of the file inode), @code{no-exec} (disallow program execution), @code{remount} (remount a mounted file system), and @code{shared} (make the mount shared).  @xref{Mount-Unmount-Remount,,, libc, The GNU C Library Reference Manual}, for more information on these flags."
+msgstr "Eine Liste von Symbolen, die Einbinde-Schalter („mount flags“) bezeichnen. Erkannt werden unter anderem @code{read-only} (nur lesbar), @code{bind-mount} (Verzeichniseinbindung), @code{no-dev} (Zugang zu besonderen Dateien verweigern), @code{no-suid} (setuid- und setgid-Bits ignorieren), @code{no-atime} (Dateizugriffs-Zeitstempel @emph{nicht} aktualisieren), @code{no-diratime} (das Gleiche ausschließlich für Verzeichnisse), @code{strict-atime} (Dateizugriffs-Zeitstempel immer aktualisieren), @code{lazy-time} (Zeitstempel nur auf zwischengespeicherten Datei-Inodes im Arbeitsspeicher aktualisieren), @code{no-exec} (Programmausführungen verweigern), @code{remount} (ein bereits eingebundenes Dateisystem neu einbinden) und @code{shared} (für Mehrfacheinhängungen). Siehe @ref{Mount-Unmount-Remount,,, libc, Referenzhandbuch der GNU-C-Bibliothek} für mehr Informationen zu diesen Einbinde-Schaltern."
 
 msgid "@code{options} (default: @code{#f})"
 msgstr "@code{options} (Vorgabe: @code{#f})"
@@ -25680,108 +25676,6 @@ msgstr "SSH"
 msgid "SSH server"
 msgstr "SSH-Server"
 
-msgid "lsh-service-type"
-msgstr "lsh-service-type"
-
-msgid "Type of the service that runs the GNU@tie{}lsh secure shell (SSH)  daemon, @command{lshd}.  The value for this service is a @code{<lsh-configuration>} object."
-msgstr "Diensttyp des Dienstes für den SSH-Daemon (Secure Shell) von GNU@tie{}lsh, nämlich @command{lshd}. Sein Wert ist ein @code{<lsh-configuration>}-Objekt."
-
-msgid "{Data Type} lsh-configuration"
-msgstr "{Datentyp} lsh-configuration"
-
-msgid "Data type representing the configuration of @command{lshd}."
-msgstr "Datentyp, der die Konfiguration von @command{lshd} repräsentiert."
-
-msgid "@code{lsh} (default: @code{lsh}) (type: file-like)"
-msgstr "@code{lsh} (Vorgabe: @code{lsh}) (Typ: dateiartig)"
-
-msgid "The package object of the GNU@tie{}lsh secure shell (SSH) daemon."
-msgstr "Das Paketobjekt mit dem SSH-Daemon von GNU@tie{}lsh."
-
-msgid "@code{daemonic?} (default: @code{#t}) (type: boolean)"
-msgstr "@code{daemonic?} (Vorgabe: @code{#t}) (Typ: Boolescher-Ausdruck)"
-
-msgid "Whether to detach from the controlling terminal."
-msgstr "Ob @command{lshd} sich vom Terminal entkoppeln soll, auf dem er läuft."
-
-msgid "@code{host-key} (default: @code{\"/etc/lsh/host-key\"}) (type: string)"
-msgstr "@code{host-key} (Vorgabe: @code{\"/etc/lsh/host-key\"}) (Typ: Zeichenkette)"
-
-msgid "File containing the @dfn{host key}.  This file must be readable by root only."
-msgstr "Eine Datei, die den Rechnerschlüssel enthält, die nur für den Administratornutzer lesbar sein darf."
-
-msgid "@code{interfaces} (default: @code{'()}) (type: list)"
-msgstr "@code{interfaces} (Vorgabe: @code{'()}) (Typ: Liste)"
-
-msgid "List of host names or addresses that @command{lshd} will listen on.  If empty, @command{lshd} listens for connections on all the network interfaces."
-msgstr "Eine Liste von Rechnernamen („Host“-Namen) oder Adressen, wo @command{lshd} lauschen soll. Wenn @var{interfaces} leer ist, lauscht @command{lshd} an allen Netzwerkschnittstellen auf Verbindungen."
-
-msgid "@code{port-number} (default: @code{22}) (type: integer)"
-msgstr "@code{port-number} (Vorgabe: @code{22}) (Typ: Ganze-Zahl)"
-
-msgid "Port to listen on."
-msgstr "Die Portnummer, auf der gelauscht werden soll."
-
-msgid "@code{allow-empty-passwords?} (default: @code{#f}) (type: boolean)"
-msgstr "@code{allow-empty-passwords?} (Vorgabe: @code{#f}) (Typ: Boolescher-Ausdruck)"
-
-msgid "Whether to accept log-ins with empty passwords."
-msgstr "Ob Anmeldungen mit leeren Passwörtern akzeptiert werden sollen."
-
-msgid "@code{root-login?} (default: @code{#f}) (type: boolean)"
-msgstr "@code{root-login?} (Vorgabe: @code{#f}) (Typ: Boolescher-Ausdruck)"
-
-msgid "Whether to accept log-ins as root."
-msgstr "Ob Anmeldungen als Administratornutzer „root“ akzeptiert werden sollen."
-
-msgid "@code{syslog-output?} (default: @code{#t}) (type: boolean)"
-msgstr "@code{syslog-output?} (Vorgabe: @code{#t}) (Typ: Boolescher-Ausdruck)"
-
-msgid "Whether to log @command{lshd} standard output to syslogd.  This will make the service depend on the existence of a syslogd service."
-msgstr "Ob die Standardausgabe von @command{lshd} an syslogd geleitet werden soll. In diesem Fall hängt der Dienst von der Existenz eines syslogd-Dienstes ab."
-
-msgid "@code{pid-file?} (default: @code{#f}) (type: boolean)"
-msgstr "@code{pid-file?} (Vorgabe: @code{#f}) (Typ: Boolescher-Ausdruck)"
-
-msgid "When @code{#t}, @command{lshd} writes its PID to the file specified in @var{pid-file}."
-msgstr "Steht dies auf @code{#t}, schreibt @command{lshd} seine PID in die Datei namens @var{pid-file}."
-
-msgid "@code{pid-file} (default: @code{\"/var/run/lshd.pid\"}) (type: string)"
-msgstr "@code{pid-file} (Vorgabe: @code{\"/var/run/lshd.pid\"}) (Typ: Zeichenkette)"
-
-msgid "File that @command{lshd} will write its PID to."
-msgstr "In welche Datei @command{lshd} seine PID schreiben wird."
-
-msgid "@code{x11-forwarding?} (default: @code{#t}) (type: boolean)"
-msgstr "@code{x11-forwarding?} (Vorgabe: @code{#t}) (Typ: Boolescher-Ausdruck)"
-
-msgid "Whether to enable X11 forwarding."
-msgstr "Ob Weiterleiten von Verbindungen an X11-Clients zugelassen werden soll."
-
-msgid "@code{tcp/ip-forwarding?} (default: @code{#t}) (type: boolean)"
-msgstr "@code{tcp/ip-forwarding?} (Vorgabe: @code{#t}) (Typ: Boolescher-Ausdruck)"
-
-msgid "Whether to enable TCP/IP forwarding."
-msgstr "Ob Weiterleiten von TCP/IP-Kommunikation zugelassen werden soll."
-
-msgid "@code{password-authentication?} (default: @code{#t}) (type: boolean)"
-msgstr "@code{password-authentication?} (Vorgabe: @code{#t}) (Typ: Boolescher-Ausdruck)"
-
-msgid "Whether to accept log-ins using password authentication."
-msgstr "Ob Anmeldungen mit passwortbasierter Authentisierung akzeptiert werden sollen."
-
-msgid "@code{public-key-authentication?} (default: @code{#t}) (type: boolean)"
-msgstr "@code{public-key-authentication?} (Vorgabe: @code{#t}) (Typ: Boolescher-Ausdruck)"
-
-msgid "Whether to accept log-ins using public key authentication."
-msgstr "Ob Anmeldungen mit öffentlichem Schlüssel akzeptiert werden sollen."
-
-msgid "@code{initialize?} (default: @code{#t}) (type: boolean)"
-msgstr "@code{initialize?} (Vorgabe: @code{#t}) (Typ: Boolescher-Ausdruck)"
-
-msgid "When @code{#f}, it is up to the user to initialize the randomness generator (@pxref{lsh-make-seed,,, lsh, LSH Manual}), and to create a key pair with the private key stored in file @var{host-key} (@pxref{lshd basics,,, lsh, LSH Manual})."
-msgstr "Wenn es @code{#f} ist, bleibt es dem Nutzer überlassen, den Zufallsgenerator zu initialisieren (siehe @ref{lsh-make-seed,,, lsh, LSH Manual}) und ein Schlüsselpaar zu erzeugen, dessen privater Schlüssel in der mit @var{host-key} angegebenen Datei steht (siehe @ref{lshd basics,,, lsh, LSH Manual})."
-
 msgid "openssh-service-type"
 msgstr "openssh-service-type"
 
@@ -26704,8 +26598,8 @@ msgstr "Um sicherzugehen, dass unbeaufsichtigte Aktualisierungen auch tatsächli
 msgid "unattended-upgrade-service-type"
 msgstr "unattended-upgrade-service-type"
 
-msgid "This is the service type for unattended upgrades.  It sets up an mcron job (@pxref{Scheduled Job Execution}) that runs @command{guix system reconfigure} from the latest version of the specified channels."
-msgstr "Dies ist der Diensttyp für unbeaufsichtigte Aktualisierungen. Damit wird ein mcron-Auftrag eingerichtet (siehe @ref{Scheduled Job Execution}), der @command{guix system reconfigure} mit der neuesten Version der angegebenen Kanäle ausführt."
+msgid "This is the service type for unattended upgrades.  It sets up a Shepherd Timer (@pxref{Scheduled Job Execution}) that runs @command{guix system reconfigure} from the latest version of the specified channels."
+msgstr "Dies ist der Diensttyp für unbeaufsichtigte Aktualisierungen. Damit wird ein Shepherd-Timer eingerichtet (siehe @ref{Scheduled Job Execution}), der @command{guix system reconfigure} mit der neuesten Version der angegebenen Kanäle ausführt."
 
 msgid "Its value must be a @code{unattended-upgrade-configuration} record (see below)."
 msgstr "Sein Wert muss ein @code{unattended-upgrade-configuration}-Verbundsobjekt sein (siehe unten)."
@@ -27317,6 +27211,9 @@ msgstr "@code{lightdm} (Vorgabe: @code{lightdm}) (Typ: dateiartig)"
 
 msgid "The lightdm package to use."
 msgstr "Das zu benutzende lightdm-Paket."
+
+msgid "@code{allow-empty-passwords?} (default: @code{#f}) (type: boolean)"
+msgstr "@code{allow-empty-passwords?} (Vorgabe: @code{#f}) (Typ: Boolescher-Ausdruck)"
 
 msgid "Whether users not having a password set can login."
 msgstr "Ob man sich auch bei Benutzerkonten, die ein leeres Passwort haben, anmelden kann."
@@ -47536,8 +47433,8 @@ msgstr ""
 msgid "The @option{--share} and @option{--expose} options can also be passed to the generated script to bind-mount additional directories into the container."
 msgstr "Die Befehlszeilenoptionen @option{--share} und @option{--expose} können Sie auch an das erzeugte Skript übergeben, um weitere Verzeichnisse im Container als Verzeichniseinbindung („bind mount“) verfügbar zu machen."
 
-msgid "This option requires Linux-libre 3.19 or newer."
-msgstr "Diese Befehlszeilenoption funktioniert nur mit Linux-libre 3.19 oder neuer."
+msgid "The @code{container} action requires Linux-libre 3.19 or newer."
+msgstr "Die Aktion @code{container} funktioniert nur mit Linux-libre 3.19 oder neuer."
 
 msgid "@var{options} can contain any of the common build options (@pxref{Common Build Options}).  In addition, @var{options} can contain one of the following:"
 msgstr "Unter den @var{Optionen} können beliebige gemeinsame Erstellungsoptionen aufgeführt werden (siehe @ref{Common Build Options}). Des Weiteren kann als @var{Optionen} Folgendes angegeben werden:"
@@ -48153,8 +48050,8 @@ msgstr "Ganz unten sehen wir den @dfn{Systemdienst}, der das Verzeichnis erzeugt
 msgid "service types"
 msgstr "Diensttypen"
 
-msgid "Technically, developers can define @dfn{service types} to express these relations.  There can be any number of services of a given type on the system---for instance, a system running two instances of the GNU secure shell server (lsh) has two instances of @code{lsh-service-type}, with different parameters."
-msgstr "Technisch funktioniert es so, dass Entwickler @dfn{Diensttypen} definieren können, um diese Beziehungen auszudrücken. Im System kann es beliebig viele Dienste zu jedem Typ geben@tie{}– zum Beispiel können auf einem System zwei Instanzen des GNU-Secure-Shell-Servers (lsh) laufen, mit zwei Instanzen des Diensttyps @code{lsh-service-type} mit je unterschiedlichen Parametern."
+msgid "Technically, developers can define @dfn{service types} to express these relations.  There can be any number of services of a given type on the system, for instance when running two instances with different parameters."
+msgstr "Technisch funktioniert es so, dass Entwickler @dfn{Diensttypen} definieren können, um diese Beziehungen auszudrücken. Im System kann es beliebig viele Dienste zu jedem Typ geben. Zum Beispiel können auf einem System zwei Instanzen mit je unterschiedlichen Parametern laufen."
 
 msgid "The following section describes the programming interface for service types and services."
 msgstr "Der folgende Abschnitt beschreibt die Programmierschnittstelle für Diensttypen und Dienste."

@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix 1.2.0-pre1\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-11-15 03:18+0000\n"
-"PO-Revision-Date: 2025-11-13 00:17+0100\n"
+"POT-Creation-Date: 2025-11-22 03:18+0000\n"
+"PO-Revision-Date: 2025-11-17 16:03+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.codeberg.org/projects/guix/guix/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -564,7 +564,7 @@ msgid ""
 "Service Switch}, for an example."
 msgstr ""
 "Executa o @dfn{name service cache daemon} da libc (nscd) com o\n"
-"determinada configuração --- um objeto @code{<nscd-configuration>}. Veja @ref{Nome\n"
+"determinada configuração --- um objeto @code{<nscd-configuration>}. Veja @ref{Name\n"
 "Service Switch}, por exemplo."
 
 #: gnu/services/base.scm:1682
@@ -1446,31 +1446,25 @@ msgid ""
 "model.  It can be used to protect the speakers on Apple Silicon devices."
 msgstr ""
 
-#: gnu/services/ssh.scm:253
-msgid ""
-"Run the GNU@tie{}lsh secure shell (SSH) daemon,\n"
-"@command{lshd}."
-msgstr ""
-
-#: gnu/services/ssh.scm:650
+#: gnu/services/ssh.scm:416
 #, fuzzy
 #| msgid "OpenSSH secure shell daemon (sshd)"
 msgid "Run the OpenSSH secure shell (SSH) server, @command{sshd}."
 msgstr "OpenSSH - daemon de shell seguro (sshd)"
 
-#: gnu/services/ssh.scm:744
+#: gnu/services/ssh.scm:510
 msgid "Run the Dropbear secure shell (SSH) server."
 msgstr ""
 
-#: gnu/services/ssh.scm:852
+#: gnu/services/ssh.scm:618
 msgid "Automatically set up ssh connections (and keep them alive)."
 msgstr ""
 
-#: gnu/services/ssh.scm:934
+#: gnu/services/ssh.scm:700
 msgid "webssh: reject policy requires `known-hosts'."
 msgstr ""
 
-#: gnu/services/ssh.scm:980
+#: gnu/services/ssh.scm:746
 msgid "Run the webssh."
 msgstr ""
 
@@ -8696,49 +8690,62 @@ msgid_plural "importing modules~{ ~a~} from the host~%"
 msgstr[0] "importando módulo~{ ~a~} do hospedeiro~%"
 msgstr[1] "importando módulos~{ ~a~} do hospedeiro~%"
 
-#: guix/gnu-maintenance.scm:527
+#: guix/gnu-maintenance.scm:303
+#, fuzzy, scheme-format
+#| msgid "~a: invalid '--verify' option~%"
+msgid "~a: invalid 'release-file-regexp' property~%"
+msgstr "~a: opção \"--verify\" inválida~%"
+
+#: guix/gnu-maintenance.scm:315
+#, scheme-format
+msgid "release file regexp ~s has ~a subexpression (expected one for the version string)~%"
+msgid_plural "release file regexp ~s has ~a subexpressions (expected one for the version string)~%"
+msgstr[0] ""
+msgstr[1] ""
+
+#: guix/gnu-maintenance.scm:555
 #, fuzzy, scheme-format
 #| msgid "failed to load '~a': ~a~%"
 msgid "failed to download '~a': ~a (~a)~%"
 msgstr "falha ao carregar \"~a\": ~a~%"
 
-#: guix/gnu-maintenance.scm:910
+#: guix/gnu-maintenance.scm:941
 #, fuzzy
 #| msgid "Updating to a specific version is not yet implemented for ~a, sorry."
 msgid "Updating to a specific version is not yet implemented for SourceForge."
 msgstr "A atualização para uma versão específica ainda não está implementada para ~a, desculpe."
 
-#: guix/gnu-maintenance.scm:914
+#: guix/gnu-maintenance.scm:945
 #, fuzzy
 #| msgid "Updating to a specific version is not yet implemented for ~a, sorry."
 msgid "Updating to a partial version is not yet implemented for SourceForge."
 msgstr "A atualização para uma versão específica ainda não está implementada para ~a, desculpe."
 
-#: guix/gnu-maintenance.scm:1068
+#: guix/gnu-maintenance.scm:1099
 msgid "Updater for GNU packages"
 msgstr "Atualizador para pacotes GNU"
 
-#: guix/gnu-maintenance.scm:1081
+#: guix/gnu-maintenance.scm:1112
 msgid "Updater for GNU packages only available via FTP"
 msgstr "Atualizador para pacotes GNU só disponíveis via FTP"
 
-#: guix/gnu-maintenance.scm:1092
+#: guix/gnu-maintenance.scm:1123
 msgid "Updater for packages hosted on savannah.gnu.org"
 msgstr "Atualizador para pacotes hospedados no savannah.gnu.org"
 
-#: guix/gnu-maintenance.scm:1099
+#: guix/gnu-maintenance.scm:1130
 msgid "Updater for packages hosted on sourceforge.net"
 msgstr "Atualizador para pacotes hospedados no sourceforge.net"
 
-#: guix/gnu-maintenance.scm:1106
+#: guix/gnu-maintenance.scm:1137
 msgid "Updater for X.org packages"
 msgstr "Atualizador para pacotes X.org"
 
-#: guix/gnu-maintenance.scm:1113
+#: guix/gnu-maintenance.scm:1144
 msgid "Updater for packages hosted on kernel.org"
 msgstr "Atualizador para pacotes hospedados no kernel.org"
 
-#: guix/gnu-maintenance.scm:1120
+#: guix/gnu-maintenance.scm:1151
 msgid "Updater that crawls HTML pages."
 msgstr "Atualizador que rastreia páginas HTML."
 

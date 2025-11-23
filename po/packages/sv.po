@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-10-20 03:18+0000\n"
-"PO-Revision-Date: 2025-11-09 09:38+0000\n"
-"Last-Translator: Umeaman <umeaman@noreply.codeberg.org>\n"
+"PO-Revision-Date: 2025-11-19 22:54+0000\n"
+"Last-Translator: rchk <rchk@noreply.codeberg.org>\n"
 "Language-Team: Swedish <https://translate.codeberg.org/projects/guix/packages/sv/>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
@@ -877,6 +877,12 @@ msgstr ""
 
 msgid "Python-ish shell"
 msgstr "Pytonaktigt skal"
+
+msgid "Validate HTML"
+msgstr "Validera HTML"
+
+msgid "Bookmark manager"
+msgstr "Bokmärkeshanterare"
 
 msgid "Ogg vorbis tools"
 msgstr "Ogg vorbis-verktyg"

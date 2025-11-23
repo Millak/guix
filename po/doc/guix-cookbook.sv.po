@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-10-21 03:18+0000\n"
-"PO-Revision-Date: 2025-11-12 12:44+0000\n"
-"Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
+"PO-Revision-Date: 2025-11-19 22:54+0000\n"
+"Last-Translator: rchk <rchk@noreply.codeberg.org>\n"
 "Language-Team: Swedish <https://translate.codeberg.org/projects/guix/documentation-cookbook/sv/>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
@@ -348,6 +348,9 @@ msgstr "#$"
 msgid "gexp"
 msgstr "gexp"
 
+msgid "ungexp"
+msgstr "ungexp"
+
 msgid "packaging"
 msgstr "paketering"
 
@@ -405,11 +408,20 @@ msgstr ""
 msgid "channel"
 msgstr "kanal"
 
+msgid "mkdir ~/my-channel\n"
+msgstr "mkdir ~/my-channel\n"
+
 msgid "Inputs"
 msgstr "Inmatningar"
 
+msgid "native-inputs"
+msgstr "native-inputs"
+
 msgid "inputs"
 msgstr "inputs"
+
+msgid "propagated-inputs"
+msgstr "propagated-inputs"
 
 msgid "Note"
 msgstr "Observera"
@@ -420,8 +432,23 @@ msgstr "Utdata"
 msgid "Just like how a package can have multiple inputs, it can also produce multiple outputs."
 msgstr "Precis som ett paket kan ha flera indata kan det också producera flera utdata."
 
+msgid "translate into"
+msgstr "översätt till"
+
+msgid "find-files"
+msgstr "find-files"
+
 msgid "mkdir-p"
 msgstr "mkdir-p"
+
+msgid "install-file"
+msgstr "install-file"
+
+msgid "copy-recursively"
+msgstr "copy-recursively"
+
+msgid "delete-file-recursively"
+msgstr "delete-file-recursively"
 
 msgid "invoke"
 msgstr "invoke"
@@ -503,6 +530,9 @@ msgstr "255.255.255.0"
 
 msgid "IPv4-Gateway"
 msgstr "IPv4-gateway"
+
+msgid "unicast"
+msgstr "unicast"
 
 msgid ""
 "@}\n"
