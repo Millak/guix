@@ -902,22 +902,21 @@ user interface to the FEniCS core components and external libraries.")
 (define-public fenics
   (package/inherit fenics-dolfin
     (name "fenics")
-    (build-system python-build-system)
-    (inputs
-     (modify-inputs (package-inputs fenics-dolfin)
-       (delete "python")
-       (prepend pybind11 python-matplotlib)))
-    (native-inputs
-     (modify-inputs (package-native-inputs fenics-dolfin)
-       (prepend cmake-minimal python-ply python-pytest python-decorator)))
-    (propagated-inputs
-     (list fenics-dolfin
-           python-petsc4py
-           python-slepc4py
-           ;; 'dolfin/jit/jit.py' parses 'dolfin.pc' at runtime.
-           python-pkgconfig))
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags
+      #~(list
+         "unit"
+         ;; This test fails and is ignored.
+         "--deselect"
+         "unit/nls/test_PETScSNES_solver.py::test_snes_set_from_options"
+         ;; These tests are flaky.
+         "--deselect=unit/common/test_timer.py::test_context_manager_named"
+         "--deselect=unit/common/test_timer.py::test_context_manager_anonymous"
+         ;; FIXME: Tests with binary encoded hdf5 files fail with a
+         ;; segfault.  See fenics-project DOLFIN commit 6fbc9fb.
+         "--ignore=unit/io/test_XDMF.py")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'relax-requirements
@@ -929,7 +928,7 @@ user interface to the FEniCS core components and external libraries.")
               ;; Instead of cluttering the user's PKG_CONFIG_PATH environment
               ;; variable, hard-code the 'dolfin.pc' absolute file name.
               (let ((pc-file (search-input-file inputs
-                              "/lib/pkgconfig/dolfin.pc")))
+                                                "/lib/pkgconfig/dolfin.pc")))
                 (substitute* "python/dolfin/jit/jit.py"
                   (("pkgconfig\\.parse\\(\"dolfin\"\\)")
                    (string-append "pkgconfig.parse(\"" pc-file "\")"))))))
@@ -939,8 +938,7 @@ user interface to the FEniCS core components and external libraries.")
               (setenv "PYBIND11_DIR" #$(this-package-input "pybind11"))
               ;; Move to python sub-directory.
               (chdir "python")))
-          (add-after 'build 'mpi-setup
-            #$%openmpi-setup)
+          (add-after 'build 'mpi-setup #$%openmpi-setup)
           (add-before 'check 'pre-check
             (lambda _
               ;; Exclude three tests that generate 'NotImplementedError' in
@@ -949,34 +947,32 @@ user interface to the FEniCS core components and external libraries.")
               ;; Also exclude tests that require meshes supplied by git-lfs.
               (substitute* "demo/test.py"
                 (("(.*stem !.*)" line)
-                 (string-append line
-                  "\n"
-                  "excludeList = [\n"
-                  "'built-in-meshes', \n"
-                  "'hyperelasticity', \n"
-                  "'elasticity', \n"
-                  "'multimesh-quadrature', \n"
-                  "'multimesh-marking', \n"
-                  "'mixed-poisson-sphere', \n"
-                  "'mesh-quality', \n"
-                  "'lift-drag', \n"
-                  "'elastodynamics', \n"
-                  "'dg-advection-diffusion', \n"
-                  "'curl-curl', \n"
-                  "'contact-vi-tao', \n"
-                  "'contact-vi-snes', \n"
-                  "'collision-detection', \n"
-                  "'buckling-tao', \n"
-                  "'auto-adaptive-navier-stokes', \n"
-                  "'advection-diffusion', \n"
-                  "'subdomains', \n"
-                  "'stokes-taylor-hood', \n"
-                  "'stokes-mini', \n"
-                  "'navier-stokes', \n"
-                  "'eigenvalue']\n"
-                  "demos = ["
-                  "d for d in demos if d[0].stem not "
-                  "in excludeList]\n")))
+                 (format #f "~a
+excludeList = [~{ '~a',~% ~}]
+demos = [d for d in demos if d[0].stem not in excludeList]~%"
+                         line
+                         (list "built-in-meshes"
+                               "hyperelasticity"
+                               "elasticity"
+                               "multimesh-quadrature"
+                               "multimesh-marking"
+                               "mixed-poisson-sphere"
+                               "mesh-quality"
+                               "lift-drag"
+                               "elastodynamics"
+                               "dg-advection-diffusion"
+                               "curl-curl"
+                               "contact-vi-tao"
+                               "contact-vi-snes"
+                               "collision-detection"
+                               "buckling-tao"
+                               "auto-adaptive-navier-stokes"
+                               "advection-diffusion"
+                               "subdomains"
+                               "stokes-taylor-hood"
+                               "stokes-mini"
+                               "navier-stokes"
+                               "eigenvalue"))))
               ;; Do not test for expired numpy aliases.
               (substitute* "test/unit/la/test_vector.py"
                 ((" numpy.float\\(42.0\\),") "")
@@ -988,32 +984,37 @@ user interface to the FEniCS core components and external libraries.")
               ;; Restrict OpenBLAS to MPI-only in preference to MPI+OpenMP.
               (setenv "OPENBLAS_NUM_THREADS" "1")))
           (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
               (when tests?
                 (with-directory-excursion "test"
-                  (invoke "pytest"
-                   "unit"
-                   ;; This test fails and is ignored.
-                   "--deselect"
-                   "unit/nls/test_PETScSNES_solver.py::test_snes_set_from_options"
-                   ;; FIXME: Tests with binary encoded hdf5 files fail with a
-                   ;; segfault.  See fenics-project DOLFIN commit 6fbc9fb.
-                   "--ignore"
-                   "unit/io/test_XDMF.py")))))
+                  (apply invoke "pytest" test-flags)))))
           (add-after 'install 'install-demo-files
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((demos (string-append (assoc-ref outputs "out")
-                             "/share/python-dolfin/demo")))
+            (lambda _
+              (let* ((demos (string-append #$output
+                                           "/share/python-dolfin/demo")))
                 (mkdir-p demos)
                 (with-directory-excursion "demo"
                   (for-each (lambda (file)
                               (let* ((dir (dirname file))
-                                     (tgt-dir (string-append demos
-                                               "/" dir)))
+                                     (tgt-dir (string-append demos "/" dir)))
                                 (unless (equal? "." dir)
                                   (mkdir-p tgt-dir)
                                   (install-file file tgt-dir))))
                             (find-files "." ".*\\.(py|gz|xdmf)$")))))))))
+    (inputs
+     (modify-inputs (package-inputs fenics-dolfin)
+       (delete "python")
+       (prepend pybind11 python-matplotlib)))
+    (native-inputs
+     (modify-inputs (package-native-inputs fenics-dolfin)
+       (prepend cmake-minimal python-ply python-pytest python-decorator
+                python-setuptools)))
+    (propagated-inputs
+     (list fenics-dolfin
+           python-petsc4py
+           python-slepc4py
+           ;; 'dolfin/jit/jit.py' parses 'dolfin.pc' at runtime.
+           python-pkgconfig))
     (home-page "https://fenicsproject.org/")
     (synopsis "High-level environment for solving differential equations")
     (description
