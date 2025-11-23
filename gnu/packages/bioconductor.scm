@@ -9635,6 +9635,35 @@ pathways and GO terms.  These functions and data are also useful for gene set
 analysis using other methods.")
     (license license:gpl2+)))
 
+(define-public r-gcptools
+  (package
+    (name "r-gcptools")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "GCPtools" version))
+       (sha256
+        (base32 "1m4ljd33vg5ari4xq8x1qsmdp0232w8f7x140mdh1gvg545rjjf4"))))
+    (properties `((upstream-name . "GCPtools")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-anvilbase
+                             r-biocbaseutils
+                             r-dplyr
+                             r-httr
+                             r-rlang
+                             r-tibble
+                             r-tidyr))
+    (native-inputs (list r-knitr r-withr))
+    (home-page "https://github.com/Bioconductor/GCPtools")
+    (synopsis "Tools for working with @code{gcloud} and @code{gsutil}")
+    (description
+     "This package provides lower-level functionality to interface with Google
+Cloud Platform tools.  @code{gcloud} and @code{gsutil} are both supported.
+The functionality provided centers around utilities for the @code{AnVIL}
+platform.")
+    (license license:artistic2.0)))
+
 (define-public r-genefilter
   (package
     (name "r-genefilter")
