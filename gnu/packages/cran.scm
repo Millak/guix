@@ -4249,6 +4249,37 @@ well as symmetric and asymmetric discriminant projections for visualisation of
 the separation of groupings.")
   (license license:gpl2+)))
 
+(define-public r-fscache
+  (package
+    (name "r-fscache")
+    (version "1.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "fscache" version))
+       (sha256
+        (base32 "0815z6a677ygiv4hlslmvbnd1pdnh2xz3sw0nzgrcr2vzj83h25x"))))
+    (properties `((upstream-name . "fscache")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-chk
+                             r-lgr
+                             r-lifecycle
+                             r-r-utils
+                             r-r6
+                             r-stringi))
+    (native-inputs (list r-knitr r-stringr r-testthat))
+    (home-page "https://gitlab.com/cnrgh/databases/r-fscache")
+    (synopsis "File system cache")
+    (description
+     "This package manages a file system cache.  Regular files can be moved or
+copied to the cache folder.  Sub-folders can be created in order to organize
+the files.  Files can be located inside the cache using a glob function.  Text
+contents can be easily stored in and retrieved from the cache using dedicated
+functions.  It can be used for an application or a package, as a global cache,
+or as a per-user cache, in which case the standard OS user cache folder will
+be used.")
+    (license license:agpl3)))
+
 (define-public r-futile-logger
   (package
     (name "r-futile-logger")
