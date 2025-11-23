@@ -1036,11 +1036,16 @@ several other projects.")
     (version "3.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "mpl_sphinx_theme" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/matplotlib/mpl-sphinx-theme")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0ilsw6s5hfvjzqs3258c8gmg5v3dwa6k69mwmkxsyh1qmv15krpw"))))
-    (build-system python-build-system)
+        (base32 "0sgax26779sl5fna8lim340j588id820nh2j64rmim17bn5vr19x"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests.
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list python-pydata-sphinx-theme))
     (home-page "https://github.com/matplotlib/mpl-sphinx-theme")
     (synopsis "Matplotlib theme for Sphinx")
