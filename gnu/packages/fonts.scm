@@ -3341,7 +3341,7 @@ files (TTF).")
 (define-public font-monaspace
   (package
     (name "font-monaspace")
-    (version "1.200")
+    (version "1.301")
     (source
      (origin
        (method git-fetch)
@@ -3351,7 +3351,7 @@ files (TTF).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0llhn40mbi67slkb9y3g16165v6hayczr11kygpz0zx6azg3m1lv"))))
+         "0f6i9v2m7x5zjdfwmcj180nmgxzlnbk2z0x7yv5sbdcrvndz1lzj"))))
     (build-system font-build-system)
     (outputs '("out" "ttf" "woff"))
     (home-page "https://monaspace.githubnext.com")
