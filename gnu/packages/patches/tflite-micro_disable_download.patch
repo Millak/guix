@@ -1,0 +1,62 @@
+diff --git a/tensorflow/lite/micro/tools/make/Makefile b/tensorflow/lite/micro/tools/make/Makefile
+index a21765b3..e8cf2bd6 100644
+--- a/tensorflow/lite/micro/tools/make/Makefile
++++ b/tensorflow/lite/micro/tools/make/Makefile
+@@ -90,7 +90,7 @@ EXTERNAL_DIR :=
+ # This is the downloads directory inside the makefiles directory
+ DOWNLOADS_DIR := $(MAKEFILE_DIR)/downloads
+ 
+-INCLUDES := \
++INCLUDES := $(PRE_INCLUDES) \
+ -I. \
+ -I$(DOWNLOADS_DIR) \
+ -I$(DOWNLOADS_DIR)/gemmlowp \
+@@ -620,27 +620,27 @@ MICROLITE_CC_SRCS := $(filter-out $(MICROLITE_BENCHMARK_SRCS), $(MICROLITE_CC_SR
+ # improved error checking. To accomodate that, we first create a downloads
+ # directory.
+ $(shell mkdir -p ${DOWNLOADS_DIR})
+-
+-# Directly download the flatbuffers library.
+-DOWNLOAD_RESULT := $(shell $(MAKEFILE_DIR)/flatbuffers_download.sh ${DOWNLOADS_DIR} $(TENSORFLOW_ROOT))
+-ifneq ($(DOWNLOAD_RESULT), SUCCESS)
+-  $(error Something went wrong with the flatbuffers download: $(DOWNLOAD_RESULT))
+-endif
+-
+-DOWNLOAD_RESULT := $(shell $(MAKEFILE_DIR)/kissfft_download.sh ${DOWNLOADS_DIR} $(TENSORFLOW_ROOT))
+-ifneq ($(DOWNLOAD_RESULT), SUCCESS)
+-  $(error Something went wrong with the kissfft download: $(DOWNLOAD_RESULT))
+-endif
+-
+-DOWNLOAD_RESULT := $(shell $(MAKEFILE_DIR)/pigweed_download.sh ${DOWNLOADS_DIR} $(TENSORFLOW_ROOT))
+-ifneq ($(DOWNLOAD_RESULT), SUCCESS)
+-  $(error Something went wrong with the pigweed download: $(DOWNLOAD_RESULT))
+-endif
+-
+-include $(MAKEFILE_DIR)/third_party_downloads.inc
+-THIRD_PARTY_DOWNLOADS :=
+-$(eval $(call add_third_party_download,$(GEMMLOWP_URL),$(GEMMLOWP_MD5),gemmlowp,))
+-$(eval $(call add_third_party_download,$(RUY_URL),$(RUY_MD5),ruy,))
++#
++## Directly download the flatbuffers library.
++#DOWNLOAD_RESULT := $(shell $(MAKEFILE_DIR)/flatbuffers_download.sh ${DOWNLOADS_DIR} $(TENSORFLOW_ROOT))
++#ifneq ($(DOWNLOAD_RESULT), SUCCESS)
++#  $(error Something went wrong with the flatbuffers download: $(DOWNLOAD_RESULT))
++#endif
++#
++#DOWNLOAD_RESULT := $(shell $(MAKEFILE_DIR)/kissfft_download.sh ${DOWNLOADS_DIR} $(TENSORFLOW_ROOT))
++#ifneq ($(DOWNLOAD_RESULT), SUCCESS)
++#  $(error Something went wrong with the kissfft download: $(DOWNLOAD_RESULT))
++#endif
++#
++#DOWNLOAD_RESULT := $(shell $(MAKEFILE_DIR)/pigweed_download.sh ${DOWNLOADS_DIR} $(TENSORFLOW_ROOT))
++#ifneq ($(DOWNLOAD_RESULT), SUCCESS)
++#  $(error Something went wrong with the pigweed download: $(DOWNLOAD_RESULT))
++#endif
++#
++#include $(MAKEFILE_DIR)/third_party_downloads.inc
++#THIRD_PARTY_DOWNLOADS :=
++#$(eval $(call add_third_party_download,$(GEMMLOWP_URL),$(GEMMLOWP_MD5),gemmlowp,))
++#$(eval $(call add_third_party_download,$(RUY_URL),$(RUY_MD5),ruy,))
+ 
+ # The target-specific makefile must have a name that is exactly
+ # TARGET_makefile.inc and is only needed for cross-compilation (i.e. when TARGET

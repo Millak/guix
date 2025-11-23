@@ -3521,6 +3521,90 @@ devices.")
                    (string-append #$output "/lib")))))
     (native-inputs '())))
 
+(define-public tflite-micro
+  (let ((commit "a94423c6b6ee1f30c82d60952d70f749296a5581")
+        (version "0")
+        (revision "0"))
+    (package
+      (name "tflite-micro")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tensorflow/tflite-micro")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0q1l4chj4p7vwclcysjmzl017l08kpqh498wpghq1cph641mdp5n"))
+         (patches (search-patches "tflite-micro_disable_download.patch"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f ;there are no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-makefile
+              (lambda _
+                (let ((makefile "tensorflow/lite/micro/tools/make/Makefile"))
+                  (substitute* makefile
+                    (("BASE_GENDIR := gen")
+                     "BASE_GENDIR := $(BUILD_DIR)")))))
+            (delete 'configure)
+
+            (replace 'build
+              (lambda _
+                (let ((makefile "tensorflow/lite/micro/tools/make/Makefile"))
+                  (mkdir-p "../build")
+                  (invoke "make"
+                          "-j"
+                          (number->string (parallel-job-count))
+                          "-f"
+                          makefile
+                          (string-append "BASE_GENDIR=" "../build")
+                          (string-append "PRE_INCLUDES=-I"
+                                         #$(this-package-input "gemmlowp")
+                                         "/include/gemmlowp"
+                                         " -I"
+                                         #$(this-package-input
+                                            "kissfft-for-tflite-micro")
+                                         "/include/kissfft"
+                                         " -I"
+                                         #$(package-source
+                                            kissfft-for-tflite-micro))))))
+            (replace 'install
+              (lambda _
+                (for-each (lambda (f)
+                            (install-file f
+                                          (string-append #$output "/lib")))
+                          (find-files "../build" "\\.a$"))
+                (for-each (lambda (f)
+                            (install-file f
+                                          (string-append #$output
+                                           "/include/lite/micro")))
+                          (find-files "tensorflow/lite/micro" "\\.h$"))
+                (for-each (lambda (f)
+                            (install-file f
+                                          (string-append #$output
+                                           "/include/lite/micro")))
+                          (find-files "signal/micro/kernels" "\\.h$"))
+                (for-each (lambda (f)
+                            (install-file f
+                                          (string-append #$output
+                                           "/include/lite/micro")))
+                          (find-files "signal/src" "\\.h$")))))))
+      (inputs (list flatbuffers-23.5 gemmlowp kissfft-for-tflite-micro ruy))
+      (native-inputs (list python python-pillow python-numpy))
+      (home-page "https://ai.google.dev/edge/litert/microcontrollers/overview")
+      (synopsis
+       "Infrastructure to enable deployment of ML models to embedded targets ")
+      (description
+       "TensorFlow Lite for Microcontrollers is a port of TensorFlow Lite designed
+to run machine learning models on DSPs, microcontrollers and other devices with
+limited memory.")
+      (license license:asl2.0))))
+
+
 (define-public dmlc-core
   (package
     (name "dmlc-core")
