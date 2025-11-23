@@ -52,7 +52,8 @@
 tools/versions-stable")))
 
 (define (fetch-releng-content)
-  "Return an input port to the %GNOME-RELENG-VERSIONS-URI file."
+  "Return a string corresponding to the content of the %GNOME-RELENG-VERSIONS-URI
+file."
   (call-with-port (http-fetch/cached (%gnome-releng-versions-uri))
     get-string-all))
 
@@ -75,8 +76,8 @@ NL < '\n'")
   '(("adwaita-fonts" . "font-adwaita")))
 
 (define (parse-releng data)
-  "Return DATA, a string representing the content of a GNOME releng file, and
-return the complete parse tree."
+  "Return the complete parse tree for DATA, a string representing the content of
+a GNOME releng file."
   (let ((tree (peg:tree (match-pattern releng data))))
     (match tree
       (#f (raise-exception (make-releng-parser-error)))
