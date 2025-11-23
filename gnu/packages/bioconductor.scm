@@ -8523,16 +8523,17 @@ paired-end data.")
 (define-public r-biobase
   (package
     (name "r-biobase")
-    (version "2.68.0")
+    (version "2.70.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "Biobase" version))
               (sha256
                (base32
-                "03vzsm6m8wbmrg997k3qczr6jfwin9qxfxmq3lal6l1yk9vk0fwr"))))
+                "1g1wh5brsspnjxxnxa0jjp3nl15m7254rk3bn56w71hfchsp82jk"))))
     (properties
      '((upstream-name . "Biobase")
-       (updater-ignored-native-inputs . ("r-all"))))
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-all" "r-convert" "r-golubesets"))))
     (build-system r-build-system)
     ;; One test depends on golubEsets, which depends on r-biobase.
     (arguments (list #:tests? #false))
