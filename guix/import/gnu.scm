@@ -91,7 +91,7 @@ download policy (see 'download-tarball' for details.)"
              (uri (string-append ,url-base version
                                  ,(string-append ".tar." archive-type)))
              (sha256
-              (base32 (guix-hash-url tarball)))))
+              (base32 ,(guix-hash-url tarball)))))
           (build-system gnu-build-system)
           (synopsis ,(gnu-package-doc-summary package))
           (description ,(beautify-description
