@@ -1104,43 +1104,28 @@ river flooding.")
 (define-public python-meshio
   (package
     (name "python-meshio")
-    (version "5.3.4")
+    (version "5.3.5")
     (source
      (origin
+       ;; Using PyPI rather than git because some test files must be
+       ;; downloaded through git-fls.
        (method url-fetch)
        (uri (pypi-uri "meshio" version))
        (sha256
-        (base32
-         "1w39qcg0rw5kb04j7sa45fnqd6k20fsdgrf62cmw2ygjgwnnjh72"))
-       (snippet
-        '(let ((file (open-file "setup.py" "a")))
-           (display "from setuptools import setup\nsetup()" file)
-           (close-port file)))))
-    (build-system python-build-system)
-    (inputs
-     (list python-h5py
-           python-netcdf4))
-    (native-inputs
-     (list python-pytest))
-    (propagated-inputs
-     (list python-importlib-metadata
-           python-numpy
-           python-rich))
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" "-v" "tests")))))))
+        (base32 "0vaqhygr2d186qixvfckzqf4447674ylnc0rl5pa16zjv6mh27zj"))))
+    (build-system pyproject-build-system)
+    (inputs (list python-h5py python-netcdf4))
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-numpy python-rich))
     (home-page "https://github.com/nschloe/meshio")
     (synopsis "I/O for mesh files")
-    (description "There are various file formats available for
-representing unstructured meshes and mesh data.  The @code{meshio}
-package is able to read and write mesh files in many formats and to
-convert files from one format to another.  Formats such as cgns, h5m,
-gmsh, xdmf and vtk are supported.  The package provides command-line
-tools and a collection of Python modules for programmatic use.")
+    (description
+     "There are various file formats available for representing unstructured
+meshes and mesh data.  The @code{meshio} package is able to read and write
+mesh files in many formats and to convert files from one format to another.
+Formats such as cgns, h5m, gmsh, xdmf and vtk are supported.  The package
+provides command-line tools and a collection of Python modules for
+programmatic use.")
     (license license:expat)))
 
 (define-public python-pygmsh
