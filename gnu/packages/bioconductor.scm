@@ -7429,14 +7429,17 @@ dynamic documents and vignettes.")
 (define-public r-escape
   (package
     (name "r-escape")
-    (version "2.4.0")
+    (version "2.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "escape" version))
        (sha256
-        (base32 "1vwahi1c89jhdnnfk2z2pf1aa5h4sd5a66kgyzx30z907x2bc37a"))))
-    (properties `((upstream-name . "escape")))
+        (base32 "0cq6xlfvmxs3c6923ck3ipx1k6yh9kna3fnfahdsxb4b17hsrhzv"))))
+    (properties
+     '((upstream-name . "escape")
+       (updater-extra-native-inputs
+        . ("r-delayedmatrixstats" "r-fgsea" "r-gsva"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -7444,37 +7447,25 @@ dynamic documents and vignettes.")
       '(modify-phases %standard-phases
          (add-after 'unpack 'delete-bad-tests
            (lambda _
-             ;; This one test fails with accuracy errors.
-             (delete-file "tests/testthat/test-performPCA.R")
              ;; This test uses experimenthub to download and cache things.
              (substitute* "tests/testthat/test-getGeneSets.R"
                ((".*Caching behavior works for a new species.*" m)
                 (string-append m "skip('guix')\n"))))))))
-    (propagated-inputs (list r-aucell
-                             r-biocparallel
-                             r-dplyr
-                             r-ggdist
-                             r-ggplot2
-                             r-ggpointdensity
-                             r-ggridges
-                             r-gseabase
-                             r-gsva
-                             r-matrix
-                             r-matrixgenerics
-                             r-msigdb
-                             r-patchwork
-                             r-reshape2
-                             r-seuratobject
-                             r-singlecellexperiment
-                             r-stringr
-                             r-summarizedexperiment
-                             r-ucell))
-    (native-inputs (list r-knitr
+    (propagated-inputs (list r-ggdist r-ggplot2 r-matrix r-matrixgenerics
+                             r-summarizedexperiment))
+    (native-inputs (list r-biocparallel
+                         r-delayedmatrixstats
+                         r-dplyr
+                         r-fgsea
+                         r-gseabase
+                         r-gsva
+                         r-knitr
                          r-rlang
                          r-seurat
+                         r-seuratobject
+                         r-singlecellexperiment
                          r-spelling
-                         r-testthat
-                         r-vdiffr))
+                         r-testthat))
     (home-page "https://bioconductor.org/packages/escape")
     (synopsis "Single cell analysis platform for enrichment")
     (description
