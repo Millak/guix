@@ -652,25 +652,30 @@ supported with @code{sphinx-issues}.")
 (define-public python-sphinx-tabs
   (package
     (name "python-sphinx-tabs")
-    (version "3.4.1")
+    (version "3.4.7")
     (home-page "https://github.com/executablebooks/sphinx-tabs")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "sphinx-tabs" version))
-              (sha256
-               (base32
-                "0cmqw5ck2jcxqyf5ibz543idspq0g0fdzxh3fpah1r0nhfg9z86j"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/executablebooks/sphinx-tabs")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mck1as0w8j1dhnmyxgic56i5r832hhqld20m76jxmqklggfd5bc"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f                ;TODO: requires sphinx-testing and rinohtype
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'loosen-docutils-requirement
-                    (lambda _
-                      (substitute* "setup.py"
-                        (("docutils~=0\\.18\\.0")
-                         "docutils>=0.17.0")))))))
-    (propagated-inputs
-     (list python-docutils python-pygments python-sphinx))
+     (list
+      #:tests? #f ;TODO: requires sphinx-testing and rinohtype
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'loosen-docutils-requirement
+            (lambda _
+              (substitute* "setup.py"
+                (("docutils~=0\\.18\\.0")
+                 "docutils>=0.17.0")))))))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-docutils python-pygments python-sphinx))
     (synopsis "Tabbed views for Sphinx")
     (description
      "Create tabbed content in Sphinx documentation when building HTML.")
