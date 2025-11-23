@@ -273,36 +273,44 @@ implementing @code{javax.usb} (JSR-80).")
        (method url-fetch)
        (uri (pypi-uri "libusb1" version))
        (sha256
-        (base32
-         "0f45rjgkq4wgyav6dz57ggj34p2l00c9n3d4639ia3z4zvgak4jp"))))
-    (build-system python-build-system)
+        (base32 "0f45rjgkq4wgyav6dz57ggj34p2l00c9n3d4639ia3z4zvgak4jp"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:modules ((srfi srfi-1)
+     (list
+      #:modules '((srfi srfi-1)
                   (guix build utils)
-                  (guix build python-build-system))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install-license-files 'remove-incorrect-license
-           (lambda* (#:key out #:allow-other-keys)
-             ;; Was relicensed to LGPL 2.1+, but old COPYING file still left
-             ;; in source. Remove it so it does not get installed.
-             (delete-file "COPYING")))
-         (add-after 'unpack 'fix-libusb-reference
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "usb1/_libusb1.py"
-               (("libusb_path = ctypes\\.util\\.find_library\\(base_name\\)")
-                (string-append
-                 "libusb_path = \""
-                 (find (negate symbolic-link?)
-                       (find-files (assoc-ref inputs "libusb")
-                                   "^libusb.*\\.so\\..*"))
-                 "\""))))))))
+                  (guix build pyproject-build-system))
+      #:test-backend #~'custom
+      #:test-flags #~(list "-m" "usb1.testUSB1")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install-license-files 'remove-incorrect-license
+            (lambda _
+              ;; Was relicensed to LGPL 2.1+, but old COPYING file still left
+              ;; in source. Remove it so it does not get installed.
+              (delete-file "COPYING")))
+          (add-after 'unpack 'fix-libusb-reference
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "usb1/_libusb1.py"
+                (("libusb_path = ctypes\\.util\\.find_library\\(base_name\\)")
+                 (string-append "libusb_path = \""
+                                (find (negate symbolic-link?)
+                                      (find-files (assoc-ref inputs "libusb")
+                                                  "^libusb.*\\.so\\..*"))
+                                "\"")))))
+          (add-after 'check 'remove-installed-tests
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (with-directory-excursion (site-packages inputs outputs)
+                (delete-file "usb1/__pyinstaller/test_libusb1_packaging.py")
+                (delete-file "usb1/testUSB1.py")))))))
+    (native-inputs (list python-setuptools))
     (propagated-inputs (list libusb))
     (home-page "https://github.com/vpelletier/python-libusb1")
     (synopsis "Pure-python wrapper for libusb-1.0")
-    (description "Libusb is a library that gives applications easy access to
-USB devices on various operating systems.  This package provides a Python
-wrapper for accessing libusb-1.0.")
+    (description
+     "Libusb is a library that gives applications easy access to USB devices
+on various operating systems.  This package provides a Python wrapper for
+accessing libusb-1.0.")
     (license license:lgpl2.1+)))
 
 (define-public python-pyusb
