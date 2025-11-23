@@ -8493,22 +8493,28 @@ classes.")
 (define-public r-bamsignals
   (package
     (name "r-bamsignals")
-    (version "1.40.0")
+    (version "1.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "bamsignals" version))
        (sha256
         (base32
-         "0bjmsciw3rrn8pid5yq5pn18w52gks6p41syggv5w21pfj3vdqxa"))))
+         "03lqryry0jyangihscjmbsvy3s2skz50jwnl25vb44wzqkqxgmvl"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; Three attributes have no name.
+             (with-directory-excursion "tests/testthat"
+               (substitute* "test_CountSignals.R"
+                 ((".*Test CountSignals class and methods.*" m)
+                  (string-append m "skip('guix')\n")))))))))
     (propagated-inputs
-     (list r-biocgenerics
-           r-genomicranges
-           r-iranges
-           r-rcpp
-           r-rhtslib
-           r-zlibbioc))
+     (list r-biocgenerics r-genomicranges r-iranges r-rcpp r-rhtslib))
     (native-inputs
      (list r-knitr r-rsamtools r-testthat))
     (home-page "https://bioconductor.org/packages/bamsignals")
