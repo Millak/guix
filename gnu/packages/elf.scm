@@ -213,39 +213,36 @@ object or archive file), @command{eu-strip} (for discarding symbols),
                 "1nkg7fsqvdr453hrskscy6xqz6fv45mylpgv1357dw3blnbsw11p"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--disable-static"
-                           "--enable-bash-completion"
-                           "--enable-manual")
-       #:make-flags '("V=1")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-source
-                    (lambda _
-                      (substitute* "build-aux/ltmain.sh"
-                        ;; Don't add -specs=/usr/lib/rpm/redhat/redhat-hardened-ld
-                        ;; to the GCC command line.
-                        (("compiler_flags=\"-specs=.*")
-                         "compiler_flags=\n"))
-                      #t))
-                  (add-after 'build 'build-documentation
-                    (lambda _
-                      (invoke "make" "-C" "doc/manuals" "html-doc" "man" "info")))
-                  (add-before 'check 'set-test-environment
-                    (lambda _
-                      (setenv "XDG_CACHE_HOME" "/tmp")
-                      #t))
-                  (add-after 'install 'install-documentation
-                    (lambda _
-                      (invoke "make" "-C" "doc/manuals"
-                              "install-man-and-info-doc")))
-                  (add-after 'install-documentation 'install-bash-completion
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (for-each (lambda (file)
-                                  (install-file
-                                   file (string-append (assoc-ref outputs "out")
-                                                       "/share/bash-completion"
-                                                       "/completions")))
-                                (find-files "bash-completion" ".*abi.*"))
-                      #t)))))
+     (list #:configure-flags #~(list "--disable-static"
+                                     "--enable-bash-completion"
+                                     "--enable-manual")
+       #:make-flags #~(list "V=1")
+       #:phases #~(modify-phases %standard-phases
+                    (add-after 'unpack 'patch-source
+                      (lambda _
+                        (substitute* "build-aux/ltmain.sh"
+                          ;; Don't add -specs=/usr/lib/rpm/redhat/redhat-hardened-ld
+                          ;; to the GCC command line.
+                          (("compiler_flags=\"-specs=.*")
+                           "compiler_flags=\n"))))
+                    (add-after 'build 'build-documentation
+                      (lambda _
+                        (invoke "make" "-C" "doc/manuals" "html-doc" "man" "info")))
+                    (add-before 'check 'set-test-environment
+                      (lambda _
+                        (setenv "XDG_CACHE_HOME" "/tmp")))
+                    (add-after 'install 'install-documentation
+                      (lambda _
+                        (invoke "make" "-C" "doc/manuals"
+                                "install-man-and-info-doc")))
+                    (add-after 'install-documentation 'install-bash-completion
+                      (lambda _
+                        (for-each (lambda (file)
+                                    (install-file
+                                     file (string-append #$output
+                                                         "/share/bash-completion"
+                                                         "/completions")))
+                                  (find-files "bash-completion" ".*abi.*")))))))
     (native-inputs
      (list pkg-config texinfo python-sphinx python))
     (propagated-inputs
