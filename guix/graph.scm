@@ -422,13 +422,13 @@ nodeArray.push(nodes[\"~a\"]);~%"
   (format port "    <node id=\"~a\">
       <data key=\"d0\">~a</data>
     </node>~%"
-          (string-replace-substring (object->string id) "\"" "\\\"")
+          id
           label))
 
 (define (emit-graphml-edge id1 id2 port)
   (format port "    <edge source=\"~a\" target=\"~a\"/>~%"
-          (string-replace-substring (object->string id1) "\"" "\\\"")
-          (string-replace-substring (object->string id2) "\"" "\\\"")))
+          id1
+          id2))
 
 (define %graphml-backend
   (graph-backend "graphml"
