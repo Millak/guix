@@ -7550,6 +7550,49 @@ and evaluate clustering results.")
 arbitrary genomic intervals along chromosomal ideogram.")
     (license license:gpl2)))
 
+(define-public r-immapex
+  (package
+    (name "r-immapex")
+    (version "1.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "immApex" version))
+       (sha256
+        (base32 "0xwj70fgfhqilc4clm54lj7h1q1742339z44nwbl1sjh049x388f"))))
+    (properties `((upstream-name . "immApex")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'skip-bad-tests
+           (lambda _
+             ;; XXX: fails because "kideraFactors" is an unknown property.
+             (substitute* "tests/testthat/test-sequenceDecoder.R"
+               ((".*.propertyDecoder decodes standard sequences correctly.*" m)
+                (string-append m "skip('guix')\n"))))))))
+    (propagated-inputs (list r-hash
+                             r-httr
+                             r-matrix
+                             r-matrixstats
+                             r-rcpp
+                             r-rvest
+                             r-singlecellexperiment
+                             r-stringr))
+    (native-inputs (list r-knitr r-spelling r-testthat))
+    (home-page "https://github.com/BorchLab/immApex/")
+    (synopsis
+     "Adaptive immune receptor sequence-based machine and deep learning")
+    (description
+     "This package provides a set of tools to for machine and deep learning in
+R from amino acid and nucleotide sequences focusing on adaptive immune
+receptors.  The package includes pre-processing of sequences, unifying gene
+nomenclature usage, encoding sequences, and combining models.  This package
+will serve as the basis of future immune receptor sequence
+functions/packages/models compatible with the @code{scRepertoire} ecosystem.")
+    (license license:expat)))
+
 (define-public r-infercnv
   (package
     (name "r-infercnv")
