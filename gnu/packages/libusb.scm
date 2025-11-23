@@ -775,39 +775,27 @@ HID-Class devices.")
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
-        '(begin
-           (delete-file-recursively "hidapi")
-           #t))))
-    (build-system python-build-system)
+        #~(begin
+            (delete-file-recursively "hidapi")))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-configuration
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "setup.py"
-               (("'/usr/include/libusb-1.0'")
-                (string-append "'" (assoc-ref inputs "libusb")
-                               "/include/libusb-1.0'"))
-               (("'/usr/include/hidapi'")
-                (string-append "'" (assoc-ref inputs "hidapi")
-                               "/include/hidapi'")))
-             #t))
-         ;; XXX Necessary because python-build-system drops the arguments.
-         (replace 'build
-           (lambda _
-             (invoke "python" "setup.py" "build" "--with-system-hidapi")))
-         (replace 'check
-           (lambda _
-             (invoke "python" "setup.py" "test" "--with-system-hidapi")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "python" "setup.py" "install" "--with-system-hidapi"
-                     (string-append "--prefix=" (assoc-ref outputs "out"))
-                     "--single-version-externally-managed" "--root=/"))))))
+     (list
+      #:test-backend #~'unittest
+      #:configure-flags
+      #~'(("--build-option" . "--with-system-hidapi"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-configuration
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "setup.py"
+                (("/usr/include/libusb-1.0")
+                 (search-input-directory inputs "include/libusb-1.0"))
+                (("/usr/include/hidapi")
+                 (search-input-directory inputs "include/hidapi"))))))))
     (inputs
      (list hidapi libusb eudev))
     (native-inputs
-     (list python-cython pkg-config))
+     (list pkg-config python-cython python-setuptools))
     (home-page "https://github.com/trezor/cython-hidapi")
     (synopsis "Cython interface to hidapi")
     (description "This package provides a Cython interface to @code{hidapi}.")
