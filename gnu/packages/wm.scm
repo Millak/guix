@@ -452,6 +452,38 @@ its looks.")
      `((upstream-name . "source")))
     (license license:bsd-3)))
 
+(define-public hyprmag
+  (package
+    (name "hyprmag")
+    (version "2.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/SIMULATAN/hyprmag")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00rc5xmddcg5iwganhwr8nyi7falh6jg324ip2r2yidmkpnsqj60"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f                  ;no tests
+           #:configure-flags
+           #~(list (string-append "-DCMAKE_INSTALL_MANDIR=share/man"))))
+    (inputs (list cairo
+                  ijg-libjpeg
+                  libglvnd
+                  pango
+                  wayland
+                  wayland-protocols
+                  libxkbcommon))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/SIMULATAN/hyprmag")
+    (synopsis "Wayland screen magnifier")
+    (description "Hyprmag is a wlroots-compatible Wayland screen magnifier with basic
+ customization options.")
+    (license license:bsd-3)))
+
 (define-public i3status
   (package
     (name "i3status")
