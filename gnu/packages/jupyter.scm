@@ -1274,7 +1274,7 @@ Docker registry.")
               (sha256
                (base32
                 "004v22nyi5cnpxq4fiws89p7i5wcnzv45n3n70axdd6prh6rkapx"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f                       ;no test suite
@@ -1285,13 +1285,14 @@ Docker registry.")
               (substitute* "sparqlkernel/install.py"
                 (("notebook.DEFAULT_STATIC_FILES_PATH") "\"/does-not-matter\"")
                 (("install_custom_css\\( destd, PKGNAME \\)") ""))))
-          (add-after 'add-install-to-pythonpath 'install-kernelspec
+          (add-after 'wrap 'install-kernelspec
             (lambda _
               (setenv "HOME" "/tmp")
               (invoke
                (string-append #$output "/bin/jupyter-sparqlkernel")
                "install"
                (string-append "--InstallKernelSpec.prefix=" #$output)))))))
+    (native-inputs (list python-setuptools))
     (propagated-inputs
      (list python-ipykernel
            python-notebook
@@ -1301,9 +1302,10 @@ Docker registry.")
            python-traitlets))
     (home-page "https://github.com/paulovn/sparql-kernel")
     (synopsis "Jupyter kernel for SPARQL")
-    (description "This module installs a Jupyter kernel for SPARQL.  It allows
-sending queries to an SPARQL endpoint, fetching and presenting the results in
-a notebook.")
+    (description
+     "This module installs a Jupyter kernel for SPARQL.  It allows sending
+queries to an SPARQL endpoint, fetching and presenting the results in a
+notebook.")
     (license license:bsd-3)))
 
 (define-public python-ipympl
