@@ -949,6 +949,55 @@ performance and other characteristics.")
 minimal bcachefs-tools package.  It is meant to be used in initrds.")
     (license (package-license bcachefs-tools-minimal/static))))
 
+(define-public bcachefs-linux-module
+  (package
+    (name "bcachefs-linux-module")
+    (version "1.32.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://evilpiepirate.org/git/bcachefs-tools.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m85s00i1xfb9lr73j41f80akkhcijh9m0b602r76b15a0l5v3a9"))))
+    (build-system linux-module-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no 'check' target
+      #:source-directory "build/src/fs/bcachefs"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda* (#:key version #:allow-other-keys)
+              (substitute* "Makefile"
+                ;; Remove unnecessary dependency on cargo
+                (("^VERSION=\\$.*$")
+                 (string-append "VERSION=\""
+                                #$version "\""))
+                ;; Remove unnecessary dependencies
+                (("^.*PKG_CONFIG.*$")
+                 ""))))
+          (add-before 'configure 'prepare-build-dir
+            (lambda _
+              (invoke "make" "install_dkms"
+                      (string-append "DESTDIR="
+                                     (getcwd) "/") "DKMSDIR=build/"))))))
+    (home-page (package-home-page bcachefs-tools-minimal/static))
+    (synopsis "Bcachefs Linux kernel module")
+    (description
+     "This package provides the Linux kernel module for Bcachefs.
+
+@dfn{Bcachefs} is a @acronym{CoW, copy-on-write} file system supporting native
+encryption, compression, snapshots, and (meta)data checksums.  It can use
+multiple block devices for replication and/or performance, similar to RAID.
+
+In addition, Bcachefs provides all the functionality of bcache, a block-layer
+caching system, and lets you assign different roles to each device based on its
+performance and other characteristics.")
+    (license license:gpl2)))
+
 (define-public exfatprogs
   (package
     (name "exfatprogs")
