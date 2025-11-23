@@ -1225,42 +1225,44 @@ Docker registry.")
 
 (define-public python-bash-kernel
   (package
-   (name "python-bash-kernel")
-   (version "0.7.2")
-   (source (origin
-            (method url-fetch)
-            (uri (pypi-uri "bash_kernel" version))
-            (sha256
-             (base32
-              "0w0nbr3iqqsgpk83rgd0f5b02462bkyj2n0h6i9dwyc1vpnq9350"))))
-   (build-system python-build-system)
-   (arguments
-    `(#:tests? #f
+    (name "python-bash-kernel")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "bash_kernel" version))
+       (sha256
+        (base32 "1ji8bivxm1d6hx10rda4fhai57l8djyha5g7a7bx26642sja1m9f"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; No tests.
       #:phases
-      (modify-phases %standard-phases
-        (add-after 'unpack 'bash-references
-          (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "bash_kernel/kernel.py"
-               (("\"bash\"")
-                (string-append "\"" (assoc-ref inputs "bash") "/bin/bash\""))
-               (("\\['bash', ")
-                (string-append "['" (assoc-ref inputs "bash") "/bin/bash', ")))
-             #t))
-        (add-after 'install 'install-kernelspec
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out")))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'bash-references
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((bash (search-input-file inputs "bin/bash")))
+                (substitute* "bash_kernel/kernel.py"
+                  (("\"bash\"")
+                   (format #f "~s" bash))
+                  (("\\['bash', ")
+                   (format #f "['~a', " bash))))))
+          (add-after 'install 'install-kernelspec
+            (lambda _
               (setenv "HOME" "/tmp")
-              (invoke "python" "-m" "bash_kernel.install" "--prefix" out)
-              #t))))))
-   (inputs
+              (invoke "python" "-m" "bash_kernel.install"
+                      "--prefix" #$output))))))
+    (native-inputs (list python-flit-core))
+    (inputs
      (list bash
+           python-filetype
            python-pexpect
            python-ipykernel
            python-jupyter-client))
-   (home-page "https://github.com/takluyver/bash_kernel")
-   (synopsis "Jupyter kernel for Bash")
-   (description "A bash shell kernel for Jupyter.")
-   (license license:expat)))
+    (home-page "https://github.com/takluyver/bash_kernel")
+    (synopsis "Jupyter kernel for Bash")
+    (description "A bash shell kernel for Jupyter.")
+    (license license:expat)))
 
 (define-public python-sparqlkernel
   (package
