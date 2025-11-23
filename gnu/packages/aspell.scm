@@ -15,7 +15,7 @@
 ;;; Copyright © 2021 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
-;;; Copyright © 2024 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2024, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -482,3 +482,34 @@ European languages.")
                       (for-each (cut install-file <> include-dir)
                                 '("config.h" "defhash.h" "ispell.h"
                                   "libispell.h" "local.h")))))))))))))
+
+(define-public spell
+  (package
+    (name "spell")
+    (version "1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/spell/spell-" version ".tar.gz"))
+       (sha256
+        (base32 "0i4pqbhzkv5y4c2j7ajx713jykxsnn4dqdcqfvzn04xkgra47hkw"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-commands
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "spell.c"
+                     (("aspell")
+                      (search-input-file inputs "bin/aspell"))
+                     (("ispell_prog = \"ispell\"")
+                      (format #f "ispell_prog = ~s"
+                              (search-input-file inputs "bin/ispell")))))))))
+    (inputs (list aspell ispell))
+    (synopsis "Spell checking")
+    (description
+     "Spell is a command-line spell-checking program.  It reads through
+a text input and prints each misspelled word on a line of its own.  It is
+implemented as a wrapper for GNU aspell or ispell.")
+    (home-page "https://savannah.gnu.org/projects/spell/")
+    (license gpl3+)))
