@@ -268,27 +268,36 @@ designed to be simple.")
 (define-public licenseheaders
   (package
     (name "licenseheaders")
-    (version "0.8.6")
+    (version "0.8.8")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "licenseheaders" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/johann-petrak/licenseheaders")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "073xcm10gyg5kcxqmbsyaz9sr0slbdwgr0r9qanch0zl8i0z9259"))))
-    (build-system python-build-system)
+        (base32 "1k2naf8vgi8l5h5nxc927x8b10kr4gkraxkim72p71flm8gqhrr4"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; Reported upstream:
-         ;; <https://github.com/johann-petrak/licenseheaders/issues/47>.
-         (add-after 'unpack 'patch-code
-           (lambda _
-             (substitute* "licenseheaders.py"
-               (("\\\"filenames\\\": \\[\\\"CMakeLists.txt\\\"\\],")
-                "\"filenames\": [\"CMakeLists.txt\"], \n        \"extensions\": [],"))
-             #t)))))
-    (propagated-inputs
-     (list python-regex))
+     (list
+      #:test-backend #~'custom
+      #:test-flags #~(list "driver.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Reported upstream:
+          ;; <https://github.com/johann-petrak/licenseheaders/issues/47>.
+          (add-after 'unpack 'patch-code
+            (lambda _
+              (substitute* "licenseheaders.py"
+                (("\\\"filenames\\\": \\[\\\"CMakeLists.txt\\\"\\]," all)
+                 (string-append all " \n        \"extensions\": [],")))))
+          (replace 'check
+            (lambda args
+              (with-directory-excursion "tests"
+                (apply (assoc-ref %standard-phases 'check) args)))))))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-regex))
     (home-page "https://github.com/johann-petrak/licenseheaders")
     (synopsis "Add or change license headers for all files in a directory")
     (description
