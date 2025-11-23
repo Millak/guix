@@ -40,7 +40,7 @@
 (define-public adaptivecpp
   (package
     (name "adaptivecpp")
-    (version "25.02.0")
+    (version "25.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -49,10 +49,10 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01wajw1vvbic1hiyz4rj7in09js3kl0xvaa2qpcg1pv7xkrz0xxx"))))
+                "0sv5f366ybzpsdpka0fb578pb4q3537h6hkn825m0kbssh32wxk7"))))
     (build-system cmake-build-system)
     ;; Sync with llvm-for-rocm llvm release.
-    (native-inputs (list clang-19 llvm-19 python-minimal))
+    (native-inputs (list clang-19 lld-19 python-minimal))
     (inputs
      (list boost
            libffi
@@ -62,6 +62,11 @@
            spirv-tools))
     (arguments
      (list
+      #:configure-flags
+      #~(list
+         "-DACPP_COMPILER_FEATURE_PROFILE=full"
+         (string-append
+          "-DACPP_LLD_PATH=" (search-input-file %build-inputs "/bin/ld.lld")))
       #:phases
       #~(modify-phases %standard-phases
           ;; FIXME: There is probably a much better way.
