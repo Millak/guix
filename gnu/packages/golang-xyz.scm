@@ -15345,6 +15345,31 @@ other directories.  It is optimized for filewalking.")
 language, namely support for record length-delimited message streaming.")
     (license license:asl2.0)))
 
+(define-public go-github-com-max-sum-base32768
+  (package
+    (name "go-github-com-max-sum-base32768")
+    (version "0.0.0-20230304063302-18e6ce5945fd")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Max-Sum/base32768")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09nakcv5ms0xybczzqm751blqclr3ssgd7f5jp60ahpwz48xrm2c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Max-Sum/base32768"))
+    (home-page "https://github.com/Max-Sum/base32768")
+    (synopsis "Go implementation of base32768, optimized for UTF-16")
+    (description
+     "This package provides a Go implementation of
+@url{https://github.com/qntm/base32768, base32768}, binary-to-text encoding,
+optimized for UTF-16.")
+    (license license:expat)))
+
 (define-public go-github-com-mgutz-ansi
   (package
     (name "go-github-com-mgutz-ansi")
