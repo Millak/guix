@@ -49410,17 +49410,17 @@ using @code{ggplot2}.")
     (name "r-visnetwork")
     (version "2.1.4")
     (source
-      (origin
-        (method url-fetch)
-        (uri (cran-uri "visNetwork" version))
-        (sha256
-          (base32
-            "116w3l65lgv18xzav5zz1pbgwpwck66n9cjpja9axrl9zi19vja7"))
-        (snippet
-         '(for-each delete-file
-                    '("inst/htmlwidgets/lib/vis/vis-network.min.js"
-                      "inst/htmlwidgets/lib/export/FileSaver/FileSaver.min.js"
-                      "inst/common-docs-files/js/jquery.url.min.js")))))
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "visNetwork" version))
+       (sha256
+        (base32
+         "1nk3i41n7bsan5q1ya6sj2v1j991vvii1rapai7l426qinc98ds8"))
+       (snippet
+        '(for-each delete-file
+                   '("inst/htmlwidgets/lib/vis/vis-network.min.js"
+                     "inst/htmlwidgets/lib/export/FileSaver/FileSaver.min.js"
+                     "inst/common-docs-files/js/jquery.url.min.js")))))
     (properties `((upstream-name . "visNetwork")))
     (build-system r-build-system)
     (arguments
@@ -49482,8 +49482,8 @@ using @code{ggplot2}.")
         ,(origin
            (method git-fetch)
            (uri (git-reference
-                 (url "https://github.com/eligrey/FileSaver.js/")
-                 (commit "1.2.0")))
+                  (url "https://github.com/eligrey/FileSaver.js/")
+                  (commit "1.2.0")))
            (file-name (git-file-name "FileSaver.js" "1.2.0"))
            (sha256
             (base32
@@ -49492,8 +49492,8 @@ using @code{ggplot2}.")
         ,(origin
            (method git-fetch)
            (uri (git-reference
-                 (url "https://github.com/websanova/js-url/")
-                 (commit "v1.8.6")))
+                  (url "https://github.com/websanova/js-url/")
+                  (commit "v1.8.6")))
            (file-name (git-file-name "js-url.js" "1.8.6"))
            (sha256
             (base32
@@ -49501,7 +49501,7 @@ using @code{ggplot2}.")
     (home-page "https://datastorm-open.github.io/visNetwork/")
     (synopsis "Network Visualization using vis.js Library")
     (description
-      "This package provides an R interface to the vis.js JavaScript charting
+     "This package provides an R interface to the vis.js JavaScript charting
 library.  It allows an interactive visualization of networks.")
     (license license:expat)))
 
