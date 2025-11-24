@@ -242,6 +242,41 @@ devices.")
 API service accounts for Go.")
     (license license:asl2.0)))
 
+(define-public go-github-com-googleapis-gax-go-v2
+  (package
+    (name "go-github-com-googleapis-gax-go")
+    (version "2.15.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/gax-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mp07716zjb7q9di6sfglscahrg053lsq3j5w68dknxn1fks5j6f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;; TODO: Tests require additional dependencies
+      #:skip-build? #t
+      #:import-path "github.com/googleapis/gax-go/v2"
+      #:unpack-path "github.com/googleapis/gax-go"))
+    (propagated-inputs
+     (list go-google-golang-org-protobuf
+           go-google-golang-org-grpc
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-genproto-googleapis-api
+           ;; go-google-golang-org-genproto
+           ;; go-google-golang-org-api
+           go-github-com-google-go-cmp))
+    (home-page "https://github.com/googleapis/gax-go")
+    (synopsis "Google API Extensions for Go")
+    (description
+     "This package contains a set of modules which aid the development of APIs for
+clients and servers based on @code{gRPC} and Google API conventions.")
+    (license license:bsd-3)))
+
 (define-public go-code-gitea-io-sdk-gitea
   (package
     (name "go-code-gitea-io-sdk-gitea")
