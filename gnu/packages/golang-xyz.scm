@@ -21000,6 +21000,35 @@ Use waterutil with it to work with TUN/TAP packets/frames.")
      "Quant provides an interface for image color quantizers.")
     (license license:expat)))
 
+(define-public go-github-com-sony-gobreaker
+  (package
+    (name "go-github-com-sony-gobreaker")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sony/gobreaker")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ghqsyb98q76drh6kx5pnmaynijxhp3wkbwq8y07z37zq3maggww"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; non-constant format string in call to fmt.Errorf
+      #:test-flags
+      #~(list "-vet=off")
+      #:import-path "github.com/sony/gobreaker"))
+    (native-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://github.com/sony/gobreaker")
+    (synopsis "Circuit Breaker implemented in Golang")
+    (description
+     "Package gobreaker implements the
+@url{https://msdn.microsoft.com/en-us/library/dn589784.aspx, Circuit Breaker
+pattern}.")
+    (license license:expat)))
+
 (define-public go-github-com-sosodev-duration
   (package
     (name "go-github-com-sosodev-duration")
