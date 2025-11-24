@@ -1908,6 +1908,56 @@ token-based authentication support across the Azure SDK.  It includes a set of
 clients supporting token authentication.")
     (license license:expat)))
 
+(define-public go-github-com-azure-azure-sdk-for-go-sdk-storage-azblob
+  (package
+    (name "go-github-com-azure-azure-sdk-for-go-sdk-storage-azblob")
+    (version "1.6.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Azure/azure-sdk-for-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "sdk/storage/azblob"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08a8kx4n31pa4krrxs1hrcwygryh86nz98fyr9hvw67202zr3adw"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "sdk/storage" "azblob")
+                    (delete-all-but "sdk" "storage")
+                    (delete-all-but "." "sdk")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;TODO: Tests require additional dependencies
+      #:import-path "github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
+      #:unpack-path "github.com/Azure/azure-sdk-for-go"))
+    (propagated-inputs
+     (list go-github-com-stretchr-testify
+           ;; go-github-com-azure-azure-sdk-for-go-sdk-resourcemanager-storage-armstorage
+           go-github-com-azure-azure-sdk-for-go-sdk-internal
+           go-github-com-azure-azure-sdk-for-go-sdk-azidentity
+           go-github-com-azure-azure-sdk-for-go-sdk-azcore))
+    (home-page "https://github.com/Azure/azure-sdk-for-go")
+    (synopsis "Azure Blob Storage module for Go")
+    (description
+     "Azure Blob Storage is Microsoft's object storage solution for the cloud.  Blob
+Storage is optimized for storing massive amounts of unstructured data - data
+that does not adhere to a particular data model or definition, such as text or
+binary data.  For more information, see
+@url{https://learn.microsoft.com/azure/storage/blobs/storage-blobs-introduction,Introduction
+to Azure Blob Storage}.")
+    (license license:expat)))
+
 (define-public go-github-com-azure-azure-sdk-for-go-sdk-internal
   (package
     (name "go-github-com-azure-azure-sdk-for-go-sdk-internal")
