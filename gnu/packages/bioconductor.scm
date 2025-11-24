@@ -24055,14 +24055,14 @@ add-on package rather than used directly.")
 (define-public r-chemminer
   (package
     (name "r-chemminer")
-    (version "3.60.0")
+    (version "3.62.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ChemmineR" version))
        (sha256
         (base32
-         "0kvg14g4mj8dsyw1ksmgqf5a0dx791px0vf61fmbi5sx67ncirf6"))))
+         "0yvf72nz3s151hsclwk8ch0rypsm7a4z3w49ds7rnqd92q1h0rx5"))))
     (properties
      '((upstream-name . "ChemmineR")
        ;; Needed for tests.
@@ -24092,8 +24092,8 @@ add-on package rather than used directly.")
            r-gplots
            r-knitr
            r-rgl
-           r-runit
            r-rsqlite
+           r-runit
            r-scatterplot3d
            r-snow))
     (home-page "https://github.com/girke-lab/ChemmineR")
