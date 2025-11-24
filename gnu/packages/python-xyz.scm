@@ -42,7 +42,7 @@
 ;;; Copyright © 2017, 2020, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2017, 2018, 2019 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
-;;; Copyright © 2017, 2019, 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2017, 2019, 2021, 2025 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2018 Ethan R. Jones <ethanrjones97@gmail.com
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
 ;;; Copyright © 2018 Vijayalakshmi Vedantham <vijimay12@gmail.com>
@@ -25521,6 +25521,15 @@ case-folding for case-insensitive matches in Unicode.")
        (sha256
         (base32 "1dicbm8gdii2bjp85s2p4pnclf25k9x4b4kaj80y8ddhh87glrlk"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-native-optimization
+            (lambda _
+              (substitute* "build.py"
+                (("^COMPILE_ARGS.*")
+                 "COMPILE_ARGS: list[str] = []\n")))))))
     (native-inputs
      (list python-cython
            python-pytest
