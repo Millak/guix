@@ -9552,6 +9552,47 @@ It also contains some convenience functions for colors, SSH to and from
 termios translations, readCh, reading passwords, etc.")
     (license license:bsd-3)))
 
+(define-public go-github-com-google-s2a-go
+  (package
+    (name "go-github-com-google-s2a-go")
+    (version "0.1.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/s2a-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19d2n9w3lm08iiggj9nm4wh64czjbkis3kyvzsy6cqmlyjykch0v"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:import-path "github.com/google/s2a-go"))
+    (propagated-inputs
+     (list go-google-golang-org-protobuf
+           go-google-golang-org-grpc
+           go-google-golang-org-appengine
+           go-golang-org-x-sync
+           go-golang-org-x-crypto
+           go-github-com-google-go-cmp))
+    (home-page "https://github.com/google/s2a-go")
+    (synopsis "Secure Session Agent Client Libraries")
+    (description
+     "This package provides the S2A transport credentials used by a @code{gRPC}
+application.
+
+The Secure Session Agent is a service that enables a workload to offload
+select operations from the mTLS handshake and protects a workload's private
+key material from exfiltration.  Specifically, the workload asks the Secure
+Session Agent for the TLS configuration to use during the handshake, to
+perform private key operations, and to validate the peer certificate chain.
+The Secure Session Agent's client libraries enable applications to communicate
+with the Secure Session Agent during the TLS handshake, and to encrypt traffic
+to the peer after the TLS handshake is complete.")
+    (license license:asl2.0)))
+
 ;; XXX: This repository has been archived by the owner on Dec 29, 2022. It is
 ;; now read-only.  It's only used by kiln, consider to remove it when it does
 ;; no longer require it.
