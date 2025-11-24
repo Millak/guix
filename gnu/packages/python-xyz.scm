@@ -2316,15 +2316,23 @@ Snake with a message.")
 (define-public python-jaconv
   (package
     (name "python-jaconv")
-    (version "0.4.0")
+    ;; Last release is not tagged.
+    (properties '((commit . "d4273468279536adb5375ffbfcd34578c6a95b70")
+                  (revision . "0")))
+    (version (git-version "0.4.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "jaconv" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ikegami-yukino/jaconv")
+             (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0qc1dx21vwlarhsg19l5rdjpjf7j7lamrcynaadf0xpj8yr79nij"))))
+        (base32 "00lvkr6jsm2h70658hly5w81ybkfp3x0rmgzpcn0s52d4n4m21fb"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel python-nose))
+    (native-inputs (list python-setuptools python-pynose))
     (home-page "https://github.com/ikegami-yukino/jaconv")
     (synopsis
      "Pure-Python Japanese character interconverter for Hiragana, Katakana,
