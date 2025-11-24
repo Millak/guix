@@ -7114,7 +7114,7 @@ CWL descriptions.")
 (define-public ravanan
   (package
     (name "ravanan")
-    (version "0.1.0")
+    (version "0.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -7122,7 +7122,7 @@ CWL descriptions.")
                     version "/ravanan-" version ".tar.lz"))
               (sha256
                (base32
-                "163r3iyqfdwd3bizm36axfsvnppqwqd6zxl2vwf7sq0lcgl2zx5p"))))
+                "00ayvxsgvma3231ja1759f5fr99a4nw3j23i8qz616wfxa54745s"))))
     (arguments
      (list #:make-flags
            #~(list (string-append "prefix=" #$output)
@@ -7163,9 +7163,10 @@ CWL descriptions.")
            guile-libyaml
            guix))
     (native-inputs
-     (list lzip))
+     (list guile-run64
+           lzip))
     (build-system gnu-build-system)
-    (home-page "https://github.com/arunisaac/ravanan")
+    (home-page "https://forge.systemreboot.net/ravanan/")
     (synopsis "High-reproducibility CWL runner powered by Guix")
     (description "ravanan is a @acronym{CWL, Common Workflow Language}
 implementation that is powered by GNU Guix and provides strong reproducibility
