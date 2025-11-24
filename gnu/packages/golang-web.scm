@@ -11456,6 +11456,38 @@ changes.")
     (description "This package provides a parser for MIME messages.")
     (license license:expat)))
 
+(define-public go-github-com-protonmail-gopenpgp-v2
+  (package
+    (name "go-github-com-protonmail-gopenpgp-v2")
+    (version "2.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ProtonMail/gopenpgp")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ky3hrpdimn0k28h6llp3zj6hdm3wdrcq6gnff3zzrzagybly9w4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/ProtonMail/gopenpgp/v2"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-pkg-errors
+           go-github-com-protonmail-go-crypto
+           go-github-com-protonmail-go-mime
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/ProtonMail/gopenpgp")
+    (synopsis "High-level OpenPGP library for Golang")
+    (description
+     "This package is a high-level OpenPGP library built on top of the
+Golang crypto library.")
+    (license license:expat)))
+
 (define-public go-github-com-puerkitobio-goquery
   (package
     (name "go-github-com-puerkitobio-goquery")
