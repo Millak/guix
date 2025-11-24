@@ -3097,16 +3097,15 @@ resolutions.")
     (name "font-opendyslexic")
     (version "0.91.12")
     (source
-      (origin
-        (method url-fetch/zipbomb)
-        (uri (string-append "https://github.com/antijingoist/opendyslexic/"
-                            "releases/download/v" version
-                            "/opendyslexic-0.910.12-rc2-2019.10.17.zip"))
-        (sha256
-         (base32
-          "11ml7v4iyf3hr0fbnkwz8afb8vi58wbcfnmn4gyvrwh9jk5pybdr"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://forge.hackers.town/antijingoist/opendyslexic")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "135wpw0f5jk43pdjrbqfhfwy6yaanw9hmfs0ykixirdds7q63j3b"))))
     (build-system font-build-system)
-    (native-inputs (list unzip))
     (home-page "https://opendyslexic.org/")
     (synopsis "Font for dyslexics and high readability")
     (description "OpenDyslexic is a font designed to help readability for some
