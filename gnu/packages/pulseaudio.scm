@@ -264,7 +264,7 @@ sound server.")
 (define-public pavucontrol
   (package
     (name "pavucontrol")
-    (version "6.1")
+    (version "6.2")
     (source
      (origin
        (method url-fetch)
@@ -272,7 +272,7 @@ sound server.")
              "https://freedesktop.org/software/pulseaudio/pavucontrol/pavucontrol-"
              version ".tar.xz"))
        (sha256
-        (base32 "0pa19v96rvkvbb32hzbzasc7xx5gnygbf7qf4x6a1bwf130n3khd"))))
+        (base32 "0cjxy7a2zmcyx28bvykmqha2ackq13ncfpz9i74wnz9hqwv7hfp9"))))
     (build-system meson-build-system)
     (inputs
      (list adwaita-icon-theme ;hard-coded theme
