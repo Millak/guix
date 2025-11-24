@@ -20051,6 +20051,39 @@ specification at http://partners.adobe.com/public/developer/en/tiff/TIFF6.pdf
      "This package implements column-formatted output for Golang.")
     (license license:expat)))
 
+(define-public go-github-com-ryszard-goskiplist
+  (package
+    (name "go-github-com-ryszard-goskiplist")
+    (version "0.0.0-20150312221310-2dfbae5fcf46")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ryszard/goskiplist")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1135gmvcwnmk36zryxq554fmikrmg5c6y5ml00arqpagn5xhnmnl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/ryszard/goskiplist"))
+    (home-page "https://github.com/ryszard/goskiplist")
+    (synopsis "Skip list implementation in Golang")
+    (description
+     "This is a library implementing @url{https://en.wikipedia.org/wiki/Skip_list,
+skip lists} as first described in @url{https://doi.org/10.1145/78973.78977,
+Skip lists: a probabilistic alternative to balanced trees} for the Go
+programming language.
+
+Skip lists are a data structure that can be used in place of balanced
+trees.  Skip lists use probabilistic balancing rather than strictly enforced
+balancing and as a result the algorithms for insertion and deletion in skip
+lists are much simpler and significantly faster than equivalent algorithms for
+balanced trees.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-sabhiram-go-gitignore
   (package
     (name "go-github-com-sabhiram-go-gitignore")
