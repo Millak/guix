@@ -23201,10 +23201,22 @@ systems.")
               (sha256
                (base32
                 "1v5w93vkdjyj6nj6jahppn0zpbsvvxkqq35k3fh58q354177kd6a"))))
-    (properties `((upstream-name . "baseline")))
+    (properties
+     '((upstream-name . "baseline")
+       (updater-extra-inputs . ("openblas"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'fix-lapack
+           (lambda _
+             (substitute* "src/Makevars"
+               (("-llapack") "-lopenblas")))))))
     (propagated-inputs
      (list r-sparsem))
+    (inputs (list openblas))
+    (native-inputs (list gfortran))
     (home-page "https://github.com/khliland/baseline/")
     (synopsis "Baseline correction of spectra")
     (description
