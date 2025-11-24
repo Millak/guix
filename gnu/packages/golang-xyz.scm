@@ -22658,6 +22658,42 @@ stopped.")
 dependencies of @url{https://u-root.org/, u-root} project.")
     (license license:bsd-3)))
 
+(define-public go-github-com-unknwon-goconfig
+  (package
+    (name "go-github-com-unknwon-goconfig")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/unknwon/goconfig")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10f0lhb3l971b2fw2xsvbsy96gx9isyckg2003av2f4rlzs27n7b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/unknwon/goconfig"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-testdata-writable
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each make-file-writable (find-files "testdata")))))
+          (add-after 'check 'remove-test-data
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "testdata")))))))
+    (native-inputs
+     (list go-github-com-smartystreets-goconvey))
+    (home-page "https://github.com/unknwon/goconfig")
+    (synopsis "Configuration file parser")
+    (description
+     "This package is a fully functional and comments-support configuration
+file(.ini) parser.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-urfave-cli
   (package
     (name "go-github-com-urfave-cli")
