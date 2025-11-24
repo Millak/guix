@@ -9601,25 +9601,6 @@ data.  It also provides the @command{bgzip}, @command{htsfile}, and
     ;; the rest is released under the Expat license
     (license (list license:expat license:bsd-3))))
 
-(define-public htslib-1.14
-  (package/inherit htslib
-    (version "1.14")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/samtools/htslib/releases/download/"
-                    version "/htslib-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0pwk8yhhvb85mi1d2qhwsb4samc3rmbcrq7b1s0jz0glaa7in8pd"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments htslib)
-       ((#:configure-flags cf #~'())
-        #~(delete "--with-external-htscodecs" #$cf))))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs htslib)
-                    (delete "htscodecs")))))
-
 ;; This package should be removed once no packages rely upon it.
 (define htslib-1.3
   (package/inherit htslib
