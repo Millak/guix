@@ -28805,15 +28805,25 @@ reproducibility.")
 (define-public r-phyloseq
   (package
     (name "r-phyloseq")
-    (version "1.52.0")
+    (version "1.54.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "phyloseq" version))
        (sha256
-        (base32 "0yrfskwv5vah20ynrpxxk4fizxc2z8j86lkhldwd4yfkwkc1nsir"))))
+        (base32 "000a4ksians9qxjfcr89qd1h6pr127h2mfjz607sl1h0kml1hiiv"))))
     (properties `((upstream-name . "phyloseq")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; These deprecated procedures have been removed in testthat.
+         (add-after 'unpack 'testthat-compatibility
+           (lambda _
+             (substitute* (find-files "tests/testthat" "\\.R$")
+               (("is_true\\(\\)") "expect_true")
+               (("is_false\\(\\)") "expect_false")))))))
     (propagated-inputs
      (list r-ade4
            r-ape
