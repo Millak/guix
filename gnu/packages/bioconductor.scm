@@ -15637,17 +15637,18 @@ signal in the input, that lead to spurious peaks during peak calling.")
 (define-public r-diffbind
   (package
     (name "r-diffbind")
-    (version "3.18.0")
+    (version "3.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DiffBind" version))
        (sha256
         (base32
-         "1dcdslb8zd3i5fpkn5nmg36gmil3q8g1vzjgbq17hif6gnah8bgi"))))
+         "1y2i85mcs4wgkl10ykmfhvikapb3kql7v4jwli99jlvi897xwjsq"))))
     (properties
      `((upstream-name . "DiffBind")
-       (updater-extra-native-inputs . ("r-biocstyle" "r-csaw" "r-edger"))))
+       (updater-extra-native-inputs
+        . ("r-biocstyle" "r-csaw" "r-edger" "r-genomeinfodb"))))
     (build-system r-build-system)
     ;; Vignettes fail with: "Only one peakset meets specified criteria."
     (arguments (list #:test-types '(list "tests")))
@@ -15675,7 +15676,8 @@ signal in the input, that lead to spurious peaks during peak calling.")
            r-s4vectors
            r-summarizedexperiment
            r-systempiper))
-    (native-inputs (list r-biocstyle r-csaw r-edger r-testthat r-xtable))
+    (native-inputs
+     (list r-biocstyle r-csaw r-edger r-genomeinfodb r-testthat r-xtable))
     (home-page "https://bioconductor.org/packages/DiffBind")
     (synopsis "Differential binding analysis of ChIP-Seq peak data")
     (description
