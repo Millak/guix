@@ -25948,6 +25948,34 @@ decimal arithmetic.")
 termination.")
     (license license:bsd-3)))
 
+(define-public go-gopkg-in-validator-v2
+  (package
+    (name "go-gopkg-in-validator-v2")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-validator/validator")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17jvj3phqv757kncn16rgjvk3lq495mjdrsc1v41r0y1dwkvpsib"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gopkg.in/validator.v2"))
+    (propagated-inputs
+     (list go-gopkg-in-check-v1))
+    (home-page "https://pkg.go.dev/gopkg.in/validator.v2")
+    (synopsis "Implement value validations based on struct tags")
+    (description
+     "This package implements value validations based on struct tags.
+In code it is often necessary to validate that a given value is valid before
+using it for something.  This package allows one to define valid values as
+struct tags when defining a new struct type.")
+    (license license:asl2.0)))
+
 (define-public go-gopkg-in-vmihailenco-msgpack-v2
   (package
     (name "go-gopkg-in-vmihailenco-msgpack-v2")
