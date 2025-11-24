@@ -4412,6 +4412,31 @@ algorithm originally designed for use in
 Golang.")
     (license license:asl2.0)))
 
+(define-public go-github-com-geoffgarside-ber
+  (package
+    (name "go-github-com-geoffgarside-ber")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/geoffgarside/ber")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08cqmd2hhcrvbrk4vaw683ydwc9y2h0v1qyr66kp2adrkhk0xgxh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/geoffgarside/ber"))
+    (home-page "https://github.com/geoffgarside/ber")
+    (synopsis "ASN.1 package supporting Basic Encoding Rules")
+    (description
+     "This package is a fork of the standard library @url{encoding/asn1} package,
+adding Basic Encoding Rules support for use with
+https://github.com/k-sone/snmpgo.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-getkin-kin-openapi
   (package
     (name "go-github-com-getkin-kin-openapi")
