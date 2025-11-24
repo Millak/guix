@@ -6804,6 +6804,40 @@ Features:
      "Package proton implements types for accessing the Proton API.")
     (license license:expat)))
 
+(define-public go-github-com-henrybear327-proton-api-bridge
+  (package
+    (name "go-github-com-henrybear327-proton-api-bridge")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/henrybear327/Proton-API-Bridge")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0721g2wdgm13vlg6sl4v0a7mp6sfl6fpaqv4zc3nq0y7a6yp0976"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;Tests require username/password
+      #:embed-files
+      #~(list "children" "nodes" "text")
+      #:import-path "github.com/henrybear327/Proton-API-Bridge"))
+    (propagated-inputs
+     (list go-golang-org-x-sync
+           go-github-com-relvacode-iso8601
+           go-github-com-henrybear327-go-proton-api
+           go-github-com-protonmail-gopenpgp-v2
+           go-github-com-protonmail-gluon))
+    (home-page "https://github.com/henrybear327/Proton-API-Bridge")
+    (synopsis "Proton API Bridge")
+    (description
+     "This package implements a funtionality of a bridge to the Proton API,
+ with the goal of providing enough functionality to be a usable backend for
+projects like rclone.")
+    (license license:expat)))
+
 (define-public go-github-com-hetznercloud-hcloud-go-v2
   (package
     (name "go-github-com-hetznercloud-hcloud-go-v2")
