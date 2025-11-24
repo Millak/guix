@@ -88,6 +88,66 @@ expression evaluation, enabling different applications to more easily
 interoperate.")
     (license license:asl2.0)))
 
+(define-public go-github-com-bradenaw-juniper
+  (package
+    (name "go-github-com-bradenaw-juniper")
+    (version "0.15.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bradenaw/juniper")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dykj5fdxsml61hdibbsk7wnp9ckvrcdyzbmcq0z1di4lw8b8kzl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; "non-constant format string in call to (*testing.common).Logf"
+      #:test-flags
+      #~(list "-vet=off")
+      #:skip-build? #t
+      #:import-path "github.com/bradenaw/juniper"))
+    (propagated-inputs (list go-golang-org-x-sync go-golang-org-x-exp))
+    (home-page "https://github.com/bradenaw/juniper")
+    (synopsis "Extensions to the Go standard library using generics")
+    (description
+     "Juniper is a library of extensions to the Go standard library using generics,
+including containers, iterators, and streams.
+
+@itemize
+@item @code{container/tree} contains a @code{Map} and @code{Set} that keep
+elements in sorted order. They are implemented using a B-tree, which performs
+better than a binary search tree.
+@item @code{container/deque} contains a double-ended queue implemented with a
+ring buffer.
+@item @code{container/xheap} contains a min-heap similar to the standard
+library's @code{container/heap} but more ergonomic, along with a
+@code{PriorityQueue} that allows setting priorities by key.
+@item @code{container/xlist} contains a linked-list similar to the standard
+library's @code{container/list}, but type-safe.
+@item @code{xslices} contains some commonly-used slice operations, like
+@code{Chunk}, @code{Reverse}, @code{Clear}, and @code{Join}.
+@item @code{iterator} contains an iterator interface used by the containers,
+along with functions to manipulate them, like @code{Map}, @code{While}, and
+@code{Reduce}.
+@item @code{stream} contains a stream interface, which is an iterator that can
+fail. Useful for iterating over collections that require I/O. It has most of
+the same combinators as @code{iterator}, plus some extras like @code{Pipe} and
+@code{Batch}.
+@item @code{parallel} contains some shorthand for common uses of goroutines to
+process slices, iterators, and streams in parallel, like
+@code{parallel.MapStream}.
+@item @code{xsort} contains extensions to the standard library package
+@code{sort}. Notably, it also has the definition for @code{xsort.Less}, which
+is how custom orderings can be defined for sorting and also for ordered
+collections like from @code{container/tree}.
+@item You can probably guess what's in the packages @code{xerrors},
+@code{xmath}, @code{xmath/xrand}, @code{xsync}, and @code{xtime}.
+@end itemize")
+    (license license:expat)))
+
 (define-public go-github-com-ebitengine-purego
   (package
     (name "go-github-com-ebitengine-purego")
