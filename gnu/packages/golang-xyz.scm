@@ -20861,6 +20861,30 @@ converting them to the @code{time.Duration} type.")
 implementation.")
     (license license:expat)))
 
+(define-public go-github-com-spacemonkeygo-monkit-v3
+  (package
+    (name "go-github-com-spacemonkeygo-monkit-v3")
+    (version "3.0.24")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/spacemonkeygo/monkit")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lrzj7gb151058k0wdknsrrh02aldhl9w9i9bmv3lcwgaprfdzjl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/spacemonkeygo/monkit/v3"))
+    (home-page "https://github.com/spacemonkeygo/monkit")
+    (synopsis "Flexible code instrumenting and data collection library")
+    (description
+     "This package is a flexible process data collection, metrics, monitoring,
+instrumentation, and tracing client library for Go.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-spdx-gordf
   (package
     (name "go-github-com-spdx-gordf")
