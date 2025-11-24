@@ -3344,6 +3344,33 @@ tools using Go.")
 variables into structs.")
     (license license:expat)))
 
+(define-public go-github-com-calebcase-tmpfile
+  (package
+    (name "go-github-com-calebcase-tmpfile")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/calebcase/tmpfile")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q1bvxyrzlzlaz7rvba1h2pdkv1c9nb18zhns06sz73k2z6h53y8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/calebcase/tmpfile"))
+    (propagated-inputs (list go-golang-org-x-sys))
+    (home-page "https://github.com/calebcase/tmpfile")
+    (synopsis "Cross-platform temporary files")
+    (description
+     "This package provides a cross-platform facility for creating temporary files
+that are automatically cleaned up (even in the event of an unexpected process
+exit).")
+    (license (list license:bsd-3
+                   license:expat))))
+
 (define-public go-github-com-cention-sany-utf7
   (package
     (name "go-github-com-cention-sany-utf7")
