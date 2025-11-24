@@ -21657,19 +21657,31 @@ and to both short and long sequence reads.")
 (define-public r-flames
   (package
     (name "r-flames")
-    (version "2.2.0")
+    (version "2.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "FLAMES" version))
        (sha256
-        (base32 "0h3lxrdacmch21lpf91alnmjsnca9l4r80r093rvzqagrm002ji5"))))
+        (base32 "1ls28dc01bm0bmf304ybgy8w89q2wwccf9krk44cn0bhynm7bsq4"))
+       (modules '((guix build utils)))
+       (snippet
+        '(delete-file-recursively "src/submodule/minimap2"))))
     (properties `((upstream-name . "FLAMES")))
     (build-system r-build-system)
     (arguments
      (list
       #:phases
       '(modify-phases %standard-phases
+         ;; These tests expect the optional oarfish to be installed.
+         (add-after 'unpack 'disable-some-tests
+           (lambda _
+             (delete-file "tests/testthat/test-run_FLAMES.R")))
+         (add-after 'unpack 'do-not-build-minimap2
+           (lambda _
+             (substitute* "src/Makevars"
+               (("all: strippedLib ../inst/bin/minimap2 ../inst/bin/oarfish")
+                "all: strippedLib"))))
          (add-after 'unpack 'fix-build-system
            (lambda _
              ;; One target uses & instead of &&, which leads to a command
@@ -21677,7 +21689,7 @@ and to both short and long sequence reads.")
              (substitute* "src/Makevars"
                ((" & ") " && ")))))))
     (inputs
-     (list minimap2 samtools zlib))
+     (list minimap2 zlib))
     (propagated-inputs
      (list r-abind
            r-bambu
@@ -21686,12 +21698,11 @@ and to both short and long sequence reads.")
            r-biocparallel
            r-biostrings
            r-circlize
+           r-cli
            r-complexheatmap
            r-cowplot
+           r-crew
            r-dplyr
-           r-dropletutils
-           r-future
-           r-genomeinfodb
            r-genomicalignments
            r-genomicfeatures
            r-genomicranges
@@ -21705,6 +21716,7 @@ and to both short and long sequence reads.")
            r-magrittr
            r-matrix
            r-matrixgenerics
+           r-r-utils
            r-rcolorbrewer
            r-rcpp
            r-readr
@@ -21712,13 +21724,15 @@ and to both short and long sequence reads.")
            r-rhtslib
            r-rsamtools
            r-rtracklayer
+           r-s4arrays
            r-s4vectors
            r-scater
            r-scatterpie
            r-scran
            r-scuttle
+           r-seqinfo
+           r-shortread
            r-singlecellexperiment
-           r-sparsearray
            r-spatialexperiment
            r-stringr
            r-summarizedexperiment
@@ -21726,9 +21740,8 @@ and to both short and long sequence reads.")
            r-tibble
            r-tidyr
            r-tidyselect
-           r-txdbmaker
            r-withr))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr which))
     (home-page "https://github.com/OliverVoogd/FLAMES")
     (synopsis
      "Full Length Analysis of Mutations and Splicing in long read RNA-seq data")
