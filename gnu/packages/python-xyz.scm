@@ -8632,25 +8632,29 @@ structure for Python.")
   (package
     (name "autokey")
     (version "0.96.0")
-    (source (origin
-             (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/autokey/autokey")
-                   (commit (string-append "v" version))))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "1v19196swihc12bcg0d9s07gfc3a44b9y7g6rqhb82qxm4p8jmbp"))
-             (modules '((guix build utils)))
-             (snippet
-              #~(begin
-                  ;; XXX: skip test depending on .git/
-                  (delete-file "tests/test_common.py")))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/autokey/autokey")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1v19196swihc12bcg0d9s07gfc3a44b9y7g6rqhb82qxm4p8jmbp"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 328 passed, 2 skipped, 1 deselected, 13 xfailed, 1 warning
+      #:test-flags
+      ;;  AssertionError: Ensure the most recent git tag version matches the
+      ;;  version number in lib/autokey/common.py
+      #~(list "--deselect=tests/test_common.py::test_version_number_accurate")
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "setup.cfg"
+                (("--cov-repor.*") ""))))
           ;; Use 'prefix' instead of '=' to allow the user to use additional
           ;; GI paths from their autokey scripts.  GUIX_PYTHONPATH is already
           ;; wrapped with prefix in python-build-system's wrap.
@@ -8679,10 +8683,10 @@ structure for Python.")
               ;; required for tests/test_configmanager.py
               (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-pyhamcrest
-           python-wheel))
+     (list python-pyhamcrest
+           git-minimal
+           python-pytest
+           python-setuptools))
     (inputs
      (list bash-minimal ; for wrap-program
            gtksourceview-3
@@ -8697,14 +8701,13 @@ structure for Python.")
            wmctrl
            zenity))
     (home-page "https://github.com/autokey/autokey")
-    (synopsis
-      "Keyboard and GUI automation utility")
+    (synopsis "Keyboard and GUI automation utility")
     (description
-      "AutoKey is a desktop automation utility for X11.  It allows the automation of
-virtually any task by responding to typed abbreviations and hotkeys.  It
-offers a full-featured GUI (GTK and QT versions) that makes it highly
-accessible for novices, as well as a scripting interface offering the full
-flexibility and power of the Python language.")
+     "AutoKey is a desktop automation utility for X11.  It allows the
+automation of virtually any task by responding to typed abbreviations and
+hotkeys.  It offers a full-featured GUI (GTK and QT versions) that makes it
+highly accessible for novices, as well as a scripting interface offering the
+full flexibility and power of the Python language.")
     (license license:gpl3+)))
 
 (define-public kalamine
