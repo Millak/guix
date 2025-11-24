@@ -4406,6 +4406,54 @@ metrics (i.e. response time, bytes written, and http status code) from your
 application's http.Handlers.")
     (license license:expat)))
 
+(define-public go-github-com-files-com-files-sdk-go-v3
+  (package
+    (name "go-github-com-files-com-files-sdk-go-v3")
+    (version "3.3.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Files-com/files-sdk-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1syx75vbamwrx5x5glf4542ml8myj9kqqkig8hmy97lhzq4d4n7a"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Files-com/files-sdk-go/v3"
+      #:embed-files
+      #~(list "Linux.gitignore")
+      #:test-flags
+      #~(list "-vet=off")))   ;Go@1.24 forces vet, but tests are not ready yet.
+    (native-inputs
+     (list go-github-com-gin-gonic-gin
+           go-github-com-dnaeon-go-vcr
+           go-github-com-snabb-httpreaderat
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-appscode-go-querystring
+           go-github-com-bradfitz-iter
+           go-github-com-chilts-sid
+           go-github-com-dustin-go-humanize
+           go-github-com-hashicorp-go-retryablehttp
+           go-github-com-hashicorp-golang-lru-v2
+           go-github-com-lpar-date
+           go-github-com-panjf2000-ants-v2
+           go-github-com-sabhiram-go-gitignore
+           go-github-com-samber-lo
+           go-github-com-winfsp-cgofuse
+           go-golang-org-x-sys
+           go-golang-org-x-text
+           go-moul-io-http2curl-v2))
+    (home-page "https://github.com/Files-com/files-sdk-go")
+    (synopsis "Files.com Go Client")
+    (description
+     "The Files.com Go SDK provides a direct, high performance integration to
+Files.com from applications written in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-flosch-pongo2-v6
   (package
     (name "go-github-com-flosch-pongo2-v6")
