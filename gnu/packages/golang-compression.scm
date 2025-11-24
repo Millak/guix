@@ -5,6 +5,7 @@
 ;;; Copyright © 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2025 Patrick Norton <patrick.147.norton@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -66,6 +67,38 @@ It was translated from the reference implementation
 the @code{c2go} tool at
 @url{https://github.com/andybalholm/c2go,https://github.com/andybalholm/c2go}.")
     (license license:expat)))
+
+(define-public go-github-com-buengese-sgzip
+  (package
+    (name "go-github-com-buengese-sgzip")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/buengese/sgzip")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01gh3d9nnb5aljjyk3svhdbihhz9x448qh6xkl2fps8w1h2knw58"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/buengese/sgzip"))
+    (propagated-inputs
+     (list go-github-com-klauspost-compress))
+    (home-page "https://github.com/buengese/sgzip")
+    (synopsis "Gzip implementation that allows seeking in the compressed file")
+    (description
+     "This package implements a seekable version of gzip-format compressed files,
+compliant with @url{https://rfc-editor.org/rfc/rfc1952.html, RFC 1952}.  This
+implementation allows seeking in the compressed file.  In normal gzip files
+that can only be achieved by decompressing from the start and discarding all
+data until the selected offset.  This gzip implementation works around this by
+creating a special metadata file that maps uncompressed blocks to compressed
+blocks allowing it to only read the compressed blocks required.")
+    (license (list license:bsd-3
+                   license:expat))))
 
 (define-public go-github-com-containerd-stargz-snapshotter-estargz
   (package
