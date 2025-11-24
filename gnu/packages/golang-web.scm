@@ -5309,6 +5309,36 @@ projects.")
 OpenAPI 2.0).")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-resty-resty-v2
+  (package
+    (name "go-github-com-go-resty-resty-v2")
+    (version "2.16.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-resty/resty")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h2l5mdajmy9f3ghhsqbfhmrjm6mpkz9n4rsv98apr79daz0g0kc"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-resty/resty/v2"
+      #:embed-files
+      #~(list "children" "nodes" "text")
+      #:test-flags
+      #~(list "-count=1")))
+    (propagated-inputs
+     (list go-golang-org-x-net
+           go-golang-org-x-time))
+    (home-page "https://resty.dev/")
+    (synopsis "HTTP, REST, and SSE client library for Golang")
+    (description
+     "Package resty provides Simple HTTP and REST client library for Go.")
+    (license license:expat)))
+
 (define-public go-github-com-go-webauthn-webauthn
   (package
     (name "go-github-com-go-webauthn-webauthn")
