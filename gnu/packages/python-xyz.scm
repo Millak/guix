@@ -33374,8 +33374,8 @@ key-value pairs from a @code{.env} file and set them as environment variables.")
        (replace "python-sh" python-sh-1)))))
 
 (define-public date2name
-  (let ((commit "6c8f37277e8ec82aa50f90b8921422be30c4e798")
-        (revision "1"))
+  (let ((commit "50cc8d3957fc0bdc26c65042ab8f0d9f05610283")
+        (revision "2"))
     (package
       (name "date2name")
       (version (git-version "0.0" revision commit))
@@ -33383,26 +33383,15 @@ key-value pairs from a @code{.env} file and set them as environment variables.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/novoid/date2name")
-               (commit commit)))
+                (url "https://github.com/novoid/date2name")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1vq96b7n16d932nyfhnzwdwxff0zrqanidmwr4cxj2p67ad9y3w7"))))
+          (base32 "16m24dvyg93rpa94401cladjvj5pk3ds5y6sbz54xygdpg9qf8qm"))))
       (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:tests? #f ;no tests
-        #:phases
-        #~(modify-phases %standard-phases
-            (delete 'build)
-            (replace 'install
-              (lambda _
-                (let* ((bindir (string-append #$output "/bin"))
-                       (binary (string-append bindir "/date2name")))
-                  (mkdir-p bindir)
-                  (copy-file "date2name/__init__.py" binary)
-                  (chmod binary #o555)))))))
-      (native-inputs (list python-setuptools))
+      (native-inputs
+       (list python-poetry-core
+             python-pytest))
       (synopsis "Handling time-stamps and date-stamps in file names")
       (description
        "By default, date2name gets the modification time of matching files and
