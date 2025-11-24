@@ -1627,6 +1627,33 @@ bar writers can be supplied for alternate environments.")
     (description "This package provides generic implementations for Go.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-anacrolix-ffprobe
+  (package
+    (name "go-github-com-anacrolix-ffprobe")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/anacrolix/ffprobe")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yx8hajqzrf2qn00b3fzb45gfqx7yk99hvklamsgmxzxxmmllcx0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;TODO: Tests require additional packages
+      #:import-path "github.com/anacrolix/ffprobe"))
+    (propagated-inputs
+     (list go-github-com-stretchr-testify
+           ;; go-github-com-anacrolix-missinggo-v2
+           go-github-com-anacrolix-envpprof))
+    (home-page "https://github.com/anacrolix/ffprobe")
+    (synopsis "Go ffprobe wrapper")
+    (description "This package wraps and interprets ffmpeg's ffprobe for Go.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-anacrolix-log
   (package
     (name "go-github-com-anacrolix-log")
