@@ -33,6 +33,8 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rust-apps)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
@@ -212,38 +214,37 @@ belonging to various licenses.")
 (define-public reuse
   (package
     (name "reuse")
-    (version "5.0.2")
+    (version "6.2.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "reuse" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://codeberg.org/fsfe/reuse-tool.git")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0p08xmpf361m81kfmkwzm898q9iaq5v6cvb0sjx1176jbnp1d047"))))
+        (base32 "1m76vrjqbr3a6bmzgxqkf0qdfk41v1mnhh524q67pincvqi533r7"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; Change directory before running the test suite to avoid having both
-     ;; the local sources on GUIX_PYTHONPATH as well as the installed
-     ;; libraries confusing Pytest (ImportPathMismatchError).
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-before 'check 'chdir
-                          (lambda _
-                            (chdir "/tmp"))))
-           ;; The test_simple test hangs (see:
-           ;; https://github.com/fsfe/reuse-tool/issues/1119).
-           #:test-flags #~(list "-k" "not test_simple")))
+     (list
+      ;; tests: 907 passed, 21 skipped, 8 warnings
+      #:test-flags #~(list "--ignore=src/reuse")))
     (native-inputs
      (list python-freezegun
            python-poetry-core
-           python-pytest
-           python-wheel))
+           python-pytest))
     (inputs
-     (list python-attrs
+     (list git
+           jujutsu
+           mercurial
+           python-attrs
            python-binaryornot
-           python-boolean.py
+           python-charset-normalizer
            python-click
            python-debian
            python-jinja2
            python-license-expression
+           python-magic
            python-tomlkit))
     (home-page "https://reuse.software/")
     (synopsis "Provide and verify copyright and licensing information")
