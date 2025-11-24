@@ -1423,6 +1423,39 @@ comparison operators, as defined in the original
 @url{http://goessner.net/articles/JsonPath/, JSONPath} proposal.")
     (license license:asl2.0)))
 
+(define-public python-json-log-formatter
+  (package
+    (name "python-json-log-formatter")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/marselester/json-log-formatter")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name  version))
+       (sha256
+        (base32 "04zs938mjf131h0lfrkm3c2dfh0x5f8rmaks0i29nlxb71zpg0f2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-s" "tests.py")))))))
+    (native-inputs (list python-django
+                         python-pytest
+                         python-setuptools
+                         python-simplejson
+                         python-ujson
+                         python-wheel))
+    (home-page "https://github.com/marselester/json-log-formatter")
+    (synopsis "JSON log formatter")
+    (description "The library helps you to store logs in JSON format.")
+    (license license:expat)))
+
 (define-public python-keeper-secrets-manager-core
   ;; released from a monorepo with other packages following various versioning
   ;; schemes. This commit was selected because some failing tests were fixed
