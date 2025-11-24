@@ -10268,6 +10268,76 @@ standard library.")
 Go.")
     (license license:asl2.0)))
 
+(define-public go-github-com-oracle-oci-go-sdk-v65
+  (package
+    (name "go-github-com-oracle-oci-go-sdk-v65")
+    (version "65.104.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/oracle/oci-go-sdk")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d8mpawbk29s28pb269fkmgqgdv4ypwk3a26hmm2amgn4vsaaqj2"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - example.com/faas/test-go-func
+            (delete-file-recursively "example/example_resource_principal_function")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/oracle/oci-go-sdk/v65"
+      #:test-flags
+      #~(list "-vet=off" ;Go@1.24 forces vet, but tests are not ready yet.
+              ;; panic: runtime error: invalid memory address or nil
+              ;; pointer dereference
+              "-skip" "TestUpload.*")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-example-tests
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively
+                          (find-files "example" ".*_test\\.go$")))))
+          (add-before 'check 'pre-check
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* "common/client.go"
+                  ;; getHomeFolder function reads current user config first
+                  ;; (which is nil) in common/client.go and set it to the root
+                  ;; of file system or "Give up and try to return something
+                  ;; sensible":
+                  ;;
+                  ;; current, e := user.Current()
+                  (("if e != nil")
+                   "if e == nil"))
+                (setenv "DOMAIN_ENDPOINT" "dummy.dummy")
+                (setenv "USER" "guix")
+                (setenv "USERPROFILE" "/tmp")
+                (setenv "HOME" "/tmp")))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-gofrs-flock
+           go-github-com-sony-gobreaker
+           go-github-com-youmark-pkcs8))
+    (home-page "https://github.com/oracle/oci-go-sdk")
+    (synopsis "Oracle Cloud Infrastructure Golang SDK")
+    (description
+     "This package provices an official Go SDK for Oracle Cloud Infrastructure.")
+    ;; This software is dual-licensed to you under the Universal Permissive
+    ;; License (UPL) 1.0 as shown at https://oss.oracle.com/licenses/upl or
+    ;; Apache License 2.0 as shown at
+    ;; http://www.apache.org/licenses/LICENSE-2.0. You may choose either
+    ;; license.
+    (license (list license:asl2.0
+                   (license:non-copyleft "https://oss.oracle.com/licenses/upl/")))))
+
 (define-public go-github-com-oschwald-geoip2-golang
   (package
     (name "go-github-com-oschwald-geoip2-golang")
