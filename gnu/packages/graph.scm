@@ -376,10 +376,7 @@ algorithm for community detection in large networks.")
     (native-inputs
      (list util-linux ;for lscpu
            python-anndata
-           python-black
-           python-coverage
-           python-coveralls
-           python-nose
+           python-pynose
            python-nose2
            python-pandas
            python-parameterized
