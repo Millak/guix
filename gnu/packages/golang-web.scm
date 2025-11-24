@@ -45,6 +45,7 @@
 ;;; Copyright © 2025 Arthur Rodrigues <arthurhdrodrigues@proton.me>
 ;;; Copyright © 2025 David Thompson <davet@gnu.org>
 ;;; Copyright © 2025 Danny Milosavljevic <dannym@friendly-machines.com>
+;;; Copyright © 2025 Patrick Norton <patrick.147.norton@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -216,7 +217,7 @@ devices.")
 (define-public go-cloud-google-com-go-compute-metadata
   (package
     (name "go-cloud-google-com-go-compute-metadata")
-    (version "0.7.0")
+    (version "0.8.0")
     (source
      (origin
        (method git-fetch)
@@ -226,7 +227,7 @@ devices.")
                                           #:subdir "compute/metadata"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ryq4ay3myk7w2wb7pzfk0pbvz6ymirxq91zm6rql7a1vb15x0n9"))))
+        (base32 "02xl6mnw3i1x8zfafrsl2gr0v5a29nn3aiif6ndzssqr0pqfg5dw"))))
     (build-system go-build-system)
     (arguments
      (list
