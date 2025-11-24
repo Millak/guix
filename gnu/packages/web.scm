@@ -9514,14 +9514,14 @@ and can be extended with the use of external commands.")
 (define-public siege
   (package
     (name "siege")
-    (version "4.1.1")
+    (version "4.1.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.joedog.org/siege/siege-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1a74py0ib1gr3znv9ah5acw67ngl08b14dbc90ww9clvgdr2ag0l"))))
+                "09ihp4sycjm8ixd0k4c7lyni4b0w2nh8gghdss1r75srs7nhq57c"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags (list (string-append "--with-zlib="
