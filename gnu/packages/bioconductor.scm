@@ -15604,23 +15604,25 @@ posterior for individual coefficients.")
 (define-public r-greylistchip
   (package
    (name "r-greylistchip")
-   (version "1.40.0")
+   (version "1.42.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "GreyListChIP" version))
             (sha256
              (base32
-              "1aykzjz3wg82k9ri4vc42dc3s93pjp5raxayq2ysf61v5j8qg17r"))))
-   (properties `((upstream-name . "GreyListChIP")))
+              "0gm1d021ik5k9dnvczagxdsrpfl85p4qzhbp1frar31ki15h3hli"))))
+   (properties
+    '((upstream-name . "GreyListChIP")
+      (updater-extra-native-inputs . ("r-biocstyle"))))
    (build-system r-build-system)
    (propagated-inputs
     (list r-bsgenome
-          r-genomeinfodb
           r-genomicalignments
           r-genomicranges
           r-mass
           r-rsamtools
           r-rtracklayer
+          r-seqinfo
           r-summarizedexperiment))
    (native-inputs (list r-biocgenerics
                         r-biocstyle
