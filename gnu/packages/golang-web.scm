@@ -15906,6 +15906,81 @@ the standard @code{context} package to store request-scoped values.")
     (description "This package is a Go Implementation of WireGuard.")
     (license license:expat)))
 
+(define-public go-google-golang-org-api
+  (package
+    (name "go-google-golang-org-api")
+    (version "0.247.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/google-api-go-client")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19rj4m4qfc6lfik6p562a2nyf9mhmz0nfargpnvkcvdzi0rh350x"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - google.golang.org/api/internal/kokoro/discogen
+            (delete-file-recursively "internal/kokoro/discogen")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "google.golang.org/api"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Network access is required.
+                       (list "TestLogDirectPathMisconfigAttrempDirectPathNotSet"
+                             "TestLogDirectPathMisconfigNotOnGCE"
+                             "TestNewClient"
+                             "TestNewTokenSource"
+                             "TestNewTokenSource_WithCredentialJSON")
+                       "|"))
+      #:test-subdirs
+      ;; XXX: Remove when all dependencies are packaged.
+      #~(list "."
+              "google-api-go-generator/..."
+              "googleapi/..."
+              "impersonate/..."
+              "internal/..."
+              "iterator/..."
+              "option/..."
+              "support/bundler/..."
+              "transport"
+              "transport/grpc"
+              "transport/http"
+              "idtoken/..."
+              "transport/grpc/..."
+              "transport/http/...")))
+    (propagated-inputs
+     (list go-cloud-google-com-go-auth
+           go-cloud-google-com-go-auth-oauth2adapt
+           go-cloud-google-com-go-compute-metadata
+           go-github-com-google-go-cmp
+           go-github-com-google-s2a-go
+           go-github-com-google-uuid
+           go-github-com-googleapis-enterprise-certificate-proxy
+           go-github-com-googleapis-gax-go-v2
+           go-go-opentelemetry-io-contrib-instrumentation-google-golang-org-grpc-otelgrpc
+           go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+           go-golang-org-x-net
+           go-golang-org-x-oauth2
+           go-golang-org-x-sync
+           go-golang-org-x-time
+           ;; go-google-golang-org-genproto-googleapis-bytestream
+           go-google-golang-org-genproto-googleapis-rpc
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://google.golang.org/api/")
+    (synopsis "Google APIs Client Library for Golang")
+    (description
+     "Package api is the root of the packages used to access
+@url{https://godoc.org/google.golang.org/api, Google Cloud Services}.")
+    (license license:bsd-3)))
+
 (define-public go-google-golang-org-genproto-googleapis-api
   (package
     (name "go-google-golang-org-genproto-googleapis-api")
