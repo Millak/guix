@@ -13974,6 +13974,48 @@ do not update the structure in-place, but instead always yield a new
 structure.  It's a stable fork of https://github.com/mndrix/ps.")
     (license license:expat)))
 
+(define-public go-github-com-lanrat-extsort
+  (package
+    (name "go-github-com-lanrat-extsort")
+    (version "1.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lanrat/extsort")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rryjcvamiivh8fhwzw0xllbhzi1s272w082yqqn3z8ji3d0lrzj"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: It looks like not proper implemented logic in GetTempDir
+      ;; function, the temp dire is hardcoded to /var/tmp with no options
+      ;; alter it via envars: "On Unix-like systems, this typically includes
+      ;; /var/tmp which is traditionally disk-backed, unlike /tmp which may be
+      ;; tmpfs."
+      ;;
+      ;; Tests start SEGFAULT gradually when disable one by one, probably due
+      ;; to the reason described above.
+      #:tests? #f
+      #:import-path "github.com/lanrat/extsort"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
+    (propagated-inputs (list go-golang-org-x-sync))
+    (home-page "https://github.com/lanrat/extsort")
+    (synopsis "External sorting for Golang")
+    (description
+     "This package implements high-performance external sorting library for
+Go that enables sorting of arbitrarily large datasets that don't fit entirely
+in memory.  The library operates on channels and uses temporary disk storage
+to handle datasets larger than available RAM.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-layeh-gopher-luar
   (package
     (name "go-github-com-layeh-gopher-luar")
