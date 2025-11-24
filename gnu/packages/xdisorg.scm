@@ -145,6 +145,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages kde-utils)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
@@ -213,8 +214,11 @@
           (add-after 'wrap 'wrap-executable
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH"))
-                    ;; see lib/autokey/UI_common_functions.py
-                    (path (list (string-append #$(this-package-input "wmctrl")
+                    ;; See: lib/autokey/UI_common_functions.py and
+                    ;; apt-requirements.txt for runtime dependencies.
+                    (path (list (string-append #$(this-package-input "kdialog")
+                                               "/bin")
+                                (string-append #$(this-package-input "wmctrl")
                                                "/bin")
                                 (string-append #$(this-package-input "zenity")
                                                "/bin"))))
@@ -243,6 +247,7 @@
     (inputs
      (list bash-minimal ; for wrap-program
            gtksourceview-3
+           kdialog
            libappindicator
            libnotify
            python-dbus
