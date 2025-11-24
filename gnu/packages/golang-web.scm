@@ -13925,6 +13925,32 @@ https://github.com/restic/restic project.")
 netmasks.")
     (license license:expat)))
 
+(define-public go-github-com-willscott-go-nfs-client
+  (package
+    (name "go-github-com-willscott-go-nfs-client")
+    (version "0.0.0-20251022144359-801f10d98886")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/willscott/go-nfs-client")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b1v0cxjj7dqd90iyhq1hg5ilnf047xgdvnw541ymbwj8in7ck34"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/willscott/go-nfs-client"))
+    (propagated-inputs (list go-github-com-rasky-go-xdr))
+    (home-page "https://github.com/willscott/go-nfs-client")
+    (synopsis "NFS client for Go")
+    (description
+     "This package implements a Network File System (NFS) client in Go.
+It's an alternative fork of unmaintained https://github.com/davecheney/nfs.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-willscott-goturn
   (package
     (name "go-github-com-willscott-goturn")
