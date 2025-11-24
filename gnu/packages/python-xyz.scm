@@ -8658,15 +8658,14 @@ structure for Python.")
           ;; Use 'prefix' instead of '=' to allow the user to use additional
           ;; GI paths from their autokey scripts.  GUIX_PYTHONPATH is already
           ;; wrapped with prefix in python-build-system's wrap.
-          (add-before 'wrap 'wrap-autokey
+          (add-after 'wrap 'wrap-executable
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH"))
-                    (path (map dirname
-                               ;; see lib/autokey/UI_common_functions.py
-                               (list (search-input-file inputs "/bin/wmctrl")
-                                     (search-input-file inputs "/bin/zenity")
-                                     (search-input-file inputs "/bin/ipython3")
-                                     (search-input-file inputs "/bin/python3")))))
+                    ;; see lib/autokey/UI_common_functions.py
+                    (path (list (string-append #$(this-package-input "wmctrl")
+                                               "/bin")
+                                (string-append #$(this-package-input "zenity")
+                                               "/bin"))))
                 (for-each
                  (lambda (program)
                    (wrap-program program
@@ -8675,6 +8674,8 @@ structure for Python.")
                  (map (lambda (name)
                         (string-append #$output "/bin/" name))
                       '("autokey-gtk"
+                        "autokey-qt"
+                        "autokey-run"
                         "autokey-shell"))))))
           (add-before 'check 'setup-env-vars
             (lambda _
