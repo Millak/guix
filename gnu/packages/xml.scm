@@ -1932,9 +1932,6 @@ libxml2 and libxslt.")
                     (setenv "CFLAGS"
                             "-Wno-error=incompatible-pointer-types")))))))))
 
-(define-deprecated python-lxml-4.7 python-lxml)
-(export python-lxml-4.7)
-
 (define-public python-lxml-html-clean
   (package
     (name "python-lxml-html-clean")
