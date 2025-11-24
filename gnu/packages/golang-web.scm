@@ -278,6 +278,48 @@ It offers customizable options for different OAuth2 flows, such as
 automatic token management.")
     (license license:asl2.0)))
 
+(define-public go-cloud-google-com-go-auth-oauth2adapt
+  (package
+    (name "go-cloud-google-com-go-auth-oauth2adapt")
+    (version "0.2.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googleapis/google-cloud-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "auth/oauth2adapt"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "109szg097fn42qpsmrmd29iwsdh2yrjh9krq8mjm02fnm7l18lc4"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "auth" "oauth2adapt")
+                    (delete-all-but "." "auth")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "cloud.google.com/go/auth/oauth2adapt"
+      #:unpack-path "cloud.google.com/go"))
+    (propagated-inputs
+     (list go-golang-org-x-oauth2
+           go-github-com-google-go-cmp
+           go-cloud-google-com-go-auth))
+    (home-page "https://cloud.google.com/go")
+    (synopsis "Convert Google Auth types")
+    (description "This package helps convert types used in
+cloud.google.com/go/auth and golang.org/x/oauth2.")
+    (license license:asl2.0)))
+
 (define-public go-cloud-google-com-go-compute-metadata
   (package
     (name "go-cloud-google-com-go-compute-metadata")
