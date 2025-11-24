@@ -4165,6 +4165,30 @@ code is based on the Go-based PHaul implementation from the CRIU repository.")
       #:import-path "github.com/cheggaaa/pb/v3"
       #:unpack-path "github.com/cheggaaa/pb"))))
 
+(define-public go-github-com-chilts-sid
+  (package
+    (name "go-github-com-chilts-sid")
+    (version "0.0.0-20190607042430-660e94789ec9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/chilts/sid")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jf99pqqakpnh1j0qrqsi8pb1pdaziar8wnnvxbkgz16hspms195"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/chilts/sid"))
+    (home-page "https://github.com/chilts/sid")
+    (synopsis "Generate sortable identifiers")
+    (description
+     "This package provides the ability to generate Sortable Identifiers.  These
+identifiers are also universally unique.")
+    (license license:expat)))
+
 (define-public go-github-com-chzyer-logex
   (package
     (name "go-github-com-chzyer-logex")
