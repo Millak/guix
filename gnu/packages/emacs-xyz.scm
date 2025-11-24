@@ -40955,10 +40955,10 @@ service, and connect it with Emacs via inter-process communication.")
       (license license:gpl3+))))
 
 (define-public emacs-telega
-  (let ((commit "50eea5dea4fdfb9fff46d71e3c3bcc6dbf09f26a"))
+  (let ((commit "956ce7f34bd3d88f446254461cb9c52cf7df071f"))
     (package
       (name "emacs-telega")
-      (version "0.8.554")
+      (version "0.8.570")               ; see telega-version in telega.el
       (source
        (origin
          (method git-fetch)
@@ -40966,7 +40966,7 @@ service, and connect it with Emacs via inter-process communication.")
                (url "https://github.com/zevlg/telega.el")
                (commit commit)))
          (sha256
-          (base32 "1w0hpiaaj6p5nlmdi99psc0lmvmy65d27pz2vv3gafp2la4dplgx"))
+          (base32 "1yhkhdimryhh76bl71f84a5zabbkq54kkg8y6m6kwcs40g3587q5"))
          (file-name (git-file-name "emacs-telega" version))
          (patches
           (search-patches "emacs-telega-path-placeholder.patch"
