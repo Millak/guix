@@ -16974,16 +16974,17 @@ multiplication.")
 (define-public r-scrapper
   (package
     (name "r-scrapper")
-    (version "1.2.1")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scrapper" version))
        (sha256
-        (base32 "186srh8lkr7xfy2alxgqd2gg5liqwxsdrnc88wcvh2iv71gqybv4"))))
+        (base32 "16lvbwby98zinykh6ybxwiswyv7072pmk9lv8sbi7mfqlh0agzfz"))))
     (properties
      '((upstream-name . "scrapper")
        (updater-ignored-native-inputs . ("r-rigraphlib"))
+       (updater-ignored-propagated-inputs . ("r-rigraphlib"))
        (updater-extra-native-inputs
         . ("pkg-config" "r-delayedmatrixstats" "r-sparsematrixstats"))
        (updater-extra-inputs
