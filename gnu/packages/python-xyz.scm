@@ -33373,33 +33373,6 @@ key-value pairs from a @code{.env} file and set them as environment variables.")
        (append python-mock)
        (replace "python-sh" python-sh-1)))))
 
-(define-public date2name
-  (let ((commit "50cc8d3957fc0bdc26c65042ab8f0d9f05610283")
-        (revision "2"))
-    (package
-      (name "date2name")
-      (version (git-version "0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-                (url "https://github.com/novoid/date2name")
-                (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "16m24dvyg93rpa94401cladjvj5pk3ds5y6sbz54xygdpg9qf8qm"))))
-      (build-system pyproject-build-system)
-      (native-inputs
-       (list python-poetry-core
-             python-pytest))
-      (synopsis "Handling time-stamps and date-stamps in file names")
-      (description
-       "By default, date2name gets the modification time of matching files and
-directories and adds a datestamp in standard ISO 8601+ format YYYY-MM-DD at
-the beginning of the file or directory name.")
-      (home-page "https://github.com/novoid/date2name")
-      (license license:gpl3+))))
-
 (define-public python-braintree
   (package
     (name "python-braintree")

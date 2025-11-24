@@ -10,6 +10,7 @@
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Peng Mei Yu <pengmeiyu@riseup.net>
+;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
@@ -104,6 +105,33 @@ application is available in multiple languages, most of the events on
 https://www.agendadulibre.org are in French and the adl-submit tool is only
 available in French.")
       (license license:gpl2))))
+
+(define-public date2name
+  (let ((commit "50cc8d3957fc0bdc26c65042ab8f0d9f05610283")
+        (revision "2"))
+    (package
+      (name "date2name")
+      (version (git-version "0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/novoid/date2name")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "16m24dvyg93rpa94401cladjvj5pk3ds5y6sbz54xygdpg9qf8qm"))))
+      (build-system pyproject-build-system)
+      (native-inputs
+       (list python-poetry-core
+             python-pytest))
+      (home-page "https://github.com/novoid/date2name")
+      (synopsis "Handling time-stamps and date-stamps in file names")
+      (description
+       "By default, date2name gets the modification time of matching files and
+directories and adds a datestamp in standard ISO 8601+ format YYYY-MM-DD at
+the beginning of the file or directory name.")
+      (license license:gpl3+))))
 
 (define-public date
   (package
