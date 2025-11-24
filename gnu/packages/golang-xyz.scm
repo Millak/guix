@@ -12237,6 +12237,32 @@ Golang.")
 text, etc. with a heavy emphasis on customization.")
     (license license:expat)))
 
+(define-public go-github-com-jeffail-gabs
+  (package
+    (name "go-github-com-jeffail-gabs")
+    (version "1.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Jeffail/gabs")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "159r34pfxdzpsknk1sfcw4m2i8n2hm2sbd9vqfpgjh6z9f1hpbv5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Jeffail/gabs"))
+    (home-page "https://github.com/Jeffail/gabs")
+    (synopsis "Parse, create and edit unknown or dynamic JSON in Golang")
+    (description
+     "This package is a small utility for dealing with dynamic or unknown JSON
+structures.  It's pretty much just a helpful wrapper for navigating
+hierarchies of @code{map[string]interface{}} objects provided by the
+@code{encoding/json} package.")
+    (license license:expat)))
+
 (define-public go-github-com-jessevdk-go-flags
   (package
     (name "go-github-com-jessevdk-go-flags")
