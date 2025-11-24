@@ -4413,7 +4413,7 @@ provide a coordinated and extensible framework to do computational biology.")
     (native-inputs
      (list perl-module-build pkg-config))
     (propagated-inputs
-     (list bioperl-minimal htslib-1.9))
+     (list bioperl-minimal htslib))
     (home-page "https://metacpan.org/release/Bio-DB-HTS")
     (synopsis "Perl interface to HTS library for DNA sequencing")
     (description "This is a Perl interface to the HTS library for DNA
