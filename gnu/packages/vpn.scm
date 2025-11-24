@@ -781,69 +781,6 @@ others.")
     (license license:lgpl2.1)
     (home-page "https://www.infradead.org/openconnect/")))
 
-(define-public openconnect-sso
-  (package
-    (name "openconnect-sso")
-    ;; 0.8.0 was released in 2021, the latest update on master HEAD is from
-    ;; 2023.
-    (properties '((commit . "94128073ef49acb3bad84a2ae19fdef926ab7bdf")
-                  (revision . "0")))
-    (version (git-version "0.8.0"
-                          (assoc-ref properties 'revision)
-                          (assoc-ref properties 'commit)))
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/vlaci/openconnect-sso")
-              (commit (assoc-ref properties 'commit))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "08cqd40p9vld1liyl6qrsdrilzc709scyfghfzmmja3m1m7nym94"))))
-    (build-system pyproject-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-          (add-after 'unpack 'use-poetry-core
-            (lambda _
-              ;; Patch to use the core poetry API.
-              (substitute* "pyproject.toml"
-                (("poetry.masonry.api")
-                 "poetry.core.masonry.api"))))
-         (add-after 'unpack 'patch-openconnect
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "openconnect_sso/app.py"
-               (("\"openconnect\"")
-                (string-append "\""
-                               (search-input-file inputs "/sbin/openconnect")
-                               "\""))))))))
-    (inputs
-     (list openconnect
-           python-attrs
-           python-colorama
-           python-keyring
-           python-lxml-4.9
-           python-prompt-toolkit
-           python-pyotp
-           python-pyqt-6
-           python-pyqtwebengine-6
-           python-pysocks
-           python-pyxdg
-           python-requests
-           python-structlog
-           python-toml))
-    (native-inputs
-     (list python-poetry-core
-           python-pytest
-           python-pytest-asyncio
-           python-pytest-httpserver))
-    (home-page "https://github.com/vlaci/openconnect-sso")
-    (synopsis "OpenConnect wrapper script supporting Azure AD (SAMLv2)")
-    (description
-     "This package provides a wrapper script for OpenConnect supporting Azure AD
-(SAMLv2) authentication to Cisco SSL-VPNs.")
-    (license license:gpl3)))
-
 (define-public openfortivpn
   (package
     (name "openfortivpn")
