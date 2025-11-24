@@ -80,6 +80,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
@@ -99,6 +100,7 @@
   #:use-module (gnu packages hurd)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages libbsd)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages ninja)
@@ -1057,7 +1059,7 @@ a card with a smaller capacity than stated.")
 (define-public duperemove
   (package
     (name "duperemove")
-    (version "0.14.1")
+    (version "0.15.2")
     (source
      (origin
        (method git-fetch)
@@ -1065,25 +1067,25 @@ a card with a smaller capacity than stated.")
              (url "https://github.com/markfasheh/duperemove")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0kl6bisbgf6x8a6gws6r097zrawhp9jxwh7m6nhq7dd48b8zrjw8"))
+        (base32 "0dsjw7nqflxapsb1fkxbqncqzq6aa8dxklc5igcvfv5mmsmchwb3"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list glib sqlite))
+    (native-inputs (list xxhash libbsd pkg-config))
+    (inputs (list glib sqlite))
     (arguments
-     `(#:tests? #f                      ; no test suite
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))           ; no configure script
+     `(#:tests? #f ;no test suite
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure)) ;no configure script
        #:make-flags (list (string-append "PREFIX=" %output)
-                          (string-append "CC=" ,(cc-for-target))
+                          (string-append "CC="
+                                         ,(cc-for-target))
                           ;; Set to <next release>dev by default.
-                          (string-append "VER=" ,version))))
+                          (string-append "VER="
+                                         ,version))))
     (home-page "https://github.com/markfasheh/duperemove")
     (synopsis "Tools for de-duplicating file system data")
-    (description "Duperemove is a simple tool for finding duplicated extents
+    (description
+     "Duperemove is a simple tool for finding duplicated extents
 and submitting them for deduplication.  When given a list of files it will
 hash their contents on a block by block basis and compare those hashes to each
 other, finding and categorizing blocks that match each other.  When given the
