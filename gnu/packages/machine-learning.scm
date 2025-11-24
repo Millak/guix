@@ -2658,36 +2658,36 @@ adjoint method for constant memory cost.")
   (package
     (name "lightgbm")
     (version "2.0.12")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://github.com/Microsoft/LightGBM")
-                     (commit (string-append "v" version))))
-              (sha256
-               (base32
-                "0jlvyn7k81dzrh9ij3zw576wbgiwmmr26rzpdxjn1dbpc3njpvzi"))
-              (file-name (git-file-name name version))))
-    (native-inputs
-     (list python-pytest python-nose))
-    (inputs
-     (list openmpi))
-    (propagated-inputs
-     (list python-numpy python-scipy))
-    (arguments
-     `(#:configure-flags
-       '("-DUSE_MPI=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (with-directory-excursion "../source"
-               (invoke "pytest" "tests/c_api_test/test_.py")))))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Microsoft/LightGBM")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "0jlvyn7k81dzrh9ij3zw576wbgiwmmr26rzpdxjn1dbpc3njpvzi"))
+       (file-name (git-file-name name version))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DUSE_MPI=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "../source"
+                  (invoke "pytest" "tests/c_api_test/test_.py"))))))))
+    (native-inputs (list python python-pytest))
+    (inputs (list openmpi))
+    (propagated-inputs (list python-numpy python-scipy))
     (home-page "https://github.com/Microsoft/LightGBM")
     (synopsis "Gradient boosting framework based on decision tree algorithms")
-    (description "LightGBM is a gradient boosting framework that uses tree
-based learning algorithms.  It is designed to be distributed and efficient with
-the following advantages:
+    (description
+     "LightGBM is a gradient boosting framework that uses tree based learning
+algorithms.  It is designed to be distributed and efficient with the following
+advantages:
 
 @itemize
 @item Faster training speed and higher efficiency
@@ -2695,7 +2695,8 @@ the following advantages:
 @item Better accuracy
 @item Parallel and GPU learning supported (not enabled in this package)
 @item Capable of handling large-scale data
-@end itemize\n")
+@end itemize
+")
     (license license:expat)))
 
 (define-public vowpal-wabbit
