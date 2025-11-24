@@ -6976,6 +6976,41 @@ protocol) - used to discover UPnP services on a network
 @end itemize")
     (license license:bsd-2)))
 
+(define-public go-github-com-ibm-go-sdk-core
+  (package
+    (name "go-github-com-ibm-go-sdk-core")
+    (version "5.21.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/IBM/go-sdk-core")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ccdnxyimls91f4gq5ci2jaqm56qqv1mm3dxw56ha2bj5zr7ipnk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/IBM/go-sdk-core/v5"))
+    (native-inputs
+     (list go-github-com-onsi-ginkgo
+           go-github-com-onsi-gomega
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-go-openapi-strfmt
+           go-github-com-go-playground-validator-v10
+           go-github-com-hashicorp-go-cleanhttp
+           go-github-com-hashicorp-go-retryablehttp
+           go-sigs-k8s-io-yaml))
+    (home-page "https://github.com/IBM/go-sdk-core")
+    (synopsis "IBM Go SDK Core")
+    (description
+     "This package implements a core functionality required by Go code generated
+ by the IBM Cloud @code{OpenAPI} SDK Generator (openapi-sdkgen).")
+    (license license:asl2.0)))
+
 (define-public go-github-com-inetaf-tcpproxy
   (package
     (name "go-github-com-inetaf-tcpproxy")
