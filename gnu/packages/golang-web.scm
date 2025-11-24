@@ -1858,6 +1858,56 @@ the OTEL Go SDK.")
 Azure SDK clients.")
     (license license:expat)))
 
+(define-public go-github-com-azure-azure-sdk-for-go-sdk-azidentity
+  (package
+    (name "go-github-com-azure-azure-sdk-for-go-sdk-azidentity")
+    (version "1.13.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Azure/azure-sdk-for-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "sdk/azidentity"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18s9h2fcbcw39idfyjglm7vyyp04bgl0x0wj4vcd8q6a46b8rbh6"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "sdk" "azidentity")
+                    (delete-all-but "." "sdk")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;TODO: Tests require additional dependencies
+      #:import-path "github.com/Azure/azure-sdk-for-go/sdk/azidentity"
+      #:unpack-path "github.com/Azure/azure-sdk-for-go"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto
+           go-github-com-google-uuid
+           go-github-com-golang-jwt-jwt-v5
+           go-github-com-azuread-microsoft-authentication-library-for-go
+           go-github-com-azure-azure-sdk-for-go-sdk-internal
+           ;; go-github-com-azure-azure-sdk-for-go-sdk-azidentity-cache
+           go-github-com-azure-azure-sdk-for-go-sdk-azcore))
+    (home-page "https://github.com/Azure/azure-sdk-for-go")
+    (synopsis "Azure Identity Client Module for Go")
+    (description
+     "The Azure Identity module provides
+@url{https://learn.microsoft.com/entra/fundamentals/whatis,Microsoft Entra ID}
+token-based authentication support across the Azure SDK.  It includes a set of
+@code{TokenCredential} implementations, which can be used with Azure SDK
+clients supporting token authentication.")
+    (license license:expat)))
+
 (define-public go-github-com-azure-azure-sdk-for-go-sdk-internal
   (package
     (name "go-github-com-azure-azure-sdk-for-go-sdk-internal")
