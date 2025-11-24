@@ -837,6 +837,33 @@ substitution.")
 can be used programatically.")
     (license license:expat)))
 
+(define-public go-github-com-aalpar-deheap
+  (package
+    (name "go-github-com-aalpar-deheap")
+    (version "0.0.0-20210914013432-0cc84d79dec3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aalpar/deheap")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1709nykin03n1adhh1kqx9j3w03awvd0p7bsim7p1xaqgdzqisq6"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aalpar/deheap"))
+    (home-page "https://github.com/aalpar/deheap")
+    (synopsis "Doubly-ended heap")
+    (description
+     "Package deheap provides the implementation of a doubly ended heap.
+Doubly ended heaps are heaps with two sides, a min side and a max side.  Like
+normal single-sided heaps, elements can be pushed onto and pulled off of a
+deheap.  Deheaps have an additional Pop function, @code{PopMax}, that returns
+elements from the opposite side of the ordering.")
+    (license license:expat)))
+
 (define-public go-github-com-abadojack-whatlanggo
   (package
     (name "go-github-com-abadojack-whatlanggo")
