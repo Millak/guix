@@ -214,6 +214,70 @@ so that it is not identified and subsequently blocked by network filtering
 devices.")
       (license license:bsd-2))))
 
+(define-public go-cloud-google-com-go-auth
+  (package
+    (name "go-cloud-google-com-go-auth")
+    (version "0.17.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googleapis/google-cloud-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "auth"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0i18wkz04w9wpckw021nawr82dh92krmcsn471rpjx1jrmgsbi5v"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-file-recursively "auth/oauth2adapt")
+                    (delete-all-but "." "auth")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "cloud.google.com/go/auth"
+      #:unpack-path "cloud.google.com/go"
+      #:test-flags
+      #~(list "-skip"
+              (string-join
+               ;; These tests all require credentials/tokens
+               '("TestGetGRPCTransportConfigAndEndpoint_S2A"
+                 "TestGetHTTPTransportConfig_S2A"
+                 "TestDownscopedToken"
+                 "TestDialTCPUserTimeout"
+                 "TestFetchTrustBoundaryData"
+                 "TestLogDirectPathMisconfigDirectPathNotSet"
+                 "TestLogDirectPathMisconfigNotOnGCE") "|"))))
+    (propagated-inputs
+     (list go-google-golang-org-protobuf
+           go-google-golang-org-grpc
+           go-golang-org-x-time
+           go-golang-org-x-net
+           go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+           go-go-opentelemetry-io-contrib-instrumentation-google-golang-org-grpc-otelgrpc
+           go-github-com-googleapis-gax-go-v2
+           go-github-com-googleapis-enterprise-certificate-proxy
+           go-github-com-google-s2a-go
+           go-github-com-google-go-cmp
+           go-cloud-google-com-go-compute-metadata))
+    (home-page "https://cloud.google.com/go")
+    (synopsis "Google Auth Library for Go")
+    (description
+     "This package provides utilities for managing Google Cloud credentials,
+including functionality for creating, caching, and refreshing OAuth2 tokens.
+It offers customizable options for different OAuth2 flows, such as
+2-legged (2LO) and 3-legged (3LO) OAuth, along with support for PKCE and
+automatic token management.")
+    (license license:asl2.0)))
+
 (define-public go-cloud-google-com-go-compute-metadata
   (package
     (name "go-cloud-google-com-go-compute-metadata")
