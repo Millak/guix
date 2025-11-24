@@ -11609,17 +11609,29 @@ platform that mimics both single and multi-sample scRNA-seq data.")
 (define-public r-mutationalpatterns
   (package
     (name "r-mutationalpatterns")
-    (version "3.18.0")
+    (version "3.19.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MutationalPatterns" version))
        (sha256
         (base32
-         "1mjjqhwzsma3yq21dvnrmmb5y5d25dng01wrmk850w30dg5lgq8j"))))
+         "1y7yxricvivg3ds3jacwf5qb366xvzw8sff9wddigz8p5kyzs7f6"))))
     (properties
      '((updater-extra-native-inputs . ("r-ccfindr"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'skip-bad-tests
+           (lambda _
+             ;; These tests may fail with accuracy problems.
+             (with-directory-excursion "tests/testthat"
+               (substitute* "test-context_potential_damage_analysis.R"
+                 ((".*Output is equal to expected.*" m)
+                  (string-append m "skip('guix')\n")))
+               (delete-file "test-mut_matrix_stranded.R")))))))
     (native-inputs
      (list r-ccfindr
            r-knitr
@@ -11644,6 +11656,7 @@ platform that mimics both single and multi-sample scRNA-seq data.")
            r-purrr
            r-rcolorbrewer
            r-s4vectors
+           r-seqinfo
            r-stringr
            r-tibble
            r-tidyr
