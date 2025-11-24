@@ -1814,6 +1814,49 @@ the OTEL Go SDK.")
     (description "This package provides a CSS parser and inliner.")
     (license license:expat)))
 
+(define-public go-github-com-azure-azure-sdk-for-go-sdk-azcore
+  (package
+    (name "go-github-com-azure-azure-sdk-for-go-sdk-azcore")
+    (version "1.20.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Azure/azure-sdk-for-go")
+              (commit (go-version->git-ref version
+                                           #:subdir "sdk/azcore"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qbcm8mqg2qvikv129s832qqvpydipv71825s4dkyjmzar5g04vf"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "sdk" "azcore")
+                    (delete-all-but "." "sdk")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/Azure/azure-sdk-for-go/sdk/azcore"
+      #:unpack-path "github.com/Azure/azure-sdk-for-go"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-azure-azure-sdk-for-go-sdk-internal
+           go-golang-org-x-net))
+    (home-page "https://github.com/Azure/azure-sdk-for-go")
+    (synopsis "Azure Core Client Module for Go")
+    (description
+     "This package implements an HTTP request/response middleware pipeline used by
+Azure SDK clients.")
+    (license license:expat)))
+
 (define-public go-github-com-azure-azure-sdk-for-go-sdk-internal
   (package
     (name "go-github-com-azure-azure-sdk-for-go-sdk-internal")
