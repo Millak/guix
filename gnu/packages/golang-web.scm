@@ -11917,6 +11917,32 @@ parts of the @code{net/url} package, modified so as to allow some reserved
 characters incorrectly escaped by net/url.")
     (license license:bsd-3)))
 
+(define-public go-github-com-putdotio-go-putio
+  (package
+    (name "go-github-com-putdotio-go-putio")
+    (version "1.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/putdotio/go-putio")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16gcs8cbf99yzq61xlv7aysjcyxh035ps41mvk59mpcjck0xh617"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/putdotio/go-putio"))
+    (propagated-inputs
+     (list go-golang-org-x-oauth2))
+    (home-page "https://github.com/putdotio/go-putio")
+    (synopsis "Put.io API client")
+    (description
+     "Package putio is the @url{Put.io} API v2 client for Go.  It's an alternative
+fork of https://github.com/igungor/go-putio.")
+    (license license:expat)))
+
 (define-public go-github-com-quic-go-qpack
   (package
     (name "go-github-com-quic-go-qpack")
