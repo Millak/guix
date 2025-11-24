@@ -11139,21 +11139,33 @@ high distances can be flagged as potentially low-quality.")
 (define-public r-metabocoreutils
   (package
     (name "r-metabocoreutils")
-    (version "1.16.1")
+    (version "1.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MetaboCoreUtils" version))
        (sha256
-        (base32 "0r8p8d3glxd2g12l8z8fis5vzxaj9m0b3ybvij4ciwky4amxjnmc"))))
+        (base32 "1ddcbr3lhi6pbb5mv2h41vgv26z9jncw1wbw5iq8dqhk09f9k1kn"))))
     (properties
      '((upstream-name . "MetaboCoreUtils")
        (updater-extra-native-inputs . ("r-robustbase"))
        ;; Avoid dependency cycle.
        (updater-ignored-native-inputs . ("r-spectra"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; This test uses a deprecated procedure that has since been removed
+         ;; from testthat.
+         (add-after 'unpack 'testthat-compatibility
+           (lambda _
+             (substitute* "tests/testthat/test_zzz.R"
+               ((".*.onLoad works.*" m)
+                (string-append m "skip('guix')\n"))))))))
     (propagated-inputs (list r-biocparallel r-mscoreutils))
-    (native-inputs (list r-knitr r-microbenchmark r-robustbase r-testthat))
+    (native-inputs (list r-callr r-knitr r-microbenchmark r-robustbase
+                         r-testthat))
     (home-page "https://github.com/RforMassSpectrometry/MetaboCoreUtils")
     (synopsis "Core utils for Metabolomics data")
     (description
