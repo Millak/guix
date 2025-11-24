@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2020, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Marius Bakke <mbakke@fastmail.com>
@@ -118,7 +118,14 @@ turn doesn't take any constant overhead into account, force a 1-MiB minimum."
                       (size-in-kib
                        (if (eq? size 'guess)
                            (estimate-partition-size root)
-                           size)))))))
+                           size)))))
+
+    ;; 'mke2fs' does not create directory indexes by default, meaning that
+    ;; directories have a limit of 65,000 sub-directories, which can be
+    ;; problematic for the store.  To avoid that, run 'e2fsck -D' to create
+    ;; those directory indexes.  See
+    ;; <https://github.com/tytso/e2fsprogs/issues/257>.
+    (invoke "e2fsck" "-fDy" target)))
 
 (define* (make-f2fs-image partition target root
                           #:key
