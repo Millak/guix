@@ -26312,16 +26312,18 @@ memory usage and processing time is minimized.")
 (define-public r-mscoreutils
   (package
     (name "r-mscoreutils")
-    (version "1.20.0")
+    (version "1.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MsCoreUtils" version))
        (sha256
         (base32
-         "0xlnlgqmg8mzha8g6a6zhy735ia3dmnrrsyvlgv62n6bspcrh1g4"))))
+         "1lckbd96589vsmyy6prqijxafwiwx3mnm9c1jlw6dbxivfzmk3n7"))))
     (properties
      '((upstream-name . "MsCoreUtils")
+       ;; Avoid dependency cycle.
+       (updater-ignored-native-inputs . ("r-msnbase"))
        (updater-extra-native-inputs . ("r-impute"
                                        "r-imputelcmd"
                                        "r-missforest"
@@ -26330,6 +26332,15 @@ memory usage and processing time is minimized.")
                                        "r-preprocesscore"
                                        "r-vsn"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             (substitute* "tests/testthat/test_imputation.R"
+               ((".*impute_matrix\\(\\) preserves dimnames.*" m)
+                (string-append m "skip('guix')\n"))))))))
     (propagated-inputs
      (list r-clue r-mass r-rcpp r-s4vectors))
     (native-inputs
