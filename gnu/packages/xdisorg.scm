@@ -1023,10 +1023,7 @@ typing tool (@code{wtype}, @code{xdotool}, etc.), or via standard output.")
      (list
       #:configure-flags
       #~(list "-Dtimers=true"
-              "-Dgnuplot=true"
-              #$@(if (target-arm32?)
-                     '("-Darm-simd=disabled")
-                     '()))))
+              "-Dgnuplot=true")))
     (synopsis "Low-level pixel manipulation library")
     (description "Pixman is a low-level software library for pixel
 manipulation, providing features such as image compositing and trapezoid
