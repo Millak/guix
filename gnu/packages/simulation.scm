@@ -632,33 +632,29 @@ problems for efficient solution on parallel systems.")
   (package
     (inherit openfoam-org)
     (name "openfoam-com")
-    (version "2212")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://develop.openfoam.com"
-                                  "/Development/openfoam/-/archive/OpenFOAM-v"
-                                  version
-                                  "/openfoam-OpenFOAM-v"
-                                  version
-                                  ".tar.gz"))
-              (sha256
-               (base32
-                "0i9039hfz9gvgymkdjhjvvn5500zha3cpdbpqrzfrfi8lbz10is2"))
-              (modules '((guix build utils)))
-              (snippet `(begin
-                          (substitute* "etc/bashrc"
-                            ;; set same version as guix package
-			    (("^export WM_PROJECT_VERSION=.*$")
-			     (string-append "export WM_PROJECT_VERSION="
-					    ,version "\n")))
-                          ;; patch shell paths
-                          (substitute* (list "src/OSspecific/POSIX/POSIX.C"
-                                             "wmake/src/Makefile"
-                                             "wmake/makefiles/general"
-                                             "wmake/makefiles/info")
-                            (("/bin/sh")
-                             "sh"))))))
-    (synopsis "Framework for numerical simulation of fluid flow (from openfoam.com)")
+    (version "2506")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/openfoam/core/openfoam")
+             (commit (string-append "OpenFOAM-v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g8cjiqkk4yp5kmxyv8z43aaalr5459i54yaqmkn6qr38cjrhnd2"))))
+    (arguments
+     ;; Since 'arguments' is a function of the package's version, define
+     ;; 'parent' such that the 'arguments' thunk gets to see the right
+     ;; version.
+     (let ((parent (package
+                     (inherit openfoam-org)
+                     (version (package-version this-package)))))
+       (substitute-keyword-arguments (package-arguments parent)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (delete 'disable-failing-tests))))))
+    (synopsis
+     "Framework for numerical simulation of fluid flow (from openfoam.com)")
     (home-page "https://www.openfoam.com")))
 
 (define-public open-simulation-interface
