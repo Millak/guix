@@ -15790,6 +15790,37 @@ maturity level}.")
 a configuration language.")
     (license license:bsd-3)))
 
+(define-public go-goftp-io-server-v2
+  (package
+    (name "go-goftp-io-server-v2")
+    (version "2.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitea.com/goftp/server")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12gyq0jpp03bxzas5439d4a7shqak7vg7s9q7j4fa1vq5n2pd2qn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:embed-files
+      #~(list "children" "nodes" "text")
+      #:import-path "goftp.io/server/v2"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-jlaffaye-ftp
+           go-github-com-minio-minio-go-v7))
+    (home-page "https://goftp.io/server")
+    (synopsis "FTP server framework")
+    (description
+     "This package provides a FTP server framework forked from
+ https://github.com/yob/graval.")
+    (license license:expat)))
+
 (define-public go-goji-io
   (package
     (name "go-goji-io")
