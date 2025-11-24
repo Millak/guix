@@ -25985,13 +25985,13 @@ libraries.")
 (define-public r-singler
   (package
     (name "r-singler")
-    (version "2.10.0")
+    (version "2.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "SingleR" version))
        (sha256
-        (base32 "0q5b8svzkif30ycpqdjibd04xzi3rj6nf8f9k2d339h711h0bmnf"))))
+        (base32 "0f7bfvyff044sf5dbgv3pfprl9qlgi16h737pfb0kq643s8ml45p"))))
     (properties
      '((upstream-name . "SingleR")
        (updater-extra-native-inputs
@@ -26012,10 +26012,9 @@ libraries.")
      (list r-biobase
            r-ggplot2
            r-knitr
-           r-pheatmap
            r-scran
-           r-scuttle
            r-scrapper
+           r-scuttle
            r-singlecellexperiment
            r-testthat
            r-viridis))
