@@ -13386,6 +13386,46 @@ intended to be used to add tracing by wrapping existing handlers (with
 Handler) and routes @code{WithRouteTag}.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-contrib-instrumentation-google-golang-org-grpc-otelgrpc
+  (package
+    (name
+     "go-go-opentelemetry-io-contrib-instrumentation-google-golang-org-grpc-otelgrpc")
+    (version "0.59.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/open-telemetry/opentelemetry-go-contrib")
+              (commit (go-version->git-ref version
+                                           #:subdir "instrumentation/google.golang.org/grpc/otelgrpc"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17kyba5816983migninw6v2si2d28j32973c0x8i08fswrjz5dm0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path
+      "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+      #:unpack-path "go.opentelemetry.io/contrib"))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-go-uber-org-goleak))
+    (propagated-inputs
+     (list go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-exporters-stdout-stdouttrace
+           go-go-opentelemetry-io-otel-metric
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-sdk-metric
+           go-go-opentelemetry-io-otel-trace
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf))
+    (home-page "https://go.opentelemetry.io/contrib")
+    (synopsis "OTLP instrumentation library for @code{google.golang.org/grpc}")
+    (description
+     "Package otelgrpc is the instrumentation library for
+@url{/google.golang.org/grpc,google.golang.org/grpc}.")
+    (license license:asl2.0)))
+
 (define-public go-go-opentelemetry-io-contrib-propagators-autoprop
   (package
     (name "go-go-opentelemetry-io-contrib-propagators-autoprop")
