@@ -443,10 +443,10 @@ and not propagated to upstream.")
      "0fg4x4ikj7f3706bmfvkwq4smxc98qr3cgpm25w48n4ys6wfgadg"))))
 
 (define-public tdlib
-  (let ((commit "7d257dcda5dd2c616c1146540ef51147c5bb2c69"))
+  (let ((commit "6f4ee8703898f7829c442c74c5170beada171962"))
     (package
       (name "tdlib")
-      (version "1.8.55")
+      (version "1.8.57")
       (source
        (origin
          (method git-fetch)
@@ -454,7 +454,7 @@ and not propagated to upstream.")
                (url "https://github.com/tdlib/td")
                (commit commit)))
          (sha256
-          (base32 "0w36jwblwi4rb61id0jkfasy01p69c9myvm51qgmv3hlw60kwq51"))
+          (base32 "0apw9bfzwwvgzqyl6v5l3d5a1innnabpa4g31mazh8r4ybzk4k0v"))
          (file-name (git-file-name name version))))
       (build-system cmake-build-system)
       (arguments
