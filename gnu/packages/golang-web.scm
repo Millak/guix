@@ -14173,6 +14173,46 @@ defined in
 maturity level}.")
     (license license:asl2.0)))
 
+(define-public go-go-opentelemetry-io-auto-sdk
+  (package
+    (name "go-go-opentelemetry-io-auto-sdk")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url
+              "https://github.com/open-telemetry/opentelemetry-go-instrumentation")
+             (commit (go-version->git-ref version
+                                          #:subdir "sdk"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "155qcbl84bwy7m9k221w75yakfv71fbxpfn9g3d7nnq6cl30fbfw"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "sdk")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:skip-build? #t
+      #:import-path "go.opentelemetry.io/auto/sdk"
+      #:unpack-path "go.opentelemetry.io/auto"))
+    (home-page "https://go.opentelemetry.io/auto")
+    (synopsis "Auto-instrumentable OpenTelemetry SDK")
+    (description
+     "Package sdk provides an auto-instrumentable @code{OpenTelemetry} SDK.")
+    (license license:asl2.0)))
+
 (define-public go-go-starlark-net
   (package
     (name "go-go-starlark-net")
