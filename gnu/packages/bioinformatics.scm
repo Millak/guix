@@ -1962,57 +1962,6 @@ quantification tools so that it can be used with the Sleuth differential
 analysis package.")
       (license license:bsd-3))))
 
-(define-public pbbam
-  (package
-    (name "pbbam")
-    (version "2.1.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/PacificBiosciences/pbbam")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1iyazi3l7dswpfxh39k5j7ydi0ywja0579xz3r6l9kkwz2n1z6dc"))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-tests
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Disable this test.  I tried fixing it by including
-             ;; optional_io.hpp, but there's a type error.
-             (substitute* "tests/src/meson.build"
-               (("'test_ReadGroupInfo.cpp',") ""))
-             #;
-             (substitute* "include/pbbam/ReadGroupInfo.h"
-               (("#include <boost/optional.hpp>" m)
-                (string-append m "\n#include <boost/optional/optional_io.hpp>")))
-             (substitute* '("tests/scripts/cram/_test.py"
-                            "tests/scripts/cram/_main.py")
-               (("'/bin/sh'")
-                (string-append "'" (which "sh") "'"))))))))
-    ;; These libraries are listed as "Required" in the pkg-config file.
-    (propagated-inputs
-     (list htslib-1.14 pbcopper zlib))
-    (inputs
-     (list boost samtools))
-    (native-inputs
-     (list googletest
-           pkg-config
-           python-wrapper)) ;for tests
-    (home-page "https://github.com/PacificBiosciences/pbbam")
-    (synopsis "Work with PacBio BAM files")
-    (description
-     "The pbbam software package provides components to create, query, and
-edit PacBio BAM files and associated indices.  These components include a core
-C++ library, bindings for additional languages, and command-line utilities.
-This library is not intended to be used as a general-purpose BAM utility - all
-input and output BAMs must adhere to the PacBio BAM format specification.
-Non-PacBio BAMs will cause exceptions to be thrown.")
-    (license license:bsd-3)))
-
 (define-public pbgzip
   (let ((commit "2b09f97b5f20b6d83c63a5c6b408d152e3982974"))
     (package
