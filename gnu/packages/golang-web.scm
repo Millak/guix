@@ -11456,6 +11456,43 @@ changes.")
     (description "This package provides a parser for MIME messages.")
     (license license:expat)))
 
+(define-public go-github-com-protonmail-go-srp
+  (package
+    (name "go-github-com-protonmail-go-srp")
+    (version "0.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ProtonMail/go-srp")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bzpq1yqfrrzyrmmwc9kf84k35567hdrs4zagxakpi7hia847l1z"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ProtonMail/go-srp"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'delete-windows-files
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "dist/windows")))))))
+    (propagated-inputs
+     (list go-github-com-cronokirby-saferith
+           go-github-com-pkg-errors
+           go-github-com-protonmail-bcrypt
+           go-github-com-protonmail-go-crypto
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/ProtonMail/go-srp")
+    (synopsis "SRP protocol implementation in Golang")
+    (description
+     "This package provides a Golang implementation of the
+@url{https://datatracker.ietf.org/doc/html/rfc5054, SRP protocol}, used for
+authentication of ProtonMail users.")
+    (license license:expat)))
+
 (define-public go-github-com-protonmail-gopenpgp-v2
   (package
     (name "go-github-com-protonmail-gopenpgp-v2")
