@@ -38511,7 +38511,7 @@ with PEP 484 argument (and return) type annotations.")
 (define-public python-typer
   (package
     (name "python-typer")
-    (version "0.19.2")
+    (version "0.20.0")
     (source
      (origin
        (method git-fetch)
@@ -38520,7 +38520,7 @@ with PEP 484 argument (and return) type annotations.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13lkzlpb35xzz1spdisrmq7md9wq3msqxwcqj85vk905iq80xjwq"))))
+        (base32 "1a2ay2kj3d3rwjscx3hw2adgqifs3hdp7kwcpdh1bl3iy8mn9xdi"))))
     (build-system pyproject-build-system)
     (arguments
      (list
