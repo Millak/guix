@@ -1478,19 +1478,22 @@ for every Python test framework.  It supports nose, py.test, and unittest.")
 (define-public python-minimock
   (package
     (name "python-minimock")
-    (version "1.2.8")
+    (version "1.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "MiniMock" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lowks/minimock")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0k2sxb1ibnyg05iblz7zhbv825f1zk9906rab7883iqgvzmdzpsz"))))
-    (build-system python-build-system)
-    (home-page "https://pypi.org/project/MiniMock")
+        (base32 "0mby3y78w8zka3dwp2dnsq3a0bq9nxr5g0h538p6zbyjrqly5paj"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pynose python-setuptools))
+    (home-page "https://github.com/lowks/minimock")
     (synopsis "Simple Python library for using mock objects")
-    (description "MiniMock is a simple library for building mock objects with
-doctest.")
+    (description
+     "MiniMock is a simple library for building mock objects with doctest.")
     (license license:expat)))
 
 (define-public python-mock
