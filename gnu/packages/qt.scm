@@ -4845,26 +4845,28 @@ indicators, code completion and call tips.")
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #f
-           #:configure-flags
-           #~`(@ ("--qsci-include-dir" . ,(string-append
-                                           #$(this-package-input "qscintilla")
-                                           "/include"))
-                 ("--qsci-library-dir" . ,(string-append
-                                           #$(this-package-input "qscintilla")
-                                           "/lib")))
            #:phases
            #~(modify-phases %standard-phases
+               (add-before 'build 'set-configure-flags
+                 (lambda _
+                   (setenv "CFLAGS" (string-append
+                                     "--qsci-include-dir"
+                                     #$(this-package-input "qscintilla")
+                                     "/include"
+                                     " --qsci-library-dir"
+                                     #$(this-package-input "qscintilla")
+                                     "/lib"))))
                (add-after 'unpack 'prepare-build
                  (lambda _
                    (chdir "Python")
                    (symlink "pyproject-qt5.toml" "pyproject.toml")))
                (add-after 'unpack 'set-include-dirs
-                 (lambda* (#:key inputs outputs #:allow-other-keys)
-                   (let* ((python (assoc-ref inputs "python"))
-                          (python-pyqt (assoc-ref inputs "python-pyqt"))
+                 (lambda _
+                   (let* ((python-pyqt #$(this-package-input "python-pyqt"))
                           (sip-include-dirs (string-append
                                              python-pyqt "/lib/python"
-                                             (python-version python)
+                                             #$(version-major+minor
+                                                (package-version python))
                                              "/site-packages/PyQt5/bindings")))
                      (setenv "SIP_INCLUDE_DIRS" sip-include-dirs)))))))
     (native-inputs
