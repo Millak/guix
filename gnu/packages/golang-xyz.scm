@@ -889,6 +889,35 @@ scripts (writing systems).  Languages are represented by a defined list of
 constants, while scripts are represented by RangeTable.")
     (license license:expat)))
 
+(define-public go-github-com-abbot-go-http-auth
+  (package
+    (name "go-github-com-abbot-go-http-auth")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/abbot/go-http-auth")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0phsnkfq1vy9b7nqsqqf0llvm7kad0nkmcrnlbwarci3p5p083qf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; `go vet' reports bad printf statements
+      #:test-flags
+      #~(list "-vet=off")
+      #:import-path "github.com/abbot/go-http-auth"))
+    (propagated-inputs
+     (list go-golang-org-x-crypto
+           go-golang-org-x-net))
+    (home-page "https://github.com/abbot/go-http-auth")
+    (synopsis "HTTP Authentication implementation in Golang")
+    (description
+     "This package is an implementation of HTTP Basic and HTTP Digest authentication.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-aclements-go-perfevent
   (package
     (name "go-github-com-aclements-go-perfevent")
