@@ -11943,6 +11943,28 @@ characters incorrectly escaped by net/url.")
 fork of https://github.com/igungor/go-putio.")
     (license license:expat)))
 
+(define-public go-github-com-putdotio-go-putio-for-rclone
+  (hidden-package
+   (let ((commit "16d982cac2b8cbae19cc4dd129dacee91f8c1447")
+         (revision "0"))
+     (package
+       (inherit go-github-com-putdotio-go-putio)
+       (name "go-github-com-putdotio-go-putio")
+       (version (git-version "0.0.0" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://github.com/putdotio/go-putio")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "1z4rfrhzrm6kbx7hpg00g02q88n3k6hvixd4drdadak13dsncipb"))))
+       (arguments
+        (substitute-keyword-arguments
+            (package-arguments go-github-com-putdotio-go-putio)
+          ((#:skip-build? _ #t) #t)))))))
+
 (define-public go-github-com-quic-go-qpack
   (package
     (name "go-github-com-quic-go-qpack")
