@@ -7772,6 +7772,33 @@ protocol in Go language.")
     (description "This packages implements a trivial HTTP client.")
     (license license:expat)))
 
+(define-public go-github-com-koofr-go-koofrclient
+  (package
+    (name "go-github-com-koofr-go-koofrclient")
+    (version "0.0.0-20221207135200-cbd7fc9ad6a6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/koofr/go-koofrclient")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bsc587q33kl8bjp2j8is6hydp39vrzc3z0k6cx4kkxx40y0ya07"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;Tests are out of date
+      #:import-path "github.com/koofr/go-koofrclient"))
+    (propagated-inputs
+     (list go-github-com-koofr-go-httpclient
+           go-github-com-onsi-ginkgo))
+    (home-page "https://github.com/koofr/go-koofrclient")
+    (synopsis "Koofr client for Golang")
+    (description "This package provides a SDK implementing HTTP client for
+@url{https://koofr.eu/, Koofr} cloud storage provider.")
+    (license license:expat)))
+
 (define-public go-github-com-koron-go-ssdp
   (package
     (name "go-github-com-koron-go-ssdp")
