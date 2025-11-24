@@ -2028,7 +2028,7 @@ UFO3 as described by the UFO font format.")
 (define-public nototools
   (package
     (name "nototools")
-    (version "0.2.16")
+    (version "0.3.2")
     (source
      (origin
        (method git-fetch)
@@ -2038,7 +2038,7 @@ UFO3 as described by the UFO font format.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "14rrdamkmhrykff8ln07fq9cm8zwj3k113lzwjcy0lgz23g51jyl"))))
+         "1sfsmfxcp4kdkra58z274w9cjgyim4by50nxdq60q3z1r5hv9iyj"))))
     (build-system python-build-system)
     (arguments
      (list
