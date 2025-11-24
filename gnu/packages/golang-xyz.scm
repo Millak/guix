@@ -19290,6 +19290,33 @@ servers.")
 Porter Stemming Algorithm.")
       (license license:expat))))
 
+(define-public go-github-com-relvacode-iso8601
+  (package
+    (name "go-github-com-relvacode-iso8601")
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/relvacode/iso8601")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "151nwcnlxagzq5rfnshld2q6b7jdb5mmnw4mavvddrrpz8v5jafm"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/relvacode/iso8601"))
+    (home-page "https://github.com/relvacode/iso8601")
+    (synopsis "ISO8601 date parser for Golang")
+    (description
+     "Package iso8601 is a utility for parsing ISO8601 datetime strings into
+native Go times.  The standard library's
+@url{https://www.rfc-editor.org/rfc/rfc3339, RFC3339} reference layout can be
+too strict for working with 3rd party APIs, especially ones written in other
+languages.")
+    (license license:expat)))
+
 (define-public go-github-com-remeh-sizedwaitgroup
   (package
     (name "go-github-com-remeh-sizedwaitgroup")
