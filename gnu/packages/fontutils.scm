@@ -442,7 +442,7 @@ but also provides many useful font conversion and analysis facilities.
            python-defcon
            python-fontmath
            python-fonttools
-           python-lxml-4.9
+           python-lxml
            python-tqdm
            python-ufonormalizer
            python-ufoprocessor))))
