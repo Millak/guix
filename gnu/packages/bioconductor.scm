@@ -9927,18 +9927,20 @@ Commons RESTful service.")
 (define-public r-genomicfeatures
   (package
     (name "r-genomicfeatures")
-    (version "1.60.0")
+    (version "1.62.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicFeatures" version))
               (sha256
                (base32
-                "16j78sgjk0hrdbhcbwrwq03355bvgg4d3lzvy773ypg8pwg0jjid"))))
+                "0rszhpmfsvn5iz3gzr3z07r7ykpmk4cbmfnjf9k2z59knnn1x9gp"))))
     (properties
      `((upstream-name . "GenomicFeatures")
        (updater-ignored-native-inputs
         . ("r-txdb-dmelanogaster-ucsc-dm3-ensgene"
-           "r-txdb-hsapiens-ucsc-hg19-knowngene"))))
+           "r-txdb-hsapiens-ucsc-hg19-knowngene"
+           ;; Avoid dependency cycle.
+           "r-txdbmaker"))))
     (build-system r-build-system)
     ;; Test require r-txdbmaker, which depends on r-genomicfeatures.
     (arguments (list #:tests? #false))
@@ -9947,15 +9949,16 @@ Commons RESTful service.")
            r-biocgenerics
            r-biostrings
            r-dbi
-           r-genomeinfodb
            r-genomicranges
            r-iranges
            r-rtracklayer
            r-s4vectors
+           r-seqinfo
            r-xvector))
     (native-inputs
      (list r-bsgenome-dmelanogaster-ucsc-dm3
            r-bsgenome-hsapiens-ucsc-hg19
+           r-genomeinfodb
            r-knitr
            r-pasillabamsubset
            r-rsamtools
