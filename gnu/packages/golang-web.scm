@@ -1814,6 +1814,47 @@ the OTEL Go SDK.")
     (description "This package provides a CSS parser and inliner.")
     (license license:expat)))
 
+(define-public go-github-com-azure-azure-sdk-for-go-sdk-internal
+  (package
+    (name "go-github-com-azure-azure-sdk-for-go-sdk-internal")
+    (version "1.11.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Azure/azure-sdk-for-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "sdk/internal"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q0cbmh4vn2x1bi7bax2q6wpqndcyw7649w8lzl384k3rbn1q8yn"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "sdk" "internal")
+                    (delete-all-but "." "sdk")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;Tests require circular dependencies
+      #:import-path "github.com/Azure/azure-sdk-for-go/sdk/internal"
+      #:unpack-path "github.com/Azure/azure-sdk-for-go"))
+    (propagated-inputs
+     (list go-golang-org-x-text
+           go-golang-org-x-net
+           go-github-com-stretchr-testify))
+    (home-page "https://github.com/Azure/azure-sdk-for-go")
+    (synopsis "Azure.Core Internal Module for Go")
+    (description "This package contains content for Azure SDK developers.")
+    (license license:expat)))
+
 (define-public go-github-com-azure-go-ntlmssp
   (package
     (name "go-github-com-azure-go-ntlmssp")
