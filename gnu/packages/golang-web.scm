@@ -1958,6 +1958,59 @@ binary data.  For more information, see
 to Azure Blob Storage}.")
     (license license:expat)))
 
+(define-public go-github-com-azure-azure-sdk-for-go-sdk-storage-azfile
+  (package
+    (name "go-github-com-azure-azure-sdk-for-go-sdk-storage-azfile")
+    (version "1.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Azure/azure-sdk-for-go")
+             (commit (go-version->git-ref version
+                                          #:subdir "sdk/storage/azfile"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08a8kx4n31pa4krrxs1hrcwygryh86nz98fyr9hvw67202zr3adw"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet #~(begin
+                    (define (delete-all-but directory . preserve)
+                      (with-directory-excursion directory
+                        (let* ((pred (negate (cut member <>
+                                                  (cons* "." ".." preserve))))
+                               (items (scandir "." pred)))
+                          (for-each (cut delete-file-recursively <>) items))))
+                    (delete-all-but "sdk/storage" "azfile")
+                    (delete-all-but "sdk" "storage")
+                    (delete-all-but "." "sdk")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;Tests need git root
+      #:import-path "github.com/Azure/azure-sdk-for-go/sdk/storage/azfile"
+      #:unpack-path "github.com/Azure/azure-sdk-for-go"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-azure-azure-sdk-for-go-sdk-storage-azblob
+           go-github-com-azure-azure-sdk-for-go-sdk-internal
+           go-github-com-azure-azure-sdk-for-go-sdk-azidentity
+           go-github-com-azure-azure-sdk-for-go-sdk-azcore))
+    (home-page "https://github.com/Azure/azure-sdk-for-go")
+    (synopsis "Azure File Storage SDK for Go")
+    (description
+     "Azure File Shares offers fully managed file shares in the cloud that are
+accessible via the industry standard
+@url{https://learn.microsoft.com/windows/desktop/FileIO/microsoft-smb-protocol-and-cifs-protocol-overview,
+Server Message Block (SMB) protocol}.  Azure file shares can be mounted
+concurrently by cloud or on-premises deployments of Windows, Linux, and
+@code{macOS}.  Additionally, Azure file shares can be cached on Windows
+Servers with Azure File Sync for fast access near where the data is being
+used.")
+    (license license:expat)))
+
 (define-public go-github-com-azure-azure-sdk-for-go-sdk-internal
   (package
     (name "go-github-com-azure-azure-sdk-for-go-sdk-internal")
