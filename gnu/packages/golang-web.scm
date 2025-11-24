@@ -14353,6 +14353,42 @@ It is to used for inputs in other packages.")
      ;; which apply to the Application, with which you must still comply
      license:lgpl3)))
 
+(define-public go-github-com-yunify-qingstor-sdk-go-v3
+  (package
+    (name "go-github-com-yunify-qingstor-sdk-go-v3")
+    (version "3.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/qingstor/qingstor-sdk-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1m7lnvkvn66r50gjhlfymhw3cslqa9q815y6vwad4gdwnj7bhfwl"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/yunify/qingstor-sdk-go/test
+            (delete-file-recursively "test")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/yunify/qingstor-sdk-go/v3"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-pengsrc-go-shared
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/yunify/qingstor-sdk-go")
+    (synopsis "QingStor SDK for Go")
+    (description
+     "This package is the official @url{https://qingcloud.com, QingStor} SDK
+for the Go programming language.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-zeebo-admission-v3
   (package
     (name "go-github-com-zeebo-admission-v3")
