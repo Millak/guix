@@ -29,6 +29,7 @@
 ;;; Copyright © 2025 Roman Scherer <roman@burningswell.com>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Arthur Rodrigues <arthurhdrodrigues@proton.me>
+;;; Copyright © 2025 Patrick Norton <patrick.147.norton@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -680,6 +681,30 @@ The purpose of this library is to encode spec structures and consts in code,
 as well as provide a consistent implementation of image encryption across
 container runtimes and build tools.")
     (license license:asl2.0)))
+
+(define-public go-github-com-cronokirby-saferith
+  (package
+    (name "go-github-com-cronokirby-saferith")
+    (version "0.33.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cronokirby/saferith")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0g510g9zcqp6rjjxlqdv72jsb0m7hmahcia3nvmw5gac1nml7q2q"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cronokirby/saferith"))
+    (home-page "https://github.com/cronokirby/saferith")
+    (synopsis "Safe arbitrary-sized arithmetic")
+    (description
+     "The purpose of this package is to provide a version of arbitrary sized
+arithmetic, in a safer (i.e. constant-time) way, for cryptography.")
+    (license license:expat)))
 
 (define-public go-github-com-davidlazar-go-crypto
   (package
