@@ -2046,64 +2046,6 @@ formats when enabled.  Parallel decompression is somewhat faster, but the true
 speedup comes during compression.")
       (license license:expat))))
 
-(define-public blasr-libcpp
-  (package
-    (name "blasr-libcpp")
-    (version "5.3.5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/PacificBiosciences/blasr_libcpp")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "07cdfnfl29zf2j7fpaaqaxghq3p0wnc109razs0icwm2q6l3gycb"))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'link-with-hdf5
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((hdf5 (assoc-ref inputs "hdf5")))
-               (substitute* "meson.build"
-                 (("libblasr_deps = \\[" m)
-                  (string-append
-                   m
-                   (format #f "cpp.find_library('hdf5', dirs : '~a'), \
-cpp.find_library('hdf5_cpp', dirs : '~a'), "
-                           hdf5 hdf5)))))))
-         (add-after 'unpack 'find-googletest
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; It doesn't find gtest_main because there's no pkg-config file
-             ;; for it.  Find it another way.
-             (substitute* "unittest/meson.build"
-               (("libblasr_gtest_dep = dependency\\('gtest_main'.*")
-                (format #f "cpp = meson.get_compiler('cpp')
-libblasr_gtest_dep = cpp.find_library('gtest_main', dirs : '~a')\n"
-                        (assoc-ref inputs "googletest")))))))
-       ;; TODO: unittest/libblasr_unittest cannot be linked
-       ;; ld: ;; unittest/df08227@@libblasr_unittest@exe/alignment_utils_FileUtils_gtest.cpp.o:
-       ;; undefined reference to symbol
-       ;; '_ZN7testing8internal9DeathTest6CreateEPKcPKNS0_2REES3_iPPS1_'
-       ;; ld: /gnu/store/...-googletest-1.8.0/lib/libgtest.so:
-       ;;   error adding symbols: DSO missing from command line
-       #:tests? #f
-       #:configure-flags '("-Dtests=false")))
-    (inputs
-     (list boost hdf5 htslib pbbam zlib))
-    (native-inputs
-     (list googletest pkg-config))
-    (home-page
-     (string-append "https://web.archive.org/web/20201106122415/"
-                    "https://github.com/PacificBiosciences/blasr_libcpp"))
-    (synopsis "Library for analyzing PacBio genomic sequences")
-    (description
-     "This package provides three libraries used by applications for analyzing
-PacBio genomic sequences.  This library contains three sub-libraries: pbdata,
-hdf and alignment.")
-    (license license:bsd-3)))
-
 (define-public randfold
   (package
     (name "randfold")
