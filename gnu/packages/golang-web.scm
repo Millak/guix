@@ -2732,6 +2732,35 @@ browser window.")
 @url{https://cloudinary.com/, Cloudinary} in Go.")
     (license license:expat)))
 
+(define-public go-github-com-cloudsoda-go-smb2
+  (package
+    (name "go-github-com-cloudsoda-go-smb2")
+    (version "0.0.0-20250228001242-d4c70e6251cc")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/CloudSoda/go-smb2")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14784m3y9g01389r38a2f6xkl030s9b4lcavaiglz6h7zm47wpwp"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cloudsoda/go-smb2"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-cloudsoda-sddl
+           go-github-com-geoffgarside-ber
+           go-github-com-jcmturner-gokrb5-v8
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/cloudsoda/go-smb2")
+    (synopsis "SMB2/3 client implementation")
+    (description "This package implements the SMB2/3 client in Go.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-cloudsoda-sddl
   (package
     (name "go-github-com-cloudsoda-sddl")
