@@ -15473,6 +15473,30 @@ requests.  Browse requests are not supported yet.")
      "The datacounter package provides counters for Go readers and writers.")
     (license license:expat)))
 
+(define-public go-github-com-minio-xxml
+  (package
+    (name "go-github-com-minio-xxml")
+    (version "0.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/minio/xxml")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yljar0sqgrp4d6bngs9714i5mvn99vyn0j0vdv2b4g598c87dy5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/minio/xxml"))
+    (home-page "https://github.com/minio/xxml")
+    (synopsis "XML 1.0 parser with extended control-character support")
+    (description
+     "This package implements a simple XML 1.0 parser that understands XML name
+spaces, along with extended support for control characters.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-mistifyio-go-zfs-v3
   (package
     (name "go-github-com-mistifyio-go-zfs-v3")
