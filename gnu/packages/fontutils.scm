@@ -313,7 +313,7 @@ them as it goes.")
            python-defcon
            python-fontmath
            python-fonttools
-           python-lxml-4.9
+           python-lxml
            python-tqdm
            python-ufonormalizer
            python-ufoprocessor))
