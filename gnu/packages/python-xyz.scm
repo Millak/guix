@@ -14564,7 +14564,12 @@ container data structures in Python).")
              (lambda* (#:key inputs #:allow-other-keys)
                (substitute* "jupyter_client/localinterfaces.py"
                  (("'ip'")
-                  (format #f "'~a'" (search-input-file inputs "sbin/ip")))))))))
+                  (format #f "'~a'" (search-input-file inputs "sbin/ip"))))))
+           ;; Hatchling seems to generate entry scripts with invalid imports.
+           (add-after 'check 'fix-syntax-error
+             (lambda _
+               (substitute* (string-append #$output "/bin/.jupyter-kernelspec-real")
+                 (("import KernelSpecApp.launch_instance") "import KernelSpecApp")))))))
      (inputs (list iproute))
      (propagated-inputs
       (list python-dateutil
