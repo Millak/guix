@@ -23878,6 +23878,30 @@ utilities for cty Golang module.")
     (native-inputs
      (list go-github-com-zeebo-assert))))
 
+(define-public go-github-com-zeebo-float16
+  (package
+    (name "go-github-com-zeebo-float16")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zeebo/float16")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "06qh3fchm5a12lx8kq7nlmfjfvla9smh3zz8s7w083rjlgpyanyl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zeebo/float16"))
+    (home-page "https://github.com/zeebo/float16")
+    (synopsis "16 bit floats in Golang")
+    (description
+     "This package implements 16 bit floats that can store numbers like
+@code{1.02e12} for exponents in @code{[-15, 15]}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-zitadel-logging
   (package
     (name "go-github-com-zitadel-logging")
