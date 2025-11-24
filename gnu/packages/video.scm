@@ -5520,7 +5520,7 @@ iTunes-style metadata.")
 (define-public livemedia-utils
   (package
     (name "livemedia-utils")
-    (version "2020.11.19")
+    (version "2025.11.06")
     (source
      (origin
        (method url-fetch)
@@ -5532,7 +5532,7 @@ iTunes-style metadata.")
              version ".tar.gz"))
        (sha256
         (base32
-         "16w6yxdbmjdhvffnrb752dn4llf3l0wb00dgdkyia0vqsv2qqyn7"))))
+         "0z6iq7pvbb8d3gkh5fqf97jlzyr0q2hk0nkizm5v4q9y545gl53n"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -5540,6 +5540,8 @@ iTunes-style metadata.")
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
               (string-append "CXX=" #$(cxx-for-target))
+              "CXXFLAGS=-std=c++20"     ; "test" field was added to
+                                        ; std::atomic_flag in C++20
               (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
               (string-append "PREFIX=" #$output))
       #:phases
