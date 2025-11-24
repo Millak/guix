@@ -16840,6 +16840,30 @@ through it's psuedoterminal.")
 list of sentences.")
     (license license:expat)))
 
+(define-public go-github-com-nfnt-resize
+  (package
+    (name "go-github-com-nfnt-resize")
+    (version "0.0.0-20180221191011-83c6a9932646")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/nfnt/resize")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "005cpiwq28krbjf0zjwpfh63rp4s4is58700idn24fs3g7wdbwya"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/nfnt/resize"))
+    (home-page "https://github.com/nfnt/resize")
+    (synopsis "Pure Golang image resizing")
+    (description
+     "This package implements image resizing for the Go programming language with
+common interpolation methods.")
+    (license license:isc)))
+
 (define-public go-github-com-nicksnyder-go-i18n-v2
   (package
     (name "go-github-com-nicksnyder-go-i18n-v2")
