@@ -11432,6 +11432,30 @@ serialization and are generally 2 to 3 times faster.  In cases where
 changes.")
     (license license:asl2.0)))
 
+(define-public go-github-com-protonmail-go-mime
+  (package
+    (name "go-github-com-protonmail-go-mime")
+    (version "0.0.0-20230322103455-7d82a3887f2f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ProtonMail/go-mime")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n7q98dsw4v2zjf2bhi8gc4map1fc8m9p9v95mqcljnfp5kncxwz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ProtonMail/go-mime"))
+    (propagated-inputs
+     (list go-golang-org-x-text))
+    (home-page "https://github.com/ProtonMail/go-mime")
+    (synopsis "Go Mime Wrapper Library")
+    (description "This package provides a parser for MIME messages.")
+    (license license:expat)))
+
 (define-public go-github-com-puerkitobio-goquery
   (package
     (name "go-github-com-puerkitobio-goquery")
