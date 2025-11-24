@@ -264,6 +264,12 @@ implementation offers several extensions over the standard utility.")
                      ",!chained renames"
                      ",!Directory"
                      "'"))))
+          ;; 'storing sparse files > 8G' fails on powerpc-linux, likely
+          ;; due to the small HDD and RAM present on these devices.
+          ((target-ppc32?)
+           '(#:make-flags (list (string-append "TESTSUITEFLAGS= -k "
+                                               "'!tricky time stamps"
+                                               ",!storing sparse files > 8G'"))))
           ;; https://lists.gnu.org/archive/html/bug-tar/2021-10/msg00007.html
           ;; tar-1.34 isn't aware of 64-bit time_t and upstream suggests
           ;; skipping the test for this release on 32-bit systems.
