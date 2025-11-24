@@ -7747,6 +7747,31 @@ by the SDK.")
 protocol in Go language.")
     (license license:expat)))
 
+(define-public go-github-com-koofr-go-httpclient
+  (package
+    (name "go-github-com-koofr-go-httpclient")
+    (version "0.0.0-20240520111329-e20f8f203988")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/koofr/go-httpclient")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jl7k1254l9454bans3fjssvwmhm420f14rc7x5xmypdsphvwks0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/koofr/go-httpclient"))
+    (native-inputs
+     (list go-github-com-onsi-gomega
+           go-github-com-onsi-ginkgo-v2))
+    (home-page "https://github.com/koofr/go-httpclient")
+    (synopsis "HTTP client for Golang")
+    (description "This packages implements a trivial HTTP client.")
+    (license license:expat)))
+
 (define-public go-github-com-koron-go-ssdp
   (package
     (name "go-github-com-koron-go-ssdp")
