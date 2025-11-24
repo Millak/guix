@@ -1336,6 +1336,40 @@ standalone program which is able to download cover art, lyrics, photos,
 biographies, reviews and more.")
     (license license:lgpl3+)))
 
+(define-public gtick
+  (package
+    (name "gtick")
+    (version "0.5.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.antcom.de/gtick/download/"
+                           name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "0j6wggp1fhyx0vyip1k27pp28xpy9pqgwg46glm7nm83r6r32hz2"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-require-dmalloc
+            ;; The use of dmalloc causes build errors like "expected
+            ;; declaration specifiers or ‘...’ before string constant" (see
+            ;; <https://mail.gnu.org/archive/html/gtick-devel/2025-11/msg00001.html>).
+            (lambda _
+              (substitute* "testsuite/Makefile.in"
+                ((" -DUSE_DMALLOC") "")))))))
+    (native-inputs (list check pkg-config))
+    (inputs (list gtk+-2 libsndfile pulseaudio))
+    (home-page "https://www.antcom.de/gtick/")
+    (synopsis "Customizable metronome application")
+    (description "GTick is a metronome application.  It supports different
+meters, such as 2/4, 3/4, 4/4, etc.  It also supports a wide range of speeds,
+from 10 to 1000 BPM. It provides a GTK+-based user interface and it can use
+both OSS and ALSA as the audio back-end.")
+    (license license:gpl3+)))
+
 (define-public lingot
   (package
     (name "lingot")
