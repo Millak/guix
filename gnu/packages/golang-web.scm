@@ -7587,6 +7587,35 @@ jsoniter and variable type declarations (if any).  jsoniter interfaces gives
 100% compatibility with code using standard lib.")
     (license license:expat)))
 
+(define-public go-github-com-jtolio-noiseconn
+  (package
+    (name "go-github-com-jtolio-noiseconn")
+    (version "0.0.0-20231127013910-f6d9ecbf1de7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jtolio/noiseconn")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xbki359wmmwn6sm5h9ixw28nzv74zcmkqxzabp46mkfv0qjsa85"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jtolio/noiseconn"))
+    (propagated-inputs
+     (list go-github-com-dsnet-try
+           go-github-com-flynn-noise
+           go-github-com-zeebo-errs
+           go-golang-org-x-sync))
+    (home-page "https://github.com/jtolio/noiseconn")
+    (synopsis "Simple Golang std @code{net.Conn} wrapper")
+    (description
+     "This package provides a @code{net.Conn} wrapper around
+https://github.com/flynn/noise crypto protocols.")
+    (license license:expat)))
+
 (define-public go-github-com-julienschmidt-httprouter
   (package
     (name "go-github-com-julienschmidt-httprouter")
