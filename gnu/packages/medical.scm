@@ -112,48 +112,6 @@ application for desktop and mobile devices that integrates with the GNU
 Health Federation.")
     (license license:gpl3+)))
 
-(define-public openmolar-1
-  (package
-    (name "openmolar")
-    (version "1.1.6-g81838c85")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://static.openmolar.com/om1/releases/openmolar-" version
-             ".tar.gz"))
-       (sha256
-        (base32 "09vrfqn511vswnj2q9m7srlwdgz066qvqpmja6sg1yl1ibh3cbpr"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'patch-/usr
-            (lambda* (#:key outputs #:allow-other-keys)
-              (substitute* '("setup.py"
-                             "src/openmolar/settings/localsettings.py")
-                (("/usr") #$output))))
-          (add-after 'unpack 'set-acceptable-version
-            (lambda _
-              (substitute* "src/openmolar/settings/version.py"
-                ((#$version) "1.1.6")))))))
-    (native-inputs
-     (list python-setuptools python-wheel))
-    (inputs (list python-pyqtwebengine
-                  python-pyqt+qscintilla
-                  python-mysqlclient
-                  qscintilla))
-    (propagated-inputs (list qtwebengine-5))
-    (home-page "https://openmolar.com/om1")
-    (synopsis "Dental practice management software")
-    (description
-     "Openmolar is a dental practice management suite.  Its
-functionality includes appointments, patient records, treatment planning,
-billing etc.  It is a full featured, reliable and thoroughly tested
-application and has been translated into many languages.")
-    (license license:gpl3+)))
-
 (define-public orthanc
   (package
     (name "orthanc")
