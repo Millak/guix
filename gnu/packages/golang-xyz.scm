@@ -18755,6 +18755,43 @@ package (which is based off an earlier version of this package).")
      (list go-github-com-stretchr-testify))
     (propagated-inputs '())))
 
+(define-public go-github-com-pengsrc-go-shared
+  (package
+    (name "go-github-com-pengsrc-go-shared")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pengsrc/go-shared")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d0nfnfilvxlxdzw18k744py5b9p852qisz37ikfyxyp24jbi6fr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; "(*github.com/pengsrc/go-shared/log.Event).write call has
+      ;; arguments but no formatting directives"
+      #:test-flags
+      #~(list "-vet=off" "-skip" "TestGetHome|TestNewLogger")
+      #:skip-build? #t
+      #:import-path "github.com/pengsrc/go-shared"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-jeffail-gabs))
+    (home-page "https://github.com/pengsrc/go-shared")
+    (synopsis "Collection of misc Golang packages")
+    (description
+     "This package provides a verity Go packages.
+@itemize
+@item buffer - provides a thin wrapper around a byte slice
+@item log - provides support for logging to stdout, stderr and file
+@item pid - provides structure and helper functions to create and remove PID file
+@end itemize")
+    (license license:asl2.0)))
+
 (define-public go-github-com-petar-gollrb
   (package
     (name "go-github-com-petar-gollrb")
