@@ -28,6 +28,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
@@ -47,6 +48,7 @@
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -297,45 +299,45 @@ and white.")
     (package
       (name "didjvu")
       (version (git-version "0.10.2" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/FriedrichFroebel/didjvu")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0ippf3hsjy13xj6pqnqr30dz8lsncsfcan2r1vbxfk1g602m3p4c"))))
-      (build-system python-build-system)
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/FriedrichFroebel/didjvu")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ippf3hsjy13xj6pqnqr30dz8lsncsfcan2r1vbxfk1g602m3p4c"))))
+      (build-system pyproject-build-system)
       (arguments
-       `(;; FIXME: Tests fail because they try to load the libxmp and pyexiv2
-         ;; modules that should not be enabled, as we only enable the gexiv2
-         ;; module.
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (add-before 'check 'disable-failing-test
-             (lambda _
-               (substitute* "tests/test_ipc.py"
-                 ;; test_wait_signal gets stuck forever
-                 (("self\\._test_signal\\(name\\)")
-                  "return True")
-                 ;; test_path fails to find a file it should have created
-                 (("path = os\\.getenv\\('PATH'\\)")
-                  "return True"))
-               (substitute* "tests/test_timestamp.py"
-                 ;; test_timezones fails with:
-                 ;;   '2009-12-18T21:25:14Z' != '2009-12-18T22:25:14+01:00'
-                 (("samples = \\[" all)
-                  (string-append "return True\n        " all)))))
-           (add-after 'install 'wrap-path
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out"))
-                     (djvulibre (assoc-ref inputs "djvulibre")))
-                 (wrap-program (string-append out "/bin/didjvu")
-                   `("PATH" ":" prefix (,(string-append djvulibre "/bin"))))))))))
-      (native-inputs (list python-nose))
+       (list
+        ;; FIXME: Tests fail because they try to load the libxmp and pyexiv2
+        ;; modules that should not be enabled, as we only enable the gexiv2
+        ;; module.
+        #:tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (add-before 'check 'disable-failing-test
+              (lambda _
+                (substitute* "tests/test_ipc.py"
+                  ;; test_wait_signal gets stuck forever
+                  (("self\\._test_signal\\(name\\)")
+                   "return True")
+                  ;; test_path fails to find a file it should have created
+                  (("path = os\\.getenv\\('PATH'\\)")
+                   "return True"))
+                (substitute* "tests/test_timestamp.py"
+                  ;; test_timezones fails with:
+                  ;; '2009-12-18T21:25:14Z' != '2009-12-18T22:25:14+01:00'
+                  (("samples = \\[" all)
+                   (string-append "return True\n        " all)))))
+            (add-after 'wrap 'wrap-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (wrap-program (string-append #$output "/bin/didjvu")
+                  `("PATH" ":" prefix
+                    (,(dirname (search-input-file inputs "bin/ddjvu"))))))))))
+      (native-inputs (list python-setuptools))
       (inputs
        (list bash-minimal
              djvulibre
