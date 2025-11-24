@@ -5521,33 +5521,37 @@ iTunes-style metadata.")
   (package
     (name "livemedia-utils")
     (version "2020.11.19")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://download.videolan.org/contrib/live555/live."
-                    version ".tar.gz"))
-              (sha256
-               (base32
-                "16w6yxdbmjdhvffnrb752dn4llf3l0wb00dgdkyia0vqsv2qqyn7"))))
+    (source
+     (origin
+       (method url-fetch)
+       ;; live555 home-page provides only the latest release; see
+       ;; <http://lists.live555.com/pipermail/live-devel/2011-November/014131.html>.
+       ;; Let's use a set of unofficial mirrors for now.
+       (uri (string-append
+             "https://download.videolan.org/contrib/live555/live."
+             version ".tar.gz"))
+       (sha256
+        (base32
+         "16w6yxdbmjdhvffnrb752dn4llf3l0wb00dgdkyia0vqsv2qqyn7"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          (string-append "CXX=" ,(cxx-for-target))
-                          (string-append "LDFLAGS=-Wl,-rpath="
-                                         (assoc-ref %outputs "out") "/lib")
-                          (string-append "PREFIX="
-                                         (assoc-ref %outputs "out")))
-       #:phases (modify-phases %standard-phases
-                  (add-before 'configure 'fix-makefiles-generation
-                    (lambda _
-                      (substitute* "genMakefiles"
-                        (("/bin/rm") "rm"))
-                      #t))
-                  (replace 'configure
-                    (lambda _
-                      (invoke "./genMakefiles"
-                              "linux-with-shared-libraries"))))))
+     (list
+      #:tests? #f                       ; No tests.
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "CXX=" #$(cxx-for-target))
+              (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
+              (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-makefiles-generation
+            (lambda _
+              (substitute* "genMakefiles"
+                (("/bin/rm") "rm"))
+              #t))
+          (replace 'configure
+            (lambda _
+              (invoke "./genMakefiles" "linux-with-shared-libraries"))))))
     (inputs
      (list openssl))
     (home-page "http://www.live555.com/liveMedia/")
