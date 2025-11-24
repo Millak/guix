@@ -1627,6 +1627,41 @@ bar writers can be supplied for alternate environments.")
     (description "This package provides generic implementations for Go.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-anacrolix-dms
+  (package
+    (name "go-github-com-anacrolix-dms")
+    (version "1.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/anacrolix/dms")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kv1xldlyxnn1f89763v8d3r9f96lgxb50dhf8n3vy99yildqm8b"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; "non-constant format string in call to github.com/anacrolix/dms/upnp.Errorf"
+      #:test-flags
+      #~(list "-vet=off")
+      #:import-path "github.com/anacrolix/dms"))
+    (propagated-inputs
+     (list go-github-com-anacrolix-ffprobe
+           go-github-com-anacrolix-log
+           go-github-com-nfnt-resize
+           go-golang-org-x-net
+           go-golang-org-x-sys))
+    (home-page "https://github.com/anacrolix/dms")
+    (synopsis "Terminal-based digital media server")
+    (description
+     "This package is a UPnP DLNA Digital Media Server.  It runs from the terminal,
+and serves content directly from the filesystem from the working directory, or
+the path given.  The SSDP component will broadcast and respond to requests on
+all available network interfaces.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-anacrolix-ffprobe
   (package
     (name "go-github-com-anacrolix-ffprobe")
