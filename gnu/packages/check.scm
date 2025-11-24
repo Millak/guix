@@ -890,46 +890,49 @@ favourite continuous integration framework.  Among Cukinia features are:
 (define-public cxxtest
   (package
     (name "cxxtest")
+    ;; 4.4 is from 2014, there is some move on master branch but still no
+    ;; fresh tag, see: <https://github.com/CxxTest/cxxtest/issues/156>.
     (version "4.4")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/cxxtest/cxxtest/"
-                                  version "/cxxtest-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1n7pbj4z9ivx005hqvivj9ddhq8awynzg6jishfbypf6j7ply58w"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://sourceforge/cxxtest/cxxtest/" version
+                           "/cxxtest-" version ".tar.gz"))
+       (sha256
+        (base32 "1n7pbj4z9ivx005hqvivj9ddhq8awynzg6jishfbypf6j7ply58w"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir-to-source
-           (lambda _
-             (chdir "python")
-             #t))
-         (add-after 'install 'install-headers
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (include-dir (string-append out "/include/cxxtest")))
-               (for-each (lambda (header-file)
-                           (install-file header-file include-dir))
-                         (find-files "../cxxtest"))
-               #t)))
-         (add-after 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc-dir (string-append out "/share/doc/cxxtest")))
-               (install-file "../README" doc-dir)
-               (install-file "../doc/guide.txt" doc-dir)
-               (copy-recursively "../sample" (string-append doc-dir "/sample"))
-               #t))))))
-    (propagated-inputs
-     (list python-ply))
-    (home-page "https://web.archive.org/web/20230604070022/http://cxxtest.com/")
+     (list
+      ;; XXX: There are SCons and CMake tests, but not pytest ones.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir-to-source
+            (lambda _
+              (chdir "python")))
+          (add-after 'install 'install-headers
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((include-dir (string-append #$output "/include/cxxtest")))
+                (for-each (lambda (header-file)
+                            (install-file header-file include-dir))
+                          (find-files "../cxxtest")))))
+          (add-after 'install 'install-doc
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((doc-dir (string-append #$output "/share/doc/cxxtest")))
+                (install-file "../README" doc-dir)
+                (install-file "../doc/guide.txt" doc-dir)
+                (copy-recursively "../sample"
+                                  (string-append doc-dir "/sample"))))))))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-ply))
+    (home-page
+     "https://web.archive.org/web/20230604070022/http://cxxtest.com/")
     (synopsis "Unit testing framework for C++")
-    (description "CxxTest is a unit testing framework for C++ that is similar
-in spirit to JUnit, CppUnit, and xUnit.  CxxTest does not require precompiling
-a CxxTest testing library, it employs no advanced features of C++ (e.g. RTTI)
-and it supports a very flexible form of test discovery.")
+    (description
+     "CxxTest is a unit testing framework for C++ that is similar in spirit to
+JUnit, CppUnit, and xUnit.  CxxTest does not require precompiling a CxxTest
+testing library, it employs no advanced features of C++ (e.g. RTTI) and it
+supports a very flexible form of test discovery.")
     (license license:lgpl3+)))
 
 (define-public doctest
