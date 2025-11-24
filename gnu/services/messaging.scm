@@ -2300,8 +2300,10 @@ multiple machines simultaneously.")))
 ;;;
 ;;; Mollysocket.
 ;;;
-(define (ms-format label str)
-  (format #f "~a = ~a~%" label (string-map (match-lambda (#\- #\_) (x x)) str)))
+(define (ms-format label rhs)
+  (let* ((uglify (match-lambda (#\- #\_) (x x)))
+         (lhs (string-map uglify (symbol->string label))))
+    (format #f "~a = ~a~%" lhs rhs)))
 (define (ms-serialize-string label val)
   (ms-format label (string-append "'" val "'")))
 (define (ms-serialize-integer label val)
