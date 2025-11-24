@@ -3849,6 +3849,34 @@ authentication through Negotiate mechanism (see
 @url{https://tools.ietf.org/html/rfc4559, RFC4559}).")
     (license license:expat)))
 
+(define-public go-github-com-dropbox-dropbox-sdk-go-unofficial-v6
+  (package
+    (name "go-github-com-dropbox-dropbox-sdk-go-unofficial-v6")
+    (version "6.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dropbox/dropbox-sdk-go-unofficial")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09hjqglxr51qhg522r2m7k9hbv0sghcjync089f6by5mrl0ks4f4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/dropbox/dropbox-sdk-go-unofficial/v6"
+      #:unpack-path "github.com/dropbox/dropbox-sdk-go-unofficial"))
+    (propagated-inputs
+     (list go-golang-org-x-oauth2))
+    (home-page "https://github.com/dropbox/dropbox-sdk-go-unofficial")
+    (synopsis "Unofficial Dropbox v2 API SDK for Golang")
+    (description
+     "This package provides an unofficial Go SDK for integrating with v2 of the
+Dropbox API.")
+    (license license:expat)))
+
 (define-public go-github-com-elazarl-go-bindata-assetfs
   (package
     (name "go-github-com-elazarl-go-bindata-assetfs")
