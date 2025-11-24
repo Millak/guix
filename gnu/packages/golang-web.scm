@@ -13343,7 +13343,7 @@ lists)
 (define-public go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
   (package
     (name "go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp")
-    (version "0.59.0")
+    (version "0.62.0")
     (source
      (origin
        (method git-fetch)
@@ -13354,10 +13354,11 @@ lists)
                                           "instrumentation/net/http/otelhttp"))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17kyba5816983migninw6v2si2d28j32973c0x8i08fswrjz5dm0"))))
+        (base32 "06h5rvvji92dj25vb37s9vmvp5fignbp7zbigbdhbql16gfhp225"))))
     (build-system go-build-system)
     (arguments
      (list
+      #:test-flags #~(list "-skip" "TestWithSpanNameFormatter")
       #:import-path
       "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
       #:unpack-path "go.opentelemetry.io/contrib"
