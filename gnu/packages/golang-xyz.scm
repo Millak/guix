@@ -14425,6 +14425,33 @@ Printf/Sprintf etc.")
     (native-inputs
      (list go-github-com-stretchr-testify))))
 
+(define-public go-github-com-lpar-date
+  (package
+    (name "go-github-com-lpar-date")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/lpar/date")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03vjnabrxhrvc4ws0adyxc6vy6ds990hnsfbr5nxyblvchyyxvj7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; "(*testing.common).Errorf format %s has arg d2 of wrong type"
+      #:test-flags
+      #~(list "-vet=off")
+      #:import-path "github.com/lpar/date"))
+    (home-page "https://github.com/lpar/date")
+    (synopsis "Utilities for working with SQL dates in Golang")
+    (description
+     "This package implements minimal utility functions for working with SQL
+dates and other date-only dates in Go.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-lucasb-eyer-go-colorful
   (package
     (name "go-github-com-lucasb-eyer-go-colorful")
