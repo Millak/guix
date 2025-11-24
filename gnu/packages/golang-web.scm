@@ -77,6 +77,7 @@
   #:use-module (gnu packages golang-check)
   #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
+  #:use-module (gnu packages golang-maths)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages prometheus)
@@ -1924,6 +1925,56 @@ Azure SDK clients.")
     (description
      "This package provides @acronym{NT (New Technology) LAN
 Manager,NTLM}/Negotiate authentication over HTTP.")
+    (license license:expat)))
+
+(define-public go-github-com-azuread-microsoft-authentication-library-for-go
+  (package
+    (name "go-github-com-azuread-microsoft-authentication-library-for-go")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url
+               "https://github.com/AzureAD/microsoft-authentication-library-for-go")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pg166ww69ls2nwgj6wgnx31wzg0dcziydi8j2sbja8cyby7ikfq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; These tests require network/certs
+      #:test-flags
+      #~(list "-skip"
+              (string-join '("TestFMIBasicFunctionality" "TestFMIIntegration"
+                             "TestUsernamePassword"
+                             "TestRemoveAccount"
+                             "TestAcquireMSITokenExchangeForESTSToken"
+                             "TestAdfsToken"
+                             "TestAccountFromCache"
+                             "TestOnBehalfOfCacheTests") "|"))
+      #:skip-build? #t
+      #:import-path
+      "github.com/AzureAD/microsoft-authentication-library-for-go"))
+    (propagated-inputs
+     (list go-github-com-golang-jwt-jwt-v5
+           go-github-com-google-uuid
+           go-github-com-kylelemons-godebug
+           go-github-com-montanaflynn-stats
+           go-github-com-pkg-browser))
+    (home-page "https://github.com/AzureAD/microsoft-authentication-library-for-go")
+    (synopsis "Microsoft Authentication Library (MSAL) for Go")
+    (description
+     "The Microsoft Authentication Library (MSAL) for Go is part of the
+@url{https://aka.ms/aaddevv2,Microsoft identity platform for developers}
+(formerly named Azure AD) v2.0.  It allows you to sign in users or apps with
+Microsoft identities
+(@url{https://azure.microsoft.com/services/active-directory/, Azure AD} and
+@url{https://account.microsoft.com, Microsoft Accounts}) and obtain tokens to
+call Microsoft APIs such as @url{https://graph.microsoft.io/, Microsoft Graph}
+or your own APIs registered with the Microsoft identity platform.  It is built
+using industry standard OAuth2 and @code{OpenID} Connect protocols.")
     (license license:expat)))
 
 (define-public go-github-com-babolivier-go-doh-client
