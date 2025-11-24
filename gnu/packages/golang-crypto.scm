@@ -2281,6 +2281,30 @@ done by Marc Stevens and Dan Shumow, and can be found at:
 @@url{https://github.com/cr-marcstevens/sha1collisiondetection,https://github.com/cr-marcstevens/sha1collisiondetection}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-protonmail-bcrypt
+  (package
+    (name "go-github-com-protonmail-bcrypt")
+    (version "0.0.0-20211005172633-e235017c1baf")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ProtonMail/bcrypt")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0znxsia69c2p4vgj9qckqq3p06rg2b5qzdm7p7svs3x46bp28s3s"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ProtonMail/bcrypt"))
+    (home-page "https://github.com/ProtonMail/bcrypt")
+    (synopsis "Bcrypt hash algorithm in Golang")
+    (description
+     "This package provides a Golang implementation of the bcrypt hash
+algorithm.  It is a fork of github.com/jameskeane/bcrypt.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-protonmail-go-crypto
   (package
     (name "go-github-com-protonmail-go-crypto")
