@@ -242,6 +242,42 @@ devices.")
 API service accounts for Go.")
     (license license:asl2.0)))
 
+(define-public go-github-com-googleapis-enterprise-certificate-proxy
+  (package
+    (name "go-github-com-googleapis-enterprise-certificate-proxy")
+    (version "0.3.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/googleapis/enterprise-certificate-proxy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jblnaa4hn9x5gfrsiw007wws7hy4h795xzzrw2bzf297ydrlnyg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:tests? #f ;; TODO: Tests require additional dependencies
+      #:skip-build? #t
+      #:import-path "github.com/googleapis/enterprise-certificate-proxy"))
+    (propagated-inputs
+     (list go-golang-org-x-sys go-golang-org-x-crypto
+           ;; go-github-com-google-go-pkcs11
+           ))
+    (home-page "https://github.com/googleapis/enterprise-certificate-proxy")
+    (synopsis "Google Proxies for Enterprise Certificates (GA)")
+    (description
+     "If you use
+@url{https://cloud.google.com/beyondcorp-enterprise/docs/securing-resources-with-certificate-based-access,
+certificate-based access} to protect your Google Cloud resources, the end user
+@url{https://en.wikipedia.org/wiki/Client_certificate,device certificate} is
+one of the credentials that is verified before access to a resource is granted.
+You can configure Google Cloud to use the device certificates in your operating
+system key store when verifying access to a resource from the gcloud CLI or
+Terraform by using the enterprise certificates feature.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-googleapis-gax-go-v2
   (package
     (name "go-github-com-googleapis-gax-go")
