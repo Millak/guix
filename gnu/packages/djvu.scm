@@ -49,6 +49,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -373,8 +374,63 @@ and background layers of images, which can then be encoded into a DjVu file.")
                  (base32
                   "0x64hg9ysrk8sismxb4jgk0sq7r9j90v2i9765xhmxpiy6f0lpni"))))
       (build-system gnu-build-system)
+      (arguments
+       (list
+        #:modules '((guix build gnu-build-system)
+                    ((guix build pyproject-build-system) #:prefix python:)
+                    (guix build utils))
+        #:imported-modules `(,@%default-gnu-imported-modules
+                             ,@%pyproject-build-system-modules)
+        #:test-target "test"
+        #:phases
+        (with-extensions (list (pyproject-guile-json))
+          #~(modify-phases %standard-phases
+              (delete 'configure)
+              (add-after 'unpack 'fix-for-python-3.11
+                (lambda _
+                  (substitute* "lib/cli/ocrodjvu.py"
+                    ;; The getargspec function has been removed in python 3.11.
+                    (("init_args, _, _, _ = inspect.getargspec\\(cls.__init__\\)")
+                     "init_args = inspect.getfullargspec(cls.__init__).args"))))
+              (add-before 'check 'disable-failing-test
+                (lambda _
+                  (substitute* "tests/test_ipc.py"
+                    ;; test_wait_signal gets stuck forever
+                    (("yield self\\._test_signal, name")
+                     "return True")
+                    ;; test_path fails to find a file it should have created
+                    (("path = os\\.getenv\\('PATH'\\)\\.split\\(':'\\)")
+                     "return True"))
+                  ;; Disable tests with tesseract. They can't work without
+                  ;; the language files that must downloaded by the final user
+                  ;; as they are not packaged in Guix.
+                  (substitute* "tests/ocrodjvu/test.py"
+                    (("engines = stdout\\.getvalue\\(\\)\\.splitlines\\(\\)")
+                     "engines = ['ocrad']"))
+                  (substitute* "tests/ocrodjvu/test_integration.py"
+                    (("engines = 'tesseract', 'cuneiform', 'gocr', 'ocrad'")
+                     "engines = 'ocrad'"))))
+              (replace 'install
+                (lambda _
+                  (invoke "make" "install"
+                          "DESTDIR=" (string-append "PREFIX=" #$output))))
+              (add-after 'install 'wrap-python
+                (assoc-ref python:%standard-phases 'wrap))
+              (add-after 'wrap-python 'wrap-path
+                (lambda* (#:key outputs #:allow-other-keys)
+                  (for-each (lambda (file)
+                              (wrap-program (search-input-file outputs file)
+                                `("PATH" ":" prefix
+                                  (,(string-append
+                                     #$(this-package-input "djvulibre") "/bin:"
+                                     #$(this-package-input "ocrad") "/bin:"
+                                     #$(this-package-input "tesseract-ocr")
+                                     "/bin")))))
+                            '("bin/djvu2hocr"
+                              "bin/hocr2djvused"
+                              "bin/ocrodjvu"))))))))
       (native-inputs
-       (list (libc-utf8-locales-for-target) libxml2 python-nose python-pillow))
+       (list (libc-utf8-locales-for-target) libxml2 python-pynose python-pillow))
       (inputs
        (list bash-minimal
              djvulibre
@@ -387,60 +443,6 @@ and background layers of images, which can then be encoded into a DjVu file.")
              python-regex
              python-wrapper
              tesseract-ocr))
-      (arguments
-       (list
-        #:modules '((guix build gnu-build-system)
-                    ((guix build python-build-system) #:prefix python:)
-                    (guix build utils))
-        #:imported-modules `(,@%default-gnu-imported-modules
-                             (guix build python-build-system))
-        #:test-target "test"
-        #:phases
-        #~(modify-phases %standard-phases
-            (delete 'configure)
-            (add-after 'unpack 'fix-for-python-3.11
-              (lambda _
-                (substitute* "lib/cli/ocrodjvu.py"
-                  ;; The getargspec function has been removed in python 3.11.
-                  (("init_args, _, _, _ = inspect.getargspec\\(cls.__init__\\)")
-                   "init_args = inspect.getfullargspec(cls.__init__).args"))))
-            (add-before 'check 'disable-failing-test
-              (lambda _
-                (substitute* "tests/test_ipc.py"
-                  ;; test_wait_signal gets stuck forever
-                  (("yield self\\._test_signal, name")
-                   "return True")
-                  ;; test_path fails to find a file it should have created
-                  (("path = os\\.getenv\\('PATH'\\)\\.split\\(':'\\)")
-                   "return True"))
-                ;; Disable tests with tesseract. They can't work without
-                ;; the language files that must downloaded by the final user
-                ;; as they are not packaged in Guix.
-                (substitute* "tests/ocrodjvu/test.py"
-                  (("engines = stdout\\.getvalue\\(\\)\\.splitlines\\(\\)")
-                   "engines = ['ocrad']"))
-                (substitute* "tests/ocrodjvu/test_integration.py"
-                  (("engines = 'tesseract', 'cuneiform', 'gocr', 'ocrad'")
-                   "engines = 'ocrad'"))))
-            (replace 'install
-              (lambda _
-                (invoke "make" "install"
-                        "DESTDIR=" (string-append "PREFIX=" #$output))))
-            (add-after 'install 'wrap-python
-              (assoc-ref python:%standard-phases 'wrap))
-            (add-after 'wrap-python 'wrap-path
-              (lambda* (#:key outputs #:allow-other-keys)
-                (for-each (lambda (file)
-                            (wrap-program (search-input-file outputs file)
-                              `("PATH" ":" prefix
-                                (,(string-append
-                                   #$(this-package-input "djvulibre") "/bin:"
-                                   #$(this-package-input "ocrad") "/bin:"
-                                   #$(this-package-input "tesseract-ocr")
-                                   "/bin")))))
-                          '("bin/djvu2hocr"
-                            "bin/hocr2djvused"
-                            "bin/ocrodjvu")))))))
       (synopsis "Program to perform OCR on DjVu files")
       (description
        "@code{ocrodjvu} is a wrapper for OCR systems, that allows you to perform
