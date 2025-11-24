@@ -9988,7 +9988,7 @@ access to (URL) path parameters.")
   (package
     (inherit go-github-com-hanwen-go-fuse)
     (name "go-github-com-hanwen-go-fuse-v2")
-    (version "2.5.0")  ;check go,mod in gocryptfs before upgrading
+    (version "2.9.0")  ;check go,mod in gocryptfs before upgrading
     (source
      (origin
        (method git-fetch)
@@ -9997,7 +9997,7 @@ access to (URL) path parameters.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wgx8gwimgf7rp7j23cl6bxx1gzzarda2kqz91i64ydc124jsqmr"))))
+        (base32 "08z0l2pnbbmrnf6fgrbdzbyq9vkb27bvdbh3yi5zryy59nkz9hcs"))))
     (build-system go-build-system)
     (arguments
      (substitute-keyword-arguments
