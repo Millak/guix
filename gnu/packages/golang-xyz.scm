@@ -3026,6 +3026,38 @@ Supported Barcode Types:
      "This is a memcache client library for the Go programming language.")
     (license license:asl2.0)))
 
+(define-public go-github-com-bradfitz-iter
+  ;; XXX Report to the users of this package, note from maintainer:
+  ;;
+  ;; This package was intended to be an educational joke when it was released
+  ;; in 2014. People didn't get the joke part and started depending on
+  ;; it. That's fine, I guess. (This is the Internet.) But it's kinda
+  ;; weird. It's one line, and not even idiomatic Go style. I encourage you
+  ;; not to depend on this or write code like this, but I do encourage you to
+  ;; read the code and think about the representation of Go slices and why it
+  ;; doesn't allocate.
+  (package
+    (name "go-github-com-bradfitz-iter")
+    (version "0.0.0-20191230175014-e8f45d346db8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bradfitz/iter")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1qqy1fhmlrsfz6l1arsxmkpfj30s090j1a3ij0lap6h45pc1z509"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bradfitz/iter"))
+    (home-page "https://github.com/bradfitz/iter")
+    (synopsis "Syntactically different way to iterate over integers")
+    (description
+     "This package provides a syntactically different way to iterate over integers.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-briandowns-spinner
   (package
     (name "go-github-com-briandowns-spinner")
