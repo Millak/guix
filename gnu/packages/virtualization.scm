@@ -334,7 +334,10 @@
                         ;; of cherry-picking the tests which need the
                         ;; ipxe-qemu firmware.
                         (substitute* "tests/meson.build"
-                          (("subdir.*qtest.*") "")))))
+                          (("subdir.*qtest.*") ""))
+                        ;; efi-ne2k_pci.rom is from ipxe-qemu.
+                        (substitute* "tests/functional/meson.build"
+                          ((".*ppc_74xx.*") "")))))
                  #~())
           (add-after 'unpack 'extend-test-time-outs
             (lambda _
