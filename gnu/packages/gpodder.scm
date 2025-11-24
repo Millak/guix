@@ -28,6 +28,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -42,6 +43,7 @@
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages music)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -174,30 +176,31 @@ and track podcasts.")
 (define-public python-mygpoclient
   (package
     (name "python-mygpoclient")
-    (version "1.9")
+    (version "1.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mygpoclient" version))
        (sha256
-        (base32
-         "05hmjdb73m7vl6lzvh58bnliy4227pv8hprwfka0bg19cnvgpyf5"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-coverage python-minimock python-nose python-pytest))
+        (base32 "1w28ij4ar42725d7np6f3rxfvm4w2ms5j06ny70qmap26ijsaj52"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "make" "test"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "test")))))))
+    (native-inputs (list python-minimock python-pytest python-setuptools))
     (home-page "https://mygpoclient.readthedocs.io")
     (synopsis "Python library for the gPodder web service")
-    (description "@code{mygpoclient} provides an easy and structured way to
-access the @url{https://gpodder.net} web services.  In addition to
-subscription list synchronization and storage, the API supports uploading and
-downloading episode status changes.")
-    (license license:gpl3+)))
+    (description
+     "@code{mygpoclient} provides an easy and structured way to access the
+@url{https://gpodder.net} web services.  In addition to subscription list
+synchronization and storage, the API supports uploading and downloading
+episode status changes.")
+    (license license:gpl3)))
 
 (define-public python-podcastparser
   (package
