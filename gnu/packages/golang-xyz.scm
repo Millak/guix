@@ -18279,6 +18279,35 @@ throughput and hit ratio performance.  It's a fork of
 @code{dgraph-io/ristretto} project.")
     (license license:asl2.0)))
 
+(define-public go-github-com-panjf2000-ants-v2
+  (package
+    (name "go-github-com-panjf2000-ants-v2")
+    (version "2.11.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/panjf2000/ants")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gz74jw7a905wld0bgcpxii3bq5864mv5hsnbkzj1n00n3lwmqmb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/panjf2000/ants/v2"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-golang-org-x-sync))
+    (home-page "https://github.com/panjf2000/ants")
+    (synopsis "Pooling solution for Golang")
+    (description
+     "This package implements a goroutine pool with fixed capacity, managing and
+recycling a massive number of goroutines, allowing developers to limit the
+number of goroutines in your concurrent programs.")
+    (license license:expat)))
+
 (define-public go-github-com-patrickmn-go-cache
   (package
     (name "go-github-com-patrickmn-go-cache")
