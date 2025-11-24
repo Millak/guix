@@ -743,38 +743,6 @@ databases to perform alignment and is more robust.  Because it is
 alignment-free, it runs much faster and also easier to use.")
     (license license:gpl2+)))
 
-(define-public pbcopper
-  (package
-    (name "pbcopper")
-    (version "2.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/PacificBiosciences/pbcopper")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "04mgmla96bsmr9gijbn3ibspry625cv4kqqxv70z4jq4qc407jy3"))))
-    (build-system meson-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-meson-files
-           (lambda _
-             (substitute* "meson.build"
-               (("-msse4.1") "")))))))
-    (inputs
-     (list boost))
-    (native-inputs
-     (list googletest pkg-config))
-    (home-page "https://github.com/PacificBiosciences/pbcopper")
-    (synopsis "Data structures, algorithms, and utilities for PacBio C++ applications")
-    (description
-     "The pbcopper library provides a suite of data structures, algorithms,
-and utilities for PacBio C++ applications.")
-    (license license:bsd-3)))
-
 (define-public r-anglemania
   (let ((commit "f27399fb947adfa0de6134493e737658ca591af5")
         (revision "1"))
