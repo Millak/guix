@@ -2732,6 +2732,33 @@ browser window.")
 @url{https://cloudinary.com/, Cloudinary} in Go.")
     (license license:expat)))
 
+(define-public go-github-com-cloudsoda-sddl
+  (package
+    (name "go-github-com-cloudsoda-sddl")
+    (version "0.0.0-20250224235906-926454e91efc")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/CloudSoda/sddl")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wb0mydqkiqc2q7rzlv0fssxshyp811wmjg3i1awd1a9z29v6qyq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/cloudsoda/sddl"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://github.com/cloudsoda/sddl")
+    (synopsis "Windows Security Descriptor library and CLI tool")
+    (description
+     "This package provides a cross-platform Go library and command-line tool for
+working with Windows Security Descriptors, providing conversion between binary
+and SDDL (Security Descriptor Definition Language) string formats.")
+    (license license:lgpl3)))
+
 (define-public go-github-com-cncf-xds-go
   (package
     (name "go-github-com-cncf-xds-go")
