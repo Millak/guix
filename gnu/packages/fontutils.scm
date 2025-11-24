@@ -2051,7 +2051,7 @@ UFO3 as described by the UFO font format.")
             (lambda* (#:key tests? #:allow-other-keys)
               (with-directory-excursion "tests"
                 (invoke "./run_tests")))))))
-    (native-inputs (list python-setuptools-scm))
+    (native-inputs (list python-pillow python-setuptools-scm))
     (propagated-inputs (list python-afdko))
     (home-page "https://github.com/googlei18n/nototools")
     (synopsis "Noto fonts support tools and scripts")
