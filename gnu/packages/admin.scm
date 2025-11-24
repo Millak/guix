@@ -3183,7 +3183,7 @@ degradation and failure.")
 (define-public fdupes
   (package
     (name "fdupes")
-    (version "2.3.2")
+    (version "2.4.0")
     (source
      (origin
        (method url-fetch)
@@ -3191,7 +3191,7 @@ degradation and failure.")
                            "releases/download/v" version "/"
                            "fdupes-" version ".tar.gz"))
        (sha256
-        (base32 "1irab60gkjmnvk1l0x92cb5vh9zw9g0vgr3s82mir93zpvn8v3c0"))))
+        (base32 "0dhpgcylf99cnxz8h4i4dhv2i3124cs0n8lssbhwn783knijfysj"))))
     (build-system gnu-build-system)
     (inputs
      (list ncurses pcre2 sqlite))
