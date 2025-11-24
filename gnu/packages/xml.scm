@@ -288,8 +288,7 @@ project (but it is usable outside of the Gnome platform).")
 ;; in future releases of libxml2.
 (define-public libxml2-with-zlib
   (hidden-package
-   (package
-     (inherit libxml2)
+   (package/inherit libxml2
      (arguments
       (substitute-keyword-arguments (package-arguments libxml2)
         ((#:configure-flags flags #~'())
