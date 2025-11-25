@@ -25882,14 +25882,14 @@ advanced visualization of sets of conserved noncoding elements.")
 (define-public r-tfbstools
   (package
     (name "r-tfbstools")
-    (version "1.46.0")
+    (version "1.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "TFBSTools" version))
        (sha256
         (base32
-         "149bhv3h8d5lr17l7bndjpmp0g48yp07kiankwvqkrl2zilr17kk"))))
+         "0vsl5i3nv57ha47qa5ba3sd99n9sd6px402wqr80fv9636qb85nq"))))
     (properties
      '((upstream-name . "TFBSTools")))
     (build-system r-build-system)
@@ -25902,7 +25902,6 @@ advanced visualization of sets of conserved noncoding elements.")
            r-catools
            r-dbi
            r-dirichletmultinomial
-           r-genomeinfodb
            r-genomicranges
            r-gtools
            r-iranges
@@ -25910,6 +25909,7 @@ advanced visualization of sets of conserved noncoding elements.")
            r-rsqlite
            r-rtracklayer
            r-s4vectors
+           r-seqinfo
            r-seqlogo
            r-tfmpvalue
            r-xml
