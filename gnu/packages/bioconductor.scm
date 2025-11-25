@@ -10776,13 +10776,13 @@ that are missing at random.")
 (define-public r-interactivedisplay
   (package
     (name "r-interactivedisplay")
-    (version "1.46.0")
+    (version "1.48.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "interactiveDisplay" version))
               (sha256
                (base32
-                "0xx8rl1ifk631v39pmzi82zavi89m74p7pslgv2w40ms4fia9vgj"))
+                "02amr55nk6jx059a0shrwpnzkgcdfsr2x8k975j7x9y0nwsj6l94"))
               (snippet
                '(for-each delete-file
                           '("inst/www/js/d3.v2.js"
