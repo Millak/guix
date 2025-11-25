@@ -17841,17 +17841,18 @@ to perform a principal components analysis that is robust to differences in
 the numbers of cells across batches.")
     (license license:gpl3)))
 
+;; TODO: check version of js-jquery-sticky-kit
 (define-public r-mast
   (package
     (name "r-mast")
-    (version "1.33.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MAST" version))
        (sha256
         (base32
-         "00rpm0w3cndza5dbiss7bmx6vpy1fqxw1rci44yap2m7z482xbjg"))
+         "1q0r9288k7jz3brsprmdc3a2h6x2nji4x7pdbd5vsrz32xrjcydw"))
        (snippet
         '(delete-file "docs/jquery.sticky-kit.min.js"))))
     (properties `((upstream-name . "MAST")))
