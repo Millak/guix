@@ -11111,13 +11111,13 @@ package that automatically loads that environment.")
 (define-public r-manor
   (package
     (name "r-manor")
-    (version "1.80.0")
+    (version "1.82.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MANOR" version))
        (sha256
-        (base32 "1kyg0ar2hvk5cqn8jxbzypw9rvzpkb2qkim6rdjb3dc01jaach1p"))))
+        (base32 "0bgv10b2639mcsvayxg7fv7jijvaz8nd0s0gp7lx62ddq1npw367"))))
     (properties `((upstream-name . "MANOR")))
     (build-system r-build-system)
     (propagated-inputs (list r-glad))
