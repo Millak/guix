@@ -27201,13 +27201,13 @@ methods based on resistant statistics.")
 (define-public r-pathview
   (package
     (name "r-pathview")
-    (version "1.48.0")
+    (version "1.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "pathview" version))
        (sha256
-        (base32 "096nf0p69jyj5ih09r1azz3ia5dzjj2n871kfmmm80sdzi1qs04g"))))
+        (base32 "1cs3nh196wcfphngyx1h0flv0fhydvjyvk1rpq8jc53mcjsdzh5b"))))
     (properties `((upstream-name . "pathview")))
     (build-system r-build-system)
     ;; Vignettes attempt to connect to the internet.
