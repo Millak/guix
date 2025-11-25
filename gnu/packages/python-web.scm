@@ -3495,7 +3495,8 @@ Encryption} (JOSE) Web Standards.")
 
 (define-public python-pyscss
   ;; XXX: no fresh release supporting Python 3.11, use the latest commit, see
-  ;; <https://github.com/Kronuz/pyScss/issues/428>.
+  ;; <https://github.com/Kronuz/pyScss/issues/428>,
+  ;; <https://github.com/Kronuz/pyScss/issues/431>.
   (let ((commit "73559d047706ccd4593cf6aa092de71f35164723")
         (revision "0"))
     (package
@@ -3512,9 +3513,12 @@ Encryption} (JOSE) Web Standards.")
           (base32 "00msypxf5dm57gyfp3jxvjinigi4km84v33w83635pms9li2k3y7"))))
       (build-system pyproject-build-system)
       (native-inputs
-       (list python-pytest python-pytest-cov python-setuptools python-wheel))
+       (list python-pytest
+             python-setuptools))
       (inputs
        (list pcre))
+      (propagated-inputs
+       (list python-six)) ;hard dependency in scss/compiler.py
       (home-page "https://github.com/Kronuz/pyScss")
       (synopsis "Scss compiler for Python")
       (description
