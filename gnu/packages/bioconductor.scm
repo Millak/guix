@@ -25200,14 +25200,14 @@ generated.")
 (define-public r-preprocesscore
   (package
     (name "r-preprocesscore")
-    (version "1.70.0")
+    (version "1.72.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "preprocessCore" version))
        (sha256
         (base32
-         "062ymdjc48580yv1kl36p0prvffk8qcf5ypsvdvdqikxfp6ayrvp"))))
+         "0kc8af6kcp10iassdfxlx5nj63837dgv2gi23pwznz0lf4ihawj4"))))
     (properties
      `((upstream-name . "preprocessCore")))
     (build-system r-build-system)
