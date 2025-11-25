@@ -9360,14 +9360,14 @@ adapted from transcriptomics.")
 (define-public r-dirichletmultinomial
   (package
     (name "r-dirichletmultinomial")
-    (version "1.50.0")
+    (version "1.52.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DirichletMultinomial" version))
        (sha256
         (base32
-         "0v4ch5nrz6kf6scxc98w9jdalmgllzy9qh35pfdx0z7wbbklk9z8"))))
+         "0mr7b6xvi841k2whmp1qwh6nys7fkd2d5m0zzsp5m76lq24hhjdn"))))
     (properties
      `((upstream-name . "DirichletMultinomial")))
     (build-system r-build-system)
