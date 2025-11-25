@@ -14449,13 +14449,13 @@ additional column data sets.")
 (define-public r-scds
   (package
     (name "r-scds")
-    (version "1.24.0")
+    (version "1.26.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "scds" version))
               (sha256
                (base32
-                "10ylhdxgz6rj4di1xwayprxwfmm8q1w3z98f2012yd89jkqvnykx"))))
+                "1j0z0w8cw80mr9nll9lj6x8573cyi1hk0wlz5f1bm66c2pf4q547"))))
     (properties `((upstream-name . "scds")))
     (build-system r-build-system)
     (propagated-inputs (list r-dplyr
