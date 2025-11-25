@@ -27660,14 +27660,14 @@ information networks from data.")
 (define-public r-genetclassifier
   (package
     (name "r-genetclassifier")
-    (version "1.48.0")
+    (version "1.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "geNetClassifier" version))
        (sha256
         (base32
-         "1x2q78nvinrj7j72z12cl9jx2cv3klpq7hrqr2r7jianjw6prhqc"))))
+         "1hsm0zbzw5syz9f0jrwxlczac11xc8as9w9vlhibwmc7hm8aasqx"))))
     (properties
      `((upstream-name . "geNetClassifier")))
     (build-system r-build-system)
