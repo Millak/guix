@@ -14215,13 +14215,13 @@ tissues.  Current functionalities include
 (define-public r-trackviewer
   (package
     (name "r-trackviewer")
-    (version "1.44.0")
+    (version "1.46.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "trackViewer" version))
               (sha256
                (base32
-                "0x7048mf4i55sf6wr2b1ibpiw2jpw7bdd3w6n9m0dwirg0w487qf"))
+                "1asyrcdq65135f2s551s543gvwcb651xmcbn9p3z2rrj53v0xxq2"))
               (snippet
                '(delete-file "inst/htmlwidgets/lib/d3/d3.v4.min.js"))))
     (properties `((upstream-name . "trackViewer")))
@@ -14255,6 +14255,7 @@ tissues.  Current functionalities include
                              r-rtracklayer
                              r-s4vectors
                              r-scales
+                             r-seqinfo
                              r-strawr
                              r-txdbmaker))
     (native-inputs
