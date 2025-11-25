@@ -8506,14 +8506,14 @@ by the user, helping with quick and reproducible access.")
 (define-public r-aroma-light
   (package
     (name "r-aroma-light")
-    (version "3.38.0")
+    (version "3.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "aroma.light" version))
        (sha256
         (base32
-         "0i6b5mp7m61dy00scqmb2aa63fl9a9pxaf1zw13sdxj5xhpns7wa"))))
+         "1jr8x2hiby46a3n456nnpsjdq37b0f429jh8mlia4zg1wy64bws8"))))
     (properties
      '((upstream-name . "aroma.light")
        ;; Needed for tests.
