@@ -18801,17 +18801,17 @@ Feature objects.")
 (define-public r-geometries
   (package
     (name "r-geometries")
-    (version "0.2.4")
+    (version "0.2.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "geometries" version))
        (sha256
-        (base32 "040ljxmzbjdr76p81ygnn5y0gzckz5k2arxkih5m5f3b6g62laf6"))))
+        (base32 "14l4qycwyi7lp8vl598xhwi28vrgj9psll3k8zafld7n64zsh4ih"))))
     (properties `((upstream-name . "geometries")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-tinytest))
     (home-page "https://dcooley.github.io/geometries/")
     (synopsis "Convert between R objects and geometric structures")
     (description
