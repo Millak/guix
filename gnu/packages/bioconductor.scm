@@ -19501,14 +19501,14 @@ attempts to assess their statistical significance.")
 (define-public r-clusterprofiler
   (package
     (name "r-clusterprofiler")
-    (version "4.16.0")
+    (version "4.18.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "clusterProfiler" version))
        (sha256
         (base32
-         "1vgyhaisk5vx812kqyzg4kyxmn8q64i99xy9di6ds3fp84j79xyl"))))
+         "0m26gbiaff72jivvk6ncgrd4mhq5y0asc7mnjn1qqrba4k63x9nr"))))
     (properties
      '((upstream-name . "clusterProfiler")
        (updater-extra-native-inputs . ("r-org-hs-eg-db"))))
@@ -19530,7 +19530,7 @@ attempts to assess their statistical significance.")
            r-tidyr
            r-yulab-utils))
     (native-inputs
-     (list r-knitr r-org-hs-eg-db r-testthat))
+     (list r-org-hs-eg-db r-quarto r-testthat))
     (home-page "https://guangchuangyu.github.io/software/clusterProfiler/")
     (synopsis "Analysis and visualization of functional profiles for gene clusters")
     (description
