@@ -25782,13 +25782,13 @@ performs copy number calculations and reports.")
 (define-public r-beaddatapackr
   (package
     (name "r-beaddatapackr")
-    (version "1.60.0")
+    (version "1.62.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BeadDataPackR" version))
               (sha256
                (base32
-                "066cjf2ir95xzc97a7ir2lhnpgzzhdgylv6ly0xvybjfbimq99a7"))))
+                "0dl1clwaccv0s7g5ka27wrb74yw8pm1sy12ax4fkpmdbyka7ca19"))))
     (properties `((upstream-name . "BeadDataPackR")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
