@@ -15441,14 +15441,14 @@ packages.")
 (define-public r-oligo
   (package
     (name "r-oligo")
-    (version "1.72.0")
+    (version "1.74.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "oligo" version))
        (sha256
         (base32
-         "1f57jzfsrz3fx3z0w97pgipcrjspw08y32v4r7r22yiywlxbksa2"))))
+         "07kkssywxinqbkpwgjihk2lia25kgr26vdbb5icwb7xldff9s4x1"))))
     (properties
      '((upstream-name . "oligo")
        (updater-ignored-native-inputs . ("r-oligodata"))))
