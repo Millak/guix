@@ -1658,14 +1658,14 @@ exposing these as TxDb objects.")
 (define-public r-txdb-hsapiens-ucsc-hg19-knowngene
   (package
     (name "r-txdb-hsapiens-ucsc-hg19-knowngene")
-    (version "3.2.2")
+    (version "3.22.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "TxDb.Hsapiens.UCSC.hg19.knownGene"
                                      version 'annotation))
               (sha256
                (base32
-                "1sajhcqqwazgz2lqbik7rd935i7kpnh08zxbp2ra10j72yqy4g86"))))
+                "1cdzvidz3c912lbq1pbqk1dp35i15c6s4ih6r13mhy2l4vc2zdmf"))))
     (properties
      `((upstream-name . "TxDb.Hsapiens.UCSC.hg19.knownGene")))
     (build-system r-build-system)
