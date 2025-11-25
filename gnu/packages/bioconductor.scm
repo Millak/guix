@@ -12378,13 +12378,13 @@ domain isotypes from pfam data.")
 (define-public r-piano
   (package
     (name "r-piano")
-    (version "2.24.0")
+    (version "2.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "piano" version))
        (sha256
-        (base32 "116fy2jmgy73fh080w6rzfzb0m2icvl8k5z2vcc3mf6p43kpkf2w"))))
+        (base32 "0z0dikcqcpd9fw5id4yvgx1kcri3n111zwizrgc80zybcr58s0w2"))))
     (properties `((upstream-name . "piano")))
     (build-system r-build-system)
     (propagated-inputs
