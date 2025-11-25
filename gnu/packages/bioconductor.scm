@@ -5727,13 +5727,13 @@ interest.")
 (define-public r-basespacer
   (package
     (name "r-basespacer")
-    (version "1.52.0")
+    (version "1.54.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BaseSpaceR" version))
               (sha256
                (base32
-                "10h6wq1b8lyh7dnxxwsjxy06y32r16k0r4knaj6zrij9d1in6yw0"))))
+                "0dyv8abr34jhig7xb7z7gghb0nnqaflwqshqbls08layz5wh4p21"))))
     (properties `((upstream-name . "BaseSpaceR")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcurl r-rjsonio))
