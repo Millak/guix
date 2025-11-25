@@ -20563,14 +20563,14 @@ decomposition algorithms.")
 (define-public r-yapsa
   (package
     (name "r-yapsa")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "YAPSA" version))
        (sha256
         (base32
-         "1i8n46ifxbhnngqk4qb93mxj07ngzr43759mw58kf0j73xp5vx4b"))))
+         "0i6s8vhk8ar62g9fzn5zr76w94i11qy7g7gfbbk3kmvg3g4rrj4c"))))
     (properties `((upstream-name . "YAPSA")))
     (build-system r-build-system)
     (propagated-inputs
@@ -20582,7 +20582,6 @@ decomposition algorithms.")
            r-dendextend
            r-doparallel
            r-dplyr
-           r-genomeinfodb
            r-genomicranges
            r-getoptlong
            r-ggbeeswarm
@@ -20595,6 +20594,7 @@ decomposition algorithms.")
            r-pmcmrplus
            r-pracma
            r-reshape2
+           r-seqinfo
            r-somaticsignatures
            r-variantannotation))
     (native-inputs
