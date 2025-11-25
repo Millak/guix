@@ -15836,13 +15836,13 @@ before and after correcting for batch effects.")
 (define-public r-mbkmeans
   (package
     (name "r-mbkmeans")
-    (version "1.24.0")
+    (version "1.26.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "mbkmeans" version))
               (sha256
                (base32
-                "0ipb03c0k5w1y4bdm9fcpg1qih74phwwwmfqldabshbwhkkaw4rp"))))
+                "1sa10gnc962311c7hgmjb3c51hz7s3704yfs2bf7kxzfjyja402s"))))
     (build-system r-build-system)
     (native-inputs
      (list r-hdf5array r-knitr r-testthat))
