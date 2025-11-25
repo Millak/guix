@@ -48669,13 +48669,13 @@ diagonals.  This package allows you to compute the tensor product of arrays.")
 (define-public r-spatstat-explore
   (package
     (name "r-spatstat-explore")
-    (version "3.5-3")
+    (version "3.6-0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "spatstat.explore" version))
               (sha256
                (base32
-                "0rd30hsfrl1vysacjqn730x4628mninqnsf07cz3f0qxj5rpbv3k"))))
+                "0wbvwi7x68ak7z3m24c2ninnzwciw0hrr6jqi3zf4hpcxi7fym1k"))))
     (properties `((upstream-name . "spatstat.explore")))
     (build-system r-build-system)
     (propagated-inputs
