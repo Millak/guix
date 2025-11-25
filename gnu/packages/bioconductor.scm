@@ -25805,13 +25805,13 @@ decompression of raw bead-level data from the Illumina BeadArray platform.")
 (define-public r-cner
   (package
     (name "r-cner")
-    (version "1.43.0")
+    (version "1.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "CNEr" version))
        (sha256
-        (base32 "129092mvpfiglf63z00himz39m5xw4dizrq70zg1l4s357cbbi9h"))))
+        (base32 "18ii60kxr3f1rsydj29ml49gjicnciq7ypvrm1dz2rv4app0bp5j"))))
     (properties
      '((upstream-name . "CNEr")))
     (arguments
@@ -25859,6 +25859,7 @@ decompression of raw bead-level data from the Illumina BeadArray platform.")
            r-rsqlite
            r-rtracklayer
            r-s4vectors
+           r-seqinfo
            r-xvector))
     (native-inputs
      (list r-bsgenome-drerio-ucsc-danrer10
