@@ -6878,13 +6878,13 @@ negative control samples.")
 (define-public r-deconvr
   (package
     (name "r-deconvr")
-    (version "1.14.0")
+    (version "1.16.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "deconvR" version))
               (sha256
                (base32
-                "076ay8fcihsk8y4kab7wdh96p6lpx4w3n78l3bnry2xnmywyxchk"))))
+                "0nbkic26yw1gwcn2ha2jb4hjinc0id0gjhwl59lf38aiy9ckssya"))))
     (properties `((upstream-name . "deconvR")))
     (build-system r-build-system)
     (propagated-inputs
