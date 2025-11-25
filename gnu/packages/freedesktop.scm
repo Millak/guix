@@ -3474,7 +3474,8 @@ notifies the user using any notification daemon implementing
          (guix build meson-build-system)
          (guix build utils))
        #:phases
-       #~(modify-phases %standard-phases
+       (with-extensions (list (cargo-guile-json))
+        #~(modify-phases %standard-phases
            (add-after 'unpack 'prepare-cargo-build-system
              (lambda args
                (for-each
@@ -3484,7 +3485,7 @@ notifies the user using any notification daemon implementing
                    '(unpack-rust-crates
                      configure
                      check-for-pregenerated-files
-                     patch-cargo-checksums)))))
+                     patch-cargo-checksums))))))
        #:configure-flags
        #~(list "-Dwith_lz4=enabled"
                "-Dwith_vaapi=enabled"
