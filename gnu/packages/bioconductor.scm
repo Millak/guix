@@ -24480,13 +24480,13 @@ different graph related packages produced by Bioconductor.")
 (define-public r-biocstyle
   (package
     (name "r-biocstyle")
-    (version "2.36.0")
+    (version "2.38.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BiocStyle" version))
               (sha256
                (base32
-                "1q186nrib86gicgv54h3snyah8kq8vc1vrzn81l5ly1hkgrn7fnl"))))
+                "0817kgf3d1lsqsg7a3vg5vrb9ia6g4j3x25cfk3j3sg64w3wz158"))))
     (properties
      `((upstream-name . "BiocStyle")))
     (build-system r-build-system)
