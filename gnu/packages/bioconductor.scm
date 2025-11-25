@@ -7761,13 +7761,13 @@ possible.")
 (define-public r-isoformswitchanalyzer
   (package
     (name "r-isoformswitchanalyzer")
-    (version "2.8.0")
+    (version "2.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "IsoformSwitchAnalyzeR" version))
        (sha256
-        (base32 "156v2c8d3szhhpfra3jyczpw5wxv1lhfr4kyfzw3v1l965dci75q"))))
+        (base32 "03xc279lhysn4lilmgi0fbx6a57xx0d31h0nyibw79qh3m14lisl"))))
     (properties `((upstream-name . "IsoformSwitchAnalyzeR")))
     (build-system r-build-system)
     (propagated-inputs
@@ -7781,7 +7781,6 @@ possible.")
            r-dplyr
            r-edger
            r-futile-logger
-           r-genomeinfodb
            r-genomicranges
            r-ggplot2
            r-gridextra
@@ -7798,6 +7797,7 @@ possible.")
            r-rtracklayer
            r-s4vectors
            r-saturn
+           r-seqinfo
            r-stringr
            r-summarizedexperiment
            r-sva
