@@ -7186,13 +7186,13 @@ heterogeneity in the original high-dimensional space.")
 (define-public r-derfinder
   (package
     (name "r-derfinder")
-    (version "1.42.0")
+    (version "1.44.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "derfinder" version))
               (sha256
                (base32
-                "083y2qsy1ix7ikz8ppf4b49ya4ipf18sxc3gznisybx807nsk4zs"))))
+                "19r6bzx6lz03pvzjvvy0g6pbf48vzp229lbd2lpgp3z6x1ncrrz5"))))
     (properties `((upstream-name . "derfinder")))
     (build-system r-build-system)
     (arguments
@@ -7221,7 +7221,8 @@ heterogeneity in the original high-dimensional space.")
                              r-qvalue
                              r-rsamtools
                              r-rtracklayer
-                             r-s4vectors))
+                             r-s4vectors
+                             r-seqinfo))
     (native-inputs (list r-derfinderdata r-knitr r-testthat
                          r-txdb-hsapiens-ucsc-hg19-knowngene))
     (home-page "https://github.com/lcolladotor/derfinder")
