@@ -16838,13 +16838,13 @@ genes or proteins in these datasets.")
 (define-public r-plyranges
   (package
     (name "r-plyranges")
-    (version "1.28.0")
+    (version "1.30.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "plyranges" version))
               (sha256
                (base32
-                "08iif4rllnshp3xzsk8y08c3jnpk2k4bbnf6f7rsx2q4sgvnlcpn"))))
+                "1s2r33jisiqcfk7avn8hhk281nbm4skq3956di3d6xv4n3qxfcy8"))))
     (properties
      '((upstream-name . "plyranges")
        (updater-extra-native-inputs . ("r-helloranges"))))
@@ -16868,7 +16868,6 @@ genes or proteins in these datasets.")
                 (string-append m "skip('guix')\n"))))))))
     (propagated-inputs (list r-biocgenerics
                              r-dplyr
-                             r-genomeinfodb
                              r-genomicalignments
                              r-genomicranges
                              r-iranges
@@ -16877,6 +16876,7 @@ genes or proteins in these datasets.")
                              r-rsamtools
                              r-rtracklayer
                              r-s4vectors
+                             r-seqinfo
                              r-tidyselect))
     (native-inputs (list r-bsgenome-hsapiens-ucsc-hg19 r-helloranges r-knitr
                          r-testthat))
