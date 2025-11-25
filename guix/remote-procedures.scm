@@ -18,7 +18,14 @@
 
 (define-module (guix remote-procedures)
   #:use-module (guix serialization)
-  #:export (visit-remote-procedures
+  #:export (%protocol-version
+            %worker-magic-1
+            %worker-magic-2
+            protocol-major
+            protocol-minor
+            protocol-version
+
+            visit-remote-procedures
             id:
             returns:
             remote-procedure-id
@@ -36,6 +43,26 @@
 ;;; generate server stubs.
 ;;;
 ;;; Code:
+
+(define %protocol-version
+  ;; Version of the currently-implemented protocol.
+  #x164)
+
+;; Values sent by the client and then the server upon handshake.
+(define %worker-magic-1 #x6e697863)               ; "nixc"
+(define %worker-magic-2 #x6478696f)               ; "dxio"
+
+(define (protocol-major magic)
+  "Extract from MAGIC, an integer, the protocol major version."
+  (logand magic #xff00))
+
+(define (protocol-minor magic)
+  "Extract from MAGIC, an integer, the protocol minor version."
+  (logand magic #x00ff))
+
+(define (protocol-version major minor)
+  "Return an integer representing protocol version MAJOR and MINOR."
+  (logior major minor))
 
 (define-syntax define-remote-procedures
   (syntax-rules (define)

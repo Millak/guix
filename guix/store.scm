@@ -211,18 +211,6 @@
             derivation-log-file
             log-file))
 
-(define %protocol-version #x164)
-
-(define %worker-magic-1 #x6e697863)               ; "nixc"
-(define %worker-magic-2 #x6478696f)               ; "dxio"
-
-(define (protocol-major magic)
-  (logand magic #xff00))
-(define (protocol-minor magic)
-  (logand magic #x00ff))
-(define (protocol-version major minor)
-  (logior major minor))
-
 (define %default-socket-path
   (string-append %state-directory "/daemon-socket/socket"))
 
