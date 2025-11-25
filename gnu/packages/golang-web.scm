@@ -12917,7 +12917,7 @@ It is to used for inputs in other packages.")
 (define-public go-github-com-zitadel-oidc-v3
   (package
     (name "go-github-com-zitadel-oidc-v3")
-    (version "3.43.0")
+    (version "3.45.0")
     (source
      (origin
        (method git-fetch)
@@ -12926,14 +12926,13 @@ It is to used for inputs in other packages.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01cpck1qy91r74q86qkw3dh62zrzwdpqlbzwrxzsv0gpqz5pixc9"))))
+        (base32 "14wqsrbyrd88czkjnl3x8b7cwaya7x2rvkks3pdm5d6l4aljg0r7"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "github.com/zitadel/oidc/v3"
       #:test-flags
-      #~(list "-vet=off"
-              "-skip" (string-join
+      #~(list "-skip" (string-join
                        ;; Tests requring Internet access.
                        (list "TestDiscover/spotify"
                              "TestIntrospect"
