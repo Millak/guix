@@ -13229,13 +13229,13 @@ pre-processed data.")
 (define-public r-rtracklayer
   (package
     (name "r-rtracklayer")
-    (version "1.68.0")
+    (version "1.70.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "rtracklayer" version))
               (sha256
                (base32
-                "07lj0frvqaw062y0d5h52abklyw2ydnk3311a6ykwhhp0mvdskd2"))))
+                "1i9yx0ngx97lmw7pcdj89da6bb0w6gpc98mrwy9prlmml78d81dn"))))
     (properties
      '((updater-ignored-native-inputs
         . ("r-bsgenome-hsapiens-ucsc-hg19"
@@ -13257,17 +13257,17 @@ pre-processed data.")
     (native-inputs
      (list pkg-config
            r-genefilter
+           r-genomeinfodb
            r-hgu133plus2-db
            r-limma
            r-org-hs-eg-db))
     (inputs
-     (list openssl zlib))
+     (list curl zlib))
     (propagated-inputs
      (list r-biocgenerics
            r-biocio
            r-biostrings
            r-curl
-           r-genomeinfodb
            r-genomicalignments
            r-genomicranges
            r-httr
@@ -13275,6 +13275,7 @@ pre-processed data.")
            r-restfulr
            r-rsamtools
            r-s4vectors
+           r-seqinfo
            r-xml
            r-xvector))
     (home-page "https://bioconductor.org/packages/rtracklayer")
