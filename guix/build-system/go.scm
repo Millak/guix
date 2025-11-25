@@ -115,6 +115,7 @@ commit hash and its date rather than a proper release tag."
                (_ arch))
              (match os
                ((or "mingw32" "cygwin") "windows")
+               ("gnu" "hurd")
                (_ os))))
       (_
        (raise
