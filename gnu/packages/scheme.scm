@@ -29,6 +29,7 @@
 ;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2024 Adam Faiz <adam.faiz@disroot.org>
 ;;; Copyright © 2024, 2025 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -533,7 +534,7 @@ in Scheme, and a runtime library which allows Pre-Scheme code to run as Scheme."
 (define-public gambit-c
   (package
     (name "gambit-c")
-    (version "4.9.5")
+    (version "4.9.7")
     (source
      (origin
        (method url-fetch)
@@ -542,7 +543,7 @@ in Scheme, and a runtime library which allows Pre-Scheme code to run as Scheme."
              (string-map (lambda (c) (if (char=? c #\.) #\_ c)) version)
              ".tgz"))
        (sha256
-        (base32 "1p61z1rp0ya4i61mq3hzmr67r3xbvi9h058cf9ci2yqfbzdzi3p2"))))
+        (base32 "08iw6jfvn4l09j52p28s9f8x551590pv300nc0cfg0isrkax6hsj"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
