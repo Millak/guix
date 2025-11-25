@@ -3926,13 +3926,13 @@ experiment.")
 (define-public r-aggregatebiovar
   (package
     (name "r-aggregatebiovar")
-    (version "1.18.0")
+    (version "1.20.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "aggregateBioVar" version))
               (sha256
                (base32
-                "0db183h2vb4f8j7rjvs3hm6xnv0k52313m63hxk9ap4n8k140yis"))))
+                "0wk6y4crv1xwapccpk5cd0klr93v94q8w0x9r0m0cpqc38a052s7"))))
     (properties `((upstream-name . "aggregateBioVar")))
     (build-system r-build-system)
     (propagated-inputs
