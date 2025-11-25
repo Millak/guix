@@ -13563,13 +13563,13 @@ different experiment.")
 (define-public r-screpertoire
   (package
     (name "r-screpertoire")
-    (version "2.4.0")
+    (version "2.5.8")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scRepertoire" version))
        (sha256
-        (base32 "1lywcwh7zbjnfad2lxma5xxq33ah0kai65nxahls0lfk0j4xibyw"))))
+        (base32 "0ijycpmaivcqqmdc90h5jx8rcwg9112pl2mdpms1hgvww70x3s6w"))))
     (properties
      '((upstream-name . "scRepertoire")))
     (build-system r-build-system)
@@ -13580,54 +13580,48 @@ different experiment.")
          (add-after 'unpack 'disable-bad-tests
            (lambda _
              ;; These attempt to connect to the Internet.
-             (substitute* "tests/testthat/test-clonalCluster.R"
-               ((".*clonalCluster works.*" m)
-                (string-append m "skip('guix')\n")))
-             (substitute* "tests/testthat/test-loadContigs.R"
-               ((".*loadContigs.*works.*" m)
+             (substitute* "tests/testthat/test-getContigDoublets.R"
+               ((".*getContigDoublets works for no doublets.*" m)
+                (string-append m "skip('guix')\n"))
+               ((".*getContigDoublets works for inputs with doublets.*" m)
                 (string-append m "skip('guix')\n")))
              (substitute* "tests/testthat/test-combineContigs.R"
                ((".*combineBCR works.*" m)
-                (string-append m "skip('guix')\n")));
-             ;; Small, Rare, and None are not included in the data.
-             (substitute* "tests/testthat/test-utils.R"
-               ((".*filteringNA.*works.*" m)
+                (string-append m "skip('guix')\n")))
+             (substitute* "tests/testthat/test-loadContigs.R"
+               ((".*loadContigs correctly auto-detects and processes various formats.*" m)
+                (string-append m "skip('guix')\n"))
+               ((".*loadContigs correctly processes various formats from URL.*" m)
+                (string-append m "skip('guix')\n")))
+             ;; These fail with: Unknown property set: 'kideraFactors'.
+             (substitute* "tests/testthat/test-positionalProperty.R"
+               ((".*positionalProperty: Output structure is correct.*" m)
+                (string-append m "skip('guix')\n"))
+               ((".*positionalProperty: ggplot object is correctly formed.*" m)
                 (string-append m "skip('guix')\n"))))))))
     (propagated-inputs
-     (list r-assertthat
-           r-cubature
-           r-dplyr
+     (list r-dplyr
            r-evmix
            r-ggalluvial
            r-ggdendro
            r-ggplot2
            r-ggraph
            r-igraph
+           r-immapex
            r-inext
            r-lifecycle
-           r-plyr
+           r-matrix
            r-purrr
            r-quantreg
            r-rcpp
-           r-reshape2
            r-rjson
            r-rlang
            r-s4vectors
            r-seuratobject
            r-singlecellexperiment
-           r-stringdist
-           r-stringr
            r-summarizedexperiment
-           r-tidygraph
-           r-truncdist
-           r-vgam))
-    (native-inputs (list r-devtools
-                         r-knitr
-                         r-seurat
-                         r-spelling
-                         r-testthat
-                         r-vdiffr
-                         r-withr))
+           r-tidygraph))
+    (native-inputs (list r-knitr r-spelling r-testthat))
     (home-page "https://bioconductor.org/packages/scRepertoire")
     (synopsis "Toolkit for single-cell immune receptor profiling")
     (description
