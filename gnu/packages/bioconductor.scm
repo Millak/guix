@@ -19083,14 +19083,14 @@ peak definition in combination with known profile characteristics.")
 (define-public r-varianttools
   (package
     (name "r-varianttools")
-    (version "1.50.0")
+    (version "1.51.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "VariantTools" version))
        (sha256
         (base32
-         "03x4q4siz32fcljzvxdvz58zly11pnvycv65kbzam1nb9vg312v2"))))
+         "14r5hnc095v1h2q2bfsgqfmmmfzdnl5srac3xla1qjq9d8xv5m7v"))))
     (properties
      '((upstream-name . "VariantTools")
        ;; This package is not needed for tests, which is great because we
