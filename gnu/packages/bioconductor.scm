@@ -27384,25 +27384,35 @@ visualizations for publication-quality multi-panel figures.")
 (define-public r-ballgown
   (package
     (name "r-ballgown")
-    (version "2.40.0")
+    (version "2.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ballgown" version))
        (sha256
         (base32
-         "0zcim1yahbmyajyz4b8iw7zb52m1b0gfg6mflqv9440dqp1fwnvi"))))
+         "1c7vy10ga3cswsqwxljbgqlsjg0d2lx9srfknbjy4fkbyrjci15k"))))
     (properties `((upstream-name . "ballgown")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; These deprecated procedures have been removed in testthat.
+         (add-after 'unpack 'testthat-compatibility
+           (lambda _
+             (substitute* "tests/testthat/test-annotation.R"
+               (("is_true\\(\\)") "expect_true")
+               (("is_false\\(\\)") "expect_false")))))))
     (propagated-inputs
      (list r-biobase
-           r-genomeinfodb
            r-genomicranges
            r-iranges
            r-limma
            r-rcolorbrewer
            r-rtracklayer
            r-s4vectors
+           r-seqinfo
            r-sva))
     (native-inputs
      (list r-knitr r-testthat))
