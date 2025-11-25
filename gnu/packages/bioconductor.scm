@@ -26709,14 +26709,14 @@ by Ernst and Kellis.")
 (define-public r-ggbio
   (package
     (name "r-ggbio")
-    (version "1.56.0")
+    (version "1.58.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ggbio" version))
        (sha256
         (base32
-         "1vdnwcq90awh2g48xirgsha07w33kqvi73mz6f3c6896abmz7p9w"))))
+         "0wnscz1r9khbh6lha55025s5wkvs2i3z4v1cjz0v3gkgkva545ff"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
@@ -26741,7 +26741,6 @@ by Ernst and Kellis.")
            r-genomicalignments
            r-genomicfeatures
            r-genomicranges
-           r-ggally
            r-ggplot2
            r-gridextra
            r-gtable
@@ -26754,6 +26753,7 @@ by Ernst and Kellis.")
            r-rtracklayer
            r-s4vectors
            r-scales
+           r-seqinfo
            r-summarizedexperiment
            r-variantannotation))
     (native-inputs
