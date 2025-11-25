@@ -15072,35 +15072,22 @@ and concepts from Philipp Winter's ScrambleSuit protocol.")
   lyrebird)
 
 (define-public go-jose-util
-  (package
+  (package/inherit go-github-com-go-jose-go-jose-v4
     (name "go-jose-util")
-    (version "0.0.0-20240226165647-31202557b449")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/go-jose/go-jose")
-             (commit (go-version->git-ref version
-                                          #:subdir "jose-util"))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "19kr2r9nnrnixpmpp37p5adnxc92bc3gzqz7rpybgaly2wfssz0q"))))
-    (build-system go-build-system)
     (arguments
-     (list
-      #:install-source? #f
-      #:import-path "github.com/go-jose/go-jose/jose-util"
-      #:unpack-path "github.com/go-jose/go-jose"))
-    (native-inputs
-     (list go-github-com-go-jose-go-jose-v3
-           go-gopkg-in-alecthomas-kingpin-v2))
-    (home-page "https://github.com/go-jose/go-jose")
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-inetaf-tcpproxy)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path _ "github.com/go-jose/go-jose/v4")
+        "github.com/go-jose/go-jose/jose-util")
+       ((#:unpack-path _ "")
+        "github.com/go-jose/go-jose")))
     (synopsis "JOSE CLI")
     (description
      "The @code{jose-util} command line utility allows for encryption,
 decryption,signing and verification of JOSE messages.  Its main purpose is to
-facilitate dealing with JOSE messages when testing or debugging.")
-    (license license:asl2.0)))
+facilitate dealing with JOSE messages when testing or debugging.")))
 
 (define-public go-gojay
   (package
