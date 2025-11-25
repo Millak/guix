@@ -25077,14 +25077,14 @@ hypothesis @code{K=1}.")
 (define-public r-icens
   (package
     (name "r-icens")
-    (version "1.80.0")
+    (version "1.82.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Icens" version))
        (sha256
         (base32
-         "125n4kd2b7fd4x198y70wyapab32wmxnf877cq1ngr9ryhlnnjl7"))))
+         "1w7bivsbp6l6nwvgqbx9rgw9v21mrs0lwvxwydmqgfk8z346f2ij"))))
     (properties `((upstream-name . "Icens")))
     (build-system r-build-system)
     (propagated-inputs
