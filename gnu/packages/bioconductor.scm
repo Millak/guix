@@ -11275,13 +11275,13 @@ correlations.")
 (define-public r-metaneighbor
   (package
     (name "r-metaneighbor")
-    (version "1.28.0")
+    (version "1.29.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "MetaNeighbor" version))
               (sha256
                (base32
-                "0fb3zljwcdpwssflpvw387zjfck0r5lg33lysvvbcz0993il6q5g"))))
+                "0fvsnwwpvwbdcq7lgbb2jq9n6scr33ip3s3z14v6nxm7zmf6i5bn"))))
     (properties `((upstream-name . "MetaNeighbor")))
     (build-system r-build-system)
     (propagated-inputs
