@@ -18406,13 +18406,13 @@ data in a format that is compatible with two-dimensional containers like the
 (define-public r-mia
   (package
     (name "r-mia")
-    (version "1.16.0")
+    (version "1.18.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "mia" version))
               (sha256
                (base32
-                "0mhf6d4yw3qsxjlq1smsfb7ywhbknvzi01s3q1k9d005w7wk24ai"))))
+                "0rn8y72mlyqk1ss52phg02sj1j6159la8b86hjc83cavrwy9gczn"))))
     (properties
      '((upstream-name . "mia")
        (updater-ignored-native-inputs
@@ -18453,6 +18453,7 @@ data in a format that is compatible with two-dimensional containers like the
     (native-inputs (list r-biomformat
                          r-dada2
                          r-knitr
+                         r-mediation
                          r-microbiome
                          r-nmf
                          r-phyloseq
