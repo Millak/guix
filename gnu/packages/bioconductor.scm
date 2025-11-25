@@ -10548,23 +10548,23 @@ fraction} are included.")
 (define-public r-raggedexperiment
   (package
     (name "r-raggedexperiment")
-    (version "1.32.2")
+    (version "1.34.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "RaggedExperiment" version))
               (sha256
                (base32
-                "07jb7a95k2z2zpw0rrya1vr4rniwan9i1m9zf49z80rpqjykw0ix"))))
+                "18mbdd0cd975q2540cdnrfdirc8khg4mqbi8z4zkabal83gzqs2s"))))
     (properties `((upstream-name . "RaggedExperiment")))
     (build-system r-build-system)
     (propagated-inputs (list r-biocbaseutils
                              r-biocgenerics
-                             r-genomeinfodb
                              r-genomicranges
                              r-iranges
                              r-matrix
                              r-matrixgenerics
                              r-s4vectors
+                             r-seqinfo
                              r-summarizedexperiment))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/RaggedExperiment")
