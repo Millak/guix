@@ -17247,6 +17247,54 @@ fine-grained log control, extensibility, and scalability.")
 terminal.")
     (license license:expat)))
 
+(define-public go-github-com-omniscale-go-osm
+  (package
+    (name "go-github-com-omniscale-go-osm")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/omniscale/go-osm")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nc02pad0bfsszw05vdwa8aq7vpjrdn82rf5xxqrdjpkm2lam74i"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/omniscale/go-osm"
+      #:test-flags
+      ;; unable to fetch current sequence:Get
+      ;; "https://planet.openstreetmap.org/replication/changesets/state.yaml":
+      ;; dial tcp: lookup planet.openstreetmap.org on [::1]:53: read udp
+      ;; [::1]:48090->[::1]:53: read: connection refused
+      #~(list "-skip" "Example")))
+    (propagated-inputs
+     (list go-github-com-gogo-protobuf
+           go-gopkg-in-fsnotify-v1
+           go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/omniscale/go-osm")
+    (synopsis "Types of OSM elements for Golang")
+    (description
+     "This package provides basic types for OSM elements
+(nodes/ways/relations/etc).
+
+It include the following submodules:
+@itemize
+@item @code{parser/changeset} - a parser for OSM changeset files
+@item @code{parser/diff} - a parser for OSM diff files (.osc)
+@item @code{parser/pbf} -  an efficient parser for OpenStreetMap PBF files
+@item @code{replication} - basic types for replication of OSM data
+@item @code{replication/changeset} - functions for downloading OSM changeset files
+@item @code{replication/diff} - functions for downloading OSM diff files
+@item @code{state} - functions for reading and writing diff status files
+@end itemize")
+    ;; XXX: No license is specified, use the same as
+    ;; https://github.com/omniscale/imposm3 where this package is in use, see:
+    ;; <https://github.com/omniscale/go-osm/issues/1>.
+    (license (list license:asl2.0))))
+
 (define-public go-github-com-op-go-logging
   (package
     (name "go-github-com-op-go-logging")
