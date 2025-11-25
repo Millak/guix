@@ -22,6 +22,7 @@
 ;;; Copyright © 2024 Wilko Meyer <w@wmeyer.eu>
 ;;; Copyright © 2024, 2025 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2025 Hennadii Stepanov <hebasto@gmail.com>
+;;; Copyright © 2025 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1153,7 +1154,10 @@ interface description protocol and its associated command line tool")
                 (("^COMPILE_ARGS.*")
                  "COMPILE_ARGS: list[str] = []\n")))))))
     (native-inputs
-     (list python-cython
+     ;; XXX: Borrow the same hack to make --tune work from python-pyscf to fix
+     ;; guix build: error: failed to determine which compiler is used
+     (list (canonical-package gcc)
+           python-cython
            python-pytest
            python-poetry-core
            python-setuptools))
@@ -1166,5 +1170,6 @@ heterogeneous data structures with many small elements, r-encoding stake up
 significantly less space than b-encodings.  This version of rencode is a
 complete rewrite in Cython to attempt to increase the performance over the
 pure Python module.")
-    (license license:bsd-3)))
+    (license license:bsd-3)
+    (properties '((tunable? . #t)))))
 
