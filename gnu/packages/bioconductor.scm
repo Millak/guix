@@ -16312,18 +16312,19 @@ the @code{arrayCGH} packages.")
 (define-public r-qdnaseq
   (package
     (name "r-qdnaseq")
-    (version "1.44.0")
+    (version "1.46.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "QDNAseq" version))
               (sha256
-               (base32 "0zkdfs6axmw4qwr11q8mv8rdji1k64004r8w7ml789wn0chzdk4p"))))
+               (base32 "12bf7x4c2vhq28vbzj322yp2gyvwcakpw13x6bsi3r87vg8rfdlr"))))
     (properties
      '((upstream-name . "QDNAseq")
        (updater-extra-native-inputs . ("r-biocstyle"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
+           r-biocgenerics
            r-cghbase
            r-cghcall
            r-dnacopy
@@ -16332,7 +16333,8 @@ the @code{arrayCGH} packages.")
            r-iranges
            r-matrixstats
            r-r-utils
-           r-rsamtools))
+           r-rsamtools
+           r-seqinfo))
     (native-inputs
      (list r-biocstyle
            r-bsgenome-hsapiens-ucsc-hg19
