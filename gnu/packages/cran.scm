@@ -32989,14 +32989,14 @@ other manipulations of bitmapped images.")
 (define-public r-rapidjsonr
   (package
     (name "r-rapidjsonr")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rapidjsonr" version))
        (sha256
         (base32
-         "07zdirhbzmvq3cp4xn8ngk1lgxbbabzays315zxbs3sxrz6lzjb2"))))
+         "13241b2lj1f55c08s751qjnd1bnlxgx2b7rfgpli5j25mxap2i5x"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/rapidjsonr")
     (synopsis "JSON parser")
