@@ -10058,13 +10058,13 @@ provide added flexibility for data combination and manipulation.")
 (define-public r-genomicranges
   (package
     (name "r-genomicranges")
-    (version "1.60.0")
+    (version "1.62.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicRanges" version))
               (sha256
                (base32
-                "082g27miaa13nyjbr6ygc3928kbn5nkmb4l3si4z85dj26k6xgs8"))))
+                "0wsbl49c542k107cgczsw5dynnrrwk9hslks229zpvxlcvapmivv"))))
     (properties
      `((upstream-name . "GenomicRanges")
        (updater-extra-native-inputs . ("r-runit"))
@@ -10092,7 +10092,7 @@ provide added flexibility for data combination and manipulation.")
     ;; The vignettes require more packages.
     (arguments (list #:test-types '(list "tests")))
     (propagated-inputs
-     (list r-biocgenerics r-genomeinfodb r-iranges r-s4vectors r-xvector))
+     (list r-biocgenerics r-iranges r-s4vectors r-seqinfo))
     (native-inputs
      (list r-annotationhub
            r-biostrings
