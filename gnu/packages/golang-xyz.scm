@@ -12067,6 +12067,34 @@ for Go.  The project is meant as alternative to
 reflection.")
     (license license:expat)))
 
+(define-public go-github-com-jmhodges-levigo
+  (package
+    (name "go-github-com-jmhodges-levigo")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jmhodges/levigo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lhh413mmclnkwn2lk1crwzargam2cx5w7k6zj8pgasy62c78iy4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; XXX: leveldb has to be added to the final target package, this is not
+      ;; included here to prevent using databases module.
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/jmhodges/levigo"))
+    (home-page "https://github.com/jmhodges/levigo")
+    (synopsis "Golang wrapper for LevelDB")
+    (description
+     "This package provides a functionality to create and access
+@url{http://code.google.com/p/leveldb/, LevelDB} databases.")
+    (license license:expat)))
+
 (define-public go-github-com-jmoiron-sqlx
   (package
     (name "go-github-com-jmoiron-sqlx")
