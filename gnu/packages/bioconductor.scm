@@ -3367,14 +3367,14 @@ snapshot.")
 (define-public r-sesamedata
   (package
     (name "r-sesamedata")
-    (version "1.26.0")
+    (version "1.28.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "sesameData" version
                                      'experiment))
               (sha256
                (base32
-                "1kq3w4gh6ka66wlh39hik82adysbkfxyq0rqqm2hdi5cv83kvv4f"))))
+                "1vlb8hb7fvijlxqnrqqd46iy0ph75pd8xnfgsbp6n6q3xs1vxv79"))))
     (properties
      `((upstream-name . "sesameData")
        ;; Avoid dependency cycle.
@@ -3384,11 +3384,11 @@ snapshot.")
     (arguments (list #:tests? #false))
     (propagated-inputs (list r-annotationhub
                              r-experimenthub
-                             r-genomeinfodb
                              r-genomicranges
                              r-iranges
                              r-readr
                              r-s4vectors
+                             r-seqinfo
                              r-stringr))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/sesameData")
