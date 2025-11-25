@@ -24365,6 +24365,41 @@ organization}.")
      (list
       #:import-path "go.yaml.in/yaml/v3"))))
 
+(define-public go-go-yaml-in-yaml-v4
+  (package
+    (inherit go-go-yaml-in-yaml-v3)
+    (name "go-go-yaml-in-yaml-v4")
+    (version "4.0.0-rc.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/yaml/go-yaml")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1r2mc5vk5pvmdv9lr1p6s2i1nfmari398qqmp29g7d2wncbhrh9c"))))
+    (arguments
+     (list
+      #:import-path "go.yaml.in/yaml/v4"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-yaml-test-suite
+            ;; Steps are taken from Makefile.
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (copy-recursively
+                 (string-append #$(this-package-native-input
+                                   "specification-yaml-test-suite")
+                                "/share/testdata")
+                 "yts/testdata/data-2022-01-17"))))
+          (add-after 'check 'remove-yaml-test-suite
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "yts/testdata")))))))
+    (native-inputs
+     (list specification-yaml-test-suite))))
+
 (define-public go-go4-org
   ;; No release or version tag, Golang pseudo version:
   ;; 0.0.0-20230225012048-214862532bf5.
