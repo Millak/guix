@@ -8,6 +8,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2025 Patrick Norton <patrick.147.norton@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,6 +54,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages golang-build)
   #:use-module (gnu packages golang-check)
+  #:use-module (gnu packages golang-compression)
   #:use-module (gnu packages golang-crypto)
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
@@ -66,6 +68,7 @@
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages prometheus)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
@@ -649,22 +652,177 @@ Feature:
 (define-public rclone
   (package
     (name "rclone")
-    (version "1.52.3")
+    (version "1.71.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/rclone/rclone/releases/download/"
-                           "v" version "/rclone-v" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/rclone/rclone")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1pdhsxzc5ch2brfylghc602h9ba3x5dshxm3vcaldrgfac0rx0zl"))))
-    ;; FIXME: Rclone bundles some libraries Guix already provides.  Need to
-    ;; un-bundle them.
+        (base32 "0kplhspd2jjb4hfm928ybxl8l8blgnh3zkhgfcp3ynm10n7qhsky"))
+       (snippet
+        #~(begin
+            ;; XXX: This test fails to compile: `undefined: testscript.Main'
+            (delete-file "fs/logger/logger_test.go"))))) 
     (build-system go-build-system)
     (arguments
      (list
-      #:import-path "github.com/rclone/rclone"
       #:install-source? #f
-      #:test-subdirs #~(list ".")))
+      #:import-path "github.com/rclone/rclone"
+      #:embed-files
+      #~(list "Linux.gitignore"
+              "Windows.gitignore"
+              "macOS.gitignore"
+              "common.gitignore"
+              "children"
+              "nodes"
+              "text")
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Requires docker-compose
+                       (list "TestIntegration"
+                             "TestDockerPluginMountTCP"
+                             "TestDockerPluginMountUnix"
+                             ;; Requires install perms
+                             "TestInstallOnLinux"
+                             ;; Requires external storage cache
+                             "TestInternalObjNotFound"
+                             "TestInternalCachedWrittenContentMatches"
+                             "TestInternalCachedUpdatedContentMatches"
+                             "TestInternalDoubleWrittenContentMatches"
+                             "TestInternalWrappedFsChangeNotSeen"
+                             "TestInternalNotifyCreatesEmptyParts"
+                             "TestInternalChangeSeenAfterDirCacheFlush"
+                             "TestInternalCacheWrites"
+                             "TestInternalMaxChunkSizeRespected"
+                             "TestInternalBug2117"
+                             "TestInternalUploadTempDirCreated"
+                             "TestInternalMoveWithNotify"
+                             "TestSftp"
+                             "TestRc"
+                             "TestCache*"
+                             "TestListPlugins"
+                             ;; Requires network
+                             "TestZenodoRemote"
+                             "TestMetadata"
+                             "TestFTP"
+                             ;; Requires executable to be visible
+                             "TestEndToEnd"
+                             "TestEndToEndMigration"
+                             "TestEndToEndRepoLayoutCompat"
+                             ;; Requires mount perms
+                             "TestMount"
+                             ;; Requires network access
+                             "TestGetVersion"
+                             "TestMetadataMapper"
+                             "TestStatsGroupOperations"
+                             "TestSorterExt"
+                             ;; Bad interface conversion
+                             "TestRcDu"
+                             ;; Requires write access
+                             "TestAddPlugin"
+                             "TestRemovePlugin"
+                             "TestKvConcurrency"
+                             "TestKvExit"
+                             "TestFileSetModTime"
+                             "TestFileRename"
+                             "TestItem*"
+                             "TestRWFileHandle*"
+                             "TestRWFileModTimeWithOpenWriters"
+                             "TestRWCacheRename"
+                             "TestFunctional"
+                             "invalid_UTF-8")
+                       "|"))))
+    (native-inputs
+     (list go-bazil-org-fuse
+           go-github-com-a8m-tree
+           go-github-com-aalpar-deheap
+           go-github-com-abbot-go-http-auth
+           go-github-com-anacrolix-dms
+           go-github-com-atotto-clipboard
+           go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-feature-s3-manager
+           go-github-com-aws-aws-sdk-go-v2-service-s3
+           go-github-com-aws-smithy-go
+           go-github-com-azure-azure-sdk-for-go-sdk-azcore
+           go-github-com-azure-azure-sdk-for-go-sdk-azidentity
+           go-github-com-azure-azure-sdk-for-go-sdk-storage-azblob
+           go-github-com-azure-azure-sdk-for-go-sdk-storage-azfile
+           go-github-com-azure-go-ntlmssp
+           go-github-com-buengese-sgzip
+           go-github-com-cloudinary-cloudinary-go-v2
+           go-github-com-cloudsoda-go-smb2
+           go-github-com-colinmarc-hdfs-v2
+           go-github-com-coreos-go-semver
+           go-github-com-coreos-go-systemd-v22
+           go-github-com-dop251-scsu
+           go-github-com-dropbox-dropbox-sdk-go-unofficial-v6
+           go-github-com-files-com-files-sdk-go-v3
+           go-github-com-gabriel-vasile-mimetype
+           go-github-com-gdamore-tcell-v2
+           go-github-com-go-chi-chi-v5
+           go-github-com-go-chi-chi-v5
+           go-github-com-go-git-go-billy-v5
+           go-github-com-golang-jwt-jwt-v4
+           go-github-com-google-uuid
+           go-github-com-googleapis-enterprise-certificate-proxy
+           go-github-com-hanwen-go-fuse-v2
+           go-github-com-henrybear327-go-proton-api
+           go-github-com-henrybear327-proton-api-bridge
+           go-github-com-ibm-go-sdk-core
+           go-github-com-jcmturner-gokrb5-v8
+           go-github-com-jlaffaye-ftp
+           go-github-com-jzelinskie-whirlpool
+           go-github-com-koofr-go-httpclient
+           go-github-com-koofr-go-koofrclient
+           go-github-com-lanrat-extsort
+           go-github-com-mattn-go-colorable
+           go-github-com-mattn-go-runewidth
+           go-github-com-max-sum-base32768
+           go-github-com-mitchellh-go-homedir
+           go-github-com-moby-sys-mountinfo
+           go-github-com-ncw-swift-v2
+           go-github-com-oracle-oci-go-sdk-v65
+           go-github-com-patrickmn-go-cache
+           go-github-com-peterh-liner
+           go-github-com-pkg-sftp
+           go-github-com-pkg-xattr
+           go-github-com-prometheus-client-golang
+           go-github-com-protonmail-go-crypto
+           go-github-com-putdotio-go-putio-for-rclone
+           go-github-com-rclone-gofakes3
+           go-github-com-rfjakob-eme
+           go-github-com-rivo-uniseg
+           go-github-com-shirou-gopsutil-v4
+           go-github-com-skratchdot-open-golang
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-t3rm1n4l-go-mega
+           go-github-com-unknwon-goconfig
+           go-github-com-willscott-go-nfs
+           go-github-com-xanzy-ssh-agent
+           go-github-com-youmark-pkcs8
+           go-github-com-yunify-qingstor-sdk-go-v3
+           go-github-com-zeebo-blake3
+           go-github-com-zeebo-xxh3
+           go-go-etcd-io-bbolt
+           go-goftp-io-server-v2
+           go-golang-org-x-crypto
+           go-golang-org-x-mobile
+           go-golang-org-x-net
+           go-golang-org-x-oauth2
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-text
+           go-golang-org-x-time
+           go-google-golang-org-api
+           go-gopkg-in-natefinch-lumberjack-v2
+           go-gopkg-in-validator-v2
+           go-storj-io-uplink))
     (synopsis "@code{rsync} for cloud storage")
     (description "@code{Rclone} is a command line program to sync files and
 directories to and from different cloud storage providers.
