@@ -23927,14 +23927,14 @@ then the law of total EBPs.")
 (define-public r-hypergraph
   (package
     (name "r-hypergraph")
-    (version "1.80.0")
+    (version "1.82.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "hypergraph" version))
        (sha256
         (base32
-         "10a7c319ikn9yznf3b7m5vdwbycbjdjb0nc9b6wjvarw3775d77i"))))
+         "0326ypzscnv2xpyvpigwsanp065wiply8w6ydg1gvryc1in5dlbm"))))
     (properties `((upstream-name . "hypergraph")))
     (build-system r-build-system)
     (propagated-inputs
