@@ -18025,7 +18025,7 @@ package (which is based off an earlier version of this package).")
   (package
     (inherit go-github-com-pelletier-go-toml)
     (name "go-github-com-pelletier-go-toml-v2")
-    (version "2.2.3")
+    (version "2.2.4")
     (source
      (origin
        (method git-fetch)
@@ -18034,7 +18034,7 @@ package (which is based off an earlier version of this package).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hqxj34d49snvc2m6lxfjxks3z9sic9xbb6w49ajrqbzy953spzs"))))
+        (base32 "0nahzbp7pbwm2cqvaqys5914hr9xgb0d511c6nq4gkl64sjjp9al"))))
     (build-system go-build-system)
     (arguments
      (list
@@ -27094,8 +27094,7 @@ tools."))))
     (inputs '())))
 
 (define-public go-toml
-  (package
-    (inherit go-github-com-pelletier-go-toml-v2)
+  (package/inherit go-github-com-pelletier-go-toml-v2
     (name "go-toml")
     (arguments
      (list
