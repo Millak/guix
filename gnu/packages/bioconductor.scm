@@ -6531,13 +6531,13 @@ factorial microarray data.")
 (define-public r-damefinder
   (package
     (name "r-damefinder")
-    (version "1.20.0")
+    (version "1.22.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "DAMEfinder" version))
               (sha256
                (base32
-                "17yb21gs9124ii65m95s6v6irmlfhqzd81sq03vzgl5k7ajkl7dc"))))
+                "0gd23z69k0sfds09q0lpz8g3ygj24c1j02ymn8wspq2k7xgivqv6"))))
     (properties `((upstream-name . "DAMEfinder")))
     (build-system r-build-system)
     (propagated-inputs
@@ -6545,7 +6545,6 @@ factorial microarray data.")
            r-biostrings
            r-bumphunter
            r-cowplot
-           r-genomeinfodb
            r-genomicalignments
            r-genomicranges
            r-ggplot2
@@ -6556,6 +6555,7 @@ factorial microarray data.")
            r-reshape2
            r-rsamtools
            r-s4vectors
+           r-seqinfo
            r-stringr
            r-summarizedexperiment
            r-variantannotation))
