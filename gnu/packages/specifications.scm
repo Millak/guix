@@ -317,3 +317,30 @@ catalog which is a widely used source of basic astronomical and astrophysical
 data for stars brighter than magnitude 6.5.  It provides 9110 stars including
 B1950 positions, proper motions, magnitudes, and, usually, spectral types.")
     (license license:public-domain)))
+
+(define-public specification-yaml-test-suite
+  (package
+    (name "specification-yaml-test-suite")
+    (version "2022-01-17")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/yaml/yaml-test-suite")
+              (commit (string-append "data-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00xcny67bp56xkvz4iq6d2prvj9p48z7r705xrw49invvgyp4wnd"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      ;; TODO: Test data files are pure YAML files and generated from the main
+      ;; branch, see Makefile. Try to re-generate them during the packaging.
+      #:install-plan
+      #~'(("./" "share/testdata"))))
+    (home-page "https://github.com/yaml/yaml-test-suite")
+    (synopsis "Comprehensive, language independent Test Suite for YAML")
+    (description
+     "This package provides data for testing the correctness of YAML processors
+devloped by @url{https://yaml.org/}.")
+    (license license:expat)))
