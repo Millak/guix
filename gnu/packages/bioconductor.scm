@@ -3982,13 +3982,13 @@ but which also provides utilities which may be useful for other platforms.")
 (define-public r-adductomicsr
   (package
     (name "r-adductomicsr")
-    (version "1.24.0")
+    (version "1.26.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "adductomicsR" version))
               (sha256
                (base32
-                "02xzzp42m3zamys2xag2j3n5l7g7viig53alrswvflcscb8qjzcy"))))
+                "0bnhbv344qxfx96z6bjmqn5r8k12i674ip7bw364y3b63swcf7ll"))))
     (properties `((upstream-name . "adductomicsR")))
     (build-system r-build-system)
     ;; Tests connect to the internet via r-experimenthub.
