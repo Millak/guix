@@ -18604,14 +18604,14 @@ model.")
 (define-public r-minfi
   (package
     (name "r-minfi")
-    (version "1.54.1")
+    (version "1.56.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "minfi" version))
        (sha256
         (base32
-         "19sp391aqjlynwgmb8hk211dp5gcjwqv0m1407m4by9pgrg1x21r"))))
+         "1rnaiy8m2nklrn9plf1ca6w0d755iib737s9zmllacrz8lc6b1ik"))))
     (properties
      '((updater-ignored-native-inputs . ("r-minfidata"))))
     (build-system r-build-system)
@@ -18628,7 +18628,6 @@ model.")
            r-delayedarray
            r-delayedmatrixstats
            r-genefilter
-           r-genomeinfodb
            r-genomicranges
            r-geoquery
            r-hdf5array
@@ -18645,6 +18644,7 @@ model.")
            r-rcolorbrewer
            r-reshape
            r-s4vectors
+           r-seqinfo
            r-siggenes
            r-summarizedexperiment))
     (native-inputs
