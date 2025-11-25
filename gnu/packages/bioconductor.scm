@@ -26886,14 +26886,14 @@ family of feature/genome hypotheses.")
 (define-public r-gviz
   (package
     (name "r-gviz")
-    (version "1.52.0")
+    (version "1.54.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Gviz" version))
        (sha256
         (base32
-         "1jsvh8mxjsqr9x8nf40jhachk0rf9civ64x34wk3ymn0ym56vj3w"))))
+         "0vljk50i5xgw31dgdxdjqxl2r3cvjm6423fz3iz80xbbax039mjs"))))
     (properties `((upstream-name . "Gviz")))
     (build-system r-build-system)
     (propagated-inputs
@@ -26918,6 +26918,7 @@ family of feature/genome hypotheses.")
            r-rsamtools
            r-rtracklayer
            r-s4vectors
+           r-seqinfo
            r-xvector))
     (native-inputs
      (list r-bsgenome-hsapiens-ucsc-hg19 r-knitr r-testthat))
