@@ -17375,14 +17375,14 @@ Viewer (SAV) files, access data, and generate QC plots.")
 (define-public r-chipexoqual
   (package
     (name "r-chipexoqual")
-    (version "1.32.0")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ChIPexoQual" version))
        (sha256
         (base32
-         "1i5ribbhamszq0nllgjqvlii4psypp2qrn81ln8q55ilysv76myv"))))
+         "1z72y7jfl1gmcgkkrjqjhj8cq8c224llrdihgrr2zj2k7nsqhnkd"))))
     (properties `((upstream-name . "ChIPexoQual")))
     (build-system r-build-system)
     (propagated-inputs
@@ -17391,7 +17391,6 @@ Viewer (SAV) files, access data, and generate QC plots.")
            r-broom
            r-data-table
            r-dplyr
-           r-genomeinfodb
            r-genomicalignments
            r-genomicranges
            r-ggplot2
@@ -17402,6 +17401,7 @@ Viewer (SAV) files, access data, and generate QC plots.")
            r-rsamtools
            r-s4vectors
            r-scales
+           r-seqinfo
            r-viridis))
     (native-inputs
      (list r-chipexoqualexample r-knitr r-testthat))
