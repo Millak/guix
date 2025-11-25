@@ -13637,14 +13637,14 @@ powerTCR R packages.")
 (define-public r-scrnaseq
   (package
     (name "r-scrnaseq")
-    (version "2.22.0")
+    (version "2.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scRNAseq" version
                               'experiment))
        (sha256
-        (base32 "0x487kv698lxcp2rq7n9j1bik0n0w9m1n1bllm209cx8xh96dm8v"))))
+        (base32 "15491c51cmlxms21s0w42vjfmm46c4bm9cg1r3c0fja8pcvzixq7"))))
     (properties `((upstream-name . "scRNAseq")))
     (build-system r-build-system)
     ;; Some tests require Internet access.
