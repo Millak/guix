@@ -9711,56 +9711,6 @@ built on top of DUNE, the Distributed and Unified Numerics Environment.")
 (define-public dune-pdelab-openmpi
   (add-openmpi-to-dune-package dune-pdelab))
 
-(define-public mlucas
-  (package
-    (name "mlucas")
-    (version "18")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://mersenneforum.org/mayer/src/C/mlucas_v" version ".txz"))
-       (sha256
-        (base32 "0h4xj6pyyac79ka5ibqjilfa3s9j3yxnzgpwc57b54kfh2bj3447"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list python-2))
-    (arguments
-     `(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda _
-             (chdir "src")
-             (call-with-output-file "Makefile"
-               (lambda (port)
-                 (format port "CC = gcc
-CFLAGS = -O3 ~a -DUSE_THREADS
-LDLIBS = -lm -lpthread -lrt
-Mlucas: $(addsuffix .o,$(basename $(wildcard *.c)))
-"
-                         ,(let ((system (or (%current-target-system)
-                                            (%current-system))))
-                            (cond
-                             ((string-prefix? "x86_64" system) "-DUSE_SSE2")
-                             (else ""))))))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-               (install-file "Mlucas" bin)
-               (install-file "primenet.py" bin))
-             #t)))))
-    (home-page "https://www.mersenne.org")
-    (synopsis "Great Internet Mersenne Prime Search (GIMPS) distributed computing client")
-    (description "Mlucas performs Lucas-Lehmer primality testing of Mersenne
-numbers in search of a world-record prime.  You may use it to test any
-suitable number as you wish, but it is preferable that you do so in a
-coordinated fashion, as part of the Great Internet Mersenne Prime
-Search (GIMPS).  Mlucas also includes a simple Python script for assignment
-management via the GIMPS project's Primenet server.")
-    (license license:gpl2+)))
-
 (define-public nauty
   (package
     (name "nauty")
