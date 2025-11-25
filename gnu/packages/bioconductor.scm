@@ -14110,13 +14110,13 @@ level.")
 (define-public r-tcgautils
   (package
     (name "r-tcgautils")
-    (version "1.28.0")
+    (version "1.29.5")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "TCGAutils" version))
               (sha256
                (base32
-                "1jkqmla4wr1dg78g29clhb0vljmyhlz8ad2wm8acs6gx4irbdxg0"))))
+                "051ylfrkbf0dx2m47hqbm4d0sw47nwmlhzwzalyx4j484jn4kra2"))))
     (properties `((upstream-name . "TCGAutils")))
     (build-system r-build-system)
     (arguments
@@ -14139,6 +14139,7 @@ level.")
                              r-raggedexperiment
                              r-rvest
                              r-s4vectors
+                             r-seqinfo
                              r-stringr
                              r-summarizedexperiment
                              r-xml2))
