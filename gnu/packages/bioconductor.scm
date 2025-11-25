@@ -22174,14 +22174,14 @@ statistics to the plot.")
 (define-public r-flowclust
   (package
     (name "r-flowclust")
-    (version "3.46.0")
+    (version "3.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "flowClust" version))
        (sha256
         (base32
-         "04zmgp11fajl72kif74zy3974dg780hx9dwp3g7y6dywf5bihlg6"))))
+         "1ncx63ynqxaldc8mb68k8jwq116myml6ccgh9j7n5dcvhfcqgqf1"))))
     (properties
      `((upstream-name . "flowClust")
        ;; Avoid dependency cycle.
