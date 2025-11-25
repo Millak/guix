@@ -18119,14 +18119,14 @@ with RNA-Seq data, but could be used with other types as well.")
 (define-public r-noiseq
   (package
     (name "r-noiseq")
-    (version "2.52.0")
+    (version "2.54.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "NOISeq" version))
        (sha256
         (base32
-         "1nd9dbjzvnpmpz107hjl3j4jq0yra13hk78lwz162xzr1275j0q4"))))
+         "05398q8cqywbvrqgzp9gjyjkv7dlq2v8f3w9rgz60jwma76vdxdw"))))
     (properties `((upstream-name . "NOISeq")))
     (build-system r-build-system)
     (propagated-inputs
