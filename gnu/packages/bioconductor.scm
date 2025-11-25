@@ -19541,13 +19541,13 @@ profiles (GO and KEGG) of gene and gene clusters.")
 (define-public r-clusterexperiment
   (package
     (name "r-clusterexperiment")
-    (version "2.28.1")
+    (version "2.30.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "clusterExperiment" version))
               (sha256
                (base32
-                "127fcfd57wfbxxxmn4gghbas2k6if1fkr777fzx2gqvq1qrd5cww"))))
+                "0lcahnfcld24xjj0fg9xmwapm3pnnf02sgf9gmvp5nkp6pjhmf5p"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr r-testthat))
