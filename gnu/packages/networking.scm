@@ -1003,14 +1003,14 @@ systems with no further dependencies.")
 (define-public blueman
   (package
     (name "blueman")
-    (version "2.4.4")
+    (version "2.4.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/blueman-project/blueman/releases"
                            "/download/" version "/blueman-" version ".tar.xz"))
        (sha256
-        (base32 "1w45dr2cmy32cvxwqaybf5m2ziraj929f4lxcwapv266r1a92kyk"))))
+        (base32 "0rp5z3xzrgwbh496dyca6xjz3iqh9xnick879il0cnc5z4vsf4n7"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
