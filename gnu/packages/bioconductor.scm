@@ -19153,13 +19153,13 @@ information about samples and features can be added to the plot.")
 (define-public r-helloranges
   (package
     (name "r-helloranges")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "HelloRanges" version))
        (sha256
-        (base32 "1ihjcwrxsbfd0sv9fdk21vszi9wjw61fycqjxv276a7i1s9r0k37"))))
+        (base32 "1az2pvxi9jnbsjk9xva85mbwq95h0wpsp3w9a3cylwwjwmflrg4n"))))
     (properties
      '((upstream-name . "HelloRanges")
        (updater-extra-native-inputs . ("r-biocstyle" "r-runit"))))
@@ -19171,7 +19171,6 @@ information about samples and features can be added to the plot.")
                              r-biostrings
                              r-bsgenome
                              r-docopt
-                             r-genomeinfodb
                              r-genomicalignments
                              r-genomicfeatures
                              r-genomicranges
@@ -19179,6 +19178,7 @@ information about samples and features can be added to the plot.")
                              r-rsamtools
                              r-rtracklayer
                              r-s4vectors
+                             r-seqinfo
                              r-summarizedexperiment
                              r-variantannotation))
     (native-inputs
