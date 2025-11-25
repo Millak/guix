@@ -5911,13 +5911,13 @@ the posterior densities for the average relative abundance of transcripts.")
 (define-public r-banocc
   (package
     (name "r-banocc")
-    (version "1.32.0")
+    (version "1.34.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "banocc" version))
               (sha256
                (base32
-                "1y2zmym9l5d2ny6vjzwc192cbgkszmglmb23xmcqrzr1q34i2vc7"))))
+                "0y2capm8b2dx68myybzgf74khm22rjqihg9l1g03xpv1k19jlc90"))))
     (properties `((upstream-name . "banocc")))
     (build-system r-build-system)
     (propagated-inputs
