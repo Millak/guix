@@ -8853,13 +8853,13 @@ respecting the grammar of its graphics paradigm.")
 (define-public r-ggside
   (package
     (name "r-ggside")
-    (version "0.4.0")
+    (version "0.4.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggside" version))
               (sha256
                (base32
-                "0zrp4bcf2ywzzvnj57y6cgk91hfm67sgscr6dba5fspz1ijs2mi1"))))
+                "0xr7i9dbrv431k56ymaz7mfyaa25qsrkps6p83g50phf5wg9q6a6"))))
     (properties `((upstream-name . "ggside")))
     (build-system r-build-system)
     (propagated-inputs
