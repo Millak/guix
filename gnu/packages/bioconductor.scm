@@ -24625,24 +24625,24 @@ db and resource files to AWS S3 buckets.")
 (define-public r-grohmm
   (package
     (name "r-grohmm")
-    (version "1.42.0")
+    (version "1.44.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "groHMM" version))
        (sha256
         (base32
-         "12b50lcsal9dmsgvfsccwa9w9h4askrfppfmfs9f99piyiavsvzz"))))
+         "0xdma6zx4sdkqfbs4v8ipxa38xywmdlgbdmihl0zysp6nxmm1jvg"))))
     (properties `((upstream-name . "groHMM")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-genomeinfodb
-           r-genomicalignments
+     (list r-genomicalignments
            r-genomicranges
            r-iranges
            r-mass
            r-rtracklayer
-           r-s4vectors))
+           r-s4vectors
+           r-seqinfo))
     (home-page "https://github.com/Kraus-Lab/groHMM")
     (synopsis "GRO-seq analysis pipeline")
     (description
