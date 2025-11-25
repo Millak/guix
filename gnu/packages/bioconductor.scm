@@ -13903,14 +13903,14 @@ methylation array data.  Both the 450k and EPIC array are supported.")
 (define-public r-shortread
   (package
     (name "r-shortread")
-    (version "1.66.0")
+    (version "1.68.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ShortRead" version))
        (sha256
         (base32
-         "1f3wnzdcd05aqxiz61lzhsbaigkpk3kgsvcjk97vgacagl925v3p"))))
+         "16vjfqsj5mjzq8sh8px6qkcq6d9r95vnp77cgqxm80gqrqny9bj2"))))
     (properties
      '((upstream-name . "ShortRead")
        (updater-ignored-native-inputs . ("r-hilbertvis"))))
@@ -13921,7 +13921,6 @@ methylation array data.  Both the 450k and EPIC array are supported.")
            r-biocgenerics
            r-biocparallel
            r-biostrings
-           r-genomeinfodb
            r-genomicalignments
            r-genomicranges
            r-hwriter
@@ -13932,6 +13931,7 @@ methylation array data.  Both the 450k and EPIC array are supported.")
            r-rhtslib
            r-rsamtools
            r-s4vectors
+           r-seqinfo
            r-xvector))
     (native-inputs (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/ShortRead")
