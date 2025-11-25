@@ -11755,13 +11755,13 @@ package TeXshade.")
 (define-public r-msbackendsql
   (package
     (name "r-msbackendsql")
-    (version "1.8.0")
+    (version "1.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MsBackendSql" version))
        (sha256
-        (base32 "0ca8l2h7w7hhrnacd37b4bmqd3lmr01l08j3df78b0yf5fgbimb6"))))
+        (base32 "04qmcmrgrk00ajxqrl412prslxfl5yy3z07pm9hp7bcxiri6bcrf"))))
     (properties
      '((upstream-name . "MsBackendSql")
        (updater-extra-native-inputs . ("r-mzr"))))
