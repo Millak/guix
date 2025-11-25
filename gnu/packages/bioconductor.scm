@@ -5042,13 +5042,13 @@ sequencing data.")
 (define-public r-anf
   (package
     (name "r-anf")
-    (version "1.30.0")
+    (version "1.32.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ANF" version))
               (sha256
                (base32
-                "17rw1sb6fvan37hvsiv21zbldq7ajkxaxaswynjp33klycqkxvaf"))))
+                "1l69zjldgvih834k09hfx1lrhj634harva38h983y4cwl58hv4xj"))))
     (properties `((upstream-name . "ANF")))
     (build-system r-build-system)
     ;; Tests attempt to download data files.
