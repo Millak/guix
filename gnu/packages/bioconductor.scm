@@ -5504,13 +5504,13 @@ cohorts of interdependent C++ libraries.")
 (define-public r-atena
   (package
     (name "r-atena")
-    (version "1.14.0")
+    (version "1.16.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "atena" version))
               (sha256
                (base32
-                "013bfmsy4dkb7zl31vb72pz9kmlkcghrnpkrdrzkrxcf1mgyzad4"))))
+                "02jbsk6inh63pcsandwik8cc0dd1q30raddkgxs7pszwlkdk1q73"))))
     (properties `((upstream-name . "atena")))
     (build-system r-build-system)
     (propagated-inputs
@@ -5528,6 +5528,7 @@ cohorts of interdependent C++ libraries.")
            r-matrixstats
            r-rsamtools
            r-s4vectors
+           r-seqinfo
            r-sparsematrixstats
            r-squarem
            r-summarizedexperiment))
