@@ -6923,13 +6923,13 @@ make mapping WGBS data to their probe IDs easier.")
 (define-public r-decoupler
   (package
     (name "r-decoupler")
-    (version "2.14.0")
+    (version "2.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "decoupleR" version))
        (sha256
-        (base32 "00sx949jgnagil55miqb2mzq8bqfn8l44w761qwh7rs4xs83m33a"))))
+        (base32 "1wg6nkjzj30lddhz95d1mlmdlr3fvpwkamzyil23wzm2yz6yw4i4"))))
     (properties
      '((upstream-name . "decoupleR")
        (updater-extra-native-inputs . ("r-aucell"
