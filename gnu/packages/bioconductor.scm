@@ -9696,14 +9696,14 @@ microarrays or GRanges for sequencing data.")
 (define-public r-gage
   (package
     (name "r-gage")
-    (version "2.58.0")
+    (version "2.60.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "gage" version))
        (sha256
         (base32
-         "0fnc53iplws7qwx3hg66b9im8g50bsb7v22dkhd8xvrsgbnn0ydr"))))
+         "0qza3nm3fmm6g8jsymiv7k8pqygxb1c4gys5gf65nj3gbwrnscba"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi r-go-db r-graph r-keggrest))
