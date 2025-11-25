@@ -27191,6 +27191,21 @@ tools."))))
                     "\nThis package provides a command line interface (CLI)
 tool."))))
 
+(define-public go-yaml
+  (package/inherit go-go-yaml-in-yaml-v4
+    (name "go-yaml")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-go-yaml-in-yaml-v4)
+       ((#:tests? _ #t) #f)
+       ((#:install-source? _ #t) #f)
+       ((#:import-path "go.yaml.in/yaml/v4")
+        "go.yaml.in/yaml/v4/cmd/go-yaml")
+       ((#:unpack-path _ "") "go.yaml.in/yaml/v4")))
+    (description
+     "The @code{go-yaml} binary is a YAML node inspection tool that provides
+various modes for analyzing and transforming YAML data.")))
+
 (define-public gofumpt
   (package/inherit go-mvdan-cc-gofumpt
     (name "gofumpt")
