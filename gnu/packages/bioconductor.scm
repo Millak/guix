@@ -6390,13 +6390,13 @@ the curve} or @acronym{SF, survival fraction} are included.")
 (define-public r-coverageview
   (package
     (name "r-coverageview")
-    (version "1.46.0")
+    (version "1.48.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "CoverageView" version))
               (sha256
                (base32
-                "1x6gsslsvfab75p8pcbbffgzzqh94q1awa31mv34j25a5hz59r38"))))
+                "0fnrgacv2ggfzp4i7c9x0368pviw224ldar2nijf5iwi07dhny9a"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-genomicalignments
