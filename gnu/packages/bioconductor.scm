@@ -8196,14 +8196,14 @@ Command Console} (AGCC)-compatible sample annotation files.")
 (define-public r-affycontam
   (package
     (name "r-affycontam")
-    (version "1.66.0")
+    (version "1.68.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "affyContam" version))
        (sha256
         (base32
-         "1r3zhfpzb65h4l92bij06z7k9kidmd7c6i2815mb22975x5hg66z"))))
+         "1b6akkpaij3jisckh73q3k19x607afdn2ppvp2h7wn9h8h9pljwj"))))
     (properties `((upstream-name . "affyContam")))
     (build-system r-build-system)
     (propagated-inputs
