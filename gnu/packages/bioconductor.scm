@@ -23457,14 +23457,14 @@ txdbmaker.")
 (define-public r-unifiedwmwqpcr
   (package
     (name "r-unifiedwmwqpcr")
-    (version "1.44.0")
+    (version "1.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "unifiedWMWqPCR" version))
        (sha256
         (base32
-         "0dsk0nwlv2g717124rlw80w2ggmkp09mhsn1bwlz8v2yn52qzaj3"))))
+         "1djpgr4y4vcf96acqqzlwf33mysfmpwj82iyzibsw4xxi17qr1yn"))))
     (properties
      `((upstream-name . "unifiedWMWqPCR")))
     (build-system r-build-system)
