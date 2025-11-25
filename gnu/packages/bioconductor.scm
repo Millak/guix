@@ -8105,14 +8105,14 @@ performing parallel computations on multicore machines.")
 (define-public r-affy
   (package
     (name "r-affy")
-    (version "1.86.0")
+    (version "1.88.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "affy" version))
        (sha256
         (base32
-         "0pk7wvqk5xzlnwly7sbpij3waypwlnrli0bnxvjhbrlgc3pnks4g"))))
+         "0jrm1x6wygss4qg338599018izxygvzs0ddlni53pdi7j1f7aw4y"))))
     (build-system r-build-system)
     ;; Some tests require r-affydata, causing a dependency cycle.
     (arguments (list #:tests? #false))
