@@ -24652,14 +24652,14 @@ db and resource files to AWS S3 buckets.")
 (define-public r-multiassayexperiment
   (package
     (name "r-multiassayexperiment")
-    (version "1.34.0")
+    (version "1.36.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MultiAssayExperiment" version))
        (sha256
         (base32
-         "0nq9s319kdhi5rq886d1rpdww7bn06hm6d7298q8aqa6jaral2b3"))))
+         "09jwnwiq4vx7cmzq5va3rh7npjyhi1p5p344c4n0h9nr55mxzjiw"))))
     (properties
      '((upstream-name . "MultiAssayExperiment")
        (updater-extra-native-inputs
@@ -24679,16 +24679,12 @@ db and resource files to AWS S3 buckets.")
            r-delayedarray
            r-genomicranges
            r-iranges
+           r-matrixgenerics
            r-s4vectors
            r-summarizedexperiment
            r-tidyr))
     (native-inputs
-     (list r-hdf5array
-           r-knitr
-           r-r-rsp
-           r-raggedexperiment
-           r-reshape2
-           r-testthat))
+     (list r-hdf5array r-knitr r-raggedexperiment r-reshape2 r-testthat))
     (home-page "https://waldronlab.io/MultiAssayExperiment/")
     (synopsis "Integration of multi-omics experiments in Bioconductor")
     (description
