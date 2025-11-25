@@ -23240,14 +23240,14 @@ provides methods for retrieving enriched pathways.")
 (define-public r-variantfiltering
   (package
     (name "r-variantfiltering")
-    (version "1.44.0")
+    (version "1.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "VariantFiltering" version))
        (sha256
         (base32
-         "124d1zn0ap1kfc8f1ks8rr392dsks3h4qr6i9pkkz1q8s9mk420b"))))
+         "070n6iq21pzq2d146d5sh9yjbmpyw617bskyfbfkpz0dh2fhxbgz"))))
     (properties
      `((upstream-name . "VariantFiltering")
        (updater-extra-native-inputs
@@ -23286,6 +23286,7 @@ provides methods for retrieving enriched pathways.")
            r-rbgl
            r-rsamtools
            r-s4vectors
+           r-seqinfo
            r-shiny
            r-shinyjs
            r-shinythemes
