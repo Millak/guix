@@ -25272,13 +25272,13 @@ array-like semantic.  It also provides:
 (define-public r-s4vectors
   (package
     (name "r-s4vectors")
-    (version "0.46.0")
+    (version "0.48.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "S4Vectors" version))
               (sha256
                (base32
-                "0h3s32z6jxa118jifdyrhpj03fgjjh1fdnaq87ls38k7lg34jhn3"))))
+                "1vs1n92d915gpvrl4y867gym9q1rsz5b0pkajndy58c329zx4m2v"))))
     (properties
      '((upstream-name . "S4Vectors")
        (updater-ignored-native-inputs
@@ -25288,7 +25288,7 @@ array-like semantic.  It also provides:
     (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-biocgenerics))
-    (native-inputs (list r-knitr r-matrix))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/S4Vectors")
     (synopsis "S4 implementation of vectors and lists")
     (description
