@@ -22626,14 +22626,14 @@ genes in the gene-set that are ranked above the leading edge).")
 (define-public r-chicago
   (package
     (name "r-chicago")
-    (version "1.36.0")
+    (version "1.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Chicago" version))
        (sha256
         (base32
-         "0hq96svbcx98gss5wf068rmpz4x85n4k5vf9pd4ips2yzy9454vf"))))
+         "1bmc7b6fgq5bw9msp4snycvw00r4wxasax9li92zsw3kva9ys941"))))
     (properties `((upstream-name . "Chicago")))
     (build-system r-build-system)
     (propagated-inputs
