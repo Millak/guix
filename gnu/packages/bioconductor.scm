@@ -18767,13 +18767,13 @@ and Infinium HD arrays are also included.")
 (define-public r-lefser
   (package
     (name "r-lefser")
-    (version "1.18.0")
+    (version "1.20.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "lefser" version))
               (sha256
                (base32
-                "19hxbx3yqdg96mb857029qvj0whd1fa7g6abq35prkxf60pld5qh"))))
+                "1v9w13kfhi5kcrl0a4z60fyqh6v5g3yrw81b6n752jb6222mgakg"))))
     (properties
      `((upstream-name . "lefser")
        (updater-extra-native-inputs . ("r-mia"))))
