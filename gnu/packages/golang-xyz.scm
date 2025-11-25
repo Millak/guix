@@ -7038,6 +7038,30 @@ help message which may simplify crating CLI applications, it's Golang
 implementation of http://docopt.org/.")
       (license license:expat))))
 
+(define-public go-github-com-dop251-scsu
+  (package
+    (name "go-github-com-dop251-scsu")
+    (version "0.0.0-20220106150536-84ac88021d00")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dop251/scsu")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vm7yfbdaz5z1m7yih5r2awahdr1lyrdfjr8qvx3z0gqi5q3klnh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/dop251/scsu"))
+    (home-page "https://github.com/dop251/scsu")
+    (synopsis "Standard Compression Scheme for Unicode")
+    (description
+     "This package provides a Standard Compression Scheme for Unicode
+implementation in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-dsnet-golib
   (package
     (name "go-github-com-dsnet-golib")
