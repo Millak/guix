@@ -3775,22 +3775,21 @@ supports the propositional fragment of PDDL2.2.")
        (snippet
         '(delete-file-recursively "contrib/metis"))))
     (build-system cmake-build-system)
-    (propagated-inputs
+    (inputs
      (list fltk
-           gfortran
+           fontconfig
            glu
            gmp
            hdf5
            libx11
            libxext
+           libxft
            mesa
            metis
            openblas
            opencascade-occt))
-    (inputs
-     (list fontconfig
-           libxft
-           python))
+    (native-inputs
+     (list python-wrapper))
     (arguments
      (list #:configure-flags
            #~(list "-DENABLE_SYSTEM_CONTRIB:BOOL=ON"
