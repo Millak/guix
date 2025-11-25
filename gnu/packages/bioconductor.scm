@@ -3812,13 +3812,13 @@ concentrations on behal of the Langmuir model.")
 (define-public r-affylmgui
   (package
     (name "r-affylmgui")
-    (version "1.82.0")
+    (version "1.84.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "affylmGUI" version))
        (sha256
-        (base32 "0lpf71axddzvlji2sbf4jrjzh7lxyxf017w5wnr0ccnxa34pdm3j"))))
+        (base32 "0rpfx60qsx0ia0xx1r0bhv44sh376z10dsgk903y80pfazrd3jn9"))))
     (properties `((upstream-name . "affylmGUI")))
     (build-system r-build-system)
     (propagated-inputs
