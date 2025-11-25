@@ -14477,13 +14477,13 @@ scRNA-seq data computationally.")
 (define-public r-slingshot
   (package
    (name "r-slingshot")
-   (version "2.16.0")
+   (version "2.18.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "slingshot" version))
             (sha256
              (base32
-              "17s9rmd5dsw65cl218sxz5wg1ysqbwqmvcs3vyffl48j5mmsvqgm"))))
+              "1gsz2a3hsc5yc4kyxkqfb6dbyfmdp41bmnas714pvabnwrcapjwd"))))
    (properties
     '((updater-extra-native-inputs . ("r-delayedmatrixstats"))))
    (build-system r-build-system)
