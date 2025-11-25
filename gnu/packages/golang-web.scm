@@ -16766,6 +16766,37 @@ Kubernetes components which are using nftables.")
 Procedure Call (RPC) framework.")
     (license license:expat)))
 
+(define-public go-storj-io-picobuf
+  (package
+    (name "go-storj-io-picobuf")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/storj/picobuf")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "18h4ashs0i8qikqi7x30yy7y72xkxcc57xdxry6nssdzcjym4w5n"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-skip" "TestMessageSize")
+      #:import-path "storj.io/picobuf"))
+    (native-inputs
+     (list go-github-com-zeebo-assert))
+    (propagated-inputs
+     (list go-google-golang-org-protobuf))
+    (home-page "https://storj.io/picobuf")
+    (synopsis "Replacement for subset of protobuf")
+    (description
+     "Picobuf is a minimal replacement for google.golang.org/protobuf with
+focusing on small binary size.  It does not support the whole Protocol Buffers
+feature set and features are added on as the need arises.")
+    (license license:expat)))
+
 ;;;
 ;;; Executables:
 ;;;
@@ -17006,6 +17037,21 @@ carries no encryption keys and cannot decode the traffic that it proxies.")))
        ((#:unpack-path _ "") "github.com/planetscale/vtprotobuf")))
     (native-inputs (package-propagated-inputs
                     go-github-com-planetscale-vtprotobuf))
+    (propagated-inputs '())
+    (inputs '())))
+
+(define-public protoc-gen-pico
+  (package/inherit go-storj-io-picobuf
+    (name "protoc-gen-pico")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-storj-io-picobuf)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:import-path _) "storj.io/picobuf/protoc-gen-pico")
+       ((#:unpack-path _ "") "storj.io/picobuf")))
+    (native-inputs (package-propagated-inputs go-storj-io-picobuf))
     (propagated-inputs '())
     (inputs '())))
 
