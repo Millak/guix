@@ -2611,14 +2611,14 @@ et al. Cancer Cell 17:98-110, 2010; Costa et al. FEBS J, 288:2311-2331,
 (define-public r-hellorangesdata
   (package
     (name "r-hellorangesdata")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "HelloRangesData" version
                               'experiment))
        (sha256
-        (base32 "0j2gw6cbnq5hjg7nnkzw5h5lb2ja8bv37x0nhqvi2n3q7bx9zxnb"))))
+        (base32 "1dz95k894vwzn5dh92qrkr9asvzhh6vcvc781s4fixxp0cg88riv"))))
     (properties `((upstream-name . "HelloRangesData")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/HelloRangesData")
