@@ -18327,14 +18327,14 @@ Bayes Analyses of Microarrays} (EBAM).")
 (define-public r-bumphunter
   (package
     (name "r-bumphunter")
-    (version "1.50.0")
+    (version "1.52.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "bumphunter" version))
        (sha256
         (base32
-         "05dsx5a3xagq6jajkcg6dzd43w5b4nbjqhjkl1wvg5va3dx4hl5z"))))
+         "1rkfhpfi30jas48ldy6qxj1dkkij7bfq3d4xsbwzmm0ip3hdipaj"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -18352,7 +18352,6 @@ Bayes Analyses of Microarrays} (EBAM).")
            r-biocgenerics
            r-dorng
            r-foreach
-           r-genomeinfodb
            r-genomicfeatures
            r-genomicranges
            r-iranges
@@ -18360,10 +18359,11 @@ Bayes Analyses of Microarrays} (EBAM).")
            r-limma
            r-locfit
            r-matrixstats
-           r-s4vectors))
+           r-s4vectors
+           r-seqinfo))
     (native-inputs
      (list r-doparallel
-           r-genomicranges
+           r-genomeinfodb
            r-rtracklayer
            r-runit
            r-testthat
