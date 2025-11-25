@@ -27804,21 +27804,17 @@ pre-specified groups of cells.")
 (define-public r-basicstarrseq
   (package
     (name "r-basicstarrseq")
-    (version "1.36.0")
+    (version "1.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BasicSTARRseq" version))
        (sha256
-        (base32 "195cpbmnz2hl1yxjq86qjdk2ns96bhvjq89kv379pq8xiais3mmz"))))
+        (base32 "06yxawx34bfr1112kkrd1g7n27qfxrnxq699ap18469vxypz2dw8"))))
     (properties `((upstream-name . "BasicSTARRseq")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-genomeinfodb
-           r-genomicalignments
-           r-genomicranges
-           r-iranges
-           r-s4vectors))
+     (list r-genomicalignments r-genomicranges r-iranges r-s4vectors r-seqinfo))
     (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/BasicSTARRseq")
     (synopsis "Basic peak calling on STARR-seq data")
