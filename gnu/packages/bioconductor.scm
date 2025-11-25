@@ -6780,13 +6780,13 @@ mechanism based on the shared signatures.")
 (define-public r-decomptumor2sig
   (package
     (name "r-decomptumor2sig")
-    (version "2.24.0")
+    (version "2.26.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "decompTumor2Sig" version))
               (sha256
                (base32
-                "13rhg8hcraiqkdyyj85maj5zk37wlx7n5m046r9s8l4cm1pmvgqp"))))
+                "1qrgc6s3fidcjg1j16ndg9l3awh0ga2v3j84b6yg8d52whf9xs0a"))))
     (properties `((upstream-name . "decompTumor2Sig")))
     (build-system r-build-system)
     ;; This package installs Perl scripts: extractSpecColumns.pl,
@@ -6797,7 +6797,6 @@ mechanism based on the shared signatures.")
            r-biostrings
            r-bsgenome-hsapiens-ucsc-hg19
            r-data-table
-           r-genomeinfodb
            r-genomicfeatures
            r-genomicranges
            r-ggplot2
@@ -6808,6 +6807,7 @@ mechanism based on the shared signatures.")
            r-quadprog
            r-readxl
            r-s4vectors
+           r-seqinfo
            r-summarizedexperiment
            r-txdb-hsapiens-ucsc-hg19-knowngene
            r-variantannotation))
