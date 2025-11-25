@@ -14975,13 +14975,13 @@ convenient formats.")
 (define-public r-tximport
   (package
     (name "r-tximport")
-    (version "1.36.1")
+    (version "1.38.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "tximport" version))
               (sha256
                (base32
-                "1wmapwbrx43q69dv0vgajzha2hq95xb6k3bx2vxpf29d771fsv46"))))
+                "1r07xnks4byp5hr51gq1j04bdrkb0axhi0bbhjpzbvgyc3fj67i3"))))
     (properties
      '((updater-extra-native-inputs
         . ("r-matrix" "r-rhdf5"))))
