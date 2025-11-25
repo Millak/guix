@@ -990,7 +990,6 @@ main_install()
     chk_init_sys
     add_init_sys_require
     chk_require "${REQUIRE[@]}"
-    chk_gpg_keyring
     chk_sys_arch
     chk_sys_nscd
     chk_existing
@@ -1001,6 +1000,7 @@ main_install()
     tmp_path="$(mktemp -t -d guix.XXXXXX)"
 
     if [ -z "${GUIX_BINARY_FILE_NAME}" ]; then
+        chk_gpg_keyring
         guix_get_bin_list "${GNU_URL}"
         guix_get_bin "${GNU_URL}" "${BIN_VER}" "$tmp_path"
         GUIX_BINARY_FILE_NAME=${BIN_VER}.tar.xz
