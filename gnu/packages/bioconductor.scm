@@ -27916,13 +27916,13 @@ targets.  It can also be used for differential expression/2-class data.")
 (define-public r-bayesspace
   (package
     (name "r-bayesspace")
-    (version "1.17.0")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BayesSpace" version))
        (sha256
-        (base32 "1ybf17zggvl7s1k6bgxskyna42fylnggv4wy7xvkglnfmv8rz5lp"))))
+        (base32 "1mqa0f08ynpplvg7ni8alk0a9w4yy876jslzx3p1kmyb8ncb4zaj"))))
     (properties `((upstream-name . "BayesSpace")))
     (build-system r-build-system)
     (propagated-inputs
