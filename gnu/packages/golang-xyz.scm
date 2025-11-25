@@ -17059,7 +17059,7 @@ millisecond)
   (package
     (inherit go-github-com-oklog-ulid)
     (name "go-github-com-oklog-ulid-v2")
-    (version "2.1.0")
+    (version "2.1.1")
     (source
      (origin
        (method git-fetch)
@@ -17068,7 +17068,7 @@ millisecond)
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pxjrg48zrmzzdjpsz7b2d56x1vwix2wywgbbv3sdi5mqf0hz17y"))))
+        (base32 "0dn9zvg9mfm6043fkj3xdnrn504zzzvqmhh3kqxngh06jdllpwwh"))))
     (arguments
      (list
       #:import-path "github.com/oklog/ulid/v2"))))
