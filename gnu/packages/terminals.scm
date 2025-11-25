@@ -1085,25 +1085,40 @@ usable with any list--including files, command history, processes and more.")
 (define-public tmate
   (package
     (name "tmate")
-    (version "2.4.0")
+    ;; XXX: The project looks like abandoned, where 2.4.0 was released in 2019
+    ;; and the latest commit on master's HEAD is from 2022, see:
+    ;; <https://github.com/tmate-io/tmate/issues/306>.
+    (properties '((commit . "ac919516f4f1b10ec928e20b3a5034d18f609d68")
+                  (revision . "0")))
+    (version (git-version "2.4.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/tmate-io/tmate")
-             (commit version)))
+              (url "https://github.com/tmate-io/tmate")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0x5c31yq7ansmiy20a0qf59wagba9v3pq97mlkxrqxn4n1gcc6vi"))))
+        (base32 "1gwmwiq0fc0bl4calnzp53hp3wyr66qvsagz37jchwhcc1za1pmp"))))
     (build-system gnu-build-system)
-    (inputs (list libevent libssh msgpack-3 ncurses))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-msgpack-version
+            (lambda _
+              (substitute* "configure.ac"
+                (("msgpack >= 1.1.0")
+                 "msgpack-c >= 1.1.0")))))))
+    (inputs (list libevent libssh msgpack-c ncurses))
     (native-inputs (list autoconf automake pkg-config))
     (home-page "https://tmate.io/")
     (synopsis "Terminal sharing application")
-    (description "tmate is a terminal sharing application that allows you to
-share your terminal with other users over the Internet.  tmate is a fork of
-tmux.")
+    (description
+     "tmate is a terminal sharing application that allows you to share your
+terminal with other users over the Internet.  tmate is a fork of tmux.")
     (license license:isc)))
 
 (define-public kitty
