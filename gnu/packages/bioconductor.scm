@@ -7350,17 +7350,18 @@ results.")
 (define-public r-dropletutils
   (package
     (name "r-dropletutils")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DropletUtils" version))
        (sha256
-        (base32 "0amxjg46a9yqkfcqg2493dl8spfsaglpv2kas38ni2w3q5wzn0yp"))))
+        (base32 "18k2jlz9yk2fayk01q165cp0wr1sb3hq73q6fp0w3w669ykfz0a5"))))
     (properties `((upstream-name . "DropletUtils")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-beachmat
+     (list r-assorthead
+           r-beachmat
            r-bh
            r-biocgenerics
            r-biocparallel
