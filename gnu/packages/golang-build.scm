@@ -20,6 +20,7 @@
 ;;; Copyright © 2024 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
+;;; Copyright © 2025 Patrick Norton <patrick.147.norton@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,7 +45,9 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages audio)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages golang))
 
 ;;; Commentary:
@@ -942,6 +945,53 @@ compile does not support generics.")
             #:import-path "golang.org/x/image"))
      (native-inputs '())
      (propagated-inputs '()))))
+
+(define-public go-golang-org-x-mobile
+  (package
+    (name "go-golang-org-x-mobile")
+    (version "0.0.0-20251113184115-a159579294ab")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/mobile")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1c6h7w1xmv47g61j24y9xkagl2f0833r9bhjzrp0aarhc6fz99b2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Permission denied to read or write go.mod file.
+                       (list "TestDocs/Modules"
+                             "TestGobind/Modules"
+                             ;; build_test.go:100: cannot set -o when building
+                             ;; non-main package
+                             "TestAndroidBuild")
+                       "|"))
+      #:import-path "golang.org/x/mobile"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/example")))))))
+    (inputs (list openal mesa))
+    (propagated-inputs
+     (list go-golang-org-x-exp
+           go-golang-org-x-image
+           go-golang-org-x-mod
+           go-golang-org-x-sync
+           go-golang-org-x-tools
+           go-golang-org-x-tools-go-packages-packagestest))
+    (home-page "https://golang.org/x/mobile")
+    (synopsis "Mobile devices support for Golang")
+    (description
+     "This package implements a functionality for using Go on mobile platforms.")
+    (license license:bsd-3)))
 
 (define-public go-golang-org-x-mod
   (package
