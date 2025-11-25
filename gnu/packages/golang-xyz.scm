@@ -24656,6 +24656,21 @@ distributions of benchmark measurements
      (list
       #:import-path "gopkg.in/alecthomas/kingpin.v2"))))
 
+(define-public go-gopkg-in-fsnotify-v1
+  (package/inherit go-github-com-fsnotify-fsnotify
+    (name "go-gopkg-in-fsnotify-v1")
+    (arguments
+     (list
+      #:import-path "gopkg.in/fsnotify.v1"
+      #:test-flags #~(list "-skip" "TestDiffMatch/3")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-import-path
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (substitute* (find-files "." "\\.go$")
+                  (("github.com/fsnotify/fsnotify") import-path))))))))))
+
 (define-public go-gopkg-in-inconshreveable-log15-v2
   (package
     (name "go-gopkg-in-inconshreveable-log15-v2")
