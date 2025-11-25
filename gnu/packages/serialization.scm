@@ -1129,3 +1129,42 @@ and validate documents loaded by one of several supported parser libraries.")
 interface description protocol and its associated command line tool")
     (license license:asl2.0)))
 
+(define-public python-rencode
+  (package
+    (name "python-rencode")
+    (version "1.0.8")
+    (source
+     (origin
+       (method git-fetch)       ;no tests in PyPI archive
+       (uri (git-reference
+              (url "https://github.com/aresch/rencode")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dicbm8gdii2bjp85s2p4pnclf25k9x4b4kaj80y8ddhh87glrlk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-native-optimization
+            (lambda _
+              (substitute* "build.py"
+                (("^COMPILE_ARGS.*")
+                 "COMPILE_ARGS: list[str] = []\n")))))))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-poetry-core
+           python-setuptools))
+    (home-page "https://github.com/aresch/rencode")
+    (synopsis "Serialization of heterogeneous data structures")
+    (description
+     "The @code{rencode} module is a data structure serialization library,
+similar to @code{bencode} from the BitTorrent project.  For complex,
+heterogeneous data structures with many small elements, r-encoding stake up
+significantly less space than b-encodings.  This version of rencode is a
+complete rewrite in Cython to attempt to increase the performance over the
+pure Python module.")
+    (license license:bsd-3)))
+
