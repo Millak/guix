@@ -21664,14 +21664,14 @@ datasets.")
 (define-public r-annotatr
   (package
     (name "r-annotatr")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "annotatr" version))
        (sha256
         (base32
-         "00d0q534apwnzal3xabgcgcd659zsg73xb3md756caipx7qlcam8"))))
+         "02l3xq8mgpabd9j57r40aqv8yd63yarrv2hlbapf3cr516n2hcks"))))
     (build-system r-build-system)
     ;; 5 tests need internet access.
     (arguments (list #:tests? #false))
@@ -21679,7 +21679,6 @@ datasets.")
      (list r-annotationdbi
            r-annotationhub
            r-dplyr
-           r-genomeinfodb
            r-genomicfeatures
            r-genomicranges
            r-ggplot2
@@ -21687,8 +21686,10 @@ datasets.")
            r-readr
            r-regioner
            r-reshape2
+           r-rlang
            r-rtracklayer
-           r-s4vectors))
+           r-s4vectors
+           r-seqinfo))
     (native-inputs
      (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/annotatr/")
