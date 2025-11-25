@@ -17049,6 +17049,51 @@ focusing on small binary size.  It does not support the whole Protocol Buffers
 feature set and features are added on as the need arises.")
     (license license:expat)))
 
+(define-public go-storj-io-uplink
+  (package
+    (name "go-storj-io-uplink")
+    (version "1.13.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/storj/uplink")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0294wyyilvf69dk5vza6zbw3imcvp7ph5nrp7d1hchxrysk3g07y"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - storj.io/uplink/testsuite
+            (delete-file-recursively "testsuite")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "storj.io/uplink"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-klauspost-compress
+           go-github-com-spacemonkeygo-monkit-v3
+           go-github-com-zeebo-errs
+           go-github-com-zeebo-sudo
+           go-golang-org-x-exp
+           go-golang-org-x-sync
+           go-storj-io-common
+           go-storj-io-drpc
+           go-storj-io-eventkit
+           go-storj-io-infectious
+           go-storj-io-picobuf))
+     (home-page "https://storj.io/uplink")
+     (synopsis "Storj network Go library")
+    (description
+     "Package uplink is the main entrypoint to interacting with
+@url{https://www.storj.io/, Storj Labs} decentralized storage network.")
+    (license license:expat)))
+
 ;;;
 ;;; Executables:
 ;;;
