@@ -20165,14 +20165,14 @@ these files at JHPCE.")
 (define-public r-atacseqqc
   (package
     (name "r-atacseqqc")
-    (version "1.32.0")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ATACseqQC" version))
        (sha256
         (base32
-         "04dnvjwxq64ax9d6mg5j30285wv1kc0yq7ms3m1bj6654v1vvpcq"))))
+         "0yb69k9cl1ibf8v0jmmzij7l6iz85gf4dyz7yli1b72yf765q5y0"))))
     (properties `((upstream-name . "ATACseqQC")))
     (build-system r-build-system)
     (propagated-inputs
