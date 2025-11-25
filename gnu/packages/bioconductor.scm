@@ -11355,20 +11355,19 @@ be explored.")
 (define-public r-methylkit
   (package
     (name "r-methylkit")
-    (version "1.34.0")
+    (version "1.36.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "methylKit" version))
               (sha256
                (base32
-                "09dc8h2w6xjkphfd82368lv9iq3yr46iiz05ixjjvlzvn772wqwd"))))
+                "0ay3x7scmp7j3g3vqlyb3w2cnakaw2bbprj7fsdy6mda7py9p2qi"))))
     (properties `((upstream-name . "methylKit")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-data-table
            r-emdbook
            r-fastseg
-           r-genomeinfodb
            r-genomicranges
            r-gtools
            r-iranges
@@ -11382,7 +11381,8 @@ be explored.")
            r-rhtslib
            r-rsamtools
            r-rtracklayer
-           r-s4vectors))
+           r-s4vectors
+           r-seqinfo))
     (native-inputs
      (list r-knitr r-testthat)) ; for vignettes
     (home-page "https://github.com/al2na/methylKit")
