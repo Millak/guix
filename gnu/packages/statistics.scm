@@ -2399,14 +2399,16 @@ framework, with additional code inspection and report generation tools.")
 (define-public r-sfsmisc
   (package
     (name "r-sfsmisc")
-    (version "1.1-22")
+    (version "1.1-23")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sfsmisc" version))
        (sha256
         (base32
-         "107s3svrfc1lqpri75alypvacx97y97cyv7pz80sp5ixc2r01sdj"))))
+         "0pnj3lwyypvdb0rv4mx81vs2cg16kx4mlsv2fxf5cmns221zl7xq"))))
+    (properties
+     '((updater-extra-propagated-inputs . ("procps"))))
     (build-system r-build-system)
     (arguments
      (list
