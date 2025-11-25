@@ -6221,7 +6221,7 @@ files are easily readable and they work nicely with version control systems.")
            python-responses
            python-setuptools
            python-setuptools-scm))
-    (propagated-inputs
+    (inputs
      (list python-imagesize
            python-importlib-resources
            python-lxml
