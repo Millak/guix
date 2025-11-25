@@ -3729,13 +3729,13 @@ results from different methods into an ensemble.")
 (define-public r-adsplit
   (package
     (name "r-adsplit")
-    (version "1.78.0")
+    (version "1.80.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "adSplit" version))
               (sha256
                (base32
-                "1lan9m80596c8fawyn1s1dz9bbcaggl726yigssycbkhpdla2yzv"))))
+                "0iqyr96s8hclxvcb3ms2gsrwl2kh84ccdcg26ssvr0w15kh7gwg9"))))
     (properties `((upstream-name . "adSplit")))
     (build-system r-build-system)
     (propagated-inputs
