@@ -8784,14 +8784,14 @@ biological sequences or sets of sequences.")
 (define-public r-biovizbase
   (package
     (name "r-biovizbase")
-    (version "1.56.0")
+    (version "1.58.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biovizBase" version))
        (sha256
         (base32
-         "14xlvcjf1w283rb3249hzh9k8c2w2z8fimh0qsjnzhm1l82dihga"))))
+         "1fx6plg3jdy9frs7p6bmxnbkyxa06bw9iyyqlw96ifi5zarkf8vl"))))
     (properties `((upstream-name . "biovizBase")))
     (build-system r-build-system)
     (propagated-inputs
@@ -8812,6 +8812,7 @@ biological sequences or sets of sequences.")
            r-rsamtools
            r-s4vectors
            r-scales
+           r-seqinfo
            r-summarizedexperiment
            r-variantannotation))
     (native-inputs (list r-bsgenome-hsapiens-ucsc-hg19 r-ensdb-hsapiens-v75
