@@ -4201,22 +4201,22 @@ can enrich this metadata with context-specific properties.")
 (define-public r-alabaster-ranges
   (package
     (name "r-alabaster-ranges")
-    (version "1.8.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "alabaster.ranges" version))
        (sha256
-        (base32 "0xijg8rr7zq3jx0zp1pf9rkxlkgv0dg7n8dsn2aisy1lznz7l8cs"))))
+        (base32 "0vlsrp3s21fq6g3w2ryp9kcclnh7m174l3a7rxk22yanfy65jmgm"))))
     (properties `((upstream-name . "alabaster.ranges")))
     (build-system r-build-system)
     (propagated-inputs (list r-alabaster-base
                              r-biocgenerics
-                             r-genomeinfodb
                              r-genomicranges
                              r-iranges
                              r-rhdf5
-                             r-s4vectors))
+                             r-s4vectors
+                             r-seqinfo))
     (native-inputs (list r-jsonlite r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/alabaster.ranges")
     (synopsis "Load and save Ranges-related artifacts from file")
