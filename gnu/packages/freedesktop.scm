@@ -2817,14 +2817,14 @@ to the C library @code{uchardet} to increase performance.")
 (define-public udiskie
   (package
     (name "udiskie")
-    (version "2.4.2")
+    (version "2.5.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "udiskie" version))
        (sha256
         (base32
-         "0z0gk8l6rv4np29kfdalmy4q3900005sxhjg0jz1aa8irdcsp1qz"))))
+         "0c6i7i7yb0lqrfxjrh63y6amw2npkp1n3dxdfjf9zh4pgbnaivd3"))))
     (build-system python-build-system)
     (native-inputs
      (list asciidoc
