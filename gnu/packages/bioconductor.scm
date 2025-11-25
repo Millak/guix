@@ -26333,14 +26333,14 @@ in the @code{matrixStats} package from CRAN.")
 (define-public r-sparsematrixstats
   (package
     (name "r-sparsematrixstats")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "sparseMatrixStats" version))
        (sha256
         (base32
-         "1xds5h7scmas1fpanmyqk9mw1bv85hn7qfp27l577fjklyiyirvr"))))
+         "15kychrmj4r4mmyjygwi69ayfm3fwfyjfbp475xylnwixyr5v7s4"))))
     (properties
      `((upstream-name . "sparseMatrixStats")))
     (build-system r-build-system)
