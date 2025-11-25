@@ -3485,7 +3485,14 @@ notifies the user using any notification daemon implementing
                    '(unpack-rust-crates
                      configure
                      check-for-pregenerated-files
-                     patch-cargo-checksums))))))
+                     patch-cargo-checksums))))
+           (add-after 'unpack 'patch-vulkan
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "src/dmabuf.rs"
+                 (("Entry::load\\(\\)")
+                  (string-append "Entry::load_from(\""
+                                 (search-input-file inputs "lib/libvulkan.so")
+                                 "\")")))))))
        #:configure-flags
        #~(list "-Dwith_lz4=enabled"
                "-Dwith_vaapi=enabled"
