@@ -11793,13 +11793,13 @@ remote MS data sets.")
 (define-public r-msexperiment
   (package
     (name "r-msexperiment")
-    (version "1.10.0")
+    (version "1.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MsExperiment" version))
        (sha256
-        (base32 "0wwwm4b1yp1d8ppzyricqa3859macffi8ncddmfaipiziglcc7l4"))))
+        (base32 "1braagzs450sxbh29rdh0dck7pwi49wd45rx3j36fw4720hgcilb"))))
     (properties
      `((upstream-name . "MsExperiment")
        (updater-extra-native-inputs . ("r-mzr"))))
