@@ -8414,14 +8414,14 @@ used by @code{ensembldb}, @code{Organism.dplyr}, and other packages.")
 (define-public r-annotationforge
   (package
     (name "r-annotationforge")
-    (version "1.50.0")
+    (version "1.52.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "AnnotationForge" version))
        (sha256
         (base32
-         "1h0h9axlq9knw8hiyhay7d9wbxvlgg8378pd6zygbj74qvy60pp3"))))
+         "0idd80w57yd4gxv5k15mzwmny18bsv2aphx7zkk250nbhj9qb7l7"))))
     (properties
      '((upstream-name . "AnnotationForge")
        (updater-extra-native-inputs . ("r-go-db" "r-runit"))
