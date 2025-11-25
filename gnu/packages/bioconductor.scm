@@ -1374,13 +1374,13 @@ annotations for the genome of the model fruit fly Drosophila melanogaster.")
 (define-public r-org-dr-eg-db
   (package
     (name "r-org-dr-eg-db")
-    (version "3.21.0")
+    (version "3.22.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "org.Dr.eg.db" version 'annotation))
               (sha256
                (base32
-                "18vznfmlmygwpwkm7kzavripjg7vppcs4p6b771nmwx62i73s0sc"))))
+                "13p3yvx4jpmca73nniiqiy3krwaw7sws549in3nswwn4875j5r93"))))
     (properties
      '((upstream-name . "org.Dr.eg.db")
        (updater-extra-native-inputs . ("r-runit"))))
