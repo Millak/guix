@@ -5706,13 +5706,13 @@ alleles, a known phenotypical feature of cancer samples.")
 (define-public r-bags
   (package
     (name "r-bags")
-    (version "2.48.0")
+    (version "2.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BAGS" version))
        (sha256
-        (base32 "1s0fqs4chr8ixxlq3a5scnncrq3bma6vz1s1isdwwxf57vp6d1v2"))))
+        (base32 "0813s292xszlw4r8xy0hnm0jkawz6l7cafv2xsa7k005lzm6dhbx"))))
     (properties `((upstream-name . "BAGS")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-breastcancervdx))
