@@ -27099,14 +27099,14 @@ on the plot.")
 (define-public r-abn
   (package
     (name "r-abn")
-    (version "3.1.9")
+    (version "3.1.12")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "abn" version))
        (sha256
         (base32
-         "153xv0gry77283ymbfr99z5p0wv2pnjg3k9b67xcj9ysal3dx4qi"))))
+         "1k0pxan20ldhx4yl6li3bj3darzhbxh7m9kk2r3cpkwsxavvxm7z"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -27121,7 +27121,9 @@ on the plot.")
     (propagated-inputs
      (list r-doparallel
            r-foreach
+           r-glmmtmb
            r-graph
+           r-jsonlite
            r-lme4
            r-mclogit
            r-nnet
