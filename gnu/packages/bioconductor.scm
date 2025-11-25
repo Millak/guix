@@ -16524,14 +16524,14 @@ experiments.")
 (define-public r-genomicinteractions
   (package
     (name "r-genomicinteractions")
-    (version "1.42.0")
+    (version "1.44.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GenomicInteractions" version))
        (sha256
         (base32
-         "02wwbxn9kcpscvkkllad42wa8i5nfqc54nmm550zfhh15qlvazys"))))
+         "1kfmlznlagjxzvwpnk18b5f5612fflkm66m93gky6ppi65ppv7xp"))))
     (properties
      `((upstream-name . "GenomicInteractions")))
     (build-system r-build-system)
@@ -16540,7 +16540,6 @@ experiments.")
            r-biocgenerics
            r-data-table
            r-dplyr
-           r-genomeinfodb
            r-genomicranges
            r-ggplot2
            r-gridextra
@@ -16551,6 +16550,7 @@ experiments.")
            r-rsamtools
            r-rtracklayer
            r-s4vectors
+           r-seqinfo
            r-stringr))
     (native-inputs
      (list r-knitr r-testthat))
