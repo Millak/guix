@@ -1754,7 +1754,7 @@ intended as a substitute for the PPPStatus and EthStatus projects.")
 (define-public iputils
   (package
     (name "iputils")
-    (version "20221126")
+    (version "20250605")
     (home-page "https://github.com/iputils/iputils")
     (source (origin
               (method git-fetch)
@@ -1762,7 +1762,7 @@ intended as a substitute for the PPPStatus and EthStatus projects.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qfdvr60mlwh5kr4p27wjknz1cvrwfi6iadh9ny45661v22i0njx"))))
+                "0ypian23hb5rk0d8f9z1qbdy3l5g1g8h18c8pc5l1lixh4y0v600"))))
     (build-system meson-build-system)
     (arguments
      (list
