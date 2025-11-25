@@ -5828,35 +5828,6 @@ individual Qt modules such as QtCore, QtGui,and so on.  Qt for Python also
 comes with the Shiboken6 CPython binding code generator, which can be used to
 generate Python bindings for your C or C++ code.")))
 
-(define-public python-pyside-2-tools
-  (package
-    (name "python-pyside-2-tools")
-    (version (package-version python-shiboken-2))
-    (source (package-source python-shiboken-2))
-    (build-system cmake-build-system)
-    (inputs
-     (list python-pyside-2 python-shiboken-2 qtbase-5))
-    (native-inputs
-     (list python-wrapper))
-    (arguments
-     (list
-      #:tests? #f
-      #:configure-flags
-      #~(list "-DBUILD_TESTS=off"
-              (string-append "-DPYTHON_EXECUTABLE="
-                             (search-input-file %build-inputs
-                                                "/bin/python")))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'go-to-source-dir
-            (lambda _ (chdir "sources/pyside2-tools"))))))
-    (home-page "https://wiki.qt.io/Qt_for_Python")
-    (synopsis
-     "Command line tools for PySide2")
-    (description
-     "Python-pyside-2-tools contains lupdate, rcc and uic tools for PySide2")
-    (license license:gpl2)))
-
 (define-public libqglviewer
   (package
     (name "libqglviewer")
