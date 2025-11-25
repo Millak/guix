@@ -18275,14 +18275,14 @@ the bridge between GEO and BioConductor.")
 (define-public r-illuminaio
   (package
     (name "r-illuminaio")
-    (version "0.50.0")
+    (version "0.52.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "illuminaio" version))
        (sha256
         (base32
-         "1azz7r90l9f7ns2p37qigwk45glq0p7rxkmgf939484iizkxq275"))))
+         "0hcn43ipy0dijr3kqdcn8hpv3a5y1xmg8d7aa2hd7i7ipjh5bfhf"))))
     (properties
      ;; This is needed for vignettes.
      '((updater-extra-native-inputs . ("r-biocstyle"))))
