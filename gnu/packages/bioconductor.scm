@@ -26397,14 +26397,14 @@ Visium platform.")
 (define-public r-delayedmatrixstats
   (package
     (name "r-delayedmatrixstats")
-    (version "1.30.0")
+    (version "1.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DelayedMatrixStats" version))
        (sha256
         (base32
-         "0mwflq5rdb172w2pjd0rkdivinilgdvh7r7zm0iqxxsw1imkj6sp"))))
+         "0ygp9p8lm19421ybqsrp0xz396cpf7b2vwk6hmrr5gxhxqqxyba5"))))
     (properties
      '((upstream-name . "DelayedMatrixStats")
        (updater-extra-native-inputs . ("r-hdf5array"))))
