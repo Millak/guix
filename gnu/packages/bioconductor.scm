@@ -10260,16 +10260,17 @@ Enrichment Analysis} (GSEA).")
 (define-public r-gsva
   (package
     (name "r-gsva")
-    (version "2.2.0")
+    (version "2.4.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GSVA" version))
               (sha256
                (base32
-                "0xnn5v9p2rvy7z935ni8a7psxdl07mzw44sdi63n33rgj8kcnlax"))))
+                "0axpdds05vmrbpixdbp50a84rj93cm9cx56y10giknwljsa7zqfm"))))
     (properties `((upstream-name . "GSVA")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase
+                             r-biocgenerics
                              r-biocparallel
                              r-biocsingular
                              r-cli
@@ -10279,12 +10280,15 @@ Enrichment Analysis} (GSEA).")
                              r-hdf5array
                              r-iranges
                              r-matrix
+                             r-matrixgenerics
+                             r-s4arrays
                              r-s4vectors
                              r-singlecellexperiment
+                             r-sparsearray
                              r-sparsematrixstats
                              r-spatialexperiment
                              r-summarizedexperiment))
-    (native-inputs (list r-biocgenerics r-gsvadata r-knitr r-runit))
+    (native-inputs (list r-gsvadata r-knitr r-runit))
     (home-page "https://github.com/rcastelo/GSVA")
     (synopsis "Gene Set Variation Analysis for microarray and RNA-seq data")
     (description
