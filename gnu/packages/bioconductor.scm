@@ -10962,13 +10962,13 @@ scale with the dimensions of large data sets.")
 (define-public r-lfa
   (package
     (name "r-lfa")
-    (version "2.8.0")
+    (version "2.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "lfa" version))
        (sha256
-        (base32 "00x7vjhsqfdbqf9lkx3lz93cqahdcdjawmfyvzyvdwjfxrmajfhb"))))
+        (base32 "0hfagl99sf92000ng0wcn88sblzb64mr8b7kfi4zz2q79n9l8b49"))))
     (properties
      '((upstream-name . "lfa")
        (updater-ignored-native-inputs . ("r-genio"))))
