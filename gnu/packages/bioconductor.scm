@@ -9849,13 +9849,13 @@ genomic intervals.  In addition, it can use BAM or BigWig files as input.")
 (define-public r-genomeinfodb
   (package
     (name "r-genomeinfodb")
-    (version "1.44.0")
+    (version "1.46.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomeInfoDb" version))
               (sha256
                (base32
-                "0rvf2v2bcspm0xlrdxcvyjfp3h5vcykmd61x073sizdsxkn4dd68"))))
+                "03mxzpz9pwhmg63is4pn5gbrkcphfj9nyzdpxymhy9s8nv3hzfd9"))))
     (properties
      '((upstream-name . "GenomeInfoDb")
        (updater-ignored-native-inputs
@@ -9866,8 +9866,7 @@ genomic intervals.  In addition, it can use BAM or BigWig files as input.")
     ;; Tests attempt to download files.
     (arguments (list #:tests? #false))
     (propagated-inputs
-     (list r-biocgenerics r-genomeinfodbdata r-iranges r-s4vectors
-           r-ucsc-utils))
+     (list r-biocgenerics r-iranges r-s4vectors r-seqinfo r-ucsc-utils))
     (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/GenomeInfoDb")
     (synopsis "Utilities for manipulating chromosome identifiers")
