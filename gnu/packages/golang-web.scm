@@ -16989,6 +16989,35 @@ Procedure Call (RPC) framework.")
 events over UDP.")
     (license license:expat)))
 
+(define-public go-storj-io-infectious
+  (package
+    (name "go-storj-io-infectious")
+    (version "0.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/storj/infectious")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0065fizv2rqqk21amkcb008pvv1bv69qr6bylaw0bz7l6awxmxq8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "storj.io/infectious"))
+    (propagated-inputs
+     (list go-golang-org-x-sys))
+    (home-page "https://storj.io/infectious")
+    (synopsis "Reed-Solomon forward error correcting library")
+    (description
+     "Package infectious implements
+@url{https://en.wikipedia.org/wiki/Reed%E2%80%93Solomon_error_correction,
+Reed-Solomon forward error correction}.  It uses the Berlekamp-Welch error
+correction algorithm to achieve the ability to actually correct errors.")
+    (license (list license:expat
+                   license:bsd-2))))
+
 (define-public go-storj-io-picobuf
   (package
     (name "go-storj-io-picobuf")
