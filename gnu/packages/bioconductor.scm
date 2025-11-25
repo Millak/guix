@@ -20131,14 +20131,14 @@ position-specific scores within R and Bioconductor.")
 (define-public r-genomicstate
   (package
     (name "r-genomicstate")
-    (version "0.99.16")
+    (version "0.99.17")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GenomicState" version
                               'annotation))
        (sha256
-        (base32 "0x4m8096ra57xs6b60ws0k1wq91yrhfr6q7jbdw8m686qzd159p1"))))
+        (base32 "1hdzf75rqq63dx2mjjjpiqvsvlqpk4ymkcll6j763wr1rdagdh3r"))))
     (properties `((upstream-name . "GenomicState")))
     (build-system r-build-system)
     ;; Tests require Internet access.
@@ -20147,11 +20147,11 @@ position-specific scores within R and Bioconductor.")
                              r-annotationhub
                              r-bumphunter
                              r-derfinder
-                             r-genomeinfodb
                              r-genomicfeatures
                              r-iranges
                              r-org-hs-eg-db
                              r-rtracklayer
+                             r-seqinfo
                              r-txdbmaker))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/LieberInstitute/GenomicState")
