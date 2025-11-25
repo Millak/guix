@@ -3105,13 +3105,13 @@ expression experiment from Mulvey et al. (2015).")
 (define-public r-hsmmsinglecell
   (package
     (name "r-hsmmsinglecell")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "HSMMSingleCell" version 'experiment))
        (sha256
-        (base32 "04r3y0c3i5b6cz17d37pm2608mma71nrlaxnwiidi6yk982mk58p"))))
+        (base32 "0a5na2c9m3v3iz5wls8csazrw6nfs25cdg1klq8z5n6p68y6fr8d"))))
     (properties
      '((upstream-name . "HSMMSingleCell")
        ;; Avoid dependency cycle.
