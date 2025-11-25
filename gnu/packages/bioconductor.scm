@@ -2720,13 +2720,13 @@ for testing purposes.")
 (define-public r-italicsdata
   (package
     (name "r-italicsdata")
-    (version "2.46.0")
+    (version "2.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ITALICSData" version 'experiment))
        (sha256
-        (base32 "1m0vp0awij7fhfxi1s8ciwf84xgqxw55ih0yvizj3ix7wg334l1n"))))
+        (base32 "0f6snn6vm65af11ql8y57gl467v5jk9vimpajqaa0fxzakmg49ql"))))
     (properties `((upstream-name . "ITALICSData")))
     (build-system r-build-system)
     (home-page "http://bioinfo.curie.fr")
