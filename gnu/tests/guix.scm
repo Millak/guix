@@ -494,5 +494,3 @@ host	all	all	::1/128 	trust"))))))
    (name "bffe")
    (description "Connect to a running Build Farm Front-end.")
    (value (run-bffe-test))))
-
-%nar-herder-os
