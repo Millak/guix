@@ -16377,14 +16377,14 @@ more complex hypotheses) via empirical Bayesian methods.")
 (define-public r-chipcomp
   (package
     (name "r-chipcomp")
-    (version "1.38.0")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ChIPComp" version))
        (sha256
         (base32
-         "0j5pq8l1azr9abfmnnycy1nkqxy19r4q5pjda45xwsmiz94b543l"))))
+         "0mbsrq97bfi3fpf2lyq1q2bqrhl1y2klk6x2ydvph2m0k3zbhp5n"))))
     (properties
      '((upstream-name . "ChIPComp")
        (updater-extra-native-inputs . ("r-biocstyle"))))
@@ -16393,13 +16393,13 @@ more complex hypotheses) via empirical Bayesian methods.")
      (list r-biocgenerics
            r-bsgenome-hsapiens-ucsc-hg19
            r-bsgenome-mmusculus-ucsc-mm9
-           r-genomeinfodb
            r-genomicranges
            r-iranges
            r-limma
            r-rsamtools
            r-rtracklayer
-           r-s4vectors))
+           r-s4vectors
+           r-seqinfo))
     (native-inputs (list r-biocstyle r-runit))
     (home-page "https://bioconductor.org/packages/ChIPComp")
     (synopsis "Quantitative comparison of multiple ChIP-seq datasets")
