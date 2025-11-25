@@ -563,13 +563,13 @@ Exon, SNP; @code{NimbleGen}: Expression, Tiling) to be used with the
 (define-public r-org-eck12-eg-db
   (package
     (name "r-org-eck12-eg-db")
-    (version "3.21.0")
+    (version "3.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "org.EcK12.eg.db" version 'annotation))
        (sha256
-        (base32 "0ng6nf3gfwiajbjsb3q19livi9drlx6flacv97igfwylhq0w2nin"))))
+        (base32 "1m19yms6g0np99myxg54phszz5zzl89hwcr0dhmixfzb2w3fh8bp"))))
     (properties
      `((upstream-name . "org.EcK12.eg.db")
        (updater-extra-native-inputs . ("r-runit"))))
