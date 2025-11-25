@@ -54792,17 +54792,17 @@ object to and from disk.")
 (define-public r-qs2
   (package
     (name "r-qs2")
-    (version "0.1.5")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "qs2" version))
        (sha256
-        (base32 "06h3dm9hkr7g276vir955c0ynlzr82qnj0a1iy6gw8d0wqkis35d"))))
+        (base32 "1pismis1ma48yvhx0v732nx8czfnm9i8q4wnwd9y5mf8sdivgjgb"))))
     (properties `((upstream-name . "qs2")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp r-rcppparallel r-stringfish))
-    (native-inputs (list r-data-table r-dplyr r-knitr pkg-config r-stringi))
+    (native-inputs (list pkg-config r-data-table r-dplyr r-knitr r-stringi))
     (home-page "https://github.com/qsbase/qs2")
     (synopsis "Efficient serialization of R objects")
     (description
