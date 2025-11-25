@@ -9637,13 +9637,13 @@ chromosome region or transcript models of lincRNA genes.")
 (define-public r-epidish
   (package
     (name "r-epidish")
-    (version "2.24.0")
+    (version "2.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "EpiDISH" version))
        (sha256
-        (base32 "1jq1vk4g3fij7yanap17xwvk7wrypgj11axbv7chg7m7m66r3p5a"))))
+        (base32 "15p5qshjbas5fb3x2sdwpcxd9ps91y4089jjy8c12q7sail4c54q"))))
     (properties `((upstream-name . "EpiDISH")))
     (build-system r-build-system)
     (propagated-inputs (list r-e1071
