@@ -25958,14 +25958,14 @@ customizable visualzations with minimal effort.")
 (define-public r-motifmatchr
   (package
     (name "r-motifmatchr")
-    (version "1.30.0")
+    (version "1.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "motifmatchr" version))
        (sha256
         (base32
-         "0j0dx8v856l4bqz0v3n2kj4yvdq4ffkfr5vsh5mwj09vbacjqzgf"))))
+         "16crqy7y6iad4b29mgxisf7gp06snf7bxgkm3y06f66y8faajlyk"))))
     (properties
      '((upstream-name . "motifmatchr")
        (updater-extra-native-inputs . ("r-bsgenome-hsapiens-ucsc-hg19"))))
@@ -25973,7 +25973,6 @@ customizable visualzations with minimal effort.")
     (propagated-inputs
      (list r-biostrings
            r-bsgenome
-           r-genomeinfodb
            r-genomicranges
            r-iranges
            r-matrix
@@ -25981,6 +25980,7 @@ customizable visualzations with minimal effort.")
            r-rcpparmadillo
            r-rsamtools
            r-s4vectors
+           r-seqinfo
            r-summarizedexperiment
            r-tfbstools))
     (native-inputs
