@@ -3082,14 +3082,14 @@ the reads can be mapped.")
 (define-public r-prolocdata
   (package
     (name "r-prolocdata")
-    (version "1.46.0")
+    (version "1.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "pRolocdata" version
                               'experiment))
        (sha256
-        (base32 "072qqvhd9qpfslbagywqv6q7ify6kydb6cc76nbb0n5901cshmvk"))))
+        (base32 "1z7kiva4w6qkqq4dcnjf2693nj68l8s5l94fq2y1qm06rpr22g9v"))))
     (properties `((upstream-name . "pRolocdata")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-msnbase))
