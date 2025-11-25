@@ -24086,13 +24086,13 @@ visualizing RNA-sequencing datasets and differentially expressed genes.")
 (define-public r-chemmineob
   (package
     (name "r-chemmineob")
-    (version "1.46.0")
+    (version "1.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ChemmineOB" version))
        (sha256
-        (base32 "0z156k7anzl0xcbch6lcg8z3dkkfy6901x8hl3wsshf6rl9ibahz"))))
+        (base32 "03pw3758my4j5d94kg3vklqy6nmp2aw664d55kwd6ww21xi0b0ln"))))
     (properties
      '((upstream-name . "ChemmineOB")
        (updater-extra-inputs . ("eigen" "openbabel"))
@@ -24115,8 +24115,8 @@ visualizing RNA-sequencing datasets and differentially expressed genes.")
                 (("/usr/include/eigen3")
                  (string-append #$(this-package-input "eigen")
                                 "/include/eigen3"))))))))
-    (inputs (list eigen openbabel))
-    (propagated-inputs (list r-bh r-biocgenerics r-rcpp r-zlibbioc))
+    (inputs (list eigen openbabel zlib))
+    (propagated-inputs (list r-bh r-biocgenerics r-rcpp))
     (native-inputs (list pkg-config r-knitr r-runit))
     (home-page "https://github.com/girke-lab/ChemmineOB")
     (synopsis "R interface to a subset of OpenBabel functionalities")
