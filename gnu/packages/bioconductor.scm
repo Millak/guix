@@ -15046,13 +15046,13 @@ R, enabling interactive analysis and visualization of genome-scale data.")
 (define-public r-variantannotation
   (package
     (name "r-variantannotation")
-    (version "1.54.1")
+    (version "1.56.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "VariantAnnotation" version))
               (sha256
                (base32
-                "0w4k79azyb3s8m1spcmqjmzx3ig9mnzv5vnlcfaxk0p8z0ahzxfr"))))
+                "008saw81bnzdyglysqcbmp745k8pxgx3ng7hkpqdry773vf3xfn8"))))
     (properties
      `((upstream-name . "VariantAnnotation")
        (updater-ignored-native-inputs
@@ -15076,8 +15076,8 @@ R, enabling interactive analysis and visualization of genome-scale data.")
            r-biocgenerics
            r-biostrings
            r-bsgenome
+           r-curl
            r-dbi
-           r-genomeinfodb
            r-genomicfeatures
            r-genomicranges
            r-iranges
@@ -15086,6 +15086,7 @@ R, enabling interactive analysis and visualization of genome-scale data.")
            r-rsamtools
            r-rtracklayer
            r-s4vectors
+           r-seqinfo
            r-summarizedexperiment
            r-xvector))
     (native-inputs (list r-bsgenome-hsapiens-ucsc-hg19
