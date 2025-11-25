@@ -8919,13 +8919,13 @@ analysis.")
 (define-public r-champ
   (package
     (name "r-champ")
-    (version "2.38.0")
+    (version "2.40.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ChAMP" version))
               (sha256
                (base32
-                "1dza1kv7s7zjw56shr6bi79vqziabihad6qjrf92p24p0yzzfwsl"))))
+                "151q3702xfll347y9yfbslcagd6idagk69jv69vd3yqzwacg58w2"))))
     (properties `((upstream-name . "ChAMP")))
     (build-system r-build-system)
     (propagated-inputs
@@ -8949,7 +8949,6 @@ analysis.")
            r-illuminaio
            r-impute
            r-isva
-           r-kpmt
            r-limma
            r-marray
            r-matrixstats
