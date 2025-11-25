@@ -5134,19 +5134,21 @@ transforms idiomatic python function calls to well-formed SQL queries.")
 (define-public python-pypika
   (package
     (name "python-pypika")
-    (version "0.47.6")
+    (version "0.49.0")
     (source
-     (origin (method git-fetch)
-             (uri (git-reference
-                   (url "https://github.com/kayak/pypika")
-                   (commit (string-append "v" version))))
-             (file-name (git-file-name name version))
-             (sha256
-              (base32
-               "001pg36sw9a36zdd1kccbymcxndphjcjbbrsy6ri7ng8h4dgz549"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kayak/pypika")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nxm2cxq9sx43g57qxw7kzy8lsl5svq659r3mhxpa9vcbxrjrb1d"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-parameterized))
+     (list python-parameterized
+           python-pytest
+           python-setuptools))
     (home-page "https://github.com/kayak/pypika")
     (synopsis "SQL query builder API for Python")
     (description
