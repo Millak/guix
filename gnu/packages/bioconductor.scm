@@ -28131,14 +28131,14 @@ the Bioconductor project.")
 (define-public r-biodb
   (package
     (name "r-biodb")
-    (version "1.16.0")
+    (version "1.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biodb" version))
        (sha256
         (base32
-         "1xja9fl4yskqj2b51smddnpqgzi5i3w4ap18rwlpw9ci07rafyk5"))))
+         "0462420y1pz1h09kd3bgwz9jazaqd4yzwz5815x438lfsdj5vxvv"))))
     (properties `((upstream-name . "biodb")))
     (build-system r-build-system)
     ;; 83 tests fail; 1025 pass.  Some of the failing tests attempt to
@@ -28147,9 +28147,8 @@ the Bioconductor project.")
     ;; all.
     (arguments (list #:tests? #false))
     (propagated-inputs
-     (list r-biocfilecache
-           r-chk
-           r-git2r
+     (list r-chk
+           r-fscache
            r-jsonlite
            r-lgr
            r-lifecycle
@@ -28159,8 +28158,9 @@ the Bioconductor project.")
            r-r6
            r-rappdirs
            r-rcpp
-           r-rcurl
            r-rsqlite
+           r-sched
+           r-sqlq
            r-stringr
            r-testthat
            r-withr
