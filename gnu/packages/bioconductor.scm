@@ -12514,13 +12514,13 @@ chromosome.  Both tumor-normal paired and tumor-only analyses are supported.")
 (define-public r-psmatch
   (package
     (name "r-psmatch")
-    (version "1.12.0")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "PSMatch" version))
        (sha256
-        (base32 "1nz75m19g6jpvpm8ajx4hdyr03kg9h6yip5w4mjrnagyww4ksbkb"))))
+        (base32 "021axxxc4590m350mcs14glyygzsy4m7x6zg3isfxn1rhsva351r"))))
     (properties
      '((upstream-name . "PSMatch")
        (updater-extra-native-inputs . ("r-mzid" "r-mzr"))))
