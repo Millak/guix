@@ -7028,13 +7028,13 @@ bases such as COSMIC.")
 (define-public r-degreport
   (package
     (name "r-degreport")
-    (version "1.44.0")
+    (version "1.46.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "DEGreport" version))
               (sha256
                (base32
-                "142h3kswqr8v5mcsj35v094cq3vgx2p0019v3nmycmsxidfw7p59"))
+                "0hy8g1v296pjvvgczxkflxhza66fj4x265vljfqsa91zljwcr9lr"))
               (snippet
                '(delete-file "docs/jquery.sticky-kit.min.js"))))
     (properties `((upstream-name . "DEGreport")))
