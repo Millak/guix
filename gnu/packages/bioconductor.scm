@@ -6572,14 +6572,14 @@ offers nice visualization of methyl-circle plots.")
 (define-public r-dearseq
   (package
     (name "r-dearseq")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "dearseq" version))
        (sha256
         (base32
-         "0as6dwgrxqshyid36435njkjvcjdasfrbl4lxgdm7yg930qr5al2"))))
+         "04a4ifz73bz0ivqirwzcr1aqfwbm7k63d9qic26n418xrdk9liwz"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-compquadform
