@@ -11607,14 +11607,14 @@ throughput genetic sequencing data sets using regression methods.")
 (define-public r-muscat
   (package
     (name "r-muscat")
-    (version "1.22.0")
+    (version "1.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "muscat" version))
        (sha256
         (base32
-         "1gbh93xb82k16wjwavpf8bfzb5fy5i4rpq5a174cjzi9idndjsra"))))
+         "0nv0qrw3cvzf6j4li2ln4xw2afdlzlpy7fn5b9cpf9g8cyn6qcqj"))))
     (properties `((upstream-name . "muscat")))
     (build-system r-build-system)
     (propagated-inputs
@@ -11627,6 +11627,7 @@ throughput genetic sequencing data sets using regression methods.")
            r-edger
            r-ggplot2
            r-glmmtmb
+           r-ihw
            r-limma
            r-lme4
            r-lmertest
@@ -11642,8 +11643,7 @@ throughput genetic sequencing data sets using regression methods.")
            r-scuttle
            r-singlecellexperiment
            r-summarizedexperiment
-           r-variancepartition
-           r-viridis))
+           r-variancepartition))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/HelenaLC/muscat")
     (synopsis "Multi-sample multi-group scRNA-seq data analysis tools")
