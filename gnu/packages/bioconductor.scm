@@ -9800,13 +9800,13 @@ and visualize the results.")
 (define-public r-genomation
   (package
     (name "r-genomation")
-    (version "1.40.1")
+    (version "1.42.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "genomation" version))
               (sha256
                (base32
-                "1rjxh2vwkiadqprsn6d67nd3nllxy2f5g0xakxnfv6p4ry8fccfs"))))
+                "1v0zq82cg4vixmsa4plcjf0zp1zvw1m4g54micazkzjkyxsfcfvh"))))
     (properties
      '((updater-extra-native-inputs . ("r-runit"))))
     (build-system r-build-system)
@@ -9814,7 +9814,6 @@ and visualize the results.")
      (list r-biostrings
            r-bsgenome
            r-data-table
-           r-genomeinfodb
            r-genomicalignments
            r-genomicranges
            r-ggplot2
@@ -9830,6 +9829,7 @@ and visualize the results.")
            r-rsamtools
            r-rtracklayer
            r-s4vectors
+           r-seqinfo
            r-seqpattern))
     (native-inputs
      (list r-knitr r-runit))
