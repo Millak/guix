@@ -10634,13 +10634,13 @@ of other R packages who wish to make use of HTSlib.")
 (define-public r-rnbeads
   (package
     (name "r-rnbeads")
-    (version "2.26.0")
+    (version "2.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RnBeads" version))
        (sha256
-        (base32 "15vp5c40g1xlqvbwivc9zgiqm9ra5capbj37xpk0kjn8vl0qwa9x"))
+        (base32 "00vfljydr8f9y1d4vh08v2ziwyr7gb36kqzc5xc0nb3f2w66f80d"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "inst/bin"))))
@@ -10682,6 +10682,7 @@ of other R packages who wish to make use of HTSlib.")
            r-matrixstats
            r-methylumi
            r-plyr
+           r-reshape2
            r-s4vectors))
     (inputs (list kentutils))
     (native-inputs
