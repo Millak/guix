@@ -18659,13 +18659,13 @@ methylation arrays.")
 (define-public r-missmethyl
   (package
     (name "r-missmethyl")
-    (version "1.42.0")
+    (version "1.44.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "missMethyl" version))
               (sha256
                (base32
-                "10sb3800dvic1nhan3g3gsmhqa4mbk22fwiyz08gq97bka4g3adp"))))
+                "1kdy34wvvdvcjxxp0jkj3c54g14pi5qnq3vzs8ywxinf2a45vyiy"))))
     (properties `((upstream-name . "missMethyl")))
     (build-system r-build-system)
     (propagated-inputs
@@ -18673,6 +18673,7 @@ methylation arrays.")
            r-biasedurn
            r-biobase
            r-biocgenerics
+           r-genomeinfodb
            r-genomicranges
            r-go-db
            r-illuminahumanmethylation450kanno-ilmn12-hg19
