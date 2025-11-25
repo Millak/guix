@@ -24849,14 +24849,14 @@ analytics on packages.")
 (define-public r-biocset
   (package
     (name "r-biocset")
-    (version "1.22.0")
+    (version "1.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocSet" version))
        (sha256
         (base32
-         "1lnk8j22v75vr5wq501976i2ny43jqd3ixwk4yfrb531acvz2yd7"))))
+         "06mjk88gm562rmnzb3bj56s5cc4griwlisvv5x4f3av9xlks7mam"))))
     (properties
      '((upstream-name . "BiocSet")
        (updater-extra-native-inputs . ("r-gseabase"))))
