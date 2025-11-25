@@ -27523,14 +27523,14 @@ real numbers.")
 (define-public r-bgeecall
   (package
     (name "r-bgeecall")
-    (version "1.24.0")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BgeeCall" version))
        (sha256
         (base32
-         "0fjqwnaq26dzca4n3d7nsq8psim2k8vq6l6gdz11psf805k60hdl"))))
+         "1ql6id4l1qchavywbarj0c5vc8j7ars34br9wb4s66is68bb688p"))))
     (properties
      '((upstream-name . "BgeeCall")
        (updater-extra-propagated-inputs . ("kallisto"))))
@@ -27539,16 +27539,26 @@ real numbers.")
     (build-system r-build-system)
     (propagated-inputs
      (list kallisto
-           r-biomart
+           r-annotationdbi
            r-biostrings
+           r-curl
            r-data-table
            r-dplyr
            r-genomicfeatures
+           r-ggplot2
+           r-iranges
            r-jsonlite
+           r-rcurl
+           r-readr
            r-rhdf5
            r-rslurm
+           r-rsqlite
            r-rtracklayer
+           r-scales
            r-sjmisc
+           r-sjmisc
+           r-spatstat-univar
+           r-stringr
            r-txdbmaker
            r-tximport))
     (native-inputs (list r-annotationhub r-httr r-knitr r-testthat))
