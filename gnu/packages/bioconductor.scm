@@ -17112,14 +17112,14 @@ workflows.")
 (define-public r-treeio
   (package
     (name "r-treeio")
-    (version "1.32.0")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "treeio" version))
        (sha256
         (base32
-         "1fcr47cj4xqdscc6riyffw5a60iz5hrz87v0ajpi3nmbiab2xjpg"))))
+         "1hm8c1znf29cmprlsyfqaks56qqq034kmvnlfvb5x4r5b7drccqp"))))
     (properties
      '((upstream-name . "treeio")
        ;; Avoid dependency cycle.
