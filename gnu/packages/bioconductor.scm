@@ -21405,14 +21405,14 @@ index.")
 (define-public r-quasr
   (package
     (name "r-quasr")
-    (version "1.48.0")
+    (version "1.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "QuasR" version))
        (sha256
         (base32
-         "0qgc9zfw58d3lp1qyyl4pj9vmd2k2k2614dyg860ynwm38f4wrsy"))))
+         "145wzdnhjhi0ys8nlsasjqw57f693yf2iichd9045s52x5zjny4h"))))
     (properties
      `((upstream-name . "QuasR")
        (updater-extra-native-inputs . ("r-rhisat2"))))
@@ -21424,7 +21424,6 @@ index.")
            r-biocparallel
            r-biostrings
            r-bsgenome
-           r-genomeinfodb
            r-genomicfeatures
            r-genomicfiles
            r-genomicranges
@@ -21434,6 +21433,7 @@ index.")
            r-rsamtools
            r-rtracklayer
            r-s4vectors
+           r-seqinfo
            r-shortread
            r-txdbmaker))
     (native-inputs
