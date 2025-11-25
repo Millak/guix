@@ -12690,13 +12690,13 @@ the graph algorithms contained in the Boost library.")
 (define-public r-rcas
   (package
     (name "r-rcas")
-    (version "1.34.0")
+    (version "1.36.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "RCAS" version))
               (sha256
                (base32
-                "1p38q8qdbsy8aylv4m07srjs2zzblgmnyal55dd1bi7pxq2ifl2y"))))
+                "1jrwmggylbgq9k7y9b8l176pk5b2r2ggcs2psf2bl2p96wczj4jb"))))
     (properties `((upstream-name . "RCAS")))
     (build-system r-build-system)
     (arguments
