@@ -11134,13 +11134,13 @@ experiments.")
 (define-public r-maser
   (package
     (name "r-maser")
-    (version "1.26.0")
+    (version "1.28.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "maser" version))
               (sha256
                (base32
-                "1qfiyjgjixw5iv077nk1c6biwwxj7jfykqvvn295gf69qahsvy4g"))))
+                "0h41vajx7dvacp62bl8fab9zmv6fhnzjwdprvh0lrg26j7zivk9i"))))
     (properties `((upstream-name . "maser")))
     (build-system r-build-system)
     (propagated-inputs
@@ -11148,13 +11148,13 @@ experiments.")
            r-data-table
            r-dplyr
            r-dt
-           r-genomeinfodb
            r-genomicranges
            r-ggplot2
            r-gviz
            r-iranges
            r-reshape2
-           r-rtracklayer))
+           r-rtracklayer
+           r-seqinfo))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/DiogoVeiga/maser")
     (synopsis "Mapping alternative splicing events to proteins")
