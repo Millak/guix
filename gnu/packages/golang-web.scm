@@ -16712,6 +16712,60 @@ support arbitrary use cases, but instead specifically focuses on supporting
 Kubernetes components which are using nftables.")
     (license license:asl2.0)))
 
+(define-public go-storj-io-drpc
+  (package
+    (name "go-storj-io-drpc")
+    (version "0.0.34")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/storj/drpc")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14lqij58nj8m84mbad1nv30s2v33l2zbw3nvc903f7bl43rgwdl6"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - storj.io/drpc/internal/backcompat
+            ;; - storj.io/drpc/internal/backcompat/newservice
+            ;; - storj.io/drpc/internal/backcompat/newservicedefs
+            ;; - storj.io/drpc/internal/backcompat/oldservice
+            ;; - storj.io/drpc/internal/backcompat/oldservicedefs
+            ;; - storj.io/drpc/internal/backcompat/servicedefs
+            ;; - storj.io/drpc/internal/grpccompat
+            ;; - storj.io/drpc/internal/integration
+            ;; - storj.io/drpc/internal/twirpcompat
+            (for-each delete-file-recursively
+                      (list "internal/backcompat"
+                            "internal/grpccompat"
+                            "internal/integration"
+                            "internal/twirpcompat"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "storj.io/drpc"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "examples")))))))
+    (native-inputs
+     (list go-github-com-zeebo-assert))
+    (propagated-inputs
+     (list go-google-golang-org-protobuf
+           go-github-com-zeebo-errs))
+    (home-page "https://storj.io/drpc")
+    (synopsis "Lightweight, drop-in replacement for gRPC")
+    (description
+     "This package is a light, drop-in replacement for gRPC, a Remote
+Procedure Call (RPC) framework.")
+    (license license:expat)))
+
 ;;;
 ;;; Executables:
 ;;;
@@ -16885,6 +16939,24 @@ go-github-com-tdewolff-minify-v2 source.")))
      "TLSRouter is a TLS proxy that routes connections to backends based on
 the TLS @acronym{SNI, Server Name Indication} of the TLS handshake.  It
 carries no encryption keys and cannot decode the traffic that it proxies.")))
+
+(define-public protoc-gen-go-drpc
+  (package/inherit go-storj-io-drpc
+    (name "protoc-gen-go-drpc")
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments go-storj-io-drpc)
+       ((#:install-source? _ #t) #f)
+       ((#:skip-build? _ #t) #f)
+       ((#:tests? _ #t) #f)
+       ((#:import-path _) "storj.io/drpc/cmd/protoc-gen-go-drpc")
+       ((#:unpack-path _ "") "storj.io/drpc")
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'remove-examples)))))
+    (native-inputs (package-propagated-inputs go-storj-io-drpc))
+    (propagated-inputs '())
+    (inputs '())))
 
 (define-public protoc-gen-go-grpc
   (package/inherit go-google-golang-org-grpc-cmd-protoc-gen-go-grpc
