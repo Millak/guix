@@ -13832,13 +13832,13 @@ reference point and sorted by a user defined feature.")
 (define-public r-sesame
   (package
     (name "r-sesame")
-    (version "1.26.0")
+    (version "1.28.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "sesame" version))
               (sha256
                (base32
-                "0kc5xs0cawxvp6qfrnppkaqx8s52j04cx6cypp05gykq8pyywpyn"))))
+                "0268p9yvzsnrjjbmbyqzhz9vnc6227200639kyn7yi2daa6fkzav"))))
     (properties `((upstream-name . "sesame")))
     (build-system r-build-system)
     ;; Tests use ExperimentHub, so needs Internet access.
@@ -13846,7 +13846,6 @@ reference point and sorted by a user defined feature.")
     (propagated-inputs (list r-biocfilecache
                              r-biocparallel
                              r-dplyr
-                             r-genomeinfodb
                              r-genomicranges
                              r-ggplot2
                              r-iranges
@@ -13855,6 +13854,7 @@ reference point and sorted by a user defined feature.")
                              r-readr
                              r-reshape2
                              r-s4vectors
+                             r-seqinfo
                              r-sesamedata
                              r-stringr
                              r-summarizedexperiment
