@@ -25498,23 +25498,23 @@ memory-efficient as possible.")
 (define-public r-hitc
   (package
     (name "r-hitc")
-    (version "1.52.0")
+    (version "1.54.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "HiTC" version))
               (sha256
                (base32
-                "0y0srz1w6yp9dkk0zyij7lq18413651z7svv9ydfyimr8gqjb2a9"))))
+                "0jnqp4n0yzrvfbrs29hz8spyafqcz4c1r7iym089m260l5l93y3n"))))
     (properties `((upstream-name . "HiTC")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biostrings
-           r-genomeinfodb
            r-genomicranges
            r-iranges
            r-matrix
            r-rcolorbrewer
-           r-rtracklayer))
+           r-rtracklayer
+           r-seqinfo))
     (home-page "https://bioconductor.org/packages/HiTC")
     (synopsis "High throughput chromosome conformation capture analysis")
     (description
