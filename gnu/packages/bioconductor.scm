@@ -13995,13 +13995,13 @@ less than 2bp on both sides of indel region.")
 (define-public r-simona
   (package
     (name "r-simona")
-    (version "1.6.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "simona" version))
        (sha256
-        (base32 "0d6zyjcrszyavpms883hjh68zwyq5hr0jh3lnhcy2zzkzlz857fd"))))
+        (base32 "0fv5qqlchbij486w2j7r2yndj2c497f4id0skq3r8pp735lgc84j"))))
     (properties
      `((upstream-name . "simona")
        (updater-extra-native-inputs
@@ -14010,6 +14010,7 @@ less than 2bp on both sides of indel region.")
     (inputs (list openjdk perl))
     (propagated-inputs (list r-circlize
                              r-complexheatmap
+                             r-fastmatch
                              r-getoptlong
                              r-globaloptions
                              r-igraph
