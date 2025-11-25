@@ -5947,6 +5947,44 @@ estimates for each correlation element.")
                 "1n2rj50gwqmqj5gs5d3asd3gcs0iv1rr1zh12s55lcsdxyfgp1ar"))))
     (properties `((upstream-name . "barcodetrackR")))
     (build-system r-build-system)
+    ;; These 13 tests fail with this error:
+    ;;   Expected `barcodetrackR::...` to have type "list".
+    ;;   Actual type: "object"
+    ;; These errors also exist in the current development version 1.19.0 for
+    ;; Bioconductor 3.23.
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             (with-directory-excursion "tests/testthat"
+               (substitute* "test-clonal-bias-functions.R"
+                 ((".*bias_(histogram|ridge_plot|lineplot) works.*" m)
+                  (string-append m "skip('guix')\n")))
+               (substitute* "test-clonal-diversity-functions.R"
+                 ((".*rank_abundance works.*" m)
+                  (string-append m "skip('guix')\n"))
+                 ((".*clonal_diversity works.*" m)
+                  (string-append m "skip('guix')\n"))
+                 ((".*clonal_count works.*" m)
+                  (string-append m "skip('guix')\n"))
+                 ((".*mds_plot works.*" m)
+                  (string-append m "skip('guix')\n")))
+               (substitute* "test-clonal-pattern-functions.R"
+                 ((".*barcode_ggheatmap works.*" m)
+                  (string-append m "skip('guix')\n"))
+                 ((".*barcode_ggheatmap_stat works.*" m)
+                  (string-append m "skip('guix')\n"))
+                 ((".*barcode_binary_heatmap works.*" m)
+                  (string-append m "skip('guix')\n"))
+                 ((".*clonal_contribution works.*" m)
+                  (string-append m "skip('guix')\n")))
+               (substitute* "test-shared-clonality-functions.R"
+                 ((".*scatter_plot works.*" m)
+                  (string-append m "skip('guix')\n"))
+                 ((".*cor_plot works.*" m)
+                  (string-append m "skip('guix')\n")))))))))
     (propagated-inputs
      (list r-circlize
            r-cowplot
