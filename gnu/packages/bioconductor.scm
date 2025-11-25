@@ -28917,14 +28917,14 @@ embeddings and functions to build new reference.")
 (define-public r-tximeta
   (package
     (name "r-tximeta")
-    (version "1.26.1")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "tximeta" version))
        (sha256
         (base32
-         "0za6x4il9qqyrb0rf57vb2qahqdra9snfql6canmpw2ixwhhgq6n"))))
+         "0rpka083c8gw3crd1sp2vhlbk9rbyvnc6r5gnr55am73rp7dk3px"))))
     (properties `((upstream-name . "tximeta")))
     (build-system r-build-system)
     ;; Two tests fail because data files are not included.
@@ -28935,19 +28935,19 @@ embeddings and functions to build new reference.")
            r-biocfilecache
            r-biostrings
            r-ensembldb
-           r-genomeinfodb
            r-genomicfeatures
            r-genomicranges
            r-iranges
            r-jsonlite
            r-matrix
            r-s4vectors
+           r-seqinfo
            r-summarizedexperiment
            r-tibble
            r-txdbmaker
            r-tximport))
     (native-inputs
-     (list r-edger r-knitr r-org-dm-eg-db r-testthat))
+     (list r-edger r-knitr r-org-dm-eg-db r-rmarkdown r-testthat))
     (home-page "https://github.com/mikelove/tximeta")
     (synopsis "Transcript quantification import with automatic metadata")
     (description
