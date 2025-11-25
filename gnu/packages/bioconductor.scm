@@ -27275,19 +27275,19 @@ whole-genome and whole-exome variant data.")
 (define-public r-snpstats
   (package
     (name "r-snpstats")
-    (version "1.58.0")
+    (version "1.60.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "snpStats" version))
        (sha256
         (base32
-         "04p7dsyd1s9nxzg0fjwvxq7r1k94ncksbn0kk7s0ja8qq6lf8zgz"))))
+         "0fyh1qzhfkiqdksxcwpr76mmlk13c6mi0m27kcdr5frb77kv1sq9"))))
     (properties `((upstream-name . "snpStats")))
     (build-system r-build-system)
     (inputs (list zlib))
     (propagated-inputs
-     (list r-biocgenerics r-matrix r-survival r-zlibbioc))
+     (list r-biocgenerics r-matrix r-survival))
     (home-page "https://bioconductor.org/packages/snpStats")
     (synopsis "Methods for SNP association studies")
     (description
