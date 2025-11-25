@@ -1885,6 +1885,7 @@ is added to the OS specified in CONFIG."
   (let ((image       (hurd-vm-configuration-image config))
         (qemu        (hurd-vm-configuration-qemu config))
         (memory-size (hurd-vm-configuration-memory-size config))
+        (type        (hurd-vm-configuration-type config))
         (options     (hurd-vm-configuration-options config))
         (id          (hurd-vm-configuration-id config))
         (net-options (hurd-vm-configuration-net-options config))
@@ -1893,8 +1894,14 @@ is added to the OS specified in CONFIG."
     (define vm-command
       ;; XXX: Use the x86_64 emulator instead of the i386 one to work around
       ;; "Bad ram pointer" issues: <https://issues.guix.gnu.org/66053>.
+
+      ;; The default qemu machine has problems with high memory on x86_64-gnu
+      ;; https://lists.gnu.org/archive/html/bug-hurd/2025-11/msg00025.html
       #~(append (list #$(file-append qemu "/bin/qemu-system-x86_64")
                       "-m" (number->string #$memory-size)
+                      #$@(if (eq? type 'hurd64-qcow2)
+                             '("-M" "q35")
+                             '())
                       #$@net-options
                       #$@options
                       "--hda" #+(system-image image)
