@@ -12837,14 +12837,14 @@ described at
 (define-public r-regioner
   (package
     (name "r-regioner")
-    (version "1.39.0")
+    (version "1.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "regioneR" version))
        (sha256
         (base32
-         "0fq8rcibsmh7vicw0p567w4847mpgj5wcc4gcsphym02hzl5ppqb"))))
+         "1s96qn8b4g4bk52d2jpyk1m4nw87ay2zhy6xf4scaqs4gd227196"))))
     (properties `((upstream-name . "regioneR")))
     (build-system r-build-system)
     (arguments
@@ -12865,7 +12865,8 @@ described at
            r-iranges
            r-memoise
            r-rtracklayer
-           r-s4vectors))
+           r-s4vectors
+           r-seqinfo))
     (native-inputs
      (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/regioneR/")
