@@ -16766,6 +16766,58 @@ Kubernetes components which are using nftables.")
 Procedure Call (RPC) framework.")
     (license license:expat)))
 
+(define-public go-storj-io-eventkit
+  (package
+    (name "go-storj-io-eventkit")
+    (version "0.0.0-20250410172343-61f26d3de156")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/storj/eventkit")
+             (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19vliv2ksw8wi382zfd5ak5zpm3yii2ivxhq5gk90m9x0swdg157"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "storj.io/eventkit"
+      #:test-subdirs
+      ;; XXX: Remove when all dependencies are packaged.
+      #~(list "."
+              "destination/..."
+              "eventkitd/private/delimited/..."
+              "eventkitd/private/protostream/..."
+              "eventkitd/private/resumablecompressed/...")))
+    (native-inputs
+     ;; For CLI tools.
+     (list ;; go-github-com-elek-bubbles
+           go-github-com-charmbracelet-bubbletea
+           go-github-com-charmbracelet-lipgloss
+           go-github-com-spf13-cobra
+           go-github-com-spf13-viper
+           go-github-com-zeebo-errs-v2))
+    (propagated-inputs
+     (list ;; go-cloud-google-com-go-bigquery ; 100+ go-cloud-google-com-*
+           go-github-com-google-gopacket
+           go-github-com-pkg-errors
+           go-github-com-spacemonkeygo-monkit-v3
+           go-github-com-spf13-cobra
+           go-github-com-spf13-viper
+           go-github-com-stretchr-testify
+           go-go-uber-org-zap
+           go-golang-org-x-sync
+           go-google-golang-org-api
+           go-google-golang-org-protobuf
+           go-storj-io-picobuf))
+    (home-page "https://storj.io/eventkit")
+    (synopsis "Report multidimensional events over UDP")
+    (description
+     "This package provides a Go library for reporting multidimensional
+events over UDP.")
+    (license license:expat)))
+
 (define-public go-storj-io-picobuf
   (package
     (name "go-storj-io-picobuf")
