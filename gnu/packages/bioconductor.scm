@@ -1326,13 +1326,13 @@ methylation array).")
 (define-public r-org-ce-eg-db
   (package
     (name "r-org-ce-eg-db")
-    (version "3.21.0")
+    (version "3.22.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "org.Ce.eg.db" version 'annotation))
               (sha256
                (base32
-                "0lqsna178pyy8fslkx4n9z5mmxd95m50w1b2gm96ikjsldgng75k"))))
+                "1mizfwq16mynjhx1s6y8f5df08k5p0vh2rg6b52v21yl4bksma05"))))
     (properties
      `((upstream-name . "org.Ce.eg.db")
        (updater-extra-native-inputs . ("r-runit"))))
