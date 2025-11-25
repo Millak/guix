@@ -14728,13 +14728,13 @@ involving two separate genomic loci encoded as GRanges objects.")
 (define-public r-summarizedexperiment
   (package
     (name "r-summarizedexperiment")
-    (version "1.38.1")
+    (version "1.40.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "SummarizedExperiment" version))
               (sha256
                (base32
-                "1f48vjcfz3cb1kdsbwjik32z9bbkdmlmlpx895p1v875dxwwlp70"))))
+                "1xmlfrdhzlbsd23warfdm5iscm61r29jxridv8krv16b95l4axk9"))))
     (properties
      `((upstream-name . "SummarizedExperiment")
        (updater-extra-native-inputs . ("r-runit"))))
@@ -14753,13 +14753,13 @@ involving two separate genomic loci encoded as GRanges objects.")
      (list r-biobase
            r-biocgenerics
            r-delayedarray
-           r-genomeinfodb
            r-genomicranges
            r-iranges
            r-matrix
            r-matrixgenerics
            r-s4arrays
-           r-s4vectors))
+           r-s4vectors
+           r-seqinfo))
     (native-inputs
      (list r-digest r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/SummarizedExperiment")
