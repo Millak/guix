@@ -9880,13 +9880,13 @@ names in their natural, rather than lexicographic, order.")
 (define-public r-genomicalignments
   (package
     (name "r-genomicalignments")
-    (version "1.44.0")
+    (version "1.46.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicAlignments" version))
               (sha256
                (base32
-                "048j2jr1jpgjckl18wx35q518ydv8b2bmdiyiaxjc65283b77614"))))
+                "18s65wfkb568fiqqxbg50qpjv2x1ryrj3zrmafqqsp7xv6da6zzj"))))
     (properties
      `((upstream-name . "GenomicAlignments")
        (updater-extra-native-inputs . ("r-runit"))
@@ -9904,11 +9904,12 @@ names in their natural, rather than lexicographic, order.")
      (list r-biocgenerics
            r-biocparallel
            r-biostrings
-           r-genomeinfodb
+           r-cigarillo
            r-genomicranges
            r-iranges
            r-rsamtools
            r-s4vectors
+           r-seqinfo
            r-summarizedexperiment))
     (native-inputs (list r-knitr
                          r-pasillabamsubset
