@@ -21,6 +21,7 @@
 ;;; Copyright © 2022, 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2024 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;; Copyright © 2025 Aiden Isik <aidenisik+git@member.fsf.org>
 ;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
@@ -98,6 +99,40 @@
   #:use-module (gnu packages unicode)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xml))
+
+(define-public acr
+  (package
+    (name "acr")
+    (version "2.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/radareorg/acr")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1qd7p50b9gkh2ihf7gs6xpdkb5jk8frg90ajqlw1pbza8735f9q1"))
+       (snippet
+        #~(begin
+            (delete-file "configure")))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                     ; No tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'bootstrap)
+          (add-after 'patch-source-shebangs 'bootstrap-after-patch-source-shebangs
+            (assoc-ref %standard-phases 'bootstrap)))))
+    (synopsis "Autoconf replacement written in pure Bash")
+    (description
+     "@acronym{ACR, Autoconf Replacement} tries to replace autoconf
+functionality generating a full-compatible configure script, but relying on
+Bourne shell script instead of m4.")
+    (home-page "https://github.com/radareorg/acr")
+    (license license:gpl2)))
 
 (define-public bam
   (package
