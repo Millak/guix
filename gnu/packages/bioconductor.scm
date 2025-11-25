@@ -3269,7 +3269,7 @@ cultures from 4 patients at 2 time points over 3 conditions (DPN, OHT and contro
 (define-public r-rcistarget-hg19-motifdbs-cisbponly-500bp
   (package
     (name "r-rcistarget-hg19-motifdbs-cisbponly-500bp")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
@@ -3277,7 +3277,7 @@ cultures from 4 patients at 2 time points over 3 conditions (DPN, OHT and contro
                               version
                               'experiment))
        (sha256
-        (base32 "1kh0av34mnds1rwh1lr1c3jc5zgyj50h72rzqhgr2zn19yb682qr"))))
+        (base32 "0cnrbmlqpqwnpr13df6mqsjm7q9vfhh385dr8qrci9hks95d3xsy"))))
     (properties `((upstream-name . "RcisTarget.hg19.motifDBs.cisbpOnly.500bp")))
     (build-system r-build-system)
     (propagated-inputs (list r-data-table))
