@@ -11087,13 +11087,13 @@ datasets (coinertia analysis).")
 (define-public r-makecdfenv
   (package
     (name "r-makecdfenv")
-    (version "1.84.0")
+    (version "1.86.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "makecdfenv" version))
               (sha256
                (base32
-                "1wjlqh7q46slgnpzvij6gajgkcp4acqs146z365l22ywkm7b90q5"))))
+                "1sxx9986nv9bpwxp3gpxfbk7vagqig914cds12bfvjyfxwg49wfz"))))
     (properties `((upstream-name . "makecdfenv")))
     (build-system r-build-system)
     (inputs (list zlib))
