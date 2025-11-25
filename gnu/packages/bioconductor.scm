@@ -8829,13 +8829,13 @@ effort and encourages consistency.")
 (define-public r-bsgenome
   (package
     (name "r-bsgenome")
-    (version "1.76.0")
+    (version "1.78.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BSgenome" version))
               (sha256
                (base32
-                "0xlfznvccvk6ymnk41bsdif4pgkh90xpsq9c67rsjrza71cl31f0"))))
+                "05j4nd6n7g0a5jprn2sq2ki0fwzca4hj850gazr3xh6a461ggjgi"))))
     (properties
      `((upstream-name . "BSgenome")
        ;; Avoid cycles.
@@ -8848,13 +8848,13 @@ effort and encourages consistency.")
      (list r-biocgenerics
            r-biocio
            r-biostrings
-           r-genomeinfodb
            r-genomicranges
            r-iranges
            r-matrixstats
            r-rsamtools
            r-rtracklayer
            r-s4vectors
+           r-seqinfo
            r-xvector))
     (home-page "https://bioconductor.org/packages/BSgenome")
     (synopsis "Infrastructure for Biostrings-based genome data packages")
