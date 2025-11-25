@@ -8866,14 +8866,14 @@ genome data packages and support for efficient SNP representation.")
 (define-public r-category
   (package
     (name "r-category")
-    (version "2.74.0")
+    (version "2.76.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Category" version))
        (sha256
         (base32
-         "1faffkhi86gmnh0capmxh0gzw7vc3xy4gxnwnidz4fj3dbvcxahn"))))
+         "1awaxnmnzs260pl2lzvmbhds17347kjln11iwbpabisyrvx8gzb2"))))
     (properties
      `((upstream-name . "Category")
        (updater-ignored-native-inputs . ("r-gostats"))))
