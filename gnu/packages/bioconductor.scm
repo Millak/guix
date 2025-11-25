@@ -22672,14 +22672,14 @@ expression space.")
 (define-public r-cicero
   (package
     (name "r-cicero")
-    (version "1.26.0")
+    (version "1.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "cicero" version))
        (sha256
         (base32
-         "1vmmgvwscrag8dv5n4k70pdichfii11j2jiav3nv9l5pqby469na"))))
+         "1ibxynw77a8mqv9av7z828wcazjpm4sfp83hd412f2rmgkls895x"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertthat
