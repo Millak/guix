@@ -27046,20 +27046,17 @@ functionalities including parsing, graph operation, visualization and etc.")
 (define-public r-ldblock
   (package
     (name "r-ldblock")
-    (version "1.38.0")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ldblock" version))
        (sha256
         (base32
-         "00yrl7yrwbx7f18g1y0kvyp9wqf95yqfx0ajm3karz123q5q3kpm"))))
+         "1v47yvbcpcf9z06gfmjsmxrf06pn57fsbmjshq0ypg5p3c3jn81p"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biocgenerics
-           r-httr
-           r-matrix
-           r-rlang))
+     (list r-biocgenerics r-httr r-matrix r-rlang r-seqinfo))
     (native-inputs
      (list r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/ldblock")
