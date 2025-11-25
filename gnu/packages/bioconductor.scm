@@ -28241,14 +28241,14 @@ design.")
 (define-public r-biomvcclass
   (package
     (name "r-biomvcclass")
-    (version "1.76.0")
+    (version "1.78.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BioMVCClass" version))
        (sha256
         (base32
-         "03w97bix5xlb6v06ffmlj1nbyl11j6qrb1a54m7wdrvranmr7msl"))))
+         "0iiz1akgb43kwsk1s318m7scwirksvjbd9kkjv246rpnagwi3im4"))))
     (properties `((upstream-name . "BioMVCClass")))
     (build-system r-build-system)
     (propagated-inputs
