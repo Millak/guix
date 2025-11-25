@@ -27784,18 +27784,20 @@ input.")
 (define-public r-basilisk-utils
   (package
     (name "r-basilisk-utils")
-    (version "1.20.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "basilisk.utils" version))
        (sha256
         (base32
-         "12wfmyq2as6vfg94fnlw4hxi6y8gw45x27hbh99mkn496vqng575"))))
+         "1pqdkfg7jifl52ada9d70xhbhknm54g9wzxsnca0q9plgpiddmz9"))))
     (properties
      '((upstream-name . "basilisk.utils")
        (updater-ignored-native-inputs . ("r-expiry"))))
     (build-system r-build-system)
+    ;; 8 tests need Internet access to test that Conda can install software.
+    (arguments (list #:tests? #false))
     (propagated-inputs
      (list r-dir-expiry))
     (native-inputs (list r-knitr r-testthat))
