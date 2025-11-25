@@ -21832,13 +21832,13 @@ for manual execution.")
 (define-public r-flowai
   (package
     (name "r-flowai")
-    (version "1.38.0")
+    (version "1.40.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "flowAI" version))
               (sha256
                (base32
-                "1w28hcfychhws8s5vkv27zssyvngrsrflnqc12y7f895f3lp72s1"))))
+                "095410xm3zmbbp5sfwp581mhnndcsq4g325f4i0gka1ll5hqnwqm"))))
     (properties `((upstream-name . "flowAI")))
     (build-system r-build-system)
     (propagated-inputs
