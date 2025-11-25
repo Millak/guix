@@ -2110,7 +2110,7 @@ transmission protocol (SCTP) in a Go application.")
 (define-public httping
   (package
     (name "httping")
-    (version "2.9")
+    (version "4.4.0")
     (source
      (origin
        (method git-fetch)
@@ -2119,17 +2119,16 @@ transmission protocol (SCTP) in a Go application.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gbpirzih0zr93fm71scqjji9wwkfp64q8z36857blsngdfm6k38"))))
-    (build-system gnu-build-system)
+        (base32 "0jnxwwqcy52m7nm36h82ql3bgbzsima80ks8pqy952h4gkqbxy5a"))))
+    (build-system cmake-build-system)
     (arguments
-     (list #:make-flags
-           #~(list (string-append "CC=" #$(cc-for-target))
-                   (string-append "PREFIX=" #$output))
-           #:tests? #f))                ; no test suite
-    (native-inputs
-     (list gettext-minimal))
-    (inputs
-     (list fftw ncurses openssl))
+     (list
+      #:configure-flags
+      #~(list "-DUSE_SSL=ON" "-DUSE_TUI=ON" "-DUSE_FFTW3=ON"
+              "-DUSE_GETTEXT=ON")
+      #:tests? #f)) ;no test suite
+    (native-inputs (list gettext-minimal pkg-config))
+    (inputs (list fftw ncurses openssl))
     (home-page "https://www.vanheusden.com/httping/")
     (synopsis "Web server latency and throughput monitor")
     (description
@@ -2138,7 +2137,7 @@ HTTP(S) request, and receive the reply headers.  It is somewhat similar to
 @command{ping}, but can be used even in cases where ICMP traffic is blocked
 by firewalls or when you want to monitor the response time of the actual web
 application stack itself.")
-    (license license:gpl2)))        ; with permission to link with OpenSSL
+    (license license:agpl3)))        ; with permission to link with OpenSSL
 
 (define-public httpstat
   (package
