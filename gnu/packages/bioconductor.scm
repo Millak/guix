@@ -28642,14 +28642,14 @@ fragments by exact matching.")
 (define-public r-dmrseq
   (package
     (name "r-dmrseq")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "dmrseq" version))
        (sha256
         (base32
-         "0zqp8nn3qhw7ds5y34apy3cwi6mb2kj8ywkkml26m5jyc613hj9i"))))
+         "03a5my4a8dja3lnrdzng7554rfkymcvdgixibhx57hqkwwvj4qcj"))))
     (properties `((upstream-name . "dmrseq")))
     (build-system r-build-system)
     (propagated-inputs
@@ -28659,7 +28659,6 @@ fragments by exact matching.")
            r-bsseq
            r-bumphunter
            r-delayedmatrixstats
-           r-genomeinfodb
            r-genomicranges
            r-ggplot2
            r-iranges
@@ -28669,7 +28668,8 @@ fragments by exact matching.")
            r-outliers
            r-rcolorbrewer
            r-rtracklayer
-           r-s4vectors))
+           r-s4vectors
+           r-seqinfo))
     (native-inputs
      (list r-knitr))
     (home-page "https://bioconductor.org/packages/dmrseq")
