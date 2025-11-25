@@ -8980,16 +8980,16 @@ regions and to highlight copy number alterations.")
 (define-public r-chipseeker
   (package
     (name "r-chipseeker")
-    (version "1.44.0")
+    (version "1.46.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ChIPseeker" version))
               (sha256
                (base32
-                "1agxgvm78wvsirvgk3azqgdqa18k6li78h0zki2fzvmzw7qfzswm"))))
+                "1dzvqn4rdj2qdnjl8qr1vk74mky9li4xnljwk4ymbxv5d7dsrq15"))))
     (build-system r-build-system)
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-knitr r-testthat r-txdb-hsapiens-ucsc-hg38-knowngene))
     (propagated-inputs
      (list r-annotationdbi
            r-aplot
