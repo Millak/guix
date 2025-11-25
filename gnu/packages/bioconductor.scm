@@ -10021,18 +10021,19 @@ extracting the desired features in a convenient format.")
 (define-public r-genomicfiles
   (package
     (name "r-genomicfiles")
-    (version "1.44.1")
+    (version "1.46.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GenomicFiles" version))
        (sha256
         (base32
-         "1k18kjsg15iw3vcpjjd4w04qkv1vfwajbrs0qr2fdxxbwsqq83yn"))))
+         "0mw8h491i20lq94r4dd4ky7ivn7ci722g314rdaphm2dvknkrda7"))))
     (properties `((upstream-name . "GenomicFiles")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biocgenerics
+     (list r-biocbaseutils
+           r-biocgenerics
            r-biocparallel
            r-genomeinfodb
            r-genomicalignments
@@ -10042,6 +10043,7 @@ extracting the desired features in a convenient format.")
            r-rsamtools
            r-rtracklayer
            r-s4vectors
+           r-seqinfo
            r-summarizedexperiment
            r-variantannotation))
     (native-inputs (list r-knitr r-runit))
