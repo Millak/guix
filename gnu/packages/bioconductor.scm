@@ -11058,13 +11058,13 @@ of data exploration, normalization, and transformation methods.")
 (define-public r-made4
   (package
     (name "r-made4")
-    (version "1.82.0")
+    (version "1.84.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "made4" version))
               (sha256
                (base32
-                "0gzb8zw1npz04s5aihvnnch64ywgdfp1djxvy3a363kjl9wbiyrf"))))
+                "16lcqxwafjmsslydxn6jd4jyvapbky8alsqdnc7bh3lmlmz3kv8v"))))
     (properties `((upstream-name . "made4")))
     (build-system r-build-system)
     (propagated-inputs
