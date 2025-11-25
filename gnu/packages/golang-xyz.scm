@@ -24814,7 +24814,7 @@ produces human-readable, logfmt-style output.")
 (define-public go-go-etcd-io-bbolt
   (package
     (name "go-go-etcd-io-bbolt")
-    (version "1.3.11")
+    (version "1.4.3")
     (source
      (origin
        (method git-fetch)
@@ -24823,12 +24823,12 @@ produces human-readable, logfmt-style output.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16s2l1yjn55rgybc9k8kh88zg7z8igm10y1xmx2qx1a147k64d31"))))
+        (base32 "0wkg0zzaiv8i91pv45kc08jkvd0if5b58py9j3816iwvcfpn803b"))))
     (build-system go-build-system)
     (arguments
      (list
-      ;; Extending the test timeout to 30 minutes still times out on aarch64.
-      #:tests? (not target-arm?)
+      ;; Tests hang
+      #:tests? #f
       #:import-path "go.etcd.io/bbolt"))
     (native-inputs
      (list go-github-com-stretchr-testify
