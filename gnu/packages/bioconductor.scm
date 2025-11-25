@@ -17194,14 +17194,14 @@ data.")
 (define-public r-ggtree
   (package
     (name "r-ggtree")
-    (version "3.16.0")
+    (version "4.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ggtree" version))
        (sha256
         (base32
-         "06wvqh66c0gf4xc9c65qr75w0rl99aqc4c4hks55axzb5q84yg6s"))))
+         "0vk1l1jmw4acgmpmgcx0pz7j39yp391mba8q1xnc8rmlfw51qvxj"))))
     (properties `((upstream-name . "ggtree")))
     (build-system r-build-system)
     (propagated-inputs
@@ -17210,6 +17210,7 @@ data.")
            r-cli
            r-dplyr
            r-ggfun
+           r-ggiraph
            r-ggplot2
            r-magrittr
            r-purrr
