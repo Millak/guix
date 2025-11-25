@@ -16892,14 +16892,14 @@ accessibility for new Bioconductor users is hopefully increased.")
 (define-public r-inspect
   (package
     (name "r-inspect")
-    (version "1.38.0")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "INSPEcT" version))
        (sha256
         (base32
-         "0k67dmifjpy1csbrcyhibsdixppwwil62rczjxggwrqdskpph1zy"))))
+         "1wfnwrgnpsrvavqdbvj57llgjf0j7yljpyhlbxbp0gbmxs9i1bnf"))))
     (properties `((upstream-name . "INSPEcT")))
     (build-system r-build-system)
     (propagated-inputs
@@ -16908,7 +16908,6 @@ accessibility for new Bioconductor users is hopefully increased.")
            r-biocparallel
            r-deseq2
            r-desolve
-           r-genomeinfodb
            r-genomicalignments
            r-genomicfeatures
            r-genomicranges
@@ -16921,6 +16920,7 @@ accessibility for new Bioconductor users is hopefully increased.")
            r-rsamtools
            r-rtracklayer
            r-s4vectors
+           r-seqinfo
            r-shiny
            r-summarizedexperiment
            r-txdb-mmusculus-ucsc-mm9-knowngene))
