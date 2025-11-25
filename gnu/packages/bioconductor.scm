@@ -592,14 +592,14 @@ analysis.")
 (define-public r-org-bt-eg-db
   (package
     (name "r-org-bt-eg-db")
-    (version "3.21.0")
+    (version "3.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "org.Bt.eg.db" version 'annotation))
        (sha256
         (base32
-         "1k7cv7jc16v9px6cz59ssllnjd52z3p5hhk99jaznzmfjb4nv9rs"))))
+         "0d9kjbacg8avn541k5vblcazqj3h22jn56klp25q32mghal4ama1"))))
     (properties
      '((upstream-name . "org.Bt.eg.db")
        (updater-extra-native-inputs . ("r-runit"))))
