@@ -25235,13 +25235,13 @@ routines.")
 (define-public r-s4arrays
   (package
     (name "r-s4arrays")
-    (version "1.8.1")
+    (version "1.10.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "S4Arrays" version))
               (sha256
                (base32
-                "03y7yfym5xy0jg0c0ccmv3m1cbi4f96k3ny5p618xh309h1sizgi"))))
+                "1vbvr0vfwl36i7dv09ibzs7mkfyzlzfl475rrkss377zsz7gbsjh"))))
     (properties
      '((upstream-name . "S4Arrays")
        (updater-ignored-native-inputs . ("r-delayedarray"))))
@@ -25250,12 +25250,7 @@ routines.")
     ;; dependency cycle.
     (arguments (list #:tests? #false))
     (propagated-inputs
-     (list r-abind
-           r-biocgenerics
-           r-crayon
-           r-iranges
-           r-matrix
-           r-s4vectors))
+     (list r-abind r-biocgenerics r-iranges r-matrix r-s4vectors))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://bioconductor.org/packages/S4Arrays")
     (synopsis "Foundation of array-like containers in Bioconductor")
