@@ -12200,14 +12200,14 @@ functionality of the @code{TxDb} packages (e.g.,
 (define-public r-organismdbi
   (package
     (name "r-organismdbi")
-    (version "1.50.0")
+    (version "1.52.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "OrganismDbi" version))
        (sha256
         (base32
-         "1lcxyb1xk81i4x4xjpbnkpbk2zfsbgw01q93i17fgahyrx2aa0d4"))))
+         "180d26ri4r9fdzx1fvggif9yy6xgi1ys8zf11llhman65wwl1w6d"))))
     (properties
      '((upstream-name . "OrganismDbi")
        (updater-ignored-native-inputs
@@ -12229,11 +12229,9 @@ functionality of the @code{TxDb} packages (e.g.,
            r-iranges
            r-rbgl
            r-s4vectors
-           r-txdbmaker))
-    (native-inputs (list r-bsgenome-hsapiens-ucsc-hg19
-                         r-knitr
-                         r-rsqlite
-                         r-runit))
+           r-seqinfo))
+    (native-inputs (list r-bsgenome-hsapiens-ucsc-hg19 r-knitr r-rsqlite
+                         r-runit r-txdbmaker))
     (home-page "https://bioconductor.org/packages/OrganismDbi")
     (synopsis "Software to enable the smooth interfacing of database packages")
     (description "The package enables a simple unified interface to several
