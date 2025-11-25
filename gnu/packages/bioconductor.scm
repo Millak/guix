@@ -4705,24 +4705,25 @@ for interacting with other cloud providers.")
 (define-public r-anvilgcp
   (package
     (name "r-anvilgcp")
-    (version "1.2.0")
+    (version "1.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "AnVILGCP" version))
        (sha256
-        (base32 "16msp62ifvazaz5c8vlr80fz2ds9rgf5rmng4phbv7isamh3h9sj"))))
+        (base32 "0bdw99m3gmg4m0qg3y0j8sps45s2xyc8bki6l97bdill1pmlqg4k"))))
     (properties `((upstream-name . "AnVILGCP")))
     (build-system r-build-system)
     (propagated-inputs (list r-anvilbase
                              r-biocbaseutils
                              r-dplyr
+                             r-gcptools
                              r-httr
                              r-jsonlite
                              r-rlang
                              r-tibble
                              r-tidyr))
-    (native-inputs (list r-knitr r-testthat r-withr))
+    (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/Bioconductor/AnVILGCP")
     (synopsis "GCP R client for the AnVIL")
     (description
