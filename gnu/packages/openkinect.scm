@@ -123,7 +123,7 @@ library")))
     (inherit libfreenect)
     (name "python-libfreenect")
     (native-inputs
-     (list python-cython))
+     (list python-cython-0))
     (inputs
      (list libfreenect))
     (propagated-inputs
@@ -131,11 +131,13 @@ library")))
     (arguments
      `(#:tests? #f                      ; package has no tests
        #:configure-flags '("-DBUILD_EXAMPLES=OFF"
-                           "-DBUILD_FAKENECT=OFF"
                            "-DBUILD_CPP=OFF"
-                           "-DBUILD_C_SYNC=OFF"
                            "-DBUILD_CV=OFF"
-                           "-DBUILD_PYTHON3=ON")
+                           "-DBUILD_C_SYNC=OFF"
+                           "-DBUILD_FAKENECT=OFF"
+                           "-DBUILD_PYTHON3=ON"
+                           ;; Relax gcc-14's strictness.
+                           "-DCMAKE_C_FLAGS=-Wno-error=int-conversion")
        #:phases ,libfreenect-derived-phases))
     (synopsis "Python wrapper for libfreenect, the Xbox Kinect device
 library")))
