@@ -489,7 +489,7 @@ upon boot."
     (define sink
       (shepherd-service
        (provision '(file-systems))
-       (requirement (cons* 'root-file-system 'user-file-systems
+       (requirement (cons* 'root-file-system
                            (map file-system->shepherd-service-name
                                 ;; Do not require file systems with Shepherd
                                 ;; requirements to provision
@@ -510,6 +510,9 @@ upon boot."
       (shepherd-service
        (documentation "Unmount manually-mounted file systems.")
        (provision '(user-file-systems))
+       ;; Unmount manually-mounted file systems before shepherd-managed
+       ;; ones, e.g /run/user/$UID and /run/user.
+       (requirement '(file-systems))
        (start #~(const #t))
        (stop #~(lambda args
                  (define (known? mount-point)
@@ -591,7 +594,8 @@ FILE-SYSTEMS."
 
                        ;; Have 'user-processes' depend on 'file-systems'.
                        (service-extension user-processes-service-type
-                                          (const '(file-systems)))))
+                                          (const '(file-systems
+                                                   user-file-systems)))))
                 (compose concatenate)
                 (extend append)
                 (description
