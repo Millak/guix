@@ -25527,14 +25527,14 @@ provided.")
 (define-public r-hdf5array
   (package
     (name "r-hdf5array")
-    (version "1.36.0")
+    (version "1.38.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "HDF5Array" version))
        (sha256
         (base32
-         "1il3a5vdyf6ddazxqcll1d8ca1bl8q1pq2l5ss9n159isdimb410"))))
+         "1qk3qpy3lha44h0d7xr30qvp9gvxh1xr8xqz34irnq8c758zlcmp"))))
     (properties
      '((upstream-name . "HDF5Array")
        (updater-ignored-native-inputs . ("r-zellkonverter"))
