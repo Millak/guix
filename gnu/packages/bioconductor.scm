@@ -27238,18 +27238,18 @@ large-scale and fully automated analysis.")
 (define-public r-snprelate
   (package
     (name "r-snprelate")
-    (version "1.42.0")
+    (version "1.44.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "SNPRelate" version))
               (sha256
                (base32
-                "01lxwm9a1vzk1cmf3bcpgad60kgj49xwryzmjdgmvhjl3pckwdha"))))
+                "1xzvrasba81a51wc48gdh82qga9a43hjx79cdw7jgb9vsn6w4iha"))))
     (properties
      '((upstream-name . "SNPRelate")
        (updater-extra-native-inputs . ("r-matrix"))))
     (build-system r-build-system)
-    (propagated-inputs (list r-gdsfmt))
+    (propagated-inputs (list r-gdsfmt r-rhpcblasctl))
     (native-inputs (list r-biocgenerics r-knitr r-matrix r-runit))
     (home-page "https://github.com/zhengxwen/SNPRelate")
     (synopsis
