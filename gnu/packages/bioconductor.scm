@@ -27743,13 +27743,13 @@ approach and a multi-scale contact profile.")
 (define-public r-basics
   (package
     (name "r-basics")
-    (version "2.20.0")
+    (version "2.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BASiCS" version))
        (sha256
-        (base32 "0wlsamynz8230h4yp8vqdmdh5n8ky1bnp6dr906cswfj89zn4yiv"))))
+        (base32 "04z4dphnxvphhngxqd7zcv5072s424m08vdsk7aqiyv7zd63jacz"))))
     (properties
      '((upstream-name . "BASiCS")
        (updater-extra-native-inputs . ("r-scrnaseq"))))
