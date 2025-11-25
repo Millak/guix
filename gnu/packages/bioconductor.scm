@@ -21460,16 +21460,19 @@ graphics.")
 (define-public r-birewire
   (package
     (name "r-birewire")
-    (version "3.40.0")
+    (version "3.41.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiRewire" version))
        (sha256
         (base32
-         "0amv3ralspzj1s5md7maxdr2abysnjrizlvcfjvdnb68ryv86wwa"))))
+         "18ckdn0ls29z7i51k6ilnd4d65ci33zcy9lidmr34djyjh732b4v"))))
     (properties `((upstream-name . "BiRewire")))
     (build-system r-build-system)
+    ;; Vignettes cannot be built:
+    ;; Error in mde(x) : 'list' object cannot be coerced to type 'double'
+    (arguments (list #:test-types '(list "tests")))
     (propagated-inputs
      (list r-igraph r-matrix r-rtsne r-slam))
     (native-inputs (list r-biocgenerics r-runit))
