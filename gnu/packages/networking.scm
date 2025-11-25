@@ -1926,16 +1926,16 @@ of the same name.")
 (define-public wireshark
   (package
     (name "wireshark")
-    (version "4.4.1")
+    (version "4.6.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://gitlab.com/wireshark/wireshark")
-             (commit (string-append "wireshark-" version))))
+             (url "https://gitlab.com/wireshark/wireshark.git")
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cc1dqmlc2jqgd6gg407qk0qkg3cjbiafzw8pf2pxhnh7n94fyki"))))
+        (base32 "14byn0izghn623z4niqfsm39phh71xbf4ajf7smq8pgaxqafdd5j"))))
     (build-system qt-build-system)
     (arguments
      (list
