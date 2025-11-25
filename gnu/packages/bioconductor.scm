@@ -21315,14 +21315,14 @@ alignment tool.")
 (define-public r-sgseq
   (package
     (name "r-sgseq")
-    (version "1.42.1")
+    (version "1.44.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "SGSeq" version))
        (sha256
         (base32
-         "1lh6vwjpdm7gvyfyh3p2gqdwl7kg6vhl7l4cc0bfg2bmkvx8b2q9"))))
+         "04sk9q7v22p1hc7znaa2fn390y5pn1nj0ayjb0b3746klsyxxc11"))))
     (properties `((upstream-name . "SGSeq")))
     (build-system r-build-system)
     (arguments
@@ -21347,6 +21347,7 @@ alignment tool.")
            r-rtracklayer
            r-runit
            r-s4vectors
+           r-seqinfo
            r-summarizedexperiment))
     (native-inputs
      (list r-bsgenome-hsapiens-ucsc-hg19 r-knitr))
