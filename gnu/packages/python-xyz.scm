@@ -6204,32 +6204,38 @@ files are easily readable and they work nicely with version control systems.")
 (define-public dosage
   (package
     (name "dosage")
-    (version "3.1")
+    (version "3.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dosage" version))
        (sha256
         (base32
-         "03sv1cwjw4zr06h1qqsmqg38lg6sq5hbhzrywq2wsplmq9dpxpfg"))))
+         "0hi5rl17rj9gay7yw7ikrkyp5qhyw5bzp4ig1sj6ahzclsia8y1h"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pytest
-                         python-pytest-xdist
-                         python-responses
-                         python-setuptools
-                         python-setuptools-scm
-                         python-wheel))
-    (propagated-inputs (list python-imagesize
-                             python-lxml
-                             python-platformdirs
-                             python-requests
-                             python-rich))
+    (arguments
+     ;; It requres additional modules for integration tests.
+     (list #:test-flags #~(list "--ignore=tests/modules/")))
+    (native-inputs
+     (list python-pytest
+           python-responses
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-imagesize
+           python-importlib-resources
+           python-lxml
+           python-platformdirs
+           python-requests
+           python-rich))
     (home-page "https://github.com/webcomics/dosage")
     (synopsis "Comic strip downloader and archiver")
-    (description "Dosage is designed to keep a local copy of specific webcomics and other
-picture-based content such as Picture of the Day sites.  With the @command{dosage}
-command-line script you can get the latest strip of a webcomic, catch-up to the last strip
-downloaded, or download a strip for a particular date or index, if possible.")
+    (description
+     "Dosage is designed to keep a local copy of specific webcomics and other
+picture-based content such as Picture of the Day sites.  With the
+@command{dosage} command-line script you can get the latest strip of a
+webcomic, catch-up to the last strip downloaded, or download a strip for a
+particular date or index, if possible.")
     (license license:expat)))
 
 (define-public python-etcd3
