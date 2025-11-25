@@ -3500,13 +3500,13 @@ gallein-treated and control zebrafish.")
 (define-public r-abarray
   (package
     (name "r-abarray")
-    (version "1.76.0")
+    (version "1.78.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ABarray" version))
               (sha256
                (base32
-                "0rs6x9ccw3i5xzsinajqq300jxwp9v69s96wp1xdgpdx24azmq03"))))
+                "0y8hf8ziyh4v5q47ysbrld402z4vwd5dgkh21fvrq13r99vx4fpx"))))
     (properties `((upstream-name . "ABarray")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-multtest))
