@@ -3474,14 +3474,14 @@ and @code{Sailfish}.  Alevin example output is also included.")
 (define-public r-zebrafishrnaseq
   (package
     (name "r-zebrafishrnaseq")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "zebrafishRNASeq" version
                               'experiment))
        (sha256
-        (base32 "0mif3j7jd9knkfjy9pw8gznckfx5k9xvypav8kkzn76awrxs7rbm"))))
+        (base32 "1l0bkdi23xs6iym514kpy48yymfm1cs9njn2gg6gn0b7mmkxdyqi"))))
     (properties `((upstream-name . "zebrafishRNASeq")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
