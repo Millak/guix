@@ -19331,14 +19331,14 @@ presence of additional sites within the allowed window size.")
 (define-public r-fgsea
   (package
     (name "r-fgsea")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "fgsea" version))
        (sha256
         (base32
-         "0q04whwss0yrqq7yvizkcp1sj06p4zk1007y72djv73f5hzdvraa"))))
+         "040z8k28zg9rlvlrywp1ah39pcll74jdmfzhy2r7rijmmvw8ypip"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bh
