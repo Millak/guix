@@ -23121,6 +23121,36 @@ like Ruby's ActiveRecord.
        ;; FIXME: Tests never end.
        '(#:tests? #f)))))
 
+(define-public sbcl-mito-auth
+  (let ((commit "262f0f1c132195daa8840e69ece2780111383d05")
+        (revision "0"))
+    (package
+      (name "sbcl-mito-auth")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fukamachi/mito-auth/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "03k4wgyyvyx7f6nznfyl1mrms9z39pkwn4wnpwj8jfsg3zcny0k3"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-mito sbcl-ironclad sbcl-babel))
+      (home-page "https://github.com/fukamachi/mito-auth/")
+      (synopsis "Mito mixin class for user authorization")
+      (description
+       "@code{mito-auth} provides a @code{mito} mixin class for user
+authorization.")
+      (license license:llgpl))))
+
+(define-public cl-mito-auth
+  (sbcl-package->cl-source-package sbcl-mito-auth))
+
+(define-public ecl-mito-auth
+  (sbcl-package->ecl-package sbcl-mito-auth))
+
 (define-public sbcl-mk-string-metrics
   (package
     (name "sbcl-mk-string-metrics")
