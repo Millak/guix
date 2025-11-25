@@ -6127,13 +6127,13 @@ export of Strand-seq data.")
 (define-public r-cardelino
   (package
     (name "r-cardelino")
-    (version "1.10.0")
+    (version "1.12.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "cardelino" version))
               (sha256
                (base32
-                "1apnzwia944cclsdc3x8plp87id3sd0qyz6xg2m61cl18nq17wl7"))))
+                "1r1dd9wmi8amv1825j74kmqjnlhxvcdqaq1g7pf48wa3qxyrylip"))))
     (properties `((upstream-name . "cardelino")))
     (build-system r-build-system)
     (propagated-inputs (list r-combinat
