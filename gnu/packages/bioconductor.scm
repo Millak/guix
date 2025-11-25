@@ -7628,14 +7628,14 @@ functions/packages/models compatible with the @code{scRepertoire} ecosystem.")
 (define-public r-infercnv
   (package
     (name "r-infercnv")
-    (version "1.24.0")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "infercnv" version))
        (sha256
         (base32
-         "0bix9cnb1bmbnjw5hfddl9hcg49j2gm9aaqr5sn2qf114by1pxr4"))))
+         "1gkgvkj06kpqwl573d5l8d9bsdp7nq61m688ma9d2fx6wg4a9r7l"))))
     (properties
      `((upstream-name . "infercnv")
        (updater-extra-inputs . ("python"))))
