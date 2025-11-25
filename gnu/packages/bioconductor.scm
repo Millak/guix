@@ -19298,13 +19298,13 @@ that protein levels remain constant despite fluctuating total mRNA levels.")
 (define-public r-fcscan
   (package
     (name "r-fcscan")
-    (version "1.22.0")
+    (version "1.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "fcScan" version))
        (sha256
-        (base32 "1sby20vm6pkrq3wwk9yhkp488w5m79mfdn0bbwnqfhlqhjacvpiy"))))
+        (base32 "0w4g65qcaxy8x30r1f638dm69kslxab2gy761ggvb8if5r7631sb"))))
     (properties `((upstream-name . "fcScan")))
     (build-system r-build-system)
     (propagated-inputs
