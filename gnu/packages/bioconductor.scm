@@ -13140,13 +13140,13 @@ tab-delimited (tabix) files.")
 (define-public r-rtcga
   (package
     (name "r-rtcga")
-    (version "1.38.0")
+    (version "1.40.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "RTCGA" version))
               (sha256
                (base32
-                "0s7wyp8i7nqwpcvrg5w92q8k24qfh7n8cn8rk5nyg0wpfy3594z7"))))
+                "18j0kqa1wavhsn6wxx622s021af87kwfnh0yry75b8632fjym8vn"))))
     (properties
      '((upstream-name . "RTCGA")
        (updater-ignored-native-inputs . ("r-rtcga-rnaseq"))))
