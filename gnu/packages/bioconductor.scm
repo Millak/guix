@@ -23311,14 +23311,14 @@ populations, splice site strength, conservation, etc.")
 (define-public r-variancepartition
   (package
     (name "r-variancepartition")
-    (version "1.38.0")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "variancePartition" version))
        (sha256
         (base32
-         "1kwlias43ga649xxm7mlb85s8br6d9sy2ihc31fmi4sx86c912yz"))))
+         "0inwnrk6jppjfmsin7zjlfg250y7q7049x5nis2xqn559pfls37s"))))
     (properties
      '((upstream-name . "variancePartition")
        (updater-extra-native-inputs . ("r-rfast"))))
@@ -23331,6 +23331,7 @@ populations, splice site strength, conservation, etc.")
            r-fancova
            r-ggplot2
            r-gplots
+           r-gtools
            r-iterators
            r-limma
            r-lme4
