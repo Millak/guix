@@ -16712,6 +16712,177 @@ support arbitrary use cases, but instead specifically focuses on supporting
 Kubernetes components which are using nftables.")
     (license license:asl2.0)))
 
+(define-public go-storj-io-common
+  (package
+    (name "go-storj-io-common")
+    (version "0.0.0-20251120170554-032ced125058")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/storj/common")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11aiwpr34z3x2nx5qbj5cr21676abnbrlwhw3h8lficr66rlx1a4"))))
+    ;; TODO: Remove vendored code <github.com/btcsuite/btcd/btcutil/base58>.
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "storj.io/common"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestLookupNodeAddress_Host"
+                             "TestLookupNodeAddress_HostAndPort"
+                             "TestFromBuild")
+                       "|"))
+      #:test-subdirs
+      ;; XXX: Remove when all missing dependencies are packaged.
+      #~(list "accesslogs/..."
+              "base58/..."
+              "bloomfilter/..."
+              "cfgstruct/..."
+              "context2/..."
+              "currency/..."
+              "debug/..."
+              "errs2/..."
+              "eventstat/..."
+              "experiment/..."
+              "fpath/..."
+              "grant/..."
+              "http/requestid/..."
+              "identity/..."
+              "leak/..."
+              "macaroon/..."
+              "memory/..."
+              "metrics/..."
+              "nodetag/..."
+              "paths/..."
+              "pb/..."
+              "peertls/..."
+              "pkcrypto/..."
+              "process/gcloudlogging/..."
+              "processgroup/..."
+              "ranger/..."
+              "rpc/..."
+              "signing/..."
+              "storj/..."
+              "strictcsv/..."
+              "sync2/..."
+              "telemetry/..."
+              "testrand/..."
+              "testtrace/..."
+              "time2/..."
+              "useragent/..."
+              "uuid/..."
+              "version/...")))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-go-uber-org-zap))
+    (propagated-inputs
+     (list ;; go-cloud-google-com-go-profiler ; 100+ go-cloud-google-com*
+           go-github-com-blang-semver-v4
+           go-github-com-bmkessler-fastdiv
+           go-github-com-calebcase-tmpfile
+           go-github-com-flynn-noise
+           go-github-com-gogo-protobuf
+           go-github-com-google-gopacket
+           go-github-com-google-pprof
+           go-github-com-jtolds-tracetagger-v2
+           go-github-com-jtolio-crawlspace
+           go-github-com-jtolio-crawlspace-tools
+           go-github-com-jtolio-noiseconn
+           go-github-com-quic-go-quic-go
+           go-github-com-shopspring-decimal
+           go-github-com-spacemonkeygo-monkit-v3
+           go-github-com-spf13-cast
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-spf13-viper
+           go-github-com-zeebo-admission-v3
+           go-github-com-zeebo-blake3
+           go-github-com-zeebo-errs
+           go-github-com-zeebo-structs
+           go-golang-org-x-crypto
+           go-golang-org-x-mod
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-gopkg-in-yaml-v2
+           go-storj-io-drpc
+           go-storj-io-eventkit
+           ;; go-storj-io-monkit-jaeger ; cycles
+           go-storj-io-picobuf))
+    (home-page "https://storj.io/common")
+    (synopsis "Common web and networking Golang utilities")
+    (description
+     "This package provides a collection of Golang utilities maintained by
+Storj project:
+
+@itemize
+@item accesslogs can handle collection and upload of arbitrarily formatted
+server access logs in the fashion of S3's server access logging
+@item bloomfilter implements a bloom-filter for pieces that need to be
+preserved
+@item cfgstruct
+@item context2 contains utilities for contexts
+@item currency
+@item debug implements debug server for satellite, storage node, and edge
+services
+@item encryption collects common cryptographic primitives needed for path and
+data encryption
+@item errs2 collects common error handling functions
+@item eventstat contains helper to create statistics about events with
+unbounded cardinality
+@item experiment implements feature flag propagation.
+@item fpath implements cross-platform file and object path handling
+@item grant
+@item http
+@item identity implements CA and Peer identity management and generation.
+@item leak provides a way to track resources when race detector is enabled
+@item macaroon implements contextual caveats and authorization
+@item memory contains byte size types and manipulation
+@item metrics implements a server which displays only read-only monitoring
+data
+@item netutil
+@item nodetag
+@item paths implements wrappers for handling encrypted and unencrypted paths
+safely
+@item peertls manages TLS configuration for peers.
+@item pkcrypto contains a set of helper functions and constants to perform
+common cryptographic operations
+@item process
+@item processgroup implements process-grouping commands.
+@item ranger implements lazy @code{io.Reader} and @code{io.Writer} interfaces
+@item readcloser implements utilities for @code{io.ReadClosers}
+@item rpc implements dialing on Storj Network
+@item signing implements consistent signing and verifying protobuf messages
+@item socket implements @url{https://tools.ietf.org/html/rfc4594#section-2.3,
+RFC4594}
+@item storj contains the types which represent the main entities of the Storj
+domain
+@item strictcsv
+@item sync2 provides a set of functions and types for having context aware
+functionalities, offloading memory through the file system, and to control
+execution of tasks which can run repetitively, concurrently or asynchronously.
+@item telemetry
+@item testcontext implements convenience context for testing.
+@item testrand implements generating random base types for testing.
+@item testtrace provides profiling debugging utilities for writing the state
+of all goroutines
+@item time2 provides time related functionality that can be manipulated to
+facilite deterministic testing
+@item traces
+@item tracing
+@item useragent implements parts of
+@url{https://tools.ietf.org/html/rfc7231#section-5.5, RFC7231} and
+@url{https://tools.ietf.org/html/rfc2616#section-14.43, RFC2616}
+@item uuid implements UUID v4 based on
+@url{https://www.rfc-editor.org/rfc/rfc4122, RFC4122}.
+@item version
+@end itemize")
+    (license license:expat)))
+
 (define-public go-storj-io-drpc
   (package
     (name "go-storj-io-drpc")
