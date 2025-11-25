@@ -13948,13 +13948,13 @@ ungapped alignment formats.")
 (define-public r-sictools
   (package
     (name "r-sictools")
-    (version "1.38.0")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "SICtools" version))
        (sha256
-        (base32 "1f1dkrvnxqvcll1ywmckfi2glap0y2rilvw9y6s9qnlq21kcidy5"))))
+        (base32 "0qrs93igg20i2zk7gcmgw54q0khp9ak7b0q6bvm7l3hjkl0lipdb"))))
     (properties
      `((upstream-name . "SICtools")
        (updater-extra-inputs . ("ncurses"))))
