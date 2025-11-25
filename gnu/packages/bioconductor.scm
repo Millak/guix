@@ -7519,13 +7519,13 @@ across individual cells.")
 (define-public r-bluster
   (package
    (name "r-bluster")
-   (version "1.18.0")
+   (version "1.20.0")
    (source (origin
             (method url-fetch)
             (uri (bioconductor-uri "bluster" version))
             (sha256
              (base32
-              "0q51rpjj2m61ax2n192pcbaix26f3jxjl5pk09w5mcppr6cym0hi"))))
+              "0ghzvj8s4hy88w4rgx817zn0ipxga31q6gj713pvjlfj6bgqvjs4"))))
    (properties
     '((upstream-name . "bluster")
       (updater-extra-native-inputs
