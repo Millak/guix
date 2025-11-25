@@ -5139,13 +5139,13 @@ tumor samples from healthy controls.")
 (define-public r-arrayexpress
   (package
     (name "r-arrayexpress")
-    (version "1.67.1")
+    (version "1.70.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ArrayExpress" version))
               (sha256
                (base32
-                "1cnlr2xnah4cw66xn5ww3ci1flfhrwwd0k3z5l1fbh8h9msnbr3w"))))
+                "1f7ai8ljy6ssbk21fl2f565v988ry12k5x7ima73z0a378zq8dyb"))))
     (properties `((upstream-name . "ArrayExpress")))
     (build-system r-build-system)
     (propagated-inputs
