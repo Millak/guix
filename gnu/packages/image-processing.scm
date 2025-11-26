@@ -232,16 +232,16 @@ with external tools and libraries.")
 (define-public dcmtk
   (package
     (name "dcmtk")
-    (version "3.6.8")
+    (version "3.6.9")
     (source
      (origin
-       (method url-fetch)
-       (uri
-        (string-append "ftp://dicom.offis.de/pub/dicom/offis/software/dcmtk/"
-                       "dcmtk" (string-join (string-split version #\.) "")
-                       "/dcmtk-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.dcmtk.org/dcmtk")
+             (commit (string-append "DCMTK-" version))))
        (sha256
-        (base32 "03vjv2lq5kr79ghf8v0q9wskkrcr2ygi097nybmqs4q3amjpc813"))))
+        (base32 "0x99gg1kahkzbayfciyhkw5xdcm8cs4r8cmv15kniw9pldi3zllr"))
+       (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
      ;; By default, only static archives are built.
