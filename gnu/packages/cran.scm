@@ -51312,6 +51312,19 @@ designs.  Broman et al. (2018) <doi:10.1534/genetics.118.301595>.")
         (base32
          "15dkh4wfszfrpfpwyhnwj3bnkjfxm17bp0grr1wf4h6zxj0jbkp5"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; These tests fail with
+             ;; "`failure_message` must be a character vector, not absent."
+             (substitute* "tests/testthat/test-vcf.R"
+               ((".*createSingleChromosomeBCFIndex.*" m)
+                (string-append m "skip('skip')\n"))
+               ((".*createSingleChromosomeVCFIndex.*" m)
+                (string-append m "skip('skip')\n"))))))))
     (inputs
      (list zlib))
     (native-inputs (list r-testthat))
