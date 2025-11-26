@@ -4164,6 +4164,23 @@ that initialize themselves dynamically from API responses which makes it
 compatible with a wide range of versions of the Stripe API.")
     (license license:expat)))
 
+(define-public python-stripe-12
+  (hidden-package
+   (package/inherit python-stripe
+     (name "python-stripe")
+     (version "12.5.1")
+     (source
+      (origin
+        (inherit (package-source python-stripe))
+        (uri (git-reference
+               (url "https://github.com/stripe/stripe-python")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256 (base32
+                 "0jgixfb8ydlx387vm7rdaqrzsiqbvi99nszrpb1ghjqyn755xigd"))))
+     (native-inputs
+      (list python-setuptools)))))
+
 (define-public python-tldextract
   (package
     (name "python-tldextract")
