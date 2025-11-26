@@ -2837,8 +2837,10 @@ Codec.")
 
 (define-public libdab
   ;; No release since 2017, use commit directly.
-  (let ((commit "b578d02eda60f613d35bab5d762ae7c9a27758d8")
-        (revision "1"))
+  ;; This is the last commit for which dab-api.h has "Version 3.0"
+  ;; in a comment.
+  (let ((commit "dfacdcd37cd76876def0861b8914d72e831b7b66")
+        (revision "2"))
     (package
       (name "libdab")
       (version (git-version "0.8" revision commit))
@@ -2850,7 +2852,7 @@ Codec.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0j339kx3n2plgfw7ikpp7b81h5n68wmsgflwljbh2sy8j62faik9"))))
+          (base32 "0ydv4iifrf4pd8s4gjg55l9abi49ppbdy2k9jlrvsvnq2i0hch86"))))
       (build-system cmake-build-system)
       (inputs
        (list faad2 fftwf zlib))
