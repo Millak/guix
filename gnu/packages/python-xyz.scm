@@ -24849,35 +24849,6 @@ metrics are:
 conversion: Gamut A, B, and C.")
     (license license:expat)))
 
-(define-public python-misaka
-  (package
-    (name "python-misaka")
-    (version "2.1.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "misaka" version))
-       (sha256
-        (base32
-         "1mzc29wwyhyardclj1vg2xsfdibg2lzb7f1azjcxi580ama55wv2"))))
-    (build-system python-build-system)
-    (arguments
-     `(;; Line 37 of setup.py calls self.run_command('develop')
-       ;; in the 'check' phase. This command seems to be trying
-       ;; to write to
-       ;; /gnu/store/...-python-<version>/lib/python<version>/site-packages/
-       ;; for which it does not have the permission to write.
-       #:tests? #f))
-    (propagated-inputs
-     (list python-cffi))
-    (home-page "https://github.com/FSX/misaka")
-    (synopsis "Python binding for Hoedown")
-    (description
-     "@code{Misaka} is a CFFI-based binding for @code{Hoedown}, a fast markdown processing
-     library written in C.  It features a fast HTML renderer and functionality to make custom
-     renderers (e.g. man pages or LaTeX).")
-    (license license:expat)))
-
 (define-public python-jsonpointer
   (package
     (name "python-jsonpointer")
