@@ -27730,6 +27730,9 @@ Processing of very large files is supported.")
        (sha256
         (base32 "07jynw6kg3bfsmnisx7nf6fydximdkryk6m08cljmfriyfkvqmhy"))))
     (build-system r-build-system)
+    (properties
+     '((updater-extra-native-inputs
+        . ("r-broom" "r-ggdendro" "r-ggrepel" "r-latticeextra"))))
     (arguments
      (list
       #:phases
@@ -27737,9 +27740,11 @@ Processing of very large files is supported.")
          (add-after 'unpack 'delete-bad-tests
            (lambda _
              ;; This file contains tests that attempt to download data files
-             ;; off the internet.
-             (delete-file "tests/testthat/test-read.file.R")
-             ;; Unknown failure.
+             ;; off the internet
+             (substitute* "tests/testthat/test-read.file.R"
+               ((".*read.file works.*" m)
+                (string-append m "skip('skip');\n")))
+             ;; Code run outside of test_that().
              (delete-file "tests/testthat/test-ladd.R"))))))
     (propagated-inputs
      (list r-dplyr
@@ -27755,7 +27760,13 @@ Processing of very large files is supported.")
            r-tibble
            r-tidyr))
     (native-inputs
-     (list r-knitr r-manipulate r-testthat))
+     (list r-broom
+           r-ggdendro
+           r-ggrepel
+           r-knitr
+           r-latticeextra
+           r-manipulate
+           r-testthat))
     (home-page "https://github.com/ProjectMOSAIC/mosaic/")
     (synopsis "Mathematics, statistics, and computation teaching utilities")
     (description
