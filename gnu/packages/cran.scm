@@ -16093,6 +16093,17 @@ functions subject to simple constraints.")
         (base32
          "16161y28wg40pwlvmildcgcwn5wx6hiyk8r79sd0r31w31h6q7sj"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'testthat-compatibility
+           (lambda _
+             ;; This test uses the procedure "with_mock", which has been
+             ;; removed from testthat.
+             (substitute* "tests/testthat/test-error.R"
+               ((".*non-native encoding causes warning.*" m)
+                (string-append m "skip('skip');\n"))))))))
     (native-inputs (list r-testthat))
     (home-page "https://github.com/krlmlr/bindr")
     (synopsis "Parametrized active bindings")
