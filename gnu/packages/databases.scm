@@ -5116,13 +5116,13 @@ provides support for parsing, splitting and formatting SQL statements.")
 (define-public python-sql
   (package
     (name "python-sql")
-    (version "1.6.0")
+    (version "1.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python_sql" version))
        (sha256
-        (base32 "0v637qc2g8w155k7crlg70w4bfxznn28c94prlxcax5dx0ja2d2v"))))
+        (base32 "09niqspjmsn9wyqadgqjcrsxxa7w4r6dcp21xhi1mimr4ya0p5ky"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-pytest python-setuptools))
     (home-page "https://python-sql.tryton.org/")
