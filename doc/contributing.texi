@@ -66,7 +66,7 @@ GNU Guix depends on the following packages:
 
 @itemize
 @item @url{https://gnu.org/software/guile/, GNU Guile}, version 3.0.x,
-version 3.0.3 or later;
+version 3.0.9 or later;
 @item @url{https://notabug.org/cwebber/guile-gcrypt, Guile-Gcrypt}, version
 0.1.0 or later;
 @item

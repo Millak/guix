@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 #
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012-2021, 2022-2023 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012-2021, 2022-2023, 2025 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2013, 2016 Mark H Weaver <mhw@netris.org>
 # Copyright © 2014-2016 Alex Kost <alezost@gmail.com>
 # Copyright © 2014-2016 David Thompson <davet@gnu.org>
@@ -130,7 +130,8 @@ if test "x$GUILD" = "x"; then
 fi
 
 dnl (guix ui), notably, requires 'default-optimization-level' added in 3.0.3.
-PKG_CHECK_MODULES([GUILE], [guile-3.0 >= 3.0.3])
+dnl (guix serialization) requires 'bytevector-slice' added in 3.0.9.
+PKG_CHECK_MODULES([GUILE], [guile-3.0 >= 3.0.9])
 
 dnl Get CFLAGS and LDFLAGS for libguile.
 GUILE_FLAGS
