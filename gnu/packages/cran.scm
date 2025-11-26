@@ -7599,6 +7599,18 @@ intersections.")
          "016m00xv59lkwm2is32v5nr4lw5a1ymdnz34r3ffflcv9bfrc6n4"))))
     (properties `((upstream-name . "RVenn")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'skip-bad-tests
+           (lambda _
+             ;; These tests fail because "class" returns 5 instead of 2 elements.
+             (substitute* "tests/testthat/test_ggvenn.R"
+               ((".*ggvenn: slices.*" m)
+                (string-append m "skip('skip');\n"))
+               ((".*ggvenn: plot for 2 and 3 sets.*" m)
+                (string-append m "skip('skip');\n"))))))))
     (propagated-inputs
      (list r-ggforce
            r-ggplot2
