@@ -3930,31 +3930,6 @@ Origin Resource Sharing}, making cross-origin AJAX possible.")
 into Jinja2 by default.")
     (license license:bsd-3)))
 
-(define-public python-flask-misaka
-  (package
-    (name "python-flask-misaka")
-    (version "1.0.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "Flask-Misaka" version))
-        (sha256
-          (base32
-            "1yi9iall3ml1n8bff1mg49xajmldcm5pc0fkpl3w2rlnny08giax"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:test-flags #~(list "tests.py")))
-    (native-inputs
-     (list python-flask python-pytest python-setuptools python-wheel))
-    (propagated-inputs
-      (list python-markupsafe python-misaka))
-    (home-page "https://github.com/singingwolfboy/flask-misaka/")
-    (synopsis "Flask interface to Misaka, a Markdown parsing library")
-    (description
-      "This package provides an interface between the Flask web framework and
-the Misaka Markdown parser.")
-    (license license:expat)))
-
 (define-public python-flask-session
   (package
     (name "python-flask-session")
