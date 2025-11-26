@@ -1315,13 +1315,13 @@ the import of the @emph{OFX} files as statement.")
 (define-public trytond-account-statement-rule
   (package
     (name "trytond-account-statement-rule")
-    (version "7.0.1")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_statement_rule" version))
        (sha256
-        (base32 "0iy12040cc2s5r3mmvagl20yjzjz5blih67fqqf7wvf8mw2gfgww"))))
+        (base32 "1yg4f29hpq28rrcgf358f5z2hcxiyawwznrxi9rl879x4jb8yg7r"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_statement_rule"))
     (native-inputs
