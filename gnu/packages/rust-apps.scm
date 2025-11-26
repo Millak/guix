@@ -1300,6 +1300,46 @@ defaults for 80% of the use cases.")
     (description "This package provides a CLI tool for Forgejo.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public gitlogue
+  (package
+    (name "gitlogue")
+    (version "0.8.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/unhappychoice/gitlogue")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "007sf2b605jkjk4qyxar1bq7fh71yvv9ixsxfqrs3hzschyj3m2g"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Cargo.toml"
+             ;; Remove the features from git2.
+             (("git2 = (\\{ version = )(\".*\"), features.*" _ _ version)
+              (string-append "git2 = " version "\n")))
+           (delete-file-recursively "docs")))))
+    (build-system cargo-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'setenv
+            (lambda _
+              (setenv "LIBGIT2_NO_VENDOR" "1"))))))
+    (native-inputs (list pkg-config))
+    (inputs (cons* libgit2-1.9 libssh2 openssl zlib
+                   (cargo-inputs 'gitlogue)))
+    (home-page "https://github.com/unhappychoice/gitlogue")
+    (synopsis "Git history screensaver")
+    (description
+     "Gitlogue is a Git history screensaver - watch your code rewrite itself.")
+    (license license:isc)))
+
 (define-public gitoxide
   (package
     (name "gitoxide")
