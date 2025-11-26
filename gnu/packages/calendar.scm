@@ -1,4 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
+;;; Copyright © 2013, 2018 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015, 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
@@ -16,6 +17,7 @@
 ;;; Copyright © 2025 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
+;;; Copyright © 2025 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -487,6 +489,55 @@ traditional Chinese characters.")
     ;; COPYING.LESSER specifies LGPL 3.0, but all source files say
     ;; 'Lesser GPL version 2 or later'.
     (license (list license:gpl2+ license:lgpl2.1+))))
+
+(define-public gcal
+  (package
+    (name "gcal")
+    (version "4.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.alteholz.dev/gnu/gcal-"
+                           version ".tar.xz"))
+       (sha256
+        (base32
+         "1p3q6his31bxs24nsgpfavw3nlhalqf0zak4f3b530p725s2vgfq"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; Adjust the bundled gnulib to work with glibc 2.28.  See e.g.
+            ;; "m4-gnulib-libio.patch".  This is a phase rather than patch
+            ;; or snippet to work around <https://bugs.gnu.org/32347>.
+            (substitute* (find-files "lib" "\\.c$")
+              (("#if defined _IO_ftrylockfile")
+               "#if defined _IO_EOF_SEEN"))
+            (substitute* "lib/stdio-impl.h"
+              (("^/\\* BSD stdio derived implementations")
+               (string-append
+                "#if !defined _IO_IN_BACKUP && defined _IO_EOF_SEEN\n"
+                "# define _IO_IN_BACKUP 0x100\n"
+                "#endif\n\n"
+                "/* BSD stdio derived implementations")))
+            #t))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "LDFLAGS=-lm")))
+    (native-inputs
+     (list check
+           pkg-config))
+    (home-page "https://www.gnu.org/software/gcal/")
+    (synopsis "Calculating and printing a wide variety of calendars")
+    (description
+     "Gcal is a program to calculate and print calendars on the
+command-line.  Calendars can be printed in 1-month, 3-month or whole-year
+views.  In addition, eternal holiday lists can be generated for many
+countries, which can be complemented by user-made lists of fixed dates to
+make an agenda.  Gcal can also calculate astronomical data, such as the
+phases of the moon, and supports alternative calendar formats: Julian,
+Gregorian, Islamic, Chinese and more.")
+    (license license:gpl3+)))
 
 (define-public gsimplecal
   (let ((version "2.4.1"))

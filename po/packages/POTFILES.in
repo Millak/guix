@@ -358,7 +358,6 @@ gnu/packages/valgrind.scm
 gnu/packages/vim.scm
 gnu/packages/vpn.scm
 gnu/packages/game-development.scm
-gnu/packages/gcal.scm
 gnu/packages/genealogy.scm
 gnu/packages/geo.scm
 gnu/packages/ghostscript.scm

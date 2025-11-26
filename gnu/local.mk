@@ -305,7 +305,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/game-development.scm		\
   %D%/packages/games.scm			\
   %D%/packages/gawk.scm				\
-  %D%/packages/gcal.scm				\
   %D%/packages/gcc.scm				\
   %D%/packages/gd.scm				\
   %D%/packages/gdb.scm				\
