@@ -1587,13 +1587,13 @@ report on cash basis.")
 (define-public trytond-account-tax-non-deductible
   (package
     (name "trytond-account-tax-non-deductible")
-    (version "7.0.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_tax_non_deductible" version))
        (sha256
-        (base32 "0xx15wj7phigrdad0yrydjfg98plb712dqq0ayhj3p17ijcvkyfl"))))
+        (base32 "0frlix01zfwqkx33bvp7wh888gvzf00dh86027pzjbqq5k890mpr"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_tax_non_deductible"))
     (native-inputs %standard-trytond-native-inputs)
