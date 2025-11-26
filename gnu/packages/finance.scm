@@ -2508,13 +2508,13 @@ and manipulation.")
 (define-public python-mt940
   (package
     (name "python-mt940")
-    (version "0.6.0")
+    (version "0.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mt940" version))
        (sha256
-        (base32 "00w9m06wxxqg9w1bkddqr6yl6ajlzhbiryqzijax64l6sks6ml6g"))))
+        (base32 "1m507a7l78k378a9r8xq61bcllyvxsrl02ivbk78i9dxd097xvcv"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-setuptools-67 python-wheel-0.40))
     (home-page "http://mt940.b2ck.com/")
