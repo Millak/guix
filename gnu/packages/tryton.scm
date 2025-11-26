@@ -1085,19 +1085,19 @@ CFONB flavors to SEPA messages.")
 (define-public trytond-account-payment-stripe
   (package
     (name "trytond-account-payment-stripe")
-    (version "7.0.4")
+    (version "7.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_payment_stripe" version))
        (sha256
-        (base32 "0yh6ixplv0jpmzkm7wfspjv9i7d0a9wxrx6rzhm9md5364nsbcys"))))
+        (base32 "0ddljzik0sk5dyvhfvamxcxw1zcmzw4lwx6jdlryxhq1z82qvcyv"))))
     (build-system pyproject-build-system)
     ;; doctest requires network and an api key
     (arguments (tryton-arguments "account_payment_stripe" "-k not scenario"))
     (native-inputs %standard-trytond-native-inputs)
     (propagated-inputs
-     (list python-stripe trytond trytond-account trytond-account-payment
+     (list python-stripe-12 trytond trytond-account trytond-account-payment
            trytond-party))
     (home-page
      "https://docs.tryton.org/projects/modules-account-payment-stripe")
