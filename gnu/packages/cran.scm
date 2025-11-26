@@ -19888,6 +19888,26 @@ regions.  Guaranteed to converge to local minimum of objective function.")
         (base32 "0k40a48qzwmardjnkf0h5s5zryivzvdanz61kxdqdfqlil19ma0d"))))
     (properties `((upstream-name . "tryCatchLog")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'testthat-compatibility
+           (lambda _
+             ;; These tests use the procedure "with_mock", which has been
+             ;; removed from testthat.
+             (substitute* "tests/testthat/test_build_log_output.R"
+               ((".*platform-specific newline works.*" m)
+                (string-append m "skip('skip');\n")))
+             (substitute* "tests/testthat/test_is_windows.R"
+               ((".*conflict in Windows OS recognition throws a warning.*" m)
+                (string-append m "skip('skip');\n")))
+             (substitute* "tests/testthat/test_namespace_hooks.R"
+               ((".*internal package state is initialized.*" m)
+                (string-append m "skip('skip');\n")))
+             (substitute* "tests/testthat/test_platform_functions.R"
+               ((".*OS-specific newlines work.*" m)
+                (string-append m "skip('skip');\n"))))))))
     (native-inputs (list r-knitr r-testthat))
     (home-page "https://github.com/aryoda/tryCatchLog")
     (synopsis "Advanced tryCatch and try functions")
