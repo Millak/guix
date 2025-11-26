@@ -2465,13 +2465,13 @@ to apply to inbound e-mails.")
 (define-public trytond-incoterm
   (package
     (name "trytond-incoterm")
-    (version "7.0.2")
+    (version "7.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_incoterm" version))
        (sha256
-        (base32 "1p5p6nddx8qavs02355378ayy620lf884v35blvffz870mybz7i7"))))
+        (base32 "1yla0h6d0p7xwznlvfbmy3aam5bcxp18z6190wicfb2sg6qyvqly"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "incoterm"))
     (native-inputs
@@ -2488,10 +2488,7 @@ to apply to inbound e-mails.")
             trytond-stock
             %standard-trytond-native-inputs))
     (propagated-inputs
-     (list trytond
-           trytond-company
-           trytond-country
-           trytond-party))
+     (list trytond trytond-company trytond-party))
     (home-page "https://docs.tryton.org/projects/modules-incoterm")
     (synopsis "Tryton module for incoterms")
     (description "The @emph{Incoterm} Tryton module is used to manage the
