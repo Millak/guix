@@ -710,41 +710,6 @@ python-axolotl.")
     (license (list license:gpl3    ; Most files
                    license:bsd-3)))) ; curve/curve25519-donna.c
 
-(define-public python-axolotl
-  (package
-    (name "python-axolotl")
-    (version "0.2.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/tgalal/python-axolotl")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0bwzsyb3z54259kh667m714n28r6jp8almb5mrx48ar0pgashsrl"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; Don't install tests
-          (add-after 'install 'cleanup-install
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (delete-file-recursively
-               (string-append (site-packages inputs outputs)
-                              "/axolotl/tests")))))))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
-    (propagated-inputs (list python-axolotl-curve25519 python-cryptography
-                             python-protobuf))
-    (home-page "https://github.com/tgalal/python-axolotl")
-    (synopsis "Python port of libaxolotl-android")
-    (description
-     "This is a python port of libaxolotl-android.  This is a ratcheting
-forward secrecy protocol that works in synchronous and asynchronous messaging
-environments.")
-    (license license:gpl3)))
-
 (define-public python-omemo-dr
   (package
     (name "python-omemo-dr")
