@@ -1972,22 +1972,25 @@ and Zilog Z80 families, plus many of their variants.")
 (define-public python-psptool
   (package
     (name "python-psptool")
-    (version "2.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "psptool" version))
-              (sha256
-               (base32
-                "1kx0xpfx67m4zclk4gs97wiwjms8i7z4f6b6m68y8sfgpshy4rf3"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; IPython is not used by the package at all
-                  (substitute* '("psptool/directory.py" "psptool/entry.py")
-                    (("from IPython.*") ""))))))
-    (build-system python-build-system)
+    (version "3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/PSPReverse/psptool")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fbx3b42cr7dv07p2b9qgzrgs19i066ysfasgvlfjscg2v68j8d0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest))
+    (native-inputs
+     (list python-psptrace-bootstrap
+           python-setuptools))
     (propagated-inputs
-     (list python-cryptography python-prettytable))
+     (list python-cryptography
+           python-prettytable))
     (home-page "https://github.com/PSPReverse/psptool")
     (synopsis "Tool for dealing with AMD binary blobs")
     (description "PSPTool is a tool for dealing with AMD binary blobs")
