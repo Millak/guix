@@ -3880,13 +3880,13 @@ credit limit of the party when confirming a sale.")
 (define-public trytond-sale-discount
   (package
     (name "trytond-sale-discount")
-    (version "7.0.1")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_sale_discount" version))
        (sha256
-        (base32 "1hqxa97dpqy9b4cpvh977scfrjyk6kmkvlyy8xi7cdwam02miwim"))))
+        (base32 "1s2msvpgbgi7l0d1iq30y0l02bq2in2a9yr1526za952vd3clf93"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_discount"))
     (native-inputs %standard-trytond-native-inputs)
