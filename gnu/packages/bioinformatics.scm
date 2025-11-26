@@ -12754,6 +12754,15 @@ sankey, alluvial and sankey bump plots in @code{ggplot2}.")
                   "11ijzy1zyjv2wgxrfcaan7g82jl27skd41hw4s2xh9lijkn8ilwh"))))
       (properties `((upstream-name . "gUtils")))
       (build-system r-build-system)
+      (arguments
+       (list
+        #:phases
+        '(modify-phases %standard-phases
+           ;; These deprecated procedures have been removed in testthat.
+           (add-after 'unpack 'testthat-compatibility
+             (lambda _
+               (substitute* "tests/testthat/test_rangeops.R"
+                 (("is_true\\(\\)") "expect_true")))))))
       (propagated-inputs
        (list r-biocgenerics
              r-data-table
@@ -12763,7 +12772,7 @@ sankey, alluvial and sankey bump plots in @code{ggplot2}.")
              r-matrix
              r-s4vectors
              r-stringr))
-      (native-inputs (list r-testthat))
+      (native-inputs (list r-testthat r-xvector))
       (home-page "https://github.com/mskilab/gUtils")
       (synopsis "Additional capabilities and speed for GenomicRanges operations")
       (description
