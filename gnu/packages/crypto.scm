@@ -21,7 +21,7 @@
 ;;; Copyright © 2020 pukkamustard <pukkamustard@posteo.net>
 ;;; Copyright © 2021 Ellis Kenyő <me@elken.dev>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2021, 2022, 2025 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Allan Adair <allan@adair.no>
 ;;; Copyright © 2022, 2024-2025 Maxim Cournoyer <maxim@guixoic.coop>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
@@ -1581,7 +1581,7 @@ non-encrypted files.")
 (define-public cryfs
   (package
     (name "cryfs")
-    (version "0.11.4")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
@@ -1589,52 +1589,53 @@ non-encrypted files.")
              "https://github.com/cryfs/cryfs/releases/download/"
              version "/cryfs-" version ".tar.xz"))
        (sha256
-        (base32 "0a48qijfrd02ianp19x3kz24w1pgigmlxdr5nks0gag7z5b2s7m7"))))
+        (base32 "1va8l8yfyi895604i8npq2b5ha0ixiqydlrq2nck2106w52wrm3s"))
+       (patches (search-patches
+                 ;; https://github.com/cryfs/cryfs/pull/494
+                 "cryfs-boost-1.88-fix.patch"
+                 ;; https://github.com/cryfs/cryfs/pull/500
+                 "cryfs-boost-1.89-fix.patch"))))
     (build-system cmake-build-system)
     (arguments
      '(#:modules ((guix build cmake-build-system)
                   (guix build utils)
                   (srfi srfi-1))
        #:configure-flags
-        ;; Note: This also disables checking for security issues.
-       `("-DCRYFS_UPDATE_CHECKS=OFF"
-         ;; This helps us use some dependencies from Guix instead of conan.
-         ;; crypto++ is still bundled: https://github.com/cryfs/cryfs/issues/369
-         ;; Googletest is also since I wasn't sure how to unbundle that.
-         ,(string-append "-DDEPENDENCY_CONFIG=" (getcwd)
-                         "/cmake-utils/DependenciesFromLocalSystem.cmake"))
+       ;; Note: This also disables checking for security issues.
+       '("-DCRYFS_UPDATE_CHECKS=OFF"
+         "-DBUILD_TESTING=ON")
+       ;; crypto++ is still bundled: https://github.com/cryfs/cryfs/issues/369
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'fix-up
            (lambda* (#:key tests? #:allow-other-keys)
-             ;; Remove junk directory that breaks the build
-             (chdir "..") (delete-file-recursively ".circleci")
+             (chdir "..") ; We end up in .github somehow
              ;; Install documentation with Guix defaults.
              (substitute* "doc/CMakeLists.txt"
                (("CONFIGURATIONS Release")
                 "CONFIGURATIONS Release RelWithDebInfo"))
-             (when tests?
-               (substitute* "CMakeLists.txt"
-                 (("option.BUILD_TESTING .build test cases. OFF.")
-                  "option(BUILD_TESTING \"build test cases\" ON)")))))
+             ;; Disable Fuse tests.
+             (substitute* "test/cryfs-cli/CMakeLists.txt"
+               (("CliTest_IntegrityCheck.cpp") "")
+               (("CliTest_Setup.cpp") "")
+               (("CliTest_WrongEnvironment.cpp") "")
+               (("CryfsUnmountTest.cpp") ""))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (let ((tests (find-files "." "-test$")))
-                 ;; XXX: Disable failing tests. Unfortunately there are a
-                 ;; few. Some only fail in the build environment due to
-                 ;; FUSE not being available.
+               (setenv "HOME" "/tmp")
+               (let ((tests (find-files "test/" "-test$")))
+                 ;; SignalHandler/SignalCatcher tests fails
+                 ;; Fuse tests can't run in build env.
                  (for-each invoke
                            (lset-difference string-contains
                                             tests
                                             '("cpp-utils-test"
-                                              "cryfs-cli-test"
-                                              "blobstore-test"
                                               "fspp-test"))))))))))
     (native-inputs
-     (list pkg-config python-wrapper))
+     (list googletest pkg-config python-wrapper))
     (inputs
-     (list boost-1.83 curl fuse-2 range-v3 spdlog))
+     (list boost curl fuse-2 range-v3 spdlog))
     (home-page "https://www.cryfs.org/")
     (synopsis "Encrypted FUSE filesystem for the cloud")
     (description "CryFS encrypts your files, so you can safely store them anywhere.
@@ -1643,7 +1644,8 @@ others.  CryFS creates an encrypted userspace filesystem that can be mounted
 via FUSE without root permissions.  It is similar to EncFS, but provides
 additional security and privacy measures such as hiding file sizes and directory
 structure.  However CryFS is not considered stable yet by the developers.")
-    (license license:lgpl3+)))
+    (license license:lgpl3+)
+    (properties `((tunable? . #t)))))
 
 (define-public b3sum
   (package

@@ -1142,6 +1142,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/crc32c-unbundle-googletest.patch		\
   %D%/packages/patches/crda-optional-gcrypt.patch		\
   %D%/packages/patches/clucene-contribs-lib.patch               \
+  %D%/packages/patches/cryfs-boost-1.88-fix.patch		\
+  %D%/packages/patches/cryfs-boost-1.89-fix.patch		\
   %D%/packages/patches/csvkit-set-locale-for-tests.patch			\
   %D%/packages/patches/ctranslate2-local-build.patch		\
   %D%/packages/patches/ctune-cmake-disable-git-clone.patch		\
