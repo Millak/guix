@@ -1586,7 +1586,11 @@ use on a given system.")
         (base32 "1gginbl76vmpccjwx93cmg8ibap8l40swly3bjv7rhmdwv6ikpnk"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--disable-bindings")))
+     (list
+      #:configure-flags
+      #~(list "--disable-bindings"
+              #$(string-append "CFLAGS="
+                               " -Wno-error=implicit-function-declaration"))))
     (native-inputs
      (list libxml2
            parallel
