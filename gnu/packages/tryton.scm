@@ -66,13 +66,13 @@ installed in the same environments.  Collecting only paths actually containing
 (define-public trytond
   (package
     (name "trytond")
-    (version "7.0.37")
+    (version "7.0.40")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond" version))
        (sha256
-        (base32 "1i51yd5kvmcny5k36pj0l3rblyig9zxv5pvvln9c2xq2nkndqqr6"))
+        (base32 "198scaad4wvpxxa7nmzkpmbymqyjay7z207px67v73br5l86q154"))
        (patches (search-patches "trytond-add-guix_trytond_path.patch"))))
     (build-system pyproject-build-system)
     (arguments
