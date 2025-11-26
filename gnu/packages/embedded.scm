@@ -2072,48 +2072,45 @@ whereas kdmx creates pseudo-ttys.")
 (define-public mbed-tools
   (package
     (name "mbed-tools")
-    (version "7.53.0")
+    (version "7.59.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "mbed-tools" version))
        (sha256
-        (base32
-         "0gdmyxy97bqr9bmkg90v3axmrr2db734nwzq2l05z84x9qiarc9i"))))
+        (base32 "12h8g8mv3llwqcjii4zvz94mv7cmhmbc204w4nqd6nnhwfvcl6ky"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "setup.py"
-               (("\"Click>=7.1,<8\"")
-                "\"Click>=7.1\""))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; Remove this failing test.
-               (delete-file "tests/ci_scripts/test_sync_board_db.py")
-               (invoke "pytest" "-vv")))))))
+     (list
+      ;; tests: 631 passed, 27 skipped, 1 warning
+      #:test-flags
+      ;; E   ModuleNotFoundError: No module named 'mbed_tools_ci_scripts'
+      #~(list "--ignore=tests/ci_scripts/test_sync_board_db.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pytest.ini"
+                (("addopts = .*") "")))))))
     (native-inputs
-     (list python-pytest
-           python-pytest-cov
-           python-factory-boy
+     (list python-factory-boy
+           python-pytest
            python-requests-mock
-           python-semver))
+           python-semver
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-dotenv
-           python-click
-           python-pdoc3
+     (list python-click
+           python-dotenv
            python-gitpython
-           python-tqdm
-           python-tabulate
-           python-requests
-           python-psutil
-           python-pyudev
-           python-typing-extensions
            python-jinja2
-           python-pyserial))
-    (build-system python-build-system)
+           python-psutil
+           python-pyserial
+           python-pyudev
+           python-requests
+           python-tabulate
+           python-tqdm
+           python-typing-extensions))
     (home-page "https://github.com/ARMmbed/mbed-tools")
     (synopsis "ARM Mbed command line tools")
     (description "This package is the successor of @code{mbed-cli}.  It
