@@ -1004,13 +1004,13 @@ methods.")
 (define-public trytond-account-payment-clearing
   (package
     (name "trytond-account-payment-clearing")
-    (version "7.0.5")
+    (version "7.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_payment_clearing" version))
        (sha256
-        (base32 "15q0jmkckxq4nhvkyhh88jm7gmcw54p6zgragw0d502c7l8bargx"))))
+        (base32 "0ghbz7d4l6dywnb4qclldf2ynv98hpp9451zwad83bigfyyf0h40"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_payment_clearing"))
     (native-inputs
