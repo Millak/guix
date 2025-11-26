@@ -1431,13 +1431,13 @@ continental accounting model for stock valuation.")
 (define-public trytond-account-stock-eu
   (package
     (name "trytond-account-stock-eu")
-    (version "7.0.5")
+    (version "7.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_account_stock_eu" version))
        (sha256
-        (base32 "1iw60aqwjz8wkpkqkc2jvv4i303cgyrym6z716xycqjmg46rn61f"))))
+        (base32 "15mp546dn764cbna72z9wwq7nw4w78p44hw56wlmvd5hwkaq2i9w"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "account_stock_eu"))
     (native-inputs
