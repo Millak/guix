@@ -4079,12 +4079,12 @@ payments prior to the creation of any invoice.")
 (define-public trytond-sale-point
   (package
     (name "trytond-sale-point")
-    (version "7.0.2")
+    (version "7.0.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "trytond_sale_point" version))
               (sha256
-               (base32 "1b7jjs14h6n8vipj5wyk07jaa5i71nb1x0x8g1zwgzh49k6pjl9l"))))
+               (base32 "0m77c14id626b3f2gqi16rxl4g0wfywhp6iyiwm9cxsdd5qj8wb3"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "sale_point"))
     (native-inputs %standard-trytond-native-inputs)
