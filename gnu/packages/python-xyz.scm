@@ -26141,29 +26141,6 @@ a notation for identifying weeks; yyyyWww (where the W is a literal).
 Week instances stringify to this form.")
     (license license:bsd-3)))
 
-(define-public python-future-fstrings
-  (package
-    (name "python-future-fstrings")
-    (version "0.4.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "future_fstrings" version))
-       (sha256
-        (base32
-         "0ydxqz2dvns44g55p8ix2x18qkfk3aaz0m0dc70f3g6n8js35h47"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-tokenize-rt))
-    (home-page "https://github.com/asottile/future-fstrings")
-    (synopsis "Backport of fstrings to Python < 3.6")
-    (description
-     "This package provides a UTF-8 compatible encoding
-@code{future_fstrings}, which performs source manipulation.  It decodes the
-source bytes using the UTF-8 encoding and then rewrites Python 3.6 style
-@code{f} strings.")
-    (license license:expat)))
-
 (define-public bpython
   (package
     (name "bpython")
