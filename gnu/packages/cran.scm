@@ -6531,6 +6531,8 @@ classification, regression and survival trees.")
     (build-system r-build-system)
     (arguments
      (list
+      ;; 30 tests currently fail because of the removal of testthat::with_mock
+      #:tests? #false
       #:phases
       '(modify-phases %standard-phases
          ;; We need this for failing tests, because lubridate needs these
