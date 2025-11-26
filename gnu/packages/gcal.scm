@@ -18,44 +18,52 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages gcal)
-  #:use-module (guix packages)
-  #:use-module (guix download)
-  #:use-module (guix build-system gnu)
-  #:use-module (guix licenses)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages check)
-  #:use-module (gnu packages pkg-config))
+  #:use-module (gnu packages pkg-config)
+  #:use-module (guix build-system gnu)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix packages))
 
 
 (define-public gcal
   (package
     (name "gcal")
     (version "4.2.0")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append "https://www.alteholz.dev/gnu/gcal-"
-                                 version ".tar.xz"))
-             (sha256
-              (base32
-               "1p3q6his31bxs24nsgpfavw3nlhalqf0zak4f3b530p725s2vgfq"))
-             (modules '((guix build utils)))
-             (snippet
-              '(begin
-                 ;; Adjust the bundled gnulib to work with glibc 2.28.  See e.g.
-                 ;; "m4-gnulib-libio.patch".  This is a phase rather than patch
-                 ;; or snippet to work around <https://bugs.gnu.org/32347>.
-                 (substitute* (find-files "lib" "\\.c$")
-                   (("#if defined _IO_ftrylockfile")
-                    "#if defined _IO_EOF_SEEN"))
-                 (substitute* "lib/stdio-impl.h"
-                   (("^/\\* BSD stdio derived implementations")
-                    (string-append "#if !defined _IO_IN_BACKUP && defined _IO_EOF_SEEN\n"
-                                   "# define _IO_IN_BACKUP 0x100\n"
-                                   "#endif\n\n"
-                                   "/* BSD stdio derived implementations")))
-                 #t))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.alteholz.dev/gnu/gcal-"
+                           version ".tar.xz"))
+       (sha256
+        (base32
+         "1p3q6his31bxs24nsgpfavw3nlhalqf0zak4f3b530p725s2vgfq"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; Adjust the bundled gnulib to work with glibc 2.28.  See e.g.
+            ;; "m4-gnulib-libio.patch".  This is a phase rather than patch
+            ;; or snippet to work around <https://bugs.gnu.org/32347>.
+            (substitute* (find-files "lib" "\\.c$")
+              (("#if defined _IO_ftrylockfile")
+               "#if defined _IO_EOF_SEEN"))
+            (substitute* "lib/stdio-impl.h"
+              (("^/\\* BSD stdio derived implementations")
+               (string-append
+                "#if !defined _IO_IN_BACKUP && defined _IO_EOF_SEEN\n"
+                "# define _IO_IN_BACKUP 0x100\n"
+                "#endif\n\n"
+                "/* BSD stdio derived implementations")))
+            #t))))
     (build-system gnu-build-system)
-    (native-inputs (list check pkg-config))
-    (arguments `(#:configure-flags '("LDFLAGS=-lm")))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "LDFLAGS=-lm")))
+    (native-inputs
+     (list check
+           pkg-config))
     (home-page "https://www.gnu.org/software/gcal/")
     (synopsis "Calculating and printing a wide variety of calendars")
     (description
@@ -66,4 +74,4 @@ countries, which can be complemented by user-made lists of fixed dates to
 make an agenda.  Gcal can also calculate astronomical data, such as the
 phases of the moon, and supports alternative calendar formats: Julian,
 Gregorian, Islamic, Chinese and more.")
-    (license gpl3+)))
+    (license license:gpl3+)))
