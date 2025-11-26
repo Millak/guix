@@ -1993,6 +1993,42 @@ and Zilog Z80 families, plus many of their variants.")
     (description "PSPTool is a tool for dealing with AMD binary blobs")
     (license license:gpl3+)))
 
+(define-public python-psptrace
+  (package
+    (name "python-psptrace")
+    (version "0.7")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "psptrace" version))
+       (sha256
+        (base32 "1mrympnpkkns2dxq34h9x9qn667ihdvbbf0wpmbp3jli0n7bj7ih"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests in PyPI or Git
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-prettytable
+           python-psptool))
+    (home-page "https://github.com/PSPReverse/PSPTrace")
+    (synopsis "Capture of an AMD boot procedure")
+    (description
+     "PSPTrace is a tool for correlating an SPI capture of an AMD boot
+procedure to the PSP firmware components.")
+    (license license:gpl3+)))
+
+(define-public python-psptrace-bootstrap
+  (hidden-package
+   (package/inherit python-psptrace
+     (name "python-psptrace")
+     (arguments
+      (list #:tests? #f
+            #:phases
+            #~(modify-phases %standard-phases
+                (delete 'sanity-check))))
+     (propagated-inputs '()))))
+
 (define-public agent-proxy
   (let ((commit "8927798a71d246871ea8fc22b4512296a3fa1765")
         (revision "0"))
