@@ -24662,34 +24662,6 @@ parts of the lines that were modified.")
 It supports both normal and Unicode strings.")
     (license license:gpl2+)))
 
-(define-public python-scandir
-  (package
-    (name "python-scandir")
-    (version "1.10.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "scandir" version))
-       (sha256
-        (base32 "1bkqwmf056pkchf05ywbnf659wqlp6lljcdb0y88wr9f0vv32ijd"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "python" "test/run_tests.py"))))))
-    (home-page "https://github.com/benhoyt/scandir")
-    (synopsis "Directory iteration function")
-    (description
-     "Directory iteration function like os.listdir(), except that instead of
-     returning a list of bare filenames, it yields DirEntry objects that include
-     file type and stat information along with the name.  Using scandir() increases
-     the speed of os.walk() by 2-20 times (depending on the platform and file
-                                                     system) by avoiding unnecessary calls to os.stat() in most cases.
-
-     This package is part of the Python standard library since version 3.5.")
-    (license license:bsd-3)))
-
 (define-public python-factory-boy
   (package
     (name "python-factory-boy")
