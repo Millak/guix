@@ -643,14 +643,14 @@ BIND and djbdns---whilst using relatively little memory.")
 (define-public unbound
   (package
     (name "unbound")
-    (version "1.24.1")
+    (version "1.24.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.unbound.net/downloads/unbound-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1azfl6dkab043jjs7r8fxkh3mwxhg1wgc9q5mqcrch1rw8ricavz"))))
+        (base32 "1nwwwmwazwx40nm88lhh7k1basml2ai6j9q30gnclvca00zbbrs4"))))
     (build-system gnu-build-system)
     (outputs '("out" "python"))
     (native-inputs
