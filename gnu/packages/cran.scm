@@ -50738,6 +50738,7 @@ vignettes in all common formats.")
            r-quanteda
            r-stm
            r-testthat
+           r-tidyr
            r-tm
            r-vdiffr))
     (home-page "https://github.com/juliasilge/tidytext")
