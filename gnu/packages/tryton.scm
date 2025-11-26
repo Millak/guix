@@ -3038,13 +3038,13 @@ pre-computes and stores prices for each product and price list.")
 (define-public trytond-product-price-list-dates
   (package
     (name "trytond-product-price-list-dates")
-    (version "7.0.0")
+    (version "7.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_product_price_list_dates" version))
        (sha256
-        (base32 "075xhsp94mniwd97qrbhizjy3ijcslm6ygl3fpi275cvz5dx3qad"))))
+        (base32 "1lm2x8d3z19sp24k755ncfsvqf7s6vi670wbhvdrx2hkqy0hvpgn"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "product_price_list_dates"))
     (native-inputs
