@@ -26939,6 +26939,11 @@ visualization of similarity data.")
                            (guix build minify-build-system))
       #:phases
       '(modify-phases (@ (guix build r-build-system) %standard-phases)
+         ;; These two tests use the deprecated procedure "with_mock" that has
+         ;; since been removed from testthat.
+         (add-after 'unpack 'testthat-compatibility
+           (lambda _
+             (delete-file "tests/testthat/test-on_done.R")))
          (add-after 'unpack 'process-javascript
            (lambda* (#:key inputs #:allow-other-keys)
              (with-directory-excursion "inst/lib/export"
