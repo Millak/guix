@@ -1314,23 +1314,23 @@ is not available for Guile 2.0.")
        (replace "guile" guile-2.2)))))
 
 (define-public guile-fibers-next
-  (let ((commit "96cd1f4d4639b5c0f0b2fb7ebfd29b339a368dcc")
+  (let ((commit "297359f0ad655378bcc3ff0d4e96101965ef39b4")
         (revision "0"))
     (package
       (inherit guile-fibers)
       (name "guile-fibers-next")
-      (version (git-version "1.3.1"
+      (version (git-version "1.4.2"
                             revision
                             commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://github.com/wingo/fibers")
+                      (url "https://codeberg.org/guile/fibers.git")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0kmsbdcpw2qdl20ihjsdcbw3nlii9f6zpkhhrwqmlyqi46hyq9xl"))))
+                  "0qh0czz5qvk5mmrc8x2gmvl5psdfd22q2rhzj4jrpan6k3d55bl8"))))
       (inputs
        (modify-inputs (package-inputs guile-fibers)
          (replace "guile" guile-next)))
