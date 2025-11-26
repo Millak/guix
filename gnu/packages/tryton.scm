@@ -3118,13 +3118,13 @@ for production management: Bill of material and production order.")
 (define-public trytond-production-outsourcing
   (package
     (name "trytond-production-outsourcing")
-    (version "7.0.1")
+    (version "7.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "trytond_production_outsourcing" version))
        (sha256
-        (base32 "105xn6w0xqvqw3y7yyapv8ks3kfk7ffm5g00vy0scl3c9qi8qi5s"))))
+        (base32 "16f4d5jma1ygjn8rwi1pi7w6nyj2n2nw0qph7jjb5pzfdw88g3g6"))))
     (build-system pyproject-build-system)
     (arguments (tryton-arguments "production_outsourcing"))
     (native-inputs %standard-trytond-native-inputs)
