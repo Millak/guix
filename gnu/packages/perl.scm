@@ -4557,6 +4557,25 @@ SHA-1 message digest algorithm for use by Perl programs.")
     (home-page "https://metacpan.org/release/Digest-SHA1")
     (license (package-license perl))))
 
+(define-public perl-digest-sha3
+  (package
+    (name "perl-digest-sha3")
+    (version "1.05")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://cpan/authors/id/M/MS/MSHELOR/"
+                                  "Digest-SHA3-" version ".tar.gz"))
+              (sha256
+               (base32
+                "08l5b93crjb657yha8m8gsci4pqa8fhpfj3hwmaify1bkc3vkwdd"))))
+    (build-system perl-build-system)
+    (synopsis "Perl implementation of the SHA-3 message digest algorithm")
+    (description
+     "This package provides @code{Digest::SHA3}, an implementation of the NIST
+SHA-3 message digest algorithm for use by Perl programs.")
+    (home-page "https://metacpan.org/release/Digest-SHA3")
+    (license (package-license perl))))
+
 (define-public perl-dist-checkconflicts
   (package
     (name "perl-dist-checkconflicts")
