@@ -3733,6 +3733,10 @@ equipped with spoken co-driver notes and co-driver icons.")
        (base32
         "1dns0nhymak44by18sv48m4xb2skiwbi2i3nb9hl6w9iwd2i2brf"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "CFLAGS=-Wno-error=implicit-function-declaration")))
     (inputs
      (list libxaw libxt))
     (home-page "https://www.gnu.org/software/gnushogi/")
