@@ -2363,7 +2363,7 @@ XDG-Output for wlclock to work.")
 (define-public wlroots
   (package
     (name "wlroots")
-    (version "0.19.1")
+    (version "0.19.2")
     (source
      (origin
        (method git-fetch)
@@ -2372,7 +2372,7 @@ XDG-Output for wlclock to work.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w3nlrvy7625jh4f0l923f7irywzfdashcw5hbf8jq9kpjhpm323"))))
+        (base32 "0w1mq72r92zk9z650gdik17h6rxqnxjy63r2mfj423zxl54s2lzi"))))
     (build-system meson-build-system)
     (arguments
      (list #:phases
