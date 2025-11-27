@@ -19266,9 +19266,36 @@ is then merged.")
         '(modify-phases %standard-phases
            (add-after 'unpack 'skip-bad-tests
              (lambda _
-               ;; These tests fail.  Some fail because of unimportant
-               ;; differences in printed messages.
                (with-directory-excursion "tests/testthat/"
+                 ;; All of these fail because with_mock has been removed from
+                 ;; r-testthat.
+                 (substitute* "test-cyto_channels-helpers.R"
+                   (("^test_that.*cyto_channel_select.*" m)
+                    (string-append m "skip('guix')")))
+                 (substitute* "test-cyto_gate_draw.R"
+                   (("^test_that.*cyto_gate_draw.*" m)
+                    (string-append m "skip('guix')")))
+                 (substitute* "test-cyto_gate_helpers.R"
+                   (("^test_that.*cyto_gate_edit.*" m)
+                    (string-append m "skip('guix')")))
+                 (substitute* "test-cyto_helpers.R"
+                   (("^test_that.*cyto_markers_edit.*" m)
+                    (string-append m "skip('guix')"))
+                   (("^test_that.*cyto_details_edit.*" m)
+                    (string-append m "skip('guix')"))
+                   (("^test_that.*cyto_channel_match.*" m)
+                    (string-append m "skip('guix')")))
+                 (substitute* "test-cyto_spillover_compute.R"
+                   (("^test_that.*cyto_spillover_compute universal reference.*" m)
+                    (string-append m "skip('guix')"))
+                   (("^test_that.*cyto_spillover_compute internal reference.*" m)
+                    (string-append m "skip('guix')")))
+                 (substitute* "test-openCyto-plugins.R"
+                   (("^test_that.*cyto_gate_manual.*" m)
+                    (string-append m "skip('guix')")))
+
+                 ;; These tests fail.  Some fail because of unimportant
+                 ;; differences in printed messages.
                  (substitute* "test-cyto_channels-helpers.R"
                    (("^test_that.*cyto_channels_restrict.*" m)
                     (string-append m "skip('guix')")))
