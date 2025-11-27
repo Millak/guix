@@ -1003,7 +1003,7 @@ specific SMBIOS tables.")
 (define-public liquidctl
   (package
     (name "liquidctl")
-    (version "1.13.0")
+    (version "1.15.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1012,7 +1012,7 @@ specific SMBIOS tables.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hpxkrfxm9c4v5ld7bh6qs9fmq9imz8s5i9l0l78l47bcm12nkrd"))))
+                "1cj4ag6h08clklqg63wpw1vvxfjx37a7ib081dd1z5bl0580zxl9"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
@@ -1020,7 +1020,9 @@ specific SMBIOS tables.")
                (add-before 'check 'set-runtime-dir
                  (lambda _
                    (setenv "XDG_RUNTIME_DIR" "/tmp"))))))
-    (native-inputs (list python-pytest))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-colorlog
            python-crcmod
