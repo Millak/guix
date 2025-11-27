@@ -20273,6 +20273,19 @@ annotations and ontologies.")
         (base32
          "1sp3f72rzlr822dxx42bswynrwwfx6f520hdhfdikqp13p2y4044"))))
     (properties `((upstream-name . "ABAEnrichment")))
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; These deprecated procedures have been removed in testthat.
+         (add-after 'unpack 'testthat-compatibility
+           (lambda _
+             (substitute* '("tests/testthat/test_0load_by_name.R"
+                            "tests/testthat/test_aba_enrich.R"
+                            "tests/testthat/test_detect_identifier.R"
+                            "tests/testthat/test_get_superstructures.R")
+               (("is_true\\(\\)") "expect_true")
+               (("is_false\\(\\)") "expect_false")))))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-abadata
