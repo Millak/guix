@@ -2038,7 +2038,7 @@ container management applications.")
             (let* ((out (assoc-ref outputs "out"))
                    (share (string-append out "/share"))
                    (bash-completions-dir
-                    (string-append out "/etc/bash-completion.d"))
+                    (string-append out "/share/bash-completion/completions"))
                    (zsh-completions-dir
                     (string-append share "/zsh/site-functions"))
                    (fish-completions-dir
