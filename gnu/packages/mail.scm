@@ -1376,12 +1376,16 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
       #~(list (format #f "-Dguile-extension-dir=~a/lib" #$output))
       #:phases
       #~(modify-phases %standard-phases
+          ;; This phase can be removed in the next major release of mu.
+          ;; <https://github.com/djcb/mu/commit/f237a2b9905475fb95da6a04e318d10cab61ddeb>
+          ;; <https://github.com/djcb/mu/commit/fc4d5b01a703e8c8cc390cfea135f08d3b45ccab>
           (add-after 'unpack 'patch-bin-references
             (lambda _
               (substitute* '("guile/tests/test-mu-guile.cc"
                              "mu/tests/test-mu-query.cc")
                 (("/bin/sh") (which "sh")))
               (substitute* '("lib/tests/bench-indexer.cc"
+                             "lib/utils/mu-utils-file.cc"
                              "lib/utils/mu-test-utils.cc")
                 (("/bin/rm") (which "rm")))
               (substitute* '("lib/mu-maildir.cc")
