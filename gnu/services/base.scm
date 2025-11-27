@@ -534,7 +534,8 @@ upon boot."
                                  (let ((errno (system-error-errno args)))
                                    (format #t "failed to unmount '~a': ~a~%"
                                            mount-point (strerror errno))))))
-                           (filter (negate known?) (mount-points)))
+                           ;; Unmount mount points in reverse order of mounting.
+                           (reverse (filter (negate known?) (mount-points))))
                  #f))))
 
     (cons* sink user-unmount
