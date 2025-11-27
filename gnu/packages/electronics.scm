@@ -2493,7 +2493,7 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
                 (("\"/usr/bin/env\", ")
                  ""))
               (substitute* "sbysrc/sby.py"
-                (("/usr/bin/env python")
+                (("/usr/bin/env python3")
                  (search-input-file inputs "bin/python3")))))
           (add-after 'install 'python:wrap
             (assoc-ref python:%standard-phases 'wrap)))))
