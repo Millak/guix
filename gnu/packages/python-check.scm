@@ -3061,32 +3061,39 @@ access to test session metadata.")
 (define-public python-pytest-mockito
   (package
     (name "python-pytest-mockito")
-    (version "0.0.4")
+    (version "0.0.5")
     (source
      (origin
-       (method git-fetch)               ;no tests in pypi archive
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/kaste/pytest-mockito")
-             (commit version)))
+              (url "https://github.com/kaste/pytest-mockito")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0hnpazaw3mglx1c405z2hkavgan99rqb3wgrcqk8x5kmhpay53xx"))))
-    (build-system python-build-system)
+        (base32 "0rq4mb1ycs3l1mpl682ybycvywmf4cp3vlrv9r1a9d2cb6qdwz8r"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "pytest" "-vv")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-hatch-vcs
+           python-hatchling
+           python-pytest-bootstrap
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-mockito python-pytest))
+     (list python-mockito))
     (home-page "https://github.com/kaste/pytest-mockito")
     (synopsis "Mockito base fixtures for Pytest")
-    (description "The @code{pytest-mockito} plugin provides base Mockito
-fixtures for Pytest.  It covers the main entry points of the Mockito mocking
-framework and makes it easy to undo any monkey patching.  The fixtures are:
+    (description
+     "The @code{pytest-mockito} plugin provides base Mockito fixtures for
+Pytest.  It covers the main entry points of the Mockito mocking framework and
+makes it easy to undo any monkey patching.
+
+The fixtures are:
 @itemize
 @item when
 @item when2
@@ -3095,7 +3102,7 @@ framework and makes it easy to undo any monkey patching.  The fixtures are:
 @item unstub
 @item spy2
 @end itemize")
-    (license license:expat)))
+     (license license:expat)))
 
 (define-public python-pytest-mpi
   (package
