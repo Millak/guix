@@ -534,7 +534,7 @@ POSIX Shell}, @url{https://www.gnu.org/software/bash/, Bash}, and
                            (string-append out "/bin/starship")))
                      (share (string-append out "/share"))
                      (bash-completion-dir
-                       (string-append out "/etc/bash-completion.d/"))
+                       (string-append out "/share/bash-completion/completions"))
                      (zsh-completion-dir
                        (string-append share "/zsh/site-functions/"))
                      (fish-completion-dir
