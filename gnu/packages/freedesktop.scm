@@ -1605,7 +1605,7 @@ multiplexer to the KMS/DRM Linux kernel devices.")
 (define-public wev
   (package
     (name "wev")
-    (version "1.0.0")
+    (version "1.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1614,7 +1614,7 @@ multiplexer to the KMS/DRM Linux kernel devices.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0l71v3fzgiiv6xkk365q1l08qvaymxd4kpaya6r2g8yzkr7i2hms"))))
+                "06890chzir0pp77akx04m4slyiyqr3kv9vjplqgmdf83sghki46i"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no tests
