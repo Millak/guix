@@ -69,6 +69,7 @@
 ;;; Copyright © 2025 Liam Hupfer <liam@hpfr.net>
 ;;; Copyright © 2025 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2025 Lee Thompson <lee.p.thomp@gmail.com>
+;;; Copyright © 2025 Alexandre Hannud Abdo <abdo@member.fsf.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5031,3 +5032,54 @@ is necessary, such as when composing tabular data using text.")
 technical and idiosyncratic feel—perfect for headers and pull-quotes.  Made to
 work well together with Mona Sans.")
     (license license:silofl1.1)))
+
+
+(define-public font-peppercarrot
+  (package
+    (name "font-peppercarrot")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://framagit.org/peppercarrot/fonts")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yw5wjd6rydgllf0c3g5nh9zqbnhc1wbbhsx36c08isr28sy59mm"))))
+    (build-system font-build-system)
+    (arguments
+     (list
+      #:license-file-regexp ".*\\.(COPYRIGHT|LICENSE)$"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; License files are spread in subdirectories, gotta catch 'em all!
+          (replace 'install-license-files
+            (let ((install-license-files (assoc-ref %standard-phases
+                                                    'install-license-files))
+                  (package-directories (find-files "."
+                                                   (lambda (file stat)
+                                                     (eq? 'directory
+                                                          (stat:type stat)))
+                                                   #:directories? #t)))
+              (lambda args
+                (for-each (lambda (directory)
+                            (with-directory-excursion directory
+                              (apply install-license-files args)))
+                          package-directories)))))))
+    (home-page "https://www.peppercarrot.com/en/fonts/")
+    (synopsis "Fonts used by the comic strip Pepper&Carrot")
+    (description
+     "This package provides a collection of open fonts compiled and adapted by David
+Revoy and collaborators for use in the comic strip Pepper&Carrot.")
+    ;; We list all licenses used for any of the many fonts in the collection
+    (license (list license:silofl1.1
+                   license:silofl1.0
+                   (license:non-copyleft
+                    "http://jikasei.me/info/license.html#M_FONT_LICENSE_1")
+                   license:gpl3
+                   license:gpl3+
+                   license:gpl2
+                   license:gpl2+
+                   license:asl2.0
+                   license:cc-by3.0))))
