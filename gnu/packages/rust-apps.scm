@@ -4219,7 +4219,8 @@ It supports taxonomies, shortcodes, and live reloading.")
                           (share (string-append out "/share"))
                           (man1 (string-append share "/man/man1"))
                           (bash-completions-dir
-                            (string-append out "/etc/bash-completion.d"))
+                           (string-append
+                            out "/share/bash-completion/completions"))
                           (zsh-completions-dir
                             (string-append share "/zsh/site-functions"))
                           (fish-completions-dir
