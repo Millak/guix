@@ -271,6 +271,20 @@ Speex, WavPack TrueAudio, WAV, AIFF, MP4 and ASF files.")
     ;; Dual-licensed: user may choose between LGPLv2.1 or MPLv1.1.
     (license (list license:lgpl2.1 license:mpl1.1))))
 
+(define-public taglib-1
+  (package/inherit taglib
+    (name (package-name taglib))
+    (version "1.13.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/taglib/taglib")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0phliksg5r1n15prcbp391xk2z1fh2c7zlc7h0nabpwkf6j08za1"))))))
+
 (define-public taglib-next
   (package
     (inherit taglib)
