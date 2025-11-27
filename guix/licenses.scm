@@ -101,6 +101,7 @@
             ruby
             sgifreeb2.0
             silofl1.1
+            silofl1.0
             sleepycat
             tcl/tk
             unicode
@@ -720,8 +721,15 @@ at URI, which may be a file:// URI pointing the package's tree."
 
 (define silofl1.1
   (license "SIL OFL 1.1"
-           "http://scripts.sil.org/OFL_web"
+           "https://openfontlicense.org/"
            "https://www.gnu.org/licenses/license-list#SILOFL"))
+
+(define silofl1.0
+  (license "SIL OFL 1.0"
+           "https://openfontlicense.org/documents/OFL-1.0.txt"
+           "Historical version of the SIL OFL, preserved only for historical
+            reasons. It is recommended that all authors use version 1.1 of the
+            OFL rather than version 1.0."))
 
 (define sleepycat
   (license "Sleepycat"
