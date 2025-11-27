@@ -3438,25 +3438,17 @@ internet.")
 (define-public python-pytest-repeat
   (package
     (name "python-pytest-repeat")
-    (version "0.9.1")
+    (version "0.9.4")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "pytest-repeat" version))
+       (uri (pypi-uri "pytest_repeat" version))
        (sha256
-        (base32 "0nxdbghjz6v4xidl5ky9wlx6z4has3vygj5r7va5ccdb8nbjilsw"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
-    (propagated-inputs
-     (list python-pytest))
+        (base32 "11a449zn7lhjyjjw40sv2c63i0mwr7q1cpbyj7kczzx6z96w2anr"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools-scm))
+     (list python-hatchling
+           python-pytest-bootstrap))
     (home-page "https://github.com/pytest-dev/pytest-repeat")
     (synopsis "Pytest plugin for repeating tests")
     (description "@code{pytest-repeat} is a plugin for Pytest that makes it
