@@ -15186,6 +15186,14 @@ including functions for geolocation and routing.")
         (base32 "1zm1zfbd0qk6icw65m9hz1hgyqj632ibq3qilidvx5jy7jh8nbpy"))))
     (properties `((upstream-name . "ggmosaic")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'ggplot-compatibility
+           (lambda _
+             (substitute* "R/scale-product.R"
+               (("is.waive") "is_waiver")))))))
     (propagated-inputs (list r-dplyr
                              r-ggplot2
                              r-ggrepel
