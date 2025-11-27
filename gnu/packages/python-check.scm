@@ -3938,23 +3938,19 @@ simplify testing of asynchronous tornado applications.")
     (version "0.6.0.post2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-tornasync" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/eukaryote/pytest-tornasync")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0pdyddbzppkfqwa7g17sdfl4w2v1hgsky78l8f4c1rx2a7cvd0fp"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #false ; TODO: fails at "from test import MESSAGE, PAUSE_TIME"
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "--verbose")))))))
+        (base32 "0iwaxvaxx9v0s1sx4kh90kpf1krzwqh73sg6lv3f2gvh0wjym85f"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest-bootstrap
+           python-setuptools))
     (propagated-inputs
-     (list python-pytest python-tornado-6))
+     (list python-tornado-6))
     (home-page "https://github.com/eukaryote/pytest-tornasync")
     (synopsis "Pytest plugin for testing Tornado code")
     (description
