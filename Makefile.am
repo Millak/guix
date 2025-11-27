@@ -104,6 +104,7 @@ MODULES =					\
   guix/discovery.scm				\
   guix/android-repo-download.scm		\
   guix/bzr-download.scm            		\
+  guix/fossil-download.scm			\
   guix/git-download.scm				\
   guix/hg-download.scm				\
   guix/hash.scm					\
@@ -236,6 +237,7 @@ MODULES =					\
   guix/build/asdf-build-system.scm		\
   guix/build/bzr.scm				\
   guix/build/copy-build-system.scm		\
+  guix/build/fossil.scm				\
   guix/build/git.scm				\
   guix/build/hg.scm				\
   guix/build/glib-or-gtk-build-system.scm	\

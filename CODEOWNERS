@@ -68,6 +68,7 @@ guix/discovery\.scm                                @guix/core
 guix/docker\.scm                                   @guix/core
 guix/download\.scm                                 @guix/core
 guix/elf\.scm                                      @guix/core
+guix/fossil-download\.scm                          @guix/core
 guix/ftp-client\.scm                               @guix/core
 guix/gexp\.scm                                     @guix/core
 guix/git-authenticate\.scm                         @guix/core
@@ -484,6 +485,7 @@ gnu/services/version-control\.scm                  @guix/vcs
 gnu/tests/version-control\.scm                     @guix/vcs
 guix/build/bzr\.scm                                @guix/vcs
 guix/build/cvs\.scm                                @guix/vcs
+guix/build/fossil\.scm                             @guix/vcs
 guix/build/git\.scm                                @guix/vcs
 guix/build/hg\.scm                                 @guix/vcs
 guix/build/svn\.scm                                @guix/vcs

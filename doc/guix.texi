@@ -8737,6 +8737,52 @@ The example below denotes a version of gnu-standards to fetch:
 
 @end deftp
 
+For Fossil repositories, the module @code{(guix fossil-download)} defines
+the @code{fossil-fetch} origin method and @code{fossil-reference} data type
+for support of the Fossil @abbr{SCM, software configuration management} system.
+
+@deffn {Procedure} fossil-fetch ref hash-algo hash [name]
+Return a fixed-output derivation that fetches @var{ref}, a
+@code{<fossil-reference>} object.  The output is expected to have recursive
+hash @var{hash} of type @var{hash-algo} (a symbol).  Use @var{name} as
+the file name, or a generic name if @code{#f}.
+@end deffn
+
+@deftp {Data Type} fossil-reference
+This data type represents a Fossil reference
+for @code{fossil-fetch} to retrieve.
+
+@table @asis
+@item @code{uri} (type: string)
+The URI of a Fossil repository to clone, in one of the following forms,
+in which @code{[...]} denotes optional elements:
+
+@table @code
+@item http[s]://[userid[:password]@@]host[:port][/path]
+A HTTP/HTTPS URL.
+@item [file://]path/to/repo.fossil
+A file URI, where the path must have an extra leading @code{/}
+to use an absolute path (without the URI scheme, the repository
+is opened directly without cloning).
+@end table
+
+@item @code{check-in} (type: string)
+A @url{https://fossil-scm.org/home/doc/trunk/www/checkin_names.wiki,
+name of the check-in} to fetch, e.g.@: its canonical hexadecimal identifier,
+associated tag and/or timestamp.
+@end table
+
+The example below denotes the @code{version-3.51.1} tag
+of the SQLite repository:
+
+@lisp
+(fossil-reference
+ (uri "https://sqlite.org/src")
+ (check-in "version-3.51.1"))
+@end lisp
+
+@end deftp
+
 @node Defining Package Variants
 @section Defining Package Variants
 
