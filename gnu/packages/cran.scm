@@ -24102,6 +24102,15 @@ Files, Fine-tunes, Moderations, and legacy Engines endpoints.")
                 "1v4dg7xhz24dnp0zxn815x1405ig64ibii6y40la1gvmzcc41dz5"))))
     (properties `((upstream-name . "operator.tools")))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; This deprecated procedure has been removed in testthat.
+         (add-after 'unpack 'testthat-compatibility
+           (lambda _
+             (substitute* "tests/testthat/test-operators.R"
+               (("is_true\\(\\)") "expect_true")))))))
     (native-inputs (list r-testthat))
     (home-page "https://github.com/decisionpatterns/operator.tools")
     (synopsis "Utilities for working with R's operators")
