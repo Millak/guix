@@ -1000,7 +1000,7 @@ through the pass command.")
       #:install-plan
       #~'(("src/passage" "/bin/")
           ("src/completion/pass.bash-completion"
-           "/etc/bash-completion.d/passage")
+           "/share/bash-completion/completions/passage")
           ("src/completion/pass.fish-completion"
            "/share/fish/vendor_completions.d/passage")
           ("src/completion/pass.zsh-completion"
