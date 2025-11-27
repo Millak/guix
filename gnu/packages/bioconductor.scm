@@ -4628,7 +4628,7 @@ to understand their data better and discover new insights.")
            r-s4vectors
            r-seqinfo
            r-xml))
-    (native-inputs (list r-knitr r-runit))
+    (native-inputs (list r-genomeinfodbdata r-knitr r-runit))
     (home-page "https://bioconductor.org/packages/AnnotationHubData")
     (synopsis "Transform public data resources into Bioconductor data structures")
     (description
