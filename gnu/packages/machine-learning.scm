@@ -3325,6 +3325,7 @@ Python.")
          "-DFARMHASH_SOURCE_DIR=/tmp/farmhash"
          (string-append "-Dgemmlowp_ROOT=" #$(this-package-input "gemmlowp")))
       #:phases
+      (with-extensions (list (pyproject-guile-json))
       #~(modify-phases %standard-phases
           (add-after 'unpack 'chdir
             (lambda _
@@ -3444,7 +3445,7 @@ find_library(ML_DTYPES_LIBRARIES
               ((assoc-ref py:%standard-phases 'sanity-check)
                #:inputs `(("sanity-check.py" . ,#$(default-sanity-check.py))
                           ,@inputs)
-               #:outputs `(("out" . ,#$output:python))))))))
+               #:outputs `(("out" . ,#$output:python)))))))))
     (inputs
      (list abseil-cpp
            cpuinfo
