@@ -8308,6 +8308,7 @@ scale-sensitive information.")
     (properties `((upstream-name . "ggvenn")))
     (build-system r-build-system)
     (propagated-inputs (list r-dplyr r-ggplot2 r-rlang r-scales))
+    (native-inputs (list r-testthat))
     (home-page "https://cran.r-project.org/package=ggvenn")
     (synopsis "Draw Venn diagram with ggplot2")
     (description
