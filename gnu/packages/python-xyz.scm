@@ -24092,13 +24092,13 @@ manipulation and interaction with formal grammars.")
 (define-public python-invoke
   (package
     (name "python-invoke")
-    (version "2.2.0")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "invoke" version))
        (sha256
-        (base32 "1mbbixban0238bwkadgynw60n0jrq1ja5wl4zv3mka7i388bnv7f"))))
+        (base32 "01z73gmbmf5q3ynr3yfz894rrwr2v9406n94n1wjp4s89adz8nsi"))))
     ;; TODO: invoke/vendor contains:
     ;; - fluidity -> https://github.com/nsi-iff/fluidity   (14y old)
     ;; - lexicon  -> https://github.com/bitprophet/lexicon (2y old)
