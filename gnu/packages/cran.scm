@@ -9623,14 +9623,7 @@ palettes, color maps, and tools to evaluate them.")
       '(modify-phases %standard-phases
          ;; This is needed for vignettes.
          (add-before 'check 'set-HOME
-           (lambda _ (setenv "HOME" "/tmp")))
-         (add-after 'unpack 'delete-bad-tests
-           (lambda _
-             ;; 6 tests fail because of slight format differences.  The values
-             ;; are all fine.
-             (for-each delete-file
-                       '("tests/testthat/test_apa_print_glm.R"
-                         "tests/testthat/test_apa_print_model_comp.R")))))))
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list r-bookdown
            r-broom
@@ -9672,6 +9665,7 @@ palettes, color maps, and tools to evaluate them.")
     (native-inputs
      (list r-afex
            r-bayesfactor
+           r-beeswarm
            r-car
            r-dplyr
            r-effectsize
