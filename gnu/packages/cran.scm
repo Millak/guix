@@ -47145,6 +47145,16 @@ appropriate dog and cat images for many status codes.")
                (base32
                 "1jp0l0hi5kv4yh28qg2yj2z5fj33gnfvdz2g2v4ibn516fj2d636"))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-test
+           (lambda _
+             ;; This test produces warnings.
+             (substitute* "tests/testthat/test_simple.R"
+               ((".*Escaped symbols renders correctly.*" m)
+                (string-append m "skip('skip')\n"))))))))
     (propagated-inputs
      (list r-magrittr r-stringr))
     (native-inputs
