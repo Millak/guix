@@ -40556,6 +40556,38 @@ from a starlit sky.")
  for the Elixir programming language.")
     (license license:gpl3+)))
 
+(define-public emacs-elysium
+  (let ((commit "049ad3091baf3ce578791187c5e5e4f932c26044")
+        (revision "0"))
+    (package
+      (name "emacs-elysium")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/lanceberge/elysium/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0x1lk24xrd0jq14h4bcmp25x2brfi5rmdxigz0wj5ipf2b57vv2y"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:test-command
+        #~(list "emacs" "-Q" "--batch"
+                "-l" "test/test-elysium.el"
+                "-f" "ert-run-tests-batch-and-exit")))
+      (propagated-inputs
+       (list emacs-gptel))
+      (home-page "https://github.com/lanceberge/elysium/")
+      (synopsis "Automatically apply @code{gptel} changes")
+      (description
+       "This package extends @code{gptel}, using that package to generate
+suggestions based on the user's request.  Those code suggestions will then
+automatically be applied to the buffer in the format of a git merge.")
+      (license license:gpl3+))))
+
 (define-public emacs-dimmer
   (let ((commit "2f915b100044e09dd647b22085e1696249c4b115")
         (revision "1"))
