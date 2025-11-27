@@ -7013,7 +7013,7 @@ including parsing and code generation.")
     (inputs
      (list guile-3.0))
     (propagated-inputs
-     (list guile-bytestructures nyacc))
+     (list guile-bytestructures nyacc-1.08.1))
     (home-page "https://git.elephly.net/software/guile-drmaa.git")
     (synopsis "Guile bindings to DRMAA")
     (description "This project provides Guile bindings to the DRMAA library
