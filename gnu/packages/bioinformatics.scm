@@ -12854,8 +12854,8 @@ file formats, and ffTrack objects in multi-track panels.")
       (license license:gpl2))))
 
 (define-public r-gchain
-  (let ((commit "dc393e8dd0d8efaf36270c04d7112db8553db36a")
-        (revision "1"))
+  (let ((commit "19f8bb924fdadca136b9827b8538574b278e86a1")
+        (revision "2"))
     (package
       (name "r-gchain")
       (version (git-version "0.2.0" revision commit))
@@ -12867,13 +12867,21 @@ file formats, and ffTrack objects in multi-track panels.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "105wgi5w2fhwq1grsvj6zjigwg0sny3z7zr577q8ki3qffjwdkj0"))))
+                  "0cg7cy97g2w2dcd980jz5fawjjrfl590hdx3rsblavcdlnzcs3x4"))))
       (properties `((upstream-name . "gChain")))
       (build-system r-build-system)
       (arguments
        (list
         #:phases
         '(modify-phases %standard-phases
+           (add-after 'unpack 'biostrings-compatibility
+             (lambda _
+               (substitute* "R/gChain.R"
+                 ((" pairwiseAlignment") " pwalign::pairwiseAlignment")
+                 (("alignedPattern") "pwalign::alignedPattern")
+                 (("deletion\\(") "pwalign::deletion(")
+                 (("insertion\\(") "pwalign::insertion(")
+                 (("Biostrings::pattern") "pwalign::pattern"))))
            (add-after 'unpack 'skip-bad-tests
              (lambda _
                (substitute* "tests/testthat/test_gChain.R"
@@ -12882,13 +12890,6 @@ file formats, and ffTrack objects in multi-track panels.")
                   (string-append m "skip('guix')"))
                  ;; C stack usage  7973568 is too close to the limit
                  ((".*'testing \"\\*\" works'.*" m)
-                  (string-append m "skip('guix')"))
-                 ;; Accuracy problem
-                 ((".*'testing cgChain\\(\\) works'.*" m)
-                  (string-append m "skip('guix')"))
-                 ;; unable to find an inherited method for function ‘strand<-’
-                 ;; for signature ‘x = "GRangesList", value = "character"’
-                 ((".*'testing permute\\(\\) works'.*" m)
                   (string-append m "skip('guix')"))))))))
       (propagated-inputs
        (list r-bamutils
