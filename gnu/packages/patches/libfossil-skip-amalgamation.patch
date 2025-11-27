@@ -1,0 +1,43 @@
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -265,15 +265,11 @@
+ amal.flags     = -nc
+ amal.run       = TOPDIR="$(DIR.top)" $(SHELL.bash) $(bin.make-amal) --quiet
+ 
+ libfossil.c: $(amal.deps)
+ 	$(amal.run) $(amal.flags)
+-libfossil.h: libfossil.c
+-all: libfossil.c
+ @if ENABLE_CXX
+-libfossil.hpp: libfossil.c
+-libfossil.c++: libfossil.c
+ amal.flags += -c++
+ @endif
+ 
+ .PHONY: amal
+ amal: libfossil.c
+@@ -287,19 +283,16 @@
+ 	fossil uv sync
+ @endif
+ @endif
+ 
+ install: install-headers
+-install-headers: libfossil.h $(install-dir.include)
+-	$(INSTALL.noexec) libfossil.h $(install-dir.include)
++install-headers: include/libfossil.h $(install-dir.include)
++	$(INSTALL.noexec) $< $(install-dir.include)
+ @if ENABLE_CXX
+-libfossil++.hpp: libfossil.h
+-libfossil++.cpp: libfossil++.hpp
+-all: libfossil++.cpp
+ install-headers: install-headers++
+-install-headers++: libfossil++.hpp $(install-dir.include)
+-	$(INSTALL.noexec) libfossil++.hpp $(install-dir.include)
++install-headers++: include/libfossil.hpp $(install-dir.include)
++	$(INSTALL.noexec) $< $(install-dir.include)
+ @endif # ENABLE_CXX
+ clean: clean-amalgamation
+ clean-amalgamation:
+ 	rm -f libfossil.c libfossil.h libfossil++.cpp libfossil++.hpp
+ 	rm -f libfossil-config.h libfossil-amalgamation.zip VERSION.h
+
