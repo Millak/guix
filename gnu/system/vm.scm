@@ -174,17 +174,6 @@ environment with the store shared with the host.  MAPPINGS is a list of
 
   (operating-system
     (inherit os)
-    ;; XXX: Until we run QEMU with UEFI support (with the OVMF firmware),
-    ;; force the traditional i386/BIOS method.
-    ;; See <https://bugs.gnu.org/28768>.
-    (bootloader (bootloader-configuration
-                 (inherit (operating-system-bootloader os))
-                 (bootloader
-                  (if (target-riscv64? (or target system))
-                      u-boot-qemu-riscv64-bootloader
-                      grub-bootloader))
-                 (targets '("/dev/vda"))))
-
     (initrd (lambda (file-systems . rest)
               (apply (operating-system-initrd os)
                      file-systems
