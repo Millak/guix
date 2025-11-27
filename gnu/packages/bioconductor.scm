@@ -11191,13 +11191,13 @@ high distances can be flagged as potentially low-quality.")
 (define-public r-metabocoreutils
   (package
     (name "r-metabocoreutils")
-    (version "1.18.0")
+    (version "1.18.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MetaboCoreUtils" version))
        (sha256
-        (base32 "1ddcbr3lhi6pbb5mv2h41vgv26z9jncw1wbw5iq8dqhk09f9k1kn"))))
+        (base32 "04rpysb7x020828xrjh4clqvrlyh0g4nym5s6dr3mhhbskxks5p9"))))
     (properties
      '((upstream-name . "MetaboCoreUtils")
        (updater-extra-native-inputs . ("r-robustbase"))
