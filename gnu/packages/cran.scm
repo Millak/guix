@@ -36473,14 +36473,14 @@ information about geometries.")
 (define-public r-sf
   (package
     (name "r-sf")
-    (version "1.0-22")
+    (version "1.0-23")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sf" version))
        (sha256
         (base32
-         "0hsbwhrxqfh36arcdz43yrj0nb1kv9sk4rr3liw08972v70yx97w"))))
+         "1sywppirwnwajnw61pgwkndgcqpqbxdgls8jlfw4idlldsnsni2a"))))
     (properties
      ;; We don't have this package
      '((updater-ignored-native-inputs . ("r-geom"))))
@@ -36512,6 +36512,7 @@ information about geometries.")
            r-rpostgres
            r-rpostgresql
            r-sp
+           r-spatstat-geom
            r-testthat
            r-tibble
            r-tidyr
