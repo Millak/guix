@@ -153,6 +153,32 @@ statistical routines, with particular focus on high-quality implementations
 and APIs for non-parametric methods.")
     (license license:bsd-3)))
 
+(define-public go-github-com-bmkessler-fastdiv
+  (package
+    (name "go-github-com-bmkessler-fastdiv")
+    (version "0.0.0-20190227075523-41d5178f2044")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/bmkessler/fastdiv")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12zd3gl2lrx5nd9g41sbw88g0560xc77qxazcfiyg6ak7sasqcs7"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/bmkessler/fastdiv"))
+    (home-page "https://github.com/bmkessler/fastdiv")
+    (synopsis "Runtime divisibility check in Golang")
+    (description
+     "Package fastdiv implements fast division, modulus and divisibility
+checks for divisors known only at runtime based on paper:
+@url{https://arxiv.org/abs/1902.01961, Faster Remainder by Direct Computation:
+Applications to Compilers and Software Libraries}.")
+    (license license:expat)))
+
 (define-public go-github-com-cockroachdb-apd
   (package
     (name "go-github-com-cockroachdb-apd")
