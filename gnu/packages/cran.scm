@@ -54011,14 +54011,14 @@ Application Program Interfaces (API)}.")
 (define-public r-btm
   (package
     (name "r-btm")
-    (version "0.3.7")
+    (version "0.3.8")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "BTM" version))
         (sha256
           (base32
-            "0lal2fr2lpaky03hrc1gb15kky3s5sr9rbkmrp3v9g2iksd7b5yb"))))
+            "10690dzh0wzkij8wiq2g3nih5hlznnq0w5jggcdp29w7j0qpk7l6"))))
     (properties `((upstream-name . "BTM")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
