@@ -23902,6 +23902,31 @@ utilities for cty Golang module.")
 @code{1.02e12} for exponents in @code{[-15, 15]}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-zeebo-incenc
+  (package
+    (name "go-github-com-zeebo-incenc")
+    (version "0.0.0-20180505221441-0d92902eec54")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zeebo/incenc")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1yzyrcgw65lb8rmgbqid4czrarakm4mbzr89qws8dpywq93i2wd2"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zeebo/incenc"))
+    (propagated-inputs
+     (list go-github-com-zeebo-errs))
+    (home-page "https://github.com/zeebo/incenc")
+    (synopsis "Incremental Encoding")
+    ;; XXX: Project provides no README or any relevant documentation.
+    (description "This package implements incremental encoding in Golang.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-zeebo-structs
   (package
     (name "go-github-com-zeebo-structs")
