@@ -6996,7 +6996,7 @@ including parsing and code generation.")
 (define-public guile-drmaa
   (package
     (name "guile-drmaa")
-    (version "0.1.1")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -7006,14 +7006,14 @@ including parsing and code generation.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1pail39f3iwllcdma4pk4sxsaypplgb5zjyvjwqf5hdv8s3y211x"))))
+         "07llgia9zyb17w6a2adzn940x4fqc4hh4cpk1dw8vi941zjvz6wl"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config texinfo sed))
     (inputs
      (list guile-3.0))
     (propagated-inputs
-     (list guile-bytestructures nyacc-1.08.1))
+     (list guile-bytestructures nyacc))
     (home-page "https://git.elephly.net/software/guile-drmaa.git")
     (synopsis "Guile bindings to DRMAA")
     (description "This project provides Guile bindings to the DRMAA library
