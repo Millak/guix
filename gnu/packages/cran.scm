@@ -12867,14 +12867,16 @@ Github Apps.")
 (define-public r-jsonify
   (package
     (name "r-jsonify")
-    (version "1.2.2")
+    (version "1.2.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "jsonify" version))
               (sha256
                (base32
-                "0bxgyj5b1hnijq5315g050giixy4k5mjz2zdx8yil0igb5ifji9p"))))
-    (properties `((upstream-name . "jsonify")))
+                "0ihfv5470wyxvdx1dh4hgcz7bxzfkacnmrwwdxj4xllwg991wyhk"))))
+    (properties
+     '((upstream-name . "jsonify")
+       (updater-extra-native-inputs . ("tzdata-for-tests"))))
     (build-system r-build-system)
     (arguments
      (list
@@ -12888,7 +12890,7 @@ Github Apps.")
                      (search-input-directory inputs
                                              "share/zoneinfo")))))))
     (propagated-inputs (list r-rapidjsonr r-rcpp))
-    (native-inputs (list r-knitr r-testthat tzdata-for-tests))
+    (native-inputs (list r-jsonlite r-testthat tzdata-for-tests))
     (home-page "https://cran.r-project.org/package=jsonify")
     (synopsis
      "Convert between R objects and JavaScript Object Notation (JSON)")
