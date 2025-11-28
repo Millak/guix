@@ -12652,6 +12652,40 @@ called concurrently with themselves and each other.")
        "This package is a simple exponential backoff counter in Go.")
       (license license:expat))))
 
+(define-public go-github-com-jtolio-crawlspace
+  (package
+    (name "go-github-com-jtolio-crawlspace")
+    (version "0.0.0-20240521193440-69abbbe5a93f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jtolio/crawlspace")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xj782ghf0iv8r2xxmg2vrh72b02h216y4yfyi60y9z0691lrsip"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/jtolio/crawlspace/tools
+            (delete-file-recursively "tools")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jtolio/crawlspace"))
+    (home-page "https://github.com/jtolio/crawlspace")
+    (synopsis "Golang's running process debugger")
+    (description
+     "Package crawlspace provides a means to dynamically interact with
+registered Go objects in a live process, using small scripting language based
+around the reflect package inspired by
+@url{https://twistedmatrix.com/documents/current/api/twisted.conch.manhole.html,
+Twisted's manhole library} .")
+    (license license:asl2.0)))
+
 (define-public go-github-com-juju-ansiterm
   (package
     (name "go-github-com-juju-ansiterm")
