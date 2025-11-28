@@ -23902,6 +23902,40 @@ utilities for cty Golang module.")
 @code{1.02e12} for exponents in @code{[-15, 15]}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-zeebo-structs
+  (package
+    (name "go-github-com-zeebo-structs")
+    ;; 1.0.2 was released in 2019, where the latest commit from master's HEAD
+    ;; provides support for go-github-com-zeebo-errs-v2.
+    (properties '((commit . "f2db460696020e0c8b4ffe48e8d59e2a89edbcf0")
+                  (revision . "0")))
+    (version (git-version "1.0.2"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zeebo/structs")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i85yh9paah4x1qlp3dhim0c0wzrwmw7py1zidmcc4l52sslxylh"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zeebo/structs"))
+    (native-inputs
+     (list go-github-com-zeebo-assert))
+    (propagated-inputs
+     (list go-github-com-spf13-cast
+           go-github-com-zeebo-errs-v2))
+    (home-page "https://github.com/zeebo/structs")
+    (synopsis "Data into structs")
+    (description
+     "This package implements a functionality to decode data into Go structs.")
+    (license license:expat)))
+
 (define-public go-github-com-zeebo-sudo
   (package
     (name "go-github-com-zeebo-sudo")
