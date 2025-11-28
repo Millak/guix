@@ -14530,13 +14530,13 @@ associated data.")
 (define-public r-ggtern
   (package
     (name "r-ggtern")
-    (version "3.5.0")
+    (version "4.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggtern" version))
        (sha256
-        (base32 "0ymly9vdzk7rd4p27m1262bm7fvim989yswgw3mr9y0422dn8awa"))))
+        (base32 "1rxrvqwz97h3g6a6nxiad4hvxkslwinkb0h5gd5kvkyv84316bii"))))
     (properties `((upstream-name . "ggtern")))
     (build-system r-build-system)
     (propagated-inputs
