@@ -86,6 +86,7 @@
 ;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Aleksandr Lebedev <alex.lebedev2003@icloud.com>
+;;; Copyright © 2025 bdunahu <bdunahu@operationnull.com>
 ;;; Copyright © 2026 Carlos Durán Domínguez <wurt@wurt.eu>
 ;;; Copyright © 2026 Andy Tai <atai@atai.org>
 ;;; Copyright © 2026 Spencer King <spencer.king@wustl.edu>
@@ -1806,6 +1807,43 @@ tiling window manager for X.")
 many keyboard controls with repositioning and maximize toggles, solid window
 drags, snap-to-border support, and virtual desktops.")
     (license (license:x11-style "file:///README"))))
+
+(define-public eww
+  (let ((commit "fddb4a09b107237819e661151e007b99b5cab36d")
+        (revision "1"))
+    (package
+      (name "eww")
+      (version (git-version "0.6.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/elkowar/eww")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ihgcxppywpcp24zhws1if6h7cxbrq2vd53wyh36j5mxylpbi59w"))))
+      (build-system cargo-build-system)
+      (arguments
+       (list #:install-source? #f
+             #:features ''("x11" "wayland")
+             #:cargo-install-paths ''("crates/eww")))
+      (inputs (cons* gdk-pixbuf
+                     glib
+                     gtk+
+                     gtk-layer-shell
+                     libdbusmenu
+                     (cargo-inputs 'eww)))
+      (native-inputs (list pkg-config))
+      (home-page "https://elkowar.github.io/eww/")
+      (synopsis "Widget system that works in any window manager")
+      (description
+       "Eww (Elkowars Wacky Widgets) is a standalone widget system made in Rust
+that allows you to implement your own, custom widgets in any window manager.
+
+Configured in @code{yuck}, a language based around S-expressions and themed
+using CSS, it is easy to customize and provides all the flexibility you need.")
+      (license license:expat))))
 
 (define-public fluxbox
   (package
