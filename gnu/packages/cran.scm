@@ -31744,13 +31744,13 @@ pairs (Selesnick 2001, 2002).")
 (define-public r-word2vec
   (package
     (name "r-word2vec")
-    (version "0.4.0")
+    (version "0.4.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "word2vec" version))
               (sha256
                (base32
-                "14ba0cj430d02bd6fay3nl4ldwqyj77iwjm4gzgdc0f6sx597iiq"))))
+                "0aqj6hnd2ciszn2hif4nj5bx2ljvxxmzyan232xf1sv49rbzckzm"))))
     (properties `((upstream-name . "word2vec")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp r-rcppprogress))
