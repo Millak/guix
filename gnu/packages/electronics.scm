@@ -1232,7 +1232,7 @@ understand and improve testbench coverage.")
 (define-public nvc
   (package
     (name "nvc")
-    (version "1.18.1")
+    (version "1.18.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1241,7 +1241,7 @@ understand and improve testbench coverage.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1l4aiaf2009wak7bccpm8x2pr27pr2b5w2naz874y8k98wqq5zlr"))))
+                "0930bjaprvx9d0g8152xyzl2hxbx34gd36198ljvr55brrisfmvb"))))
     (build-system gnu-build-system)
     (arguments
      (list #:out-of-source? #t
