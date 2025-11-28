@@ -868,7 +868,8 @@ any X11 window.")
       #~(list (string-append "CC=" #$(cc-for-target))
               (string-append "PREFIX=" #$output)
               "WITH_ALLCOMP=yes"
-              (string-append "BASHCOMPDIR=" #$output "/etc/bash_completion.d"))
+              (string-append "BASHCOMPDIR="
+                             #$output "/share/bash-completion/completions"))
       ;; Parallel tests may cause a race condition leading to a
       ;; timeout in some circumstances.
       #:parallel-tests? #f
