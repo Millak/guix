@@ -23902,6 +23902,33 @@ utilities for cty Golang module.")
 @code{1.02e12} for exponents in @code{[-15, 15]}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-zeebo-goof
+  (package
+    (name "go-github-com-zeebo-goof")
+    (version "0.0.0-20240528180144-f1d11ca928f2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zeebo/goof")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zckl852npidlwdz0nrj4p418hg910skl9qipr6n9fjg7zljjwnk"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zeebo/goof"))
+    (propagated-inputs
+     (list go-github-com-zeebo-errs))
+    (home-page "https://github.com/zeebo/goof")
+    (synopsis "Go Object Finder")
+    (description
+     "Goof (Go Object Finder) is a package that does the unthinkable to the
+binaryes: calling functions, @code{fmt.Fprintf}, and accesing
+@code{reflect.Type} from them.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-zeebo-incenc
   (package
     (name "go-github-com-zeebo-incenc")
