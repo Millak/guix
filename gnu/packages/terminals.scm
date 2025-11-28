@@ -1482,9 +1482,11 @@ basic input/output.")
                        "-o" (string-append share "/terminfo/")
                        "extra/alacritty.info")
                ;; Install completions.
-               (mkdir-p (string-append out "/etc/bash_completion.d"))
+               (mkdir-p (string-append
+                         out "/share/bash-completion/completions"))
                (copy-file "extra/completions/alacritty.bash"
-                          (string-append out "/etc/bash_completion.d/alacritty"))
+                          (string-append
+                           out "/share/bash-completion/completions/alacritty"))
                (install-file "extra/completions/_alacritty"
                              (string-append share "/zsh/site-functions"))
                (install-file "extra/completions/alacritty.fish"
