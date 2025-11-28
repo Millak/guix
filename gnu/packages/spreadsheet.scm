@@ -101,7 +101,7 @@
 (define-public visidata
   (package
     (name "visidata")
-    (version "3.2")
+    (version "3.3")
     (source
      ;; PyPI tarball is missing the requirements.txt file.
      (origin
@@ -113,7 +113,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rpds8x7hdwh48v2dja1qq5bamnd63rb8p416nnn8d2n58xkvs4h"))))
+         "1c5nd7klc3rdnjyvza7nrqwiiiadnr31yn13gac6y5iz1i3ymqfb"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:phases
