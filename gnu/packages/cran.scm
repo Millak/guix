@@ -18810,18 +18810,18 @@ Optimization problems by using the simplex algorithm.")
 (define-public r-geojsonsf
   (package
     (name "r-geojsonsf")
-    (version "2.0.3")
+    (version "2.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "geojsonsf" version))
        (sha256
-        (base32 "1la6zfzv14ascwds0bp67d7x3am0v14mylc4b2lyd0nrf93a2p17"))))
+        (base32 "16dvdbbl7g8bhfnfsfgwh3jk99r9w5iqdk7cqinv32kxnkv5b84c"))))
     (properties `((upstream-name . "geojsonsf")))
     (build-system r-build-system)
     (propagated-inputs (list r-geometries r-jsonify r-rapidjsonr r-rcpp
                              r-sfheaders))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-tinytest))
     (home-page "https://github.com/SymbolixAU/geojsonsf")
     (synopsis "GeoJSON to Simple Feature converter")
     (description "This package converts between @code{GeoJSON} and Simple
