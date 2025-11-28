@@ -381,7 +381,7 @@ individual low-level driver modules.")
           (add-after 'install 'python:wrap
             (@@ (guix build python-build-system) wrap)))))
     (native-inputs
-     (list clang python-minimal-wrapper python-sphinx texinfo yosys-clang))
+     (list clang python-minimal-wrapper python-sphinx texinfo yosys))
     (inputs
      (list python-click python-json5 readline))
     (home-page "https://yosyshq.readthedocs.io/projects/eqy/en/latest/")
@@ -1766,7 +1766,7 @@ verification.")
            python-setuptools-scm
            sby
            yices
-           yosys-clang))
+           yosys))
     (propagated-inputs
      (list python-jinja2 python-jschon python-pyvcd))
     (home-page "https://amaranth-lang.org/docs/amaranth/latest/")
@@ -2596,7 +2596,7 @@ them usable as simple logic analyzer and/or oscilloscope hardware.")
                   python-xmlschema
                   z3
                   yices
-                  yosys-clang))
+                  yosys))
     ;; TODO: see above build-info phase comment.
     ;; (native-inputs (list
     ;;                 python-sphinx python-sphinx-argparse texinfo))
