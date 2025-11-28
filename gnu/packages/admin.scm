@@ -6631,10 +6631,11 @@ file or files to several hosts.")
                               (install-file "man-page/dust.1"
                                             (string-append share "/man/man1"))
                               (mkdir-p (string-append out
-                                        "/etc/bash_completion.d"))
-                              (copy-file "completions/dust.bash"
-                                         (string-append out
-                                          "/etc/bash_completion.d/dust"))
+                                        "/share/bash-completion/completions"))
+                              (copy-file
+                               "completions/dust.bash"
+                               (string-append
+                                out "/share/bash-completion/completions/dust"))
                               (install-file "completions/dust.fish"
                                             (string-append share
                                              "/fish/vendor_completions.d"))
