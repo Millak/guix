@@ -23902,6 +23902,32 @@ utilities for cty Golang module.")
 @code{1.02e12} for exponents in @code{[-15, 15]}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-zeebo-sudo
+  (package
+    (name "go-github-com-zeebo-sudo")
+    (version "1.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zeebo/sudo")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ih2cx823vdc5g4pvq3bqjir0x9lyn3dx8ka4gkmr9mbxqak1sb5"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zeebo/sudo"))
+    (home-page "https://github.com/zeebo/sudo")
+    (synopsis "Bypasses restrictions on reflect")
+    (description
+     "sudo is a package to make reflect more powerful (and dangerous).
+It exports a single function, @code{Sudo}, which when passed a
+@code{reflect.Value}, will return a new reflect.Value with the read-only
+restrictions removed.")
+    (license license:expat)))
+
 (define-public go-github-com-zitadel-logging
   (package
     (name "go-github-com-zitadel-logging")
