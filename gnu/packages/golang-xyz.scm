@@ -12652,6 +12652,31 @@ called concurrently with themselves and each other.")
        "This package is a simple exponential backoff counter in Go.")
       (license license:expat))))
 
+(define-public go-github-com-jtolds-tracetagger-v2
+  (package
+    (name "go-github-com-jtolds-tracetagger-v2")
+    (version "2.0.0-rc5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jtolio/tracetagger")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1x47n43ikmbndzknyd3xja2cymnm0nmsn7b17cmlpfxgs7vj7gzd"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jtolds/tracetagger/v2"))
+    (propagated-inputs
+     (list go-github-com-spacemonkeygo-monkit-v3))
+    (home-page "https://github.com/jtolds/tracetagger")
+    (synopsis "Trace tagger for Golang")
+    ;; XXX: Project provides no README or any relevant documentation.
+    (description "This package implements a functionality to tag traces.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-jtolio-crawlspace
   (package
     (name "go-github-com-jtolio-crawlspace")
