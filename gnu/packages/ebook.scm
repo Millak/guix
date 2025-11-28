@@ -137,14 +137,14 @@ with Microsoft Compiled HTML (CHM) files")
 (define-public calibre
   (package
     (name "calibre")
-    (version "8.13.0")
+    (version "8.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://download.calibre-ebook.com/" version
                            "/calibre-" version ".tar.xz"))
        (sha256
-        (base32 "092zv9s0w87vwb5n54ps7lawjmwjqpmk93yp6lslnphpb6hqal6z"))
+        (base32 "1d2ygxf5srzdxc3jpngmq3zbz9plxnbzm4dzygpfd38szr5zwyss"))
        (modules '((guix build utils)))
        (snippet
         '(begin
