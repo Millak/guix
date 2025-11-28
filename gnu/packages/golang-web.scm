@@ -13984,6 +13984,37 @@ It is to used for inputs in other packages.")
      ;; which apply to the Application, with which you must still comply
      license:lgpl3)))
 
+(define-public go-github-com-zeebo-admission-v3
+  (package
+    (name "go-github-com-zeebo-admission-v3")
+    (version "3.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zeebo/admission")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lvgpdnz7iapq5gzm2xbr6pz05wd1ackmy0z102sh72fzv9d5w6x"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zeebo/admission/v3"))
+    (native-inputs
+     (list go-github-com-zeebo-assert))
+    (propagated-inputs
+     (list go-github-com-spacemonkeygo-monkit-v3
+           go-github-com-zeebo-errs
+           go-github-com-zeebo-float16
+           go-github-com-zeebo-incenc))
+    (home-page "https://github.com/zeebo/admission")
+    (synopsis "UDP packets processing in Golang")
+    ;; XXX: Project provides no README or any relevant documentation.
+    (description
+     "Package admission is a fast way to ingest/send metrics via UDP.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-zitadel-oidc-v3
   (package
     (name "go-github-com-zitadel-oidc-v3")
