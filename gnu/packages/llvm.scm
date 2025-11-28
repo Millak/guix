@@ -1616,14 +1616,16 @@ requirements according to version 1.1 of the OpenCL specification.")
     ;; Apache license 2.0 with LLVM exception
     (license license:asl2.0)))
 
-(define-public mlir-19
+(define (mlir-from-llvm llvm)
+  "Produce MLIR with dependencies on LLVM."
   (package
     (name "mlir")
-    (version (package-version llvm-19))
+    (version (package-version llvm))
     (source (llvm-monorepo version))
     (build-system cmake-build-system)
+    (native-inputs (package-native-inputs llvm))
     (inputs
-     (list llvm-19))
+     (list llvm))
     (arguments
      (list #:build-type "Release"
            #:configure-flags
@@ -1643,6 +1645,12 @@ fragmentation, improve compilation for heterogeneous hardware, significantly
 reduce the cost of building domain specific compilers, and aid in connecting
 existing compilers together.")
     (license license:asl2.0))) ; With LLVM exception
+
+(define-public mlir-19
+  (mlir-from-llvm llvm-19))
+
+(define-public mlir-15
+  (mlir-from-llvm llvm-15))
 
 (define-public python-llvmlite
   (package
