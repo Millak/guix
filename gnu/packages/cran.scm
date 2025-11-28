@@ -31866,13 +31866,13 @@ R packages (on CRAN, Bioconductor or Github).")
 (define-public r-doc2vec
   (package
     (name "r-doc2vec")
-    (version "0.2.0")
+    (version "0.2.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "doc2vec" version))
               (sha256
                (base32
-                "0249hm0103kxxsi4gks4h20wf6p00gbrk9jf8c148mbja1l56f6v"))))
+                "1ghm6np4jviid28q46qw57ipcqakpmkc915iznbi6ld3364aggvz"))))
     (properties `((upstream-name . "doc2vec")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
