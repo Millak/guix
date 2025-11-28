@@ -39264,14 +39264,14 @@ provides tools to compute this metric.")
 (define-public r-lintr
   (package
     (name "r-lintr")
-    (version "3.2.0")
+    (version "3.3.0-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lintr" version))
        (sha256
         (base32
-         "13mzwbg7k52finb0qp0xs1c1mp79f92cxlpfkc6h064s529czk20"))))
+         "01nazxffg7kwakg9xymg150hmr83w630bwcax4sx4xyddz268adi"))))
     (properties `((upstream-name . "lintr")))
     (build-system r-build-system)
     (arguments
@@ -39301,6 +39301,7 @@ provides tools to compute this metric.")
            r-glue
            r-knitr
            r-rex
+           r-xfun
            r-xml2
            r-xmlparsedata))
     ;; The importer adds a lot of inputs that we don't need.
