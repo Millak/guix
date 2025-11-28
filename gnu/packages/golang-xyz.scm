@@ -12686,6 +12686,48 @@ around the reflect package inspired by
 Twisted's manhole library} .")
     (license license:asl2.0)))
 
+(define-public go-github-com-jtolio-crawlspace-tools
+  (package
+    (name "go-github-com-jtolio-crawlspace-tools")
+    (version "0.0.0-20240521193440-69abbbe5a93f")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jtolio/crawlspace")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xj782ghf0iv8r2xxmg2vrh72b02h216y4yfyi60y9z0691lrsip"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        #~(begin
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but "." "tools")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/jtolio/crawlspace/tools"
+      #:unpack-path "github.com/jtolio/crawlspace"))
+    (propagated-inputs
+     (list go-github-com-jtolio-crawlspace
+           go-github-com-kr-pretty
+           go-github-com-zeebo-goof
+           go-github-com-zeebo-sudo))
+    (home-page "https://github.com/jtolio/crawlspace")
+    (synopsis "Object Finder tools for crawlspace")
+    (description
+     "This package provides an additional tooling powered by
+https://github.com/zeebo/goof - calling functions in binary files." )
+    (license license:asl2.0)))
+
 (define-public go-github-com-juju-ansiterm
   (package
     (name "go-github-com-juju-ansiterm")
