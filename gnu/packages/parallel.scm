@@ -422,6 +422,7 @@ minimal slurm package BASE-SLURM."
               (sha256
                (base32
                 "1vydd44wp1xns7dd6zh7yin7i5p0ia3x2bk7ql56wfzhi22yf9sd"))
+              (patches (search-patches "slurm-drmaa-25.patch"))
               (modules '((guix build utils)))
               (snippet
                ;; This is a typo fixed in upstream commit
