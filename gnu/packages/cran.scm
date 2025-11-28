@@ -36553,17 +36553,17 @@ The design types included are Audze-Eglais, MaxiMin, and uniform.")
 (define-public r-sfheaders
   (package
     (name "r-sfheaders")
-    (version "0.4.4")
+    (version "0.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sfheaders" version))
        (sha256
-        (base32 "01xxp7lpf333djs0lifnnhk5akv8prk0r5mq0ilynyyhn5kzwpzn"))))
+        (base32 "1wxx514yg4hfrs97mqagsldyb1cjcrafk3f48xrrafj8iqkwjfgr"))))
     (properties `((upstream-name . "sfheaders")))
     (build-system r-build-system)
     (propagated-inputs (list r-geometries r-rcpp))
-    (native-inputs (list r-testthat))
+    (native-inputs (list r-shapes r-testthat))
     (home-page "https://dcooley.github.io/sfheaders/")
     (synopsis "Converts between R objects and Simple Feature objects")
     (description
