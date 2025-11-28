@@ -55028,14 +55028,14 @@ Bessel K function.")
 (define-public r-ztpln
   (package
     (name "r-ztpln")
-    (version "0.1.2")
+    (version "0.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ztpln" version))
        (sha256
         (base32
-         "1b22m72a8117yrgq5k1gzsrbx6yrsrj7bpd49lh7x3vbaz56c0wr"))))
+         "16x7x4fw8lwp40nsmj1xymkwqam5l0w8adzx8pwhxrs612i4r7d2"))))
     (properties `((upstream-name . "ztpln")))
     (build-system r-build-system)
     (propagated-inputs
