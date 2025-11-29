@@ -4015,34 +4015,34 @@ and written in Python.")
 (define-public python-html5-parser
   (package
     (name "python-html5-parser")
-    (version "0.4.10")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "html5-parser" version))
-              (sha256
-               (base32
-                "195wgxls3df7djry9cz3p2k9644l6bfd66fczbaw55fsq0c48agr"))))
-    (build-system python-build-system)
+    (version "0.4.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kovidgoyal/html5-parser")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0axrz2x67nhsh3kijy68wwy5hx8h8418d8g2qz6f3pyxix7gw2fi"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-configure-flags
             (lambda _
-              (setenv "CFLAGS"
-                      "-Wno-error=implicit-function-declaration"))))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list libxml2))
-    (propagated-inputs
-     (list python-lxml python-beautifulsoup4 python-chardet))
+              (setenv "CFLAGS" "-Wno-error=implicit-function-declaration"))))))
+    (native-inputs (list pkg-config python-setuptools))
+    (inputs (list libxml2))
+    (propagated-inputs (list python-lxml python-beautifulsoup4 python-chardet))
     (home-page "https://html5-parser.readthedocs.io")
     (synopsis "Fast C-based HTML5 parsing for Python")
-    (description "This package provides a fast implementation of the HTML5
-parsing spec for Python.  Parsing is done in C using a variant of the gumbo
-parser.  The gumbo parse tree is then transformed into an lxml tree, also in
-C, yielding parse times that can be a thirtieth of the html5lib parse times.")
+    (description
+     "This package provides a fast implementation of the HTML5 parsing spec
+for Python.  Parsing is done in C using a variant of the gumbo parser.  The
+gumbo parse tree is then transformed into an lxml tree, also in C, yielding
+parse times that can be a thirtieth of the html5lib parse times.")
     ;; src/as-python-tree.[c|h] are licensed GPL3.  The other files
     ;; indicate ASL2.0, including the LICENSE file for the whole project.
     (license (list license:asl2.0 license:gpl3))))
