@@ -173,9 +173,8 @@
               (assoc-ref glib-or-gtk:%standard-phases
                          'glib-or-gtk-wrap))
             (add-after 'glib-or-gtk-wrap 'wrap-aacircuit
-              (lambda* (#:key outputs #:allow-other-keys)
-                (wrap-program (string-append (assoc-ref outputs "out")
-                                             "/bin/aacircuit")
+              (lambda _
+                (wrap-program (string-append #$output "/bin/aacircuit")
                   `("GDK_PIXBUF_MODULE_FILE" =
                     (,(getenv "GDK_PIXBUF_MODULE_FILE")))
                   `("GI_TYPELIB_PATH" ":" prefix
@@ -185,9 +184,8 @@
        ;; <https://docs.pytest.org/en/7.1.x/how-to/nose.html> after report to
        ;; the upstream to modify them, use deprecated Nose test runner for
        ;; now.
-       (list python-nose
+       (list python-pynose
              python-setuptools
-             python-wheel
              xvfb-run))
       (inputs
        (list bash-minimal
