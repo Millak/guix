@@ -19022,6 +19022,31 @@ and bash completion for the go command line.")
      "This package provides a wrapper round runit service status.")
     (license license:expat)))
 
+(define-public go-github-com-protonmail-go-mbox
+  (package
+    (name "go-github-com-protonmail-go-mbox")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ProtonMail/go-mbox")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j82rmigq8ayjgn3a5pfhmb6mghy30nrix30kbjdjf498kxvhlgv"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ProtonMail/go-mbox"))
+    (home-page "https://github.com/ProtonMail/go-mbox")
+    (synopsis "Mbox files into messages parser in Golang")
+    (description
+     "This package implements functionality for parsing and formating the
+mbox file format.  It's an alternative fork of
+https://github.com/emersion/go-mbox.")
+    (license license:expat)))
+
 (define-public go-github-com-pterm-pterm
   (package
     (name "go-github-com-pterm-pterm")
