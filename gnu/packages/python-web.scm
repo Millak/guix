@@ -115,6 +115,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages adns)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages nss)
@@ -8500,22 +8501,38 @@ supports features like HTTP keep-alive, reget, throttling and more.")
 (define-public python-pycares
   (package
     (name "python-pycares")
-    (version "4.3.0")
+    (version "4.11.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pycares" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/saghul/pycares")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0i8d0433wmm7wi8i2l2hjiyhmy35b9s888qrk6fqx5xcdmpnjhn5"))))
-    (build-system python-build-system)
-    (arguments `(#:tests? #f))          ;tests require internet access
+        (base32 "18syxp9bpm70zfiw427p7cpp6wg0ybrw6b32c1zvdp2i8jgd82xl"))
+       (snippet #~(begin
+                    (rmdir "deps/c-ares")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: Half of the tests require internet access
+      ;; There is currently no markers to avoid running them.
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'configure-system-lib
+            (lambda _
+              (setenv "PYCARES_USE_SYSTEM_LIB" "1"))))))
+    (native-inputs (list python-pytest python-setuptools))
+    (inputs (list c-ares))
     (propagated-inputs (list python-cffi))
     (home-page "https://github.com/saghul/pycares")
     (synopsis "Python interface for @code{c-ares}")
-    (description "@code{pycares} is a Python module which provides an
-interface to @code{c-ares}, a C library that performs DNS requests and
-name resolutions asynchronously.")
+    (description
+     "@code{pycares} is a Python module which provides an interface to
+@code{c-ares}, a C library that performs DNS requests and name resolutions
+asynchronously.")
     (license license:expat)))
 
 (define-public python-yarl
