@@ -1443,28 +1443,14 @@ from Lisp and S-expressions, building pixel perfect badges.")
        (sha256
         (base32 "0x6qcsbjxp2alxqxsngs8a22fdi7pi2ylv9q4l1jgmypn0svkqqk"))))
     (build-system cmake-build-system)
-    (inputs (list boost
-                  fftw
-                  fftwf
-                  hdf5
-                  ilmbase ;propagated by openexr, but needed explicitly
-                          ;to create a configure-flag
-                  libjpeg-turbo
-                  libpng
-                  libtiff
-                  openexr-2
-                  python-wrapper
-                  python-numpy-2
-                  zlib))
-    (native-inputs (list doxygen python-nose python-sphinx))
     (arguments
      (list
       #:configure-flags
       #~(list "-Wno-dev" ;suppress developer mode with lots of warnings
               (string-append
-                "-DVIGRANUMPY_INSTALL_DIR=" #$output "/lib/python"
-                #$(version-major+minor (package-version python))
-                "/site-packages")
+               "-DVIGRANUMPY_INSTALL_DIR=" #$output "/lib/python"
+               #$(version-major+minor (package-version python))
+               "/site-packages")
               ;; OpenEXR is not enabled by default.
               "-DWITH_OPENEXR=1"
               ;; Fix rounding error on 32-bit machines
@@ -1479,6 +1465,20 @@ from Lisp and S-expressions, building pixel perfect badges.")
               "-DAUTOBUILD_TESTS=ON"
               ;; Disable running tests during the build.
               "-DAUTOEXEC_TESTS=OFF")))
+    (inputs (list boost
+                  fftw
+                  fftwf
+                  hdf5
+                  ilmbase ;propagated by openexr, but needed explicitly
+                          ;to create a configure-flag
+                  libjpeg-turbo
+                  libpng
+                  libtiff
+                  openexr-2
+                  python-wrapper
+                  python-numpy-2
+                  zlib))
+    (native-inputs (list doxygen python-sphinx))
     (synopsis "Computer vision library")
     (description
      "VIGRA stands for Vision with Generic Algorithms.  It is an image
