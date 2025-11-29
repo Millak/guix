@@ -7514,14 +7514,24 @@ internetarchive python module for programmatic access to archive.org.")
          (sha256
           (base32
            "0zlkzqnpz7a4iavsq5vaz0nf5nr7qm5znpg1vlpz6rwnx6hikjdb"))))
-      (build-system python-build-system)
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:test-flags
+        #~(list
+           ;; These tests require an Internet connection.
+           "--exclude=test_browse"
+           "--exclude=test_command"
+           "--exclude=test_search")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'get-tests
+              (lambda* (#:key inputs #:allow-other-keys)
+                (copy-file (assoc-ref inputs "test-clf") "test_clf.py"))))))
       (propagated-inputs
        (list python-docopt
              python-pygments
-             python-requests
-             python-nose
-             python-lxml
-             python-pyaml))
+             python-requests))
       (inputs
        `(("test-clf"
           ,(origin
@@ -7532,20 +7542,7 @@ internetarchive python module for programmatic access to archive.org.")
              (sha256
               (base32
                "19lr5zdzsmxgkg7wrjq1yzkiahd03wi4k3dskssyhmjls8c10nqd"))))))
-      (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'get-tests
-             (lambda _
-               (copy-file (assoc-ref %build-inputs "test-clf") "test_clf.py")
-               #t))
-           (replace 'check
-             (lambda _
-               (invoke "nosetests"
-                       ;; These tests require an Internet connection.
-                       "--exclude=test_browse"
-                       "--exclude=test_command"
-                       "--exclude=test_search"))))))
+      (native-inputs (list python-pynose python-setuptools))
       (home-page "https://github.com/ncrocfer/clf")
       (synopsis "Search code snippets on @url{https://commandlinefu.com}")
       (description "@code{clf} is a command line tool for searching code
