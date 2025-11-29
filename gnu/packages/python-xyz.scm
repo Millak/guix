@@ -11579,14 +11579,14 @@ To address this and enable easy cycling over arbitrary @code{kwargs}, the
        (sha256
         (base32 "0x7nkphr6g5ql5fvgss8l56rgiyjgh6fm8zzs73i94ci9wzlm63w"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-numpy))
-    (native-inputs
-     (list python-nose python-setuptools python-wheel))
+    (arguments (list #:tests? #f))      ; No tests.
+    (propagated-inputs (list python-numpy))
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://github.com/njsmith/colorspacious")
     (synopsis "Python library for colorspace conversions")
-    (description "@code{colorspacious} is a Python library that lets you
-convert between colorspaces like sRGB, XYZ, CIEL*a*b*, CIECAM02, CAM02-UCS, etc.")
+    (description
+     "@code{colorspacious} is a Python library that lets you convert between
+colorspaces like sRGB, XYZ, CIEL*a*b*, CIECAM02, CAM02-UCS, etc.")
     (license license:expat)))
 
 (define-public python-propcache
