@@ -3816,18 +3816,19 @@ threads.")
     (version "1.0.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "sockjs-tornado" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mrjoes/sockjs-tornado/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "15dgv6hw6c7h3m310alw1h6p5443lrm9pyqhcv2smc13fz1v04pc"))))
-    (build-system python-build-system)
+        (base32 "1y4wjca1776nvd0b79pz4d52i312xsyb2vahb883qmrw6s56mynk"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(;; There are no tests, and running the test phase requires missing
-       ;; dependencies
-       #:tests? #f))
-    (propagated-inputs
-     (list python-tornado))
+     (list
+      #:tests? #f))     ;The only test in examples/test/test.py runs a server.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-tornado))
     (home-page "https://github.com/mrjoes/sockjs-tornado/")
     (synopsis
      "SockJS Python server implementation on top of the Tornado framework")
