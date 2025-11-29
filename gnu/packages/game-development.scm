@@ -1740,7 +1740,7 @@ bugfixes and enhancements, and a new governance model.")
 (define-public python-renpy
   (package
     (name "python-renpy")
-    (version "8.3.0")
+    (version "8.5.0")
     (source
      (origin
        (method url-fetch)
@@ -1748,8 +1748,11 @@ bugfixes and enhancements, and a new governance model.")
                            "/renpy-" version "-source.tar.bz2"))
        (sha256
         (base32
-         "1xb9ixb73nm271frkchrqpf64bcrdvrk3n4281dxzm4k4wj60rwb"))
+         "1dv856sb8mak21kkj0ys0k6zc6ly2k8102ahnfdrc04cwdrryw6b"))
        (modules '((guix build utils)))
+       ;; TODO: Remove when updating Python to 3.12 or higher.
+       (patches (search-patches "renpy-python-3.11-compat.patch"
+                                "renpy-fix-integer-slots.patch"))
        (snippet
         #~(begin
             ;; Build without sync service.
@@ -1759,15 +1762,29 @@ bugfixes and enhancements, and a new governance model.")
             (for-each delete-file
                       '("renpy/encryption.pyx"
                         "renpy/common/00sync.rpy"))
-            (substitute* "module/setup.py"
-              (("cython\\(\"renpy\\.encryption\"\\)") ""))
+            (delete-file-recursively "src/libhydrogen")
+            (substitute* "setup.py"
+              (("cython\\(\"renpy\\.encryption\"\\)") "")
+              (("version = .*") (string-append "version = \"" #$version "\"")))
             (substitute* "renpy/__init__.py"
               (("import renpy\\.encryption") ""))
             ;; Trust vc_version.py when it comes to detecting whether a
             ;; version is official.
             (substitute* "renpy/__init__.py"
-              (("official = official and .*") ""))))))
-    (build-system python-build-system)
+              (("official = official and .*") ""))
+
+            ;; Make source compatible with Python 3.11.
+            ;; Drop this part once a newer Python is used.
+            (substitute* (find-files "renpy" "\\.py$")
+              (("type ([A-Za-z0-9]+) =" all id)
+               (string-append id " =")))
+            (substitute* "renpy/minstore.py"
+              ((", override") ""))
+
+            ;; Use SDL2/ prefix.
+            (substitute* "src/pygame/sdl_image_compat.h"
+              (("\"SDL_image.h\"") "<SDL2/SDL_image.h>"))))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f                       ; Ren'py doesn't seem to package tests
@@ -1785,49 +1802,36 @@ bugfixes and enhancements, and a new governance model.")
                       (search-input-file (or native-inputs inputs)
                                          "/bin/cython"))
               (setenv "RENPY_DEPS_INSTALL" (string-join (map cdr inputs) ":"))))
-          (add-before 'build 'relax-gcc-14-strictness
+          (add-after 'build 'build-renpy
             (lambda _
-              (setenv "CFLAGS" (string-join
-                                (list "-g" "-O2"
-                                      "-Wno-error=incompatible-pointer-types"
-                                      "-Wno-error=implicit-function-declaration")
-                                " "))))
-          (replace 'build
-            (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
-              ;; The "module" subdirectory contains a python (really cython)
-              ;; project, which is built using a script, that is thankfully
-              ;; named "setup.py".
-              (with-directory-excursion "module"
-                (apply (assoc-ref %standard-phases 'build) args))
-              ;; The above only builds the cython modules, but nothing else,
-              ;; so we do that here.
               (invoke "python" "-m" "compileall" "renpy")))
-          (replace 'install
-            (lambda* (#:key inputs outputs #:allow-other-keys #:rest args)
-              ;; Again, we have to wrap the module installation.
-              ;; Additionally, we want to install the python code
-              ;; (both source and compiled) in the same directory.
-              (let* ((out (assoc-ref outputs "out"))
-                     (site (string-append "/lib/python"
+          (add-after 'install 'install-renpy
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((site (string-append (assoc-ref outputs "out")
+                                         "/lib/python"
                                           (python-version
                                            (assoc-ref inputs "python"))
                                           "/site-packages")))
-                (with-directory-excursion "module"
-                  (apply (assoc-ref %standard-phases 'install) args))
                 (copy-recursively "renpy"
-                                  (string-append out site "/renpy"))
-                (delete-file-recursively (string-append out site
-                                                        "/renpy/common"))))))))
-    (native-inputs (list python-cython-0))
+                                  (string-append site "/renpy"))
+                (delete-file-recursively
+                 (string-append site "/renpy/common"))
+                (for-each delete-file
+                          (find-files site "\\.py[ix]"))))))))
+    (native-inputs (list pkg-config
+                         python-cython
+                         python-setuptools
+                         python-wheel))
     (inputs
-     (list ffmpeg-6
+     (list assimp
+           ffmpeg
            freetype
            fribidi
            glew
            libpng
            (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))
            xdg-utils))
-    (propagated-inputs (list python-ecdsa python-future python-pygame-sdl2))
+    (propagated-inputs (list python-ecdsa python-future))
     (home-page "https://www.renpy.org/")
     (synopsis "Ren'py python module")
     (description "This package contains the shared libraries and Python modules

@@ -2228,7 +2228,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/retroarch-unbundle-spirv-cross.patch	\
   %D%/packages/patches/rct-add-missing-headers.patch		\
   %D%/packages/patches/readline-link-ncurses.patch		\
-  %D%/packages/patches/renpy-use-system-fribidi.patch		\
+  %D%/packages/patches/renpy-python-3.11-compat.patch			\
+  %D%/packages/patches/renpy-fix-integer-slots.patch			\
   %D%/packages/patches/reposurgeon-add-missing-docbook-files.patch	\
   %D%/packages/patches/rdkit-unbundle-external-dependencies.patch	\
   %D%/packages/patches/r-httpuv-1.6.6-unvendor-libuv.patch	\

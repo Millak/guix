@@ -1,0 +1,189 @@
+Index: renpy-8.5.0-source/renpy/color.py
+===================================================================
+--- renpy-8.5.0-source.orig/renpy/color.py
++++ renpy-8.5.0-source/renpy/color.py
+@@ -19,7 +19,7 @@
+ # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ 
+-from typing import final, overload
++from typing import final, overload, ForwardRef
+ 
+ import re
+ import colorsys
+@@ -32,7 +32,7 @@ _LONG_COLOR_STRING_RE = re.compile(
+     r"#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})?",
+ )
+ 
+-type ColorLike = "Color" | tuple[int, int, int, int] | tuple[int, int, int] | str
++type ColorLike = ForwardRef("Color") | tuple[int, int, int, int] | tuple[int, int, int] | str
+ """
+ The color, in one of the standard formats Ren'Py understands. These are:
+ - A Color object.
+@@ -409,11 +409,11 @@ class Color(tuple[int, int, int, int]):
+ 
+     __rmul__ = __mul__  # type: ignore
+ 
+-    def _interpolate_tuple[T: tuple](self, a: T, b: T, fraction: float) -> T:
++    def _interpolate_tuple(self, a: tuple, b: tuple, fraction: float) -> tuple:
+         i = self._interpolate_num
+         return type(a)(tuple(i(ac, bc, fraction) for ac, bc in zip(a, b)))
+ 
+-    def _interpolate_num[T: (float, int)](self, a: T, b: T, fraction: float) -> T:
++    def _interpolate_num(self, a: int | float, b: int | float, fraction: float) -> int | float:
+         return type(a)(a + (b - a) * fraction)
+ 
+     def interpolate(self, other: ColorLike, fraction: float) -> "Color":
+Index: renpy-8.5.0-source/renpy/cslots.pyi
+===================================================================
+--- renpy-8.5.0-source.orig/renpy/cslots.pyi
++++ renpy-8.5.0-source/renpy/cslots.pyi
+@@ -19,6 +19,8 @@
+ # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ 
++from typing import TypeVar, Generic
++
+ class Object:
+     linenumber: int
+     "If known, the line number of the object in the source file."
+@@ -45,7 +47,9 @@ class Object:
+         and setting all slots to the default, breaking reference cycles.
+         """
+ 
+-class Slot[T]:
++T = TypeVar('T')
++
++class Slot(Generic(T)):
+     number: int
+     "A number assigned to this slot."
+ 
+Index: renpy-8.5.0-source/renpy/easy.py
+===================================================================
+--- renpy-8.5.0-source.orig/renpy/easy.py
++++ renpy-8.5.0-source/renpy/easy.py
+@@ -21,7 +21,7 @@
+ 
+ """Functions that make the user's life easier."""
+ 
+-from typing import Any, Callable
++from typing import Any, Callable, ParamSpec, TypeVar
+ from collections.abc import Iterable
+ 
+ import contextlib
+@@ -262,7 +262,10 @@ def split_properties(properties: dict[st
+     return rv
+ 
+ 
+-def to_list[T](value: T | Iterable[T], copy: bool = False) -> list[T]:
++T = TypeVar('T')
++
++
++def to_list(value: T | Iterable[T], copy: bool = False) -> list[T]:
+     """
+     If the value is an iterable, turns it into a list, otherwise wraps it into one.
+     If a list is provided and `copy` is True, a new list will be returned.
+@@ -281,7 +284,7 @@ def to_list[T](value: T | Iterable[T], c
+         return [value]
+ 
+ 
+-def to_tuple[T](value: T | Iterable[T]) -> tuple[T, ...]:
++def to_tuple(value: T | Iterable[T]) -> tuple[T, ...]:
+     """
+     Same as to_list, but with tuples.
+     """
+@@ -299,7 +302,11 @@ def to_tuple[T](value: T | Iterable[T])
+         return (value,)
+ 
+ 
+-def run_callbacks[**P, R](
++P = ParamSpec('P')
++R = TypeVar('R')
++
++
++def run_callbacks(
+     cb: Callable[P, R] | list[Callable[P, R]] | None,
+     *args: P.args,
+     **kwargs: P.kwargs,
+Index: renpy-8.5.0-source/renpy/display/position.py
+===================================================================
+--- renpy-8.5.0-source.orig/renpy/display/position.py
++++ renpy-8.5.0-source/renpy/display/position.py
+@@ -19,11 +19,14 @@
+ # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ 
+-from typing import final, overload, SupportsIndex, Any
++from typing import final, overload, SupportsIndex, Any, TypeVar
+ 
+ from renpy.types import Position
+ 
+ 
++T = TypeVar('T', int, float, "absolute")
++
++
+ @final
+ class absolute(float):
+     """
+@@ -176,7 +179,7 @@ class absolute(float):
+ 
+     @overload
+     @staticmethod
+-    def compute_raw[T: ("int | float | absolute")](value: T, room: float) -> T: ...
++    def compute_raw(value: T, room: float) -> T: ...
+ 
+     @staticmethod
+     def compute_raw(value: Position, room: float) -> "int | float | absolute":
+Index: renpy-8.5.0-source/renpy/types.py
+===================================================================
+--- renpy-8.5.0-source.orig/renpy/types.py
++++ renpy-8.5.0-source/renpy/types.py
+@@ -29,10 +29,11 @@
+ # be inconvenient.
+ 
+ import renpy
++from typing import ForwardRef
+ 
+-type Displayable = renpy.display.displayable.Displayable
++type Displayable = ForwardRef('renpy.display.displayable.Displayable')
+ 
+-type DisplayableLike = Displayable | str | list[str] | renpy.color.Color
++type DisplayableLike = Displayable | str | list[str] | ForwardRef('renpy.color.Color')
+ """
+ This describes anything that Ren'Py considers to be a displayable.
+ 
+@@ -45,7 +46,7 @@ Apart from Displayable itself, this coul
+ - renpy.color.Color object.
+ """
+ 
+-type Position = int | float | renpy.display.position.absolute | renpy.display.position.position
++type Position = int | float | ForwardRef('renpy.display.position.absolute') | ForwardRef('renpy.display.position.position')
+ """
+ This describes a position, which can be one of:
+ - An integer - treated as pixels from the top left corner of the area.
+Index: renpy-8.5.0-source/renpy/__init__.py
+===================================================================
+--- renpy-8.5.0-source.orig/renpy/__init__.py
++++ renpy-8.5.0-source/renpy/__init__.py
+@@ -227,6 +227,7 @@ backup_blacklist = {
+     "renpy.test.testreporter",
+     "renpy.test.testsettings",
+     "renpy.tfd",
++    "renpy.types",
+     "renpy.gl2",
+     "renpycoverage",
+ }
+@@ -245,9 +246,13 @@ name_blacklist = {
+     "renpy.savelocation.disk_lock",
+     "renpy.character.TAG_RE",
++    "renpy.color.ColorLike",
+     "renpy.display.im.cache",
++    "renpy.display.position.Position",
+     "renpy.display.render.main_thread",
+     "renpy.display.render.blit_lock",
+     "renpy.display.render.IDENTITY",
++    "renpy.easy.Displayable",
++    "renpy.easy.DisplayableLike",
+     "renpy.loader.auto_lock",
+     "renpy.display.screen.cprof",
+     "renpy.audio.audio.lock",

@@ -1,0 +1,40 @@
+Index: renpy-8.5.0-source/renpy/cslots.pyx
+===================================================================
+--- renpy-8.5.0-source.orig/renpy/cslots.pyx
++++ renpy-8.5.0-source/renpy/cslots.pyx
+@@ -32,6 +32,9 @@ Value unions, followed by a series of by
+ from cpython.mem cimport PyMem_Calloc, PyMem_Free
+ from cpython.object cimport PyObject, PyTypeObject, Py_TPFLAGS_HAVE_GC, PyObject_Free
+ from cpython.ref cimport Py_XINCREF, Py_XDECREF, Py_CLEAR
++cdef extern from "<limits.h>":
++    const long long LLONG_MIN
++    const long long LLONG_MAX
+ 
+ from copyreg import __newobj__
+ 
+@@ -51,7 +54,7 @@ cdef unsigned char DEFAULT_VALUE = 0xff
+ 
+ cdef union Value:
+     PyObject *object
+-    unsigned long long integer
++    long long integer
+ 
+ cdef class CMetaclass(type):
+ 
+@@ -369,10 +372,15 @@ cdef class IntegerSlot(Slot):
+         super(IntegerSlot, self).__init__(default_value)
+         self.default_int_value = default_value
+ 
+-    def __set__(self, CObject instance, unsigned int value):
++    def __set__(self, CObject instance, long long value):
+ 
+         cdef Value v
+ 
++        if value >= (LLONG_MAX >> 1):
++           raise OverflowError("Value is too large for an IntegerSlot")
++        if value <= (LLONG_MIN >> 1):
++           raise OverflowError("Value is too small for an IntegerSlot")
++
+         if value == self.default_int_value:
+             v.object = NULL
+         else:
