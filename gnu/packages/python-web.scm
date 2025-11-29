@@ -2203,23 +2203,32 @@ aiohttp.  It supports SOCKS4(a) and SOCKS5.")
 (define-public python-aiodns
   (package
     (name "python-aiodns")
-    (version "3.0.0")
+    (version "3.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "aiodns" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/saghul/aiodns")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1mlcw14hxyzd2yg89gj1l84gfi8nbl7h32iw17myxz23wymxyswl"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-pycares))
+        (base32 "1as7l48962dpk3r4zdsifj761dks5nyr35hxs7m8crvkyb1dg9m9"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))                    ;tests require internet access
+     (list
+      #:tests? #f))                     ;tests require internet access
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-pytest-asyncio
+           python-setuptools))
+    (propagated-inputs (list python-pycares))
     (home-page "https://github.com/saghul/aiodns")
     (synopsis "Simple DNS resolver for asyncio")
-    (description "@code{aiodns} provides a simple way for doing
-asynchronous DNS resolutions with a synchronous looking interface by
-using @url{https://github.com/saghul/pycares,pycares}.")
+    (description
+     "@code{aiodns} provides a simple way for doing asynchronous DNS
+resolutions with a synchronous looking interface by using
+@url{https://github.com/saghul/pycares,pycares}.")
     (license license:expat)))
 
 (define-public python-aioquic
