@@ -4084,6 +4084,32 @@ used to build IMAP clients and servers.")
 @code{go-github-com-emersion-go-imap}.")
     (license license:expat)))
 
+(define-public go-github-com-emersion-go-imap-uidplus
+  (package
+    (name "go-github-com-emersion-go-imap-uidplus")
+    (version "0.0.0-20200503180755-e75854c361e9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/emersion/go-imap-uidplus")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0iqazibiy38zfa1wzhdbxx1aq46k70wrhjxnp9sgl7xg6s7n6blb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/emersion/go-imap-uidplus"))
+    (propagated-inputs
+     (list go-github-com-emersion-go-imap))
+    (home-page "https://github.com/emersion/go-imap-uidplus")
+    (synopsis "UIDPLUS extension for go-imap")
+    (description
+     "This package implements the IMAP UIDPLUS extension, as defined in
+@@url{https://rfc-editor.org/rfc/rfc4315.html, RFC4315}.")
+    (license license:expat)))
+
 (define-public go-github-com-emersion-go-maildir
   (package
     (name "go-github-com-emersion-go-maildir")
