@@ -6298,12 +6298,11 @@ setup"))))
                   python-pysam
                   python-numpy
                   python-scipy))
-    (native-inputs (list python-setuptools-git
+    (native-inputs (list python-mock
+                         python-pynose
+                         python-pytz
                          python-setuptools
-                         python-wheel
-                         python-mock ;for tests
-                         python-nose ;for tests
-                         python-pytz)) ;for tests
+                         python-setuptools-git))
     (home-page "https://github.com/YeoLab/clipper")
     (synopsis "CLIP peak enrichment recognition")
     (description "CLIPper is a tool to define peaks in CLIP-seq datasets.")
