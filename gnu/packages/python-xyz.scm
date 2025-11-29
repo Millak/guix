@@ -18595,12 +18595,12 @@ in the data.")
        (sha256
         (base32
          "1iqrxhd8hvlyf8cqbc731ssnwm61wrycnbiczy5wsfahd3hlh8i4"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-ipykernel python-jupyter-client python-prompt-toolkit
            python-pygments))
-    (native-inputs
-     (list python-nose python-pytest))
     (home-page "https://jupyter.org")
     (synopsis "Jupyter terminal console")
     (description "This package provides a terminal-based console frontend for
