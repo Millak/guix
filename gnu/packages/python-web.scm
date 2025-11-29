@@ -8219,22 +8219,23 @@ textual content for output generation on the web.")
     (name "python-flask-principal")
     (version "0.4.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "Flask-Principal" version))
-        (sha256
-          (base32
-           "0lwlr5smz8vfm5h9a9i7da3q1c24xqc6vm9jdywdpgxfbi5i7mpm"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-blinker))
-    (native-inputs
-     (list python-flask python-nose))
-    (home-page "https://pythonhosted.org/Flask-Principal/")
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/pallets-eco/flask-principal")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hcqcj768inmyfsw1y2vk6pa9p22dh138ll809rhpz9vjz6spnqk"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-blinker))
+    (native-inputs (list python-flask python-pynose python-setuptools))
+    (home-page "https://github.com/pallets-eco/flask-principal")
     (synopsis "Identity management for Flask")
-    (description "@code{flask_principal} is a identity management library for
-Flask.  It supports managing both authentication and authorization data in a
-thread-local variable.")
+    (description
+     "@code{flask_principal} is a identity management library for Flask.  It
+supports managing both authentication and authorization data in a thread-local
+variable.")
     (license license:expat)))
 
 (define-public python-flask-httpauth
