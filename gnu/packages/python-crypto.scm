@@ -1388,11 +1388,10 @@ Derivation function (HKDF) defined in RFC 5869.")
         (method url-fetch)
         (uri (pypi-uri "spake2" version))
         (sha256
-         (base32
-          "0d4kbaxi4cv8klyqh6yb0p0qiwfdwvczy1h2mzvmlfdcsnlc87s2"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-cryptography python-hkdf))
+         (base32 "0d4kbaxi4cv8klyqh6yb0p0qiwfdwvczy1h2mzvmlfdcsnlc87s2"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-cryptography))
     (home-page "https://github.com/warner/python-spake2")
     (synopsis "SPAKE2 password-authenticated key exchange in Python")
     (description "This package provides a Python implementation of the SPAKE2
