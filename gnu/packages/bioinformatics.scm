@@ -4896,32 +4896,34 @@ consensus sequences.")
        (snippet '(delete-file "libs/ccs"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'relax-requirements
-                    (lambda _
-                      (substitute* "setup.py"
-                        (("'argparse[^']*',")
-                         "") ;only for python2
-                        (("==")
-                         ">=")
-                        ;; This package changed names.
-                        (("python-Levenshtein")
-                         "levenshtein"))))
-                  (add-before 'build 'build-libssw
-                    (lambda _
-                      (with-directory-excursion "libs/striped_smith_waterman"
-                        (invoke "make" "libssw.so"))))
-                  (add-before 'build 'fix-reference-to-ccs
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (substitute* "CIRI_long/pipeline.py"
-                        (("'ccs -i")
-                         (string-append "'"
-                                        (assoc-ref inputs "circtools")
-                                        "/bin/ccs" " -i")))
-                      ;; yuck!
-                      (substitute* "CIRI_long/main.py"
-                        (("os.chmod\\(lib_path.*")
-                         "")))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                (("'argparse[^']*',")
+                 "") ;only for python2
+                (("==")
+                 ">=")
+                ;; This package changed names.
+                (("python-Levenshtein")
+                 "levenshtein"))))
+          (add-before 'build 'build-libssw
+            (lambda _
+              (with-directory-excursion "libs/striped_smith_waterman"
+                (invoke "make" "libssw.so"))))
+          (add-before 'build 'fix-reference-to-ccs
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "CIRI_long/pipeline.py"
+                (("'ccs -i")
+                 (string-append "'"
+                                (assoc-ref inputs "circtools") "/bin/ccs"
+                                " -i")))
+              ;; yuck!
+              (substitute* "CIRI_long/main.py"
+                (("os.chmod\\(lib_path.*")
+                 "")))))))
     (inputs (list circtools
                   python-biopython
                   python-bwapy
@@ -4933,7 +4935,7 @@ consensus sequences.")
                   python-pyspoa
                   python-scikit-learn
                   python-scipy))
-    (native-inputs (list python-cython python-nose python-setuptools))
+    (native-inputs (list python-cython python-pynose python-setuptools))
     (home-page "https://ciri-cookbook.readthedocs.io/")
     (synopsis "Circular RNA identification for Nanopore sequencing")
     (description "CIRI-long is a package for circular RNA identification using
