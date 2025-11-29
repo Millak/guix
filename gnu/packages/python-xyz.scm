@@ -12498,7 +12498,6 @@ classes.  It is forked from @code{cached-property}.")
   (package
     (name "python-pdf2image")
     (version "1.17.0")
-    ;; No tests in the PyPI tarball.
     (source
      (origin
        (method git-fetch)
@@ -12510,13 +12509,15 @@ classes.  It is forked from @code{cached-property}.")
         (base32 "0xd8q939zqa8flfcdhbgyadiwqb8sgnd42cbr6n1l2jl9fnix45v"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; The following excluded tests assume hardcoded binary paths to
-     ;; /usr/bin/pdftoppm and /usr/bin/pdftocairo.
-     '(#:test-flags '("--exclude=^test_use_poppler_path$"
-                      "--exclude=^test_use_poppler_path_with_trailing_slash$")))
+     (list
+      ;; The following excluded tests assume hardcoded binary paths to
+      ;; /usr/bin/pdftoppm and /usr/bin/pdftocairo.
+      #:test-flags
+      #~(list "--exclude=^test_use_poppler_path$"
+              "--exclude=^test_use_poppler_path_with_trailing_slash$")))
     (propagated-inputs (list python-pillow))
     (inputs (list poppler))
-    (native-inputs (list python-nose which python-setuptools python-wheel))
+    (native-inputs (list python-pynose which python-setuptools))
     (home-page "https://github.com/Belval/pdf2image")
     (synopsis
      "Python wrapper around @command{pdftoppm} and @command{pdftocairo}")
