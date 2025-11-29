@@ -1188,7 +1188,7 @@ synchronization of multiple instances.")
        (snippet
         ;; Remove pre-built binaries from bin/.
         #~(for-each delete-file (find-files "bin" "^swfrender")))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -1198,11 +1198,12 @@ synchronization of multiple instances.")
             ;; other build system to build itself - it's delivered ready to
             ;; run from the source.
             (replace 'check
-              (lambda _
-                (setenv "DISPLAY" ":0")
-                (setenv "XDG_CACHE_HOME" (getcwd))
-                (setenv "HOME" (getcwd))
-                (invoke "xvfb-run" "python" "hydrus_test.py")))
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (setenv "DISPLAY" ":0")
+                  (setenv "XDG_CACHE_HOME" (getcwd))
+                  (setenv "HOME" (getcwd))
+                  (invoke "xvfb-run" "python" "hydrus_test.py"))))
             ;; XXX: program help files are not built.  Updating
             ;; python-pymdown-extensions to its latest version might be the
             ;; solution, but this would require also packaging its new build
@@ -1257,10 +1258,7 @@ synchronization of multiple instances.")
                   (chmod server #o0555))))))))
     ;; All native-inputs are only needed for the the check phase
     (native-inputs
-     (list xvfb-run
-           python-nose
-           python-mock
-           python-httmock))
+     (list xvfb-run python-mock python-httmock python-setuptools))
     ;; All python packages were taken from static/build_files/linux/requirements.txt
     (propagated-inputs
      (list python-beautifulsoup4
