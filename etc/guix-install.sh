@@ -793,8 +793,8 @@ export PATH="$GUIX_PROFILE/bin${PATH:+:}$PATH"
 # info and man readers.  When INFOPATH is unset, add a trailing colon so Emacs
 # searches 'Info-default-directory-list'.  When MANPATH is unset, add a
 # trailing colon so the system default search path is used.
-export INFOPATH="$GUIX_PROFILE/share/info:$INFOPATH"
-export MANPATH="$GUIX_PROFILE/share/man:$MANPATH"
+export INFOPATH="$GUIX_PROFILE/share/info:${INFOPATH:-}"
+export MANPATH="$GUIX_PROFILE/share/man:${MANPATH:-}"
 
 # User's default profile, if it exists
 GUIX_PROFILE="$HOME/.guix-profile"
