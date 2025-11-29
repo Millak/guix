@@ -3067,24 +3067,35 @@ classes
 (define-public python-falcon-cors
   (package
     (name "python-falcon-cors")
-    (version "1.1.7")
+    (properties '((commit . "41e9f075e193c1f76b26c0a8c67ad6e87462dfa6")
+                  (revision . "0")))
+    (version (git-version "1.1.7"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "falcon-cors" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lwcolton/falcon-cors")
+             (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "12pym7hwsbd8b0c1azn95nas8gm3f1qpr6lpyx0958xm65ffr20p"))))
-    (build-system python-build-system)
+        (base32 "0iqz1i1p5xr32n34j77p2a86jmrkg1w90d2wcmmy1mhi5mgdm5gx"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; XXX: The last commit's tests are uncompatible with the more recent
+      ;; version of python-falcon.
+      #:tests? #f))
     (native-inputs
-     (list python-falcon))
-    (home-page
-     "https://github.com/lwcolton/falcon-cors")
+     (list python-falcon python-mock python-pynose python-setuptools))
+    (home-page "https://github.com/lwcolton/falcon-cors")
     (synopsis "Falcon @dfn{cross-origin resource sharing} (CORS) library")
-    (description "This middleware provides @dfn{cross-origin resource
-sharing} (CORS) support for Falcon.  It allows applying a specially crafted
-CORS object to the incoming requests, enabling the ability to serve resources
-over a different origin than that of the web application.")
+    (description
+     "This middleware provides @dfn{cross-origin resource sharing} (CORS)
+support for Falcon.  It allows applying a specially crafted CORS object to the
+incoming requests, enabling the ability to serve resources over a different
+origin than that of the web application.")
     (license license:asl2.0)))
 
 (define-public python-furl
