@@ -190,6 +190,7 @@
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -384,14 +385,8 @@ service.")
                (base32
                 "0xy9l4hky85h3rgdmqmhcnx0q1hq0brskr8lzw2lz6lh7pxlxmyw"))))
     (build-system gnu-build-system)
-    (native-inputs
-     ;; For tests.
-     `(("python" ,python-wrapper)
-       ("python-nose" ,python-nose)
-       ("perl" ,perl)
-       ("perl-ipc-run" ,perl-ipc-run)))
-    (arguments
-     `(#:test-target "test"))
+    (arguments (list #:test-target "test"))
+    (native-inputs (list perl perl-ipc-run python-wrapper python-pynose))
     (synopsis "Single tool that combines @command{cat} & @command{rm}")
     (description
      "hungrycat prints the contents of a file to standard output, while
