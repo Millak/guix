@@ -12056,16 +12056,34 @@ bioinformatics file formats, sequence alignment, and more.")
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/fhcrc/seqmagick")
-               (commit commit)))
+                (url "https://github.com/fhcrc/seqmagick")
+                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32 "0syipb7m44s5bqrhs17bwr28svy2s83j8d93kbazav92jzszzsw4"))))
       (build-system pyproject-build-system)
-      (inputs
-       (list python-biopython python-pygtrie))
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-version
+              ;; Alternative of setup.py version check:
+              ;;
+              ;; subprocess.call(
+              ;; ('mkdir -p seqmagick/data && '
+              ;;  'git describe --tags --dirty > seqmagick/data/ver.tmp '
+              ;;  '&& mv seqmagick/data/ver.tmp seqmagick/data/ver '
+              ;;  '|| rm -f seqmagick/data/ver.tmp'),
+              ;; shell=True, stderr=open(os.devnull, "w"))
+              ;;
+              (lambda _
+                (mkdir "seqmagick/data")
+                (with-output-to-file "seqmagick/data/ver"
+                  (lambda _ (display #$version))))))))
       (native-inputs
-       (list python-nose python-setuptools python-wheel))
+       (list python-pynose
+             python-setuptools))
+      (inputs (list python-biopython python-pygtrie))
       (home-page "https://github.com/fhcrc/seqmagick")
       (synopsis "Tools for converting and modifying sequence files")
       (description
