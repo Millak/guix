@@ -7261,6 +7261,7 @@ direct replacement for @command{xvfb-run} specifically.
     (arguments
      (list #:install-source? #f
            #:tests? #f                  ;Requires running display server.
+           #:cargo-install-paths ''(".")
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-paths
