@@ -1764,6 +1764,61 @@ library, scripting API, and co-simulation capability for FPGA or ASIC
 verification.")
     (license license:asl2.0)))
 
+(define-public open-logic
+  (package
+    (name "open-logic")
+    (version "4.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/open-logic/open-logic/")
+              (commit version)
+              ;; Required by the en_cl_fix submodule.
+              (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0azapw9dyr5l5qal7qd409lyq0w6pw2wyjwvxfl44sykpbfxdl2x"))))
+    (outputs
+     '("out" "test"))
+    (properties
+     `((output-synopsis "test" "Testing code")
+       (output-synopsis "out" "Source code")))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "sim"
+                  (substitute* "run.py"
+                    ;; This is required to comply with current VUnit, see:
+                    ;; https://github.com/VUnit/vunit/issues/777
+                    (("compile_builtins=False, ")
+                     ""))
+                  (invoke "python3" "run.py" "--nvc" "-v"))))))
+      #:install-plan
+      #~'(("src" "share/open-logic/src" #:exclude-regexp ("core"))
+          ("3rdParty" "share/open-logic/3rdParty")
+          ("test" "share/open-logic/test" #:output "test"))))
+    (native-inputs
+     (list nvc python-matplotlib python-minimal python-vunit))
+    (native-search-paths
+     (list (search-path-specification
+             (variable "OPEN_LOGIC")
+             (separator #f)
+             (files (list "share/open-logic")))))
+    (home-page "https://github.com/open-logic/open-logic/")
+    (synopsis "Open library of VHDL standard components")
+    (description "Open Logic implements commonly used design units in a
+reusable and vendor/tool-independent way.  It is written following the VHDL
+2008 standard, but can also be used from System Verilog.")
+    (license (list license:lgpl2.1
+                   license:expat)))) ;en_cl_fix uses Expat license
+
 ;;; Required by python-vunit.
 (define osvvm-2023.04
   (package
