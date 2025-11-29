@@ -185,6 +185,9 @@
   (allow guix_daemon_t
          root_t
          (dir (mounton)))
+  (allow init_t
+         guix_daemon.guix_store_content_t
+         (dir (mounton)))
   (allow guix_daemon_t
          fs_t
          (filesystem (getattr)))
@@ -360,6 +363,14 @@
   (allow guix_daemon_t
          self
          (netlink_route_socket (bind create getattr nlmsg_read read write getopt)))
+
+  ;; Allow use of user namespaces
+  (allow guix_daemon_t
+         self
+         (cap_userns (sys_admin net_admin sys_chroot)))
+  (allow guix_daemon_t
+         self
+         (user_namespace (create)))
 
   ;; Socket operations
   (allow guix_daemon_t
