@@ -10940,6 +10940,7 @@ BAM and Wiggle files in both transcript-coordinate and genomic-coordinate.")
         (base32
          "0gbb9iyb7swiv5455fm5rg98r7l6qn27v564yllqjd574hncpx6m"))))
     (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests.
     (inputs
      (list python-bx-python
            python-cython
@@ -10948,10 +10949,7 @@ BAM and Wiggle files in both transcript-coordinate and genomic-coordinate.")
            python-pyparsing
            python-pysam
            python-setuptools
-           python-wheel
            zlib))
-    (native-inputs
-     (list python-nose))
     (home-page "https://rseqc.sourceforge.net/")
     (synopsis "RNA-seq quality control package")
     (description
