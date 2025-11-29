@@ -2782,11 +2782,7 @@ interactive learning.")
            python-six
            python-tqdm))
     (native-inputs
-     (list python-black
-           python-nose
-           python-pymongo
-           python-pytest
-           python-wheel))
+     (list python-pymongo python-pynose python-pytest))
     (home-page "https://hyperopt.github.io/hyperopt/")
     (synopsis "Library for hyperparameter optimization")
     (description "Hyperopt is a Python library for serial and parallel
