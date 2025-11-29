@@ -23,6 +23,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu system image)
+  #:use-module (guix deprecation)
   #:use-module (guix diagnostics)
   #:use-module (guix discovery)
   #:use-module (guix gexp)
@@ -74,9 +75,12 @@
             image-without-os
             operating-system-for-image
 
+            esp-partition/grub
+            esp32-partition/grub
+            root-partition
+
             esp-partition
             esp32-partition
-            root-partition
 
             mbr-disk-image
             mbr-hybrid-disk-image
@@ -125,21 +129,28 @@
 parent image record."
    (image (operating-system #false) . fields))
 
-(define esp-partition
+(define esp-partition/grub
   (partition
-   (size (* 40 (expt 2 20)))
-   (offset root-offset)
-   (label "GNU-ESP") ;cosmetic only
-   ;; Use "vfat" here since this property is used when mounting.  The actual
-   ;; FAT-ness is based on file system size (16 in this case).
-   (file-system "vfat")
-   (flags '(esp))
-   (initializer (gexp initialize-efi-partition))))
+    (size (* 40 (expt 2 20)))
+    (offset root-offset)
+    (label "GNU-ESP") ;cosmetic only
+    ;; Use "vfat" here since this property is used when mounting.  The actual
+    ;; FAT-ness is based on file system size (16 in this case).
+    (file-system "vfat")
+    (flags '(esp))
+    (initializer #~(lambda* (root #:key #:allow-other-keys)
+                     (initialize-efi-partition root #:grub-efi #+grub-efi)))))
 
-(define esp32-partition
+(define esp32-partition/grub
   (partition
-   (inherit esp-partition)
-   (initializer (gexp initialize-efi32-partition))))
+    (inherit esp-partition/grub)
+    (initializer #~(lambda* (root #:key #:allow-other-keys)
+                     (initialize-efi32-partition #:grub-efi32 #+grub-efi32)))))
+
+;; Be more transparent. The esp partition unconditinally installs grub.
+;; It doesn't look up bootloader of the system.
+(define-deprecated/public-alias esp-partition esp-partition/grub)
+(define-deprecated/public-alias esp32-partition esp32-partition/grub)
 
 (define root-partition
   (partition
@@ -166,19 +177,19 @@ parent image record."
    (format 'disk-image)
    (partition-table-type 'mbr)
    (partitions
-    (list esp-partition root-partition))))
+    (list esp-partition/grub root-partition))))
 
 (define efi-disk-image
   (image-without-os
    (format 'disk-image)
    (partition-table-type 'gpt)
-   (partitions (list esp-partition root-partition))))
+   (partitions (list esp-partition/grub root-partition))))
 
 (define efi32-disk-image
   (image-without-os
    (format 'disk-image)
    (partition-table-type 'gpt)
-   (partitions (list esp32-partition root-partition))))
+   (partitions (list esp32-partition/grub root-partition))))
 
 (define iso9660-image
   (image-without-os
@@ -501,15 +512,6 @@ used in the image."
                               #:copy-closures? (not
                                                 #$(image-shared-store? image))
                               #:system-directory #$os
-                              ;; These two shouldn't be needed unconditionally.
-                              #:grub-efi
-                              #+(if (bootloader-uses-grub-efi? bootloader)
-                                    grub-efi
-                                    #f)
-                              #:grub-efi32
-                              #+(if (bootloader-uses-grub-efi? bootloader)
-                                    grub-efi32
-                                    #f)
                               #:bootloader-package
                               #+(bootloader-package bootloader)
                               #:bootloader-installer
