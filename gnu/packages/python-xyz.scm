@@ -6950,37 +6950,36 @@ Prefix) - Encode and decode data structures.")
   (package
     (name "python-dogtail")
     (version "0.9.11")
-    (source (origin
-             (method url-fetch)
-             (uri
-              (string-append
-               "https://gitlab.com/dogtail/dogtail/-/raw/released/"
-               "dogtail-" version ".tar.gz"))
-             (sha256
-              (base32
-               "0sr38z7b2n12bvfd4xw4b5dnnhkn5zl3h0ymmnnzavcihfqia6l0"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://gitlab.com/dogtail/dogtail/-/raw/released/" "dogtail-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "0sr38z7b2n12bvfd4xw4b5dnnhkn5zl3h0ymmnnzavcihfqia6l0"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f                      ; TODO Launching dbus for the tests
-                                        ; fails
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (system "Xvfb :1 &")
-               (setenv "DISPLAY" ":1")
-               (invoke "dbus-run-session" "--" "nosetests" "-v" "tests/"))
-             #t)))))
-    (propagated-inputs
-     (list python-pygobject python-pycairo python-pyatspi))
+     (list
+      #:tests? #f ;TODO Launching dbus for the tests fails
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (system "Xvfb :1 &")
+                (setenv "DISPLAY" ":1")
+                (invoke "dbus-run-session" "--"
+                        "nosetests" "-v" "tests/")))))))
+    (propagated-inputs (list python-pygobject python-pycairo python-pyatspi))
     (native-inputs
-     (list python-nose
+     (list python-pynose
            gtk+
            xorg-server-for-tests
            dbus
            gsettings-desktop-schemas
-           gobject-introspection))
+           gobject-introspection
+           python-setuptools))
     (home-page "https://gitlab.com/dogtail/dogtail/")
     (synopsis "GUI test tool and automation framework written in Python")
     (description
