@@ -3832,11 +3832,10 @@ of regular expressions from text data and automatic test generation.")
     (native-inputs
      (list python-numpy
            python-pandas
-           python-nose
+           python-pynose
            python-pytest
            python-setuptools
-           python-xarray
-           python-wheel))
+           python-xarray))
     (home-page "https://github.com/jupyter-widgets/traittypes")
     (synopsis "Trait types for NumPy, SciPy and friends")
     (description "The goal of this package is to provide a reference
