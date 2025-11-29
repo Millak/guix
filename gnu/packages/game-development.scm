@@ -1794,61 +1794,56 @@ are only used to bootstrap it.")
   (package
     (inherit python-renpy)
     (name "renpy")
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:tests? #f ; see python-renpy
-      #:modules '((srfi srfi-1)
-                  (guix build python-build-system)
-                  (guix build utils))
-      #:imported-modules `((srfi srfi-1) ,@%python-build-system-modules)
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-commands
+          (add-after 'unpack 'fix-launcher
             (lambda* (#:key inputs outputs #:allow-other-keys)
-              (substitute* "launcher/game/choose_directory.rpy"
-                (("/usr/bin/python")
-                 (search-input-file inputs "/bin/python3")))
-              (substitute* "launcher/game/front_page.rpy"
-                (("xdg-open")
-                 (search-input-file inputs "/bin/xdg-open")))
+              (substitute* "launcher/game/gui7.rpy"
+                (("([ ]*)import gui7" all indent)
+                 (string-append indent "import sys\n"
+                                indent "import os\n"
+                                indent "from store import config\n"
+                                indent "sys.path.insert(0, os.path.join"
+                                "(config.renpy_base, \"launcher\"))\n"
+                                all)))
               (substitute* "launcher/game/project.rpy"
-                (("cmd = \\[ executable, \"-EO\", sys.argv\\[0\\] \\]")
+                (("cmd = \\[ executable, sys.argv\\[0\\] \\]")
                  (string-append "cmd = [ \"" (assoc-ref outputs "out")
                                 "/bin/renpy\" ]"))
                 ;; Projects are still created in the usual style, so we need
                 ;; to adjust the path.
                 (("cmd.append\\(self.path\\)")
-                 "cmd.append(self.path + \"/game\")"))))
+                 "cmd.append(self.path + \"/game\")"))
+              (substitute* "renpy/common/00action_other.rpy"
+                (("xdg-open") (search-input-file inputs "bin/xdg-open")))))
           (add-after 'unpack 'drop-game-from-paths
             (lambda _
               (substitute* (list "launcher/game/gui7.rpy"
                                  "launcher/game/gui7/images.py")
+                ((", \"gui\", \"game\",") ", \"gui\",")
                 ((", \"game\", \"gui7\",") ", \"gui7\","))
-              #t))
-          (add-before 'build 'start-xserver
-            (lambda* (#:key inputs native-inputs #:allow-other-keys)
-              (let ((Xvfb (search-input-file (or native-inputs inputs)
-                                             "/bin/Xvfb")))
-                (setenv "HOME" (getcwd))
-                (system (format #f "~a :1 &" Xvfb))
-                (setenv "DISPLAY" ":1"))))
-          (replace 'build
-            (lambda _
-              (invoke "python" "renpy.py" "launcher" "quit")
-              (invoke "python" "renpy.py" "the_question" "quit")
-              (invoke "python" "renpy.py" "tutorial" "quit")))
+              (substitute* "gui/game/guisupport.rpy"
+                ((", \"launcher\", \"game\"") ", \"launcher\""))))
+          (delete 'build)
           (replace 'install
             (lambda* (#:key inputs outputs #:allow-other-keys)
               ;; Here we install our custom renpy program.
               ;; After finishing this step, "out" will have the following:
-              ;; |-- bin/renpy
-              ;; `-- share/renpy ; i.e. path_to_renpy_base()
+              ;; |-- bin
+              ;; |   |-- renpy          ; stupid launcher, requires game path
+              ;; |   `-- renpy-launcher ; upstream launcher
+              ;; `-- share/renpy        ; i.e. path_to_renpy_base()
               ;;     |-- common
-              ;;     `-- gui
+              ;;     |-- launcher
+              ;;     |-- gui
+              ;;     `-- sdk-fonts
               ;;
               ;; Note that common shares the source files that would be installed
-              ;; by python2-renpy (which are instead deleted from that package),
+              ;; by python-renpy (which are instead deleted from that package),
               ;; but also contains their byte-compiled versions.
               ;; On other systems, renpy_base would point to site-packages or
               ;; even somewhere in /opt.
@@ -1870,71 +1865,38 @@ are only used to bootstrap it.")
               ;;     |-- Super Awesome Game.py
               ;;     `-- Super Awesome Game.sh
               (let* ((out (assoc-ref outputs "out"))
-                     (bin/renpy (string-append out "/bin/renpy")))
+                     (bin/renpy (string-append out "/bin/renpy"))
+                     (bin/renpy-launcher (string-append out "/bin/renpy-launcher")))
                 (copy-recursively "renpy/common"
                                   (string-append out "/share/renpy/common"))
-                (copy-recursively "gui"
+                (copy-recursively "launcher/game"
+                                  (string-append out "/share/renpy/launcher"))
+                (copy-recursively "gui/game"
                                   (string-append out "/share/renpy/gui"))
                 (copy-recursively "sdk-fonts"
                                   (string-append out "/share/renpy/sdk-fonts"))
-
                 (mkdir-p (string-append out "/bin"))
                 (copy-file #$(local-file (search-auxiliary-file "renpy/renpy.in"))
                            bin/renpy)
                 (substitute* bin/renpy
                   (("@PYTHON@") (search-input-file inputs "bin/python3"))
                   (("@RENPY_BASE@") (string-append out "/share/renpy")))
-                (chmod bin/renpy #o755))))
-
-          (add-after 'install 'install-games
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (define renpy (assoc-ref outputs "out"))
-              ;; TODO: We should offer a renpy-build-system to make the
-              ;; installation of Ren'py games easier.
-              (define* (install-renpy-game #:key output game name (renpy renpy)
-                                           #:allow-other-keys)
-                (let* ((name (or name (basename game)))
-                       (launcher (string-append output "/bin/renpy-" name))
-                       (share (string-append output "/share/renpy/" name)))
-                  (copy-recursively (string-append game "/game") share)
-                  (mkdir-p (string-append output "/bin"))
-                  (with-output-to-file launcher
-                    (lambda ()
-                      (format #t
-                              "#!~a~%~a ~a \"$@\""
-                              (search-input-file inputs "/bin/bash")
-                              (string-append renpy "/bin/renpy")
-                              share)))
-                  (chmod launcher #o755)))
-
-              (install-renpy-game #:output (assoc-ref outputs "out")
-                                  #:game "launcher")
-
-              (install-renpy-game #:output (assoc-ref outputs "the-question")
-                                  #:game "the_question"
-                                  #:name "the-question")
-
-              (install-renpy-game #:output (assoc-ref outputs "tutorial")
-                                  #:game "tutorial")))
-          (replace 'wrap
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let ((out (assoc-ref outputs "out"))
-                    (site (string-append "/lib/python"
-                                         (python-version
-                                          (assoc-ref inputs "python"))
-                                         "/site-packages")))
-                (wrap-program (string-append out "/bin/renpy")
-                  `("GUIX_PYTHONPATH" =
-                    (,@(delete-duplicates
-                        (map
-                         (lambda (store-path)
-                           (string-append store-path site))
-                         (cons (assoc-ref outputs "out")
-                               (map cdr
-                                    (filter
-                                     (lambda (input)
-                                       (string-prefix? "python" (car input)))
-                                     inputs))))))))))))))
+                (chmod bin/renpy #o755)
+                (with-output-to-file bin/renpy-launcher
+                  (lambda _
+                    (format #t "#!~a~%exec ~a ~a \"$@\""
+                            (search-input-file inputs "/bin/bash")
+                            bin/renpy
+                            (string-append out "/share/renpy/launcher"))))
+                (chmod bin/renpy-launcher #o755))))
+          (add-after 'install 'build
+            (lambda _
+              (let* ((bin/renpy (string-append #$output "/bin/renpy"))
+                     (renpy-base (string-append #$output "/share/renpy")))
+                (for-each
+                 (lambda (dir)
+                   (invoke bin/renpy (string-append renpy-base "/" dir) "quit"))
+                 (list "common" "gui" "launcher"))))))))
     (inputs (list bash-minimal
                   python
                   python-pefile
@@ -1945,7 +1907,6 @@ are only used to bootstrap it.")
                   xdg-utils))
     (propagated-inputs '())
     (native-inputs (list xorg-server-for-tests))
-    (outputs (list "out" "tutorial" "the-question"))
     (home-page "https://www.renpy.org/")
     (synopsis "Visual Novel Engine")
     (description "Ren'Py is a visual novel engine that helps you use words,
