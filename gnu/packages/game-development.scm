@@ -70,6 +70,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system renpy)
   #:use-module (guix build-system scons)
   #:use-module (gnu packages)
   #:use-module (gnu packages assembly)
@@ -1915,6 +1916,19 @@ mobile devices.  These can be both visual novels and life simulation games.
 The easy to learn script language allows anyone to efficiently write large
 visual novels, while its Python scripting is enough for complex simulation
 games.")
+    (license license:expat)))
+
+(define-public renpy-the-question
+  (package
+    (inherit renpy)
+    (name "renpy-the-question")
+    (build-system renpy-build-system)
+    (arguments (list #:game "the_question/game"))
+    (native-inputs (list xorg-server-for-tests))
+    (synopsis "Example visual novel")
+    (description "The Question is a short example visual novel showing that
+your Ren'py installation works, similar to a \"Hello World\" program in other
+programming languages.")
     (license license:expat)))
 
 (define-public python-pyxel
