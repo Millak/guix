@@ -435,9 +435,8 @@ setup against another one.")
     (native-inputs
      (list coreutils
            python-lxml
-           python-nose
-           python-setuptools
-           python-wheel))
+           python-pynose
+           python-setuptools))
     (home-page "https://github.com/sosy-lab/benchexec/")
     (synopsis "Framework for Reliable Benchmarking")
     (description
