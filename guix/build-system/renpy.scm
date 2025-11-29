@@ -81,6 +81,8 @@
                       (outputs '("out"))
                       (output "out")
                       (game "game")
+                      (tests? #t)
+                      (test-flags ''())
                       (search-paths '())
                       (system (%current-system))
                       (guile #f)
@@ -102,6 +104,8 @@
                          #:outputs #$(outputs->gexp outputs)
                          #:output #$output
                          #:game #$game
+                         #:test-flags #$test-flags
+                         #:tests? #$tests?
                          #:search-paths
                          '#$(sexp->gexp
                              (map search-path-specification->sexp

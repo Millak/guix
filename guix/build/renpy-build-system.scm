@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2021, 2025 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -38,6 +38,19 @@
           ;; should be "compile", but renpy wants to compile itself really
           ;; badly if we do
           "quit"))
+
+(define* (start-xorg-server #:key tests? inputs native-inputs #:allow-other-keys)
+  (when tests?
+    (let ((Xvfb (search-input-file (or native-inputs inputs)
+                                   "/bin/Xvfb")))
+      (setenv "HOME" (getcwd))
+      (system (format #f "~a :1 &" Xvfb))
+      (setenv "DISPLAY" ":1"))))
+
+(define* (check #:key game tests? (test-flags '()) #:allow-other-keys)
+  (if tests?
+      (apply invoke "renpy" game "test" test-flags)
+      (display "test suite not run\n")))
 
 (define* (install #:key inputs outputs game (output "out") #:allow-other-keys)
   (let* ((out (assoc-ref outputs output))
@@ -87,7 +100,8 @@
     (delete 'bootstrap)
     (delete 'configure)
     (replace 'build build)
-    (delete 'check)
+    (add-before 'check 'start-xorg-server start-xorg-server)
+    (replace 'check check)
     (replace 'install install)
     (add-after 'install 'install-desktop-file install-desktop-file)))
 
