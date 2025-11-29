@@ -3911,18 +3911,26 @@ Origin Resource Sharing}, making cross-origin AJAX possible.")
     (version "0.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "Flask-Markdown" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dcolish/flask-markdown")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0l32ikv4f7va926jlq4f7gx0xid247bhlxl6bd9av5dk8ljz1hyq"))))
-    (build-system python-build-system)
+        (base32 "1rqqmvjc4rjal6l4y3caxw9b3157pl923h4i1ihbm0gziqv3g2hl"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:tests? #f))        ; Tests seem to be incompatible with latest python
-    (propagated-inputs
-     (list python-markdown python-flask))
-    (native-inputs
-     (list python-nose))
+     (list
+      #:tests? #f  ;Tests seem to be incompatible with latest python
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (substitute* "setup.py"
+                (("dev")
+                 #$version)))))))
+    (propagated-inputs (list python-markdown python-flask))
+    (native-inputs (list python-pynose python-setuptools))
     (home-page "https://github.com/dcolish/flask-markdown")
     (synopsis "Small extension to help with using Markdown in Flask")
     (description
