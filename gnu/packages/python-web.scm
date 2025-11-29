@@ -5223,25 +5223,30 @@ can utilise asyncio, uvloop, or trio worker types.")
   (package
     (name "python-querystring-parser")
     (version "1.2.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "querystring_parser" version))
-              (sha256
-               (base32
-                "0qlar8a0wa003hm2z6wcpb625r6vjj0a70rsni9h8lz0zwfcwkv4"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bernii/querystring-parser")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15n89bf1x9dgp1vi697pa238nvn0vbqp3ghf0xrcyqqa9gn1l6fb"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      ;; XXX FIXME: This test is broken with Python 3.7:
-                      ;; https://github.com/bernii/querystring-parser/issues/35
-                      (substitute* "querystring_parser/tests.py"
-                        (("self\\.assertEqual\\(self\\.knownValuesNormalized, result\\)")
-                         "True"))
-                      (invoke "python" "querystring_parser/tests.py"))))))
-    (propagated-inputs
-     (list python-six))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda _
+              ;; XXX FIXME: This test is broken with Python 3.7:
+              ;; https://github.com/bernii/querystring-parser/issues/35
+              (substitute* "querystring_parser/tests.py"
+                (("self\\.assertEqual\\(self\\.knownValuesNormalized, result\\)")
+                 "True"))
+              (invoke "python" "querystring_parser/tests.py"))))))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-six))
     (home-page "https://github.com/bernii/querystring-parser")
     (synopsis "QueryString parser that correctly handles nested dictionaries")
     (description
