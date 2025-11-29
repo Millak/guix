@@ -9131,9 +9131,9 @@ decorator for retrying on exceptions.")
        (sha256
         (base32 "19ncbmnq2rnkqxhc9wf0q9whji34iyfv1pz6z61vnv4qhhdrn33v"))))
     (build-system pyproject-build-system)
-    (arguments (list #:test-backend #~'nose))
+    (arguments (list #:test-backend #~'unittest))
     (propagated-inputs (list python-docutils))
-    (native-inputs (list python-nose python-setuptools))
+    (native-inputs (list python-setuptools))
     (home-page "https://github.com/twolfson/restructuredtext-lint")
     (synopsis "Linter")
     (description
