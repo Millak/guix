@@ -126,16 +126,54 @@
                         "binary-format=elf"
                         "target-os=linux"
                         #$@(cond
+                            ((string-prefix? "x86_64" (%current-target-system))
+                             #~()) ; Implies boost.stacktrace.from_exception=on
+                            ;;; Note: With llvm's libc++, enabling that for
+                            ;;; non-x86_64 non-mingw32 would be a bad idea.
+                            ;;; libc++'s backtrace is not thread-safe and
+                            ;;; would leak then.
+                            ;;;
+                            ;;; We disable it here completely.  Alternatively,
+                            ;;; we could disable it only if the user used
+                            ;;; (package-with-c-toolchain ... clang) or
+                            ;;; otherwise has libc++ in their dependencies.
+                            ;;;
+                            ;;; In the latter case, we would have to set
+                            ;;; BOOST_STACKTRACE_LIBCXX_RUNTIME_MAY_CAUSE_MEMORY_LEAK
+                            ;;; and that seems ill-advised (if a future
+                            ;;; update broke it in other ways, we would
+                            ;;; be blind to it).
+                            ;;;
+                            ;;; See also:
+                            ;;; <https://codeberg.org/guix/guix/issues/4541>.
                             ((string-prefix? "arm" (%current-target-system))
                              #~("abi=aapcs"
                                 "address-model=32"
-                                "architecture=arm"))
+                                "architecture=arm"
+                                ;; See also:
+                                ;; <https://codeberg.org/guix/guix/issues/4541>.
+                                "boost.stacktrace.from_exception=off"))
                             ((string-prefix? "aarch64" (%current-target-system))
                              #~("abi=aapcs"
                                 "address-model=64"
-                                "architecture=arm"))
-                            (else #~())))
-                     #~()))
+                                "architecture=arm"
+                                ;; See also:
+                                ;; <https://codeberg.org/guix/guix/issues/4541>.
+                                "boost.stacktrace.from_exception=off"))
+                            (else
+                             ;; See also:
+                             ;; <https://codeberg.org/guix/guix/issues/4541>.
+                             #~("boost.stacktrace.from_exception=off"))))
+                     ;; Not cross-compiling.
+                     #~(#$@(cond
+                         ((string-suffix? "mingw32" (%current-system))
+                          #~()) ; Implies boost.stacktrace.from_exception=on
+                         ((string-prefix? "x86_64" (%current-system))
+                          #~()) ; Implies boost.stacktrace.from_exception=on
+                         (else
+                          ;; See also:
+                          ;; <https://codeberg.org/guix/guix/issues/4541>.
+                          #~("boost.stacktrace.from_exception=off"))))))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-shells
@@ -217,7 +255,33 @@ across a broad spectrum of applications.")
               (patch-flags '("-p2"))
               (sha256
                (base32
-                "13iviiwk1srpw9dmiwabkxv56v0pl0zggjp8zxy1419k5zzfsy34")))))))
+                "13iviiwk1srpw9dmiwabkxv56v0pl0zggjp8zxy1419k5zzfsy34"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments boost)
+      ((#:make-flags _ #f)
+       #~(list "threading=multi" "link=shared"
+              ;; Set the RUNPATH to $libdir so that the libs find each other.
+              (string-append "linkflags=-Wl,-rpath="
+                             #$output "/lib")
+              #$@(if (%current-target-system)
+                     #~("--user-config=user-config.jam"
+                        ;; Python is not supported when cross-compiling.
+                        "--without-python"
+                        "binary-format=elf"
+                        "target-os=linux"
+                        #$@(cond
+                            ((string-prefix? "arm" (%current-target-system))
+                             #~("abi=aapcs"
+                                "address-model=32"
+                                "architecture=arm"))
+                            ((string-prefix? "aarch64" (%current-target-system))
+                             #~("abi=aapcs"
+                                "address-model=64"
+                                "architecture=arm"))
+                            (else
+                             #~())))
+                     ;; Not cross-compiling.
+                     #~()))))))))
 
 (define-deprecated-package boost-with-python3
   boost)
