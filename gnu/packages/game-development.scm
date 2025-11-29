@@ -1931,6 +1931,18 @@ your Ren'py installation works, similar to a \"Hello World\" program in other
 programming languages.")
     (license license:expat)))
 
+(define-public renpy-tutorial
+  (package
+    (inherit renpy)
+    (name "renpy-tutorial")
+    (build-system renpy-build-system)
+    (arguments (list #:game "the_question/game"))
+    (native-inputs (list xorg-server-for-tests))
+    (synopsis "Tutorial for Ren'py")
+    (description "This package provides an interactive tutorial for the Ren'py
+visual novel engine, explaining all of its features.")
+    (license license:expat)))
+
 (define-public python-pyxel
   ;; Note to updaters: Use commit and revision even if you're bumping
   ;; to a release, as upstream is known to "reuse" tags.
