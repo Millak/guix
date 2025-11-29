@@ -1621,56 +1621,6 @@ drop selectors, frames, images, labels, selectors, tables, text inputs,
 color switches, and many more, with multiple options to customize.")
     (license license:expat)))
 
-(define-public python-pygame-sdl2
-  (let ((real-version "2.1.0")
-        (renpy-version "8.3.0"))
-    (package
-      (inherit python-pygame)
-      (name "python-pygame-sdl2")
-      (version (string-append real-version "+renpy" renpy-version))
-      (source
-       (origin
-         (method url-fetch)
-         (uri (string-append "https://www.renpy.org/dl/" renpy-version
-                             "/pygame_sdl2-" version ".tar.gz"))
-         (sha256 (base32 "1p8a4v3r5vjxhiwxdmqqhkl38zav6c4a6w6v2nixzdhzyfkgk16n"))
-         (modules '((guix build utils)))
-         (snippet
-          '(begin
-             ;; drop generated sources
-             (delete-file-recursively "gen")
-             (delete-file-recursively "gen3")
-             (delete-file-recursively "gen-static")))))
-      (build-system python-build-system)
-      (arguments
-       (list
-        #:tests? #f               ; tests require pygame to be installed first
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'set-paths 'set-sdl-vars
-              (lambda* (#:key inputs #:allow-other-keys)
-                (setenv "PYGAME_SDL2_CFLAGS"
-                        (string-append "-I"
-                                       (assoc-ref inputs "sdl-union")
-                                       "/include/SDL2 -D_REENTRANT"))
-                (setenv "PYGAME_SDL2_LDFLAGS"
-                        (string-append "-L"
-                                       (assoc-ref inputs "sdl-union")
-                                       "/lib -Wl,-rpath,"
-                                       (assoc-ref inputs "sdl-union")
-                                       "/lib -Wl,--enable-new-dtags -lSDL2")))))))
-      (inputs
-       (list (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))))
-      (native-inputs
-       (list python-cython-0))
-      (home-page "https://www.renpy.org/")
-      (synopsis "Reimplementation of the Pygame API using SDL2")
-      (description "Pygame_SDL2 reimplements the Pygame API using SDL2,
-staying close to the original, but also adding some SDL2-specific features.
-While it aims to be used as a drop-in replacement, it appears to be
-developed mainly for Ren'py.")
-      (license (list license:lgpl2.1 license:zlib)))))
-
 (define-public python-pygame-ce
   (package
     (name "python-pygame-ce")
