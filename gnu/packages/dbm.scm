@@ -251,20 +251,23 @@ SQL, Key/Value, XML/XQuery or Java Object storage for their data model.")
                                    "See LICENSE in the distribution."))))
 
 (define-public bdb-6
-  (package (inherit bdb-4.8)
+  (package
     (name "bdb")
     (version "6.2.32")
     (source (origin
-              (inherit (package-source bdb-4.8))
               (method url-fetch)
               (uri (string-append "https://download.oracle.com/berkeley-db/db-"
                                   version ".tar.gz"))
               (sha256
                (base32
                 "1yx8wzhch5wwh016nh0kfxvknjkafv6ybkqh6nh7lxx50jqf5id9"))
-              (patches '())))
-    ;; Copy-paste the arguments from bdb-4.8 and drop the
+              (modules '((guix build utils)
+                         (srfi srfi-1)))
+              (snippet bdb-snippet)))
+    ;; Copy-paste the arguments from bdb-5.3 and drop the
     ;; 'bdb-configure patch phase.
+    (build-system gnu-build-system)
+    (outputs '("out" "doc"))
     (arguments
      (list #:tests? #f                        ; no check target available
            #:disallowed-references '("doc")
@@ -317,6 +320,13 @@ SQL, Key/Value, XML/XQuery or Java Object storage for their data model.")
                      (("rm (.*) configure") "")
                      (("chmod (.*) config.guess(.*)$") ""))
                    (invoke "sh" "s_config"))))))
+    (native-inputs (list autoconf automake-1.16.5 libtool))
+    (synopsis "Berkeley database")
+    (description
+     "Berkeley DB is an embeddable database allowing developers the choice of
+SQL, Key/Value, XML/XQuery or Java Object storage for their data model.")
+    (home-page
+     "http://www.oracle.com/us/products/database/berkeley-db/overview/index.html")
     ;; Starting with version 6, BDB is distributed under AGPL3. Many individual
     ;; files are covered by the 3-clause BSD license.
     (license (list license:agpl3+ license:bsd-3))))
