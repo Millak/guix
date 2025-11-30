@@ -7591,31 +7591,29 @@ Protocol, WAMP}
 (define-public python-requests-oauthlib
   (package
     (name "python-requests-oauthlib")
-    (version "1.2.0")
+    (version "2.0.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "requests-oauthlib" version))
-       (sha256
-        (base32
-         "0mrglgcvq7k48pf27s4gifdk0za8xmgpf55jy15yjj471qrk6rdx"))))
-    (build-system python-build-system)
+       (method git-fetch)
+       (uri (git-reference (url
+                            "https://github.com/requests/requests-oauthlib")
+                           (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "0i0vnanxqilnf2rgng7n96rl8fzq0dbcl3rpl7zkxj50kv66nqwl"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; removes tests that require network access
-         (add-before 'check 'pre-check
-           (lambda _
-             (delete-file "tests/test_core.py")
-             #t)))))
+     (list
+      #:test-flags
+      #~(list
+         "--ignore=tests/test_core.py"  ; requires network access.
+         "--ignore=tests/examples/test_native_spa_pkce_auth0.py"
+         "-k" "not test_fetch_access_token"))) ; flaky tests.
     (native-inputs
-     (list python-pyjwt python-requests-mock python-mock))
+     (list python-requests-mock python-pytest python-setuptools))
     (propagated-inputs
      (list python-oauthlib python-requests))
-    (home-page
-     "https://github.com/requests/requests-oauthlib")
-    (synopsis
-     "OAuthlib authentication support for Requests")
+    (home-page "https://github.com/requests/requests-oauthlib")
+    (synopsis "OAuthlib authentication support for Requests")
     (description
      "Requests-OAuthlib uses the Python Requests and OAuthlib libraries to
 provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients.")
