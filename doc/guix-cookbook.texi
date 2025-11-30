@@ -1909,11 +1909,11 @@ Don't forget to modify all workspace members in @code{(gnu packages
 rust-crates)}:
 
 @lisp
-(define rust-pipewire-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)
-(define rust-pipewire-sys-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)
+(define rust-pipewire-0.8.0.fd3d8f7 package:rust-pipewire-0.8.0.fd3d8f7)
+(define rust-pipewire-sys-0.8.0.fd3d8f7 package:rust-pipewire-0.8.0.fd3d8f7)
 @dots{}
-(define rust-libspa-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)
-(define rust-libspa-sys-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)
+(define rust-libspa-0.8.0.fd3d8f7 package:rust-pipewire-0.8.0.fd3d8f7)
+(define rust-libspa-sys-0.8.0.fd3d8f7 package:rust-pipewire-0.8.0.fd3d8f7)
 @end lisp
 
 @node Using Rust Libraries in Other Build Systems
