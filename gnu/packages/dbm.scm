@@ -159,18 +159,96 @@ SQL, Key/Value, XML/XQuery or Java Object storage for their data model.")
      "http://www.oracle.com/us/products/database/berkeley-db/overview/index.html")))
 
 (define-public bdb-5.3
-  (package (inherit bdb-4.8)
+  (package
     (name "bdb")
     (version "5.3.28")
     (source (origin
-              (inherit (package-source bdb-4.8))
+              (method url-fetch)
               (uri (string-append "https://download.oracle.com/berkeley-db/db-"
                                   version ".tar.gz"))
               (sha256
                (base32
                 "0a1n5hbl7027fbz5lm0vp0zzfp1hmxnz14wx3zl9563h83br5ag0"))
               (patch-flags '("-p0"))
-              (patches (search-patches "bdb-5.3-atomics-on-gcc-9.patch"))))))
+              (patches (search-patches "bdb-5.3-atomics-on-gcc-9.patch"))
+              (modules '((guix build utils)
+                         (srfi srfi-1)))
+              (snippet bdb-snippet)))
+    (build-system gnu-build-system)
+    (outputs '("out"                             ; programs, libraries, headers
+               "doc"))                           ; 94 MiB of HTML docs
+    (arguments
+     (list #:tests? #f                        ; no check target available
+           #:disallowed-references '("doc")
+           #:out-of-source? #true
+           #:configure-flags
+           #~(list
+              #$@(if (target-ppc64le?)
+                     #~("CFLAGS=-g -O2 -Wno-error=implicit-function-declaration -fpermissive")
+                     #~("CFLAGS=-g -O2 -Wno-error=implicit-function-declaration"))
+              ;; Remove 7 MiB of .a files.
+              "--disable-static"
+
+              ;; The compatibility mode is needed by some packages,
+              ;; notably iproute2.
+              "--enable-compat185"
+
+              ;; The following flag is needed so that the inclusion
+              ;; of db_cxx.h into C++ files works; it leads to
+              ;; HAVE_CXX_STDHEADERS being defined in db_cxx.h.
+              "--enable-cxx")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'bootstrap
+                 (lambda* (#:key inputs native-inputs outputs
+                           #:allow-other-keys #:rest arguments)
+                   (with-directory-excursion "dist"
+                     (for-each (lambda (x)
+                                 (install-file x "aclocal"))
+                               (find-files "aclocal_java"))
+                     (apply (assq-ref %standard-phases 'bootstrap) arguments)
+                     (let ((automake-files (search-input-directory
+                                            (or native-inputs inputs)
+                                            "share/automake-1.16")))
+                       (define (replace file)
+                         (symlink (string-append automake-files "/" file) file))
+                       (for-each replace '("config.sub" "config.guess"
+                                           "install-sh"))))))
+               #$@(if (or (target-arm?)
+                          (target-riscv64?))
+                      #~((add-after 'unpack 'bdb-configure-patch
+                           (lambda _
+                             (invoke
+                              "patch" "-p1" "-i"
+                              #$(local-file
+                                 (search-patch "bdb-4-5-configure.patch"))))))
+                      #~())
+               (add-before 'configure 'pre-configure
+                 (lambda _
+                   (chdir "dist")
+                   ;; '--docdir' is not honored, so we need to patch.
+                   (substitute* "Makefile.in"
+                     (("docdir[[:blank:]]*=.*")
+                      (string-append "docdir = " #$output:doc
+                                     "/share/doc/bdb")))
+                   ;; Replace __EDIT_DB_VERSION__... by actual version numbers.
+                   ;; s_config is responsible for this, but also runs autoconf
+                   ;; again, so patch out the autoconf bits.
+                   (substitute* "s_config"
+                     (("^.*(aclocal|autoconf|autoheader|config\\.hin).*$") "")
+                     (("^.*auto4mte.*$") "")
+                     (("rm (.*) configure") "")
+                     (("chmod (.*) config.guess(.*)$") ""))
+                   (invoke "sh" "s_config"))))))
+    (native-inputs (list autoconf automake-1.16.5 libtool))
+    (synopsis "Berkeley database")
+    (description
+     "Berkeley DB is an embeddable database allowing developers the choice of
+SQL, Key/Value, XML/XQuery or Java Object storage for their data model.")
+    (home-page
+     "http://www.oracle.com/us/products/database/berkeley-db/overview/index.html")
+    (license (license:non-copyleft "file://LICENSE"
+                                   "See LICENSE in the distribution."))))
 
 (define-public bdb-6
   (package (inherit bdb-4.8)
