@@ -12234,6 +12234,41 @@ Version 2,Signed Signature Version 3, and Signed Signature Version 4.
 Supports S3 and STS.")
     (license license:expat)))
 
+(define-public go-github-com-snabb-httpreaderat
+  (package
+    (name "go-github-com-snabb-httpreaderat")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/snabb/httpreaderat")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0f9qdqyzk57mrizdbr049ynz8xpw6h3dlsb5ibbzlcryl0pbhzki"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/snabb/httpreaderat"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file-recursively "example")))))))
+    (propagated-inputs
+     (list go-github-com-pkg-errors))
+    (home-page "https://github.com/snabb/httpreaderat")
+    (synopsis "Golang @code{io.ReaderAt} to make HTTP Range Requests")
+    (description
+     "This package implements @code{io.ReaderAt} that makes
+@url{https://tools.ietf.org/html/rfc7233, HTTP Range Requests}.  It can be
+used for example with \"archive/zip\" package in Go standard library. Together
+they can be used to access remote (HTTP accessible) ZIP archives without
+needing to download the whole archive file.")
+    (license license:expat)))
+
 (define-public go-github-com-sourcegraph-jsonrpc2
   (package
     (name "go-github-com-sourcegraph-jsonrpc2")
