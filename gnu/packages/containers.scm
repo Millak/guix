@@ -8,6 +8,7 @@
 ;;; Copyright © 2024, 2025 Tomas Volf <~@wolfsden.cz>
 ;;; Copyright © 2024 Foundation Devices, Inc. <hello@foundation.xyz>
 ;;; Copyright © 2024 Jean-Pierre De Jesus DIAZ <jean@foundation.xyz>
+;;; Copyright © 2025 Tomas Volf <~@wolfsden.cz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -570,7 +571,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
 (define-public podman
   (package
     (name "podman")
-    (version "5.6.1")
+    (version "5.7.0")
     (outputs '("out" "docker"))
     (properties
      `((output-synopsis "docker" "docker alias for podman")
@@ -583,7 +584,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
              (url "https://github.com/containers/podman")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1k8dppbni8wbzxqqaknp08h687qw884wn7bkpiwmbw9np261fl4b"))
+        (base32 "0p1hh3sy5m1l1151wsda3q346pd4dm9hgpwjqakdha8yixyicwj8"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -614,7 +615,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
                 (invoke "make" "remotesystem"))))
           (add-after 'unpack 'fix-hardcoded-paths
             (lambda _
-              (substitute* "vendor/github.com/containers/common/pkg/config/config_linux.go"
+              (substitute* "vendor/go.podman.io/common/pkg/config/config_linux.go"
                 (("/usr/local/libexec/podman")
                  (string-append #$output "/libexec/podman"))
                 (("/usr/local/lib/podman")
@@ -675,7 +676,7 @@ Its main purpose is to support the key usage by @code{docker-init}:
      (list grep
            bats
            git-minimal/pinned
-           go-1.23
+           go-1.24
            go-md2man
            gettext-minimal ; for envsubst
            mandoc
