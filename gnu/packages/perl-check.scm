@@ -1595,19 +1595,20 @@ a minimum of effort.")
 (define-public perl-test-perltidy
   (package
     (name "perl-test-perltidy")
-    (version "20130104")
+    (version "20230226")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "mirror://cpan/authors/id/L/LA/LARRYL/Test-PerlTidy-"
+             "mirror://cpan/authors/id/S/SH/SHLOMIF/Test-PerlTidy-"
              version ".tar.gz"))
        (sha256
         (base32
-         "1j5rsb4km9rzcbd1ljavj8vm42bmilji40v2jj2k87l1ykrxj59z"))))
+         "1h83v22ndrya3ffpi2m7vdz5qkspwmn1ci3cpd6msycm0w8l5qn0"))))
     (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-path-tiny))
     (propagated-inputs
-     (list perl-file-finder perl-file-slurp perltidy perl-text-diff))
+     (list perl-file-finder perl-file-slurp perl-tidy perl-text-diff))
     (home-page "https://metacpan.org/release/Test-PerlTidy")
     (synopsis "Check that all your Perl files are tidy")
     (description
