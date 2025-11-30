@@ -1734,8 +1734,8 @@ At this stage, the package @code{cargo-audit} is buildable.
 
 @item
 Finally we'll unbundle the vendored dependencies.  The lockfile importer
-inserts @code{TODO:} comments for libraries with high probability of
-bundled dependencies.  @code{cargo-build-system} also performs
+inserts @code{TODO REVIEW:} comments for libraries with high probability
+of bundled dependencies.  @code{cargo-build-system} also performs
 additional check for binary files in its
 @code{check-for-pregenerated-files} phase, which usually indicates
 bundling:

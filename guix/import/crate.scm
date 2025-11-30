@@ -300,7 +300,7 @@ referencing all imported sources."
             (string-append (crate-name->package-name name) "-" version))
           ,@(if (or (string-suffix? "src" name)
                     (string-suffix? "sys" name))
-                (list (comment ";; TODO: Check bundled sources.\n" #f))
+                (list (comment ";; TODO REVIEW: Check bundled sources.\n" #f))
                 '())
           (crate-source ,name ,version
                         ,(bytevector->nix-base32-string
@@ -327,7 +327,7 @@ referencing all imported sources."
               ,(string->symbol
                 (string-append (crate-name->package-name name) "-" version))
               ,(comment
-                ";; TODO: Define standalone package if this is a workspace.\n"
+                ";; TODO REVIEW: Define standalone package if this is a workspace.\n"
                 #f)
               (origin
                 (method git-fetch)

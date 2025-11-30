@@ -311,9 +311,7 @@ version = \"25.2.0\"\n" port)))
                 "aho-corasick" "1.1.3"
                 "05mrpkvdgp5d20y2p989f187ry9diliijgwrs254fs9s1m1x6q4f"))
              (define rust-smithay-0.4.0.0cd3345
-               ,($ <comment>
-                   ";; TODO: Define standalone package if this is a workspace.\n"
-                   #f)
+               ,(? comment?)
                (origin
                  (method git-fetch)
                  (uri (git-reference
