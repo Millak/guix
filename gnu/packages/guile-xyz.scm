@@ -3611,6 +3611,76 @@ Probably can be replaced with guile's built-in file-descriptor procedures.")
     (home-page "https://codeberg.org/shegeley/wayland-scm")
     (license license:wtfpl2)))
 
+(define-public guile-wayland-scm
+  (package
+    (name "guile-wayland-scm")
+    (version "v0.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://codeberg.org/shegeley/wayland-scm")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "17xfc2826nh96ivsszv4avpcs4gbli8k3r0i1idyxkdhxa745rm7"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;; no tests yet
+      #:modules `(((guix build guile-build-system)
+                   #:select (target-guile-effective-version))
+                  ,@%default-gnu-modules)
+      #:imported-modules `((guix build guile-build-system)
+                           ,@%default-gnu-imported-modules)
+      #:make-flags
+      #~(let* ((wayland-dir #$(this-package-input "wayland")))
+          (list
+           "GUILE_AUTO_COMPILE=0"
+           (string-append "DESTDIR" "=" #$output)
+           (string-append "WAYLAND_DIR" "=" wayland-dir)
+           (string-append "WAYLAND_PROTOCOLS_PATH" "="
+                          #$(this-package-input "wayland-protocols"))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'respect-guile
+            (lambda* _
+              (delete-file "Makefile")
+              (rename-file "guile.Makefile" "Makefile")
+              (setenv "GUILE_AUTO_COMPILE" "0")))
+          (delete 'install)
+          (delete 'check)
+          (add-after 'build 'install
+            (lambda* _
+              (let* ((v (target-guile-effective-version))
+                     (share-dir (string-append #$output "/share/guile/site/"
+                                               v "/wayland-scm")))
+                (copy-recursively "wayland-scm" share-dir))))
+          (add-after 'install 'set-core-protocol-path-in-client
+            (lambda* _
+              (let* ((v (target-guile-effective-version))
+                     (dir (string-append #$output "/share/guile/site/"
+                                         v "/wayland-scm"))
+                     (core-protocol-file (string-append
+                                          dir "/protocols" "/wayland.scm"))
+                     (client-file (string-append dir "/client.scm")))
+                (substitute* (list client-file)
+                  (("WAYLAND_BASE_PROTOCOL_PATH")
+                   core-protocol-file))))))))
+    (native-search-paths
+     (list (search-path-specification
+             (variable "GUILE_EXTENSIONS_PATH")
+             (files (list "lib/guile/3.0")))))
+    (native-inputs (list guile-3.0 pkg-config texinfo autoconf automake))
+    (inputs (list wayland wayland-protocols))
+    (propagated-inputs (list guile-wayland-scm-socket guile-wayland-scm-shm))
+    (synopsis "Mostly R7RS-compliant Guile Scheme client bindings for Wayland")
+    (description "This package provides mostly R7RS-compliant Guile Scheme
+client bindings for Wayland.")
+    (home-page "https://codeberg.org/shegeley/wayland-scm")
+    (license license:wtfpl2)))
+
 (define-public g-wrap
   (package
     (name "g-wrap")
