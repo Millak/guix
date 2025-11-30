@@ -77,8 +77,9 @@ Italian (@pxref{Top,,, guix-cookbook.it, Ricettario di GNU Guix}),
 Brazilian Portuguese (@pxref{Top,,, guix-cookbook.pt_BR,
 Livro de receitas do GNU Guix}), Russian (@pxref{Top,,, guix-cookbook.ru,
 GNU Guix Рецепты}), Slovak (@pxref{Top,,, guix-cookbook.sk,
-Receptár GNU Guix}), and Swedish (@pxref{Top,,, guix-cookbook.sv,
-Kokbok för GNU Guix}).  If you would like to translate
+Receptár GNU Guix}), Swedish (@pxref{Top,,, guix-cookbook.sv,
+Kokbok för GNU Guix}), and Tamil (@pxref{Top,,, guix-cookbook.ta,
+GNU Guix கையேடு}).  If you would like to translate
 this document in your native language, consider joining
 @uref{https://translate.codeberg.org/projects/guix/documentation-cookbook,
 Weblate} (@pxref{Translating Guix,,, guix, GNU Guix Reference

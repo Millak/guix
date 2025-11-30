@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-10-24 03:18+0000\n"
-"PO-Revision-Date: 2025-11-23 01:17+0000\n"
+"PO-Revision-Date: 2025-11-29 15:53+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/documentation-manual/de/>\n"
 "Language: de\n"
@@ -17302,6 +17302,27 @@ msgstr "Mit dem Elm-Importer können Sie auch eine Version als Zeichenkette ange
 msgid "guix import elm elm-explorations/webgl@@1.1.3\n"
 msgstr "guix import elm elm-explorations/webgl@@1.1.3\n"
 
+msgid "npm-binary"
+msgstr "npm-binary"
+
+msgid "Node.js"
+msgstr "Node.js"
+
+msgid "Import metadata from the @uref{https://registry.npmjs.org, npm Registry}, as in this example:"
+msgstr "Metadaten aus der @uref{https:///registry.npmjs.org, npm-Registry} importieren, wie in diesem Beispiel:"
+
+msgid "guix import npm-binary buffer-crc32\n"
+msgstr "guix import npm-binary buffer-crc32\n"
+
+msgid "The npm-binary importer also allows you to specify a version string:"
+msgstr "Mit dem npm-binary-Importer können Sie auch eine Version als Zeichenkette angeben:"
+
+msgid "guix import npm-binary buffer-crc32@@1.0.0\n"
+msgstr "guix import npm-binary buffer-crc32@@1.0.0\n"
+
+msgid "Generated package expressions skip the build step of the @code{node-build-system}. As such, generated package expressions often refer to transpiled or generated files, instead of being built from source."
+msgstr "Die erzeugten Paketausdrücke überspringen den build-Schritt des @code{node-build-system}. Damit beziehen sich erzeugte Paketausdrücke oft auf transpilierte oder generierte Dateien, statt sie aus ihrem Quellcode zu erstellen."
+
 msgid "opam"
 msgstr "opam"
 
@@ -20612,6 +20633,12 @@ msgstr "Ein weiteres Beispiel ist ein Dateisystem, was von einem zugeordneten Ge
 
 msgid "@code{shepherd-requirements} (default: @code{'()})"
 msgstr "@code{shepherd-requirements} (Vorgabe: @code{'()})"
+
+msgid "This is a list of symbols denoting Shepherd requirements that must be met before mounting the file system."
+msgstr "Eine Liste von Symbolen, die Shepherd-Voraussetzungen benennen, die erfüllt sein müssen, um dieses Dateisystem einzubinden."
+
+msgid "As an example, an NFS file system would typically have a requirement for @code{networking}.  In some situations, requiring @code{networking} might not be sufficient as @code{networking} being marked as started does @emph{not} imply the network has already been configured and in working order (for example, when using @code{dhcp-client-service-type}).  For such cases, adding a requirement on a custom @code{network-online} service may be necessary.  A sample @code{network-online} one-shot Shepherd service implementation is provided below:"
+msgstr "Zum Beispiel würde für ein NFS-Dateisystem normalerweise @code{networking} als Abhängigkeit angegeben. In manchen Situationen genügt das allerdings @emph{nicht}, weil trotz einem als gestartet markierten @code{networking} das Netzwerk vielleicht @emph{nicht} unbedingt bereits konfiguriert wurde oder ordentlich funktioniert (zum Beispiel wenn @code{dhcp-client-service-type} benutzt wird). In solchen Fällen kann es erforderlich sein, dass Sie hier eine Abhängigkeit von einem eigenen @code{network-online}-Dienst angeben. Ein Beispiel, wie Sie @code{network-online} als einmalig ausgeführten („one-shot“) Shepherd-Dienst implementieren, folgt:"
 
 msgid ""
 "(simple-service 'network-online shepherd-root-service-type\n"
@@ -52846,8 +52873,8 @@ msgstr "@code{file-system} (Vorgabe: @code{\"ext4\"})"
 msgid "The partition file system as a string, defaulting to @code{\"ext4\"}."
 msgstr "Das Dateisystem der Partition als Zeichenkette. Die Vorgabe ist @code{\"ext4\"}."
 
-msgid "The supported values are @code{\"vfat\"}, @code{\"fat16\"}, @code{\"fat32\"}, @code{\"btrfs\"}, and @code{\"ext4\"}."
-msgstr "Als Wert werden @code{\"vfat\"}, @code{\"fat16\"}, @code{\"fat32\"}, @code{\"btrfs\"} und @code{\"ext4\"} unterstützt."
+msgid "The supported values are @code{\"btrfs\"}, @code{\"ext4\"}, @code{\"fat16\"}, @code{\"f2fs\"}, @code{\"fat32\"}, @code{\"vfat\"}, and @code{\"swap\"}."
+msgstr "Als Wert werden @code{\"btrfs\"}, @code{\"ext4\"}, @code{\"fat16\"}, @code{\"f2fs\"}, @code{\"fat32\"}, @code{\"vfat\"} und @code{\"swap\"} unterstützt."
 
 msgid "@code{\"vfat\"}, @code{\"fat16\"}, and @code{\"fat32\"} partitions without the @code{'esp} flag are by default LBA compatible."
 msgstr "Partitionen mit @code{\"vfat\"}-, @code{\"fat16\"}- und @code{\"fat32\"}-Dateisystem werden automatisch LBA-kompatibel eingestellt, wenn sie keine @code{'esp}-Flag tragen."

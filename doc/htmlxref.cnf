@@ -2,7 +2,7 @@
 # Modified by Ludovic Courtès <ludo@gnu.org> for the GNU Guix manual.
 # Further modified by Tomas Volf <~@wolfsden.cz>.
 
-htmlxrefversion=2025-08-31.16; # UTC
+htmlxrefversion=2025-11-29.21; # UTC
 
 # Copyright 2010-2020, 2022 Free Software Foundation, Inc.
 #
@@ -453,6 +453,8 @@ GUIX_COOKBOOK = ${GUIX_ROOT}/cookbook
  guix-cookbook.sk	node    ${GUIX_COOKBOOK}/sk/html_node/
  guix-cookbook.sv	mono    ${GUIX_COOKBOOK}/sv/guix-cookbook.sv.html
  guix-cookbook.sv	node    ${GUIX_COOKBOOK}/sv/html_node/
+ guix-cookbook.ta	mono    ${GUIX_COOKBOOK}/ta/guix-cookbook.ta.html
+ guix-cookbook.ta	node    ${GUIX_COOKBOOK}/ta/html_node/
  guix-cookbook		mono    ${GUIX_COOKBOOK}/en/guix-cookbook.html
  guix-cookbook		node	${GUIX_COOKBOOK}/en/html_node/
  guix-cookbook.zh_CN	mono    ${GUIX_COOKBOOK}/zh-cn/guix-cookbook.zh_CN.html

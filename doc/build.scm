@@ -72,7 +72,7 @@
 
 (define %cookbook-languages
   ;; Available translations for the 'guix-cookbook' text domain.
-  '("de" "en" "es" "fr" "it" "ko" "pt_BR" "ru" "sk" "sv" "zh_CN"))
+  '("de" "en" "es" "fr" "it" "ko" "pt_BR" "ru" "sk" "sv" "ta" "zh_CN"))
 
 (define %languages
   ;; Available translations for the document being built.
@@ -1300,7 +1300,7 @@ must be the Guix top-level source directory, from which PO files are taken."
                                                   language))
                                ".html")))
                          "HTML, entirely on one page"))
-                  ,@(if (member language '("ko" "ru"))
+                  ,@(if (member language '("ko" "ru" "ta"))
                         '()
                         `((li (a (@ (href ,(string-append
                                             #$manual

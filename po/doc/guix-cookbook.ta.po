@@ -1,0 +1,821 @@
+# SOME DESCRIPTIVE TITLE
+# Copyright (C) YEAR the authors of Guix (msgids) and the following authors (msgstr)
+# This file is distributed under the same license as the guix manual package.
+# Gold Ayan <thangaayyanar@gmail.com>, 2024.
+# Florian Pelz <pelzflorian@pelzflorian.de>, 2024, 2025.
+# Vaanjinathan Ramasamy <vaanjinathanramasamy@gmail.com>, 2024.
+msgid ""
+msgstr ""
+"Project-Id-Version: guix manual checkout\n"
+"Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
+"POT-Creation-Date: 2025-10-21 03:18+0000\n"
+"PO-Revision-Date: 2025-11-30 17:01+0000\n"
+"Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
+"Language-Team: Tamil <https://translate.codeberg.org/projects/guix/documentation-cookbook/ta/>\n"
+"Language: ta\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.14.3\n"
+
+msgid "@documentencoding UTF-8"
+msgstr ""
+"@documentencoding UTF-8\n"
+"@documentlanguage ta"
+
+msgid "GNU Guix Cookbook"
+msgstr "GNU Guix கையேடு"
+
+msgid "Copyright @copyright{} 2019, 2022 Ricardo Wurmus@* Copyright @copyright{} 2019 Efraim Flashner@* Copyright @copyright{} 2019 Pierre Neidhardt@* Copyright @copyright{} 2020 Oleg Pykhalov@* Copyright @copyright{} 2020 Matthew Brooks@* Copyright @copyright{} 2020 Marcin Karpezo@* Copyright @copyright{} 2020 Brice Waegeneire@* Copyright @copyright{} 2020 André Batista@* Copyright @copyright{} 2020 Christine Lemmer-Webber@* Copyright @copyright{} 2021 Joshua Branson@* Copyright @copyright{} 2022, 2023 Maxim Cournoyer@* Copyright @copyright{} 2023-2025 Ludovic Courtès@* Copyright @copyright{} 2023 Thomas Ieong@* Copyright @copyright{} 2024 Florian Pelz@* Copyright @copyright{} 2025 45mg@* Copyright @copyright{} 2023 Marek Felšöci@* Copyright @copyright{} 2023 Konrad Hinsen@* Copyright @copyright{} 2023 Philippe Swartvagher@*"
+msgstr "Copyright @copyright{} 2019, 2022 Ricardo Wurmus@* Copyright @copyright{} 2019 Efraim Flashner@* Copyright @copyright{} 2019 Pierre Neidhardt@* Copyright @copyright{} 2020 Oleg Pykhalov@* Copyright @copyright{} 2020 Matthew Brooks@* Copyright @copyright{} 2020 Marcin Karpezo@* Copyright @copyright{} 2020 Brice Waegeneire@* Copyright @copyright{} 2020 André Batista@* Copyright @copyright{} 2020 Christine Lemmer-Webber@* Copyright @copyright{} 2021 Joshua Branson@* Copyright @copyright{} 2022, 2023 Maxim Cournoyer@* Copyright @copyright{} 2023-2025 Ludovic Courtès@* Copyright @copyright{} 2023 Thomas Ieong@* Copyright @copyright{} 2024 Florian Pelz@* Copyright @copyright{} 2025 45mg@* Copyright @copyright{} 2023 Marek Felšöci@* Copyright @copyright{} 2023 Konrad Hinsen@* Copyright @copyright{} 2023 Philippe Swartvagher@*"
+
+msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.  A copy of the license is included in the section entitled ``GNU Free Documentation License''."
+msgstr "இலவச மென்பொருள் அறக்கட்டளையால் வெளியிடப்பட்ட குனு இலவச ஆவண உரிமம், பதிப்பு 1.3 அல்லது அதற்குப் பிந்தைய பதிப்பின் விதிமுறைகளின் கீழ் இந்த ஆவணத்தை நகலெடுக்க, விநியோகிக்க மற்றும்/அல்லது மாற்றுவதற்கு இசைவு வழங்கப்படுகிறது; மாறாத பிரிவுகள் இல்லாமல், முன் அட்டை உரைகள் இல்லை, பின் அட்டை உரைகள் இல்லை. உரிமத்தின் நகல் ``GNU இலவச ஆவண உரிமம்'' என்ற பிரிவில் சேர்க்கப்பட்டுள்ளது."
+
+msgid "System administration"
+msgstr "அமைப்பு நிர்வாகம்"
+
+msgid "Guix cookbook: (guix-cookbook)"
+msgstr "கிக்ஸ் பயனர் கையேடு: (guix-cookbook.ta)"
+
+msgid "Tutorials and examples for GNU Guix."
+msgstr "குனு கிக்ஸ் க்கான பயிற்சிகள் மற்றும் எடுத்துக்காட்டுகள்."
+
+msgid "Tutorials and examples for using the GNU Guix Functional Package Manager"
+msgstr "குனு கிக்ஸ் செயல்பாட்டு தொகுப்பு மேலாளரைப் பயன்படுத்துவதற்கான பயிற்சிகள் மற்றும் எடுத்துக்காட்டுகள்"
+
+msgid "The GNU Guix Developers"
+msgstr "குனு கிக்ஸ் நிரலாளர்"
+
+msgid "Top"
+msgstr "Top"
+
+msgid "This document presents tutorials and detailed examples for GNU@tie{}Guix, a functional package management tool written for the GNU system.  Please @pxref{Top,,, guix, GNU Guix reference manual} for details about the system, its API, and related concepts."
+msgstr "இந்த ஆவணம் GNU@tie{}Guix க்கான பயிற்சிகள் மற்றும் விரிவான எடுத்துக்காட்டுகளை வழங்குகிறது, இது GNU அமைப்பிற்காக எழுதப்பட்ட ஒரு செயல்பாட்டு தொகுப்பு மேலாண்மை கருவியாகும். கணினி, அதன் பநிஇ மற்றும் தொடர்புடைய கருத்துக்கள் பற்றிய விவரங்களுக்கு @pxref{Top,,, guix, GNU Guix குறிப்பு கையேடு}."
+
+msgid "This manual is also available in Simplified Chinese (@pxref{Top,,, guix-cookbook.zh_CN, GNU Guix 烹饪书}), French (@pxref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}), German (@pxref{Top,,, guix-cookbook.de, GNU-Guix-Kochbuch}), Korean (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}), Spanish (@pxref{Top,,, guix-cookbook.es, Libro de recetas de GNU Guix}), Italian (@pxref{Top,,, guix-cookbook.it, Ricettario di GNU Guix}), Brazilian Portuguese (@pxref{Top,,, guix-cookbook.pt_BR, Livro de receitas do GNU Guix}), Russian (@pxref{Top,,, guix-cookbook.ru, GNU Guix Рецепты}), Slovak (@pxref{Top,,, guix-cookbook.sk, Receptár GNU Guix}), Swedish (@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}), and Tamil (@pxref{Top,,, guix-cookbook.ta, GNU Guix கையேடு}).  If you would like to translate this document in your native language, consider joining @uref{https://translate.codeberg.org/projects/guix/documentation-cookbook, Weblate} (@pxref{Translating Guix,,, guix, GNU Guix Reference Manual})."
+msgstr "இந்த கையேடு ஆங்கில கிடைக்கிறது (@pxref{Top,,, guix-cookbook, GNU Guix Cookbook}) எளிமைப்படுத்தப்பட்ட சீன மொழியிலும் (@pxref{Top,,, guix-cookbook.zh_CN, GNU Guix 烹饪书}), பிரெஞ்சு (@pxref{Top,,, guix-cookbook.fr, Livre de recettes de GNU Guix}), செர்மன் (@pxref{Top,,, guix-cookbook.de, GNU-Guix-Kochbuch}), , கொரியன் (@pxref{Top,,, guix-cookbook.ko, GNU Guix 쿡북}), ச்பானிச் (@pxref{Top,,, guix-cookbook.es, Libro de recetas de GNU Guix}), இத்தாலியன் (@pxref{Top,,, guix-cookbook.it, Ricettario di GNU Guix}), பிரேசிலிய போர்த்துகீசியம் (@pxref{Top,,, guix-cookbook.pt_BR, Livro de receitas do GNU Guix}), ரசியன் (@pxref{Top,,, guix-cookbook.ru, GNU Guix Рецепты}, ச்லோவாக் (@pxref{Top,,, guix-cookbook.sk, Receptár GNU Guix}), மற்றும் ச்வீடிச் (@pxref{Top,,, guix-cookbook.sv, Kokbok för GNU Guix}). இந்த ஆவணத்தை உங்கள் தாய் மொழியில் மொழிபெயர்க்க விரும்பினால், @uref{https://translate.codeberg.org/projects/guix/documentation-cookbook, Weblate} (@pxref{Translating Guix,,, guix, GNU Guix குறிப்பு கையேடு}) இல் சேரவும்."
+
+msgid "Scheme tutorials"
+msgstr "ஸ்கீம்(Scheme) பயிற்சிகள்"
+
+msgid "Meet your new favorite language!"
+msgstr "உங்களுக்குப் பிடித்த புதிய மொழியைச் சந்திக்கவும்!"
+
+msgid "Packaging"
+msgstr "பொதியாக்கம்"
+
+msgid "Packaging tutorials"
+msgstr "பேக்கேசிங் பயிற்சிகள்"
+
+msgid "System Configuration"
+msgstr "அமைப்பின் உள்ளமைப்பு"
+
+msgid "Customizing the GNU System"
+msgstr "குனு அமைப்பைத் தனிப்பயனாக்குதல் (customize)"
+
+msgid "Containers"
+msgstr "கொள்கலன்கள்"
+
+msgid "Isolated environments and nested systems"
+msgstr "தனிமைப்படுத்தப்பட்ட சூழல்கள் மற்றும் உள்ளமை அமைப்புகள்"
+
+msgid "Virtual Machines"
+msgstr "மெய்நிகர் பொறிகள்"
+
+msgid "Virtual machines usage and configuration"
+msgstr "மெய்நிகர் இயந்திரங்களின் பயன்பாடு மற்றும் கட்டமைப்பு"
+
+msgid "Advanced package management"
+msgstr "மேம்பட்ட தொகுப்பு மேலாண்மை"
+
+msgid "Power to the users!"
+msgstr "பயனாளர்களுக்கு அதிகாரம்!"
+
+msgid "Software Development"
+msgstr "மென்பொருள் மேம்பாடு"
+
+msgid "Environments, continuous integration, etc."
+msgstr "சூழல்கள், தொடர்ச்சியான ஒருங்கிணைப்பு போன்றவை."
+
+msgid "Environment management"
+msgstr "சுற்றுச்சூழல் மேலாண்மை"
+
+msgid "Control environment"
+msgstr "கட்டுப்பாட்டு சூழல்"
+
+msgid "Reproducible Research"
+msgstr "மீண்டும் உருவாக்கக்கூடிய ஆராய்ச்சி"
+
+msgid "A foundation for reproducible research."
+msgstr "மீண்டும் உருவாக்கக்கூடிய ஆராய்ச்சிக்கான அடித்தளம்."
+
+msgid "Installing Guix on a Cluster"
+msgstr "ஒரு கிளச்டரில் Guix ஐ நிறுவுகிறது"
+
+msgid "High-performance computing."
+msgstr "உயர் செயல்திறன் கணினி."
+
+msgid "Guix System Management"
+msgstr "Guix கணினி மேலாண்மை"
+
+msgid "System Management specifics."
+msgstr "கணினி மேலாண்மை விவரக்குறிப்புகள்."
+
+msgid "Acknowledgments"
+msgstr "அங்கீகாரங்கள்"
+
+msgid "Thanks!"
+msgstr "நன்றி!"
+
+msgid "GNU Free Documentation License"
+msgstr "குனு இலவச ஆவண உரிமம்"
+
+msgid "The license of this document."
+msgstr "இந்த ஆவணத்தின் உரிமம்."
+
+msgid "Concept Index"
+msgstr "கருத்து அட்டவணை"
+
+msgid "Concepts."
+msgstr "கருத்துக்கள்."
+
+msgid "--- The Detailed Node Listing ---"
+msgstr "--- விரிவான முனை பட்டியல் ---"
+
+msgid "A Scheme Crash Course"
+msgstr "ஒரு ச்கீம் க்ராச் கோர்ச்"
+
+msgid "Packaging Tutorial"
+msgstr "பேக்கேசிங் பயிற்சி"
+
+msgid "A tutorial on how to add packages to Guix."
+msgstr "Guix இல் தொகுப்புகளை எவ்வாறு சேர்ப்பது என்பது பற்றிய ஒரு பயிற்சி."
+
+msgid "Packaging Workflows"
+msgstr "பேக்கேசிங் பணிப்பாய்வு"
+
+msgid "Real life examples on working with specific build systems."
+msgstr "குறிப்பிட்ட உருவாக்க அமைப்புகளுடன் பணிபுரிவதற்கான நிச வாழ்க்கை எடுத்துக்காட்டுகள்."
+
+msgid "A ``Hello World'' package"
+msgstr "ஒரு ``அலோ வேர்ல்ட்'' தொகுப்பு"
+
+msgid "Setup"
+msgstr "அமைவு"
+
+msgid "Extended example"
+msgstr "நீட்டிக்கப்பட்ட சான்று"
+
+msgid "Other build systems"
+msgstr "பிற உருவாக்க அமைப்புகள்"
+
+msgid "Programmable and automated package definition"
+msgstr "நிரல்படுத்தக்கூடிய மற்றும் தானியங்கு தொகுப்பு வரையறை"
+
+msgid "Getting help"
+msgstr "உதவி பெறுதல்"
+
+msgid "Conclusion"
+msgstr "முடிவுரை"
+
+msgid "References"
+msgstr "குறிப்புகள்"
+
+msgid "Local file"
+msgstr "உள்ளக கோப்பு"
+
+msgid "Channels"
+msgstr "சேனல்கள்"
+
+msgid "Direct checkout hacking"
+msgstr "நேரடி செக்அவுட் ஏக்கிங்"
+
+msgid "Recursive importers"
+msgstr "சுழல்நிலை இறக்குமதியாளர்கள்"
+
+msgid "Automatic update"
+msgstr "தானியங்கி மேம்படுத்தல்"
+
+msgid "Inheritance"
+msgstr "பரம்பரை"
+
+msgid "Packaging Rust Crates"
+msgstr "பேக்கேசிங் ரச்ட் கிரேட்ச்"
+
+msgid "Common Workflow for Rust Packaging"
+msgstr "ரச்ட் பேக்கேசிங்கிற்கான பொதுவான பணிப்பாய்வு"
+
+msgid "Cargo Workspaces and Development Snapshots"
+msgstr "சரக்கு பணியிடங்கள் மற்றும் மேம்பாட்டு ச்னாப்சாட்கள்"
+
+msgid "Using Rust Libraries in Other Build Systems"
+msgstr "மற்ற பில்ட் சிச்டங்களில் ரச்ட் லைப்ரரிகளைப் பயன்படுத்துதல்"
+
+msgid "Auto-Login to a Specific TTY"
+msgstr "ஒரு குறிப்பிட்ட TTY இல் தானாக உள்நுழைக"
+
+msgid "Automatically Login a User to a Specific TTY"
+msgstr "ஒரு குறிப்பிட்ட TTY இல் ஒரு பயனரை தானாக உள்நுழையவும்"
+
+msgid "Customizing the Kernel"
+msgstr "கர்னலைத் தனிப்பயனாக்குதல்"
+
+msgid "Creating and using a custom Linux kernel on Guix System."
+msgstr "Guix கணினியில் தனிப்பயன் Linux கர்னலை உருவாக்கி பயன்படுத்துதல்."
+
+msgid "Guix System Image API"
+msgstr "Guix சிச்டம் இமேச் பநிஇ"
+
+msgid "Customizing images to target specific platforms."
+msgstr "குறிப்பிட்ட தளங்களை குறிவைக்க படங்களை தனிப்பயனாக்குதல்."
+
+msgid "Using security keys"
+msgstr "பாதுகாப்பு விசைகளைப் பயன்படுத்துதல்"
+
+msgid "How to use security keys with Guix System."
+msgstr "Guix மண்டலம் உடன் பாதுகாப்பு விசைகளை எவ்வாறு பயன்படுத்துவது."
+
+msgid "Dynamic DNS mcron job"
+msgstr "மாறும் டிஎன்எச் மெக்ரான் வேலை"
+
+msgid "Job to update the IP address behind a DuckDNS host name."
+msgstr "DuckDNS புரவலன் பெயருக்குப் பின்னால் உள்ள IP முகவரியைப் புதுப்பிப்பதற்கான வேலை."
+
+msgid "Connecting to Wireguard VPN"
+msgstr "Wireguard VPN உடன் இணைக்கிறது"
+
+msgid "Connecting to a Wireguard VPN."
+msgstr "வயர்கார்டு VPN உடன் இணைக்கிறது."
+
+msgid "Customizing a Window Manager"
+msgstr "சாளர மேலாளரைத் தனிப்பயனாக்குதல்"
+
+msgid "Handle customization of a Window manager on Guix System."
+msgstr "Guix கணினியில் ஒரு சாளர மேலாளரின் தனிப்பயனாக்கத்தைக் கையாளவும்."
+
+msgid "Running Guix on a Linode Server"
+msgstr "லினோட் சேவையகத்தில் Guix ஐ இயக்குகிறது"
+
+msgid "Running Guix on a Linode Server."
+msgstr "லினோட் சேவையகத்தில் Guix ஐ இயக்குகிறது."
+
+msgid "Running Guix on a Kimsufi Server"
+msgstr "கிம்சுஃபி சர்வரில் Guixஐ இயக்குகிறது"
+
+msgid "Running Guix on a Kimsufi Server."
+msgstr "கிம்சுஃபி சர்வரில் Guixஐ இயக்குகிறது."
+
+msgid "Setting up a bind mount"
+msgstr "பைண்ட் மவுண்ட் அமைத்தல்"
+
+msgid "Setting up a bind mount in the file-systems definition."
+msgstr "கோப்பு முறைமைகளின் வரையறையில் பைண்ட் மவுண்ட்டை அமைத்தல்."
+
+msgid "Getting substitutes from Tor"
+msgstr "Tor இலிருந்து மாற்றுகளைப் பெறுதல்"
+
+msgid "Configuring Guix daemon to get substitutes through Tor."
+msgstr "Tor மூலம் மாற்றுகளைப் பெற Guix deemon ஐ உள்ளமைக்கிறது."
+
+msgid "Setting up NGINX with Lua"
+msgstr "லுவா உடன் NGINX ஐ அமைக்கிறது"
+
+msgid "Configuring NGINX web-server to load Lua modules."
+msgstr "லுவா தொகுதிகளை ஏற்றுவதற்கு NGINX இணைய சேவையகத்தை உள்ளமைக்கிறது."
+
+msgid "Music Server with Bluetooth Audio"
+msgstr "ஊடலை ஆடியோவுடன் இசை சேவையகம்"
+
+msgid "Headless music player with Bluetooth output."
+msgstr "ஊடலை வெளியீட்டுடன் எட்லெச் மியூசிக் பிளேயர்."
+
+msgid "StumpWM"
+msgstr "ச்டம்ப்டபிள்யூஎம்"
+
+msgid "Session lock"
+msgstr "அமர்வு பூட்டு"
+
+msgid "Xorg"
+msgstr "கோர்க்"
+
+msgid "Guix Containers"
+msgstr "சிப்சம் கொள்கலன்கள்"
+
+msgid "Perfectly isolated environments"
+msgstr "முற்றிலும் தனிமைப்படுத்தப்பட்ட சூழல்கள்"
+
+msgid "Guix System Containers"
+msgstr "Guix சிச்டம் கொள்கலன்கள்"
+
+msgid "A system inside your system"
+msgstr "உங்கள் கணினியில் உள்ள ஒரு அமைப்பு"
+
+msgid "A Database Container"
+msgstr "ஒரு தரவுத்தள கொள்கலன்"
+
+msgid "Container Networking"
+msgstr "கொள்கலன் நெட்வொர்க்கிங்"
+
+msgid "Network bridge for QEMU"
+msgstr "QEMU க்கான பிணைய பாலம்"
+
+msgid "Routed network for libvirt"
+msgstr "libvirt க்கான வழித்தட பிணையம்"
+
+msgid "Custom NAT-based network for libvirt"
+msgstr "libvirt க்கான தனிப்பயன் NAT அடிப்படையிலான பிணையம்"
+
+msgid "References: VM References"
+msgstr "குறிப்புகள்: VM குறிப்புகள்"
+
+msgid "Further reading on virtual machines."
+msgstr "மெய்நிகர் கணினிகளில் மேலும் படிக்கவும்."
+
+msgid "Guix Profiles in Practice"
+msgstr "நடைமுறையில் உள்ள Guix சுயவிவரங்கள்"
+
+msgid "Strategies for multiple profiles and manifests."
+msgstr "பல சுயவிவரங்கள் மற்றும் வெளிப்பாடுகளுக்கான உத்திகள்."
+
+msgid "Basic setup with manifests"
+msgstr "மேனிஃபெச்ட்சுடன் அடிப்படை அமைப்பு"
+
+msgid "Required packages"
+msgstr "தேவையான தொகுப்புகள்"
+
+msgid "Default profile"
+msgstr "இயல்புநிலை சுயவிவரம்"
+
+msgid "The benefits of manifests"
+msgstr "வெளிப்படும் நன்மைகள்"
+
+msgid "Reproducible profiles"
+msgstr "மீண்டும் உருவாக்கக்கூடிய சுயவிவரங்கள்"
+
+msgid "Getting Started"
+msgstr "பயன்படுத்தத் தொடங்குதல்"
+
+msgid "Step 0: using `guix shell'."
+msgstr "படி 0: `guix shell' ஐப் பயன்படுத்துதல்."
+
+msgid "Building with Guix"
+msgstr "Guix உடன் கட்டிடம்"
+
+msgid "Step 1: building your code."
+msgstr "படி 1: உங்கள் குறியீட்டை உருவாக்குதல்."
+
+msgid "The Repository as a Channel"
+msgstr "சேனலாக களஞ்சியம்"
+
+msgid "Step 2: turning the repo in a channel."
+msgstr "படி 2: ஒரு சேனலில் ரெப்போவை திருப்புதல்."
+
+msgid "Package Variants"
+msgstr "தொகுப்பு மாறுபாடுகள்"
+
+msgid "Bonus: Defining variants."
+msgstr "போனச்: மாறுபாடுகளை வரையறுத்தல்."
+
+msgid "Setting Up Continuous Integration"
+msgstr "தொடர்ச்சியான ஒருங்கிணைப்பை அமைத்தல்"
+
+msgid "Step 3: continuous integration."
+msgstr "படி 3: தொடர்ச்சியான ஒருங்கிணைப்பு."
+
+msgid "Build Manifest"
+msgstr "மேனிஃபெச்ட்டை உருவாக்குங்கள்"
+
+msgid "Bonus: Manifest."
+msgstr "போனச்: மேனிஃபெச்ட்."
+
+msgid "Wrapping Up"
+msgstr "மடக்குதல்"
+
+msgid "Recap."
+msgstr "மறுபரிசீலனை."
+
+msgid "Guix environment via direnv"
+msgstr "direnv வழியாக Gix சூழல்"
+
+msgid "Setup Guix environment with direnv"
+msgstr "Direnv உடன் Guix சூழலை அமைக்கவும்"
+
+msgid "Using Guix for Reproducible Research"
+msgstr "மறுஉருவாக்கம் செய்யக்கூடிய ஆராய்ச்சிக்கு Guix ஐப் பயன்படுத்துதல்"
+
+msgid "Setting Up the Environment"
+msgstr "சூழலை அமைத்தல்"
+
+msgid "Step 1: using `guix shell'."
+msgstr "படி 1: `guix shell' ஐப் பயன்படுத்துதல்."
+
+msgid "Recording the Environment"
+msgstr "சூழலைப் பதிவு செய்தல்"
+
+msgid "Step 2: using `guix describe'."
+msgstr "படி 2: `guix description' ஐப் பயன்படுத்துதல்."
+
+msgid "Ensuring Long-Term Source Code Archiving"
+msgstr "நீண்ட கால மூலக் குறியீடு காப்பகத்தை உறுதி செய்தல்"
+
+msgid "Step 3: Software Heritage."
+msgstr "படி 3: மென்பொருள் பாரம்பரியம்."
+
+msgid "Referencing the Software Environment"
+msgstr "மென்பொருள் சூழலைக் குறிப்பிடுதல்"
+
+msgid "Step 4: SWHIDs."
+msgstr "படி 4: SWHIDகள்."
+
+msgid "Setting Up a Head Node"
+msgstr "ஒரு தலை முனையை அமைத்தல்"
+
+msgid "The node that runs the daemon."
+msgstr "டெமானை இயக்கும் முனை."
+
+msgid "Setting Up Compute Nodes"
+msgstr "கணினி முனைகளை அமைத்தல்"
+
+msgid "Client nodes."
+msgstr "வாங்கி முனைகள்."
+
+msgid "Cluster Network Access"
+msgstr "கிளச்டர் பிணையம் அணுகல்"
+
+msgid "Dealing with network access restrictions."
+msgstr "பிணையம் அணுகல் கட்டுப்பாடுகளைக் கையாள்வது."
+
+msgid "Cluster Disk Usage"
+msgstr "கிளச்டர் வட்டு பயன்பாடு"
+
+msgid "Disk usage considerations."
+msgstr "வட்டு பயன்பாடு பரிசீலனைகள்."
+
+msgid "Cluster Security Considerations"
+msgstr "கிளச்டர் பாதுகாப்பு பரிசீலனைகள்"
+
+msgid "Keeping the cluster secure."
+msgstr "கிளச்டரை பாதுகாப்பாக வைத்திருத்தல்."
+
+msgid "Upgrade Postgres for Cuirass"
+msgstr "Cuiras க்கான Postgres ஐ மேம்படுத்தவும்"
+
+msgid "Upgrading from the default postgres."
+msgstr "இயல்புநிலை postgres இலிருந்து மேம்படுத்துகிறது."
+
+msgid "GNU@tie{}Guix is written in the general purpose programming language Scheme, and many of its features can be accessed and manipulated programmatically.  You can use Scheme to generate package definitions, to modify them, to build them, to deploy whole operating systems, etc."
+msgstr "GNU@tie{}Guix பொது நோக்கத்திற்கான நிரலாக்க மொழி திட்டத்தில் எழுதப்பட்டுள்ளது, மேலும் அதன் பல அம்சங்களை நிரல் ரீதியாக அணுகலாம் மற்றும் கையாளலாம். தொகுப்பு வரையறைகளை உருவாக்க, அவற்றை மாற்ற, அவற்றை உருவாக்க, முழு இயக்க முறைமைகளை வரிசைப்படுத்த, போன்றவற்றை நீங்கள் திட்டத்தைப் பயன்படுத்தலாம்."
+
+msgid "Knowing the basics of how to program in Scheme will unlock many of the advanced features Guix provides --- and you don't even need to be an experienced programmer to use them!"
+msgstr "திட்டத்தில் எவ்வாறு நிரல் செய்வது என்பதற்கான அடிப்படைகளை அறிந்துகொள்வது Guix வழங்கும் பல மேம்பட்ட அம்சங்களைத் திறக்கும் --- மேலும் அவற்றைப் பயன்படுத்த நீங்கள் அனுபவமிக்க புரோகிராமராக இருக்க வேண்டிய அவசியமில்லை!"
+
+msgid "Let's get started!"
+msgstr "தொடங்குவோம்!"
+
+msgid "Scheme, crash course"
+msgstr "ச்கீம், க்ராச் கோர்ச்"
+
+msgid "Guix uses the Guile implementation of Scheme.  To start playing with the language, install it with @code{guix install guile} and start a @dfn{REPL}---short for @uref{https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop, @dfn{read-eval-print loop}}---by running @code{guile} from the command line."
+msgstr "Guix திட்டத்தின் Guile செயல்படுத்தலைப் பயன்படுத்துகிறது. மொழியுடன் விளையாடுவதைத் தொடங்க, அதை @code{guix install guile} மூலம் நிறுவி, @dfn{REPL}----க்கு @uref{https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop, @dfn{read-eval-print loop}}-@code{guile} லைனில் இருந்து இயக்கப்படும்"
+
+msgid "Alternatively you can also run @code{guix shell guile -- guile} if you'd rather not have Guile installed in your user profile."
+msgstr "மாற்றாக, உங்கள் பயனர் சுயவிவரத்தில் Guile நிறுவப்படாமல் இருந்தால், @code{guix ஓடு guile -- guile} ஐயும் இயக்கலாம்."
+
+msgid "In the following examples, lines show what you would type at the REPL; lines starting with ``@result{}'' show evaluation results, while lines starting with ``@print{}'' show things that get printed.  @xref{Using Guile Interactively,,, guile, GNU Guile Reference Manual}, for more details on the REPL."
+msgstr "பின்வரும் எடுத்துக்காட்டுகளில், REPL இல் நீங்கள் என்ன தட்டச்சு செய்வீர்கள் என்பதைக் கோடுகள் காட்டுகின்றன; ``@result{}'' உடன் தொடங்கும் வரிகள் மதிப்பீட்டு முடிவுகளைக் காட்டுகின்றன, அதே சமயம் ``@print{}'' உடன் தொடங்கும் வரிகள் அச்சிடப்படும் விசயங்களைக் காட்டுகின்றன. REPL பற்றிய கூடுதல் விவரங்களுக்கு @xref{குயிலை ஊடாடலாகப் பயன்படுத்துதல்,,, guile, GNU Guile குறிப்பு Manual}."
+
+msgid "Scheme syntax boils down to a tree of expressions (or @emph{s-expression} in Lisp lingo).  An expression can be a literal such as numbers and strings, or a compound which is a parenthesized list of compounds and literals.  @code{#true} and @code{#false} (abbreviated @code{#t} and @code{#f}) stand for the Booleans ``true'' and ``false'', respectively."
+msgstr "திட்ட தொடரியல் வெளிப்பாடுகளின் மரமாக (அல்லது லிச்ப் லிங்கோவில் @emph{s-expression}) கொதிக்கிறது. ஒரு வெளிப்பாடு என்பது எண்கள் மற்றும் சரங்கள் போன்ற ஒரு எழுத்துப் பொருளாக இருக்கலாம் அல்லது சேர்மங்கள் மற்றும் எழுத்துகளின் அடைப்புக் குறியிடப்பட்ட பட்டியலான கலவையாக இருக்கலாம். @code{#true} மற்றும் @code{#false} (சுருக்கமாக @code{#t} மற்றும் @code{#f}) முறையே பூலியன்கள் ``true'' மற்றும் ```false'' என்பதைக் குறிக்கிறது."
+
+msgid "Examples of valid expressions:"
+msgstr "சரியான வெளிப்பாடுகளின் எடுத்துக்காட்டுகள்:"
+
+msgid ""
+"\"Hello World!\"\n"
+"@result{} \"Hello World!\"\n"
+"\n"
+msgstr ""
+"\"அலோ வேர்ல்ட்!\" \n"
+"@result{} \"அலோ வேர்ல்ட்!\"\n"
+"\n"
+
+msgid ""
+"17\n"
+"@result{} 17\n"
+"\n"
+msgstr ""
+"17 \n"
+"@result{} 17\n"
+"\n"
+
+msgid ""
+"(display (string-append \"Hello \" \"Guix\" \"\\n\"))\n"
+"@print{} Hello Guix!\n"
+"@result{} #<unspecified>\n"
+msgstr ""
+"(display (string-append \"அலோ \" \"குயிக்ச்\" \"\\n\"))\n"
+"@print{} அலோ குயிக்ச்\n"
+"@result{} #<unspecified>\n"
+
+msgid "This last example is a function call nested in another function call.  When a parenthesized expression is evaluated, the first term is the function and the rest are the arguments passed to the function.  Every function returns the last evaluated expression as its return value."
+msgstr "இந்த கடைசி சான்று மற்றொரு செயல்பாட்டு அழைப்பில் உள்ள ஒரு செயல்பாட்டு அழைப்பு ஆகும். அடைப்புக் குறியிடப்பட்ட வெளிப்பாடு மதிப்பிடப்படும்போது, முதல் சொல் செயல்பாடு ஆகும், மீதமுள்ளவை செயல்பாட்டிற்கு அனுப்பப்பட்ட வாதங்கள். ஒவ்வொரு செயல்பாடும் கடைசியாக மதிப்பிடப்பட்ட வெளிப்பாட்டை அதன் திரும்ப மதிப்பாக வழங்கும்."
+
+msgid "Anonymous functions---@dfn{procedures} in Scheme parlance---are declared with the @code{lambda} term:"
+msgstr "அநாமதேய செயல்பாடுகள்---@dfn{procedures} திட்ட மொழியில்--- @code{lambda} வார்த்தையுடன் அறிவிக்கப்படுகின்றன:"
+
+msgid ""
+"(lambda (x) (* x x))\n"
+"@result{} #<procedure 120e348 at <unknown port>:24:0 (x)>\n"
+msgstr ""
+"(lambda (x) (* x x))\n"
+"@result{} #<procedure 120e348 at <unknown port>:24:0 (x)>\n"
+
+msgid "The above procedure returns the square of its argument.  Since everything is an expression, the @code{lambda} expression returns an anonymous procedure, which can in turn be applied to an argument:"
+msgstr "மேலே உள்ள செயல்முறை அதன் வாதத்தின் சதுரத்தை வழங்குகிறது. எல்லாம் ஒரு வெளிப்பாடு என்பதால், @code{lambda} வெளிப்பாடு ஒரு அநாமதேய செயல்முறையை வழங்குகிறது, இது ஒரு வாதத்திற்குப் பயன்படுத்தப்படலாம்:"
+
+msgid ""
+"((lambda (x) (* x x)) 3)\n"
+"@result{} 9\n"
+msgstr ""
+"((lambda (x) (* x x)) 3)\n"
+"@result{} 9\n"
+
+msgid "Procedures are regular values just like numbers, strings, Booleans, and so on."
+msgstr "நடைமுறைகள் எண்கள், சரங்கள், பூலியன்கள் மற்றும் பல போன்ற வழக்கமான மதிப்புகள்."
+
+msgid "Anything can be assigned a global name with @code{define}:"
+msgstr "@code{define} மூலம் எதற்கும் உலகளாவிய பெயரை ஒதுக்கலாம்:"
+
+msgid ""
+"(define a 3)\n"
+"(define square (lambda (x) (* x x)))\n"
+"(square a)\n"
+"@result{} 9\n"
+msgstr ""
+"(define a 3)\n"
+"(define சதுரம் (lambda (x) (* x x)))\n"
+"(சதுரம் a)\n"
+"@result{} 9\n"
+
+msgid "Procedures can be defined more concisely with the following syntax:"
+msgstr "பின்வரும் தொடரியல் மூலம் செயல்முறைகளை இன்னும் சுருக்கமாக வரையறுக்கலாம்:"
+
+msgid "(define (square x) (* x x))\n"
+msgstr "(define (சதுரம் x) (* x x))\n"
+
+msgid "A list structure can be created with the @code{list} procedure:"
+msgstr "@code{list} செயல்முறை மூலம் பட்டியல் கட்டமைப்பை உருவாக்கலாம்:"
+
+msgid ""
+"(list 2 a 5 7)\n"
+"@result{} (2 3 5 7)\n"
+msgstr ""
+"(list 2 a 5 7)\n"
+"@result{} (2 3 5 7)\n"
+
+msgid "Standard procedures are provided by the @code{(srfi srfi-1)} module to create and process lists (@pxref{SRFI-1, list processing,, guile, GNU Guile Reference Manual}).  Here are some of the most useful ones in action:"
+msgstr "பட்டியல்களை உருவாக்கவும் செயலாக்கவும் @code{(srfi srfi-1)} தொகுதி மூலம் நிலையான நடைமுறைகள் வழங்கப்படுகின்றன (@pxref{SRFI-1, list processing,,  guile, GNU Guile குறிப்பு Manual}). செயல்பாட்டில் மிகவும் பயனுள்ள சில இங்கே:"
+
+msgid ""
+"(use-modules (srfi srfi-1))  ;import list processing procedures\n"
+"\n"
+msgstr ""
+"(use-modules (srfi srfi-1)) ;இறக்குமதி பட்டியல் செயலாக்க நடைமுறைகள்\n"
+"\n"
+
+msgid ""
+"(append (list 1 2) (list 3 4))\n"
+"@result{} (1 2 3 4)\n"
+"\n"
+msgstr ""
+"(append (list 1 2) (list 3 4))\n"
+"@result{} (1 2 3 4)\n"
+"\n"
+
+msgid ""
+"(map (lambda (x) (* x x)) (list 1 2 3 4))\n"
+"@result{} (1 4 9 16)\n"
+"\n"
+msgstr ""
+"(map (lambda (x) (* x x)) (list 1 2 3 4))\n"
+"@result{} (1 4 9 16)\n"
+"\n"
+
+msgid ""
+"(delete 3 (list 1 2 3 4))        @result{} (1 2 4)\n"
+"(filter odd? (list 1 2 3 4))     @result{} (1 3)\n"
+"(remove even? (list 1 2 3 4))    @result{} (1 3)\n"
+"(find number? (list \"a\" 42 \"b\")) @result{} 42\n"
+msgstr ""
+"(delete 3 (list 1 2 3 4))        @result{} (1 2 4)\n"
+"(filter odd? (list 1 2 3 4))     @result{} (1 3)\n"
+"(remove even? (list 1 2 3 4))    @result{} (1 3)\n"
+"(find number? (list \"a\" 42 \"b\")) @result{} 42\n"
+
+msgid "Notice how the first argument to @code{map}, @code{filter}, @code{remove}, and @code{find} is a procedure!"
+msgstr "@code{map}, @code{filter}, @code{remove} மற்றும் @code{find} ஆகியவற்றுக்கான முதல் உரையாடல் எப்படி ஒரு செயல்முறையாகும் என்பதைக் கவனியுங்கள்!"
+
+msgid "S-expression"
+msgstr "எச்-வெளிப்பாடு"
+
+msgid "The @dfn{quote} disables evaluation of a parenthesized expression, also called an S-expression or ``s-exp'': the first term is not called over the other terms (@pxref{Expression Syntax, quote,, guile, GNU Guile Reference Manual}).  Thus it effectively returns a list of terms."
+msgstr "S-expression அல்லது ``s-exp'' என்றும் அழைக்கப்படும் அடைப்புக் குறியிடப்பட்ட வெளிப்பாட்டின் மதிப்பீட்டை @dfn{quote} முடக்குகிறது: முதல் சொல் மற்ற விதிமுறைகளுக்கு மேல் அழைக்கப்படுவதில்லை (@pxref{Expression Syntax, quote,, guile, GNU Guile Reference Manual}). எனவே இது விதிமுறைகளின் பட்டியலை திறம்பட வழங்குகிறது."
+
+msgid ""
+"'(display (string-append \"Hello \" \"Guix\" \"\\n\"))\n"
+"@result{} (display (string-append \"Hello \" \"Guix\" \"\\n\"))\n"
+"\n"
+msgstr ""
+"'(display (string-append \"Hello \" \"Guix\" \"\\n\"))\n"
+"@result{} (display (string-append \"Hello \" \"Guix\" \"\\n\"))\n"
+"\n"
+
+msgid ""
+"'(2 a 5 7)\n"
+"@result{} (2 a 5 7)\n"
+msgstr ""
+"'(2 a 5 7)\n"
+"@result{} (2 a 5 7)\n"
+
+msgid "The @code{quasiquote} (@code{`}, a backquote) disables evaluation of a parenthesized expression until @code{unquote} (@code{,}, a comma)  re-enables it.  Thus it provides us with fine-grained control over what is evaluated and what is not."
+msgstr "@code{quasiquote} (@code{`}, ஒரு காற்புள்ளி) அதை மீண்டும் இயக்கும் வரை @code{unquote} (@code{,}, ஒரு பின்கோட்) அடைப்புக் குறியிடப்பட்ட வெளிப்பாட்டின் மதிப்பீட்டை முடக்குகிறது. இவ்வாறு மதிப்பிடப்படும் மற்றும் மதிப்பிடப்படாதவற்றின் மீது நமக்கு நுணுக்கமான கட்டுப்பாட்டை வழங்குகிறது."
+
+msgid ""
+"`(2 a 5 7 (2 ,a 5 ,(+ a 4)))\n"
+"@result{} (2 a 5 7 (2 3 5 7))\n"
+msgstr ""
+"`(2 a 5 7 (2 ,a 5 ,(+ a 4)))\n"
+"@result{} (2 a 5 7 (2 3 5 7))\n"
+
+msgid "Note that the above result is a list of mixed elements: numbers, symbols (here @code{a}) and the last element is a list itself."
+msgstr "மேலே உள்ள முடிவு கலப்பு உறுப்புகளின் பட்டியல் என்பதை நினைவில் கொள்ளவும்: எண்கள், குறியீடுகள் (இங்கே @code{a}) மற்றும் கடைசி உறுப்பு ஒரு பட்டியலே."
+
+msgid "G-expressions, syntax"
+msgstr "சி-வெளிப்பாடுகள், தொடரியல்"
+
+msgid "gexps, syntax"
+msgstr "gexps, தொடரியல்"
+
+msgid "#~"
+msgstr "#~"
+
+msgid "#$"
+msgstr "#$"
+
+msgid "gexp"
+msgstr "gexp"
+
+msgid "ungexp"
+msgstr "ungexp"
+
+msgid "Guix defines a variant of S-expressions on steroids called @dfn{G-expressions} or ``gexps'', which come with a variant of @code{quasiquote} and @code{unquote}: @code{#~} (or @code{gexp}) and @code{#$} (or @code{ungexp}).  They let you @emph{stage code for later execution}."
+msgstr "@dfn{G-expressions} அல்லது ``gexps'' எனப்படும் ச்டீராய்டுகளில் S-எக்ச்பிரசன்களின் மாறுபாட்டை Guix வரையறுக்கிறது, இது @code{quasiquote} மற்றும் @code{unquote}: @code{#~} (அல்லது @code{gexp}) மற்றும் @code{#$} (அல்லது @code{#$}) அவர்கள் @emph{ungexp} அனுமதிக்கிறார்கள்."
+
+msgid "For example, you'll encounter gexps in some package definitions where they provide code to be executed during the package build process.  They look like this:"
+msgstr "எடுத்துக்காட்டாக, சில தொகுப்பு வரையறைகளில் நீங்கள் gexps ஐ சந்திப்பீர்கள், அங்கு அவை தொகுப்பு உருவாக்க செயல்முறையின் போது செயல்படுத்தப்பட வேண்டிய குறியீட்டை வழங்குகின்றன. அவை இப்படி இருக்கும்:"
+
+msgid ""
+"(use-modules (guix gexp)           ;so we can write gexps\n"
+"             (gnu packages base))  ;for 'coreutils'\n"
+"\n"
+msgstr ""
+"(use-modules (guix gexp) ;எனவே நாம் gexps எழுதலாம் \n"
+"             (gnu packages base)) ;'coreutils'க்கு\n"
+"\n"
+
+msgid "@xref{G-Expressions,,, guix, GNU Guix Reference Manual}, for more on gexps."
+msgstr "@xref{G-Expressions,,, guix, GNU Guix குறிப்பு Manual}, gexps பற்றி மேலும் அறிய."
+
+msgid "Multiple variables can be named locally with @code{let} (@pxref{Local Bindings,,, guile, GNU Guile Reference Manual}):"
+msgstr "@code{let} (@pxref{Local Bindings,,, guile, GNU Guile Reference Manual}) மூலம் பல மாறிகளுக்கு உள்நாட்டில் பெயரிடலாம்:"
+
+msgid ""
+"(define x 10)\n"
+"(let ((x 2)\n"
+"      (y 3))\n"
+"  (list x y))\n"
+"@result{} (2 3)\n"
+"\n"
+msgstr ""
+"(define x 10)\n"
+"(let ((x 2)\n"
+"      (y 3))\n"
+"  (list x y))\n"
+"@result{} (2 3)\n"
+"\n"
+
+msgid ""
+"x\n"
+"@result{} 10\n"
+"\n"
+msgstr ""
+"x\n"
+"@result{} 10\n"
+"\n"
+
+msgid ""
+"y\n"
+"@error{} In procedure module-lookup: Unbound variable: y\n"
+msgstr ""
+"y\n"
+"@error{} In procedure module-lookup: Unbound variable: y\n"
+
+msgid "Use @code{let*} to allow later variable declarations to refer to earlier definitions."
+msgstr "முந்தைய வரையறைகளைக் குறிப்பிடுவதற்குப் பிற்கால மாறி அறிவிப்புகளை அனுமதிக்க @code{let*} ஐப் பயன்படுத்தவும்."
+
+msgid ""
+"(let* ((x 2)\n"
+"       (y (* x 3)))\n"
+"  (list x y))\n"
+"@result{} (2 6)\n"
+msgstr ""
+"(let* ((x 2)\n"
+"       (y (* x 3)))\n"
+"  (list x y))\n"
+"@result{} (2 6)\n"
+
+msgid "@dfn{Keywords} are typically used to identify the named parameters of a procedure.  They are prefixed by @code{#:} (hash, colon) followed by alphanumeric characters: @code{#:like-this}.  @xref{Keywords,,, guile, GNU Guile Reference Manual}."
+msgstr "ஒரு செயல்முறையின் பெயரிடப்பட்ட அளவுருக்களை அடையாளம் காண @dfn{Keywords} பொதுவாகப் பயன்படுத்தப்படுகின்றன. அவை @code{#:} (ஆச், பெருங்குடல்) மற்றும் எண்ணெழுத்து எழுத்துக்களால் முன்னொட்டப்படுகின்றன: @code{#:like-this}. @xref{Keywords,,, guile, GNU Guile குறிப்பு Manual}."
+
+msgid "The percentage @code{%} is typically used for read-only global variables in the build stage.  Note that it is merely a convention, like @code{_} in C.  Scheme treats @code{%} exactly the same as any other letter."
+msgstr "@code{%} சதவிகிதம் பொதுவாக உருவாக்க நிலையில் படிக்க-மட்டும் உலகளாவிய மாறிகளுக்குப் பயன்படுத்தப்படுகிறது. C இல் உள்ள @code{_} போன்று இது ஒரு மாநாடு என்பதை நினைவில் கொள்ளவும். Scheme @code{%}ஐ வேறு எந்த எழுத்தையும் போலவே கருதுகிறது."
+
+msgid "Modules are created with @code{define-module} (@pxref{Creating Guile Modules,,, guile, GNU Guile Reference Manual}).  For instance"
+msgstr "தொகுதிகள் @code{define-module} மூலம் உருவாக்கப்படுகின்றன (@pxref{Creating Guile Modules,,, guile, GNU Guile குறிப்பு Manual}). உதாரணமாக"
+
+msgid ""
+"(define-module (guix build-system ruby)\n"
+"  #:use-module (guix store)\n"
+"  #:export (ruby-build\n"
+"            ruby-build-system))\n"
+msgstr ""
+"(define-module (guix build-system ruby)\n"
+"  #:use-module (guix store)\n"
+"  #:export (ruby-build\n"
+"            ruby-build-system))\n"
+
+msgid "defines the module @code{guix build-system ruby} which must be located in @file{guix/build-system/ruby.scm} somewhere in the Guile load path.  It depends on the @code{(guix store)} module and it exports two variables, @code{ruby-build} and @code{ruby-build-system}."
+msgstr "@code{guix build-system ruby} தொகுதியை வரையறுக்கிறது, இது Guile ஏற்ற பாதையில் எங்காவது @file{guix/build-system/ruby.scm} இல் இருக்க வேண்டும். இது @code{(guix store)} தொகுதியைச் சார்ந்தது மேலும் இது @code{ruby-build} மற்றும் @code{ruby-build-system} ஆகிய இரண்டு மாறிகளை ஏற்றுமதி செய்கிறது."
+
+msgid "@xref{Package Modules,,, guix, GNU Guix Reference Manual}, for info on modules that define packages."
+msgstr "@xref{Package Modules,,, guix, GNU Guix குறிப்பு Manual}, தொகுப்புகளை வரையறுக்கும் தொகுதிகள் பற்றிய தகவலுக்கு."
+
+msgid "Going further"
+msgstr "மேலும் செல்கிறது"
+
+msgid "Scheme is a language that has been widely used to teach programming and you'll find plenty of material using it as a vehicle.  Here's a selection of documents to learn more about Scheme:"
+msgstr "திட்டம் என்பது நிரலாக்கத்தை கற்பிக்க பரவலாகப் பயன்படுத்தப்படும் ஒரு மொழியாகும், மேலும் அதை வாகனமாகப் பயன்படுத்தி ஏராளமான பொருட்களைக் காணலாம். திட்டத்தைப் பற்றி மேலும் அறிய ஆவணங்களின் தேர்வு இங்கே:"
+
+msgid "@uref{https://spritely.institute/static/papers/scheme-primer.html, @i{A Scheme Primer}}, by Christine Lemmer-Webber and the Spritely Institute."
+msgstr "@uref{https://spritely.institute/static/papers/scheme-primer.html, @i{A Scheme Primer}}, கிறிச்டின் லெம்மர்-வெப்பர் மற்றும் ச்ப்ரைட்லி நிறுவனம்."
+
+msgid "@uref{http://www.troubleshooters.com/codecorn/scheme_guile/hello.htm, @i{Scheme at a Glance}}, by Steve Litt."
+msgstr "@uref{http://www.troubleshooters.com/codecorn/scheme_guile/hello.htm, @i{Scheme at a Glance}}, ச்டீவ் லிட்."
+
+msgid "@uref{https://sarabander.github.io/sicp/, @i{Structure and Interpretation of Computer Programs}}, by Harold Abelson and Gerald Jay Sussman, with Julie Sussman.  Colloquially known as ``SICP'', this book is a reference."
+msgstr "@uref{https://sarabander.github.io/sicp/, @i{Structure and Interpretation of Computer Programs}}, சூலி சுச்மானுடன் அரோல்ட் அபெல்சன் மற்றும் செரால்ட் சே சுச்மேன். பேச்சு வழக்கில் ``SICP'' என்று அழைக்கப்படும் இந்தப் நூல் ஒரு குறிப்பு."
+
+msgid "You can also install it and read it from your computer:"
+msgstr "நீங்கள் அதை நிறுவி உங்கள் கணினியிலிருந்தும் படிக்கலாம்:"
+
+msgid ""
+"guix install book-sicp info-reader\n"
+"info sicp\n"
+msgstr ""
+"guix install book-sicp info-reader\n"
+"info sicp\n"
+
+msgid "You'll find more books, tutorials and other resources at @url{https://schemers.org/}."
+msgstr "@url{https://schemers.org/} இல் கூடுதல் புத்தகங்கள், பயிற்சிகள் மற்றும் பிற ஆதாரங்களைக் காணலாம்."
+
+msgid "packaging"
+msgstr "பொதியாக்கம்"
+
+msgid "This chapter is dedicated to teaching you how to add packages to the collection of packages that come with GNU Guix.  This involves writing package definitions in Guile Scheme, organizing them in package modules, and building them."
+msgstr "இந்த அத்தியாயம் GNU Guix உடன் வரும் தொகுப்புகளின் தொகுப்பில் தொகுப்புகளை எவ்வாறு சேர்ப்பது என்பதை உங்களுக்கு கற்பிப்பதற்காக அர்ப்பணிக்கப்பட்டுள்ளது. இது Guile திட்டத்தில் தொகுப்பு வரையறைகளை எழுதுதல், அவற்றை தொகுப்பு தொகுதிகளில் ஒழுங்கமைத்தல் மற்றும் அவற்றை உருவாக்குதல் ஆகியவை அடங்கும்."
+
+msgid "GNU Guix stands out as the @emph{hackable} package manager, mostly because it uses @uref{https://www.gnu.org/software/guile/, GNU Guile}, a powerful high-level programming language, one of the @uref{https://en.wikipedia.org/wiki/Scheme_%28programming_language%29, Scheme} dialects from the @uref{https://en.wikipedia.org/wiki/Lisp_%28programming_language%29, Lisp family}."
+msgstr "GNU Guix ஆனது @emph{hackable} தொகுப்பு நிர்வாகியாகத் தனித்து நிற்கிறது, ஏனெனில் இது @uref{https://www.gnu.org/software/guile/, GNU Guile}, ஒரு சக்திவாய்ந்த உயர்நிலை நிரலாக்க மொழி, @uref{https://en.wikipedia.org/wiki/Scheme_%28programming_language%29, Scheme} இல் இருந்து, @uref{https://en.wikipedia.org/wiki/Lisp_%28programming_language%29, Lisp குடும்பம்}."
+
+msgid "Package definitions are also written in Scheme, which empowers Guix in some very unique ways, unlike most other package managers that use shell scripts or simple languages."
+msgstr "செல் ச்கிரிப்டுகள் அல்லது எளிய மொழிகளைப் பயன்படுத்தும் பிற தொகுப்பு மேலாளர்களைப் போலல்லாமல், சில தனித்துவமான வழிகளில் Guix ஐ மேம்படுத்தும் திட்டத்தில் தொகுப்பு வரையறைகளும் எழுதப்பட்டுள்ளன."
+
+msgid "Use functions, structures, macros and all of Scheme expressiveness for your package definitions."
+msgstr "உங்கள் தொகுப்பு வரையறைகளுக்கு செயல்பாடுகள், கட்டமைப்புகள், மேக்ரோக்கள் மற்றும் அனைத்து திட்ட வெளிப்பாடுகளையும் பயன்படுத்தவும்."
+
+msgid "Inheritance makes it easy to customize a package by inheriting from it and modifying only what is needed."
+msgstr "மரபுரிமையானது, ஒரு தொகுப்பை அதிலிருந்து பெறுவதன் மூலமும், தேவையானதை மட்டும் மாற்றியமைப்பதன் மூலமும் தனிப்பயனாக்குவதை எளிதாக்குகிறது."
+
+msgid "Batch processing: the whole package collection can be parsed, filtered and processed.  Building a headless server with all graphical interfaces stripped out? It's possible.  Want to rebuild everything from source using specific compiler optimization flags? Pass the @code{#:make-flags \"...\"} argument to the list of packages.  It wouldn't be a stretch to think @uref{https://wiki.gentoo.org/wiki/USE_flag, Gentoo USE flags} here, but this goes even further: the changes don't have to be thought out beforehand by the packager, they can be @emph{programmed} by the user!"
+msgstr "தொகுதி செயலாக்கம்: முழு தொகுப்பு சேகரிப்பையும் பாகுபடுத்தலாம், வடிகட்டலாம் மற்றும் செயலாக்கலாம். அனைத்து வரைகலை இடைமுகங்களும் அகற்றப்பட்ட எட்லெச் சர்வரை உருவாக்குகிறீர்களா? இது நிகழக்கூடிய. குறிப்பிட்ட கம்பைலர் ஆப்டிமைசேசன் கொடிகளைப் பயன்படுத்தி மூலத்திலிருந்து அனைத்தையும் மீண்டும் உருவாக்க விரும்புகிறீர்களா? @code{#:make-flags \"...\"} வாதத்தை தொகுப்புகளின் பட்டியலுக்கு அனுப்பவும். இங்கே @uref{https://wiki.gentoo.org/wiki/USE_flag, Gentoo USE flags} என்று நினைப்பது ஒரு நீண்ட விசயமாக இருக்காது, ஆனால் இது இன்னும் மேலே செல்கிறது: மாற்றங்களை பேக்கேசரால் முன்பே யோசிக்க வேண்டியதில்லை, அவை பயனரால் @emph{programmed} செய்யப்படலாம்!"
+
+msgid "The following tutorial covers all the basics around package creation with Guix.  It does not assume much knowledge of the Guix system nor of the Lisp language.  The reader is only expected to be familiar with the command line and to have some basic programming knowledge."
+msgstr "பின்வரும் பயிற்சியானது Guix உடன் தொகுப்பு உருவாக்கம் பற்றிய அனைத்து அடிப்படைகளையும் உள்ளடக்கியது. இது Guix அமைப்பு அல்லது Lisp மொழி பற்றிய அதிக அறிவைக் கொண்டிருக்கவில்லை. வாசகர் கட்டளை வரியை நன்கு அறிந்திருக்க வேண்டும் மற்றும் சில அடிப்படை நிரலாக்க அறிவு இருக்க வேண்டும் என்று எதிர்பார்க்கப்படுகிறது."
+
+msgid "VM References"
+msgstr "VM குறிப்புகள்"
+
+msgid "fdl-1.3.texi"
+msgstr "fdl-1.3.texi"

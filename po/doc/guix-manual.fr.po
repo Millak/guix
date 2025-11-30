@@ -54,15 +54,15 @@ msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-10-24 03:18+0000\n"
-"PO-Revision-Date: 2025-11-12 23:49+0100\n"
-"Last-Translator: roptat <roptat@noreply.codeberg.org>\n"
+"PO-Revision-Date: 2025-11-26 22:53+0000\n"
+"Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: French <https://translate.codeberg.org/projects/guix/documentation-manual/fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.13.3\n"
+"X-Generator: Weblate 5.14\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -4461,16 +4461,6 @@ msgstr "ssh-ed25519 AAAAC3NzaC@dots{}mde+UhL hint@@example.org\n"
 
 msgid "If the machine is running the OpenSSH daemon, @command{sshd}, the host key can be found in a file such as @file{/etc/ssh/ssh_host_ed25519_key.pub}."
 msgstr "Si la machine utilise le démon OpenSSH, @command{sshd}, la clef d'hôte se trouve dans un fichier comme @file{/etc/ssh/ssh_host_ed25519_key.pub}."
-
-msgid "If the machine is running the SSH daemon of GNU@tie{}lsh, @command{lshd}, the host key is in @file{/etc/lsh/host-key.pub} or a similar file.  It can be converted to the OpenSSH format using @command{lsh-export-key} (@pxref{Converting keys,,, lsh, LSH Manual}):"
-msgstr "Si la machine utilise le démon SSH de GNU@tie{}lsh, la clef d'hôte est dans @file{/etc/lsh/host-key.pub} ou un fichier similaire.  Elle peut être convertie au format OpenSSH avec @command{lsh-export-key}  (@pxref{Converting keys,,, lsh, LSH Manual}) :"
-
-msgid ""
-"$ lsh-export-key --openssh < /etc/lsh/host-key.pub\n"
-"ssh-rsa AAAAB3NzaC1yc2EAAAAEOp8FoQAAAQEAs1eB46LV@dots{}\n"
-msgstr ""
-"$ lsh-export-key --openssh < /etc/lsh/host-key.pub\n"
-"ssh-rsa AAAAB3NzaC1yc2EAAAAEOp8FoQAAAQEAs1eB46LV@dots{}\n"
 
 msgid "A number of optional fields may be specified:"
 msgstr "Il y a un certain nombre de champs facultatifs que vous pouvez remplir :"
@@ -15661,9 +15651,6 @@ msgstr "le gestionnaire de mise à jour pour les paquets @uref{https://launchpad
 msgid "generic-html"
 msgstr "generic-html"
 
-msgid "a generic updater that crawls the HTML page where the source tarball of the package is hosted, when applicable, or the HTML page specified by the @code{release-monitoring-url} property of the package."
-msgstr "un gestionnaire de mise à jour qui visite la page HTML où l'archive des sources est hébergée, lorsque c'est possible, ou la page HTML spécifiée par la propriété @code{release-monitoring-url} du paquet."
-
 msgid "generic-git"
 msgstr "generic-git"
 
@@ -22403,9 +22390,6 @@ msgstr "SSH"
 msgid "SSH server"
 msgstr "Serveur SSH"
 
-msgid "@code{allow-empty-passwords?} (default: @code{#f}) (type: boolean)"
-msgstr "@code{allow-empty-passwords?} (par défaut : @code{#f}) (type : booléen)"
-
 msgid "openssh-service-type"
 msgstr "openssh-service-type"
 
@@ -23894,6 +23878,9 @@ msgstr "@code{lightdm} (par défaut : @code{lightdm}) (type : simili-fichier)"
 
 msgid "The lightdm package to use."
 msgstr "Le paquet lightdm à utiliser."
+
+msgid "@code{allow-empty-passwords?} (default: @code{#f}) (type: boolean)"
+msgstr "@code{allow-empty-passwords?} (par défaut : @code{#f}) (type : booléen)"
 
 msgid "Whether users not having a password set can login."
 msgstr "Indique si les utilisateurs et utilisatrices sans mot de passe peuvent se connecter."
@@ -41715,9 +41702,6 @@ msgstr "En bas, on voit le @dfn{service système} qui produit le répertoire con
 msgid "service types"
 msgstr "types de services"
 
-msgid "Technically, developers can define @dfn{service types} to express these relations.  There can be any number of services of a given type on the system---for instance, a system running two instances of the GNU secure shell server (lsh) has two instances of @code{lsh-service-type}, with different parameters."
-msgstr "Techniquement, on peut définir des @dfn{types de services} pour exprimer ces relations.  Il peut y avoir n'importe quel quantité de services d'un type donné sur le système — par exemple, un système sur lequel tournent deux instances du serveur ssh de GNU (lsh) a deux instance de @var{lsh-service-type}, avec des paramètres différents."
-
 msgid "The following section describes the programming interface for service types and services."
 msgstr "La section suivante décrit l'interface de programmation des types de services et des services."
 
@@ -44513,8 +44497,8 @@ msgstr "La position du début de la partition en octets, relativement au début 
 msgid "@code{file-system} (default: @code{\"ext4\"})"
 msgstr "@code{file-system} (par défaut : @code{\"ext4\"})"
 
-msgid "The supported values are @code{\"vfat\"}, @code{\"fat16\"}, @code{\"fat32\"}, @code{\"btrfs\"}, and @code{\"ext4\"}."
-msgstr "Les valeurs prises en charge sont @code{\"vfat\"}, @code{\"fat16\"}, @code{\"fat32\"}, @code{\"btrfs\"} et @code{\"ext4\"}."
+msgid "The supported values are @code{\"btrfs\"}, @code{\"ext4\"}, @code{\"fat16\"}, @code{\"f2fs\"}, @code{\"fat32\"}, @code{\"vfat\"}, and @code{\"swap\"}."
+msgstr "Les valeurs prises en charge sont @code{\"btrfs\"}, @code{\"ext4\"}, @code{\"fat16\"}, @code{\"f2fs\"}, @code{\"fat32\"}, @code{\"vfat\"} et @code{\"swap\"}."
 
 msgid "@code{file-system-options} (default: @code{'()})"
 msgstr "@code{file-system-options} (par défaut : @code{'()})"
