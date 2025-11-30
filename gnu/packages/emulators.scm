@@ -1333,7 +1333,7 @@ SDL audio plugin.")
 (define-public mupen64plus-input-sdl
   (package
     (name "mupen64plus-input-sdl")
-    (version "2.5.9")
+    (version "2.6.0")
     (source
      (origin
        (method git-fetch)
@@ -1342,7 +1342,7 @@ SDL audio plugin.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nnniyiy0wpg4m9918va31xxnz8r5qvj0z08vyq2is0b47ld3kq0"))))
+        (base32 "1x07bc3pcfy11k1kp7q0bwz1z9wppxyi3f5pr72wsk1s8szzvck0"))))
     (build-system gnu-build-system)
     (native-inputs
      (list which))
