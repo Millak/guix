@@ -7469,20 +7469,25 @@ with @code{Gevent} to make asynchronous HTTP Requests easily.")
   (package
     (name "python-gwebsockets")
     (version "0.7")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "gwebsockets" version))
-              (sha256
-               (base32
-                "0kgq7wssz0mrhxdafkfc9prj0qjv9z0lyivyqvjvjnnypg54di7m"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-pygobject))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sugarlabs/gwebsockets")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0w422yz0qdix5xb6aqrrci1s1hy4whncspwb03m9ankqww0s1yv2"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests upstream.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-pygobject))
     (home-page "https://github.com/sugarlabs/gwebsockets")
     (synopsis "GLib based websockets server")
-    (description "This package provides a websocket server written in Python.
-It uses GIO for network communication and hence it easily integrates with the
-GLib mainloop.")
+    (description
+     "This package provides a websocket server written in Python.  It uses GIO
+for network communication and hence it easily integrates with the GLib
+mainloop.")
     (license license:asl2.0)))
 
 (define-public python-dpkt
