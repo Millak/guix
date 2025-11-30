@@ -7924,6 +7924,27 @@ string into a slice of words.")
 defined output to the standard output.")
     (license license:expat)))
 
+(define-public go-github-com-fatih-color-for-zk
+  (hidden-package
+   (package
+     (inherit go-github-com-fatih-color)
+     (name "go-github-com-fatih-color-for-zk")
+     (version "1.13.0")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/fatih/color")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "029qkxsdpblhrpgbv4fcmqwkqnjhx08hwiqp19pd7zz6l8a373ay"))))
+     (arguments
+      (list
+       #:import-path "github.com/fatih/color"
+       #:test-flags
+       #~(list "-vet=off"))))))
+
 (define-public go-github-com-fatih-gomodifytags
   ;; This particular commit (v1.17.1-0.20250423142747-f3939df9aa3c) provides
   ;; "modifytags" submodule which is required for gopls@0.19.1.
