@@ -2474,8 +2474,7 @@ versa.")
                                  "--version")))))))
     (native-inputs (list perl-module-build perl-test-deep))
     (inputs (list bash-minimal))
-    (propagated-inputs (list perltidy
-                             perl-exception-class
+    (propagated-inputs (list perl-exception-class
                              perl-io-string
                              perl-ppi
                              perl-ppix-regexp
@@ -2492,7 +2491,8 @@ versa.")
                              perl-ppix-utilities
                              perl-readonly
                              perl-string-format
-                             perl-task-weaken))
+                             perl-task-weaken
+                             perl-tidy))
     (home-page "https://metacpan.org/release/Perl-Critic")
     (synopsis "Critique Perl source code for best-practices")
     (description
