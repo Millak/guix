@@ -1597,7 +1597,7 @@ Glide64MK2 video plugin.")
 (define-public mupen64plus-video-rice
   (package
     (name "mupen64plus-video-rice")
-    (version "2.5.9")
+    (version "2.6.0")
     (source
      (origin
        (method git-fetch)
@@ -1606,7 +1606,7 @@ Glide64MK2 video plugin.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vn24g7ahyv70jd06f5sq0j4bjs4axl2c0kfz4qdkpqsamsgxng8"))))
+        (base32 "16bzcjawyzy3wmxaq1chjfnljspm1sgzv7swylr9lkf3kpaijcw2"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config which))
