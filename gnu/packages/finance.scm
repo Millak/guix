@@ -237,7 +237,7 @@ line client and a client based on Qt.")
            python-scipy
            qttools-5))
     (inputs
-     (list bdb-5.3
+     (list bdb
            boost
            expat
            gmp
