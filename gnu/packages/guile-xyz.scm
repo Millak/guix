@@ -3535,6 +3535,82 @@ Probably can be replaced with guile's built-ins: @code{fdes->ports},
     (home-page "https://codeberg.org/shegeley/wayland-scm")
     (license license:wtfpl2)))
 
+(define-public guile-wayland-scm-shm
+  (package
+    (name "guile-wayland-scm-shm")
+    (version "v0.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://codeberg.org/shegeley/wayland-scm")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "17xfc2826nh96ivsszv4avpcs4gbli8k3r0i1idyxkdhxa745rm7"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules `(((guix build guile-build-system)
+                   #:select (target-guile-effective-version))
+                  ,@%default-gnu-modules)
+      #:imported-modules `((guix build guile-build-system)
+                           ,@%default-gnu-imported-modules)
+      #:make-flags
+      #~(list
+         "GUILE_AUTO_COMPILE=0"
+         (string-append "CC=" #$(cc-for-target))
+         (string-append "CFLAGS=" "-I" #$(this-package-input "guile")
+                        "/include/guile/3.0")
+         (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "ext/shm")))
+          (add-before 'build 'respect-guile
+            (lambda* (#:key outputs #:allow-other-keys)
+              (delete-file "Makefile")
+              (rename-file "guile.Makefile" "Makefile")))
+          ;; 'build is actually 'build-so
+          (add-after 'build 'install-so
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((v (target-guile-effective-version))
+                     (libdir (string-append #$output "/lib/guile/" v)))
+                (install-file "wayland-scm-shm.so" libdir))))
+          (add-after 'build 'build-guile
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "GUILE_AUTO_COMPILE" "0")
+              (let* ((v (target-guile-effective-version))
+                     (libdir (string-append #$output "/lib/guile/" v)))
+                (substitute* '("guile-shm.scm")
+                  (("wayland-scm-shm")
+                   (string-append libdir "/wayland-scm-shm.so"))))
+              (invoke "guild" "compile" "-o" "guile-shm.go" "guile-shm.scm")))
+          (add-after 'build-guile 'install-guile
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* [(v (target-guile-effective-version))
+                     (share-dir (string-append #$output "/share/guile/site/"
+                                               v "/wayland-scm"))]
+                (rename-file "guile-shm.scm" "shm.scm")
+                (install-file "shm.scm" share-dir))))
+          (delete 'check)
+          (delete 'install))))
+    (native-search-paths
+     (list (search-path-specification
+             (variable "GUILE_EXTENSIONS_PATH")
+             (files (list "lib/guile/3.0")))))
+    (inputs (list gcc guile-3.0))
+    (synopsis "C bindings for wayland shared memory (SHM) in multi-scheme
+(Guile, Gauche, Chicken) wayland library")
+    (description "Guile C bindings for wayland shared memory (SHM). Exposes
+simple procedures: @code{wl_shm_create_wrapper},
+@code{wl_shm_allocate_wrapper}, @code{wl_shm_munmap}, @code{wl_shm_mmap}
+Probably can be replaced with guile's built-in file-descriptor procedures.")
+    (home-page "https://codeberg.org/shegeley/wayland-scm")
+    (license license:wtfpl2)))
+
 (define-public g-wrap
   (package
     (name "g-wrap")
