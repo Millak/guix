@@ -2473,7 +2473,8 @@ media, 2D/3D graphics and ECMAScript.")
                     "/vlc-" version ".tar.xz"))
               (sha256
                (base32
-                "1c7vbbicx95nymrybgvd2d3p65q0wayhpvsx9ncs1vpsglfvxnr4"))))
+                "1c7vbbicx95nymrybgvd2d3p65q0wayhpvsx9ncs1vpsglfvxnr4"))
+              (patches (search-patches "vlc-livemedia-2024.11.28.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      (list flex bison gettext-minimal pkg-config))
