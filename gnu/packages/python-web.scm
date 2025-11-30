@@ -5426,22 +5426,28 @@ object to help create WSGI responses.")
 (define-public python-zc-lockfile
   (package
     (name "python-zc-lockfile")
-    (version "3.0.post1")
+    (version "4.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "zc.lockfile" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zopefoundation/zc.lockfile")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1v41irj7azaag3f14xyviv3l8mvap74v5p3q274k68vakrnyxcmd"))))
-    (build-system python-build-system)
+        (base32 "0b1kkwx2d4wf392sd3bfjvzgkdrknwsxg9mby121mq8zl7c490gg"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (if tests?
-                          (invoke "zope-testrunner" "--test-path=src")
-                          (format #t "test suite not run~%")))))))
-    (native-inputs (list python-zope-testing python-zope-testrunner))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (if tests?
+                  (invoke "zope-testrunner" "--test-path=src")
+                  (format #t "test suite not run~%")))))))
+    (native-inputs (list python-zope-testing python-zope-testrunner
+                         python-setuptools))
     (home-page "https://github.com/zopefoundation/zc.lockfile")
     (synopsis "Interprocess locks using lock files")
     (description
