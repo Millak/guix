@@ -7493,19 +7493,27 @@ mainloop.")
 (define-public python-dpkt
   (package
     (name "python-dpkt")
-    (version "1.9.4")
+    (version "1.9.8")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "dpkt" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/kbandla/dpkt")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1d28r8pmhzjjd6hrn1xcddinfhwv8lcl1s59ygmqa8kfmz5pkrgl"))))
-    (build-system python-build-system)
+        (base32 "0dhy8l4sqfxqdda6lishb95g3v6hnw14l20ipqpzb6vaw1vf7mzj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--pyargs" "dpkt")))
+    (native-inputs (list python-pytest python-pytest-cov python-setuptools))
     (home-page "https://github.com/kbandla/dpkt")
     (synopsis "Packet generator and parser for TCP/IP protocols")
-    (description "The dpkt module is a fast, simple packet generator and parser
-for the basic TCP/IP protocols.")
+    (description
+     "The dpkt module is a fast, simple packet generator and parser for the
+basic TCP/IP protocols.")
     (license license:bsd-3)))
 
 (define-public python-geventhttpclient
