@@ -697,6 +697,37 @@ style).
 test minimization algorithm.")
     (license license:bsd-2)))
 
+(define-public go-github-com-dnaeon-go-vcr
+  (package
+    (name "go-github-com-dnaeon-go-vcr")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dnaeon/go-vcr")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1aw8s3aljhw9vpzcf8m64r5yv5g0j09dky30shzxvpjwpl5yxhir"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/dnaeon/go-vcr"))
+    (propagated-inputs
+     (list go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/dnaeon/go-vcr")
+    (synopsis "Record and replay your HTTP interactions")
+    (description
+     "@@code{go-vcr} simplifies testing by recording your HTTP interactions
+and replaying them in future runs in order to provide fast, deterministic and
+accurate testing of your code.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-dvyukov-go-fuzz
   (package
     (name "go-github-com-dvyukov-go-fuzz")
