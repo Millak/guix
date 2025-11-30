@@ -1419,7 +1419,7 @@ high-level emulation (HLE) RSP processor plugin.")
 (define-public mupen64plus-rsp-z64
   (package
     (name "mupen64plus-rsp-z64")
-    (version "2.5.9")
+    (version "2.6.0")
     (source
      (origin
        (method git-fetch)
@@ -1428,7 +1428,7 @@ high-level emulation (HLE) RSP processor plugin.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02w7c6b7fc6q5rrvawxv48xp64crfs5jbs06f2fqqj4smysyjfcc"))))
+        (base32 "0hpd402a00kmqsq45hrmgjfd1nchkjgjj5hc3fzb4fbvac5pacsz"))))
     (build-system gnu-build-system)
     (inputs
      (list mupen64plus-core))
