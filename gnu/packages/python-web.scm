@@ -6761,23 +6761,48 @@ authorization scheme.")
 (define-public python-msal
   (package
     (name "python-msal")
-    (version "1.31.1")
+    (version "1.34.0")
     (home-page
      "https://github.com/AzureAD/microsoft-authentication-library-for-python")
-    (source (origin
-              (method git-fetch)
-              ;; Pypi does not have tests.
-              (uri (git-reference (url home-page) (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "18dg1j2az5ywk6klfd3kp36fxa4cmmf9yvma4li0a2nz2jgc1gdd"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xcyiv742ihnzypjw7syamnhqffdy6wsvvv0f5jcl3pap0apbk0z"))
+       (patches (search-patches "python-msal-requests.patch"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; Tests (all?) rely on network access and only some can be disabled by
-     ;; setting the environment variable TRAVIS_TAG.
-     (list #:tests? #f))
-    (native-inputs (list python-mock))
+     (list
+      #:test-flags
+      #~(list
+         "--ignore=tests/test_benchmark.py"
+         ;; XXX: Ignoring cryptography version scheme tests.
+         "-k"
+         "not test_ceiling_should_be_latest_cryptography_version_plus_three"
+         ;; XXX: These tests try to access the network.
+         "--ignore=tests/test_application.py"
+         "--ignore=tests/test_ccs.py"
+         ;; XXX: These tests assume they are run on Windows.
+         "--ignore=tests/test_mi.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-cryptography-version
+            (lambda _
+              (substitute* "tests/test_cryptography.py"
+                (("^latest_cryptography_version = @version@")
+                 (format #f "latest_cryptography_version = ~s"
+                         #$(package-version
+                            (this-package-input "python-cryptography")))))))
+          (add-before 'check 'configure-tests
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "TRAVIS_TAG" "1")))))))
+    (native-inputs
+     (list nss-certs-for-test python-mock python-pytest python-setuptools))
     (propagated-inputs (list python-cryptography python-pyjwt python-requests))
     (synopsis "Microsoft Authentication Library (MSAL) for Python")
     (description

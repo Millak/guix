@@ -1,0 +1,36 @@
+From 74cda7c7ce34b34b1a378b5e3be02f44bbea09d6 Mon Sep 17 00:00:00 2001
+Message-ID: <74cda7c7ce34b34b1a378b5e3be02f44bbea09d6.1764515163.git.ngraves@ngraves.fr>
+From: Nicolas Graves <ngraves@ngraves.fr>
+Date: Sun, 30 Nov 2025 16:05:39 +0100
+Subject: [PATCH] Replace requests.get by a placeholder
+
+---
+ tests/test_cryptography.py | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/tests/test_cryptography.py b/tests/test_cryptography.py
+index b119e59..8948ab0 100644
+--- a/tests/test_cryptography.py
++++ b/tests/test_cryptography.py
+@@ -3,7 +3,6 @@ import os
+ import re
+ from unittest import TestCase
+ import warnings
+-import xml.etree.ElementTree as ET
+ 
+ import requests
+ 
+@@ -11,9 +10,7 @@ from msal.application import (
+     _str2bytes, _load_private_key_from_pem_str, _parse_pfx)
+ 
+ 
+-latest_cryptography_version = ET.fromstring(
+-    requests.get("https://pypi.org/rss/project/cryptography/releases.xml").text
+-    ).findall("./channel/item/title")[0].text
++latest_cryptography_version = @version@
+ 
+ 
+ def get_current_ceiling():
+-- 
+2.51.2
+
