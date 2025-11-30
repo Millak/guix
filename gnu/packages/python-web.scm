@@ -7394,9 +7394,10 @@ upload, and reCAPTCHA.")
        (sha256
         (base32
          "0p4v50rwv64wcd0zlq7rzl4waprwr4hj19s3cgf1isywa7jcisgm"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-flask))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))  ; No tests upstream.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-flask))
     (home-page "https://pagure.io/flask-multistatic")
     (synopsis "Flask plugin to allow overriding static files")
     (description "@code{flask-multistatic} is a flask plugin that adds support
