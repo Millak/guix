@@ -20,7 +20,7 @@
 ;;; Copyright © 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020-2025 Maxim Cournoyer <maxim@guixotic.coop>
-;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2021, 2022, 2025 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022, 2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -1192,10 +1192,10 @@ tst_qt_cmake_create.cpp"
                            '("device_config.prf" "moc.prf" "qt_config.prf"))
                     (("\\$\\$\\[QT_HOST_DATA/get\\]") archdata)
                     (("\\$\\$\\[QT_HOST_DATA/src\\]") archdata)))))
-            (add-after 'install 'delete-installed-tests
+            (add-before 'install 'dont-install-tests
               (lambda _
-                (delete-file-recursively
-                 (string-append #$output "/tests"))))))))
+                (substitute* "cmake_install.cmake"
+                  (("include.*tests/cmake_install") "#"))))))))
     (native-inputs
      (modify-inputs (package-native-inputs qtbase-5)
        (prepend ninja                   ;CMake Generator, also used for tests
