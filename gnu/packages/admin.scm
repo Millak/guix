@@ -2215,7 +2215,7 @@ by bandwidth they use.")
            perl-test-pod
            perl-test-pod-coverage
            perl-test-trap
-           perltidy))
+           perl-tidy))
     (inputs
      (list bash-minimal                 ;for wrap-program
            perl-exception-class
