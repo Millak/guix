@@ -292,7 +292,7 @@ Examples of valid expressions:
 @result{} 17
 
 (display (string-append "Hello " "Guix" "\n"))
-@print{} Hello Guix!
+@print{} Hello Guix
 @result{} #<unspecified>
 @end lisp
 
