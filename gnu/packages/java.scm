@@ -1644,6 +1644,10 @@ new Date();"))
                                                          "-ga"))))
                             (file-name (git-file-name name version))
                             (sha256 (base32 hash))))
+                         (properties
+                          '((release-tag-prefix . "jdk-")
+                            (release-tag-suffix . "-ga")
+                            (release-tag-version-delimiter . ".")))
                          (native-inputs
                           (modify-inputs (package-native-inputs bootstrap)
                             (replace "openjdk" bootstrap)))
