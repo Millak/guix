@@ -3100,43 +3100,25 @@ the source code, it only prints out style mistakes.")
 
 (define-public go-gopkg-in-dnaeon-go-vcr-v3
   (package
+    (inherit go-github-com-dnaeon-go-vcr)
     (name "go-gopkg-in-dnaeon-go-vcr-v3")
-    (version "3.2.0")
+    (version "3.2.2")
     (source
      (origin
+       (inherit (package-source go-github-com-dnaeon-go-vcr))
        (method git-fetch)
        (uri (git-reference
-             (url "https://gopkg.in/dnaeon/go-vcr.v3")
-             (commit (string-append "v" version))))
+              (url "https://github.com/dnaeon/go-vcr")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1nij7rjbnrbsgjlm7fwpg298qffrgi2ic3wb51vqzxl6s9qkbzrq"))
-       (snippet
-        #~(begin (use-modules (guix build utils))
-                 (delete-file-recursively "vendor")))))
-    (build-system go-build-system)
+        (base32 "0p8lnkksjajnil1cwsfmpdajvnx1i3z6sfpgqk4hyvlz3apki8vg"))))
     (arguments
-     (list
-      #:import-path "gopkg.in/dnaeon/go-vcr.v3"
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: Workaround for go-build-system's lack of Go modules
-          ;; support.
-          (delete 'build)
-          (replace 'check
-            (lambda* (#:key tests? import-path #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion (string-append "src/" import-path)
-                  (invoke "go" "test" "-v" "./..."))))))))
+     (substitute-keyword-arguments
+         (package-arguments go-github-com-dnaeon-go-vcr)
+       ((#:import-path _) "gopkg.in/dnaeon/go-vcr.v3")))
     (propagated-inputs
-     (list go-gopkg-in-yaml-v3))
-    (home-page "https://gopkg.in/dnaeon/go-vcr.v3")
-    (synopsis "Record and replay your HTTP interactions")
-    (description
-     "@@code{go-vcr} simplifies testing by recording your HTTP interactions
-and replaying them in future runs in order to provide fast, deterministic and
-accurate testing of your code.")
-    (license license:bsd-2)))
+     (list go-gopkg-in-yaml-v3))))
 
 (define-public go-gopkg-in-dnaeon-go-vcr-v4
   (package
