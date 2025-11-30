@@ -7208,24 +7208,27 @@ Services (AWS) API.")
 (define-public python-wsgiproxy2
   (package
     (name "python-wsgiproxy2")
-    (version "0.4.6")
+    (version "0.5.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "WSGIProxy2" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gawel/WSGIProxy2/")
+             (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "16jch5nic0hia28lps3c678s9s9mjdq8n87igxncjg0rpi5adqnf"))))
-    (build-system python-build-system)
-    (native-inputs
-     (list python-webtest))
-    (propagated-inputs
-     (list python-requests python-six python-urllib3 python-webob))
+        (base32 "0aw9ibla2cqzlbm3vzyk1yk3d8pccpbpdkqx99q30hq1fz1izsm2"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs (list python-webtest python-setuptools))
+    (propagated-inputs (list python-requests python-six python-urllib3
+                             python-webob))
     (home-page "https://github.com/gawel/WSGIProxy2/")
     (synopsis "WSGI Proxy with various http client backends")
-    (description "WSGI turns HTTP requests into WSGI function calls.
-WSGIProxy turns WSGI function calls into HTTP requests.
-It also includes code to sign requests and pass private data,
-and to spawn subprocesses to handle requests.")
+    (description
+     "WSGI turns HTTP requests into WSGI function calls.  WSGIProxy turns WSGI
+function calls into HTTP requests.  It also includes code to sign requests and
+pass private data, and to spawn subprocesses to handle requests.")
     (license license:expat)))
 
 (define-public python-pastedeploy
