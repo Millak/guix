@@ -5346,13 +5346,18 @@ connection to each user.")
     (version "1.1.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "tornado-http-auth" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gvalkov/tornado-http-auth")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0hyc5f0a09i5yb99pk4bxpg6w9ichbrb5cv7hc9hff7rxd8w0v0x"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-tornado))
+        (base32 "1v9sin1zlck9wvkwx0ldqb1b271xlkq63562w8g1yb7v6qka9q4f"))))
+    (build-system pyproject-build-system)
+    ;; XXX: This version is incompatible with current tornado.testing.
+    (arguments (list #:tests? #f))
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-tornado))
     (home-page "https://github.com/gvalkov/tornado-http-auth")
     (synopsis "Digest and basic authentication module for Tornado")
     (description
