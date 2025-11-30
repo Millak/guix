@@ -6856,23 +6856,20 @@ used as authentication in IMAP mail servers.")
 (define-public python-oauthlib
   (package
     (name "python-oauthlib")
-    (version "3.1.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "oauthlib" version))
-              (sha256
-               (base32
-                "12gqnabwck30gdlpwm6af3s28qm9p2yc7b1w8s4fk9ncbz1irr5y"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest" "-vv"))))))
-    (native-inputs
-     (list python-pytest python-pytest-cov python-mock))
-    (propagated-inputs
-     (list python-cryptography python-pyjwt python-blinker))
+    (version "3.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oauthlib/oauthlib")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0aa38lpa6s1k56v7w7kw2w4l159kaz4gn03m698a8hfdjkx92fb5"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-pytest-cov python-mock
+                         python-setuptools))
+    (propagated-inputs (list python-cryptography python-pyjwt python-blinker))
     (home-page "https://github.com/oauthlib/oauthlib")
     (synopsis "OAuth implementation for Python")
     (description
