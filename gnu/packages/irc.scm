@@ -375,7 +375,7 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
 (define-public weechat
   (package
     (name "weechat")
-    (version "4.7.2")
+    (version "4.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -384,7 +384,7 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10gb8wmkfyz7cgmpxrigk7i3az7qzhv8rkrfa48h6ryaw47z17vz"))))
+                "12xj58w94k38bwy4rizc6jhi93mpda09qsbi3cshqypin963dqjr"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs
@@ -402,7 +402,7 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
            (list zstd "lib")
            ;; Scripting language plug-ins.
            guile-3.0
-           lua-5.1
+           lua
            perl
            python
            ruby
