@@ -1239,7 +1239,7 @@ Enjoy all of your favorite Atari 2600 games on your PC thanks to Stella!")
 (define-public mupen64plus-core
   (package
     (name "mupen64plus-core")
-    (version "2.5.9")
+    (version "2.6.0")
     (source
      (origin
        (method git-fetch)
@@ -1248,7 +1248,7 @@ Enjoy all of your favorite Atari 2600 games on your PC thanks to Stella!")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1iav8r3f0r44sq9pz4zjqrdzyspk412c117ywxz02qpjkhkf91a3"))))
+        (base32 "1xf15b6c3i0vv92b420a92pfvfaxhji56ivin8pn5r7fajkqyfb7"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config nasm which))
@@ -1258,6 +1258,7 @@ Enjoy all of your favorite Atari 2600 games on your PC thanks to Stella!")
            libpng
            mesa
            sdl2
+           vulkan-loader
            zlib))
     (arguments
      '(#:phases
