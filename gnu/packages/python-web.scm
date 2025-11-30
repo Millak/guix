@@ -7234,21 +7234,17 @@ pass private data, and to spawn subprocesses to handle requests.")
 (define-public python-pastedeploy
   (package
     (name "python-pastedeploy")
-    (version "2.1.1")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PasteDeploy" version))
        (sha256
-        (base32 "05s88qdjdwd9d9qs13fap7nqgxs7qs5qfzzjbrc5va13k2mxdskd"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:test-target "pytest"))
-    (native-inputs
-     (list python-pytest python-pytest-runner))
+        (base32 "15as15mgz9xn33abwrp0x0mbj537ib3q47z8ky5475c05wasznwx"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-pytest-cov python-setuptools))
     (home-page "https://pylonsproject.org/")
-    (synopsis
-     "Load, configure, and compose WSGI applications and servers")
+    (synopsis "Load, configure, and compose WSGI applications and servers")
     (description
      "This tool provides code to load WSGI applications and servers from URIs;
 these URIs can refer to Python Eggs for INI-style configuration files.  Paste
