@@ -5482,7 +5482,7 @@ https://github.com/cowsql/cowsql/blob/main/doc/protocol.md}.")
 (define-public go-github-com-cpuguy83-go-md2man-v2
   (package
     (name "go-github-com-cpuguy83-go-md2man-v2")
-    (version "2.0.5")
+    (version "2.0.7")
     (source
      (origin
        (method git-fetch)
@@ -5491,7 +5491,7 @@ https://github.com/cowsql/cowsql/blob/main/doc/protocol.md}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gqlkv1pv8cpvcj8g77d1hzy5bnp5a3k3xs02iahlr3a65m4azsi"))))
+        (base32 "0bbaagr56vnq4yhvyjpdrgl28kl54ix96j7qjiwa55wxv2yqdahc"))))
     (build-system go-build-system)
     (arguments
      (list
