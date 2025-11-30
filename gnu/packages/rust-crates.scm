@@ -22,7 +22,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cargo)
-  #:use-module (gnu packages rust-sources)
+  #:use-module ((gnu packages rust-sources) #:prefix package:)
   #:export (lookup-cargo-inputs))
 
 ;;;
@@ -4517,9 +4517,9 @@
   (crate-source "detect-newline-style" "0.1.2"
                 "0j9pcjk2ab21f36fqybz69whd1c4xy60hy7qd5v59aqm6rfg490i"))
 
-(define rust-deunicode-1.6.1 rust-deunicode-1)
+(define rust-deunicode-1.6.1 package:rust-deunicode-1)
 
-(define rust-deunicode-1.6.2 rust-deunicode-1)
+(define rust-deunicode-1.6.2 package:rust-deunicode-1)
 
 (define rust-devicons-0.6.12
   (crate-source "devicons" "0.6.12"
@@ -8795,7 +8795,7 @@
   (crate-source "hyperlocal" "0.8.0"
                 "136978rsp0wr6x28cxivxhbq2np66l4jrq3n9xwckrrd5dxxzbqg"))
 
-(define rust-hypher-0.1.6 rust-hypher-0.1)
+(define rust-hypher-0.1.6 package:rust-hypher-0.1)
 
 (define rust-hyprland-0.3.13
   (crate-source "hyprland" "0.3.13"
@@ -10616,9 +10616,9 @@
   (crate-source "libspa" "0.8.0"
                 "044qs48yl0llp2dmrgwxj9y1pgfy09i6fhq661zqqb9a3fwa9wv5"))
 
-(define rust-libspa-0.8.0.93138d0 rust-pipewire-0.8.0.93138d0)
+(define rust-libspa-0.8.0.93138d0 package:rust-pipewire-0.8.0.93138d0)
 
-(define rust-libspa-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)
+(define rust-libspa-0.8.0.fd3d8f7 package:rust-pipewire-0.8.0.fd3d8f7)
 
 (define rust-libspa-0.9.2
   (crate-source "libspa" "0.9.2"
@@ -10632,9 +10632,9 @@
   (crate-source "libspa-sys" "0.8.0"
                 "07yh4i5grzbxkchg6dnxlwbdw2wm5jnd7ffbhl77jr0388b9f3dz"))
 
-(define rust-libspa-sys-0.8.0.93138d0 rust-pipewire-0.8.0.93138d0)
+(define rust-libspa-sys-0.8.0.93138d0 package:rust-pipewire-0.8.0.93138d0)
 
-(define rust-libspa-sys-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)
+(define rust-libspa-sys-0.8.0.fd3d8f7 package:rust-pipewire-0.8.0.fd3d8f7)
 
 (define rust-libspa-sys-0.9.2
   ;; TODO: Check bundled sources.
@@ -13617,7 +13617,7 @@
   (crate-source "pcre2" "0.2.9"
                 "0avb52h3ppw6kp9ynlw988c745am9j7px2cdsm0la10qmi1mrr9v"))
 
-(define rust-pcre2-0.2.9.85b7afb rust-pcre2-utf32-0.2)
+(define rust-pcre2-0.2.9.85b7afb package:rust-pcre2-utf32-0.2)
 
 (define rust-pcre2-sys-0.2.10
   (crate-source "pcre2-sys" "0.2.10"
@@ -13629,7 +13629,7 @@
                 "12hxy54i8amdnmcm034hqdc7iryd20n8aqg1hw5w540vzcc5s3sm"
                 #:snippet '(delete-file-recursively "upstream")))
 
-(define rust-pcre2-sys-0.2.9.85b7afb rust-pcre2-utf32-0.2)
+(define rust-pcre2-sys-0.2.9.85b7afb package:rust-pcre2-utf32-0.2)
 
 (define rust-pcsc-2.9.0
   (crate-source "pcsc" "2.9.0"
@@ -13945,15 +13945,15 @@
   (crate-source "pipewire" "0.8.0"
                 "1nldg1hz4v0qr26lzdxqpvrac4zbc3pb6436sl392425bjx4brh8"))
 
-(define rust-pipewire-0.8.0.93138d0 rust-pipewire-0.8.0.93138d0)
+(define rust-pipewire-0.8.0.93138d0 package:rust-pipewire-0.8.0.93138d0)
 
-(define rust-pipewire-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)
+(define rust-pipewire-0.8.0.fd3d8f7 package:rust-pipewire-0.8.0.fd3d8f7)
 
 (define rust-pipewire-0.9.2
   (crate-source "pipewire" "0.9.2"
                 "0i4ddb89cr8x02zqy35krlx5mgkd3mqr0qbwkx4mdmqipydbi24n"))
 
-(define rust-pipewire-sys-0.8.0.93138d0 rust-pipewire-0.8.0.93138d0)
+(define rust-pipewire-sys-0.8.0.93138d0 package:rust-pipewire-0.8.0.93138d0)
 
 (define rust-pipewire-sys-0.7.2
   (crate-source "pipewire-sys" "0.7.2"
@@ -13963,7 +13963,7 @@
   (crate-source "pipewire-sys" "0.8.0"
                 "04hiy3rl8v3j2dfzp04gr7r8l5azzqqsvqdzwa7sipdij27ii7l4"))
 
-(define rust-pipewire-sys-0.8.0.fd3d8f7 rust-pipewire-0.8.0.fd3d8f7)
+(define rust-pipewire-sys-0.8.0.fd3d8f7 package:rust-pipewire-0.8.0.fd3d8f7)
 
 (define rust-pipewire-sys-0.9.2
   ;; TODO: Check bundled sources.
@@ -14633,7 +14633,7 @@
   (crate-source "ptyprocess" "0.4.1"
                 "1kz8gzsr2pjpxcxy708338wcdqnxg3cpfbca8q8a44gvpvvsw1by"))
 
-(define rust-pubgrub-0.3.0-alpha.1.b70cf70 rust-pubgrub-0.3.0.b70cf70)
+(define rust-pubgrub-0.3.0-alpha.1.b70cf70 package:rust-pubgrub-0.3.0.b70cf70)
 
 (define rust-public-api-0.33.1
   (crate-source "public-api" "0.33.1"
@@ -15794,8 +15794,8 @@
   (crate-source "rgb" "0.8.52"
                 "1km115a9lblf9pldvx51dmmg30y8ms4ka67hvas2ndcq556qhshc"))
 
-(define rust-ring-0.17.8 rust-ring-0.17)
-(define rust-ring-0.17.14 rust-ring-0.17)
+(define rust-ring-0.17.8 package:rust-ring-0.17)
+(define rust-ring-0.17.14 package:rust-ring-0.17)
 
 (define rust-ripemd-0.1.3
   (crate-source "ripemd" "0.1.3"
@@ -17822,9 +17822,9 @@
   (crate-source "smawk" "0.3.2"
                 "0344z1la39incggwn6nl45k8cbw2x10mr5j0qz85cdz9np0qihxp"))
 
-(define rust-smithay-0.6.0.ede2707 rust-smithay-0.6.0.ede2707)
+(define rust-smithay-0.6.0.ede2707 package:rust-smithay-0.6.0.ede2707)
 
-(define rust-smithay-0.7.0.20d2dac rust-smithay-0.7.0.20d2dac)
+(define rust-smithay-0.7.0.20d2dac package:rust-smithay-0.7.0.20d2dac)
 
 (define rust-smithay-0.7.0.d743e1a
   ;; TODO: Define standalone package if this is a workspace.
@@ -17839,7 +17839,7 @@
   (crate-source "smithay-client-toolkit" "0.18.1"
                 "0fpm2yfpsif7022w4xalxgn53y8w5dc8zkipcpbj1n1vmgpd6bwj"))
 
-(define rust-smithay-drm-extras-0.1.0.20d2dac rust-smithay-0.7.0.20d2dac)
+(define rust-smithay-drm-extras-0.1.0.20d2dac package:rust-smithay-0.7.0.20d2dac)
 
 (define rust-smithay-client-toolkit-0.15.4
   (crate-source "smithay-client-toolkit" "0.15.4"
@@ -17853,7 +17853,7 @@
   (crate-source "smithay-clipboard" "0.7.2"
                 "0inqnr4x458nqz0wdcanbgn77dad3bj0m7pjj074lrv3qkp1d0nc"))
 
-(define rust-smithay-drm-extras-0.1.0.ede2707 rust-smithay-0.6.0.ede2707)
+(define rust-smithay-drm-extras-0.1.0.ede2707 package:rust-smithay-0.6.0.ede2707)
 
 (define rust-smol-str-0.1.24
   (crate-source "smol_str" "0.1.24"
@@ -18603,9 +18603,9 @@
   (crate-source "synstructure" "0.13.2"
                 "1lh9lx3r3jb18f8sbj29am5hm9jymvbwh6jb1izsnnxgvgrp12kj"))
 
-(define rust-syntect-5.2.0 rust-syntect-5.2)
+(define rust-syntect-5.2.0 package:rust-syntect-5.2)
 
-(define rust-syntect-5.3.0 rust-syntect-5.3)
+(define rust-syntect-5.3.0 package:rust-syntect-5.3)
 
 (define rust-sys-info-0.9.1
   (crate-source "sys-info" "0.9.1"
@@ -20895,7 +20895,7 @@
   (crate-source "version-compare" "0.2.0"
                 "12y9262fhjm1wp0aj3mwhads7kv0jz8h168nn5fb8b43nwf9abl5"))
 
-(define rust-version-ranges-0.1.1.b70cf70 rust-pubgrub-0.3.0.b70cf70)
+(define rust-version-ranges-0.1.1.b70cf70 package:rust-pubgrub-0.3.0.b70cf70)
 
 (define rust-version-track-0.1.0
   (crate-source "version-track" "0.1.0"
@@ -21745,7 +21745,7 @@
   (crate-source "web-time" "1.1.0"
                 "1fx05yqx83dhx628wb70fyy10yjfq1jpl20qfqhdkymi13rq0ras"))
 
-(define rust-web-view-0.7.3.82d7cbc rust-web-view-0.7.3.82d7cbc)
+(define rust-web-view-0.7.3.82d7cbc package:rust-web-view-0.7.3.82d7cbc)
 
 (define rust-webbrowser-1.0.4
   (crate-source "webbrowser" "1.0.4"
