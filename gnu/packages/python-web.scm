@@ -6397,22 +6397,25 @@ WebSocket usage in Python programs.")
 (define-public python-purl
   (package
     (name "python-purl")
-    (version "1.5")
+    (version "1.6")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "purl" version))
-        (sha256
-          (base32
-            "15ibnz1xrh5msmn04j0nr00sz4n7jwx6cwd6zlx99kkz3vpin53m"))))
-    (build-system python-build-system)
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/codeinthehole/purl")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01zngf0s0qfsrsk0skn57frbzyscwv8467pfjk6hxdfgdx2wkg95"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags #~(list "--pyargs" "./tests")))
+    (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-six))
-    (home-page
-      "https://github.com/codeinthehole/purl")
-    (synopsis
-      "Python package for URL manipulation")
-    (description
-      "Purl is a Python package for handling URLs.")
+    (home-page "https://github.com/codeinthehole/purl")
+    (synopsis "Python package for URL manipulation")
+    (description "Purl is a Python package for handling URLs.")
     (license license:expat)))
 
 (define-public python-apiron
