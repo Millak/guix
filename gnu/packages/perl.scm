@@ -13419,26 +13419,6 @@ system.")
 as exceptions to standard program flow.")
     (license (package-license perl))))
 
-(define-public perltidy
-  (package
-    (name "perltidy")
-    (version "20180220")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/perltidy/" version
-                                  "/Perl-Tidy-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0w1k5ffcrpx0fm9jgprrwy0290k6cmy7dyk83s61063migi3r5z9"))))
-    (build-system perl-build-system)
-    (home-page "https://perltidy.sourceforge.net/")
-    (synopsis "Perl script tidier")
-    (description "This package contains a Perl script which indents and
-reformats Perl scripts to make them easier to read.   The formatting can be
-controlled with command line parameters.  The default parameter settings
-approximately follow the suggestions in the Perl Style Guide.")
-    (license license:gpl2+)))
-
 (define-public perl-tidy
   (package
     (name "perl-tidy")
@@ -13458,6 +13438,9 @@ approximately follow the suggestions in the Perl Style Guide.")
 parameters may be omitted, in which case the @code{@@ARGV} array will be used
 to provide input parameters as described in the @samp{perltidy(1)} man page.")
     (license license:gpl2+)))
+
+;; Deprecated on 2025-11-20.
+(define-deprecated-package perltidy perl-tidy)
 
 (define-public perl-tie-cycle
   (package
