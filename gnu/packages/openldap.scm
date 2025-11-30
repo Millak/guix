@@ -72,7 +72,7 @@
 (define-public openldap
   (package
     (name "openldap")
-    (version "2.6.9")
+    (version "2.6.10")
     (source (origin
               (method url-fetch)
               ;; See <http://www.openldap.org/software/download/> for a list of
@@ -88,7 +88,7 @@
                           "openldap-release/openldap-" version ".tgz")))
               (sha256
                (base32
-                "1zxjws0mcm9cjwhhb7v1qq6g7avqlnx7ydcr1pzhsd68x5rxrdrc"))))
+                "05p5gfcas34zc2hyl2mwcr189b04jy9y8bqbsvmplws2mm5g0rf0"))))
     (build-system gnu-build-system)
     (inputs (list bdb cyrus-sasl gnutls libgcrypt zlib))
     (native-inputs (list libtool groff bdb-5.3))
