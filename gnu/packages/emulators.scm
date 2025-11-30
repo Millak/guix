@@ -3405,7 +3405,7 @@ This is a part of the TiLP project.")
            texinfo))
     (inputs
      (list alsa-lib
-           asio
+           asio-1.28
            expat
            flac
            fontconfig
