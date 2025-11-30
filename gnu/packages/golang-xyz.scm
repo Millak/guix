@@ -10936,6 +10936,34 @@ Algorithms are included to calculate yahrzeits, birthdays, and
 anniversaries.")
     (license license:gpl2+)))
 
+(define-public go-github-com-heimdalr-dag
+  (package
+    (name "go-github-com-heimdalr-dag")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/heimdalr/dag")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13hvdhld450bylhhfhnr8bjwbhjgdf3v6n64yxdic0lzi0b93ajb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/heimdalr/dag"))
+    (native-inputs
+     (list go-github-com-go-test-deep))
+    (propagated-inputs
+     (list go-github-com-emirpasic-gods
+           go-github-com-google-uuid))
+    (home-page "https://github.com/heimdalr/dag")
+    (synopsis "Directed acyclic graph (DAG) implementation in Golang")
+    (description
+     "This package implements directed acyclic graphs (DAGs).")
+    (license license:bsd-3)))
+
 (define-public go-github-com-hhrutter-tiff
   (package
     (name "go-github-com-hhrutter-tiff")
