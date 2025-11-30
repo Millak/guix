@@ -2022,6 +2022,33 @@ between tests and a test harness.  This package helps Go to generate TAP
 output.")
     (license license:unlicense)))
 
+(define-public go-github-com-modocache-gover
+  (package
+    (name "go-github-com-modocache-gover")
+    (version "0.0.0-20171022184752-b58185e213c5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sozorogami/gover")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1w7pzqh8ljacpxhwq9f4s4ax908dgl22qfxyrx51mblylwzvm6va"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/modocache/gover"))
+    (native-inputs
+     (list go-github-com-onsi-ginkgo))
+    (home-page "https://github.com/modocache/gover")
+    (synopsis "Integration with coveralls.io for *.coverprofile files")
+    (description
+     "This package inplements a functionality to collect all
+@code{.coverprofile} files rooted in the project and concatenante them into a
+single file ready for https://coveralls.io/.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-nbio-st
   (package
     (name "go-github-com-nbio-st")
