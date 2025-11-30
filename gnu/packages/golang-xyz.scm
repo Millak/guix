@@ -23031,6 +23031,45 @@ XOR, as in kademlia.")
 @code{MemoryInfo}.")
     (license license:expat)))
 
+(define-public go-github-com-winfsp-cgofuse
+  (package
+    (name "go-github-com-winfsp-cgofuse")
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/winfsp/cgofuse")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0wqxn3plbp6rabmyfyxamjl0ilm0n5pkiwhsvnbrx9pcpmlc1b0p"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:tests? #f ;XXX: panic: cgofuse: cannot find FUSE
+      #:import-path "github.com/winfsp/cgofuse"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file-recursively
+               (string-append "src/" import-path "/examples")))))))
+    (propagated-inputs
+     (list fuse fuse-2))
+    (home-page "https://github.com/winfsp/cgofuse")
+    (synopsis "Cross-platform FUSE library for Golang")
+    (description
+     "Cgofuse is a cross-platform FUSE library for Go.  It is supported on
+multiple platforms and can be ported to any platform that has a FUSE
+implementation.  It has @url{https://pkg.go.dev/cmd/cgo, cgo},
+@url{https://go.dev/wiki/WindowsDLLs, !cgo} (aka \"nocgo\") and
+@url{https://github.com/libfuse/libfuse/tree/fuse-2.9.9, FUSE} (aka
+\"FUSE2\"), @url{https://github.com/libfuse/libfuse, FUSE3} variants depending
+on the platform.")
+    (license license:expat)))
+
 (define-public go-github-com-workiva-go-datastructures
   (package
     (name "go-github-com-workiva-go-datastructures")
