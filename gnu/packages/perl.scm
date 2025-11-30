@@ -13442,14 +13442,14 @@ approximately follow the suggestions in the Perl Style Guide.")
 (define-public perl-tidy
   (package
     (name "perl-tidy")
-    (version "20250616")
+    (version "20250912")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/S/SH/SHANCOCK/Perl-Tidy-"
              version ".tar.gz"))
        (sha256
-        (base32 "16k83qmfdiq5360n3166vkvhi46p8y436r86i6j2938ryviifxdh"))))
+        (base32 "197hkkbiz1v0id6s6vr3pgildw1rlp2mj70gvqpspkpv6n4f93ml"))))
     (build-system perl-build-system)
     (home-page "https://metacpan.org/release/Perl-Tidy")
     (synopsis "Perl module to indent and reformat Perl scripts")
