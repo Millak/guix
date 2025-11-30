@@ -83,6 +83,7 @@
 ;;; Copyright © 2025 Noé Lopez <noelopez@free.fr>
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
+;;; Copyright © 2025 Abra K. <abra_k_332@protonmail.me>
 ;;; Copyright © 2026 Roman Riabenko <roman@riabenko.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -10329,6 +10330,71 @@ associations for GNOME.")
     (description "GoVirt is a GObject wrapper for the oVirt REST API.")
     (home-page "https://gitlab.gnome.org/GNOME/libgovirt")
     (license license:gpl2+)))
+
+(define-public gnome-tour
+  (package
+    (name "gnome-tour")
+    (version "49.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.gnome.org/GNOME/gnome-tour")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fzvgffwargmycxby6j2q0fka74hcb4ff8yvbh8w8a0vpvpnc9b1"))
+       (modules '((guix build utils)))
+       (snippet #~(begin
+                    (substitute* "src/widgets/window.rs"
+                      (("let (name|version) = .*;" all what)
+                       (case (string->symbol what)
+                         ((name) "let name = \"GNOME\";")
+                         ((version) "let version = \"\";"))))))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:imported-modules
+      `(,@%meson-build-system-modules
+        ,@%cargo-build-system-modules)
+      #:modules
+      `(((guix build cargo-build-system) #:prefix cargo:)
+        (guix build meson-build-system)
+        (guix build utils))
+      #:phases
+      (with-extensions (list (cargo-guile-json))
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'prepare-for-build
+              (lambda _
+                (delete-file "Cargo.lock")))
+            (add-after 'configure 'prepare-cargo-build-system
+              (lambda args
+                (for-each (lambda (phase)
+                            (format #t "Running cargo phase: ~a~%" phase)
+                            (apply (assoc-ref cargo:%standard-phases phase)
+                                   #:vendor-dir "vendor"
+                                   #:cargo-target #$(cargo-triplet)
+                                   args))
+                          '(unpack-rust-crates
+                            configure
+                            check-for-pregenerated-files
+                            patch-cargo-checksums))))))))
+    (native-inputs (cons* pkg-config
+                          rust
+                          `(,rust "cargo")
+                          gettext-minimal
+                          `(,gtk "bin")
+                          `(,glib "bin")
+                          desktop-file-utils
+                          (cargo-inputs 'gnome-tour)))
+    (inputs (list libadwaita
+                  glib
+                  gtk))
+    (synopsis "GNOME Tour and Greeter")
+    (description "A guided tour and greeter for GNOME.")
+    (home-page "https://apps.gnome.org/Tour/")
+    (license license:gpl3+)))
 
 (define-public gnome-weather
   (package
