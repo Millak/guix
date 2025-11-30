@@ -6217,23 +6217,27 @@ deprecation warnings to be issued when a variable is used.")
   (package
     (name "python-ndg-httpsclient")
     (version "0.5.1")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "ndg_httpsclient" version))
-              (sha256
-                (base32
-                  "0412b7i1s4vj7lz9r72nmb28h9syd4q2x89bdirkkc3a6z8awbyp"))))
-    (build-system python-build-system)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/cedadev/ndg_httpsclient/")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0lhsgs4am4xyjssng5p0vkfwqncczj1dpa0vss4lrhzq86mnn5rz"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(;; The tests appear to require networking.
-       #:tests? #f))
-    (propagated-inputs
-     (list python-pyasn1 python-pyopenssl))
+     (list
+      #:tests? #f)) ;Tests appear to require networking.
+    (native-inputs (list python-setuptools))
+    (propagated-inputs (list python-pyasn1 python-pyopenssl))
     (synopsis "HTTPS support for Python's httplib and urllib2")
-    (description "This is a HTTPS client implementation for httplib and urllib2
-based on PyOpenSSL.  PyOpenSSL provides a more fully-featured SSL implementation
-over the default provided with Python and, importantly, enables full
-verification of the SSL peer.")
+    (description
+     "This is a HTTPS client implementation for httplib and urllib2 based on
+PyOpenSSL.  PyOpenSSL provides a more fully-featured SSL implementation over
+the default provided with Python and, importantly, enables full verification
+of the SSL peer.")
     (home-page "https://github.com/cedadev/ndg_httpsclient/")
     (license license:bsd-3)))
 
