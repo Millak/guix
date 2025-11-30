@@ -6907,7 +6907,6 @@ authenticated session objects providing things like keep-alive.")
     (version "0.9")
     (source
      (origin
-       ;; There's only a wheel on PyPI.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/AmanoTeam/Unalix")
@@ -6915,15 +6914,8 @@ authenticated session objects providing things like keep-alive.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0h8wc1axv26h753a8brc6dccqndx005c2bhr09gwg5c1hj9zsfml"))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest))
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
     (home-page "https://pypi.org/project/Unalix/")
     (synopsis "Python library for removing tracking fields from URLs")
     (description "Unalix is a library written in Python implementing the
