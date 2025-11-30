@@ -1243,7 +1243,7 @@
                 "0xxdyn1zcc4jiy0n3bfn56486djbsfd76w0pzn50wlx7s2dlvrsa"))
 
 (define rust-aws-lc-sys-0.20.1
-  ;; TODO: Check bundled sources.
+  ;; TODO REVIEW: Check bundled sources.
   (crate-source "aws-lc-sys" "0.20.1"
                 "00q73wwzbcp9v1sn155d5gajj5ki9mqlpj9d1hj2vbf6529283hg"))
 
@@ -9961,7 +9961,7 @@
                 "0yp3rz7vrn9mmqdpkds426r1p9vs6i8mkxx8ryqdfadr0s2q0s0q"))
 
 (define rust-js-sys-0.3.76
-  ;; TODO: Check bundled sources.
+  ;; TODO REVIEW: Check bundled sources.
   (crate-source "js-sys" "0.3.76"
                 "1dz7v777h2j38wkf8k5iwkfxskn6nff2cdv2jsslyxkpn2svc5v7"))
 
@@ -10295,7 +10295,7 @@
                 "0ssx5f16hhif8zjdd1fz4cwn1cwjslwcbssm2xs7l93g2i6hw6h0"))
 
 (define rust-libbz2-rs-sys-0.2.1
-  ;; TODO: Check bundled sources.
+  ;; TODO REVIEW: Check bundled sources.
   (crate-source "libbz2-rs-sys" "0.2.1"
                 "1jzw1nz25k7b9rbq7czqyvckgxxj90d3bdc020mpravqb06zhnvp"))
 
@@ -10404,7 +10404,7 @@
                 "0v34vjczpj8hzxnx1nj5cxwf326m91gn7bi3l3zkfg72xij94kvz"))
 
 (define rust-libdisplay-info-sys-0.3.0
-  ;; TODO: Check bundled sources.
+  ;; TODO REVIEW: Check bundled sources.
   (crate-source "libdisplay-info-sys" "0.3.0"
                 "07xmkc2aqcdn6d58321y87rd3gzdr4nx3ncm1mmrr7w1p1ahsn96"))
 
@@ -10710,7 +10710,7 @@
 (define rust-libspa-sys-0.8.0.fd3d8f7 package:rust-pipewire-0.8.0.fd3d8f7)
 
 (define rust-libspa-sys-0.9.2
-  ;; TODO: Check bundled sources.
+  ;; TODO REVIEW: Check bundled sources.
   (crate-source "libspa-sys" "0.9.2"
                 "1q66vim2wha1rdglqn5w0i42z59pa9s5s8sqj37xxdifbm2lj44h"))
 
@@ -10932,7 +10932,7 @@
                 "1aq7r2g7786hyxhv40spzf2nhag5xbw2axxc1k8z5k1dsgdm4v6j"))
 
 (define rust-linux-raw-sys-0.4.5
-  ;; TODO: Check bundled sources.
+  ;; TODO REVIEW: Check bundled sources.
   (crate-source "linux-raw-sys" "0.4.5"
                 "00w52pb2cb4b2880ksyzagmzbyjdmp9ac0w3qfvjv3453fnzvg2p"))
 
@@ -14059,7 +14059,7 @@
 (define rust-pipewire-sys-0.8.0.fd3d8f7 package:rust-pipewire-0.8.0.fd3d8f7)
 
 (define rust-pipewire-sys-0.9.2
-  ;; TODO: Check bundled sources.
+  ;; TODO REVIEW: Check bundled sources.
   (crate-source "pipewire-sys" "0.9.2"
                 "0dpa8q10b9cja5z5r5zgb8q27pnpla7kn3h91c11gjnnw3z8l0nb"))
 
@@ -15681,7 +15681,7 @@
                 "1glcyqvryv2zj6kjbfji0cldrkincqx3ds3wjwl4qnsnig15wn5w"))
 
 (define rust-reflink-0.1.3.e8d93b4
-  ;; TODO: Define standalone package if this is a workspace.
+  ;; TODO REVIEW: Define standalone package if this is a workspace.
   (origin
     (method git-fetch)
     (uri (git-reference (url "https://github.com/nicokoch/reflink")
@@ -17996,7 +17996,7 @@
 (define rust-smithay-0.7.0.20d2dac package:rust-smithay-0.7.0.20d2dac)
 
 (define rust-smithay-0.7.0.d743e1a
-  ;; TODO: Define standalone package if this is a workspace.
+  ;; TODO REVIEW: Define standalone package if this is a workspace.
   (origin
     (method git-fetch)
     (uri (git-reference (url "https://github.com/Smithay/smithay.git")
@@ -19988,7 +19988,7 @@
                 "1c3jn4ka61l4qw0g8w9lw5l0fwid4wz76x2cvdb3za81a4cp171i"))
 
 (define rust-tracy-client-sys-0.27.0
-  ;; TODO: Check bundled sources.
+  ;; TODO REVIEW: Check bundled sources.
   (crate-source "tracy-client-sys" "0.27.0"
                 "07yv23nh5wj6gd7l36ipxg0yr5cgkjzqyqamlybk0as6f2n93crg"))
 
@@ -21909,12 +21909,12 @@
                 "15qbbdbhyz02srvm01p0cvlh0pvmbbin9hislp0yx8rvnbs9jfz3"))
 
 (define rust-web-sys-0.3.76
-  ;; TODO: Check bundled sources.
+  ;; TODO REVIEW: Check bundled sources.
   (crate-source "web-sys" "0.3.76"
                 "1g0j3kii20mh7hqmdajz2r4c21zynb9h9h026wymalkx88ip5p84"))
 
 (define rust-web-sys-0.3.69
-  ;; TODO: Check bundled sources.
+  ;; TODO REVIEW: Check bundled sources.
   (crate-source "web-sys" "0.3.69"
                 "1vqkxk935xa8zcnsi4bd88sb267ly2i24xl1yiq26d1n32hskbvp"))
 
