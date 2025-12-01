@@ -6976,9 +6976,9 @@ protocol) - used to discover UPnP services on a network
 @end itemize")
     (license license:bsd-2)))
 
-(define-public go-github-com-ibm-go-sdk-core
+(define-public go-github-com-ibm-go-sdk-core-v5
   (package
-    (name "go-github-com-ibm-go-sdk-core")
+    (name "go-github-com-ibm-go-sdk-core-v5")
     (version "5.21.1")
     (source
      (origin

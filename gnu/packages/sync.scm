@@ -772,7 +772,7 @@ Feature:
            go-github-com-hanwen-go-fuse-v2
            go-github-com-henrybear327-go-proton-api
            go-github-com-henrybear327-proton-api-bridge
-           go-github-com-ibm-go-sdk-core
+           go-github-com-ibm-go-sdk-core-v5
            go-github-com-jcmturner-gokrb5-v8
            go-github-com-jlaffaye-ftp
            go-github-com-jzelinskie-whirlpool
