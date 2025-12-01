@@ -15,6 +15,7 @@
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Junker dk@junkeria.club
+;;; Copyright © 2025 Reza Housseini <reza@housseini.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,6 +41,7 @@
   #:use-module (guix svn-download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system pyproject)
@@ -60,6 +62,7 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages libftdi)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages messaging)
@@ -72,6 +75,8 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages rust)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
@@ -1462,6 +1467,69 @@ Depending on the board, there is usually some kind of recovery button to bring
 the SoC into serial download boot mode; check the documentation of your
 hardware.  The utility support USB and UART as serial link.")
       (license license:lgpl2.1+))))
+
+(define-public python-cmsis-pack-manager
+  (package
+    (name "python-cmsis-pack-manager")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pyocd/cmsis-pack-manager")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0djxvmpw6krv459w0w98cva9clrpqicwfr0fx55hkaix1x51bgci"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:imported-modules `(,@%cargo-build-system-modules
+                           ,@%pyproject-build-system-modules)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
+                  (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each
+               (lambda (phase)
+                 (format #t "Running cargo phase: ~a~%" phase)
+                 (apply (assoc-ref cargo:%standard-phases phase)
+                        #:cargo-target #$(cargo-triplet)
+                        args))
+               '(unpack-rust-crates
+                 configure
+                 check-for-pregenerated-files
+                 patch-cargo-checksums)))))))
+    (propagated-inputs
+     (list python-appdirs
+           python-cffi
+           python-pyyaml))
+    (native-inputs
+     (append
+      (list maturin ;TODO: Move to build-tools module someday
+            python-wrapper
+            python-jinja2
+            python-pytest
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
+    (inputs (cargo-inputs 'python-cmsis-pack-manager))
+    (home-page "https://github.com/pyocd/cmsis-pack-manager")
+    (synopsis "CMSIS-Pack index manager")
+    (description
+     "@code{cmsis-pack-manager} is a Python module, Rust crate and command line
+utility for managing current device information that is stored in many
+@acronym{Common Microcontroller Software Interface Standard, CMSIS}
+PACKs. Users of @code{cmsis-pack-manager} may query for information such as
+processor type, flash algorithm and memory layout information in a Python
+program or through the command line utility, @code{pack-manager}, provided as
+part of this module.")
+    (license license:asl2.0)))
 
 (define-public python-libmpsse
   (package
