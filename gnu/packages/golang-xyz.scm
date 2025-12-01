@@ -25977,6 +25977,34 @@ distributions of benchmark measurements
      (list
       #:import-path "gopkg.in/alecthomas/kingpin.v2"))))
 
+(define-public go-gopkg-in-djherbis-times-v1
+  (package
+    (name "go-gopkg-in-djherbis-times-v1")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/djherbis/times")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dk087l9c927f90zrsmyxxfx5i980r952qw47j9srq2q7dd0b4ni"))
+       (modules '((guix build utils)))
+       ;; Fix import path for itself in the example code (build by 'check).
+       (snippet '(substitute* "example/main.go"
+                   (("github.com/djherbis/times")
+                    "gopkg.in/djherbis/times.v1")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gopkg.in/djherbis/times.v1"))
+    (home-page "https://github.com/djherbis/times")
+    (synopsis "File times for Golang")
+    (description
+     "This package allows access different file time metadata from Golang.")
+    (license license:expat)))
+
 (define-public go-gopkg-in-fsnotify-v1
   (package/inherit go-github-com-fsnotify-fsnotify
     (name "go-gopkg-in-fsnotify-v1")
