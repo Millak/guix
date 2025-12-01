@@ -1,0 +1,16 @@
+On GNU/Hurd, 'PATH_MAX' is undefined.  Provide a reasonable default value.
+Adapted from <https://github.com/libgit2/libgit2/pull/7100>.
+
+diff --git a/tests/clar/clar.h b/tests/clar/clar.h
+index ca72292ae91..98e2b14e880 100644
+--- a/t/unit-tests/clar/clar.h
++++ b/t/unit-tests/clar/clar.h
+@@ -14,6 +14,8 @@
+ # define CLAR_MAX_PATH 4096
+ #elif defined(_WIN32)
+ # define CLAR_MAX_PATH MAX_PATH
++#elif !defined(PATH_MAX)			  /* GNU/Hurd */
++# define CLAR_MAX_PATH 4096
+ #else
+ # define CLAR_MAX_PATH PATH_MAX
+ #endif

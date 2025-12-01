@@ -320,7 +320,8 @@ Python 3.3 and later, rather than on Python 2.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1ifpkrr64g8b0vv13155gz876s2f4vcqrvhgc75lkab9dzlgxn1w"))))
+                "1ifpkrr64g8b0vv13155gz876s2f4vcqrvhgc75lkab9dzlgxn1w"))
+              (patches (search-patches "git-clar-path-max.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list
