@@ -392,6 +392,19 @@ facilitate packaging Python projects, where packaging includes:
     (native-inputs
      (list python-wheel-0.40))))
 
+(define-public python-setuptools-79
+  (package
+    (inherit python-setuptools)
+    (name "python-setuptools")
+    (version "79.0.1")
+    (source
+     (origin
+       (inherit (package-source python-setuptools))
+       (method url-fetch)
+       (uri (pypi-uri "setuptools" version))
+       (sha256
+        (base32 "127svm8cdpvmq37gcrbvdr9fhrhs0nscnzh63gypjc1wyfwfg30j"))))))
+
 (define-deprecated/public-alias python-setuptools-next
   python-setuptools)                   ;may be removed after 2025-12-01
 
