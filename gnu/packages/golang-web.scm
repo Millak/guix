@@ -16712,6 +16712,31 @@ etc)
 be used as both a binary and a library.")
     (license license:bsd-3)))
 
+(define-public go-github-com-mvdan-xurls
+  (package
+    (name "go-github-com-mvdan-xurls")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mvdan/xurls")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05q4nqbpgfb0a35sn22rn9mlag2ks4cgwb54dx925hipp6zgj1hx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/mvdan/xurls"))
+    (propagated-inputs (list go-golang-org-x-net))
+    (home-page "https://github.com/mvdan/xurls")
+    (synopsis "Extracts URLs from text")
+    (description
+     "Xurls extracts urls from plain text using regular expressions.  It can
+be used as both a binary and a library.")
+    (license license:bsd-3)))
+
 (define-public go-nhooyr-io-websocket
   (package
     (name "go-nhooyr-io-websocket")
