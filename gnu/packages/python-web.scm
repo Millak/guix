@@ -7542,28 +7542,6 @@ Protocol, WAMP}
 provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients.")
     (license license:isc)))
 
-(define-public python-url
-  (package
-    (name "python-url")
-    (version "0.2.0")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "url" version))
-              (sha256
-               (base32
-                "0v879yadcz9qxfl41ak6wkga1kimp9cflla9ddz03hjjvgkqy5ki"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-publicsuffix))
-    (native-inputs
-     (list python-coverage python-nose))
-    (arguments
-     `(#:tests? #f)) ; FIXME: tests fail with "ImportError: No module named 'tests'"
-    (home-page "https://github.com/seomoz/url-py")
-    (synopsis "URL Parsing")
-    (description "Library for parsing urls.")
-    (license license:expat)))
-
 (define-public python-cachecontrol
   (package
     (name "python-cachecontrol")
