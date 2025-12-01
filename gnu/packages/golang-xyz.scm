@@ -24667,6 +24667,31 @@ It is a maintained fork of @url{gorilla/schema,
 https://github.com/gorilla/schema}")
     (license license:bsd-3)))
 
+(define-public go-github-com-zk-org-pretty
+  (package
+    (name "go-github-com-zk-org-pretty")
+    (version "0.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zk-org/pretty")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "086zcjamclnn3y9w4ww88ik9avwihbxk7h08vk7686643i1zij96"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/zk-org/pretty"))
+    (propagated-inputs (list go-github-com-rogpeppe-go-internal
+                             go-github-com-kr-text))
+    (home-page "https://github.com/zk-org/pretty")
+    (synopsis "Pretty printing for Golang values")
+    (description
+      "This package provides a pretty printing library for Golang values.")
+    (license license:expat)))
+
 (define-public go-github-com-zyedidia-clipper
   (package
     (name "go-github-com-zyedidia-clipper")
