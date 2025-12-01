@@ -22315,6 +22315,31 @@ flushing entries at a given size or interval, useful for cases such as
 batching log events.")
     (license license:expat)))
 
+(define-public go-github-com-tj-go-naturaldate
+  (package
+    (name "go-github-com-tj-go-naturaldate")
+    (version "1.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tj/go-naturaldate")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12d7nf1jd7nk9r8ifn1hr21a7m4yb1garmiw2grrsi5zsqsh2jb1"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tj/go-naturaldate"))
+    (propagated-inputs (list go-github-com-tj-assert))
+    (home-page "https://github.com/tj/go-naturaldate")
+    (synopsis "Provides natural date time parsing")
+    (description
+     "This package parses human-friendly relative date/time ranges.")
+    (license license:expat)))
+
+
 (define-public go-github-com-tj-go-spin
   (package
     (name "go-github-com-tj-go-spin")
