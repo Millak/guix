@@ -6318,6 +6318,29 @@ sessions, flash messages, custom backends, and more.")
 protocol.")
     (license license:bsd-2)))
 
+(define-public go-github-com-gosimple-slug
+  (package
+    (name "go-github-com-gosimple-slug")
+    (version "1.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gosimple/slug")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15gk6hdd8kjfl0srlf3gnjq34m64as1s6pjv7paaxd1zvrcml46y"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gosimple/slug"))
+    (propagated-inputs (list go-github-com-gosimple-unidecode))
+    (home-page "https://github.com/gosimple/slug")
+    (synopsis "URL-friendly slugify with multiple language support")
+    (description "Generates slug from Unicode string for use in URLs.")
+    (license license:mpl2.0)))
+
 (define-public go-github-com-gregjones-httpcache
   (package
     (name "go-github-com-gregjones-httpcache")
