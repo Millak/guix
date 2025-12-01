@@ -74,7 +74,6 @@
                   gtk+
                   gdk-pixbuf
                   libnotify
-                  libzip
                   sqlite
                   python
                   python-pyserial))
