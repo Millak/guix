@@ -10696,6 +10696,17 @@ writing C extensions for Python as easy as Python itself.")
               ;; time of the test suite.
               (setenv "CFLAGS" "-O0"))))))))
 
+(define-public python-cython-next
+  (package
+    (inherit python-cython)
+    (version "3.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cython" version))
+       (sha256
+        (base32 "0d0n0yyicr7icd4f5kn1wwbjqyad6j4m640xlqlk3ixchgad7bf3"))))))
+
 ;; It may be removed after 2026-01-24.
 (define-deprecated/public-alias python-cython-3 python-cython)
 
