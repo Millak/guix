@@ -35547,11 +35547,10 @@ utility.  It also provides two command-line tools, @code{bsdiff4} and
     (version "1.0.8")
     (source
      (origin
-       ;; python-mpv from pypi does not include the tests directory.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/jaseg/python-mpv")
-             (commit (string-append "v" version))))
+              (url "https://github.com/jaseg/python-mpv")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "04azy5wa2n8pa21z6lz1p1p0vy7flaqm8ypy46jb77gig2g50xrh"))))
@@ -35564,9 +35563,8 @@ utility.  It also provides two command-line tools, @code{bsdiff4} and
                    ;; Without an absolute path it is not able find and load libmpv.
                    (substitute* "mpv.py"
                      (("sofile = .*")
-                      (string-append "sofile = \""
-                                     (search-input-file inputs "/lib/libmpv.so")
-                                     "\"\n")))))
+                      (format #f "sofile = '~a/lib/libmpv.so'~%"
+                              #$(this-package-input "mpv"))))))
                (add-before 'check 'prepare-for-tests
                  (lambda _
                    ;; Fontconfig throws errors when it has no cache dir to use.
@@ -35579,8 +35577,7 @@ utility.  It also provides two command-line tools, @code{bsdiff4} and
      (list python-pytest
            python-pyvirtualdisplay
            python-setuptools
-           python-xvfbwrapper
-           python-wheel))
+           xorg-server-for-tests))
     (inputs (list mpv))
     (propagated-inputs (list python-pillow)) ;for raw screenshots
     (home-page "https://github.com/jaseg/python-mpv")
