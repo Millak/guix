@@ -1371,6 +1371,28 @@ be stripped.")
 with as little developer effort as possible.")
     (license license:expat)))
 
+(define-public go-github-com-alecthomas-kong-for-zk
+  (hidden-package
+   (package
+     (inherit go-github-com-alecthomas-kong)
+     (name "go-github-com-alecthomas-kong-for-zk")
+     (version "0.5.0")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/alecthomas/kong")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1lk4nb8ilvy0l5szj4s6wnz716vlz0v253423ykmph5l6bmips1k"))))
+     (arguments
+      (list
+       #:tests? #f
+       #:import-path "github.com/alecthomas/kong"))
+     (propagated-inputs (list go-github-com-alecthomas-repr
+                              go-github-com-pkg-errors)))))
+
 (define-public go-github-com-alecthomas-kong-hcl
   (package
     (name "go-github-com-alecthomas-kong-hcl")
