@@ -852,7 +852,7 @@ Extensions} (DNSSEC).")
 (define-public knot
   (package
     (name "knot")
-    (version "3.4.8")
+    (version "3.5.2")
     (source
      (origin
        (method git-fetch)
@@ -861,7 +861,7 @@ Extensions} (DNSSEC).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0zydnb9kbk65kbrg01sxl48a5ikdap7lhm1wvmcmk5vhvgxdbb53"))
+        (base32 "0z1h22qjhjvjlli66nq3bl5nskdid6g86jk7v37y02vwy5xq93rm"))
        (patches
         (search-patches "knot-remove-runtime-deps.patch"))
        (modules '((guix build utils)))
@@ -903,7 +903,7 @@ Extensions} (DNSSEC).")
           (add-before 'bootstrap 'update-parser
             (lambda _
               (with-directory-excursion "src"
-                (invoke "sh" "../scripts/update-parser.sh"))))
+                (invoke "sh" "../scripts/update_parser.sh"))))
           (add-before 'configure 'disable-directory-pre-creation
             (lambda _
               ;; Don't install empty directories like ‘/etc’ outside the store.
