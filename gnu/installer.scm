@@ -374,7 +374,7 @@ purposes."
              `(channel ,(channel-name channel) ,url ,(channel-commit channel))))
           channels))))
 
-(define* (installer-program #:key dry-run?)
+(define* (installer-program #:key dry-run? (guix-for-installer (current-guix)))
   "Return a file-like object that runs the given INSTALLER."
   (define init-gettext
     ;; Initialize gettext support, so that installer messages can be
@@ -423,7 +423,7 @@ purposes."
                            guile-gnutls
                            guile-zlib           ;for (gnu build linux-modules)
                            guile-zstd           ;for (gnu build linux-modules)
-                           (current-guix))
+                           guix-for-installer)
       (with-imported-modules `(,@(source-module-closure
                                   `(,@modules
                                     (gnu services herd)

@@ -28,6 +28,7 @@
   #:use-module (gnu)
   #:use-module (gnu system)
   #:use-module (gnu system privilege)
+  #:use-module (gnu bootloader)
   #:use-module (gnu bootloader u-boot)
   #:use-module (guix gexp)
   #:use-module (guix store)
@@ -64,6 +65,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (ice-9 match)
   #:export (installation-os
+            make-installation-os
             a20-olinuxino-lime-installation-os
             a20-olinuxino-lime2-emmc-installation-os
             a20-olinuxino-micro-installation-os
@@ -334,10 +336,29 @@ templates under @file{/etc/configuration}.")))
     "Load the @code{uvesafb} kernel module with the right options.")
    (default-value #t)))
 
-(define* (%installation-services #:key (system (or (and=>
-                                                    (%current-target-system)
-                                                    platform-target->system)
-                                                   (%current-system))))
+(define (guix-package-commit guix)
+  ;; Extract the commit of the GUIX package.
+  (match (package-source guix)
+    ((? channel? source)
+     (channel-commit source))
+    (_
+     (apply (lambda* (#:key commit #:allow-other-keys) commit)
+            (package-arguments guix)))))
+
+(define* (%installation-services
+          #:key
+          (system (or (and=>
+                       (%current-target-system)
+                       platform-target->system)
+                      (%current-system)))
+          (guix-for-system
+           (let ((guix (current-guix)))
+             (package
+               (inherit guix)
+               ;; Do not leak the local checkout URL.
+               (source (channel
+                         (inherit %default-guix-channel)
+                         (commit (guix-package-commit guix))))))))
   ;; List of services of the installation system.
   (let ((motd (plain-file "motd" "
 \x1b[1;37mWelcome to the installation of GNU Guix!\x1b[0m
@@ -355,15 +376,6 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
     (define bare-bones-os
       (load "examples/bare-bones.tmpl"))
 
-    (define (guix-package-commit guix)
-      ;; Extract the commit of the GUIX package.
-      (match (package-source guix)
-        ((? channel? source)
-         (channel-commit source))
-        (_
-         (apply (lambda* (#:key commit #:allow-other-keys) commit)
-                (package-arguments guix)))))
-
     (append
      ;; Generic services
      (list (service virtual-terminal-service-type)
@@ -371,7 +383,8 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
            (service kmscon-service-type
                     (kmscon-configuration
                      (virtual-terminal "tty1")
-                     (login-program (installer-program))))
+                     (login-program (installer-program
+                                     #:guix-for-installer guix-for-system))))
 
            (service login-service-type
                     (login-configuration
@@ -408,13 +421,7 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
 
                      ;; Install and run the current Guix rather than an older
                      ;; snapshot.
-                     (guix (let ((guix (current-guix)))
-                             (package
-                               (inherit guix)
-                               ;; Do not leak the local checkout URL.
-                               (source (channel
-                                        (inherit %default-guix-channel)
-                                        (commit (guix-package-commit guix)))))))))
+                     (guix guix-for-system)))
 
            ;; Start udev so that useful device nodes are available.
            ;; Use device-mapper rules for cryptsetup & co; enable the CRDA for
@@ -525,19 +532,52 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
         jfsutils
         xfsprogs))
 
-(define installation-os
+(define* (%installation-initrd-modules
+          #:key
+          (system (or (and=>
+                       (%current-target-system)
+                       platform-target->system)
+                      (%current-system))))
+  ;; AArch64 currently lacks a lot of modules necessary
+  ;; for booting from USB sticks, hard disks or
+  ;; CDROMs. Those are built-in in x86_64 kernel.
+  `(,@(if (target-aarch64? system)
+          '("sr_mod" "sd_mod"
+            "usb_common" "usbcore"
+            ;; USB 3.0
+            "xhci_pci" "xhci_hcd"
+            ;; embedded USB 3.0
+            "xhci_plat_hcd"
+            ;; USB 2.0
+            "ehci_pci" "ehci_hcd")
+          '())
+    ,@%base-initrd-modules))
+
+(define* (make-installation-os #:key
+                               ;; Version displayed in the GRUB entry name.
+                               (grub-displayed-version
+                                (package-version guix))
+                               ;; Whether to use efi-only installation.
+                               ;; When #f, use hybrid grub that sets up
+                               ;; both legacy boot and efi.
+                               (efi-only? #f))
   ;; The operating system used on installation images for USB sticks etc.
   (operating-system
     (host-name "gnu")
     (timezone "Europe/Paris")
     (locale "en_US.utf8")
     (name-service-switch %mdns-host-lookup-nss)
-    (bootloader (bootloader-configuration
-                 (bootloader grub-bootloader)
-                 (targets '("/dev/sda"))))
-    (label (string-append "GNU Guix installation "
-                          (or (getenv "GUIX_DISPLAYED_VERSION")
-                              (package-version guix))))
+
+    (initrd-modules (%installation-initrd-modules))
+
+    (bootloader (if efi-only?
+                    (bootloader-configuration
+                      (bootloader grub-efi-bootloader)
+                      (targets '("/boot/efi")))
+                    (bootloader-configuration
+                      (bootloader grub-bootloader)
+                      (targets '("/dev/sda")))))
+    (label (string-append "GNU Guix installation " grub-displayed-version))
 
     ;; XXX: The AMD Radeon driver is reportedly broken, which makes kmscon
     ;; non-functional:
@@ -550,19 +590,19 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
      ;; the appropriate one.
      (append %base-live-file-systems
 
-            ;; XXX: This should be %BASE-FILE-SYSTEMS but we don't need
-            ;; elogind's cgroup file systems.
-            (list %pseudo-terminal-file-system
-                  %shared-memory-file-system
-                  %efivars-file-system
-                  %immutable-store)))
+             ;; XXX: This should be %BASE-FILE-SYSTEMS but we don't need
+             ;; elogind's cgroup file systems.
+             (list %pseudo-terminal-file-system
+                   %shared-memory-file-system
+                   %efivars-file-system
+                   %immutable-store)))
 
     (users (list (user-account
-                  (name "guest")
-                  (group "users")
-                  (supplementary-groups '("wheel")) ; allow use of sudo
-                  (password "")
-                  (comment "Guest of GNU"))))
+                   (name "guest")
+                   (group "users")
+                   (supplementary-groups '("wheel")) ; allow use of sudo
+                   (password "")
+                   (comment "Guest of GNU"))))
 
     (issue %issue)
     (services (%installation-services))
@@ -570,20 +610,25 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
     ;; We don't need setuid programs, except for 'passwd', which can be handy
     ;; if one is to allow remote SSH login to the machine being installed.
     (privileged-programs (list (privileged-program
-                                (program (file-append shadow "/bin/passwd"))
-                                (setuid? #t))))
+                                 (program (file-append shadow "/bin/passwd"))
+                                 (setuid? #t))))
 
     (pam-services
      ;; Explicitly allow for empty passwords.
      (base-pam-services #:allow-empty-passwords? #t))
 
     (packages (append
-                (list glibc             ; for 'tzselect' & co.
-                      fontconfig
-                      font-dejavu font-gnu-unifont
-                      grub)             ; mostly so xrefs to its manual work
-                %installer-disk-utilities
-                %base-packages))))
+               (list glibc             ; for 'tzselect' & co.
+                     fontconfig
+                     font-dejavu font-gnu-unifont
+
+                     ;; Mostly so xrefs to its manual work.
+                     (bootloader-package
+                      (bootloader-configuration-bootloader bootloader)))
+               %installer-disk-utilities
+               %base-packages))))
+
+(define installation-os (make-installation-os))
 
 (define* (os-with-u-boot os board #:key (bootloader-target "/dev/mmcblk0")
                          (triplet "arm-linux-gnueabihf"))
