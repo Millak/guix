@@ -387,7 +387,7 @@ Terraform by using the enterprise certificates feature.")
 
 (define-public go-github-com-googleapis-gax-go-v2
   (package
-    (name "go-github-com-googleapis-gax-go")
+    (name "go-github-com-googleapis-gax-go-v2")
     (version "2.15.0")
     (source
      (origin
