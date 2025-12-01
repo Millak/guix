@@ -22659,18 +22659,30 @@ etc.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 27 passed, 8 deselected
       #:test-flags
-      #~(list "--ignore=tests/test_examples.py"
-              ;; OSError: Pillow was built without XCB support
-              "--ignore=tests/test_smart.py"
-              "--ignore=tests/test_smart2.py"
-              "--ignore=tests/test_smart_thread.py")))
+      ;; TODO: Add libxcb to python-pillow on the next python-team cycle.
+      ;; OSError: Pillow was built without XCB support
+      #~(list #$@(map (lambda (test) (string-append "--deselect="
+                                                    "tests/"
+                                                    test))
+                      (list "test_smart.py::test_slowshot"
+                            "test_smart.py::test_slowshot_with"
+                            "test_smart.py::test_slowshot_nocrop"
+                            "test_smart.py::test_slowshot_timeout"
+                            "test_smart.py::test_slowshot_timeout_nocrop"
+                            "test_smart2.py::test_double"
+                            "test_smart_thread.py::test_smart"
+                            "test_examples.py::test_screenshot")))))
     (native-inputs
-     (list python-entrypoint2 python-psutil python-pytest
-           python-setuptools python-vncdotool-bootstrap python-wheel
-           xmessage xorg-server-for-tests))
-    (propagated-inputs
-     (list python-easyprocess python-pillow))
+     (list python-easyprocess
+           python-entrypoint2
+           python-psutil
+           python-pytest
+           python-setuptools
+           python-vncdotool-bootstrap
+           xmessage
+           xorg-server-for-tests))
     (home-page "https://github.com/ponty/pyvirtualdisplay")
     (synopsis "Python wrapper for Xvfb, Xephyr and Xvnc")
     (description
