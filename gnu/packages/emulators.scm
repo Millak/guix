@@ -1146,7 +1146,10 @@ The following systems are supported:
           ((#:configure-flags flags ''())
            ;; Relax error checks to avoid a build failure with GCC 14.
            #~(cons "-DCMAKE_C_FLAGS=-Wno-error=incompatible-pointer-types"
-                   #$flags))))))))
+                   #$flags))))
+      (inputs
+        (modify-inputs (package-inputs mgba)
+                       (replace "ffmpeg" ffmpeg-6)))))))
 
 (define-public sameboy
   (package
