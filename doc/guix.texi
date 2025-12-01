@@ -802,7 +802,8 @@ which automates the binary installation process without use of a foreign
 distro package
 manager@footnote{@uref{https://guix.gnu.org/guix-install.sh}}.
 Use of @file{guix-install.sh} requires Bash, GnuPG, GNU@tie{}tar, wget,
-and Xz.
+and Xz.  On systems where @code{systemd} is detected, the tool
+@code{newgidmap} from the @code{uidmap} package is also required.
 
 The script guides you through the following:
 
