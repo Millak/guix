@@ -26,6 +26,7 @@
 ;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2026 Nemin <bergengocia@protonmail.com>
+;;; Copyright © 2026 Nguyễn Gia Phong <cnx@loang.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -100,6 +101,7 @@
   #:use-module (gnu packages rpc)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages tcl)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages unicode)
   #:use-module (gnu packages version-control)
@@ -138,6 +140,48 @@ functionality generating a full-compatible configure script, but relying on
 Bourne shell script instead of m4.")
     (home-page "https://github.com/radareorg/acr")
     (license license:gpl2)))
+
+(define-public autosetup
+  (package
+    (name "autosetup")
+    (version "0.7.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/msteveb/autosetup")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32 "002b380073cpxlqziia2gvngywrb37b08p9k0zk9vlxn2p174hc6"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-file "jimsh0.c")
+            (substitute* "Makefile"
+              (("^.*tclsh8\\..*")       ;tests run with specific Tcl versions
+               ""))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:test-target "test"
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (delete 'build)
+               (replace 'install
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "sys-find-tclsh"
+                     (("jimsh tclsh")
+                      (search-input-file inputs "bin/tclsh")))
+                   (invoke "tclsh" "autosetup"
+                           (string-append "--sysinstall=" #$output)))))))
+    (inputs (list tcl))
+    (home-page "https://msteveb.github.io/autosetup/")
+    (synopsis "Build environment auto-configurator")
+    (description
+     "@command{autosetup} is a tool, similar to @command{autoconf},
+to configure a build system for the appropriate environment,
+according to the system capabilities and the user-selected options.")
+    (license license:bsd-2)))
 
 (define-public bam
   (package
