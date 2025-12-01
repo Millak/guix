@@ -20035,6 +20035,30 @@ logging.")
       #:go go-1.23
       #:import-path "github.com/russross/blackfriday/v2"))))
 
+(define-public go-github-com-rvflash-elapsed
+  (package
+    (name "go-github-com-rvflash-elapsed")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/rvflash/elapsed")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jawknvv51k1awlzpyr2qc1s75s1fg3l40c0zhixp1sc98hl434c"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/rvflash/elapsed"))
+    (home-page "https://github.com/rvflash/elapsed")
+    (synopsis "Calculates the elapsed time for a given date")
+    (description
+      "This package can be used to return the elapsed time since a
+given time in a human-readable format.")
+    (license license:expat)))
+
 (define-public go-github-com-rwcarlsen-goexif
   ;; No release or version tag, Golang pseudo version:
   ;; 0.0.0-20190401172101-9e8deecbddbd.
