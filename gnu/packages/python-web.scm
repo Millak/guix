@@ -7134,31 +7134,6 @@ Services (AWS) API.")
            python-pytest
            python-pytest-xdist))))
 
-;; This is not an official release of awscli version 2, so it should not be
-;; named awscli.
-(define-public awscliv2
-  (package
-    (inherit awscli)
-    (name "awscliv2")
-    (version "2.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri name version))
-       (sha256
-        (base32
-         "1bpp6kmb75qdhgzsx69ki04345bfkzwnmg84y5x6nyfpph2g3fsz"))))
-    (arguments
-     ;; FIXME: The 'pypi' release does not contain tests.
-     '(#:tests? #f))
-    (inputs
-     (list python-importlib-resources
-           python-executor))
-    (native-inputs
-     (list python-poetry-core
-           python-pytest))))
-
-
 (define-public python-wsgiproxy2
   (package
     (name "python-wsgiproxy2")
