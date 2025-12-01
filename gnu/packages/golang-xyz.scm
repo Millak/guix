@@ -24198,6 +24198,31 @@ deltas can be applied to a JSON object to \"patch\" them.")
 common sequence} values from two arbitrary arrays.")
     (license license:expat)))
 
+(define-public go-github-com-yuin-goldmark-meta
+  (package
+    (name "go-github-com-yuin-goldmark-meta")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/yuin/goldmark-meta")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07dnwpkcifk9lw25ncflwdzmp8xqwbsbq0bnw3v7ljz9i8zi3ya3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/yuin/goldmark-meta"))
+    (propagated-inputs (list go-gopkg-in-yaml-v2 go-github-com-yuin-goldmark))
+    (home-page "https://github.com/yuin/goldmark-meta")
+    (synopsis "YAML metadata extension for the goldmark markdown parser")
+    (description
+     "Extension for the @code{goldmark} markdown parser which enables
+defining document metadata in the YAML format.")
+    (license license:expat)))
+
 (define-public go-github-com-yuin-gopher-lua
   (package
     (name "go-github-com-yuin-gopher-lua")
