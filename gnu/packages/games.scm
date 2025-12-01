@@ -10374,53 +10374,6 @@ the net.  There can be 1 to 8 balls in game.  Once one ball touches
 the ground, the set ends and all balls are served again.")
     (license license:gpl3+)))
 
-(define-public 4dtris
-  (package
-    (name "4dtris")
-    (version "0.4.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://launchpad.net/4dtris/"
-                           (version-major+minor version)
-                           "/" version "/+download/4dtris_"
-                           version ".orig.tar.gz"))
-       (sha256
-        (base32
-         "1nfkhcm0l89jyw8yr65na97g4l385zhjf7whkyg47c3v5sdqq2g7"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags '("CFLAGS=-fcommon")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-install-directories
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "Makefile.in"
-                 (("bindir = /usr/games")
-                  (string-append "bindir = " out "/bin"))
-                 (("/usr/share/applications")
-                  (string-append out "/share/applications"))
-                 (("/usr/share/games/4dtris")
-                  (string-append out "/share/4dtris"))))
-             #t))
-         (add-after 'set-paths 'set-sdl-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "CPATH"
-                     (string-append
-                      (search-input-directory inputs "/include/SDL")
-                      ":" (or (getenv "CPATH") ""))))))))
-    (inputs
-     `(("fontconfig" ,fontconfig)
-       ("freeglut" ,freeglut)
-       ("sdl" ,(sdl-union (list sdl sdl-ttf)))))
-    (home-page "https://launchpad.net/4dtris/")
-    (synopsis "4D Tetris")
-    (description "4D-TRIS is an alteration of the well-known Tetris game.  The
-game field is extended to 4D space, which has to filled up by the gamer with
-4D hyper cubes.")
-    (license license:gpl3)))
-
 (define-public arx-libertatis
   (package
     (name "arx-libertatis")
