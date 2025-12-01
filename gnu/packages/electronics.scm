@@ -2373,6 +2373,34 @@ automated testing of HDL code.")
     ;; subdirectories are under ASL.
     (license (list license:mpl2.0 license:asl2.0))))
 
+(define-public qucsrflayout-cli
+  (package
+    (name "qucsrflayout-cli")
+    (version "2.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/thomaslepoix/Qucs-RFlayout/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1nhqhb5x5giv8ck9y9aib6vh6kvnfrycsbdzh6fnzng046aq67aq"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      #:configure-flags
+      #~(list "-DQRFL_MINIMAL=ON"
+              "-DCMAKE_BUILD_TYPE=Release")))
+    (home-page "https://github.com/thomaslepoix/Qucs-RFlayout/")
+    (synopsis "Produce layouts from Qucs RF schematics")
+    (description
+     "@code{qucsrflayout} command exports @acronym{RF, Radio Frequency}
+schematics to KiCad layouts and OpenEMS scripts.")
+    (license license:gpl3+)))
+
 (define-public qucsator-rf
   (package
     (name "qucsator-rf")
