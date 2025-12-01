@@ -47841,7 +47841,9 @@ machine.  The @code{grub-bootloader} bootloader is always used
 independently of what is declared in the @code{operating-system} file
 passed as argument.  This is to make it easier to work with QEMU, which
 uses the SeaBIOS BIOS by default, expecting a bootloader to be installed
-in the Master Boot Record (MBR).
+in the Master Boot Record (MBR).  In case the virtual machine is
+going to be AArch64, you might want to take a look at @code{qcow2-gpt}
+image type that installs bootloader only in EFI.
 
 @cindex docker-image, creating docker images
 When using the @code{docker} image type, a Docker image is produced.
@@ -54765,7 +54767,18 @@ Build an image based on the @code{efi32-disk-image} image.
 
 @defvar qcow2-image-type
 Build an image based on the @code{mbr-disk-image} image but with the
-@code{compressed-qcow2} image format.
+@code{compressed-qcow2} image format. The resulting image will have
+an MBR embedded bootloader as well as an EFI bootloader. This image
+is not suitable for architectures that do not support `grub-pc`,
+such as AArch64. See @code{qcow2-gpt-image-type} for an alternative.
+@end defvar
+
+@defvar qcow2-gpt-image-type
+Build an image based on the @code{efi-disk-image} image but with the
+@code{compressed-qcow2} image format. The resulting image will have
+only EFI bootloader, unlike @code{qcow2-image-type}. This image
+is suitable for architectures that do not support `grub-pc`, such
+as AArch64.
 @end defvar
 
 @defvar iso-image-type

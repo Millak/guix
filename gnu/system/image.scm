@@ -98,6 +98,7 @@
             efi-raw-image-type
             efi32-raw-image-type
             qcow2-image-type
+            qcow2-gpt-image-type
             iso-image-type
             uncompressed-iso-image-type
             docker-image-type
@@ -261,6 +262,16 @@ set to the given OS."
    (constructor (cut image-with-os
                  (image
                   (inherit mbr-hybrid-disk-image)
+                  (name 'image.qcow2)
+                  (format 'compressed-qcow2))
+                 <>))))
+
+(define qcow2-gpt-image-type
+  (image-type
+   (name 'qcow2-gpt)
+   (constructor (cut image-with-os
+                 (image
+                  (inherit efi-disk-image)
                   (name 'image.qcow2)
                   (format 'compressed-qcow2))
                  <>))))
