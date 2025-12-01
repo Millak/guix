@@ -285,7 +285,7 @@ they already exist."
 EINVAL, ELOOP, etc."
   (or (false-if-exception (canonicalize-path file))
       (begin
-        (format (warning-error-port)
+        (format (current-warning-port)
                 "warning: could not canonicalize file `~a'; using as-is~%"
                 file)
         file)))
