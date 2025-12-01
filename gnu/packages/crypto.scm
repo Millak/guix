@@ -79,6 +79,7 @@
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
@@ -102,6 +103,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26))
@@ -1393,12 +1395,14 @@ API.")
 (define-deprecated-package libolm
   olm)
 
+;; TODO: This is the only Python package here, consider to build from source
+;; directly without inheritance and move to python-crypto module.
 (define-public python-olm
   (package
     ;; python-olm is part of olm and must be updated at the same time.
     (inherit olm)
     (name "python-olm")
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -1408,17 +1412,15 @@ API.")
               (chdir "python")))
           (add-before 'build 'set-preprocessor
             (lambda _
-              (setenv "CPP" "gcc -E")))
-          (replace 'check
-            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-              (when tests?
-                (add-installed-pythonpath inputs outputs)
-                (invoke "pytest")))))))
+              (setenv "CPP" "gcc -E"))))))
     (inputs (list olm))
     (propagated-inputs
      (list python-cffi python-future))
     (native-inputs
-     (list python-pytest python-pytest-benchmark python-aspectlib))
+     (list python-aspectlib
+           python-pytest
+           python-pytest-benchmark
+           python-setuptools))
     (synopsis "Python bindings for Olm")
     (description "The Olm library implements the Double Ratchet
 cryptographic ratchet.  This package contains its Python bindings.")))
