@@ -2487,6 +2487,8 @@ input and outputs an XML dataset.")
               (substitute* "qucs/settings.cpp"
                 (("\"/usr/local/Xyce.*\"")
                  (format #f "~s" (search-input-file inputs "bin/Xyce")))
+                (("\"qucsrflayout\"")
+                 (format #f "~s" (search-input-file inputs "bin/qucsrflayout")))
                 (("\"ngspice\"")
                  (format #f "~s" (search-input-file inputs "bin/ngspice")))
                 (("\"octave\"")
@@ -2499,6 +2501,8 @@ input and outputs an XML dataset.")
                    ,(string-append
                      #$(this-package-input "qucsator-rf") "/bin")
                    ,(string-append
+                     #$(this-package-input "qucsrflayout-cli") "/bin")
+                   ,(string-append
                      #$(this-package-input "xyce-serial") "/bin")))))))))
     (native-inputs (list qttools))
     (inputs
@@ -2510,6 +2514,7 @@ input and outputs an XML dataset.")
            qtsvg
            qtwayland
            qucsator-rf
+           qucsrflayout-cli
            xyce-serial))
     (synopsis "GUI for different circuit simulation kernels")
     (description
