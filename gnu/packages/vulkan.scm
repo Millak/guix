@@ -513,7 +513,7 @@ API.")
   (package
     (name "shaderc")
     ;; shaderc doesn't follow the versioning scheme of vulkan sdk
-    (version "2025.3")
+    (version "2025.5")
     (source
      (origin
        (method git-fetch)
@@ -523,7 +523,7 @@ API.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0w1mj5b3n6kp0brqindb7fppvllzlywkdk1zglkbj3bw8k0795mb"))))
+         "0i1rwn4xg8galdxw66p72m36q5vx8zx42ypdcmhv15nv6mj92q9y"))))
     (build-system cmake-build-system)
     (arguments
      (list
