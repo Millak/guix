@@ -2485,7 +2485,7 @@ input and outputs an XML dataset.")
           (add-after 'unpack 'adjust-default-settings
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "qucs/settings.cpp"
-                (("\"/usr/local/Xyce.*\"")
+                (("\"Xyce\"")
                  (format #f "~s" (search-input-file inputs "bin/Xyce")))
                 (("\"qucsrflayout\"")
                  (format #f "~s" (search-input-file inputs "bin/qucsrflayout")))
