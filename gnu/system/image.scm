@@ -369,11 +369,12 @@ set to the given OS."
 (define (bootloader-uses-grub-efi? bootloader)
   "Return true if the bootloader-name contains grub-efi."
   (memq (bootloader-name bootloader)
-        (list grub-efi grub-efi32
-              grub-efi-removable-bootloader
-              grub-efi32-removable-bootloader
-              grub-efi-netboot-bootloader
-              grub-efi-netboot-removable-bootloader)))
+        '(grub-efi
+          grub-efi32
+          grub-efi-removable-bootloader
+          grub-efi32-removable-bootloader
+          grub-efi-netboot-bootloader
+          grub-efi-netboot-removable-bootloader)))
 
 
 ;;
