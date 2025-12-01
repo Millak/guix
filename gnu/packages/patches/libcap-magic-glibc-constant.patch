@@ -1,0 +1,43 @@
+This patch is from the upstream repo, from between the tags libcap-2.75
+and libcap-2.76, and can be removed after the update to 2.76.
+
+From 04b285680bfb45117af685eabf1675917118bdb5 Mon Sep 17 00:00:00 2001
+Message-ID: <04b285680bfb45117af685eabf1675917118bdb5.1764517342.git.efraim@flashner.co.il>
+From: "Andrew G. Morgan" <morgan@kernel.org>
+Date: Sat, 22 Mar 2025 09:49:50 -0700
+Subject: [PATCH] Glibc needs a constant to be defined for puts() to work.
+
+See https://bugzilla.kernel.org/show_bug.cgi?id=219880
+
+Signed-off-by: Andrew G. Morgan <morgan@kernel.org>
+---
+ libcap/execable.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/libcap/execable.h b/libcap/execable.h
+index 89e61a3..a68ea24 100644
+--- a/libcap/execable.h
++++ b/libcap/execable.h
+@@ -23,6 +23,17 @@
+ #endif
+ #define __EXECABLE_H
+ 
++#ifdef __GLIBC__
++/*
++ * https://bugzilla.kernel.org/show_bug.cgi?id=219880 So far as I can
++ * tell this value is some legacy magic meaning, but is a detail no
++ * longer important to glibc. Only the existence of this constant in
++ * the linkage is needed.
++ */
++extern const int _IO_stdin_used;
++const int _IO_stdin_used __attribute__((weak)) = 131073;
++#endif /* def __GLIBC__ */
++
+ const char __execable_dl_loader[] __attribute((section(".interp"))) =
+     SHARED_LOADER ;
+ 
+-- 
+Efraim Flashner   <efraim@flashner.co.il>   אפרים פלשנר
+GPG key = A28B F40C 3E55 1372 662D  14F7 41AA E7DC CA3D 8351
+Confidentiality cannot be guaranteed on emails sent or received unencrypted
+

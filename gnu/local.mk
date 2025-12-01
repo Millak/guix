@@ -1725,6 +1725,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libbraiding-no-s.patch                   \
   %D%/packages/patches/libcaca-CVE-2021-3410-pt1.patch		\
   %D%/packages/patches/libcaca-CVE-2021-3410-pt2.patch		\
+  %D%/packages/patches/libcap-magic-glibc-constant.patch	\
   %D%/packages/patches/libcanberra-sound-theme-freedesktop.patch \
   %D%/packages/patches/libcanberra-wayland-crash.patch \
   %D%/packages/patches/libcroco-CVE-2020-12825.patch		\

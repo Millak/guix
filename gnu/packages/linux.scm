@@ -4903,7 +4903,16 @@ configuration (iptunnel, ipmaddr).")
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               (delete 'configure))
+               (delete 'configure)
+               #$@(if (target-ppc32?)
+                      #~((add-after 'unpack 'apply-patch
+                           (lambda _
+                             (let ((patch
+                                  #$(local-file
+                                     (search-patch
+                                      "libcap-magic-glibc-constant.patch"))))
+                             (invoke "patch" "--force" "-p1" "-i" patch)))))
+                      #~()))
            #:test-target "test"
            #:make-flags
            #~(list "lib=lib"
