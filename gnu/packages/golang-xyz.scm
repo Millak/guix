@@ -22465,6 +22465,47 @@ supported by the time package
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-tliron-kutil
+  (package
+    (name "go-github-com-tliron-kutil")
+    (version "0.1.59")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tliron/go-kutil")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07lhzgpsi96icdya874xmfd1ymg4s4y09s7m7h398aryn7hbysyg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      ;; TODO: Not ready packages required for tests and full build.
+      ;; (propagated-inputs
+      ;;   (list
+      ;;     go-github-com-beevik-etree
+      ;;     go-github-com-coreos-go-systemd
+      ;;     go-github-com-dop251-goja
+      ;;     go-github-com-fxamacker-cbor
+      ;;     go-github-com-go-git-go-git
+      ;;     go-github-com-google-go-containerregistry
+      ;;     go-github-com-hokaccha-go-prettyjson
+      ;;     go-github-com-mitchellh-hashstructure
+      ;;     go-github-com-segmentio-ksuid
+      ;;     go-github-com-tliron-yamlkeys
+      ;;     go-github-com-zchee-color
+      ;;     go-k8s-io-apiextensions-apiserver
+      ;;     go-k8s-io-klog))
+      #:skip-build? #t
+      #:tests? #f
+      #:import-path "github.com/tliron/kutil"))
+    (home-page "https://github.com/tliron/go-kutil")
+    (synopsis "Utility library for Golang")
+    (description
+      "This package provides a collection of Golang utilities.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-tomwright-dasel-v2
   (package
     (name "go-github-com-tomwright-dasel-v2")
