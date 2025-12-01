@@ -1964,6 +1964,29 @@ specified image or color, easing the process of theme creation.")
 @code{cffi} bindings as well as rust binaries as python packages.")
     (license (list license:expat license:asl2.0))))
 
+(define-public mitm-cache
+  (package
+    (name "mitm-cache")
+    (version "0.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/chayleaf/mitm-cache")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0hbjzf3jb8gpisq3qi5z7wc20hawcgvjwnw2xp80bwq1cj12d3vr"))))
+    (build-system cargo-build-system)
+    (arguments
+     '(#:install-source? #f))
+    (inputs (cons `(,zstd "lib") (cargo-inputs 'mitm-cache)))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/chayleaf/mitm-cache")
+    (synopsis "Man-in-the-middle caching proxy")
+    (description "This is a caching @acronym{MITM, man-in-the-middle} proxy
+for fetching the dependencies of poorly designed build systems.")
+    (license license:expat)))
+
 (define-public mollysocket
   (package
     (name "mollysocket")
