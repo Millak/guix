@@ -51,7 +51,7 @@
 (define-public boinc-client
   (package
     (name "boinc-client")
-    (version "8.2.4")
+    (version "8.2.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -62,7 +62,7 @@
               (file-name (git-file-name "boinc" version))
               (sha256
                (base32
-                "03xcyrnnbm6201apvvrl8ysq7gn3yn96slm9znsymw0cnf3j85jm"))))
+                "1ppcf57p6dkv9dv5k90fj3xhbv9di2d3yjkg2flfv5d45s82lay8"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -74,6 +74,7 @@
                   gtk+
                   gdk-pixbuf
                   libnotify
+                  libzip
                   sqlite
                   python
                   python-pyserial))
