@@ -985,11 +985,16 @@ it can be used for bootloading."
                              file-systems
                              #:volatile-root? volatile-root?
                              rest)))
-            (bootloader (if (eq? format 'iso9660)
+            ;; Only replace with grub-mkrescue-bootloader if grub-pc
+            ;; is supported. AArch64 doesn't support it.  In such
+            ;; cases, respect bootloader of the system.  Still,
+            ;; for now make-iso9660-image installs only GRUB.
+            (bootloader (if (and (eq? format 'iso9660)
+                                 (supported-package? grub-hybrid))
                             (bootloader-configuration
-                             (inherit
-                              (operating-system-bootloader base-os))
-                             (bootloader grub-mkrescue-bootloader))
+                              (inherit
+                               (operating-system-bootloader base-os))
+                              (bootloader grub-mkrescue-bootloader))
                             (operating-system-bootloader base-os)))
             (file-systems (cons (file-system
                                   (mount-point "/")
