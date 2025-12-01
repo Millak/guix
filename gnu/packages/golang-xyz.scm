@@ -24261,6 +24261,35 @@ Go host programs.")
 from the system keyring.")
     (license license:expat)))
 
+(define-public go-github-com-zchee-color
+  (package
+    (name "go-github-com-zchee-color")
+    (version "2.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/zchee/color")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0im301c9m5702lsv3qvzwmx943m9hmrpb2670zfv0z14cm7fqhls"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-vet=off")
+      #:import-path "github.com/zchee/color/v2"))
+    (propagated-inputs (list go-github-com-mattn-go-isatty
+                             go-github-com-mattn-go-colorable))
+    (home-page "https://github.com/zchee/color")
+    (synopsis "Color package for Golang")
+    (description
+     "Package color is an ANSI color package to output colorized or
+SGR defined output to the standard output.  The API can be used in several way,
+pick one that suits you.")
+    (license license:expat)))
+
 (define-public go-github-com-zclconf-go-cty
   (package
     (name "go-github-com-zclconf-go-cty")
