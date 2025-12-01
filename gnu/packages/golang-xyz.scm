@@ -8525,6 +8525,30 @@ it effectively reuses the JSON struct tags as well as the custom JSON methods
 @code{MarshalJSON} and @code{UnmarshalJSON} unlike go-yaml.")
     (license license:expat)))
 
+(define-public go-github-com-gosimple-unidecode
+  (package
+    (name "go-github-com-gosimple-unidecode")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gosimple/unidecode")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dxdddn744l0s1lr006s2a4k02w6qx8j3k31c7sfflh7wvwzcdzx"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/gosimple/unidecode"))
+    (home-page "https://github.com/gosimple/unidecode")
+    (synopsis "Unicode transliterator for Golang")
+    (description
+     "Package unidecode implements a unicode transliterator which
+replaces non-ASCII characters with their ASCII approximations.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-git-lfs-go-netrc
   (package
     (name "go-github-com-git-lfs-go-netrc")
