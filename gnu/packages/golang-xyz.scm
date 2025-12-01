@@ -22465,6 +22465,38 @@ supported by the time package
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-tliron-glsp
+  (package
+    (name "go-github-com-tliron-glsp")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tliron/glsp")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vz4idndpcxrkjck6m0azdg8zsgcxcchf0ldhnkr8fj3z2sllljr"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/tliron/glsp"))
+    (propagated-inputs (list go-github-com-sasha-s-go-deadlock
+                             go-github-com-tliron-kutil
+                             go-github-com-sourcegraph-jsonrpc2
+                             go-github-com-pkg-errors
+                             go-github-com-gorilla-websocket
+                             go-golang-org-x-term
+                             go-golang-org-x-crypto
+                             go-github-com-zchee-color))
+    (home-page "https://github.com/tliron/glsp")
+    (synopsis "Language Server Protocol SDK for Golang")
+    (description
+     "Implementation of the @acronym{LSP, language server protocol}
+for Golang, allowing the creating of custom language servers.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-tliron-kutil
   (package
     (name "go-github-com-tliron-kutil")
