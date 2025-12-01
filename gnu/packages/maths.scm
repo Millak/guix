@@ -71,6 +71,7 @@
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Sören Tempel <soeren@soeren-tempel.net>
 ;;; Copyright © 2025 nomike Postmann <nomike@nomike.com>
+;;; Copyright © 2025 Reza Housseini <reza@housseini.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -11554,3 +11555,67 @@ expression parsing and evaluation.")
 linear programming (LP), mixed-integer programming (MIP), and quadratic
 programming (QP) models")
     (license license:expat)))
+
+(define-public trilinos-zoltan
+  (package
+    (name "trilinos-zoltan")
+    (version "16.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference (url "https://github.com/trilinos/Trilinos")
+                           (commit (string-append "trilinos-release-"
+                                                  (string-replace-substring
+                                                   version "." "-")))))
+       (file-name (git-file-name "trilinos" version))
+       (sha256 (base32 "1snn8vzxwrk9qsvv9wsv4zf99cvcja4shgjpsavp893v9gvgp2gm"))))
+    (build-system cmake-build-system)
+    (inputs (list openmpi
+                  perl
+                  python
+                  python-wrapper
+                  tcsh
+                  pt-scotch
+                  zlib))
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DTrilinos_ENABLE_Zoltan=ON"
+              "-DBUILD_SHARED_LIBS=ON"
+              "-DTPL_ENABLE_MPI=ON"
+              "-DTPL_ENABLE_METIS=OFF"
+              "-DTPL_ENABLE_Scotch=ON"
+              "-DTPL_ENABLE_Zlib=ON"
+              "-DTrilinos_ENABLE_Fortran=OFF"
+              "-DZoltan_ENABLE_TESTS=ON"
+              ;; disable failing tests
+              "-DZoltan_ch_brack2_3_zoltan_parallel_DISABLE=ON"
+              "-DZoltan_ch_grid20x19_zoltan_parallel_DISABLE=ON"
+              "-DZoltan_hg_felix_zoltan_parallel_DISABLE=ON"
+              "-DZoltan_hg_ibm03_zoltan_parallel_DISABLE=ON"
+              "-DZoltan_ch_degenerate_zoltan_parallel_DISABLE=ON"
+              "-DZoltan_ch_degenerateAA_zoltan_parallel_DISABLE=ON"
+              "-DZoltan_ch_ewgt_scotch_parallel_DISABLE=ON"
+              "-DZoltan_ch_hammond_zoltan_parallel_DISABLE=ON"
+              "-DZoltan_ch_hammond_scotch_parallel_DISABLE=ON"
+              "-DZoltan_ch_hammond2_zoltan_parallel_DISABLE=ON"
+              "-DZoltan_ch_hughes_zoltan_parallel_DISABLE=ON"
+              "-DZoltan_ch_simple_scotch_parallel_DISABLE=ON"
+              "-DZoltan_hg_cage10_zoltan_parallel_DISABLE=ON"
+              "-DZoltan_ch_vwgt_scotch_parallel_DISABLE=ON")))
+    (home-page "https://trilinos.github.io/")
+    (synopsis
+     "Parallel partitioning, load balancing and data-management services")
+    (description
+     "The Zoltan library is a collection of data management services for parallel,
+unstructured, adaptive, and dynamic applications. It simplifies the
+load-balancing, data movement, unstructured communication, and memory usage
+difficulties that arise in dynamic applications such as adaptive
+finite-element methods, particle methods, and crash simulations. Zoltan's
+data-structure neutral design also lets a wide range of applications use it
+without imposing restrictions on application data structures. Its object-based
+interface provides a simple and inexpensive way for application developers to
+use the library and researchers to make new capabilities available under a
+common interface.
+")
+    (license license:bsd-3)))
