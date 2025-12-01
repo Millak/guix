@@ -61,6 +61,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby-check)
+  #:use-module (gnu packages terminals)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
@@ -656,3 +657,77 @@ them via CalDAV using, for example, @code{vdirsyncer}.")
      "Watson is command-line interface to manage your time.  It supports
 projects, tagging and reports.")
     (license license:expat)))
+
+(define-public zk
+  (package
+    (name "zk")
+    (version "0.15.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/zk-org/zk/")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jm18qp4sgfb92c420jc8ylfjwc6shv29fb1jc4z2g03dqcbg2l7"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Remove the sqlite database tests as they require a dependency on
+        ;; github.com/go-testfixtures/testfixtures/v3 which itself requires
+        ;; several new dependencies to be added to Guix.
+        #~(begin
+            (for-each delete-file
+                      (find-files "internal/adapter/sqlite" ".*_test\\.go$"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:install-source? #f
+      #:import-path "github.com/zk-org/zk"
+      #:test-flags
+      #~(list "-vet=off" "-skip"
+              ;; Test matches $HOME against the /etc/passwd entry.
+              ;; Doesn't work on Guix because of HOME=/homeless-shelter.
+              "TestExpandPath")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-paths
+            (lambda* (#:key inputs import-path #:allow-other-keys)
+              (substitute* (string-append "src/" import-path
+                                          "/internal/adapter/fzf/fzf.go")
+                (("\"fzf\"")
+                 (format #f "~s" (search-input-file inputs "/bin/fzf")))))))))
+    (native-inputs
+     (list go-github-com-alecaivazis-survey-v2
+           go-github-com-alecaivazis-survey-v2
+           go-github-com-alecthomas-kong-for-zk
+           go-github-com-aymerick-raymond
+           go-github-com-bmatcuk-doublestar-v4
+           go-github-com-fatih-color-for-zk
+           go-github-com-google-go-cmp
+           go-github-com-gosimple-slug
+           go-github-com-kballard-go-shellquote
+           go-github-com-lestrrat-go-strftime
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-sqlite3
+           go-github-com-mvdan-xurls
+           go-github-com-pelletier-go-toml
+           go-github-com-pkg-errors
+           go-github-com-relvacode-iso8601
+           go-github-com-rvflash-elapsed
+           go-github-com-schollz-progressbar-v3
+           go-github-com-tj-go-naturaldate
+           go-github-com-tliron-glsp
+           go-github-com-tliron-kutil
+           go-github-com-yuin-goldmark
+           go-github-com-yuin-goldmark-meta
+           go-github-com-zk-org-pretty
+           go-gopkg-in-djherbis-times-v1))
+    (inputs
+     (list fzf))
+    (home-page "https://zk-org.github.io/zk/")
+    (synopsis "Plain text note-taking assistant")
+    (description
+     "Command-line tooling for helping you to maintain a plain text
+Zettelkasten or personal wiki.  Based on the Markdown markup language.")
+    (license license:gpl3)))
