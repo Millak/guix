@@ -13494,32 +13494,6 @@ It uses the kernel's built-in @code{ptrace} feature and handles shared
 libraries.  Applications do not need to be recompiled--or even restarted.")
     (license license:gpl3+)))
 
-(define-public sysprof-3.44
-  (package
-    (inherit sysprof)
-    (name "sysprof")
-    (version "3.44.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/sysprof/"
-                                  (version-major+minor version) "/"
-                                  "sysprof-" version ".tar.xz"))
-              (sha256
-               (base32 "0nq0icbln0ryqzlybr7wyl19mhr3vkqzs6wasn430fwpf5drypdb"))))
-    (inputs (modify-inputs (package-inputs sysprof)
-              (replace "glib" glib)
-              (replace "gtk" gtk+)))
-    (native-inputs (modify-inputs (package-native-inputs sysprof)
-                     (replace "glib" `(,glib "bin"))))
-    (arguments (substitute-keyword-arguments (package-arguments sysprof)
-                 ((#:phases phases '%standard-phases)
-                  #~(modify-phases #$phases
-                      (replace 'disable-post-install
-                        (lambda _
-                          (substitute* "build-aux/meson/post_install.sh"
-                            (("gtk-update-icon-cache") "true")
-                            (("update-desktop-database") "true"))))))))))
-
 (define-public libspelling
   (package
     (name "libspelling")
