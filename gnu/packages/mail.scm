@@ -1341,81 +1341,86 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
       (license license:bsd-3))))
 
 (define-public mu
-  (package
-    (name "mu")
-    (version "1.12.13")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/djcb/mu")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "160b0rk2fs3zc3yhvx1wsca4a6xzcyc8rlgimn3qmkvd0b31ngdg"))))
-    (build-system meson-build-system)
-    (native-inputs
-     (list pkg-config
-           emacs-minimal
-           gnupg                        ; for tests
-           tzdata-for-tests             ; for tests
-           texinfo))
-    (inputs
-     (list glib gmime guile-3.0 xapian readline python))
-    (arguments
-     (list
-      #:modules '((guix build meson-build-system)
-                  (guix build emacs-utils)
-                  ((guix build guile-build-system)
-                   #:select (target-guile-effective-version))
-                  (guix build utils))
-      #:imported-modules `(,@%meson-build-system-modules
-                           (guix build guile-build-system)
-                           (guix build emacs-utils))
-      #:configure-flags
-      #~(list (format #f "-Dguile-extension-dir=~a/lib" #$output))
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; This phase can be removed in the next major release of mu.
-          ;; <https://github.com/djcb/mu/commit/f237a2b9905475fb95da6a04e318d10cab61ddeb>
-          ;; <https://github.com/djcb/mu/commit/fc4d5b01a703e8c8cc390cfea135f08d3b45ccab>
-          (add-after 'unpack 'patch-bin-references
-            (lambda _
-              (substitute* '("guile/tests/test-mu-guile.cc"
-                             "mu/tests/test-mu-query.cc")
-                (("/bin/sh") (which "sh")))
-              (substitute* '("lib/tests/bench-indexer.cc"
-                             "lib/utils/mu-utils-file.cc"
-                             "lib/utils/mu-test-utils.cc")
-                (("/bin/rm") (which "rm")))
-              (substitute* '("lib/mu-maildir.cc")
-                (("/bin/mv") (which "mv")))))
-          (add-after 'install 'fix-ffi
-            (lambda _
-              (substitute* (find-files #$output "mu\\.scm")
-                (("\"libguile-mu\"")
-                 (format #f "\"~a/lib/libguile-mu\"" #$output)))))
-          (add-after 'install 'install-emacs-autoloads
-            (lambda _
-              (emacs-generate-autoloads
-               "mu4e"
-               (string-append #$output
-                              "/share/emacs/site-lisp/mu4e"))))
-          (add-after 'install 'wrap-executable
-            (lambda _
-              (let* ((bin (string-append #$output "/bin"))
-                     (version (target-guile-effective-version))
-                     (scm (string-append #$output "/share/guile/site/" version)))
-                (wrap-program (string-append bin "/mu")
-                  `("GUILE_LOAD_PATH" ":" prefix (,scm)))))))))
-    (home-page "https://www.djcbsoftware.nl/code/mu/")
-    (synopsis "Quickly find emails")
-    (description
-     "Mu is a tool for dealing with e-mail messages stored in the
+  ;; this commit fixes nondeterministic test failing the build
+  ;; revert back to a tagged release next time
+  ;; <https://github.com/djcb/mu/commit/46f91ab7b7641caac992a41264ac41a76c001c87>
+  (let ((commit "46f91ab7b7641caac992a41264ac41a76c001c87")
+        (revision "1"))
+    (package
+      (name "mu")
+      (version (git-version "1.12.13" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/djcb/mu")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1dbadvpl0fwy975f4i58rq7n85gfjhv92lcdmkv1w3h1mjn2v0sd"))))
+      (build-system meson-build-system)
+      (native-inputs
+       (list pkg-config
+             emacs-minimal
+             gnupg                      ; for tests
+             tzdata-for-tests           ; for tests
+             texinfo))
+      (inputs
+       (list glib gmime guile-3.0 xapian readline python))
+      (arguments
+       (list
+        #:modules '((guix build meson-build-system)
+                    (guix build emacs-utils)
+                    ((guix build guile-build-system)
+                     #:select (target-guile-effective-version))
+                    (guix build utils))
+        #:imported-modules `(,@%meson-build-system-modules
+                             (guix build guile-build-system)
+                             (guix build emacs-utils))
+        #:configure-flags
+        #~(list (format #f "-Dguile-extension-dir=~a/lib" #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; This phase can be removed in the next major release of mu.
+            ;; <https://github.com/djcb/mu/commit/f237a2b9905475fb95da6a04e318d10cab61ddeb>
+            ;; <https://github.com/djcb/mu/commit/fc4d5b01a703e8c8cc390cfea135f08d3b45ccab>
+            (add-after 'unpack 'patch-bin-references
+              (lambda _
+                (substitute* '("guile/tests/test-mu-guile.cc"
+                               "mu/tests/test-mu-query.cc")
+                  (("/bin/sh") (which "sh")))
+                (substitute* '("lib/tests/bench-indexer.cc"
+                               "lib/utils/mu-utils-file.cc"
+                               "lib/utils/mu-test-utils.cc")
+                  (("/bin/rm") (which "rm")))
+                (substitute* '("lib/mu-maildir.cc")
+                  (("/bin/mv") (which "mv")))))
+            (add-after 'install 'fix-ffi
+              (lambda _
+                (substitute* (find-files #$output "mu\\.scm")
+                  (("\"libguile-mu\"")
+                   (format #f "\"~a/lib/libguile-mu\"" #$output)))))
+            (add-after 'install 'install-emacs-autoloads
+              (lambda _
+                (emacs-generate-autoloads
+                 "mu4e"
+                 (string-append #$output
+                                "/share/emacs/site-lisp/mu4e"))))
+            (add-after 'install 'wrap-executable
+              (lambda _
+                (let* ((bin (string-append #$output "/bin"))
+                       (version (target-guile-effective-version))
+                       (scm (string-append #$output "/share/guile/site/" version)))
+                  (wrap-program (string-append bin "/mu")
+                    `("GUILE_LOAD_PATH" ":" prefix (,scm)))))))))
+      (home-page "https://www.djcbsoftware.nl/code/mu/")
+      (synopsis "Quickly find emails")
+      (description
+       "Mu is a tool for dealing with e-mail messages stored in the
 Maildir format.  Mu's purpose in life is to help you to quickly find the
 messages you need; in addition, it allows you to view messages, extract
 attachments, create new maildirs, and so on.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public alot
   (package
