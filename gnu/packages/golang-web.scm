@@ -1815,6 +1815,47 @@ the OTEL Go SDK.")
     (description "This package provides a CSS parser and inliner.")
     (license license:expat)))
 
+(define-public go-github-com-aymerick-raymond
+  (package
+    (name "go-github-com-aymerick-raymond")
+    (version "2.0.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/aymerick/raymond")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0s5nxzx87a12hcdzhliy1j8albfx2jqddaks4m86yfrcawm6vndn"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/aymerick/raymond"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Replace vendored mustache version with the one from 'inputs'.
+          (add-before 'check 'supply-mustache
+            (lambda* (#:key inputs import-path #:allow-other-keys)
+              (let ((mustache (string-append "src/" import-path "/mustache")))
+                (delete-file-recursively mustache)
+                (copy-recursively #$(this-package-input "mustache-specs")
+                                  mustache)))))))
+    (inputs `(("mustache-specs" ,(origin
+                                   (method git-fetch)
+                                   (uri (git-reference (url
+                                                        "https://github.com/mustache/spec")
+                                                       (commit
+                                                        "83b0721610a4e11832e83df19c73ace3289972b9")))
+                                   (sha256 (base32
+                                            "1g2f6hi04vkxrk53ixzm7yvkg5v8m00dh9nrkh9lxnx8aw824y80"))))))
+    (propagated-inputs (list go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/aymerick/raymond")
+    (synopsis "Handlebars for Golang")
+    (description
+     "This package provides a minimal templating engine for Golang.")
+    (license license:expat)))
+
 (define-public go-github-com-azure-azure-sdk-for-go-sdk-azcore
   (package
     (name "go-github-com-azure-azure-sdk-for-go-sdk-azcore")
