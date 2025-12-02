@@ -6,7 +6,7 @@
 ;;; Copyright © 2018-2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020, 2022, 2023 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2021, 2025 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2023, 2024 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 TakeV <takev@disroot.org>
 ;;; Copyright © 2023 Ivan Vilata i Balaguer <ivan@selidor.net>
@@ -975,13 +975,13 @@ efficient as possible on all supported Python versions.")
 (define-public python-zipstream-ng
   (package
     (name "python-zipstream-ng")
-    (version "1.7.1")
+    (version "1.9.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "zipstream-ng" version))
+       (uri (pypi-uri "zipstream_ng" version))
        (sha256
-        (base32 "1z4zdqqs2rg3z36khgj96bpggv34av337isfv7yxg32prawj687r"))))
+        (base32 "1snsczv5v2fvndxi8hbgd42ghhiwc20cdz8dz3xpw4rdh8q41nd0"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-pytest-cov python-setuptools python-wheel))
