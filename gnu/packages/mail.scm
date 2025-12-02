@@ -4033,20 +4033,22 @@ operators and scripters.")
      `(#:make-flags
        (list (string-append "CC=" ,(cc-for-target)))
        #:parallel-build? #f             ;fails otherwise
-       #:configure-flags (list (string-append "--with-ssl-include-dir="
-                                              (assoc-ref %build-inputs "openssl")
-                                              "/include/openssl")
-                               (string-append "--with-ssl-dir="
-                                              (assoc-ref %build-inputs "openssl"))
-                               (string-append "--with-ssl-certs-dir="
-                                              "/etc/ssl/certs/")
-                               (string-append "--with-ssl-lib-dir="
-                                              (assoc-ref %build-inputs "openssl")
-                                              "/lib")
-                               (string-append "--with-interactive-spellcheck="
-                                              (assoc-ref %build-inputs "aspell")
-                                              "/bin/aspell")
-                               "--with-date-stamp=Thu  1 Jan 01:00:01 CET 1970")
+       #:configure-flags
+         (list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-type"
+           (string-append "--with-ssl-include-dir="
+                          (assoc-ref %build-inputs "openssl")
+                          "/include/openssl")
+           (string-append "--with-ssl-dir="
+                          (assoc-ref %build-inputs "openssl"))
+           (string-append "--with-ssl-certs-dir="
+                          "/etc/ssl/certs/")
+           (string-append "--with-ssl-lib-dir="
+                          (assoc-ref %build-inputs "openssl")
+                          "/lib")
+           (string-append "--with-interactive-spellcheck="
+                          (assoc-ref %build-inputs "aspell")
+                          "/bin/aspell")
+           "--with-date-stamp=Thu  1 Jan 01:00:01 CET 1970")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'assume-shadow-passwords
