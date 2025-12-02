@@ -5142,6 +5142,40 @@ extra metadata.  Because HDF5 and MAT files might need to be read from
 untrusted sources, pickling is avoided in this package.")
       (license license:bsd-2))))
 
+(define-public python-prctl
+  (package
+    (name "python-prctl")
+    (version "1.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "python-prctl" version))
+              (sha256
+                (base32
+                  "1kk7gv582w72spnz6agr0pz0hlpgchp3l7zxzzjarwfllwjrmjml"))))
+    (build-system pyproject-build-system)
+    (arguments
+      (list #:test-backend ''custom
+            #:test-flags ''("test_prctl.py")
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'unpack 'patch-tests
+                  (lambda _
+                    (substitute* "test_prctl.py"
+                      ;; actual suffix used in cpython build output dir name
+                      (("sys.version\\[0:3\\]") "sys.implementation.cache_tag")
+                      ;; test_no_new_privs assumes existance of /bin/ping, but
+                      ;; can never run anyway due to it requiring setuid ping.
+                      ;; just short circuit it instead.
+                      (("os.stat\\('/bin/ping'\\)\\.st_mode") "0")))))))
+    (inputs (list libcap))
+    (native-inputs (list python-setuptools))
+    (supported-systems (filter target-linux? %supported-systems))
+    (home-page "https://pythonhosted.org/python-prctl")
+    (synopsis "Linux capabilities library")
+    (description "This package provides a Python library for controlling Linux
+capabilities and attributes, similar to the prctl syscall.")
+    (license license:gpl3+)))
+
 (define-public python-hjson
   ;; Using commit from master branch as the PyPI version does not contain
   ;; the hjson/tests/ directory.
