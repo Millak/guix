@@ -2104,11 +2104,45 @@ among others.")
        (sha256
         (base32 "0jbzmxnxmgf60158gpvfsp8j2cid6psfwj3j94vxv61z8wk4xnl1"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-setuptools python-wheel))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            ;; A simple regression tests, taken from project's GitHub Actions,
+            ;; see: <.github/workflows/python-package.yml>.
+            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+              (when tests?
+                (with-output-to-file "nothing.py"
+                  (const (display "def test_1(): pass\n")))
+                (invoke "pynose" "nothing.py" "--co" "-v")
+                (invoke "pynose" "nothing.py" "-v")
+                (invoke "nosetests" "nothing.py" "--co" "-v")
+                (invoke "nosetests" "nothing.py" "-v")
+                (delete-file "nothing.py")))))))
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/mdmintz/pynose")
-    (synopsis "pynose fixes nose to extend unittest and make testing easier")
+    (synopsis "Unittest framework for Python")
     (description
-     "pynose fixes nose to extend unittest and make testing easier.")
+     "@code{pynose} is a maintained successor of deprecated @code{nose} unittest
+runner.
+Changes over @code{nose}:
+@itemize
+@item fixes @code{AttributeError: module 'collections' has no attribute 'Callable'}
+@item fixes @code{AttributeError: module 'inspect' has no attribute 'getargspec'}
+@item fixes @code{ImportError: cannot import name '_TextTestResult' from 'unittest'}
+@item fixes @code{RuntimeWarning: TestResult has no addDuration method}
+@item fixes @code{DeprecationWarning: pkg_resources is deprecated as an API}
+@item fixes all @code{flake8} issues from the original nose
+@item replaces the imp module with the newer importlib module
+@item the default logging level now hides @code{INFO} logs for less noise
+@item adds @code{--capture-logs} for hiding output from all logging levels
+@item adds @code{--logging-init} to use @code{logging.basicConfig(level)}
+@item the @code{-s} option is always active to see the output of @code{print()}
+@item adds @code{--capture-output} for hiding the output of @code{print()}
+@item adds @code{--co} as a shortcut to using @code{--collect-only}
+@end itemize")
     (license license:lgpl2.0)))
 
 (define-public python-pytest-aiohttp
