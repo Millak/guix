@@ -4328,6 +4328,27 @@ different audio devices such as ALSA or PulseAudio.")
                    (license:non-copyleft
                     "file://src/TPCircularBuffer/README.markdown")))))
 
+(define-public projectm-eval
+  (package
+    (name "projectm-eval")
+    (version "1.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/projectM-visualizer/projectm-eval")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04m5k6azji0fk3japzd8v4k04affbfpangfw4fgvk3ac5w75872a"))))
+    (build-system cmake-build-system)
+    (native-inputs (list googletest))
+    (home-page "https://github.com/projectM-visualizer/projectm-eval")
+    (synopsis "Re-implementation of the NullSoft Expression Evaluation Library")
+    (description "This is an open-source re-implementation of the NullSoft
+Expression Evaluation Library 2, as used in the Milkdrop music visualizer.")
+    (license license:expat)))
+
 (define-public qjackctl
   (package
     (name "qjackctl")
