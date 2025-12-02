@@ -376,17 +376,34 @@ service.")
   (package
     (name "hungrycat")
     (version "0.4.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/jwilk/hungrycat/"
-                                  "releases/download/" version "/"
-                                  "hungrycat-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0xy9l4hky85h3rgdmqmhcnx0q1hq0brskr8lzw2lz6lh7pxlxmyw"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/jwilk/hungrycat/")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0llfb7kh2k53aqwc1fagw77fmwhvwdxd5qlg0fyrhqq298gj8wif"))))
     (build-system gnu-build-system)
-    (arguments (list #:test-target "test"))
-    (native-inputs (list perl perl-ipc-run python-wrapper python-pynose))
+    (arguments
+     (list
+      ;; tests: Files=2, Tests=2334,  1 wallclock secs
+      #:test-target "test"
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-doc
+            (lambda _
+              (invoke "make" "-C" "doc"))))))
+    (native-inputs
+     (list automake
+           autoconf
+           cppcheck
+           perl
+           perl-ipc-run
+           python-docutils))
     (synopsis "Single tool that combines @command{cat} & @command{rm}")
     (description
      "hungrycat prints the contents of a file to standard output, while
