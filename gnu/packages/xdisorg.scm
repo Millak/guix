@@ -1937,6 +1937,27 @@ night to daytime temperature to allow your eyes to slowly adapt.  At night the
 color temperature should be set to match the lamps in your room.")
     (license license:gpl3+)))
 
+(define-public wayout
+  (package
+    (name "wayout")
+    (version "0.1.5")
+    (home-page "https://git.sr.ht/~proycon/wayout")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page) (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1i7bab1dcdyybwarhy44xawb6661zv4z8rfdicjyljg320vj79a2"))))
+    (build-system meson-build-system)
+    (native-inputs (list cmake-minimal pkg-config scdoc))
+    (inputs (list cairo pango wayland wayland-protocols))
+    (synopsis "Output simple text to a wayland desktop widget")
+    (description
+     "Wayout takes text from standard input and outputs it to a desktop-widget
+on Wayland desktops.")
+    (license license:gpl3+)))
+
 (define-public redshift-wayland
   (let ((commit "7da875d34854a6a34612d5ce4bd8718c32bec804")
         (revision "1"))
