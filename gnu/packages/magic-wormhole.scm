@@ -5,6 +5,7 @@
 ;;; Copyright © 2024 TakeV <takev@disroot.org>
 ;;; Copyright © 2024 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2025 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2025 Brendan Tildesley <mail@brendan.scot>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -118,14 +119,14 @@ together, allowing them to pretend they have a direct connection.")
 (define-public magic-wormhole
   (package
     (name "magic-wormhole")
-    (version "0.19.2")
+    (version "0.21.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "magic_wormhole" version))
        (sha256
         (base32
-         "0wbwz5kzqgr4352xbp08z8syg9cl8dkqy8rsa3y4rzq9ry5agd5j"))))
+         "0rx3f9v143facxpij6d0kxq2dbg0nhbq6l92w12aljwvl5r5klxn"))))
     (build-system pyproject-build-system)
     (arguments
      (list
