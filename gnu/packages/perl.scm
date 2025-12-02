@@ -14608,7 +14608,12 @@ such that being individual extensions would be wasteful.")
                    ;;   Can't use an undefined value as a subroutine reference
                    ;;   during global destruction.
                    (substitute* "t/core_events.t"
-                     (("^SDL::Events::set_event_filter") "#")))))))
+                     (("^SDL::Events::set_event_filter") "#"))))
+               (add-after 'unpack 'gcc-14
+                 (lambda _
+                   (substitute* "inc/My/Builder.pm"
+                     (("^our \\$config =.*")
+                      "our $config = { ccflags => \"-Wno-error=implicit-function-declaration\" };")))))))
     (native-inputs
      (list perl-alien-sdl
            perl-capture-tiny
