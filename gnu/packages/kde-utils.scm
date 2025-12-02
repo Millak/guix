@@ -5,6 +5,7 @@
 ;;; Copyright © 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2025 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1411,7 +1412,8 @@ redone.")
     (version "0.13.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://kde/stable/rsibreak/" version
+              (uri (string-append "mirror://kde/stable/rsibreak/"
+                           (version-major+minor version)
                            "/rsibreak-" version ".tar.xz"))
               (sha256
                (base32
