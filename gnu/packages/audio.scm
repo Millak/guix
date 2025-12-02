@@ -4349,6 +4349,33 @@ different audio devices such as ALSA or PulseAudio.")
 Expression Evaluation Library 2, as used in the Milkdrop music visualizer.")
     (license license:expat)))
 
+(define-public projectm
+  (package
+    (name "projectm")
+    (version "4.1.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/projectM-visualizer/projectm")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yw1q6zmx2683immxfxn2kxjwwv6xk9m6yja701m4z2brhdx1iw1"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         "-DBUILD_TESTING=ON" "-DENABLE_SDL_UI=OFF" "-DENABLE_SYSTEM_GLM=ON")))
+    (inputs (list mesa projectm-eval))
+    (native-inputs (list googletest glm))
+    (home-page "https://github.com/projectM-visualizer/projectm")
+    (synopsis "Milkdrop-like music visualizer")
+    (description "projectM is an open-source re-implementation of the MilkDrop
+visualizer.  This package contains only the libprojectm library.")
+    (license license:lgpl2.1+)))
+
 (define-public qjackctl
   (package
     (name "qjackctl")
