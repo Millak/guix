@@ -105,6 +105,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -1850,6 +1851,52 @@ reusable and vendor/tool-independent way.  It is written following the VHDL
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (delete 'fix-scripts)))))))
+
+(define-public pyspice
+  (package
+    (name "pyspice")
+    (version "1.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/PySpice-org/PySpice")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02z35gyx27npqg7g0m1gdy8wid93iy335pc72j90ycx998xf2r5k"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:tests? #f ;we check the build after installation
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'patch-libngspice
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "PySpice/Spice/NgSpice/Shared.py"
+                ((" path = .*" _)
+                 (string-append " path = \""
+                                (search-input-file inputs "lib/libngspice.so")
+                                "\"")))))
+          (add-after 'install 'check-after-install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (add-installed-pythonpath inputs outputs)
+              (invoke (string-append #$output "/bin/pyspice-post-installation")
+                      "--check-install"))))))
+    (native-inputs (list python-pytest))
+    (propagated-inputs (list python-matplotlib python-pyyaml))
+    (inputs (list libngspice
+                  ngspice
+                  python-invoke
+                  python-ply
+                  python-requests
+                  python-scipy))
+    (home-page "https://pyspice.fabrice-salvaire.fr/")
+    (synopsis "Circuit simulator Python interface")
+    (description "PySpice implements a Ngspice binding and provides an
+oriented object API on top of SPICE, the simulation output is converted to
+Numpy arrays for convenience.")
+    (license license:gpl3+)))
 
 (define-public python-amaranth
   (package
