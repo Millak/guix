@@ -4034,7 +4034,7 @@ operators and scripters.")
        (list (string-append "CC=" ,(cc-for-target)))
        #:parallel-build? #f             ;fails otherwise
        #:configure-flags
-         (list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-type"
+         (list "CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"
            (string-append "--with-ssl-include-dir="
                           (assoc-ref %build-inputs "openssl")
                           "/include/openssl")
