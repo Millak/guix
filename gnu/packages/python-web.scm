@@ -8861,14 +8861,14 @@ high level API for making HTTP requests when using Twisted.")
 (define-public python-autobahn
   (package
     (name "python-autobahn")
-    (version "24.4.2")
+    (version "25.11.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "autobahn" version))
         (sha256
          (base32
-          "1jcjxr16cy93v2kjwpvrcmg7cjbp5kyhbcpq25nhny6gn3qixmx2"))))
+          "1w9wyyqzg1dil8jsjm08n2pnk6jws87scli932drhghcr2f2prjj"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -8889,11 +8889,14 @@ high level API for making HTTP requests when using Twisted.")
                        ;; Strip new XBR feature which isn't available in Guix.
                        (setenv "AUTOBAHN_STRIP_XBR" "1"))))))
     (native-inputs (list python-setuptools python-wheel))
-    (propagated-inputs (list python-cffi
+    (propagated-inputs (list python-cbor2
                              python-cryptography
                              python-hyperlink
+                             python-msgpack
+                             python-py-ubjson
                              python-twisted
-                             python-txaio))
+                             python-txaio
+                             python-ujson))
     (home-page "https://github.com/crossbario/autobahn-python/")
     (synopsis "Web Application Messaging Protocol implementation")
     (description "This package provides an implementation of the @dfn{Web Application
