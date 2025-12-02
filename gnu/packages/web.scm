@@ -31,7 +31,7 @@
 ;;; Copyright © 2018 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2019-2021, 2023-2025 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2019 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2019, 2025 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
@@ -7828,14 +7828,14 @@ system.")
 (define-public python-py-ubjson
   (package
     (name "python-py-ubjson")
-    (version "0.10.0")
+    (version "0.16.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "py-ubjson" version))
        (sha256
         (base32
-         "03l9m9w5ip4hw0y69wlys5gzsfb7zcq3a77blj88grgiqhn5vm5n"))))
+         "10m4lmlhqqai90sd0z6qvm2ysrxz8g4q7yq0x0r3czhwb9lvigxr"))))
     (build-system python-build-system)
     (home-page "https://github.com/Iotic-Labs/py-ubjson")
     (synopsis "Universal Binary JSON encoder/decoder")
