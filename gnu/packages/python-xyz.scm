@@ -24032,20 +24032,17 @@ a file-like object from which an arbitrarily-sized key can be read.")
 (define-public python-qrcode
   (package
     (name "python-qrcode")
-    (version "8.0")
+    (version "8.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "qrcode" version))
        (sha256
-        (base32 "0iz3pj67b90k2racwzbf9yml6rjs8nnrpvhns6b45zppa2qy4p02"))))
+        (base32 "0v2h8vs1b80qhkc293w5dzvd439600ffzcznp5m16crb2yjg5hrm"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-poetry-core
            python-pytest))
-    (propagated-inputs
-     (list python-pillow
-           python-pypng))
     (home-page "https://github.com/lincolnloop/python-qrcode")
     (synopsis "QR Code image generator")
     (description
