@@ -28318,17 +28318,20 @@ project.")
 (define-public python-humanize
   (package
     (name "python-humanize")
-    (version "4.0.0")
+    (version "4.14.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "humanize" version))
         (sha256
          (base32
-          "006vpl19bffy9fn0sssxbfakcvgrx7fhvy6l515fzln7vwpqf7zf"))))
+          "03d9xdashy8bsxvg15nz3ih1nsl6na1cmc9mqh2xch56brq9581g"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-freezegun python-pytest python-setuptools python-wheel))
+     (list python-freezegun
+           python-hatch-vcs
+           python-hatchling
+           python-pytest))
     (home-page "https://github.com/jmoiron/humanize")
     (synopsis "Print numerical information in a human-readable form")
     (description "This package provides a Python module that displays numbers
