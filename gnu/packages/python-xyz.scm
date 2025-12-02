@@ -38482,7 +38482,7 @@ their files and supports any packaging format (including wheels).")
 (define-public python-twisted
   (package
     (name "python-twisted")
-    (version "24.11.0")
+    (version "25.5.0")
     (source
      (origin
        (method git-fetch)
@@ -38491,7 +38491,7 @@ their files and supports any packaging format (including wheels).")
               (commit (string-append "twisted-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0k4rd5bpx40j1k0mgbhzqa35dyni0kk7pxjr8x3pm1iaka1718rh"))))
+        (base32 "07v2ssr2s6zcj2r6nvp28x7i3awjb6k8gz0mi4wg606gw4kdgxsk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
