@@ -1056,7 +1056,7 @@ which allows one to install the M8 firmware on any Teensy.")
 (define-public mcy
   (package
     (name "mcy")
-    (version "0.59")
+    (version "0.60")
     (source
      (origin
        (method git-fetch)
