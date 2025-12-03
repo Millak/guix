@@ -18060,6 +18060,7 @@ once.  This package provides tools to perform Drop-seq analyses.")
            samtools
            r-minimal
            r-rmarkdown
+           r-genomeinfodb
            r-ggplot2
            r-ggpubr
            r-ggrepel
