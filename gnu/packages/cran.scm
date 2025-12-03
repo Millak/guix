@@ -16265,13 +16265,13 @@ ellipses, circles, cylinders, arrows, ...")
 (define-public r-globaloptions
   (package
     (name "r-globaloptions")
-    (version "0.1.2")
+    (version "0.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "GlobalOptions" version))
        (sha256
-        (base32 "0gkm77w6db9ajyncy1xdcivplap06a51zi99m009kylccschd2a7"))))
+        (base32 "03z6wswc5al1fhy7is8jgs48yx6glbrxffikyanlvwifj1r30d8c"))))
     (properties `((upstream-name . "GlobalOptions")))
     (build-system r-build-system)
     (native-inputs
