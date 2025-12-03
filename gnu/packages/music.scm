@@ -3186,7 +3186,7 @@ typographic detail of symbols on the page.")
     (native-inputs
      (list lilypond python-pytest python-setuptools python-wheel))
     (propagated-inputs
-     (list abjad))
+     (list python-abjad))
     (home-page "https://abjad.github.io")
     (synopsis "Abjad quantization extension, based on Paul Nauert's Q-Grids")
     (description
