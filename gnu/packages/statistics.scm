@@ -3516,13 +3516,13 @@ files into/from Pandas DataFrames.  It is a wrapper around the C library
 (define-public r-rlrsim
   (package
     (name "r-rlrsim")
-    (version "3.1-8")
+    (version "3.1-9")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "RLRsim" version))
         (sha256
-          (base32 "06i4slc7fj8xifq20i1vqfadfw2p81b0kfzga60139hnryz1zpva"))))
+          (base32 "1xb353f2bfm27rkgc008n0vf8y6ggy2ql7lx0z2azc4k13mn0szp"))))
     (properties `((upstream-name . "RLRsim")))
     (build-system r-build-system)
     (propagated-inputs (list r-lme4 r-mgcv r-nlme r-rcpp))
