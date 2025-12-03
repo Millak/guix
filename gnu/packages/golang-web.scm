@@ -10296,6 +10296,63 @@ control the daemon.")
     (description "Package client is a Go client for the Docker Engine API.")
     (license license:asl2.0)))
 
+(define-public go-github-com-moby-vpnkit
+  (package
+    (name "go-github-com-moby-vpnkit")
+    (version "0.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/moby/vpnkit")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14f6a0qs59q4ajcgj8i41pnx8vragzj62xiz4pl0ydxzx2327sh7"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/moby/vpnkit"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Tests requiring access with TOKEN to API endpoints.
+                       (list "ControllerDispose"
+                             "OverlappingPorts"
+                             "DiscardClusterIPService")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-broken-test-files
+            (lambda* (#:key tests? import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (delete-file "go/pkg/controller/controller_test.go")))))))
+    (native-inputs
+     (list go-github-com-spf13-viper
+           go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-google-uuid
+           go-github-com-labstack-echo-v4
+           go-github-com-linuxkit-virtsock
+           ;; go-github-com-microsoft-go-winio ;Windows only
+           go-github-com-pkg-errors
+           go-github-com-sirupsen-logrus
+           go-golang-org-x-crypto
+           go-golang-org-x-sync
+           go-k8s-io-api
+           go-k8s-io-apimachinery
+           go-k8s-io-client-go))
+    (home-page "https://github.com/moby/vpnkit")
+    (synopsis "Virtual network support for container tooling for Golang")
+    (description "This package provides a set of Golang libraries and utilities
+facilitating virtual networking for container runtimes and reliable TCP/UDP
+forwarding and DNS resolution across host and VM boundaries.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-muhlemmer-httpforwarded
   (package
     (name "go-github-com-muhlemmer-httpforwarded")
