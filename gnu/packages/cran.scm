@@ -5312,14 +5312,14 @@ on the system.")
 (define-public r-gplots
   (package
     (name "r-gplots")
-    (version "3.2.0")
+    (version "3.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gplots" version))
        (sha256
         (base32
-         "0isgbzsj0zkbzp5zvcz4nkc70rm33pcvcmfd6jiiqiw7nilirqqj"))))
+         "00p3dfk0czcp8dvcfdsx3a4wbwlnxqhrn6x8byj6mfzxv0w0nk7q"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-catools r-gtools r-kernsmooth))
