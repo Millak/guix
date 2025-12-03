@@ -21198,13 +21198,13 @@ packages that work with genomic data.")
 (define-public r-piton
   (package
     (name "r-piton")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "piton" version))
        (sha256
-        (base32 "1krf6zi238m275nxjlpyayv8y2drbgs2kg19dpkqm0lmlz5y5ar8"))))
+        (base32 "0cvzdfhn58d8hxh3lc0pvdk4m82iy8nf0m1gr2d9wz0fq885sw1z"))))
     (properties `((upstream-name . "piton")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
