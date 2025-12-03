@@ -10962,13 +10962,13 @@ M. J. D. Powell.")
 (define-public r-mirai
   (package
     (name "r-mirai")
-    (version "2.5.2")
+    (version "2.5.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mirai" version))
        (sha256
-        (base32 "0zsr9baidl6c5d4fj50w9xsyf7sns8mh4f116gxx4hi92pab0vbr"))))
+        (base32 "1nlf59r00m740l0yng2salv739a66v89k418kyh9h55j7f5v998p"))))
     (properties `((upstream-name . "mirai")))
     (build-system r-build-system)
     (propagated-inputs (list r-nanonext))
