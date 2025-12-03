@@ -54808,14 +54808,14 @@ Apache2.")
 (define-public r-exactextractr
   (package
     (name "r-exactextractr")
-    (version "0.10.0")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "exactextractr" version))
        (sha256
         (base32
-         "1pj3145c20r4hnyyrynzmps96a4fpgn408lrl6b9bs79y33c6zwv"))))
+         "1km58l3zg4600fx7f4knn5bn024w2bdchf6alyzq1hc7wks927s5"))))
     (properties
      '((upstream-name . "exactextractr")
        (updater-extra-native-inputs . ("r-ncdf4"))))
@@ -54824,7 +54824,11 @@ Apache2.")
     (propagated-inputs
      (list r-raster r-rcpp r-sf))
     (native-inputs
-     (list r-ncdf4 r-knitr r-testthat))
+     (list r-dplyr
+           r-knitr
+           r-ncdf4
+           r-terra
+           r-testthat))
     (home-page "https://isciences.gitlab.io/exactextractr/")
     (synopsis "Fast extraction from raster datasets using polygons")
     (description
