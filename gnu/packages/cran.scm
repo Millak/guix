@@ -8603,14 +8603,14 @@ between a set of landmarks and the samples are calculated.")
 (define-public r-lme4
   (package
     (name "r-lme4")
-    (version "1.1-37")
+    (version "1.1-38")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lme4" version))
        (sha256
         (base32
-         "037hprzv9skjcp07lhgdy9ymaihnms6pjibr61ls1paz8in7bnyg"))))
+         "1iwciihadfda3wsy6yxny97wb3r0jlq5lb3f2651gsjk030rby4p"))))
     (build-system r-build-system)
     (properties
      '((updater-ignored-native-inputs . ("r-car" "r-gamm4"))))
@@ -8624,10 +8624,13 @@ between a set of landmarks and the samples are calculated.")
            r-nloptr
            r-rcpp
            r-rcppeigen
-           r-reformulas))
+           r-rdpack
+           r-reformulas
+           r-rlang))
     (native-inputs
      (list r-devtools
            r-ggplot2
+           r-insight
            r-knitr
            r-mgcv
            r-optimx
