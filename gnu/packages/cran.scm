@@ -6526,13 +6526,13 @@ classification, regression and survival trees.")
 (define-public r-rpresto
   (package
     (name "r-rpresto")
-    (version "1.4.7")
+    (version "1.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RPresto" version))
        (sha256
-        (base32 "0r4ajzd3ciicvsydacvm8gywhcr64mh1g5p2hjl1lrxzj09x4ckw"))))
+        (base32 "0fki4ifjanzhx7kf7ws20nmzxljr50yrqiajami3k6r1cab7psa9"))))
     (properties
      '((upstream-name . "RPresto")
        (updater-extra-native-inputs . ("tzdata-for-tests"))))
@@ -6564,8 +6564,10 @@ classification, regression and survival trees.")
            r-progress
            r-purrr
            r-rlang
+           r-stringdist
            r-stringi
            r-tibble
+           r-tidyselect
            r-vctrs))
     (native-inputs (list r-hms r-knitr r-testthat r-withr tzdata-for-tests))
     (home-page "https://github.com/prestodb/RPresto")
