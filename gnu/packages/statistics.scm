@@ -890,15 +890,15 @@ posteriors and evidences.")
 (define-public r-testthat
   (package
     (name "r-testthat")
-    (version "3.3.0")
+    (version "3.3.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "testthat" version))
               (sha256
                (base32
-                "082nd13fj2f7miz0ny4n2vv6924gcavndmdans1gw6p4inal4qnb"))))
+                "1dld7h3k0z15ybcddcmr8l3ibfgv3rqfbn65b9a9ddvr7kr4d202"))))
     (properties
-     '((updater-ignored-native-inputs . ("r-testthat"))
+     '((updater-ignored-native-inputs . ("r-testthat" "r-s7" "r-xml2"))
        (updater-extra-native-inputs . ("r-digest"))))
     (build-system r-build-system)
     (propagated-inputs
