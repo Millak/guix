@@ -7322,13 +7322,13 @@ specifications, such as RAM, CPU type, and R version.")
 (define-public r-bestnormalize
   (package
     (name "r-bestnormalize")
-    (version "1.9.1")
+    (version "1.9.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "bestNormalize" version))
               (sha256
                (base32
-                "1lryl23jvf51n7ka58ncwhjglk0zzm18wik962h403j4mph1jjly"))))
+                "1q3ylrn496q7z6ascwg4qnmv0k0fghhkwwdkf05457d3s9gavc75"))))
     (properties `((upstream-name . "bestNormalize")))
     (build-system r-build-system)
     (propagated-inputs (list r-butcher
@@ -7339,10 +7339,11 @@ specifications, such as RAM, CPU type, and R version.")
                              r-generics
                              r-lambertw
                              r-nortest
+                             r-progress
                              r-purrr
                              r-recipes
                              r-tibble))
-    (native-inputs (list r-knitr r-testthat))
+    (native-inputs (list r-knitr r-rlang r-testthat))
     (home-page "https://petersonr.github.io/bestNormalize/")
     (synopsis "Normalizing transformation functions")
     (description
