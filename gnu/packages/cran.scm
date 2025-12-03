@@ -4520,13 +4520,13 @@ text annotations.")
 (define-public r-ggbeeswarm
   (package
     (name "r-ggbeeswarm")
-    (version "0.7.2")
+    (version "0.7.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggbeeswarm" version))
               (sha256
                (base32
-                "1rcw54isai05np4fj19vcxx2vcxq7y2nm3az9m8xwbc9pdjs4z7x"))))
+                "0q3hgi45jbnnbmpd1ihs1i2anc73bcmjmw0cfbjl70z3acg3hd2q"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-beeswarm r-cli r-ggplot2 r-lifecycle r-vipor))
