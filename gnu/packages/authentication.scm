@@ -221,8 +221,13 @@ YubiKey into your existing user authentication infrastructure.")
        (sha256
         (base32 "1mdj1wj0adcnx354fs17928yn2xfr1hj5mfraq282dagi873sqw3"))))
     (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'force-reconfigure
+           (lambda _ (delete-file "configure"))))))
     (native-inputs
-     (list pkg-config))
+     (list autoconf automake libtool pkg-config))
     (inputs
      (list linux-pam))
     (home-page "https://pamtester.sourceforge.net/")
