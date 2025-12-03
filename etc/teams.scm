@@ -1172,7 +1172,7 @@ the \"texlive\" importer."
 (define-member (person "Ricardo Wurmus"
                        "rekado@elephly.net"
                        "rekado")
-  r sugar)
+  bioinformatics r sugar)
 
 (define-member (person "Christopher Baines"
                        "guix@cbaines.net"
