@@ -27,7 +27,7 @@
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2018-2024 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018-2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019–2022 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Justus Winter <justus@sequoia-pgp.org>
@@ -4842,6 +4842,14 @@ score.")
                (base32
                 "0ncs1dzhrn9nlaxpyap2ipf61fc7k9bkkqacp3w6bngfj2c0p6yj"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-Werror
+            (lambda _
+              (substitute* '("Makefile.am" "Makefile.in")
+                (("-Werror") "")))))))
     (home-page "https://undbx.sourceforge.io/")
     (synopsis "Extract email messages from Outlook Express .dbx files")
     (description "This package provides a tool to extract, recover and
