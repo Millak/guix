@@ -16105,14 +16105,14 @@ functions subject to simple constraints.")
 (define-public r-bindr
   (package
     (name "r-bindr")
-    (version "0.1.2")
+    (version "0.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bindr" version))
        (sha256
         (base32
-         "16161y28wg40pwlvmildcgcwn5wx6hiyk8r79sd0r31w31h6q7sj"))))
+         "0vrlfws1qrs6xi41c5i3x5hb8mcghbh7l09bdmv7syyj2bcac4pj"))))
     (build-system r-build-system)
     (arguments
      (list
