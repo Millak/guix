@@ -54558,14 +54558,14 @@ time zone manipulations.")
 (define-public r-vroom
   (package
     (name "r-vroom")
-    (version "1.6.6")
+    (version "1.6.7")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "vroom" version))
         (sha256
           (base32
-            "1pl016hj90nk14d81i5r9w104smxnhkh6ysd0qj1dd583gqpwnw5"))))
+            "1jknbkxjcbqk5831zpjqswb8dmrwbi1nw0vh1n9fmh4bdsvynb16"))))
     (properties
      '((upstream-name . "vroom")
        (updater-extra-native-inputs . ("tzdata-for-tests"))))
