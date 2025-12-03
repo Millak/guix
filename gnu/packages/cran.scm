@@ -39160,14 +39160,14 @@ Row} (CSR) format.")
 (define-public r-text2vec
   (package
     (name "r-text2vec")
-    (version "0.6.4")
+    (version "0.6.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "text2vec" version))
        (sha256
         (base32
-         "0sjlvp4zhzwc0ai7626fpw3ws8xv0xhl8gv8mrk24lrpk5nhin2h"))))
+         "154nlvrwjc0b5v2wd2v8pmn00a30di327h09sichxlpiwwm50m3k"))))
     (properties `((upstream-name . "text2vec")))
     (build-system r-build-system)
     (propagated-inputs
@@ -39181,7 +39181,7 @@ Row} (CSR) format.")
            r-rsparse
            r-stringi))
     (native-inputs
-     (list r-knitr r-testthat))
+     (list r-glmnet r-knitr r-testthat))
     (home-page "https://text2vec.org")
     (synopsis "Text mining framework for R")
     (description
