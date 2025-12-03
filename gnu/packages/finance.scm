@@ -40,6 +40,7 @@
 ;;; Copyright © 2024 Saku Laesvuori <saku@laesvuori.fi>
 ;;; Copyright © 2024 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2025 Hennadii Stepanov <hebasto@gmail.com>
+;;; Copyright © 2025 James Smith <jsubuntuxp@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1486,7 +1487,7 @@ the KeepKey Hardware Wallet.")
             "03779gvlx70i0nnry98i4pl1d92604ix5x6jgdfkrdgzqbh5vj27"))))
     (build-system python-build-system)
     (inputs
-     (list python-keepkey python-trezor-agent))
+     (list python-keepkey python-packaging python-trezor-agent))
     (home-page "https://github.com/romanz/trezor-agent")
     (synopsis "KeepKey as hardware SSH/GPG agent")
     (description "This package allows using KeepKey as a hardware SSH/GPG
