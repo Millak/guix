@@ -6603,17 +6603,17 @@ tablets.")
 (define-public r-runner
   (package
     (name "r-runner")
-    (version "0.4.4")
+    (version "0.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "runner" version))
        (sha256
-        (base32 "0vhqjnwcx3z3i74p26divx6palx1rwvk4jpqn64jrqlzaw9qich4"))))
+        (base32 "0mhw4bxb079pb0c0f5xsb6cyfda9y1c3zxg9mlww50nd996sgp0x"))))
     (properties `((upstream-name . "runner")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
-    (native-inputs (list r-knitr))
+    (native-inputs (list r-knitr r-tinytest))
     (home-page "https://cran.r-project.org/package=runner")
     (synopsis "Running operations for vectors")
     (description
