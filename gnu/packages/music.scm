@@ -3217,7 +3217,7 @@ music theorist Paul Nauert's quantization grids or Q-Grids, for short.")
            python-setuptools
            python-wheel))
     (propagated-inputs
-     (list abjad))
+     (list python-abjad))
     (home-page "https://abjad.github.io")
     (synopsis "Abjad rhythm-maker extension package")
     (description
