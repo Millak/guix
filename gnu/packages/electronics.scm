@@ -742,7 +742,7 @@ used in the declarative section of design units.")
   ;; See <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=27344#236>.
   (package
     (name "libngspice")
-    (version "44.2")
+    (version "45.2")
     (source
      (origin
        (method git-fetch)
@@ -751,7 +751,7 @@ used in the declarative section of design units.")
               (commit (string-append "ngspice-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vp27149kx8l7397bv5p708jqph1kma8rb9bl7ckgmbr9sw9cn3q"))))
+        (base32 "0k32v64dhnv1abbgxd782qx0gzbwcfg3ijz9549j7bskik6kl2zr"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -768,13 +768,11 @@ used in the declarative section of design units.")
               "--enable-xspice"
               "--with-ngshared")))
     (native-inputs
-     (list autoconf
+     (list autoconf-2.71
            automake
            bison
            flex
            libtool))
-    (inputs
-     (list openmpi))
     (home-page "https://ngspice.sourceforge.io/")
     (synopsis "Mixed-level/mixed-signal circuit simulator")
     (description
