@@ -50,7 +50,8 @@
               (modules '((guix build utils)))
               (snippet
                ;; Remove bundled fonts.
-               '(delete-file-recursively "misc/fonts"))))
+               #~(for-each delete-file
+                           (find-files "misc/fonts" "\\.ttf")))))
     (outputs '("out" "doc"))
     (build-system gnu-build-system)
     (arguments
