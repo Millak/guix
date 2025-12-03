@@ -26633,14 +26633,14 @@ the work.")
 (define-public r-doby
   (package
     (name "r-doby")
-    (version "4.7.0")
+    (version "4.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "doBy" version))
        (sha256
         (base32
-         "1217zbcwwcafqmg8h3dmqjvpqz9id61ppv3hdlm69vbxfk2nsw5a"))))
+         "0yw2ggwgm34hf89vkrlfnykgs3icmfds6qblpvfpm42g7d7b3nd6"))))
     (properties `((upstream-name . "doBy")))
     (build-system r-build-system)
     (propagated-inputs
@@ -26649,16 +26649,18 @@ the work.")
            r-cowplot
            r-deriv
            r-dplyr
+           r-forecast
            r-ggplot2
            r-mass
            r-matrix
            r-microbenchmark
            r-modelr
+           r-purrr
            r-rlang
            r-tibble
            r-tidyr))
     (native-inputs
-     (list r-geepack r-knitr r-lme4 r-multcomp r-testthat))
+     (list r-knitr r-testthat))
     (home-page "https://people.math.aau.dk/~sorenh/software/doBy/")
     (synopsis "Groupwise statistics, LSmeans, linear contrasts, and utilities")
     (description
