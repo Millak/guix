@@ -21,7 +21,7 @@
 ;;; Copyright © 2022, 2023 Juliana Sims <juli@incana.org>
 ;;; Copyright © 2024 Evgeny Pisemsky <mail@pisemsky.site>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2025 Anderson Torres <anderson.torres.8519@gmail.com>
+;;; Copyright © 2025,2026 Anderson Torres <anderson.torres.8519@gmail.com>
 ;;; Copyright © 2025 Aiden Isik <aidenisik+git@member.fsf.org>
 ;;; Copyright © 2025 Josep Bigorra <jjbigorra@gmail.com>
 ;;; Copyright © 2025 John Kehayias <john.kehayias@protonmail.com>
@@ -1217,25 +1217,24 @@ your existing scripts and tools.  It is inspired by the GNU Make utility
 but it does away with a lot of the complexity that comes with its history.")
     (license license:gpl3+)))
 
-
 (define-public pdpmake
   (package
     (name "pdpmake")
-    (version "1.4.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/rmyorston/pdpmake")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0fjx5imd7s0h0yy8h2qc4vkdq7kxqcljnrw6h8n88720xha5z3cb"))))
+    (version "2.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "git://git.frippery.org/pdpmake")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "13qfvn0kw1fkpmjdpk0cscmvj5iycdq68kqfiml1slf1936pllb9"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:test-target "test"
-      #:parallel-tests? #f
       #:make-flags
       #~(list "DESTDIR=\"\""
               (string-append "CC=" #$(cc-for-target))
@@ -1244,14 +1243,16 @@ but it does away with a lot of the complexity that comes with its history.")
       #~(modify-phases %standard-phases
           (delete 'configure))))
     (home-page "https://frippery.org/make/")
-    (synopsis "POSIX make")
+    (synopsis "Public domain POSIX make")
     (description
      "This package contains an implementation of POSIX make.  The default
 configuration enables extensions.  Generally these extensions are compatible
 with GNU make.")
     ;; pdpmake is distributed under the public domain, but the sources include
     ;; tests under the GPL license version 2.
-    (license (list license:gpl2 license:public-domain))))
+    (license
+     (list license:gpl2
+           license:public-domain))))
 
 (define-public potato-make
   ;; No releases.
