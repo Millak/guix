@@ -479,6 +479,11 @@ of Rebar and Mix build systems and Hex.pm importer."
                       "guix/import/hexpm.scm"
                       "guix/scripts/import/hexpm.scm")))
 
+(define-team bioinformatics
+  (team 'bioinformatics
+        #:name "Bioinformatics team"
+        #:scope (list "gnu/packages/bioinformatics.scm")))
+
 (define-team bootstrap
   (team 'bootstrap
         #:name "Bootstrap"
