@@ -1631,7 +1631,11 @@ requirements according to version 1.1 of the OpenCL specification.")
            #:configure-flags
            #~(list "-DMLIR_BUILD_MLIR_C_DYLIB=ON"
                    "-DLLVM_BUILD_LLVM_DYLIB=ON"
-                   "-DLLVM_LINK_LLVM_DYLIB=ON")
+                   "-DLLVM_LINK_LLVM_DYLIB=ON"
+                   ;; The two following options install mlir-tblgen (which is
+                   ;; used by some dependent projects such as flang).
+                   "-DLLVM_INSTALL_TOOLCHAIN_ONLY=OFF"
+                   "-DLLVM_BUILD_UTILS=ON")
            #:tests? #f                  ; Tests require gtest
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'change-directory
