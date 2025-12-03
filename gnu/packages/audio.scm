@@ -814,7 +814,7 @@ streams from live audio.")
 (define-public dsp
   (package
     (name "dsp")
-    (version "1.9")
+    (version "2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -823,7 +823,7 @@ streams from live audio.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0iksmianwig7w78hqip2a8yy6r63sv8cv9pis8qxny6w1xap6njb"))))
+                "1kzjv972qbvzh7nml3brrdf6qmjmcapldbikbn2gxhpmkgxzhhar"))))
     (build-system gnu-build-system)
     (arguments
      (list
