@@ -49006,14 +49006,14 @@ for the geometry of linear networks.")
 (define-public r-spatstat-linnet
   (package
     (name "r-spatstat-linnet")
-    (version "3.3-2")
+    (version "3.4-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spatstat.linnet" version))
        (sha256
         (base32
-         "0mf6d34wf4c3nl3ac75fjgkpkcgg8k0ba031dmmhhscwd64r8yyy"))))
+         "18s3msk5zs5dq1z43dv40zz8avnaabcjpx2c9v8przhxik4a0wlx"))))
     (properties
      `((upstream-name . "spatstat.linnet")))
     (build-system r-build-system)
