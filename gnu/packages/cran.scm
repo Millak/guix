@@ -4938,13 +4938,13 @@ customization from ggplot2 and other ggplot2 extension packages.")
 (define-public r-ggthemes
   (package
     (name "r-ggthemes")
-    (version "5.1.0")
+    (version "5.2.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggthemes" version))
               (sha256
                (base32
-                "03mxigi34nd05wjigm8lpcbyhp4c8jxz7zm04qs27clbzsn1jj07"))))
+                "1xicj5jvzw1050f7jcdcqbnafar1mwz6w8ld6xdp2bq8gabd9wx0"))))
     (properties
      '((updater-extra-native-inputs . ("r-dplyr"))))
     (build-system r-build-system)
@@ -4955,7 +4955,13 @@ customization from ggplot2 and other ggplot2 extension packages.")
            r-scales
            r-stringr
            r-tibble))
-    (native-inputs (list r-dplyr r-testthat))
+    (native-inputs (list r-dplyr
+                         r-glue
+                         r-rlang
+                         r-spelling
+                         r-testthat
+                         r-vdiffr
+                         r-withr))
     (home-page "https://cran.rstudio.com/web/packages/ggthemes")
     (synopsis "Extra themes, scales and geoms for @code{ggplot2}")
     (description "This package provides extra themes and scales for
