@@ -21,6 +21,8 @@ guix/build-system/rebar\.scm                       @guix/beam
 guix/import/hexpm\.scm                             @guix/beam
 guix/scripts/import/hexpm\.scm                     @guix/beam
 
+gnu/packages/bioinformatics\.scm                   @guix/bioinformatics
+
 gnu/packages/commencement\.scm                     @guix/bootstrap
 gnu/packages/mes\.scm                              @guix/bootstrap
 
