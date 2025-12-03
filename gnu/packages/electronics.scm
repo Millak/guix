@@ -89,6 +89,7 @@
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages libedit)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libftdi)
   #:use-module (gnu packages libusb)
@@ -3082,7 +3083,7 @@ parallel computing platforms.  It also supports serial execution.")
 (define-public yosys
   (package
     (name "yosys")
-    (version "0.59.1")
+    (version "0.60")
     (source
      (origin
        (method git-fetch)
@@ -3090,7 +3091,7 @@ parallel computing platforms.  It also supports serial execution.")
               (url "https://github.com/YosysHQ/yosys")
               (commit (string-append "v" version))))
        (sha256
-        (base32 "1fjvhsxk9g1q072bfpp8vxwyiaa73nn0b20ciff2gl2jnp07fvpp"))
+        (base32 "13ygzsx81a32nmqqs5rn8w419dcx7s822bh9l2zc82jphy54nc3s"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -3128,6 +3129,8 @@ parallel computing platforms.  It also supports serial execution.")
               (substitute* '("Makefile")
                 (("ENABLE_EDITLINE \\:= 0")
                  "ENABLE_EDITLINE := 1")
+                (("ENABLE_LIBYOSYS \\:= 0")
+                 "ENABLE_LIBYOSYS := 1")
                 (("ABCEXTERNAL \\?=")
                  (string-append "ABCEXTERNAL = "
                                 (search-input-file inputs "/bin/abc"))))))
@@ -3157,15 +3160,14 @@ parallel computing platforms.  It also supports serial execution.")
                          gtkwave        ;for the tests
                          iverilog ;for the tests
                          pkg-config
-                         perl
-                         python
-                         tcl)) ;tclsh for the tests
+                         perl))
     ;; Optional dependencies increase considerably package closure.
-    ;; - gtkwave: required only for vcd2fst binary, used by ???sim??? command.
-    ;; - graphviz, xdot: used by ???show??? command to display schematics.
+    ;; - gtkwave: required only for vcd2fst binary, used by ‘sim’ command.
+    ;; - graphviz, xdot: used by ‘show’ command to display schematics.
     (inputs (list abc-yosyshq
                   bash-minimal
                   clang
+                  editline
                   libffi
                   psmisc
                   python
@@ -3175,8 +3177,11 @@ parallel computing platforms.  It also supports serial execution.")
                   z3
                   zlib))
     (home-page "https://yosyshq.net/yosys/")
-    (synopsis "FPGA Verilog RTL synthesizer")
-    (description "Yosys synthesizes Verilog-2005.")
+    (synopsis "Open synthesis suite for RTL code")
+    (description "Yosys consist on a framework of RTL synthesis tools.  It
+currently has extensive Verilog-2005 support, and performs synthesis of VHDL
+code using external plugins.  It provides a basic set of synthesis algorithms
+for various application domains, including FPGAs and ASICs.")
     (license license:isc)))
 
 (define-deprecated-package yosys-clang yosys)
