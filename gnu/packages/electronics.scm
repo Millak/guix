@@ -756,16 +756,25 @@ used in the declarative section of design units.")
     (arguments
      (list
       #:tests? #f ;there are no tests for libngspice
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'install 'delete-scripts
-                     (lambda _
-                       (delete-file-recursively
-                        (string-append #$output
-                                       "/share/ngspice/scripts")))))
-      #:configure-flags #~(list "--enable-openmp" "--enable-cider"
-                                "--enable-xspice" "--with-ngshared")))
-    (native-inputs (list autoconf automake bison flex libtool))
-    (inputs (list openmpi))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'delete-scripts
+            (lambda _
+              (delete-file-recursively
+               (string-append #$output "/share/ngspice/scripts")))))
+      #:configure-flags
+      #~(list "--enable-openmp"
+              "--enable-cider"
+              "--enable-xspice"
+              "--with-ngshared")))
+    (native-inputs
+     (list autoconf
+           automake
+           bison
+           flex
+           libtool))
+    (inputs
+     (list openmpi))
     (home-page "https://ngspice.sourceforge.io/")
     (synopsis "Mixed-level/mixed-signal circuit simulator")
     (description
