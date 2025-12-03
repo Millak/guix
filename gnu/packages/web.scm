@@ -6227,7 +6227,7 @@ The program supports multilingual content and is fully extensible.")
            gettext-minimal
            subversion
            git
-           bazaar
+           breezy
            cvs
            mercurial))
     (inputs
