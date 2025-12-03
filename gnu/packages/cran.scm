@@ -37756,13 +37756,15 @@ package.")
 (define-public r-yaml
   (package
     (name "r-yaml")
-    (version "2.3.10")
+    (version "2.3.11")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "yaml" version))
               (sha256
                (base32
-                "0v9al1fh82vpjhml91j73sim7gfyc0154kxaam41sdkf6qnx8dp2"))))
+                "0b62p9h42xbbl96jlvbdyriys1h1v2jlnzcvsmbj5fp2p5qgmi5r"))))
+    (properties
+     '((updater-extra-native-inputs . ("r-runit"))))
     (build-system r-build-system)
     (native-inputs (list r-runit))
     (home-page "https://cran.r-project.org/web/packages/yaml/")
