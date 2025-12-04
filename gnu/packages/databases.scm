@@ -5947,57 +5947,6 @@ be blown away by a SQL-DB or an external database server.")
     (description "SDB is a simple key/value database based on djb's cdb disk
 storage that supports JSON and array introspection.")
     (license license:expat)))
-
-(define-public sequeler
-  (package
-    (name "sequeler")
-    (version "0.8.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Alecaddd/sequeler")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0biggmsn8k7j6pdrwk29whl56qlfgvf5d9vjpgz4nyqih56wgh9j"))))
-    (build-system meson-build-system)
-    (arguments
-     '(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           ;; Don't create 'icon-theme.cache'.
-           (lambda _
-             (substitute* "build-aux/meson_post_install.py"
-               (("gtk-update-icon-cache") "true")
-               (("update-desktop-database") "true")))))))
-    (native-inputs
-     `(;("appstream-glib" ,appstream-glib)  ; validation fails for lack of network
-       ("gettext-minimal" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")             ; for glib-compile-resources
-       ("gtk+" ,gtk+ "bin")
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
-    (inputs
-     `(("glib" ,glib)
-       ("granite" ,granite)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gtk+" ,gtk+)
-       ("gtksourceview-3" ,gtksourceview-3)
-       ("libgda" ,libgda)
-       ("libgee" ,libgee)
-       ("libsecret" ,libsecret)
-       ("libssh2" ,libssh2)
-       ("libxml2" ,libxml2)))
-    (synopsis "Friendly SQL Client")
-    (description "Sequeler is a native Linux SQL client built in Vala and
-Gtk.  It allows you to connect to your local and remote databases, write SQL in
-a handy text editor with language recognition, and visualize SELECT results in
-a Gtk.Grid Widget.")
-    (home-page "https://github.com/Alecaddd/sequeler")
-    (license license:gpl2+)))
-
 (define-public sqlitebrowser
   (package
     (name "sqlitebrowser")
