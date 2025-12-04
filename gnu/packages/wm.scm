@@ -370,7 +370,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
 (define-public hyprland
   (package
     (name "hyprland")
-    (version "0.52.1")
+    (version "0.52.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/hyprwm/Hyprland"
@@ -387,7 +387,7 @@ loginctl commands (lock/unlock/before-sleep) and inhibit.")
                               "subprojects"))))
               (sha256
                (base32
-                "09gz250n5cpxk5niv9ilb05wwzl8620sxjv542v53p5bcihaqgf4"))))
+                "1pfpfj1f02r1a2sr71v3jkmdfvr0kc8mp51b92487bbci6cxpd2p"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f                  ;No tests.
