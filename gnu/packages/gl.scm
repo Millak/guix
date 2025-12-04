@@ -266,7 +266,7 @@ generate a GL/GLES/EGL/GLX/WGL loader tailored for specific requirements.")
               (lambda* (#:key tests? #:allow-other-keys)
                 (when tests?
                   (invoke "xvfb-run" "utility/test.sh"))))))))
-    (native-inputs (list python-setuptools python-wheel xvfb-run))
+    (native-inputs (list python-setuptools python-wheel xvfb-run-for-tests))
     (propagated-inputs (list python-jinja2))))
 
 (define-public s2tc
