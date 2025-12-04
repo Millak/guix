@@ -831,6 +831,32 @@ documents.")
 builder does not support SVG images natively (e.g. LaTeX).")
     (license license:bsd-2)))
 
+(define-public python-sphinxcontrib-video
+  (package
+    (name "python-sphinxcontrib-video")
+    (version "0.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sphinxcontrib_video" version))
+       (sha256
+        (base32 "192wbnljj8wzgv802r5yfz1wd88qm1xhnhq2b7629qbx3gkk783m"))))
+    (build-system pyproject-build-system)
+    ;; There is an error not finding the Pytest 'app' fixture causing all the
+    ;; tests to error (see:
+    ;; <https://github.com/sphinx-contrib/video/issues/62>).
+    (arguments (list #:tests? #f))
+    (propagated-inputs (list python-sphinx))
+    (native-inputs (list python-beautifulsoup4
+                         python-defusedxml
+                         python-pytest
+                         python-setuptools
+                         python-wheel))
+    (home-page "https://sphinxcontrib-video.readthedocs.io/")
+    (synopsis "Allows embedding of HTML5 videos in sphinx")
+    (description "Allows embedding of HTML5 videos in sphinx.")
+    (license license:asl2.0)))
+
 (define-public python-sphinxcontrib-websupport
   (package
     (name "python-sphinxcontrib-websupport")
