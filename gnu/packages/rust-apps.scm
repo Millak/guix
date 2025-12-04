@@ -3032,7 +3032,7 @@ configuration-free.")
 (define-public vhdl-ls
   (package
     (name "vhdl-ls")
-    (version "0.85.0")
+    (version "0.86.0")
     (source
      (origin
        (method git-fetch)
@@ -3041,12 +3041,15 @@ configuration-free.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vb2wmwammbxg89q8hhndskw43kgbamhyz41wdmpzk9skwy658ms"))))
+        (base32 "17ap5g96y359zy05890bwn6y6zqsg1dy5n5745vvcyz9jdhkijqz"))))
     (build-system cargo-build-system)
     (arguments
      (list
+      #:rust rust-1.87
       #:install-source? #f
       #:cargo-install-paths ''("vhdl_ls")
+      ;; Remove this line when ‘rustdoc’ is available in #:rust.
+      #:cargo-test-flags ''("--lib" "--bins" "--tests" "--examples")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'install-libraries
