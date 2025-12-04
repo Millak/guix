@@ -10964,6 +10964,10 @@ and also provides the base for the FlightGear Flight Simulator.")
                        (invoke "tar" "xf"
                                #$(this-package-native-input "flightgear-data")
                                "--strip-components=1")))))
+               (add-after 'qt-wrap 'fg-root-wrap
+                 (lambda _
+                   (wrap-program (string-append #$output "/bin/fgfs")
+                     `("FG_ROOT" = (,(string-append #$output "/share/flightgear"))))))
                ;; Test suite needs access to FGData so run it after 'install.
                (delete 'check)
                (add-after 'install-data 'check
