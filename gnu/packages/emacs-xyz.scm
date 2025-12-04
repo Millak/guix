@@ -46246,8 +46246,8 @@ EasyPG and latest Emacs.")
       (license license:gpl2+))))
 
 (define-public emacs-wallabag
-  (let ((commit "686fabf477b903857bc5d54a0a8e49620822e14e")
-        (revision "1"))
+  (let ((commit "798379d3a7210cb03abe6e470b59c212bb467632")
+        (revision "2"))
     (package
       (name "emacs-wallabag")
       (version (git-version "1.1.0" revision commit))
@@ -46259,11 +46259,11 @@ EasyPG and latest Emacs.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "09xpc65psh8nf7gww3y2chnfkyi8b8mz1bs71g0zmz8h5djf821i"))))
+          (base32 "01sp9pvylvcpb30l9iz5xs2pingv1h1hnws3di7q07y6dfzpan9f"))))
       (build-system emacs-build-system)
       (arguments
        '(#:tests? #f ;no tests
-         #:include (cons* "emojis.alist" %default-include)))
+         #:include (cons* "emojis.alist" "default.css" %default-include)))
       (propagated-inputs (list emacs-emacsql emacs-request emacs-s emacs-gptel))
       (home-page "https://github.com/chenyanming/wallabag.el/")
       (synopsis "Emacs interface to wallabag")
