@@ -14426,36 +14426,46 @@ quality control are provided.")
 (define-public gdc-client
   (package
     (name "gdc-client")
-    (version "1.6.0")
+    (version "2.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/NCI-GDC/gdc-client.git")
-             (commit version)))
+              (url "https://github.com/NCI-GDC/gdc-client.git")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cagawlzjwj3wam10lv64xgbfx4zcnzxi5sjpsdhq7rn4z24mzc2"))))
+        (base32 "1yzd8j3p7w9x00qj6mx8kvlv253063pdnf7ixpkqmmwzbjhv072s"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'relax-requirements
-                    (lambda _
-                      (substitute* "requirements.txt"
-                        (("==")
-                         ">=")))))))
-    (inputs (list python-cryptography
-                  python-intervaltree
-                  python-jsonschema
-                  python-lxml
-                  python-ndg-httpsclient
-                  python-progressbar2
-                  python-pyasn1
-                  python-pyopenssl
-                  python-pyyaml
-                  python-requests
-                  python-termcolor))
-    (native-inputs (list python-setuptools python-wheel))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.cfg"
+                (("intervaltree~=3.0.2") "intervaltree")
+                (("termcolor~=1.1.0") "termcolor"))))
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((" --cov=gdc_client --cov-report term") "")))))))
+    (native-inputs
+     (list python-flask
+           python-httmock
+           python-moto
+           python-pytest
+           python-requests-mock
+           python-setuptools))
+    (inputs
+     (list python-importlib-metadata
+           python-intervaltree
+           python-jsonschema
+           python-lxml
+           python-progressbar2
+           python-pyyaml
+           python-requests
+           python-termcolor))
     (home-page "https://gdc.nci.nih.gov/access-data/gdc-data-transfer-tool")
     (synopsis "GDC data transfer tool")
     (description
