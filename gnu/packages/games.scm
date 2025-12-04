@@ -10869,21 +10869,32 @@ levels to unlock.")
         '(begin
            ;; There are some bundled libraries.
            (for-each delete-file-recursively
-                     '("3rdparty/expat/"))
+                     '("3rdparty/expat/"
+                       "3rdparty/tiny_gltf/"))
            #t))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DSYSTEM_EXPAT=ON")
-       #:test-exclude "(http|dns|repository|catalog)"))
+       #:test-exclude "(http|dns|repository|catalog)"
+       #:phases
+       ,#~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-tiny-gltf
+              (lambda _
+                (substitute* "3rdparty/CMakeLists.txt"
+                  (("add_subdirectory\\(tiny_gltf\\)") ""))
+                (substitute* "simgear/CMakeLists.txt"
+                  (("FGTinyGLTF") "tinygltf")))))))
     (inputs
-     `(("boost" ,boost)
-       ("c-ares" ,c-ares)
-       ("curl" ,curl)
-       ("expat" ,expat)
-       ("mesa" ,mesa)
-       ("openal" ,openal)
-       ("openscenegraph" ,openscenegraph)
-       ("zlib" ,zlib)))
+     (list boost
+           c-ares
+           curl
+           expat
+           mesa
+           nlohmann-json
+           openal
+           openscenegraph
+           tinygltf
+           zlib))
     (home-page "https://home.flightgear.org/")
     (synopsis "Libraries for 3D simulations and games")
     (description "SimGear is a set of libraries designed to be used as
