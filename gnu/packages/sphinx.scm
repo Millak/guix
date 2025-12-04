@@ -929,7 +929,11 @@ Sphinx documents in web templates and to handle searches.")
            python-statsmodels
            python-wheel))
     (propagated-inputs
-     (list python-pillow
+     ;; Propagate joblib as it's needed when building Sphinx doc in parallel
+     ;; (otherwise the error "joblib must be importable when parallel mode is
+     ;; enabled" is thrown).
+     (list python-joblib
+           python-pillow
            python-sphinx))
     (home-page "https://sphinx-gallery.github.io/stable/index.html")
     (synopsis "Generate an examples gallery automatically")
