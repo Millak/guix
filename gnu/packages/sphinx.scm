@@ -52,6 +52,7 @@
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages graphviz)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages jupyter)
@@ -273,6 +274,32 @@ sources.")
            python-pytest-xdist
            (texlive-local-tree
             (list texlive-anyfontsize texlive-cm-super texlive-tex-gyre))))))
+
+(define-public python-sphinx-tags
+  (package
+    (name "python-sphinx-tags")
+    (version "0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sphinx_tags" version))
+       (sha256
+        (base32 "179mlmql7nmwd12lqyrncx8klbxjcmb7s8zj0v3nfxglmjdj2r9h"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-sphinx))
+    (native-inputs
+     (list pandoc
+           python-beautifulsoup4
+           python-flit-core
+           python-myst-parser
+           python-nbsphinx
+           python-pytest
+           python-sphinx-design))
+    (home-page "https://sphinx-tags.readthedocs.io/en/latest/")
+    (synopsis "Sphinx extension to create tags")
+    (description "This package provides a Sphinx extension to
+create tags for documentation pages.")
+    (license license:expat)))
 
 (define-public python-sphinxcontrib-apidoc
   (package
