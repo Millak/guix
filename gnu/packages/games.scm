@@ -10931,6 +10931,7 @@ and also provides the base for the FlightGear Flight Simulator.")
                    (string-append "-DFG_DATA_DIR=" #$output "/share/flightgear"))
            ;; TODO: test suite segfaults.
            #:tests? #f
+           #:qtbase qtbase
            #:phases
            #~(modify-phases %standard-phases
                (add-after 'unpack 'skip-some-tests
@@ -10980,10 +10981,9 @@ and also provides the base for the FlightGear Flight Simulator.")
            openal
            openscenegraph
            plib
-           qtdeclarative-5
-           qtquickcontrols2-5
-           qtsvg-5
-           qtwayland-5
+           qtdeclarative
+           qtsvg
+           qtwayland
            simgear
            speexdsp
            sqlite
