@@ -1336,8 +1336,9 @@ Trisquel's @code{apt}.")
      (list
       ;; tests: 1295 passed, 9 skipped
       #:test-flags
-      ;; Network access is required.
-      #~(list "--ignore=tests/console/commands/test_add.py"
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; Network access is required.
+              "--ignore=tests/console/commands/test_add.py"
               "--ignore=tests/console/commands/test_search.py"
               "--ignore=tests/console/commands/test_show.py"
               "--ignore=tests/installation/test_chef.py"
