@@ -1097,7 +1097,7 @@ environment.")
      (list airspy
            airspyhf
            bladerf
-           boost
+           boost-1.83
            fftwf
            gmp
            gnuradio
@@ -1199,7 +1199,7 @@ primitives for SDR (Software Defined Radio).")
              pybind11
              python-numpy))
       (inputs
-       (list boost
+       (list boost-1.83
              gmp
              gnuradio
              itpp
@@ -1290,7 +1290,7 @@ to the fix block above.
     (native-inputs
      (list pkg-config pybind11 python-six))
     (inputs
-     (list boost
+     (list boost-1.83
            gmp
            gnuradio
            log4cpp
@@ -1343,7 +1343,7 @@ satellites.")
      (list pkg-config))
     (inputs
      (list alsa-lib
-           boost
+           boost-1.83
            fftwf
            gmp
            gnuradio
@@ -3441,7 +3441,7 @@ instruction sets.")
        ("python-mako" ,python-mako)))
     (inputs
      (list armadillo
-           boost
+           boost-1.83
            cpu-features
            fmt
            gflags
