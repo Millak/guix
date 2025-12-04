@@ -11867,21 +11867,26 @@ apply unified diffs.  It has features such as:
 (define-public python-numpydoc
   (package
     (name "python-numpydoc")
-    (version "1.5.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "numpydoc" version))
        (sha256
         (base32
-         "0k2z3g4s3w39h1nd293542hl9qv55j29gcr3bkia0rr3ldsppnxh"))))
+         "00gsbzpx7s3yq6g5c8k7rlq2hhx2pdraqcbb18k142g3xvv70y9z"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags
-           '(list "numpydoc/tests"
-                  ;; TODO: unclear why these fail.
-                  "-k" "not test_MyClass and not test_my_function")))
-    (propagated-inputs (list python-jinja2 python-sphinx))
+     (list
+      #:test-flags
+      '(list "numpydoc/tests"
+             "-k" (string-append
+                   ;; TODO: unclear why these fail.
+                   "not test_MyClass and not test_my_function "
+                   ;; This test compares installed vs source absolute file
+                   ;; names.
+                   "and not test_source_file_name_with_properties"))))
+    (propagated-inputs (list python-sphinx python-tomli))
     (native-inputs
      (list python-matplotlib
            python-pytest
