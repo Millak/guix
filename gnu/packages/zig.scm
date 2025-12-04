@@ -85,7 +85,7 @@
   (origin
     (method git-fetch)
     (uri (git-reference
-          (url "https://github.com/ziglang/zig")
+          (url "https://codeberg.org/ziglang/zig")
           (commit commit)))
     (file-name (git-file-name "zig" version))
     (sha256 (base32 hash))
