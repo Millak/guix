@@ -1060,6 +1060,44 @@ which allows one to install the M8 firmware on any Teensy.")
                    license:public-domain
                    license:zlib))))
 
+(define-public magic
+  (package
+    (name "magic")
+    (version "8.3.581")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/RTimothyEdwards/magic")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1if7c2ngk232pmsp0q3vqikg52kb25r7l3bgyfk1w5qskf89xzls"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:configure-flags
+      #~(list (string-append
+               "--with-tcl=" #$(this-package-input "tcl"))
+              (string-append
+               "--with-tk=" #$(this-package-input "tk")))))
+    (inputs (list cairo
+                  glu
+                  libx11
+                  mesa
+                  python
+                  readline
+                  tcl
+                  tk))
+    (home-page "http://opencircuitdesign.com/magic/index.html")
+    (synopsis "@acronym{VLSI, Very-large-scale integration} layout tool")
+    (description
+     "Magic is an interactive @acronym{EDA, Electronic Design Automation} layout
+tool.  It can run @acronym{DRC, design rule check} and @acronym{LVS, layout
+versus schematic} tests and can assist with automatic routing.")
+    (license license:bsd-0)))
+
 ;; TODO: Unbundle scintilla when ScintillaEdit.h is available.
 (define-public mcy
   (package
