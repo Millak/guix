@@ -65,6 +65,7 @@
   #:use-module (gnu packages time)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages graph)
+  #:use-module (gnu packages statistics)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages xml))
 
@@ -885,13 +886,13 @@ Sphinx documents in web templates and to handle searches.")
 (define-public python-sphinx-gallery
   (package
     (name "python-sphinx-gallery")
-    (version "0.19.0")
+    (version "0.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sphinx_gallery" version))
        (sha256
-        (base32 "1crfmzl61pj308nj5q4vb98d09gpcw3bmz8jlql2wr5d819cn044"))))
+        (base32 "0dfp12zjasnidh7l21zjjfkwamgmrh2p15cm6lnq2g8qqq81aa3h"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -908,25 +909,27 @@ Sphinx documents in web templates and to handle searches.")
     (native-inputs
      (list python-absl-py
            python-graphviz
+           ;;python-intersphinx-registry TODO: package me!
            python-ipython
            python-joblib
+           python-jupyterlite-sphinx
            python-lxml
-           ;; python-intersphinx-registry ; not packaged yet
            python-matplotlib
            python-numpy
            python-packaging
            python-plotly
+           python-pydata-sphinx-theme
            python-pytest
            python-pytest-cov
            python-seaborn
            python-setuptools
            python-setuptools-scm
-           ;; python-sphinxcontrib-video ; not packaged yet
-           ;; python-statsmodels         ;
+           python-sphinxcontrib-video
+           python-sphinx-design
+           python-statsmodels
            python-wheel))
     (propagated-inputs
-     (list python-jupyterlite-sphinx
-           python-pillow
+     (list python-pillow
            python-sphinx))
     (home-page "https://sphinx-gallery.github.io/stable/index.html")
     (synopsis "Generate an examples gallery automatically")
