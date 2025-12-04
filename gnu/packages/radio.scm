@@ -1231,41 +1231,38 @@ DMR, NXDN, P25, etc.")
                      license:isc)))))
 
 (define-public gr-iqbal
-  ;; No tag for version supporting Gnuradio 3.9; use commit.
-  (let ((commit "fbee239a6fb36dd2fb564f6e6a0d393c4bc844db")
-        (revision "0"))
-    (package
-      (name "gr-iqbal")
-      (version (git-version "0.38.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.osmocom.org/gr-iqbal")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "12p193ngcs65nd3lynry119nhv40mikamqkw37wdln7lawx3nw7p"))))
-      (build-system cmake-build-system)
-      (arguments (list #:tests? #f))
-      (native-inputs
-       (list doxygen
-             pkg-config
-             pybind11
-             python
-             python-numpy
-             python-six))
-      (inputs
-       (list boost
-             fftwf
-             gmp
-             gnuradio
-             libosmo-dsp
-             log4cpp
-             spdlog
-             volk))
-      (synopsis "GNU Radio block to correct IQ imbalance")
-      (description
+  (package
+    (name "gr-iqbal")
+    (version "0.38.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.osmocom.org/gr-iqbal")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "08qnirnwkxida1k4gdjm43jfvk2j32afcl0212kyb1ixw2gwc2wy"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))
+    (native-inputs
+     (list doxygen
+           pkg-config
+           pybind11
+           python
+           python-numpy
+           python-six))
+    (inputs
+     (list boost-1.83
+           fftwf
+           gmp
+           gnuradio
+           libosmo-dsp
+           log4cpp
+           spdlog
+           volk))
+    (synopsis "GNU Radio block to correct IQ imbalance")
+    (description
      "This is a GNU Radio block to correct IQ imbalance in quadrature
 receivers.  It's composed of two main block:
 @itemize
@@ -1273,8 +1270,8 @@ receivers.  It's composed of two main block:
 @item Optimize: Attempts to auto-detect the phase and amplitude error to feed
 to the fix block above.
 @end itemize")
-      (home-page "https://git.osmocom.org/gr-iqbal/")
-      (license license:gpl3+))))
+    (home-page "https://git.osmocom.org/gr-iqbal/")
+    (license license:gpl3+)))
 
 (define-public gr-satellites
   (package
