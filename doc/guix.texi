@@ -7888,7 +7888,8 @@ package looks like this:
                (base32
                 "0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i"))))
     (build-system gnu-build-system)
-    (arguments '(#:configure-flags '("--enable-silent-rules")))
+    (arguments
+     (list #:configure-flags #~(list "--enable-silent-rules")))
     (inputs (list gawk))
     (synopsis "Hello, GNU world: An example GNU package")
     (description "Guess what GNU Hello prints!")
@@ -7899,7 +7900,7 @@ package looks like this:
 @noindent
 Without being a Scheme expert, the reader may have guessed the meaning
 of the various fields here.  This expression binds the variable
-@code{hello} to a @code{<package>} object, which is essentially a record
+@code{hello} to a @code{<package>} record
 (@pxref{SRFI-9, Scheme records,, guile, GNU Guile Reference Manual}).
 This package object can be inspected using procedures found in the
 @code{(guix packages)} module; for instance, @code{(package-name hello)}
@@ -7957,31 +7958,29 @@ The @code{arguments} field specifies options for the build system
 @code{gnu-build-system} as a request run @file{configure} with the
 @option{--enable-silent-rules} flag.
 
-@cindex quote
-@cindex quoting
-@findex '
-@findex quote
-@cindex backquote (quasiquote)
-@findex `
-@findex quasiquote
-@cindex comma (unquote)
-@findex ,
-@findex unquote
-What about these quote (@code{'}) characters?  They are Scheme syntax to
-introduce a literal list; @code{'} is synonymous with @code{quote}.
-Sometimes you'll also see @code{`} (a backquote, synonymous with
-@code{quasiquote}) and @code{,} (a comma, synonymous with @code{unquote}).
-@xref{Expression Syntax, quoting,, guile, GNU Guile Reference Manual},
-for details.  Here the value of the @code{arguments} field is a list of
-arguments passed to the build system down the road, as with @code{apply}
+The value of the @code{arguments} field is a list of arguments passed to
+the build system and that end up being applied, as with @code{apply}
 (@pxref{Fly Evaluation, @code{apply},, guile, GNU Guile Reference
 Manual}).
 
+@cindex keyword arguments, for build systems
 The hash-colon (@code{#:}) sequence defines a Scheme @dfn{keyword}
 (@pxref{Keywords,,, guile, GNU Guile Reference Manual}), and
 @code{#:configure-flags} is a keyword used to pass a keyword argument
 to the build system (@pxref{Coding With Keywords,,, guile, GNU Guile
 Reference Manual}).
+
+@findex #~
+@findex gexp
+@cindex staging, for build system arguments
+@cindex code staging, in package definitions
+What about these hash-tilde (@code{#~}) characters?  This is
+Guix-specific syntax introducing a so-called @dfn{G-expression}
+(@pxref{G-Expressions}), which denotes code that is @dfn{staged} for
+eventual evaluation: this staged code is only evaluated if and when
+attempting to build the package, by the build daemon.  In this example,
+the staged code is the @code{(list @dots{})} expression, which builds a
+list of one element, the configure flag.
 
 @item
 The @code{inputs} field specifies inputs to the build process---i.e.,
