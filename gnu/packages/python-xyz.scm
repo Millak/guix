@@ -12220,20 +12220,25 @@ toolkits.")
                 (symlink (string-append html "/_images")
                          (string-append info "/matplotlib-figures"))))))))
     (native-inputs
-     (list graphviz
+     (list ffmpeg                       ;for matplotlib animation support
+           graphviz
            inkscape/pinned
            python-colorspacious
            python-ipython
            python-ipykernel
            python-ipywidgets
+           python-matplotlib
            python-mpl-sphinx-theme
            python-numpydoc
+           python-pyyaml
            python-scipy
            python-sphinx
            python-sphinx-copybutton
            python-sphinx-design
            python-sphinx-gallery
+           python-sphinx-tags
            python-sphinxcontrib-svg2pdfconverter
+           python-sphinxcontrib-video
            texinfo
            texlive-dvipng-bin
            (texlive-local-tree
