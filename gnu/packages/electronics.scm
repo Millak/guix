@@ -2106,6 +2106,31 @@ editing of mask layouts, and verification such as
 @acronym{DRC, Design rule checking} and @acronym{LVS, Layout Versus Schematic}.")
     (license license:gpl3+)))
 
+(define-public python-liberty-parser
+  (package
+    (name "python-liberty-parser")
+    (version "0.0.27")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/tok/liberty-parser")
+             (commit version)))
+       (sha256
+        (base32 "0x8spiy4sxjma3dxvynax8hbzyxl90bgws00cqxazy95wyfbngar"))
+       (file-name (git-file-name name version))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-lark python-numpy python-sympy))
+    (native-inputs (list python-pytest python-setuptools))
+    (home-page "https://codeberg.org/tok/liberty-parser")
+    (synopsis "Parser for Liberty timing libraries")
+    (description
+     "The @code{liberty-parser} Python library provides a parser
+and data structures for the Liberty format,
+a standard file format used in @acronym{EDA, Electronic Design Automation}
+for example for timing information of digital circuits.")
+    (license license:gpl3+)))
+
 (define-public python-pyucis
   (package
     (name "python-pyucis")
