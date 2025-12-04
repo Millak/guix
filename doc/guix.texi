@@ -7906,9 +7906,16 @@ This package object can be inspected using procedures found in the
 @code{(guix packages)} module; for instance, @code{(package-name hello)}
 returns---surprise!---@code{"hello"}.
 
-With luck, you may be able to import part or all of the definition of
-the package you are interested in from another repository, using the
-@code{guix import} command (@pxref{Invoking guix import}).
+@quotation Quick start
+Impatient?  With luck, you may be able to import part or all of the
+definition of the package you are interested in from another repository,
+using the @code{guix import} command (@pxref{Invoking guix import}).
+
+Alternatively, try out the
+@uref{https://guix-hpc.gitlabpages.inria.fr/guix-packager/,
+Guix-Packager interface} in your web browser to produce a preliminary
+package definition.
+@end quotation
 
 In the example above, @code{hello} is defined in a module of its own,
 @code{(gnu packages hello)}.  Technically, this is not strictly
