@@ -12209,35 +12209,38 @@ Full documentation may be found at
 (define-public python-tweepy
   (package
     (name "python-tweepy")
-    (version "4.4.0")
+    (version "4.16.0")
     (source
      (origin
        (method git-fetch)
        (uri
         (git-reference
-         (url "https://github.com/tweepy/tweepy")
-         (commit (string-append "v" version))))
+          (url "https://github.com/tweepy/tweepy")
+          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0jl3j20iqvzqqw5q5ldval5wrc2pdx94zff3b6b87j51yjx3qjhr"))))
-    (build-system python-build-system)
+        (base32 "1k99qf0h1ykz0c56wdnlsyvd6zrcsrc4rl7rnlaxrpjppxjnpcpn"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f         ;XXX: need /etc/ssl/certs/ca-certificates.crt
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "python" "-m" "unittest" "discover" "tests")))))))
-    (propagated-inputs
-     (list python-aiohttp python-requests python-requests-oauthlib))
+     ;; tests: 149 passed, 3 skipped, 1 warning
+     (list #:test-backend #~'unittest
+           #:test-flags #~(list "discover" "tests")))
     (native-inputs
-     (list python-vcrpy))
+     (list nss-certs-for-test
+           python-flit-core
+           python-urllib3-1.26
+           python-vcrpy))
+    (propagated-inputs
+     (list python-aiohttp
+           python-async-lru
+           python-oauthlib
+           python-requests
+           python-requests-oauthlib))
     (home-page "https://www.tweepy.org/")
     (synopsis "Twitter library for Python")
-    (description "This package provides @code{Tweepy}, an easy-to-use Python
-library for accessing the Twitter API.")
+    (description
+     "This package provides @code{Tweepy}, an easy-to-use Python library for
+accessing the Twitter API.")
     (license license:expat)))
 
 (define-public python-quart
