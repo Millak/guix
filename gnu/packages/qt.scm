@@ -4798,6 +4798,40 @@ PySide2, PyQt6, PySide6) and additional custom QWidgets.")
 bindings (PySide, PySide2, PyQt4 and PyQt5).")
     (license license:expat)))
 
+(define-public python-superqt
+  (package
+    (name "python-superqt")
+    (version "0.7.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "superqt" version))
+       (sha256
+        (base32 "0zkqm6rdz252d7wjcsc7ybi63a52ikvkkf1xknf954f33nkxnbw2"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pygments python-qtpy
+                             python-typing-extensions))
+    (native-inputs (list python-hatch-vcs python-hatchling))
+    (home-page "https://github.com/pyapp-kit/superqt")
+    (synopsis "Extra widgets and components for PyQt/PySide")
+    (description "This package provides some extra widgets for
+@code{PyQt/PySide}:
+@itemize
+@item Multi-handle slider for float values
+@item Spinbox with arbitrarily large integers
+@item Magnitude combined with unit dropdown
+@item Label that willl elide text
+@item Searchable ComboBox populated from Enum
+@item Searchable List
+@item Searchable Tree
+@item Color ComboBox
+@item Colormap ComboBox
+@item Toggle switch
+@item Collapsible widget to hide and unhide child widgets
+@item Flow layout
+@end itemize")
+    (license license:bsd-3)))
+
 (define-public qscintilla
   (package
     (name "qscintilla")
