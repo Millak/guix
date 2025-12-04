@@ -70,13 +70,13 @@
 (define-public python-sphinx
   (package
     (name "python-sphinx")
-    (version "7.4.7")
+    (version "9.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sphinx" version))
        (sha256
-        (base32 "1zlwxv9fmpypja8w1a8lj5lrzflh710ia9nwdx05nv3yxakr4br4"))))
+        (base32 "03rhacplvxh6rsvzhc6l1pyhmcignn41kgdfq8if5grzivhldslq"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -109,6 +109,7 @@
            python-packaging
            python-pygments
            python-requests
+           python-roman-numerals
            python-snowballstemmer
            python-sphinx-alabaster-theme
            python-sphinxcontrib-applehelp
@@ -1102,7 +1103,13 @@ several other projects.")
       ;; "Currently only dot format is supported."
       #~(list "--ignore=tests/test_renderers/test_parse_directives.py"
               ;; AssertionError: FILES DIFFER:
-              "--deselect=tests/test_sphinx/test_sphinx_builds.py::test_includes")))
+              "--deselect=tests/test_sphinx/test_sphinx_builds.py::test_includes"
+              ;; There are 31 assertion failures (in slightly different
+              ;; expected outputs) in the Sphinx related tests following the
+              ;; update to Sphinx 9 (see:
+              ;; <https://github.com/executablebooks/MyST-Parser/issues/1030>).
+              "--ignore=tests/test_sphinx/test_sphinx_builds.py"
+              "--ignore=tests/test_renderers/test_fixtures_sphinx.py")))
     (native-inputs
      (list python-beautifulsoup4
            python-flit-core
@@ -1352,6 +1359,9 @@ documenting acceptable argument types and return value types of functions.")
                (base32
                 "0w16w7zjhb6pxv7py7q13882r58ly4s71l2lyns0wq6qkv1za9iw"))))
     (build-system pyproject-build-system)
+    ;; The 'test_no_transforms' test started failing with Sphinx 9 (see:
+    ;; <https://github.com/sphinx-extensions2/sphinx-pytest/issues/28>).
+    (arguments (list #:test-flags #~(list "-k" "not test_no_transforms")))
     (native-inputs (list python-flit-core))
     (propagated-inputs (list python-pytest python-sphinx))
     (home-page "https://github.com/chrisjsewell/sphinx-pytest")
