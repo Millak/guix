@@ -26,6 +26,7 @@
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2026 Thomas Kramer <thomas@f-si.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,6 +71,7 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
   #:use-module (gnu packages engineering)
@@ -89,6 +91,7 @@
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libftdi)
@@ -2076,6 +2079,32 @@ developing hardware based on synchronous digital logic using the Python
 programming language, as well as evaluation board definitions and a System on
 Chip toolkit.")
     (license license:bsd-3)))
+
+(define-public python-klayout
+  (package
+    (name "python-klayout")
+    (version "0.30.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/klayout/klayout")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "1ixl8wzpiaw6frb28x9y9jy3fvhjclmn4xl77i72rs37rf4i2a2s"))
+       (file-name (git-file-name name version))))
+    (build-system pyproject-build-system)
+    (arguments
+     '(#:tests? #f))
+    (native-inputs (list curl expat libpng python-setuptools python-tomli))
+    (home-page "https://klayout.de")
+    (synopsis "Mask layout library for Python")
+    (description
+     "python-klayout is a standalone Python API of KLayout.
+This library supports OASIS and GDS2 file formats,
+editing of mask layouts, and verification such as
+@acronym{DRC, Design rule checking} and @acronym{LVS, Layout Versus Schematic}.")
+    (license license:gpl3+)))
 
 (define-public python-pyucis
   (package
