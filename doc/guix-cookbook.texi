@@ -506,10 +506,6 @@ selection of documents to learn more about Scheme:
 Scheme Primer}}, by Christine Lemmer-Webber and the Spritely Institute.
 
 @item
-@uref{http://www.troubleshooters.com/codecorn/scheme_guile/hello.htm,
-@i{Scheme at a Glance}}, by Steve Litt.
-
-@item
 @c There used to be a copy at mitpress.mit.edu but it vanished.
 @uref{https://sarabander.github.io/sicp/,
 @i{Structure and Interpretation of Computer Programs}}, by Harold
