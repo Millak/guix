@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024, 2025 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2025 Junker <dk@junkeria.club>
+;;; Copyright © 2025 Ghislain Vaillant <ghislain.vaillant@inria.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,7 +56,8 @@
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages wm)
   #:use-module (gnu packages xdisorg)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages xorg))
 
 (define-public calligra
   (package
@@ -281,6 +283,50 @@ creation, focus mode, fullscreen mode, live word count, and document navigation
 in an aesthetic writing environment.  It comes with the cmark-gfm Markdown
 processor built in, and can integrate with Pandoc, MultiMarkdown, Discount, and
 cmark processors if they are installed.")
+    (license license:gpl3+)))
+
+(define-public klevernotes
+  (package
+    (name "klevernotes")
+    (version "1.2.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://kde/stable/klevernotes/" version
+                           "/klevernotes-" version ".tar.xz"))
+       (sha256
+        (base32 "0jnnbsml29gmpbycx8b012rnzdnjfigp9d6wsaww085mql0rdf73"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:qtbase qtbase
+      #:configure-flags
+      #~(list "-DBUILD_TESTING:BOOL=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'start-xorg-server
+            (lambda _
+              (system "Xvfb :99 -screen 0 1024x768x24 &")
+              (setenv "DISPLAY" ":99.0"))))))
+    (native-inputs (list extra-cmake-modules xorg-server))
+    (inputs (list kconfigwidgets
+                  kcoreaddons
+                  ki18n
+                  kiconthemes
+                  kio
+                  kirigami
+                  kirigami-addons
+                  kitemmodels
+                  qqc2-desktop-style
+                  qtsvg
+                  qtwayland
+                  qtwebengine
+                  sonnet))
+    (home-page "https://apps.kde.org/klevernotes/")
+    (synopsis "Note taking and management application")
+    (description
+     "KleverNotes is a note taking and management application.  It uses Markdown
+and allows you to preview your content.")
     (license license:gpl3+)))
 
 (define-public tellico
