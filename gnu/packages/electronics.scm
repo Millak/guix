@@ -844,6 +844,54 @@ chip cross-sections basked on mask data.")
     ;; The license version will be clarified with the next version bump.
     (license license:gpl3+)))
 
+(define-public lctime
+  (package
+    (name "lctime")
+    (version "0.0.28")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/librecell/lctime")
+             (commit version)))
+       (sha256
+        (base32 "18s7by4ndxxha1yr6sns389smgrz9df5sgqwvvxcw8wwv8v7mpjd"))
+       (file-name (git-file-name name version))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-ngspice-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/lctime/characterization/ngspice_subprocess.py"
+                (("= 'ngspice'")
+                 (format #f "= ~s"
+                         (search-input-file inputs "bin/ngspice"))))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "bash" "./run_tests.sh")))))))
+    (inputs (list ngspice
+                  pyspice
+                  python-joblib
+                  python-klayout
+                  python-liberty-parser
+                  python-networkx
+                  python-numpy
+                  python-ply
+                  python-requests
+                  python-scipy
+                  python-sympy))
+    (native-inputs (list bash-minimal python-pytest python-setuptools))
+    (home-page "https://codeberg.org/librecell/lctime")
+    (synopsis "CMOS standard-cell characterization tool")
+    (description
+     "lctime extracts timing and power characteristics of CMOS standard-cells.
+It simulates the netlists of the cells with ngspice and writes the
+characterization result in a liberty library file.")
+    (license license:agpl3+)))
+
 (define-public libngspice
   ;; Note: The ngspice's build system does not allow us to build both the
   ;; library and the executables in one go.  Thus, we have two packages.
