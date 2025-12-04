@@ -2249,6 +2249,24 @@ edit distance algorithm for Python in Cython for high performance.")
 requiring minimal changes to the code.")
     (license license:expat)))
 
+(define-public python-roman-numerals
+  (package
+    (name "python-roman-numerals")
+    (version "3.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "roman_numerals" version))
+       (sha256
+        (base32 "0l956dwchx6hjncax2kh7xdk8ymfz90jhrxkpmhx6jwd3vy3ckiq"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-flit-core python-pytest))
+    (home-page "https://pypi.org/project/roman-numbers/")
+    (synopsis "Python library to manipulate Roman numerals")
+    (description "This package provides a Python library to manipulate
+well-formed Roman numerals.")
+    (license license:expat)))
+
 (define-public python-rush
   (package
     (name "python-rush")
