@@ -2080,7 +2080,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-gpg-setup-72.patch                \
   %D%/packages/patches/python-hdmedians-replace-nose.patch	\
   %D%/packages/patches/python-louvain-fix-test.patch		\
-  %D%/packages/patches/python-matplotlib-fix-legend-loc-best-test.patch	\
   %D%/packages/patches/python-mohawk-pytest.patch	\
   %D%/packages/patches/python-msal-requests.patch	\
   %D%/packages/patches/python-norns-nose.patch			\

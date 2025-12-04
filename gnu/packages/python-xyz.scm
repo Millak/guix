@@ -11788,42 +11788,51 @@ comparison.
 (define-public python-matplotlib
   (package
     (name "python-matplotlib")
-    (version "3.8.2")
+    (version "3.10.8")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "matplotlib" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/matplotlib/matplotlib")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "18amhxyxa6yzy1nwky4ggdgvvxnbl3qz2lki05vfx0dqf6w7ia81"))
-       (patches (search-patches "python-matplotlib-fix-legend-loc-best-test.patch"))))
+        (base32 "1rlday52hcyrp7xfbdf4z8lzgnxkpfvjxnl9qmq0jvc3ph3n8k5i"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      #:configure-flags
+      ''(("setup-args" . #("-DrcParams-backend=TkAgg"
+                           "-Dsystem-freetype=true"
+                           "-Dsystem-qhull=true"))
+         ("install-args" . "--tags=data,python-runtime,runtime,tests"))
       #:test-flags
-      '(list "-m" "not network"
-        "-k" (string-join
-              (list
-               ;; This one fails with a small difference in the upper left.
-               "not test_figure_legend_outside"
-               "test_warn_big_data_best_loc"
-               ;; The 'test_lazy_auto_backend_selection' fails because it
-               ;; would require an X server; skip it.
-               "test_lazy_auto_backend_selection"
-               ;; It fails with deprecation warning The register_cmap function
-               ;; was deprecated in Matplotlib 3.7 and will be removed two
-               ;; minor releases later.
-               "test_double_register_builtin_cmap"
-               ;; Failed: DID NOT WARN. No warnings of type (<class
-               ;; 'UserWarning'>,) were emitted.
-               "test_rcparams_update"
-               "test_rcparams_init"
-               ;; ResourceWarning: unclosed file <_io.BufferedWriter
-               ;; name='a.pdf'>
-               "test_multipage_keep_empty"
-               ;; UserWarning: Glyph 8722 (\N{MINUS SIGN}) missing from
-               ;; current font.
-               "test_mathtext_ticks")
-              " and not "))
+      #~(list "-m" "not network"
+              "-n" (number->string (parallel-job-count))
+              ;; Run the installed tests, which is what we want since not
+              ;; everything gets built in the source directory.
+              "--pyargs" "matplotlib"
+              "-k"
+              (string-join
+               (list
+                ;; XXX: Disable all image comparison tests because we're using
+                ;; a newer version of FreeType than matplotlib expects.  This
+                ;; leads to minor differences throughout the tests.
+                "not image_comparison"
+                "check_figures_equal"
+                "png"                   ;disables many problematic image tests
+                "test_figure_legend_outside"
+                "test_ft2font_get_kerning"
+                "test_normal_axes"
+                "test_get_tightbbox_polar"
+                ;; The invisible line ordering test fails due to a too short
+                ;; timeout (see:
+                ;; <https://github.com/matplotlib/matplotlib/issues/30809>).
+                "test_invisible_Line_rendering"
+                ;; The determinism check test is not deterministic (see:
+                ;; <https://github.com/matplotlib/matplotlib/issues/30360>)
+                "test_determinism_check")
+               " and not "))
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'pretend-version
@@ -11832,78 +11841,24 @@ comparison.
             ;; '0.0.0'.
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
-          (add-after 'unpack 'fix-and-disable-failing-tests
-            ;; XXX: Disable all image comparison tests because we're using a
-            ;; newer version of FreeType than matplotlib expects.  This leads
-            ;; to minor differences throughout the tests.
+          (add-after 'unpack 'patch-commands
             (lambda _
-              (substitute* (append (find-files "lib/matplotlib/tests/"
-                                               "test_.*\\.py$")
-                                   (find-files "lib/mpl_toolkits/tests"
-                                               "test_.*\\.py$"))
-                (("^from matplotlib" match)
-                 (string-append "import pytest\n" match))
-                (("( *)@([^_]+_)*(image_comparison|check_figures_equal)" match
-                  indent)
-                 (string-append indent "@pytest.mark.skip(\
-reason=\"unknown minor image differences\")\n" match)))
               (substitute* "lib/matplotlib/tests/test_animation.py"
-                (("/bin/sh") (which "sh")))
-              (for-each delete-file
-                        ;; test_normal_axes, test_get_tightbbox_polar
-                        '("lib/matplotlib/tests/test_axes.py"
-                          "lib/matplotlib/tests/test_polar.py"
-                          ;; We don't use the webagg backend and this test
-                          ;; forces it.
-                          "lib/matplotlib/tests/test_backend_webagg.py"
-                          ;; test_outward_ticks
-                          "lib/matplotlib/tests/test_tightlayout.py"
-                          ;; test_hidden_axes fails with minor extent
-                          ;; differences, possibly due to the use of a
-                          ;; different version of FreeType.
-                          "lib/matplotlib/tests/test_constrainedlayout.py"
-                          ;; Fontconfig returns no fonts.
-                          "lib/matplotlib/tests/test_font_manager.py"
-                          ;; The images comparison test fails
-                          ;; non-deterministically when run in parallel (see:
-                          ;; https://github.com/matplotlib/matplotlib/issues/22992).
-                          "lib/matplotlib/tests/test_compare_images.py"))))
+                (("/bin/sh") (which "sh")))))
           (add-after 'unpack 'patch-dlopen
             (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "src/_c_internal_utils.c"
+              (substitute* "src/_c_internal_utils.cpp"
                 (("libX11.so.6")
                  (search-input-file inputs "lib/libX11.so.6")))))
           (add-before 'build 'configure-environment
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Fix rounding errors when using the x87 FPU.
               (when (string-prefix? "i686" #$(%current-system))
-                (setenv "CFLAGS" "-ffloat-store"))
-              (call-with-output-file "mplsetup.cfg"
-                (lambda (port)
-                  (format port "\
-[libs]
-system_freetype = true
-system_qhull = true
-
-[rc_options]
-backend=TkAgg
-
-[directories]
-basedirlist = ~a,~a
-
-[packages]
-tests = True~%" #$(this-package-input "tcl") #$(this-package-input "tk"))))))
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                ;; Step out of the source directory to avoid interference.
-                (with-directory-excursion "/tmp"
-                  ;; Run the installed tests, which is what we want since not
-                  ;; everything gets built in the source directory.
-                  (apply invoke "pytest"
-                         "-n" (number->string (parallel-job-count))
-                         "--pyargs" "matplotlib"
-                         test-flags))))))))
+                (setenv "CFLAGS" "-ffloat-store"))))
+          (add-before 'check 'chdir
+            (lambda _
+              ;; Step out of the source directory to avoid interference.
+              (chdir "/tmp"))))))
     (propagated-inputs
      (list python-contourpy
            python-cycler
@@ -11925,7 +11880,8 @@ tests = True~%" #$(this-package-input "tcl") #$(this-package-input "tk"))))))
            tcl
            tk))
     (native-inputs
-     (list pkg-config
+     (list meson-python
+           pkg-config
            pybind11
            python-pytest
            python-pytest-timeout
