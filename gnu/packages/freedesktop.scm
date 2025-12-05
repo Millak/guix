@@ -42,6 +42,7 @@
 ;;; Copyright © 2024, 2025 dan <i@dan.games>
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 wvlab <me@wvlab.xyz>
+;;; Copyright © 2025 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -327,6 +328,45 @@ some of the freedesktop.org specifications.")
 \"virtual planes\" called layers, set KMS properties on them, and libliftoff
 will pick hardware planes for these layers if possible.")
     (license license:expat)))
+
+(define-public lisgd
+  (package
+    (name "lisgd")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~mil/lisgd")
+              (commit version)))
+       (sha256
+        (base32
+         "0rkm6d3jn0i1fwf5qj47hv8w9aax5fijhccnc6f6v59q3aj5jd4n"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ; There are no tests.
+      #:make-flags
+      #~(list
+         (string-append "CC=" #$(cc-for-target))
+         (string-append "PREFIX=" %output)
+         (string-append "CPPFLAGS="
+                        "-DWITH_WAYLAND "
+                        "-I" #$libinput "/include "
+                        "-I" #$wayland "/include")
+         (string-append "LDFLAGS="
+                        "-L" #$libinput "/lib "
+                        "-L" #$wayland "/lib"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)))) ; There is no configure script.
+    (inputs (list libinput libx11 wayland))
+    (home-page "https://git.sr.ht/~mil/lisgd")
+    (synopsis "Bind gestures via libinput touch events")
+    (description "Bind gestures on touchscreens and unsupported gesture
+devices via libinput touch events.")
+    (license (list license:expat license:x11))))
 
 (define-public malcontent
   (package
