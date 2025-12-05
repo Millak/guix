@@ -9467,7 +9467,7 @@ and fairly speedy.")
 (define-public python-httptools
   (package
     (name "python-httptools")
-    (version "0.6.4")
+    (version "0.7.1")
     (source
      (origin
        ;; PyPI tarball comes with a vendored http-parser and no tests.
@@ -9477,7 +9477,7 @@ and fairly speedy.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05zsa77jlm2h9z0vfj6gdqklj3pbzbijhk5s9b3q7iaxl347hwzc"))
+        (base32 "0j9c1av3y1smg6lgh0i031l07i9plzbvv14jj53vpzm35sy7kbl7"))
        (modules '((guix build utils)))
        (snippet
         #~(begin (delete-file-recursively "vendor")))))
