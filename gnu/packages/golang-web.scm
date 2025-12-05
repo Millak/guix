@@ -4498,6 +4498,95 @@ against documents, as well as for calculating & applying
        ((#:import-path "github.com/evanphx/json-patch")
         "github.com/evanphx/json-patch/v5")))))
 
+(define-public go-github-com-sigstore-sigstore
+  (package
+    (name "go-github-com-sigstore-sigstore")
+    (version "1.10.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sigstore/sigstore")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0whcwzdmvf8xhin55112dmwflk5ipcd14mxjlgj5lpw3a8fp38af"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/sigstore/sigstore/hack/tools
+            ;; - github.com/sigstore/sigstore/pkg/signature/kms/aws
+            ;; - github.com/sigstore/sigstore/pkg/signature/kms/azure
+            ;; - github.com/sigstore/sigstore/pkg/signature/kms/gcp
+            ;; - github.com/sigstore/sigstore/pkg/signature/kms/hashivault
+            ;; - sigstore-kms-localkms
+            ;; - github.com/sigstore/sigstore/test/fuzz
+            (for-each delete-file-recursively
+                      (list "hack/tools"
+                            "pkg/signature/kms/aws"
+                            "pkg/signature/kms/azure"
+                            "pkg/signature/kms/gcp"
+                            "pkg/signature/kms/hashivault"
+                            "test/cliplugin/localkms"
+                            "test/fuzz"))))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:go go-1.25
+      #:skip-build? #t
+      #:import-path "github.com/sigstore/sigstore"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Network access is required.
+                       (list "TestAltLegacyURLToCDN"
+                             "TestCache"
+                             "TestConcurrentAccessInitialize"
+                             "TestConcurrentAccessNewFromEnv"
+                             "TestCustomRoot"
+                             "TestCustomRootFileRemoteStore"
+                             "TestGetTargetsByMeta"
+                             "TestLegacyBucketToCDN"
+                             "TestProviderIsAzureBacked"
+                             "TestNewFromEnv"
+                             "TestLegacyURLToCDN"
+                             "TestAltLegacyURLToCDN"
+                             "TestNoCache"
+                             "TestUpdatedTargetNamesEmbedded"
+                             "TestUpdatedTargetNamesEmbedded")
+                       "|"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-github-com-coreos-go-oidc-v3
+           go-github-com-go-jose-go-jose-v4
+           go-github-com-go-rod-rod
+           go-github-com-google-go-containerregistry
+           go-github-com-letsencrypt-boulder
+           go-github-com-pkg-browser
+           go-github-com-secure-systems-lab-go-securesystemslib
+           go-github-com-sigstore-protobuf-specs
+           go-github-com-theupdateframework-go-tuf
+           go-github-com-tink-crypto-tink-go-v2
+           go-golang-org-x-crypto
+           go-golang-org-x-oauth2
+           go-golang-org-x-term))
+    (home-page "https://sigstore.dev/")
+    (synopsis "Common Go library for Sigstore services")
+    (description
+     "Sigstore is a Go library providing common functionality for Sigstore
+services.  It includes cryptographic utilities, OAuth/OIDC authentication,
+certificate handling, and tools for interacting with Sigstore infrastructure
+like Fulcio and Rekor.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-ysmood-fetchup
   (package
     (name "go-github-com-ysmood-fetchup")
