@@ -24715,6 +24715,30 @@ its real absolute path in the system.")
 format for debugging and logging purposes.")
     (license license:expat)))
 
+(define-public go-github-com-ysmood-gson
+  (package
+    (name "go-github-com-ysmood-gson")
+    (version "0.7.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ysmood/gson")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ha7w3igak5mfk4dgr0wdvn9sv9xdxwymihfin1d4ajgi975qzhf"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ysmood/gson"))
+    (home-page "https://github.com/ysmood/gson")
+    (synopsis "Go JSON path query library")
+    (description
+     "Gson is a Go library for querying JSON data using path expressions,
+similar to JSONPath but with a simpler syntax.")
+    (license license:expat)))
+
 (define-public go-github-com-yudai-gojsondiff
   (package
     (name "go-github-com-yudai-gojsondiff")
