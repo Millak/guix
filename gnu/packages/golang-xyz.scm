@@ -5431,6 +5431,112 @@ specifying container platforms.")
 repositories.")
     (license license:asl2.0)))
 
+(define-public go-github-com-containers-storage
+  (package
+    (name "go-github-com-containers-storage")
+    (version "1.59.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containers/storage")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1d7masgf73grsa5rv6y8lf1nwa1hay5fcgm49ab71yc693xr3ixq"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containers/storage"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Most of these tests require root level access to
+                       ;; write files in, check if they may be covered:
+                       ;; 
+                       ;; creating an ID-mapped copy of layer "Layer": error
+                       ;; chrooting to <...>
+                       (list "TestAttachLoopbackDeviceRace"
+                             "TestChangesWithChangesGH13590"
+                             "TestChrootApplyDotDotFile"
+                             "TestChrootApplyEmptyArchiveFromSlowReader"
+                             "TestChrootCopyFileWithTar"
+                             "TestChrootCopyFileWithTarAndChown"
+                             "TestChrootCopyWithTar"
+                             "TestChrootCopyWithTarAndChown"
+                             "TestChrootTarUntar"
+                             "TestChrootTarUntarWithSymlink"
+                             "TestChrootUntarEmptyArchiveFromSlowReader"
+                             "TestChrootUntarPath"
+                             "TestChrootUntarPathAndChown"
+                             "TestChrootUntarWithHugeExcludesList"
+                             "TestCopyDir"
+                             "TestCopyWithTarInexistentDestWillCreateIt"
+                             "TestEnsureRemoveAllWithMount"
+                             "TestMkdirAllAndChownNew"
+                             "TestMkdirAllAs"
+                             "TestMkdirAs"
+                             "TestReplaceFileTarWrapper"
+                             "TestStoreDelete"
+                             "TestStoreMultiList"
+                             "TestSupportsShifting"
+                             "TestSupportsShifting/with_mount_program"
+                             "TestTarUntarWithXattr"
+                             "TestTarWithBlockCharFifo"
+                             "TestTarWithMaliciousSymlinks"
+                             "TestUnshareOOMScoreAdj"
+                             "TestUntarHardlinkToSymlink"
+                             "TestUntarPath"
+                             "TestUntarWithMaliciousSymlinks"
+                             "TestVfsChanges"
+                             "TestVfsCreateBase"
+                             "TestVfsCreateEmpty"
+                             "TestVfsCreateFromTemplate"
+                             "TestVfsCreateSnap"
+                             "TestVfsDiffApply100Files"
+                             "TestVfsEcho"
+                             "TestVfsListLayers")
+                       "|"))))
+    (inputs
+     (list btrfs-progs))
+    (propagated-inputs
+     (list go-github-com-burntsushi-toml
+           go-github-com-containerd-stargz-snapshotter-estargz
+           go-github-com-cyphar-filepath-securejoin
+           go-github-com-docker-go-units
+           go-github-com-google-go-intervals
+           go-github-com-json-iterator-go
+           go-github-com-klauspost-compress
+           go-github-com-klauspost-pgzip
+           go-github-com-mattn-go-shellwords
+           ;; go-github-com-microsoft-go-winio
+           ;; go-github-com-microsoft-hcsshim
+           go-github-com-mistifyio-go-zfs-v3
+           go-github-com-moby-sys-capability
+           go-github-com-moby-sys-mountinfo
+           go-github-com-moby-sys-user
+           go-github-com-opencontainers-go-digest
+           go-github-com-opencontainers-runtime-spec
+           go-github-com-opencontainers-selinux
+           go-github-com-sirupsen-logrus
+           go-github-com-stretchr-testify
+           go-github-com-tchap-go-patricia-v2
+           go-github-com-ulikunitz-xz
+           go-github-com-vbatts-tar-split
+           go-golang-org-x-sync
+           go-golang-org-x-sys
+           go-gotest-tools-v3))
+    (home-page "https://github.com/containers/storage")
+    (synopsis "Container storage library for Go")
+    (description
+     "This package provides a Go library for storing and managing container
+images, layers, and containers on the filesystem.  It supports multiple
+storage drivers including overlay, devicemapper, btrfs, and vfs.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-containers-winquit
   ;; As it's seen in description, it's a Windows specific package but
   ;; gvisor-tap-vsock can't be build if it's absent.
