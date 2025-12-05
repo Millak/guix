@@ -5,8 +5,6 @@ names of the available TCP network interfaces.
 
 Initially submitted at <https://github.com/openucx/ucx/pull/4462>.
 
-diff --git a/src/uct/tcp/tcp_iface.c b/src/uct/tcp/tcp_iface.c
-index f90d54fef..a2f74dc32 100644
 --- a/src/uct/tcp/tcp_iface.c
 +++ b/src/uct/tcp/tcp_iface.c
 @@ -18,6 +18,8 @@
@@ -18,8 +16,8 @@ index f90d54fef..a2f74dc32 100644
  
  #define UCT_TCP_IFACE_NETDEV_DIR "/sys/class/net"
  
-@@ -873,6 +875,85 @@ static int uct_tcp_is_bridge(const char *if_name)
-     return (stat(path, &st) == 0) && S_ISDIR(st.st_mode);
+@@ -921,6 +923,85 @@ out:
+     return ret;
  }
  
 +/* Fetch information about available network devices through an ioctl.  */
@@ -36,7 +34,7 @@ index f90d54fef..a2f74dc32 100644
 +    conf.ifc_len = 0;
 +    conf.ifc_req = NULL;
 +
-+    status = ucs_socket_create(AF_INET, SOCK_STREAM, &sock);
++    status = ucs_socket_create(AF_INET, SOCK_STREAM, 0, &sock);
 +    if (status != UCS_OK) {
 +        goto out;
 +    }
@@ -104,7 +102,7 @@ index f90d54fef..a2f74dc32 100644
  ucs_status_t uct_tcp_query_devices(uct_md_h md,
                                     uct_tl_device_resource_t **devices_p,
                                     unsigned *num_devices_p)
-@@ -890,9 +971,9 @@ ucs_status_t uct_tcp_query_devices(uct_md_h md,
+@@ -938,9 +1019,9 @@ ucs_status_t uct_tcp_query_devices(uct_md_h md,
  
      n = scandir(UCT_TCP_IFACE_NETDEV_DIR, &entries, NULL, alphasort);
      if (n == -1) {
@@ -117,11 +115,3 @@ index f90d54fef..a2f74dc32 100644
      }
  
      devices     = NULL;
-@@ -959,7 +1040,6 @@ out_release:
-     }
- 
-     free(entries);
--out:
-     return status;
- }
- 
