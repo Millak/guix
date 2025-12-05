@@ -14922,6 +14922,30 @@ to handle datasets larger than available RAM.")
 specified by @uref{https://tools.ietf.org/html/rfc2141, IETF RFC 2141}.")
     (license license:expat)))
 
+(define-public go-github-com-liggitt-tabwriter
+  (package
+    (name "go-github-com-liggitt-tabwriter")
+    (version "0.0.0-20181228230101-89fcab3d43de")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/liggitt/tabwriter")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04q8d0jk1ymvy7pv1dgfbqzk8gcjfa77psg1lk30ghlisf54pakg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/liggitt/tabwriter"))
+    (home-page "https://github.com/liggitt/tabwriter")
+    (synopsis "Tab-separated text writer for Go")
+    (description
+     "This package provides a tabwriter implementation with additional
+features for padding and filtering escape sequences.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-leonelquinteros-gotext
   (package
     (name "go-github-com-leonelquinteros-gotext")
