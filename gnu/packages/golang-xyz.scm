@@ -22557,6 +22557,49 @@ environment")
        (sha256
         (base32 "15qi7v2a1kbf70yi3w6y26wbwj0sm8hv9f6xjrb4rl6nv9l8j88c"))))))
 
+(define-public go-github-com-theupdateframework-go-tuf
+  (package
+    (name "go-github-com-theupdateframework-go-tuf")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/theupdateframework/go-tuf")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "00yc5rj6x0lxv0011ynl7b82yz9lrqix5rgwi514km4h4m9rsl99"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 ;; Depends on Python no required for Go module.
+                 (delete-file-recursively "client/python_interop")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/theupdateframework/go-tuf"
+      #:test-subdirs
+      ;; Avoiding tests in cmd/.
+      #~(list "." "client/..." "data" "encrypted" "internal/..." "pkg/..."
+              "util" "verify")))
+    (native-inputs
+     (list go-github-com-google-gofuzz
+           go-github-com-stretchr-testify
+           go-gopkg-in-check-v1))
+    (propagated-inputs
+     (list go-github-com-dustin-go-humanize
+           go-github-com-secure-systems-lab-go-securesystemslib
+           go-github-com-syndtr-goleveldb
+           go-golang-org-x-crypto
+           go-golang-org-x-term))
+    (home-page "https://github.com/theupdateframework/go-tuf")
+    (synopsis "Go implementation of The Update Framework")
+    (description
+     "Go-TUF is a Go implementation of The Update Framework (TUF), a framework
+for securing software update systems.  It provides tools for creating and
+managing TUF repositories and clients for securely downloading updates.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-tidwall-cities
   (package
     (name "go-github-com-tidwall-cities")
