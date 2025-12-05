@@ -28226,23 +28226,26 @@ operation.")
 (define-public go-sigs-k8s-io-yaml
   (package
     (name "go-sigs-k8s-io-yaml")
-    (version "1.4.0")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/kubernetes-sigs/yaml")
-             (commit (string-append "v" version))))
+              (url "https://github.com/kubernetes-sigs/yaml")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yjnmpwmvlb6md3djn6qx1ag4ld7gjz7jfyz1ldml88zyb9crpqx"))))
+        (base32 "1p7mm7z259nh07ij8k8csg8gbbsr48riszpsl9g0rksghpn61n73"))))
     (build-system go-build-system)
     (arguments
      (list
       #:import-path "sigs.k8s.io/yaml"))
     (native-inputs
-     (list go-github-com-google-go-cmp
-           go-gopkg-in-check-v1))
+     (list go-github-com-google-go-cmp))
+    (propagated-inputs
+     (list go-go-yaml-in-yaml-v2
+           go-go-yaml-in-yaml-v3
+           go-sigs-k8s-io-randfill))
     (home-page "https://sigs.k8s.io/yaml")
     (synopsis "YAML marshaling and unmarshaling support for Go")
     (description
