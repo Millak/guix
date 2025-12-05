@@ -10135,34 +10135,70 @@ errors when data is invalid.")
 (define-public python-pydantic-core
   (package
     (name "python-pydantic-core")
-    (version "2.27.2")
+    (version "2.41.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pydantic_core" version))
        (sha256
-        (base32 "0fgv3xdn4n7a606sjz8b15cnzyqy3pspycvjc1r0bvhz9id6w0pb"))))
-    (build-system cargo-build-system)
+        (base32 "0vj72r481py6r5mlna185g3ppw1jri964q77spzp7lval4gabnh8"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:imported-modules `(,@%cargo-build-system-modules
                            ,@%pyproject-build-system-modules)
-      #:modules '((guix build cargo-build-system)
-                  ((guix build pyproject-build-system) #:prefix py:)
+      #:modules '(((guix build cargo-build-system) #:prefix cargo:)
+                  (guix build pyproject-build-system)
                   (guix build utils))
+      ;; tests: 5318 passed, 123 skipped, 10 xfailed
+      #:test-flags
+      #~(list "--ignore=tests/benchmarks"
+              ;; XXX: It cycles, bootstrap variant needs to be introduced:
+              ;; python-pydantic-core -> python-pydantic ->
+              ;; python-inline-snapshot -> python-pydantic-core
+              "--ignore=tests/test_docstrings.py"
+              "--ignore=tests/test_hypothesis.py"
+              "--ignore=tests/validators/test_allow_partial.py"
+              "--ignore=tests/validators/test_frozenset.py"
+              "--ignore=tests/validators/test_list.py"
+              "--ignore=tests/validators/test_set.py")
       #:phases
-      (with-extensions (list (pyproject-guile-json))
       #~(modify-phases %standard-phases
-          (add-after 'build 'build-python-module
-            (assoc-ref py:%standard-phases 'build))
-          (add-after 'build-python-module 'install-python-module
-            (assoc-ref py:%standard-phases 'install))))
-      #:install-source? #false))
+          (add-after 'unpack 'prepare-cargo-build-system
+            (lambda args
+              (for-each (lambda (phase)
+                          (format #t "Running cargo phase: ~a~%" phase)
+                          (apply (assoc-ref cargo:%standard-phases phase)
+                                 #:cargo-target #$(cargo-triplet)
+                                 args))
+                        '(unpack-rust-crates
+                          configure
+                          check-for-pregenerated-files
+                          patch-cargo-checksums))))
+          (add-after 'unpack 'patch-pyproject
+            (lambda _
+              ;; maturin failed to parce pyproject.toml.
+              (substitute* "pyproject.toml"
+                (("^license-files = .*") "")))))))
     (native-inputs
-     (list maturin python-typing-extensions python-wrapper))
+     (append
+      (list maturin
+            python-dirty-equals
+            python-pytest
+            python-pytest-benchmark ;TODO: disable in pyproject.toml
+            python-pytest-mock
+            python-pytest-timeout
+            python-typing-inspection
+            python-tzdata
+            rust
+            `(,rust "cargo"))
+      (or (and=> (%current-target-system)
+                 (compose list make-rust-sysroot))
+          '())))
+    (inputs
+     (cargo-inputs 'python-pydantic-core))
     (propagated-inputs
      (list python-typing-extensions))
-    (inputs (cargo-inputs 'python-pydantic-core))
     (home-page "https://github.com/pydantic/pydantic-core")
     (synopsis "Core validation logic for pydantic")
     (description "This package provides the core functionality for pydantic
