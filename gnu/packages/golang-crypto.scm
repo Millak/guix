@@ -2502,6 +2502,37 @@ Boneh and Victor Shoup's cryptography book} (pg 789, PAKE2 protocol).")
 seed} Go's random number generator (if possible).")
     (license license:expat)))
 
+(define-public go-github-com-secure-systems-lab-go-securesystemslib
+  (package
+    (name "go-github-com-secure-systems-lab-go-securesystemslib")
+    (version "0.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/secure-systems-lab/go-securesystemslib")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0x5ln3k4lvh5vpva7j9i9ncxyhxflb4ml41d9q6xipnvv5cbr3i9"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/secure-systems-lab/go-securesystemslib"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-codahale-rfc6979
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/secure-systems-lab/go-securesystemslib")
+    (synopsis "Common cryptographic routines for secure systems")
+    (description
+     "This package provides a Go implementation of common cryptographic
+routines used in secure systems.  It includes support for various signature
+schemes and key management utilities.")
+    (license license:expat)))
+
 (define-public go-github-com-serialx-hashring
   (package
     (name "go-github-com-serialx-hashring")
