@@ -10012,34 +10012,33 @@ comparing system environments.")
    (license license:gpl3+)))
 
 (define-public cassini-headers
-  (let ((commit "9a8a738a879f007849fbc69be8e3487a4abf0952")
-        (revision "0"))
-    (package
-      (name "cassini-headers")
-      (version (git-version "2.0.0"               ;per .spec file
-                            revision commit))
-      (home-page "https://github.com/HewlettPackard/shs-cassini-headers")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference (url home-page) (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0a54vwfr29n0i392wdap7rzmq0lb8mxa17d8yljdbm0kzrq48csz"))))
-      (build-system copy-build-system)
-      (arguments
-       (list #:install-plan
-             #~'(("include" "include")
-                 ("share/cassini-headers" "share/cassini-headers"))))
-      (synopsis "Cassini network hardware definitions and headers")
-      (description
-       "This package provides hardware definitions and C headers for use by
+  (package
+    (name "cassini-headers")
+    (version "12.0.1")
+    (home-page "https://github.com/HewlettPackard/shs-cassini-headers")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url home-page)
+                     (commit (string-append "release/shs-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0fvhk42pssw67zba4zq1b73d1m9ysc4g8sfibjmmhc0fwr92iamp"))))
+    (build-system copy-build-system)
+    (arguments
+     (list #:install-plan
+           #~'(("include" "include")
+               ("share/cassini-headers" "share/cassini-headers"))))
+    (synopsis "Cassini network hardware definitions and headers")
+    (description
+     "This package provides hardware definitions and C headers for use by
 the Linux driver and by user-space applications for the Cassini/Slingshot
 high-speed network interconnect made by HPE (formerly Cray).  User-land
 software uses @file{cxi_prov_hw.h} from this package.")
-      ;; As per include/cxi_prov_hw.h it is __aarch64__ or __x86_64__ only.
-      (supported-systems '("x86_64-linux" "aarch64-linux"))
-      (license (list license:gpl2 license:bsd-2))))) ;dual-licensed
+    ;; As per include/cxi_prov_hw.h it is __aarch64__ or __x86_64__ only.
+    (supported-systems '("x86_64-linux" "aarch64-linux"))
+    (license (list license:gpl2 license:bsd-2)))) ;dual-licensed
 
 (define-public cxi-driver
   (let ((commit "5f0ec0ead6ef3f98542a2ef5e76b89d14dd22150")
