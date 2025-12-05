@@ -785,7 +785,7 @@ commonly needed services in distributed and parallel computing systems.")
 (define-public prrte
   (package
    (name "prrte")
-   (version "3.0.6")
+   (version "4.0.0")
    (source (origin
             (method url-fetch)
             (uri (string-append
@@ -793,7 +793,7 @@ commonly needed services in distributed and parallel computing systems.")
                   version "/prrte-" version ".tar.bz2"))
             (sha256
              (base32
-              "0wiy0vk37v4db1jgxza8bci0cczcvj34dalzsrlz05dk45zb7dl3"))))
+              "1r2dxnv3spmfd3l5is8cly2mmmc98xgm9wvvih99j35sw1hwjbiw"))))
    (build-system gnu-build-system)
    (arguments
     (list #:configure-flags
