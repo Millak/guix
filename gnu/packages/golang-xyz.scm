@@ -22341,6 +22341,49 @@ suffix comparison, rather than the string-based or tree-based approaches.")
      "This package provides utilities for manipulating POSIX capabilities.")
     (license license:bsd-2)))
 
+(define-public go-github-com-sylabs-sif-v2
+  (package
+    (name "go-github-com-sylabs-sif-v2")
+    (version "2.22.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sylabs/sif")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16iv5dqdl6jqi3nhg0pl3nfw8g5ksj2g5xa9iq1i3pg4bpm5h5hq"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/sylabs/sif/v2"
+      #:test-flags
+      ;; Tests try to access file outside the scope.
+      #~(list "-skip" (string-join
+                       (list "TestLoadContainerFromPath/NoOpts"
+                             "TestLoadContainerFromPath/ReadWrite"
+                             "TestHeader_GetIntegrityReader/LaunchScript")
+                       "|"))))
+    (native-inputs
+     ;; CLI only
+     (list go-github-com-spf13-cobra
+           go-github-com-spf13-pflag))
+    (propagated-inputs
+     (list go-github-com-google-go-containerregistry
+           go-github-com-google-uuid
+           go-github-com-protonmail-go-crypto
+           go-github-com-sebdah-goldie-v2
+           go-github-com-sigstore-sigstore))
+    (home-page "https://github.com/sylabs/sif")
+    (synopsis "Singularity Image Format reference implementation")
+    (description
+     "This package provides a Go implementation for reading and writing
+Singularity Image Format (SIF) files.  SIF is a container format used by
+Singularity/Apptainer for packaging applications.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-syndtr-goleveldb
   (package
     (name "go-github-com-syndtr-goleveldb")
