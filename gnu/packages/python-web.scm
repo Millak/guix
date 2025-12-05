@@ -339,7 +339,7 @@ JSON APIs with Behave.")
 (define-public python-blacksheep
   (package
     (name "python-blacksheep")
-    (version "2.4.2")
+    (version "2.4.5")
     (source
      (origin
        (method git-fetch)
@@ -348,11 +348,11 @@ JSON APIs with Behave.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v9pkg3ffxxcdc8ynjjh5fgis5m49m65sbrgcrghmz0xkik5ny5w"))))
+        (base32 "02lfa75p8phdw3pi9c4n4fr3pmkyi3rdp6mqgz9xhq58g9blpddx"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 1675 passed, 3 skipped
+      ;; tests: 1799 passed
       ;;
       ;; Run all unit tests, but do not run integration tests from `itests`
       ;; directory.
@@ -378,8 +378,11 @@ JSON APIs with Behave.")
            python-setuptools))
     (propagated-inputs
      (list python-certifi
+           python-essentials
            python-essentials-openapi
            python-guardpost
+           python-httptools
+           python-rodi
            python-itsdangerous))
     (home-page "https://github.com/Neoteroi/BlackSheep")
     (synopsis "Asynchronous framework to build event based web applications")
