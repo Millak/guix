@@ -25,8 +25,8 @@
   #:use-module (srfi srfi-35)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
-  #:replace (info)
   #:export (warning
+            info
             report-error
             leave
 
