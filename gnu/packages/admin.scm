@@ -605,15 +605,35 @@ interface and is based on GNU Guile.")
                (base32
                 "1mh080060lnycys8yq6kkiy363wif8dsip3nyklgd3a1r22wb274"))))
     (arguments
-     (substitute-keyword-arguments (package-arguments shepherd-0.10)
-       ((#:configure-flags flags #~'())
-        #~(list "--localstatedir=/var"
-
-                ;; Gzip and zstd are used by the log rotation service.
-                (string-append "--with-gzip=" #$(this-package-input "gzip")
-                               "/bin/gzip")
-                (string-append "--with-zstd=" #$(this-package-input "zstd")
-                               "/bin/zstd")))))
+     (list
+      #:configure-flags
+      #~(list "--localstatedir=/var"
+              ;; Gzip and zstd are used by the log rotation service.
+              (string-append "--with-gzip=" #$(this-package-input "gzip")
+                             "/bin/gzip")
+              (string-append "--with-zstd=" #$(this-package-input "zstd")
+                             "/bin/zstd"))
+      #:make-flags #~'("GUILE_AUTO_COMPILE=0")
+      #:phases (if (%current-target-system)
+                   #~(modify-phases %standard-phases
+                       (add-before 'configure 'set-fibers-directory
+                         (lambda* (#:key inputs  #:allow-other-keys)
+                           ;; When cross-compiling, refer to the target
+                           ;; Fibers, not the native one.
+                           (let ((fibers
+                                  (search-input-file
+                                   inputs
+                                   "share/guile/site/3.0/fibers.scm"))
+                                 (fibers-go
+                                  (search-input-file
+                                   inputs
+                                   "lib/guile/3.0/site-ccache/fibers.go")))
+                             (substitute* '("herd.in" "shepherd.in")
+                               (("%FIBERS_SOURCE_DIRECTORY%")
+                                (dirname fibers))
+                               (("%FIBERS_OBJECT_DIRECTORY%")
+                                (dirname fibers-go)))))))
+                   #~%standard-phases)))
     (native-inputs
      (modify-inputs (package-native-inputs shepherd-0.10)
        (replace "guile-fibers"
