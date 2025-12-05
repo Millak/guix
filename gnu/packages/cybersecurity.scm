@@ -147,7 +147,7 @@ Refresh}in-DRAM mitigations effectively and as such can trigger bit flips.")
            python-msgspec
            python-platformdirs
            python-psutil
-           python-pydantic-2
+           python-pydantic
            python-pygit2
            python-tabulate
            python-zstandard))

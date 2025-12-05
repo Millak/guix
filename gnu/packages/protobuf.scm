@@ -601,7 +601,7 @@ mechanism for serializing structured data.")
     (native-inputs
      (list python-poetry-core
            python-poetry-dynamic-versioning
-           python-pydantic-2
+           python-pydantic
            python-pytest
            python-pytest-benchmark
            python-pytest-cov))

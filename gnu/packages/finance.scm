@@ -1584,7 +1584,7 @@ Luhn and family of ISO/IEC 7064 check digit algorithms.")
         (base32 "16d0q1yzrh9fn6ybbsvhr9wbgld27rvn152w4wdcibidq2jbi0s2"))))
     (build-system pyproject-build-system)
     (native-inputs (list python-hatchling python-hatch-vcs python-pytest
-                         python-pydantic-2))
+                         python-pydantic))
     (propagated-inputs (list python-importlib-resources python-pycountry
                              python-rstr python-typing-extensions))
     (home-page "http://github.com/mdomke/schwifty/")

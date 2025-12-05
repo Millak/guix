@@ -1607,7 +1607,7 @@ Features:
            python-ipykernel
            python-jacobi
            python-joblib
-           python-pydantic-2
+           python-pydantic
            python-pytest
            python-resample
            python-scikit-build-core
@@ -4329,7 +4329,7 @@ idea of the remaining amount of computation to be done.")
            python-shapely))
     (propagated-inputs
      (list python-packaging
-           python-pydantic-2
+           python-pydantic
            python-typeguard
            python-typing-extensions
            python-typing-inspect))
@@ -4850,7 +4850,7 @@ readable.")
            python-pandas
            python-progressbar2
            python-pyarrow
-           python-pydantic-2
+           python-pydantic
            python-pydantic-settings
            python-pyyaml
            python-requests

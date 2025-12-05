@@ -2190,7 +2190,7 @@ reused when throttling user interactions with a resource (e.g., an API).")
                     " and not "))))
     (propagated-inputs (list python-dparse
                              python-packaging
-                             python-pydantic-2
+                             python-pydantic
                              python-ruamel.yaml
                              python-typing-extensions))
     (native-inputs (list python-deepdiff python-hatchling python-pytest))
@@ -3991,7 +3991,7 @@ implementation for the Telegram Bot API.")
     (build-system pyproject-build-system)
     (propagated-inputs (list python-packaging
                              python-platformdirs
-                             python-pydantic-2
+                             python-pydantic
                              python-sphinx
                              python-sphinx-autodoc-typehints
                              python-sphinx-rtd-theme
@@ -10135,39 +10135,8 @@ errors when data is invalid.")
     (propagated-inputs
      (list python-typing-extensions))))
 
-(define-public python-pydantic-2
-  (package
-    (inherit python-pydantic)
-    (name "python-pydantic")
-    (version "2.10.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pydantic" version))
-       (sha256
-        (base32 "01jg4ll2py05izm7s9hlv5xbxcsp26bvb2585gzf8vfs4fbjxwc2"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      #~(list "--ignore=tests/test_docs.py"   ; no pytest_examples
-              "--ignore-glob=tests/benchmarks/*"
-              ;; Unimportant difference in one test's error message.
-              "--ignore=tests/test_networks.py")))
-    (native-inputs
-     (list tzdata-for-tests
-           python-dirty-equals
-           python-hatch-fancy-pypi-readme
-           python-hatchling
-           python-jsonschema
-           python-pytest
-           python-pytest-benchmark
-           python-pytest-mock))
-    (propagated-inputs
-     (list python-annotated-types
-           python-pydantic-core
-           python-rich
-           python-typing-extensions))))
+;; It may be removed after 2026-01-05.
+(define-deprecated/public-alias python-pydantic-2 python-pydantic)
 
 (define-public python-pydantic-core
   (package
@@ -10258,7 +10227,7 @@ validation and serialization.")
          "1rfffz4kasjihys8qgnvjb8cwm0dycsdj7qnggi9372b9q1ng4zg"))))
     (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-pydantic-2))
+     (list python-pydantic))
     (native-inputs
      (list python-hatchling python-pytest))
     (home-page "https://github.com/mpkocher/pydantic-cli")
@@ -10318,7 +10287,7 @@ Interfaces} via data models provided in the JSON format.")
               ;; '/homeless-shelter/
               (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list python-dotenv python-pydantic-2))
+     (list python-dotenv python-pydantic))
     (native-inputs
      (list python-hatchling
            python-pytest
@@ -19104,7 +19073,7 @@ allows one to make simple text-mode user interfaces on Unix-like systems")
                (base32
                 "03hgb6601mx6iip4nr8i0is8x5vmh85z286j7j8lhkxxlqydswlf"))))
     (build-system pyproject-build-system)
-    (propagated-inputs (list python-pydantic-2 python-srsly))
+    (propagated-inputs (list python-pydantic python-srsly))
     (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/explosion/confection")
     (synopsis "Config system for Python")
@@ -31318,7 +31287,7 @@ facility for filtering those results.")
                              python-nltk
                              python-packaging
                              python-psutil
-                             python-pydantic-2
+                             python-pydantic
                              python-requests
                              python-ruamel.yaml
                              python-safety-schemas
@@ -35134,7 +35103,7 @@ object, which can be useful if you want to force your objects into a table.")
            python-jsonpickle
            python-numpy
            python-pandas
-           python-pydantic-2
+           python-pydantic
            python-pytest
            python-pytest-benchmark
            python-pytz
@@ -35970,7 +35939,7 @@ platform using the ActivityPub protocol.")
     (native-inputs (list cmake-minimal
                          ninja
                          python-scikit-build-core
-                         python-pydantic-2))
+                         python-pydantic))
     (arguments
      (list
       #:tests? #f                  ;needs network

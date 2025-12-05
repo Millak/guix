@@ -1097,7 +1097,7 @@ entries, photos, book chapters, or anything else.")
                 "0f5hgjkavvk1csb1yl34scqai3ljjhh93k5kbqm8s8hclry4fvg4"))))
     (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-django python-pydantic-2))
+     (list python-django python-pydantic))
     (native-inputs
      (list python-flit-core
            python-psycopg2

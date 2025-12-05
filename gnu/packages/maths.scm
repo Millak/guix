@@ -4571,7 +4571,7 @@ savings are consistently > 5x.")
     (propagated-inputs (list python-mpmath
                              python-numpy
                              python-psutil
-                             python-pydantic-2
+                             python-pydantic
                              python-pyyaml
                              python-tomli))
     (home-page "https://github.com/Libensemble/libensemble")
