@@ -1767,6 +1767,41 @@ hash.")
       (description "PKI based identities for use in @command{go-libp2p}.")
       (license license:expat))))
 
+(define-public go-github-com-loft-sh-ssh
+  (package
+    (name "go-github-com-loft-sh-ssh")
+    (version "0.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/loft-sh/ssh")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bbc536knxipjkd6b9cfld94qy5n9pw3pc8bdjvmsiapa5356417"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/loft-sh/ssh"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       (list "TestLocalUnixForwardingRespectsCallback"
+                             "TestLocalUnixForwardingWorks"
+                             "TestReverseUnixForwardingWorks")
+                       "|"))))
+    (propagated-inputs
+     (list go-github-com-anmitsu-go-shlex
+           go-golang-org-x-crypto))
+    (home-page "https://github.com/loft-sh/ssh")
+    (synopsis "SSH servers in Golang")
+    (description
+     "Package ssh wraps the @code{crypto/ssh} package with a higher-level API
+for building SSH servers.  The goal of the API was to make it as simple as
+using net/http, so the API is very similar.  It's alternaive fork of
+@url{https://github.com/gliderlabs/ssh}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-marten-seemann-chacha20
   (package
     (name "go-github-com-marten-seemann-chacha20")
