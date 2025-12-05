@@ -952,7 +952,7 @@ minimal bcachefs-tools package.  It is meant to be used in initrds.")
 (define-public bcachefs-linux-module
   (package
     (name "bcachefs-linux-module")
-    (version "1.32.1")
+    (version "1.33.0")
     (source
      (origin
        (method git-fetch)
@@ -961,7 +961,7 @@ minimal bcachefs-tools package.  It is meant to be used in initrds.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m85s00i1xfb9lr73j41f80akkhcijh9m0b602r76b15a0l5v3a9"))))
+        (base32 "05lqw3mxi73nm1q4qv43p9hyiwi2hdx4nc9fzm7rxwip6ys1kqkd"))))
     (build-system linux-module-build-system)
     (arguments
      (list
