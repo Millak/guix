@@ -24739,6 +24739,30 @@ format for debugging and logging purposes.")
 similar to JSONPath but with a simpler syntax.")
     (license license:expat)))
 
+(define-public go-github-com-ysmood-leakless
+  (package
+    (name "go-github-com-ysmood-leakless")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ysmood/leakless")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13yas5q77apk3zjp532pms4005zpzqlb0bbhvw6m0ky5cxpz4rww"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ysmood/leakless"))
+    (home-page "https://github.com/ysmood/leakless")
+    (synopsis "Go library for leak-free subprocess management")
+    (description
+     "Leakless is a Go library that ensures child processes are properly
+terminated when the parent process exits, preventing zombie processes.")
+    (license license:expat)))
+
 (define-public go-github-com-yudai-gojsondiff
   (package
     (name "go-github-com-yudai-gojsondiff")
