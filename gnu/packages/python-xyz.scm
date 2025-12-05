@@ -10068,29 +10068,39 @@ which can produce feeds in RSS 2.0, RSS 0.91, and Atom formats.")
 (define-public python-pydantic
   (package
     (name "python-pydantic")
-    (version "1.10.19")
+    (version "2.12.5")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/samuelcolvin/pydantic")
-             (commit (string-append "v" version))))
+              (url "https://github.com/samuelcolvin/pydantic")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0swcpfq1y0h5dcj82idls8k5la4xh4c0vz47y7jci2qass8gjffc"))))
+        (base32 "0h1dwnd16smyknv7fzskv8akp96pw18mrd3l8a3nbhs1afslnd7m"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 5428 passed, 1091 skipped, 24 xfailed
       #:test-flags
-      ;; One test fails with  not equal assertion.
-      #~(list "--deselect=tests/test_validators.py::test_assert_raises_validation_error")))
+      #~(list "--parallel-threads" (number->string (parallel-job-count)))))
     (native-inputs
-     (list python-pytest
+     (list tzdata-for-tests
+           python-dirty-equals
+           python-faker
+           python-hatch-fancy-pypi-readme
+           python-hatchling
+           python-jsonschema
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-examples
            python-pytest-mock
-           python-setuptools
-           python-wheel))
+           python-pytest-run-parallel))
     (propagated-inputs
-     (list python-typing-extensions))
+     (list python-annotated-types
+           python-pydantic-core ;it's hard == requirement, keep it in sync
+           python-typing-extensions
+           python-typing-inspection))
     (home-page "https://github.com/samuelcolvin/pydantic")
     (synopsis "Python data validation and settings management")
     (description
