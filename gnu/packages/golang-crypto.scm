@@ -655,6 +655,38 @@ Deterministic signatures remove the need for a random number generator during
 signing.")
     (license license:isc)))
 
+(define-public go-github-com-containers-libtrust
+  (package
+    (name "go-github-com-containers-libtrust")
+    (version "0.0.0-20230121012942-c1716e8a8d01")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containers/libtrust")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xlyiravmpryz4piaczjwg09q599nfxr3vlgnbv55x3jvy71j0yg"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; tlsdemo contains demo executables (separate main packages) which
+            ;; are meant to be run with "go run"--not compiled together.
+            (delete-file-recursively "tlsdemo")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containers/libtrust"))
+    (home-page "https://github.com/containers/libtrust")
+    (synopsis "Primitives for identity and authorization for containers")
+    (description
+     "Libtrust is a library for managing authentication and authorization
+using public key cryptography.  It provides authorization and access control
+through a distributed trust graph.  It's maintained fork of
+@url{https://github.com/docker-archive-public/docker.libtrust}.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-containers-ocicrypt
   (package
     (name "go-github-com-containers-ocicrypt")
