@@ -67,6 +67,7 @@
 ;;; Copyright © 2025 Ashvith Shetty <ashvithshetty0010@zohomail.in>
 ;;; Copyright © 2025 Philippe Swartvagher <phil.swart@gmx.fr>
 ;;; Copyright © 2025 Simen Endsjø <contact@simendsjo.me>
+;;; Copyright © 2025 bdunahu <bdunahu@operationnull.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -139,6 +140,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages node)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages pantheon)
@@ -5847,6 +5849,46 @@ connecting to MS SQL and Sybase servers over TCP/IP.")
      "TinyDB is a small document oriented database written in pure Python
 with no external dependencies.  The targets are small apps that would
 be blown away by a SQL-DB or an external database server.")
+    (license license:expat)))
+
+(define-public sdb
+  (package
+    (name "sdb")
+    (version "2.2.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/radareorg/sdb.git")
+                     (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "15pc807s2nmhnr3mspyz9h47rkxkv1r07x959ir17v5b6zs7wxvw"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'setenv-cc
+            (lambda _
+              (setenv "CC" #$(cc-for-target))))
+          ;; The provided meson.build uses a Makefile in the source root
+          ;; to run the tests, but resolves its directory relative to
+          ;; the build directory, assuming the build is one level under
+          ;; the source tree. This breaks if the build tree is elsewhere.
+          (add-before 'check 'set-test-workdir-to-source-root
+            (lambda _
+              (substitute* "../source/meson.build"
+                (("workdir: join_paths.*$")
+                 "workdir: meson.project_source_root(),\n")))))))
+    (native-inputs
+     (list node
+           perl
+           python-minimal-wrapper))
+    (home-page "https://github.com/radareorg/sdb")
+    (synopsis "Simple and fast string based key-value database")
+    (description "SDB is a simple key/value database based on djb's cdb disk
+storage that supports JSON and array introspection.")
     (license license:expat)))
 
 (define-public sequeler
