@@ -2898,6 +2898,45 @@ gracefully enhance standard library testing package and behaviors of the
 simple way to create observable objects and subscribe to their changes.")
     (license license:expat)))
 
+(define-public go-github-com-ysmood-got
+  (package
+    (name "go-github-com-ysmood-got")
+    (version "0.42.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ysmood/got")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0nlkclkxnmzji6vfacyzl4khfsgdsj8x3m8w33q6f8cr5944vh0y"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ysmood/got"
+      #:test-flags
+      ;; Tests fail due to: ANSI escape/terminal color differences
+      #~(list "-skip" "TestAssertionColor|TestColor")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests require GODEBUG="tracebackancestors=N" environment
+              ;; setting.
+              (setenv "GODEBUG" "tracebackancestors=1000"))))))
+    (native-inputs
+     (list go-github-com-sergi-go-diff
+           go-github-com-ysmood-gotrace))
+    (propagated-inputs
+     (list go-github-com-ysmood-gop))
+    (home-page "https://github.com/ysmood/got")
+    (synopsis "Go test helpers and assertion library")
+    (description
+     "Got is a Go test helper library that provides assertion functions and
+utilities for writing cleaner test code.")
+    (license license:expat)))
+
 (define-public go-github-com-ysmood-gotrace
   (package
     (name "go-github-com-ysmood-gotrace")
