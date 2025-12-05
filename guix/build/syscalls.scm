@@ -1271,11 +1271,18 @@ memory (CLONE_VM) or threads (CLONE_THREAD) are shared with it."
     (pid (parent pid))))
 
 (define (thread-count)
-  "Return the complete thread count of the current process.  Unlike
-`all-threads', this also counts the Guile signal delivery, and finalizer
-threads."
-  (scandir "/proc/self/task"
-           (negate (cut member <> '("." "..")))))
+  "Return the complete thread count of the current process.  If it could not
+be retrieved, a warning is emitted and the value 1 is used as a fallback.
+Unlike `all-threads', this also counts the Guile signal delivery, and
+finalizer threads."
+  (match (scandir "/proc/self/task" (negate (cut member <> '("." ".."))))
+    (#f
+     ;; This can happen, for example in containers where /proc is not
+     ;; exposed.
+     (format (current-warning-port)
+             "warning: thread count not available; returning 1~%")
+     1)
+    (x (length x))))
 
 (define unshare
   (let ((proc (syscall->procedure int "unshare" (list int))))
@@ -1293,7 +1300,7 @@ with EINVAL."
                                               flags))
              (warn/maybe (lambda ()
                            (when (and require-single-thread?
-                                      (< 1 (length (thread-count))))
+                                      (< 1 (thread-count)))
                              (format (current-warning-port)
                                      "warning: unshare single-thread \
 requirement violated~%")))))
