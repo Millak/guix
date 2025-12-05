@@ -350,6 +350,81 @@ cloud.google.com/go/auth and golang.org/x/oauth2.")
 API service accounts for Go.")
     (license license:asl2.0)))
 
+(define-public go-github-com-go-rod-rod
+  (package
+    (name "go-github-com-go-rod-rod")
+    (version "0.116.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-rod/rod")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1szq6j9ascf1qpq8d6vzq8ka7gsr297g8ywpz1p3sk8wrpf35ycb"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-rod/rod"
+      #:test-flags
+      ;; Browser and network access are required.
+      #~(list "-skip" (string-join
+                       (list "TestBasic"
+                             "TestCrash"
+                             "TestDownload"
+                             "TestWebSocketLargePayload"
+                             "TestDuplicatedConnectErr"
+                             "TestBrowserValid"
+                             "TestLaunch"
+                             "TestLaunchClient"
+                             "TestManaged"
+                             "TestSlowSend"
+                             "TestUseNode")
+                       "|"))
+      #:test-subdirs
+      ;; The full test suite requires acces to the browser and network, run
+      ;; portion of unittests only.
+      #~(list "lib/cdp"
+              "lib/defaults"
+              "lib/devices"
+              "lib/input"
+              "lib/launcher"
+              "lib/proto"
+              "lib/utils"
+              "lib/utils/check-issue")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-examples-and-benchmak
+            (lambda* (#:key import-path #:allow-other-keys)
+              (with-directory-excursion (string-append "src/" import-path)
+                (for-each delete-file-recursively
+                          (list "examples_test.go"
+                                "lib/benchmark"
+                                "setup_test.go"
+                                "lib/cdp/example_test.go"
+                                "lib/examples")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests require GODEBUG="tracebackancestors=N" environment
+              ;; setting.
+              (setenv "GODEBUG" "tracebackancestors=1000"))))))
+    (native-inputs
+     (list go-github-com-ysmood-got
+           go-github-com-ysmood-gotrace))
+    (propagated-inputs
+     (list go-github-com-ysmood-fetchup-for-go-rod
+           go-github-com-ysmood-goob
+           go-github-com-ysmood-gson
+           go-github-com-ysmood-leakless))
+    (home-page "https://go-rod.github.io/")
+    (synopsis "Chrome DevTools Protocol driver for browser automation")
+    (description
+     "Rod is a high-level driver for Chrome DevTools Protocol.  It's designed
+for web automation and scraping, providing a simple API to control Chrome or
+Chromium browsers programmatically.")
+    (license license:expat)))
+
 (define-public go-github-com-googleapis-enterprise-certificate-proxy
   (package
     (name "go-github-com-googleapis-enterprise-certificate-proxy")
@@ -4455,6 +4530,27 @@ against documents, as well as for calculating & applying
      "Fetchup is a Go helper library for downloading and unpacking files from
 URLs.  It supports various archive formats and provides progress tracking.")
     (license license:expat)))
+
+;; Remove when go-rod is updated
+(define-public go-github-com-ysmood-fetchup-for-go-rod
+  (hidden-package
+   (package
+     (inherit go-github-com-ysmood-fetchup)
+     (name "go-github-com-ysmood-fetchup")
+     (version "0.2.3")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/ysmood/fetchup")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0xyqiywynidrn7fmh07vg80wscy55fch1q7rng27sg3zq824z7xh"))))
+    (arguments
+     (list
+      #:tests? #f
+      #:import-path "github.com/ysmood/fetchup")))))
 
 (define-public go-github-com-fasthttp-router
   (package
