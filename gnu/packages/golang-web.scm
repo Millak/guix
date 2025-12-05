@@ -8434,6 +8434,108 @@ known as JOSE) technologies.")
            go-github-com-valyala-fastjson
            go-golang-org-x-crypto))))
 
+(define-public go-github-com-letsencrypt-boulder
+  (package
+    (name "go-github-com-letsencrypt-boulder")
+    (version "0.20260202.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/letsencrypt/boulder")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1n8pg1bnxb7ajpjs93ji8vibaqx5rs5wyv082klajdx80pz7mbks"))
+       (snippet
+        #~(begin (use-modules (guix build utils))
+                 (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/letsencrypt/boulder"
+      #:test-subdirs
+      ;; XXX: Remove when all inputs are packaged.
+      #~(list "allowlist"
+              "core"
+              "crl/idp"
+              "csr"
+              "errors"
+              "goodkey"
+              "goodkey/sagoodkey"
+              "grpc/creds"
+              "grpc/internal/leakcheck"
+              "grpc/noncebalancer"
+              "identifier"
+              "log/validator"
+              "metrics/measured_http"
+              "must"
+              "nonce"
+              "pkcs11helpers"
+              "precert"
+              "privatekey"
+              "probs"
+              "salesforce"
+              "sfe/forms"
+              "sfe/zendesk"
+              "strictyaml"
+              "test/load-generator/acme"
+              "test/zendeskfake")))
+    (propagated-inputs
+     (list go-github-com-aws-aws-sdk-go-v2
+           go-github-com-aws-aws-sdk-go-v2-config
+           go-github-com-aws-aws-sdk-go-v2-service-s3
+           go-github-com-aws-smithy-go
+           go-github-com-go-jose-go-jose-v4
+           go-github-com-go-logr-stdr
+           go-github-com-go-sql-driver-mysql
+           go-github-com-golang-groupcache
+           go-github-com-jmhodges-clock
+           go-github-com-letsencrypt-challtestsrv
+           go-github-com-miekg-dns
+           go-github-com-miekg-pkcs11
+           go-github-com-nxadm-tail
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-github-com-redis-go-redis-v9
+           go-github-com-titanous-rocacheck
+           go-go-opentelemetry-io-contrib-instrumentation-google-golang-org-grpc-otelgrpc
+           go-go-opentelemetry-io-contrib-instrumentation-net-http-otelhttp
+           go-go-opentelemetry-io-otel
+           go-go-opentelemetry-io-otel-exporters-otlp-otlptrace-otlptracegrpc
+           go-go-opentelemetry-io-otel-sdk
+           go-go-opentelemetry-io-otel-trace
+           go-golang-org-x-crypto
+           go-golang-org-x-net
+           go-golang-org-x-term
+           go-golang-org-x-text
+           go-golang-org-x-time
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+           go-gopkg-in-yaml-v3
+
+           ;; TODO: Complete packaging
+           ;; go-github-com-eggsampler-acme-v3
+           ;; go-github-com-google-certificate-transparency-go
+           ;; go-github-com-grpc-ecosystem-go-grpc-middleware-providers-prometheus
+           ;; go-github-com-letsencrypt-borp
+           ;; go-github-com-letsencrypt-pkcs11key-v4
+           ;; go-github-com-letsencrypt-validator-v10
+           ;; go-github-com-redis-go-redis-extra-redisotel-v9
+           ;; go-github-com-weppos-publicsuffix-go
+           ;; go-github-com-zmap-zcrypto
+           #;go-github-com-zmap-zlint-v3))
+    (home-page "https://github.com/letsencrypt/boulder")
+    (synopsis "ACME-based certificate authority used by Let's Encrypt")
+    (description
+     "Boulder is the software that runs @url{https://letsencrypt.org,Let's
+Encrypt} certificate authority.  This package provides the goodkey subpackage
+for checking RSA and ECDSA public keys for common weaknesses.")
+    (license license:mpl2.0)
+    ;; XXX: Don't expose since it's a partial package.
+    (properties '((hidden? . #t)))))
+
 (define-public go-github-com-letsencrypt-challtestsrv
   (package
     (name "go-github-com-letsencrypt-challtestsrv")
