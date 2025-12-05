@@ -24688,6 +24688,33 @@ its real absolute path in the system.")
 @url{https://github.com/yosuke-furukawa/json5, JSON5}.")
       (license license:bsd-3))))
 
+(define-public go-github-com-ysmood-gop
+  (package
+    (name "go-github-com-ysmood-gop")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ysmood/gop")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "09p4h723bnzk3p3bscns8667pg3jj8fwz4vh7ifdms9n3vy5w1g0"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ysmood/gop"
+      ;; TestStyle, TestTokenize, and TestFixNestedStyle fail due to ANSI
+      ;; escape sequence differences in the build environment.
+      #:test-flags #~(list "-skip" "TestStyle|TestTokenize|TestFixNestedStyle")))
+    (home-page "https://github.com/ysmood/gop")
+    (synopsis "Go pretty printer for data structures")
+    (description
+     "Gop is a Go pretty printer that formats Go data structures in a readable
+format for debugging and logging purposes.")
+    (license license:expat)))
+
 (define-public go-github-com-yudai-gojsondiff
   (package
     (name "go-github-com-yudai-gojsondiff")
