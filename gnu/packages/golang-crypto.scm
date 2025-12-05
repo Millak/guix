@@ -63,6 +63,7 @@
   #:use-module (gnu packages golang-web)
   #:use-module (gnu packages golang-xyz)
   #:use-module (gnu packages password-utils)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages security-token)
   #:use-module (gnu packages specifications)
   #:use-module (gnu packages tls))
@@ -2307,6 +2308,45 @@ Counter-cryptanalysis from Marc Stevens.  The original ubc implementation was
 done by Marc Stevens and Dan Shumow, and can be found at:
 @@url{https://github.com/cr-marcstevens/sha1collisiondetection,https://github.com/cr-marcstevens/sha1collisiondetection}.")
     (license license:asl2.0)))
+
+(define-public go-github-com-proglottis-gpgme
+  (package
+    (name "go-github-com-proglottis-gpgme")
+    (version "0.1.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/proglottis/gpgme")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1bjnwiakwvkp013q032xzyhm56hxgydjwy61dl3f34flsj7f6z7w"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/proglottis/gpgme"
+      #:test-flags
+      #~(list "-skip" (string-join
+                       ;; Tests require gpg-connect-agent and GPG v1.x
+                       (list "TestContext_Encrypt"
+                             "TestContext_Decrypt"
+                             "TestContext_DecryptVerify"
+                             "TestContext_Sign")
+                       "|"))))
+    ;; XXX: Any inputs should be propagated for Go libraries, it's a current
+    ;; limitation of go-build-system, see alternative proposal:
+    ;; <https://codeberg.org/guix/guix/pulls/88>.
+    (propagated-inputs
+     (list gpgme
+           pkg-config))
+    (home-page "https://github.com/proglottis/gpgme")
+    (synopsis "Go bindings for GPGME")
+    (description
+     "This package provides Go bindings for GPGME, the GnuPG Made Easy
+library.  It allows Go programs to use GPG for encryption, decryption,
+signing, and verification operations.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-protonmail-bcrypt
   (package
