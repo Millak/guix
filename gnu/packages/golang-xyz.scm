@@ -920,6 +920,30 @@ constants, while scripts are represented by RangeTable.")
      "This package is an implementation of HTTP Basic and HTTP Digest authentication.")
     (license license:asl2.0)))
 
+(define-public go-github-com-acarl005-stripansi
+  (package
+    (name "go-github-com-acarl005-stripansi")
+    (version "0.0.0-20180116102854-5a71ef0e047d")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/acarl005/stripansi")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "02sxiishdixm791jqbkmhdcvc712l0fb8rqmibxzgc61h0qs6rs3"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/acarl005/stripansi"))
+    (home-page "https://github.com/acarl005/stripansi")
+    (synopsis "Strip ANSI escape codes from strings")
+    (description
+     "This package provides a function to strip ANSI escape codes from
+strings in Go.  Useful for removing terminal color codes from text.")
+    (license license:expat)))
+
 (define-public go-github-com-aclements-go-perfevent
   (package
     (name "go-github-com-aclements-go-perfevent")
