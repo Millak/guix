@@ -5431,6 +5431,131 @@ specifying container platforms.")
 repositories.")
     (license license:asl2.0)))
 
+;; XXX: This package was moved; please update your references to use
+;; go.podman.io/image/v5 instead. New development of this project happens on
+;; https://github.com/containers/container-libs.
+(define-public go-github-com-containers-image-v5
+  (package
+    (name "go-github-com-containers-image-v5")
+    (version "5.36.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/containers/image")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0mx1kh52c812d34b5bs8i5hfsmxs58aqdcc352i1wvqjai1lwy7h"))))
+    ;; XXX: Project provides some test data not in text formats:
+    ;; - copy/fixtures
+    ;; - docker/archive/fixtures/almostempty.tar
+    ;; - pkg/compression/
+    ;; - pkg/compression/fixtures
+    ;; - signature/fixtures
+    ;; - signature/simplesequoia/testdata/data
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/containers/image/v5"
+      #:embed-files
+      #~(list "VERSION"
+              "applicator"
+              "content"
+              "core"
+              "format"
+              "format-annotation"
+              "format-assertion"
+              "meta-data"
+              "schema"
+              "unevaluated"
+              "validation")
+      #:test-subdirs
+      ;; XXX: Most of the tests passed just fine but some the them fail due to
+      ;; module versions mismatched, try to fix them all and remove this
+      ;; constrain.
+      #~(list "copy"
+              "directory/explicitfilepath"
+              "docker/archive"
+              "docker/policyconfiguration"
+              "docker/reference"
+              "internal/image"
+              "internal/iolimits"
+              "internal/manifest"
+              "internal/multierr"
+              "internal/pkg/platform"
+              "internal/putblobdigest"
+              "internal/set"
+              "internal/signature"
+              "internal/signer"
+              "internal/uploadreader"
+              "manifest"
+              "oci/internal"
+              "openshift"
+              "pkg/blobcache"
+              "pkg/blobinfocache"
+              "pkg/blobinfocache/boltdb"
+              "pkg/blobinfocache/internal/prioritize"
+              "pkg/blobinfocache/memory"
+              "pkg/blobinfocache/none"
+              "pkg/blobinfocache/sqlite"
+              "pkg/compression"
+              "pkg/shortnames"
+              "pkg/strslice"
+              "pkg/sysregistriesv2"
+              "signature/internal"
+              "signature/sigstore"
+              "signature/sigstore/rekor"
+              "tarball"
+              "transports")))
+    (native-inputs
+     (list go-github-com-distribution-reference
+           go-github-com-letsencrypt-boulder
+           go-github-com-santhosh-tekuri-jsonschema-v6
+           go-github-com-segmentio-ksuid))
+    (propagated-inputs
+     (list go-dario-cat-mergo
+           go-github-com-burntsushi-toml
+           go-github-com-containers-libtrust
+           go-github-com-containers-ocicrypt
+           go-github-com-containers-storage
+           go-github-com-cyberphone-json-canonicalization
+           go-github-com-docker-cli
+           go-github-com-docker-distribution
+           go-github-com-docker-docker
+           go-github-com-docker-docker-credential-helpers
+           go-github-com-docker-go-connections
+           go-github-com-hashicorp-go-cleanhttp
+           go-github-com-hashicorp-go-retryablehttp
+           go-github-com-klauspost-compress
+           go-github-com-klauspost-pgzip
+           go-github-com-manifoldco-promptui
+           go-github-com-mattn-go-sqlite3
+           go-github-com-opencontainers-go-digest
+           go-github-com-opencontainers-image-spec
+           go-github-com-proglottis-gpgme
+           go-github-com-secure-systems-lab-go-securesystemslib
+           go-github-com-sigstore-fulcio
+           go-github-com-sigstore-sigstore
+           go-github-com-sirupsen-logrus
+           go-github-com-stretchr-testify
+           go-github-com-sylabs-sif-v2
+           go-github-com-ulikunitz-xz
+           go-github-com-vbauerster-mpb-v8
+           go-go-etcd-io-bbolt
+           go-golang-org-x-crypto
+           go-golang-org-x-oauth2
+           go-golang-org-x-sync
+           go-golang-org-x-term
+           go-gopkg-in-yaml-v3))
+    (home-page "https://github.com/containers/image")
+    (synopsis "Container image library for Go")
+    (description
+     "This package provides a Go library for working with container images,
+including copying between registries, validating signatures, and converting
+between different image formats like Docker and OCI.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-containers-storage
   (package
     (name "go-github-com-containers-storage")
