@@ -597,7 +597,7 @@ and preserve leading and trailing whitespace.")
 (define-public copyq
   (package
     (name "copyq")
-    (version "11.0.0")
+    (version "13.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -606,7 +606,7 @@ and preserve leading and trailing whitespace.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "04z36jk55dw7rpdr51h6i0645nwnvba0q0q4qxjlnpwyr9ibrpzy"))))
+                "0fl5d4jniv32rsyraw7m1svkvc9nfl479zk3ah6h6p46k4px8663"))))
     (build-system qt-build-system)
     (arguments
      (list
@@ -622,7 +622,9 @@ and preserve leading and trailing whitespace.")
            qtwayland
            wayland
            knotifications
-           kstatusnotifieritem))
+           kstatusnotifieritem
+           kguiaddons
+           libxtst))
     (native-inputs
      (list extra-cmake-modules pkg-config qttools))
     (synopsis "Clipboard manager with advanced features")
