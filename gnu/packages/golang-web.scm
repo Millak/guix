@@ -4920,6 +4920,34 @@ Features:
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-go-chi-chi
+  (package
+    (name "go-github-com-go-chi-chi")
+    (version "4.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/go-chi/chi")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1chbdqmhzmni5bagkzrpcar9ky2fmvxpyq0xq7xh58880az6lbdl"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/go-chi/chi"
+      #:test-flags #~(list "-vet=off")))
+    (propagated-inputs
+     (list go-golang-org-x-net))
+    (home-page "https://github.com/go-chi/chi")
+    (synopsis "Lightweight router for building Go HTTP services")
+    (description
+     "Chi is a lightweight, idiomatic and composable router for building Go
+HTTP services.  It is based on the standard Go @code{net/http} package and
+supports middleware, routing groups, and URL parameters.")
+    (license license:expat)))
+
 (define-public go-github-com-go-chi-chi-v5
   (package
     (name "go-github-com-go-chi-chi-v5")
