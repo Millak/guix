@@ -15468,6 +15468,52 @@ that writes tinted (colorized) logs.  The output format is inspired by the
 @code{zerolog.ConsoleWriter} and @code{slog.TextHandler}.")
     (license license:expat)))
 
+(define-public go-github-com-loft-sh-log
+  (package
+    (name "go-github-com-loft-sh-log")
+    (version "0.0.0-20250610153027-c2f046135b12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/loft-sh/log")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "062i269ikh9y45lnl1v3qfcncp00nw4f9rzjpx98xs078nl5j3ah"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (delete-file-recursively "vendor")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/loft-sh/log"
+      #:test-flags #~(list "-vet=off")))
+    (propagated-inputs
+     (list go-github-com-acarl005-stripansi
+           go-github-com-alecaivazis-survey-v2
+           go-github-com-go-logr-logr
+           go-github-com-k0kubun-go-ansi
+           go-github-com-mgutz-ansi
+           go-github-com-moby-term
+           go-github-com-olekukonko-tablewriter-0.0.5
+           go-github-com-pkg-errors
+           go-github-com-sirupsen-logrus
+           go-github-com-sytten-logrus-zap-hook
+           go-go-uber-org-zap
+           go-gopkg-in-natefinch-lumberjack-v2
+           go-k8s-io-klog-v2))
+    (home-page "https://github.com/loft-sh/log")
+    (synopsis "Structured logging library for Loft tools")
+    (description
+     "This package provides a structured logging library used by Loft tools
+including DevPod.  It wraps @code{logrus} and @code{zap} with additional
+features.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-logrusorgru-aurora
   (package
     (name "go-github-com-logrusorgru-aurora")
