@@ -2682,6 +2682,31 @@ to support the streaming mode required by Go's standard Hash interface.")
 @url{https://www.rfc-editor.org/errata/rfc7512, errata} specifications.")
     (license license:asl2.0)))
 
+(define-public go-github-com-titanous-rocacheck
+  (package
+    (name "go-github-com-titanous-rocacheck")
+    (version "0.0.0-20171023193734-afe73141d399")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/titanous/rocacheck")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xb0hii3dffi88hczd81jb5p1hi7yk1davlsfz6q2xiza03x95dg"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/titanous/rocacheck"))
+    (home-page "https://github.com/titanous/rocacheck")
+    (synopsis "Check RSA keys for ROCA vulnerability")
+    (description
+     "Rocacheck is a Go library for checking RSA public keys for the ROCA
+vulnerability (CVE-2017-15361) that affected certain Infineon cryptographic
+libraries and smart cards.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-tjfoc-gmsm
   (package
     (name "go-github-com-tjfoc-gmsm")
