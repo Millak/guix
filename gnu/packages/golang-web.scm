@@ -9078,6 +9078,33 @@ Hyper-V sockets} and @url{http://stefanha.github.io/virtio/, virtio
 sockets}.")
     (license license:asl2.0)))
 
+(define-public go-github-com-loft-sh-admin-apis
+  (package
+    (name "go-github-com-loft-sh-admin-apis")
+    (version "0.0.0-20260212114730-dbda80c541d7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/loft-sh/admin-apis")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s6njnn7xfk7jbf1sw3rfhrwhdp8ln37anqrnpjjc09fjzax7ish"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/loft-sh/admin-apis"))
+    (propagated-inputs
+     (list go-github-com-ghodss-yaml
+           go-github-com-stripe-stripe-go-v81))
+    (home-page "https://github.com/loft-sh/admin-apis")
+    (synopsis "Loft admin API definitions")
+    (description
+     "This package provides admin API definitions for the Loft platform.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-lum8rjack-go-ja4h
   (package
     (name "go-github-com-lum8rjack-go-ja4h")
