@@ -615,7 +615,7 @@ supported algorithm is chosen to ensure interoperability with
 (define-public emacs-elchacha
   (package
     (name "emacs-elchacha")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method git-fetch)
@@ -624,7 +624,7 @@ supported algorithm is chosen to ensure interoperability with
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ghh2gs36h4hnfi49y8f9bl002vjvrg239v5zgfp0mqfyr70lnqc"))))
+        (base32 "1f2nvfh2cdbb34x0smf1xlnwf8nw7mw3jng70ghkyjy7881s1f3x"))))
     (build-system emacs-build-system)
     (arguments
      (list
