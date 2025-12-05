@@ -38191,7 +38191,7 @@ all of your projects, then override or add variables on a per-project basis.")
 (define-public emacs-casual
   (package
     (name "emacs-casual")
-    (version "2.9.2")
+    (version "2.11.2")
     (source
      (origin
        (method git-fetch)
@@ -38200,7 +38200,7 @@ all of your projects, then override or add variables on a per-project basis.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08rsb4nwnjpz4xrqvhjap2p4frgmf69lbh0k5lvk0bndkpr8pczs"))))
+        (base32 "10hdhpgsxhvyi6ybcvlfhwm88q34sgsb43jvgg7m4jm98n1nvima"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -38209,7 +38209,7 @@ all of your projects, then override or add variables on a per-project basis.")
           (add-after 'unpack 'build-info-manual
             (lambda _
               ;; FIXME: Re-generating documentation is not possible at the
-              ;; moment (release 2.9.2) because the "casual" Texinfo class is
+              ;; moment (release 2.11.2) because the "casual" Texinfo class is
               ;; missing from the repository, and this prevents Org from
               ;; exporting properly the "casual.org" file to Texinfo.
               ;;
@@ -38235,7 +38235,7 @@ all of your projects, then override or add variables on a per-project basis.")
       #:test-command #~(list "make" "tests"
                              (string-append " CASUAL_LIB_DIR=" (getcwd)
                                             "/source"))))
-    (native-inputs (list texinfo))
+    (native-inputs (list emacs-csv-mode texinfo))
     ;; Casual relies on the latest stable release of `transient' which may
     ;; differ from the version that is preinstalled as a built-in.
     (propagated-inputs (list emacs-magit emacs-transient))
