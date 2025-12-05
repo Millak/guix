@@ -44,11 +44,19 @@
 
  (entry (commit "14bb0192fde79909999c3880b6b66aa22499eb11")
         (title
-         (en "Linux-libre 6.16 removed from Guix"))
+         (en "Linux-libre 6.16 removed from Guix")
+         (de "Linux-libre 6.16 wurde aus Guix entfernt")
+         (zh "Linux-libre 6.16 已从 Guix 中移除"))
         (body
          (en "The linux-libre 6.16 kernel series has been removed from Guix, as
 it is no longer supported upstream.  The 6.17 kernel series is now the
-default.")))
+default.")
+         (de "Die Versionsreihe 6.16 des Linux-libre-Kernels wurde aus GNU Guix
+entfernt, weil sie von dessen Anbieter nicht mehr unterstützt wird.
+Kernel-Versionsreihe 6.17 ist jetzt vorgegeben.")
+         (zh "由于上游不再支持，GNU Guix 已移除 6.16 系列的 linux-libre 内核。6.17
+内核系列现已成为默认版本。")))
+
 
  (entry (commit "8daae75de3670594dfcb63b6ae6f1603ca6f7971")
         (title
