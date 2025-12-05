@@ -433,6 +433,7 @@ and JSON.
      (list ;; python-azure-identity
            python-dotenv
            python-flit-core
+           python-psutil
            python-pydantic
            python-pytest
            python-pytest-cases
