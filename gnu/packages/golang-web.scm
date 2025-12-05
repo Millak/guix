@@ -17882,6 +17882,37 @@ the standard @code{context} package to store request-scoped values.")
     (description "This package is a Go Implementation of WireGuard.")
     (license license:expat)))
 
+(define-public go-gomodules-xyz-jsonpatch-v2
+  (package
+    (name "go-gomodules-xyz-jsonpatch-v2")
+    (version "2.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/gomodules/jsonpatch")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a4f7q7lfpwq1ky1k3sfrvmskc64b9wizfn94wqa9kwb6v6j8b0l"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "gomodules.xyz/jsonpatch/v2"
+      #:unpack-path "gomodules.xyz/jsonpatch"))
+    (native-inputs
+     (list go-github-com-stretchr-testify))
+    (propagated-inputs
+     (list go-github-com-evanphx-json-patch
+           go-github-com-pkg-errors))
+    (home-page "https://github.com/gomodules/jsonpatch")
+    (synopsis "JSON Patch (RFC 6902) and target document generation")
+    (description
+     "This package provides functionality for generating JSON Patch documents
+and for applying JSON Patch operations to JSON documents per RFC 6902.  It's
+an alternative fork of @url{https://github.com/mattbaird/jsonpatch}.")
+    (license license:asl2.0)))
+
 (define-public go-google-golang-org-api
   (package
     (name "go-google-golang-org-api")
