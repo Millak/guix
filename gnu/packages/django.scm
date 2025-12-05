@@ -1088,14 +1088,15 @@ entries, photos, book chapters, or anything else.")
 (define-public python-django-ninja
   (package
     (name "python-django-ninja")
-    (version "1.4.3")
+    (version "1.5.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "django_ninja" version))
               (sha256
                (base32
-                "0f5hgjkavvk1csb1yl34scqai3ljjhh93k5kbqm8s8hclry4fvg4"))))
+                "1iqp3c4gxvskw1xdi9bqzpz2rw6779ydkd6czp3382fncj5adkba"))))
     (build-system pyproject-build-system)
+    ;; tests: 670 passed, 1 skipped, 53 warnings
     (propagated-inputs
      (list python-django python-pydantic))
     (native-inputs
