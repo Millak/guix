@@ -4423,6 +4423,39 @@ against documents, as well as for calculating & applying
        ((#:import-path "github.com/evanphx/json-patch")
         "github.com/evanphx/json-patch/v5")))))
 
+(define-public go-github-com-ysmood-fetchup
+  (package
+    (name "go-github-com-ysmood-fetchup")
+    (version "0.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/ysmood/fetchup")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0da4n133bnz31jpbjvd1wq2qqd1jf0fnw02yh626l0am3jmrhqz8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/ysmood/fetchup"
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Network access is required.
+          (add-after 'unpack 'remove-examples
+            (lambda* (#:key import-path #:allow-other-keys)
+              (delete-file
+               (string-append "src/" import-path "/examples_test.go")))))))
+    (propagated-inputs
+     (list go-github-com-ysmood-got))
+    (home-page "https://github.com/ysmood/fetchup")
+    (synopsis "Go helper to download and unpack files")
+    (description
+     "Fetchup is a Go helper library for downloading and unpacking files from
+URLs.  It supports various archive formats and provides progress tracking.")
+    (license license:expat)))
+
 (define-public go-github-com-fasthttp-router
   (package
     (name "go-github-com-fasthttp-router")
