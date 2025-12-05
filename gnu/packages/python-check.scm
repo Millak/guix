@@ -3677,6 +3677,34 @@ eliminate flaky failures.")
 flaky tests, thereby improving the consistency of the test suite results.")
     (license license:expat)))
 
+(define-public python-pytest-run-parallel
+  (package
+    (name "python-pytest-run-parallel")
+    (version "0.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest_run_parallel" version))
+       (sha256
+        (base32 "1qiz0kpjzqad9s5kr1rx4zxncy4zfghzb85cl7hjzca0j34agbji"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest-bootstrap
+           python-pytest-order
+           python-pytest-xdist
+           python-setuptools))
+    (home-page "https://github.com/Quansight-Labs/pytest-run-parallel")
+    (synopsis "Pytest plugin to run tests concurrently")
+    (description
+     "This package provides a simple pytest plugin to run tests concurrently.
+ The main goal of pytest-run-parallel is to discover thread-safety issues that
+could exist when using C libraries, this is of vital importance after
+@url{https://peps.python.org/pep-0703/, PEP703}, which provides a path for a
+CPython implementation without depending on the Global Interpreter Lock (GIL),
+thus allowing for proper parallelism in programs that make use of the CPython
+interpreter.")
+    (license license:expat)))
+
 ;; This is only used by python-sanic
 (define-public python-pytest-sanic
   (package
