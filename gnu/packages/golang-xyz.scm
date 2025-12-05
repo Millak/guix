@@ -4017,6 +4017,31 @@ package provides an API for comparing Golden files.")
      "Package slice provides utility functions for working with slices in Go.")
     (license license:expat)))
 
+(define-public go-github-com-charmbracelet-x-exp-strings
+  (package
+    (name "go-github-com-charmbracelet-x-exp-strings")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/charmbracelet/x")
+              (commit (go-version->git-ref version
+                                           #:subdir "exp/strings"))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1i0xlik5rn59pfsx9ci4c4r68h32cg97s9yygplr5skwhq7513cz"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/charmbracelet/x/exp/strings"
+      #:unpack-path "github.com/charmbracelet/x"))
+    (home-page "https://github.com/charmbracelet/x")
+    (synopsis "String manipulation utilities for Go")
+    (description
+     "Package strings provides utility functions for working with strings in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-charmbracelet-x-input
   (package
     (name "go-github-com-charmbracelet-x-input")
