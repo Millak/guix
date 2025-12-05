@@ -15278,6 +15278,34 @@ raw strings.")
      (list
       #:import-path "github.com/MakeNowJust/heredoc/v2"))))
 
+(define-public go-github-com-manifoldco-promptui
+  (package
+    (name "go-github-com-manifoldco-promptui")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/manifoldco/promptui")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1nnlj1ahwq4ar5gbvxg8dqjl1wl5r8mhcm0bixg1c4wiihz8xv8m"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/manifoldco/promptui"))
+    (propagated-inputs
+     (list go-github-com-chzyer-readline
+           go-golang-org-x-sys))
+    (home-page "https://github.com/manifoldco/promptui")
+    (synopsis "Interactive prompt for command-line applications")
+    (description
+     "Promptui is a library providing a simple interface to create interactive
+prompts for command-line applications.  It supports selections, text input,
+and confirmation dialogs with customizable templates.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-marcinbor85-gohex
   ;; No release, see <https://github.com/marcinbor85/gohex/issues/5>.
   (let ((commit "baab2527a9a2a4abb3dc06baabedfa5e0268b8d8")
