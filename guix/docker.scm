@@ -326,7 +326,9 @@ added to image as a layer."
                         ("arm"     "arm")
                         ("aarch64" "arm64")
                         ("mips64"  "mips64le")
-                        ("riscv64" "riscv64")))))
+                        ("powerpc64le" "ppc64le")
+                        ("riscv64" "riscv64")
+                        ("s390x"   "s390x")))))
     ;; Make sure we start with a fresh, empty working directory.
     (mkdir directory)
     (with-directory-excursion directory
