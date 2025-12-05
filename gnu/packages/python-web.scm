@@ -1135,7 +1135,7 @@ formats (PDF/XML/CSV).")
 (define-public python-guardpost
   (package
     (name "python-guardpost")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method git-fetch)
@@ -1144,7 +1144,7 @@ formats (PDF/XML/CSV).")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q09w953d4cjjvp8pp3kkkhw0y9kq2jgj6fihdz9np55pwxkfd15"))))
+        (base32 "1xsakqn36g2h1s5rnbaf1lasx1jn4skqhmb8kdl1k4pgxp5sczyy"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1152,14 +1152,16 @@ formats (PDF/XML/CSV).")
       ;; <https://github.com/Neoteroi/GuardPost/issues/18>.
       #:test-flags '(list "--ignore=tests/test_jwts.py")))
     (native-inputs
-     (list python-cryptography
-           python-flask
+     (list python-flask
            python-hatchling
-           python-pyjwt
            python-pytest
            python-pytest-asyncio))
     (propagated-inputs
-     (list python-rodi))
+     (list python-rodi
+           ;; [optional]
+           python-cryptography
+           python-essentials
+           python-pyjwt))
     (home-page "https://github.com/Neoteroi/GuardPost/")
     (synopsis
      "Authentication and authorization framework for Python applications")
