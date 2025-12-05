@@ -5928,6 +5928,35 @@ values.  It supports almost all kind of types: @code{int/8/16/32/64},
 metrics to Graphite.")
     (license license:bsd-2)))
 
+(define-public go-github-com-cyberphone-json-canonicalization
+  (package
+    (name "go-github-com-cyberphone-json-canonicalization")
+    (version "0.0.0-20241213102144-19d51d7fe467")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cyberphone/json-canonicalization")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1g1q784rsj5jam7zs049dlb637dqsswkf79ncsjy7x8rl18gg8bs"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path (string-append "github.com/cyberphone/"
+                                   "json-canonicalization/go/src/"
+                                   "webpki.org/jsoncanonicalizer")
+      #:unpack-path "github.com/cyberphone/json-canonicalization"))
+    (home-page "https://github.com/cyberphone/json-canonicalization")
+    (synopsis "JSON Canonicalization Scheme (JCS) implementation")
+    (description
+     "This package implements the JSON Canonicalization Scheme (JCS) as
+defined in @url{https://datatracker.ietf.org/doc/html/rfc8785, RFC 8785}.  JCS
+provides a predictable serialization of JSON data, which is useful for digital
+signatures.")
+    (license license:asl2.0)))
+
 (define-public go-github-com-cyphar-filepath-securejoin
   (package
     (name "go-github-com-cyphar-filepath-securejoin")
