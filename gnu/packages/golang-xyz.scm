@@ -4811,7 +4811,7 @@ dependencies and a simple API.")
 (define-public go-github-com-containerd-containerd
   (package
     (name "go-github-com-containerd-containerd")
-    (version "1.7.12")
+    (version "1.7.22")
     (source
      (origin
        (method git-fetch)
@@ -4820,7 +4820,7 @@ dependencies and a simple API.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jwrdiglhqxccmmiq33li3myrb409mvskvcghli411fs9r46lxm3"))
+        (base32 "1yfda4qnygy4lcqb6cqc7v7h2lf0gl64xhvkp39zngmqm0lw30gh"))
        (snippet
         #~(begin
             (use-modules (guix build utils))
