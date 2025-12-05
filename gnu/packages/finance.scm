@@ -1392,6 +1392,7 @@ the KeepKey Hardware Wallet.")
         (base32
          "03zj602m2rln9yvr08dswy56vzkbldp8b074ixwzz525dafblr92"))))
     (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ; No tests detected
     (inputs
      (list python-ledgerblue python-trezor-agent))
     (native-inputs
