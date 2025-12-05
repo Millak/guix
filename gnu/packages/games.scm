@@ -6678,14 +6678,14 @@ that sets it apart from other monster fighting RPGs.")
 (define-public tuxpaint
   (package
     (name "tuxpaint")
-    (version "0.9.34") ;keep VER_DATE below in sync
+    (version "0.9.35") ;keep VER_DATE below in sync
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/tuxpaint/tuxpaint/" version
                            "/tuxpaint-" version ".tar.gz"))
        (sha256
-        (base32 "00zdf3iza3qrbwmwn9q5fw5z29i1pw63xaq9d15f1ac6sdgdyqdp"))
+        (base32 "1bfhidnspv7jm90z98jxmhwvlfac9hh2ijdjmbyr8zp73gwqmhf1"))
        (modules '((guix build utils)))
        (snippet '(begin
                    ;; Remove win32 directory which contains binary dll's and the
@@ -6707,6 +6707,7 @@ that sets it apart from other monster fighting RPGs.")
                   libpng
                   (librsvg-for-system)
                   libpaper
+                  libxml2
                   netpbm
                   pango
                   sdl2
@@ -6719,7 +6720,7 @@ that sets it apart from other monster fighting RPGs.")
     (arguments
      (list
       #:make-flags
-      #~(list "VER_DATE=2024-10-25"
+      #~(list "VER_DATE=2025-05-26"
               "GPERF=gperf"
               (string-append "CC="
                              #$(cc-for-target))
@@ -6770,7 +6771,7 @@ your child be creative.")
 (define-public tuxpaint-stamps
   (package
     (name "tuxpaint-stamps")
-    (version "2024.10.25")
+    (version "2025.05.26")
     (source
      (origin
        (method url-fetch)
@@ -6779,7 +6780,7 @@ your child be creative.")
                            "/tuxpaint-stamps-" version ".tar.gz"))
        (sha256
         (base32
-         "19vng3h6icd7zs2arfmkcg4w7snsw5syx956ww05xgvwll9s2hal"))))
+         "17wlh9gkqzskny7ycwcsl2arsjzvmspy6d41q9j3mj9nh2gs5x09"))))
     (build-system copy-build-system)
     (arguments (list #:install-plan #~'(("stamps" "share/tuxpaint/"))))
     (home-page (package-home-page tuxpaint))
@@ -6792,7 +6793,7 @@ with the \"Stamp\" tool within Tux Paint.")
 (define-public tuxpaint-config
   (package
     (name "tuxpaint-config")
-    (version "0.0.25")                  ;keep VER_DATE below in sync
+    (version "0.0.26")                  ;keep VER_DATE below in sync
     (source
      (origin
        (method url-fetch)
@@ -6800,7 +6801,7 @@ with the \"Stamp\" tool within Tux Paint.")
                            version "/tuxpaint-config-" version ".tar.gz"))
        (sha256
         (base32
-         "16awjwxr2wf6v05wr2z01kgnah2nwwk9k5y25fb3lawnzy0aqild"))))
+         "1f73av2fvqr6bd6kacmybaq4y03p1yxcbsyf84l1cph0mwmmzb7r"))))
     (build-system gnu-build-system)
     (native-inputs (list gettext-minimal pkg-config))
     (inputs
@@ -6813,7 +6814,7 @@ with the \"Stamp\" tool within Tux Paint.")
            libxft
            mesa))
     (arguments
-     `(#:make-flags `("VER_DATE=2024-11-15"
+     `(#:make-flags `("VER_DATE=2024-04-19"
                       "CONFDIR=/etc/tuxpaint" ;don't write to store
                       ,(string-append "PREFIX=" %output)
                       "GNOME_PREFIX=$(PREFIX)")
@@ -6830,8 +6831,7 @@ with the \"Stamp\" tool within Tux Paint.")
                   (add-before 'install 'make-install-dirs
                     (lambda* (#:key outputs #:allow-other-keys)
                       (let ((out (assoc-ref outputs "out")))
-                        (mkdir-p (string-append out "/bin"))
-                        #t))))))
+                        (mkdir-p (string-append out "/bin"))))))))
     (home-page (package-home-page tuxpaint))
     (synopsis "Configure Tux Paint")
     (description
