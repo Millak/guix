@@ -23456,6 +23456,36 @@ anti-fragmentation protection.")
      "Package fasttemplate implements simple and fast template library.")
     (license license:expat)))
 
+(define-public go-github-com-vbauerster-mpb-v8
+  (package
+    (name "go-github-com-vbauerster-mpb-v8")
+    (version "8.11.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/vbauerster/mpb")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zq7k0jpi8322n6f2kgygxlbldnan0x57ifyhhja74q6vlqjp1k8"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/vbauerster/mpb/v8"))
+    (propagated-inputs
+     (list go-github-com-acarl005-stripansi
+           go-github-com-mattn-go-runewidth
+           go-github-com-vividcortex-ewma
+           go-golang-org-x-sys))
+    (home-page "https://github.com/vbauerster/mpb")
+    (synopsis "Multi-progress bar for Go CLI applications")
+    (description
+     "This package provides a multi-progress bar for Go command-line
+applications.  It supports multiple progress bars, customizable decorators,
+and dynamic bar addition/removal.")
+    (license license:unlicense)))
+
 (define-public go-github-com-vbatts-go-mtree
   (package
     (name "go-github-com-vbatts-go-mtree")
