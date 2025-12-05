@@ -8840,7 +8840,7 @@ something with a bit more flair than the Modus themes.")
 (define-public emacs-doric-themes
   (package
     (name "emacs-doric-themes")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method git-fetch)
@@ -8849,7 +8849,7 @@ something with a bit more flair than the Modus themes.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06kvv5hvqig1sngzzvpxfpb9wln9fv2b7krjmvb0n3kvp0s0bxmd"))))
+        (base32 "06zhm0w3j474n190simv18rqzsfq3lsq9m7ljr3a4fswd3hvx846"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ;no tests
     (home-page "https://github.com/protesilaos/doric-themes")
