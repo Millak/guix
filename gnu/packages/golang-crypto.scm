@@ -628,6 +628,32 @@ Cryptography (ECC).")
 @code{encoding/base64} library.")
     (license (list license:asl2.0 license:asl2.0))))
 
+(define-public go-github-com-codahale-rfc6979
+  (package
+    (name "go-github-com-codahale-rfc6979")
+    (version "0.0.0-20141003034818-6a90f24967eb")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/codahale/rfc6979")
+              (commit (go-version->git-ref version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07p51hmvvzvn84mg1c3kmp799j7jf7w15770qw8qz9q7j8frx03f"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/codahale/rfc6979"))
+    (home-page "https://github.com/codahale/rfc6979")
+    (synopsis "Deterministic ECDSA signatures in Go")
+    (description
+     "This package implements @url{https://www.rfc-editor.org/rfc/rfc6979, RFC
+6979}, which describes how to generate deterministic ECDSA signatures.
+Deterministic signatures remove the need for a random number generator during
+signing.")
+    (license license:isc)))
+
 (define-public go-github-com-containers-ocicrypt
   (package
     (name "go-github-com-containers-ocicrypt")
