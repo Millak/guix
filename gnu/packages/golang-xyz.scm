@@ -19056,6 +19056,33 @@ function calls, and custom operators.  It's useful for configuration files,
 user-defined rules, and data filtering.")
     (license license:bsd-3)))
 
+(define-public go-github-com-paesslerag-jsonpath
+  (package
+    (name "go-github-com-paesslerag-jsonpath")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/PaesslerAG/jsonpath")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19x98ilxgklhy70x3y5fmqn5kdymwssnwxv0gjyfcf2zwnzm89c4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "github.com/PaesslerAG/jsonpath"))
+    (propagated-inputs
+     (list go-github-com-paesslerag-gval))
+    (home-page "https://github.com/PaesslerAG/jsonpath")
+    (synopsis "JSONPath implementation for Go")
+    (description
+     "This package provides a JSONPath implementation for Go using the gval
+expression evaluation library.  It allows querying JSON documents using
+JSONPath expressions like @samp{$.store.book[*].author}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-panjf2000-ants-v2
   (package
     (name "go-github-com-panjf2000-ants-v2")
