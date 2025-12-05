@@ -42,6 +42,14 @@
 (channel-news
  (version 0)
 
+ (entry (commit "14bb0192fde79909999c3880b6b66aa22499eb11")
+        (title
+         (en "Linux-libre 6.16 removed from Guix"))
+        (body
+         (en "The linux-libre 6.16 kernel series has been removed from Guix, as
+it is no longer supported upstream.  The 6.17 kernel series is now the
+default.")))
+
  (entry (commit "8daae75de3670594dfcb63b6ae6f1603ca6f7971")
         (title
          (en "Fundraising to sustain and strengthen Guix")
