@@ -39176,6 +39176,33 @@ uses ujson.")
 inspection of types defined in the Python standard typing module.")
     (license license:expat)))
 
+(define-public python-typing-inspection
+  (package
+    (name "python-typing-inspection")
+    (version "0.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pydantic/typing-inspection")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dqib4arxxaxwyapw6y4pcvm38l8djkhd8cfr149w42bw4xrqr38"))))
+    (build-system pyproject-build-system)
+    ;; tests: 89 passed, 3 skipped
+    (native-inputs
+     (list python-pytest
+           python-hatchling))
+    (propagated-inputs
+     (list python-typing-extensions))
+    (home-page "https://github.com/pydantic/typing-inspection")
+    (synopsis "Runtime typing introspection tools")
+    (description
+     "@code{typing-inspection} provides tools to inspect type annotations at
+runtime.")
+    (license license:expat)))
+
 (define-public python-typogrify
   (package
     (name "python-typogrify")
