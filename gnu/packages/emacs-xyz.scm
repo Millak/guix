@@ -18508,7 +18508,7 @@ names, e.g., @samp{#0000ff} is displayed in white with a blue background.")
 (define-public emacs-colorful-mode
   (package
     (name "emacs-colorful-mode")
-    (version "1.2.4")
+    (version "1.2.5")
     (source
      (origin
        (method git-fetch)
@@ -18517,7 +18517,7 @@ names, e.g., @samp{#0000ff} is displayed in white with a blue background.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cm5bpw2x15h6pf5vxcp2f7jf1rkpnq7qq8idlv9n9p5nnxwik1d"))))
+        (base32 "0d85wpvh56l8v0k8174g9dpniibc4k7j5nzszsk8ix1l42fsbi8i"))))
     (build-system emacs-build-system)
     ;; No automated tests.  The test directory contains sample files for
     ;; visual inspection.
