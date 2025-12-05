@@ -8711,7 +8711,7 @@ This mode supports Apache HTTP Server 2.4 and major modules.")
 (define-public emacs-apheleia
   (package
     (name "emacs-apheleia")
-    (version "4.4.1")
+    (version "4.4.2")
     (source
      (origin
        (method git-fetch)
@@ -8720,7 +8720,7 @@ This mode supports Apache HTTP Server 2.4 and major modules.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06zbl4syvk05qh57mlzwyw9avyag26yirw99b9l3z0fxcmyn8l39"))))
+        (base32 "1ldj6cny88b7j0jspv68sw5z9jpfpqimavmbnhcbq7gmc6xlbmvz"))))
     (build-system emacs-build-system)
     (native-inputs (list emacs-buttercup))
     (home-page "https://github.com/raxod502/apheleia")
