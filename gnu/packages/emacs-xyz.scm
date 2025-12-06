@@ -15679,6 +15679,35 @@ alleviates the need for context macros, enclosing specifications or required
 test tags.  It supports both interactive and non-interactive use.")
       (license license:gpl3+))))
 
+(define-public emacs-load-dir
+  ;; This package is kept inside ELPA; there is no version-specific
+  ;; tag. Version string was taken from source code.
+  (let ((commit "22bcac73d8808a680fd9b261cd89937d8e5c6a3c")
+        (revision "0"))
+    (package
+      (name "emacs-load-dir")
+      (version (git-version "0.0.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://git.savannah.gnu.org/git/emacs/elpa.git")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "011m9vnjrxmnpnvf7zjfg3pzkkfsfwc4xf3h5z37f2d4x7ghlw10"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:tests? #f))              ; No tests.
+      (synopsis "Load all Emacs Lisp files in a given directory")
+      (description
+       "This package provides a way to load all Emacs Lisp snippets (they
+don't have to be libraries) in a directory on startup or when Emacs is already
+running.  It won't reload snippets unless the user requests it.")
+      (home-page "https://elpa.gnu.org/packages/load-dir.html")
+      (license license:gpl3+))))
+
 (define-public emacs-load-relative
   (package
     (name "emacs-load-relative")
