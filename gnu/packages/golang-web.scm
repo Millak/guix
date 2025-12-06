@@ -11002,6 +11002,93 @@ mainly for managing the configuration of Open vSwitch and OVN, but it could
 also be used to manage your stamp collection.")
     (license license:asl2.0)))
 
+(define-public go-github-com-sigstore-fulcio
+  (package
+    (name "go-github-com-sigstore-fulcio")
+    (version "1.8.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/sigstore/fulcio")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1cz66fswvy50868yr13s4pvrdn3lk9kh0wp3ynrb2g6l4y7z8rw5"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Submodules with their own go.mod files and packaged separately:
+            ;;
+            ;; - github.com/sigstore/fulcio/hack/tools
+            (delete-file-recursively "hack/tools")))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:skip-build? #t
+      #:import-path "github.com/sigstore/fulcio"
+      #:test-subdirs
+      ;; XXX: Remove when all inputs are packaged.
+      #~(list "pkg/api"
+              "pkg/certificate"
+              "pkg/oauthflow")))
+    (native-inputs
+     (list go-github-com-stretchr-testify
+           go-github-com-google-go-cmp
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-spf13-viper))
+    (propagated-inputs
+     (list go-github-com-asaskevich-govalidator
+           go-github-com-coreos-go-oidc-v3
+           go-github-com-fsnotify-fsnotify
+           go-github-com-go-jose-go-jose-v4
+           go-github-com-grpc-ecosystem-go-grpc-middleware
+           go-github-com-grpc-ecosystem-go-grpc-prometheus
+           go-github-com-grpc-ecosystem-grpc-gateway-v2
+           go-github-com-hashicorp-golang-lru-v2
+           go-github-com-magiconair-properties
+           go-github-com-paesslerag-jsonpath
+           go-github-com-prometheus-client-golang
+           go-github-com-prometheus-client-model
+           go-github-com-prometheus-common
+           go-github-com-rs-cors
+           go-github-com-sigstore-protobuf-specs
+           go-github-com-sigstore-sigstore
+           go-github-com-tink-crypto-tink-go-v2
+           go-go-uber-org-zap
+           go-go-yaml-in-yaml-v3
+           go-google-golang-org-api
+           go-google-golang-org-genproto-googleapis-api
+           go-google-golang-org-grpc
+           go-google-golang-org-protobuf
+
+           ;; TODO: Complete packaging
+           ;; go-chainguard-dev-go-grpc-kit
+           ;; go-chainguard-dev-sdk
+           ;; go-cloud-google-com-go-security
+           ;; go-github-com-google-certificate-transparency-go
+           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-aws
+           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-azure
+           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-gcp
+           ;; go-github-com-sigstore-sigstore-pkg-signature-kms-hashivault
+           ;; go-github-com-spiffe-go-spiffe-v2
+           ;; go-github-com-thalesignite-crypto11
+           ;; go-github-com-tink-crypto-tink-go-awskms-v2
+           ;; go-github-com-tink-crypto-tink-go-gcpkms-v2
+           ;; go-go-step-sm-crypto
+           ;; go-goa-design-goa-v3
+           #;go-sigs-k8s-io-release-utils))
+    (home-page "https://github.com/sigstore/fulcio")
+    (synopsis "Sigstore certificate authority for code signing")
+    (description
+     "Fulcio is a free-to-use certificate authority for issuing code signing
+certificates for an OpenID Connect (OIDC) identity, such as email address.
+It is part of the Sigstore project for software supply chain security.")
+    (license license:asl2.0)
+    ;; XXX: Don't expose since it's a partial package.
+    (properties '((hidden? . #t)))))
+
 (define-public go-github-com-pascaldekloe-goe
   (package
     (name "go-github-com-pascaldekloe-goe")
