@@ -234,27 +234,17 @@ managers.")
 (define-public asciinema
   (package
     (name "asciinema")
-    (version "2.4.0")
+    (version "3.0.1")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/asciinema/asciinema")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (crate-uri "asciinema" version))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0qhf4sc5fl81rpq3rgzy7qcch620dh12scvsbdfczfbyjb10ps2i"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'fix-python-path
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* "tests/pty_test.py"
-                     (("python3") (search-input-file inputs "/bin/python3"))))))))
-    (native-inputs
-     (list python-pytest ; For tests.
-           python-setuptools python-wheel))
+        (base32 "1w64inic9z2fb0vwi0a2q8i31d4jsr6n71dg1ixhmmvkdpv7gb1j"))))
+    (build-system cargo-build-system)
+    (native-inputs (list python-minimal)) ;needed for tests
+    (inputs (cargo-inputs 'asciinema))
     (home-page "https://asciinema.org")
     (synopsis "Terminal session recorder")
     (description
