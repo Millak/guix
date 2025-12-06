@@ -46063,28 +46063,24 @@ should pop up.")
     (license license:gpl3+)))
 
 (define-public emacs-hare-mode
-  ;; XXX: Upstream did not tag any commit.  Using "Version:" keyword as base
-  ;; version.
-  (let ((commit "bb7b2faccb5939b0c8d4ffa6a6e28a0d2bc93dd6")
-        (revision "0"))
-    (package
-      (name "emacs-hare-mode")
-      (version (git-version "0.1.0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.sr.ht/~bbuccianti/hare-mode")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "13vjlmxfgwiljzjwkzhxzz565y34fggsbp840bxlwbwa6lsfrsa8"))))
-      (build-system emacs-build-system)
-      (home-page "https://git.sr.ht/~bbuccianti/hare-mode")
-      (synopsis "Hare major mode for Emacs")
-      (description
-       "This package an Emacs major mode for the Hare programming language.")
-      (license license:gpl3+))))
+  (package
+    (name "emacs-hare-mode")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://git.sr.ht/~grafov/hare-mode")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0l31q53h3spw5g5fwa238dryxs563644gzgv1gcpshjda8dnmibf"))))
+    (build-system emacs-build-system)
+    (home-page "https://git.sr.ht/~grafov/hare-mode")
+    (synopsis "Hare major mode for Emacs")
+    (description
+     "This package an Emacs major mode for the Hare programming language.")
+    (license license:gpl3+)))
 
 (define-public emacs-org-cliplink
   (let ((commit "13e0940b65d22bec34e2de4bc8cba1412a7abfbc")
