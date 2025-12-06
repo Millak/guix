@@ -26,6 +26,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages terminals)
   #:use-module (guix packages)
   #:use-module (guix gexp)
   #:use-module (guix download)
@@ -163,7 +164,7 @@ comfortable for anyone.")
 (define-public rlwrap
   (package
     (name "rlwrap")
-    (version "0.46.2")
+    (version "0.48")
     (source
      (origin
        (method git-fetch)
@@ -172,12 +173,13 @@ comfortable for anyone.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mp3rhq8qifj0gr31qi5sh10ixlpvqv3vi4miaf61v1xiphvd6nk"))))
+        (base32 "13iqss291sapivryix91ri62ws4v4n2mz2gf68cm2i6avy734f2b"))
+       (patches (search-patches "rlwrap-no-rbgen.patch"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake perl))
     (inputs
-     (list readline))
+     (list readline libptytty))
     (synopsis "Wrapper to allow the editing of keyboard commands")
     (description
      "Rlwrap is a 'readline wrapper', a small utility that uses the GNU

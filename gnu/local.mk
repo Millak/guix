@@ -2250,6 +2250,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/remake-impure-dirs.patch			\
   %D%/packages/patches/restartd-update-robust.patch             \
   %D%/packages/patches/restic-0.9.6-fix-tests-for-go1.15.patch	\
+  %D%/packages/patches/rlwrap-no-rbgen.patch	\
   %D%/packages/patches/rng-tools-revert-build-randstat.patch	\
   %D%/packages/patches/rocclr-5.6.0-enable-gfx800.patch		\
   %D%/packages/patches/rocm-opencl-runtime-4.3-noclinfo.patch 	\

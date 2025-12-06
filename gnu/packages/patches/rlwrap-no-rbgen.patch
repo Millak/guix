@@ -1,0 +1,27 @@
+Do not regenerate the completion.c file, a generated version is included
+in the repository itself. Generating it requires packaging a modified
+version of libredblack. Removing this Makefile rule ensure that the file
+is never regenerated.
+
+---
+ src/Makefile.am | 10 ----------
+ 1 file changed, 10 deletions(-)
+
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 43a6755..1ac59d5 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -4,13 +4,3 @@ rlwrap_SOURCES =  main.c signals.c readline.c pty.c completion.c term.c ptytty.c
+ 
+ 
+ AM_CFLAGS=-DDATADIR=\"@datadir@\" 
+-
+-# use old-fashioned suffix rule for non-GNU make
+-.rb.c :
+-	rbgen $< $@
+-
+-.rb.c:
+-   @[ $$? != 127 ] ||  echo "You don't seem to have rbgen (http://libredblack.sourceforge.net/). If you didn't change any .rb files, this is not a problem"   
+- 
+-
+-
