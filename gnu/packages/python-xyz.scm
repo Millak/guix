@@ -176,6 +176,7 @@
 ;;; Copyright © 2025 Allan Adair <allan@adair.no>
 ;;; Copyright © 2025 Hennadii Stepanov <hebasto@gmail.com>
 ;;; Copyright © 2025 Luca Kredel <luca.kredel@web.de>
+;;; Copyright © 2025 Isidor Zeuner <guix@quidecco.pl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -15711,6 +15712,42 @@ with discrete numbers (integers) in count tables.  This implementation should
 be relatively fast, and can use multiple cores to sort the columns and
 tie-resolvement is accelerated by numba.")
     (license license:expat)))
+
+(define-public python-quantlaw
+  (package
+    (name "python-quantlaw")
+    (version "0.0.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Quantlaw/quantlaw")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ps0hcw2x2w9g0gipflka98zf1zsadgs161r6pgp7nh0sq8kpkrh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k"
+              ;; test expects network access
+              "not test_load_statue_names")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "setup.cfg"
+                (("--cov.*")
+                 "")))))))
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-beautifulsoup4 python-networkx
+                             python-pandas python-regex python-requests))
+    (home-page "https://quantlaw.readthedocs.io/")
+    (synopsis "Coding utilities for quantitative legal studies")
+    (description
+     "This package provides coding utilities for quantitative legal studies.")
+    (license license:bsd-3)))
 
 (define-public python-singledispatch
   (package
