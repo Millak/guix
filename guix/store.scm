@@ -424,12 +424,9 @@ daemon.  Return a server object."
              ;; One of the 'write-' or 'read-' calls below failed, but this is
              ;; really a connection error.
              (handshake-error)))
-    (let*-values (((port)
-                   (or port (connect-to-daemon
-                             uri #:non-blocking? non-blocking?)))
-                  ((output flush)
-                   (buffering-output-port port
-                                          (make-bytevector 8192))))
+    (let ((port
+           (or port (connect-to-daemon
+                     uri #:non-blocking? non-blocking?))))
       (write-value integer %worker-magic-1 port)
       (force-output port)
       (let ((r (read-value integer port)))
@@ -449,23 +446,11 @@ daemon.  Return a server object."
             (write-value integer cpu-affinity port))
           (write-value integer (if reserve-space? 1 0) port)
           (force-output port)
-          (letrec* ((actual-built-in-builders
-                     (if built-in-builders
-                         (delay built-in-builders)
-                         (delay (%built-in-builders conn))))
-                    (caches
-                     (make-vector
-                      (atomic-box-ref %store-connection-caches)
-                      vlist-null))
-                    (conn
-                     (%make-store-connection port
-                                             (protocol-major v)
-                                             (protocol-minor v)
-                                             output flush
-                                             (make-hash-table 100)
-                                             (make-hash-table 100)
-                                             caches
-                                             actual-built-in-builders)))
+          (let ((conn
+                 (port->connection port
+                                   #:version v
+                                   #:built-in-builders
+                                   built-in-builders)))
             (let loop ((done? (process-stderr conn)))
               (or done? (process-stderr conn)))
             conn))))))
