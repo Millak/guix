@@ -359,10 +359,11 @@ non-blocking."
                                     (errno (system-error-errno args)))))
                  (loop rest)))))))))
 
-(define* (connect-to-daemon uri-or-filename #:key non-blocking?)
+(define* (connect-to-daemon uri-or-filename #:key non-blocking?
+                            (buffer-size 8192))
   "Connect to the daemon at URI-OR-FILENAME and return an input/output port.
 If NON-BLOCKING?, use a non-blocking socket when using the file, unix or guix
-URI schemes.
+URI schemes.  A default BUFFER-SIZE of 8192 is used.
 
 This is a low-level procedure that does not perform the initial handshake with
 the daemon.  Use 'open-connection' for that."
@@ -371,33 +372,37 @@ the daemon.  Use 'open-connection' for that."
                        (file uri-or-filename)
                        (errno ENOTSUP)))))
 
-  (match (string->uri uri-or-filename)
-    (#f                                 ;URI is a file name
-     (open-unix-domain-socket uri-or-filename
-                              #:non-blocking? non-blocking?))
-    ((? uri? uri)
-     (match (uri-scheme uri)
-       ((or #f 'file 'unix)
-        (open-unix-domain-socket (uri-path uri)
+  (let ((port
+         (match (string->uri uri-or-filename)
+           (#f                                 ;URI is a file name
+            (open-unix-domain-socket uri-or-filename
+                                     #:non-blocking? non-blocking?))
+           ((? uri? uri)
+            (match (uri-scheme uri)
+              ((or #f 'file 'unix)
+               (open-unix-domain-socket (uri-path uri)
+                                        #:non-blocking? non-blocking?))
+              ('guix
+               (open-inet-socket (uri-host uri)
+                                 (or (uri-port uri) %default-guix-port)
                                  #:non-blocking? non-blocking?))
-       ('guix
-        (open-inet-socket (uri-host uri)
-                          (or (uri-port uri) %default-guix-port)
-                          #:non-blocking? non-blocking?))
-       ((? symbol? scheme)
-        ;; Try to dynamically load a module for SCHEME.
-        ;; XXX: Errors are swallowed.
-        (match (false-if-exception
-                (resolve-interface `(guix store ,scheme)))
-          ((? module? module)
-           (match (false-if-exception
-                   (module-ref module 'connect-to-daemon))
-             ((? procedure? connect)
-              (connect uri))
-             (x (not-supported))))
-          (#f (not-supported))))
-       (x
-        (not-supported))))))
+              ((? symbol? scheme)
+               ;; Try to dynamically load a module for SCHEME.
+               ;; XXX: Errors are swallowed.
+               (match (false-if-exception
+                       (resolve-interface `(guix store ,scheme)))
+                 ((? module? module)
+                  (match (false-if-exception
+                          (module-ref module 'connect-to-daemon))
+                    ((? procedure? connect)
+                     (connect uri))
+                    (x (not-supported))))
+                 (#f (not-supported))))
+              (x
+               (not-supported)))))))
+    (when buffer-size
+      (setvbuf port 'block buffer-size))
+    port))
 
 (define* (open-connection #:optional (uri (%daemon-socket-uri))
                           #:key port (reserve-space? #t) cpu-affinity
@@ -467,23 +472,22 @@ daemon.
 Warning: this procedure assumes that the initial handshake with the daemon has
 already taken place on PORT and that we're just continuing on this established
 connection.  Use with care."
-  (let-values (((output flush)
-                (buffering-output-port port (make-bytevector 8192))))
-    (define connection
-      (%make-store-connection port
-                              (protocol-major version)
-                              (protocol-minor version)
-                              output flush
-                              (make-hash-table 100)
-                              (make-hash-table 100)
-                              (make-vector
-                               (atomic-box-ref %store-connection-caches)
-                               vlist-null)
-                              (if built-in-builders
-                                  (delay built-in-builders)
-                                  (delay (%built-in-builders connection)))))
-
-    connection))
+  (define connection
+    (%make-store-connection port
+                            (protocol-major version)
+                            (protocol-minor version)
+                            port
+                            (lambda ()
+                              (force-output port))
+                            (make-hash-table 100)
+                            (make-hash-table 100)
+                            (make-vector
+                             (atomic-box-ref %store-connection-caches)
+                             vlist-null)
+                            (if built-in-builders
+                                (delay built-in-builders)
+                                (delay (%built-in-builders connection)))))
+  connection)
 
 (define (store-connection-version store)
   "Return the protocol version of STORE as an integer."
@@ -824,45 +828,6 @@ definitions."
                  ,@(if locale
                        `(("locale" . ,locale))
                        '()))))
-
-(define (buffering-output-port port buffer)
-  "Return two value: an output port wrapped around PORT that uses BUFFER (a
-bytevector) as its internal buffer, and a thunk to flush this output port."
-  ;; Note: In Guile 2.2.2, custom binary output ports already have their own
-  ;; 4K internal buffer.
-  (define size
-    (bytevector-length buffer))
-
-  (define total 0)
-
-  (define (flush)
-    (put-bytevector port buffer 0 total)
-    (force-output port)
-    (set! total 0))
-
-  (define (write bv offset count)
-    (if (zero? count)                             ;end of file
-        (flush)
-        (let loop ((offset offset)
-                   (count count)
-                   (written 0))
-          (cond ((= total size)
-                 (flush)
-                 (loop offset count written))
-                ((zero? count)
-                 written)
-                (else
-                 (let ((to-copy (min count (- size total))))
-                   (bytevector-copy! bv offset buffer total to-copy)
-                   (set! total (+ total to-copy))
-                   (loop (+ offset to-copy) (- count to-copy)
-                         (+ written to-copy))))))))
-
-  ;; Note: We need to return FLUSH because the custom binary port has no way
-  ;; to be notified of a 'force-output' call on itself.
-  (values (make-custom-binary-output-port "buffering-output-port"
-                                          write #f #f flush)
-          flush))
 
 (define profiled?
   (let ((profiled
