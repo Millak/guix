@@ -3405,7 +3405,7 @@ Swartz.")
 (define-public python-jose
   (package
     (name "python-jose")
-    (version "3.3.0")
+    (version "3.5.0")
     (home-page "https://github.com/mpdavis/python-jose")
     (source (origin
               (method git-fetch)
@@ -3413,25 +3413,12 @@ Swartz.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18whsdpllg8574ma4r0qawkgw4nam6lsf63pi6761j38rvl84lg9"))))
+                "0frv7r6q43mjl7s82hh8qvqpdgyfvmyq2b6aq4402riq2i238d7h"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      '(list "-k"
-             ;; These fail because of unexpected locations of line breaks.
-             (string-append "not test_public_key_to_pem "
-                            "and not test_private_key_to_pem "
-                            "and not test_public_key_load_cycle "
-                            "and not test_private_key_load_cycle"))))
     (native-inputs
-     (list ;; All native inputs are for tests.
-           python-pyasn1 python-pytest python-pytest-cov
-           python-pytest-runner
-           python-setuptools
-           python-wheel))
+     (list python-pyasn1 python-pytest python-setuptools))
     (propagated-inputs
-     (list python-cryptography python-ecdsa python-rsa python-six))
+     (list python-cryptography python-ecdsa python-rsa))
     (synopsis "JOSE implementation in Python")
     (description
      "The @dfn{JavaScript Object Signing and Encryption} (JOSE) technologies
