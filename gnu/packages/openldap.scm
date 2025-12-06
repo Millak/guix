@@ -51,6 +51,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rsync)
   #:use-module (gnu packages selinux)
@@ -65,6 +66,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python))
 
 (define-public openldap
@@ -191,18 +193,22 @@ an LDAP server.")
 (define-public python-ldap
   (package
     (name "python-ldap")
-    (version "3.4.3")
+    (version "3.4.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "python-ldap" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/python-ldap/python-ldap")
+              (commit (string-append name "-" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1872bvrakypb96wrsf932f3xflnbqniiyf8h58x48apgl0cwa9mb"))))
-    (build-system python-build-system)
+         "0gbda9lpa2kxm2xy6l4j3k3c69jh7qq77l6nf20aci4wfvj6wm52"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
          (add-after 'unpack 'configure-openldap-locations
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((slapd (search-input-file inputs "libexec/slapd"))
@@ -212,6 +218,8 @@ an LDAP server.")
                (setenv "SCHEMA" schema)))))))
     (inputs
      (list openldap cyrus-sasl mit-krb5))
+    (native-inputs
+     (list python-pytest python-setuptools))
     (propagated-inputs
      (list python-pyasn1 python-pyasn1-modules))
     (home-page "https://www.python-ldap.org/")
