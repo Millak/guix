@@ -73,6 +73,7 @@
 # Copyright © 2024 James Smith <jsubuntuxp@disroot.org>
 # Copyright © 2025 Nigko Yerden <nigko.yerden@gmail.com>
 # Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
+# Copyright © 2025 bdunahu <bdunahu@operationnull.com>
 #
 # This file is part of GNU Guix.
 #
@@ -2224,6 +2225,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/qtwebengine-fix-dependencies.patch       \
   %D%/packages/patches/qtwebsockets-6.9-fix-tst_QWebSocket.patch\
   %D%/packages/patches/rabbitmq-defaults.patch		\
+  %D%/packages/patches/radare2-fix-meson-build-to-use-sys-qjs.patch	\
+  %D%/packages/patches/radare2-fix-meson-build-to-use-sys-sdb.patch	\
   %D%/packages/patches/ragel-char-signedness.patch		\
   %D%/packages/patches/randomjungle-disable-static-build.patch	\
   %D%/packages/patches/rapidcheck-fix-libs.patch		\

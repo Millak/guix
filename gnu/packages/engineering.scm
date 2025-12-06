@@ -129,6 +129,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages javascript)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libcanberra)
@@ -145,6 +146,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
+  #:use-module (gnu packages node)
   #:use-module (gnu packages openkinect)
   #:use-module (gnu packages parallel)
   #:use-module (gnu packages pcre)
@@ -2095,7 +2097,7 @@ bootloader in Espressif ESP8266 & ESP32 series chips.")
 (define-public radare2
   (package
     (name "radare2")
-    (version "5.1.1")
+    (version "6.0.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2103,29 +2105,59 @@ bootloader in Espressif ESP8266 & ESP32 series chips.")
                     (commit version)))
               (sha256
                (base32
-                "0hv9x31iabasj12g8f04incr1rbcdkxi3xnqn3ggp8gl4h6pf2f3"))
-              (file-name (git-file-name name version))))
-    (build-system gnu-build-system)
+                "1nkqa8mkmvmbc3812gf5ayfmzyf0krjgc1695rpkphw3fsl76rgx"))
+              (file-name (git-file-name name version))
+              (patches
+               (search-patches "radare2-fix-meson-build-to-use-sys-sdb.patch"
+                               "radare2-fix-meson-build-to-use-sys-qjs.patch"))))
+    (build-system meson-build-system)
     (arguments
      (list
-      #:tests? #f                      ; tests require git and network access
+      #:configure-flags
+      #~(list "-Duse_libuv=true"
+              "-Duse_ssl=true"
+              "-Duse_sys_capstone=true"
+              "-Duse_sys_lz4=true"
+              "-Duse_sys_magic=true"
+              "-Duse_sys_openssl=true"
+              "-Duse_sys_xxhash=true"
+              "-Duse_sys_zip=true"
+              "-Duse_sys_zlib=true")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'configure 'mklibdir
-            (lambda _ (mkdir-p (string-append #$output "/lib")))))
-      #:configure-flags
-      #~(list "--with-openssl"
-              "--with-rpath"
-              "--with-syscapstone"
-              "--with-sysmagic"
-              "--with-syszip"
-              "--with-sysxxhash")
-      #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))))
-    ;; TODO: Add gmp and libzip and make the build system actually find them.
+          ;; CHECK LATER: This patches an incorrect relative include.
+          (add-before 'build 'fix-relative-include
+            (lambda _
+              (substitute* "../source/libr/arch/p/java/plugin.c"
+                (("include \".." all)
+                 (string-append all "/..")))))
+          ;; These tests require sample binaries from an external repository.
+          (add-before 'check 'skip-tests
+            (lambda _
+              (substitute* '("../source/test/unit/test_bin.c"
+                             "../source/test/unit/test_dwarf.c"
+                             "../source/test/unit/test_dwarf_info.c"
+                             "../source/test/unit/test_dwarf_integration.c"
+                             "../source/test/unit/test_pdb.c"
+                             ;; TODO: add r2pipe and enable this test.
+                             "../source/test/unit/test_r2pipe.c")
+                (("(^| )main *\\(.*" all)
+                 (string-append all " exit (77);\n"))))))))
     (inputs
-     (list capstone libuv openssl zip))
+     (list capstone
+           gmp
+           libuv
+           libzip
+           lz4
+           openssl
+           quickjs-ng
+           sdb
+           zlib))
     (native-inputs
-     (list pkg-config))
+     (list node
+           perl
+           pkg-config
+           python-minimal-wrapper))
     (propagated-inputs
      ;; In the Libs: section of r_hash.pc.
      (list xxhash))

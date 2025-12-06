@@ -1,0 +1,148 @@
+Use guix-provided sdb instead of a meson subproject.
+
+Patch by bdunahu <bdunahu@operationnull.com>.
+
+diff --git a/libr/anal/d/meson.build b/libr/anal/d/meson.build
+index bc4b7ccf22..cd1af6e84b 100644
+--- a/libr/anal/d/meson.build
++++ b/libr/anal/d/meson.build
+@@ -117,7 +117,7 @@ if host_machine.system() != 'uefi'
+     output: fcnsign_sdb_files,
+     command: [sdb_exe, '-r', meson.current_source_dir()],
+     env: sdb_env,
+-    depends: host_machine.system() == 'uefi' ? [windows_type_file] : [sdb_exe, windows_type_file],
++    depends: [windows_type_file],
+     build_by_default: true,
+     install: true,
+     install_dir: join_paths(r2_sdb, 'fcnsign')
+diff --git a/libr/asm/d/meson.build b/libr/asm/d/meson.build
+index 44b5356372..ffd8dab323 100644
+--- a/libr/asm/d/meson.build
++++ b/libr/asm/d/meson.build
+@@ -62,7 +62,6 @@ if host_machine.system() != 'uefi'
+     output: opcodes_sdb_files,
+     command: [sdb_exe, '-r', meson.current_source_dir()],
+     env: sdb_env,
+-    depends: sdb_exe,
+     build_by_default: true,
+     install: true,
+     install_dir: join_paths(r2_sdb, 'opcodes')
+diff --git a/libr/bin/d/dll/meson.build b/libr/bin/d/dll/meson.build
+index 136aa381ac..d6a3ba88f7 100644
+--- a/libr/bin/d/dll/meson.build
++++ b/libr/bin/d/dll/meson.build
+@@ -170,7 +170,6 @@ if host_machine.system() != 'uefi'
+     output: dll_sdb_files,
+     command: [sdb_exe, '-r', meson.current_source_dir()],
+     env: sdb_env,
+-    depends: sdb_exe,
+     build_by_default: true,
+     install: true,
+     install_dir: join_paths(r2_sdb, join_paths('format', 'dll'))
+diff --git a/libr/bin/d/meson.build b/libr/bin/d/meson.build
+index 0f5e160f02..347654406d 100644
+--- a/libr/bin/d/meson.build
++++ b/libr/bin/d/meson.build
+@@ -27,7 +27,6 @@ if host_machine.system() != 'uefi'
+     output: format_sdb_files,
+     command: [sdb_exe, '-r', meson.current_source_dir()],
+     env: format_sdb_env,
+-    depends: sdb_exe,
+     build_by_default: true,
+     install: true,
+     install_dir: join_paths(r2_sdb, join_paths('format'))
+diff --git a/libr/fs/d/meson.build b/libr/fs/d/meson.build
+index 808c03666d..d507f58efb 100644
+--- a/libr/fs/d/meson.build
++++ b/libr/fs/d/meson.build
+@@ -21,7 +21,6 @@ if host_machine.system() != 'uefi'
+     output: fs_sdb_files,
+     command: [sdb_exe, '-r', meson.current_source_dir()],
+     env: sdb_env,
+-    depends: sdb_exe,
+     build_by_default: true,
+     install: true,
+     install_dir: join_paths(r2_sdb, 'fs')
+diff --git a/libr/syscall/d/meson.build b/libr/syscall/d/meson.build
+index 13d7a78db5..5371e0fe2a 100644
+--- a/libr/syscall/d/meson.build
++++ b/libr/syscall/d/meson.build
+@@ -41,7 +41,6 @@ if host_machine.system() != 'uefi'
+     output: syscall_sdb_files,
+     command: [sdb_exe, '-r', '-r', meson.current_source_dir()],
+     env: sdb_env,
+-    depends: sdb_exe,
+     build_by_default: true,
+     install: true,
+     install_dir: join_paths(r2_sdb, 'syscall')
+@@ -49,4 +48,3 @@ if host_machine.system() != 'uefi'
+ else
+   r_syscall_d_sources = []
+ endif
+-
+diff --git a/libr/util/d/meson.build b/libr/util/d/meson.build
+index 9f34b18642..14a08412be 100644
+--- a/libr/util/d/meson.build
++++ b/libr/util/d/meson.build
+@@ -40,7 +40,6 @@ if host_machine.system() != 'uefi'
+     output: charsets_sdb_files,
+     command: [sdb_exe, '-r', meson.current_source_dir()],
+     env: sdb_env,
+-    depends: sdb_exe,
+     build_by_default: true,
+     install: true,
+     install_dir: join_paths(r2_sdb, 'charsets')
+diff --git a/meson.build b/meson.build
+index 52583b29cf..f26be0e41a 100644
+--- a/meson.build
++++ b/meson.build
+@@ -510,22 +510,11 @@ script_files = [
+ ]
+ install_data(script_files, install_dir: r2_scripts)
+
+-libsdb_sp = subproject('sdb')
+-libsdb_static = libsdb_sp.get_variable('libsdb_static')
+-if host_machine.system() == 'uefi'
+-  libsdb_dynamic = libsdb_static
+-else
+-  libsdb_dynamic = libsdb_sp.get_variable('libsdb').get_shared_lib()
+-endif
+-libsdb_includes = libsdb_sp.get_variable('sdb_inc')
+-libsdb_version = libsdb_sp.get_variable('sdb_version')
+-
+-sdb_dep = declare_dependency(
+-  link_whole: libsdb_static,
+-  include_directories: libsdb_includes
+-)
++libsdb_includes = []
++libsdb_version = 'never used'
+
+-sdb_exe = libsdb_sp.get_variable('sdb_exe')
++sdb_dep = dependency('sdb', required: true)
++sdb_exe = find_program('sdb', required: true).full_path()
+
+ if host_machine.system() == 'windows'
+ copyinout = [
+@@ -554,12 +543,7 @@ elif os_name == 'windows'
+     lib_extension = '.dll'
+ endif
+
+-libsdb_install = custom_target('libr2sdb',
+-  input : libsdb_dynamic,
+-  output : 'libsdb' + lib_extension,
+-  command : copyinout,
+-  install : true,
+-  install_dir : get_option('libdir'))
++# We used to install libsdb here, but Guix already provides this.
+
+ sdb_gen_cmd_cgen = [ sdb_exe, '-t', '-C', '-o', '@OUTPUT@', '@INPUT@' ]
+ sdb_gen_cmd = [ sdb_exe, '@OUTPUT@', '==', '@INPUT@' ]
+@@ -575,7 +559,7 @@ spp_files = [
+ spp_inc = [platform_inc, include_directories(join_paths('shlr','spp'))]
+
+ libr2spp = static_library('r2spp', spp_files,
+-  link_with: [ libsdb_static ], # libsdb_static,
++  dependencies: [ sdb_dep ],
+   include_directories: [ libsdb_includes, spp_inc ],
+   c_args: ['-DHAVE_R_UTIL', '-DUSE_R2=1'],
+   implicit_include_directories: false
