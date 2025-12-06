@@ -20516,7 +20516,7 @@ federated blogging platform WriteFreely.")
 (define-public emacs-org
   (package
     (name "emacs-org")
-    (version "9.7.35")
+    (version "9.7.39")
     (source
      (origin
        (method git-fetch)
@@ -20525,7 +20525,7 @@ federated blogging platform WriteFreely.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w3hb9zxi1li0mwawfmcmpmi2adlyx3cf0fskq43kpdcbh172766"))))
+        (base32 "1bq4k37iax3zyhr6g335g9p9ja316yhj9a2jbh2d1mfw3rykfy2b"))))
     (build-system emacs-build-system)
     (outputs (list "out" "test"))
     (arguments
