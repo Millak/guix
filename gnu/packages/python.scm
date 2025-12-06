@@ -453,7 +453,10 @@ expression of procedural code; full modularity, supporting hierarchical
 packages; exception-based error handling; and very high level dynamic
 data types.")
     (properties '((cpe-name . "python")
-                  (cpe-vendor . "python")))
+                  (cpe-vendor . "python")
+                  ;; CVE-2023-36632 is not a bug according to
+                  ;; https://github.com/python/cpython/issues/103800
+                  (lint-hidden-cve . ("CVE-2023-36632"))))
     (license license:psfl)))
 
 ;; Current 2.x version.
