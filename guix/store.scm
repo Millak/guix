@@ -431,6 +431,7 @@ daemon.  Return a server object."
                    (buffering-output-port port
                                           (make-bytevector 8192))))
       (write-value integer %worker-magic-1 port)
+      (force-output port)
       (let ((r (read-value integer port)))
         (unless (= r %worker-magic-2)
           (handshake-error))
@@ -447,6 +448,7 @@ daemon.  Return a server object."
           (when cpu-affinity
             (write-value integer cpu-affinity port))
           (write-value integer (if reserve-space? 1 0) port)
+          (force-output port)
           (letrec* ((actual-built-in-builders
                      (if built-in-builders
                          (delay built-in-builders)
@@ -585,6 +587,7 @@ encoding conversion errors."
                   (m   (modulo len 8)))
              (dump-port p user-port len
                         #:buffer-size (if (<= len 16384) 16384 65536))
+             (force-output p)
              (unless (zero? m)
                ;; Consume padding, as for strings.
                (get-bytevector-n p (- 8 m))))
@@ -597,6 +600,7 @@ encoding conversion errors."
                   (data    (make-bytevector max-len))
                   (len     (get-bytevector-n! user-port data 0 max-len)))
              (write-bytevector data p len)
+             (force-output p)
              #f))
           ((= k %stderr-next)
            ;; Log a string.  Build logs are usually UTF-8-encoded, but they
