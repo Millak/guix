@@ -15687,7 +15687,7 @@ in the modeline by default.")
 (define-public emacs-test-simple
   (package
     (name "emacs-test-simple")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
@@ -15695,7 +15695,7 @@ in the modeline by default.")
                            version ".el"))
        (sha256
         (base32
-         "1yd61jc9ds95a5n09052kwc5gasy57g4lxr0jsff040brlyi9czz"))))
+         "11sgc7187l1a4f1x1f6z58dy7pc7n1999id50rjifkvk901x0qd1"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/rocky/emacs-test-simple")
     (synopsis "Simple unit test framework for Emacs Lisp")
