@@ -25763,14 +25763,14 @@ write applications that use WebSockets, and is not useful by itself.")
 (define-public emacs-oauth2
   (package
     (name "emacs-oauth2")
-    (version "0.18.3")
+    (version "0.18.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "oauth2-" version ".tar"))
        (sha256
-        (base32 "1xn9jkf55b9sc6fidzn6p1falvvgvpc08iz53fvmmp7fandgwbxi"))))
+        (base32 "1hhfk7glp3m9f4aqf1dvqs5f7qp4s2gvbxamyxjalw3sj6pbv92n"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/oauth2.html")
     (synopsis "OAuth 2.0 authorization protocol implementation")
