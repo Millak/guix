@@ -2473,17 +2473,22 @@ of C++14 components that complements @code{std} and Boost.")
     (build-system cmake-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "-DENABLE_TESTS=ON")
+      #:configure-flags #~(list "-DENABLE_TESTS=ON" "-DENABLE_CRYPTO=ON"
+                                "-DENABLE_NETSSL=ON")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-problematic-tests
             (lambda _
               (substitute* (list "Foundation/CMakeLists.txt" ; XXX: fails.
-                                 ;; Require network access
+                                 ;; Require network access.
                                  "Net/CMakeLists.txt"
                                  "MongoDB/CMakeLists.txt"
-                                 "Redis/CMakeLists.txt")
+                                 "Redis/CMakeLists.txt"
+                                 ;; Requires network access and uses certificates
+                                 ;; that will expire.
+                                 "NetSSL_OpenSSL/CMakeLists.txt")
                 (("ENABLE_TESTS") "FALSE")))))))
+    (inputs (list openssl))
     (home-page "https://pocoproject.org/")
     (synopsis "Portable C++ components")
     (description "This package provides a collection of C++ libraries intended
