@@ -36869,7 +36869,7 @@ given search terms.")
 (define-public emacs-notmuch-maildir
   (package
     (name "emacs-notmuch-maildir")
-    (version "1.3.0")
+    (version "1.3.1")
     (source
      (origin
        (method git-fetch)
@@ -36878,7 +36878,7 @@ given search terms.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b31qqbdnj2zf9bcs1za5am5gs3xpzsxln269kd2c53pzffbnvyg"))))
+        (base32 "061xabwvhzkmpvcaqcz47cryj29zcmxvz3sliyvnj0fnqnbpg407"))))
     (build-system emacs-build-system)
     (arguments
      (list #:test-command
