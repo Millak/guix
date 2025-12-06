@@ -23318,17 +23318,17 @@ containing words from the Rime project.")
 (define-public emacs-pyim
   (package
     (name "emacs-pyim")
-    (version "5.3.4")
+    (version "5.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/pyim-" version ".tar"))
        (sha256
-        (base32 "0axi8vizr2pdswdnnkr409k926h9k7w3c18nbmb9j3pfc32inkjs"))))
+        (base32 "1s452swgbkbnpfhiwmipmvbqn6wkf6f7dq63gr349h7n29nbnnnk"))))
     (build-system emacs-build-system)
     (arguments (list #:tests? #f))      ; tests require emacs-pyim-basedict
     (propagated-inputs
-     (list emacs-async emacs-posframe emacs-xr))
+     (list emacs-async emacs-xr))
     (home-page "https://github.com/tumashu/pyim")
     (synopsis "Chinese input method")
     (description
