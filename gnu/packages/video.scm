@@ -2743,7 +2743,8 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
                (base32 "0w0qk61ll0mddbkiwavqfx048sacyvp6fwglms58ypw869rh7iy7"))
               (patches
                (search-patches
-                "mpv-0.40.0-fix-ffmpeg-8.0.patch"))))
+                "mpv-0.40.0-fix-ffmpeg-8.0.patch"
+                "mpv-0.40.0-fix-wayland-cpu-usage.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
