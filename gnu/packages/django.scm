@@ -203,13 +203,13 @@ your project into different processes.")
 (define-public python-django
   (package
     (name "python-django")
-    (version "5.2.8")
+    (version "5.2.9")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "django" version))
        (sha256
-        (base32 "0zvc8p4brwbj4yy8jxcannjfnik2xh4vis04c3x2r6mvlmk4h993"))))
+        (base32 "15d45imlysz7wcm4azf6a9rjv19jxb953x8sav0fc9wcbvycrd8n"))))
     (build-system pyproject-build-system)
     (arguments
      '(#:test-flags
@@ -295,8 +295,8 @@ any Web site.  Django focuses on automating as much as possible and adhering
 to the @dfn{don't repeat yourself} (DRY) principle.")
     (license license:bsd-3)
     (properties `((cpe-name . "django")
-                  ;; This CVE seems fixed since 4.2.1.
-                  (lint-hidden-cve . ("CVE-2023-31047"))))))
+                  ;; This CVE seems fixed since 5.2.1.
+                  (lint-hidden-cve . ("CVE-2025-32873"))))))
 
 (define-public python-django-4
   (package
