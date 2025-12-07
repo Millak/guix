@@ -667,7 +667,6 @@ in the style of communicating sequential processes (@dfn{CSP}).")
         #~(modify-phases #$phases
             (delete 'skip-TestGoPathShlibGccgo-tests)
             (delete 'patch-source)
-            (delete 'disable-more-tests)
             (add-after 'unpack 'patch-os-tests
               (lambda _
                 (substitute* "src/os/os_test.go"
@@ -716,6 +715,45 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                 ;; https://github.com/golang/go/issues/57691
                 (substitute* "src/cmd/cgo/internal/testsanitizers/asan_test.go"
                   ((".*arena_fail.*") ""))))
+
+            (replace 'disable-more-tests
+              (lambda _
+                #$@(cond
+                     ((target-aarch64?)
+                      ;; https://go-review.googlesource.com/c/go/+/151303
+                      ;; This test is known buggy on aarch64 and is enabled and
+                      ;; disabled upstream with some regularity.
+                      #~((substitute* "src/plugin/plugin_test.go"
+                           (("package plugin_test")
+                            (string-append "//go:build !(linux && arm64)\n\n"
+                                           "package plugin_test")))
+                         ;; collect2: fatal error: cannot find 'ld'
+                         ;; Disable testshared by adding a build constraint that
+                         ;; excludes linux/arm64.
+                         (substitute* "src/cmd/cgo/internal/testshared/shared_test.go"
+                           (("package shared_test")
+                            (string-append "//go:build !(linux && arm64)\n\n"
+                                           "package shared_test")))
+                         (substitute* "src/cmd/dist/test.go"
+                           ((".*testcshared.*") "")
+                           ((".*testshared.*") ""))))
+                     ((target-arm32?)
+                      ;; https://go-review.googlesource.com/c/go/+/151303
+                      ;; This test is known buggy on aarch64 so we disable
+                      ;; it on armhf also since we emulate armhf on aarch64.
+                      #~((substitute* "src/plugin/plugin_test.go"
+                           (("package plugin_test")
+                            (string-append "//go:build !(linux && arm)\n\n"
+                                           "package plugin_test")))
+                         ;; collect2: fatal error: cannot find 'ld'
+                         (substitute* "src/cmd/cgo/internal/testshared/shared_test.go"
+                           (("package shared_test")
+                            (string-append "//go:build !(linux && arm)\n\n"
+                                           "package shared_test")))
+                         (substitute* "src/cmd/dist/test.go"
+                           ((".*testcshared.*") "")
+                           ((".*testshared.*") ""))))
+                     (else (list #t)))))
 
             (add-after 'enable-external-linking 'enable-external-linking-1.21
               (lambda _
