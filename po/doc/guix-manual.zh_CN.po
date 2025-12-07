@@ -3486,16 +3486,6 @@ msgstr "ssh-ed25519 AAAAC3NzaC@dots{}mde+UhL hint@@example.org\n"
 msgid "If the machine is running the OpenSSH daemon, @command{sshd}, the host key can be found in a file such as @file{/etc/ssh/ssh_host_ed25519_key.pub}."
 msgstr "如果这个机器正在运行 OpenSSH 后台进程，@command{sshd}，那么主机公钥可以在@file{/etc/ssh/ssh_host_ed25519_key.pub}找到。"
 
-msgid "If the machine is running the SSH daemon of GNU@tie{}lsh, @command{lshd}, the host key is in @file{/etc/lsh/host-key.pub} or a similar file.  It can be converted to the OpenSSH format using @command{lsh-export-key} (@pxref{Converting keys,,, lsh, LSH Manual}):"
-msgstr "如果这个机器正在运行 GNU@tie{}lsh，@command{lshd}，那么主机公钥可以在@file{/etc/lsh/host-key.pub}或类似的位置找到。它可以通过@command{lsh-export-key}命令转换成 OpenSSH 格式（@pxref{Converting keys,,, lsh, LSH 用户手册}）："
-
-msgid ""
-"$ lsh-export-key --openssh < /etc/lsh/host-key.pub\n"
-"ssh-rsa AAAAB3NzaC1yc2EAAAAEOp8FoQAAAQEAs1eB46LV@dots{}\n"
-msgstr ""
-"$ lsh-export-key --openssh < /etc/lsh/host-key.pub\n"
-"ssh-rsa AAAAB3NzaC1yc2EAAAAEOp8FoQAAAQEAs1eB46LV@dots{}\n"
-
 msgid "A number of optional fields may be specified:"
 msgstr "一些可选的项："
 

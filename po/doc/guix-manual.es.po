@@ -3699,16 +3699,6 @@ msgstr "ssh-ed25519 AAAAC3NzaC@dots{}mde+UhL recordatorio@@example.org\n"
 msgid "If the machine is running the OpenSSH daemon, @command{sshd}, the host key can be found in a file such as @file{/etc/ssh/ssh_host_ed25519_key.pub}."
 msgstr "Si la máquina está ejecutando el daemon OpenSSH, @command{sshd}, la clave pública de la máquina puede encontrarse en un archivo como @file{/etc/ssh/ssh_host_ed25519_key.pub}."
 
-msgid "If the machine is running the SSH daemon of GNU@tie{}lsh, @command{lshd}, the host key is in @file{/etc/lsh/host-key.pub} or a similar file.  It can be converted to the OpenSSH format using @command{lsh-export-key} (@pxref{Converting keys,,, lsh, LSH Manual}):"
-msgstr "Si la máquina está ejecutando el daemon SSH GNU@tie{}lsh, @command{lshd}, la clave de la máquina está en @file{/etc/lsh/host-key.pub} o un archivo similar. Puede convertirse a formato OpenSSH usando @command{lsh-export-key} (@pxref{Converting keys,,, lsh, LSH Manual}):"
-
-msgid ""
-"$ lsh-export-key --openssh < /etc/lsh/host-key.pub\n"
-"ssh-rsa AAAAB3NzaC1yc2EAAAAEOp8FoQAAAQEAs1eB46LV@dots{}\n"
-msgstr ""
-"$ lsh-export-key --openssh < /etc/lsh/host-key.pub\n"
-"ssh-rsa AAAAB3NzaC1yc2EAAAAEOp8FoQAAAQEAs1eB46LV@dots{}\n"
-
 msgid "A number of optional fields may be specified:"
 msgstr "Ciertos número de campos opcionales pueden ser especificados:"
 
@@ -17104,9 +17094,6 @@ msgstr "Hay varios aspectos que se pueden configurar, en particular la periodici
 msgid "To ensure that upgrades are actually happening, you can run @command{guix system describe}.  To investigate upgrade failures, visit the unattended upgrade log file (see below)."
 msgstr "Para asegurar que las actualizaciones se están levando a cabo realmente, puede ejecutar @command{guix system describe}. Para investigar fallos en las actualizaciones, visite el archivo de registro de las actualizaciones desatendidas (véase a continuación)."
 
-msgid "This is the service type for unattended upgrades.  It sets up an mcron job (@pxref{Scheduled Job Execution}) that runs @command{guix system reconfigure} from the latest version of the specified channels."
-msgstr "Es el tipo de servicio para las actualizaciones desatendidas. Configura un trabajo de mcron (@pxref{Scheduled Job Execution}) que ejecuta @command{guix system reconfigure} a partir de la última versión de los canales especificados."
-
 msgid "Its value must be a @code{unattended-upgrade-configuration} record (see below)."
 msgstr "Su valor debe ser un registro @code{unattended-upgrade-configuration} (véase a continuación)."
 
@@ -26149,20 +26136,6 @@ msgstr "Si el directorio @file{/etc/childhurd} no existe, el servicio @code{secr
 msgid "By default, the service automatically populates @file{/etc/childhurd} with the following non-volatile secrets, unless they already exist:"
 msgstr "De manera predeterminada el servicio crea @file{/etc/childhurd} con los siguientes secretos no volátiles, a no ser que ya existan:"
 
-msgid "Note that by default the VM image is volatile, i.e., once stopped the contents are lost.  If you want a stateful image instead, override the configuration's @code{image} and @code{options} without the @code{--snapshot} flag using something along these lines:"
-msgstr "Tenga en cuenta que la imagen de la máquina virtual es volátil, es decir, los contenidos se pierden cuando se para. Si desea una imagen que mantenga el estado puede modificar la configuración de @code{image} y @code{options} sin la opción @code{--snapshot} usando algo parecido a esto:"
-
-msgid ""
-"(service hurd-vm-service-type\n"
-"         (hurd-vm-configuration\n"
-"          (image   (const \"/out/of/store/writable/hurd.img\"))\n"
-"          (options '())))\n"
-msgstr ""
-"(service hurd-vm-service-type\n"
-"         (hurd-vm-configuration\n"
-"          (image   (const \"/no/almacen/y/perm/escritura/hurd.img\"))\n"
-"          (options '())))\n"
-
 msgid "Ganeti"
 msgstr "Ganeti"
 
@@ -29628,9 +29601,6 @@ msgstr ""
 "guix system container mi-configuración.scm \\\n"
 "   --expose=$HOME --share=$HOME/tmp=/intercambio\n"
 
-msgid "This option requires Linux-libre 3.19 or newer."
-msgstr "Esta opción requiere Linux-libre 3.19 o posterior."
-
 msgid "@var{options} can contain any of the common build options (@pxref{Common Build Options}).  In addition, @var{options} can contain one of the following:"
 msgstr "@var{opciones} puede contener cualquiera de las opciones de construcción comunes (@pxref{Common Build Options}). Además, @var{opciones} puede contener una de las siguientes:"
 
@@ -30073,9 +30043,6 @@ msgstr "En la base, podemos ver el @dfn{servicio del sistema}, el cual produce e
 
 msgid "service types"
 msgstr "tipos de servicio"
-
-msgid "Technically, developers can define @dfn{service types} to express these relations.  There can be any number of services of a given type on the system---for instance, a system running two instances of the GNU secure shell server (lsh) has two instances of @code{lsh-service-type}, with different parameters."
-msgstr "Técnicamente, las desarrolladoras pueden definir @dfn{tipos de servicio} para expresar estas relaciones. Puede haber cualquier número de servicios de un tipo dado en el sistema---por ejemplo, un sistema que ejecuta dos instancias del shell seguro GNU (lsh) tiene dos instancias de @var{lsh-service-type}, con parámetros diferentes."
 
 msgid "The following section describes the programming interface for service types and services."
 msgstr "La siguiente sección describe la interfaz programática para tipos de servicio y servicios."

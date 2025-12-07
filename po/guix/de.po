@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-11-15 03:18+0000\n"
-"PO-Revision-Date: 2025-11-15 23:55+0000\n"
+"POT-Creation-Date: 2025-12-04 03:18+0000\n"
+"PO-Revision-Date: 2025-12-01 16:18+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/guix/de/>\n"
 "Language: de\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14\n"
+"X-Generator: Weblate 5.14.3\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -1325,31 +1325,25 @@ msgid ""
 "model.  It can be used to protect the speakers on Apple Silicon devices."
 msgstr ""
 
-#: gnu/services/ssh.scm:253
-msgid ""
-"Run the GNU@tie{}lsh secure shell (SSH) daemon,\n"
-"@command{lshd}."
-msgstr ""
-
-#: gnu/services/ssh.scm:650
+#: gnu/services/ssh.scm:416
 #, fuzzy
 #| msgid "OpenSSH secure shell daemon (sshd)"
 msgid "Run the OpenSSH secure shell (SSH) server, @command{sshd}."
 msgstr "OpenSSH-Secure-Shell-Daemon (sshd)"
 
-#: gnu/services/ssh.scm:744
+#: gnu/services/ssh.scm:510
 msgid "Run the Dropbear secure shell (SSH) server."
 msgstr "Den Dropbear-SSH-Server ausführen."
 
-#: gnu/services/ssh.scm:852
+#: gnu/services/ssh.scm:618
 msgid "Automatically set up ssh connections (and keep them alive)."
 msgstr "Automatisch SSH-Verbindungen aufbauen (und aufrechterhalten)."
 
-#: gnu/services/ssh.scm:934
+#: gnu/services/ssh.scm:700
 msgid "webssh: reject policy requires `known-hosts'."
 msgstr "webssh: Reject-Richtlinie erfordert „known-hosts“."
 
-#: gnu/services/ssh.scm:980
+#: gnu/services/ssh.scm:746
 msgid "Run the webssh."
 msgstr "Webssh ausführen."
 
@@ -1577,7 +1571,7 @@ msgstr ""
 "der Persönlichen Umgebung benutzt wurden, und falls verfügbar ihre\n"
 "Konfigurationsdatei."
 
-#: gnu/home/services/desktop.scm:117
+#: gnu/home/services/desktop.scm:122
 msgid ""
 "Create a @code{x11-display} Shepherd service that waits for the X\n"
 "Window (or ``X11'') graphical display server to be up and running, up to a\n"
@@ -1587,7 +1581,7 @@ msgid ""
 "start."
 msgstr "Erzeugt einen Shepherd-Dienst @code{x11-display}, der darauf wartet, dass X Window (auch bekannt als „X11“) zur grafischen Anzeige läuft, spätestens nach der eingestellten Zeit, und setzt die Umgebungsvariable @env{DISPLAY} von @command{shepherd} entsprechend. Wenn in dieser Zeit kein nutzbarer X11-Server sichtbar wird, wird der Dienst @code{x11-display} als fehlgeschlagen gekennzeichnet."
 
-#: gnu/home/services/desktop.scm:283
+#: gnu/home/services/desktop.scm:288
 msgid ""
 "Run Redshift, a program that adjusts the color temperature of display\n"
 "according to time of day."
@@ -1595,11 +1589,11 @@ msgstr ""
 "Redshift starten, ein Programm, das die Farbtemperatur des Bildschirms\n"
 "je nach Tageszeit anpasst."
 
-#: gnu/home/services/desktop.scm:331
+#: gnu/home/services/desktop.scm:336
 msgid "Run the session-specific D-Bus inter-process message bus."
 msgstr "Führt den sitzungsspezifischen D-Bus-Interprozess-Nachrichtenbus aus."
 
-#: gnu/home/services/desktop.scm:382
+#: gnu/home/services/desktop.scm:387
 msgid ""
 "Run the @code{unclutter} daemon, which, on systems using the\n"
 "Xorg graphical display server, automatically hides the cursor after a\n"
@@ -1609,11 +1603,18 @@ msgstr ""
 "Xorg-Grafikserver verwenden, den Cursor automatisch ausblendet, nachdem eine\n"
 "benutzerdefinierte Zeitspanne abgelaufen ist."
 
-#: gnu/home/services/desktop.scm:439
+#: gnu/home/services/desktop.scm:444
 msgid ""
 "Run the @code{xmodmap} utility to modify keymaps and pointer\n"
 "buttons under the Xorg display server via user-defined expressions."
 msgstr "Führt das Dienstprogramm @code{xmodmap} aus, um Tastaturbelegungen sowie Zuordnungen für Maustasten und Tasten ähnlicher Zeigergeräte unter dem Xorg-Anzeigeserver über benutzerdefinierte Ausdrücke zu ändern."
+
+#: gnu/home/services/desktop.scm:542
+msgid ""
+"Run the @code{darkman} daemon, which will invoke scripts in\n"
+"$XDG_DATA_DIRS/dark-mode.d/ when sundown, and invoke scripts in\n"
+"$XDG_DATA_DIRS/light-mode.d/ when sunrise."
+msgstr ""
 
 #: gnu/home/services/dotfiles.scm:59
 #, scheme-format
@@ -1869,30 +1870,30 @@ msgstr "Der Store befindet sich auf einem Btrfs-Unterlaufwerk, aber der Name des
 msgid "Use the @code{subvol} Btrfs file system option."
 msgstr "Verwenden Sie die Einbinde-Option @code{subvol} für das Btrfs-Dateisystem."
 
-#: gnu/system/image.scm:351
+#: gnu/system/image.scm:363
 msgid "image lacks a partition with the 'boot' flag"
 msgstr "Keine der Partitionen für das Abbild trägt eine 'boot'-Flag"
 
-#: gnu/system/image.scm:395
+#: gnu/system/image.scm:417
 #, scheme-format
 msgid "unsupported image type: ~a"
 msgstr "Nicht unterstützter Abbildtyp: ~a"
 
-#: gnu/system/image.scm:414 gnu/system/image.scm:437
+#: gnu/system/image.scm:438 gnu/system/image.scm:463
 #, scheme-format
 msgid "unsupported partition type: ~a"
 msgstr "Nicht unterstützter Partitionstyp: ~a"
 
-#: gnu/system/image.scm:547
+#: gnu/system/image.scm:574
 msgid "EFI bootloader required with GPT partitioning"
 msgstr "EFI-Bootloader wird vorausgesetzt bei GPT-Partitionierung"
 
-#: gnu/system/image.scm:1051
+#: gnu/system/image.scm:1078
 #, scheme-format
 msgid "~a: unsupported image format"
 msgstr "~a: Nicht unterstütztes Abbild-Format"
 
-#: gnu/system/image.scm:1081
+#: gnu/system/image.scm:1108
 #, scheme-format
 msgid "~a: no such image type"
 msgstr "~a: Abbildtyp gibt es nicht"
@@ -1966,7 +1967,7 @@ msgstr ""
 #: guix/scripts/weather.scm:384 guix/scripts/describe.scm:97
 #: guix/scripts/processes.scm:301 guix/scripts/deploy.scm:58
 #: guix/scripts/container.scm:35 guix/scripts/container/exec.scm:43
-#: guix/scripts/archive.scm:104 guix/scripts/shell.scm:87
+#: guix/scripts/archive.scm:104 guix/scripts/shell.scm:86
 #: guix/scripts/environment.scm:165 guix/scripts/style.scm:710
 #: guix/scripts/home.scm:159 guix/scripts/time-machine.scm:79
 #: guix/scripts/import.scm:81 guix/scripts/import/cpan.scm:44
@@ -3992,7 +3993,7 @@ msgstr ""
 #: guix/scripts/describe.scm:99 guix/scripts/processes.scm:303
 #: guix/scripts/deploy.scm:60 guix/scripts/container.scm:37
 #: guix/scripts/container/exec.scm:45 guix/scripts/archive.scm:106
-#: guix/scripts/shell.scm:89 guix/scripts/environment.scm:167
+#: guix/scripts/shell.scm:88 guix/scripts/environment.scm:167
 #: guix/scripts/style.scm:712 guix/scripts/home.scm:161
 #: guix/scripts/time-machine.scm:81 guix/scripts/import.scm:85
 #: guix/scripts/import/cpan.scm:48 guix/scripts/import/cran.scm:58
@@ -8579,49 +8580,62 @@ msgid_plural "importing modules~{ ~a~} from the host~%"
 msgstr[0] "Modul~{ ~a~} von der Wirtsseite importieren~%"
 msgstr[1] "Module~{ ~a~} von der Wirtsseite importieren~%"
 
-#: guix/gnu-maintenance.scm:527
+#: guix/gnu-maintenance.scm:303
+#, fuzzy, scheme-format
+#| msgid "~a: invalid '--verify' option~%"
+msgid "~a: invalid 'release-file-regexp' property~%"
+msgstr "~a: Ungültige Argumente für „--verify“~%"
+
+#: guix/gnu-maintenance.scm:315
+#, scheme-format
+msgid "release file regexp ~s has ~a subexpression (expected one for the version string)~%"
+msgid_plural "release file regexp ~s has ~a subexpressions (expected one for the version string)~%"
+msgstr[0] ""
+msgstr[1] ""
+
+#: guix/gnu-maintenance.scm:555
 #, fuzzy, scheme-format
 #| msgid "failed to load '~a': ~a~%"
 msgid "failed to download '~a': ~a (~a)~%"
 msgstr "„~a“ konnte nicht geladen werden: ~a~%"
 
-#: guix/gnu-maintenance.scm:910
+#: guix/gnu-maintenance.scm:941
 #, fuzzy
 #| msgid "Updating to a specific version is not yet implemented for ~a, sorry."
 msgid "Updating to a specific version is not yet implemented for SourceForge."
 msgstr "Die Aktualisierung auf eine bestimmte Version ist für ~a leider noch nicht implementiert."
 
-#: guix/gnu-maintenance.scm:914
+#: guix/gnu-maintenance.scm:945
 #, fuzzy
 #| msgid "Updating to a specific version is not yet implemented for ~a, sorry."
 msgid "Updating to a partial version is not yet implemented for SourceForge."
 msgstr "Die Aktualisierung auf eine bestimmte Version ist für ~a leider noch nicht implementiert."
 
-#: guix/gnu-maintenance.scm:1068
+#: guix/gnu-maintenance.scm:1099
 msgid "Updater for GNU packages"
 msgstr "Aktualisierungsprogramm für GNU-Pakete"
 
-#: guix/gnu-maintenance.scm:1081
+#: guix/gnu-maintenance.scm:1112
 msgid "Updater for GNU packages only available via FTP"
 msgstr "Aktualisierungsprogramm für GNU-Pakete, die nur über FTP verfügbar sind"
 
-#: guix/gnu-maintenance.scm:1092
+#: guix/gnu-maintenance.scm:1123
 msgid "Updater for packages hosted on savannah.gnu.org"
 msgstr "Aktualisierungsprogramm für auf savannah.gnu.org gehostete Pakete"
 
-#: guix/gnu-maintenance.scm:1099
+#: guix/gnu-maintenance.scm:1130
 msgid "Updater for packages hosted on sourceforge.net"
 msgstr "Aktualisierungsprogramm für auf sourceforge.net gehostete Pakete"
 
-#: guix/gnu-maintenance.scm:1106
+#: guix/gnu-maintenance.scm:1137
 msgid "Updater for X.org packages"
 msgstr "Aktualisierungsprogramm für X.org-Pakete"
 
-#: guix/gnu-maintenance.scm:1113
+#: guix/gnu-maintenance.scm:1144
 msgid "Updater for packages hosted on kernel.org"
 msgstr "Aktualisierungsprogramm für auf kernel.org gehostete Pakete"
 
-#: guix/gnu-maintenance.scm:1120
+#: guix/gnu-maintenance.scm:1151
 msgid "Updater that crawls HTML pages."
 msgstr "Aktualisierungsprogramm mit Webcrawler für HTML-Seiten"
 
@@ -9050,8 +9064,9 @@ msgid "Did you forget a @code{use-modules} form?"
 msgstr "Vielleicht haben Sie eine @code{use-modules}-Form vergessen?"
 
 #: guix/ui.scm:371
-#, scheme-format
-msgid "Did you forget @code{(use-modules ~a)}?"
+#, fuzzy, scheme-format
+#| msgid "Did you forget @code{(use-modules ~a)}?"
+msgid "Did you forget @code{(use-modules ~a)} or @code{#:use-module ~a}?"
 msgstr "Vielleicht haben Sie @code{(use-modules ~a)} vergessen?"
 
 #: guix/ui.scm:381
@@ -10458,7 +10473,7 @@ msgstr "Avahi-Daemon läuft nicht; Substitutserver können nicht automatisch erk
 msgid "an Avahi error was raised by `~a': ~a~%"
 msgstr "Ein Avahi-Fehler wurde durch „~a“ gemeldet: ~a~%"
 
-#: guix/scripts/shell.scm:58
+#: guix/scripts/shell.scm:57
 msgid ""
 "Usage: guix shell [OPTION] PACKAGES... [-- COMMAND...]\n"
 "Build an environment that includes PACKAGES and execute COMMAND or an\n"
@@ -10468,7 +10483,7 @@ msgstr ""
 "Eine Umgebung erstellen, die PAKETE enthält, und den\n"
 "BEFEHL oder eine interaktive Shell darin ausführen.\n"
 
-#: guix/scripts/shell.scm:64
+#: guix/scripts/shell.scm:63
 msgid ""
 "\n"
 "  -D, --development      include the development inputs of the next package"
@@ -10476,7 +10491,7 @@ msgstr ""
 "\n"
 "  -D, --development      die Entwicklungseingaben des folgenden Pakets aufnehmen"
 
-#: guix/scripts/shell.scm:66
+#: guix/scripts/shell.scm:65
 msgid ""
 "\n"
 "  -f, --file=FILE        add to the environment the package FILE evaluates to"
@@ -10485,7 +10500,7 @@ msgstr ""
 "  -f, --file=DATEI       zur Umgebung das Paket hinzunehmen, zu dem die\n"
 "                           DATEI ausgewertet wird"
 
-#: guix/scripts/shell.scm:69
+#: guix/scripts/shell.scm:68
 msgid ""
 "\n"
 "  -q                     inhibit loading of 'guix.scm' and 'manifest.scm'"
@@ -10493,7 +10508,7 @@ msgstr ""
 "\n"
 "  -q                     Laden von „guix.scm“ und „manifest.scm“ unterdrücken"
 
-#: guix/scripts/shell.scm:71
+#: guix/scripts/shell.scm:70
 msgid ""
 "\n"
 "      --rebuild-cache    rebuild cached environment, if any"
@@ -10501,7 +10516,7 @@ msgstr ""
 "\n"
 "      --rebuild-cache    zwischengespeicherte Umgebung neu erstellen"
 
-#: guix/scripts/shell.scm:73
+#: guix/scripts/shell.scm:72
 msgid ""
 "\n"
 "      --export-manifest  print a manifest for the given options"
@@ -10510,7 +10525,7 @@ msgstr ""
 "      --export-manifest  ein Manifest entsprechend den angegebenen\n"
 "                           Befehlszeilenoptionen ausgeben"
 
-#: guix/scripts/shell.scm:75
+#: guix/scripts/shell.scm:74
 msgid ""
 "\n"
 "  -F, --emulate-fhs      for containers, emulate the Filesystem Hierarchy\n"
@@ -10520,27 +10535,27 @@ msgstr ""
 "  -F, --emulate-fhs      bei Containern: den Filesystem Hierarchy Standard\n"
 "                           (FHS) emulieren"
 
-#: guix/scripts/shell.scm:237
+#: guix/scripts/shell.scm:236
 #, scheme-format
 msgid "ignoring invalid file name: '~a'~%"
 msgstr "Ungültiger Dateiname wird ignoriert: „~a“~%"
 
-#: guix/scripts/shell.scm:297 guix/scripts/environment.scm:1204
+#: guix/scripts/shell.scm:296 guix/scripts/environment.scm:1204
 #, scheme-format
 msgid "no packages specified; creating an empty environment~%"
 msgstr "Keine Pakete angegeben; leere Umgebung wird erstellt~%"
 
-#: guix/scripts/shell.scm:302
+#: guix/scripts/shell.scm:301
 #, scheme-format
 msgid "loading environment from '~a'...~%"
 msgstr "Umgebung aus „~a“ wird geladen …~%"
 
-#: guix/scripts/shell.scm:308
+#: guix/scripts/shell.scm:307
 #, scheme-format
 msgid "not loading '~a' because not authorized to do so~%"
 msgstr "„~a“ wird nicht geladen, denn es wurde nicht autorisiert~%"
 
-#: guix/scripts/shell.scm:310
+#: guix/scripts/shell.scm:309
 #, scheme-format
 msgid ""
 "To allow automatic loading of\n"
@@ -10559,7 +10574,7 @@ msgstr ""
 "echo ~a >> ~a\n"
 "@end example\n"
 
-#: guix/scripts/shell.scm:518
+#: guix/scripts/shell.scm:522
 msgid ""
 ";; What follows is a \"manifest\" equivalent to the command line you gave.\n"
 ";; You can store it in a file that you may then pass to any 'guix' command\n"
@@ -10570,11 +10585,11 @@ msgstr ""
 ";; beliebigen 'guix'-Befehl zu übergeben, der die Befehlszeilenoption\n"
 ";; '--manifest' (oder '-m') annimmt.\n"
 
-#: guix/scripts/shell.scm:558
+#: guix/scripts/shell.scm:562
 msgid "spawn one-off software environments"
 msgstr "Umgebungen für einmalige Nutzungen erzeugen"
 
-#: guix/scripts/shell.scm:583
+#: guix/scripts/shell.scm:587
 msgid ""
 "Consider passing the @option{--check} option once\n"
 "to make sure your shell does not clobber environment variables."
@@ -11596,16 +11611,16 @@ msgstr "~A: Laden über hg fehlgeschlagen~%"
 msgid "failed to retrieve package information from ~a: ~a (~a)~%"
 msgstr "Paketinformationen konnten nicht von ~a heruntergeladen werden: ~a (~a)~%"
 
-#: guix/import/cran.scm:1042 guix/import/cran.scm:1065
+#: guix/import/cran.scm:1053 guix/import/cran.scm:1076
 #, scheme-format
 msgid "~a provides only the latest version of each package, sorry."
 msgstr "~a kann leider nur die neuste Version eines Pakets bereitstellen."
 
-#: guix/import/cran.scm:1135
+#: guix/import/cran.scm:1146
 msgid "Updater for CRAN packages"
 msgstr "Aktualisierungsprogramm für CRAN-Pakete"
 
-#: guix/import/cran.scm:1142
+#: guix/import/cran.scm:1153
 msgid "Updater for Bioconductor packages"
 msgstr "Aktualisierungsprogramm für Bioconductor-Pakete"
 
@@ -12173,42 +12188,42 @@ msgstr ""
 "Aufruf: guix import pypi PAKETNAME\n"
 "Das PyPI-Paket für PAKETNAME importieren und umwandeln.\n"
 
-#: guix/import/pypi.scm:262
+#: guix/import/pypi.scm:268
 msgid "Could not extract requirement name in spec:"
 msgstr "Der Requirement-Name konnte nicht aus der Spezifikation extrahiert werden:"
 
-#: guix/import/pypi.scm:338
+#: guix/import/pypi.scm:344
 #, scheme-format
 msgid "parse-requires.txt reached an unexpected condition on line ~a~%"
 msgstr "parse-requires.txt ist in einen unerwarteten Zustand gelaufen in Zeile ~a~%"
 
-#: guix/import/pypi.scm:404
+#: guix/import/pypi.scm:410
 #, scheme-format
 msgid "Failed to extract file: ~a from wheel.~%"
 msgstr "Datei konnte nicht extrahiert werden: ~a aus dem Wheel.~%"
 
-#: guix/import/pypi.scm:423
+#: guix/import/pypi.scm:429
 #, fuzzy, scheme-format
 #| msgid "Cannot guess requirements from source archive: no requires.txt file found.~%"
 msgid "Cannot guess requirements from pyproject.toml file, because it does not exist.~%"
 msgstr "Requirements können nicht aus dem Quellarchiv erraten werden: Keine Datei requires.txt gefunden.~%"
 
-#: guix/import/pypi.scm:447
+#: guix/import/pypi.scm:453
 #, scheme-format
 msgid "Cannot guess requirements from source archive: no requires.txt file found.~%"
 msgstr "Requirements können nicht aus dem Quellarchiv erraten werden: Keine Datei requires.txt gefunden.~%"
 
-#: guix/import/pypi.scm:465
+#: guix/import/pypi.scm:471
 #, scheme-format
 msgid "Unsupported archive format; cannot determine package dependencies from source archive: ~a~%"
 msgstr "Nicht unterstütztes Archivformat. Paketabhängigkeiten können nicht anhand des Quellarchivs bestimmt werden: ~a~%"
 
-#: guix/import/pypi.scm:546
+#: guix/import/pypi.scm:552
 #, scheme-format
 msgid "project name ~a does not appear verbatim in the PyPI URI~%"
 msgstr "Der Projektname ~a kommt nicht wörtlich in der PyPI-URI vor~%"
 
-#: guix/import/pypi.scm:549
+#: guix/import/pypi.scm:555
 #, scheme-format
 msgid ""
 "The PyPI URI is: @url{~a}.  You should review the\n"
@@ -12220,12 +12235,12 @@ msgstr ""
 "Womöglich müssen Sie anstelle von ~s einen Teil der PyPI-URI\n"
 "angeben, der das Paket bezeichnet."
 
-#: guix/import/pypi.scm:654
+#: guix/import/pypi.scm:678
 #, scheme-format
 msgid "no source release for pypi package ~a ~a~%"
 msgstr "Es gibt keine Quellcode-Veröffentlichung für das PyPI-Paket ~a ~a~%"
 
-#: guix/import/pypi.scm:662
+#: guix/import/pypi.scm:686
 #, scheme-format
 msgid ""
 "This indicates that the\n"
@@ -12238,7 +12253,7 @@ msgstr ""
 "zu erstellen, verweisen Sie auf das Repository des Anbieters bei\n"
 "@uref{~a}."
 
-#: guix/import/pypi.scm:709
+#: guix/import/pypi.scm:744
 msgid "Updater for PyPI packages"
 msgstr "Aktualisierungsprogramm für PyPI-Pakete"
 
@@ -12575,11 +12590,6 @@ msgstr ""
 "  -m, --manifest=DATEI   alle Pakete im Manifest aus DATEI auswählen"
 
 #: guix/scripts/refresh.scm:171
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      --target-version=VERSION\n"
-#| "                         update the package or packages to VERSION"
 msgid ""
 "\n"
 "      --target-version=VERSION\n"
@@ -12589,7 +12599,9 @@ msgid ""
 msgstr ""
 "\n"
 "      --target-version=VERSION\n"
-"                         Paket(e) auf VERSION aktualisieren"
+"                         Paket(e) auf VERSION aktualisieren\n"
+"                         VERSION darf unvollständig angegeben sein, etwa\n"
+"                         als 6 oder 6.4 statt 6.4.3"
 
 #: guix/scripts/refresh.scm:176
 msgid ""

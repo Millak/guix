@@ -5394,16 +5394,6 @@ msgstr "ssh-ed25519 AAAAC3NzaC@dots{}mde+UhL hint@@example.org\n"
 msgid "If the machine is running the OpenSSH daemon, @command{sshd}, the host key can be found in a file such as @file{/etc/ssh/ssh_host_ed25519_key.pub}."
 msgstr "Se la macchina sta eseguendo il demone OpenSSH, @command{sshd}, la chiave host può essere trovata in un file come @file{/etc/ssh/ssh_host_ed25519_key.pub}."
 
-msgid "If the machine is running the SSH daemon of GNU@tie{}lsh, @command{lshd}, the host key is in @file{/etc/lsh/host-key.pub} or a similar file.  It can be converted to the OpenSSH format using @command{lsh-export-key} (@pxref{Converting keys,,, lsh, LSH Manual}):"
-msgstr "Se la macchina sta eseguendo il demone SSH di GNU@tie{}lsh, @command{lshd}, la chiave host si trova in @file{/etc/lsh/host-key.pub} o un file simile. Può essere convertita al formato OpenSSH usando @command{lsh-export-key} (@pxref{Converting keys,,, lsh, LSH Manual}):"
-
-msgid ""
-"$ lsh-export-key --openssh < /etc/lsh/host-key.pub\n"
-"ssh-rsa AAAAB3NzaC1yc2EAAAAEOp8FoQAAAQEAs1eB46LV@dots{}\n"
-msgstr ""
-"$ lsh-export-key --openssh < /etc/lsh/host-key.pub\n"
-"ssh-rsa AAAAB3NzaC1yc2EAAAAEOp8FoQAAAQEAs1eB46LV@dots{}\n"
-
 msgid "A number of optional fields may be specified:"
 msgstr "Possono essere specificati alcuni campi opzionali:"
 
