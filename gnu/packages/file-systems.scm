@@ -831,7 +831,7 @@ performance and other characteristics.")
 
 (define-public bcachefs-tools
   ;; The final public package with shell completion even when cross-compiling,
-  ;; as well as optional features such as FUSE (‘bcachefs fusemount’).
+  ;; as well as optional features.
   (package
     (inherit bcachefs-tools-minimal)
     (name "bcachefs-tools")
@@ -845,10 +845,6 @@ performance and other characteristics.")
           (srfi srfi-26)))
        ((#:phases phases #~%standard-phases)
 	#~(modify-phases #$phases
-            (add-before 'build 'enable-fuse
-              (lambda _
-                ;; This must be an environment variable, not a make flag!
-                (setenv "BCACHEFS_FUSE" "1")))
 	    (add-after 'install 'install-completions
               (lambda* (#:key native-inputs #:allow-other-keys)
                 (define bcachefs
@@ -875,10 +871,7 @@ performance and other characteristics.")
      (append (package-native-inputs bcachefs-tools-minimal)
 	     (if (%current-target-system)
 		 (list bcachefs-tools-minimal)
-		 (list))))
-    (inputs
-     (modify-inputs (package-inputs bcachefs-tools-minimal)
-       (append fuse)))))
+		 (list))))))
 
 (define-public bcachefs-tools-minimal/static
   ;; The static variant is public for consistency with the other file system
