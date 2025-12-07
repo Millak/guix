@@ -28,6 +28,26 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
 
+(define-public hare-compress
+  (package
+    (name "hare-compress")
+    (version "0.25.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~sircmpwn/hare-compress")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0iwfqaaiin0zi97fi7p0p1v42lf78yf6cpyakpjhyyfhgk3bm4mk"))))
+    (build-system hare-build-system)
+    (supported-systems %hare-supported-systems)
+    (home-page "https://sr.ht/~sircmpwn/hare-compress")
+    (synopsis "Compression algorithms for Hare")
+    (description "This package provides compression algorithms for Hare.")
+    (license license:mpl2.0)))
+
 (define-public hare-json
   (package
     (name "hare-json")
