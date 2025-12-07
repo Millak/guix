@@ -804,6 +804,7 @@ def contents() -> str:
                                     " test_termios" ;os.openpty() Operation not permitted
                                     " test_tty" ;os.openpty() Operation not permitted
                                     " test_sqlite3" ;; sqlite3.OperationalError: database is locked
+                                    " test_tarfile" ;; ELOOP vs ENAMETOOLONG
                                     " test_builtin"
                                     " test_capi"
                                     " test_dbm_ndbm"
