@@ -4205,17 +4205,15 @@ be used for realtime video capture via Linux-specific APIs.")
 (define-public obs
   (package
     (name "obs")
-    (version "32.0.1")
+    (version "32.0.4")
     (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/obsproject/obs-studio")
-                    (commit version)
-                    (recursive? #t)))
-              (file-name (git-file-name name version))
+              (method url-fetch)
+              (uri (string-append "https://github.com/obsproject/obs-studio/releases/download/"
+                                  version
+                                  "/OBS-Studio-" version "-Sources.tar.gz"))
               (sha256
                (base32
-                "10z2bqzcjfpq70316lxcswmgszwazyskmx0xv74c0471bmal1mgp"))
+                "1a5vpm0ah0a6gq6wrwid4gd89zi52pg24r4sqqagxyq58fi2xrnr"))
               (patches
                (search-patches "obs-modules-location.patch"))))
     (build-system cmake-build-system)
@@ -4233,9 +4231,9 @@ be used for realtime video capture via Linux-specific APIs.")
                 "-DENABLE_AJA=OFF"
                 "-DENABLE_QSV11=OFF"
                 "-DENABLE_NVENC=OFF"
-                ;; <https://github.com/zaphoyd/websocketpp/issues/1157>
-                ;; Fix: <https://github.com/zaphoyd/websocketpp/pull/1164>
-                "-DENABLE_WEBSOCKET=OFF"
+                ;; Requires a custom version of websocketpp in inputs, that's
+                ;; patched to be compatible with recent versions of Boost 
+                "-DENABLE_WEBSOCKET=ON"
                 ;; Browser plugin requires cef, but it is not packaged yet.
                 ;; <https://bitbucket.org/chromiumembedded/cef/src/master/>
                 "-DBUILD_BROWSER=OFF"))
@@ -4277,6 +4275,7 @@ be used for realtime video capture via Linux-specific APIs.")
       jack-1
       jansson
       libdatachannel
+      libfdk
       libglvnd
       libva
       libx264
@@ -4303,7 +4302,7 @@ be used for realtime video capture via Linux-specific APIs.")
       vulkan-headers
       wayland
       wayland-protocols
-      websocketpp
+      websocketpp-next ;see websocket note above
       zlib))
     (synopsis "Live streaming software")
     (description "Open Broadcaster Software provides a graphical interface for
