@@ -155,6 +155,7 @@
   #:use-module (gnu packages telephony)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages toolkits)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
@@ -4398,6 +4399,55 @@ visualizer.  This package contains only the libprojectm library.")
       (description "A curated selection of 9,795 ProjectM/Milkdrop presets,
 meant to be included in any projectM-based application.")
       (license license:public-domain))))
+
+(define-public projectm-sdl
+  (let ((source-commit "72e5632897c9d9bef452c679d3cbe8c7b4bb4157")
+        (revision "0"))
+    (package
+      (name "projectm-sdl")
+      (version (git-version "0" revision source-commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+            (url "https://github.com/projectM-visualizer/frontend-sdl-cpp")
+            (commit source-commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "14vsjn589lrcwkz0d4528i33aslqsgh7m17kxj0fyd21pwj5n54l"))
+         (modules '((guix build utils)))
+         ;;There are no icon files to install.
+         (snippet #~(substitute* "install.cmake" (("install_icon.+") "")))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:tests? #f                ;There are no tests.
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'link-imgui
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (begin (delete-file-recursively "vendor/imgui")
+                            (symlink (assoc-ref %build-inputs "imgui-source")
+                                     "vendor/imgui")))))
+             #:configure-flags
+             #~(list
+                ;; There are texture repositories from both ProjectM and
+                ;; Milkdrop, but their licensing is unclear, so they are not
+                ;; packaged.  ProjectM functions fine with only presets.
+                (string-append "-DDEFAULT_PRESETS_PATH="
+                               (assoc-ref %build-inputs "projectm-presets"))
+                ;; The config location search path can be changed, but the
+                ;; install path stays the same, so only this value works.
+                ;; And without it, only the binary's path is checked.
+                (string-append "-DDEFAULT_CONFIG_PATH="
+                               #$output "/share/projectMSDL/"))))
+      (inputs (list freetype poco projectm projectm-presets sdl2))
+      (native-inputs (list `("imgui-source" ,(package-source imgui))))
+      (home-page "https://github.com/projectM-visualizer/frontend-sdl-cpp")
+      (synopsis "Reference frontend for the libprojectm music visualizer")
+      (description "This is a simple Milkdrop-like music visualizer that uses
+the projectM library to visualize audio input.")
+      (license license:gpl3+)))) ;presets
 
 (define-public qjackctl
   (package
