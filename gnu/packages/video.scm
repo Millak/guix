@@ -4640,28 +4640,30 @@ configuration (bitrate).")
 (define-public obs-pipewire-audio-capture
   (package
     (name "obs-pipewire-audio-capture")
-    (version "1.1.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/dimtpap/obs-pipewire-audio-capture")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0qjl8xlaf54zgz34f1dfybdg2inc2ir42659kh15ncihpgbx0wzl"))))
+    (version "1.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dimtpap/obs-pipewire-audio-capture")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "092xv2azqs85lxnggx7q71ch0l5jbnay0737x1xhz99azf0fidqs"))))
     (build-system cmake-build-system)
     (arguments
      (list
-      #:tests? #f ; no test target
+      #:tests? #f ;no test target
       #:configure-flags
       #~(list (string-append "-DLIBOBS_INCLUDE_DIR="
                              #$(this-package-input "obs") "/lib")
-              "-Wno-dev")))
+              "-DBUILD_OUT_OF_TREE=On" "-Wno-dev")))
     (native-inputs (list libconfig pkg-config))
-    (inputs (list obs pipewire simde))
-    (home-page "https://obsproject.com/forum/resources/pipewire-audio-capture.1458/")
-    (synopsis "Audio device and application capture for OBS Studio using PipeWire")
+    (inputs (list obs pipewire wireplumber simde))
+    (home-page
+     "https://obsproject.com/forum/resources/pipewire-audio-capture.1458/")
+    (synopsis
+     "Audio device and application capture for OBS Studio using PipeWire")
     (description "This plugin adds 3 sources for capturing audio outputs,
 inputs and applications using PipeWire.")
     (license license:gpl2+)))
