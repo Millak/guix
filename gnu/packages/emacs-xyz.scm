@@ -45600,27 +45600,35 @@ buffer.")
     (license license:gpl3+)))
 
 (define-public emacs-setup
-  (package
-    (name "emacs-setup")
-    (version "1.5.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://elpa.gnu.org/packages/setup-"
-                            version ".tar"))
-        (sha256
-          (base32 "184g3kd9caxyhwq41w94spkjs1j45vblg4sqfb5h5pqb5h9p95n5"))))
-    (build-system emacs-build-system)
-    (home-page "https://git.sr.ht/~pkal/setup")
-    (synopsis "Helpful configuration macro")
-    (description
-"The @code{setup} macro simplifies repetitive configuration patterns, by
-providing context-sensitive local macros in @code{setup} bodies.  These macros
-can be mixed with regular elisp code without any issues, allowing for
-flexible and terse configurations.  The list of local macros can be
-extended by the user via @code{setup-define}.  A list of currently known
-local macros are documented in the docstring for @code{setup}.")
-    (license license:gpl3+)))
+  ;; No tagged releases; this commit reflects the version bump on the source
+  (let ((commit "5a69dab9bb79d8bebaaa9bc14795cbaafd1c2423"))
+    (package
+      (name "emacs-setup")
+      (version "1.5.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://codeberg.org/pkal/setup.el")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1pa5k36pkgvp8als0ngxgy17x0gja9j26qydw3wwawkslssl5kbx"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f))                   ; No tests.
+      (home-page "https://codeberg.org/pkal/setup.el")
+      (synopsis "Helpful configuration macro")
+      (description
+       "The @code{setup} macro simplifies repetitive configuration patterns,
+by providing context-sensitive local macros in @code{setup} bodies.  These
+macros can be mixed with regular elisp code without any issues, allowing for
+flexible and terse configurations.  The list of local macros can be extended
+by the user via @code{setup-define}.  A list of currently known local macros
+are documented in the docstring for @code{setup}.")
+      (license license:gpl3+))))
 
 (define-public emacs-tomelr
   (package
