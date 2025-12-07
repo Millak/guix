@@ -15683,25 +15683,41 @@ in the modeline by default.")
     (license license:gpl3+))))
 
 (define-public emacs-test-simple
-  (package
-    (name "emacs-test-simple")
-    (version "1.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://elpa.gnu.org/packages/test-simple-"
-                           version ".el"))
-       (sha256
-        (base32
-         "11sgc7187l1a4f1x1f6z58dy7pc7n1999id50rjifkvk901x0qd1"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/rocky/emacs-test-simple")
-    (synopsis "Simple unit test framework for Emacs Lisp")
-    (description
-     "Test Simple is a simple unit test framework for Emacs Lisp.  It
+  (let ((commit "da8ddb6fecb820c8e0809ac0892374e755e4efec")) ;version bump
+    (package
+      (name "emacs-test-simple")
+      (version "1.3.1")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/rocky/emacs-test-simple/")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "18a9d1n2xc2fqimvsg0nkvizn7y7sb6ap5i9al526cp40l0yky3n"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'check
+              (lambda* (#:key tests? #:allow-other-keys)
+                (when tests?
+                  (with-directory-excursion "test"
+                    (invoke "emacs" "--batch"
+                            "-l" "test-basic.el"
+                            "-l" "test-buffer.el"
+                            "-l" "test-fns.el"
+                            "-l" "test-no-clear.el"))))))))
+      (home-page "https://github.com/rocky/emacs-test-simple")
+      (synopsis "Simple unit test framework for Emacs Lisp")
+      (description
+       "Test Simple is a simple unit test framework for Emacs Lisp.  It
 alleviates the need for context macros, enclosing specifications or required
 test tags.  It supports both interactive and non-interactive use.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-load-relative
   (package
