@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2025 Lilah Tascheter <lilah@lunabee.space>
+;;; Copyright © 2025 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +27,26 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages))
+
+(define-public hare-json
+  (package
+    (name "hare-json")
+    (version "0.25.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~sircmpwn/hare-json")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dkvjkxap4vm5lc04y22mdk7mn8ainljak6wc4bhjf0zq6la2w0v"))))
+    (build-system hare-build-system)
+    (supported-systems %hare-supported-systems)
+    (home-page "https://sr.ht/~sircmpwn/hare-json")
+    (synopsis "JSON support for Hare")
+    (description "This package provides JSON support for Hare.")
+    (license license:mpl2.0)))
 
 (define-public hare-ssh
   (package
