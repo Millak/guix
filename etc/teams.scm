@@ -1088,11 +1088,6 @@ the \"texlive\" importer."
                        "bavier")
   science)
 
-(define-member (person "Lars-Dominik Braun"
-                       "lars@6xq.net"
-                       "ldb")
-  python haskell)
-
 (define-member (person "Jonathan Brielmaier"
                        "jonathan.brielmaier@web.de"
                        "jonsger")
