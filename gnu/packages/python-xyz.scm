@@ -41326,34 +41326,31 @@ Library.")
 (define-public python-xmp-toolkit
   (package
     (name "python-xmp-toolkit")
-    (version "2.0.2")
+    (version "2.1.0")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "python-xmp-toolkit" version))
+       (uri (pypi-uri "python_xmp_toolkit" version))
        (sha256
-        (base32 "12x6lyaxjpbl8ll3cj97039kwvsha2nkx2v8v8irfbi2p0dl721s"))
-        (patches (search-patches
-                   "python-xmp-toolkit-add-missing-error-codes.patch"))))
+        (base32 "1np2njq6c1fnxh6bbh3xp2slz5dm7aamknv7hxax53a11p3a42na"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      #~(list "-k" (string-append "not test_can_put_xmp and "
-                                  "not test_exempi_bad_combinations and "
-                                  "not test_formats and "
-                                  "not test_get_xmp and "
-                                  "not test_open_file_with_options"))
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'configure-environment
-            (lambda* (#:key outputs inputs #:allow-other-keys)
-              (let ((exempi #$(this-package-input "exempi")))
-                (setenv "LD_LIBRARY_PATH"
-                        (string-append exempi "/lib"))))))))
-    (inputs (list exempi))
-    (propagated-inputs (list python-pytz))
-    (native-inputs (list python-pytest python-setuptools python-wheel))
+          (add-after 'unpack 'patch-source
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "libxmp/exempi.py"
+                (("ctypes.util.find_library\\('exempi'\\)")
+                 (format #f "~s" (search-input-file
+                                  inputs "lib/libexempi.so")))))))))
+    (native-inputs
+     (list python-pytest
+           python-flit-core))
+    (inputs
+     (list exempi))
+    (propagated-inputs
+     (list python-pytz))
     (home-page "https://github.com/python-xmp-toolkit/python-xmp-toolkit")
     (synopsis "Python XMP Toolkit for working with metadata")
     (description "Python XMP Toolkit is a library for working with XMP
