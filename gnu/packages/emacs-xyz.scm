@@ -43481,48 +43481,6 @@ as a plug-and-play solution for anyone already using Org mode for their
 personal wiki.")
     (license license:gpl3+)))
 
-(define-public emacs-org-node
-  (package
-    (name "emacs-org-node")
-    (version "2.4.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/meedstrom/org-node/")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "03600cxy8dr2sd49d07v61izxpvdxgfyiangjzkbma4qdpbkmjgh"))))
-    (build-system emacs-build-system)
-    (arguments
-     '(#:tests? #f ; fails
-       #:test-command '("./makem.sh" "tests")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'dont-git
-           (lambda _
-             (substitute* "makem.sh"
-               (("^cd.*\"")
-                "")))))))
-    (propagated-inputs
-     (list emacs-el-job
-           emacs-llama
-           emacs-magit))
-    ;; tests
-    (native-inputs
-     (list emacs-buttercup
-           emacs-dash
-           util-linux
-           grep
-           sed))
-    (home-page "https://github.com/meedstrom/org-node/")
-    (synopsis "Non-hierarchical note-taking with Org-mode, faster than
-org-roam")
-    (description "This package provides a notetaking system like Roam,
-using org mode; faster than org-roam.")
-    (license license:gpl3+)))
-
 (define-public emacs-org-mem
   (package
     (name "emacs-org-mem")
@@ -43563,7 +43521,7 @@ structure of all your Org files – headings, links and so on..")
     (home-page "https://github.com/meedstrom/org-node/")
     (license license:gpl3+)))
 
-(define-public emacs-org-node-3
+(define-public emacs-org-node
   (package
     (name "emacs-org-node")
     (version "3.9.9")
@@ -43606,6 +43564,8 @@ using org mode; faster than org-roam.  This version of org-node has
 different configuration options to org-node 2 so you DO have to set
 it up again.")
     (license license:gpl3+)))
+
+(define-deprecated-package emacs-org-node-3 emacs-org-node)
 
 (define-public emacs-org-super-links
   (package
