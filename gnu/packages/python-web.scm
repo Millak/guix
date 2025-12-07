@@ -13137,51 +13137,57 @@ Amazon S3 or any other external service.")
 (define-public python-fastapi
   (package
     (name "python-fastapi")
-    (version "0.115.6")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "fastapi" version))
-              (sha256
-               (base32
-                "0m36nyldk0640mbsysm446bz6rfynpjsm5lajmra8kn1vmx6zi4y"))))
+    (version "0.124.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fastapi" version))
+       (sha256
+        (base32 "1rplb37099ivd9bxyy80hljb4979zsqdjbqzk5cx5rkmmmwd2316"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1126 passed, 12 skipped, 2 deselected
       #:test-flags
-      ;; Argument() missing 1 required positional argument: 'default'
-      '(list "--ignore=tests/test_fastapi_cli.py"
-             ;; cannot import name 'StaticPool' from 'sqlalchemy'
-             "--ignore-glob=tests/test_tutorial/*"
-             ;; FIXME: Unclear why these 8 tests fail.
-             "--ignore=tests/test_dependency_contextmanager.py")
-      #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'relax-requirements
-           (lambda _
-             (substitute* "pyproject.toml"
-               (("<0.42.0") "<=0.42.0")))))))
-    (propagated-inputs (list python-email-validator
-                             python-fastapi-cli
-                             python-httpx
-                             python-itsdangerous
-                             python-jinja2
-                             python-multipart
-                             python-orjson
-                             python-pydantic
-                             python-pydantic-settings
-                             python-pyyaml
-                             python-starlette
-                             python-typing-extensions
-                             python-ujson
-                             python-uvicorn))
+      #~(list "--ignore=tests/test_tutorial/"
+              "--ignore=docs_src/"
+              ;; Coverage is required.
+              "--deselect=tests/test_fastapi_cli.py::test_fastapi_cli"
+              ;;  pytest.PytestUnraisableExceptionWarning: Exception ignored
+              ;;  in: <function MemoryObjectReceiveStream.__del__ at
+              ;;  0x7ffff654af20>
+              "-Wignore::pytest.PytestUnraisableExceptionWarning")))
     (native-inputs
-     (list python-dirty-equals
+     (list python-anyio
+           python-dirty-equals
            python-flask
            python-inline-snapshot
            python-pdm-backend
+           ;; python-pwdlib
            python-pyjwt
            python-pytest
-           python-sqlalchemy))
+           python-sqlalchemy
+           ;; python-sqlmodel
+           python-types-orjson
+           python-types-ujson))
+    (propagated-inputs
+     (list python-starlette
+           python-pydantic
+           python-typing-extensions
+           python-annotated-doc
+           ;; [optional]
+           python-email-validator
+           python-fastapi-cli
+           python-httpx
+           python-itsdangerous
+           python-jinja2
+           python-multipart
+           python-orjson
+           python-pydantic-extra-types
+           python-pydantic-settings
+           python-pyyaml
+           python-ujson
+           python-uvicorn))
     (home-page "https://github.com/tiangolo/fastapi")
     (synopsis "Web framework based on type hints")
     (description "FastAPI provides a web API framework based on pydantic and
