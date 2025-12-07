@@ -1142,12 +1142,18 @@ system_flags = $(foreach system,$(1),-s $(system))
 #   5. Build the installation and VM images.  The images will run 'guix'
 #      corresponding to 'vX.Y.Z' + 1 commit, and they will install 'vX.Y.Z'.
 #
-# This 'release' target takes care of everything and copies the resulting
-# files to $(releasedir).
+# This is split into two targets, because a commit is made that has to be
+# pushed to Guix.
+# First, 'prepare-release' should be run, doing steps 1 and 2.
+# Then, the resulting commit should be pushed so that it's available
+# to be downloaded for the system images.
+# Afterwards, the 'release' target takes care of the rest.  This 'release'
+# target takes care of everything and copies the resulting files to
+# $(releasedir).
 #
 # XXX: Depend on 'dist' rather than 'distcheck' to work around the Gettext
 # issue described at <https://savannah.gnu.org/bugs/index.php?51027>.
-release: dist-with-updated-version all
+prepare-release: dist-with-updated-version all
 	@if ! git diff-index --quiet HEAD; then			\
 	  echo "There are uncommitted changes; stopping." >&2 ;	\
 	  exit 1 ;						\
@@ -1165,6 +1171,13 @@ release: dist-with-updated-version all
 	$(top_builddir)/pre-inst-env guix build guix	\
 	      $(call system_flags,$(SUPPORTED_SYSTEMS))	\
 	      -v1 --no-grafts --fallback
+
+	@echo
+	@echo "First step done! Source tarball is ready in $(releasedir)"
+	@echo "Now push the resulting commit and run `make release`."
+	@echo
+
+release: all
 # Generate the binary release tarballs.
 	rm -f $(BINARY_TARBALLS)
 	$(MAKE) $(BINARY_TARBALLS)
