@@ -40,6 +40,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -49,6 +50,7 @@
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
@@ -389,6 +391,33 @@ Design spec without sacrificing ease of use or application performance.")
       "Pivy provides python bindings for Coin, a 3D graphics library with an
 Application Programming Interface based on the Open Inventor 2.1 API.")
     (license license:isc)))
+
+(define-public python-py3exiv2
+  (package
+    (name "python-py3exiv2")
+    (version "0.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       ;; Source: https://code.launchpad.net/py3exiv2
+       (uri (pypi-uri "py3exiv2" version))
+       (sha256
+        (base32 "12is7xb393wvq3la9lhi0y1xkmpvjj6v13cikb7k6iqcfrgkxckj"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f))        ;no tests in PyPI
+    (native-inputs
+     (list boost
+           python-setuptools))
+    (inputs
+     (list exiv2))
+    (home-page "https://www.py3exiv2.tuxfamily.org/")
+    (synopsis "Python binding to the exiv2 library")
+    (description
+     "This package provides a Python binding to the library
+@code{https://exiv2.org/, exiv2} - cross-platform C++ library and a command
+line utility to manage image metadata.")
+    (license license:gpl3+)))
 
 (define-public python-pyglet
   (package
