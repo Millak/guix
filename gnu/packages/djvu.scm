@@ -33,6 +33,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gawk)
@@ -50,6 +51,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-graphics)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
@@ -295,50 +297,50 @@ and white.")
     (license license:gpl2)))
 
 (define-public didjvu
-  (let ((revision "0")
-        (commit "43e2735d0b3575ca04e82a427dca88bc68fa4931"))
     (package
       (name "didjvu")
-      (version (git-version "0.10.2" revision commit))
+      (version "0.11.0")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/FriedrichFroebel/didjvu")
-               (commit commit)))
+                ;; It's a fork of https://github.com/jwilk/didjvu, see:
+                ;; <https://github.com/FriedrichFroebel/didjvu/issues/47>.
+                (url "https://github.com/FriedrichFroebel/didjvu")
+                (commit version)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0ippf3hsjy13xj6pqnqr30dz8lsncsfcan2r1vbxfk1g602m3p4c"))))
+          (base32 "11z9daa5qfm8cqaxdywfvrnaxid33p7lidj7i8xzv30wyzxdr6zg"))))
       (build-system pyproject-build-system)
       (arguments
        (list
-        ;; FIXME: Tests fail because they try to load the libxmp and pyexiv2
-        ;; modules that should not be enabled, as we only enable the gexiv2
-        ;; module.
-        #:tests? #f
+        #:test-backend #~'unittest
+        #:test-flags
+        #~(list "discover" "--verbose" "--start-directory" "tests/")
         #:phases
         #~(modify-phases %standard-phases
-            (delete 'configure)
             (add-before 'check 'disable-failing-test
               (lambda _
                 (substitute* "tests/test_ipc.py"
-                  ;; test_wait_signal gets stuck forever
-                  (("self\\._test_signal\\(name\\)")
-                   "return True")
                   ;; test_path fails to find a file it should have created
                   (("path = os\\.getenv\\('PATH'\\)")
                    "return True"))
-                (substitute* "tests/test_timestamp.py"
-                  ;; test_timezones fails with:
-                  ;; '2009-12-18T21:25:14Z' != '2009-12-18T22:25:14+01:00'
-                  (("samples = \\[" all)
-                   (string-append "return True\n        " all)))))
+                (substitute* (list "tests/test_ipc.py" "tests/test_cli.py")
+                ;; XXX: See:
+                ;; <https://github.com/FriedrichFroebel/didjvu/issues/48>.
+                  (((string-append "(test_action_no_args|test_bad_action|"
+                                   "test_no_args|test_wait_signal)")
+                    all)
+                   (string-append "__off_" all)))))
             (add-after 'wrap 'wrap-path
               (lambda* (#:key inputs #:allow-other-keys)
                 (wrap-program (string-append #$output "/bin/didjvu")
                   `("PATH" ":" prefix
                     (,(dirname (search-input-file inputs "bin/ddjvu"))))))))))
-      (native-inputs (list python-setuptools))
+      (native-inputs
+       (list boost
+             tzdata-for-tests
+             python-setuptools))
       (inputs
        (list bash-minimal
              djvulibre
@@ -346,14 +348,15 @@ and white.")
              minidjvu
              python-gamera
              python-pillow
+             python-py3exiv2
              python-pygobject
-             python-wrapper))
+             python-xmp-toolkit))
       (synopsis "DjVu encoder with foreground/background separation")
       (description
        "@code{didjvu} uses the @code{Gamera} framework to separate the foreground
 and background layers of images, which can then be encoded into a DjVu file.")
       (home-page "https://jwilk.net/software/didjvu")
-      (license license:gpl2))))
+      (license license:gpl2)))
 
 (define-public ocrodjvu
   (let ((revision "0")
