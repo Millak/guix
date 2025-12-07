@@ -1600,7 +1600,7 @@ natural language processing framework.")
                              python-jinja2
                              python-langcodes
                              python-murmurhash
-                             python-numpy-2
+                             python-numpy
                              python-packaging
                              python-preshed
                              python-pydantic-2
@@ -2277,7 +2277,7 @@ and are compatible with its API.")
                              python-confection
                              python-cymem
                              python-murmurhash
-                             python-numpy-2
+                             python-numpy
                              python-packaging
                              python-preshed
                              python-pydantic-2

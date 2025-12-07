@@ -6526,7 +6526,7 @@ of @code{xmlfile}.")
       (propagated-inputs
        (list python-appdirs
              python-future
-             python-numpy-2
+             python-numpy
              python-pillow
              python-pyyaml
              python-requests
@@ -10971,87 +10971,7 @@ include_dirs = ~:*~a/include~%"
            gfortran))
     (inputs (list bash openblas))))
 
-(define-public python-numpy-2
-  (package
-    (inherit python-numpy)
-    (name "python-numpy")
-    (version "2.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://github.com/numpy/numpy/releases/download/v"
-             version "/numpy-" version ".tar.gz"))
-       (sha256
-        (base32 "0aqx8hsw54wfp7iv0h0ljlpsygvmrmi3rjic6rsa6v92lhhaxj8y"))))
-    (arguments
-     (list
-      #:modules '((guix build utils)
-                  (guix build pyproject-build-system)
-                  (ice-9 format))
-      #:test-flags
-      #~(list "-m" "not slow"
-              "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              ;; See: <https://github.com/numpy/numpy/issues/27531>,
-              ;;      <https://github.com/numpy/numpy/issues/17685>,
-              ;;      <https://github.com/numpy/numpy/issues/17635>.
-              "-k" "not test_api_importable")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-executable-paths
-            (lambda _
-              (substitute* "numpy/distutils/exec_command.py"
-                (("'/bin/sh'")
-                 (format #f "~s" (which "bash"))))
-              (substitute* "numpy/meson.build"
-                ;; Relay on python from the PATH instead of full reference
-                ;; stored in built wheel.
-                (("'py.full_path\\(\\)'") "'python'"))))
-          (add-before 'build 'parallelize-build
-            (lambda _
-              (setenv "OMP_NUM_THREAD"
-                      (number->string (parallel-job-count)))
-              (setenv "NPY_NUM_BUILD_JOBS"
-                      (number->string (parallel-job-count)))))
-          ;; XXX: It fails with an issue "'fenv_t' has not been declared..."
-          ;; when the gfortran header is used.  Remove gfortran from
-          ;; CPLUS_INCLUDE_PATH as a workaround.  Taken from
-          ;; <https://issues.guix.gnu.org/73439#45>.
-          (add-after 'set-paths 'hide-gfortran
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((gfortran (assoc-ref inputs "gfortran")))
-                (setenv "CPLUS_INCLUDE_PATH"
-                        (string-join
-                         (delete (string-append gfortran "/include/c++")
-                                 (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
-                         ":")))))
-          (add-before 'build 'configure-blas
-            (lambda* (#:key inputs #:allow-other-keys)
-              (call-with-output-file "site.cfg"
-                (lambda (port)
-                  (format port
-                          "[openblas]
-libraries = openblas
-library_dirs = ~a/lib
-include_dirs = ~:*~a/include~%" #$(this-package-input "openblas"))))))
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (with-directory-excursion #$output
-                  (apply invoke "pytest" test-flags))))))))
-    (native-inputs
-     (list gfortran
-           meson-python
-           ninja
-           pkg-config
-           python-hypothesis
-           python-mypy
-           python-pytest
-           python-pytest-xdist
-           python-setuptools
-           python-setuptools
-           python-typing-extensions
-           python-wheel))))
+(define-deprecated/public-alias python-numpy-2 python-numpy)
 
 (define-public python-numpysane
   (package
@@ -11723,7 +11643,7 @@ apply unified diffs.  It has features such as:
      (list python-pytest
            python-setuptools))
     (propagated-inputs
-     (list python-numpy-2))
+     (list python-numpy))
     (home-page "https://github.com/pydata/numexpr")
     (synopsis "Fast numerical expression evaluator for NumPy")
     (description

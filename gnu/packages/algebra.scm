@@ -805,7 +805,7 @@ a C program.")
     (native-inputs
      (list googletest
            pkg-config
-           python-numpy-2
+           python-numpy
            python-wrapper))
     (inputs
      (list fftw

@@ -1478,7 +1478,7 @@ from Lisp and S-expressions, building pixel perfect badges.")
                   libtiff
                   openexr-2
                   python-wrapper
-                  python-numpy-2
+                  python-numpy
                   zlib))
     (native-inputs (list doxygen python-sphinx))
     (synopsis "Computer vision library")

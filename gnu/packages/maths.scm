@@ -4401,7 +4401,7 @@ summation in K-fold precision.")
               (delete-file-recursively "blis"))))))
     (native-inputs
      (list python-cython
-           python-numpy-2
+           python-numpy
            python-pytest
            python-setuptools))
     (home-page "https://github.com/explosion/cython-blis")
