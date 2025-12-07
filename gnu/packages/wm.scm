@@ -83,6 +83,7 @@
 ;;; Copyright © 2025 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2025 Andrew Wong <wongandj@icloud.com>
 ;;; Copyright © 2025 Hugo Buddelmeijer <hugo@buddelmeijer.nl>
+;;; Copyright © 2025 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -719,10 +720,15 @@ Despite the name it should work with any X11 window manager.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bd5nrlga5g1sz1f64gnc3dqy8yfrr4q1ss59krymbpxa1hhf55c"))))
+                "1bd5nrlga5g1sz1f64gnc3dqy8yfrr4q1ss59krymbpxa1hhf55c"))
+              (patches
+               ;; Pull patch pending upstream inclusion for "-fno-common"
+               ;; toolchain support:
+               ;; <https://github.com/karulont/i3lock-blur/pull/22>
+               (search-patches "i3lock-blur-fix-build-on-gcc-10.patch"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config automake autoconf))
+     (list pkg-config automake-1.16.5 autoconf))
     (inputs
      (list cairo
            mesa

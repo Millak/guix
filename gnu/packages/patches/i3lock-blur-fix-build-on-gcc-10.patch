@@ -1,0 +1,31 @@
+From ec8fe0e7f7d78bf445602ed517efd5c324bb32f7 Mon Sep 17 00:00:00 2001
+From: Sergei Trofimovich <slyich@gmail.com>
+Date: Sun, 15 May 2022 10:36:29 +0100
+Subject: [PATCH] fix build on gcc-10 (-fno-common)
+
+gcc-10 changed the default from -fcommon to fno-common:
+  https://gcc.gnu.org/PR85678
+
+As a result build fails as:
+
+    ld: i3lock-unlock_indicator.o:(.bss+0xc): multiple definition of
+      `input_position'; i3lock-i3lock.o:(.bss+0x3c): first defined here
+
+The change turned one of definitions into declaration.
+---
+ unlock_indicator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/unlock_indicator.c b/unlock_indicator.c
+index 9ef0b48..34e151b 100644
+--- a/unlock_indicator.c
++++ b/unlock_indicator.c
+@@ -36,7 +36,7 @@ extern bool debug_mode;
+ 
+ /* The current position in the input buffer. Useful to determine if any
+  * characters of the password have already been entered or not. */
+-int input_position;
++extern int input_position;
+ 
+ /* The lock window. */
+ extern xcb_window_t win;
