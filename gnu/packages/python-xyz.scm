@@ -39452,6 +39452,55 @@ distance (Ukkonen).")
 parsing UK postcodes.")
     (license license:expat)))
 
+(define-public python-ulid
+  (package
+    (name "python-ulid")
+    (version "3.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/mdomke/python-ulid")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m1sixmqynlalsw50af5mv5q4gpz2052d1p2ig9hr7yqmdvqcz6p"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-freezegun
+           python-hatch-fancy-pypi-readme
+           python-hatch-vcs
+           python-hatchling
+           python-pytest))
+    (propagated-inputs
+     (list python-pydantic))
+    (home-page "https://github.com/mdomke/python-ulid")
+    (synopsis "Universally unique lexicographically sortable identifier")
+    (description
+     "ULID is a universally unique lexicographically sortable identifier.
+It is:
+@itemize
+@item 128-bit compatible with UUID
+@item 1.21e+24 unique ULIDs per millisecond
+@item lexicographically sortable!
+@item canonically encoded as a 26 character string, as opposed to the 36
+character UUID
+@item uses Crockford's base32 for better efficiency and readability (5 bits
+per character)
+@item case insensitive
+@item no special characters (URL safe)
+@item monotonic sort order (correctly detects and handles the same
+millisecond)
+@end itemize")
+    (license license:expat)))
+
 (define-public python-uncertainties
   (package
     (name "python-uncertainties")
