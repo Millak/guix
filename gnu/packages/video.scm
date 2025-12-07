@@ -4749,16 +4749,15 @@ different filters than the original.")
 (define-public obs-source-copy
   (package
     (name "obs-source-copy")
-    (version "0.2.6")
+    (version "0.3.0")
     (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/exeldro/obs-source-copy")
-                    (commit version)))
-              (file-name (git-file-name name version))
+              (method url-fetch)
+              (uri (string-append "https://github.com/exeldro/obs-source-copy/releases/download/"
+                                  version
+                                  "/source-copy-" version "-source.tar.xz"))
               (sha256
                (base32
-                "0hkjpjli1bw090asc0a9km1gqjachv3hsx5z642kqc5mrnq7fnq3"))))
+                "0zr1yayzd4x3m108ji9c4xs7d7bavbz2hr81782l25kfhv3ry9f7"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -4768,7 +4767,7 @@ different filters than the original.")
                              #$(this-package-input "obs") "/lib")
               "-DBUILD_OUT_OF_TREE=On"
               "-Wno-dev")))
-    (inputs (list obs qtbase-5 simde))
+    (inputs (list obs qtbase simde))
     (home-page "https://github.com/exeldro/obs-source-copy")
     (synopsis "OBS plugin for copy and paste scenes, sources and filters")
     (description "This package provides an OBS plugin for copy and paste
