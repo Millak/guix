@@ -233,7 +233,8 @@ generate such a compilation database.")
        (uri (string-append
              "http://www.crufty.net/ftp/pub/sjg/bmake-" version ".tar.gz"))
        (sha256
-        (base32 "0q30a04lg91g4932xgl0hg4c798inr5ky8fq6cwqzfkpar8zi8s5"))))
+        (base32 "0q30a04lg91g4932xgl0hg4c798inr5ky8fq6cwqzfkpar8zi8s5"))
+       (patches (search-patches "bmake-run-check-separately.patch"))))
     (build-system gnu-build-system)
     (inputs
      (list bash-minimal))
@@ -241,7 +242,7 @@ generate such a compilation database.")
      (list bc coreutils))
     (arguments
      (list
-      #:tests? #f                       ; test during build
+      #:test-target "test"
       #:phases
       #~(modify-phases %standard-phases
           ;; Ensure that a store path to /bin/sh is detected as a POSIX shell by

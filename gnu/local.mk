@@ -1063,6 +1063,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/binutils-mingw-w64-deterministic.patch	\
   %D%/packages/patches/binutils-2.41-fix-cross.patch		\
   %D%/packages/patches/bloomberg-bde-tools-fix-install-path.patch	\
+  %D%/packages/patches/bmake-run-check-separately.patch	\
   %D%/packages/patches/boolector-find-googletest.patch	\
   %D%/packages/patches/boost-fix-duplicate-definitions-bug.patch	\
   %D%/packages/patches/btanks-scons-python.patch		\
