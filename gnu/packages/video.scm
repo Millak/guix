@@ -4375,7 +4375,7 @@ applied via a static image (.png, .jpeg, etc).
 (define-public obs-composite-blur
   (package
     (name "obs-composite-blur")
-    (version "1.1.0")
+    (version "1.5.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4384,7 +4384,7 @@ applied via a static image (.png, .jpeg, etc).
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mlbc1zi4bp8xwiq0ynjciysqvlbrxa0v5an9hkzsl9vwxgz9jc9"))))
+                "0y0g75q3vvvw9bciwh8qlz711x1qlpbph9g6hfmwk4v25in3sgn1"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -4395,23 +4395,8 @@ applied via a static image (.png, .jpeg, etc).
       #~(list (string-append "-DLIBOBS_INCLUDE_DIR="
                              #$(this-package-input "obs") "/lib")
               "-DBUILD_OUT_OF_TREE=On"
-              "-Wno-dev")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'move-shaders
-            (lambda _
-              (mkdir-p
-               (string-append
-                #$output
-                "/share/obs/obs-plugins/obs-composite-blur"))
-              (rename-file
-               (string-append
-                #$output
-                "/data/obs-plugins/obs-composite-blur/shaders")
-               (string-append
-                #$output
-                "/share/obs/obs-plugins/obs-composite-blur/shaders")))))))
-    (inputs (list obs qtbase-5 simde))
+              "-Wno-dev")))
+    (inputs (list obs qtbase simde))
     (home-page "https://github.com/FiniteSingularity/obs-composite-blur")
     (synopsis "Different blur algorithms for OBS")
     (description "Composite Blur Plugin is a comprehensive blur plugin that
