@@ -62,6 +62,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages adns)
+  #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -225,47 +226,66 @@ generate such a compilation database.")
 (define-public bmake
   (package
     (name "bmake")
-    (version "20230723")
+    (version "20251111")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "http://www.crufty.net/ftp/pub/sjg/bmake-" version ".tar.gz"))
        (sha256
-        (base32 "012rzgjmncdla1l43f9wl8v13h7d46zgn28k6djpcgx23fahsan4"))))
+        (base32 "0q30a04lg91g4932xgl0hg4c798inr5ky8fq6cwqzfkpar8zi8s5"))))
     (build-system gnu-build-system)
     (inputs
      (list bash-minimal))
     (native-inputs
-     (list coreutils))
+     (list bc coreutils))
     (arguments
      (list
       #:tests? #f                       ; test during build
       #:phases
       #~(modify-phases %standard-phases
+          ;; Ensure that a store path to /bin/sh is detected as a POSIX shell by
+          ;; modifying the pattern matching in the use_defshell() function.
+          ;; Without this, the tests won't correctly detect our provided default
+          ;; shell as a POSIX shell and will thus fail.
+          (add-after 'unpack 'fix-shell-detection
+            (lambda _
+              (substitute* "configure"
+                (("sh\\|/bin/sh\\|\\*/bsh)")
+                 "*/bin/sh)"))))
           (add-after 'configure 'fix-test ; fix from nixpkgs
             (lambda* (#:key inputs native-inputs #:allow-other-keys)
               (substitute* "unit-tests/unexport-env.mk"
                 (("PATH=\t/bin:/usr/bin:/sbin:/usr/sbin")
                  "PATH := ${PATH}"))
+              (substitute* '("unit-tests/varmod-sun-shell1.exp"
+                             "unit-tests/suff.exp")
+                (("/bin/sh")
+                 (search-input-file (or native-inputs inputs) "/bin/sh")))
               (substitute* '("unit-tests/opt-keep-going-indirect.mk"
                              "unit-tests/opt-keep-going-indirect.exp")
                 (("false")
-                 (search-input-file (or native-inputs inputs) "/bin/false")))))
-          (add-after 'configure 'remove-fail-tests
-            (lambda _
-              (substitute* "unit-tests/Makefile"
-                (("cmd-interrupt") "")
-                (("deptgt-interrupt") "")
-                (("varmod-localtime") "")))))
+                 (search-input-file (or native-inputs inputs) "/bin/false"))))))
       #:configure-flags
       #~(list
          (string-append
-          "--with-defshell=" #$(this-package-input "bash-minimal") "/bin/bash")
+          "--with-defshell=" #$(this-package-input "bash-minimal") "/bin/sh")
          (string-append
           "--with-default-sys-path=" #$output "/share/mk"))
       #:make-flags
-      #~(list "INSTALL=install")))      ; use coreutils' install
+      #~(list
+          "INSTALL=install"         ; use coreutils' install
+          (string-append
+            "BROKEN_TESTS="
+            (string-join
+              (list "cmd-interrupt"
+                    "deptgt-interrupt"
+                    "varmod-localtime"
+                    ;; directive-export failures are related to TZ env.
+                    ;; these tests are also disabled by nixpkgs.
+                    "directive-export"
+                    "directive-export-gmake"
+              " "))))))
     (home-page "http://www.crufty.net/help/sjg/bmake.htm")
     (synopsis "BSD's make")
     (description
