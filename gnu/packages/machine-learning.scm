@@ -210,14 +210,18 @@ representations and sentence classification.")
     (version "0.5.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "autograd-gamma" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/CamDavidsonPilon/autograd-gamma")
+              ;; The 5.0.0 version is not tagged, but can only be this commit.
+              (commit "5876e0320865c592ed4a370c6a6ef282cf163480")))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1i699a9m5ndnj8cwzjjf2agb77aawhzrzxfbmn5zrkxridxvnypj"))))
+        (base32 "0hpjnpw7bsy1xja4pnxx5fvv7xly72lp3hdazhr9zbmn6s7vcs19"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-autograd
            python-scipy))
