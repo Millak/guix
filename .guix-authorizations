@@ -100,6 +100,9 @@
    ;; <https://lists.gnu.org/archive/html/guix-devel/2020-01/msg00499.html>.
    "1EFB 0909 1F17 D28C CBF9  B13A 53D4 57B2 D636 EE82"
    (name "roptat"))
+  (;; primary: "3AC5 5D0E 1DA7 AF44 3868  11EE 213D C372 0E7A 023C"
+   "6B51 071A 0FB1 52AD ED93  6360 0322 7982 69E4 71C3"
+   (name "Rutherther"))
   ("EAD1 89E4 799B 5E5E B20A  2A19 CDBC 0BD9 5943 A706"
    (name "SameExpert"))
   (;; primary: "D6B0 C593 DA8C 5EDC A44C  7A58 C336 91F7 1188 B004"
