@@ -4376,6 +4376,29 @@ Expression Evaluation Library 2, as used in the Milkdrop music visualizer.")
 visualizer.  This package contains only the libprojectm library.")
     (license license:lgpl2.1+)))
 
+(define-public projectm-presets
+  (let ((commit "0180df21f5e0bd39b9060cc5de420ed2f1f9e509")
+        (revision "0"))
+    (package
+      (name "projectm-presets")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+            (url "https://github.com/projectM-visualizer/presets-cream-of-the-crop")
+            (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1g64s6v4xbmx0skiy3ag9889adl8rvwahzd7rmrchiwbd1gap771"))))
+      (build-system copy-build-system)
+      (home-page "https://github.com/projectM-visualizer/presets-cream-of-the-crop")
+      (synopsis "Curated selection of ProjectM/Milkdrop presets")
+      (description "A curated selection of 9,795 ProjectM/Milkdrop presets,
+meant to be included in any projectM-based application.")
+      (license license:public-domain))))
+
 (define-public qjackctl
   (package
     (name "qjackctl")
