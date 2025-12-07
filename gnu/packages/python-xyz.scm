@@ -10716,6 +10716,99 @@ writing C extensions for Python as easy as Python itself.")
 (define-public python-numpy
   (package
     (name "python-numpy")
+    (version "2.3.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/numpy/numpy/releases/download/v"
+             version "/numpy-" version ".tar.gz"))
+       (sha256
+        (base32 "0aqx8hsw54wfp7iv0h0ljlpsygvmrmi3rjic6rsa6v92lhhaxj8y"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils)
+                  (guix build pyproject-build-system)
+                  (ice-9 format))
+      #:test-flags
+      #~(list "-m" "not slow"
+              "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; See: <https://github.com/numpy/numpy/issues/27531>,
+              ;;      <https://github.com/numpy/numpy/issues/17685>,
+              ;;      <https://github.com/numpy/numpy/issues/17635>.
+              "-k" "not test_api_importable")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-executable-paths
+            (lambda _
+              (substitute* "numpy/distutils/exec_command.py"
+                (("'/bin/sh'")
+                 (format #f "~s" (which "bash"))))
+              (substitute* "numpy/meson.build"
+                ;; Relay on python from the PATH instead of full reference
+                ;; stored in built wheel.
+                (("'py.full_path\\(\\)'") "'python'"))))
+          (add-before 'build 'parallelize-build
+            (lambda _
+              (setenv "OMP_NUM_THREAD"
+                      (number->string (parallel-job-count)))
+              (setenv "NPY_NUM_BUILD_JOBS"
+                      (number->string (parallel-job-count)))))
+          ;; XXX: It fails with an issue "'fenv_t' has not been declared..."
+          ;; when the gfortran header is used.  Remove gfortran from
+          ;; CPLUS_INCLUDE_PATH as a workaround.  Taken from
+          ;; <https://issues.guix.gnu.org/73439#45>.
+          (add-after 'set-paths 'hide-gfortran
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((gfortran (assoc-ref inputs "gfortran")))
+                (setenv "CPLUS_INCLUDE_PATH"
+                        (string-join
+                         (delete (string-append gfortran "/include/c++")
+                                 (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
+                         ":")))))
+          (add-before 'build 'configure-blas
+            (lambda* (#:key inputs #:allow-other-keys)
+              (call-with-output-file "site.cfg"
+                (lambda (port)
+                  (format port
+                          "[openblas]
+libraries = openblas
+library_dirs = ~a/lib
+include_dirs = ~:*~a/include~%" #$(this-package-input "openblas"))))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion #$output
+                  (apply invoke "pytest" test-flags))))))))
+    (native-inputs
+     (list gfortran
+           meson-python
+           ninja
+           pkg-config
+           python-hypothesis
+           python-mypy
+           python-pytest
+           python-pytest-xdist
+           python-setuptools
+           python-setuptools
+           python-typing-extensions
+           python-wheel))
+    (home-page "https://numpy.org")
+    (synopsis "Fundamental package for scientific computing with Python")
+    (description "NumPy is the fundamental package for scientific computing
+with Python.  It contains among other things: a powerful N-dimensional array
+object, sophisticated (broadcasting) functions, tools for integrating C/C++
+and Fortran code, useful linear algebra, Fourier transform, and random number
+capabilities.")
+    (properties
+     '((upstream-name . "numpy")))
+    (license license:bsd-3)))
+
+(define-public python-numpy-1
+  (package
+    (inherit python-numpy)
+    (name "python-numpy")
     ;; XXX: Starting from v1.26.0 the project includes a vendored-meson which
     ;; is needed for SIMD and BLAS/LAPACK features that are not yet available
     ;; in upstream Meson.
@@ -10735,7 +10828,6 @@ writing C extensions for Python as easy as Python itself.")
         (base32
          "0410j6jfz1yzm5s0v0yrc1j0q6ih4322357and7arr0jxnlsn0ia"))
        (patches (search-patches "python-numpy-gcc-14.patch"))))
-    (build-system pyproject-build-system)
     (arguments
      (list
       #:modules '((guix build utils)
@@ -10877,17 +10969,7 @@ include_dirs = ~:*~a/include~%"
            ;; <https://github.com/numpy/numpy/issues/24318>.
            gcc                    ;fevn.h c[++] include must precede fortran's
            gfortran))
-    (inputs (list bash openblas))
-    (home-page "https://numpy.org")
-    (synopsis "Fundamental package for scientific computing with Python")
-    (description "NumPy is the fundamental package for scientific computing
-with Python.  It contains among other things: a powerful N-dimensional array
-object, sophisticated (broadcasting) functions, tools for integrating C/C++
-and Fortran code, useful linear algebra, Fourier transform, and random number
-capabilities.")
-    (properties
-     '((upstream-name . "numpy")))
-    (license license:bsd-3)))
+    (inputs (list bash openblas))))
 
 (define-public python-numpy-2
   (package
