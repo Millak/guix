@@ -10303,6 +10303,61 @@ validation and serialization.")
 Interfaces} via data models provided in the JSON format.")
     (license license:expat)))
 
+(define-public python-pydantic-extra-types
+  (package
+    (name "python-pydantic-extra-types")
+    (version "2.10.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pydantic/pydantic-extra-types")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0n3w6zm7wdj0xb2c4kjkysfxhcr5pzbgcpcw158pzdsxz6svnrl3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 13079 passed, 1 deselected
+      #:test-flags
+      ;; See: <https://github.com/pydantic/pydantic-extra-types/issues/345>.
+      #~(list "--ignore=tests/test_s3.py"
+              "--deselect=tests/test_coordinate.py::test_json_schema"
+              ;; XXX: The most of the tests fail, pendulum is optional package
+              ;; and needs to be =>3 where we have 2.1.2, updating to 3+
+              ;; requires Rust.
+              "--ignore=tests/test_pendulum_dt.py"
+              "--ignore=tests/test_json_schema.py")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "TZ" "UTC")
+              (setenv "TZDIR" (search-input-directory inputs
+                                                      "share/zoneinfo")))))))
+    (native-inputs
+     (list python-pytest
+           python-hatchling
+           tzdata-for-tests))
+    (propagated-inputs
+     (list python-pydantic
+           python-typing-extensions
+           ;; [optional]
+           python-cron-converter
+           ;; python-pendulum
+           python-phonenumbers
+           python-pycountry
+           python-pymongo
+           python-pytz
+           python-semver
+           python-tzdata
+           python-ulid))
+    (home-page "https://github.com/pydantic/pydantic-extra-types")
+    (synopsis "Extra Pydantic types")
+    (description "This package provides sxtra types for Pydantic.")
+    (license license:expat)))
+
 (define-public python-pydantic-settings
   (package
     (name "python-pydantic-settings")
