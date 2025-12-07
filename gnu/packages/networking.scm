@@ -1569,6 +1569,50 @@ between different versions of ØMQ.")
 files contain direct mappings of the abstractions provided by the ØMQ C API.")
     (license license:expat)))
 
+(define-public libcoap
+  (package
+    (name "libcoap")
+    (version "4.3.5a")
+    (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/obgm/libcoap")
+                      (commit (string-append "v" version))))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "078bi6i6115wyhx9qssh30kf5ziv8sn7ch5fg31rf7qr7pypbfxa"))))
+    (outputs (list "out" "doc"))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+       #:configure-flags
+       #~(list "--enable-tests"
+               "--with-openssl")
+       #:phases
+       #~(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "./tests/testdriver")))))))
+    (native-inputs (list asciidoc
+                         autoconf
+                         automake
+                         doxygen
+                         libtool
+                         pkg-config
+                         which))
+    (inputs (list cunit openssl))
+    (home-page "https://libcoap.net/")
+    (synopsis "Implementation of the CoAP application protocol")
+    (description
+      "This package provides a C implementation of a lightweight
+application-protocol for devices that are constrained their resources such as
+computing power, RF range, memory, bandwidth, or network packet sizes.  This
+protocol, @acronym{CoAP, Constrained Application Protocol}, is standardized by
+the IETF as @url{https://www.rfc-editor.org/rfc/rfc7252, RFC 7252}.")
+    (license license:bsd-2)))
+
 (define-public libnatpmp
   ;; Install the latest commit as it provides a pkg-config (.pc) file.
   (let ((base-version "20230423")
