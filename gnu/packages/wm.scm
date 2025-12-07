@@ -2475,8 +2475,15 @@ modules for building a Wayland compositor.")
        (sha256
         (base32 "00s73nhi3sc48l426jdlqwpclg41kx1hv0yk4yxhbzw19gqpfm1h"))))
     (propagated-inputs (modify-inputs (package-propagated-inputs wlroots)
-                         (delete libdisplay-info)))))
-
+                         (delete libdisplay-info)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments wlroots)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            ;; Required to fix build with GCC >= 15.
+            (add-before 'configure 'set-cflags
+              (lambda _
+                (setenv "CFLAGS" "-Wno-error=calloc-transposed-args")))))))))
 
 (define-public wl-mirror
   (package
