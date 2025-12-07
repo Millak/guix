@@ -104,6 +104,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (guix packages)
   #:use-module (guix gexp)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
@@ -4008,72 +4009,33 @@ library.")
 tissue-specificity metrics for gene expression.")
     (license license:gpl3+)))
 
-(define-public python-pandas-2
+(define-public python-pandas
   (package
     (name "python-pandas")
-    (version "2.2.3")
+    (version "2.3.3")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pandas-dev/pandas")
-             (commit (string-append "v" version))))
+              (url "https://github.com/pandas-dev/pandas")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00f6jnplwg7iffnxdm4hpfls0ncbarc23933xq1rm5nk5g8dcldx"))
+        (base32 "0qf4frgj31kd9i544n8v03a0bv9mgml3f7n9n1rik187q3r8ygfg"))
        (patches (search-patches "python-pandas-2-no-pytz_datetime.patch"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 174115 passed, 24224 skipped, 990 xfailed, 77 xpassed, 110 warnings
       #:test-flags
-      #~(list "--pyargs" "pandas"
-              ;; "--exitfirst"
-              ;; XXX The tests won't even start on my 16 core laptop, but they
-              ;; start with 4 processes.
+      #~(list "-m" (string-join
+                    (list "not db" "network" "single_cpu" "slow" "slow_arm")
+                    " and not ")
               "--numprocesses" (number->string (min 4 (parallel-job-count)))
-              "-m" "not slow and not network and not db"
-              ;; All tests errored.
-              "--ignore=pandas/tests/io/test_clipboard.py"
               "-k" (string-join
-                    (list
-                     "not test_git_version"
-                     "test_show_versions_console"
-                     ;; Not testing ~ expansion.
-                     "test_expand_user"
-                     "test_get_handle_with_path"
-                     ;; These test access the internet (see:
-                     ;; https://github.com/pandas-dev/pandas/issues/45085).:
-                     ;; pandas/tests/io/xml/test_xml.py::test_wrong_url[lxml]
-                     ;; pandas/tests/io/xml/test_xml.py::test_wrong_url[etree]
-                     "test_wrong_url"
-                     ;; TODO: Missing input
-                     "TestS3"
-                     "s3"
-                     ;; This test fails when run with pytest-xdist
-                     ;; (see: https://github.com/pandas-dev/pandas/issues/39096).
-                     "test_memory_usage"
-                     "test_parsing_tzlocal_deprecated"
-                     ;; PyArrow is optional.
-                     "test_style_bar_with_pyarrow_NA_values"
-                     "test_very_negative_exponent"
-                     "test_usecols_no_header_pyarrow"
-                     "test_scientific_no_exponent[pyarrow-None]"
-                     "test_inspect_getmembers"
-                     ;; SciPy introduces cycle, optional.
-                     "test_savefig"
-                     ;; It requires a fresh python-tzdata, including new
-                     ;; timezones.
-                     "test_repr"
-                     ;; Fails with Pytest@8.4.1, fixed on main branch.
-                     ;; See: <https://github.com/pandas-dev/pandas/issues/61557>.
-                     "test_groupby_raises_category_on_category"
-                     ;; These tests should be skipped on 32bit systems:
-                     ;; Cannot cast array data from dtype('int64') to dtype('int32')
-                     #$@(if (not (target-64bit?))
-                            #~("test_inf_bound_infinite_recursion"
-                               "test_reindex_behavior_with_interval_index"
-                               "test_repeating_interval_index_with_infs")
-                            #~()))
+                    (list "not test_git_version"
+                          "test_parsing_tzlocal_deprecated"
+                          "test_show_versions_console")
                     " and not "))
       #:phases
       #~(modify-phases %standard-phases
@@ -4082,57 +4044,72 @@ tissue-specificity metrics for gene expression.")
               (with-output-to-file "_version.py"
                 (lambda _
                   (display
-                   (string-append "__version__ = \""
-                                  #$(package-version this-package)
-                                  "\""))))))
-          (add-before 'check 'pre-check
-            (lambda _
-              (setenv "HOME" ".")
-              ;; Skip tests that require lots of resources.
-              (setenv "PANDAS_CI" "1")))
-          (add-after 'unpack 'patch-which
-            (lambda _
-              (substitute* "pandas/io/clipboard/__init__.py"
-                (("^WHICH_CMD = .*")
-                 (string-append "WHICH_CMD = \""
-                                #$(this-package-input "which")
-                                "/bin/which\"\n")))))
-          ;; The compiled libraries are only in the output at this point,
-          ;; but they are needed to run tests.
-          ;; FIXME: This should be handled by the pyargs pytest argument,
-          ;; but is not for some reason.
-          (add-before 'check 'pre-check
-            (lambda _
-              (copy-recursively
-               (string-append #$output
-                              "/lib/python3.11/site-packages/pandas/_libs")
-               "pandas/_libs"))))))
+                   (string-append "__version__ = \"" #$version "\""))))))
+          (replace 'check
+            (lambda* (#:key inputs outputs test-flags tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")
+                (with-directory-excursion
+                    (string-append (string-append (site-packages inputs outputs)
+                                                  "/pandas"))
+                  (apply invoke "pytest" "-vv" test-flags))))))))
     (propagated-inputs
-     (list python-dateutil
-           python-jinja2
-           python-matplotlib
-           python-numpy
-           python-openpyxl
+     (list python-numpy
+           python-dateutil
            python-pytz
            python-tzdata
-           python-xlrd
-           python-xlsxwriter))
+           ;; XXX: Pandas lists a lot of optional dependencies which are not
+           ;; hard requirements, leave them listed here and commented out for
+           ;; the reference purpose. Try to keep closure as bare minimal as
+           ;; possible.
+           ;;
+           ;; [optional]
+           ;; python-adbc-driver-postgresql
+           ;; python-adbc-driver-sqlite
+           ;; python-beautifulsoup4
+           ;; python-bottleneck
+           ;; python-fastparquet
+           ;; python-fsspec
+           ;; python-gcsfs
+           ;; python-html5lib
+           ;; python-hypothesis
+           ;; python-jinja2
+           ;; python-lxml
+           ;; python-matplotlib
+           ;; python-numba
+           ;; python-numexpr
+           ;; python-odfpy
+           ;; python-openpyxl
+           ;; python-psycopg2
+           ;; python-pyarrow
+           ;; python-pyiceberg
+           ;; python-pymysql
+           ;; python-pyqt5
+           ;; python-pyreadstat
+           ;; python-python-calamine
+           ;; python-pytz
+           ;; python-pyxlsb
+           ;; python-qtpy
+           ;; python-s3fs
+           ;; python-scipy
+           ;; python-sqlalchemy
+           ;; python-tables
+           ;; python-tabulate
+           ;; python-xarray
+           ;; python-xlrd
+           ;; python-xlsxwriter
+           #;python-zstandard))
     (inputs
-     (list which xclip xsel))
+     (list xclip xsel))
     (native-inputs
-     (list meson-python
-           python-beautifulsoup4
-           python-cython
-           python-html5lib
+     (list meson
+           meson-python
            python-lxml
-           python-matplotlib
-           python-openpyxl
-           python-pytest-asyncio
            python-pytest
-           python-pytest-localserver
-           python-pytest-mock
+           python-pytest-asyncio
            python-pytest-xdist
-           python-versioneer))
+           python-versioneer
+           tzdata-for-tests))
     (home-page "https://pandas.pydata.org")
     (synopsis "Data structures for data analysis, time series, and statistics")
     (description
@@ -4143,7 +4120,7 @@ and intuitive.  It aims to be the fundamental high-level building block for
 doing practical, real world data analysis in Python.")
     (license license:bsd-3)))
 
-(define-public python-pandas python-pandas-2)
+(define-deprecated/public-alias python-pandas-2 python-pandas)
 
 (define-public python-pandas-stubs
   (package
