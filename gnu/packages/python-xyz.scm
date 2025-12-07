@@ -392,6 +392,31 @@ protocol of git-annex, while leaving the behavior of the remote up to the
 user.")
     (license license:gpl3)))
 
+(define-public python-annotated-doc
+  (package
+    (name "python-annotated-doc")
+    (version "0.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/fastapi/annotated-doc")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13fh58q1a8kvrx1kjgr6qmd09jhikxc7wlyccajpfz657ipjif9v"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pdm-backend))
+    (home-page "https://github.com/fastapi/annotated-doc")
+    (synopsis "Annotated for some Python objects")
+    (description
+     "This package implements a funtionality for document parameters, class
+attributes, return types, and variables inline, with
+Annotated.")
+    (license license:expat)))
+
 (define-public python-archspec
   (package
     (name "python-archspec")
