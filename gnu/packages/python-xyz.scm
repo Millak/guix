@@ -834,6 +834,35 @@ Configurations:
 @end table")
     (license license:bsd-2)))
 
+(define-public python-cron-converter
+  (package
+    (name "python-cron-converter")
+    (version "1.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Sonic0/cron-converter")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k5svwh9g6fxjx567iwjysq8x07cmy8qfwpk0pm0jjrgr42w9l6c"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest
+           #:test-flags #~(list "discover" "--verbose" "tests/unit")))
+    (native-inputs
+     (list python-dateutil
+           python-setuptools))
+    (propagated-inputs
+     (list python-dateutil))
+    (home-page "https://github.com/Sonic0/cron-converter")
+    (synopsis "Cron string parser and scheduler for Python")
+    (description
+     "Cron-converter provides a Cron string parser (from string/lists to
+string/lists) and iteration for the datetime object with a cron like format.")
+    (license license:expat)))
+
 (define-public python-curtsies
   (package
     (name "python-curtsies")
