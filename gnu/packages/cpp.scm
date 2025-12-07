@@ -2314,42 +2314,39 @@ parsers according to a Parsing Expression Grammar (PEG).")
     (license license:expat)))
 
 (define-public lexy
-  ;; Bug fixes since last release.
-  (let ((commit "34d2adf74a2b25b6bdd760a3bbb931f3fd5e60cd")
-        (revision "0"))
-    (package
-      (name "lexy")
-      (version (git-version "2022.12.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/foonathan/lexy")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1ywcy3wdmqjj5z1w64hk0dwf8iv6p62s48m7l6vn881hfzc8hcxz"))))
-      (build-system cmake-build-system)
-      (arguments
-       (list #:configure-flags #~(list "-DLEXY_BUILD_DOCS=OFF") ; needs Hugo
-             #:phases
-             #~(modify-phases %standard-phases
-                 (add-after 'unpack 'fix-dependencies
-                   (lambda _
-                     (substitute* "tests/CMakeLists.txt"
-                       (("^message\\(STATUS \"Fetching doctest\"\\).*") "")
-                       (("^include\\(FetchContent\\).*") "")
-                       (("^FetchContent_Declare\\(doctest .*") "")
-                       (("^FetchContent_MakeAvailable\\(doctest\\)")
-                        "find_package(doctest REQUIRED)")
-                       (("^(target_link_libraries\\(lexy_test_base .*) doctest\\)"
-                         _ prefix)
-                        (string-append prefix ")"))))))))
-      (native-inputs (list doctest))
-      (home-page "https://lexy.foonathan.net/")
-      (synopsis "C++ parser combinator library")
-      (description "lexy is a parser combinator library for C++17 and later.")
-      (license license:boost1.0))))
+  (package
+    (name "lexy")
+    (version "2025.05.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/foonathan/lexy")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14j2z7x2l65q95j5br5nw7awgd87p9m2xw7mma4qspiricd0rniq"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DLEXY_BUILD_DOCS=OFF") ; needs Hugo
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-dependencies
+                 (lambda _
+                   (substitute* "tests/CMakeLists.txt"
+                     (("^message\\(STATUS \"Fetching doctest\"\\).*") "")
+                     (("^include\\(FetchContent\\).*") "")
+                     (("^FetchContent_Declare\\(doctest .*") "")
+                     (("^FetchContent_MakeAvailable\\(doctest\\)")
+                      "find_package(doctest REQUIRED)")
+                     (("^(target_link_libraries\\(lexy_test_base .*) doctest\\)"
+                       _ prefix)
+                      (string-append prefix ")"))))))))
+    (native-inputs (list doctest))
+    (home-page "https://lexy.foonathan.net/")
+    (synopsis "C++ parser combinator library")
+    (description "lexy is a parser combinator library for C++17 and later.")
+    (license license:boost1.0)))
 
 (define-public psascan
   (package
