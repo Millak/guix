@@ -24,6 +24,7 @@
 ;;; Copyright © 2024 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
 ;;; Copyright © 2024 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2025 Zheng Junjie <z572@z572.online>
+;;; Copyright © 2025 Ashish SHUKLA <ashish.is@lostca.se>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1312,7 +1313,7 @@ multiple local rocks trees.")
 (define-public fennel
   (package
     (name "fennel")
-    (version "1.5.1")
+    (version "1.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1321,7 +1322,7 @@ multiple local rocks trees.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09m7v62qw058llfrfqja14yx8ngjzrfx10hf2h1cc5zz0nbw89bj"))))
+                "09gky2w8z83qqv0n9vx8jqsfldni14kjr6l7y5k44lq5i30i0fsv"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags #~(list (string-append "PREFIX="
