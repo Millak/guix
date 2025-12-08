@@ -3794,23 +3794,29 @@ directories and files.")
 (define-public python-pytest-regressions
   (package
     (name "python-pytest-regressions")
-    (version "2.7.0")
+    (version "2.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest_regressions" version))
        (sha256
-        (base32 "0pph1935rq180ax0szwwf3c6zq2v40snypagr49914i31570cc2c"))))
+        (base32 "08fjzhsp4akdzn08d0nx2b9k16iad7wvdw4fqwv3sap0pq40gn8s"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Do not fail on warning.
-      ;; DeprecationWarning: module 'sre_constants' is deprecated
-      #:test-flags #~(list "-W" "ignore::DeprecationWarning")))
+      #:test-flags
+      ;; To reduce closure size it prevents including python-numpy,
+      ;; python-pandas and python-matplotlib.
+      #~(list "--ignore=tests/test_dataframe_regression.py"
+              "--ignore=tests/test_ndarrays_regression.py"
+              "--ignore=tests/test_num_regression.py"
+              "--deselect=tests/test_filenames.py::test_foo"
+              "--deselect=tests/test_filenames.py::TestClass::test_foo"
+              "--deselect=tests/test_filenames.py::TestClassWithIgnoredName::test_foo"
+              "--deselect=tests/test_image_regression.py::test_image_regression"
+              "--deselect=tests/test_image_regression.py::test_image_regression_workflow")))
     (native-inputs
-     (list python-numpy
-           python-pandas
-           python-pytest
+     (list python-pytest-bootstrap
            python-setuptools
            python-setuptools-scm))
     (propagated-inputs
