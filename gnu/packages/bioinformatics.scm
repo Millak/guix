@@ -7181,42 +7181,33 @@ currently runs on single machines and on slurm via its API.")
 (define-public python-dendropy
   (package
     (name "python-dendropy")
-    (version "4.5.1")
+    (version "5.0.8")
     (source
      (origin
        (method git-fetch)
-       ;; Source from GitHub so that tests are included.
        (uri (git-reference
-             (url "https://github.com/jeetsukumaran/DendroPy")
-             (commit (string-append "v" version))))
+              (url "https://github.com/jeetsukumaran/DendroPy")
+              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0lrfzjqzbpk1rrra9vd7z2j7q09jy9w1ss7wn2rd85i4k5y3xz8l"))))
+         "0gcg4brixwh1dykrwkb2iyg9q27zz6d4gd7p05p08r8pbvsscqh2"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-       #:test-flags
-       '(list "-k"
+      ;; tests: 1047 passed, 5 deselected, 12 warnings
+      #:test-flags
+      #~(list "-k"
               (string-join
                ;; These tests fail because we have no "paup" executable.
                (list "not test_group1"
                      "test_basic_split_counting_under_different_rootings"
                      "test_basic_split_count_with_incorrect_weight_treatment_raises_error"
-                     "test_basic_split_count_with_incorrect_rootings_raises_error"
-
-                     ;; Assert error for unknown reasons
-                     "test_by_num_lineages")
-               " and not "))
-       #:phases
-       '(modify-phases %standard-phases
-          (add-after 'unpack 'python-compatibility
-            (lambda _
-              (substitute* "tests/test_datamodel_taxon.py"
-                (("collections.Iterable")
-                 "collections.abc.Iterable")))))))
-    (native-inputs (list python-pytest python-wheel))
-    (propagated-inputs (list python-setuptools))
+                     "test_basic_split_count_with_incorrect_rootings_raises_error")
+               " and not "))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (home-page "https://dendropy.org/")
     (synopsis "Library for phylogenetics and phylogenetic computing")
     (description
