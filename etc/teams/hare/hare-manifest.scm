@@ -27,7 +27,7 @@
   (map package->manifest-entry
        (fold-packages
          (lambda (package lst)
-           (if (or (eq? 'zig (build-system-name (package-build-system package)))
+           (if (or (eq? 'hare (build-system-name (package-build-system package)))
                    (string=? "hare" (package-name package)))
                (cons package lst)
              lst))
