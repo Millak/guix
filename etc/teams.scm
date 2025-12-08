@@ -15,6 +15,7 @@ exec $pre_inst_env_maybe guix repl -- "$0" "$@"
 ;;; Copyright © 2025 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;; Copyright © 2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2025 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -696,6 +697,14 @@ GLib/GIO, GTK, GStreamer and Webkit."
                       "guix/import/go.scm"
                       "guix/scripts/import/go.scm"
                       "tests/import/go.scm")))
+
+(define-team hare
+  (team 'hare
+        #:name "Hare"
+        #:scope (list "gnu/packages/hare.scm"
+                      "gnu/packages/hare-xyz.scm"
+                      "guix/build-system/hare.scm"
+                      "guix/build/hare-build-system.scm")))
 
 (define-team haskell
   (team 'haskell
