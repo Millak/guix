@@ -21331,23 +21331,41 @@ sequence for paired-ended data, for which this information is not available.")
 (define-public checkm
   (package
     (name "checkm")
-    (version "1.1.3")
+    (version "1.2.4")
     (source
      (origin
        (method url-fetch)
-       (uri (pypi-uri "checkm-genome" version))
+       (uri (pypi-uri "checkm_genome" version))
        (sha256
-        (base32 "0i2nnki639hgjag17wlva2x0ymn37b4krqsf6akxddykhfbkdnkz"))))
+        (base32 "0wdjrz9v5cb6fa6rcd56v3x09yyffx18jjd9g8iw0i6i0lmw9abx"))))
     (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ;Some tests fail for unknown reasons.
-       #:phases (modify-phases %standard-phases
-                  (add-before 'check 'set-HOME
-                    (lambda _
-                      (setenv "HOME" "/tmp"))))))
-    (inputs (list python-dendropy python-matplotlib python-numpy python-pysam
-                  python-scipy))
-    (native-inputs (list python-setuptools python-wheel))
+     (list
+      #:test-flags
+      #~(list "-k" (string-append
+                    ;; AttributeError: 'BinStatistics' object has no attribute
+                    ;; '_BinStatistics__calculateCodingBases'
+                    "not testCodingBases"
+                    ;; KeyError: 'GC'
+                    " and not testGC"
+                    ;; AttributeError: 'BinStatistics' object
+                    ;; has no attribute
+                    ;; 'calculateScaffoldLengthStats'
+                    " and not testScaffoldLengthStats"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'set-HOME
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
+    (inputs
+     (list python-dendropy
+           python-matplotlib
+           python-numpy
+           python-pysam
+           python-scipy))
     (home-page "https://ecogenomics.github.io/CheckM/")
     (synopsis "Assess the quality of putative genome bins")
     (description
