@@ -695,6 +695,13 @@ DAEMON and to the current configuration variables."
                       "etc/guix-daemon.cil.in"
                       "guix-daemon.cil"))
 
+(define (apparmor-tunables source daemon)
+  "Return the AppArmor tunables file used by the guix and guix-daemon AppArmor
+profiles with its variables set."
+  (parameterized-file source daemon
+                      "etc/apparmor.d/tunables/guix.in"
+                      "apparmor-guix-tunables"))
+
 (define (systemd-file source daemon file)
   "Return the given systemd file from SOURCE parameterized for DAEMON."
   (parameterized-file source daemon
@@ -708,6 +715,12 @@ DAEMON and to the current configuration variables."
                    ,(file-append* source "/etc/completion/bash/guix"))
                   ("etc/bash_completion.d/guix-daemon"
                    ,(file-append* source "/etc/completion/bash/guix-daemon"))
+                  ("etc/apparmor.d/guix"
+                   ,(file-append* source "/etc/apparmor.d/guix"))
+                  ("etc/apparmor.d/guix-daemon"
+                   ,(file-append* source "/etc/apparmor.d/guix-daemon"))
+                  ("etc/apparmor.d/tunables/guix"
+                   ,(apparmor-tunables source daemon))
                   ("share/zsh/site-functions/_guix"
                    ,(file-append* source "/etc/completion/zsh/_guix"))
                   ("share/fish/vendor_completions.d/guix.fish"
