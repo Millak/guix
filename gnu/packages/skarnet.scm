@@ -120,29 +120,36 @@ complexity.")))
 (define-public s6
   (package
    (name "s6")
-   (version "2.13.1.0")
+   (version "2.13.2.0")
    (source
     (origin
      (method url-fetch)
      (uri (string-append "https://skarnet.org/software/s6/s6-"
                          version ".tar.gz"))
      (sha256
-      (base32 "0znfwb9yx12lyz5kaqylr4iy1ifnxc82vc670jpv0z4mab7i81mz"))))
+      (base32 "0icsz417mkld0v4bbgqwnj1nsyg2n2n32sa0j43bfsvi8a04n4f5"))))
    (build-system gnu-build-system)
    (inputs (list skalibs execline))
    (arguments
-    `(#:configure-flags (list
-                        (string-append "--with-sysdeps="
-                                       (assoc-ref %build-inputs "skalibs")
-                                       "/lib/skalibs/sysdeps"))
-      #:tests? #f                       ; no tests exist
-      #:phases
-      (modify-phases %standard-phases
-        (add-after 'install 'install-doc
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let* ((out (assoc-ref outputs "out"))
-                   (doc (string-append out "/share/doc/s6-" ,version)))
-              (copy-recursively "doc" doc)))))))
+    (list
+     #:configure-flags
+     #~(list (string-append "--with-sysdeps="
+                            (search-input-directory %build-inputs
+                                                    "/lib/skalibs/sysdeps"))
+             (string-append "--with-lib="
+                            (dirname (search-input-file %build-inputs
+                                                        "/lib/libskarnet.a")))
+             (string-append "--with-lib="
+                            (dirname (search-input-file %build-inputs
+                                                        "/lib/libexecline.a"))))
+     #:tests? #f ;no tests exist
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-after 'install 'install-doc
+           (lambda _
+             (copy-recursively "doc"
+                               (string-append #$output "/share/doc/s6-"
+                                              #$version)))))))
    (home-page "https://skarnet.org/software/s6")
    (license isc)
    (synopsis "Small suite of programs for process supervision")
