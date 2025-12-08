@@ -45,6 +45,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages pkg-config)
@@ -53,6 +54,7 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rust)
   #:use-module (gnu packages rust-apps)
@@ -163,37 +165,46 @@ This Python package wraps the Blosc library.")
 (define-public python-blosc2
   (package
     (name "python-blosc2")
-    (version "2.7.1")                   ;3.0.0 requires numpy>=1.25
+    (version "3.12.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "blosc2" version))
        (sha256
-        (base32 "1s4gpdf1hfbw5w3hpx0g8bfwjrws1b8wgmh7snafh5ivai0lvnrl"))))
+        (base32 "17z3byk0q79rf7j8nh4k0qls1mwdrlylgi85qayqirvk9df92bx4"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 8192 passed, 7466 deselected
       #:test-flags
-      #~(list "--pyargs" "blosc2")
+      ;; Network access is requited: OSError: Could not find a suitable TLS CA
+      ;; certificate bundle, invalid path: /etc/ssl/certs/ca-certificates.crt
+      #~(list "--deselect=tests/test_embed_store.py::test_with_remote"
+              "tests")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'configure
             (lambda _
               (setenv "USE_SYSTEM_BLOSC2" "ON"))))))
-    (inputs (list c-blosc2))
+    (native-inputs
+     (list cmake-minimal
+           pkg-config
+           python-cython
+           python-psutil
+           python-pytest
+           python-pytorch ;XXX: hard dependency to run tests
+           python-scikit-build-core
+           python-setuptools))
+    (inputs
+     (list c-blosc2))
     (propagated-inputs
      (list python-msgpack
            python-ndindex
            python-numexpr
            python-numpy
-           python-py-cpuinfo))
-    (native-inputs
-     (list cmake-minimal
-           pkg-config
-           python-cython
-           python-pytest
-           python-scikit-build
-           python-setuptools))
+           python-platformdirs
+           python-py-cpuinfo
+           python-requests))
     (home-page "https://github.com/blosc/python-blosc2")
     (synopsis "Python wrapper for the Blosc2 data compressor library")
     (description
