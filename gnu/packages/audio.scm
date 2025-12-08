@@ -4654,21 +4654,21 @@ tempo and pitch of an audio recording independently of one another.")
 (define-public rtmidi
   (package
     (name "rtmidi")
-    (version "5.0.0")
+    (version "6.0.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://www.music.mcgill.ca/~gary/rtmidi"
+              (uri (string-append "https://caml.music.mcgill.ca/~gary/rtmidi"
                                   "/release/rtmidi-" version ".tar.gz"))
               (file-name (string-append "rtmidi-" version ".tar.gz"))
               (sha256
                (base32
-                "1ff2yfq3k4l209fr71v3w98fpjjv1chs09vkbmxj03lcikahxns8"))))
+                "0nyvck6qlncbfpplgxspjk77fmi05w78ik0cf8039hj29gvcqq2r"))))
     (build-system gnu-build-system)
     (inputs
      (list alsa-lib jack-2))
     (native-inputs
      (list autoconf automake libtool pkg-config))
-    (home-page "https://www.music.mcgill.ca/~gary/rtmidi")
+    (home-page "https://caml.music.mcgill.ca/~gary/rtmidi")
     (synopsis "Cross-platform MIDI library for C++")
     (description
      "RtMidi is a set of C++ classes (RtMidiIn, RtMidiOut, and API specific
