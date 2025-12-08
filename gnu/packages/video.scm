@@ -4655,16 +4655,16 @@ inputs and applications using PipeWire.")
 (define-public obs-shaderfilter
   (package
     (name "obs-shaderfilter")
-    (version "2.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/exeldro/obs-shaderfilter")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1kqa8323gcnyqjcya4ynhwvd38y0xsxvxndzndpmg18q88svyiq8"))))
+    (version "2.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/exeldro/obs-shaderfilter")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0cxk8aiiiamhg8r0rzv8lihrzjiid2g03ib68dn6xmskr367dhs0"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -4674,28 +4674,12 @@ inputs and applications using PipeWire.")
       #:configure-flags
       #~(list (string-append "-DLIBOBS_INCLUDE_DIR="
                              #$(this-package-input "obs") "/lib")
-              "-DBUILD_OUT_OF_TREE=On"
-              "-Wno-dev")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'fix-effects
-            (lambda _
-              (for-each
-               (lambda (directory)
-                 (mkdir-p
-                  (string-append
-                   #$output "/share/obs/obs-plugins/obs-shaderfilter"))
-                 (rename-file
-                  (string-append
-                   #$output "/data/obs-plugins/obs-shaderfilter/" directory)
-                  (string-append
-                   #$output "/share/obs/obs-plugins/obs-shaderfilter/"
-                   directory)))
-               '("examples" "textures")))))))
+              "-DBUILD_OUT_OF_TREE=On" "-Wno-dev")))
     (inputs (list obs qtbase-5 simde))
     (home-page "https://github.com/exeldro/obs-shaderfilter")
     (synopsis "OBS filter for applying an arbitrary shader to a source")
-    (description "Plugin for OBS Studio which is intended to allow users to
+    (description
+     "Plugin for OBS Studio which is intended to allow users to
 apply their own shaders to OBS sources.  This theoretically makes possible
 some simple effects like drop shadows that can be implemented strictly in
 shader code.")
