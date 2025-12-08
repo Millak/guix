@@ -1260,6 +1260,60 @@ over FastCGI.  It hopes to provide clean CGI support to Nginx (and other web
 servers that may need it).")
       (license license:expat))))
 
+(define-public sogogi
+  ;; Using the latest version that is compatible with our packaged version
+  ;; of go-github-com-emersion-go-webdav.  We can update to the latest release
+  ;; once go-github-com-emersion-go-webdav is upgraded.
+  (let ((commit "afabb59eb615853a271c2af8cca03b60a6ca850e")
+        (revision "0"))
+    (package
+      (name "sogogi")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://codeberg.org/emersion/sogogi.git")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "09pi493xz1nkjd1n05nh09whv1shy0mxxy9p56fjh6r87l5b8dnj"))
+         (modules '((guix build utils)))
+         ;; Update import path of go-scfg, see:
+         ;; <https://codeberg.org/emersion/sogogi/commit/e6fd81c>.
+         (snippet '(substitute* "config.go"
+                    (("git.sr.ht/~emersion/go-scfg")
+                     "codeberg.org/emersion/go-scfg")))))
+      (build-system go-build-system)
+      (arguments
+       (list
+        #:install-source? #f
+        #:import-path "codeberg.org/emersion/sogogi"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'install-man-page
+              (lambda* (#:key import-path #:allow-other-keys)
+                (let ((man (string-append #$output "/share/man/man")))
+                  (mkdir-p (string-append man "1"))
+                  (with-input-from-file
+                      (string-append "src/" import-path "/doc/sogogi.1.scd")
+                    (lambda _
+                      (with-output-to-file (string-append man "1/sogogi.1")
+                        (lambda _
+                          (invoke "scdoc")))))))))))
+      (native-inputs
+       (list go-codeberg-org-emersion-go-scfg
+             go-github-com-emersion-go-webdav
+             scdoc))
+      (home-page "https://codeberg.org/emersion/sogogi")
+      (synopsis "Minimalistic WebDav server implementation")
+      (description
+       "This package provides a WebDAV file server based on
+@code{github.com/emersion/go-webdav}.  The server exposes a configured local
+filesystem to remote users via HTTP and supports defining access rights
+on a per-user basis.")
+      (license license:agpl3))))
+
 (define-public starman
   (package
     (name "starman")
