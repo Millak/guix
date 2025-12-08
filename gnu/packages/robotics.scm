@@ -22,6 +22,7 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
+  #:use-module (guix gexp)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages base)
   #:use-module (gnu packages cpp)
@@ -72,3 +73,34 @@ hundred times faster than real-time.")
       ;; citation, but that sentence is written as not being part of the
       ;; license (fortunately).
       (license license:gpl2+))))
+
+(define-public fusion
+  (package
+    (name "fusion")
+    (version "1.2.9")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/xioTechnologies/Fusion")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0k5p9fc3zg49c9l8cfm08sgnzwkbz2brv7yfwsly2yfipl38w6xx"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda _ (install-file "Fusion/libFusion.so"
+                                    (string-append #$output "/lib")))))))
+    (home-page "https://github.com/xioTechnologies/Fusion")
+    (synopsis "Sensor fusion library for embedded systems")
+    (description "Fusion is a sensor fusion library implementing the Attitude
+and Heading Reference System (AHRS) algorithm, which combines available
+gyroscope, accelerometer, and magnetometer data into a single measurement of
+orientation relative to the Earth.")
+    (license license:expat)))
