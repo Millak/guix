@@ -4551,16 +4551,15 @@ Looking Glass.")
 (define-public obs-move-transition
   (package
     (name "obs-move-transition")
-    (version "3.0.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/exeldro/obs-move-transition")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0kni1a8zqqbgx5mmaw4k4chswsy0i9qk89zcbg58mvspz9zzv4id"))))
+    (version "3.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/exeldro/obs-move-transition/releases/download/"
+             version "/move-transition-" version "-source.tar.xz"))
+       (sha256
+        (base32 "19p074vynv3a7zp97gck9chglryp15vybcs31an6bz8900bcz0qp"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -4570,9 +4569,9 @@ Looking Glass.")
       #:configure-flags
       #~(list (string-append "-DLIBOBS_INCLUDE_DIR="
                              #$(this-package-input "obs") "/lib")
-              "-DBUILD_OUT_OF_TREE=On"
+              "-DBUILD_OUT_OF_TREE=On" ;build outside of OBS source tree
               "-Wno-dev")))
-    (inputs (list obs qtbase-5 simde))
+    (inputs (list obs qtbase simde))
     (home-page "https://github.com/exeldro/obs-move-transition")
     (synopsis "Move transition for OBS Studio")
     (description "Plugin for OBS Studio to move source to a new position
