@@ -479,7 +479,10 @@ editor (console only)")
                      "-B" (string-append
                            (dirname
                             (search-input-file inputs "/lib/libgccjit.so"))
-                           "/gcc")))))))
+                           "/gcc")))))
+                (substitute* "lisp/emacs-lisp/disass.el"
+                  (("\"objdump\"")
+                   (string-append "\"" (search-input-file inputs "/bin/objdump") "\"")))))
             (add-after 'build 'build-trampolines
               (lambda* (#:key make-flags #:allow-other-keys)
                 (apply invoke "make" "trampolines" make-flags)))
