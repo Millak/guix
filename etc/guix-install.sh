@@ -17,6 +17,7 @@
 # Copyright © 2024 Tomas Volf <~@wolfsden.cz>
 # Copyright © 2024 Richard Sent <richard@freakingpenguin.com>
 # Copyright © 2025 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+# Copyright © 2025 Noé Lopez <noelopez@free.fr>
 #
 # This file is part of GNU Guix.
 #
@@ -918,6 +919,64 @@ sys_maybe_setup_selinux()
     restorecon -R /gnu /var/guix
 }
 
+sys_maybe_setup_apparmor()
+{
+    if ! [ -f /sys/module/apparmor/parameters/enabled ]
+    then
+        return
+    fi
+
+    if ! command -v apparmor_parser &> /dev/null
+    then
+        return
+    fi
+
+    prompt_yes_no "Install AppArmor profile that might be required to run guix-daemon?" \
+        || return 0
+
+    local var_guix=/var/guix/profiles/per-user/root/current-guix
+    local apparmor_sources="${var_guix}/etc/apparmor.d/"
+
+    if ! [ -d "$apparmor_sources" ]
+    then
+        _err "This version of Guix doesn’t contain AppArmor profiles."
+        return
+    fi
+
+    cp -f -t /etc/apparmor.d/tunables "$apparmor_sources/tunables/guix"
+    cp -f -t /etc/apparmor.d "$apparmor_sources/guix-daemon"
+    cp -f -t /etc/apparmor.d "$apparmor_sources/guix"
+    apparmor_parser --warn=all -r /etc/apparmor.d/guix-daemon
+    apparmor_parser --warn=all -r /etc/apparmor.d/guix
+
+    _msg_pass "apparmor profiles installed and loaded"
+}
+
+sys_delete_apparmor_profiles()
+{
+    # Not a big deal if the apparmor_parser commands fail as they only apply
+    # for the current boot, we still want to go on and remove the files.
+    if [ -f "/etc/apparmor.d/guix" ]
+    then
+        _msg_info "removing /etc/apparmor.d/guix"
+        apparmor_parser -R /etc/apparmor.d/guix || true
+        rm -f "/etc/apparmor.d/guix"
+    fi
+
+    if [ -f "/etc/apparmor.d/guix-daemon" ]
+    then
+        _msg_info "removing /etc/apparmor.d/guix-daemon"
+        apparmor_parser -R /etc/apparmor.d/guix-daemon || true
+        rm -f "/etc/apparmor.d/guix-daemon"
+    fi
+
+    if [ -f "/etc/apparmor.d/tunables/guix" ]
+    then
+        _msg_info "removing /etc/apparmor.d/tunables/guix"
+        rm -f "/etc/apparmor.d/tunables/guix"
+    fi
+}
+
 sys_delete_init_profile()
 {
     _msg_info "removing /etc/profile.d/zzz-guix.sh"
@@ -1020,6 +1079,7 @@ main_install()
     sys_create_store "${GUIX_BINARY_FILE_NAME}" "${tmp_path}"
     sys_create_build_user
     sys_maybe_setup_selinux
+    sys_maybe_setup_apparmor
     sys_enable_guix_daemon
     sys_authorize_build_farms
     sys_create_init_profile
@@ -1053,6 +1113,7 @@ main_uninstall()
     sys_delete_guix_daemon
     # stop people from accessing their profiles.
     sys_delete_user_profiles
+    sys_delete_apparmor_profiles
     # kill guix off all the guts of guix
     sys_delete_store
     # clean up the system
