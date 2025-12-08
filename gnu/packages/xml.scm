@@ -1127,6 +1127,19 @@ different Unicode encodings which happen automatically during
 parsing/saving.")
     (license license:expat)))
 
+(define-public pugixml-next
+  (package
+    (inherit pugixml)
+    (name "pugixml-next")
+    (version "1.15")
+    (source
+     (origin
+      (method url-fetch)
+      (uri (string-append "https://github.com/zeux/pugixml/releases/download/v"
+                          version "/pugixml-" version ".tar.gz"))
+      (sha256
+       (base32 "06ji1pcm74y7i0gxs5fl8nqxsjq6nl9h36pbq8hv8gvhz9bxwnk5"))))))
+
 (define-public python-pyxb-x
   (package
     (name "python-pyxb-x")
