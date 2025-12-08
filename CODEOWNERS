@@ -193,6 +193,11 @@ guix/import/go\.scm                                @guix/go
 guix/scripts/import/go\.scm                        @guix/go
 tests/import/go\.scm                               @guix/go
 
+gnu/packages/hare\.scm                             @guix/hare
+gnu/packages/hare-xyz\.scm                         @guix/hare
+guix/build-system/hare\.scm                        @guix/hare
+guix/build/hare-build-system\.scm                  @guix/hare
+
 gnu/packages/dhall\.scm                            @guix/haskell
 gnu/packages/haskell(-.+|)\.scm$                   @guix/haskell
 gnu/packages/purescript\.scm                       @guix/haskell
