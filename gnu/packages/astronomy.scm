@@ -9896,16 +9896,7 @@ packages for HST.")
                           "test_update_legacy_file"
                           "test_update_stis_asn"
                           "test_update_waiver_wfpc2")
-                    " and not "))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; XXX: Build and check phases passed just fine, it looks like
-                ;; a blind pin to 2+ version, see:
-                ;; <https://github.com/spacetelescope/stwcs/releases/tag/1.7.4>.
-                (("numpy>=2.0") "numpy")))))))
+                    " and not "))))
     (native-inputs
      (list nss-certs-for-test
            python-pytest
