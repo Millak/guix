@@ -99,6 +99,16 @@ programming language. For general Hare programming, see the @code{hare}
 package.")
     (license license:gpl3)))
 
+(define $HAREPATH
+  (search-path-specification
+    (variable "HAREPATH")
+    (files '("share/hare"))))
+
+(define $HARE_TOOLPATH
+  (search-path-specification
+    (variable "HARE_TOOLPATH")
+    (files '("libexec/hare"))))
+
 (define-public hare
   (package
     (name "hare")
@@ -154,12 +164,7 @@ package.")
                              (tc "x86_64-linux-gnu")))))
     (native-inputs (list harec qbe scdoc))
     (supported-systems %hare-supported-systems)
-    (search-paths (list (search-path-specification
-                          (variable "HAREPATH")
-                          (files '("share/hare")))))
-    (native-search-paths (list (search-path-specification
-                                 (variable "HARE_TOOLPATH")
-                                 (files '("libexec/hare")))))
+    (native-search-paths (list $HAREPATH $HARE_TOOLPATH))
     (home-page "https://harelang.org")
     (synopsis "Harelang compiler tooling and stdlib")
     (description "Hare is a simple systems programming language, featuring
