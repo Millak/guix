@@ -23,6 +23,7 @@
 (define-module (gnu packages skarnet)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
+  #:use-module (guix gexp)
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -31,14 +32,14 @@
 (define-public skalibs
   (package
     (name "skalibs")
-    (version "2.14.3.0")
+    (version "2.14.4.0")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "https://skarnet.org/software/skalibs/skalibs-"
                           version ".tar.gz"))
       (sha256
-       (base32 "09y4cqq92n0cdmzx196bymlkvyf8n8iwdkkal4phd6xhr5caajm1"))))
+       (base32 "1980mr5rydimhixxkzkd60q1xchl9ji51zcjixrj1jcchihn4qhf"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f                      ; no tests exist
