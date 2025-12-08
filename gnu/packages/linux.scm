@@ -10041,9 +10041,41 @@ software uses @file{cxi_prov_hw.h} from this package.")
     (license (list license:gpl2 license:bsd-2)))) ;dual-licensed
 
 (define-public cxi-driver
+  (package
+    (name "cxi-driver")
+    (version "13.0.0")
+    (home-page "https://github.com/HewlettPackard/shs-cxi-driver")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url home-page)
+              (commit (string-append "release/shs-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1md6ammah7ywk5k9gsxix945w5498hpdfwzr603aiirlz2x4m4wh"))))
+    ;; TODO: Actually build the Linux driver.
+    (build-system copy-build-system)
+    (arguments
+     (list #:install-plan #~'(("include" "include"))))
+    (propagated-inputs (list cassini-headers))
+    (synopsis "Linux driver for the Cassini/Slingshot interconnect")
+    (description
+     "This is the Linux driver for the Cray/HPE Cassini 1 and 2 high-speed
+network interconnect (aka. Slingshot), and its Ethernet driver.  It includes
+the @file{uapi/misc/cxi.h} C header file for use by user-land software.
+
+Currently the Linux driver itself is missing from this package.")
+    (license license:gpl2+)))
+
+(define-public cxi-driver-for-libfabric-1
+  ;; This old version defines constants such as 'CXI_MAP_IOVA_ALLOC' that
+  ;; libfabric 1.22.0 relies on.
   (let ((commit "5f0ec0ead6ef3f98542a2ef5e76b89d14dd22150")
         (revision "0"))
     (package
+      (inherit cxi-driver)
       (name "cxi-driver")
       (version (git-version "1.0.0"               ;per .spec file
                             revision commit))
@@ -10055,20 +10087,7 @@ software uses @file{cxi_prov_hw.h} from this package.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "19cly014ihgdidrc1aki2xsbfhpc0g73v0vxcky8r27xza7rz5bg"))))
-      ;; TODO: Actually build the Linux driver.
-      (build-system copy-build-system)
-      (arguments
-       (list #:install-plan #~'(("include" "include"))))
-      (propagated-inputs (list cassini-headers))
-      (synopsis "Linux driver for the Cassini/Slingshot interconnect")
-      (description
-       "This is the Linux driver for the Cray/HPE Cassini 1 and 2 high-speed
-network interconnect (aka. Slingshot), and its Ethernet driver.  It includes
-the @file{uapi/misc/cxi.h} C header file for use by user-land software.
-
-Currently the Linux driver itself is missing from this package.")
-      (license license:gpl2+))))
+           "19cly014ihgdidrc1aki2xsbfhpc0g73v0vxcky8r27xza7rz5bg")))))))
 
 (define-public libcxi
   (package
@@ -10195,7 +10214,10 @@ libraries, which are often integrated directly into libfabric.")
         (string-append "https://github.com/ofiwg/libfabric/releases/download/v"
                        version "/libfabric-" version ".tar.bz2"))
        (sha256
-        (base32 "1znmw83rmippv0fwz0x7lgylfk17dr9ckll8lrm4z7kclspnqpj8"))))))
+        (base32 "1znmw83rmippv0fwz0x7lgylfk17dr9ckll8lrm4z7kclspnqpj8"))))
+    (inputs
+     (modify-inputs (package-inputs libfabric)
+       (append cxi-driver-for-libfabric-1)))))
 
 (define-public psm
   (package
