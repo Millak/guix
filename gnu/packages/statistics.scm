@@ -1313,16 +1313,27 @@ new data from those PDFs.")
      (list
       #:test-flags
       ;; NOTE: Tests take 15-25min to complete on 16 threads and much longer
-      ;; in single one, consider to try enabling --numprocesses option.
-      #~(list ;; "--numprocesses" (number->string (parallel-job-count))
-              ;; This accuracy test fails because 0.012 is not < 0.01.
-              "-k" "not test_weibull_with_delayed_entries")))
+      ;; in single one, so enabling --numprocesses option.
+      #~(list "lifelines/tests"
+              "--numprocesses" (number->string (min 16 (parallel-job-count)))
+              "-k" (string-join
+                    (list
+                     ;; This accuracy test fails because 0.012 is not < 0.01.
+                     "not test_weibull_with_delayed_entries"
+                     ;; These checks are too expensive, last for ages.
+                     "test_univariate_fitters_ok_if_given_timedelta"
+                     "test_predict_methods_returns_a_scalar_or_a_array_depending_on_input"
+                     "test_cumulative_density_ci_is_ordered_correctly"
+                     (string-append
+                      "test_univariate_fitters_okay_if_"
+                      "given_boolean_col_with_object_dtype"))
+                    " and not "))))
     (native-inputs
      (list python-dill
            python-flaky
            python-joblib
            python-pytest
-           ;; python-pytest-xdist
+           python-pytest-xdist          ;see NOTE above
            python-setuptools
            python-wheel))
     (propagated-inputs
