@@ -24875,7 +24875,6 @@ example the @code{windowmaker} or @code{openbox} packages---preferably
 by adding it to the @code{packages} field of your operating system
 definition (@pxref{operating-system Reference, system-wide packages}).
 
-@anchor{wayland-gdm}
 GDM also supports Wayland: it can itself use Wayland instead of X11 for
 its user interface, and it can also start Wayland sessions.  Wayland
 support is enabled by default.  To disable it, set @code{wayland?} to
@@ -26387,16 +26386,6 @@ For example, they may elevate privileges on a limited number of
 special-purpose system interfaces and programs.  This allows backlight
 adjustment helpers, power management utilities, screen lockers, and
 other integrated functionality to work as expected.
-
-The desktop environments in Guix use the Xorg display server by
-default.  If you'd like to use the newer display server protocol
-called Wayland, you need to enable Wayland support in GDM
-(@pxref{wayland-gdm}).  Another solution is to use the
-@code{sddm-service} instead of GDM as the graphical login manager.
-You should then select the ``GNOME (Wayland)'' session in SDDM@.
-Alternatively you can also try starting GNOME on Wayland manually from a
-TTY with the command ``XDG_SESSION_TYPE=wayland exec dbus-run-session
-gnome-session``.  Currently only GNOME has support for Wayland.
 
 @defvar gnome-desktop-service-type
 This is the type of the service that adds the @uref{https://www.gnome.org,
