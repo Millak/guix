@@ -4459,68 +4459,6 @@ and objects, closures and structs.  This currently does not support
 serializing continuations or delimited continuations.")
     (license license:lgpl2.0+)))
 
-(define-public python-on-guile
-  (package
-    (name "python-on-guile")
-    (version "1.2.3.5")
-    (home-page "https://gitlab.com/python-on-guile/python-on-guile")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page)
-                                  (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "05xrvcj6a4gzq1ybyin270qz8wamgc7w2skyi9iy6hkpgdhxy8vf"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:parallel-build? #f                   ;not supported
-       #:make-flags '("GUILE_AUTO_COMPILE=0") ;to prevent guild warnings
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'chdir
-           (lambda _ (chdir "modules") #t))
-         (add-after 'chdir 'augment-GUILE_LOAD_PATH
-           (lambda _
-             ;; TODO: It would be better to patch the Makefile.
-             (setenv "GUILE_LOAD_PATH"
-                     (string-append ".:"
-                                    (getenv "GUILE_LOAD_PATH")))))
-         (add-after 'install 'wrap
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Wrap the 'python' executable so it can find its
-             ;; dependencies and own modules.
-             (let* ((out (assoc-ref outputs "out"))
-                    (guile-version ,(version-major+minor
-                                     (package-version guile-3.0)))
-                    (scm (string-append out "/share/guile/site/"
-                                        guile-version))
-                    (ccache (string-append out "/lib/guile/" guile-version
-                                           "/site-ccache"))
-                    (load-path (string-join
-                                (cons scm
-                                      ;; XXX: cdr because we augment it above.
-                                      (cdr (string-split
-                                            (getenv "GUILE_LOAD_PATH") #\:)))
-                                ":"))
-                    (compiled-path (string-append
-                                    ccache ":"
-                                    (getenv "GUILE_LOAD_COMPILED_PATH"))))
-               (wrap-program (string-append out "/bin/python")
-                 `("GUILE_LOAD_PATH" ":" prefix
-                   (,load-path))
-                 `("GUILE_LOAD_COMPILED_PATH" ":" prefix
-                   (,compiled-path)))))))))
-    (inputs
-     (list bash-minimal guile-3.0 guile-persist guile-readline guile-stis-parser))
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
-    (synopsis "Python implementation in Guile")
-    (description
-     "This package allows you to compile a Guile Python file to any target
-from @code{tree-il}.")
-    (license license:lgpl2.0+)))
-
 (define-public guile-hoot
   (package
     (name "guile-hoot")
