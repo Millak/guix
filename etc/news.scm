@@ -46,6 +46,7 @@
         (title
          (en "Linux-libre 6.16 removed from Guix")
          (de "Linux-libre 6.16 wurde aus Guix entfernt")
+         (pt "Linux-libre 6.16 removido do Guix")
          (zh "Linux-libre 6.16 已从 Guix 中移除"))
         (body
          (en "The linux-libre 6.16 kernel series has been removed from Guix, as
@@ -54,6 +55,8 @@ default.")
          (de "Die Versionsreihe 6.16 des Linux-libre-Kernels wurde aus GNU Guix
 entfernt, weil sie von dessen Anbieter nicht mehr unterstützt wird.
 Kernel-Versionsreihe 6.17 ist jetzt vorgegeben.")
+         (pt "A série 6.16 do kernel linux-libre foi removida do Guix, dado
+que não é mais suportada pelo fornecedor.  A série 6.17 é o padrão atual")
          (zh "由于上游不再支持，GNU Guix 已移除 6.16 系列的 linux-libre 内核。6.17
 内核系列现已成为默认版本。")))
 
