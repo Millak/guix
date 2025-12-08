@@ -169,32 +169,7 @@
                   (for-each delete-file
                             (append (find-files "." "\\.elc$")
                                     (find-files "." "loaddefs\\.el$")
-                                    (find-files "eshell" "^esh-groups\\.el$")))
-
-                  ;; Make sure Tramp looks for binaries in the right places on
-                  ;; remote Guix System machines, where 'getconf PATH' returns
-                  ;; something bogus.
-                  (substitute* "net/tramp.el"
-                    ;; Patch the line after "(defcustom tramp-remote-path".
-                    (("\\(tramp-default-remote-path")
-                     (format
-                      #f "(tramp-default-remote-path ~s ~s ~s ~s ~s ~s ~s "
-                      "/run/privileged/bin"
-                      "~/.guix-profile/bin" "~/.guix-profile/sbin"
-                      "~/.guix-home/bin" "~/.guix-home/sbin"
-                      "/run/current-system/profile/bin"
-                      "/run/current-system/profile/sbin")))
-
-                  ;; Make sure Man looks for C header files in the right
-                  ;; places.
-                  (substitute* "man.el"
-                    (("\"/usr/local/include\"" line)
-                     (string-join
-                      (list line
-                            "\"~/.guix-profile/include\""
-                            "\"~/.guix-home/include\""
-                            "\"/run/current-system/profile/include\"")
-                      " ")))))))
+                                    (find-files "eshell" "^esh-groups\\.el$")))))))
     (outputs '("out" "doc"))
     (build-system gnu-build-system)
     (arguments
@@ -296,6 +271,31 @@
                    (if replacement
                        (string-append "\"" replacement "\"")
                        all))))
+              ;; Make sure Tramp looks for binaries in the right places on
+              ;; remote Guix System machines, where 'getconf PATH' returns
+              ;; something bogus.
+              (substitute* "lisp/net/tramp.el"
+                ;; Patch the line after "(defcustom tramp-remote-path".
+                (("\\(tramp-default-remote-path")
+                 (format
+                  #f "(tramp-default-remote-path ~s ~s ~s ~s ~s ~s ~s "
+                  "/run/privileged/bin"
+                  "~/.guix-profile/bin" "~/.guix-profile/sbin"
+                  "~/.guix-home/bin" "~/.guix-home/sbin"
+                  "/run/current-system/profile/bin"
+                  "/run/current-system/profile/sbin")))
+
+              ;; Make sure Man looks for C header files in the right
+              ;; places.
+              (substitute* "lisp/man.el"
+                (("\"/usr/local/include\"" line)
+                 (string-join
+                  (list line
+                        "\"~/.guix-profile/include\""
+                        "\"~/.guix-home/include\""
+                        "\"/run/current-system/profile/include\"")
+                  " ")))
+
               ;; match ".gvfs-fuse-daemon-real" and ".gvfsd-fuse-real"
               ;; respectively when looking for GVFS processes.
               (substitute* "lisp/net/tramp-gvfs.el"
