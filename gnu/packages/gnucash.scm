@@ -301,43 +301,53 @@ applications and libraries.  It is used by AqBanking.")
     (license license:lgpl2.1+)))
 
 (define-public aqbanking
-  (let ((attachid "531")) ;; file attachid changes for each version
-    (package
-      (name "aqbanking")
-      (version "6.6.0")
-      (source
-       (origin
-         (method url-fetch)
-         (uri (string-append "https://www.aquamaniac.de/rdm/attachments/"
-                             "download/" attachid "/aqbanking-" version ".tar.gz"))
-         (sha256
-          (base32 "1yqbwh91gwwqgiv8cf15rc9mxcdlikhbr5qknaqp5bavp63l8qrp"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(;; Parallel building fails because aqhbci is required before it's
-         ;; built.
-         #:parallel-build? #f
-         #:phases
-         (modify-phases %standard-phases
-           ;; Embed the package version instead of the build date
-           (add-after 'unpack 'use-version-instead-of-date
-             (lambda _
-               (substitute*
-                   "src/libs/plugins/backends/aqhbci/header.xml.in"
-                 (("@DATETIME@") ,version)))))))
-      (propagated-inputs
-       (list gwenhywfar))
-      (inputs
-       (list gmp xmlsec gnutls))
-      (native-inputs
-       (list pkg-config gettext-minimal libltdl))
-      (home-page "https://www.aquamaniac.de")
-      (synopsis "Interface for online banking tasks")
-      (description
-       "AqBanking is a modular and generic interface to online banking tasks,
+  (package
+    (name "aqbanking")
+    (version "6.8.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.aquamaniac.de/git/aqbanking")
+              (commit version)))
+       (sha256
+        (base32
+         "0ys5r8lbr1nvd14fr82rs6c16iqfpd1hdz5l9s8l9biy2sq8jh0z"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; Parallel building fails because aqhbci is required before it's
+      ;; built.
+      #:parallel-build? #f
+      #:phases
+      #~(modify-phases %standard-phases
+        (add-before 'bootstrap 'make-cvs
+          (lambda _
+            (invoke "make" "-fMakefile.cvs")))
+        ;; Embed the package version instead of the build date
+        (add-after 'make-cvs 'use-version-instead-of-date
+          (lambda _
+            (substitute*
+                "src/libs/plugins/backends/aqhbci/header.xml.in"
+              (("@DATETIME@") #$version))))
+        (add-before 'build 'build-types
+          (lambda _
+            (invoke "make" "typedefs")
+            (invoke "make" "typefiles"))))))
+    (propagated-inputs
+     (list gwenhywfar))
+    (inputs
+     (list gmp xmlsec gnutls))
+    (native-inputs
+     (list autoconf automake gettext-minimal libltdl libtool pkg-config))
+    (home-page "https://www.aquamaniac.de")
+    (synopsis "Interface for online banking tasks")
+    (description
+     "AqBanking is a modular and generic interface to online banking tasks,
 financial file formats (import/export) and bank/country/currency information.
 AqBanking uses backend plugins to actually perform the online tasks.  HBCI,
 OFX DirectConnect, YellowNet, GeldKarte, and DTAUS discs are currently
 supported.  AqBanking is used by GnuCash, KMyMoney, and QBankManager.")
-      ;; AqBanking is licensed under the GPLv2 or GPLv3
-      (license (list license:gpl2 license:gpl3)))))
+    ;; AqBanking is licensed under the GPLv2 or GPLv3
+    (license (list license:gpl2 license:gpl3))))
