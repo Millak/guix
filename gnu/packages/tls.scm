@@ -1200,6 +1200,21 @@ ciphers such as ChaCha20, Curve25519, NTRU, and Blake2b.")
     (home-page "https://www.wolfssl.com/")
     (license license:gpl2+))) ; Audit
 
+(define-public wolfssl-for-rpcs3
+  (package/inherit wolfssl
+    (name "wolfssl-for-rpcs3")
+    (arguments
+     (substitute-keyword-arguments (package-arguments wolfssl)
+       ((#:configure-flags flags ''())
+        #~(cons* "--enable-des3"
+                 "--enable-pwdbased"
+                 "--enable-fastmath"
+                 "--enable-opensslextra"
+                 "--disable-harden"
+                 "--enable-altcertchains"
+                 "--enable-writedup"
+                 #$flags))))))
+
 (define-public aws-lc
   (package
     (name "aws-lc")
