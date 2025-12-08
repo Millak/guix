@@ -235,23 +235,33 @@ clock synchronization.")))
 
 (define-public s6-rc
   (package
-   (name "s6-rc")
-   (version "0.5.5.0")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (string-append "https://skarnet.org/software/s6-rc/s6-rc-"
-                         version ".tar.gz"))
-     (sha256
-      (base32 "00fzn9vxmspds8hspz9spg0am9k91cl2bysr1ai61smcsfwg3df3"))))
+    (name "s6-rc")
+    (version "0.5.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://skarnet.org/software/s6-rc/s6-rc-" version
+                           ".tar.gz"))
+       (sha256
+        (base32 "0vjqfjjv317x9qyamdfgzy3vchwrj0519yav56nrkng80ml7y9w1"))))
     (build-system gnu-build-system)
     (inputs (list skalibs execline s6))
     (arguments
-     '(#:configure-flags (list
-                          (string-append "--with-sysdeps="
-                                         (assoc-ref %build-inputs "skalibs")
-                                         "/lib/skalibs/sysdeps"))
-       #:tests? #f))                    ; no tests exist
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-sysdeps="
+                             (search-input-directory %build-inputs
+                                                     "/lib/skalibs/sysdeps"))
+              (string-append "--with-lib="
+                             (dirname (search-input-file %build-inputs
+                                                         "/lib/libskarnet.a")))
+              (string-append "--with-lib="
+                             (dirname (search-input-file %build-inputs
+                                                         "/lib/libexecline.a")))
+              (string-append "--with-lib="
+                             (dirname (search-input-file %build-inputs
+                                                         "/lib/libs6.a"))))
+      #:tests? #f)) ;no tests exist
     (home-page "https://skarnet.org/software/s6-rc")
     (license isc)
     (synopsis "Service manager for s6-based systems")
