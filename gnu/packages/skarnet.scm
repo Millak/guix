@@ -276,7 +276,7 @@ environment.")))
 (define-public s6-portable-utils
   (package
    (name "s6-portable-utils")
-   (version "2.3.0.4")
+   (version "2.3.1.0")
    (source
     (origin
      (method url-fetch)
@@ -284,15 +284,19 @@ environment.")))
            "https://skarnet.org/software/s6-portable-utils/s6-portable-utils-"
            version ".tar.gz"))
      (sha256
-      (base32 "023bj28ix7mmsdwfgjj9fh9slycd7zjfq7r4sczfz0cir2v8gvld"))))
+      (base32 "1yc05azffdisbchsk2if1jxaya5l7kkvascpk7a15i72gal4l904"))))
     (build-system gnu-build-system)
     (inputs (list skalibs))
     (arguments
-     '(#:configure-flags (list
-                          (string-append "--with-sysdeps="
-                                         (assoc-ref %build-inputs "skalibs")
-                                         "/lib/skalibs/sysdeps"))
-       #:tests? #f))                    ; no tests exist
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-sysdeps="
+                             (search-input-directory %build-inputs
+                                                     "/lib/skalibs/sysdeps"))
+              (string-append "--with-lib="
+                             (dirname (search-input-file %build-inputs
+                                                         "/lib/libskarnet.a"))))
+      #:tests? #f)) ;no tests exist
     (home-page "https://skarnet.org/software/s6-portable-utils")
     (license isc)
     (synopsis "Tiny command-line Unix utilities")
