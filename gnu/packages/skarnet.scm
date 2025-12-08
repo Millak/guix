@@ -27,6 +27,8 @@
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module ((guix build utils)
+                #:select (search-input-file search-input-directory))
   #:use-module (guix build-system gnu))
 
 (define-public skalibs
@@ -67,36 +69,42 @@ and file system operations.  It is used by all skarnet.org software.")
 (define-public execline
   (package
     (name "execline")
-    (version "2.9.6.1")
+    (version "2.9.7.0")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "https://skarnet.org/software/execline/execline-"
                           version ".tar.gz"))
       (sha256
-       (base32 "1jp5y3w2db9d7yp17pcsvny656z0w2rywn9s9fnb2kfyy9i9v4bn"))))
+       (base32 "01q2gm8rh65b0jvslzqznvq3q6zx3cbgk02lxbc7hh4rzh71djbk"))))
     (build-system gnu-build-system)
     (inputs (list bash-minimal skalibs))
     (arguments
-     '(#:configure-flags (list
-                          (string-append "--with-sysdeps="
-                                         (assoc-ref %build-inputs "skalibs")
-                                         "/lib/skalibs/sysdeps"))
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch
-                    (lambda _
-                      ;; This umask makes the symlinks in lib readable on
-                      ;; i586-gnu
-                      (substitute* "tools/install.sh"
-                        (("umask 077") "umask 033"))))
-                  (add-after
-                   'install 'post-install
-                   (lambda* (#:key inputs outputs #:allow-other-keys)
-                    (let* ((out (assoc-ref outputs "out"))
-                           (bin (string-append out "/bin")))
-                      (wrap-program (string-append bin "/execlineb")
-                        `("PATH" ":" prefix (,bin)))))))
-       #:tests? #f))                    ; no tests exist
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-sysdeps="
+                             (search-input-directory %build-inputs
+                                                     "/lib/skalibs/sysdeps"))
+              (string-append "--with-lib="
+                             (dirname (search-input-file %build-inputs
+                                                         "/lib/libskarnet.a"))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch
+            (lambda _
+              ;; This umask makes the symlinks in lib readable on
+              ;; i586-gnu
+              (substitute* "tools/install.sh"
+                (("umask 077")
+                 "umask 033"))))
+
+          (add-after 'install 'post-install
+            (lambda _
+              (let ((bin (string-append #$output "/bin")))
+                (wrap-program (string-append bin "/execlineb")
+                  `("PATH" ":" prefix
+                    (,bin)))))))
+      #:tests? #f)) ;no tests exist
     (home-page "https://skarnet.org/software/execline/")
     (license isc)
     (synopsis "Non-interactive shell-like language with minimal overhead")
