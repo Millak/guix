@@ -1845,25 +1845,32 @@ between dataframe libraries.
 (define-public python-ndindex
   (package
     (name "python-ndindex")
-    (version "1.7")                     ;newer versions require a newer numpy
+    (version "1.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ndindex" version))
        (sha256
-        (base32 "1lpgsagmgxzsas7g8yiv6wmyss8q57w92h70fn11rnpadsvx16xz"))))
+        (base32 "048gc4pwvsyxkz7brph1fwmlgjd35alimvnb3248y91iy30i6q8g"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 121 passed, 1 deselected, 3 warnings
       #:test-flags
-      #~(list "-c" "/dev/null" ;avoid coverage
-              "-k" "not test_iter_indices_matmul"))) ; flaky
+      #~(list "--pyargs" "ndindex"
+              "-c" "/dev/null" ;avoid coverage
+              "-k" "not test_iter_indices_matmul") ; flaky
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "ndindex"))))))
     (native-inputs
      (list python-cython
            python-numpy
            python-pytest
            python-setuptools
-           python-wheel))
+           python-sympy))
     (home-page "https://quansight-labs.github.io/ndindex/")
     (synopsis "Python library for manipulating indices of ndarrays")
     (description "This package provides a Python library for manipulating
