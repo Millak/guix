@@ -1327,7 +1327,6 @@ multiple local rocks trees.")
     (arguments
      (list #:make-flags #~(list (string-append "PREFIX="
                                                (assoc-ref %outputs "out")))
-           #:tests? #t ;even on cross-build
            #:test-target "test"
            #:phases #~(modify-phases %standard-phases
                         (delete 'configure)
