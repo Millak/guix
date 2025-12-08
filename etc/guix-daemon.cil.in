@@ -455,6 +455,27 @@
          vnc_port_t
          (tcp_socket (name_bind)))
 
+  ;; 'guix gc' needs to go through /proc entries for all processes that are
+  ;; running.  Strictly speaking, it means guix-daemon needs access to all
+  ;; process types in the SELinux policy.  In practice, only processes from
+  ;; programs in the /gnu/store are relevant for finding roots for garbage
+  ;; collection.  Since Guix currently doesn't install any SELinux policy for
+  ;; its packages, we can assume that all the processes it needs to access run
+  ;; as unconfined_t.
+  ;;
+  ;; FIXME: This doesn't stop 'guix gc' from generating a lot of unnecessary
+  ;; AVC denied audit messages.  Perhaps guix-daemon could test whether it has
+  ;; access to the proc entry before trying to access it?
+  (allow guix_daemon_t
+         unconfined_t
+         (dir (search)))
+  (allow guix_daemon_t
+         unconfined_t
+         (file (read)))
+  (allow guix_daemon_t
+         unconfined_t
+         (lnk_file (read)))
+
   ;; I guess sometimes it needs random numbers
   (allow guix_daemon_t
          random_device_t
