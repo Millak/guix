@@ -3598,17 +3598,21 @@ in fast modern Fortran.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 17 passed, 58 skipped, 1 deselected, 1 xfailed, 25 warnings
+      #:test-flags
+      #~(list "--pyargs" "casa_formats_io"
+              ;; AttributeError: module 'numpy' has no attribute 'product'
+              "-k" "not test_ms_tables[.]")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'build-extensions
+          (add-before 'check 'remove-local-source
             (lambda _
-              (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+              (delete-file-recursively "casa_formats_io"))))))
     (native-inputs
      (list python-pytest
-           python-pytest-cov
            python-pytest-openfiles
            python-setuptools
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-click
