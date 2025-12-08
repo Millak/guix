@@ -105,6 +105,19 @@ over IRC, instant messaging, network games, and most server software.")
     (license
      (license:x11-style "file://LICENSE" "See 'LICENSE' file in the distribution"))))
 
+(define-public miniupnpc-next
+  (package
+    (inherit miniupnpc)
+    (name "miniupnpc-next")
+    (version "2.3.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://miniupnp.tuxfamily.org/files/"
+                           "miniupnpc-" version ".tar.gz"))
+       (sha256
+        (base32 "06mx6kk42px0f08k5pazmjawbj19gnpg3pwxrj4c1mjac7x0lanm"))))))
+
 (define-public libupnp
   (package
     (name "libupnp")
