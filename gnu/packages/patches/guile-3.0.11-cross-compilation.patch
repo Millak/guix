@@ -1,0 +1,29 @@
+Fix cross-compilation of Guile 3.0.11:
+
+  https://codeberg.org/guile/guile/issues/88
+
+--- a/module/system/base/target.scm
++++ b/module/system/base/target.scm
+@@ -45,15 +45,13 @@
+ ;;;
+ 
+ ;; Hacky way to get native pointer size without having to load (system
+-;; foreign).
+-(define-syntax %native-word-size
+-  (lambda (stx)
+-    (syntax-case stx ()
+-      (id (identifier? #'id)
+-          (cond
+-           ((< most-positive-fixnum (ash 1 32)) 4)
+-           ((< most-positive-fixnum (ash 1 64)) 8)
+-           (else (error "unexpected!" most-positive-fixnum)))))))
++;; foreign).  Note: Use the value of 'most-positive-fixnum' available at
++;; run time, not a macro-expansion time, to ensure the correct value is
++;; used when cross-compiling.
++(define %native-word-size
++  (cond ((< most-positive-fixnum (ash 1 32)) 4)
++        ((< most-positive-fixnum (ash 1 64)) 8)
++        (else (error "unexpected!" most-positive-fixnum))))
+ 
+ (define %target-type (make-fluid %host-type))
+ (define %target-endianness (make-fluid (native-endianness)))

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2026 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2016, 2018 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2017, 2018 Mark H Weaver <mhw@netris.org>
@@ -477,7 +477,53 @@ without requiring the source code to be rewritten.")
             (variable "GUILE_EXTENSIONS_PATH")
             (files '("lib/guile/3.0/extensions")))))))
 
-(define-public guile-3.0-latest guile-3.0)
+(define-public guile-3.0.11
+  (package
+    (inherit guile-3.0)
+    (name "guile")
+    (version "3.0.11")
+    (source
+     (origin
+       (inherit (package-source guile-2.2))
+       (uri (string-append "mirror://gnu/guile/guile-" version ".tar.xz"))
+       (sha256
+        (base32 "0q4laxcraxh3r9s62p6nw3g3n6xlqxy16r5kdylpyyk56v97k341"))
+       (patches (search-patches "guile-3.0.11-cross-compilation.patch"))
+       ;; Replace the snippet because the oom-test still fails on some 32-bit
+       ;; architectures.
+       (snippet '(for-each delete-file
+                           (find-files "prebuilt" "\\.go$")))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments guile-3.0)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            #$@(if (target-hurd?)
+                   #~((delete 'patch-posix-spawn-usage))
+                   #~())
+            #$@(if (system-hurd?)
+                   #~((replace 'disable-tests
+                        (lambda _
+                          (substitute* "test-suite/Makefile.in"
+                            ;; AF_UNIX/SOCK_STREAM: bind abstract - arguments: bind ENOENT
+                            (("tests/00-socket.test")
+                             "")
+                            ;; thread-sleep!: thread sleeps fractions of a second
+                            (("tests/srfi-18.test")
+                             "")
+                            ;; flaky: server is listening - arguments: connect EINVAL
+                            (("tests/web-server.test")
+                             ""))
+                          ;; failed to remove 't-guild-compile-7215.go.tdL7yC
+                          (substitute* "test-suite/standalone/Makefile.in"
+                            (("test-guild-compile ")
+                             ""))))
+                      (delete 'disable-threads.tests))
+                   #~())))))))
+
+(define-public guile-3.0-latest
+  ;; At the moment 3.0.11 leads to test failures in the 'guix' package so we
+  ;; cannot switch just yet: see <https://codeberg.org/guix/guix/pulls/5360>.
+  guile-3.0)
 
 ;;; The symbol guile-3.0/fixed should be used when guile-3.0 needs fixes
 ;;; (security or else) and this deprecation could be removed.

@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012-2025 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012-2026 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2022, 2023, 2024, 2025 Andreas Enge <andreas@enge.fr>
 # Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 # Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Mark H Weaver <mhw@netris.org>
@@ -1546,6 +1546,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/guile-default-utf8.patch			\
   %D%/packages/patches/guile-2.2-default-utf8.patch		\
   %D%/packages/patches/guile-relocatable.patch			\
+  %D%/packages/patches/guile-3.0.11-cross-compilation.patch	\
   %D%/packages/patches/guile-3.0-relocatable.patch		\
   %D%/packages/patches/guile-linux-syscalls.patch		\
   %D%/packages/patches/guile-3.0-linux-syscalls.patch		\
