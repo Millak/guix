@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Prafulla Giri <pratheblackdiamond@gmail.com>
 ;;; Copyright © 2020 Christopher Lam <christopher.lck@gmail.com>
 ;;; Copyright © 2023, 2024 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2025 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -57,6 +58,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix utils))
@@ -257,38 +259,46 @@ to be read using the GNOME Yelp program.")
       (license (list license:fdl1.1+ license:gpl3+)))))
 
 (define-public gwenhywfar
-  (let ((attachid "529")) ;; file attachid changes for each version
-    (package
-      (name "gwenhywfar")
-      (version "5.12.0")
-      (source
-       (origin
-         (method url-fetch)
-         (uri (string-append "https://www.aquamaniac.de/rdm/attachments/"
-                             "download/" attachid "/gwenhywfar-" version ".tar.gz"))
-         (sha256
-          (base32 "09nnjn1i8nzlkk62wai2lbnvqap8w6y98fh520b1y883fx2g3m8a"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:configure-flags
-         (list "--disable-network-checks"
-               ;; GTK+3, GTK+2 and QT4 are supported.
-               "--with-guis=gtk3"
-               "--enable-system-certs"
-               "--with-libxml2-code=yes"
-               "--disable-binreloc")))
-      (inputs
-       (list libgcrypt gnutls openssl gtk+ libxml2))
-      (native-inputs
-       (list pkg-config))
-      (home-page "https://www.aquamaniac.de")
-      (synopsis "Utility library for networking and security applications")
-      (description
-       "This package provides a helper library for networking and security
+  (package
+    (name "gwenhywfar")
+    (version "5.14.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.aquamaniac.de/git/gwenhywfar")
+              (commit version)))
+       (sha256
+        (base32
+         "0p0fzi69jsr3flpr10s8gbl9i265x5j5k1q2i5yva2vsdx2j2878"))
+       (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--disable-network-checks"
+              ;; GTK+3, GTK+2, Qt4, Qt5 and Qt6 are supported.
+              "--with-guis=gtk3"
+              "--enable-system-certs"
+              "--with-libxml2-code=yes"
+              "--disable-binreloc")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'bootstrap 'make-cvs
+            (lambda _
+              (invoke "make" "-fMakefile.cvs"))))))
+    (inputs
+     (list libgcrypt gnutls openssl gtk+ libxml2))
+    (native-inputs
+     (list autoconf automake gettext-minimal libtool pkg-config))
+    (home-page "https://www.aquamaniac.de")
+    (synopsis "Utility library for networking and security applications")
+    (description
+     "This package provides a helper library for networking and security
 applications and libraries.  It is used by AqBanking.")
-      ;; The license includes an explicit additional permission to compile and
-      ;; distribute this library with the OpenSSL Toolkit.
-      (license license:lgpl2.1+))))
+    ;; The license includes an explicit additional permission to compile and
+    ;; distribute this library with the OpenSSL Toolkit.
+    (license license:lgpl2.1+)))
 
 (define-public aqbanking
   (let ((attachid "531")) ;; file attachid changes for each version
