@@ -1141,7 +1141,7 @@ the \"texlive\" importer."
 (define-member (person "jgart"
                        "jgart@dismail.de"
                        "jgart")
-  lisp mentors)
+  hare lisp mentors)
 
 (define-member (person "Guillaume Le Vaillant"
                        "glv@posteo.net"
