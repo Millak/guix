@@ -135,17 +135,17 @@ Python versions below 3.14.")
             (lambda _
               (setenv "USE_SYSTEM_BLOSC" "1")
               (setenv "Blosc_ROOT" #$(this-package-input "c-blosc")))))))
-    (propagated-inputs
-     (list python-scikit-build))
-    (inputs
-     (list c-blosc))
     (native-inputs
      (list cmake-minimal
            ninja/pinned
-           python-numpy
+           ;; See: <https://github.com/Blosc/python-blosc/issues/347>.
+           python-numpy-1
            python-psutil
            python-py-cpuinfo
+           python-scikit-build
            python-setuptools))
+    (inputs
+     (list c-blosc))
     (home-page "https://github.com/blosc/python-blosc")
     (synopsis "Python wrapper for the Blosc data compressor library")
     (description "Blosc is a high performance compressor optimized for binary
