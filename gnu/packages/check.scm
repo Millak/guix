@@ -3791,46 +3791,6 @@ asynchronous code in Python (asyncio).")
 directories and files.")
     (license license:expat)))
 
-(define-public python-pytest-regressions
-  (package
-    (name "python-pytest-regressions")
-    (version "2.8.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest_regressions" version))
-       (sha256
-        (base32 "08fjzhsp4akdzn08d0nx2b9k16iad7wvdw4fqwv3sap0pq40gn8s"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:test-flags
-      ;; To reduce closure size it prevents including python-numpy,
-      ;; python-pandas and python-matplotlib.
-      #~(list "--ignore=tests/test_dataframe_regression.py"
-              "--ignore=tests/test_ndarrays_regression.py"
-              "--ignore=tests/test_num_regression.py"
-              "--deselect=tests/test_filenames.py::test_foo"
-              "--deselect=tests/test_filenames.py::TestClass::test_foo"
-              "--deselect=tests/test_filenames.py::TestClassWithIgnoredName::test_foo"
-              "--deselect=tests/test_image_regression.py::test_image_regression"
-              "--deselect=tests/test_image_regression.py::test_image_regression_workflow")))
-    (native-inputs
-     (list python-pytest-bootstrap
-           python-setuptools
-           python-setuptools-scm))
-    (propagated-inputs
-     (list python-pytest-datadir
-           python-pyyaml))
-    (home-page "https://github.com/ESSS/pytest-regressions")
-    (synopsis "Easy to use fixtures to write regression tests")
-    (description
-     "This plugin makes it simple to test general data, images, files, and
-numeric tables by saving expected data in a data directory (courtesy of
-pytest-datadir) that can be used to verify that future runs produce the same
-data.")
-    (license license:expat)))
-
 (define-public python-pytest-tornado5
   (package
     (name "python-pytest-tornado5")
