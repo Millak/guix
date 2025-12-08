@@ -194,23 +194,36 @@ as an alternative to the BIND, djbdns or other DNS clients.")))
 
 (define-public s6-networking
   (package
-   (name "s6-networking")
-   (version "2.7.0.4")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (string-append "https://skarnet.org/software/s6-networking/"
-                         "s6-networking-" version ".tar.gz"))
-     (sha256
-      (base32 "0r89b6pq50rzdipqk0la96pyw5a68ni6i9fh175zcn2gh86bgg9i"))))
+    (name "s6-networking")
+    (version "2.7.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://skarnet.org/software/s6-networking/"
+                           "s6-networking-" version ".tar.gz"))
+       (sha256
+        (base32 "14k5l3wkriqzkykz2nqh15g0dgblrkjprihz9jfsa899wybk9cx7"))))
     (build-system gnu-build-system)
     (inputs (list skalibs execline s6 s6-dns))
     (arguments
-     '(#:configure-flags (list
-                          (string-append "--with-sysdeps="
-                                         (assoc-ref %build-inputs "skalibs")
-                                         "/lib/skalibs/sysdeps"))
-       #:tests? #f))                    ; no tests exist
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-sysdeps="
+                             (search-input-directory %build-inputs
+                                                     "/lib/skalibs/sysdeps"))
+              (string-append "--with-lib="
+                             (dirname (search-input-file %build-inputs
+                                                         "/lib/libskarnet.a")))
+              (string-append "--with-lib="
+                             (dirname (search-input-file %build-inputs
+                                                         "/lib/libs6dns.a")))
+              (string-append "--with-lib="
+                             (dirname (search-input-file %build-inputs
+                                                         "/lib/libexecline.a")))
+              (string-append "--with-lib="
+                             (dirname (search-input-file %build-inputs
+                                                         "/lib/libs6.a"))))
+      #:tests? #f)) ;no tests exist
     (home-page "https://skarnet.org/software/s6-networking")
     (license isc)
     (synopsis "Suite of network utilities for Unix systems")
