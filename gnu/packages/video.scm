@@ -4421,7 +4421,7 @@ masks.
 (define-public obs-gradient-source
   (package
     (name "obs-gradient-source")
-    (version "0.3.2")
+    (version "0.3.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4430,7 +4430,7 @@ masks.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1s1frbax6md9bvlm4zynp9lab9fmh95xk7dq9b2f8q0rhprnb6g6"))))
+                "18wxjjn9hgkj74wc1wlfs8nm0i4a931mm80s3rq07v3blsyx7lv3"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -4442,7 +4442,7 @@ masks.
                              #$(this-package-input "obs") "/lib")
               "-DBUILD_OUT_OF_TREE=On"
               "-Wno-dev")))
-    (inputs (list obs qtbase-5 simde))
+    (inputs (list obs qtbase simde))
     (home-page "https://github.com/exeldro/obs-gradient-source")
     (synopsis "Plugin for adding a gradient Source to OBS Studio")
     (description "This package provides a plugin for adding a gradient Source
