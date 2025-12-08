@@ -234,6 +234,10 @@
                             (string-append "--with-bash-completion-dir="
                                            (assoc-ref %outputs "out")
                                            "/etc/bash_completion.d")
+                            ;; TODO: Uncomment after guix is updated.
+                            ;; (string-append "--with-apparmor-profile-dir="
+                            ;;                (assoc-ref %outputs "out")
+                            ;;                "/etc/apparmor.d")
 
                             ;; Set 'DOT_USER_PROGRAM' to the empty string so
                             ;; we don't keep a reference to Graphviz, whose

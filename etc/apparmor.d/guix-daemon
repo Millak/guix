@@ -1,0 +1,88 @@
+abi <abi/4.0>,
+
+include <tunables/global>
+include <tunables/guix>
+
+profile guix-daemon @{guix_storedir}/*-{guix-daemon,guix}-*/bin/guix-daemon flags=(enforce,attach_disconnected.path=/disconnected) {
+  include <abstractions/base>
+
+  userns,
+  signal,
+  capability sys_admin,
+  capability net_admin,
+  capability sys_chroot,
+  capability setgid,
+  capability chown,
+  network dgram,
+  umount,
+  mount,
+  pivot_root,
+  # Paths inside build chroot
+  /real-root/ w,
+  / w,
+
+  @{guix_localstatedir}/guix/** rwk,
+  /var/log/guix/** w,
+  owner @{PROC}/@{pid}/{fd/,environ} r,
+  owner @{PROC}/@{pid}/oom_score_adj w,
+  owner @{PROC}/@{pid}/uid_map rw,
+  owner @{PROC}/@{pid}/gid_map rw,
+  owner @{PROC}/@{pid}/setgroups w,
+  @{guix_storedir}/ r,
+  @{guix_storedir}/** rwlmk,
+  @{guix_storedir}/*/bin/guile cx -> guix-builder,
+  @{guix_storedir}/*-guix-command cx -> guix-helper,
+  @{guix_storedir}/*-guix-*/bin/guix cx -> guix-helper,
+  @{etc_rw}/nsswitch.conf r,
+  @{etc_rw}/passwd r,
+  @{etc_rw}/group r,
+  owner /tmp/** rwl,
+  owner /var/tmp/** rwl,
+
+  /usr/bin/newgidmap Ux,
+
+  # Site-specific additions and overrides. See local/README for details.
+  include if exists <local/guix-daemon>
+
+  profile guix-builder flags=(enforce,attach_disconnected.path=/disconnected) {
+    include <abstractions/base>
+
+    signal (receive),
+
+    @{guix_storedir}/** rwlmkux,
+
+    owner /tmp/** rw,
+
+    @{PROC}/@{pid}/fd/ r,
+
+    /disconnected/** rw,
+  }
+
+  # This is for any time guix is called by the daemon as a helper:
+  # - guix download
+  # - guix discover
+  # - guix gc --list-busy
+  # - probably more?
+  profile guix-helper flags=(enforce,attach_disconnected.path=/disconnected) {
+    include <abstractions/base>
+    include <abstractions/nameservice>
+
+    signal (receive),
+    ptrace (read) peer=guix-daemon,
+
+    /disconnected/run/dbus/system_bus_socket rw,
+    dbus (send, receive),
+    @{guix_localstatedir}/guix/discover/ rw,
+    @{guix_localstatedir}/guix/discover/* rw,
+
+    @{guix_localstatedir}/guix/substitute/ rw,
+    @{guix_localstatedir}/guix/substitute/** rwk,
+
+    @{guix_sysconfdir}/guix/** r,
+
+    @{guix_storedir}/** rwlmix,
+
+    @{PROC}/ r,
+    owner @{PROC}/@{pid}/{fd/,environ} r,
+  }
+}

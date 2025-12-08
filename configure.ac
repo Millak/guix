@@ -81,6 +81,15 @@ AC_ARG_WITH([selinux-policy-dir],
   [selinux_policydir='${datadir}/selinux/'])
 AC_SUBST([selinux_policydir])
 
+AC_ARG_WITH([apparmor-profile-dir],
+  AS_HELP_STRING([--with-apparmor-profile-dir=DIR],
+    [name of the AppArmor profile directory]),
+  [apparmor_profiledir="$withval"],
+  [apparmor_profiledir='${sysconfdir}/apparmor.d'])
+AC_SUBST([apparmor_profiledir])
+apparmor_profile_tunablesdir='${apparmor_profiledir}/tunables'
+AC_SUBST([apparmor_profile_tunablesdir])
+
 dnl Better be verbose.
 AC_MSG_CHECKING([for the store directory])
 AC_MSG_RESULT([$storedir])
@@ -308,6 +317,7 @@ AC_CONFIG_FILES([Makefile
                  po/guix/Makefile.in
                  po/packages/Makefile.in
                  etc/guix-daemon.cil
+                 etc/apparmor.d/tunables/guix
                  guix/config.scm])
 
 AC_CONFIG_FILES([etc/committer.scm], [chmod +x etc/committer.scm])

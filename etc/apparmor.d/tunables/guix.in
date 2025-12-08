@@ -1,0 +1,5 @@
+@{guix_storedir} = @storedir@
+@{guix_sysconfdir} = @guix_sysconfdir@
+@{guix_localstatedir} = @guix_localstatedir@
+
+include if exists <tunables/guix.d>

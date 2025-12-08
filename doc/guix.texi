@@ -146,6 +146,7 @@ Copyright @copyright{} 2025 Artur Wroblewski@*
 Copyright @copyright{} 2025 Edouard Klein@*
 Copyright @copyright{} 2025 Rodion Goritskov@*
 Copyright @copyright{} 2025 dan@*
+Copyright @copyright{} 2025 Noé Lopez@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -919,6 +920,7 @@ pre-built binaries.
 * Build Environment Setup::     Preparing the isolated build environment.
 * Daemon Offload Setup::        Offloading builds to remote machines.
 * SELinux Support::             Using an SELinux policy for the daemon.
+* AppArmor Support::            Using an AppArmor profile for the daemon.
 @end menu
 
 @node Build Environment Setup
@@ -1096,6 +1098,8 @@ cp /var/guix/profiles/per-user/root/current-guix/lib/systemd/system/*.service \
 systemctl daemon-reload
 systemctl start guix-daemon
 @end example
+
+If your system has AppArmor enabled, @pxref{AppArmor Support}.
 
 @quotation Warning
 The commands above assume that @command{guix pull} was run for the root
@@ -1525,6 +1529,43 @@ The downside is that root would have to install or upgrade the policy at
 installation time whenever the Guix package that provides the
 effectively running @code{guix-daemon} executable is upgraded.
 @end enumerate
+
+@node AppArmor Support
+@subsection AppArmor Support
+
+@cindex AppArmor
+
+Guix includes an AppArmor profile for the build daemon in
+@file{etc/apparmor.d/guix-daemon} that can be installed on systems with
+strict AppArmor policies to allow it to run unprivileged
+(@pxref{Build Environment Setup}).  Indeed, the unprivileged daemon makes
+use of Linux user namespaces but these are disallowed
+without an AppArmor policy on some systems like Ubuntu.
+
+To know if this applies to you, check if the
+@code{kernel.apparmor_restrict_unprivileged_userns} kernel parameter is
+enabled.
+
+@subsubsection Installing the AppArmor profile
+@cindex AppArmor, profile installation
+
+@quotation Note
+The @code{guix-install.sh} binary installation script offers to perform
+the steps below for you (@pxref{Binary Installation}).
+@end quotation
+
+Run these commands as root to install the profile:
+
+@example
+export apparmor_sources=/var/guix/profiles/per-user/root/current-guix/etc/apparmor.d
+cp -f -t /etc/apparmor.d/tunables "$apparmor_sources/tunables/guix"
+cp -f -t /etc/apparmor.d "$apparmor_sources/guix-daemon"
+cp -f -t /etc/apparmor.d "$apparmor_sources/guix"
+apparmor_parser -r /etc/apparmor.d/guix-daemon
+apparmor_parser -r /etc/apparmor.d/guix
+@end example
+
+After this, the build daemon will be able to function correctly.
 
 @node Invoking guix-daemon
 @section Invoking @command{guix-daemon}

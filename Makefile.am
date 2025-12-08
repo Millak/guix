@@ -746,6 +746,13 @@ dist_fishcompletion_DATA = etc/completion/fish/guix.fish
 # SELinux policy
 nodist_selinux_policy_DATA = etc/guix-daemon.cil
 
+# AppArmor profiles.
+nodist_apparmor_profile_DATA =	\
+  etc/apparmor.d/guix-daemon
+
+nodist_apparmor_profile_tunables_DATA = \
+  etc/apparmor.d/tunables/guix
+
 EXTRA_DIST +=						\
   .dir-locals.el					\
   .guix-authorizations					\
