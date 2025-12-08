@@ -91,6 +91,7 @@
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages image-processing)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libusb)
@@ -109,9 +110,12 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages robotics)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages stb)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages textutils)
@@ -3724,6 +3728,165 @@ of MIPS CPU interpreters, recompilers and a virtual machine which manages
 hardware states and PS2 system memory.  This allows you to play PS2 games on
 your PC, with many additional features and benefits.")
     (license license:gpl3+)))
+
+(define-public rpcs3
+  ;; NB: When updating to a new release, don't forget to check if any more
+  ;; libraries can be linked dynamically, and to update the commits for any
+  ;; specialized sources included in native-inputs so that they match the
+  ;; sub-modules in ./3rdparty.
+  (package
+    (name "rpcs3")
+    (version "0.0.38")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/RPCS3/rpcs3")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0dwrfjs9b3ldwyn68nmyf0qip4hm1w8c3picdl3zk7z76j7rrhal"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         ;; -fexceptions is needed to compile part of yaml-cpp.
+         "-DCMAKE_CXX_FLAGS=-fexceptions"
+         ;; "USE_NATIVE_INSTRUCTIONS makes rpcs3 compile with -march=native,
+         ;; which is useful for local builds, but not good for packages."
+         "-DUSE_NATIVE_INSTRUCTIONS=OFF"
+         "-DWITH_LLVM=ON"
+         "-DBUILD_LLVM=OFF"
+         "-DSTATIC_LINK_LLVM=OFF"
+         "-DUSE_FAUDIO=ON"
+         "-DUSE_LIBEVDEV=ON"
+         "-DUSE_DISCORD_RPC=OFF"
+         "-DUSE_VULKAN=ON"
+         "-DUSE_PRECOMPILED_HEADERS=OFF"
+         "-DUSE_SDL=ON"
+         "-DUSE_SYSTEM_CUBEB=ON"
+         "-DUSE_SYSTEM_CURL=ON"
+         "-DUSE_SYSTEM_FAUDIO=ON"
+         "-DUSE_SYSTEM_FFMPEG=ON"
+         "-DUSE_SYSTEM_FLATBUFFERS=ON"
+         "-DUSE_SYSTEM_GLSLANG=ON"
+         "-DUSE_SYSTEM_HIDAPI=ON"
+         "-DUSE_SYSTEM_LIBPNG=ON"
+         "-DUSE_SYSTEM_LIBUSB=ON"
+         "-DUSE_SYSTEM_MINIUPNPC=ON"
+         "-DUSE_SYSTEM_OPENAL=ON"
+         "-DUSE_SYSTEM_OPENCV=ON"
+         "-DUSE_SYSTEM_PUGIXML=ON"
+         "-DUSE_SYSTEM_RTMIDI=ON"
+         "-DUSE_SYSTEM_SDL=ON"
+         "-DUSE_SYSTEM_VULKAN_MEMORY_ALLOCATOR=ON"
+         "-DUSE_SYSTEM_WOLFSSL=ON"
+         "-DUSE_SYSTEM_ZLIB=ON"
+         "-DUSE_SYSTEM_ZSTD=ON"
+         "-DBUILD_RPCS3_TESTS=ON"
+         "-DRUN_RPCS3_TESTS=ON"
+         ;; "Choose whether to enable GameMode features or not."
+         ;; Off, for now, because GameMode requires systemd to work.
+         "-DUSE_GAMEMODE=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'add-some-submodules
+            ;; TODO: Remove as many of these as possible.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (with-directory-excursion "3rdparty"
+                (rmdir "fusion/fusion")
+                (symlink (string-append
+                          (search-input-directory inputs "Fusion") "/../")
+                         "fusion/fusion")
+                (rmdir "SoundTouch/soundtouch")
+                (symlink (dirname
+                          (search-input-file inputs "soundtouch.pc.in"))
+                         "SoundTouch/soundtouch")
+                (rmdir "asmjit/asmjit")
+                (symlink (string-append
+                          (search-input-directory inputs "src/asmjit")
+                          "/../../")
+                         "asmjit/asmjit")
+                (rmdir "yaml-cpp/yaml-cpp")
+                (symlink (dirname
+                          (search-input-file inputs "yaml-cpp.pc.in"))
+                         "yaml-cpp/yaml-cpp")
+                (rmdir "stblib/stb")
+                (symlink (dirname
+                          (search-input-file inputs "stb_c_lexer.h"))
+                         "stblib/stb")))))))
+    (inputs
+     (append
+      (list cubeb
+            curl
+            eudev
+            faudio
+            ;; RPCS3 v0.0.38 uses symbols that are deprecated in ffmpeg 8.
+            ;; See https://github.com/RPCS3/rpcs3/issues/17461
+            ffmpeg-6
+            flatbuffers
+            glew
+            glslang
+            glu
+            hidapi
+            jack-2
+            libevdev
+            libglvnd
+            libpng
+            libusb-next
+            llvm-18
+            mesa
+            miniupnpc-next
+            openal
+            opencv
+            pugixml-next
+            pulseaudio
+            qtbase
+            qtmultimedia
+            qtsvg
+            rtmidi
+            sdl3
+            spirv-tools
+            vulkan-loader
+            wayland
+            wolfssl-for-rpcs3
+            zlib
+            `(,zstd "lib"))))
+    (native-inputs
+     (list
+      googletest
+      pkg-config
+      vulkan-memory-allocator
+      (package-source asmjit)
+      (package-source fusion)
+      (package-source stb)
+      (origin
+        (file-name "rpcs3-soundtouch-source")
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/RPCS3/soundtouch")
+               (commit "3982730833b6daefe77dcfb32b5c282851640c17")))
+        (sha256
+         (base32 "07q514mx69jkrz7i58c45iwj3zql88vdsa1sah7immwr1005i91y")))
+      (origin
+        (file-name "rpcs3-yaml-cpp-source")
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/RPCS3/yaml-cpp")
+               (commit "456c68f452da09d8ca84b375faa2b1397713eaba")))
+        (sha256
+         (base32 "0spp91yz1bvr9dljc7zgjf2sqw49d8b9yinlncykjwzxm7ap7jys")))))
+    (home-page "https://rpcs3.net/")
+    (synopsis "PlayStation 3 emulator")
+    (description "RPCS3 is an emulator and debugger for the Sony
+@acronym{PS3,PlayStation 3}.")
+    (license
+     (list license:gpl2                 ;core, pine_server.h
+           license:bsd-3                ;FindWayland.cmake, FindFFMPEG.cmake
+           ;;flow_layout.h, sse2neon.h, unordered_dense.h, ffx_fsr1.h,
+           ;;ffx_a.h, bcdec.hpp, LUrlParser.h, khrplatform.h
+           license:expat))))
 
 (define-public gens-gs
   (package
