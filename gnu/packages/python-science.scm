@@ -3441,47 +3441,95 @@ cross-validation.")
 (define-public python-scipy
   (package
     (name "python-scipy")
-    (version "1.12.0")
+    (version "1.16.3")
+    ;; TODO: PyPI archive bundles extra in subprojects:
+    ;; - https://github.com/boostorg/math
+    ;; - https://github.com/scipy/HiGHS
+    ;; - https://github.com/scipy/xsf
+    ;; - qhull
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "scipy" version))
        (sha256
-        (base32 "18rn15wg3lp58z204fbjjhy0h79c53yg3c4qqs9h3liniamspxab"))))
+        (base32 "1jxf6mjr3whbh23p8bnlcyiss5rsamq37qgys8xz8qi781cpds01"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 78689 passed, 4982 skipped, 319 xfailed, 19 xpassed, 2660 warnings
+      #:configure-flags
+      ''(("setup-args" . #("-Duse-system-libraries=all")))
+      #:test-flags
+      #~(list "--durations=10"
+              "--numprocesses" (number->string (min 4 (parallel-job-count)))
+              "--pyargs" "scipy"
+              "-k" (string-join
+                    ;; Network access is requied.
+                    (list "not test_ascent"
+                          "test_electrocardiogram"
+                          "test_existence_all"
+                          "test_face"
+                          ;; pycparser.ply.yacc.YaccError: Unable to build parser
+                          "test_callbacks"
+                          "test_bad_callbacks"
+                          ;; AssertionError: Items are not equal: ACTUAL:
+                          ;; np.complex128(inf+nanj) DESIRED: (inf+0j)
+                          "test_expm1_complex"
+                          ;; AssertionError: Not equal to tolerance rtol=1e-07, atol=0
+                          "test_log1p_complex"
+                          ;; AssertionError: Not equal to tolerance rtol=5e-09, atol=0
+                          "test_nctdtr_accuracy[3.0-5.0--2.0-1.5645373999149622e-09-5e-09]"
+                          ;; Bad results (X out of Y) for the following points
+                          ;; (in output 0):
+                          "test_spherical_in_complex"
+                          "test_spherical_jn_complex"
+                          "test_spherical_kn"
+                          "test_spherical_yn_complex"
+                          ;; Not equal to tolerance rtol=1e-07, atol=0
+                          "test_negative_real_gh14582[spherical_in-False]"
+                          "test_negative_real_gh14582[spherical_in-True]"
+                          "test_negative_real_gh14582[spherical_jn-False]"
+                          "test_negative_real_gh14582[spherical_jn-True]"
+                          "test_negative_real_gh14582[spherical_yn-False]"
+                          "test_negative_real_gh14582[spherical_yn-True]"
+                          ;; Failed: DID NOT WARN. No warnings of type (<class
+                          ;; 'RuntimeWarning'>,) were emitted.
+                          "test_boost_eval_issue_14606")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          #$@(if (target-x86-32?)
-                 #~((add-after 'unpack 'apply-i686-patch
-                      (lambda _
-                        (let ((patch-file
-                               #$(local-file
-                                  (search-patch "python-scipy-i686.patch"))))
-                          (invoke "patch" "--force" "-p1" "-i"
-                                  patch-file)))))
-                 #~())
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "meson.build"
+                ;; boost
+                (("1.88.0") "1.89.0"))))
+          (add-after 'set-paths 'hide-gfortran
+            ;; See: <https://issues.guix.gnu.org/73439#45>.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((gfortran #$(this-package-native-input "gfortran")))
+                (setenv "CPLUS_INCLUDE_PATH"
+                        (string-join
+                         (delete (string-append gfortran "/include/c++")
+                                 (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
+                         ":")))))
           (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
+            (lambda* (#:key test-flags tests? #:allow-other-keys)
               (when tests?
                 ;; Step out of the source directory to avoid interference.
+                ;; See: <.github/workflows/linux.yml> for any other posible
+                ;; tests setup.
                 (with-directory-excursion "/tmp"
-                  (invoke "python" "-c"
-                          (string-append
-                           "import scipy; scipy.test('fast', parallel="
-                           (number->string (parallel-job-count))
-                           ", verbose=2)")))))))))
+                  (setenv "HOME" "/tmp")
+                  (setenv "PYTHONOPTIMIZE" "2")
+                  (apply invoke "pytest" "-vv" test-flags))))))))
     (native-inputs
      (list gfortran
-           ;; XXX: Adding gfortran shadows GCC headers, causing a compilation
-           ;; failure.  Somehow also providing GCC works around it ...
-           gcc
            meson-python
            pkg-config
            python-click
-           python-cython-0
+           python-cython
            python-doit
+           python-hypothesis
            python-mpmath
            python-numpydoc
            python-pooch
@@ -3495,8 +3543,11 @@ cross-validation.")
            python-threadpoolctl
            python-typing-extensions))
     (inputs
-     (list openblas
-           pybind11-2.10))
+     (list boost
+           openblas
+           pybind11
+           qhull
+           xsimd))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://scipy.org/")
