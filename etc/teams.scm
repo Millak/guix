@@ -1276,9 +1276,9 @@ the \"texlive\" importer."
   games)
 
 (define-member (person "Laurent Gatto"
-                       "laurent.gatto@gmail.com"
+                       "lgatto@protonmail.ch"
                        "lgatto")
-  r)
+  r bioinformatics)
 
 (define-member (person "Nicolas Goaziou"
                        "guix@nicolasgoaziou.fr"
