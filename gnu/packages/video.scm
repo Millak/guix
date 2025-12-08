@@ -4822,16 +4822,16 @@ Wayland compositors.")
 (define-public obs-vkcapture
   (package
     (name "obs-vkcapture")
-    (version "1.5.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/nowrep/obs-vkcapture")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0p4v3c6wsgkvh3kszdl47w8j0f4q5n1rv6bk8alvipf97r4x25w2"))))
+    (version "1.5.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/nowrep/obs-vkcapture")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14mmmylfjyx60xqfvr4izfkzgwr08ngyj0409g5g6l970rzvpdnf"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f)) ;no tests
