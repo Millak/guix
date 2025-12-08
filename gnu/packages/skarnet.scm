@@ -309,7 +309,7 @@ systems and other constrained environments, but they work everywhere.")))
 (define-public s6-linux-init
   (package
    (name "s6-linux-init")
-   (version "1.1.2.1")
+   (version "1.1.3.0")
    (source
     (origin
      (method url-fetch)
@@ -317,18 +317,26 @@ systems and other constrained environments, but they work everywhere.")))
            "https://skarnet.org/software/s6-linux-init/s6-linux-init-"
            version ".tar.gz"))
      (sha256
-      (base32 "0c35jr09d6jrnsbm2ijfcjnc94ylz0adf7bj52hlfzwv495027lp"))))
+      (base32 "1vdkhxafbns8yx7d8dnw995xirhzgn85155igvvk9hcsf5mmj6yi"))))
     (build-system gnu-build-system)
     (inputs
      (list execline s6 skalibs))
     (arguments
-     '(#:configure-flags
-       (list
-        "--disable-static"
-        (string-append "--with-sysdeps="
-                       (assoc-ref %build-inputs "skalibs")
-                       "/lib/skalibs/sysdeps"))
-       #:tests? #f))                    ; no tests exist
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-sysdeps="
+                             (search-input-directory %build-inputs
+                                                     "/lib/skalibs/sysdeps"))
+              (string-append "--with-lib="
+                             (dirname (search-input-file %build-inputs
+                                                         "/lib/libskarnet.a")))
+              (string-append "--with-lib="
+                             (dirname (search-input-file %build-inputs
+                                                         "/lib/libexecline.a")))
+              (string-append "--with-lib="
+                             (dirname (search-input-file %build-inputs
+                                                         "/lib/libs6.a"))))
+      #:tests? #f)) ;no tests exist
     (home-page "https://skarnet.org/software/s6-linux-init")
     (license isc)
     (synopsis "Minimalistic tools to create an s6-based init system on Linux")
