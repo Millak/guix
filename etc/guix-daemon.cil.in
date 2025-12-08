@@ -175,6 +175,10 @@
          (file (execute
                 execute_no_trans read write open entrypoint map
                 getattr link unlink)))
+  ;; Needed to execute the 'newgidmap' helper.
+  (allow guix_daemon_t
+         bin_t
+         (file (execute execute_no_trans map)))
 
   ;; Remounting /gnu/store read-write.
   (allow guix_daemon_t
@@ -322,7 +326,7 @@
                 map
                 getattr setattr
                 unlink
-                open read write)))
+                open read write append)))
   (allow guix_daemon_t
          guix_daemon_conf_t
          (lnk_file (create getattr rename unlink read)))
@@ -367,7 +371,7 @@
   ;; Allow use of user namespaces
   (allow guix_daemon_t
          self
-         (cap_userns (sys_admin net_admin sys_chroot)))
+         (cap_userns (setgid sys_admin net_admin sys_chroot)))
   (allow guix_daemon_t
          self
          (user_namespace (create)))
