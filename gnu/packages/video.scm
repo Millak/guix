@@ -2849,6 +2849,36 @@ projects while introducing many more.")
 used alongside a @acronym{UI, User Interface} script that calls it.")
       (license license:mpl2.0))))
 
+(define-public mpv-uosc
+  (package
+    (name "mpv-uosc")
+    (version "5.12.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/tomasklaen/uosc")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pn9a8jp9v7pf6vpifqy9nwr7ac862cb1p1vgm6wy84nxxgklaxx"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("src/uosc" "share/mpv/scripts/")
+          ("src/fonts" "share/mpv/"))))
+    (propagated-inputs
+     (list mpv-thumbfast))
+    (home-page "https://github.com/tomasklaen/uosc")
+    (synopsis "Feature-rich minimalist proximity-based UI for mpv player")
+    (description
+     "uosc is a minimalist interface for mpv.  It hides and shows elements
+based on cursor proximity and offers configurable controls, thumbnails, and
+tools for selecting subtitles, audio, and video tracks, and downloading
+subtitles.  Menus are searchable and support mouse scroll wheel.")
+    (license license:gpl3+)))
+
 (define-public smplayer
   (package
     (name "smplayer")
