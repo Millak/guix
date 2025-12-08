@@ -26,7 +26,7 @@
   #:use-module (guix build-system trivial)
   #:use-module ((guix licenses) #:select (expat public-domain)))
 
-(define stb
+(define-public stb
   ;; stb is a collection of libraries developed within the same repository.
   ;; When updating this, remember to change versions below as appropriate.
   (let ((commit "2e2bef463a5b53ddf8bb788e25da6b8506314c08")
