@@ -2876,7 +2876,7 @@ computations.")
 (define-public c-blosc2
   (package
     (name "c-blosc2")
-    (version "2.15.2")
+    (version "2.22.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2885,7 +2885,7 @@ computations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17kqwvw2n6bgzidi8f5906s5hc9wm1lbfbpd491gf7csxjck99sx"))))
+                "147gkmdrqbw3knqmsj8pc2x0jqcrai81wxjj5f3jna556krpxq6i"))))
     (build-system cmake-build-system)
     (arguments
      (list #:parallel-tests? #f
