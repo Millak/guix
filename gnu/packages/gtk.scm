@@ -1009,9 +1009,8 @@ application suites.")
 (define-public gtk+
   (package
     (inherit gtk+-2)
-    (replacement gtk+/fixed)
     (name "gtk+")
-    (version "3.24.49")
+    (version "3.24.51")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1020,7 +1019,7 @@ application suites.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0flsnh3f0l9v3y2hmnxz1h15nw1l12ixmiwcpiy1ywplrlgq4j00"))
+                "07vw0rani9d65px36fzzj7sprv5r48shyjdgzipkihzqaldd98yh"))
               (patches (search-patches
                         "gtk3-respect-GUIX_GTK3_PATH.patch"
                         "gtk3-respect-GUIX_GTK3_IM_MODULE_FILE.patch"))))
@@ -1140,23 +1139,6 @@ application suites.")
      (list (search-path-specification
             (variable "GUIX_GTK3_PATH")
             (files '("lib/gtk-3.0")))))))
-
-(define-public gtk+/fixed
-  (let* ((base gtk+)
-         (source (package-source base)))
-    (package
-      (inherit base)
-      (version "3.24.51")
-      (source
-       (origin
-         (inherit source)
-         (uri (git-reference
-                (inherit (origin-uri source))
-                (commit version)))
-         (file-name (git-file-name (package-name base) version))
-         (sha256
-          (base32
-           "07vw0rani9d65px36fzzj7sprv5r48shyjdgzipkihzqaldd98yh")))))))
 
 (define-public gtk
   (package
