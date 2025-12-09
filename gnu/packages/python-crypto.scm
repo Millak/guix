@@ -1769,12 +1769,19 @@ can also encrypt and decrypt messages using RSA and ECDH.")
     (version "0.1.5")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyu2f" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/google/pyu2f/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0srhzdbgdsqwpcw7awqm19yg3xbabqckfvrp8rbpvz2232hs7jm3"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #f))          ;none included
+        (base32 "1jlpplw7hlrh8bgmp37g18panij0p7ism6r4d981my4dc73lbwik"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; This test requires the fakefs package.
+      #:test-flags #~(list "--ignore=pyu2f/tests/hid/linux_test.py")))
+    (native-inputs (list python-mock python-pytest python-setuptools))
     (propagated-inputs (list python-six))
     (home-page "https://github.com/google/pyu2f/")
     (synopsis "U2F host library for interacting with a U2F device over USB")
