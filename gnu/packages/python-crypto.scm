@@ -1454,20 +1454,20 @@ Password-Authenticated Key Exchange algorithm.")
        (method url-fetch)
        (uri (pypi-uri "keyutils" version))
        (sha256
-        (base32
-         "0lipygpzhwzzsq2k5imb1jgkmj8y4khxdwhzadjs3bd56g6bmkx9"))))
-    (build-system python-build-system)
+        (base32 "0lipygpzhwzzsq2k5imb1jgkmj8y4khxdwhzadjs3bd56g6bmkx9"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'regenerate-c-file
+            (lambda _
+              (invoke "cython" "keyutils/_keyutils.pyx"))))))
     (native-inputs
-     (list python-cython python-pytest python-pytest-runner))
+     (list python-cython python-pytest python-setuptools))
     (inputs
      (list keyutils))
-    (arguments
-     (list #:tests? #f
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-before 'build 'regenerate-c-file
-                 (lambda _
-                   (invoke "cython" "keyutils/_keyutils.pyx"))))))
     (home-page "https://github.com/sassoftware/python-keyutils")
     (synopsis "Python bindings for keyutils")
     (description
