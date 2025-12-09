@@ -5415,27 +5415,32 @@ of the netcdf4 package before.")
 (define-public python-netcdf4
   (package
     (name "python-netcdf4")
-    (version "1.6.2")
+    (version "1.7.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "netCDF4" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Unidata/netcdf4-python")
+              (commit (string-append "v" version "rel"))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0lxfykqdkpbmqma72m2mhwdz8lgl83n5vj7ydygl3252yqpv10h3"))))
+        (base32 "1bq0dkgq795z00j5z4xi1dqqw0chaj5j80hg5nci1piyr2ic41v9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: Ran 113 tests; skipped=7
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'set-configure-flags
             (lambda _
               (setenv "CFLAGS" (string-join
-                                (list "-Wno-error=incompatible-pointer-types"
+                                (list "-g -O2"
+                                      "-Wno-error=incompatible-pointer-types"
                                       "-Wno-error=implicit-function-declaration"
                                       "-Wno-error=int-conversion")
                                 " "))
               (setenv "HDF5_DIR" #$(this-package-input "hdf5"))
+              (setenv "JPEG_DIR" #$(this-package-input "libjpeg-turbo"))
               (setenv "NETCDF4_DIR" #$(this-package-input "netcdf"))
               (setenv "USE_NCCONFIG" "0")))
           (replace 'check
@@ -5447,12 +5452,19 @@ of the netcdf4 package before.")
                   (invoke "python" "run_all.py"))))))))
     (native-inputs
      (list python-cython
+           python-packaging
+           python-pytest
            python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-numpy python-cftime))
+           python-setuptools-scm
+           python-typing-extensions))
     (inputs
-     (list netcdf hdf5 zlib))
+     (list netcdf
+           hdf5
+           zlib))
+    (propagated-inputs
+     (list python-certifi
+           python-cftime
+           python-numpy))
     (home-page "https://github.com/Unidata/netcdf4-python")
     (synopsis "Python/numpy interface to the netCDF library")
     (description "Netcdf4-python is a Python interface to the netCDF C
