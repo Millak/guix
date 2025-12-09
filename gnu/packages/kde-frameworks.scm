@@ -1265,26 +1265,6 @@ but also for getting notified upon idle time events, such as custom timeouts,
 or user activity.")
     (license (list license:gpl2+ license:lgpl2.1+))))
 
-(define-public kidletime-5
-  (package
-    (inherit kidletime)
-    (name "kidletime")
-    (version "5.116.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/frameworks/"
-                    (version-major+minor version) "/"
-                    name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "15s9nxpkqy3i182xk82bpl92iaqcilsckja7301854fw6ppl8vvh"))))
-    (native-inputs
-     (list extra-cmake-modules pkg-config))
-    (inputs
-     (list libxscrnsaver ; X-Screensaver based poller, fallback mode
-           qtbase-5 qtx11extras))))
-
 (define-public kirigami
   (package
     (name "kirigami")
