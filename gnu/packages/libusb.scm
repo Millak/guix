@@ -92,6 +92,20 @@
 devices on various operating systems.")
     (license license:lgpl2.1+)))
 
+(define-public libusb-next
+  (package
+    (inherit libusb)
+    (name "libusb-next")
+    (version "1.0.29")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/libusb/libusb/"
+                           "releases/download/v" version
+                           "/libusb-" version ".tar.bz2"))
+       (sha256
+        (base32 "118alz1rzqp6qaq486wn5hygs27qnc38rm4vxb69a4wd1yazqxsr"))))))
+
 (define-public libusb-compat
   (package
     (name "libusb-compat")
