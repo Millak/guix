@@ -226,18 +226,17 @@ implements the latter option to help with matplotlib graphs.")
 (define-public python-algopy
   (package
     (name "python-algopy")
-    (version "0.6.0") ; the higher versions requir NumPy 2+ stack
+    (version "0.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "algopy" version))
        (sha256
-        (base32 "1vjrzzxa3gvyh2zvm1vwg0s6a7dv23rihgdvgyj1vqniyymp91nq"))))
+        (base32 "0l9d4pkbal6m6q8v6w5zr9wlij4sfycc8i2w7irk0i4n8hyvm0ja"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-numpy
            python-scipy))
