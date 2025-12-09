@@ -2096,25 +2096,6 @@ ASpell and HUNSPELL.")
 uses a job-based interface to queue tasks and execute them in an efficient way.")
     (license license:lgpl2.1+)))
 
-(define-public threadweaver-5
-  (package
-    (inherit threadweaver)
-    (name "threadweaver")
-    (version "5.116.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/frameworks/"
-                    (version-major+minor version) "/"
-                    name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1q7ax3dhsayz35j0l9pdmarkwfyyy1dsy2crdf5xz8pr5mjxq8wp"))))
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list qtbase-5))))
-
 
 ;; Tier 2
 ;;
