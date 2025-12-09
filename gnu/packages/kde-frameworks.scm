@@ -1355,26 +1355,6 @@ model to observers
 @end enumerate")
     (license license:lgpl2.1+)))
 
-(define-public kitemmodels-5
-  (package
-    (inherit kitemmodels)
-    (name "kitemmodels")
-    (version "5.116.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/frameworks/"
-                    (version-major+minor version) "/"
-                    name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1wcznkj24553spkl202zwifk6hgrvdd60j3y47jp2m6zpadywz2k"))))
-    (native-inputs
-     (list extra-cmake-modules))
-    (inputs
-     (list qtdeclarative-5))
-    (arguments '())))
-
 (define-public kitemviews
   (package
     (name "kitemviews")
