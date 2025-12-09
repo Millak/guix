@@ -1825,24 +1825,27 @@ supply a handful of python functions as methods to a class.")
 (define-public python-starkbank-ecdsa
   (package
     (name "python-starkbank-ecdsa")
-    (version "2.0.3")
+    (version "2.2.0")
     (home-page "https://github.com/starkbank/ecdsa-python")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url home-page)
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1k9h4p0frkgj76vrqfjim4mik98g09mivdxxcmxr6raa5jwr83sh"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01zy16csrbyfhjl0kay9rbpbwc3dpr7kh2qkrbdy5a1n644fbahx"))))
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'remove-broken-test
-                          (lambda _
-                            (delete-file "tests/testOpenSSL.py"))))))
-    (build-system python-build-system)
-    (native-inputs (list python-pytest))
+     (list
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-broken-test
+            (lambda _
+              (delete-file "tests/testOpenSSL.py"))))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-setuptools))
     (synopsis "Python ECDSA library")
     (description "This package provides a Python ECDSA library, optimized for
 speed but without C extensions.")
