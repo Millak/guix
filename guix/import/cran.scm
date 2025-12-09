@@ -6,6 +6,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2025 John Dawson <dawson.john.andrew@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -849,7 +850,7 @@ S-expression."
   (let ((input-names (map upstream-input-name inputs))
         (esbuild-modules '(#:modules
                            '((guix build r-build-system)
-                             (guix build minify-build-system)
+                             ((guix build minify-build-system) #:select (minify))
                              (guix build utils)
                              (ice-9 match))
                            #:imported-modules
