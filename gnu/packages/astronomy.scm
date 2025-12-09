@@ -3765,13 +3765,13 @@ attempting to maintain ISTP compliance
 (define-public python-cesium
   (package
     (name "python-cesium")
-    (version "0.12.1")
+    (version "0.12.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "cesium" version))
               (sha256
                (base32
-                "0jr0ycqz9ns6mcskm4sxx92k40fj3v0x9knjaw5ac9f3mpqxsfbv"))))
+                "0kfz2fgi2hnl1a9pz8nk0cr1vyk4c7cg1vmkpnwpgy7n44fkbxwa"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -3783,9 +3783,13 @@ attempting to maintain ISTP compliance
           ;; this mismatch is to jump to the output directory.
           (add-before 'check 'check-chdir
             (lambda _ (chdir #$output))))))
+    (native-inputs
+     (list python-cython
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-click ;XXX required by python-dask
-           python-cloudpickle
+     (list python-cloudpickle
            python-dask
            python-gatspy
            python-joblib
@@ -3794,12 +3798,17 @@ attempting to maintain ISTP compliance
            python-scikit-learn
            python-scipy
            python-toolz))
-    (native-inputs (list python-cython python-pytest python-setuptools-scm
-                         python-setuptools python-wheel))
-    (home-page "https://pypi.org/project/cesium/")
+    (home-page "https://cesium-ml.org/")
     (synopsis "Library for time-series feature extraction and processing")
     (description
-     "Cesium is a library for time-series feature extraction and processing.")
+     "Cesium is an end-to-end machine learning platform for time-series, from
+calculation of features to model-building to predictions.  Cesium has two main
+components - a Python library, and a web application platform that allows
+interactive exploration of machine learning pipelines.  Take control over the
+workflow in a Python terminal or Jupyter notebook with the Cesium library, or
+upload your time-series files, select your machine learning model, and watch
+Cesium do feature extraction and evaluation right in your browser with the web
+application.")
     (license license:bsd-3)))
 
 (define-public python-ci-watson
