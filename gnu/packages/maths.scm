@@ -2528,7 +2528,6 @@ similar to MATLAB, GNU Octave or SciPy.")
      (list doxygen graphviz m4))
     (inputs
      (list curl
-           hdf4-alt
            hdf5
            libaec
            libjpeg-turbo
@@ -2539,8 +2538,7 @@ similar to MATLAB, GNU Octave or SciPy.")
      (list #:configure-flags
            #~'("CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"
                "--enable-doxygen" "--enable-dot"
-               "--enable-hdf4" "--disable-dap-remote-tests")
-
+               "--disable-dap-remote-tests")
            #:phases
            #~(modify-phases %standard-phases
                (add-before 'configure 'fix-source-date
