@@ -714,104 +714,69 @@ optimization problems in Python.")
 (define-public python-dask
   (package
     (name "python-dask")
-    (version "2024.12.1")
+    (version "2025.11.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/dask/dask/")
-             (commit version)))
+              (url "https://github.com/dask/dask/")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17iqfyjphyn72xdr8fmynzvixskbq16pwmsknwc6anq7s2axvas2"))))
+        (base32 "12m4p4zfm96fjsm45wppdrylsi71vjr0ywplz6q7fhw9vbhk0kki"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Avoid coverage
+      ;; tests: 15277 passed, 751 skipped, 261 xfailed, 280 xpassed, 90 warnings
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
-              "-m" "not gpu and not slow and not network"
-              ;; These all fail with different hashes.  Doesn't seem
-              ;; problematic.
-              "--ignore-glob=**/test_tokenize.py"
-              ;; ORC tests crash Python with a failure to find the global
-              ;; localtime file.  See also
-              ;; https://github.com/apache/arrow/issues/40633.
-              "--ignore-glob=**/test_orc.py"
-              "-k" (string-append
+      #~(list "-m" "not gpu and not slow and not network"
+              "--pyargs" "dask"
+              "--numprocesses" (number->string (min 4 (parallel-job-count)))
+              "--reruns=3"
+              "-k" (string-join
                     ;; This one cannot be interrupted.
-                    "not test_interrupt"
-                    ;; This one fails with "local variable 'ctx' referenced
-                    ;; before assignment".  Maybe enable this in later
-                    ;; versions (or when pandas has been upgraded.
-                    " and not test_dt_accessor"
-                    ;; This fails when dask-expr is among the inputs.
-                    " and not test_groupby_internal_repr"
-                    ;; This fails with different job ids.
-                    " and not test_to_delayed_optimize_graph"
-                    ;; This one expects a deprecation warning that never
-                    ;; comes.
-                    " and not test_RandomState_only_funcs"
-                    ;; This test expects a RuntimeWarning that is never
-                    ;; raised.
-                    " and not test_nanquantile_all_nan")
-              ;; Tests must run from the output directory, because otherwise
-              ;; it complains about the difference between the target
-              ;; directory embedded in the pyc files and the source directory
-              ;; from which we run tests.
-              (getcwd))
+                    (list "not test_interrupt"
+                          ;; AttributeError: 'Array' object has no attribute
+                          ;; 'expr'
+                          "test_blockwise"
+                          "test_is_dask_collection_doesnt_materialize")
+                    " and not "))
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'versioneer
-            (lambda _
-              ;; Our version of versioneer needs setup.cfg.  This is adapted
-              ;; from pyproject.toml.
-              (with-output-to-file "setup.cfg"
-                (lambda ()
-                  (display "\
-[versioneer]
-VCS = git
-style = pep440
-versionfile_source = dask/_version.py
-versionfile_build = dask/_version.py
-tag_prefix =
-parentdir_prefix = dask-
-")))
-              (invoke "versioneer" "install")
-              (substitute* "setup.py"
-                (("versioneer.get_version\\(\\)")
-                 (string-append "\"" #$version "\"")))))
           (add-after 'unpack 'fix-pytest-config
             (lambda _
-              ;; This option is not supported by our version of pytest.
               (substitute* "pyproject.toml"
-                (("--cov-config=pyproject.toml") ""))))
-          (add-after 'unpack 'patch-pyproject
+                ((".*--cov-config=pyproject.toml.*") ""))))
+          (add-before 'build 'set-version
             (lambda _
-              ;; We use pyarrow > 14
-              (substitute* "pyproject.toml"
-                (("\"pyarrow_hotfix\",") ""))))
-          (add-before 'check 'pre-check
-            (lambda _ (chdir "/tmp"))))))
-    (propagated-inputs
-     (list python-click ;needed at runtime
-           python-cloudpickle
-           python-dask-expr
-           python-fsspec
-           python-importlib-metadata ;needed at runtime for dask/_compatibility.py
-           python-numpy
-           python-packaging
-           python-pandas
-           python-partd
-           python-toolz
-           python-pyyaml))
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (add-before 'check 'remove-local-source
+            (lambda _
+              (delete-file-recursively "dask"))))))
     (native-inputs
-     (list python-importlib-metadata
-           python-pytest
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-mock
            python-pytest-rerunfailures
+           python-pytest-timeout
            python-pytest-xdist
-           python-versioneer
-           python-setuptools))
+           python-setuptools
+           python-setuptools-scm-next
+           tzdata-for-tests))
+    (propagated-inputs
+     (list python-click
+           python-cloudpickle
+           python-fsspec
+           python-importlib-metadata
+           python-packaging
+           python-partd
+           python-pyyaml
+           python-toolz
+           ;; [optional]
+           python-lz4
+           python-numpy
+           python-pandas
+           python-pyarrow))
     (home-page "https://github.com/dask/dask/")
     (synopsis "Parallel computing with task scheduling")
     (description
