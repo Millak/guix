@@ -1722,19 +1722,10 @@ implementation of the Argon2 password hashing algorithm.")
                (commit "2838db3df239797c71bddacc48a4c49a83f35747")))
         (file-name (git-file-name name version))
         (sha256
-         (base32
-          "1m32dh5fqc8cy7jyf1z5fs6zvmdkbq5fi98hr609gbl7s0l0y0i9"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "python" "-m" "pytest"))))))
-    (native-inputs
-     (list python-pytest))
-    (propagated-inputs
-     (list python-argon2-cffi python-cryptography))
+         (base32 "1m32dh5fqc8cy7jyf1z5fs6zvmdkbq5fi98hr609gbl7s0l0y0i9"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-setuptools))
+    (propagated-inputs (list python-argon2-cffi python-cryptography))
     (home-page "https://www.dropbox.com/developers")
     (synopsis "Library to password-protect your data")
     (description
