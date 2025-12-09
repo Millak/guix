@@ -868,16 +868,12 @@ of improving usability, security and speed.")
               (sha256
                (base32
                 "07k0hgr42vw2j92cln3klxka81f33knd7459cn3d8aszvfh52w6w"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; As per the Unit Testing subsection in the README.
-                (invoke "python" "-m" "crcmod.test")))))))
+      #:test-backend #~'custom
+      #:test-flags #~(list "-m" "crcmod.test")))
+    (native-inputs (list python-setuptools))
     (synopsis "CRC generator for Python")
     (description "Python module for generating objects that compute the
 Cyclic Redundancy Check.")
