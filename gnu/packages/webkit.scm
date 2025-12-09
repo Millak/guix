@@ -132,6 +132,7 @@ engine that uses Wayland for graphics output.")
   (package
     (name "webkitgtk")
     (version "2.48.1")
+    (replacement webkitgtk/fixed)
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.webkitgtk.org/releases/"
@@ -301,9 +302,21 @@ propagated by default) such as @code{gst-plugins-good} and
                    license:bsd-2
                    license:bsd-3))))
 
-(define-public webkitgtk-for-gtk3
+(define webkitgtk/fixed
   (package
     (inherit webkitgtk)
+    (version "2.50.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://www.webkitgtk.org/releases/"
+                                  "webkitgtk-" version ".tar.xz"))
+              (sha256
+               (base32 "0kymjkskp2ndvs10hvqc0l7i3x19s2hga0g8azhv5djvd6s0d83h"))
+              (patches (search-patches
+                        "webkitgtk-adjust-bubblewrap-paths.patch"))))))
+
+(define-public webkitgtk-for-gtk3
+  (package/inherit webkitgtk
     (name "webkitgtk-for-gtk3")
     (arguments
      (substitute-keyword-arguments (package-arguments webkitgtk)
