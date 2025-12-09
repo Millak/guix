@@ -2504,47 +2504,6 @@ used by file indexers to retrieve the metadata.  This library can also be used
 by applications to write metadata.")
     (license (list license:lgpl2.0 license:lgpl2.1 license:lgpl3))))
 
-(define-public kfilemetadata-5
-  (package
-    (inherit kfilemetadata)
-    (name "kfilemetadata")
-    (version "5.116.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/frameworks/"
-                    (version-major+minor version) "/"
-                    name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "13yfcy02rmhrhf8lxv7smk1n9rg1ywsh60hwzm94b8hq9a62qp0r"))))
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "ctest" "-E"
-                        "(usermetadatawritertest|taglibextractortest)")))))))
-    (native-inputs (list extra-cmake-modules pkg-config))
-    (inputs
-     (list attr
-           ebook-tools
-           karchive-5
-           kconfig-5
-           kcoreaddons-5
-           ki18n-5
-           qtmultimedia-5
-           qtbase-5
-           ;; Required run-time packages
-           catdoc
-           ;; Optional run-time packages
-           exiv2
-           ffmpeg
-           poppler-qt5
-           taglib))))
-
 (define-public kimageannotator
   (package
     (name "kimageannotator")
