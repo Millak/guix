@@ -4315,16 +4315,17 @@ and JACK.")
 (define-public obs-advanced-masks
   (package
     (name "obs-advanced-masks")
-    (version "1.1.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/FiniteSingularity/obs-advanced-masks")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0vhilhzdfv0wa8hqz8ffavr272w3d5b75vvldf8rfy9pm5c8xn9n"))))
+    (version "1.5.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/FiniteSingularity/obs-advanced-masks")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1llmz42y2m2gpm1bp48dybi7iv4vafl7ya3rb259798ikwzva3fm"))
+       (patches (search-patches "obs-advanced-masks-nlohmann-json.patch"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -4334,27 +4335,17 @@ and JACK.")
       #:configure-flags
       #~(list (string-append "-DLIBOBS_INCLUDE_DIR="
                              #$(this-package-input "obs") "/lib")
-              "-DBUILD_OUT_OF_TREE=On"
-              "-Wno-dev")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'move-shaders
-            (lambda _
-              (mkdir-p
-               (string-append
-                #$output
-                "/share/obs/obs-plugins/obs-advanced-masks"))
-              (rename-file
-               (string-append
-                #$output
-                "/data/obs-plugins/obs-advanced-masks/shaders")
-               (string-append
-                #$output
-                "/share/obs/obs-plugins/obs-advanced-masks/shaders")))))))
-    (inputs (list obs qtbase-5 simde))
+              "-DBUILD_OUT_OF_TREE=On" "-Wno-dev")))
+    (inputs (list curl
+                  obs
+                  nlohmann-json
+                  qtbase
+                  qtsvg
+                  simde))
     (home-page "https://github.com/FiniteSingularity/obs-advanced-masks")
     (synopsis "Advanced masking plugin for OBS")
-    (description "OBS Advanced Masks is a project designed to expand the
+    (description
+     "OBS Advanced Masks is a project designed to expand the
 masking functionalities within OBS Studio.  This plug-in provides filters for
 users to create intricate and customized masks for their OBS Scenes and
 Sources.
@@ -4369,7 +4360,8 @@ any combination of the red, green, blue, or alpha channels from said source.
 @item Image Masks include all of the same functionality as Source Masks, but
 applied via a static image (.png, .jpeg, etc).
 @item Gradient Masks allow a fading mask using a user-specified gradient.
-@end itemize\n")
+@end itemize
+")
     (license license:gpl2)))
 
 (define-public obs-composite-blur
