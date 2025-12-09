@@ -40524,6 +40524,7 @@ but portable.")
                  (compose list make-rust-sysroot))
           '())))
     (inputs (cargo-inputs 'python-watchfiles))
+    (propagated-inputs (list python-anyio)) ;imported in main.py
     (home-page "https://github.com/samuelcolvin/watchfiles")
     (synopsis "Simple, modern file watching and code reload in Python")
     (description
