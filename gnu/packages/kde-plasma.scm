@@ -1455,51 +1455,6 @@ you login.")
     (home-page "https://invent.kde.org/plasma/kwallet-pam")
     (license (list license:lgpl2.1+))))
 
-(define-public kwayland-integration
-  (package
-    (name "kwayland-integration")
-    (version "6.5.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/stable/plasma/"
-                                  version "/" name "-"
-                                  version ".tar.xz"))
-              (sha256
-               (base32
-                "01jxpl0zbz8pbnrbxw9bnn148mr03rrf86ryl627cqx8k4p9842d"))))
-    (build-system qt-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (delete 'check)
-                        (add-after 'install 'check-after-install
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (setenv "HOME" (getcwd))
-                              (setenv "XDG_RUNTIME_DIR" (getcwd))
-                              (setenv "QT_QPA_PLATFORM" "offscreen")
-                              (invoke "ctest"))))
-                        (add-before 'check-after-install 'check-setup
-                          (lambda* (#:key outputs #:allow-other-keys)
-                            (setenv "QT_PLUGIN_PATH"
-                                    (string-append #$output
-                                                   "/lib/qt5/plugins:"
-                                                   (getenv "QT_PLUGIN_PATH"))))))))
-    (native-inputs (list extra-cmake-modules wayland-protocols pkg-config))
-    (inputs (list kguiaddons-5
-                  kidletime-5
-                  kwindowsystem-5
-                  kwayland-5
-                  libxkbcommon
-                  wayland
-                  plasma-wayland-protocols
-                  qtbase-5
-                  qtwayland-5))
-    (synopsis "KWayland runtime integration plugins")
-    (description "This package provides Wayland integration plugins for various
-KDE Frameworks components.")
-    (home-page "https://invent.kde.org/plasma/kwayland-integration")
-    (license (list license:lgpl2.1 license:lgpl3))))
-
 (define-public kwin
   (package
     (name "kwin")
