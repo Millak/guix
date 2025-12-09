@@ -883,33 +883,26 @@ Cyclic Redundancy Check.")
 (define-public python-blurhash
   (package
     (name "python-blurhash")
-    (version "1.1.4")
+    (version "1.1.5")
     (source
       (origin
-        ;; Tests not included in pypi release and releases not tagged in git repo.
         (method git-fetch)
         (uri (git-reference
                (url "https://github.com/halcy/blurhash-python")
-               (commit "22e081ef1c24da1bb5c5eaa2c1d6649724deaef8")))
+               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32
-          "1qq6mhydlp7q3na4kmaq3871h43wh3pyfyxr4b79bia73wjdylxf"))))
-    (build-system python-build-system)
+         (base32 "16xcjxiya773fp7bxs9i6y1wsjx88pdvlwj6bqyy9vf3ckcffcwm"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (delete-file "setup.cfg")
-             (invoke "pytest"))))))
+     (list #:test-flags #~(list "-c" "/dev/null")))
     (native-inputs
-     (list python-numpy python-pillow python-pytest))
+     (list python-numpy python-pillow python-pytest python-setuptools))
     (home-page "https://github.com/halcy/blurhash-python")
-    (synopsis
-     "Pure-Python implementation of the blurhash algorithm")
+    (synopsis "Pure-Python implementation of the blurhash algorithm")
     (description
-     "Pure-Python implementation of the blurhash algorithm.")
+     "This package provides a pure Python implementation of the blurhash
+algorithm.")
     (license license:expat)))
 
 (define-public python-ecpy
