@@ -2105,7 +2105,7 @@ performance computing environments.")
 (define-public python-scikit-learn
   (package
     (name "python-scikit-learn")
-    (version "1.7.0")
+    (version "1.7.2")
     (source
      (origin
        (method git-fetch)
@@ -2114,37 +2114,23 @@ performance computing environments.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "105bd5n3l4db59lw0cdi6w8x9qysams017rjrly2629nklhiqx1q"))))
+        (base32 "11lrlw8bm6f8r67043v2gc4wfpgiyvzp8ya6sds5858ddizjjxs3"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 34005 passed, 4844 skipped, 150 xfailed, 65 xpassed, 4551 warnings
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
-              "-m" "not network"
-              "-k" (string-join
-                    ;; This test tries to access the internet.
-                    (list "not test_load_boston_alternative"
-                          ;; XXX: 35 failed with various reasons, 36871 (!)
-                          ;; passed; invistigate if we need care about that.
-                          "test_check_pandas_sparse_invalid"
-                          "test_ard_accuracy_on_easy_problem"
-                          "test_check_inplace_ensure_writeable"
-                          "test_covariance"
-                          "test_estimators"
-                          "test_ledoit_wolf"
-                          "test_mcd"
-                          "test_mcd_issue1127"
-                          "test_mcd_support_covariance_is_zero"
-                          "test_oas"
-                          "test_shrunk_covariance"
-                          "test_toy_ard_object")
-                    " and not "))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              "-m" "not network")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-notice-rgx
+          (add-after 'unpack 'patch-pyproject
             (lambda _
-              ;; FIXME: This line contains regexps and breaks toml parser.
               (substitute* "pyproject.toml"
+                ;; XXX: error: Field `project.license` has an invalid type,
+                ;; expecting a dictionary of strings (got `BSD-3-Clause`)
+                (("^license = .*") "license = {text = \"BSD-3-Clause\"}\n")
+                ;; FIXME: This line contains regexps and breaks toml parser.
                 (("notice-rgx.*") ""))))
           (add-before 'build 'configure
             (lambda _
@@ -2167,6 +2153,7 @@ performance computing environments.")
     (native-inputs
      (list gfortran
            meson-python
+           pkg-config
            python-cython
            python-pandas
            python-pytest
