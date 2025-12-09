@@ -28,7 +28,7 @@
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
-;;; Copyright © 2022 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2022, 2025 Maxim Cournoyer <maxim@guixotic.coop>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2023 dan <i@dan.games>
@@ -2214,19 +2214,23 @@ from account statements and other documents and for managing documents.")
 (define-public fava
   (package
     (name "fava")
-    (version "1.30.2")
+    (version "1.30.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fava" version))
        (sha256
-        (base32 "110ah1xsapiabjssl6lzp0s7nl5ypszpmqndgfqw4pifpgzp3kdf"))))
+        (base32 "1d2p5dbj6a855qq3jkl6k01prlhvazlm7ws33a7323a6r6amiykk"))))
     (build-system pyproject-build-system)
+    (arguments (list #:test-flags
+                     ;; There are some small differences in the expected
+                     ;; output for this test (see:
+                     ;; <https://github.com/beancount/fava/issues/2153>).
+                     #~(list "-k" "not options-/long-example/api/options")))
     (propagated-inputs
      (list beancount-3
            beanquery
            python-babel
-           python-anyio
            python-beangulp
            python-cheroot
            python-click
@@ -2242,8 +2246,7 @@ from account statements and other documents and for managing documents.")
      (list python-babel
            python-pytest
            python-setuptools
-           python-types-setuptools
-           python-types-simplejson))
+           python-wheel))
     (home-page "https://beancount.github.io/fava/")
     (synopsis "Web interface for the accounting tool Beancount")
     (description "Fava is a web interface for the double-entry bookkeeping
