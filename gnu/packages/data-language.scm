@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;; Copyright © 2025 Maxim Cournoyer <maxim@guixotic.coop>
+;;; Copyright © 2025 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,6 +22,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
@@ -66,7 +68,6 @@
            glpk
            graphicsmagick
            gsl
-           hdf4-alt
            hdf5
            libgeotiff
            libjpeg-turbo
@@ -83,6 +84,9 @@
            udunits
            wxwidgets
            zlib))
+    (arguments
+      (list
+        #:configure-flags #~(list "-DHDF=OFF"))) ; keep default "-DHDF5=ON"
     (home-page "https://gnudatalanguage.github.io/")
     (synopsis "Compiler for GDL, an IDL-compatible programming language")
     (description
