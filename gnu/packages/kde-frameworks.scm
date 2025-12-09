@@ -219,32 +219,6 @@ used from QtQuick applications for both simple display of data as well as
 continuous display of high-volume data.")
     (license (list license:lgpl2.1 license:lgpl3))))
 
-(define-public kquickcharts-5
-  (package
-    (inherit kquickcharts)
-    (name "kquickcharts")
-    (version "5.116.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://kde/stable/frameworks/"
-                                  (version-major+minor version)
-                                  "/" name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1bd20kpypji6053fwn5a1b41rjf7r1b3wk85swb0xlmm2kji236j"))))
-    (build-system cmake-build-system)
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (system "Xvfb :1 -screen 0 640x480x24 &")
-                              (setenv "DISPLAY" ":1")
-                              (setenv "QT_QPA_PLATFORM" "offscreen")
-                              (invoke "ctest")))))))
-    (inputs (list qtbase-5 qtdeclarative-5 qtquickcontrols2-5
-                  xorg-server-for-tests))))
-
 (define-public kuserfeedback
   ;; FIXME: Try to reduce data collection and ensure transmission i disabled by default.
   ;; FIXME: Check https://www.reddit.com/r/kde/comments/f7ojg9 for insights
