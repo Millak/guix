@@ -1011,249 +1011,51 @@ interoperability offered by HDF5.")
 (define-public python-distributed
   (package
     (name "python-distributed")
-    (version "2024.12.1")
+    (version "2025.11.0")
     (source
      (origin
-       ;; The test files are not included in the archive on pypi
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/dask/distributed")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1k0kmzd48mvaaizbf3b6lk84s0fw88x9v7hfgiddyyv6mf4x7h27"))))
+        (base32 "1ljzgbbs61si8b3qvxf7fb74wdhnj2mfg9a5nfngqv662fnibabg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      '(list "-m"
-             (string-append "not slow"
-                            " and not flaky"
-                            " and not gpu"
-                            " and not ipython"
-                            " and not avoid_ci")
-             ;; This disables FutureWarning that are caught as error,
-             ;; related to the merge of python-dask-expr in python-dask.
-             "-W"
-             (string-append "ignore::FutureWarning")
-             "-k"
-             (string-append
-              ;; These fail because they require network access,
-              ;; specifically access to 8.8.8.8.
-              "not "
-              (string-join
-               (list
-                "TestClientSecurityLoader.test_security_loader"
-                "test_BatchedSend"
-                "test_allowed_failures_config"
-                "test_async_context_manager"
-                "test_async_with"
-                "test_client_repr_closed_sync"
-                "test_client_is_quiet_cluster_close"
-                "test_close_closed"
-                "test_close_fast_without_active_handlers"
-                "test_close_grace_period_for_handlers"
-                "test_close_loop_sync"
-                "test_close_properly"
-                "test_close_twice"
-                "test_compression"
-                "test_connection_pool"
-                "test_connection_pool_close_while_connecting"
-                "test_connection_pool_detects_remote_close"
-                "test_connection_pool_outside_cancellation"
-                "test_connection_pool_remove"
-                "test_connection_pool_respects_limit"
-                "test_connection_pool_tls"
-                "test_counters"
-                "test_dashboard_host"
-                "test_dashboard_link_cluster"
-                "test_dashboard_link_inproc"
-                "test_deserialize_error"
-                "test_dont_override_default_get"
-                "test_ensure_no_new_clients"
-                "test_errors"
-                "test_fail_to_pickle_target_2"
-                "test_failure_doesnt_crash"
-                "test_file_descriptors_dont_leak"
-                "test_finished"
-                "test_freeze_batched_send"
-                "test_get_client_functions_spawn_clusters"
-                "test_host_uses_scheduler_protocol"
-                "test_identity_inproc"
-                "test_identity_tcp"
-                "test_large_packets_inproc"
-                "test_locked_comm_drop_in_replacement"
-                "test_locked_comm_intercept_read"
-                "test_locked_comm_intercept_write"
-                "test_messages_are_ordered_bsend"
-                "test_messages_are_ordered_raw"
-                "test_mixing_clients_different_scheduler"
-                "test_multiple_listeners"
-                "test_no_dangling_asyncio_tasks"
-                "test_plugin_exception"
-                "test_plugin_internal_exception"
-                "test_plugin_multiple_exceptions"
-                "test_ports"
-                "test_preload_import_time"
-                "test_preload_manager_sequence"
-                "test_queue_in_task"
-                "test_quiet_client_close"
-                "test_rebalance_sync"
-                "test_repr_localcluster"
-                "test_require_encryption"
-                "test_rpc_closed_exception"
-                "test_rpc_default"
-                "test_rpc_inproc"
-                "test_rpc_message_lifetime_default"
-                "test_rpc_message_lifetime_inproc"
-                "test_rpc_message_lifetime_tcp"
-                "test_rpc_serialization"
-                "test_rpc_tcp"
-                "test_rpc_tls"
-                "test_rpc_with_many_connections_inproc"
-                "test_rpc_with_many_connections_tcp"
-                "test_scheduler_file"
-                "test_security_dict_input_no_security"
-                "test_security_loader"
-                "test_security_loader_ignored_if_explicit_security_provided"
-                "test_security_loader_ignored_if_returns_none"
-                "test_send_after_stream_start"
-                "test_send_before_close"
-                "test_send_before_start"
-                "test_send_recv_args"
-                "test_send_recv_cancelled"
-                "test_sending_traffic_jam"
-                "test_serializers"
-                "test_server"
-                "test_server_comms_mark_active_handlers"
-                "test_shutdown"
-                "test_shutdown_localcluster"
-                "test_teardown_failure_doesnt_crash_scheduler"
-                "test_tell_workers_when_peers_have_left"
-                "test_threadpoolworkers_pick_correct_ioloop"
-                "test_tls_listen_connect"
-                "test_tls_temporary_credentials_functional"
-                "test_transition_failure_triggers_log_event"
-                "test_variable_in_task"
-                "test_worker_preload_text"
-                "test_worker_uses_same_host_as_nanny"
-                "test_nanny_timeout")   ; access to 127.0.0.1
-               " and not ")
-
-              ;; This seems to want to use 64GB of memory.
-              " and not test_computation_object_code_dask_compute"
-
-              ;; These fail because it doesn't find dask[distributed]
-              " and not test_quiet_close_process"
-
-              ;; There is no distributed.__git_revision__ property.
-              " and not test_git_revision"
-
-              ;; The system monitor did not return a dictionary containing
-              ;; "host_disk_io.read_bps".
-              " and not test_disk_config"
-
-              ;; These fail because the exception text format
-              ;; appears to have changed.
-              " and not test_exception_text"
-              " and not test_worker_bad_args"
-
-              ;; These time out
-              " and not test_nanny_timeout"
-
-              ;; These tests are rather flaky
-              " and not test_quiet_quit_when_cluster_leaves"
-              " and not multiple_clients_restart"
-              " and not test_steal_twice"
-              " and not test_task_groups_update_start_stop"
-              " and not test_web_preload"
-              " and not test_web_preload_worker"))
+      ;; TODO: Test suite requires networking for most of the tests or special
+      ;; care, find a way to enable some unit tests, see:
+      ;; <.github/workflows/tests.yaml>.
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'versioneer
-            (lambda _
-              ;; Our version of versioneer needs setup.cfg.  This is adapted
-              ;; from pyproject.toml.
-              (with-output-to-file "setup.cfg"
-                (lambda ()
-                  (display "\
-[versioneer]
-VCS = git
-style = pep440
-versionfile_source = distributed/_version.py
-versionfile_build = distributed/_version.py
-tag_prefix =
-parentdir_prefix = distributed-
-")))
-              (invoke "versioneer" "install")
-              (substitute* "setup.py"
-                (("versioneer.get_version\\(\\)")
-                 (string-append "\"" #$version "\"")))))
           (add-after 'unpack 'fix-pytest-config
             (lambda _
-              ;; This option is not supported by our version of pytest.
               (substitute* "pyproject.toml"
-                (("--cov-config=pyproject.toml.*") ""))))
-          (add-after 'unpack 'fix-references
-            (lambda* (#:key outputs #:allow-other-keys)
-              (substitute* '("distributed/comm/tests/test_ucx_config.py"
-                             "distributed/tests/test_client.py"
-                             "distributed/tests/test_queues.py"
-                             "distributed/tests/test_variable.py"
-                             "distributed/cli/tests/test_tls_cli.py"
-                             "distributed/cli/tests/test_dask_spec.py"
-                             "distributed/cli/tests/test_dask_worker.py"
-                             "distributed/cli/tests/test_dask_scheduler.py")
-                (("\"dask-scheduler\"")
-                 (format #false "\"~a/bin/dask-scheduler\"" #$output))
-                (("\"dask-worker\"")
-                 (format #false "\"~a/bin/dask-worker\"" #$output)))))
-          (add-before 'check 'pre-check
+                (("--cov-config.*") ""))))
+          (add-before 'build 'set-version
             (lambda _
-              (setenv "DISABLE_IPV6" "1")
-              ;; Disable job queueing
-              (setenv "DASK_DISTRIBUTED__SCHEDULER__WORKER_SATURATION" "inf")
-              ;; Do not use dask-expr
-              (setenv "DASK_DATAFRAME__QUERY_PLANNING" "False")
-              ;; The integration tests are all problematic to some
-              ;; degree.  They either require network access or some
-              ;; other setup.  We only run the tests in
-              ;; distributed/tests.
-              (for-each (lambda (dir)
-                          (delete-file-recursively
-                           (string-append "distributed/" dir "/tests")))
-                        (list "cli" "comm" "dashboard" "deploy" "diagnostics"
-                              "http" "http/scheduler" "http/worker"
-                              "protocol" "shuffle"))))
-          ;; We need to use "." here.
-          (replace 'check
-            (lambda* (#:key tests? test-flags #:allow-other-keys)
-              (when tests?
-                (apply invoke "python" "-m" "pytest" "." "-vv" test-flags)))))))
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
+    (native-inputs
+     (list python-setuptools
+           python-setuptools-scm-next))
     (propagated-inputs
      (list python-click
            python-cloudpickle
-           python-cryptography
            python-dask
-           python-dask-expr
+           python-jinja2
+           python-locket
            python-msgpack
+           python-packaging
            python-psutil
            python-pyyaml
-           python-setuptools
            python-sortedcontainers
            python-tblib
            python-toolz
            python-tornado-6
            python-urllib3
            python-zict))
-    (native-inputs
-     (list python-flaky
-           python-importlib-metadata
-           python-pytest
-           python-pytest-timeout
-           python-versioneer
-           python-wheel))
     (home-page "https://distributed.dask.org")
     (synopsis "Distributed scheduler for Dask")
     (description "Dask.distributed is a lightweight library for distributed
