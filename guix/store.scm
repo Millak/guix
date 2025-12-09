@@ -228,9 +228,6 @@
   (major  store-connection-major-version)
   (minor  store-connection-minor-version)
 
-  (buffer store-connection-output-port)                 ;output port
-  (flush  store-connection-flush-output)                ;thunk
-
   ;; Caches.  We keep them per-connection, because store paths build
   ;; during the session are temporary GC roots kept for the duration of
   ;; the session.
@@ -476,9 +473,6 @@ connection.  Use with care."
     (%make-store-connection port
                             (protocol-major version)
                             (protocol-minor version)
-                            port
-                            (lambda ()
-                              (force-output port))
                             (make-hash-table 100)
                             (make-hash-table 100)
                             (make-vector
@@ -495,11 +489,6 @@ connection.  Use with care."
                     (store-connection-minor-version store)))
 
 (define-deprecated/alias nix-server-version store-connection-version)
-
-(define (write-buffered-output server)
-  "Flush SERVER's output port."
-  (force-output (store-connection-output-port server))
-  ((store-connection-flush-output server)))
 
 (define (close-connection server)
   "Close the connection to SERVER."
@@ -630,13 +619,12 @@ encoding conversion errors."
                         #'(server #:key arg ...)
                         #'(server arg ...))
            docstring
-           (let* ((s (store-connection-socket server))
-                  (buffered (store-connection-output-port server)))
+           (let* ((s (store-connection-socket server)))
              (record-operation 'name)
-             (write-value integer id buffered)
-             (write-value type arg buffered)
+             (write-value integer id s)
+             (write-value type arg s)
              ...
-             (write-buffered-output server)
+             (force-output s)
 
              ;; Loop until the server is done sending error output.
              (let loop ()
@@ -941,16 +929,15 @@ path."
            ;; We don't use the 'operation' macro so we can pass SELECT? to
            ;; 'write-file'.
            (record-operation 'add-to-store)
-           (let ((port (store-connection-socket server))
-                 (buffered (store-connection-output-port server)))
+           (let ((port (store-connection-socket server)))
              (write-value integer (remote-procedure-id add-to-store)
-                          buffered)
-             (write-value utf8-string basename buffered)
-             (write-value integer 1 buffered)                   ;obsolete, must be #t
-             (write-value boolean recursive? buffered)
-             (write-value utf8-string hash-algo buffered)
-             (write-file file-name buffered #:select? select?)
-             (write-buffered-output server)
+                          port)
+             (write-value utf8-string basename port)
+             (write-value integer 1 port)                   ;obsolete, must be #t
+             (write-value boolean recursive? port)
+             (write-value utf8-string hash-algo port)
+             (write-file file-name port #:select? select?)
+             (force-output port)
              (let loop ((done? (process-stderr server)))
                (or done? (loop (process-stderr server))))
              (read-value store-path port)))))
@@ -1056,20 +1043,19 @@ an arbitrary directory layout in the store without creating a derivation."
         ;; We don't use the 'operation' macro so we can use 'write-file-tree'
         ;; instead of 'write-file'.
         (record-operation 'add-to-store/tree)
-        (let ((port (store-connection-socket server))
-              (buffered (store-connection-output-port server)))
+        (let ((port (store-connection-socket server)))
           (write-value integer (remote-procedure-id add-to-store)
-                       buffered)
-          (write-value utf8-string basename buffered)
-          (write-value integer 1 buffered)                      ;obsolete, must be #t
-          (write-value integer (if recursive? 1 0) buffered)
-          (write-value utf8-string hash-algo buffered)
-          (write-file-tree basename buffered
+                       port)
+          (write-value utf8-string basename port)
+          (write-value integer 1 port)  ;obsolete, must be #t
+          (write-value integer (if recursive? 1 0) port)
+          (write-value utf8-string hash-algo port)
+          (write-file-tree basename port
                            #:file-type+size file-type+size
                            #:file-port file-port
                            #:symlink-target symlink-target
                            #:directory-entries directory-entries)
-          (write-buffered-output server)
+          (force-output port)
           (let loop ((done? (process-stderr server)))
             (or done? (loop (process-stderr server))))
           (let ((result (read-value store-path port)))
