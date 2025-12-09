@@ -725,7 +725,7 @@ typically encountered in feature film production.")
            openvdb
            pugixml
            python
-           python-numpy
+           python-numpy-1
            tbb
            zlib
            `(,zstd "lib")))
