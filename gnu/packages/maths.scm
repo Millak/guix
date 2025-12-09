@@ -2505,7 +2505,7 @@ similar to MATLAB, GNU Octave or SciPy.")
 (define-public netcdf
   (package
     (name "netcdf")
-    (version "4.9.0")
+    (version "4.9.2")
     (source
      (origin
        (method url-fetch)
@@ -2514,33 +2514,49 @@ similar to MATLAB, GNU Octave or SciPy.")
              "/netcdf-c-" version ".tar.gz"))
        (sha256
         (base32
-         "0j8b814mjdqvqanzmrxpq8hn33n22cdzb3gf9vhya24wnwi615ac"))
+         "0j3c3amzvsd8bd52dqgqa8gkgl7n36qf0yahyl4kz5mrpnxvl4fg"))
        (modules '((guix build utils)))
        (snippet
         ;; Make sure this variable is defined only once.  Failing to do so
         ;; would break builds of 'netcdf-parallel-openmpi' with a
         ;; multiple-definition link error with GCC 10.
         '(substitute* "ncdump/ocprint.c"
-           (("^int ocdebug") "static int ocdebug")))
+          (("^int ocdebug") "static int ocdebug")))
        (patches (search-patches "netcdf-date-time.patch"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list doxygen graphviz m4))
+     (list doxygen
+           graphviz
+           m4
+           unzip))
     (inputs
      (list curl
+           bzip2
            hdf5
            libaec
            libjpeg-turbo
            libxml2
-           unzip
-           zlib))
+           zlib
+           zstd))
     (arguments
      (list #:configure-flags
-           #~'("CFLAGS=-g -O2 -Wno-error=incompatible-pointer-types"
-               "--enable-doxygen" "--enable-dot"
-               "--disable-dap-remote-tests")
+           #~(list "--disable-dap-remote-tests"
+                   ;; XXX: ... docs/internal.md' does not exist
+                   ;; "--enable-doxygen"
+                   "--enable-dot"
+                   "--enable-netcdf-4"
+                   (string-append "--with-plugin-dir=" #$output "/lib/hdf5-plugins"))
            #:phases
            #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-tests
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Network access is required for these tests.
+                   (substitute* (list "ncdap_test/Makefile.am"
+                                      "ncdap_test/Makefile.in")
+                     (("testurl.sh") ""))
+                   (substitute* "nczarr_test/Makefile.in"
+                     (("/bin/bash")
+                      (search-input-file inputs "bin/bash")))))
                (add-before 'configure 'fix-source-date
                  (lambda _
                    ;; As we ${SOURCE_DATE_EPOCH} evaluates to "1" in the build
