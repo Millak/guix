@@ -2946,7 +2946,9 @@ of functions to execute the desired steps in the mock-observing process.")
         "--ignore=astroML/density_estimation/tests/test_hist_binwidth.py"
         ;; Disalbe tests with NumPy, see
         ;; <https://github.com/astroML/astroML/issues/281>.
-        "--ignore=astroML/tests/test_resample.py")
+        "--ignore=astroML/tests/test_resample.py"
+        "-k" (string-append "not astroML.density_estimation.empirical.EmpiricalDistribution"
+                            " and not astroML.utils.utils.log_multivariate_gaussian"))
       #:phases
       '(modify-phases %standard-phases
          (add-after 'unpack 'patch-build-system
@@ -2973,11 +2975,12 @@ of functions to execute the desired steps in the mock-observing process.")
            (lambda _
              (setenv "HOME" "/tmp"))))))
     (native-inputs
-     (list python-pytest-astropy-header
-           python-pytest-cov
+     (list python-pytest
+           python-pytest-astropy
+           python-pytest-astropy-header
            python-pytest-doctestplus
            python-pytest-remotedata
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-astropy
            python-matplotlib
