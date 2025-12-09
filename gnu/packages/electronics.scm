@@ -1921,7 +1921,6 @@ reusable and vendor/tool-independent way.  It is written following the VHDL
            python-setuptools))
     (inputs
      (list libngspice
-           ngspice
            python-invoke
            python-matplotlib
            python-ply
