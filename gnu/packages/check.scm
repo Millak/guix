@@ -833,7 +833,17 @@ format.")
     (arguments
      '(#:parallel-tests? #f
        #:configure-flags '("-DBUILD_TESTS=ON"
-                           "-DUSE_BUNDLED_TINYXML2=OFF")))
+                           "-DUSE_BUNDLED_TINYXML2=OFF")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-testcondition-test
+           (lambda _
+             (substitute* "test/testcondition.cpp"
+               (("test.cpp:4\\] -> \\[test.cpp:6")
+                "test.cpp:4:25] -> [test.cpp:6:18")
+               (("test.cpp:3\\] -> \\[test.cpp:5(.*false)"_ rest)
+                (string-append "test.cpp:3:22] -> [test.cpp:5:22" rest
+                               " [knownConditionTrueFalse]"))))))))
     (inputs
      (list tinyxml2))
     (home-page "https://cppcheck.sourceforge.io")
