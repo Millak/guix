@@ -971,19 +971,42 @@ Python.")
 (define-public python-pycryptodome
   (package
     (name "python-pycryptodome")
-    (version "3.21.0")
+    (version "3.23.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pycryptodome" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/Legrandin/pycryptodome")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "15vjyjy686kgm4fnpwlah1wvxxy0wvr4q5vnp1iygnlv8q6pwy7p"))
+        (base32 "0j1dk55y0q7gqmig1l5b8774w63w2i7qrii1xzkpzz0c3i229i67"))
        (modules '((guix build utils)))
        (snippet pycryptodome-unbundle-tomcrypt-snippet)))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 42912 passed
+      #:test-backend #~'custom
+      ;; As seen in
+      ;; <https://github.com/Legrandin/pycryptodome/blob/v3.23.0/INSTALL.rst>.
+      #:test-flags
+      #~(list "-m" "Crypto.SelfTest")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-gmp-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "lib/Crypto/Math/_IntegerGMP.py"
+                (("load_lib\\(\"gmp\"")
+                 (format #f "load_lib(~s"
+                         (search-input-file inputs "/lib/libgmp.so.10")))))))))
+    (native-inputs
+     (list python-pycryptodome-test-vectors
+           python-setuptools))
     (inputs
-     (list libtomcrypt libtommath))
+     (list gmp
+           libtomcrypt
+           libtommath))
     (home-page "https://www.pycryptodome.org")
     (synopsis "Low-level cryptographic Python library")
     (description
@@ -1047,17 +1070,21 @@ PyCryptodome variants, the other being python-pycryptodomex.")
                    license:asl2.0))))
 
 (define-public python-pycryptodomex
-  (package (inherit python-pycryptodome)
+  (package/inherit python-pycryptodome
     (name "python-pycryptodomex")
-    (version (package-version python-pycryptodome))
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "pycryptodomex" version))
-       (sha256
-        (base32 "0v4y03ha7rm9kdcv9fkrmc94425z3q3mq1nn5p1jbpc1ag80nb92"))
-       (modules '((guix build utils)))
-       (snippet pycryptodome-unbundle-tomcrypt-snippet)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-pycryptodome)
+       ((#:test-flags _)
+        #~(list "-m" "Cryptodome.SelfTest"))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'build 'set-separate-namespace
+              (lambda _
+                ;; This changes the build logic, see setup.py.
+                (with-output-to-file ".separate_namespace"
+                  (lambda _ (display "")))))))))
+    (synopsis
+     "Low-level cryptographic Python library independent of the old PyCrypto")
     (description
      "PyCryptodome is a self-contained Python package of low-level
 cryptographic primitives.  It's not a wrapper to a separate C library like
