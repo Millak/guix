@@ -4636,19 +4636,27 @@ of dates.")
     (version "0.6.16")
     (source
      (origin
-       (method git-fetch) ; no tests in the PyPI tarball
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/esheldon/esutil")
-             (commit version)))
+              (url "https://github.com/esheldon/esutil")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "05csk5asq3si7gdq8mpfh288z10rs45ylpcrrcjx0009q52l95xq"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'relax-gcc-14-strictness
+            (lambda _
+              (setenv "CFLAGS" (string-join
+                                (list "-g" "-O2"
+                                      "-Wno-error=incompatible-pointer-types")
+                                " ")))))))
     (native-inputs
      (list python-pytest
-           python-numpy
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-numpy
            python-scipy))
