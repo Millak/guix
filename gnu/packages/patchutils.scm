@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2018, 2023 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
+;;; Copyright © 2014,2017, 2018, 2023 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2015, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Christopher Baines <mail@cbaines.net>
@@ -51,6 +52,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages text-editors)
   #:use-module (gnu packages time)
   #:use-module (gnu packages version-control)
@@ -525,6 +527,38 @@ patches, and displays the patches along with comments and state information.
 Users can login allowing them to change the state of patches.")
     (home-page "http://jk.ozlabs.org/projects/patchwork/")
     (license license:gpl2+)))
+
+(define-public wdiff
+  (package
+    (name "wdiff")
+    (version "1.2.2")
+    (source
+     (origin
+      (method url-fetch)
+      (uri (string-append "mirror://gnu/wdiff/wdiff-"
+                          version ".tar.gz"))
+      (sha256
+       (base32
+        "0sxgg0ms5lhi4aqqvz1rj4s77yi9wymfm3l3gbjfd1qchy66kzrl"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (add-before 'check 'fix-sh
+                    (lambda _
+                      (substitute* "tests/testsuite"
+                        (("#! /bin/sh")
+                         (string-append "#!" (which "sh")))))))))
+    (native-inputs
+     (list which
+           ;; For some reason wdiff.info gets rebuilt.
+           texinfo))
+    (home-page "https://www.gnu.org/software/wdiff/")
+    (synopsis "Word difference finder")
+    (description
+     "GNU Wdiff is a front-end to the diff program from Diffutils that
+allows you to compare files on a word-by-word basis, where a word is anything
+between whitespace.")
+    (license license:gpl3+)))
 
 (define-public wiggle
   (package

@@ -543,7 +543,6 @@ gnu/packages/video.scm
 gnu/packages/vlang.scm
 gnu/packages/vnc.scm
 gnu/packages/w3m.scm
-gnu/packages/wdiff.scm
 gnu/packages/weather.scm
 gnu/packages/wm.scm
 gnu/packages/wordnet.scm

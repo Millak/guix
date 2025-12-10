@@ -695,7 +695,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/vpn.scm				\
   %D%/packages/vulkan.scm			\
   %D%/packages/w3m.scm				\
-  %D%/packages/wdiff.scm			\
   %D%/packages/weather.scm			\
   %D%/packages/web.scm				\
   %D%/packages/web-browsers.scm			\
