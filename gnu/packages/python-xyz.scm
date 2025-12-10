@@ -11660,16 +11660,17 @@ apply unified diffs.  It has features such as:
 (define-public python-numexpr
   (package
     (name "python-numexpr")
-    (version "2.12.1")
+    (version "2.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "numexpr" version))
        (sha256
-        (base32 "1aslzx2mzgk1xxxpm3mrvl8ngfxj7dxlz4q2xbqx20gh1bnzlfg2"))))
+        (base32 "12xla8qkza3xjrqb2yc517z460mqnwi82m9i5v1sbdy7hq80pq2b"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 6039 passed, 8 warnings
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
