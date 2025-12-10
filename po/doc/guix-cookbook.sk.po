@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-12-01 03:18+0000\n"
-"PO-Revision-Date: 2025-12-03 14:14+0000\n"
+"POT-Creation-Date: 2025-12-10 03:18+0000\n"
+"PO-Revision-Date: 2025-12-10 14:56+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Slovak <https://translate.codeberg.org/projects/guix/documentation-cookbook/sk/>\n"
 "Language: sk\n"
@@ -600,7 +600,7 @@ msgid "#$"
 msgstr "#$"
 
 msgid "gexp"
-msgstr "gvýraz"
+msgstr "gexp"
 
 msgid "ungexp"
 msgstr "odgvýraziť"
@@ -727,9 +727,6 @@ msgstr "Scheme je jazyk, ktorý sa hojne využíva pri výuke programovania a s�
 
 msgid "@uref{https://spritely.institute/static/papers/scheme-primer.html, @i{A Scheme Primer}}, by Christine Lemmer-Webber and the Spritely Institute."
 msgstr "@uref{https://spritely.institute/static/papers/scheme-primer.html, @i{A Scheme Primer}}, od Christine Lemmer-Webberovej a Spritely Institute."
-
-msgid "@uref{http://www.troubleshooters.com/codecorn/scheme_guile/hello.htm, @i{Scheme at a Glance}}, by Steve Litt."
-msgstr "@uref{http://www.troubleshooters.com/codecorn/scheme_guile/hello.htm, @i{Scheme at a Glance}}, od Steva Litta."
 
 msgid "@uref{https://sarabander.github.io/sicp/, @i{Structure and Interpretation of Computer Programs}}, by Harold Abelson and Gerald Jay Sussman, with Julie Sussman.  Colloquially known as ``SICP'', this book is a reference."
 msgstr "@uref{https://sarabander.github.io/sicp/, @i{Structure and Interpretation of Computer Programs}}, od Harolda Abelsona, Geralda Jay Sussmana a Julie Sussmanovej.  Táto knižná príručka je bežne známa ako ``SICP''."

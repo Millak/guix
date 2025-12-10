@@ -14,16 +14,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-11-28 03:18+0000\n"
-"PO-Revision-Date: 2025-11-29 15:53+0000\n"
-"Last-Translator: cpt66 <cpt66@noreply.codeberg.org>\n"
+"POT-Creation-Date: 2025-12-08 03:18+0000\n"
+"PO-Revision-Date: 2025-12-10 11:20+0000\n"
+"Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Dutch <https://translate.codeberg.org/projects/guix/guix/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14\n"
+"X-Generator: Weblate 5.14.3\n"
 
 #: gnu.scm:81
 #, scheme-format
@@ -1814,33 +1814,33 @@ msgstr "Het depot bevindt zich op een Btrfs-subvolume, maar de naam van het volu
 msgid "Use the @code{subvol} Btrfs file system option."
 msgstr "Gebruik de @code{subvol} optie van het Btrfs-bestandssysteem."
 
-#: gnu/system/image.scm:352
+#: gnu/system/image.scm:363
 msgid "image lacks a partition with the 'boot' flag"
 msgstr ""
 
-#: gnu/system/image.scm:405
+#: gnu/system/image.scm:417
 #, fuzzy, scheme-format
 #| msgid "Unsupported image type ~a~%."
 msgid "unsupported image type: ~a"
 msgstr "Niet-ondersteund systeemafbeeldingstype ~a~%."
 
-#: gnu/system/image.scm:426 gnu/system/image.scm:451
+#: gnu/system/image.scm:438 gnu/system/image.scm:463
 #, fuzzy, scheme-format
 #| msgid "unsupported policy: ~a~%"
 msgid "unsupported partition type: ~a"
 msgstr "niet-ondersteund beleid: ~a~%"
 
-#: gnu/system/image.scm:571
+#: gnu/system/image.scm:574
 msgid "EFI bootloader required with GPT partitioning"
 msgstr ""
 
-#: gnu/system/image.scm:1075
+#: gnu/system/image.scm:1078
 #, fuzzy, scheme-format
 #| msgid "unsupported manifest format"
 msgid "~a: unsupported image format"
 msgstr "indeling van paklijst wordt niet ondersteund"
 
-#: gnu/system/image.scm:1105
+#: gnu/system/image.scm:1108
 #, scheme-format
 msgid "~a: no such image type"
 msgstr "~a: geen dergelijk systeemafbeeldingstype"
@@ -9098,10 +9098,9 @@ msgid "Did you forget a @code{use-modules} form?"
 msgstr "Vergat je @code{use-modules} te gebruiken?"
 
 #: guix/ui.scm:371
-#, fuzzy, scheme-format
-#| msgid "Did you forget @code{(use-modules ~a)}?"
+#, scheme-format
 msgid "Did you forget @code{(use-modules ~a)} or @code{#:use-module ~a}?"
-msgstr "Vergat je @code{(use-modules ~a)} te gebruiken?"
+msgstr "Vergat je @code{(use-modules ~a)} of @code{#:use-module ~a} te gebruiken?"
 
 #: guix/ui.scm:381
 #, scheme-format
@@ -10642,23 +10641,23 @@ msgstr ""
 msgid "ignoring invalid file name: '~a'~%"
 msgstr "  canonieke bestandsnaam: ~a~%"
 
-#: guix/scripts/shell.scm:296 guix/scripts/environment.scm:1204
+#: guix/scripts/shell.scm:300 guix/scripts/environment.scm:1204
 #, scheme-format
 msgid "no packages specified; creating an empty environment~%"
 msgstr "geen pakketten opgegeven; zal een lege omgeving aanmaken~%"
 
-#: guix/scripts/shell.scm:301
+#: guix/scripts/shell.scm:305
 #, fuzzy, scheme-format
 #| msgid "following redirection to `~a'...~%"
 msgid "loading environment from '~a'...~%"
 msgstr "omleiding naar ‘~a’ wordt gevolgd…~%"
 
-#: guix/scripts/shell.scm:307
+#: guix/scripts/shell.scm:311
 #, scheme-format
 msgid "not loading '~a' because not authorized to do so~%"
 msgstr ""
 
-#: guix/scripts/shell.scm:309
+#: guix/scripts/shell.scm:313
 #, scheme-format
 msgid ""
 "To allow automatic loading of\n"
@@ -10670,18 +10669,18 @@ msgid ""
 "@end example\n"
 msgstr ""
 
-#: guix/scripts/shell.scm:522
+#: guix/scripts/shell.scm:526
 msgid ""
 ";; What follows is a \"manifest\" equivalent to the command line you gave.\n"
 ";; You can store it in a file that you may then pass to any 'guix' command\n"
 ";; that accepts a '--manifest' (or '-m') option.\n"
 msgstr ""
 
-#: guix/scripts/shell.scm:562
+#: guix/scripts/shell.scm:566
 msgid "spawn one-off software environments"
 msgstr ""
 
-#: guix/scripts/shell.scm:587
+#: guix/scripts/shell.scm:591
 msgid ""
 "Consider passing the @option{--check} option once\n"
 "to make sure your shell does not clobber environment variables."
@@ -11083,7 +11082,7 @@ msgstr "‘--user’ kan niet zonder ‘--container’ gebruikt worden~%"
 msgid "'--profile' cannot be used with package options~%"
 msgstr "‘--profile’ kan niet samen met pakketopties gebruikt worden~%"
 
-#: guix/scripts/environment.scm:1243
+#: guix/scripts/environment.scm:1245
 #, scheme-format
 msgid "'--check' is unnecessary when using '--container'; doing nothing~%"
 msgstr ""
@@ -11736,19 +11735,19 @@ msgstr "~a: ophalen mislukte~%"
 msgid "failed to retrieve package information from ~a: ~a (~a)~%"
 msgstr "ophalen van bron voor ‘~a’ mislukt"
 
-#: guix/import/cran.scm:1042 guix/import/cran.scm:1065
+#: guix/import/cran.scm:1053 guix/import/cran.scm:1076
 #, fuzzy, scheme-format
 #| msgid "~a is already the latest version of ~a~%"
 msgid "~a provides only the latest version of each package, sorry."
 msgstr "~a is al de laatste versie van ~a~%"
 
-#: guix/import/cran.scm:1135
+#: guix/import/cran.scm:1146
 #, fuzzy
 #| msgid "Updater for GNU packages"
 msgid "Updater for CRAN packages"
 msgstr "Bijwerker voor GNU-pakketten"
 
-#: guix/import/cran.scm:1142
+#: guix/import/cran.scm:1153
 #, fuzzy
 #| msgid "Updater for X.org packages"
 msgid "Updater for Bioconductor packages"

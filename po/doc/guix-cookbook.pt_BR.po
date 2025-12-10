@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-12-01 03:18+0000\n"
+"POT-Creation-Date: 2025-12-10 03:18+0000\n"
 "PO-Revision-Date: 2025-12-05 00:10+0000\n"
 "Last-Translator: fkeiler <fkeiler@noreply.codeberg.org>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.codeberg.org/projects/guix/documentation-cookbook/pt_BR/>\n"
@@ -798,9 +798,6 @@ msgstr "Scheme é uma linguagem que tem sido amplamente utilizada para ensinar p
 
 msgid "@uref{https://spritely.institute/static/papers/scheme-primer.html, @i{A Scheme Primer}}, by Christine Lemmer-Webber and the Spritely Institute."
 msgstr "@uref{https://spritely.institute/static/papers/scheme-primer.html, @i{A Scheme Primer}}, por Christine Lemmer-Webber e o Spritely Institute."
-
-msgid "@uref{http://www.troubleshooters.com/codecorn/scheme_guile/hello.htm, @i{Scheme at a Glance}}, by Steve Litt."
-msgstr "@uref{http://www.troubleshooters.com/codecorn/scheme_guile/hello.htm, @i{Scheme at a Glance}}, por Steve Litt."
 
 msgid "@uref{https://sarabander.github.io/sicp/, @i{Structure and Interpretation of Computer Programs}}, by Harold Abelson and Gerald Jay Sussman, with Julie Sussman.  Colloquially known as ``SICP'', this book is a reference."
 msgstr "@uref{https://sarabander.github.io/sicp/, @i{Structure and Interpretation of Computer Programs}}, por Harold Abelson e Gerald Jay Sussman, com Julie Sussman. Coloquialmente conhecido como ``SICP'', este livro é uma referência."

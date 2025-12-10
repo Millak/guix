@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-12-04 03:18+0000\n"
-"PO-Revision-Date: 2025-12-01 16:18+0000\n"
+"POT-Creation-Date: 2025-12-08 03:18+0000\n"
+"PO-Revision-Date: 2025-12-10 11:20+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/guix/de/>\n"
 "Language: de\n"
@@ -9064,10 +9064,9 @@ msgid "Did you forget a @code{use-modules} form?"
 msgstr "Vielleicht haben Sie eine @code{use-modules}-Form vergessen?"
 
 #: guix/ui.scm:371
-#, fuzzy, scheme-format
-#| msgid "Did you forget @code{(use-modules ~a)}?"
+#, scheme-format
 msgid "Did you forget @code{(use-modules ~a)} or @code{#:use-module ~a}?"
-msgstr "Vielleicht haben Sie @code{(use-modules ~a)} vergessen?"
+msgstr "Vielleicht haben Sie @code{(use-modules ~a)} oder @code{#:use-module ~a} vergessen?"
 
 #: guix/ui.scm:381
 #, scheme-format
@@ -10540,22 +10539,22 @@ msgstr ""
 msgid "ignoring invalid file name: '~a'~%"
 msgstr "Ungültiger Dateiname wird ignoriert: „~a“~%"
 
-#: guix/scripts/shell.scm:296 guix/scripts/environment.scm:1204
+#: guix/scripts/shell.scm:300 guix/scripts/environment.scm:1204
 #, scheme-format
 msgid "no packages specified; creating an empty environment~%"
 msgstr "Keine Pakete angegeben; leere Umgebung wird erstellt~%"
 
-#: guix/scripts/shell.scm:301
+#: guix/scripts/shell.scm:305
 #, scheme-format
 msgid "loading environment from '~a'...~%"
 msgstr "Umgebung aus „~a“ wird geladen …~%"
 
-#: guix/scripts/shell.scm:307
+#: guix/scripts/shell.scm:311
 #, scheme-format
 msgid "not loading '~a' because not authorized to do so~%"
 msgstr "„~a“ wird nicht geladen, denn es wurde nicht autorisiert~%"
 
-#: guix/scripts/shell.scm:309
+#: guix/scripts/shell.scm:313
 #, scheme-format
 msgid ""
 "To allow automatic loading of\n"
@@ -10574,7 +10573,7 @@ msgstr ""
 "echo ~a >> ~a\n"
 "@end example\n"
 
-#: guix/scripts/shell.scm:522
+#: guix/scripts/shell.scm:526
 msgid ""
 ";; What follows is a \"manifest\" equivalent to the command line you gave.\n"
 ";; You can store it in a file that you may then pass to any 'guix' command\n"
@@ -10585,11 +10584,11 @@ msgstr ""
 ";; beliebigen 'guix'-Befehl zu übergeben, der die Befehlszeilenoption\n"
 ";; '--manifest' (oder '-m') annimmt.\n"
 
-#: guix/scripts/shell.scm:562
+#: guix/scripts/shell.scm:566
 msgid "spawn one-off software environments"
 msgstr "Umgebungen für einmalige Nutzungen erzeugen"
 
-#: guix/scripts/shell.scm:587
+#: guix/scripts/shell.scm:591
 msgid ""
 "Consider passing the @option{--check} option once\n"
 "to make sure your shell does not clobber environment variables."
@@ -11012,7 +11011,7 @@ msgstr "„--symlink“ kann nur mit „--container“ benutzt werden~%"
 msgid "'--profile' cannot be used with package options~%"
 msgstr "„--profile“ kann nicht zusammen mit Paketoptionen angegeben werden~%"
 
-#: guix/scripts/environment.scm:1243
+#: guix/scripts/environment.scm:1245
 #, scheme-format
 msgid "'--check' is unnecessary when using '--container'; doing nothing~%"
 msgstr "Sie brauchen kein „--check“, wenn Sie „--container“ angeben; nichts wird geprüft~%"

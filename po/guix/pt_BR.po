@@ -20,9 +20,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix 1.2.0-pre1\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-11-30 03:18+0000\n"
-"PO-Revision-Date: 2025-11-30 13:52+0000\n"
-"Last-Translator: fkeiler <fkeiler@noreply.codeberg.org>\n"
+"POT-Creation-Date: 2025-12-08 03:18+0000\n"
+"PO-Revision-Date: 2025-12-10 11:20+0000\n"
+"Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.codeberg.org/projects/guix/guix/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -2029,30 +2029,30 @@ msgstr "O armazém está em um subvolume Btrfs, mas o nome do subvolume é desco
 msgid "Use the @code{subvol} Btrfs file system option."
 msgstr "Use a opção de sistema de arquivo @code{subvol} do Btrfs."
 
-#: gnu/system/image.scm:352
+#: gnu/system/image.scm:363
 msgid "image lacks a partition with the 'boot' flag"
 msgstr "a imagem não possui uma partição com o sinalizador 'boot'"
 
-#: gnu/system/image.scm:405
+#: gnu/system/image.scm:417
 #, scheme-format
 msgid "unsupported image type: ~a"
 msgstr "tipo de imagem não suportado: ~a"
 
-#: gnu/system/image.scm:426 gnu/system/image.scm:451
+#: gnu/system/image.scm:438 gnu/system/image.scm:463
 #, scheme-format
 msgid "unsupported partition type: ~a"
 msgstr "tipo de partição não suportado: ~a"
 
-#: gnu/system/image.scm:571
+#: gnu/system/image.scm:574
 msgid "EFI bootloader required with GPT partitioning"
 msgstr "Bootloader EFI necessário com particionamento GPT"
 
-#: gnu/system/image.scm:1075
+#: gnu/system/image.scm:1078
 #, scheme-format
 msgid "~a: unsupported image format"
 msgstr "~a: sem suporte ao formato de imagem"
 
-#: gnu/system/image.scm:1105
+#: gnu/system/image.scm:1108
 #, scheme-format
 msgid "~a: no such image type"
 msgstr "~a: não existe esse tipo de imagem"
@@ -9169,10 +9169,9 @@ msgid "Did you forget a @code{use-modules} form?"
 msgstr "Você se esqueceu de uma forma @code{use-modules}?"
 
 #: guix/ui.scm:371
-#, fuzzy, scheme-format
-#| msgid "Did you forget @code{(use-modules ~a)}?"
+#, scheme-format
 msgid "Did you forget @code{(use-modules ~a)} or @code{#:use-module ~a}?"
-msgstr "Você se esqueceu de @code{(use-modules ~a)}?"
+msgstr "Você se esqueceu de @code{(use-modules ~a)} ou @code{#:use-module ~a}?"
 
 #: guix/ui.scm:381
 #, scheme-format
@@ -10631,22 +10630,22 @@ msgstr ""
 msgid "ignoring invalid file name: '~a'~%"
 msgstr "nome de arquivo canônico: ~a~%"
 
-#: guix/scripts/shell.scm:296 guix/scripts/environment.scm:1204
+#: guix/scripts/shell.scm:300 guix/scripts/environment.scm:1204
 #, scheme-format
 msgid "no packages specified; creating an empty environment~%"
 msgstr "nenhum pacote especificado; criando um ambiente vazio~%"
 
-#: guix/scripts/shell.scm:301
+#: guix/scripts/shell.scm:305
 #, scheme-format
 msgid "loading environment from '~a'...~%"
 msgstr "carregando ambiente de '~a'...~%"
 
-#: guix/scripts/shell.scm:307
+#: guix/scripts/shell.scm:311
 #, scheme-format
 msgid "not loading '~a' because not authorized to do so~%"
 msgstr "não está carregando '~a' porque não está autorizado a fazê-lo~%"
 
-#: guix/scripts/shell.scm:309
+#: guix/scripts/shell.scm:313
 #, scheme-format
 msgid ""
 "To allow automatic loading of\n"
@@ -10665,7 +10664,7 @@ msgstr ""
 "eco ~a >> ~a\n"
 "@end example\n"
 
-#: guix/scripts/shell.scm:522
+#: guix/scripts/shell.scm:526
 msgid ""
 ";; What follows is a \"manifest\" equivalent to the command line you gave.\n"
 ";; You can store it in a file that you may then pass to any 'guix' command\n"
@@ -10675,11 +10674,11 @@ msgstr ""
 ";; Você pode armazená-lo em um arquivo que você pode então passar para qualquer\n"
 ";; comando 'guix' que aceite uma opção '--manifest' (ou '-m').\n"
 
-#: guix/scripts/shell.scm:562
+#: guix/scripts/shell.scm:566
 msgid "spawn one-off software environments"
 msgstr "gerar ambientes de software únicos"
 
-#: guix/scripts/shell.scm:587
+#: guix/scripts/shell.scm:591
 msgid ""
 "Consider passing the @option{--check} option once\n"
 "to make sure your shell does not clobber environment variables."
@@ -11091,7 +11090,7 @@ msgstr "'--symlink' não pode ser usado sem '--container'~%"
 msgid "'--profile' cannot be used with package options~%"
 msgstr "\"--profile\" não pode ser usado com opções de pacote~%"
 
-#: guix/scripts/environment.scm:1243
+#: guix/scripts/environment.scm:1245
 #, scheme-format
 msgid "'--check' is unnecessary when using '--container'; doing nothing~%"
 msgstr "'--check' é desnecessário ao usar '--container'; nada a ser feito~%"

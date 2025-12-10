@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix 1.0.1.4876-09145-dirty\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-12-01 03:18+0000\n"
+"POT-Creation-Date: 2025-12-10 03:18+0000\n"
 "PO-Revision-Date: 2025-12-03 14:14+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/documentation-cookbook/de/>\n"
@@ -739,9 +739,6 @@ msgstr "Die Sprache Scheme wurde oft eingesetzt, um Programmieren beizubringen, 
 
 msgid "@uref{https://spritely.institute/static/papers/scheme-primer.html, @i{A Scheme Primer}}, by Christine Lemmer-Webber and the Spritely Institute."
 msgstr "@uref{https://spritely.institute/news/ein-scheme-primer.html, @i{Ein Scheme-Primer}}, von Christine Lemmer-Webber und dem Spritely Institute, auf Deutsch übersetzt von Florian Pelz."
-
-msgid "@uref{http://www.troubleshooters.com/codecorn/scheme_guile/hello.htm, @i{Scheme at a Glance}}, by Steve Litt."
-msgstr "@uref{http://www.troubleshooters.com/codecorn/scheme_guile/hello.htm, @i{Scheme at a Glance}} von Steve Litt."
 
 msgid "@uref{https://sarabander.github.io/sicp/, @i{Structure and Interpretation of Computer Programs}}, by Harold Abelson and Gerald Jay Sussman, with Julie Sussman.  Colloquially known as ``SICP'', this book is a reference."
 msgstr "Eines der Referenzbücher zu Scheme ist das einflussreiche „Structure and Interpretation of Computer Programs“, von Harold Abelson und Gerald Jay Sussman, mit Julie Sussman. Eine deutsche Übersetzung „Struktur und Interpretation von Computerprogrammen“ hat Susanne Daniels-Herold verfasst. Vom englischen Original finden Sie eine @uref{https://sarabander.github.io/sicp/, kostenlose Ausgabe online}. Viele kennen es unter dem Akronym SICP."

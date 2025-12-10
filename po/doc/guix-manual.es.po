@@ -61,7 +61,7 @@ msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-10-24 03:18+0000\n"
-"PO-Revision-Date: 2025-09-27 14:50+0000\n"
+"PO-Revision-Date: 2025-12-10 14:56+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Spanish <https://translate.codeberg.org/projects/guix/documentation-manual/es/>\n"
 "Language: es\n"
@@ -69,7 +69,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.13.2\n"
+"X-Generator: Weblate 5.14.3\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 msgid "Contributing"
@@ -7651,11 +7651,8 @@ msgstr ""
 "  #:use-module (gnu packages gawk))\n"
 "\n"
 
-msgid "Without being a Scheme expert, the reader may have guessed the meaning of the various fields here.  This expression binds the variable @code{hello} to a @code{<package>} object, which is essentially a record (@pxref{SRFI-9, Scheme records,, guile, GNU Guile Reference Manual}).  This package object can be inspected using procedures found in the @code{(guix packages)} module; for instance, @code{(package-name hello)} returns---surprise!---@code{\"hello\"}."
-msgstr "Sin ser una experta en Scheme---pero conociendo un poco de inglés---, la lectora puede haber supuesto el significado de varios campos aquí. Esta expresión asocia la variable @code{hello} al objeto @code{<package>}, que esencialmente es un registro (@pxref{SRFI-9, Scheme records,, guile, GNU Guile Reference Manual}). Este objeto de paquete puede ser inspeccionado usando los procedimientos encontrados en el módulo @code{(guix packages)}; por ejemplo, @code{(package-name hello)} devuelve---¡sorpresa!---@code{\"hello\"}."
-
-msgid "With luck, you may be able to import part or all of the definition of the package you are interested in from another repository, using the @code{guix import} command (@pxref{Invoking guix import})."
-msgstr "Con suerte, puede que sea capaz de importar parte o toda la definición del paquete de su interés de otro repositorio, usando la orden @code{guix import} (@pxref{Invoking guix import})."
+msgid "Without being a Scheme expert, the reader may have guessed the meaning of the various fields here.  This expression binds the variable @code{hello} to a @code{<package>} record (@pxref{SRFI-9, Scheme records,, guile, GNU Guile Reference Manual}).  This package object can be inspected using procedures found in the @code{(guix packages)} module; for instance, @code{(package-name hello)} returns---surprise!---@code{\"hello\"}."
+msgstr "Sin ser una experta en Scheme---pero conociendo un poco de inglés---, la lectora puede haber supuesto el significado de varios campos aquí. Esta expresión asocia la variable @code{hello} al registro @code{<package>} (@pxref{SRFI-9, Scheme records,, guile, GNU Guile Reference Manual}). Este objeto de paquete puede ser inspeccionado usando los procedimientos encontrados en el módulo @code{(guix packages)}; por ejemplo, @code{(package-name hello)} devuelve---¡sorpresa!---@code{\"hello\"}."
 
 msgid "In the example above, @code{hello} is defined in a module of its own, @code{(gnu packages hello)}.  Technically, this is not strictly necessary, but it is convenient to do so: all the packages defined in modules under @code{(gnu packages @dots{})} are automatically known to the command-line tools (@pxref{Package Modules})."
 msgstr "En el ejemplo previo, @code{hello} se define en un módulo para ella, @code{(gnu packages hello)}. Técnicamente, esto no es estrictamente necesario, pero es conveniente hacerlo: todos los paquetes definidos en módulos bajo @code{(gnu packages @dots{})} se reconocen automáticamente en las herramientas de línea de órdenes (@pxref{Package Modules})."
@@ -7689,33 +7686,6 @@ msgstr "Cuando comience a empaquetar software no trivial puede que necesite herr
 
 msgid "The @code{arguments} field specifies options for the build system (@pxref{Build Systems}).  Here it is interpreted by @code{gnu-build-system} as a request run @file{configure} with the @option{--enable-silent-rules} flag."
 msgstr "El campo @code{arguments} especifica las opciones para el sistema de construcción (@pxref{Build Systems}). Aquí son interpretadas por @code{gnu-build-system} como una petición de ejecutar @file{configure} con la opción @option{--enable-silent-rules}."
-
-msgid "quote"
-msgstr "quote"
-
-msgid "quoting"
-msgstr "literales, inhibición de la evaluación"
-
-msgid "'"
-msgstr "'"
-
-msgid "backquote (quasiquote)"
-msgstr "acento grave (quasiquote)"
-
-msgid "`"
-msgstr "`"
-
-msgid "quasiquote"
-msgstr "quasiquote"
-
-msgid "comma (unquote)"
-msgstr "coma (unquote)"
-
-msgid ","
-msgstr ","
-
-msgid "unquote"
-msgstr "unquote"
 
 msgid "The hash-colon (@code{#:}) sequence defines a Scheme @dfn{keyword} (@pxref{Keywords,,, guile, GNU Guile Reference Manual}), and @code{#:configure-flags} is a keyword used to pass a keyword argument to the build system (@pxref{Coding With Keywords,,, guile, GNU Guile Reference Manual})."
 msgstr "La secuencia almohadilla-dos puntos (@code{#:}) define una @dfn{palabra clave} Scheme (@pxref{Keywords,,, guile, GNU Guile Reference Manual}), y @code{#:configure-flags} es una palabra clave usada para pasar un parámetro nominal al sistema de construcción (@pxref{Coding With Keywords,,, guile, GNU Guile Reference Manual})."

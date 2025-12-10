@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: guix-manual 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-10-24 03:18+0000\n"
-"PO-Revision-Date: 2025-12-03 14:39+0000\n"
+"PO-Revision-Date: 2025-12-10 14:56+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: German <https://translate.codeberg.org/projects/guix/documentation-manual/de/>\n"
 "Language: de\n"
@@ -4640,8 +4640,8 @@ msgstr "Wenn bei Ihnen Parabola läuft, können Sie, nachdem Sie das Repository 
 msgid "sudo pacman -S guix\n"
 msgstr "sudo pacman -S guix\n"
 
-msgid "The Guix project also provides a shell script, @file{guix-install.sh}, which automates the binary installation process without use of a foreign distro package manager@footnote{@uref{https://guix.gnu.org/guix-install.sh}}.  Use of @file{guix-install.sh} requires Bash, GnuPG, GNU@tie{}tar, wget, and Xz."
-msgstr "Das Guix-Projekt stellt außerdem ein Shell-Skript bereit, @file{guix-install.sh}, mit dem der Installationsvorgang aus Binärdateien ohne ein Paketverwaltungsprogramm der Fremddistribution automatisiert wird@footnote{@uref{https://guix.gnu.org/guix-install.sh}}. Um @file{guix-install.sh} benutzen zu können, werden Bash, GnuPG, GNU@tie{}tar, wget und Xz vorausgesetzt."
+msgid "The Guix project also provides a shell script, @file{guix-install.sh}, which automates the binary installation process without use of a foreign distro package manager@footnote{@uref{https://guix.gnu.org/guix-install.sh}}.  Use of @file{guix-install.sh} requires Bash, GnuPG, GNU@tie{}tar, wget, and Xz.  On systems where @code{systemd} is detected, the tool @code{newgidmap} from the @code{uidmap} package is also required."
+msgstr "Das Guix-Projekt stellt außerdem ein Shell-Skript bereit, @file{guix-install.sh}, mit dem der Installationsvorgang aus Binärdateien ohne ein Paketverwaltungsprogramm der Fremddistribution automatisiert wird@footnote{@uref{https://guix.gnu.org/guix-install.sh}}. Um @file{guix-install.sh} benutzen zu können, werden Bash, GnuPG, GNU@tie{}tar, wget und Xz vorausgesetzt. Auf Systemen, wo @code{systemd} gefunden wird, brauchen Sie außerdem das Programm @code{newgidmap} aus dem Paket @code{uidmap} als Voraussetzung."
 
 msgid "The script guides you through the following:"
 msgstr "Das Skript führt Sie durch Folgendes:"
@@ -10739,7 +10739,8 @@ msgid ""
 "               (base32\n"
 "                \"0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i\"))))\n"
 "    (build-system gnu-build-system)\n"
-"    (arguments '(#:configure-flags '(\"--enable-silent-rules\")))\n"
+"    (arguments\n"
+"     (list #:configure-flags #~(list \"--enable-silent-rules\")))\n"
 "    (inputs (list gawk))\n"
 "    (synopsis \"Hello, GNU world: An example GNU package\")\n"
 "    (description \"Guess what GNU Hello prints!\")\n"
@@ -10758,18 +10759,25 @@ msgstr ""
 "               (base32\n"
 "                \"0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i\"))))\n"
 "    (build-system gnu-build-system)\n"
-"    (arguments '(#:configure-flags '(\"--enable-silent-rules\")))\n"
+"    (arguments\n"
+"     (list #:configure-flags #~(list \"--enable-silent-rules\")))\n"
 "    (inputs (list gawk))\n"
 "    (synopsis \"Hello, GNU world: An example GNU package\")\n"
 "    (description \"Guess what GNU Hello prints!\")\n"
 "    (home-page \"https://www.gnu.org/software/hello/\")\n"
 "    (license gpl3+)))\n"
 
-msgid "Without being a Scheme expert, the reader may have guessed the meaning of the various fields here.  This expression binds the variable @code{hello} to a @code{<package>} object, which is essentially a record (@pxref{SRFI-9, Scheme records,, guile, GNU Guile Reference Manual}).  This package object can be inspected using procedures found in the @code{(guix packages)} module; for instance, @code{(package-name hello)} returns---surprise!---@code{\"hello\"}."
-msgstr "Auch ohne ein Experte in Scheme zu sein, könnten Leser erraten haben, was die verschiedenen Felder dabei bedeuten. Dieser Ausdruck bindet die Variable @code{hello} an ein @code{<package>}-Objekt, was an sich nur ein Verbund (Record) ist (siehe @ref{SRFI-9, Scheme-Verbünde,, guile, Referenzhandbuch zu GNU Guile}). Die Felder dieses Paket-Objekts lassen sich mit den Prozeduren aus dem Modul @code{(guix packages)} auslesen, zum Beispiel liefert @code{(package-name hello)}@tie{}– Überraschung!@tie{}– @code{\"hello\"}."
+msgid "Without being a Scheme expert, the reader may have guessed the meaning of the various fields here.  This expression binds the variable @code{hello} to a @code{<package>} record (@pxref{SRFI-9, Scheme records,, guile, GNU Guile Reference Manual}).  This package object can be inspected using procedures found in the @code{(guix packages)} module; for instance, @code{(package-name hello)} returns---surprise!---@code{\"hello\"}."
+msgstr "Auch ohne ein Experte in Scheme zu sein, könnten Leser erraten haben, was die verschiedenen Felder dabei bedeuten. Dieser Ausdruck bindet die Variable @code{hello} an einen @code{<package>}-Verbund (Record) (siehe @ref{SRFI-9, Scheme-Verbünde,, guile, Referenzhandbuch zu GNU Guile}). Die Felder dieses Paket-Objekts lassen sich mit den Prozeduren aus dem Modul @code{(guix packages)} auslesen, zum Beispiel liefert @code{(package-name hello)}@tie{}– Überraschung!@tie{}– @code{\"hello\"}."
 
-msgid "With luck, you may be able to import part or all of the definition of the package you are interested in from another repository, using the @code{guix import} command (@pxref{Invoking guix import})."
-msgstr "Mit etwas Glück können Sie die Definition vielleicht teilweise oder sogar ganz aus einer anderen Paketsammlung importieren, indem Sie den Befehl @code{guix import} verwenden (siehe @ref{Invoking guix import})."
+msgid "Quick start"
+msgstr "Schnelleinstieg"
+
+msgid "Impatient? With luck, you may be able to import part or all of the definition of the package you are interested in from another repository, using the @code{guix import} command (@pxref{Invoking guix import})."
+msgstr "Ungeduldig? Mit etwas Glück können Sie die Definition vielleicht teilweise oder sogar ganz aus einer anderen Paketsammlung importieren, indem Sie den Befehl @code{guix import} verwenden (siehe @ref{Invoking guix import})."
+
+msgid "Alternatively, try out the @uref{https://guix-hpc.gitlabpages.inria.fr/guix-packager/, Guix-Packager interface} in your web browser to produce a preliminary package definition."
+msgstr "Alternativ probieren Sie mal die @uref{https://guix-hpc.gitlabpages.inria.fr/guix-packager/, Guix-Packager-Schnittstelle} in Ihrem Web-Browser aus, um eine erste Version einer Paketdefinition vorgeschlagen zu bekommen."
 
 msgid "In the example above, @code{hello} is defined in a module of its own, @code{(gnu packages hello)}.  Technically, this is not strictly necessary, but it is convenient to do so: all the packages defined in modules under @code{(gnu packages @dots{})} are automatically known to the command-line tools (@pxref{Package Modules})."
 msgstr "In obigem Beispiel wurde @code{hello} in einem eigenen Modul ganz für sich alleine definiert, und zwar @code{(gnu packages hello)}. Technisch gesehen muss es nicht unbedingt in einem solchen Modul definiert werden, aber es ist bequem, denn alle Module unter @code{(gnu packages …)} werden automatisch von den Befehlszeilenwerkzeugen gefunden (siehe @ref{Package Modules})."
@@ -10804,38 +10812,29 @@ msgstr "Sobald Sie anfangen, Pakete für nichttriviale Software zu schreiben, k�
 msgid "The @code{arguments} field specifies options for the build system (@pxref{Build Systems}).  Here it is interpreted by @code{gnu-build-system} as a request run @file{configure} with the @option{--enable-silent-rules} flag."
 msgstr "Das Feld @code{arguments} gibt an, welche Optionen dem Erstellungssystem mitgegeben werden sollen (siehe @ref{Build Systems}). In diesem Fall interpretiert @code{gnu-build-system} diese als Auftrag, @file{configure} mit der Befehlszeilenoption @option{--enable-silent-rules} auszuführen."
 
-msgid "quote"
-msgstr "quote"
+msgid "The value of the @code{arguments} field is a list of arguments passed to the build system and that end up being applied, as with @code{apply} (@pxref{Fly Evaluation, @code{apply},, guile, GNU Guile Reference Manual})."
+msgstr "Der Wert des @code{arguments}-Feldes ist eine Liste von Argumenten, die an das Erstellungssystem weitergereicht werden, wie bei @code{apply} (siehe @ref{Fly Evaluation, @code{apply},, guile, Referenzhandbuch zu GNU Guile})."
 
-msgid "quoting"
-msgstr "Maskierung"
-
-msgid "'"
-msgstr "'"
-
-msgid "backquote (quasiquote)"
-msgstr "Backquote (Quasimaskierung)"
-
-msgid "`"
-msgstr "`"
-
-msgid "quasiquote"
-msgstr "quasiquote"
-
-msgid "comma (unquote)"
-msgstr "Komma (Demaskierung)"
-
-msgid ","
-msgstr ","
-
-msgid "unquote"
-msgstr "unquote"
-
-msgid "What about these quote (@code{'}) characters? They are Scheme syntax to introduce a literal list; @code{'} is synonymous with @code{quote}.  Sometimes you'll also see @code{`} (a backquote, synonymous with @code{quasiquote}) and @code{,} (a comma, synonymous with @code{unquote}).  @xref{Expression Syntax, quoting,, guile, GNU Guile Reference Manual}, for details.  Here the value of the @code{arguments} field is a list of arguments passed to the build system down the road, as with @code{apply} (@pxref{Fly Evaluation, @code{apply},, guile, GNU Guile Reference Manual})."
-msgstr "Was hat es mit diesen einfachen Anführungszeichen (@code{'}) auf sich? Sie gehören zur Syntax von Scheme und führen eine wörtlich zu interpretierende Datenliste ein; dies nennt sich Maskierung oder Quotierung. @code{'} ist synonym mit @code{quote}. Ihnen könnte auch @code{`} begegnen (ein Backquote, stattdessen kann man auch das längere Synonym @code{quasiquote} schreiben); damit können wir eine wörtlich als Daten interpretierte Liste einführen, aber bei dieser „Quasimaskierung“ kann @code{,} (ein Komma, oder dessen Synonym @code{unquote}) benutzt werden, um den ausgewerteten Wert eines Ausdrucks in diese Liste einzufügen. @ref{Expression Syntax, Quotierung,, guile, Referenzhandbuch zu GNU Guile} enthält weitere Details. Hierbei ist also der Wert des @code{arguments}-Feldes eine Liste von Argumenten, die an das Erstellungssystem weitergereicht werden, wie bei @code{apply} (siehe @ref{Fly Evaluation, @code{apply},, guile, Referenzhandbuch zu GNU Guile})."
+msgid "keyword arguments, for build systems"
+msgstr "Schlüsselwortargumente, für Erstellungssysteme"
 
 msgid "The hash-colon (@code{#:}) sequence defines a Scheme @dfn{keyword} (@pxref{Keywords,,, guile, GNU Guile Reference Manual}), and @code{#:configure-flags} is a keyword used to pass a keyword argument to the build system (@pxref{Coding With Keywords,,, guile, GNU Guile Reference Manual})."
 msgstr "Ein Doppelkreuz gefolgt von einem Doppelpunkt (@code{#:}) definiert ein Scheme-@dfn{Schlüsselwort} (siehe @ref{Keywords,,, guile, Referenzhandbuch zu GNU Guile}) und @code{#:configure-flags} ist ein Schlüsselwort, um eine Befehlszeilenoption an das Erstellungssystem mitzugeben (siehe @ref{Coding With Keywords,,, guile, Referenzhandbuch zu GNU Guile})."
+
+msgid "#~"
+msgstr "#~"
+
+msgid "gexp"
+msgstr "gexp"
+
+msgid "staging, for build system arguments"
+msgstr "Staging, von Argumenten in Erstellungssystemen"
+
+msgid "code staging, in package definitions"
+msgstr "Code-Staging, in Paketdefinitionen"
+
+msgid "What about these hash-tilde (@code{#~}) characters? This is Guix-specific syntax introducing a so-called @dfn{G-expression} (@pxref{G-Expressions}), which denotes code that is @dfn{staged} for eventual evaluation: this staged code is only evaluated if and when attempting to build the package, by the build daemon.  In this example, the staged code is the @code{(list @dots{})} expression, which builds a list of one element, the configure flag."
+msgstr "Die Doppelkreuz-Tilde-Zeichen (@code{#~}) wiederum sind Guix-eigene Syntax, mit der ein sogenannter @dfn{G-Aussdruck} begonnen wird (siehe @ref{G-Expressions}), womit wir Code zur späteren Ausführung vormerken (wir nennen ihn @dfn{staged}). Staged Code wird dann und nur dann ausgewertet, wenn das Paket durch den Erstellungs-Daemon erstellt wird. In diesem Beispiel ist der Staged Code der @code{(list @dots{})}-Ausdruck, der eine einelementige Liste mit der configure-Befehlszeilenoption erstellt."
 
 msgid "The @code{inputs} field specifies inputs to the build process---i.e., build-time or run-time dependencies of the package.  Here, we add an input, a reference to the @code{gawk} variable; @code{gawk} is itself bound to a @code{<package>} object."
 msgstr "Das Feld @code{inputs} legt Eingaben an den Erstellungsprozess fest@tie{}– d.h.@: Abhängigkeiten des Pakets zur Erstellungs- oder Laufzeit. Hier fügen wir eine Eingabe hinzu, eine Referenz auf die Variable @code{gawk}; @var{gawk} ist auch selbst wiederum an ein @code{<package>}-Objekt als Variablenwert gebunden."
@@ -41593,6 +41592,9 @@ msgstr "@code{image} (Vorgabe: @var{hurd-vm-disk-image})"
 msgid "The image object representing the disk image of this virtual machine (@pxref{System Images})."
 msgstr "Das @code{image}-Objekt für ein Disk-Image, mit dem diese virtuelle Maschine laufen soll (siehe @ref{System Images})."
 
+msgid "Alternatively, this can be the file name (a string) of an image, which is useful if you want the image to persist across service restarts---see example below."
+msgstr "Alternativ können Sie den Dateinamen (als Zeichenkette) eines Abbilds angeben. Das ist nützlich, wenn Sie möchten, dass das Abbild auch nach einem Neustart des Dienstes bestehen bleibt. Siehe das folgende Beispiel."
+
 msgid "@code{disk-size} (default: @code{'guess})"
 msgstr "@code{disk-size} (Vorgabe: @code{'guess})"
 
@@ -41713,6 +41715,22 @@ msgstr ""
 "/etc/childhurd/etc/ssh/ssh_host_ecdsa_key\n"
 "/etc/childhurd/etc/ssh/ssh_host_ed25519_key.pub\n"
 "/etc/childhurd/etc/ssh/ssh_host_ecdsa_key.pub\n"
+
+msgid "Note that by default the VM image is volatile---i.e., once the service is stopped, the contents are lost.  If you want a persistent image instead, override the configuration's @code{image} and @code{options} without the @option{--snapshot} flag using something along these lines:"
+msgstr "Beachten Sie, dass nach Vorgabe ein flüchtiges Abbild für die virtuelle Maschine benutzt wird, also dessen Inhalt verloren geht, sobald der Dienst gestoppt wurde. Wenn Sie stattdessen ein bleibendes Abbild möchten, ändern Sie die Felder @code{image} und @code{options} in der Konfiguration, so dass keine @option{--snapshot}-Befehlszeilenoption übergeben wird, z.B.@: so:"
+
+msgid ""
+"(service hurd-vm-service-type\n"
+"         (hurd-vm-configuration\n"
+"          ;; Specify an out-of-store, persistent image.\n"
+"          (image \"/out/of/store/writable/hurd.img\")\n"
+"          (options '())))\n"
+msgstr ""
+"(service hurd-vm-service-type\n"
+"         (hurd-vm-configuration\n"
+"          ;; Abbild außerhalb des Stores mit bleibendem Zustand.\n"
+"          (image \"/nicht/im/store/mit/schreibzugriff/hurd.img\")\n"
+"          (options '())))\n"
 
 msgid "Ganeti"
 msgstr "Ganeti"

@@ -24,8 +24,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: guix 0.14.0\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
-"POT-Creation-Date: 2025-11-15 03:18+0000\n"
-"PO-Revision-Date: 2025-11-13 00:09+0100\n"
+"POT-Creation-Date: 2025-12-08 03:18+0000\n"
+"PO-Revision-Date: 2025-12-10 10:26+0000\n"
 "Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://translate.codeberg.org/projects/guix/guix/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -33,7 +33,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.14\n"
+"X-Generator: Weblate 5.14.3\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -1310,29 +1310,23 @@ msgid ""
 "model.  It can be used to protect the speakers on Apple Silicon devices."
 msgstr "运行 @command{speakersafetyd}，一个用户空间守护进程，实现德州仪器智能放大器扬声器保护模型的类似物。它可以用于保护 Apple Silicon 设备上的扬声器。"
 
-#: gnu/services/ssh.scm:253
-msgid ""
-"Run the GNU@tie{}lsh secure shell (SSH) daemon,\n"
-"@command{lshd}."
-msgstr "运行 GNU@tie{}lsh 安全外壳（SSH）守护进程，@command{lshd}。"
-
-#: gnu/services/ssh.scm:650
+#: gnu/services/ssh.scm:416
 msgid "Run the OpenSSH secure shell (SSH) server, @command{sshd}."
 msgstr "运行 OpenSSH 安全外壳（SSH）服务器，@command{sshd}。"
 
-#: gnu/services/ssh.scm:744
+#: gnu/services/ssh.scm:510
 msgid "Run the Dropbear secure shell (SSH) server."
 msgstr "运行 Dropbear 安全外壳（SSH）服务器。"
 
-#: gnu/services/ssh.scm:852
+#: gnu/services/ssh.scm:618
 msgid "Automatically set up ssh connections (and keep them alive)."
 msgstr "自动设置 ssh 连接（并保持连接活跃）。"
 
-#: gnu/services/ssh.scm:934
+#: gnu/services/ssh.scm:700
 msgid "webssh: reject policy requires `known-hosts'."
 msgstr "webssh：拒绝策略需要 `known-hosts`。"
 
-#: gnu/services/ssh.scm:980
+#: gnu/services/ssh.scm:746
 msgid "Run the webssh."
 msgstr "运行 webssh。"
 
@@ -1537,7 +1531,7 @@ msgid ""
 "environment, and its configuration file, when available."
 msgstr "在家环境本身中存储有关家环境的来源信息：构建家环境时使用的渠道，以及其配置文件（如果可用）。"
 
-#: gnu/home/services/desktop.scm:117
+#: gnu/home/services/desktop.scm:122
 msgid ""
 "Create a @code{x11-display} Shepherd service that waits for the X\n"
 "Window (or ``X11'') graphical display server to be up and running, up to a\n"
@@ -1547,28 +1541,35 @@ msgid ""
 "start."
 msgstr "创建一个 @code{x11-display} Shepherd 服务，等待 X 窗口（或“X11”）图形显示服务器启动，最长等待可配置的延迟时间，并相应地设置 @command{shepherd} 本身的 @code{DISPLAY} 环境变量。如果在此期间没有可访问的 X11 服务器出现，@code{x11-display} 服务将被标记为启动失败。"
 
-#: gnu/home/services/desktop.scm:283
+#: gnu/home/services/desktop.scm:288
 msgid ""
 "Run Redshift, a program that adjusts the color temperature of display\n"
 "according to time of day."
 msgstr "运行 Redshift，一款根据一天中时间调整显示器色温的程序。"
 
-#: gnu/home/services/desktop.scm:331
+#: gnu/home/services/desktop.scm:336
 msgid "Run the session-specific D-Bus inter-process message bus."
 msgstr "运行会话特定的 D-Bus 进程间消息总线。"
 
-#: gnu/home/services/desktop.scm:382
+#: gnu/home/services/desktop.scm:387
 msgid ""
 "Run the @code{unclutter} daemon, which, on systems using the\n"
 "Xorg graphical display server, automatically hides the cursor after a\n"
 "user-defined timeout has expired."
 msgstr "运行 @code{unclutter} 守护进程，在使用 Xorg 图形显示服务器的系统上，用户定义的超时后自动隐藏光标。"
 
-#: gnu/home/services/desktop.scm:439
+#: gnu/home/services/desktop.scm:444
 msgid ""
 "Run the @code{xmodmap} utility to modify keymaps and pointer\n"
 "buttons under the Xorg display server via user-defined expressions."
 msgstr "运行 @code{xmodmap} 工具，通过用户定义的表达式修改 Xorg 显示服务器下的键盘映射和指针按钮。"
+
+#: gnu/home/services/desktop.scm:542
+msgid ""
+"Run the @code{darkman} daemon, which will invoke scripts in\n"
+"$XDG_DATA_DIRS/dark-mode.d/ when sundown, and invoke scripts in\n"
+"$XDG_DATA_DIRS/light-mode.d/ when sunrise."
+msgstr ""
 
 #: gnu/home/services/dotfiles.scm:59
 #, scheme-format
@@ -1814,30 +1815,30 @@ msgstr "存储位于 Btrfs 子卷上，但子卷名称未知。"
 msgid "Use the @code{subvol} Btrfs file system option."
 msgstr "使用 @code{subvol} Btrfs 文件系统选项。"
 
-#: gnu/system/image.scm:351
+#: gnu/system/image.scm:363
 msgid "image lacks a partition with the 'boot' flag"
 msgstr "映像缺少带有“boot”标志的分区"
 
-#: gnu/system/image.scm:395
+#: gnu/system/image.scm:417
 #, scheme-format
 msgid "unsupported image type: ~a"
 msgstr "不支持的映像类型：~a"
 
-#: gnu/system/image.scm:414 gnu/system/image.scm:437
+#: gnu/system/image.scm:438 gnu/system/image.scm:463
 #, scheme-format
 msgid "unsupported partition type: ~a"
 msgstr "不支持的分区类型：~a"
 
-#: gnu/system/image.scm:547
+#: gnu/system/image.scm:574
 msgid "EFI bootloader required with GPT partitioning"
 msgstr "GPT 分区需要 EFI 引导加载程序"
 
-#: gnu/system/image.scm:1051
+#: gnu/system/image.scm:1078
 #, fuzzy, scheme-format
 msgid "~a: unsupported image format"
 msgstr "~A: 未知格式~%"
 
-#: gnu/system/image.scm:1081
+#: gnu/system/image.scm:1108
 #, scheme-format
 msgid "~a: no such image type"
 msgstr "~a：无此映像类型"
@@ -1904,7 +1905,7 @@ msgstr ""
 #: guix/scripts/weather.scm:384 guix/scripts/describe.scm:97
 #: guix/scripts/processes.scm:301 guix/scripts/deploy.scm:58
 #: guix/scripts/container.scm:35 guix/scripts/container/exec.scm:43
-#: guix/scripts/archive.scm:104 guix/scripts/shell.scm:87
+#: guix/scripts/archive.scm:104 guix/scripts/shell.scm:86
 #: guix/scripts/environment.scm:165 guix/scripts/style.scm:710
 #: guix/scripts/home.scm:159 guix/scripts/time-machine.scm:79
 #: guix/scripts/import.scm:81 guix/scripts/import/cpan.scm:44
@@ -2092,7 +2093,7 @@ msgstr "不支持的分区标志： ~a ~%"
 #: gnu/image.scm:152
 #, scheme-format
 msgid "~s: invalid '~a' value"
-msgstr "~s: 无效的 '~a' 之数值~%"
+msgstr "~s: 无效的 '~a' 的数值~%"
 
 #: gnu/installer.scm:239
 msgid "Locale"
@@ -3883,7 +3884,7 @@ msgstr ""
 #: guix/scripts/describe.scm:99 guix/scripts/processes.scm:303
 #: guix/scripts/deploy.scm:60 guix/scripts/container.scm:37
 #: guix/scripts/container/exec.scm:45 guix/scripts/archive.scm:106
-#: guix/scripts/shell.scm:89 guix/scripts/environment.scm:167
+#: guix/scripts/shell.scm:88 guix/scripts/environment.scm:167
 #: guix/scripts/style.scm:712 guix/scripts/home.scm:161
 #: guix/scripts/time-machine.scm:81 guix/scripts/import.scm:85
 #: guix/scripts/import/cpan.scm:48 guix/scripts/import/cran.scm:58
@@ -8352,44 +8353,55 @@ msgid "importing module~{ ~a~} from the host~%"
 msgid_plural "importing modules~{ ~a~} from the host~%"
 msgstr[0] "从主机导入模块~{ ~a~}~%"
 
-#: guix/gnu-maintenance.scm:527
+#: guix/gnu-maintenance.scm:303
+#, fuzzy, scheme-format
+msgid "~a: invalid 'release-file-regexp' property~%"
+msgstr "~a: 无效的数字~%"
+
+#: guix/gnu-maintenance.scm:315
+#, scheme-format
+msgid "release file regexp ~s has ~a subexpression (expected one for the version string)~%"
+msgid_plural "release file regexp ~s has ~a subexpressions (expected one for the version string)~%"
+msgstr[0] ""
+
+#: guix/gnu-maintenance.scm:555
 #, fuzzy, scheme-format
 msgid "failed to download '~a': ~a (~a)~%"
 msgstr "连接到 `~a' 失败：~a~%"
 
-#: guix/gnu-maintenance.scm:910
+#: guix/gnu-maintenance.scm:941
 msgid "Updating to a specific version is not yet implemented for SourceForge."
 msgstr "尚未为 SourceForge 实现更新到特定版本。"
 
-#: guix/gnu-maintenance.scm:914
+#: guix/gnu-maintenance.scm:945
 msgid "Updating to a partial version is not yet implemented for SourceForge."
 msgstr "尚未为 SourceForge 实现更新到部分版本。"
 
-#: guix/gnu-maintenance.scm:1068
+#: guix/gnu-maintenance.scm:1099
 msgid "Updater for GNU packages"
 msgstr "GNU 软件包更新程序"
 
-#: guix/gnu-maintenance.scm:1081
+#: guix/gnu-maintenance.scm:1112
 msgid "Updater for GNU packages only available via FTP"
 msgstr "仅通过 FTP 提供的 GNU 软件包更新程序"
 
-#: guix/gnu-maintenance.scm:1092
+#: guix/gnu-maintenance.scm:1123
 msgid "Updater for packages hosted on savannah.gnu.org"
 msgstr "托管于 savannah.gnu.org 的软件包更新程序"
 
-#: guix/gnu-maintenance.scm:1099
+#: guix/gnu-maintenance.scm:1130
 msgid "Updater for packages hosted on sourceforge.net"
 msgstr "托管于 sourceforge.net 的软件包更新程序"
 
-#: guix/gnu-maintenance.scm:1106
+#: guix/gnu-maintenance.scm:1137
 msgid "Updater for X.org packages"
 msgstr "X.org 软件包更新程序"
 
-#: guix/gnu-maintenance.scm:1113
+#: guix/gnu-maintenance.scm:1144
 msgid "Updater for packages hosted on kernel.org"
 msgstr "托管于 kernel.org 的软件包更新程序"
 
-#: guix/gnu-maintenance.scm:1120
+#: guix/gnu-maintenance.scm:1151
 msgid "Updater that crawls HTML pages."
 msgstr "爬取 HTML 页面的更新程序。"
 
@@ -8824,8 +8836,8 @@ msgstr "您是否忘记使用 @code{use-modules} 导入某库？"
 
 #: guix/ui.scm:371
 #, scheme-format
-msgid "Did you forget @code{(use-modules ~a)}?"
-msgstr "您是否忘记使用 @code{(use-modules ~a)}？"
+msgid "Did you forget @code{(use-modules ~a)} or @code{#:use-module ~a}?"
+msgstr "您是否忘记使用 @code{(use-modules ~a)} 或 @code{#:use-module ~a}？"
 
 #: guix/ui.scm:381
 #, scheme-format
@@ -10184,7 +10196,7 @@ msgstr "Avahi 守护进程未运行，无法自动发现替代服务器。~%"
 msgid "an Avahi error was raised by `~a': ~a~%"
 msgstr "~a：TLS 证书错误：~a"
 
-#: guix/scripts/shell.scm:58
+#: guix/scripts/shell.scm:57
 msgid ""
 "Usage: guix shell [OPTION] PACKAGES... [-- COMMAND...]\n"
 "Build an environment that includes PACKAGES and execute COMMAND or an\n"
@@ -10193,7 +10205,7 @@ msgstr ""
 "用法：guix shell [OPTION] PACKAGES... [-- COMMAND...]\n"
 "构建包含软件包的环境并执行命令或在该环境中启动交互式 shell。\n"
 
-#: guix/scripts/shell.scm:64
+#: guix/scripts/shell.scm:63
 #, fuzzy
 msgid ""
 "\n"
@@ -10202,7 +10214,7 @@ msgstr ""
 "\n"
 "  -n, --dry-run          不要构建派生包"
 
-#: guix/scripts/shell.scm:66
+#: guix/scripts/shell.scm:65
 msgid ""
 "\n"
 "  -f, --file=FILE        add to the environment the package FILE evaluates to"
@@ -10210,7 +10222,7 @@ msgstr ""
 "\n"
 "  -f, --file=FILE        将求值 FILE 得到的包添加到环境中"
 
-#: guix/scripts/shell.scm:69
+#: guix/scripts/shell.scm:68
 #, fuzzy
 msgid ""
 "\n"
@@ -10219,7 +10231,7 @@ msgstr ""
 "\n"
 "  -h, --help                     显示这份说明并退出"
 
-#: guix/scripts/shell.scm:71
+#: guix/scripts/shell.scm:70
 msgid ""
 "\n"
 "      --rebuild-cache    rebuild cached environment, if any"
@@ -10227,7 +10239,7 @@ msgstr ""
 "\n"
 "      --rebuild-cache    重建缓存的环境（如果有）"
 
-#: guix/scripts/shell.scm:73
+#: guix/scripts/shell.scm:72
 msgid ""
 "\n"
 "      --export-manifest  print a manifest for the given options"
@@ -10235,7 +10247,7 @@ msgstr ""
 "\n"
 "      --export-manifest  打印给定选项的清单"
 
-#: guix/scripts/shell.scm:75
+#: guix/scripts/shell.scm:74
 msgid ""
 "\n"
 "  -F, --emulate-fhs      for containers, emulate the Filesystem Hierarchy\n"
@@ -10244,27 +10256,27 @@ msgstr ""
 "\n"
 "  -F, --emulate-fhs      对容器模拟文件系统层次结构标准（FHS）"
 
-#: guix/scripts/shell.scm:237
+#: guix/scripts/shell.scm:236
 #, scheme-format
 msgid "ignoring invalid file name: '~a'~%"
 msgstr "忽略非法文件名：'~a'~%"
 
-#: guix/scripts/shell.scm:297 guix/scripts/environment.scm:1204
+#: guix/scripts/shell.scm:300 guix/scripts/environment.scm:1204
 #, scheme-format
 msgid "no packages specified; creating an empty environment~%"
 msgstr "未指定软件包；正在创建一个空环境~%"
 
-#: guix/scripts/shell.scm:302
+#: guix/scripts/shell.scm:305
 #, scheme-format
 msgid "loading environment from '~a'...~%"
 msgstr "正在从 '~a' 加载环境变量…~%"
 
-#: guix/scripts/shell.scm:308
+#: guix/scripts/shell.scm:311
 #, scheme-format
 msgid "not loading '~a' because not authorized to do so~%"
 msgstr "未加载 '~a'，因为未被授权~%"
 
-#: guix/scripts/shell.scm:310
+#: guix/scripts/shell.scm:313
 #, scheme-format
 msgid ""
 "To allow automatic loading of\n"
@@ -10282,7 +10294,7 @@ msgstr ""
 "echo ~a >> ~a\n"
 "@end example\n"
 
-#: guix/scripts/shell.scm:518
+#: guix/scripts/shell.scm:526
 msgid ""
 ";; What follows is a \"manifest\" equivalent to the command line you gave.\n"
 ";; You can store it in a file that you may then pass to any 'guix' command\n"
@@ -10291,11 +10303,11 @@ msgstr ""
 ";; 以下是与您提供的命令行等效的“清单”。\n"
 ";; 您可以将其存储在文件中，然后传递给任何接受 '--manifest'（或 '-m'）选项的 'guix' 命令。\n"
 
-#: guix/scripts/shell.scm:558
+#: guix/scripts/shell.scm:566
 msgid "spawn one-off software environments"
 msgstr "生成一次性软件环境"
 
-#: guix/scripts/shell.scm:583
+#: guix/scripts/shell.scm:591
 msgid ""
 "Consider passing the @option{--check} option once\n"
 "to make sure your shell does not clobber environment variables."
@@ -10683,7 +10695,7 @@ msgstr "'--symlink' 不能在没有 '--container' 的情况下使用~%"
 msgid "'--profile' cannot be used with package options~%"
 msgstr "'--profile' 不能与包选项一起使用~%"
 
-#: guix/scripts/environment.scm:1243
+#: guix/scripts/environment.scm:1245
 #, scheme-format
 msgid "'--check' is unnecessary when using '--container'; doing nothing~%"
 msgstr "'--check' 在使用 '--container' 时不必要；不执行任何操作~%"
@@ -11264,16 +11276,16 @@ msgstr "~a：下载失败~%"
 msgid "failed to retrieve package information from ~a: ~a (~a)~%"
 msgstr "连接到 `~a' 失败：~a~%"
 
-#: guix/import/cran.scm:1042 guix/import/cran.scm:1065
+#: guix/import/cran.scm:1053 guix/import/cran.scm:1076
 #, scheme-format
 msgid "~a provides only the latest version of each package, sorry."
 msgstr "~a 仅提供每个包的最新版本，抱歉。"
 
-#: guix/import/cran.scm:1135
+#: guix/import/cran.scm:1146
 msgid "Updater for CRAN packages"
 msgstr "CRAN 包的更新器"
 
-#: guix/import/cran.scm:1142
+#: guix/import/cran.scm:1153
 msgid "Updater for Bioconductor packages"
 msgstr "Bioconductor 包的更新器"
 
@@ -11793,41 +11805,41 @@ msgstr ""
 "用法：guix import pypi PACKAGE-NAME\n"
 "导入并转换 PACKAGE-NAME 的 PyPI 包。\n"
 
-#: guix/import/pypi.scm:262
+#: guix/import/pypi.scm:268
 msgid "Could not extract requirement name in spec:"
 msgstr "无法从规范中提取需求名称："
 
-#: guix/import/pypi.scm:338
+#: guix/import/pypi.scm:344
 #, scheme-format
 msgid "parse-requires.txt reached an unexpected condition on line ~a~%"
 msgstr "parse-requires.txt 在第 ~a 行遇到意外情况~%"
 
-#: guix/import/pypi.scm:404
+#: guix/import/pypi.scm:410
 #, fuzzy, scheme-format
 msgid "Failed to extract file: ~a from wheel.~%"
 msgstr "连接到 `~a' 失败：~a~%"
 
-#: guix/import/pypi.scm:423
+#: guix/import/pypi.scm:429
 #, scheme-format
 msgid "Cannot guess requirements from pyproject.toml file, because it does not exist.~%"
 msgstr "无法从 pyproject.toml 文件猜测需求，因为该文件不存在。~%"
 
-#: guix/import/pypi.scm:447
+#: guix/import/pypi.scm:453
 #, scheme-format
 msgid "Cannot guess requirements from source archive: no requires.txt file found.~%"
 msgstr "无法从源代码归档猜测需求：未找到 requires.txt 文件。~%"
 
-#: guix/import/pypi.scm:465
+#: guix/import/pypi.scm:471
 #, scheme-format
 msgid "Unsupported archive format; cannot determine package dependencies from source archive: ~a~%"
 msgstr "不支持的归档格式；无法从源代码归档确定包依赖：~a~%"
 
-#: guix/import/pypi.scm:546
+#: guix/import/pypi.scm:552
 #, scheme-format
 msgid "project name ~a does not appear verbatim in the PyPI URI~%"
 msgstr "项目名称 ~a 未在 PyPI URI 中逐字出现~%"
 
-#: guix/import/pypi.scm:549
+#: guix/import/pypi.scm:555
 #, scheme-format
 msgid ""
 "The PyPI URI is: @url{~a}.  You should review the\n"
@@ -11835,12 +11847,12 @@ msgid ""
 "a substring of the PyPI URI that identifies the package."
 msgstr "PyPI URI 是：@url{~a}。您应检查生成包中的 pypi-uri 声明。您可能需要用 PyPI URI 的子字符串替换 ~s 来标识该包。"
 
-#: guix/import/pypi.scm:654
+#: guix/import/pypi.scm:678
 #, scheme-format
 msgid "no source release for pypi package ~a ~a~%"
 msgstr "pypi 包 ~a ~a 没有源代码发布~%"
 
-#: guix/import/pypi.scm:662
+#: guix/import/pypi.scm:686
 #, scheme-format
 msgid ""
 "This indicates that the\n"
@@ -11849,7 +11861,7 @@ msgid ""
 "@uref{~a}."
 msgstr "这表明该包在 PyPI 上可用，但仅作为包含二进制文件的“wheel”，而非源码。要从源码构建，请参考上游仓库 @uref{~a}。"
 
-#: guix/import/pypi.scm:709
+#: guix/import/pypi.scm:744
 msgid "Updater for PyPI packages"
 msgstr "PyPI 包的更新器"
 
@@ -12597,6 +12609,11 @@ msgstr "禁止固定输出的 chroot 构建访问主机回环接口"
 msgid "socket-activated with %1% socket"
 msgid_plural "socket-activated with %1% sockets"
 msgstr[0] "通过 %1% 套接字激活"
+
+#~ msgid ""
+#~ "Run the GNU@tie{}lsh secure shell (SSH) daemon,\n"
+#~ "@command{lshd}."
+#~ msgstr "运行 GNU@tie{}lsh 安全外壳（SSH）守护进程，@command{lshd}。"
 
 #, scheme-format
 #~ msgid "Migrating profile generations to '~a'...~%"

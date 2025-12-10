@@ -18,15 +18,15 @@ msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2025-10-24 03:18+0000\n"
-"PO-Revision-Date: 2025-10-27 12:09+0000\n"
-"Last-Translator: pelzflorian <pelzflorian@noreply.codeberg.org>\n"
+"PO-Revision-Date: 2025-12-10 23:20+0000\n"
+"Last-Translator: gitwasamistake <gitwasamistake@noreply.codeberg.org>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.codeberg.org/projects/guix/documentation-manual/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.13.3\n"
+"X-Generator: Weblate 5.14.3\n"
 
 msgid "Contributing"
 msgstr "Contribuindo"
@@ -1803,6 +1803,15 @@ msgstr "Para pacotes Java que contêm uma única classe ou uma pequena hierarqui
 msgid "rust"
 msgstr "rust"
 
+msgid "(gnu packages rust-crates)"
+msgstr "(gnu packages rust-crates)"
+
+msgid "(gnu packages rust-sources)"
+msgstr "(gnu packages rust-sources)"
+
+msgid "In the Rust community it is common for multiple incompatible versions of a package to be used at any given time, so all libraries should have a versioned suffix.  The versioned suffix is the left-most non-zero digit (and any leading zeros, of course).  This follows the ``caret'' version scheme intended by Cargo.  Examples@: @code{rust-clap-2}, @code{rust-rand-0.6}."
+msgstr "No comunidade Rust é comum que várias versões incompatíveis de um pacote sejam usadas a qualquer momento, então todas as bibliotecas devem ter um sufixo versionado. O sufixo versionado é o dígito diferente de zero mais à esquerda (e quaisquer zeros à esquerda, é claro). Isso segue o esquema de versão ``caret'' pretendido pelo Cargo. Exemplos@: @code{rust-clap-2}, @code{rust-rand-0.6}."
+
 msgid "Elm"
 msgstr "Elm"
 
@@ -2881,6 +2890,9 @@ msgstr "Se essas pessoas não estiverem disponíveis para resolver o problema a 
 
 msgid "Once the problem has been dealt with, it is the responsibility of those involved to make sure the situation is understood.  If you are working to understand what happened, focus on gathering information and avoid assigning any blame.  Do ask those involved to describe what happened, do not ask them to explain the situation---this would implicitly blame them, which is unhelpful.  Accountability comes from a consensus about the problem, learning from it and improving processes so that it's less likely to reoccur."
 msgstr "Uma vez que o problema tenha sido resolvido, é responsabilidade dos envolvidos garantir que a situação seja compreendida. Se você estiver trabalhando para entender o que aconteceu, concentre-se em reunir informações e evite atribuir qualquer culpa. Peça aos envolvidos para descrever o que aconteceu, não peça para eles explicarem a situação --- isso os culparia implicitamente, o que não ajuda. A responsabilização vem de um consenso sobre o problema, aprendendo com ele e melhorando os processos para que seja menos provável que ele ocorra novamente."
+
+msgid "Reverting commits"
+msgstr "Revertendo commits"
 
 msgid "In order to reduce the possibility of mistakes, committers will have their Codeberg account removed from the Guix Codeberg project and their key removed from @file{.guix-authorizations} after 12 months of inactivity; they can ask to regain commit access by emailing the maintainers, without going through the vouching process."
 msgstr "Para reduzir a possibilidade de erros, os responsáveis pelo commit terão suas contas Codeberg removidas do projeto Guix em Codeberg e suas chaves removidas de @file{.guix-authorizations} após 12 meses de inatividade; eles podem solicitar o acesso de commit novamente enviando um e-mail aos mantenedores, sem passar pelo processo de garantia."
@@ -4829,9 +4841,6 @@ msgstr "Se você estiver executando o Parabola, depois de habilitar o repositór
 msgid "sudo pacman -S guix\n"
 msgstr "sudo pacman -S guix\n"
 
-msgid "The Guix project also provides a shell script, @file{guix-install.sh}, which automates the binary installation process without use of a foreign distro package manager@footnote{@uref{https://guix.gnu.org/guix-install.sh}}.  Use of @file{guix-install.sh} requires Bash, GnuPG, GNU@tie{}tar, wget, and Xz."
-msgstr "O projeto Guix também fornece um script de shell, @file{guix-install.sh}, que automatiza o processo de instalação binária sem o uso de um gerenciador de pacotes de distro estrangeiro@footnote{@uref{https://guix.gnu.org/guix-install.sh}}. O uso de @file{guix-install.sh} requer Bash, GnuPG, GNU@tie{}tar, wget e Xz."
-
 msgid "Downloading and extracting the binary tarball"
 msgstr "Baixando e extraindo o tarball binário"
 
@@ -4933,6 +4942,9 @@ msgstr "ambiente de compilação"
 
 msgid "In a standard multi-user setup, Guix and its daemon---the @command{guix-daemon} program---are installed by the system administrator.  Unprivileged users may use Guix tools to build packages or otherwise access the store, and the daemon will do it on their behalf, ensuring that the store is kept in a consistent state, and allowing built packages to be shared among users."
 msgstr "Em uma configuração multiusuário padrão, o Guix e seu daemon – o programa @command{guix-daemon} – são instalados pelo administrador do sistema. Usuários desprivilegiados podem usar ferramentas Guix para criar pacotes ou acessar o armazém, e o daemon fará isso em seu nome, garantindo que o armazém seja mantido em um estado consistente e permitindo que pacotes construídos sejam compartilhados entre os usuários."
+
+msgid "Daemon Running as Root"
+msgstr "Daemon se executando como root"
 
 msgid "build users"
 msgstr "usuários de compilação"
@@ -10393,50 +10405,8 @@ msgstr ""
 "  #:use-module (gnu packages gawk))\n"
 "\n"
 
-msgid ""
-"(define-public hello\n"
-"  (package\n"
-"    (name \"hello\")\n"
-"    (version \"2.10\")\n"
-"    (source (origin\n"
-"              (method url-fetch)\n"
-"              (uri (string-append \"mirror://gnu/hello/hello-\" version\n"
-"                                  \".tar.gz\"))\n"
-"              (sha256\n"
-"               (base32\n"
-"                \"0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i\"))))\n"
-"    (build-system gnu-build-system)\n"
-"    (arguments '(#:configure-flags '(\"--enable-silent-rules\")))\n"
-"    (inputs (list gawk))\n"
-"    (synopsis \"Hello, GNU world: An example GNU package\")\n"
-"    (description \"Guess what GNU Hello prints!\")\n"
-"    (home-page \"https://www.gnu.org/software/hello/\")\n"
-"    (license gpl3+)))\n"
-msgstr ""
-"(define-public hello\n"
-"  (package\n"
-"    (name \"hello\")\n"
-"    (version \"2.10\")\n"
-"    (source (origin\n"
-"              (method url-fetch)\n"
-"              (uri (string-append \"mirror://gnu/hello/hello-\" version\n"
-"                                  \".tar.gz\"))\n"
-"              (sha256\n"
-"               (base32\n"
-"                \"0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i\"))))\n"
-"    (build-system gnu-build-system)\n"
-"    (arguments '(#:configure-flags '(\"--enable-silent-rules\")))\n"
-"    (inputs (list gawk))\n"
-"    (synopsis \"Hello, GNU world: An example GNU package\")\n"
-"    (description \"Guess what GNU Hello prints!\")\n"
-"    (home-page \"https://www.gnu.org/software/hello/\")\n"
-"    (license gpl3+)))\n"
-
-msgid "Without being a Scheme expert, the reader may have guessed the meaning of the various fields here.  This expression binds the variable @code{hello} to a @code{<package>} object, which is essentially a record (@pxref{SRFI-9, Scheme records,, guile, GNU Guile Reference Manual}).  This package object can be inspected using procedures found in the @code{(guix packages)} module; for instance, @code{(package-name hello)} returns---surprise!---@code{\"hello\"}."
-msgstr "Sem ser um especialista em Scheme, o leitor pode ter adivinhado o significado dos vários campos aqui. Esta expressão vincula a variável @code{hello} a um objeto @code{<package>}, que é essencialmente um registro (@pxref{SRFI-9, Scheme records,, guile, Manual de Referência do GNU Guile}). Este objeto de pacote pode ser inspecionado usando procedimentos encontrados no módulo @code{(guix packages)}; por exemplo, @code{(package-name hello)} retorna---surpresa!---@code{\"hello\"}."
-
-msgid "With luck, you may be able to import part or all of the definition of the package you are interested in from another repository, using the @code{guix import} command (@pxref{Invoking guix import})."
-msgstr "Com sorte, você poderá importar parte ou toda a definição do pacote de seu interesse de outro repositório, usando o comando @code{guix import} (@pxref{Invoking guix import})."
+msgid "Without being a Scheme expert, the reader may have guessed the meaning of the various fields here.  This expression binds the variable @code{hello} to a @code{<package>} record (@pxref{SRFI-9, Scheme records,, guile, GNU Guile Reference Manual}).  This package object can be inspected using procedures found in the @code{(guix packages)} module; for instance, @code{(package-name hello)} returns---surprise!---@code{\"hello\"}."
+msgstr "Sem ser um especialista em Scheme, o leitor pode ter adivinhado o significado dos vários campos aqui. Esta expressão vincula a variável @code{hello} a um registro @code{<package>} (@pxref{SRFI-9, Scheme records,, guile, Manual de Referência do GNU Guile}). Este objeto de pacote pode ser inspecionado usando procedimentos encontrados no módulo @code{(guix packages)}; por exemplo, @code{(package-name hello)} retorna---surpresa!---@code{\"hello\"}."
 
 msgid "In the example above, @code{hello} is defined in a module of its own, @code{(gnu packages hello)}.  Technically, this is not strictly necessary, but it is convenient to do so: all the packages defined in modules under @code{(gnu packages @dots{})} are automatically known to the command-line tools (@pxref{Package Modules})."
 msgstr "No exemplo acima, @code{hello} é definido em um módulo próprio, @code{(gnu packages hello)}. Tecnicamente, isso não é estritamente necessário, mas é conveniente fazê-lo: todos os pacotes definidos em módulos sob @code{(gnu packages @dots{})} são automaticamente conhecidos pelas ferramentas de linha de comando (@pxref{Package Modules})."
@@ -10471,35 +10441,8 @@ msgstr "Ao começar a empacotar software não trivial, você pode precisar de fe
 msgid "The @code{arguments} field specifies options for the build system (@pxref{Build Systems}).  Here it is interpreted by @code{gnu-build-system} as a request run @file{configure} with the @option{--enable-silent-rules} flag."
 msgstr "O campo @code{arguments} especifica opções para o sistema de compilação (@pxref{Build Systems}). Aqui, ele é interpretado por @code{gnu-build-system} como uma solicitação executada @file{configure} com o sinalizador @option{--enable-silent-rules}."
 
-msgid "quote"
-msgstr "quote"
-
-msgid "quoting"
-msgstr "literais, inibição de avaliação"
-
-msgid "'"
-msgstr "'"
-
-msgid "backquote (quasiquote)"
-msgstr "crase (quasiquote)"
-
-msgid "`"
-msgstr "`"
-
-msgid "quasiquote"
-msgstr "quasiquote"
-
-msgid "comma (unquote)"
-msgstr "vírgula (unquote)"
-
-msgid ","
-msgstr ","
-
-msgid "unquote"
-msgstr "unquote"
-
-msgid "What about these quote (@code{'}) characters? They are Scheme syntax to introduce a literal list; @code{'} is synonymous with @code{quote}.  Sometimes you'll also see @code{`} (a backquote, synonymous with @code{quasiquote}) and @code{,} (a comma, synonymous with @code{unquote}).  @xref{Expression Syntax, quoting,, guile, GNU Guile Reference Manual}, for details.  Here the value of the @code{arguments} field is a list of arguments passed to the build system down the road, as with @code{apply} (@pxref{Fly Evaluation, @code{apply},, guile, GNU Guile Reference Manual})."
-msgstr "E quanto a esses caracteres de citação (@code{'})? Eles são sintaxe Scheme para introduzir uma lista literal; @code{'} é sinônimo de @code{quote}. Às vezes, você também verá @code{`} (uma crase, sinônimo de @code{quasiquote}) e @code{,} (uma vírgula, sinônimo de @code{unquote}). @xref{Expression Syntax, quoting,, guile, Manual de referência do GNU Guile}, para detalhes. Aqui, o valor do campo @code{arguments} é uma lista de argumentos passados para o sistema de construção mais adiante, como com @code{apply} (@pxref{Fly Evaluation, @code{apply},, guile, Manual de referência do GNU Guile})."
+msgid "The value of the @code{arguments} field is a list of arguments passed to the build system and that end up being applied, as with @code{apply} (@pxref{Fly Evaluation, @code{apply},, guile, GNU Guile Reference Manual})."
+msgstr "O valor do campo @code{arguments} é uma lista de argumentos passados para o sistema de construção mais adiante, como com @code{apply} (@pxref{Fly Evaluation, @code{apply},, guile, Manual de referência do GNU Guile})."
 
 msgid "The hash-colon (@code{#:}) sequence defines a Scheme @dfn{keyword} (@pxref{Keywords,,, guile, GNU Guile Reference Manual}), and @code{#:configure-flags} is a keyword used to pass a keyword argument to the build system (@pxref{Coding With Keywords,,, guile, GNU Guile Reference Manual})."
 msgstr "A sequência hash-dois-pontos (@code{#:}) define um @dfn{palavra-chave} em Scheme (@pxref{Keywords,,, guile, Manual de referência do GNU Guile}) e @code{#:configure-flags} é uma palavra-chave usada para passar um argumento de palavra-chave para o sistema de compilação (@pxref{Coding With Keywords,,, guile, Manual de referência do GNU Guile})."
@@ -11953,6 +11896,9 @@ msgstr "arquiteturas estrangeiras"
 
 msgid "system configuration"
 msgstr "configuração do sistema"
+
+msgid "One of the advantages of putting all the system configuration under the control of Guix is that it supports transactional system upgrades, and makes it possible to roll back to a previous system instantiation, should something go wrong with the new one (@pxref{Features}).  Another advantage is that it makes it easy to replicate the exact same configuration across different machines, or at different points in time, without having to resort to additional administration tools layered on top of the own tools of the system."
+msgstr "Uma das vantages de colocar todas as configurações do sistema sob controle do Guix é que ele permite atualizações transacionais do sistema, o que torna possível o retrocesso a uma instanciação anterior do sistema, caso algo de errado com a nova (@pxref{Features}).  Outra vantagem é que ele facilita a replicação da mesma configuração em máquinas diferentes, ou em momentos diferentesm sem ter que passar por outras ferramentas de administração adicionais por cima das ferramentas do sistema."
 
 msgid "operating-system"
 msgstr "operating-system"
@@ -13495,6 +13441,9 @@ msgstr "{Tipo de dados} shepherd-configuration"
 
 msgid "home configuration"
 msgstr "Configuração pessoal"
+
+msgid "Using Guix for managing home environments provides a number of advantages:"
+msgstr "Usar o Guix para gerenciar seu ambiente pessoal traz várias vantagens."
 
 msgid "home services"
 msgstr "serviços pessoais"
