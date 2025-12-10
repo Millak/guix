@@ -1355,6 +1355,10 @@ C++ programming language.")
        (sha256
         (base32 "19cvjaq16z777xyi8krgc5jif5wkjv1ikw2icijprlj0zi5511dd"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DCMAKE_POSITION_INDEPENDENT_CODE=ON")))
     (synopsis "Small XML parser for C++")
     (description "TinyXML2 is a small and simple XML parsing library for the
 C++ programming language.")
