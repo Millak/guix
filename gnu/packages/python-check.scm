@@ -1775,28 +1775,42 @@ also ensuring that the notebooks are running without errors.")
 (define-public python-nox
   (package
     (name "python-nox")
-    (version "2024.10.09")
+    (version "2025.11.12")
     (source
      (origin
-       ;; No tests in the PyPI tarball.
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/wntrblm/nox")
-             (commit version)))
+              (url "https://github.com/wntrblm/nox")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gvv6hcwmmmg1sgwar42061ahx5p773d5fzx3c7sq81wh3gp7lqr"))))
+        (base32 "19cpsdi158ngn5jskfk50zbjn745nhlijx1w73rcmmqph0rl518r"))))
     (build-system pyproject-build-system)
-    (propagated-inputs
-     (list python-argcomplete
-           python-colorlog
-           python-packaging
-           python-py
-           python-virtualenv))
+    ;; tests: 631 passed, 40 skipped
+    (arguments
+     (list
+      #:test-flags
+      #~(list "-k"
+              (string-join
+               ;; XXX: Tests fails to find uv.
+               (list "not test_download_python_always_preexisting_interpreter[uv]"
+                     "test_download_python_auto_missing_interpreter[uv]"
+                     "test_download_python_failed_install[always-uv]"
+                     "test_download_python_failed_install[auto-uv]"
+                     "test_noxfile_script_mode"
+                     "test_noxfile_script_mode_exec"
+                     "test_noxfile_script_mode_url_req")
+               " and not "))))
     (native-inputs
      (list python-hatchling
-           python-jinja2
            python-pytest))
+    (propagated-inputs
+     (list python-argcomplete
+           python-attrs
+           python-colorlog
+           python-dependency-groups
+           python-humanize
+           python-virtualenv))
     (home-page "https://nox.thea.codes/")
     (synopsis "Flexible test automation")
     (description
