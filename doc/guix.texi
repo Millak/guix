@@ -45481,7 +45481,7 @@ A string representing the OCI image tag.  Defaults to @code{latest}.
 @item @code{value} (type: oci-lowerable-image)
 A @code{manifest} or @code{operating-system} record that will be lowered
 into an OCI compatible tarball.  Otherwise this field's value can be a
-gexp or a file-like object that evaluates to an OCI compatible tarball.
+file-like object that evaluates to an OCI compatible tarball.
 
 @item @code{pack-options} (default: @code{'()}) (type: list)
 An optional set of keyword arguments that will be passed to the

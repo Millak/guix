@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2024, 2025 Giacomo Leidi <therewasa@fishinthecalculator.me>
+;;; Copyright © 2025 Owen T. Heisler <writer@owenh.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -523,7 +524,6 @@ but ~a was found") el))))
 (define (oci-lowerable-image? image)
   (or (manifest? image)
       (operating-system? image)
-      (gexp? image)
       (file-like? image)))
 
 (define (string-or-oci-image? image)
@@ -558,8 +558,8 @@ the OCI image.")
   (value
    (oci-lowerable-image)
    "A @code{manifest} or @code{operating-system} record that will be lowered
-into an OCI compatible tarball.  Otherwise this field's value can be a gexp
-or a file-like object that evaluates to an OCI compatible tarball.")
+into an OCI compatible tarball.  Otherwise this field's value can be a
+file-like object that evaluates to an OCI compatible tarball.")
   (pack-options
    (list '())
    "An optional set of keyword arguments that will be passed to the
@@ -1080,14 +1080,13 @@ for the OCI runtime volume create command."
                         target system grafts?))
        ((? operating-system? value)
         (lower-operating-system value target system))
-       ((or (? gexp? value)
-            (? file-like? value))
-        value)
+       ((? file-like? value)
+        (lower-object value))
        (_
         (raise
          (formatted-message
           (G_ "oci-image value must contain only manifest,
-operating-system, gexp or file-like records but ~a was found")
+operating-system, or file-like records but ~a was found")
           value))))
      #:target target
      #:system system)))
