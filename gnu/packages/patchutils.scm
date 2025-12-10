@@ -534,20 +534,22 @@ Users can login allowing them to change the state of patches.")
     (version "1.2.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "mirror://gnu/wdiff/wdiff-"
-                          version ".tar.gz"))
-      (sha256
-       (base32
-        "0sxgg0ms5lhi4aqqvz1rj4s77yi9wymfm3l3gbjfd1qchy66kzrl"))))
+       (method url-fetch)
+       (uri (string-append "mirror://gnu/wdiff/wdiff-"
+                           version ".tar.gz"))
+       (sha256
+        (base32
+         "0sxgg0ms5lhi4aqqvz1rj4s77yi9wymfm3l3gbjfd1qchy66kzrl"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-before 'check 'fix-sh
-                    (lambda _
-                      (substitute* "tests/testsuite"
-                        (("#! /bin/sh")
-                         (string-append "#!" (which "sh")))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fix-testsuite
+            (lambda _
+              (substitute* "tests/testsuite"
+                (("#! /bin/sh")
+                 (string-append "#!" (which "sh")))))))))
     (native-inputs
      (list which
            ;; For some reason wdiff.info gets rebuilt.
