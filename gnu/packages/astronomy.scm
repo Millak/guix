@@ -4228,13 +4228,13 @@ files and provide related services.")
 (define-public python-ctapipe
   (package
     (name "python-ctapipe")
-    (version "0.27.0")
+    (version "0.28.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ctapipe" version))
        (sha256
-        (base32 "0flcrq6agmvpfb3wbixrmsizsna5vinb5w9k9r3vrx3i7hx2zfld"))))
+        (base32 "1gkkqbar3r816s8qks9r8ps710xny8v50iyp596j02f40nw6zknf"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -4262,7 +4262,7 @@ files and provide related services.")
            ;; [poptional]
            python-bokeh
            python-eventio
-           ;; python-iminuit ;see guix/guix#2381
+           python-iminuit
            python-matplotlib
            python-pyirf))
     (home-page "https://github.com/cta-observatory/ctapipe/")
