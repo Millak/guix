@@ -17127,21 +17127,22 @@ third-party code.")
 (define-public python-msgpack
   (package
     (name "python-msgpack")
-    (version "1.1.1")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "msgpack" version))
        (sha256
-        (base32 "1k84s6w17i1ylrcm39wi1djjv832vn08w3299xcv5nib9birrdvp"))))
+        (base32 "0zpl4sb9zk7fh3abaxqlf65d0g3hvjy6k028k3rn1pbk2cy7cq1v"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-setuptools))
+     (list python-pytest
+           python-setuptools))
+    (home-page "https://msgpack.org/")
     (synopsis "MessagePack (de)serializer")
     (description "MessagePack is a fast, compact binary serialization format,
 suitable for similar data to JSON.  This package provides CPython bindings for
 reading and writing MessagePack data.")
-    (home-page "https://pypi.org/project/msgpack/")
     (license license:asl2.0)))
 
 (define-public python-msgpack-for-borg
