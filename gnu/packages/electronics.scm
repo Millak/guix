@@ -1812,7 +1812,7 @@ verification.")
 (define-public open-logic
   (package
     (name "open-logic")
-    (version "4.1.0")
+    (version "4.2.0")
     (source
      (origin
        (method git-fetch)
@@ -1824,7 +1824,7 @@ verification.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0azapw9dyr5l5qal7qd409lyq0w6pw2wyjwvxfl44sykpbfxdl2x"))))
+         "1792a6i9jq2yawipmk0nr01z092kx3kkav9v5sjf34khk3biav6q"))))
     (outputs
      '("out" "test"))
     (properties
