@@ -338,7 +338,7 @@ parallel study, and original language study.")
 (define-public book-emacs-lisp-elements
   (package
     (name "book-emacs-lisp-elements")
-    (version "1.0.0")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -347,7 +347,7 @@ parallel study, and original language study.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fwbj2hrb33blknxd3qrm7jjs2ixrbyc77788i37qvn6v1y741ry"))))
+        (base32 "0w3jxgkynq37rn7c17pnricykqf3gmq4crsvkz2j2g3hc0ydf6qp"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -361,8 +361,8 @@ parallel study, and original language study.")
     (home-page "https://protesilaos.com/emacs/emacs-lisp-elements")
     (synopsis "Overview of the Emacs Lisp programming language")
     (description
-     "Emacs Lisp Elements is a book written by Protesilaos Stavrou, providing a big
-picture view of the @acronym{Elisp, Emacs Lisp} programming language by
+     "Emacs Lisp Elements is a book written by Protesilaos Stavrou, providing
+a big picture view of the @acronym{Elisp, Emacs Lisp} programming language by
 combining prose with code.  This book aims to provide an idea of how Elisp
 works by showing some of the main concepts and patterns encountered in
 everyday Elisp code.
