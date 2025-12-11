@@ -689,25 +689,26 @@ and vice versa.")
 (define-public cracklib
   (package
     (name "cracklib")
-    (version "2.9.8")
+    (version "2.10.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/cracklib/cracklib/"
-                           "releases/download/v" version "/"
-                           "cracklib-" version ".tar.bz2"))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/cracklib/cracklib/")
+              (commit (string-append "v" version))))
        (sha256
-        (base32 "11p3f0yqg9d32g3n1qik7jfyl2l14pf8i8vzq3bpram3bqw3978z"))))
+        (base32
+         "037ybxmxap39bjhfajyxnmn8612k638qilfv9r90s6qkxs6lj6ir"))
+       (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-dict
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (begin
-               (chmod (string-append "util/cracklib-format") #o755)
-               (apply invoke "make" "dict" make-flags)
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'bootstrap 'chdir
+            (lambda _ (chdir "src"))))))
+    (native-inputs
+     (list autoconf automake libtool intltool))
     (synopsis "Password checking library")
     (home-page "https://github.com/cracklib/cracklib")
     (description
