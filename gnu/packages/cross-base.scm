@@ -622,7 +622,7 @@ the base compiler.  Use XBINUTILS as the associated cross-Binutils."
                    (for-each (cut setenv <> cpath)
                              '#$%gcc-cross-include-paths)
                    #t)))))))
-
+      (supported-systems %supported-systems)
       (inputs `(("cross-glibc-hurd-headers" ,xglibc/hurd-headers)
                 ("cross-gnumach-headers" ,xgnumach-headers)))
 
