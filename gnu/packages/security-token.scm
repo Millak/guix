@@ -1200,7 +1200,7 @@ contactless (RFID) and contact USB chipcard readers.")
 (define-public qdigidoc
   (package
     (name "qdigidoc")
-    (version "4.8.2")
+    (version "4.9.1")
     (source
      (origin
        (method git-fetch)
@@ -1214,7 +1214,7 @@ contactless (RFID) and contact USB chipcard readers.")
              (recursive? #t)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "171p2cwr8l1clvmy5719kpqsv061i7rsr33nc99gap2pzbb4f48z"))
+        (base32 "1by4jnr3sx4s8sxv1iw8ja9iln3aw6k583kdl3r92cbcdfasm7xj"))
        (patches (search-patches "qdigidoc-bundle-config-files.patch"
                                 "qdigidoc-bundle-tsl-files.patch"))))
     (build-system qt-build-system)
