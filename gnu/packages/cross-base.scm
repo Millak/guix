@@ -637,7 +637,7 @@ the base compiler.  Use XBINUTILS as the associated cross-Binutils."
       (inherit hurd-core-headers)
       (name (string-append (package-name hurd-core-headers)
                            "-cross-" target))
-
+      (supported-systems %supported-systems)
       (inputs `(("gnumach-headers" ,xgnumach-headers)
                 ("hurd-headers" ,xhurd-headers)
                 ("hurd-minimal" ,xhurd-minimal)))))
