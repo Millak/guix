@@ -2085,7 +2085,7 @@ data inside a GPG encrypted file, which we'll call a coffin.")
 (define-public xkcdpass
   (package
     (name "xkcdpass")
-    (version "1.19.4")
+    (version "1.20.0")
     (home-page "https://github.com/redacted/XKCD-password-generator")
     (source
      (origin
@@ -2096,7 +2096,7 @@ data inside a GPG encrypted file, which we'll call a coffin.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1din4fqxgcj74vcjrsmn19sv81raards39x8pd75hmfxqqgggnd6"))))
+         "11imgiiwd9ggkw7235hsdj9xm0rpv8s46v087mgb3ad0d8v48fqf"))))
     (build-system python-build-system)
     (arguments
      (list
