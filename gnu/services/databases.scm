@@ -344,7 +344,7 @@ host	all	all	::1/128 	md5"))
                           (match '#$args
                             (("start")
                              (call-with-input-file #$pid-file read))
-                            (_ #t))))))
+                            (_ #f))))))
        (list (shepherd-service
               (provision '(postgres postgresql))
               (documentation "Run the PostgreSQL daemon.")
