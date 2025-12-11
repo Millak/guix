@@ -123,7 +123,7 @@ Index: emacs/src/comp.c
 -  Lisp_Object hash = concat3 (path_hash, separator, content_hash);
 -  return concat3 (filename, hash, build_string (NATIVE_ELISP_SUFFIX));
 +
-+  if (file_name_absolute_p (filename)) /* no match in load-path */
++  if (Ffile_name_absolute_p (filename)) /* no match in load-path */
 +    filename = rel_name;
 +
 +  Lisp_Object bogus_dirs =
