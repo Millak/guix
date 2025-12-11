@@ -577,7 +577,7 @@ the base compiler.  Use XBINUTILS as the associated cross-Binutils."
           `(cons* ,(string-append "--build=" (%current-system))
                   ,(string-append "--host=" target)
                   ,flags))))
-
+      (supported-systems %supported-systems)
       (propagated-inputs `(("gnumach-headers" ,xgnumach-headers)
                            ("hurd-headers" ,xhurd-headers)))
 
