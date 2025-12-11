@@ -573,22 +573,6 @@ API.")
 shader compilation.")
     (license license:asl2.0)))
 
-(define-public shaderc-for-pcsx2
-  (package
-    (inherit shaderc)
-    (name "shaderc-for-pcsx2")
-    (version "2024.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-	     (url "https://github.com/google/shaderc")
-	     (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0j723lyr1hkkrpmkw76glri7k5cmjnv64sx1nybramcblagzrgyq"))
-       (patches (search-patches "shaderc-for-pcsx2-changes.patch"))))))
-
 (define-public vkd3d
   (let ((commit "56cd4a94d541707959ce7677af6d1a34739e5579")) ; Release 1.2.
     (package
