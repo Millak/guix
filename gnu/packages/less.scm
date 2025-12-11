@@ -26,6 +26,7 @@
   #:use-module (guix gexp)
   #:use-module (guix licenses)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-compression)
@@ -98,6 +99,7 @@ text editors.")
             ;; dependencies which might never ever be used.
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((file (search-input-file inputs "/bin/file"))
+                    (locale (search-input-file inputs "/bin/locale"))
                     (tput (search-input-file inputs "/bin/tput")))
                 (substitute* "sxw2txt"
                   (("^use warnings;" line)
@@ -109,11 +111,13 @@ text editors.")
                 (substitute* "lesspipe.sh"
                   (("tput colors")
                    (string-append tput " colors"))
+                  (("\\<locale\\>") locale)
                   (("file -")
                    (string-append file " -")))))))))
     (inputs
      (list file
            ncurses                      ; for tput
+           glibc                        ; for locale
            perl-archive-zip))
     (native-inputs (list perl))
     (home-page "https://github.com/wofr06/lesspipe")
