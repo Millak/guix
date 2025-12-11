@@ -109,8 +109,7 @@ text editors.")
                 (substitute* "lesscomplete"
                   (("file -") (string-append file " -")))
                 (substitute* "lesspipe.sh"
-                  (("tput colors")
-                   (string-append tput " colors"))
+                  (("\\<tput\\>") tput)
                   (("\\<locale\\>") locale)
                   (("file -")
                    (string-append file " -")))))))))
