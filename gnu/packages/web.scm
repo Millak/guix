@@ -9878,6 +9878,7 @@ It contains the code shared by all Kiwix ports.")
            pugixml
            qtbase
            qtdeclarative
+           qtsvg
            qtwebchannel
            qtwebengine
            qtwayland
