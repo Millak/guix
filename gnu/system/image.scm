@@ -145,7 +145,7 @@ parent image record."
   (partition
     (inherit esp-partition/grub)
     (initializer #~(lambda* (root #:key #:allow-other-keys)
-                     (initialize-efi32-partition #:grub-efi32 #+grub-efi32)))))
+                     (initialize-efi32-partition root #:grub-efi32 #+grub-efi32)))))
 
 ;; Be more transparent. The esp partition unconditinally installs grub.
 ;; It doesn't look up bootloader of the system.
