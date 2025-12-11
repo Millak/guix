@@ -16491,14 +16491,14 @@ Python.")
 (define-public python-markdown
   (package
     (name "python-markdown")
-    (version "3.8.2")
+    (version "3.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "markdown" version))
        (sha256
         (base32
-         "0ibw4didlgfffpzc807rak96df3mwqijbrhw8dkpzqhjvmq9lyr4"))))
+         "03lcnvr39pmfiids6jdr1iwwr0hg62m0zf7g5arvdcm4597js1ip"))))
     (build-system pyproject-build-system)
     (native-inputs
      (list python-pyyaml
