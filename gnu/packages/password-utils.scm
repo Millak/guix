@@ -1848,7 +1848,7 @@ group them into chains.")
 (define-public zxcvbn-c
   (package
     (name "zxcvbn-c")
-    (version "2.5")
+    (version "2.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1857,7 +1857,7 @@ group them into chains.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1clm9sxz6q360xk6vq5hi3b0mq374nl958mjcfxk94l692zrpaj4"))))
+                "1z8l5qipzqfpg9dg7i7rdhlhswmjk06i14ffrrk3npblrjjya17w"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
