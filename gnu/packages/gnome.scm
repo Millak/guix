@@ -823,8 +823,8 @@ patterns.")
                   gtk+
                   json-glib
                   libcanberra
-                  libsoup
-                  rest))
+                  librest
+                  libsoup))
     (native-inputs (list desktop-file-utils ;for update-desktop-database
                          gettext-minimal
                          `(,glib "bin")
@@ -1252,7 +1252,7 @@ in the GNOME desktop.")
        ("libgdata" ,libgdata)
        ("libgfbgraph" ,gfbgraph)
        ("libzapojit" ,libzapojit)
-       ("rest" ,rest)
+       ("rest" ,librest)
        ("tracker" ,tracker)))
     (synopsis "Web Crawlers for GNOME")
     (description "GNOME Online Miners provides a set of crawlers that
@@ -1505,11 +1505,11 @@ extraction, and lookup for applications on the desktop.")
            libgweather
            libnma
            libpwquality
+           librest
            libsecret
            network-manager
            packagekit
            polkit
-           rest-next
            tecla
            upower
            webkitgtk))
@@ -4936,28 +4936,30 @@ File Shredder, it uses the GNU Core Utility called shred to securely delete
 files.")
     (license license:gpl3+)))
 
-(define-public rest
+(define-public librest
   (package
-    (name "rest")
-    (version "0.8.1")
+    (name "librest")
+    (version "0.10.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/rest/"
+              (uri (string-append "mirror://gnome/sources/librest/"
                                   (version-major+minor version) "/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1j81bgqmd55s5lxyaxcplym9n6xywcs1cm9wmvafsg2xiv9sl4q5"))))
-    (build-system gnu-build-system)
+                "1f69hl8qbmp7hsa0j28cvcj31232rdfr41ghvjkwy8ispc9bjv3v"))))
+    (outputs (list "out" "doc"))
+    (build-system meson-build-system)
     (arguments
-     '(#:tests? #f ; tests require internet connection
-       #:configure-flags
-       '("--with-ca-certificates=/etc/ssl/certs/ca-certificates.crt")))
+     (list #:tests? #f                  ; tests require internet connection
+           #:configure-flags
+           #~(list "-Dca_certificates_path=/etc/ssl/certs/ca-certificates.crt"
+                   "-Dexamples=false")))
     (native-inputs
-     (list `(,glib "bin") gobject-introspection pkg-config))
+     (list `(,glib "bin") gi-docgen gobject-introspection pkg-config))
     (propagated-inputs
-     ;; rest-0.7.pc refers to all these.
-     (list glib libsoup-minimal-2 libxml2))
+     ;; rest-0.10.pc refers to all these.
+     (list glib json-glib libsoup libxml2))
     (home-page "https://www.gtk.org/")
     (synopsis "RESTful web api query library")
     (description
@@ -4966,50 +4968,7 @@ claim to be \"RESTful\".  It includes convenience wrappers for libsoup and
 libxml to ease remote use of the RESTful API.")
     (license license:lgpl2.1+)))
 
-(define-public rest-next
-  (package
-    (inherit rest)
-    (name "rest")
-    (version "0.9.1")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnome/sources/rest/"
-                                  (version-major+minor version) "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1qy2291d2vprdbbxmf0sa98izk09nl3znzzv7lckwf6f1v0sarlj"))))
-    (build-system meson-build-system)
-    (arguments (substitute-keyword-arguments
-                 (strip-keyword-arguments
-                   '(#:tests?)
-                   (package-arguments rest))
-                 ((#:configure-flags _)
-                  ;; Do not build the optional 'librest-demo' program as it
-                  ;; depends on gtksourceview and libadwaita and thus,
-                  ;; indirectly, on Rust.
-                  #~(list "-Dexamples=false"))
-                 ((#:phases phases '%standard-phases)
-                  #~(modify-phases #$phases
-                      (add-after 'unpack 'disable-problematic-tests
-                        ;; These tests require networking.
-                        (lambda _
-                          (substitute* "tests/meson.build"
-                            ((".*'flickr',.*") "")
-                            ((".*'lastfm',.*") ""))))
-                      (add-before 'check 'prepare-for-tests
-                        (lambda _
-                          (setenv "HOME" "/tmp")))))))
-    (native-inputs
-     (modify-inputs (package-native-inputs rest)
-       (append gettext-minimal
-               gi-docgen
-               gsettings-desktop-schemas)))
-    (inputs (list json-glib))
-    (propagated-inputs
-     (modify-inputs (package-propagated-inputs rest)
-       (replace "libsoup-minimal" libsoup)
-       (append json-glib)))))
+(define-deprecated-package rest librest)
 
 (define-public libshumate
   (package
@@ -7003,7 +6962,7 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
                (base32 "1c6xkxx2c1jqhy56pfbsmnk418n1rm2fgqyrgi3hf2kzrc0fhhpd"))))
     (build-system meson-build-system)
     (native-inputs (list gi-docgen gobject-introspection pkg-config uhttpmock))
-    (inputs (list gnome-online-accounts json-glib libsoup rest))
+    (inputs (list gnome-online-accounts json-glib libsoup librest))
     (home-page "https://gnome.pages.gitlab.gnome.org/msgraph/")
     (synopsis "GLib library for accessing MS Graph APIs")
     (description "This package provides a GLib-based library for accessing
@@ -8129,8 +8088,8 @@ window manager.")
            gcr
            json-glib
            libsecret
+           librest
            mit-krb5
-           rest-next
            webkitgtk))
     (synopsis "Single sign-on framework for GNOME")
     (home-page "https://wiki.gnome.org/Projects/GnomeOnlineAccounts")
@@ -8168,7 +8127,6 @@ Microsoft Exchange, Last.fm, IMAP/SMTP, Jabber, SIP and Kerberos.")
        #~(modify-phases #$phases
            (delete 'disable-gtk-update-icon-cache)))))
     (inputs (modify-inputs (package-inputs gnome-online-accounts)
-              (replace "rest" rest)
               (replace "webkitgtk" webkitgtk-with-libsoup2)))))
 
 (define-public evolution-data-server
@@ -10211,8 +10169,7 @@ associations for GNOME.")
            pkg-config))
     (propagated-inputs
      ;; These dependencies are required by govirt-1.0.pc.
-     (list glib
-           rest-next))
+     (list glib librest))
     (synopsis "GoVirt Library")
     (description "GoVirt is a GObject wrapper for the oVirt REST API.")
     (home-page "https://gitlab.gnome.org/GNOME/libgovirt")
@@ -10609,7 +10566,7 @@ library.")
              gtk-doc/stable gobject-introspection
              intltool libtool pkg-config))
       (inputs
-       (list gnome-online-accounts json-glib rest))
+       (list gnome-online-accounts json-glib librest))
       (home-page "https://wiki.gnome.org/Projects/Zapojit")
       (synopsis "Library for accessing SkyDrive and Hotmail")
       (description
@@ -10753,7 +10710,7 @@ desktop.  It supports multiple calendars, month, week and year view.")
            itstool
            pkg-config))
     (inputs
-     (list rest                         ;for Todoist plugin
+     (list librest                      ;for Todoist plugin
            gtk
            json-glib                    ;for Todoist plugin
            libadwaita
@@ -11053,7 +11010,7 @@ compiled.")
     (inputs
      (list gnome-online-accounts
            json-glib
-           rest))
+           librest))
     (synopsis "GLib/GObject wrapper for the Facebook API")
     (description "This library allows you to use the Facebook API from
 GLib/GObject code.")

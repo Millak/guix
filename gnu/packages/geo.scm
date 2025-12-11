@@ -562,12 +562,12 @@ topology functions.")
            libadwaita
            libgee
            libgweather
+           librest
            librsvg
            libsecret
            libshumate
            libsoup
            libxml2
-           rest-next
            webkitgtk-for-gtk3))
     (synopsis "Graphical map viewer and wayfinding program")
     (description "GNOME Maps is a graphical map viewer.  It uses map data from
