@@ -488,6 +488,8 @@ the base compiler.  Use XBINUTILS as the associated cross-Binutils."
                             '#$%gcc-cross-include-paths))))))))
     (propagated-inputs
      (list xgnumach-headers))
+    (inputs (modify-inputs (package-inputs mig)
+              (delete "gnumach-headers")))
     (native-inputs
      (modify-inputs (package-native-inputs mig)
        (prepend xgcc xbinutils)))))
