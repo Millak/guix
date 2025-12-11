@@ -104,6 +104,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages ninja)
+  #:use-module (gnu packages parallel)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages pulseaudio)
@@ -3649,27 +3650,88 @@ de-interlacing patches for use with PCSX2.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0nr53cjifqwnz3icxsj01yd3aw1vfsfxga4zz5zi8aqr175mvq27"))
-       (modules '((guix build utils)))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
        (snippet
         #~(begin
-            (substitute* "pcsx2/Pcsx2Config.cpp"
-	      (("Path::Canonicalize\\(Path::GetDirectory\\(program_path\\)\\);")
-	       "Path::Canonicalize(
-((std::string)Path::GetDirectory(program_path)).append(\"/../share/\"));"))
-            (delete-file-recursively "3rdparty/d3d12memalloc")
-            (delete-file-recursively "3rdparty/winpixeventruntime")
-            (delete-file-recursively "3rdparty/winwil")))))
+            (substitute* "cmake/Pcsx2Utils.cmake"
+              (("(PCSX2_GIT_REV \")Unknown" _ prefix)
+               (string-append prefix #$version "-guix")))
+            (delete-file "3rdparty/include/Packet32.h") ;"not open source"
+            ;; XXX: 'delete-all-but' is copied from the turbovnc package.
+            (define (delete-all-but directory . preserve)
+              (with-directory-excursion directory
+                (let* ((pred (negate (cut member <>
+                                          (cons* "." ".." preserve))))
+                       (items (scandir "." pred)))
+                  (for-each (cut delete-file-recursively <>) items))))
+            (delete-all-but
+             "3rdparty"
+             ;; asl2.0 and cc0
+             "glad"                     ;Is tailored.
+             ;; bsd-3
+             "libchdr"                  ;Not packaged in guix.
+             "vixl"                     ;Not packaged in guix.
+             "xbyak"                    ;Just includes.
+             ;; bsd-4 (pcap) and bsd-2 (xxhash)
+             "include"                  ;Just includes.
+             ;; expat
+             "ccc"                      ;Is tailored.
+             "cubeb"                    ;Is tailored.
+             "discord-rpc"              ;Not packaged in guix.
+             "imgui"                    ;Is tailored.
+             "rapidyaml"                ;Not packaged in guix.
+             "rcheevos"                 ;Does not have a linkable binary.
+             "simpleini"                ;Is tailored (GetKeyCount).
+             "zydis"                    ;Could not link.
+             ;; gpl2+
+             "freesurround"             ;Unclear what upstream is.
+             ;; lgpl2.0+
+             "demangler"                ;Is tailored.
+             ;; public-domain
+             "lzma"                     ;Does not have a linkable library.
+             ;; silofl1.1
+             "promptfont")              ;Unclear what upstream is.
+            (substitute* "CMakeLists.txt"
+              (("add_subdirectory\\(3rdparty/googletest)")
+               "find_package(GTest REQUIRED)"))
+            (substitute* "cmake/SearchForStuff.cmake"
+              (("add_subdirectory\\(3rdparty/cpuinfo EXCLUDE_FROM_ALL\\)")
+               "find_package(cpuinfo REQUIRED)")
+              (("disable_compiler_warnings_for_target\\(cpuinfo\\)") "")
+              (("add_subdirectory\\(3rdparty/fast_float EXCLUDE_FROM_ALL\\)")
+               "find_package(FastFloat REQUIRED)")
+              (("add_subdirectory\\(3rdparty/fmt EXCLUDE_FROM_ALL\\)")
+               "find_package(fmt REQUIRED)")
+              (("disable_compiler_warnings_for_target\\(fmt\\)") "")
+              (("add_subdirectory\\(3rdparty/libzip EXCLUDE_FROM_ALL\\)")
+               "find_package(libzip REQUIRED)")
+              (("add_subdirectory\\(3rdparty/rapidjson EXCLUDE_FROM_ALL\\)")
+               "find_package(RapidJSON REQUIRED)")
+              (("add_subdirectory\\(3rdparty/soundtouch EXCLUDE_FROM_ALL\\)")
+               "pkg_check_modules(SoundTouch REQUIRED soundtouch)")
+              (("add_subdirectory\\(3rdparty/vulkan EXCLUDE_FROM_ALL\\)")
+               "find_package(VulkanMemoryAllocator REQUIRED)
+find_package(VulkanHeaders REQUIRED)"))
+            ;Specifically, line 213.
+            (substitute* "common/CMakeLists.txt"
+              (("fast_float") ""))
+            (substitute* "pcsx2/CMakeLists.txt"
+              (("SoundTouch::SoundTouch") "SoundTouch")
+              (("\
+target_link_libraries\\(PCSX2_FLAGS INTERFACE vulkan-headers\\)") ""))
+            (substitute* "pcsx2/Host/AudioStream.cpp"
+              (("SoundTouch.h") "soundtouch/SoundTouch.h"))))))
     (build-system cmake-build-system)
     (arguments
      (list
-      #:parallel-build? #t
       #:configure-flags
       #~(list "-DCMAKE_C_COMPILER=clang"
               "-DCMAKE_CXX_COMPILER=clang++"
-              "-DCMAKE_PREFIX_PATH=\"$PWD/deps\""
-              "-GNinja")
-      #:imported-modules `((guix build copy-build-system)
-                           ,@%cmake-build-system-modules)
+              "-GNinja"
+              "-DPACKAGE_MODE=ON"
+              "-DUSE_LINKED_FFMPEG=ON")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'build
@@ -3678,52 +3740,52 @@ de-interlacing patches for use with PCSX2.")
           (replace 'check
             (lambda* (#:key tests? #:allow-other-keys)
               (when tests? (invoke "ninja" "unittests"))))
-          (replace 'install
-            (lambda* args
-              (apply
-               (assoc-ref (@ (guix build copy-build-system) %standard-phases)
-                          'install)
-               #:install-plan
-               '(("bin/pcsx2-qt" "bin/")
-                 ("bin/resources" "share/")
-                 ("bin/translations" "share/")
-                 ("../source/.github/workflows/scripts/linux/pcsx2-qt.desktop"
-                  "share/applications/"))
-               args)))
           (add-after 'install 'install-patches
-            (lambda* (#:key inputs #:allow-other-keys)
-              (install-file (search-input-file %build-inputs "/patches.zip")
-                            (string-append #$output "/share/resources")))))))
+            (lambda _
+              (symlink
+               (search-input-file %build-inputs "/patches.zip")
+               (string-append
+                #$output "/share/PCSX2/resources/patches.zip")))))))
     (inputs (list (module-ref
                    (resolve-interface '(gnu packages debug)) 'libbacktrace)
                   `(,zstd-1.5.7 "lib")
+                  cpuinfo
                   curl
                   dbus
                   eudev
+                  fast-float
                   ffmpeg
                   freetype
+                  fmt-11
                   kddockwidgets
-                  libaio
                   libjpeg-turbo
                   libpcap
                   libpng-next
                   libwebp
+                  libxi
                   libxrandr
+                  libzip
                   lz4
                   pcsx2-patches
-                  plutovg
                   plutosvg
+                  plutovg
                   qtbase
                   qtdeclarative
                   qtsvg
                   qttools
-                  qtwayland
+                  rapidjson
                   sdl3
                   shaderc
+                  soundtouch
                   vulkan-headers
-                  wayland
-                  libxi))
-    (native-inputs (list clang-17 extra-cmake-modules ninja pkg-config))
+                  wayland))
+    (native-inputs
+     (list clang-17
+           extra-cmake-modules
+           googletest
+           ninja
+           pkg-config
+           vulkan-memory-allocator))
     (home-page "https://pcsx2.net")
     (synopsis "PlayStation 2 (PS2) emulator")
     (description
@@ -3732,7 +3794,17 @@ emulator.  Its purpose is to emulate the PS2's hardware, using a combination
 of MIPS CPU interpreters, recompilers and a virtual machine which manages
 hardware states and PS2 system memory.  This allows you to play PS2 games on
 your PC, with many additional features and benefits.")
-    (license license:gpl3+)))
+    (license (list license:gpl3+        ;main code
+                   ;; code in 3rdparty/
+                   license:asl2.0
+                   license:bsd-2
+                   license:bsd-3
+                   license:bsd-4
+                   license:cc0
+                   license:expat
+                   license:lgpl2.0+
+                   license:public-domain
+                   license:silofl1.1))))
 
 (define-public rpcs3
   ;; NB: When updating to a new release, don't forget to check if any more
