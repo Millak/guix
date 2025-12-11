@@ -21488,28 +21488,31 @@ procedures for emacs-lisp-mode.")
       (license license:gpl3+))))
 
 (define-public emacs-ht
-  (package
-    (name "emacs-ht")
-    (version "2.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Wilfred/ht.el")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0can9v336lgnq0q2ha3js0565jzp3dlwwqxhcbx5swk5kp148f07"))))
-    (build-system emacs-build-system)
-    (propagated-inputs (list emacs-dash))
-    (native-inputs
-     (list emacs-ert-runner))
-    (home-page "https://github.com/Wilfred/ht.el")
-    (synopsis "Hash table library for Emacs")
-    (description
-     "This package simplifies the use of hash tables in elisp.  It also
+  ;; Last release in 2021.
+  (let ((commit "1c49aad1c820c86f7ee35bf9fff8429502f60fef")
+        (revision "0"))
+    (package
+      (name "emacs-ht")
+      (version (git-version "2.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+                (url "https://github.com/Wilfred/ht.el")
+                (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1vyk81xav1ghdb39fqi99yf6yvzsh6p007v7yhzk1bbqqffkvqdj"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-dash))
+      (native-inputs
+       (list emacs-ert-runner))
+      (home-page "https://github.com/Wilfred/ht.el")
+      (synopsis "Hash table library for Emacs")
+      (description
+       "This package simplifies the use of hash tables in elisp.  It also
 provides functions to convert hash tables from and to alists and plists.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-log4e
   (package
