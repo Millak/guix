@@ -25,6 +25,7 @@
 ;;; Copyright © 2024 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2025 Robin Templeton <robin@guixotic.coop>
 ;;; Copyright © 2025 Laura Kirsch <laurakirsch240406@gmail.com>
+;;; Copyright © 2025 Cayetano Santos <csantosb@inventati.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -102,14 +103,16 @@
 (define-public ccid
   (package
     (name "ccid")
-    (version "1.5.2")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://ccid.apdu.fr/files/ccid-"
-                                  version ".tar.bz2"))
-              (sha256
-               (base32
-                "06bjdswbwcwndsn23rsdhz5a7xqsgb66glqnk9lqzd7qws3l94qk"))))
+    (version "1.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://salsa.debian.org/rousseau/CCID")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0j3xw2s44dpphdyy5bnf33s4b2y25p8igdc7lidmsrhh4afv7rp9"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -117,17 +120,25 @@
       #~(list (string-append "--enable-usbdropdir="
                              #$output
                              "/pcsc/drivers"))
-       #:phases
-       #~(modify-phases %standard-phases
-         (add-after 'unpack 'patch-Makefile
-           (lambda _
-             (substitute* "src/Makefile.in"
-               (("/bin/echo") (which "echo")))
-             #t)))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-Makefile
+            (lambda _
+              (substitute* "src/Makefile.am"
+                (("/bin/echo") (which "echo"))))))))
     (native-inputs
-     (list perl pkg-config))
+     (list autoconf
+           autoconf-archive
+           automake
+           flex
+           libtool
+           perl
+           pkg-config
+           python-wrapper
+           which
+           pkg-config))
     (inputs
-     (list libusb pcsc-lite))
+     (list libusb pcsc-lite zlib))
     (home-page "https://ccid.apdu.fr/")
     (synopsis "PC/SC driver for USB smart card devices")
     (description
