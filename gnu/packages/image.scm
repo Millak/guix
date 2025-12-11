@@ -272,7 +272,7 @@ library.  It supports almost all PNG features and is extensible.")
    (license license:zlib)
    (home-page "http://www.libpng.org/pub/png/libpng.html")))
 
-(define-public libpng-for-pcsx2
+(define-public libpng-next
   (package
     (inherit libpng)
     (version "1.6.50")

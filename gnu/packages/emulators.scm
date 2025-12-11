@@ -3706,7 +3706,7 @@ de-interlacing patches for use with PCSX2.")
                   libaio
                   libjpeg-turbo
                   libpcap
-                  libpng-for-pcsx2
+                  libpng-next
                   libwebp
                   libxrandr
                   lz4
