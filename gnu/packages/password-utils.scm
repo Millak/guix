@@ -1494,7 +1494,7 @@ program.")
 (define-public pass-git-helper
   (package
     (name "pass-git-helper")
-    (version "4.0.0")
+    (version "4.1.0")
     (source
      (origin
        (method git-fetch)
@@ -1504,7 +1504,7 @@ program.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0g56jwh3ay6is8cm4579zhaj12kj8q23pnv5rbqaw19i0xv2f0s8"))))
+         "01m5vinl9qz5r4iaqj9z0jx9q13i17mkj3lax4kba2jdh5h57j40"))))
     (build-system pyproject-build-system)
     (arguments
      (list
