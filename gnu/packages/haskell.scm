@@ -4,7 +4,7 @@
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2015, 2019 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2018, 2019, 2021, 2026 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
+;;; Copyright © 2013, 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2022, 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
@@ -115,6 +115,66 @@
       (description "This package provides the Yale Haskell system running on
 top of CLISP.")
       (license license:bsd-4))))
+
+(define-public hugs
+  (package
+    (name "hugs")
+    (version "Sep2006")
+    (source
+     (origin
+      (method url-fetch)
+      (uri (string-append "https://www.haskell.org/hugs/downloads/2006-09/"
+                          name "98-plus-" version ".tar.gz"))
+      (sha256
+       (base32
+        "1mdy4aq4campgmnpc2qwq7bsbfhaxfsqdghbyyz2wms4lnfcmyma"))
+      (patches (search-patches "hugs-fix-build.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'fix-sh-n-cp
+           (lambda _
+             (substitute*
+                 '("configure"
+                   "libraries/configure"
+                   "packages/time/configure"
+                   "packages/base/configure"
+                   "packages/X11/configure"
+                   "packages/HGL/configure"
+                   "packages/OpenAL/configure"
+                   "packages/OpenGL/configure"
+                   "packages/network/configure"
+                   "packages/unix/configure"
+                   "packages/Cabal/tests/HSQL/configure"
+                   "packages/ALUT/configure"
+                   "packages/GLUT/configure"
+                   "packages/base/cbits/execvpe.c"
+                   "packages/base/System/Process/Internals.hs"
+                   "packages/Cabal/Distribution/attic"
+                   "packages/Cabal/Distribution/Simple/Register.hs"
+                   "packages/Cabal/Distribution/Simple/Hugs.hs"
+                   "tools/hugs-hc"
+                   "src/machdep.c"
+                   "libraries/Makefile.in")
+               (("/bin/sh") (which "sh")))
+             (substitute* '("demos/Makefile.in"
+                            "libraries/Makefile.in")
+               (("/bin/cp") (which "cp")))
+             #t)))
+       #:tests? #f)) ; no test target
+    (native-inputs (list gcc-13))
+    (home-page "https://www.haskell.org/hugs/")
+    (synopsis "Functional programming system based on Haskell 98")
+    (description
+     "Hugs 98 is an interpreter and programming environment for developing
+Haskell programs.  It provides an almost complete implementation of Haskell
+98, which includes expression and pattern syntax, primitives for monadic I/O,
+with support for simple interactive programs, handle-based I/O, and exception
+handling.  Hugs has a nearly complete implementation of the Haskell module
+system and supports a number of advanced extensions.")
+   (license (license:non-copyleft "file://License"
+                                  "See License in the distribution."))))
 
 ;; This package contains lots of generated .hc files containing C code to
 ;; bootstrap the compiler without a Haskell compiler.  The included .hc files
