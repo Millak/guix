@@ -42,6 +42,23 @@
 (channel-news
  (version 0)
 
+ (entry (commit "d3b79beaa806452dceaffb8b211b69dc4c346aba")
+        (title
+         (en "Linux-libre 5.4 no longer supported"))
+        (body
+         (en "The linux-libre 5.4 kernel series is no longer supported
+upstream and will be removed from GNU Guix soon:
+
+https://www.kernel.org/category/releases.html
+
+This kernel series was first added to Guix in 2019 by Mark Weaver, at version
+5.4.5.  After ~297 updates delivered to Guix users, we have deployed the final
+update, 5.4.302.
+
+The next kernel series removals are scheduled for December 2026, when the Linux
+long-term support team is planning to stop supporting four different kernel
+series: 6.12, 6.6, 5.15, and 5.10.")))
+
  (entry (commit "14bb0192fde79909999c3880b6b66aa22499eb11")
         (title
          (en "Linux-libre 6.16 removed from Guix")
