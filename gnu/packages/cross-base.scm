@@ -453,6 +453,7 @@ target that libc."
                          "i386")
                         ((? target-x86-64?)
                          "x86_64")))))))))))
+    (supported-systems %supported-systems)
     (native-inputs
      (modify-inputs (package-native-inputs gnumach-headers)
        (prepend xgcc xbinutils)))))
