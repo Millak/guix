@@ -5792,14 +5792,7 @@ milliarcsecond).")
      (list
       ;; XXX: Tests require access to https://jwst-crds-pub.stsci.edu server
       ;; for getting data sets.
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; scipy>=1.14.1
-                (("1.14.1") "1.12.0")))))))
+      #:tests? #f))
     (native-inputs
      (list python-ci-watson
            python-pysiaf
