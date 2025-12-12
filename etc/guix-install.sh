@@ -819,6 +819,11 @@ if [ -L "$GUIX_PROFILE" ]; then
     *$GUIX_PROFILE/share/man*) ;;
     *) export MANPATH="$GUIX_PROFILE/share/man:$MANPATH"
   esac
+
+  case $XDG_DATA_DIRS in
+    *$GUIX_PROFILE/share*) ;;
+    *) export XDG_DATA_DIRS="$GUIX_PROFILE/share:$XDG_DATA_DIRS"
+  esac
 fi
 
 # NOTE: Guix Home handles its own profile initialization in ~/.profile. See
