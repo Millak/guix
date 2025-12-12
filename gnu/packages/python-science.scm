@@ -1454,6 +1454,16 @@ MIGRAD algorithm and Numba accelerated functions.")
        (sha256
         (base32 "0a08680q6rnl6b1azq0lzd8r08pgnjd9ynwivb1g2vi4ccb4h7y1"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                ;; AttributeError: module 'numpy' has no attribute
+                ;; 'VisibleDeprecationWarning'
+                ((".*error::numpy.VisibleDeprecationWarning.*") "")))))))
     (native-inputs
      (list python-pytest
            python-pytest-benchmark
