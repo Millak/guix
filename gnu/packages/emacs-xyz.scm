@@ -18879,6 +18879,27 @@ determines structure, this mode provides indentation and indentation command
 behavior very similar to that of Python mode.")
     (license license:gpl3+)))
 
+(define-public emacs-yaml-pro
+  (package
+    (name "emacs-yaml-pro")
+    (version "1.3.3")
+    (home-page "https://github.com/zkry/yaml-pro")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1sipz42gb8pl8w9xci5m0kdz5dlinxj409hvyz173z3gzg7f4qr1"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-yaml))
+    (synopsis "Tools for editing YAML leveraging tree-sitter/parser")
+    (description "Leverages tree-sitter and provides fast and accurate
+YAML parsing.")
+    (license license:gpl3+)))
+
 (define-public emacs-yari
   (let ((revision "0")
         (commit "de61285ceb21f56c29f4be12e2e65b2aa2bccf56"))
