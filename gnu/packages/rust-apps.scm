@@ -2555,8 +2555,30 @@ with colored output, multi-column keyword search, additional information, pager
 support, watch support (like @command{top}) and a tree view.")
     (license license:expat)))
 
+(define-public rust-cbindgen-0.29
+  (package
+    (name "rust-cbindgen")
+    (version "0.29.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cbindgen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "168pl7jrz6zw7yi4hggqa78fgr8z8g7fyyjhihpw10cf583zvyxy"))))
+    (build-system cargo-build-system)
+    (arguments (list #:install-source? #f))
+    (native-inputs (list python-cython))
+    (inputs (cargo-inputs 'rust-cbindgen-0.29))
+    (home-page "https://github.com/mozilla/cbindgen")
+    (synopsis "Tool for generating C bindings to Rust code")
+    (description
+     "This package provides a tool for generating C/C++ bindings to Rust code.")
+    (license license:mpl2.0)))
+
 (define-public rust-cbindgen-0.28
   (package
+    (inherit rust-cbindgen-0.29)
     (name "rust-cbindgen")
     (version "0.28.0")
     (source
@@ -2566,15 +2588,7 @@ support, watch support (like @command{top}) and a tree view.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1zyiaifg6mcd4wwhhbxk8adzhph6qz4wxzgagvg3ijp95j58dpga"))))
-    (build-system cargo-build-system)
-    (arguments (list #:install-source? #f))
-    (native-inputs (list python-cython))
-    (inputs (cargo-inputs 'rust-cbindgen-0.28))
-    (home-page "https://github.com/mozilla/cbindgen")
-    (synopsis "Tool for generating C bindings to Rust code")
-    (description
-     "This package provides a tool for generating C/C++ bindings to Rust code.")
-    (license license:mpl2.0)))
+    (inputs (cargo-inputs 'rust-cbindgen-0.28))))
 
 (define-public rust-cbindgen-0.27
   (package

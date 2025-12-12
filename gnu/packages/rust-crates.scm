@@ -9185,6 +9185,10 @@
   (crate-source "indexmap" "2.12.1"
                 "1wmcfk7g7d9wz1dninlijx70kfkzz6d5r36nyi2hdjjvaqmvpm0a"))
 
+(define rust-indexmap-2.5.0
+  (crate-source "indexmap" "2.5.0"
+                "1r87dlvyg04fa9m4m6pkvwsdx54rx471fas66qff40bk5ym01fb8"))
+
 (define rust-indexmap-2.7.1
   (crate-source "indexmap" "2.7.1"
                 "0lmnm1zbr5gq3wic3d8a76gpvampridzwckfl97ckd5m08mrk74c"))
@@ -16799,6 +16803,10 @@
   (crate-source "serde_bytes" "0.11.19"
                 "1a1y1v0r9akqyvprxnmpgc0i8wybqqpvgi01mi8qxn3rkrq41m55"))
 
+(define rust-serde-spanned-1.0.0
+  (crate-source "serde_spanned" "1.0.0"
+                "10rv91337k8x8zmfir4h8aiwmwgkq07gdv7h0jxhcwwgk10lqws0"))
+
 (define rust-serde-xml-rs-0.6.0
   (crate-source "serde-xml-rs" "0.6.0"
                 "10i7dvd0c1clj4jbljd08qs8466nlymx7ma7k3ncksx1rn7affpv"))
@@ -19360,6 +19368,10 @@
   (crate-source "toml" "0.8.23"
                 "0qnkrq4lm2sdhp3l6cb6f26i8zbnhqb7mhbmksd550wxdfcyn6yw"))
 
+(define rust-toml-0.9.2
+  (crate-source "toml" "0.9.2"
+                "1b0fcp0la720p82vcsv3lrkdgsz1lmhv02rfj2bi19rgq6bfw2pd"))
+
 (define rust-toml-0.9.6
   (crate-source "toml" "0.9.6"
                 "00g2y1r2znl73s03qfb2sgc977hhqajxyp617gax28yshprlqamf"))
@@ -19387,6 +19399,10 @@
 (define rust-toml-datetime-0.6.9
   (crate-source "toml_datetime" "0.6.9"
                 "18q9ix4isxw2n4mij3v6x0pb4jw1hbxbc5wbprlbq91yjrddp99x"))
+
+(define rust-toml-datetime-0.7.0
+  (crate-source "toml_datetime" "0.7.0"
+                "1qwivxqkjxxwcqsvfhxnphpwphci0grdfk197wyxfn1gj0z1rpms"))
 
 (define rust-toml-datetime-0.7.1
   (crate-source "toml_datetime" "0.7.1"
@@ -19431,6 +19447,10 @@
 (define rust-toml-edit-0.23.7
   (crate-source "toml_edit" "0.23.7"
                 "13cgp4y6prad1lh18bbg64zkq48hafq7xzs4fb0hwpcv1mnyz1b4"))
+
+(define rust-toml-parser-1.0.1
+  (crate-source "toml_parser" "1.0.1"
+                "0c6a77v4i8zll5dbpyr306iq02msjsr1fhd12b2p97h6vdr0a84p"))
 
 (define rust-toml-parser-1.0.2
   (crate-source "toml_parser" "1.0.2"
@@ -27086,6 +27106,79 @@
                                            rust-wit-bindgen-rt-0.39.0
                                            rust-zerocopy-0.8.26
                                            rust-zerocopy-derive-0.8.26))
+                     (rust-cbindgen-0.29 =>
+                                    (list rust-anstream-0.6.19
+                                          rust-anstyle-1.0.11
+                                          rust-anstyle-parse-0.2.7
+                                          rust-anstyle-query-1.1.3
+                                          rust-anstyle-wincon-3.0.9
+                                          rust-autocfg-1.5.0
+                                          rust-bitflags-2.9.1
+                                          rust-cfg-if-1.0.1
+                                          rust-clap-4.5.41
+                                          rust-clap-builder-4.5.41
+                                          rust-clap-lex-0.7.5
+                                          rust-colorchoice-1.0.4
+                                          rust-dashmap-5.5.3
+                                          rust-diff-0.1.13
+                                          rust-equivalent-1.0.2
+                                          rust-errno-0.3.13
+                                          rust-fastrand-2.3.0
+                                          rust-getrandom-0.3.3
+                                          rust-hashbrown-0.14.5
+                                          rust-heck-0.5.0
+                                          rust-indexmap-2.5.0
+                                          rust-is-terminal-polyfill-1.70.1
+                                          rust-itoa-1.0.15
+                                          rust-lazy-static-1.5.0
+                                          rust-libc-0.2.174
+                                          rust-linux-raw-sys-0.9.4
+                                          rust-lock-api-0.4.13
+                                          rust-log-0.4.27
+                                          rust-memchr-2.7.5
+                                          rust-once-cell-1.21.3
+                                          rust-once-cell-polyfill-1.70.1
+                                          rust-parking-lot-0.12.4
+                                          rust-parking-lot-core-0.9.11
+                                          rust-pretty-assertions-1.4.1
+                                          rust-proc-macro2-1.0.95
+                                          rust-quote-1.0.40
+                                          rust-r-efi-5.3.0
+                                          rust-redox-syscall-0.5.13
+                                          rust-rustix-1.0.8
+                                          rust-ryu-1.0.20
+                                          rust-scopeguard-1.2.0
+                                          rust-serde-1.0.228
+                                          rust-serde-core-1.0.228
+                                          rust-serde-derive-1.0.228
+                                          rust-serde-json-1.0.140
+                                          rust-serde-spanned-1.0.0
+                                          rust-serial-test-2.0.0
+                                          rust-serial-test-derive-2.0.0
+                                          rust-smallvec-1.15.1
+                                          rust-strsim-0.11.1
+                                          rust-syn-2.0.104
+                                          rust-tempfile-3.20.0
+                                          rust-toml-0.9.2
+                                          rust-toml-datetime-0.7.0
+                                          rust-toml-parser-1.0.1
+                                          rust-toml-writer-1.0.2
+                                          rust-unicode-ident-1.0.18
+                                          rust-utf8parse-0.2.2
+                                          rust-wasi-0.14.2+wasi-0.2.4
+                                          rust-windows-sys-0.59.0
+                                          rust-windows-targets-0.52.6
+                                          rust-windows-aarch64-gnullvm-0.52.6
+                                          rust-windows-aarch64-msvc-0.52.6
+                                          rust-windows-i686-gnu-0.52.6
+                                          rust-windows-i686-gnullvm-0.52.6
+                                          rust-windows-i686-msvc-0.52.6
+                                          rust-windows-x86-64-gnu-0.52.6
+                                          rust-windows-x86-64-gnullvm-0.52.6
+                                          rust-windows-x86-64-msvc-0.52.6
+                                          rust-winnow-0.7.12
+                                          rust-wit-bindgen-rt-0.39.0
+                                          rust-yansi-1.0.1))
                      (circtools =>
                                 (list rust-adler2-2.0.0
                                       rust-aho-corasick-1.1.3
