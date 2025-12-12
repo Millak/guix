@@ -1170,32 +1170,36 @@ standard software: R and Python.")
 (define-public python-fgivenx
   (package
     (name "python-fgivenx")
-    (version "2.4.2")
+    ;; See: https://github.com/handley-lab/fgivenx/issues/30
+    (properties '((commit . "cf51dbf8b7efdd8d84f055740a069a5b882dcf77")
+                  (revision . "0")))
+    (version (git-version "2.4.2"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "fgivenx" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/handley-lab/fgivenx")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1ji6fqxsxmp58yvc16r41wjakgnw710gwhwviyi6q42bfj9lag6z"))))
+        (base32 "1z9lwrjvz977gk6z7zqj8d21yi0xcz67mj1737yzzdc8c03nzg9w"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 24 passed, 1 deselected, 167578 warnings
-      #:test-flags
-      ;; AttributeError: 'GrouperView' object has no attribute 'join'
-      #~(list "--deselect=fgivenx/test/test_drivers.py::test_plotting")))
+    ;; tests: 25 passed, 1 warning
     (native-inputs
      (list python-pytest
            python-pytest-mpl
            python-setuptools))
     (propagated-inputs
-     (list python-getdist
-           python-matplotlib
-           python-joblib
+     (list python-matplotlib
            python-numpy
            python-scipy
+           ;; [optional]
+           python-getdist
+           python-joblib
            python-tqdm))
-    (home-page "https://github.com/fgivenx/fgivenx")
+    (home-page "https://github.com/handley-lab/fgivenx")
     (synopsis "Functional Posterior Plotter")
     (description
      "@code{fgivenx} is a Python package for plotting posteriors of functions.
