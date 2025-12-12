@@ -220,17 +220,17 @@
 ;; It's used for cache validation and therefore can lead to strange bugs.
 ;; ex: date '+%Y%m%d%H%M%S'
 ;; or: (format-time-string "%Y%m%d%H%M%S")
-(define %librewolf-build-id "20251130211358")
+(define %librewolf-build-id "20251211220123")
 
 (define-public librewolf
   (package
     (name "librewolf")
-    (version "145.0.2-2")
+    (version "146.0-2")
     (source
      (make-librewolf-source
       #:version version
-      #:firefox-hash "13c5hk7v71kzqw8zmqqyc8n0gcakmzpksh28npr52yylnp3b9ifp"
-      #:librewolf-hash "160mdkdqzff7kcrn7xi5hjsjsz52zf21mq4fcplhdnm1xrwwn4p2"
+      #:firefox-hash "05nz4b2063z7j1k80v5nsdi8xnl13xfil2blxw1idhxb23hcmm08"
+      #:librewolf-hash "0x6i0bi1p0s1wcdhmffchd39n0imljw2dv171pzl2my0dkr76zbl"
       #:l10n firefox-l10n))
     (build-system gnu-build-system)
     (arguments
@@ -678,7 +678,7 @@
                          pkg-config
                          python
                          rust-librewolf
-                         rust-cbindgen-0.28
+                         rust-cbindgen-0.29
                          which
                          yasm))
     (native-search-paths
