@@ -4769,27 +4769,35 @@ exitinction laws found in the literature.")
 (define-public python-fits-schema
   (package
     (name "python-fits-schema")
-    (version "0.5.6")
+    ;; 0.5.6 was released in 2022, there are NumPy 2 comparability changes
+    ;; which are available on master HEAD, use the latest commit for now.
+    (properties '((commit . "ccffe04a8a47f2bd0f69014caaf73d9679b89a87")
+                  (revision . "0")))
+    (version (git-version "0.5.6"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "fits_schema" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/VODF/fits_schema")
+              (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1y6an115k7x31hbb67bfp513k802c1nfz2rxy418qkf832blnqfd"))))
+        (base32 "0lj8vb3b2s7m56bs4am6856w8vdlyi4p86gj7hlkncfngsgx1f8v"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          ;; TODO: It's removed on Git's master.
-          ;; ModuleNotFoundError: No module named 'eschool21_demo'
-          (add-after 'unpack 'fix-setup.cfg
+          (add-before 'build 'set-env-version
             (lambda _
-              (substitute* "setup.cfg"
-                (("fibonacci = eschool21_demo.__main__:main") "")))))))
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                      #$(version-major+minor+point version)))))))
     (native-inputs
      (list python-pytest
-           python-setuptools))
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
      (list python-astropy
            python-numpy))
