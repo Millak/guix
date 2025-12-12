@@ -1037,7 +1037,7 @@ document}.")
            git-minimal/pinned
            highfive
            pkg-config
-           python-pynbody-1
+           python-pynbody
            python-wrapper))
     (inputs
      (list fftw
