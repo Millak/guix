@@ -10744,7 +10744,7 @@ analysis.  This package contains functionality for:
     (version "1.1.1")
     (source
      (origin
-       (method git-fetch) ;; no tests in the PyPI tarball
+       (method git-fetch)
        (uri (git-reference
              ;; XXX: Upstream is not stable with version style
              ;; <https://github.com/Cosmoglobe/zodipy/issues/48>
@@ -10754,15 +10754,6 @@ analysis.  This package contains functionality for:
        (sha256
         (base32 "0n51bism8irj2afj4xjyx438ylcc8f1dw2x0jy8xg90x7wdh30cm"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; scipy = "^1.13.0"
-                (("1.13.0") "1.12.0")))))))
     (native-inputs
      (list python-poetry-core
            python-pytest))
