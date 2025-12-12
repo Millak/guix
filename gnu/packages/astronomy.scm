@@ -6148,6 +6148,13 @@ pulsar timing tool.")
        (sha256
         (base32 "1nljcaz0r60wvsy5dwb040wll2dd764dvib5xzkpc59cbw5lz85h"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; AttributeError: `np.string_` was removed in the NumPy 2.0
+      ;; release. Use `np.bytes_` instead.
+      #~(list "--deselect=linetools/tests/test_init_absline.py::test_dicts"
+              "--deselect=linetools/tests/test_init_emissline.py::test_dicts")))
     (native-inputs
      (list python-pytest
            python-pytest-astropy
