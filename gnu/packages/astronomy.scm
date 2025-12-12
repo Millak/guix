@@ -9386,9 +9386,9 @@ over many parameters:
      (list python-astropy
            python-numpy
            python-photutils
-           python-scikit-image-next
+           python-scikit-image
            python-scipy
-           ;; [extras-require]
+           ;; [optional]
            python-matplotlib))
     (home-page "https://github.com/vrodgom/statmorph")
     (synopsis "Non-parametric morphological diagnostics of galaxy images")
