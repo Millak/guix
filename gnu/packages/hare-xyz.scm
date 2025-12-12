@@ -48,6 +48,26 @@
     (description "This package provides compression algorithms for Hare.")
     (license license:mpl2.0)))
 
+(define-public hare-ev
+  (package
+    (name "hare-ev")
+    (version "0.25.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~sircmpwn/hare-ev")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ak9anvzg2qfdsvxpcszshimw5cqbm52zfq7kwx7z0yf6qi6zm0f"))))
+    (build-system hare-build-system)
+    (supported-systems %hare-supported-systems)
+    (home-page "https://sr.ht/~sircmpwn/hare-ev")
+    (synopsis "Event loop for Hare")
+    (description "This package provides an event loop for Hare programs.")
+    (license license:mpl2.0)))
+
 (define-public hare-json
   (package
     (name "hare-json")
