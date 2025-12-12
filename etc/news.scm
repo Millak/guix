@@ -45,7 +45,8 @@
  (entry (commit "d3b79beaa806452dceaffb8b211b69dc4c346aba")
         (title
          (en "Linux-libre 5.4 no longer supported")
-         (de "Linux-libre 5.4 nicht mehr unterstützt"))
+         (de "Linux-libre 5.4 nicht mehr unterstützt")
+         (pt "Linux-libre 5.4 não é mais suportado"))
         (body
          (en "The linux-libre 5.4 kernel series is no longer supported
 upstream and will be removed from GNU Guix soon:
@@ -71,7 +72,19 @@ ausgeliefert, 5.4.302.
 
 Der weitere Plan von Linux’ Team für Langzeitunterstützung sieht vor, als
 Nächstes die Unterstützung für vier verschiedene Kernel-Reihen im Dezember 2026
-zu beenden: 6.12, 6.6, 5.15 und 5.10.")))
+zu beenden: 6.12, 6.6, 5.15 und 5.10.")
+         (pt "A série 5.4 do kernel linux-libre não é mais suportada pelo
+fornecedor e será removida do GNU Guix em breve:
+
+https://www.kernel.org/category/releases.html
+
+Esta série de kernels foi adicionada inicialmente ao Guix em 2019 por Mark
+Weaver, na versão 5.4.5.  Após ~297 atualizações entregues aos usuários do
+Guix, implantamos a atualização final, 5.4.302.
+
+As próximas remoções de séries do kernel estão agendadas para dezembro de
+2026, quando o time de suporte de longo prazo planeja interromper o suporte a
+quatro séries diferentes do kernel: 6.12, 6.6, 5.15 e 5.10.")))
 
  (entry (commit "14bb0192fde79909999c3880b6b66aa22499eb11")
         (title
