@@ -302,13 +302,13 @@ to the @dfn{don't repeat yourself} (DRY) principle.")
   (package
     (inherit python-django)
     (name "python-django-4")
-    (version "4.2.26")
+    (version "4.2.27")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "django" version))
         (sha256
-         (base32 "0ylxdpkiwdh8yhqxqzm90fxiagm8v7xijvdm5ha3ypmmpj3y964k"))))
+         (base32 "14jvv95nw76fz8v0gzqdn6xwicqdn91glpjcb4vfxld3ykhgnrdq"))))
     (arguments
      (substitute-keyword-arguments (package-arguments python-django)
        ((#:phases phases)
