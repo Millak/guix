@@ -2865,7 +2865,7 @@ logic, also known as grey logic.")
 (define-public python-scikit-image
   (package
     (name "python-scikit-image")
-    (version "0.23.2")
+    (version "0.25.2")
     (source
      (origin
        (method git-fetch)
@@ -2874,61 +2874,49 @@ logic, also known as grey logic.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bc8i57sjk44vd9k1ilr6fpvfq1zbq9yfi22lz22k26mzrlisym3"))))
+        (base32 "1cr3ki47z9g8kylnff1nrmv5fr3lrgmibl41q0v98pldghnslxdv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 8271 passed, 160 skipped, 1 deselected, 89 xfailed
       #:test-flags
-      ;; To make sure we test compiled and installed module.
-      #~(list (string-append #$output "/lib/python"
-                             #$(version-major+minor (package-version python))
-                             "/site-packages")
+      #~(list "--ignore=benchmarks/"
               "--pyargs" "skimage"
-              ;; Disable flaky test
-              "-k" (string-join
-                    (list "not test_ellipse_parameter_stability"
-                          ;; ValueError: Cannot call len() on object with unknown chunk size.
-                          "test_thresholds_dask_compatibility[threshold_triangle-41-43]")
-                    " and not "))
+              ;; RuntimeWarning: divide by zero encountered in scalar divide
+              "-k" "not test_ellipse_parameter_stability")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'change-home-dir
+          (add-before 'check 'remove-local-source
             (lambda _
-              ;; Change from /homeless-shelter to /tmp for write permission.
-              (setenv "HOME" "/tmp")))
-          (add-before 'check 'pre-check
-            (lambda _
-              ;; To prevent loading tests twise.
-              ;; 16277 passed, 240 skipped, 4 deselected
-              (delete-file-recursively "skimage")))
-          (add-before 'check 'post-check
-            (lambda _
-              (for-each delete-file-recursively
-                        (find-files #$output "__pycache__" #:directories? #t)))))))
-    ;; See requirements/ for the list of build and run time requirements.
+              (delete-file-recursively "skimage"))))))
+    ;; See pyproject.toml for the list of build and run time requirements.
     ;; NOTE: scikit-image has an optional dependency on python-pooch, however
     ;; propagating it would enable many more tests that require online data.
     (propagated-inputs
-     (list python-cloudpickle
-           python-dask
-           python-imageio
+     (list python-imageio
            python-lazy-loader
-           python-matplotlib
            python-networkx
            python-numpy
+           python-packaging
            python-pillow
-           python-pythran
-           python-pywavelets
            python-scipy
-           python-tifffile))
+           python-tifffile
+           ;; [optional]
+           ;; python-astropy
+           ;; python-cloudpickle
+           ;; python-dask
+           ;; python-matplotlib
+           ;; python-pooch
+           ;; python-pyamg
+           ;; python-pywavelets
+           ;; python-scikit-learn
+           #;python-simpleitk))
     (native-inputs
      (list meson-python
            python-cython
-           python-numpydoc
-           python-packaging
            python-pytest
            python-pytest-localserver
-           python-wheel))
+           python-pythran))
     (home-page "https://scikit-image.org/")
     (synopsis "Image processing in Python")
     (description
