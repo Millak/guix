@@ -2923,38 +2923,8 @@ logic, also known as grey logic.")
      "Scikit-image is a collection of algorithms for image processing.")
     (license license:bsd-3)))
 
-;; TODO: Port simplified test steps to python-scikit on the next refresh round.
-(define-public python-scikit-image-next
-  (package
-    (inherit python-scikit-image)
-    (name "python-scikit-image")
-    (version "0.25.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-              (url "https://github.com/scikit-image/scikit-image")
-              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1cr3ki47z9g8kylnff1nrmv5fr3lrgmibl41q0v98pldghnslxdv"))))
-    (arguments
-     (list
-      ;; tests: 8489 passed, 128 skipped
-      #:test-flags
-      #~(list "--ignore=benchmarks"
-              "--pyargs" "skimage")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'remove-local-skimage
-            (lambda _
-              ;; This would otherwise interfere with finding the installed
-              ;; skimage when running tests.
-              (delete-file-recursively "skimage")))
-          (add-before 'check 'post-check
-            (lambda _
-              (for-each delete-file-recursively
-                        (find-files #$output "__pycache__" #:directories? #t)))))))))
+;; XXX: Deprecated on <2025-12-12>.
+(define-deprecated/public-alias python-scikit-image-next python-scikit-image)
 
 (define-public python-scikit-misc
   (package
