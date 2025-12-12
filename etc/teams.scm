@@ -702,6 +702,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
   (team 'hare
         #:name "Hare"
         #:scope (list "gnu/packages/hare.scm"
+                      "gnu/packages/hare-apps.scm"
                       "gnu/packages/hare-xyz.scm"
                       "guix/build-system/hare.scm"
                       "guix/build/hare-build-system.scm")))
