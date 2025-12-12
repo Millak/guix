@@ -5919,7 +5919,7 @@ files.")
     (version "0.6.6")
     (source
      (origin
-       (method git-fetch)               ; no release in PyPI
+       (method git-fetch)
        (uri (git-reference
              (url "https://github.com/ALFA-project-erc/kanon")
              (commit (string-append "v" version))))
@@ -5929,10 +5929,10 @@ files.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 150 passed, 18 deselected, 246 warnings
       #:test-flags
-      #~(list ;"--numprocesses" "auto"
-              ;; XXX: This tests failing a lot.
-              "-k" (string-append "not test_attribute_forwardin"
+      ;; XXX: This tests failing a lot.
+      #~(list "-k" (string-append "not test_attribute_forwardin"
                                   " and not test_declination"
                                   " and not test_init_basedquantity"
                                   " and not test_ptolemy_viz"
@@ -5969,11 +5969,11 @@ files.")
     (propagated-inputs
      (list python-astropy-6
            python-matplotlib
-           python-numpy
+           python-numpy-1
            python-pandas
            python-requests
            python-scipy
-           ;; Optional
+           ;; [optional]
            python-ipykernel
            python-papermill))
     (home-page "https://dishas.obspm.fr")
