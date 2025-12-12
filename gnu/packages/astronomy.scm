@@ -2822,7 +2822,7 @@ a path (for moving targets) and combining cutouts
            python-astropy-6
            python-gwcs-0.21
            python-jsonschema
-           python-numpy))
+           python-numpy-1))
     (home-page "https://github.com/GeminiDRSoftware/astrodata")
     (synopsis "Managing astronomical data through a uniform interface")
     (description
