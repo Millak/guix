@@ -3251,6 +3251,41 @@ The portal interfaces include APIs for file access, opening URIs, printing
 and others.")
     (license license:lgpl2.1+)))
 
+(define-public xdg-desktop-portal-next
+  (let ((base xdg-desktop-portal))
+    (package
+      (inherit base)
+      (version "1.20.3")
+      (source
+       (origin
+         (method url-fetch)
+         (uri (string-append
+               "https://github.com/flatpak/xdg-desktop-portal/releases/download/"
+               version "/xdg-desktop-portal-" version ".tar.xz"))
+         (sha256
+          (base32
+           "1p4yvbhqr8yf231gm69vdz3h7na8m6x1mhiw3bmhg4gm6x4idysb"))
+         (patches (search-patches
+                   "xdg-desktop-portal-1.20.3-disable-configuration-search-exit.patch"))
+         (modules '((guix build utils)))
+         ;; Disable failing tests.
+         (snippet #~(substitute* "tests/meson.build"
+                      ((".*test_dynamiclauncher.*") "")
+                      ((".*test_notification.*") "")
+                      ((".*test_usb.*") "")))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:configure-flags flags #~'())
+          ;; Requires python-furo, which isn't packaged for guix, and depends
+          ;; on node.js.
+          #~(append '("-Ddocumentation=disabled")
+                    #$flags))))
+      (inputs (modify-inputs (package-inputs base)
+                (append gstreamer
+                        gst-plugins-base
+                        gst-plugins-good
+                        umockdev))))))
+
 (define-public xdg-desktop-portal-gtk
   (package
     (name "xdg-desktop-portal-gtk")
