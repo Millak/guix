@@ -6071,6 +6071,35 @@ of the InventorXt GUI component toolkit.")
 various hypr* apps.")
     (license license:bsd-3)))
 
+(define-public hyprland-qt-support
+  (package
+    (name "hyprland-qt-support")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hyprwm/hyprland-qt-support")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0rxdj8l985bvsg3gca79jb4rf0dy066x5cmxsyyavlcp7yz6irps"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:tests? #f ;There are no tests.
+      #:qtbase qtbase
+      #:configure-flags
+      #~(list "-DINSTALL_QML_PREFIX=lib/qt6/qml")))
+    (native-inputs (list pkg-config))
+    (inputs (list qtbase qtdeclarative hyprlang))
+    (home-page "https://github.com/hyprwm/hyprland-qt-support")
+    (synopsis "QML style provider for Hyprland applications")
+    (description
+     "This package provides a QML style that can be used by setting the
+@code{QT_QUICK_CONTROLS_STYLE} variable to the string
+@code{org.hyprland.style} (or passing it to @code{QQuickStyle::setStyle}).")
+    (license license:bsd-3)))
 
 (define-public libdbusmenu-qt
   (package
