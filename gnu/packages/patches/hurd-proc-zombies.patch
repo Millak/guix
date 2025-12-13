@@ -1,0 +1,28 @@
+Upstream status: https://lists.gnu.org/archive/html/bug-hurd/2025-12/msg00019.html
+
+From 382c796742dad624d958ac283a7fb10960c742b1 Mon Sep 17 00:00:00 2001
+From: Yelninei <yelninei@tutamail.com>
+Date: Sat, 13 Dec 2025 17:55:08 +0000
+Subject: [PATCH] proc: Also check whether the last child is already dead.
+
+* proc/mgt.c (process_has_exited): Repeat check for the last child too.
+---
+ proc/mgt.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/proc/mgt.c b/proc/mgt.c
+index 3f04e2ba..dcb619af 100644
+--- a/proc/mgt.c
++++ b/proc/mgt.c
+@@ -1102,6 +1102,8 @@ process_has_exited (struct proc *p)
+ 				1, tp->p_pgrp->pg_pgid,
+ 				!tp->p_pgrp->pg_orphcnt);
+       tp->p_parent = reparent_to;
++      if (tp->p_dead)
++	isdead = 1;
+ 
+       /* And now append the lists. */
+       tp->p_sib = reparent_to->p_ochild;
+-- 
+2.52.0
+
