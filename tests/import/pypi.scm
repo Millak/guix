@@ -329,7 +329,7 @@ files specified by SPECS.  Return its file name."
             (native-inputs (list python-pytest
                                  python-setuptools
                                  python-wheel))
-            (home-page "http://example.com")
+            (home-page "https://example.com")
             (synopsis "summary")
             (description "summary.")
             (license license:lgpl2.0))
@@ -366,7 +366,7 @@ files specified by SPECS.  Return its file name."
             (propagated-inputs (list python-dummy-dep-a python-dummy-dep-b))
             (native-inputs (list python-dummy-build-dep-a python-dummy-build-dep-b
                                  python-dummy-test-dep-a python-dummy-test-dep-b))
-            (home-page "http://example.com")
+            (home-page "https://example.com")
             (synopsis "summary")
             (description "summary.")
             (license license:lgpl2.0))
@@ -408,7 +408,7 @@ files specified by SPECS.  Return its file name."
             (native-inputs (list python-dummy-build-dep-a python-dummy-build-dep-b
                                  python-dummy-test-dep-a python-dummy-test-dep-b
                                  python-pytest))
-            (home-page "http://example.com")
+            (home-page "https://example.com")
             (synopsis "summary")
             (description "summary.")
             (license license:lgpl2.0))
@@ -449,7 +449,7 @@ files specified by SPECS.  Return its file name."
             (native-inputs (list python-pytest
                                  python-setuptools
                                  python-wheel))
-            (home-page "http://example.com")
+            (home-page "https://example.com")
             (synopsis "summary")
             (description "summary.")
             (license license:lgpl2.0))
@@ -478,7 +478,7 @@ files specified by SPECS.  Return its file name."
                         (base32 ,(? string? hash)))))
             (build-system pyproject-build-system)
             (native-inputs (list python-setuptools python-wheel))
-            (home-page "http://example.com")
+            (home-page "https://example.com")
             (synopsis "summary")
             (description "summary.")
             (license license:lgpl2.0))
@@ -510,7 +510,7 @@ files specified by SPECS.  Return its file name."
             (native-inputs (list python-pytest
                                  python-setuptools
                                  python-wheel))
-            (home-page "http://example.com")
+            (home-page "https://example.com")
             (synopsis "summary")
             (description "summary.")
             (license license:lgpl2.0))
