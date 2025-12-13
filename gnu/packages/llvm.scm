@@ -66,6 +66,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages cmake)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages bootstrap)           ;glibc-dynamic-linker
@@ -1664,14 +1665,14 @@ existing compilers together.")
 (define-public python-llvmlite
   (package
     (name "python-llvmlite")
-    (version "0.44.0")
+    (version "0.45.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "llvmlite" version))
        (sha256
         (base32
-         "1m4lzja9xy82bhwa914p49pkbjckjc5nraspj7nsnl6ilmk7srh7"))))
+         "0dl3m9i4hsph77pmnsy47943r7rywy6syy5bsy5ifjd91p9brc6f"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -1684,39 +1685,12 @@ existing compilers together.")
                 (setenv "CPPFLAGS" "-fPIC")
                 (setenv "LDFLAGS" (string-append "-Wl,-rpath="
                                                  llvm "/lib"))))))))
-    (native-inputs (list python-pytest python-setuptools))
+    (native-inputs
+     (list cmake-minimal
+           python-pytest
+           python-setuptools))
     (inputs
-     (list
-      (let* ((patches-commit
-              "c52dd17d97aa5f3698cf7f8152b8f6551c10132a")
-             (patch-uri (lambda (name)
-                          (string-append
-                           "https://raw.githubusercontent.com/numba/"
-                           "llvmlite/"
-                           patches-commit
-                           "/conda-recipes/"
-                           name)))
-             (patch-origin (lambda (name hash)
-                             (origin (method url-fetch)
-                                     (uri (patch-uri name))
-                                     (sha256 (base32 hash)))))
-             (arch-independent-patches
-              (list (patch-origin
-                     "llvm15-clear-gotoffsetmap.patch"
-                     "097iypk4l1shyrhb72msjnl7swlc78nsnb7lv507rl0vs08n6j94")
-                    (patch-origin
-                     "llvm15-remove-use-of-clonefile.patch"
-                     "01qxzr15q3wh1ikbfi8jcs83fh27fs2w6damf7giybs6gx4iynnd")
-                    (patch-origin
-                     "llvm15-svml.patch"
-                     "15n5vph2m7nd0jlf75n3h63h89m1kf4zn4s2jd1xmjrs848lgg87"))))
-        (package
-          (inherit llvm-15)
-          (source
-           (origin
-             (inherit (package-source llvm-15))
-             (patches (append arch-independent-patches
-                              (origin-patches (package-source llvm-15))))))))))
+     (list llvm-20))
     (home-page "https://llvmlite.pydata.org")
     (synopsis "Wrapper around basic LLVM functionality")
     (description
