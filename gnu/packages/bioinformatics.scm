@@ -21887,8 +21887,8 @@ tree-based ensemble regressors.")
   ;; We use this commit because the last release is not compatible with the
   ;; current version of numpy.  See
   ;; https://github.com/aertslab/pySCENIC/issues/579#issuecomment-2405207860
-  (let ((commit "eaf23eb1fdcaae79b273de56b374b71aa8afde5a")
-        (revision "1"))
+  (let ((commit "06bafba412792f6efa5a552a23bb221cc3bdea1b")
+        (revision "2"))
     (package
       (name "pyscenic")
       (version (git-version "0.12.1" revision commit))
@@ -21901,7 +21901,7 @@ tree-based ensemble regressors.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1si2ifmj0cy2yba8lw5m7mg97iqaxi0cwhy3j43rz5bzkp0cah8n"))))
+           "15zkv082j1d7fh4pcznqss1q539ndg8ymwbs62xhypylwh7ry0sx"))))
       (build-system pyproject-build-system)
       (arguments
        (list
@@ -21950,7 +21950,7 @@ tree-based ensemble regressors.")
              python-tqdm
              python-umap-learn))
       (native-inputs
-       (list python-pytest python-wheel))
+       (list python-pytest python-setuptools))
       (home-page "https://scenic.aertslab.org/")
       (synopsis "Single-Cell regulatory network inference and clustering")
       (description
