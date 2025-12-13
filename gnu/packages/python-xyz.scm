@@ -7231,6 +7231,7 @@ formats, including:
                 (base32
                   "0aikb8gcarhifn3sadrbbs5czagih9hjv250gsrgy9v1d49pvn7s"))))
     (build-system python-build-system)
+    (native-inputs (list python-setuptools-67))
     (home-page "https://bitbucket.org/izi/polib/wiki/Home")
     (synopsis "Manipulate, create and modify gettext files")
     (description "Polib can manipulate any gettext format (po, pot and mo)
