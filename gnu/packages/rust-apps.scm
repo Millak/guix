@@ -1090,6 +1090,32 @@ Supported launchers are: dmenu, fuzzel, rofi, walker and custom.")
 Supported launchers are: dmenu, fuzzel, rofi, walker and custom.")
     (license license:gpl3)))
 
+(define-public pwmenu
+  (package
+    (name "pwmenu")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/e-tho/pwmenu")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0fzr60pn0yrw2fm055g9n0zs70g1w16w4dwrsnj95w0psidig9k9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f))
+    (native-inputs (list clang pkg-config))
+    (inputs (cons* pipewire
+                   (cargo-inputs 'pwmenu)))
+    (home-page "https://github.com/e-tho/pwmenu")
+    (synopsis "Launcher-driven Pipewire audio manager")
+    (description
+     "@code{pwmenu} (PipeWire Menu) manages audio through your launcher of choice.
+Supported launchers are: dmenu, fuzzel, rofi, walker and custom.")
+    (license license:gpl3)))
+
 (define-public evremap
   (let ((commit "cc618e8b973f5c6f66682d1477b3b868a768c545")) ;version bump
     (package
