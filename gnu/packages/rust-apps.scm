@@ -1065,6 +1065,31 @@ configuration instructions.")
 Supported launchers are: dmenu, fuzzel, rofi, walker and custom.")
     (license license:gpl3)))
 
+(define-public iwmenu
+  (package
+    (name "iwmenu")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/e-tho/iwmenu")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+          "1xig0g6sqxx4hh8fj8vd92mm0bmvjfx493kpiymaas30rn26nfnq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f))
+    (inputs (cargo-inputs 'iwmenu))
+    (home-page "https://github.com/e-tho/iwmenu")
+    (synopsis "Launcher-driven Wi-Fi manager")
+    (description
+     "@code{iwmenu} (iNet Wireless Menu) manages Wi-Fi through your launcher of choice.
+Supported launchers are: dmenu, fuzzel, rofi, walker and custom.")
+    (license license:gpl3)))
+
 (define-public evremap
   (let ((commit "cc618e8b973f5c6f66682d1477b3b868a768c545")) ;version bump
     (package
