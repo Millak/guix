@@ -1,0 +1,22 @@
+Inspired by
+https://github.com/gentoo/gentoo/commit/2ad1ddf9b8b0e0b1f91fc3dd9412ad2f9c1346c3
+see also
+https://dev.gnupg.org/rMecd0c86d62351d267bdc9566286c532a394c711b
+Gemeinsame Unterverzeichnisse: gpg-1.10.0.alt/examples und gpg-1.10.0/examples.
+Gemeinsame Unterverzeichnisse: gpg-1.10.0.alt/gpg und gpg-1.10.0/gpg.
+diff -u gpg-1.10.0.alt/setup.py gpg-1.10.0/setup.py
+--- gpg-1.10.0.alt/setup.py	2025-12-13 21:18:02.595203761 +0100
++++ gpg-1.10.0/setup.py	2025-12-13 21:19:42.624197460 +0100
+@@ -220,9 +220,9 @@
+     def run(self):
+         self._generate()
+ 
+-        swig_sources.extend((self._in_build_base('gpgme.i'), self._in_build_base('helpers.c')))
+-        swig_opts.extend(['-I' + self.build_base,
+-                          '-outdir', os.path.join(self.build_lib, 'gpg')])
++        swige.sources.extend((self._in_build_base('gpgme.i'), self._in_build_base('helpers.c')))
++        swige.swig_opts.extend(['-I' + self.build_base,
++                               '-outdir', os.path.join(self.build_lib, 'gpg')])
+         include_dirs.insert(0, self.build_base)
+ 
+         self.run_command('build_ext')

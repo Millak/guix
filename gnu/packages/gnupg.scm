@@ -584,6 +584,7 @@ interface (FFI) of Guile.")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "gpg" version))
+              (patches (search-patches "python-gpg-setup-72.patch"))
               (sha256
                (base32
                 "1ji3ynhp36m1ccx7bmaq75dhij9frpn19v9mpi4aajn8csl194il"))))
