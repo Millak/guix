@@ -19980,7 +19980,7 @@ that deprecated code is eventually removed.")
        "1gpdc1f0q5c9scmbw1l9g40jjfk3pxwg91ayvn7xbvvddlh1n9lh"))))
    (build-system python-build-system)
    (native-inputs
-    (list python-pytest))
+    (list python-pytest python-setuptools-67))
    (synopsis "JSON Matching Expressions")
    (description "JMESPath (pronounced “james path”) is a Python library that
 allows one to declaratively specify how to extract elements from a JSON
