@@ -8265,6 +8265,7 @@ for Flask programs that are using @code{python-alembic}.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "06q14mn5n56rdnqvsbbjixygilblgg85fzw029n96qf6f1rvldiq"))))
+    (native-inputs (list python-setuptools-67))
     (propagated-inputs
      (list python-six))
     (build-system python-build-system)
