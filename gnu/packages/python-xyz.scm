@@ -37111,18 +37111,25 @@ as possible in order to be comprehensible and easily extensible.")
 (define-public python-tables
   (package
     (name "python-tables")
-    (version "3.10.2")
+    ;; XXX: Compatability fix for numexpr 2.13.0, see:
+    ;; <https://github.com/PyTables/PyTables/pull/1256>.
+    (properties '((commit . "aad9079c80ce3ae7f385d00af760d171dcc10535")
+                  (revision . "0")))
+    (version (git-version "3.10.2"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "tables" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/PyTables/PyTables")
+             (commit (assoc-ref properties 'commit))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0469jrkmp0qv8cmlqkizm3b8imyc97mk9pfn66ldpyl6f4m82i15"))
+        (base32 "0gnqj1gj6dnr167pacmynvghw8bwwll6nlz843rm95r07zi6blrm"))
        (snippet '(begin
                    (use-modules (guix build utils))
-                   ;; TODO: Unbundle.
-                   ;; (delete-file-recursively "hdf5-blosc")
+                   (delete-file-recursively "hdf5-blosc")
                    (delete-file-recursively "c-blosc")))))
     (build-system pyproject-build-system)
     (arguments
@@ -37145,6 +37152,10 @@ as possible in order to be comprehensible and easily extensible.")
                                 "\",\n" m)))))
           (add-before 'build 'pre-build
             (lambda _
+              (substitute* "setup.py"
+                (("hdf5-blosc/src")
+                 (format #f "~a/src"
+                         #$(package-source (this-package-input "hdf5-blosc")))))
               (invoke "make" "distclean")       ;Regenerate C code with Cython
               (setenv "BLOSC2_DIR" #$(this-package-input "cblosc2"))
               (setenv "BLOSC_DIR" #$(this-package-input "c-blosc"))
@@ -37177,6 +37188,7 @@ as possible in order to be comprehensible and easily extensible.")
            c-blosc
            c-blosc2
            hdf5
+           hdf5-blosc
            lzo))
     (propagated-inputs
      (list python-blosc2
