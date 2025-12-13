@@ -741,8 +741,17 @@ system, then @code{flit_core} to build the package.")
 them as the version argument or in a SCM managed file.")
     (license license:expat)))
 
-(define-deprecated/public-alias python-setuptools-scm-next
-  python-setuptools-scm)               ;may be removed after 2025-12-01
+(define-public python-setuptools-scm-next
+  (package
+    (inherit python-setuptools-scm)
+    (name "python-setuptools-scm")
+    (version "9.2.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "setuptools_scm" version))
+       (sha256
+        (base32 "0mzgyyg1cgigkmlfm0iy44f2092zn8xc093ygn4a11jncss4lrqw"))))))
 
 (define-public python-editables
   (package
