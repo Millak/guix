@@ -391,6 +391,32 @@ the terminal.")
      "This package provides a lightweight wallet tracker and query engine for Bitcoin.")
     (license license:expat)))
 
+(define-public bzmenu
+  (package
+    (name "bzmenu")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/e-tho/bzmenu")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+          "0mdfbp69az6i6lb4nlr0ahwz2894qls5v6lbkpqmg8y0szyq5i1v"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f))
+    (native-inputs (list pkg-config))
+    (inputs (cons* dbus (cargo-inputs 'bzmenu)))
+    (home-page "https://github.com/e-tho/bzmenu")
+    (synopsis "Launcher-driven Bluetooth manager")
+    (description
+     "@code{bzmenu} (BlueZ Menu) manages Bluetooth through your launcher of
+choice.  Supported launchers are: dmenu, fuzzel, rofi, walker and custom.")
+    (license license:gpl3)))
+
 ;; Note: It has expat license.
 ;; Note: That is supposedly the (unreleased) version 0.6.3.
 (define %tinycbor-source
