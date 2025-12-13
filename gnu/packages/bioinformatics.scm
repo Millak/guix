@@ -702,37 +702,38 @@ for many other tasks.")
 (define-public cpat
   (package
     (name "cpat")
-    (version "3.0.4")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "CPAT" version))
-              (sha256
-               (base32
-                "0dfrwwbhv1n4nh2a903d1qfb30fgxgya89sa70aci3wzf8h2z0vd"))
-              (modules '((guix build utils)))
-              (snippet
-               '(for-each delete-file-recursively
-                          (list ".eggs"
-                                "lib/__pycache__/"
-                                "lib/cpmodule/__pycache__/")))))
+    (version "3.0.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/liguowang/cpat")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13l2bxaxn4bf7fglx2vnsxfjzvav96d9v78gzwx71sp7wgsjwz9w"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
-      '(modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (with-directory-excursion "test"
-                 ;; There is no test4.fa
-                 (substitute* "test.sh"
-                   ((".*-g test4.fa.*") ""))
-                 (invoke "bash" "test.sh"))))))))
+      #~(modify-phases %standard-phases
+          (replace 'check
+            ;; Working test steps from <test_files/test.sh> file.
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "test_files"
+                  (system* "gunzip" "Human_test_coding_mRNA.fa.gz")
+                  (invoke "cpat" "--hex=Human_Hexamer.tsv"
+                          "--logitModel=Human_logitModel.RData"
+                          "--top-orf=5"
+                          "--outfile=out5"
+                          "--gene=Human_test_coding_mRNA.fa"
+                          "--antisense"))))))))
     (propagated-inputs
      (list python-numpy python-pysam))
     (inputs
      (list r-minimal))
-    (native-inputs (list python-setuptools python-wheel))
+    (native-inputs (list python-setuptools))
     (home-page "https://wlcb.oit.uci.edu/cpat/")
     (synopsis "Alignment-free distinction between coding and noncoding RNA")
     (description
