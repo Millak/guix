@@ -28546,7 +28546,7 @@ and dates in \"human readable\" forms.  For example, it would display
     (version "1.17.3")
     (source
      (origin
-       (method git-fetch)       ;no tests in PyPI archive
+       (method git-fetch)
        (uri (git-reference
               (url "https://github.com/spotify/annoy")
               (commit (string-append "v" version))))
@@ -28555,10 +28555,15 @@ and dates in \"human readable\" forms.  For example, it would display
         (base32 "1zmdp1dws3i35a0psb10k6rkh3iaiq8s9ybxibvfjihbapidd4d0"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; Requires python-h5py
-     (list #:test-flags #~(list "--ignore=test/accuracy_test.py")))
+     (list
+      #:test-flags
+      ;; urllib.error.URLError: <urlopen error [Errno -3] Temporary failure in
+      ;; name resolution>
+      #~(list "--deselect=test/accuracy_test.py::test_glove_25"
+              "--deselect=test/accuracy_test.py::test_nytimes_16"
+              "--deselect=test/accuracy_test.py::test_fashion_mnist")))
     (native-inputs
-     (list ;; python-h5py
+     (list python-h5py
            python-numpy
            python-pytest
            python-setuptools))
