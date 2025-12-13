@@ -1557,7 +1557,21 @@ the tty to run, among other things."
                                                   (string-append dir "/lib"))
                                                 (list #$@name-services))
                                            ":")))))
-           (stop #~(make-kill-destructor))
+           (stop #~(let ((terminate (make-kill-destructor)))
+                     (lambda (process)
+                       (terminate process)
+
+                       ;; PID 1 might have mapped nscd database files via
+                       ;; '__nscd_get_mapping'.  Call the relevant libc
+                       ;; functions (those with a corresponding GETFD* request
+                       ;; type) to cause PID 1 to notice that those mappings
+                       ;; are stale and to unmap them.  Failure to do so would
+                       ;; prevent the root file system from being remounted
+                       ;; read-only when shutting down.
+                       (false-if-exception (getpw "root"))
+                       (false-if-exception (getgr "root"))
+                       (false-if-exception (getaddrinfo "localhost" "http"))
+                       #f)))
            (modules `((ice-9 popen)               ;for the actions
                       (ice-9 rdelim)
                       (ice-9 match)

@@ -827,6 +827,18 @@ in a loop.  See <http://bugs.gnu.org/26931>.")
                                                      ,witness-size))))))
                                marionette))
 
+            ;; Cause PID 1 to create a mapping to nscd's database files.
+            ;; Those mappings used to prevent 'root-file-system' to remount
+            ;; read-only on shutdown.  See
+            ;; <https://codeberg.org/guix/guix/issues/4269>.
+            (test-equal "open libc NSS database"
+              "root"
+              (marionette-eval '(begin
+                                  (use-modules (gnu services herd))
+                                  (start-service 'nscd) ;wait for nscd
+                                  (eval-there '(passwd:name (getgr "root"))))
+                               marionette))
+
             ;; Halt the system.
             (marionette-eval '(system* "/run/current-system/profile/sbin/halt")
                              marionette)
@@ -891,7 +903,10 @@ in a loop.  See <http://bugs.gnu.org/26931>.")
     "Make sure the root file system is cleanly unmounted when the system is
 halted.")
    (value
-    (let ((os (marionette-operating-system %simple-os)))
+    (let ((os (marionette-operating-system
+               %simple-os
+               #:imported-modules '((gnu services herd)
+                                    (guix combinators)))))
       (run-root-unmount-test os)))))
 
 
