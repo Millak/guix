@@ -1689,6 +1689,31 @@ replacement for i3status, written in pure Rust.  It provides a way to display
 bar.  It is also compatible with sway.")
     (license license:gpl3)))
 
+(define-public iwmenu
+  (package
+    (name "iwmenu")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/e-tho/iwmenu")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1xig0g6sqxx4hh8fj8vd92mm0bmvjfx493kpiymaas30rn26nfnq"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:install-source? #f))
+    (inputs (cargo-inputs 'iwmenu))
+    (home-page "https://github.com/e-tho/iwmenu")
+    (synopsis "Launcher-driven Wi-Fi manager")
+    (description
+     "@code{iwmenu} (iNet Wireless Menu) manages Wi-Fi through your launcher of
+choice.  Supported launchers are: dmenu, fuzzel, rofi, walker and custom.")
+    (license license:gpl3)))
+
 (define-public jless
   (package
     (name "jless")
