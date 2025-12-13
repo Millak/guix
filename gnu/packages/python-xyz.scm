@@ -27673,95 +27673,66 @@ validation testing and application logic.")
 (define-public python-numba
   (package
     (name "python-numba")
-    (version "0.61.0")
+    (version "0.62.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "numba" version))
        (sha256
         (base32
-         "09grslc9ij1ry94c5yz10rvf0w29vn7pwilijphrj20np24jx3c8"))))
+         "0qai1npy5x2p68872zi6hr97sxdmwmigr8802b1383l9m9144xvv"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 10723 tests (skipped=708, expected failures=23)
+      #:test-backend #~'custom
+      #:test-flags
+      ;; Check <buildscripts> directory for more build/tests examples.
+      #~(list "-m" "numba.runtests"
+              "--exclude-tags='long_running'"
+              "--multiprocess" (number->string (min 8 (parallel-job-count)))
+              "-b"
+              "-v"
+              "--"
+              "numba.tests")
       #:phases
-      `(modify-phases %standard-phases
-         (add-after 'unpack 'disable-proprietary-features
-           (lambda _
-             (setenv "NUMBA_DISABLE_HSA" "1")
-             (setenv "NUMBA_DISABLE_CUDA" "1")))
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             ;; This expects to be able to run pip.
-             (delete-file "numba/tests/test_sysinfo.py")
-             ;; This one test fails because a deprecation warning is printed.
-             (substitute* "numba/tests/test_import.py"
-               (("def test_no_accidental_warnings")
-                "def disabled_test_no_accidental_warnings"))
-             ;; These tests fail due to result rounding depending on CPU.
-             (substitute* "numba/tests/test_looplifting.py"
-               (("def test_lift_objectmode_issue_4223")
-                "def disabled_test_lift_objectmode_issue_4223"))
-             (substitute* "numba/tests/test_extending.py"
-               (("def test_series_ufunc")
-                "def disabled_test_series_ufunc")
-               (("def test_index_ufunc")
-                "def disabled_test_index_ufunc"))
-             (substitute* "numba/tests/test_array_exprs.py"
-               (("def test_explicit_output")
-                "def disabled_test_explicit_output"))
-             (substitute* "numba/tests/test_target_extension.py"
-               (("def test_basic_offload")
-                "def disabled_test_basic_offload"))
-             (substitute* "numba/tests/test_np_functions.py"
-               (("def test_windowing")
-                "def disabled_test_windowing"))
-             ;; This fails nondeterministically, possibly depending on CPU.
-             ;; https://github.com/numba/numba/issues/8282.
-             (substitute* "numba/tests/test_function_type.py"
-               (("def test_wrapper_address_protocol_libm")
-                "def disabled_test_wrapper_address_protocol_libm"))
-             ;; Some tests timeout or crash on some architectures.
-             ,@(cond
-                ((target-aarch64?)
-                 `((substitute* "numba/tests/test_sets.py"
-                     (("def test_add_discard")
-                      "def disabled_test_add_discard")
-                     (("def test_isdisjoint")
-                      "def disabled_test_isdisjoint")
-                     (("def test_issubset")
-                      "def disabled_test_issubset")
-                     (("def test_issuperset")
-                      "def disabled_test_issuperset")
-                     (("def test_remove_error")
-                      "def disabled_test_remove_error"))))
-                ((target-ppc64le?)
-                 `((substitute* "numba/tests/test_mathlib.py"
-                     (("def test_ldexp")
-                      "def disabled_test_ldexp"))))
-                ((target-arm32?)
-                 ;; Armhf emulation on aarch64 using armv8 machines returns
-                 ;; 'armv8l' from platform.machine() and won't skip some tests.
-                 ;; Fix borrowed from an upstream bug report:
-                 ;; https://github.com/numba/numba/issues/6345#issuecomment-764993001
-                 `((substitute* '("numba/tests/support.py"
-                                  "numba/tests/test_dispatcher.py")
-                     (("platform\\.machine\\(\\) == 'armv7l'")
-                      (string-append
-                       "platform.machine().startswith('armv') and "
-                       "int(platform.machine()[len('armv'):-1]) >= 7")))))
-                (#t '()))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               ;; Something is wrong with the PYTHONPATH when running the
-               ;; tests from the build directory, as it complains about not being
-               ;; able to import certain modules.
-               (with-directory-excursion "/tmp"
-                 (setenv "HOME" (getcwd))
-                 (invoke "python3" "-m" "numba.runtests" "-v" "-m"))))))))
-    (propagated-inputs (list python-llvmlite python-numpy))
-    (native-inputs (list python-setuptools python-wheel))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              ;; This expects to be able to run pip.
+              (delete-file "numba/tests/test_sysinfo.py")
+              ;; This fails nondeterministically, possibly depending on CPU.
+              ;; https://github.com/numba/numba/issues/8282.
+              (substitute* "numba/tests/test_function_type.py"
+                (("def test_wrapper_address_protocol_libm")
+                 "def disabled_test_wrapper_address_protocol_libm"))
+              (substitute* "numba/tests/test_caching.py"
+                ;; RuntimeError: cannot cache function 'simple_usecase': no
+                ;; locator available for file
+                (("def test_non_creatable_pycache")
+                 "def __off_test_non_creatable_pycache")
+                (("def test_non_writable_pycache")
+                 "def __off_test_non_writable_pycache")
+                ;; AssertionError: None is not an instance of <class
+                ;; 'numba.core.caching.UserWideCacheLocator'>
+                (("def test_frozen")
+                 "def __off_test_frozen"))))
+          (add-before 'build 'disable-proprietary-features
+            (lambda _
+              (setenv "NUMBA_DISABLE_HSA" "1")
+              (setenv "NUMBA_DISABLE_CUDA" "1")))
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp")
+              ;; XXX: Something is wrong with the PYTHONPATH when running the
+              ;; tests from the build directory, as it complains about not
+              ;; being able to import certain modules.
+              (delete-file-recursively "numba"))))))
+    (native-inputs
+     (list python-setuptools))
+    (propagated-inputs
+     (list python-llvmlite
+           python-numpy))
     (home-page "https://numba.pydata.org")
     (synopsis "Compile Python code using LLVM")
     (description "Numba gives you the power to speed up your applications with
