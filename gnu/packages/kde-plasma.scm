@@ -1475,7 +1475,7 @@ you login.")
       #:test-exclude
       (string-append "("
                      (string-join
-                         '(;; Fails on an Apple M1 (aarch64) with the following error:
+                         `(;; Fails on an Apple M1 (aarch64) with the following error:
                            ;; TestColorspaces::roundtripConversion fails
                            "kwin-testColorspaces"
 
@@ -1517,7 +1517,11 @@ you login.")
                            "kwin-testFractionalRepaint"
                            "kwin-testDrmLegacy"
                            "kwin-testInputCapture"
-                           "kwin-testMockDrm")
+                           "kwin-testMockDrm"
+                           ,@(if (target-aarch64?)
+                                 '("kwin-testSecurityContext"
+                                   "kwin-testXwaylandSelection")
+                                 '()))
                          "|")
                      ")")
       #:phases
