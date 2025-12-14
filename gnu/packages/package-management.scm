@@ -1800,6 +1800,42 @@ endif()
 functionality.  It uses libsolv for dependency resolution and is the
 foundation for the Mamba package manager.")
     (license license:bsd-3)))
+
+(define-public python-libmambapy
+  (package
+    (inherit libmamba)
+    (name "python-libmambapy")
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "tests/")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "libmambapy")))
+          (add-before 'build 'set-cmake-prefix-path
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "CMAKE_PREFIX_PATH"
+                      (string-append (assoc-ref inputs "libmamba")
+                                     ":" (or (getenv "CMAKE_PREFIX_PATH") ""))))))))
+    (native-inputs
+     (list cmake-minimal
+           ninja
+           pkg-config
+           pybind11
+           python-scikit-build
+           python-pytest
+           python-setuptools))
+    (inputs
+     (list libmamba))
+    (home-page "https://github.com/mamba-org/mamba")
+    (synopsis "Python bindings for libmamba")
+    (description
+     "Libmambapy provides Python bindings for the libmamba library,
+enabling fast package management functionality in Python applications.")
+    (license license:bsd-3)))
 (define-public conan
   (package
     (name "conan")
