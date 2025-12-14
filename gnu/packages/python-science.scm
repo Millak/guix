@@ -4820,20 +4820,28 @@ being merged upstream into @code{xarray}.")
 (define-public python-xarray-einstats
   (package
     (name "python-xarray-einstats")
-    (version "0.7.0")
-    (source (origin
-              (method git-fetch) ; no tests in PyPI
-              (uri (git-reference
-                    (url "https://github.com/arviz-devs/xarray-einstats")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "14c424swpdginaz4pm3nmkizxy34x19q6xq3d4spx9s9031f6n3a"))))
+    (version "0.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/arviz-devs/xarray-einstats")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11crz1l6swabwzmwbrxypfw8gbbp81higzgi5nsxzfigcrrqq30a"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-einops python-flit-core python-numba
-                         python-pytest))
-    (propagated-inputs (list python-numpy python-scipy python-xarray))
+    ;; tests: 317 passed, 48 skipped 
+    (native-inputs
+     (list python-flit-core
+           python-pytest))
+    (propagated-inputs
+     (list python-numpy
+           python-scipy
+           python-xarray
+           ;; [optinoal]
+           python-einops
+           python-numba))
     (home-page "https://einstats.python.arviz.org/en/latest/")
     (synopsis "Stats, linear algebra and einops for xarray")
     (description
