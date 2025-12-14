@@ -51,14 +51,14 @@
 (define-public libkdegames
   (package
     (name "libkdegames")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkdegames-" version ".tar.xz"))
        (sha256
-        (base32 "1928nizx6667imxvp69jlr8j2mrvanv7mlbvnk37hydkgxkhbws6"))))
+        (base32 "1w86a2vlap1n38gfwbbqvb0kikb1ahnk0g3q39f798q77adgk20s"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs
