@@ -595,14 +595,14 @@ Features are:
 (define-public krdc
   (package
     (name "krdc")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/krdc-" version ".tar.xz"))
        (sha256
-        (base32 "0slha1lnc775bjvj5x52xgzfsi7l2z525wb9vmnjndn04657ncda"))))
+        (base32 "0icnnl01h4g6sazwk22jfy6mj6qf25z8r9xmqq01n59xa30c034j"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config kdoctools))
