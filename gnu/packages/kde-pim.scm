@@ -1890,14 +1890,14 @@ e-mail client programs into KMail and KDE PIM.")
 (define-public kmailtransport
   (package
     (name "kmailtransport")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmailtransport-" version ".tar.xz"))
        (sha256
-        (base32 "1bip4prvds1nmifpyr4q291r6sh6y409fa8x4znwl9gdckmqbyr1"))))
+        (base32 "1gz15py1nrg2kr8kvb1zq4swhgvj7xxy2bwfpzdjlzb55pczs3s8"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
