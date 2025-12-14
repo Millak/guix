@@ -320,46 +320,54 @@ be output in text, PostScript, PDF or HTML.")
 (define-public python-arviz
   (package
     (name "python-arviz")
-    (version "0.21.0")
-    (source (origin
-              (method git-fetch)        ; PyPI misses some test files
-              (uri (git-reference
-                    (url "https://github.com/arviz-devs/arviz")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "02bqpl61gzn65vhwspi6gx9ln2wlwh8xm418i8vhmls44rvszcxf"))))
+    (version "0.22.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/arviz-devs/arviz")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04l1zsr2m80avvrh73v34sp4p9fzakmgliszsww2wmv99cl5jdk7"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; FIXME: matplotlib tests fail because of the "--save" test flag.
-     (list #:test-flags #~'("--ignore"
-                            "arviz/tests/base_tests/test_plots_matplotlib.py")
+     (list
+      ;; tests: 3384 passed, 147 skipped, 10 deselected
+      #:test-flags
+      #~(list "-k" (string-join
+                    ;; Network access is required.
+                    (list "not test_plot_ppc_transposed"
+                          "test_plot_separation[kwargs0]"
+                          "test_plot_separation[kwargs1]"
+                          "test_plot_separation[kwargs2]"
+                          "test_plot_separation[kwargs3]"
+                          "test_plot_separation[kwargs4]"
+                          "test_plot_trace_legend[False-False]"
+                          "test_plot_trace_legend[False-True]"
+                          "test_plot_trace_legend[True-False]"
+                          "test_plot_trace_legend[True-True]")
+                    " and not ")
+              "arviz/tests/base_tests/")
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'remove-radon
+               (add-before 'check 'pre-check
                  (lambda _
-                   (delete-file
-                    ;; This dataset is loaded remotely, it's not supposed to
-                    ;; be copied locally.
-                    "arviz/data/example_data/code/radon/radon.json")))
-               (add-before 'check 'write-permission
-                 (lambda _
-                   ;; 3 tests require write permission.
                    (setenv "HOME" "/tmp"))))))
-    (native-inputs (list python-cloudpickle python-pytest))
-    (propagated-inputs (list python-dm-tree
-                             python-h5netcdf
-                             python-matplotlib
-                             python-numpy
-                             python-packaging
-                             python-pandas
-                             python-scipy
-                             python-typing-extensions
-                             python-xarray
-                             python-xarray-einstats
-                             python-setuptools
-                             python-wheel))
+    (native-inputs
+     (list python-cloudpickle
+           python-pytest
+           python-setuptools))
+    (propagated-inputs
+     (list python-h5netcdf
+           python-matplotlib
+           python-numpy
+           python-packaging
+           python-pandas
+           python-scipy
+           python-typing-extensions
+           python-xarray
+           python-xarray-einstats))
     (home-page "https://github.com/arviz-devs/arviz")
     (synopsis "Exploratory analysis of Bayesian models")
     (description
