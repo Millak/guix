@@ -6203,12 +6203,11 @@ emission lines in 1-D spectra, especially galaxy and quasar spectra.")
      (list #:tests? #f)) ; no tests provided
     (native-inputs
      (list python-cython
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-losoto
            python-matplotlib
-           python-numpy
+           python-numpy-1
            python-pyqt
            python-pyqt5-sip))
     (home-page "https://github.com/tikk3r/lofar-h5plot")
