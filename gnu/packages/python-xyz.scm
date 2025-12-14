@@ -15726,7 +15726,14 @@ PNG and terminal output.")
      (list
       ;; 2358 passed, 16 skipped, 6 xfailed, 17 warnings
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count)) )))
+      #~(list "--numprocesses" (number->string (parallel-job-count))
+              ;; XXX: See: <https://github.com/mwaskom/seaborn/issues/3892>.
+              ;; KeyError: 'labelleft'
+              "--deselect=tests/_core/test_plot.py::TestLabelVisibility::test_1d_column_wrapped"
+              "--deselect=tests/_core/test_plot.py::TestLabelVisibility::test_1d_row_wrapped"
+              ;; AttributeError: module 'numpy' has no attribute
+              ;; 'VisibleDeprecationWarning'
+              "--deselect=tests/test_distributions.py::TestKDEPlotBivariate::test_weights")))
     (native-inputs
      (list python-flit-core
            python-pytest
