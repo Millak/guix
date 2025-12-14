@@ -1302,14 +1302,14 @@ re-executing them as necessary.")
 (define-public inetutils
   (package
     (name "inetutils")
-    (version "2.5")
+    (version "2.7")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/inetutils/inetutils-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0q1257ci22g2jbdiqs00mharc1lqkbibdlkhj23f3si6qjxkn17s"))))
+                "11n01vsd51r7qraaaylhhx04hq4s6vcq0896zkz0yp1wvqfbwmm1"))))
     (build-system gnu-build-system)
     (arguments
      (list
