@@ -1835,6 +1835,67 @@ foundation for the Mamba package manager.")
      "Libmambapy provides Python bindings for the libmamba library,
 enabling fast package management functionality in Python applications.")
     (license license:bsd-3)))
+
+(define-public python-conda-libmamba-solver
+  (package
+    (name "python-conda-libmamba-solver")
+    (version "25.11.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/conda/conda-libmamba-solver")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0vzynzpkhi90bydg2azvi95siq3f1csda2sv9yffhxpcv51v12dp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; Most tests require network access to fetch conda channels/packages.
+      #:test-flags
+      #~(list "--ignore=tests/test_channels.py"       ; network: fetch channels
+              "--ignore=tests/test_downstream.py"     ; network: conda-build
+              "--ignore=tests/test_index.py"          ; network: channel index
+              "--ignore=tests/test_performance.py"    ; commercial codspeed service
+              "--ignore=tests/test_repoquery.py"      ; network: repo queries
+              "--ignore=tests/test_shards.py"         ; network: shard fetching
+              "--ignore=tests/test_shards_subset.py"  ; network: shard ops
+              "--ignore=tests/test_solver.py"         ; network: solver
+              "--ignore=tests/test_solver_differences.py"  ; network: solver
+              "--ignore=tests/test_workarounds.py")   ; network: workarounds
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list python-boltons
+           python-libmambapy
+           python-msgpack
+           python-requests
+           python-zstandard))
+    (native-inputs
+     (list conda-bootstrap  ; For sanity-check (imports conda)
+           ;python-conda-index
+           python-hatchling
+           python-hatch-vcs
+           python-pytest
+           python-pytest-xprocess))
+    ;; We avoid propagating conda-bootstrap's dependencies in conda-bootstrap.
+    ;; This means we have to repeat conda-bootstrap's dependencies here.
+    (inputs
+     (package-inputs conda-bootstrap))
+    (home-page "https://github.com/conda/conda-libmamba-solver")
+    (synopsis "Fast Mamba solver for Conda")
+    (description
+     "The conda-libmamba-solver package provides a fast solver backend for
+Conda based on the libmamba library.  It significantly speeds up dependency
+resolution compared to the classic solver.")
+    (license license:bsd-3)))
 (define-public conan
   (package
     (name "conan")
