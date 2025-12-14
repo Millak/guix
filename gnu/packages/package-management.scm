@@ -1707,6 +1707,99 @@ written entirely in Python.")
      "Libsolv is a library for solving package dependencies using a SAT solver.
 It is used by the RPM package manager and the Mamba/Conda package managers.")
     (license license:bsd-3)))
+
+(define-public libmamba
+  (package
+    (name "libmamba")
+    (version "2.3.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mamba-org/mamba")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10zvhm9mx4jcvkfqnzp1h1va48zfhz8wbpan1imq3b08493h53nz"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_LIBMAMBA=ON"
+              "-DBUILD_SHARED=ON"
+              "-DBUILD_LIBMAMBA_TESTS=ON"
+              "-DBUILD_LIBMAMBAPY=OFF"
+              "-DBUILD_MICROMAMBA=OFF"
+              "-DBUILD_MAMBA_PACKAGE=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'add-find-zstd
+            (lambda* (#:key inputs #:allow-other-keys)
+              (mkdir-p "cmake/modules")
+              ;; We build zstd from Makefile rather than cmake.
+              ;; That means zstd doesn't install their zstdConfig.cmake.
+              ;; Hence, we have to create our own cmake file in mamba to have
+              ;; cmake find zstd.
+              (with-output-to-file "cmake/modules/Findzstd.cmake"
+                (lambda ()
+                  (display "
+find_path(ZSTD_INCLUDE_DIR zstd.h)
+find_library(ZSTD_LIBRARY NAMES zstd)
+
+if(ZSTD_INCLUDE_DIR AND ZSTD_LIBRARY)
+  set(zstd_FOUND TRUE)
+  if(NOT TARGET zstd::libzstd_shared)
+    add_library(zstd::libzstd_shared UNKNOWN IMPORTED)
+    set_target_properties(zstd::libzstd_shared PROPERTIES
+      IMPORTED_LOCATION \"${ZSTD_LIBRARY}\"
+      INTERFACE_INCLUDE_DIRECTORIES \"${ZSTD_INCLUDE_DIR}\")
+  endif()
+endif()
+")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; Create fake root prefix and home for tests
+                (let ((fake-root (string-append (getcwd) "/fake-mamba-root"))
+                      (fake-home (string-append (getcwd) "/fake-home")))
+                  (mkdir-p (string-append fake-root "/pkgs"))
+                  (mkdir-p (string-append fake-root "/envs"))
+                  (mkdir-p (string-append fake-root "/conda-meta"))
+                  (mkdir-p fake-home)
+                  (setenv "MAMBA_ROOT_PREFIX" fake-root)
+                  (setenv "HOME" fake-home))
+                (invoke "./libmamba/tests/test_libmamba"
+                        "~which" ; expects /bin, /usr/bin
+                        "~user_home_dir" ; getpwuid fails in build container
+                        "~SubdirIndexLoader" ; downloads from conda.anaconda.org
+                        "~Create problem graph" ; downloads from conda.anaconda.org
+                        "~Test create_conda_forge utility" ; downloads from conda.anaconda.org
+                        "~Install highest priority package" ; timestamp is 0 in build env
+                        "~Use CA certificate from the root prefix" ; no CA certs in build env
+                        "~remote_yaml_file")))))))  ; downloads from raw.githubusercontent.com
+    (native-inputs
+     (list catch2-3 cli11 pkg-config python))
+    (inputs
+     (list curl
+           libarchive
+           libsolv
+           openssl
+           simdjson
+           `(,zstd "lib")))
+    (propagated-inputs
+     (list fmt-11
+           libexpected
+           nlohmann-json
+           reproc
+           spdlog-1.15
+           yaml-cpp))
+    (home-page "https://github.com/mamba-org/mamba")
+    (synopsis "Fast cross-platform package manager library")
+    (description
+     "Libmamba is a C++ library that provides fast package management
+functionality.  It uses libsolv for dependency resolution and is the
+foundation for the Mamba package manager.")
+    (license license:bsd-3)))
 (define-public conan
   (package
     (name "conan")
