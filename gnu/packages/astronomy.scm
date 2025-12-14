@@ -5094,6 +5094,7 @@ the Gizmo code, in particular, the FIRE cosmological simulations.")
       ;; tests: 77 passed, 2 skipped, 3 deselected
       #:test-flags
       #~(list "--pyargs" "glue_astronomy"
+              ;; XXX: See: <https://github.com/glue-viz/glue-astronomy/issues/117>.
               "-k" (string-join
                     ;; Not equal to tolerance rtol=1e-07, atol=0
                     (list "not test_from_spectrum1d[wcs3d]"
@@ -5101,8 +5102,19 @@ the Gizmo code, in particular, the FIRE cosmological simulations.")
                           ;; multi-dimensional. Please specify
                           ;; spectral_axis_index.
                           "test_spectrum1d_2d_data[2]"
-                          "test_spectrum1d_2d_data[3]")
-                    " and not "))))
+                          "test_spectrum1d_2d_data[3]"
+                          ;; AssertionError: assert False
+                          "test_identifier_casa"
+                          ;; AttributeError: module 'numpy' has no attribute
+                          ;; 'product'
+                          "test_reader_casa"
+                          "test_spectral_cube_io")
+                    " and not "))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (native-inputs
      (list python-mock
            python-pytest-astropy
