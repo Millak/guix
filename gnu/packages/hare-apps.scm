@@ -18,6 +18,7 @@
 
 (define-module (gnu packages hare-apps)
   #:use-module (gnu packages hare-xyz)
+  #:use-module (gnu packages man)
   #:use-module (guix build-system hare)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -60,3 +61,25 @@ The state will transition following every accepted transition.  If there is no
 more available transition, the state goes back to the initial position.")
     (license license:agpl3+)))
 
+(define-public sxmobar
+  (package
+    (name "sxmobar")
+    (version "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://git.sr.ht/~stacyharper/sxmobar")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1dlw4sbf3awzxvglmfml5fmi9w6zmqxr2f4xqsrwchi154bixix9"))))
+    (build-system hare-build-system)
+    (native-inputs (list scdoc))
+    (supported-systems %hare-supported-systems)
+    (home-page "https://sxmobar.builtwithhare.org")
+    (synopsis "Status bar component manager")
+    (description "sxmobar is a status bar component manager.  It is used to
+generate status lines for @command{i3status}, @command{i3bar},
+@command{swaybar}, and others.")
+    (license license:agpl3+)))
