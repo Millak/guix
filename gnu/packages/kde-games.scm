@@ -924,14 +924,14 @@ This package is part of the KDE games module.")
 (define-public kfourinline
   (package
     (name "kfourinline")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kfourinline-" version ".tar.xz"))
        (sha256
-        (base32 "04lpm7f119imm0x439bqlm62v7jq4arb0w1kq5s2b2hj1w6ayn65"))))
+        (base32 "18n5a031q5y1jf1jx5lkfghxz39jaw254qiqybilf7jicbg91rn0"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
