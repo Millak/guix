@@ -4737,31 +4737,32 @@ two-dimensional renderings such as scatter plots and histograms.
 (define-public python-xarray
   (package
     (name "python-xarray")
-    (version "2023.12.0")
+    (version "2025.12.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "xarray" version))
               (sha256
                (base32
-                "0cyldwchcrmbm1y7l1ry70kk8zdh7frxci3c6iwf4iyyj34dnra5"))))
+                "1vczqm5daz79n7w3ycd0m1wf0bf78wd84w6xbgac8sfcvkxadxkk"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      #:test-flags
-      ;; This needs a more recent version of python-hypothesis
-      '(list "--ignore=xarray/tests/test_strategies.py"
-             ;; These are known to fail with Pandas 2
-             "-k"
-             (string-append "not test_datetime_conversion_warning"
-                            " and not test_timedelta_conversion_warning"
-                            ;; These expect deprecation warnings that are not
-                            ;; emitted in our case.
-                            " and not test_drop_index_labels"
-                            " and not test_rename_multiindex"))))
+      ;; tests: 6677 passed, 9632 skipped, 14 xfailed, 4 xpassed, 53 warnings 
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "pyproject.toml"
+                ((".*--mypy-.*") "")))))))
     (native-inputs
-     (list python-setuptools python-setuptools-scm python-pytest python-wheel))
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-numpy python-packaging python-pandas))
+     (list python-numpy
+           python-packaging
+           python-pandas))
     (home-page "https://github.com/pydata/xarray")
     (synopsis "N-D labeled arrays and datasets")
     (description "Xarray (formerly xray) makes working with labelled
