@@ -38,9 +38,11 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages calendar)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
@@ -55,6 +57,7 @@
   #:use-module (gnu packages kde-plasma)
   #:use-module (gnu packages kde-graphics)
   #:use-module (gnu packages markup)
+  #:use-module (gnu packages messaging)
   #:use-module (gnu packages openldap)
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages pkg-config)
@@ -618,16 +621,15 @@ browser for easy news reading.")
 (define-public itinerary
   (package
     (name "itinerary")
-    (version "25.08.3")
+    (version "25.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "11qz2qidprqh6mfizi94wfk9giy1b0nqilpn4s1y974lgzscxy18"))))
+                "1g50w82qj8wwgafs7c41pkyrx6lqljls53dj9r561911nm5n6k7n"))))
     (build-system qt-build-system)
-
     (arguments
      (list #:qtbase qtbase
            #:phases
@@ -642,34 +644,41 @@ browser for easy news reading.")
            #:tests? #f)) ;Fails 20/27
     (native-inputs (list extra-cmake-modules python-minimal))
     (inputs (list karchive
+                  kcalendarcore
+                  kcontacts
+                  kcoreaddons
+                  kcrash
                   kdbusaddons
+                  kfilemetadata
+                  khealthcertificate
+                  kholidays
                   ki18n
                   kio
                   kirigami
                   kirigami-addons
-                  kitinerary
                   kitemmodels
-                  kcoreaddons
-                  kcontacts
-                  kholidays
+                  kitinerary
                   kmime
                   knotifications
-                  kpublictransport
-                  kcalendarcore
-                  khealthcertificate
-                  kosmindoormap
                   kopeninghours
+                  kosmindoormap
                   kpkpass
+                  kpublictransport
                   kunitconversion
                   kwindowsystem
+                  libical
+                  libqmatrixclient
+                  olm
+                  openssl
                   prison
+                  qcoro-qt6
+                  qqc2-desktop-style
                   qtdeclarative
                   qtkeychain-qt6
-                  qtpositioning
                   qtlocation
                   qtmultimedia
+                  qtpositioning
                   qtwayland
-                  qqc2-desktop-style
                   shared-mime-info
                   solid
                   sonnet
