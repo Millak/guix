@@ -523,6 +523,12 @@ Definition Facility.")
     ;; MIT License
     (license license:expat)))
 
+(define (make-clisp-tests-locales)
+  (make-glibc-utf8-locales
+   glibc
+   #:locales (list "de_DE" "en_US" "fr_FR" "ru_RU")
+   #:name "clisp-tests-locales"))
+
 (define-public clisp
   (package
     (name "clisp")
@@ -539,6 +545,7 @@ Definition Facility.")
     (build-system gnu-build-system)
     (native-inputs
      (list
+      (make-clisp-tests-locales)
       cl-asdf
       coreutils)) ;to use "cat" in a test
     (inputs
