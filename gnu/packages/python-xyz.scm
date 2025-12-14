@@ -5044,48 +5044,44 @@ library.")
 (define-public python-h5py
   (package
     (name "python-h5py")
-    (version "3.13.0")
+    (version "3.15.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "h5py" version))
        (sha256
-        (base32 "1hq5f5mnkv2138xsq7k7qncf6b7zc0cmm2fhhpd2603j31jy8w0q"))))
+        (base32 "0sbbw9100f2763czngbpg1jxisp5r5pkpa2swm6mcws4bka3wvn8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 800 passed, 18 skipped, 4 deselected, 12 warnings
+      #:test-flags
+      ;; Tests requiring the build with  MPI.
+      #~(list "-k" (string-append "not test_mpio"
+                                  " and not test_mpio_append"
+                                  " and not test_mpi_atomic"
+                                  " and not test_close_multiple_mpio_driver"))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-hdf5-paths
             (lambda _
               (setenv "HDF5_DIR" #$(this-package-input "hdf5"))))
-          ;; The tests only work after being installed.
-          (delete 'check)
-          (add-after 'install 'check
-            (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
               (when tests?
                 (setenv "H5PY_TEST_CHECK_FILTERS" "1")
-                (with-directory-excursion (site-packages inputs outputs)
-                  (invoke "pytest" "-vv")))))
-          (add-before 'build 'relax-gcc-14-strictness
-            (lambda _
-              (setenv
-               "CFLAGS"
-               (string-append
-                "-g -O2"
-                `" -Wno-error=incompatible-pointer-types")))))))
-    (propagated-inputs (list python-six python-numpy))
-    (inputs (list hdf5))
+                (with-directory-excursion #$output
+                  (apply invoke "pytest" "-vv" test-flags))))))))
     (native-inputs
      (list pkg-config
            python-cython
-           python-ipython
            python-pkgconfig
            python-pytest
-           ;; Required to run tests, but the MPI tests are skipped anyway.
-           python-pytest-mpi
-           python-setuptools
-           python-wheel))
+           python-setuptools))
+    (inputs
+     (list hdf5))
+    (propagated-inputs
+     (list python-numpy))
     (home-page "https://www.h5py.org/")
     (synopsis "Read and write HDF5 files from Python")
     (description
