@@ -1367,14 +1367,14 @@ test and recovery certificates.")
 (define-public kidentitymanagement
   (package
     (name "kidentitymanagement")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kidentitymanagement-" version ".tar.xz"))
        (sha256
-        (base32 "1nzp9ww8nc07cf74zlx7b8ssvrqmv5d919n479p0c0nh8kzixcpv"))))
+        (base32 "1nxn0vprxsfrp2kxflp59zh46fi02rkash74zxza4612p6dhb3kr"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
