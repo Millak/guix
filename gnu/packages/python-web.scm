@@ -2074,13 +2074,17 @@ provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients."
 (define-public python-aiohttp-client-cache
   (package
     (name "python-aiohttp-client-cache")
-    (version "0.13.0")
+    (version "0.14.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "aiohttp_client_cache" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/requests-cache/aiohttp-client-cache")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0lrq8fh94whvfmfr9ncfizq2ssa2fp1v1izd1y7f3gmd80ixcp6w"))))
+        (base32
+         "17qa2sh63wa7b9ma40y2b6k9sjscc5vfwlmf46sv36l1mz9rmd4y"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -2088,7 +2092,7 @@ provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients."
       ;; Run unit tests only which not require networking or additional setup.
       #~(list "--ignore=test/integration")))
     (native-inputs
-     (list python-poetry-core
+     (list python-hatchling
            ;; TODO: Missing packages: pytest-clarity,
            ;; nox-poetry, types-aiofiles.
            python-async-timeout
@@ -2097,7 +2101,6 @@ provide an easy-to-use Python interface for building OAuth1 and OAuth2 clients."
            python-pytest
            python-pytest-aiohttp
            python-pytest-asyncio
-           python-pytest-cov
            python-pytest-xdist))
     (propagated-inputs
      (list python-aiofiles
