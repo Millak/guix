@@ -764,14 +764,14 @@ with support for QR scanning.")
 (define-public kfind
   (package
     (name "kfind")
-    (version "25.08.3")
+    (version "25.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kfind-" version ".tar.xz"))
               (sha256
                (base32
-                "064m1hw6jn0cqlsymf1k0wql3ssz7mhmhgam2796q24jjfc4yvbm"))))
+                "0zpafr8vm791rcxs6ncw3nb62f6p724slnrsf2h1ay8rbz67vl2k"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase
                      #:tests? #f))
