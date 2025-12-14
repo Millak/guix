@@ -2371,25 +2371,25 @@ of people.")
 (define-public websockify
   (package
     (name "websockify")
-    (version "0.11.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/novnc/websockify")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0ysqylpyv17s52634wn3vrwf7y9b5ig7fdfv8vwj1272lvv68qgk"))))
+    (version "0.13.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/novnc/websockify")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01163ikxmwmncrg7m8wy238ykjd5qif6bz85zqnk3mrvipicp7kg"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-nose2 python-setuptools python-wheel))
+    (native-inputs
+     (list python-nose2
+           python-setuptools))
     (inputs
      (list python-jwcrypto
            python-numpy
            python-redis
-           python-requests
-           ;; TODO: Remove simplejson for versions > 0.11.0.
-           python-simplejson))
+           python-requests))
     (home-page "https://github.com/novnc/websockify")
     (synopsis "WebSockets support for any application/server")
     (description "Websockify translates WebSockets traffic to normal socket
