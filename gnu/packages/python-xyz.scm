@@ -37927,20 +37927,6 @@ MicroManager, MD GEL, and FluoView files.  It also lets you write numpy arrays
 to TIFF, BigTIFF, and ImageJ hyperstack compatible files.")
     (license license:bsd-3)))
 
-(define-public python-tifffile-for-dask-image
-  ;; It's for python-dask-image@2024.5.3, remove when no longer required.
-  (hidden-package
-   (package
-     (inherit python-tifffile)
-     (name "python-tifffile")
-     (version "2023.12.9")
-     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "tifffile" version))
-        (sha256
-         (base32 "1f6d8qdlq0zlksfdhp1mhj9icpwhw4cz47r4i80m6r0a328xmlcx")))))))
-
 (define-public python-tiktoken
   (package
     (name "python-tiktoken")

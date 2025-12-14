@@ -854,49 +854,38 @@ optimization and generally improved organization.")
 (define-public python-dask-image
   (package
     (name "python-dask-image")
-    (version "2024.5.3")
+    (version "2025.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dask_image" version))
        (sha256
-        (base32 "0g4293n1vjlpyxbvd1xz3pz9an9z4rnsw1m7lynhm00m0bgiz7qc"))))
+        (base32 "1cx07dh09yqq6swyziiy9mb2f27ywja18gylfly1874a7af1mks5"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 2152 passed, 177 skipped, 6 deselected, 4037 warnings
-      #:test-flags
-      #~(list "-k" (string-join
-                    ;; KeyError: 'float32
-                    (list "not test_spline_filter_output_dtype[None-float32_1]"
-                          "test_spline_filter_output_dtype[-1-float32_1]"
-                          ;; AttributeError: 'str' object has no attribute
-                          ;; 'start'
-                          "test_find_objects"
-                          "test_3d_find_objects"
-                          ;; assert False
-                          "test_find_objects_with_empty_chunks")
-                    " and not "))
+      ;; tests: 2171 passed, 177 skipped, 3405 warnings
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'build 'set-version
+          (add-after 'unpack 'fix-pytest-config
             (lambda _
               (substitute* "pyproject.toml"
-                (("^version_file.*") "")
-                (("dynamic = \\[\"version\"\\]")
-                 (string-append "version = \"" #$version "\""))))))))
+                (("--flake8") ""))))
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version))))))
     (native-inputs
      (list python-pytest
            python-pytest-timeout
            python-setuptools
-           python-setuptools-scm))
+           python-setuptools-scm-next))
     (propagated-inputs
      (list python-dask
            python-numpy
            python-pandas
            python-pims
            python-scipy
-           python-tifffile-for-dask-image))
+           python-tifffile))
     (home-page "https://github.com/dask/dask-image")
     (synopsis "Distributed image processing")
     (description "This is a package for image processing with Dask arrays.
