@@ -97,8 +97,10 @@
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages less)
   #:use-module (gnu packages libedit)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lisp)
+  #:use-module (gnu packages logging)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
@@ -113,6 +115,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages popt)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
@@ -1661,6 +1664,49 @@ it easy to create independent environments even for C libraries.  Conda is
 written entirely in Python.")
     (license license:bsd-3)))
 
+(define-public libsolv
+  (package
+    (name "libsolv")
+    (version "0.7.35")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openSUSE/libsolv")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0gfzh9qzb7z4z7kr8fj0gafky0zvnrr6j6rb9fhmvcxvss6h4w8c"))
+       (patches
+        (search-patches "libsolv-conda-variant-priorization.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DENABLE_CONDA=ON"
+              "-DWITH_LIBXML2=ON"
+              "-DENABLE_LZMA_COMPRESSION=ON"
+              "-DENABLE_BZIP2_COMPRESSION=ON"
+              "-DENABLE_ZSTD_COMPRESSION=ON"
+              (string-append "-DZSTD_INCLUDE_DIRS="
+                             (assoc-ref %build-inputs "zstd")
+                             "/include")
+              (string-append "-DZSTD_LIBRARY="
+                             (assoc-ref %build-inputs "zstd")
+                             "/lib/libzstd.so"))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list libxml2
+           xz
+           bzip2
+           `(,zstd "lib")))
+    (home-page "https://github.com/openSUSE/libsolv")
+    (synopsis "Library for solving package dependencies")
+    (description
+     "Libsolv is a library for solving package dependencies using a SAT solver.
+It is used by the RPM package manager and the Mamba/Conda package managers.")
+    (license license:bsd-3)))
 (define-public conan
   (package
     (name "conan")

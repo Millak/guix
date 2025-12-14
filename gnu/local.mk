@@ -1712,6 +1712,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/librewolf-compare-paths.patch		\
   %D%/packages/patches/librewolf-neuter-locale-download.patch	\
   %D%/packages/patches/librewolf-use-system-wide-dir.patch	\
+  %D%/packages/patches/libsolv-conda-variant-priorization.patch	\
   %D%/packages/patches/libvirt-add-install-prefix.patch	\
   %D%/packages/patches/libvirt-respect-modules-path.patch	\
   %D%/packages/patches/libzmf-doxygen-1.14.patch		\
