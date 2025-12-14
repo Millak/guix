@@ -2148,19 +2148,40 @@ Changes over @code{nose}:
 (define-public python-pytest-aiohttp
   (package
     (name "python-pytest-aiohttp")
-    (version "0.3.0")
+    (version "1.1.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pytest-aiohttp" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/aio-libs/pytest-aiohttp")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0kx4mbs9bflycd8x9af0idcjhdgnzri3nw1qb0vpfyb3751qaaf9"))))
-    (build-system python-build-system)
+         "0hqj6fqqhvyy61ikwqjcs1p4g3s7z01prsjgck19r8as4pfih5g7"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+          ;; Patch based on
+          ;; https://github.com/aio-libs/pytest-aiohttp/pull/115/files
+          (add-after 'unpack 'create-pytest-ini
+            (lambda _
+              (call-with-output-file "pytest.ini"
+                (lambda (port)
+                  (format port "[pytest]
+asyncio_default_fixture_loop_scope = function"))))))))
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-aiohttp))
+     (list python-aiohttp
+           python-pytest-asyncio))
     (home-page "https://github.com/aio-libs/pytest-aiohttp/")
     (synopsis "Pytest plugin for aiohttp support")
     (description "This package provides a pytest plugin for aiohttp support.")
