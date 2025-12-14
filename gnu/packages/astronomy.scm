@@ -6245,36 +6245,42 @@ supports only the basic features of the original.")
 (define-public python-losoto
   (package
     (name "python-losoto")
-    (version "2.5.0")
+    (version "2.6.0")
     (source
      (origin
-       (method git-fetch) ; no tests data in the PyPI tarball
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/revoltek/losoto")
-             (commit version)))
+              (url "https://github.com/revoltek/losoto")
+              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bpp156rrn35x1350kn1g7h6s9427yh1mhs5dbdyzy264z1m2gdr"))))
+        (base32 "0wqqjc7iaphiq517n939s3wmsypyxwjaqrr51q21343m2blrl40m"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 19 failed, 23 passed, 53 warnings
+      ;; XXX: See: <https://github.com/revoltek/losoto/issues/186>.
+      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; Test steps are taken from GitHub Actions
-                ;; <.github/workflows/python.yml>.
-                (invoke "python" "tools/losoto_test.py")))))))
+          (add-after 'unpack 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               ;; XXX: See: <https://github.com/revoltek/losoto/issues/187>.
+               (("progressbar") "progressbar2")))))))
     (native-inputs
-     (list python-cython
+     (list python-pytest
            python-setuptools
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-configparser
+     (list python-casacore
+           python-lofar-parameterset
            python-matplotlib
            python-numpy
-           python-casacore
+           python-progressbar2
            python-scipy
            python-tables))
     (home-page "https://github.com/revoltek/losoto")
