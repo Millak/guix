@@ -2278,7 +2278,7 @@ pass files.")
 (define-public kpublictransport
   (package
     (name "kpublictransport")
-    (version "25.08.3")
+    (version "25.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
@@ -2286,7 +2286,7 @@ pass files.")
                                   ".tar.xz"))
               (sha256
                (base32
-                "05vcb00s6jq8lzwc8yls9qjn4vf2mvgrk75mf78yp8847pr7v27d"))))
+                "0dasw1bm0m20jaz8whw66x7fcg943b4wi1ybw3aa0l1r66ibzfsx"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -2308,13 +2308,16 @@ pass files.")
     (native-inputs (list extra-cmake-modules pkg-config tzdata-for-tests))
     ;; TODO: clipper and osmctools are not detected
     (inputs (list clipper
+                  ki18n
                   kirigami-addons
+                  kitemmodels
+                  networkmanager-qt
                   osmctools
                   protobuf
                   qtdeclarative
-                  zlib
-                  networkmanager-qt
-                  ki18n))
+                  qtlocation
+                  qtpositioning
+                  zlib))
     (home-page "https://api.kde.org/kdepim/kpublictransport/html/index.html")
     (synopsis "Library for accessing realtime public transport data")
     (description
