@@ -498,7 +498,7 @@ Akonadi PIM data server.  It uses Xapian for indexing and querying.")
 (define-public akonadi-import-wizard
   (package
     (name "akonadi-import-wizard")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
@@ -506,7 +506,7 @@ Akonadi PIM data server.  It uses Xapian for indexing and querying.")
                            "/src/akonadi-import-wizard-" version
                            ".tar.xz"))
        (sha256
-        (base32 "168kxnphrkidp0shxky2gdycma7hfd5yyzvlr4l8ay6vyyhvblsz"))))
+        (base32 "12v22gajm8dnyly8wcf8whs1ddi4rya0p6bjpscq4kyaz23nflzf"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
