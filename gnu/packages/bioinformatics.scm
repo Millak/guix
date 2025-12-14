@@ -21848,34 +21848,46 @@ pycisTarget and SCENIC.")
 (define-public python-arboreto
   (package
     (name "python-arboreto")
-    (version "0.1.6")
+    ;; 0.1.6 was released in 2021
+    (properties '((commit . "79f916b0ea25c00989331b8db243826049c3d66c")
+                  (revision . "0")))
+    (version (git-version "0.1.6"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/aertslab/arboreto")
-                    (commit "2f475dca08f47a60acc2beb8dd897e77b7495ca4")))
+                     (url "https://github.com/aertslab/arboreto")
+                     (commit (assoc-ref properties 'commit))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0l0im8ay7l2d24f7vaha454vsaha9s36bfqhbijg3b8ir8apsd7l"))))
+                "10h1xzvp5r4612icxd5mfhvmwyw57mlvw6z9nwgh37qpzjcnvddd"))))
     (build-system pyproject-build-system)
-    ;; Lots of tests fail because python-distributed fails to start the
-    ;; "Nanny" process.
-    (arguments '(#:tests? #false))
+    (arguments
+     (list
+      ;; tests: 38 tests (skipped=2)
+      #:test-backend #~'unittest
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (substitute* "tests/test_algo.py"
+                ;; AssertionError: 'Timed out trying to connect to
+                ;; tcp://127.0.0.2:12345 after 10 s' not found in 'Timed out
+                ;; trying to connect to tcp://127.0.0.2:12345 after 30 s'
+                (("def test_address")
+                 "def __off_test_address")))))))
     (native-inputs
-     (list python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (propagated-inputs
-     (list python-bokeh
+     (list python-bokeh ;XXX: for python-dask
            python-dask
            python-distributed
-           python-lz4
            python-numpy
            python-pandas
-           python-pyarrow
            python-scikit-learn
-           python-scipy
-           python-tornado-6))
+           python-scipy))
     (home-page "https://github.com/aertslab/arboreto")
     (synopsis "Gene regulatory network inference using tree-based ensemble regressors")
     (description
