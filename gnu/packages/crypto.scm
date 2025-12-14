@@ -520,14 +520,14 @@ total number of shares generated.")
 (define-public tomb
   (package
     (name "tomb")
-    (version "2.11")
+    (version "2.13")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://files.dyne.org/tomb/releases/"
                            "Tomb-" version ".tar.gz"))
        (sha256
-        (base32 "05f34yx91bn9fj7rkabgpzvkw4pa6bg2c1r8cnp72wwnx6bzj97m"))))
+        (base32 "1405kw0j8i1bqyqbim8530xf6hchpf57r9p1v92aknwyn5wgny0g"))))
     (build-system gnu-build-system)
     (arguments
      (list
