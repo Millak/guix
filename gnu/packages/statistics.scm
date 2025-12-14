@@ -1287,16 +1287,30 @@ building design matrices.")
        (sha256
         (base32 "1a1d98vjkjs8zwx4hdss3gv67jyf25mmsrdc5qi8hpxminkizb6w"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; tests: 46 passed, 6 deselected, 214 warnings
+      #:test-flags
+      ;; XXX: See: <https://github.com/lzkelley/kalepy/issues/22>.
+      ;; AttributeError: module 'numpy' has no attribute 'product'
+      #~(list #$@(map (lambda (test) (string-append "--deselect="
+                                                    "kalepy/tests/"
+                                                    "test_utils.py::"
+                                                    test))
+                      (list "Test_Midpoints::test_midpoints_lin"
+                            "Test_Midpoints::test_midpoints_log"
+                            "Test_Trapz::test_nd"
+                            "Test_Trapz_Dens_To_Mass::test_ndim"
+                            "Test_Trapz_Dens_To_Mass::test_ndim_a2")))))
     (native-inputs
      (list python-pytest
-           python-setuptools
-           python-wheel))
+           python-setuptools))
     (propagated-inputs
      (list python-matplotlib
            python-numba
            python-numpy
            python-scipy
-           python-six))
+           python-six))         ;XXX: hard dependency
     (home-page "https://github.com/lzkelley/kalepy")
     (synopsis "Kernel Density Estimation (KDE) and sampling")
     (description
