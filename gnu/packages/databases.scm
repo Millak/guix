@@ -5899,7 +5899,7 @@ a Gtk.Grid Widget.")
 (define-public sqlitebrowser
   (package
     (name "sqlitebrowser")
-    (version "3.13.0")
+    (version "3.13.1")
     (source
      (origin
        (method git-fetch)
@@ -5908,7 +5908,7 @@ a Gtk.Grid Widget.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0v4a59lgqng9hqvbc2k504aclinpwpk8hi6ckirbr6m1pnf26kfr"))
+        (base32 "0615yks1krwjw4l1xxahn9j6qbd7cs8dxza7kc73hc5wr0xng5kf"))
        (modules '((guix build utils)))
        (snippet
         '(begin
