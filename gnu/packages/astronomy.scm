@@ -10085,16 +10085,20 @@ and @code{astropy}.")
 (define-public python-sunkit-spex
   (package
     (name "python-sunkit-spex")
-    (version "0.4.0")
+    (properties '((commit . "bb544c44573d6de44e3d5ba08d06cab0059a4db7")
+                  (revision . "0")))
+    (version (git-version "0.4.0"
+                          (assoc-ref properties 'revision)
+                          (assoc-ref properties 'commit)))
     (source
      (origin
-       (method git-fetch) ; not published on PyPI
+       (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/sunpy/sunkit-spex")
-             (commit (string-append "v" version))))
+              (url "https://github.com/sunpy/sunkit-spex")
+              (commit (assoc-ref properties 'commit))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1fa4n7vkg2az4f07i21a7plssqgz770vfhf6k9qngi6f8bkib83w"))))
+        (base32 "1n6if5zpbblp5bjy93bzh5bwrmbjfn2lkc850j4d9n5cw4jia3gy"))))
     (build-system pyproject-build-system)
     (arguments
      (list
@@ -10105,30 +10109,21 @@ and @code{astropy}.")
       #~(modify-phases %standard-phases
           (add-before 'build 'set-version
             (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
-          (add-before 'check 'pre-check
-            (lambda _
-              ;; PermissionError: [Errno 13] Permission denied:
-              ;; '/homeless-shelter'
-              (setenv "HOME" "/tmp")))
-          ;; The module tries to load remote data during sanity check:
-          ;; WARNING: SunpyUserWarning: <urlopen error [Errno -3] Temporary
-          ;; failure in name resolution> [sunpy.data.data_manager.cache]
-          (delete 'sanity-check))))
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                      #$(version-major+minor+point version)))))))
     (native-inputs
      (list python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
     (propagated-inputs
      (list python-corner
            python-emcee
+           python-gwcs
            python-matplotlib
-           python-ndim
+           python-ndcube
            python-nestle
            python-numdifftools
-           python-orthopy
+           python-numpy
            python-parfive
-           python-quadpy
            python-scipy
            python-sunpy
            python-xarray))
