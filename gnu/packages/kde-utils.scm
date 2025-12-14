@@ -365,14 +365,14 @@ your computer.")
 (define-public kaichat
   (package
     (name "kaichat")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde//stable/kaichat/kaichat-" version
                            ".tar.xz"))
        (sha256
-        (base32 "18bwannb0p40fpqw0ygiq8m9wfl3k6561l10s7754x7a4lgpfshn"))))
+        (base32 "19w31mpbc5c1rfzygmxhmqx8wlwdmi1gfg75i4cfvz49936q0nal"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase))
