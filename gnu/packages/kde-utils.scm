@@ -1072,14 +1072,14 @@ whom pressing buttons hurts.")
 (define-public kmouth
   (package
     (name "kmouth")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmouth-" version ".tar.xz"))
        (sha256
-        (base32 "0znkxsqk7fxicd4xkijc4730qy9p5pq9gfy3rbda40ijz676vvrg"))))
+        (base32 "07zrdvldq6ab7jda5yr579i6sgpynidq9l1gh31hnchydxxx537k"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
