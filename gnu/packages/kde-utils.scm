@@ -995,14 +995,14 @@ the computer and 3D Printers.")
 (define-public kmag
   (package
     (name "kmag")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmag-" version ".tar.xz"))
        (sha256
-        (base32 "0s5lm8hxndy78yr4cjf4dazjbhgh1zdap51b2xbld0rvb477jc64"))))
+        (base32 "0vblnm6gmz7a4nbjjb7d9f2sgvipcmqhabc72ncn7lmwqwz7wz0a"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
