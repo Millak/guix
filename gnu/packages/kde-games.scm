@@ -604,14 +604,14 @@ This package is part of the KDE games module.")
 (define-public kbounce
   (package
     (name "kbounce")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/kbounce-" version ".tar.xz"))
        (sha256
-        (base32 "06lh7nn6212c2sa0qkxgdr5j4n7b50rcnnkvlasj6cl68i4rwhgi"))))
+        (base32 "1a4qr0hcacrcgyrc908i80kcrw9n087aar5jryq29rdr5g848qf5"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
