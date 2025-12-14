@@ -43502,8 +43502,8 @@ org-mode templates.")
     (license license:gpl3+)))
 
 (define-public emacs-org-glossary
-  (let ((commit "1b9b7fd3d1e6c214c34463e568daaba6df00ec27")
-        (revision "0"))
+  (let ((commit "97827bc323765a5f70213c62800bed50d75c2822")
+        (revision "1"))
     (package
       (name "emacs-org-glossary")
       (version (git-version "0.0.1" revision commit))
@@ -43515,7 +43515,7 @@ org-mode templates.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "09mg8aqxamnxx8kpdyk074wf2wkm4rx62z7q66azw70hjr1ggwa3"))))
+          (base32 "0qd1ikc602nnhhm0czv4gn9b1g4jqhjbnnz93ba2pjimgssmb58w"))))
       (build-system emacs-build-system)
       (arguments
        (list
