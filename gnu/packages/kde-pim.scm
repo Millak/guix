@@ -1843,14 +1843,14 @@ dealing with email.")
 (define-public kmailimporter
   (package
     (name "kmailimporter")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/mailimporter-" version ".tar.xz"))
        (sha256
-        (base32 "1afsdz67n2vwjfqvzmkig7iz0gw12a9m3vbdflr56fjbwamh3jzh"))))
+        (base32 "05aacvrgi0d8mar8xfikbxi53xy4cr1scy5r5vsc3bsx664sqsdn"))))
     (properties `((upstream-name . "mailimporter")))
     (build-system qt-build-system)
     (native-inputs
