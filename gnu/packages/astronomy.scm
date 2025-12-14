@@ -8220,24 +8220,24 @@ PSF} describing how the optical system spreads light from sources.")
 (define-public python-reproject
   (package
     (name "python-reproject")
-    (version "0.14.1") ;XXX: Newer versions need to be built with NumPy 2+
+    (version "0.19.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "reproject" version))
        (sha256
-        (base32 "0yg5dga054xdwsx75q204h04gmrw0mgayc74l4rpymcbkckymj2k"))))
+        (base32 "1jbjq54kp438zbjpmd3kxm9r4h6p7dgq11ywf3iajn0j6k4nlpds"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 2062 passed, 398 skipped, 3 warnings
+      ;; tests: 2288 passed, 566 skipped, 99 warnings
       #:test-flags
-      #~(list "--arraydiff"
-              "--arraydiff-default-format=fits"
-              "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              ;; ValueError: Could not determine celestial frame corresponding
-              ;; to the specified WCS object
-              "-k" "not test_solar_wcs")
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; AssertionError: assert 'Broadcasting is being used' in ''
+              "-k" (string-append
+                    "not test_reproject_parallel_broadcasting[none]"
+                    " and not test_reproject_parallel_broadcasting[None]"
+                    " and not test_reproject_parallel_broadcasting[memmap]"))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
@@ -8251,24 +8251,25 @@ PSF} describing how the optical system spreads light from sources.")
               (for-each delete-file-recursively
                         (find-files #$output "__pycache__" #:directories? #t)))))))
     (native-inputs
-     (list python-cython
+     (list python-asdf
+           python-cython
            python-extension-helpers
+           python-gwcs
            python-pytest-astropy
            python-pytest-xdist
-           python-setuptools-scm))
-    (inputs
-     (list python-asdf
-           python-gwcs
            python-pyvo
+           python-setuptools-scm
            python-shapely
            python-sunpy-minimal))
     (propagated-inputs
      (list python-astropy
            python-astropy-healpix
-           python-cloudpickle
            python-dask
+           python-dask-image
            python-fsspec
            python-numpy
+           python-pillow
+           python-pyavm
            python-scipy
            python-zarr))
     (home-page "https://reproject.readthedocs.io")
