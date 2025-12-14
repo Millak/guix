@@ -179,14 +179,14 @@ Dolphin with the version control systems: Bzr, Git, Mercurial, Subversion.")
 (define-public kdf
   (package
     (name "kdf")
-    (version "25.08.3")
+    (version "25.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kdf-" version ".tar.xz"))
               (sha256
                (base32
-                "0rgs8nqnc0wskikgvck78y59my8p2yd98ynsrbg6yhpf9xl6amvy"))))
+                "1m4kl3zh3z4mrdwzc7l1dfd34yfg08m1m8ifmy9cm4g5v12sky25"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules kdoctools))
