@@ -89,14 +89,14 @@ charts.")
 (define-public analitza
   (package
     (name "analitza")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/analitza-" version ".tar.xz"))
        (sha256
-        (base32 "1lg4hdmra49pidahypd73gr4rmhgi4bbad6gp263v6qq7wf79ghs"))))
+        (base32 "1g8yl258m1hs13fpnfkxn5wkpgllsxybah1vqav0zn37x33yqxgd"))))
     (native-inputs (list extra-cmake-modules qttools))
     (inputs (list eigen qtbase qtdeclarative qtsvg))
     (build-system qt-build-system)
