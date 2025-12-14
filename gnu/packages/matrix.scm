@@ -413,72 +413,76 @@ fledged batteries-included asyncio layer using aiohttp.")
     (license license:isc)))
 
 (define-public pantalaimon
-  (let ((commit "257ef6a2e5e5668cd43347037c09ba036f91d997")
-        (revision "0"))
-    (package
-      (name "pantalaimon")
-      (version (git-version "0.10.5" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/matrix-org/pantalaimon")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1i18mjlc143d2xwlha09i5ny06vipmy8fii05427zq5vjz8rysgx"))))
-      (build-system pyproject-build-system)
-      (arguments
-       (list
-        #:test-flags
-        #~(list "tests"
-                ;; These tests hang.
-                "--ignore=tests/proxy_test.py"
-                "-k" "not test_start_loop")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'relax-requirements
-              (lambda _
-                (substitute* "setup.py"
-                  ;; Newer version is packaged.
-                  (("\"matrix-nio\\[e2e\\] >= 0\\.24, < 0\\.25\\.2\"")
-                   "\"matrix-nio[e2e] >= 0.24, <= 0.25.2\""))))
-            (add-after 'install 'install-doc
-              (lambda _
-                (with-directory-excursion "docs/man"
-                  (let ((man (string-append #$output "/share/man")))
-                    (install-file "panctl.1" (string-append man "/man1"))
-                    (install-file "pantalaimon.5" (string-append man "/man5"))
-                    (install-file "pantalaimon.8"
-                                  (string-append man "/man8")))))))))
-      (native-inputs
-       (list python-aioresponses
-             python-faker
-             python-pytest
-             python-pytest-aiohttp
-             python-pytest-asyncio
-             python-setuptools))
-      (propagated-inputs
-       (list python-aiohttp
-             python-attrs
-             python-cachetools
-             python-click
-             python-dbus
-             python-janus
-             python-keyring
-             python-logbook
-             python-matrix-nio
-             python-notify2
-             python-peewee
-             python-platformdirs
-             python-prompt-toolkit
-             python-pydbus
-             python-pygobject))
-      (home-page "https://github.com/matrix-org/pantalaimon")
-      (synopsis "Matrix proxy daemon that adds E2E encryption capabilities")
-      (description
-       "Pantalaimon is an end-to-end encryption aware Matrix reverse proxy
+  (package
+    (name "pantalaimon")
+    (version "0.10.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/matrix-org/pantalaimon")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07cf5k0b1i5pfplmx2p5l3ba76jjfzzcky9ylj7593k7nrm5drl3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "tests"
+              ;; These tests hang.
+              "--ignore=tests/proxy_test.py"
+              "-k" "not test_start_loop")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'create-pytest-ini
+            (lambda _
+              (call-with-output-file "pytest.ini"
+                (lambda (port)
+                  (format port "[pytest]
+asyncio_mode = auto")))))
+          (add-after 'unpack 'relax-requirements
+            (lambda _
+              (substitute* "setup.py"
+                ;; Newer version is packaged.
+                (("\"matrix-nio\\[e2e\\] >= 0\\.24, < 0\\.25\\.2\"")
+                 "\"matrix-nio[e2e] >= 0.24, <= 0.25.2\""))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (with-directory-excursion "docs/man"
+                (let ((man (string-append #$output "/share/man")))
+                  (install-file "panctl.1" (string-append man "/man1"))
+                  (install-file "pantalaimon.5" (string-append man "/man5"))
+                  (install-file "pantalaimon.8"
+                                (string-append man "/man8")))))))))
+    (native-inputs
+     (list python-aioresponses
+           python-faker
+           python-pytest
+           python-pytest-aiohttp
+           python-pytest-asyncio
+           python-setuptools))
+    (propagated-inputs
+     (list python-aiohttp
+           python-attrs
+           python-cachetools
+           python-click
+           python-dbus
+           python-janus
+           python-keyring
+           python-logbook
+           python-matrix-nio
+           python-notify2
+           python-peewee
+           python-platformdirs
+           python-prompt-toolkit
+           python-pydbus
+           python-pygobject))
+    (home-page "https://github.com/matrix-org/pantalaimon")
+    (synopsis "Matrix proxy daemon that adds E2E encryption capabilities")
+    (description
+     "Pantalaimon is an end-to-end encryption aware Matrix reverse proxy
 daemon.  Pantalaimon acts as a good man in the middle that handles the
 encryption for you.  Messages are transparently encrypted and decrypted for
 clients inside of pantalaimon.")
-      (license license:asl2.0))))
+    (license license:asl2.0)))
