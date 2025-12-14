@@ -218,14 +218,14 @@ unmount drives and view them in a file manager.")
 (define-public khelpcenter
   (package
     (name "khelpcenter")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/khelpcenter-" version ".tar.xz"))
        (sha256
-        (base32 "184v94yw31bqrl40plhg3hq6z1scb69sy7qxnlqibwxf9m1bpd2g"))))
+        (base32 "1a3xjaa59wjlq3i12f6ajz22cmz6nihxzc4q1laknqf7hx21g987"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase))
