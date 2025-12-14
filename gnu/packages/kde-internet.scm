@@ -151,7 +151,7 @@ framework.  It builds XMPP clients complying with the XMPP Compliance Suites
 (define-public falkon
   (package
     (name "falkon")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
@@ -159,7 +159,7 @@ framework.  It builds XMPP clients complying with the XMPP Compliance Suites
                            "/src/falkon-" version ".tar.xz"))
        (sha256
         (base32
-         "0ag140vn8jlwr5b3282gwjfk0xaqp6psbr71i15zb2q28a52s98n"))))
+         "0nd9nywi42cr9a9zwksbp5zwv20jpjwppv9n0xbh83fy3fx4v6vd"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase))
