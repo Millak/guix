@@ -8186,16 +8186,17 @@ solar physics.")
 (define-public python-regions
   (package
     (name "python-regions")
-    (version "0.10")
+    (version "0.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "regions" version))
        (sha256
-        (base32 "10cswrknj3qh9i1daynlx4ild66lwcyra5rs03h8s9j4l275274n"))))
+        (base32 "0dmfvk33ywlmxr3f6p9vhr7aq4mf57l1y7ls12d6ds9dibbxl2h0"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1112 passed, 8 skipped, 13 xfailed
       #:test-flags
       #~(list "--numprocesses" (number->string (parallel-job-count)))
       #:phases
@@ -8204,23 +8205,20 @@ solar physics.")
             (lambda* (#:key tests? test-flags #:allow-other-keys)
               (with-directory-excursion #$output
                 (apply invoke "pytest" "-vv" test-flags)))))))
-    (propagated-inputs
-     (list python-astropy
-           python-h5py
-           python-matplotlib
-           python-numpy
-           python-scipy
-           python-shapely))
     (native-inputs
      (list python-cython
            python-extension-helpers
            python-pytest-arraydiff
            python-pytest-astropy
-           python-pytest-runner
            python-pytest-xdist
            python-setuptools
-           python-setuptools-scm
-           python-wheel))
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy
+           python-numpy
+           ;; [optional]
+           python-matplotlib
+           python-shapely))
     (home-page "https://github.com/astropy/regions")
     (synopsis "Package for region handling")
     (description "Regions is an Astropy package for region handling.")
