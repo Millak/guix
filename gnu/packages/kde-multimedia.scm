@@ -1099,14 +1099,14 @@ Its features include:
 (define-public libkcompactdisc
   (package
     (name "libkcompactdisc")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/libkcompactdisc-" version ".tar.xz"))
        (sha256
-        (base32 "0w46wcm67xpqlxxpzjbqxkm59s2vlq5yx6s5p849f56wnj59wyix"))))
+        (base32 "0qbmjyzsf44kmqprfgar41p4kykgwfn3bznmnlxxkjqp7q27wknp"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules))
