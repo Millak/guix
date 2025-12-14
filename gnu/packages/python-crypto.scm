@@ -1225,11 +1225,21 @@ been constructed to maintain extensive documentation on how to use
     (version "2.9.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "pyotp" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/pyauth/pyotp")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0qvgsf86az9cqj6d8vim2shvyam89ik0p4sszysf7pfvw116csrl"))))
-    (build-system python-build-system)
+        (base32 "0fx253649bvs2w31jdwnr51dm0b6v1zhp7mprnis37c57vj4qczz"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "test.py")))
+    (native-inputs
+     (list python-setuptools
+           python-pytest))
     (home-page "https://github.com/pyauth/pyotp")
     (synopsis "Python One Time Password Library")
     (description
