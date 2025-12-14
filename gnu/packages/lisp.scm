@@ -600,7 +600,17 @@ Definition Facility.")
                                 "/share/common-lisp/source/asdf/asdf.lisp"))
                     (contrib-asdf "modules/asdf/asdf.lisp"))
                (delete-file contrib-asdf)
-               (copy-file guix-asdf contrib-asdf)))))))
+               (copy-file guix-asdf contrib-asdf))))
+         (add-after 'configure 'patch-parallel-tests
+           (lambda _
+             ;; Parallel runs of test are causing a lot of non-determinism
+             ;; in clisp. This doesn't fix the non-determinism completely,
+             ;; but it makes the package build more times than before.
+             ;; NOTE: this doesn't seem to take much more time than
+             ;; the parallel tests.
+             (substitute* "src/Makefile"
+               ((" check-tests-parallel ") " check-tests-all "))
+             #t)))))
     (native-search-paths
      (list (search-path-specification
             (variable "XDG_DATA_DIRS")
