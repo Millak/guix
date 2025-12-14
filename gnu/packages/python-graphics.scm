@@ -668,6 +668,7 @@ music." )
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 54 passed, 5 skipped, 8 deselected, 5 warnings
       #:test-flags
       #~(list "-k" (string-join
                     ;; XXX: Check why these test fail.
@@ -678,7 +679,10 @@ music." )
                           "test_lookupint"
                           "test_numpyConversion"
                           "test_pointers")
-                    " and not "))
+                    " and not ")
+              ;; TypeError: list indices must be integers or slices, not
+              ;; numpy.bool
+              "--deselect=tests/test_core.py::TestCore::test_vbo")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'build 'fix-paths
