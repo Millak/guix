@@ -288,7 +288,7 @@ document meta data file.")
 (define-public kpmcore
   (package
     (name "kpmcore")
-    (version "25.08.3")
+    (version "25.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -296,7 +296,7 @@ document meta data file.")
                     "/src/" name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1qv8xmqr5d9pysj66c3khcg8v3w3ckq63wnsc6xx839sid4j40j3"))))
+                "1k6fwhhfgziihvp0jfkwpnwrncfx711mamhwzv0c7mrvn0pgr77n"))))
     (build-system cmake-build-system)
     (native-inputs
      (list extra-cmake-modules pkg-config))
