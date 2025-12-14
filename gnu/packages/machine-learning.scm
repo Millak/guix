@@ -2461,6 +2461,7 @@ standard feature selection algorithms.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 616 passed, 3 deselected, 99 warnings
       #:test-flags
       ;; This test fails because the newer version of scikit learn returns one
       ;; more classification result than expected.  This should be harmless.
@@ -2474,9 +2475,19 @@ standard feature selection algorithms.")
              "--ignore=tests/test_dataset.py"
              ;; Test requiring not packaged dataset.
              "--ignore=tests/spurious_correlation/test_correlation_visualizer.py"
-             "--ignore=tests/spurious_correlation/test_spurious_correlation.py")
+             "--ignore=tests/spurious_correlation/test_spurious_correlation.py"
+             ;; AssertionError: assert 'Annotators [1] did not label any
+             ;; examples.' in 'labels_multiannotator cannot have columns with
+             ;; all NaN, each annotator must annotator at least one example.
+             "--deselect=tests/test_multiannotator.py::test_label_quality_scores_multiannotator")
       #:phases
       '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               ;; See: <https://github.com/cleanlab/cleanlab/issues/1258> and
+               ;; <https://github.com/cleanlab/cleanlab/issues/1151>.
+               (("numpy~=1.22") "numpy>=1.22"))))
          (add-after 'unpack 'remove-datasets
            (lambda _
              (delete-file "tests/datalab/conftest.py"))))))
@@ -2488,12 +2499,12 @@ standard feature selection algorithms.")
            python-tqdm))
     (native-inputs
      (list ;; python-dataset ; https://github.com/huggingface/datasets
+           python-matplotlib
            python-pytest
            python-pytorch
            python-setuptools
            python-torchvision
-           python-typing-extensions
-           python-wheel))
+           python-typing-extensions))
     (home-page "https://cleanlab.ai")
     (synopsis "Automatically find and fix dataset issues")
     (description
