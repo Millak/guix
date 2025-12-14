@@ -366,14 +366,14 @@ This package is part of the KDE games module.")
 (define-public kshisen
   (package
     (name "kshisen")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/"
                            version "/src/kshisen-" version ".tar.xz"))
        (sha256
-        (base32 "1a0y11kyrpibf3vl4imlgmnhi9vmpy3yaxj7nqlv6xy26a2lxzyh"))))
+        (base32 "1a35fb3bb0nvjas1d3cmjxr5gchh85cdp1dcwm7r6ph3wjirfmfg"))))
     (build-system qt-build-system)
     (native-inputs
      (list extra-cmake-modules
