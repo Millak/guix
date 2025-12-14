@@ -1480,7 +1480,17 @@ manage (install/update) them for you.")
                     ;; XXX: Issues salad: network access, can't detect Conda
                     ;; environemnt, assertion failed; review if they may be
                     ;; fixed.
+                    ;;
+                    ;; test_info_all: Fails due to parallel test interference.
+                    ;; test_notices_appear_once_when_running_decorated_commands
+                    ;; creates and deletes an environment named "notices_test".
+                    ;; When test_info_all runs in parallel, it invokes
+                    ;; "conda info --envs" (sees notices_test), then the other
+                    ;; test deletes it, then test_info_all invokes
+                    ;; "conda info --all" (doesn't see notices_test).  The
+                    ;; assertion that these outputs match fails.
                     (list "not test_PrefixData_return_value_contract"
+                          "test_info_all"
                           "test__get_python_info"
                           "test_auto_update_conda"
                           "test_build_version_shows_as_changed "
@@ -1896,6 +1906,41 @@ enabling fast package management functionality in Python applications.")
 Conda based on the libmamba library.  It significantly speeds up dependency
 resolution compared to the classic solver.")
     (license license:bsd-3)))
+
+(define-public conda
+  (package
+    (inherit conda-bootstrap)
+    (name "conda")
+    (version "25.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/conda/conda")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1s8xxc8rfayfq6p3iwgp9v3hbanp30ciw7cznppn1qk1l9fy7nxj"))
+       (patches
+        (search-patches "conda-fix-plugin-settings-test.patch"
+                        "conda-fix-cross-platform-export-tests.patch"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments conda-bootstrap)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            ;; Remove the patch that forces classic solver - we have libmamba
+            (delete 'set-default-solver-to-classic)
+            ;; Replace pre-check to not force classic solver
+            (replace 'pre-check
+              (lambda _
+                (setenv "HOME" "/tmp")
+                ;; Prevent tests from writing package cache to the output
+                ;; directory, which would cause non-reproducible builds.
+                (setenv "CONDA_PKGS_DIRS" "/tmp/conda-pkgs")))))))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs conda-bootstrap)
+       (prepend python-conda-libmamba-solver)))))
+
 (define-public conan
   (package
     (name "conan")

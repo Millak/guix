@@ -1,0 +1,79 @@
+From 39ea25ff598cfd52e0cac37525a44dbf6590b800 Mon Sep 17 00:00:00 2001
+From: Travis Hathaway <travis.j.hathaway@gmail.com>
+Date: Mon, 29 Sep 2025 15:22:44 +0200
+SPDX-License-Identifier: BSD-3-Clause
+Subject: [PATCH 1/2] removing this test because it we are adding a setting to
+ conda-libmamba-solver
+
+---
+ tests/plugins/test_settings.py | 17 -----------------
+ 1 file changed, 17 deletions(-)
+
+diff --git a/tests/plugins/test_settings.py b/tests/plugins/test_settings.py
+index 05196c5c09b..27b9fcf70c1 100644
+--- a/tests/plugins/test_settings.py
++++ b/tests/plugins/test_settings.py
+@@ -326,23 +326,6 @@ def test_conda_config_describe_includes_plugin_settings(
+     assert f"plugins.{MAP_PARAMETER_NAME}:" in out
+ 
+ 
+-def test_conda_config_describe_not_included_without_plugins(conda_cli):
+-    """
+-    Ensure that the describe command does not include the section banner
+-    for plugins when no additional settings are provided by plugins
+-    """
+-    out, err, _ = conda_cli("config", "--describe")
+-
+-    section_banner = (
+-        "# ######################################################\n"
+-        "# ##     Additional settings provided by plugins      ##\n"
+-        "# ######################################################"
+-    )
+-
+-    assert not err
+-    assert section_banner not in out
+-
+-
+ def test_conda_config_describe_unknown_plugin_setting(
+     condarc_plugin_manager, conda_cli
+ ):
+
+From 7254151456ad201bfc1ead8ab48a509c4e9a7319 Mon Sep 17 00:00:00 2001
+From: Travis Hathaway <travis.j.hathaway@gmail.com>
+Date: Mon, 29 Sep 2025 17:09:01 +0200
+Subject: [PATCH 2/2] using a mock to fix test instead of removing it
+
+---
+ tests/plugins/test_settings.py | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/tests/plugins/test_settings.py b/tests/plugins/test_settings.py
+index 27b9fcf70c1..eb5200eb105 100644
+--- a/tests/plugins/test_settings.py
++++ b/tests/plugins/test_settings.py
+@@ -326,6 +326,25 @@ def test_conda_config_describe_includes_plugin_settings(
+     assert f"plugins.{MAP_PARAMETER_NAME}:" in out
+ 
+ 
++def test_conda_config_describe_not_included_without_plugins(conda_cli, mocker):
++    """
++    Ensure that the describe command does not include the section banner
++    for plugins when no additional settings are provided by plugins
++    """
++    mock = mocker.patch("conda.plugins.manager.CondaPluginManager.get_hook_results")
++    mock.return_value = []
++    out, err, _ = conda_cli("config", "--describe")
++
++    section_banner = (
++        "# ######################################################\n"
++        "# ##     Additional settings provided by plugins      ##\n"
++        "# ######################################################"
++    )
++
++    assert not err
++    assert section_banner not in out
++
++
+ def test_conda_config_describe_unknown_plugin_setting(
+     condarc_plugin_manager, conda_cli
+ ):

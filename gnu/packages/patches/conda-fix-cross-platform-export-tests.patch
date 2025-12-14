@@ -1,0 +1,57 @@
+Author: Danny Milosavljevic <dannym@friendly-machines.com>
+Date: Sun Dec 14 09:26:14 PM CET 2025
+Subject: Fix cross-platform export tests to work offline.
+SPDX-License-Identifier: BSD-3-Clause
+
+These tests need channels configured to resolve packages for other platforms.
+Without channels, the libmamba solver crashes with IndexError on empty repos.
+This patch adds the local conda_format_repo test channel to these tests,
+allowing them to work without network access.
+
+diff --git a/tests/cli/test_main_export.py b/tests/cli/test_main_export.py
+index 1234567..abcdefg 100644
+--- a/tests/cli/test_main_export.py
++++ b/tests/cli/test_main_export.py
+@@ -848,6 +848,7 @@ def test_export_platform_argument(
+
+ def test_export_multiple_platforms(
+     conda_cli: CondaCLIFixture,
++    conda_format_repo_channel,
+     plugin_manager_with_exporters: CondaPluginManager,
+     tmp_path: Path,
+ ) -> None:
+@@ -874,6 +875,7 @@ def test_export_multiple_platforms(
+
+ def test_export_single_platform_different_platform(
+     conda_cli: CondaCLIFixture,
++    conda_format_repo_channel,
+     tmp_path: Path,
+     plugin_manager_with_exporters: CondaPluginManager,
+ ):
+diff --git a/tests/conftest.py b/tests/conftest.py
+index 1234567..abcdefg 100644
+--- a/tests/conftest.py
++++ b/tests/conftest.py
+@@ -75,6 +75,22 @@ def test_recipes_channel(mocker: MockerFixture) -> Path:
+     return TEST_RECIPES_CHANNEL
+
+
++CONDA_FORMAT_REPO = Path(__file__).parent / "data" / "conda_format_repo"
++
++
++@pytest.fixture
++def conda_format_repo_channel(mocker: MockerFixture) -> Path:
++    """Set up conda_format_repo as the channel for tests needing multi-platform data."""
++    mocker.patch(
++        "conda.base.context.Context.channels",
++        new_callable=mocker.PropertyMock,
++        return_value=(channel_str := str(CONDA_FORMAT_REPO),),
++    )
++    reset_context()
++    assert context.channels == (channel_str,)
++    return CONDA_FORMAT_REPO
++
++
+ @pytest.fixture
+ def wheelhouse() -> Path:
+     """Return the path to the directory containing pre-built wheel files used in tests."""
