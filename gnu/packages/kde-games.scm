@@ -1814,14 +1814,14 @@ This package is part of the KDE games module.")
 (define-public kjumpingcube
   (package
     (name "kjumpingcube")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kjumpingcube-" version ".tar.xz"))
        (sha256
-        (base32 "1qs0yjdchhfv3c27pxn24drrz04yxbaz9pfnb3s13piddpprn1d0"))))
+        (base32 "0d4ipqyknls3vcbl27r7v1461zg85kfn7hdbkl12l5cskfz3nr4p"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
