@@ -694,14 +694,14 @@ information.")
 (define-public kincidenceeditor
   (package
     (name "kincidenceeditor")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/incidenceeditor-" version ".tar.xz"))
        (sha256
-        (base32 "160s477xws1x53adyjz99690i7ij5lb6nfm207qvqfkja4vmrhfh"))))
+        (base32 "1kz738byg15nrym3d94wmv783jjwqqjl4zb802pipq9scvj1r8kd"))))
     (properties `((upstream-name . "incidenceeditor")))
     (build-system qt-build-system)
     (native-inputs
