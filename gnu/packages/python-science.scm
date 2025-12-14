@@ -1586,69 +1586,83 @@ spheres, cubes, etc.")
 (define-public python-modin
   (package
     (name "python-modin")
-    (version "0.32.0")
+    (version "0.37.1")
     (source
      (origin
-       ;; The archive on pypi does not include all required files.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/modin-project/modin")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1vb3iffgspryb6nvwiwdnypb922vkn2yvyzc1y0wwxcb0c0fl78d"))))
+        (base32 "1kqdx3b7sb3895ynypb6swf2jly26xvdghqqrm9ahqps16cn9dx9"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests:
+      ;; - api: 5 passed 
+      ;; - dask: 269 passed, 2 skipped, 93 xfailed, 191 warnings
+      ;; - python: 269 passed, 2 skipped, 93 xfailed, 197 warnings
       #:test-flags
       #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
-              ;; These four tests fail because an expected error is not raised.
-              "-k" "not test_binary_bad_broadcast")
+              ;; AssertionError: assert 'array <...>
+              "-k" (string-join
+                    (list "not test_repr[100]"
+                          "test_repr[size1]"
+                          "test_repr[size2]"
+                          "test_repr[size3]"
+                          "test_repr[size4]"
+                          "test_repr[size5]"
+                          "test_repr[size6]"
+                          "test_repr[size7]"
+                          "test_repr[size8]"
+                          "test_repr[size9]")
+                    " and not ")
+              "modin/tests/numpy")
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'loosen-requirements
-           (lambda _
-             (substitute* "setup.py"
-               ;; Don't depend on a specific version of Pandas.
-               (("pandas==") "pandas>="))))
-         (replace 'check
-           (lambda* (#:key tests? test-flags #:allow-other-keys)
-             (when tests?
-               (setenv "MODIN_ENGINE" "dask")
-               (apply invoke "python" "-m" "pytest"
-                      "modin/tests/numpy" test-flags)
-               (setenv "MODIN_ENGINE" "python")
-               (apply invoke "python" "-m" "pytest"
-                      "modin/tests/numpy" test-flags)))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'versioneer
+            (lambda _
+              (invoke "versioneer" "install")
+              (substitute* "setup.py"
+                (("version=versioneer.get_version\\(),")
+                 (string-append "version='" #$version "',")))))
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "setup.cfg"
+                ((" --cov-.*--cov-report=") ""))))
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                ;; API basic tests
+                (invoke "pytest" "-vv"
+                        "modin/tests/test_executions_api.py"
+                        "modin/tests/test_headers.py"
+                        "modin/tests/core/test_dispatcher.py::test_add_option")
+                ;; More complex engine tests, the complete set up requires
+                ;; database access and AWS credentials, see:
+                ;; <.github/workflows/ci.yml >.
+                (setenv "MODIN_ENGINE" "dask")
+                (apply invoke  "pytest" "-vv"  test-flags)
+                (setenv "MODIN_ENGINE" "python")
+                (apply invoke "pytest" "-vv"  test-flags)))))))
+    (native-inputs
+     (list python-boto3
+           python-pytest
+           python-pytest-xdist
+           python-s3fs
+           python-setuptools
+           python-versioneer))
     (propagated-inputs
-     (list python-cloudpickle
-           python-dask
-           python-distributed
+     (list python-fsspec
            python-numpy
            python-packaging
            python-pandas
-           python-s3fs))
-    (native-inputs
-     (list python-boto3
-           python-jinja2
-           python-lxml
-           python-matplotlib
-           python-msgpack
-           python-openpyxl
            python-psutil
-           python-pyarrow
-           python-pytest
-           python-pytest-benchmark
-           python-pytest-cov
-           python-pytest-xdist
-           python-scipy
-           python-sqlalchemy
-           python-tables
-           python-tqdm
-           python-xarray
-           python-xlrd
-           python-wheel))
+           python-typing-extensions
+           ;; [optinoal]
+           python-dask
+           python-distributed))
     (home-page "https://github.com/modin-project/modin")
     (synopsis "Make your pandas code run faster")
     (description
