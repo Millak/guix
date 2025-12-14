@@ -2196,17 +2196,17 @@ and exchanging calendar data, vCalendar and iCalendar.")
 (define-public kpkpass
   (package
     (name "kpkpass")
-    (version "25.08.3")
+    (version "25.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/" version
                                   "/src/kpkpass-" version ".tar.xz"))
               (sha256
                (base32
-                "12vm7vgqwngvi4i3p23d722973j77sv3wfy0fplip46x7vrac0iq"))))
+                "1xjk7ydsjgaxkyfijgngx6c5sb4pvsn0z329qxlspizpx0bglb2r"))))
     (build-system qt-build-system)
     (native-inputs (list extra-cmake-modules))
-    (inputs (list karchive shared-mime-info))
+    (inputs (list karchive qtdeclarative shared-mime-info))
     (arguments (list #:qtbase qtbase))
     (home-page "https://invent.kde.org/pim/kpkpass")
     (synopsis "Apple Wallet Pass reader")
