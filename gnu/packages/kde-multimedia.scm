@@ -935,14 +935,14 @@ Its main features are:
 (define-public kmix
   (package
     (name "kmix")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmix-" version ".tar.xz"))
        (sha256
-        (base32 "177p10qn7awlfrz356fm9wv4zx7479afjdhdl2gwss6v18b8qhpq"))))
+        (base32 "0gjmssy56cd75ivawi0qbkf0wv7av4llrk2rfp2l5z8xq4nw1xmg"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase))
     (native-inputs
