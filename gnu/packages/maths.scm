@@ -3852,6 +3852,7 @@ ASCII text files using Gmsh's own scripting language.")
     (license license:gpl2+)))
 
 (define-public veusz
+  ;; TODO: Maybe move to (gnu packages plotutils)
   (package
     (name "veusz")
     (version "4.2")
@@ -3864,8 +3865,12 @@ ASCII text files using Gmsh's own scripting language.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Tests currently fail with exception TypeError:
-      ;; calling <function version ...> returned 3.6.2, not a test
+      ;; TODO: When run with custom test backend "tests/runselftest.py":
+      ;; <...>
+      ;; qt.qpa.plugin: Could not load the Qt platform plugin
+      ;; "xcb" in "" even though it was found. This application failed to
+      ;; start because no Qt platform plugin could be
+      ;; initialized. Reinstalling the application may fix this problem.
       #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
@@ -3895,21 +3900,28 @@ ASCII text files using Gmsh's own scripting language.")
                           "/lib/qt6/plugins")))))))))
     (native-inputs
      (list pkg-config
-           python-astropy
            python-setuptools
-           python-wheel
            qttools))
     (inputs
      (list bash-minimal
            ghostscript ;optional, for EPS/PS output
            python-dbus
-           python-h5py ;optional, for HDF5 data
+           python-numpy
            python-pyqt-6
            qtbase
            qtsvg
-           qtwayland))
-    (propagated-inputs
-     (list python-numpy))
+           qtwayland
+           ;;
+           ;; These are extra requirements which are listed for the reference,
+           ;; try not to include them directly and install on demand to reduce
+           ;; closure size and relax module cycles (maths<-->astronomy,
+           ;; maths<-->python-science).
+           ;;
+           ;; [optional]
+           ;; python-astropy
+           ;; python-pyemf3     ;not packaged
+           ;; python-iminuit
+           python-h5py))        ;for HDF5 data
     (home-page "https://veusz.github.io/")
     (synopsis "Scientific plotting package")
     (description
