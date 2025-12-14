@@ -2040,49 +2040,36 @@ The supported distributions are:
 (define-public python-numdifftools
   (package
     (name "python-numdifftools")
-    (version "0.9.41")
+    (version "0.9.42")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "numdifftools" version))
        (sha256
-        (base32 "1d49wd5jqnl0500jyws0vb7nv4dy4bb5ml4z9qx1n8867k6hbxsf"))))
+        (base32 "1hgv3jhf4y9qrizkwfryj2b56zd0i2dvzig1y7r4ng193wbparl6"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 177 passed, 3 skipped, 2 deselected, 971 warnings
       #:test-flags
-      #~(list "--pyargs" "numdifftools"
-              "-k" (string-join
-                    ;; Tests failing with error: TypeError: a must be an array
-                    ;; of real numbers, see
-                    ;; <https://github.com/pbrod/numdifftools/issues/72>.
-                    (list "not test_high_order_derivative"
-                          "test_low_order_derivative_on_example_functions"
-                          "test_sinx_div_x"
-                          "test_complex_hessian_issue_35"
-
-                          "numdifftools.fornberg.Taylor"
-                          "numdifftools.fornberg.derivative"
-                          "numdifftools.fornberg.taylor")
-                    " and not "))
+      #~(list "-m" "not benchmark and not slow")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
+          (add-after 'unpack 'fix-pytest-config
             (lambda _
-              (substitute* "setup.py"
-                ;; We can run tests without deprecated pytest-runner.
-                (("setup_requires.*") "")))))))
+              (substitute* "pyproject.toml"
+                ((" --cov=numdifftools --cov-report=xml") "")))))))
     (native-inputs
      (list python-algopy
            python-line-profiler
+           python-pdm-backend
            python-pytest
-           python-setuptools
-           python-setuptools-scm
-           python-statsmodels
-           python-wheel))
+           python-statsmodels))
     (propagated-inputs
      (list python-numpy
-           python-scipy))
+           python-scipy
+           ;; [optional]
+           python-matplotlib))
     (home-page "https://github.com/pbrod/numdifftools")
     (synopsis "Solves automatic numerical differentiation problems")
     (description
