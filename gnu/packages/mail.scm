@@ -802,7 +802,6 @@ operating systems.")
        ("docbook-xml" ,docbook-xml-4.2)
        ("w3m" ,w3m)
        ("tcl" ,tcl)
-
        ;; Test file data for the unit tests included in the neomutt source.
        ("neomutt-test-files"
         ,(let ((commit "8629adab700a75c54e8e28bf05ad092503a98f75"))
@@ -816,67 +815,68 @@ operating systems.")
               (base32
                 "1ci04nqkab9mh60zzm66sd6mhsr6lya8wp92njpbvafc86vvwdlr")))))))
     (arguments
-     `(#:test-target "test"
-       #:configure-flags
-       (list "--gpgme"
+     (list
+      #:test-target "test"
+      #:configure-flags
+      #~(list "--gpgme"
+              ;; Database, implies header caching.
+              "--disable-tokyocabinet"
+              "--disable-qdbm"
+              "--disable-bdb"
+              "--lmdb"
+              "--kyotocabinet"
 
-             ;; Database, implies header caching.
-             "--disable-tokyocabinet"
-             "--disable-qdbm"
-             "--disable-bdb"
-             "--lmdb"
-             "--kyotocabinet"
+              "--gdbm"
 
-             "--gdbm"
+              "--gnutls"
+              "--ssl=1"
+              "--sasl"
+              (string-append "--with-sasl="
+                             #$(this-package-input "cyrus-sasl"))
 
-             "--gnutls"
-             "--ssl=1"
-             "--sasl"
-             (string-append "--with-sasl="
-                            (assoc-ref %build-inputs "cyrus-sasl"))
+              "--smime"
+              "--notmuch"
+              (string-append "--with-notmuch="
+                             #$(this-package-input "notmuch"))
 
-             "--smime"
-             "--notmuch"
-             (string-append "--with-notmuch="
-                            (assoc-ref %build-inputs "notmuch"))
+              "--idn2"
 
-             "--idn2"
-
-             ;; If we do not set this, neomutt wants to check
-             ;; whether the path exists, which it does not
-             ;; in the chroot.
-             "--with-mailpath=/var/mail"
-
-             (string-append "--with-ncurses="
-                            (assoc-ref %build-inputs "ncurses"))
-             (string-append "--prefix="
-                            (assoc-ref %outputs "out"))
-             "--zstd=1")
-       #:phases
-       (modify-phases %standard-phases
-         ;; TODO: autosetup is meant to be included in the source,
-         ;; but we should package autosetup and use our own version of it.
-         (replace 'configure
-           (lambda* (#:key outputs inputs configure-flags #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (flags `(,@configure-flags))
-                    (bash (which "bash")))
-               (setenv "SHELL" bash)
-               (setenv "CONFIG_SHELL" bash)
-               (apply invoke bash
-                      (string-append (getcwd) "/configure")
-                      flags))))
-         (add-before 'check 'prepare-test-files
-           (lambda* (#:key inputs #:allow-other-keys)
-             (copy-recursively (assoc-ref inputs "neomutt-test-files") "tests")
-             ;; FIXME: investigate why tests are failing, Nix is also disabling one
-             (substitute* "test/main.c"
-                          (("NEOMUTT_TEST_ITEM\\(test_expando_filter\\)") "")
-                           (("NEOMUTT_TEST_ITEM\\(test_mutt_sig_exit_handler\\)") "")
-                           (("NEOMUTT_TEST_ITEM\\(test_mutt_path_tilde\\)") ""))
-             (with-directory-excursion "tests"
-               (setenv "NEOMUTT_TEST_DIR" (getcwd)) ; must be absolute
-               (invoke "bash" "setup.sh")))))))
+              ;; If we do not set this, neomutt wants to check
+              ;; whether the path exists, which it does not
+              ;; in the chroot.
+              "--with-mailpath=/var/mail"
+              (string-append "--with-ncurses="
+                             #$(this-package-input "ncurses"))
+              (string-append "--prefix=" #$output)
+              "--zstd=1")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; TODO: autosetup is meant to be included in the source,
+          ;; but we should package autosetup and use our own version of it.
+          (replace 'configure
+            (lambda* (#:key outputs inputs configure-flags #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (flags `(,@configure-flags))
+                     (bash (which "bash")))
+                (setenv "SHELL" bash)
+                (setenv "CONFIG_SHELL" bash)
+                (apply invoke bash
+                       (string-append (getcwd) "/configure")
+                       flags))))
+          (add-before 'check 'prepare-test-files
+            (lambda _
+              (copy-recursively
+               #$(this-package-native-input "neomutt-test-files")
+               "tests")
+              ;; FIXME: investigate why tests are failing, Nix also disables
+              ;; (a different) one: test_expando_node_padding.
+              (substitute* "test/main.c"
+                (("NEOMUTT_TEST_ITEM\\(test_expando_filter\\)") "")
+                (("NEOMUTT_TEST_ITEM\\(test_mutt_sig_exit_handler\\)") "")
+                (("NEOMUTT_TEST_ITEM\\(test_mutt_path_tilde\\)") ""))
+              (with-directory-excursion "tests"
+                (setenv "NEOMUTT_TEST_DIR" (getcwd)) ; must be absolute
+                (invoke "bash" "setup.sh")))))))
     (home-page "https://neomutt.org/")
     (synopsis "Command-line mail reader based on Mutt")
     (description
