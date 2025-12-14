@@ -438,17 +438,18 @@ to camera devices supported by @code{libgphoto2} using
 (define-public kate
   (package
     (name "kate")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kate-" version ".tar.xz"))
        (sha256
-        (base32 "02x9zhrk459gz7c9yxql260vgq1s9w5x4ijw3g4mv6qwp2svhbn9"))))
+        (base32 "0mkz6xlwhc2xgi05n9gygm2nr09w1sh5aj1magnjlfgb1v244hga"))))
     (build-system qt-build-system)
     (native-inputs
-     (list extra-cmake-modules kdoctools))
+     (list extra-cmake-modules kdoctools xorg-server-for-tests))
+    ;; TODO: Unbundle rapidjson and SingleApplication.
     (inputs
      (list breeze-icons ;; default icon set
            karchive
@@ -473,6 +474,7 @@ to camera devices supported by @code{libgphoto2} using
            libplasma
            libxkbcommon
            plasma-activities
+           qtsvg
            qtwayland))
     (arguments
      (list #:qtbase qtbase
@@ -485,10 +487,8 @@ to camera devices supported by @code{libgphoto2} using
                      (("QStringLiteral[(]\"/usr\"[)]")
                       (format #f "QStringLiteral(\"~a\")"
                               (dirname (dirname (which "ls"))))))))
-               (add-before 'check 'check-setup
-                 (lambda _
-                   ;; make Qt render "offscreen", required for tests
-                   (setenv "QT_QPA_PLATFORM" "offscreen")
+               (add-before 'check 'set-home-directory
+                 (lambda* _
                    (setenv "HOME" (getcwd)))))))
     (home-page "https://kate-editor.org/")
     (synopsis "Multi-document, multi-view text editor")
@@ -507,8 +507,10 @@ Kate's features include:
 @item Symbol viewers for C, C++, and Python
 @item XML completion and validation
 @end itemize")
-    (license ;; GPL for programs, LGPL for libraries
-     (list license:gpl2+ license:lgpl2.0))))
+    (license
+     ;; GPL for programs, LGPL for libraries and MIT (Expat) for the 3rd party
+     ;; libraries.
+     (list license:gpl2+ license:lgpl2.0 license:expat))))
 
 (define-public kdebugsettings
   (package
