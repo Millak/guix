@@ -520,14 +520,14 @@ This package is part of the KDE games module.")
 (define-public kmines
   (package
     (name "kmines")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/kmines-" version ".tar.xz"))
        (sha256
-        (base32 "0gsamph4ipmxw3anr214vbxlpg7d7d1lxlzpm0sad7xgv0ydmw4r"))))
+        (base32 "1yy9bmrwf5cwgpai8lqqspfyv1b158sz8m9dsv3qznwnnig1lmn1"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
