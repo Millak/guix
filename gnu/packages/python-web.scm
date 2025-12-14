@@ -11533,8 +11533,9 @@ SOCKS5(h), HTTP tunnel).")
        (sha256
         (base32
          "1l4xwdh0fcnvrv0mzig4g2kgqkfbsy64zjm1ggc6grk3mykcxlz7"))))
-    (build-system python-build-system)
-    (native-inputs (list unzip))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;no tests in package
+    (native-inputs (list unzip python-setuptools))
     (home-page "https://github.com/Azure/azure-sdk-for-python")
     (synopsis "Azure namespace internals")
     (description
