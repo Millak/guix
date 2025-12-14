@@ -98,14 +98,14 @@
 (define-public kquickimageeditor
   (package
     (name "kquickimageeditor")
-    (version "0.5.1")
+    (version "0.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/" name "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0acv6cis7gjpnzpnlxfrf6rzhwyqdm234p6r7vx7gl7ad3rp30ph"))))
+        (base32 "0yjl4b8ix9ffya89nq9pp1gmvdwshjslh5dw1gavda34q7hlrv8i"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
@@ -113,7 +113,9 @@
     (native-inputs
      (list extra-cmake-modules))
     (inputs
-     (list qtdeclarative))
+     (list kconfig
+           opencv
+           qtdeclarative))
     (home-page "https://invent.kde.org/libraries/kquickimageeditor/")
     (synopsis "QtQuick components for image editing")
     (description "KQuickImageEditor is a set of QtQuick components providing
