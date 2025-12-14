@@ -795,10 +795,6 @@ export PATH="$GUIX_PROFILE/bin${PATH:+:}$PATH"
 # trailing colon so the system default search path is used.
 export INFOPATH="$GUIX_PROFILE/share/info:$INFOPATH"
 export MANPATH="$GUIX_PROFILE/share/man:$MANPATH"
-# Expose the latest Guix modules to Guile so guix shell and repls spawned by
-# e.g. Geiser work out of the box.
-export GUILE_LOAD_PATH="$GUIX_PROFILE/share/guile/site/3.0${GUILE_LOAD_PATH:+:}$GUILE_LOAD_PATH"
-export GUILE_LOAD_COMPILED_PATH="$GUIX_PROFILE/lib/guile/3.0/site-ccache${GUILE_LOAD_COMPILED_PATH:+:}$GUILE_LOAD_COMPILED_PATH"
 
 # User's default profile, if it exists
 GUIX_PROFILE="$HOME/.guix-profile"
