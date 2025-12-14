@@ -2,7 +2,7 @@
 ;;; Copyright © 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2017, 2020, 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2019, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2021, 2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2022 Josselin Poiret <dev@jpoiret.xyz>
 ;;; Copyright © 2022 Reza Alizadeh Majd <r.majd@pantherx.org>
@@ -26,7 +26,8 @@
 (define-module (gnu bootloader)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system uuid)
-  #:use-module (guix discovery)
+  #:autoload   (guix discovery) (fold-module-public-variables)
+  #:autoload   (guix describe) (modules-from-current-profile)
   #:use-module (guix gexp)
   #:use-module (guix profiles)
   #:use-module (guix records)
@@ -305,10 +306,8 @@ instead~%")))
 
 (define (bootloader-modules)
   "Return the list of bootloader modules."
-  (all-modules (map (lambda (entry)
-                      `(,entry . "gnu/bootloader"))
-                    %load-path)
-               #:warn warn-about-load-error))
+  (modules-from-current-profile "gnu/bootloader"
+                                #:warn warn-about-load-error))
 
 (define %bootloaders
   ;; The list of publically-known bootloaders.

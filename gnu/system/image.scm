@@ -25,7 +25,8 @@
 (define-module (gnu system image)
   #:use-module (guix deprecation)
   #:use-module (guix diagnostics)
-  #:use-module (guix discovery)
+  #:autoload   (guix discovery) (fold-module-public-variables)
+  #:autoload   (guix describe) (modules-from-current-profile)
   #:use-module (guix gexp)
   #:use-module (guix modules)
   #:use-module (guix monads)
@@ -315,10 +316,14 @@ set to the given OS."
 ;; Helpers.
 ;;
 
-(define not-config?
-  ;; Select (guix …) and (gnu …) modules, except (guix config).
+(define neither-config-nor-git?
+  ;; Select (guix …) and (gnu …) modules, except (guix config) and (guix git).
+  ;; The latter is autoloaded by some modules but it is not supposed to be
+  ;; actually used in the context of image creation; adding it to the module
+  ;; closure would imply adding Guile-Git as well.
   (match-lambda
     (('guix 'config) #f)
+    (('guix 'git) #f)
     (('guix rest ...) #t)
     (('gnu rest ...) #t)
     (rest #f)))
@@ -352,7 +357,7 @@ set to the given OS."
                                   (gnu build hurd-boot)
                                   (gnu build linux-boot)
                                   (guix store database))
-                                #:select? not-config?)
+                                #:select? neither-config-nor-git?)
                              ((guix config) => ,(make-config.scm)))
       #~(begin
           (use-modules (gnu build image)
@@ -786,7 +791,7 @@ output file."
                                       (guix build utils)
                                       (guix build store-copy)
                                       (gnu build image))
-                                    #:select? not-config?)
+                                    #:select? neither-config-nor-git?)
                                  ((guix config) => ,(make-config.scm)))
           #~(begin
               (use-modules (guix docker)
@@ -880,7 +885,7 @@ output file."
                                       (guix build utils)
                                       (guix store database)
                                       (gnu build image))
-                                    #:select? not-config?)
+                                    #:select? neither-config-nor-git?)
                                  ((guix config) => ,(make-config.scm)))
           #~(begin
               (use-modules (guix build pack)
@@ -1137,10 +1142,8 @@ image, depending on IMAGE format."
 (define (image-modules)
   "Return the list of image modules."
   (cons (resolve-interface '(gnu system image))
-        (all-modules (map (lambda (entry)
-                            `(,entry . "gnu/system/images/"))
-                          %load-path)
-                     #:warn warn-about-load-error)))
+        (modules-from-current-profile "gnu/system/images"
+                                      #:warn warn-about-load-error)))
 
 (define %image-types
   ;; The list of publically-known image types.

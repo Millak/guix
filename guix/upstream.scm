@@ -24,7 +24,8 @@
 (define-module (guix upstream)
   #:use-module (guix records)
   #:use-module (guix utils)
-  #:use-module (guix discovery)
+  #:autoload   (guix discovery) (fold-module-public-variables)
+  #:autoload   (guix describe) (modules-from-current-profile)
   #:use-module ((guix download)
                 #:select (download-to-store url-fetch))
   #:use-module (guix git-download)
@@ -219,10 +220,8 @@ correspond to the same version."
 (define (importer-modules)
   "Return the list of importer modules."
   (cons (resolve-interface '(guix gnu-maintenance))
-        (all-modules (map (lambda (entry)
-                            `(,entry . "guix/import"))
-                          %load-path)
-                     #:warn warn-about-load-error)))
+        (modules-from-current-profile "guix/import"
+                                      #:warn warn-about-load-error)))
 
 (define %updaters
   ;; The list of publically-known updaters, alphabetically sorted.

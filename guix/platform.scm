@@ -21,6 +21,7 @@
   #:use-module (guix memoization)
   #:use-module (guix records)
   #:use-module (guix ui)
+  #:autoload   (guix describe) (modules-from-current-profile)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
@@ -100,10 +101,8 @@ exception."
 
 (define (platform-modules)
   "Return the list of platform modules."
-  (all-modules (map (lambda (entry)
-                      `(,entry . "guix/platforms"))
-                    %load-path)
-               #:warn warn-about-load-error))
+  (modules-from-current-profile "guix/platforms"
+                                #:warn warn-about-load-error))
 
 (define platforms
   ;; The list of publically-known platforms.

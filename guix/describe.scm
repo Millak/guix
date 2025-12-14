@@ -26,6 +26,7 @@
   #:autoload   (guix channels) (channel-name
                                 sexp->channel
                                 manifest-entry-channel)
+  #:autoload   (guix discovery) (all-modules)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-71)
@@ -33,6 +34,7 @@
   #:export (current-profile
             current-profile-date
             current-profile-entries
+            modules-from-current-profile
             current-channels
             package-path-entries
             append-channels-to-load-path!
@@ -101,6 +103,26 @@ or #f if this is not applicable."
     (match initial-program-arguments
       ((program . _)
        (find-profile program)))))
+
+(define* (modules-from-current-profile sub-directory
+                                       #:key (warn (const #f)))
+  "Return the list of modules from SUB-DIRECTORY found in (current-profile).
+If 'current-profile' returns #f, search for those modules in each entry of
+'%load-path'."
+  (all-modules (map (lambda (entry)
+                      `(,entry . ,sub-directory))
+                    (match (current-profile-entries)
+                      (()
+                       %load-path)
+                      (lst
+                       ;; Browse modules from all the channels, including
+                       ;; 'guix', and nothing else.
+                       (map (lambda (entry)
+                              (string-append (manifest-entry-item entry)
+                                             "/share/guile/site/"
+                                             (effective-version)))
+                            lst))))
+               #:warn warn))
 
 (define (current-profile-date)
   "Return the creation date of the current profile (produced by 'guix pull'),

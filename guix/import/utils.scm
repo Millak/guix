@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2018, 2019, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2013, 2018-2020, 2023, 2025 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2017, 2019, 2020, 2022, 2023, 2024, 2025 Ricardo Wurmus <rekado@elephly.net>
@@ -42,7 +42,8 @@
   #:use-module (guix packages)
   #:use-module (guix deprecation)
   #:use-module (guix diagnostics)
-  #:use-module (guix discovery)
+  #:autoload   (guix discovery) (fold-module-public-variables)
+  #:autoload   (guix describe) (modules-from-current-profile)
   #:use-module (guix build-system)
   #:use-module (guix git)
   #:use-module (guix hash)
@@ -600,9 +601,7 @@ APPEND-VERSION?/string is a string, append this string."
         ,guix-package))))
 
 (define (build-system-modules)
-  (all-modules (map (lambda (entry)
-                      `(,entry . "guix/build-system"))
-                    %load-path)))
+  (modules-from-current-profile "guix/build-system"))
 
 (define (lookup-build-system-by-name name)
   "Return a <build-system> value for the symbol NAME, representing the name of
