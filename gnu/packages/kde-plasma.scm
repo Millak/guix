@@ -2191,11 +2191,17 @@ the KDE Plasma 6 desktop.")
     (arguments
      (list #:qtbase qtbase
            #:test-exclude
+           ;; The tst_calibrationtool test fails on aarch64 due to floating-point
+           ;; precision: QMatrix4x4 comparison fails with tiny differences
+           ;; (1.11759e-08 instead of exact 0).
            (string-append "("
-                          (string-join '("positionertest"
+                          (string-join `("positionertest"
                                          "kcm-keyboard-keyboard_memory_\
 persister_test"
-                                         "foldermodeltest")
+                                         "foldermodeltest"
+                                         ,@(if (target-aarch64?)
+                                               '("tst_calibrationtool")
+                                               '()))
                                        "|")
                           ")")
            #:phases
