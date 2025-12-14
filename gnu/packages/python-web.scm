@@ -3537,7 +3537,7 @@ JWE, JWK, JWA, and JWT.")
            python-setuptools))
     (propagated-inputs
      (list python-cryptography
-           python-deprecated))
+           python-typing-extensions))
     (home-page "https://github.com/latchset/jwcrypto")
     (synopsis "Implementation of JOSE Web standards")
     (description
