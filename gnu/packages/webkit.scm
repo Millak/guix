@@ -131,21 +131,13 @@ engine that uses Wayland for graphics output.")
 (define-public webkitgtk
   (package
     (name "webkitgtk")
-    (version "2.48.1")
-    (replacement webkitgtk/fixed)
+    (version "2.50.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.webkitgtk.org/releases/"
-                                  name "-" version ".tar.xz"))
+                                  "webkitgtk-" version ".tar.xz"))
               (sha256
-               (base32 "13r5xfhvy7gpjdm026wv5njmlfq9ab5sid9snzh0zjndqhhxzvwq"))
-              (snippet
-               #~(begin
-                   (use-modules (guix build utils))
-                   ;; https://bugs.webkit.org/show_bug.cgi?id=268739
-                   ;; Fix a FTBFS on i686, powerpc64le.
-                   (substitute* "Source/JavaScriptCore/llint/LowLevelInterpreter.cpp"
-                     (("UNUSED_VARIABLE\\(t[67]\\);") ""))))
+               (base32 "0kymjkskp2ndvs10hvqc0l7i3x19s2hga0g8azhv5djvd6s0d83h"))
               (patches (search-patches
                         "webkitgtk-adjust-bubblewrap-paths.patch"))))
     (build-system cmake-build-system)
@@ -301,19 +293,6 @@ propagated by default) such as @code{gst-plugins-good} and
                    license:lgpl2.1+
                    license:bsd-2
                    license:bsd-3))))
-
-(define webkitgtk/fixed
-  (package
-    (inherit webkitgtk)
-    (version "2.50.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://www.webkitgtk.org/releases/"
-                                  "webkitgtk-" version ".tar.xz"))
-              (sha256
-               (base32 "0kymjkskp2ndvs10hvqc0l7i3x19s2hga0g8azhv5djvd6s0d83h"))
-              (patches (search-patches
-                        "webkitgtk-adjust-bubblewrap-paths.patch"))))))
 
 (define-public webkitgtk-for-gtk3
   (package/inherit webkitgtk
