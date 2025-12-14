@@ -1855,14 +1855,14 @@ This package is part of the KDE games module.")
 (define-public knights
   (package
     (name "knights")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/knights-" version ".tar.xz"))
        (sha256
-        (base32 "0g9825yn76r6mmimisvfk4xp1albqq4mg84mas11xbfx60jrn26a"))))
+        (base32 "0vwl0y41qz9bih4dirbn4d3wcp629zxf31r9is2aa2m4p1arrxdn"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
