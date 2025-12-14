@@ -9121,41 +9121,48 @@ instruments.")
 (define-public python-spectral-cube
   (package
     (name "python-spectral-cube")
-    (version "0.6.6")
+    (version "0.6.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "spectral_cube" version))
        (sha256
-        (base32 "0hz2pxc7fnxd1xr1n74ljjc84j25plnclp3y6jwg1banps360c3f"))))
+        (base32 "1r3mwrnjw2yfjsd3bskl013c3yk0ad3ky1yhxlvyiz4phrahhb3f"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; See <https://github.com/radio-astro-tools/radio-beam/issues/129>.
-      #:tests? #f
+      ;; tests: 1520 passed, 185 skipped, 17 xfailed, 6048 warnings
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count)))))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; AttributeError: module 'numpy' has no attribute 'product'
+              #$@(map (lambda (test) (string-append "--deselect="
+                                                    "spectral_cube/tests/"
+                                                    "test_casafuncs.py::"
+                                                    "test"))
+                      (list "test_casa_read_basic[False-False]"
+                            "test_casa_read_basic[False-True]"
+                            "test_casa_read_basic[True-False]"
+                            "test_casa_read_basic[True-True]"
+                            "test_casa_read_basic_nomask")))))
+    (native-inputs
+     (list python-pytest
+           python-pytest-astropy
+           python-pytest-xdist
+           python-regions
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-aplpy
-           python-astropy
+     (list python-astropy
            python-casa-formats-io
            python-dask
-           python-distributed
-           python-fsspec
            python-joblib
-           python-matplotlib
            python-numpy
            python-packaging
-           python-pvextractor-bootstrap
            python-radio-beam
-           python-reproject
-           python-scipy
            python-tqdm
+           ;; [optional]
+           python-scipy
            python-zarr))
-    (native-inputs
-     (list python-regions
-           python-setuptools-scm
-           python-wheel))
     (home-page "https://spectral-cube.readthedocs.io/en/latest/")
     (synopsis "Library for reading and analyzing astrophysical spectral data cubes")
     (description
