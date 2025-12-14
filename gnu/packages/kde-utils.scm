@@ -1454,14 +1454,14 @@ remind you to take a break now and then.")
 (define-public sweeper
   (package
     (name "sweeper")
-    (version "25.08.3")
+    (version "25.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://kde/stable/release-service/" version
                            "/src/sweeper-" version ".tar.xz"))
        (sha256
-        (base32 "17b58p83j7gnavmrz7jgi41ssm18z2458wnlwj81zglz3b1vgc3f"))))
+        (base32 "0vvrwb79lh7aqrz66xx5qsbfncsj5bw0crsy7fvj5mpvfnd22wp0"))))
     (build-system qt-build-system)
     (arguments
      (list #:qtbase qtbase
