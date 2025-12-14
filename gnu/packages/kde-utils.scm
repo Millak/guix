@@ -657,14 +657,14 @@ characters.")
 (define-public kdialog
   (package
     (name "kdialog")
-    (version "25.08.3")
+    (version "25.12.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kde/stable/release-service/"
                                   version "/src/kdialog-" version ".tar.xz"))
               (sha256
                (base32
-                "1d5svwlg7yjv0cf9flfn1zld24lj1dq3xf23aq9jv2mlxhrzrjfj"))))
+                "18bl0254c5rn7q6nrxp604w22irc8h646yqlhv0ilgm8gcz4n1pg"))))
     (build-system qt-build-system)
     (arguments (list #:qtbase qtbase
                      #:tests? #f))
