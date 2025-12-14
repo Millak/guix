@@ -1324,6 +1324,36 @@ river flooding.")
        (sha256
         (base32 "0vaqhygr2d186qixvfckzqf4447674ylnc0rl5pa16zjv6mh27zj"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; XXX: See: <https://github.com/nschloe/meshio/issues/1499>.
+      ;; ValueError: invalid literal for int() with base 10: 'np.int64(4)'
+      #~(list "--deselect=tests/test_dolfin.py::test_dolfin[mesh3]"
+              "--deselect=tests/test_gmsh.py::test_gmsh22[False-mesh9]"
+              "--deselect=tests/test_gmsh.py::test_gmsh22[False-mesh10]"
+              "--deselect=tests/test_gmsh.py::test_gmsh22[False-mesh11]"
+              "--deselect=tests/test_gmsh.py::test_gmsh22[False-mesh12]"
+              "--deselect=tests/test_gmsh.py::test_gmsh22[False-mesh13]"
+              "--deselect=tests/test_gmsh.py::test_gmsh22[False-mesh14]"
+              "--deselect=tests/test_gmsh.py::test_gmsh40[False-mesh8]"
+              "--deselect=tests/test_gmsh.py::test_gmsh40[False-mesh9]"
+              "--deselect=tests/test_gmsh.py::test_gmsh40[False-mesh10]"
+              "--deselect=tests/test_gmsh.py::test_gmsh40[False-mesh11]"
+              "--deselect=tests/test_gmsh.py::test_gmsh40[False-mesh12]"
+              "--deselect=tests/test_gmsh.py::test_gmsh40[False-mesh13]"
+              "--deselect=tests/test_gmsh.py::test_gmsh41[False-mesh8]"
+              "--deselect=tests/test_gmsh.py::test_gmsh41[False-mesh9]"
+              "--deselect=tests/test_gmsh.py::test_gmsh41[False-mesh10]"
+              "--deselect=tests/test_gmsh.py::test_gmsh41[False-mesh11]"
+              "--deselect=tests/test_gmsh.py::test_gmsh41[False-mesh12]"
+              "--deselect=tests/test_gmsh.py::test_gmsh41[False-mesh13]"
+              "--deselect=tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh0]"
+              "--deselect=tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh1]"
+              "--deselect=tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh2]"
+              "--deselect=tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh3]"
+              "--deselect=tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh4]"
+              "--deselect=tests/test_ugrid.py::test_io[1e-07-.ugrid-mesh5]")))
     (inputs (list python-h5py python-netcdf4))
     (native-inputs (list python-pytest python-setuptools))
     (propagated-inputs (list python-numpy python-rich))
