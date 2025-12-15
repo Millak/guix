@@ -717,7 +717,9 @@ DAEMON and to the current configuration variables."
                   ,@(map (lambda (file)
                            `(,(string-append "lib/systemd/system/" file)
                              ,(systemd-file source daemon file)))
-                         '("guix-gc.service"
+                         '("gnu-store.mount"
+                           "guix-gc.service"
+                           "guix-gc.timer"
                            "guix-publish.service"
                            "guix-daemon.service"))
                   ("share/guix/berlin.guix.gnu.org.pub"
