@@ -1,0 +1,12 @@
+abi <abi/4.0>,
+
+include <tunables/global>
+include <tunables/guix>
+
+# There’s no point in confining the guix executable, since it can run
+# any user code and so everything is expected.  We just need to
+# explicitely enable userns for systems with the
+# kernel.apparmor_restrict_unprivileged_userns sysctl.
+profile guix @{guix_storedir}/{*-guix-command,*-guix-*/bin/guix} flags=(unconfined) {
+  userns,
+}

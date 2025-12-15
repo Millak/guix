@@ -748,6 +748,7 @@ nodist_selinux_policy_DATA = etc/guix-daemon.cil
 
 # AppArmor profiles.
 nodist_apparmor_profile_DATA =	\
+  etc/apparmor.d/guix		\
   etc/apparmor.d/guix-daemon
 
 nodist_apparmor_profile_tunables_DATA = \
