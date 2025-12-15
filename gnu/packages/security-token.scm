@@ -561,7 +561,7 @@ retrieve a YubiKey's serial number, and so forth.")
 (define-public python-pyscard
   (package
     (name "python-pyscard")
-    (version "2.0.7")
+    (version "2.3.1")
     (source (origin
               (method url-fetch)
               ;; The maintainer publishes releases on various sites, but
@@ -571,8 +571,8 @@ retrieve a YubiKey's serial number, and so forth.")
                     version "/pyscard-" version ".tar.gz"))
               (sha256
                (base32
-                "1gy1hmzrhfa7bqs132v89pchm9q3rpnqf3a6225vwpx7bx959017"))))
-    (build-system python-build-system)
+                "04vckr77416sn0jncal9x1p2kmgd37w52kz5nr00g58agbsmchx2"))))
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -588,7 +588,7 @@ retrieve a YubiKey's serial number, and so forth.")
          ;; pyscard wants to dlopen libpcsclite, so tell it where it is.
          (add-after 'unpack 'patch-dlopen
            (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "smartcard/scard/winscarddll.c"
+             (substitute* "src/smartcard/scard/winscarddll.c"
                (("lib = \"libpcsclite\\.so\\.1\";")
                 (simple-format
                  #f
@@ -597,13 +597,17 @@ retrieve a YubiKey's serial number, and so forth.")
     (inputs
      (list pcsc-lite))
     (native-inputs
-     (list swig))
+     (list python-pytest
+           python-setuptools
+           swig))
     (home-page "https://github.com/LudovicRousseau/pyscard")
     (synopsis "Smart card library for Python")
     (description
      "The pyscard smart card library is a framework for building smart card
 aware applications in Python.  The smart card module is built on top of the
 PCSC API Python wrapper module.")
+    (properties
+     '((release-monitoring-url . "https://github.com/LudovicRousseau/pyscard")))
     (license license:lgpl2.1+)))
 
 (define-public yubikey-oath-dmenu
