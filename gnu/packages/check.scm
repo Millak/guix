@@ -1916,31 +1916,37 @@ reported in a previous test run.")
 (define-public python-pytest-randomly
   (package
     (name "python-pytest-randomly")
-    (version "3.16.0")
+    (version "4.0.1")
     (source (origin
-              (method git-fetch)        ;no tests in pypi archive
+              (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/pytest-dev/pytest-randomly")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ai6gn811wm1ixjimgpsi5nwlcpxaj4kmil69vf2s2ph0c2zw93s"))))
+                "0zglnyl3wc2ri9dhkvd1z0ywksk2v1abpdlclc253c8xivv4c3ai"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 23 passed, 13 deselected
       #:test-flags
       #~(list "-p" "no:randomly"
-              ;; The tests validating ordering fail, as well as as two others,
-              ;; for unknown reasons (see:
-              ;; https://github.com/pytest-dev/pytest-randomly/issues/454).
-              "-k" "not test_it_runs_before_stepwise and not test_model_bakery")))
+              ;; Skip tests requireing python-factory-boy, python-faker,
+              ;; python-numpy, and python-pytest-xdist to reduce closure size.
+              "-k" (string-join
+                    (list "not test_entrypoint_injection"
+                          "test_factory_boy"
+                          "test_faker"
+                          "test_faker_fixture"
+                          "test_it_runs_before_stepwise"
+                          "test_model_bakery"
+                          "test_numpy"
+                          "test_numpy_doesnt_crash_with_large_seed"
+                          "test_xdist")
+                    " and not "))))
     (native-inputs
-     (list python-factory-boy
-           python-faker
-           python-numpy
-           python-pytest-bootstrap
-           python-pytest-xdist
+     (list python-pytest-bootstrap
            python-setuptools))
     (home-page "https://github.com/pytest-dev/pytest-randomly")
     (synopsis "Pytest plugin to randomly order tests")
