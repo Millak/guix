@@ -421,18 +421,17 @@ supersedes the RTED algorithm for computing the tree edit distance.")
 (define-public python-asap3
   (package
     (name "python-asap3")
-    (version "3.13.9")
+    (version "3.13.10")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asap3" version))
        (sha256
-        (base32 "0r4sx93v2ck4m9ykzj9zaar2l9wk4nrb3d3rlik1nqimk6pnnbm2"))))
+        (base32 "1qpy9nnwv692hd3cg70n2zwjank25mlsfvvirklijwis3m4lfqg4"))))
     (build-system pyproject-build-system)
-    (arguments
-     (list #:tests? #f)) ;TODO: collecting ... ERROR: Wrong command line.
     (native-inputs
-     (list python-setuptools
+     (list python-pytest
+           python-setuptools
            which)) ;for build
     (propagated-inputs
      (list python-ase
