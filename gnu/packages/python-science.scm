@@ -1986,7 +1986,11 @@ interpolation of 1D data (for example, time series) with splines.")
        (sha256
         (base32
          "0sbfanbkfs6c77np4vz0ayrwnv99bpn5xgj5fnf2yhhk0lcd6ry6"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:test-backend #~'unittest))
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-msgpack python-numpy))
     (home-page "https://github.com/lebedov/msgpack-numpy")
