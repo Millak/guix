@@ -2354,19 +2354,22 @@ evaluating arrays of polynomials based on @code{numpy.ndarray objects}.")
 (define-public python-numpy-groupies
   (package
     (name "python-numpy-groupies")
-    (version "0.9.14")
+    (version "0.11.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "numpy_groupies" version))
        (sha256
-        (base32 "000qz0z78rs3l6y0dd2vzvd2lx3mczm2762whwsdnhz6c35axdq1"))))
-    (build-system python-build-system)
+        (base32 "1q13gi0018maifhn6dkwi0pprr3p7ikv9r3zffg6p1ayspdazm5f"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest
-           python-pytest-runner
-           python-numba
-           python-numpy))
+     (list python-numba
+           python-pandas
+           python-pytest
+           python-setuptools
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-numpy))
     (home-page "https://github.com/ml31415/numpy-groupies")
     (synopsis "Tools for group-indexing operations: aggregated sum and more")
     (description
