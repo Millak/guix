@@ -8698,7 +8698,7 @@ bookmarks using a declarative input in the form of a markdown file.")
     (arguments
      (list
       #:test-flags
-      #~(list "--numprocesses" (number->string (parallel-job-count))
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
               ;; Disabled to avoid having to depend on ipython/jupyter.
               "-k" "not test_parallel_call_cached_function_defined_in_jupyter")))
     (native-inputs
