@@ -3715,24 +3715,29 @@ for many database kinds that tortoise-orm doesn't need, for example.")
 (define-public python-asyncpg
   (package
     (name "python-asyncpg")
+    ;; asyncpg 0.31.0 requires Cython(>=3.2.1,<4.0.0), got Cython==3.1.2
     (version "0.30.0")
     (source
      (origin
+       ;; git-fetch leads to errors like
+       ;; ValueError: 'asyncpg/pgproto/pgproto.pyx' doesn't match any files
        (method url-fetch)
        (uri (pypi-uri "asyncpg" version))
        (sha256
         (base32 "0lf8xbrsb2ycpqx1vzlb05p48g5sh9zq24a8yh17cw5nia9fjlf5"))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; raises ValueError("Invalid IPv6 URL") ; Maybe due to urllib?
+      #~(list "-k" "not TestConnectParams")))
     (native-inputs
      (list postgresql
            python-cython
            python-pytest
            python-uvloop
            python-distro
-           python-setuptools
-           python-wheel))
-    (propagated-inputs
-     (list python-async-timeout))
+           python-setuptools))
     (home-page "https://github.com/MagicStack/asyncpg")
     (synopsis "Fast PostgreSQL database client library for Python")
     (description "@code{asyncpg} is a database interface library designed
