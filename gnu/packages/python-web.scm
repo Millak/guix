@@ -7913,7 +7913,10 @@ It comes with safe defaults and easily configurable options.")
        (sha256
         (base32
          "1z1brjsvni0260bypldkl8a05sgp0qk18x560zl44igr3q99m5f0"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments (list #:test-backend #~'unittest))
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://github.com/tikitu/jsmin/")
     (synopsis "Python JavaScript minifier")
     (description
