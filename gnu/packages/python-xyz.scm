@@ -6914,7 +6914,11 @@ Python 3.3+.")
        (sha256
         (base32
          "1nv92sphpkyrncak4qgj50qmgkmj4ycl2szbnv9c7ihgl5df4div"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list
+      python-pytest
+      python-setuptools))
     (home-page "https://github.com/SamuelHaidu/simple-rlp")
     (synopsis
      "Python implementation of RLP (Recursive Length Prefix) encoding")
