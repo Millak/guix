@@ -6590,7 +6590,11 @@ standard.")
               (sha256
                (base32
                 "0kdsp883mx0lfyykv0p12bvs203kdm3skb8bw5wf2pc7kb393sl1"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; no tests in PyPI or Git
+    (native-inputs
+     (list python-setuptools))
     (propagated-inputs
      (list python-stdlib-list))
     (home-page "https://gitlab.com/joelostblom/session_info")
