@@ -15295,6 +15295,16 @@ computing.")
                   texlive-xetex
                   texlive-xindy))))))
 
+;; A bare minimal package, mainly to use in tests and reduce closure
+;; size. Tests are left out in the main package to slim down native-inputs.
+(define-public python-ipython-minimal
+  (package/inherit python-ipython
+    (name "python-ipython-minimal")
+    (arguments
+     (list #:tests? #f))
+    (native-inputs
+     (list python-setuptools))))
+
 (define-public python-ipython-pygments-lexers
   (package
     (name "python-ipython-pygments-lexers")
