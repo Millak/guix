@@ -3790,19 +3790,19 @@ asynchronous code in Python (asyncio).")
 (define-public python-pytest-dependency
   (package
     (name "python-pytest-dependency")
-    (version "0.5.1")
+    (version "0.6.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "pytest-dependency" version))
         (sha256
           (base32
-            "0swl3mxca7nnjbb5grfzrm3fa2750h9vjsha0f2kyrljc6895a62"))))
-    (build-system python-build-system)
-    (propagated-inputs
-      (list python-pytest))
-    (home-page
-      "https://github.com/RKrahl/pytest-dependency")
+            "1hdcidq4miqd5fvg9khvzw3gm3waxnp7wgqr5h39anfr75m0wjwk"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+      (list python-pytest-bootstrap
+            python-setuptools))
+    (home-page "https://github.com/RKrahl/pytest-dependency")
     (synopsis "Manage dependencies of tests")
     (description "This pytest plugin manages dependencies of tests.  It allows
 to mark some tests as dependent from other tests.  These tests will then be
