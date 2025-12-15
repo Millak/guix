@@ -15150,7 +15150,7 @@ functions, useful in the context of writing unit tests among other uses.")
 (define-public python-ipython
   (package
     (name "python-ipython")
-    (version "8.37.0")   ;it's the latest version in 8.*.* series
+    (version "9.8.0")
     (source
      (origin
        (method git-fetch)
@@ -15159,13 +15159,19 @@ functions, useful in the context of writing unit tests among other uses.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02jrmqalcbj0vg887ssavlk6hqyiqkkk4y0cha8vcfbzwibp7lhc"))))
+        (base32 "01xislvlz33hlpbpf9cfgqabva3wzg49gb5437ypdzwldf8q25cg"))))
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; 1523 passed, 90 skipped, 5 deselected, 3 xfailed, 722 warnings
+      ;; tests: 1655 passed, 118 skipped, 3 xfailed, 7 warnings
+      ;; with-extra: 1681 passed, 87 skipped, 5 deselected, 3 xfailed, 8 warnings
+      #:test-backend #~'custom
+      ;; XXX: It's a workaround to fix the error with module import
+      ;; "_pytest.pathlib.ImportPathMismatchError:", see:
+      ;; <https://codeberg.org/guix/guix/issues/2108>.
       #:test-flags
-      #~(list "-k" (string-join
+      #~(list "-m" "pytest" "-vv"
+              "-k" (string-join
                     ;; These need git.
                     (list "not test_json_getsysinfo"
                           "IPython.utils.sysinfo.sys_info"
@@ -15175,24 +15181,13 @@ functions, useful in the context of writing unit tests among other uses.")
                           "test_time_raise_on_interrupt")
                     " and not "))
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'make-docs-reproducible
-           (lambda _
-             (substitute* "IPython/sphinxext/ipython_directive.py"
-               ((".*import datetime") "")
-               ((".*datetime.datetime.now\\(\\)") "")
-               (("%timeit") "# %timeit"))))
-         (replace 'check
-           (lambda* (#:key tests? test-flags #:allow-other-keys)
-             (when tests?
-               (setenv "HOME" "/tmp/")  ;required by some tests
-               (apply invoke "python" "-m" "pytest" "-vv"
-                      test-flags)))))))
-    (inputs (list readline which))
+      #~(modify-phases %standard-phases
+          (add-before 'check 'pre-check
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list python-colorama
-           python-decorator
-           python-exceptiongroup
+     (list python-decorator
+           python-ipython-pygments-lexers
            python-jedi
            python-matplotlib-inline
            python-pexpect
@@ -15202,17 +15197,20 @@ functions, useful in the context of writing unit tests among other uses.")
            python-traitlets
            python-typing-extensions))
     (native-inputs
-     (list python-curio
+     (list python-pytest
+           python-pytest-asyncio
+           python-setuptools
+           python-testpath
+           ;; [extra]
+           python-curio
+           ;; python-ipykernel  ;cycles
+           ;; python-jupyter-ai ;not packaged
            python-matplotlib
+           ;; python-nbclient   ;cycles
            python-nbformat
            python-numpy
            python-pandas
-           python-pickleshare
-           python-pytest
-           python-pytest-asyncio-0.21
-           python-setuptools
-           python-testpath
-           python-wheel))
+           python-trio))
     (home-page "https://ipython.org")
     (synopsis "IPython is a tool for interactive computing in Python")
     (description
