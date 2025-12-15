@@ -4628,14 +4628,33 @@ managers for automatically closing connections.")
 (define-public python-databases
   (package
     (name "python-databases")
-    (version "0.7.0")
+    ;; 0.9.0 needs sqlalchemy>=2.0.7
+    ;; 0.8.0 needs sqlalchemy>=1.4.42,<1.5
+    (version "0.8.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "databases" version))
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/encode/databases")
+              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0x5nqhzgjqimv2ybjbzy5vv0l23g0n1g5f6fnyahbf1f7nfl2bga"))))
-    (build-system python-build-system)
+        (base32 "183yawn8w561y1ni117rf5zaxm4gqqbcmi9fp52xd5fx2dj8qy3v"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      ;; These need TEST_DATABASE_URLS set.
+      ;; TODO: Use "sqlite:///test.db"? See docs/contributing.md.
+      #~(list "--ignore=tests/test_databases.py"
+              "--ignore=tests/test_integration.py"
+              "--ignore=tests/test_connection_options.py")))
+    (native-inputs
+     (list python-httpx
+           python-psycopg
+           python-pytest
+           python-setuptools
+           python-starlette))
     (propagated-inputs
      (list python-aiosqlite
            python-aiopg
