@@ -1166,14 +1166,19 @@ settings.")
 (define-public python-mnemonic
   (package
     (name "python-mnemonic")
-    (version "0.20")
+    (version "0.21")
     (source
       (origin
-        (method url-fetch)
-        (uri (pypi-uri "mnemonic" version))
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/trezor/python-mnemonic")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
         (sha256
-          (base32 "1xi5qvj2rvi5almf9c89rl7hz1z4ms04d53pg818i4vpkmivavvw"))))
-    (build-system python-build-system)
+          (base32 "1r8cdlgqpmj71ap3kyhc2nq8dn29gmj7v8dlq8kgcy91jky94n8g"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core python-pytest))
     (propagated-inputs
      (list python-pbkdf2))
     (home-page "https://github.com/trezor/python-mnemonic")
