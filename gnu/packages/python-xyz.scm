@@ -1371,7 +1371,7 @@ activity monitor) library for Python.")
        (sha256
         (base32
          "0bcm6c6r4ck9nfj9xwz4rm2swc5lrjvmw3lyl6rgj639jf41nawh"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -1387,7 +1387,7 @@ activity monitor) library for Python.")
     (propagated-inputs
      (list python-sortedcontainers))
     (native-inputs
-     (list python-pytest))
+     (list python-setuptools python-pytest))
     (home-page "https://github.com/chaimleib/intervaltree")
     (synopsis "Editable interval tree data structure")
     (description
