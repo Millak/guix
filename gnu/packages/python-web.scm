@@ -10207,16 +10207,17 @@ be registered via an entrypoint.")
 (define-public python-plaster-pastedeploy
   (package
     (name "python-plaster-pastedeploy")
-    (version "0.7")
+    (version "1.0.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "plaster_pastedeploy" version))
               (sha256
                (base32
-                "1zg7gcsvc1kzay1ry5p699rg2qavfsxqwl17mqxzr0gzw6j9679r"))))
-    (build-system python-build-system)
+                "04hl71p76wnwiy195p5w51bn3c6ba0lgx8nsfm42d9s15rnjw9my"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest))
+     (list python-pytest
+           python-setuptools))
     (propagated-inputs
      (list python-plaster python-pastedeploy))
     (home-page "https://github.com/Pylons/plaster_pastedeploy")
