@@ -838,7 +838,7 @@ implementing a Relying Party.")
 (define-public python-yubikey-manager
   (package
     (name "python-yubikey-manager")
-    (version "5.1.1")
+    (version "5.8.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -846,7 +846,7 @@ implementing a Relying Party.")
                     "/yubikey_manager-" version ".tar.gz"))
               (sha256
                (base32
-                "1kma08rxvpzn2gf8b9vxyyb2pvrakm7hhpdmbnb54nwbdnbxp1v4"))))
+                "0q45ff0lajszgwcnqxysf5vnwjssllnlxrsfr5ingm7xw5jxmw1s"))))
     (build-system pyproject-build-system)
     (propagated-inputs
      (list python-click
