@@ -446,26 +446,34 @@ of solids.")
 (define-public python-ase
   (package
     (name "python-ase")
-    (version "3.25.0")
+    (version "3.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ase" version))
        (sha256
-        (base32 "1hk2r5042cs9shqv49w0jvf65wkyq74s6vc5drfz1275kz5ghk1p"))))
+        (base32 "0xahqqyxkxrjh1g23icydngrvc8iv3lnd4iys9i802jvfxas6wd0"))))
     (build-system pyproject-build-system)
     (arguments
-     (list #:test-flags
-           #~(list ;; DeprecationWarning.
+     (list
+      ;; tests: 2 failed, 2999 passed, 566 skipped, 5 xfailed, 47 warnings
+      #:test-flags
+      #~(list "--numprocesses" (number->string (min 8 (parallel-job-count)))
+              ;; DeprecationWarning.
               "--deselect"
               "ase/test/fio/test_espresso.py::test_pw_input_write_nested_flat"
               ;; UserWarning.
               "--deselect"
               "ase/test/fio/test_espresso.py::TestConstraints::test_fix_scaled")))
-    (propagated-inputs (list python-matplotlib python-numpy python-scipy))
-    (native-inputs (list python-pytest python-pytest-xdist python-setuptools
-                         python-wheel))
+    (native-inputs
+     (list python-pytest
+           python-pytest-xdist
+           python-setuptools))
     (inputs (list spglib))
+    (propagated-inputs
+     (list python-matplotlib
+           python-numpy
+           python-scipy))
     (home-page "https://wiki.fysik.dtu.dk/ase/")
     (synopsis "Atomic Simulation Environment")
     (description "This package provides a set of tools and Python modules for
