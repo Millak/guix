@@ -20101,7 +20101,7 @@ allowing the insertion of arbitrary types into the tree.")
 (define-public python-pypairix
   (package
     (name "python-pypairix")
-    (version "0.3.8")
+    (version "0.3.9")
     ;; The tarball on pypi does not include the makefile to build the
     ;; programs.
     (source
@@ -20114,7 +20114,7 @@ allowing the insertion of arbitrary types into the tree.")
        (sha256
         (base32
          "1jlxj3xa67q1i58pmbi6imhvl6f5w9m5qxv0xd45ba86mp8mnmvz"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -20130,6 +20130,9 @@ allowing the insertion of arbitrary types into the tree.")
           (add-after 'install 'install-programs
             (lambda _
               (copy-recursively "bin" (string-append #$output "/bin")))))))
+    (native-inputs
+     (list python-pytest
+           python-setuptools))
     (inputs
      (list zlib))
     (home-page "https://github.com/4dn-dcic/pairix")
