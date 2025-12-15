@@ -10139,16 +10139,18 @@ decorator until a separate scan phase.")
 (define-public python-zope-deprecation
   (package
     (name "python-zope-deprecation")
-    (version "4.4.0")
+    (version "6.0")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "zope.deprecation" version))
+              (uri (pypi-uri "zope_deprecation" version))
               (sha256
                (base32
-                "1pz2cv7gv9y1r3m0bdv7ks1alagmrn5msm5spwdzkb2by0w36i8d"))))
-    (build-system python-build-system)
-    (native-inputs `())
-    (propagated-inputs `())
+                "0pzimp7xr8m0836bbsrx8wa9ybl58s5hwacas95nsfp6m2ypwwhq"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ;no tests in PyPI
+    (native-inputs
+     (list python-setuptools))
     (home-page "https://zopedeprecation.readthedocs.io/")
     (synopsis "Function for marking deprecations")
     (description "The @code{zope.deprecation} module provides a function for
