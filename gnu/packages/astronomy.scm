@@ -9228,27 +9228,14 @@ of axis order, spatial projections, and spectral units that exist in the wild.
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; 571 passed, 130 skipped, 2 deselected, 3 xfailed
+      ;; 572 passed, 131 skipped, 3 xfailed
       #:test-flags
-      #~(list "-k" (string-join
-                    (list
-                     ;; Disabling test requiring access to download
-                     ;; <https://datacenter.iers.org/data/9/finals2000A.all>.
-                     ;; XXX: Check if test data may be packed as standalone
-                     ;; package.
-                     "not test_create_spectral_axis"
-                     ;; ValueError: Expected the following order of world
-                     ;; arguments: SpectralCoord
-                     "test_wcs_transformations")
-                    " and not "))
+      ;; Disabling test requiring access to download
+      ;; <https://datacenter.iers.org/data/9/finals2000A.all>.
+      ;; XXX: Check if test data may be packed as standalone package.
+      #~(list "-k" "not test_create_spectral_axis")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "setup.cfg"
-                ;; scipy>=1.14.1; all tests passed, it will remove after
-                ;; python-team is merged.
-                ((">=1.14") ">=1.12.0"))))
           (add-before 'check 'set-home-env
             (lambda _
               ;; Tests require HOME to be set.
