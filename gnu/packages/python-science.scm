@@ -4252,50 +4252,32 @@ y, z)}.")
   (package
     (name "python-pythran")
     (version "0.17.0")
-    (home-page "https://github.com/serge-sans-paille/pythran")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference (url home-page) (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32 "1rm9lfbz5qvah1m0rr5gaaahkf1gzwlw1ysvym2l2yh0clglav94"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/serge-sans-paille/pythran")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1rm9lfbz5qvah1m0rr5gaaahkf1gzwlw1ysvym2l2yh0clglav94"))))
     (build-system pyproject-build-system)
     (arguments
      (list
       ;; FIXME: find more reliable tests file(s), all tests from
       ;; test_typing.py fail with error: ModuleNotFoundError: No module named
       ;; 'distutils.msvccompiler'.
-      #:tests? #f
-      #:test-flags
-      '(list (string-append "--numprocesses=" (number->string
-                                               (parallel-job-count)))
-             ;; XXX There are lots of tests of the format
-             ;; pythran/tests/test_*.py, but they cannot easily be selected.
-             "pythran/tests/test_typing.py")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'check 'pre-check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; Remove compiler flag that trips newer GCC:
-                ;; https://github.com/serge-sans-paille/pythran/issues/908
-                (substitute* "pythran/tests/__init__.py"
-                  (("'-Wno-absolute-value',") ""))
-                (setenv "HOME" (getcwd))
-                ;; This setup is modelled after the upstream CI system.
-                (call-with-output-file ".pythranrc"
-                  (lambda (port)
-                    (format port "[compiler]\nblas=openblas~%")))))))))
+      #:tests? #f))
     (native-inputs
-     ;; For tests.
-     (list openblas
-           python-pytest
-           python-pytest-xdist
-           python-setuptools
-           python-wheel))
+     (list python-setuptools))
     (propagated-inputs
-     (list boost xsimd                  ;headers need to be available
-           python-beniget python-gast python-numpy python-ply))
+     (list boost                 ;headers need to be available
+           xsimd
+           python-beniget
+           python-gast
+           python-numpy
+           python-ply))
+    (home-page "https://github.com/serge-sans-paille/pythran")
     (synopsis "Ahead of Time compiler for numeric kernels")
     (description
      "Pythran is an ahead of time compiler for a subset of the Python
