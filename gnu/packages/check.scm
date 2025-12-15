@@ -1913,47 +1913,6 @@ tests.  Tests can be rerun in a specific order by passing a seed value
 reported in a previous test run.")
     (license license:expat)))
 
-(define-public python-pytest-randomly
-  (package
-    (name "python-pytest-randomly")
-    (version "4.0.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/pytest-dev/pytest-randomly")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0zglnyl3wc2ri9dhkvd1z0ywksk2v1abpdlclc253c8xivv4c3ai"))))
-    (build-system pyproject-build-system)
-    (arguments
-     (list
-      ;; tests: 23 passed, 13 deselected
-      #:test-flags
-      #~(list "-p" "no:randomly"
-              ;; Skip tests requireing python-factory-boy, python-faker,
-              ;; python-numpy, and python-pytest-xdist to reduce closure size.
-              "-k" (string-join
-                    (list "not test_entrypoint_injection"
-                          "test_factory_boy"
-                          "test_faker"
-                          "test_faker_fixture"
-                          "test_it_runs_before_stepwise"
-                          "test_model_bakery"
-                          "test_numpy"
-                          "test_numpy_doesnt_crash_with_large_seed"
-                          "test_xdist")
-                    " and not "))))
-    (native-inputs
-     (list python-pytest-bootstrap
-           python-setuptools))
-    (home-page "https://github.com/pytest-dev/pytest-randomly")
-    (synopsis "Pytest plugin to randomly order tests")
-    (description "This is a Pytest plugin to randomly order tests and control
-Python's @code{random.seed}.")
-    (license license:expat)))
-
 (define-public python-pytest-runner
   (package
     (name "python-pytest-runner")
