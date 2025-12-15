@@ -8387,7 +8387,7 @@ pipelines.")
     (build-system pyproject-build-system)
     (arguments
      (list
-      ;; tests: 294 passed, 298 skipped, 2 deselected, 1 warning
+      ;; tests: 294 passed, 298 skipped, 2 deselected, 2 warnings
       #:test-flags
       #~(list "--color=no"
               ;; Tests requiring calibration data.
@@ -8417,11 +8417,6 @@ pipelines.")
               "-k" "not test_inject_sources and not test_grid_injection")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'relax-requirements
-            (lambda _
-              (substitute* "pyproject.toml"
-                ;; XXX: scipy >=1.14.1
-                ((" >=1.14.1") ""))))
           (add-before 'build 'set-version
             (lambda _
               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
