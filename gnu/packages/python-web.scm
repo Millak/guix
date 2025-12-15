@@ -10108,19 +10108,25 @@ language-neutral coding interface compatible with all major web browsers.")))
 (define-public python-venusian
   (package
     (name "python-venusian")
-    (version "3.0.0")
+    (version "3.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "venusian" version))
        (sha256
-        (base32 "0f7f67dkgxxcjfhpdd5frb9pszkf04lyzzpn5069q0xi89r2p17n"))))
-    (build-system python-build-system)
+        (base32 "0h8cdwx5x6i1ydc9s0hxwvy73l6iwlqijn2l77mq74k6anrv6ksk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-pytest-config
+            (lambda _
+              (substitute* "setup.cfg"
+                (("--cov --cov-report=term-missing ") "")))))))
     (native-inputs
-     `(("python-pytest" ,python-pytest)
-       ("python-runner" ,python-pytest-runner)
-       ("python-pytest-cov" ,python-pytest-cov)))
-    (arguments '(#:test-target "pytest"))
+     (list python-pytest
+           python-setuptools))
     (home-page "https://docs.pylonsproject.org/projects/venusian")
     (synopsis "Library for deferring decorator actions")
     (description
