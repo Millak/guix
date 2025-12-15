@@ -2748,7 +2748,7 @@ doctest to render the object representations.")
 (define-public python-pytest-doctestplus
   (package
     (name "python-pytest-doctestplus")
-    (version "1.2.1")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
@@ -2758,6 +2758,7 @@ doctest to render the object representations.")
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 44 passed, 6 deselected, 1 xfailed
       #:test-flags
       #~(list "-k" (string-join
                     ;; Tests requiring network access.
@@ -2771,19 +2772,18 @@ doctest to render the object representations.")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-git-path
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "pytest_doctestplus/plugin.py"
                 (("\"git\"")
-                 (format #f "'~a/bin/git'"
-                         #$(this-package-native-input "git-minimal")))))))))
+                 (format #f "~s" (search-input-file inputs "/bin/git")))))))))
     (native-inputs
      (list git-minimal/pinned
            python-numpy
-           python-pytest
-           python-setuptools-scm
-           python-wheel))
+           python-pytest-bootstrap
+           python-setuptools
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-setuptools)) ;for pkg_resources
+     (list python-packaging))
     (home-page "https://github.com/astropy/pytest-doctestplus")
     (synopsis "Pytest plugin with advanced doctest features")
     (description
