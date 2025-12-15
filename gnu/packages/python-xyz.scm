@@ -3209,24 +3209,22 @@ into dataclasses.")
 (define-public python-contourpy
   (package
     (name "python-contourpy")
-    (version "1.3.2")
+    (version "1.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "contourpy" version))
        (sha256
-        (base32 "0m5by0zqycm87ip6kcixya5hnsqji2alzibz3dklq0ssf515k55n"))))
+        (base32 "1078vg1lha4z8adrfnpr68sdqmjdn0ml74d4pk804191bcai4gh8"))))
     (build-system pyproject-build-system)
     (arguments
      (list
+      ;; tests: 1746 passed, 17 skipped, 8 warnings
       #:test-flags
-      #~(list
-         ;; Image tests require matplotlib and create a circular dependency.
-         "-m" "not image"
-         ;; Tests that pass but avoided for load reasons.
-         "-k" "not test_filled_random_big and not test_lines_random_big")))
-    (propagated-inputs
-     (list python-numpy))
+      ;; To prevent adding Matplotlib reducing closure size, and break cycle.
+      #~(list "-m" "not image"
+              ;; Tests that pass but avoided for load reasons.
+              "-k" "not test_filled_random_big and not test_lines_random_big")))
     (native-inputs
      (list cmake-minimal
            meson-python
@@ -3234,6 +3232,8 @@ into dataclasses.")
            pybind11
            python-pytest
            python-wurlitzer))
+    (propagated-inputs
+     (list python-numpy))
     (home-page "https://contourpy.readthedocs.io/")
     (synopsis
      "Python library for calculating contours of 2D quadrilateral grids")
